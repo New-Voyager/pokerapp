@@ -7,4 +7,6 @@ class AppColors {
   static const Color widgetBackgroundColor = Color(0xff262626);
 
   static const Color unselectedColor = Color(0xff878787);
+
+  static const Color cardBackgroundColor = Color(0xff313235);
 }

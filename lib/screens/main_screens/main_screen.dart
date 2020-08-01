@@ -3,7 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_icons.dart';
 import 'package:pokerapp/screens/clubs_screen.dart';
-import 'package:pokerapp/screens/games_screen.dart';
+import 'package:pokerapp/screens/games_screen/games_screen.dart';
 import 'package:pokerapp/screens/main_screens/widgets/tab_bar_item.dart';
 import 'package:pokerapp/screens/profile_screen.dart';
 
@@ -30,7 +30,8 @@ class _MainScreenState extends State<MainScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.screenBackgroundColor,
-      body: SafeArea(
+      body: Padding(
+        padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
         child: Column(
           children: <Widget>[
             Expanded(
