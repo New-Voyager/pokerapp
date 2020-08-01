@@ -2,6 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 
 class AppStyles {
+  // game item info text styles
+  static const gameItemInfoTextStyle = TextStyle(
+    color: Color(0xff848484),
+    fontSize: 12.0,
+    fontFamily: AppAssets.fontFamilyLato,
+  );
+
   // main screen styles
   static const double cardRadius = 10.0;
 

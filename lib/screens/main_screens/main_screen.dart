@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_icons.dart';
-import 'package:pokerapp/screens/clubs_screen.dart';
-import 'package:pokerapp/screens/games_screen/games_screen.dart';
+import 'package:pokerapp/screens/main_screens/clubs_screen/clubs_screen.dart';
+import 'package:pokerapp/screens/main_screens/games_screen/games_screen.dart';
 import 'package:pokerapp/screens/main_screens/widgets/tab_bar_item.dart';
-import 'package:pokerapp/screens/profile_screen.dart';
+import 'package:pokerapp/screens/main_screens/profile_screen/profile_screen.dart';
 
 class MainScreen extends StatefulWidget {
   @override

@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
-import 'package:pokerapp/mock_data/mock_played_games.dart';
+import 'package:pokerapp/mock_data/mock_game_data.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/screens/main_screens/games_screen/enums.dart';
 import 'package:pokerapp/widgets/text_button.dart';
 
-class PlayedGameItem extends StatelessWidget {
-  PlayedGameItem({
+class GameItem extends StatelessWidget {
+  GameItem({
     @required this.game,
+    this.gameStatus = GameStatus.PlayedGames,
   });
 
-  final MockPlayedGames game;
+  final MockGameData game;
+  final GameStatus gameStatus;
 
   @override
   Widget build(BuildContext context) {
@@ -86,11 +89,7 @@ class PlayedGameItem extends StatelessWidget {
 
                       Text(
                         "${game.gameType}${'\t' * 10}buy in : ${game.buyIn}",
-                        style: const TextStyle(
-                          color: Color(0xff848484),
-                          fontSize: 12.0,
-                          fontFamily: AppAssets.fontFamilyLato,
-                        ),
+                        style: AppStyles.gameItemInfoTextStyle,
                       ),
                       Spacer(),
 
@@ -100,40 +99,52 @@ class PlayedGameItem extends StatelessWidget {
 
                       Text(
                         'Game ID - ${game.gameID}',
-                        style: const TextStyle(
-                          color: Color(0xff848484),
-                          fontSize: 12.0,
-                          fontFamily: AppAssets.fontFamilyLato,
-                        ),
+                        style: AppStyles.gameItemInfoTextStyle,
                       ),
                       separator,
 
                       /*
-                      * Session time and end time
+                      *  for played games -  session time and end time
+                      *  for live games - open seats and
                       * */
 
-                      Text(
-                        "Session Time ${game.sessionTime}${'\t' * 4}Ended at : ${game.gameEndedAt}",
-                        style: const TextStyle(
-                          color: Color(0xff848484),
-                          fontSize: 12.0,
-                          fontFamily: AppAssets.fontFamilyLato,
-                        ),
-                      ),
+                      gameStatus == GameStatus.LiveGames
+                          ? Text(
+                              "${game.openSeats == '0' ? 'No' : game.openSeats} Open Seat${game.openSeats == '1' ? '' : 's'}${'\t' * 4}${game.gameStartedAt}",
+                              style: AppStyles.gameItemInfoTextStyle,
+                            )
+                          : Text(
+                              "Session Time ${game.sessionTime}${'\t' * 4}Ended at : ${game.gameEndedAt}",
+                              style: AppStyles.gameItemInfoTextStyle,
+                            ),
                     ],
                   ),
+
+                  /*
+                  * for played games - profit or loss
+                  * for live games - Join or Join Waitlist button
+                  * */
+
                   Align(
                     alignment: Alignment.centerRight,
-                    child: Text(
-                      '${double.parse(game.profit) == 0 ? '' : (double.parse(game.profit) > 0 ? '+' : '-')}${game.profit}',
-                      style: TextStyle(
-                        color: double.parse(game.profit) > 0
-                            ? Color(0xff31fe53)
-                            : Color(0xffff0000),
-                        fontFamily: AppAssets.fontFamilyLato,
-                        fontSize: 16.0,
-                      ),
-                    ),
+                    child: gameStatus == GameStatus.LiveGames
+                        ? TextButton(
+                            split: true,
+                            text: game.openSeats == '0'
+                                ? 'Join Waitlist'
+                                : 'Join',
+                            onTap: () {},
+                          )
+                        : Text(
+                            '${double.parse(game.profit) == 0 ? '' : (double.parse(game.profit) > 0 ? '+' : '-')}${game.profit}',
+                            style: TextStyle(
+                              color: double.parse(game.profit) > 0
+                                  ? Color(0xff31fe53)
+                                  : Color(0xfffe3153),
+                              fontFamily: AppAssets.fontFamilyLato,
+                              fontSize: 16.0,
+                            ),
+                          ),
                   ),
                 ],
               ),
