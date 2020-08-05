@@ -5,10 +5,12 @@ import 'package:pokerapp/resources/app_colors.dart';
 class RoundTextField extends StatelessWidget {
   final String hintText;
   final IconData iconData;
+  final Function onChanged;
 
   RoundTextField({
     @required this.hintText,
     @required this.iconData,
+    this.onChanged,
   });
 
   @override
@@ -27,6 +29,7 @@ class RoundTextField extends StatelessWidget {
         vertical: 5.0,
       ),
       child: TextField(
+        onChanged: onChanged,
         style: TextStyle(
           color: Colors.white,
           fontSize: 17.0,

@@ -30,8 +30,22 @@ class MockClubData {
     return List.generate(
       numberOfClubs,
       (_) => MockClubData(
-        clubName: 'Club Boston',
-        hostName: 'Manny',
+        clubName: ([
+          'Manchester Bus Station',
+          'Club Haverhill',
+          'Club Hyderabad',
+          'BU Warren Towers',
+          'Club Boston',
+        ]..shuffle())
+            .first,
+        hostName: ([
+          'Martinez',
+          'Manny',
+          'Yolo',
+          'Bobby',
+          'Aditya',
+        ]..shuffle())
+            .first,
         memberCount: r.nextInt(300).toString(),
         joinDate: '08/07/2020',
         isActive: r.nextInt(3) == 0 ? true : false,
