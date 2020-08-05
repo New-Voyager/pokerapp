@@ -9,4 +9,9 @@ class AppColors {
   static const Color unselectedColor = Color(0xff878787);
 
   static const Color cardBackgroundColor = Color(0xff313235);
+
+  static const Color contentColor = Color(0xff848484);
+
+  static const Color negativeColor = Color(0xffef1212);
+  static const Color positiveColor = Color(0xff1aff22);
 }

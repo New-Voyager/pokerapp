@@ -3,8 +3,9 @@ import 'package:flutter/painting.dart';
 import 'package:pokerapp/mock_data/mock_game_data.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/resources/app_styles.dart';
-import 'package:pokerapp/screens/main_screens/games_screen/enums.dart';
+import 'package:pokerapp/screens/main_screens/games_page_view/enums.dart';
 import 'package:pokerapp/widgets/text_button.dart';
 
 class GameItem extends StatelessWidget {
@@ -28,7 +29,7 @@ class GameItem extends StatelessWidget {
       decoration: const BoxDecoration(
         color: AppColors.cardBackgroundColor,
         borderRadius: BorderRadius.all(
-          Radius.circular(AppStyles.cardRadius),
+          Radius.circular(AppDimensions.cardRadius),
         ),
         boxShadow: AppStyles.cardBoxShadow,
       ),
@@ -49,7 +50,7 @@ class GameItem extends StatelessWidget {
               ]..shuffle())
                   .first,
               borderRadius: const BorderRadius.horizontal(
-                left: Radius.circular(AppStyles.cardRadius),
+                left: Radius.circular(AppDimensions.cardRadius),
               ),
             ),
           ),
@@ -89,7 +90,7 @@ class GameItem extends StatelessWidget {
 
                       Text(
                         "${game.gameType}${'\t' * 10}buy in : ${game.buyIn}",
-                        style: AppStyles.gameItemInfoTextStyle,
+                        style: AppStyles.itemInfoTextStyle,
                       ),
                       Spacer(),
 
@@ -99,7 +100,7 @@ class GameItem extends StatelessWidget {
 
                       Text(
                         'Game ID - ${game.gameID}',
-                        style: AppStyles.gameItemInfoTextStyle,
+                        style: AppStyles.itemInfoTextStyle,
                       ),
                       separator,
 
@@ -111,11 +112,11 @@ class GameItem extends StatelessWidget {
                       gameStatus == GameStatus.LiveGames
                           ? Text(
                               "${game.openSeats == '0' ? 'No' : game.openSeats} Open Seat${game.openSeats == '1' ? '' : 's'}${'\t' * 4}${game.gameStartedAt}",
-                              style: AppStyles.gameItemInfoTextStyle,
+                              style: AppStyles.itemInfoTextStyle,
                             )
                           : Text(
                               "Session Time ${game.sessionTime}${'\t' * 4}Ended at : ${game.gameEndedAt}",
-                              style: AppStyles.gameItemInfoTextStyle,
+                              style: AppStyles.itemInfoTextStyle,
                             ),
                     ],
                   ),

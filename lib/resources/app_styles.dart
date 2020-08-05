@@ -2,19 +2,35 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 
 class AppStyles {
-  // game item info text styles
-  static const gameItemInfoTextStyle = TextStyle(
+  static const itemInfoTextStyle = TextStyle(
     color: Color(0xff848484),
     fontSize: 12.0,
     fontFamily: AppAssets.fontFamilyLato,
   );
 
-  // main screen styles
-  static const double cardRadius = 10.0;
+  static const itemInfoSecondaryTextStyle = TextStyle(
+    color: Color(0xff848484),
+    fontSize: 16.0,
+    fontFamily: AppAssets.fontFamilyLato,
+  );
+
+  // club item info text styles
+  static const clubItemInfoTextStyle = TextStyle(
+    color: Color(0xff319ffe),
+    fontSize: 12.0,
+    fontFamily: AppAssets.fontFamilyLato,
+  );
 
   static const List<BoxShadow> cardBoxShadow = [
     BoxShadow(
       color: Colors.black,
+      blurRadius: 6.0,
+    ),
+  ];
+
+  static const List<BoxShadow> cardBoxShadowMedium = [
+    BoxShadow(
+      color: Color(0x26000000),
       blurRadius: 6.0,
     ),
   ];

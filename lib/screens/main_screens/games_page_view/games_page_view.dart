@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/mock_data/mock_game_data.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/resources/app_strings.dart';
-import 'package:pokerapp/screens/main_screens/games_screen/enums.dart';
-import 'package:pokerapp/screens/main_screens/games_screen/widgets/game_item.dart';
+import 'package:pokerapp/screens/main_screens/games_page_view/enums.dart';
+import 'package:pokerapp/screens/main_screens/games_page_view/widgets/game_item.dart';
 
 class GamesScreen extends StatefulWidget {
   @override
@@ -38,8 +39,8 @@ class _GamesScreenState extends State<GamesScreen> {
         physics: const BouncingScrollPhysics(),
         padding: EdgeInsets.only(
           top: MediaQuery.of(context).padding.top,
-          left: 10.0,
-          right: 10.0,
+          left: AppDimensions.kMainPaddingHorizontal,
+          right: AppDimensions.kMainPaddingHorizontal,
         ),
         children: <Widget>[
           /*
