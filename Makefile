@@ -4,7 +4,7 @@ load-data:
 
 .PHONY: stack-up
 stack-up:
-	cd docker && docker-compose up
+	cd docker && docker-compose up -d
 
 .PHONY: stack-down
 stack-down:
