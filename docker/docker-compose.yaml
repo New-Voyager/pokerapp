@@ -1,0 +1,38 @@
+version: '3'
+
+services:
+  game-server:
+    image: gcr.io/voyager-01-285603/game-server:latest
+    tty: true
+    depends_on:
+      - nats
+
+  nats:
+    image: gcr.io/voyager-01-285603/nats-server:latest
+    ports:
+      - 4222:4222
+      - 8222:8222
+      - 9222:9222
+
+  api-server:
+    image: gcr.io/voyager-01-285603/api-server:latest
+    ports:
+      - 9501:9501
+
+  postgres:
+    image: postgres
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: 'game'
+      POSTGRES_PASSWORD: 'game'
+
+volumes:
+  db-data:
+      
+networks:
+  default:
+    external:
+      name: game
