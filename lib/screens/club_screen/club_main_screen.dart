@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_icons.dart';
-import 'package:pokerapp/screens/main_screens/clubs_page_view/clubs_page_view.dart';
+import 'package:pokerapp/screens/club_screen/info_page_view/info_page_view.dart';
+import 'package:pokerapp/screens/club_screen/members_page_view/members_page_view.dart';
+import 'package:pokerapp/screens/club_screen/messages_page_view/messages_page_view.dart';
 import 'package:pokerapp/screens/main_screens/games_page_view/games_page_view.dart';
-import 'package:pokerapp/screens/main_screens/profile_page_view/profile_page_view.dart';
 import 'package:pokerapp/widgets/tab_bar_item.dart';
 
-class MainScreen extends StatefulWidget {
+class ClubMainScreen extends StatefulWidget {
   @override
-  _MainScreenState createState() => _MainScreenState();
+  _ClubMainScreenState createState() => _ClubMainScreenState();
 }
 
-class _MainScreenState extends State<MainScreen>
+class _ClubMainScreenState extends State<ClubMainScreen>
     with SingleTickerProviderStateMixin {
   TabController _controller;
 
@@ -21,7 +22,7 @@ class _MainScreenState extends State<MainScreen>
 
     _controller = TabController(
       vsync: this,
-      length: 3,
+      length: 4,
     );
   }
 
@@ -31,7 +32,7 @@ class _MainScreenState extends State<MainScreen>
       backgroundColor: AppColors.screenBackgroundColor,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.only(top: 10.0),
+          padding: EdgeInsets.only(top: 10.0),
           child: Column(
             children: <Widget>[
               Expanded(
@@ -39,9 +40,10 @@ class _MainScreenState extends State<MainScreen>
                   physics: NeverScrollableScrollPhysics(),
                   controller: _controller,
                   children: <Widget>[
+                    MessagesPageView(),
                     GamesPageView(),
-                    ClubsPageView(),
-                    ProfilePageView(),
+                    MembersPageView(),
+                    InfoPageView(),
                   ],
                 ),
               ),
@@ -59,16 +61,20 @@ class _MainScreenState extends State<MainScreen>
                   ),
                   tabs: <Widget>[
                     TabBarItem(
+                      iconData: AppIcons.message,
+                      title: 'Messages',
+                    ),
+                    TabBarItem(
                       iconData: AppIcons.playing_card,
                       title: 'Games',
                     ),
                     TabBarItem(
-                      iconData: AppIcons.users,
-                      title: 'Clubs',
+                      iconData: AppIcons.membership,
+                      title: 'Members',
                     ),
                     TabBarItem(
-                      iconData: AppIcons.user,
-                      title: 'My Profile',
+                      iconData: Icons.info,
+                      title: 'Members',
                     ),
                   ],
                 ),

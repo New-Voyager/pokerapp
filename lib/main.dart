@@ -3,8 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:pokerapp/screens/auth_screens/login_screen.dart';
 
 void main() {
-  WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setEnabledSystemUIOverlays([]);
   runApp(MyApp());
 }
 

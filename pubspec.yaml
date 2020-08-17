@@ -42,6 +42,6 @@ flutter:
          weight: 900
 
     # icon packs
-   - family: NavigationBarIcons
+   - family: AppIcons
      fonts:
-       - asset: assets/icons/navigation_bar_icons.ttf
+       - asset: assets/icons/app_icons.ttf

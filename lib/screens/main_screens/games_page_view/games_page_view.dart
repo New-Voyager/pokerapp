@@ -7,12 +7,12 @@ import 'package:pokerapp/resources/app_strings.dart';
 import 'package:pokerapp/screens/main_screens/games_page_view/enums.dart';
 import 'package:pokerapp/screens/main_screens/games_page_view/widgets/game_item.dart';
 
-class GamesScreen extends StatefulWidget {
+class GamesPageView extends StatefulWidget {
   @override
-  _GamesScreenState createState() => _GamesScreenState();
+  _GamesPageViewState createState() => _GamesPageViewState();
 }
 
-class _GamesScreenState extends State<GamesScreen> {
+class _GamesPageViewState extends State<GamesPageView> {
   static final _totalPlayedGames = 9;
   static final _totalLiveGames = 3;
 

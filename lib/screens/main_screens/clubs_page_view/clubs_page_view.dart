@@ -3,17 +3,18 @@ import 'package:pokerapp/mock_data/mock_club_data.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
+import 'package:pokerapp/screens/club_screen/club_main_screen.dart';
 import 'package:pokerapp/screens/main_screens/clubs_page_view/widgets/club_item.dart';
 import 'package:pokerapp/widgets/round_text_field.dart';
 import 'package:pokerapp/widgets/text_button.dart';
 import 'package:provider/provider.dart';
 
-class ClubsScreen extends StatefulWidget {
+class ClubsPageView extends StatefulWidget {
   @override
-  _ClubsScreenState createState() => _ClubsScreenState();
+  _ClubsPageViewState createState() => _ClubsPageViewState();
 }
 
-class _ClubsScreenState extends State<ClubsScreen> {
+class _ClubsPageViewState extends State<ClubsPageView> {
   static final _totalClubs = 17;
 
   var _clubs = MockClubData.get(_totalClubs);
@@ -104,8 +105,16 @@ class _ClubsScreenState extends State<ClubsScreen> {
                       var club = query.isNotEmpty
                           ? _filteredClubs[index]
                           : _clubs[index];
-                      return ClubItem(
-                        club: club,
+                      return InkWell(
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => ClubMainScreen(),
+                          ),
+                        ),
+                        child: ClubItem(
+                          club: club,
+                        ),
                       );
                     },
                     separatorBuilder: (_, __) => SizedBox(height: 10.0),
