@@ -7,4 +7,5 @@ class AppStrings {
   static const String welcomeText = 'Welcome';
   static const String usernameText = 'Username';
   static const String passwordText = 'Password';
+  static const String registerNowText = 'Register Now';
 }

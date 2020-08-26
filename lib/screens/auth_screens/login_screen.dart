@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/resources/app_strings.dart';
 import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/screens/auth_screens/registration_screen.dart';
 import 'package:pokerapp/screens/main_screens/main_screen.dart';
 import 'package:pokerapp/widgets/card_form_text_field.dart';
 import 'package:pokerapp/widgets/round_button.dart';
@@ -68,6 +69,24 @@ class _LoginScreenState extends State<LoginScreen> {
                 separator5,
                 CardFormTextField(
                   hintText: AppStrings.passwordText,
+                ),
+
+                separator30,
+                GestureDetector(
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => RegistrationScreen(),
+                    ),
+                  ),
+                  child: Text(
+                    AppStrings.registerNowText,
+                    textAlign: TextAlign.end,
+                    style: AppStyles.clubItemInfoTextStyle.copyWith(
+                      fontSize: 18.0,
+                      // TODO PUT ALL STYLES IN SEPARATE MODULE
+                    ),
+                  ),
                 ),
 
                 Spacer(),

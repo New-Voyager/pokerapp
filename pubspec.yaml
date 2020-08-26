@@ -11,13 +11,24 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+
+  # ui
   cupertino_icons: ^0.1.3
+
+  modal_progress_hud: ^0.1.3
 
   # state management
   provider: ^4.3.1
 
   # icon pack
   font_awesome_flutter: ^8.8.1
+
+  # networking
+  graphql_flutter: ^3.1.0
+
+  # device id
+  flutter_udid: ^1.0.1
+
 
 dev_dependencies:
   flutter_test:
