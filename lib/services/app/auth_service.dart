@@ -69,6 +69,8 @@ class AuthService {
     if (result.hasException) return false;
 
     authModel.uuid = (result.data as LazyCacheMap).data['createPlayer'];
+    authModel.password = null; // the password need not to be saved locally
+
     return _save(authModel);
   }
 
