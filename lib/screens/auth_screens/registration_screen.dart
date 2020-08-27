@@ -3,6 +3,7 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:pokerapp/models/auth_model.dart';
 import 'package:pokerapp/resources/app_strings.dart';
 import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/screens/main_screens/main_screen.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/widgets/card_form_text_field.dart';
@@ -23,8 +24,16 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         _showLoading = !_showLoading;
       });
 
-  // move user to the dashboard
-  _move() {}
+  // move user to the main screen
+  _move() {
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(
+        builder: (_) => MainScreen(),
+      ),
+      (_) => false,
+    );
+  }
 
   _register(BuildContext ctx) async {
     // validate : user name must not be empty
@@ -43,11 +52,19 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         "You must provide an email",
       );
 
+    if (!RegExp(
+            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+        .hasMatch(_authModel.email.trim()))
+      return Alerts.showSnackBar(ctx, 'Enter a valid email');
+
     if (_authModel.password == null || _authModel.email.isEmpty)
       return Alerts.showSnackBar(
         ctx,
         "You must provide a password",
       );
+
+    /* set the auth type as email registration */
+    _authModel.authType = AuthType.Email;
 
     _toggleLoading();
 
@@ -71,6 +88,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         ctx,
         "You must provide a display name",
       );
+
+    /* set the auth type as guest registration */
+    _authModel.authType = AuthType.Guest;
 
     _toggleLoading();
 

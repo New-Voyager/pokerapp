@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:pokerapp/screens/auth_screens/login_screen.dart';
+import 'package:pokerapp/screens/splash_screen.dart';
 import 'package:pokerapp/services/graphQL/configurations/graph_ql_configuration.dart';
 
 GraphQLConfiguration graphQLConfiguration = GraphQLConfiguration();
@@ -27,9 +27,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-
-      // todo use provider here - to check auth state and decide accordingly
-      home: LoginScreen(),
+      home: SplashScreen(),
     );
   }
 }
