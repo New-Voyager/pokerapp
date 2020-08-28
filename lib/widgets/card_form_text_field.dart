@@ -3,14 +3,22 @@ import 'package:pokerapp/resources/app_assets.dart';
 
 class CardFormTextField extends StatelessWidget {
   const CardFormTextField({
+    this.color = Colors.transparent,
     this.onChanged,
     this.controller,
     @required this.hintText,
     this.obscureText,
     this.keyboardType,
     this.radius,
+    this.elevation = 10.0,
+    this.validator,
+    this.onSaved,
   });
 
+  final Function onSaved;
+  final Function validator;
+  final double elevation;
+  final Color color;
   final controller;
   final String hintText;
   final bool obscureText;
@@ -21,7 +29,7 @@ class CardFormTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: Colors.transparent,
+      color: color,
       margin: EdgeInsets.all(0.0),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(radius ?? 5.0),
@@ -30,10 +38,12 @@ class CardFormTextField extends StatelessWidget {
           width: 1.0,
         ),
       ),
-      elevation: 10.0,
+      elevation: elevation,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
-        child: TextField(
+        child: TextFormField(
+          validator: validator,
+          onSaved: onSaved,
           onChanged: onChanged,
           controller: controller,
           maxLines: 1,

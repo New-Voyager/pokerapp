@@ -8,7 +8,9 @@ import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/screens/club_screen/club_main_screen.dart';
 import 'package:pokerapp/screens/main_screens/clubs_page_view/widgets/club_item.dart';
+import 'package:pokerapp/screens/main_screens/clubs_page_view/widgets/create_club_bottom_sheet.dart';
 import 'package:pokerapp/services/app/clubs_service.dart';
+import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/widgets/round_text_field.dart';
 import 'package:pokerapp/widgets/text_button.dart';
 import 'package:provider/provider.dart';
@@ -29,6 +31,43 @@ class _ClubsPageViewState extends State<ClubsPageView> {
       setState(() {
         _showLoading = !_showLoading;
       });
+  }
+
+  void _createClub(BuildContext ctx) async {
+    /* show a bottom sheet asking for club information */
+
+    /* the bottom sheet returns
+    * 'name'
+    * 'description'
+    * keys, which are used by the API to create a new club */
+    Map<String, String> clubDetails = await showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (ctx) => CreateClubBottomSheet(),
+    );
+
+    /* user has cancelled the club creation process */
+    if (clubDetails == null) return;
+
+    String clubName = clubDetails['name'];
+    String clubDescription = clubDetails['description'];
+
+    _toggleLoading();
+
+    /* create a club using the clubDetails */
+    bool status = await ClubsService.createClub(
+      clubName,
+      clubDescription,
+    );
+
+    _toggleLoading();
+
+    /* finally, show a status message and fetch all the clubs (if required) */
+    if (status) {
+      Alerts.showSnackBar(ctx, 'Created new club');
+      _fetchClubs();
+    } else
+      Alerts.showSnackBar(ctx, 'Something went wrong');
   }
 
   void _fetchClubs() async {
@@ -86,9 +125,7 @@ class _ClubsPageViewState extends State<ClubsPageView> {
                     _getTitleTextWidget('Clubs'),
                     TextButton(
                       text: '+ Create Club',
-                      onTap: () {
-                        // todo create new club
-                      },
+                      onTap: () => _createClub(ctx),
                     ),
                   ],
                 ),
@@ -141,43 +178,74 @@ class _ClubsPageViewState extends State<ClubsPageView> {
                                         _filteredClubs.clear();
                                         _filteredClubs = _clubs
                                             .where((c) =>
-                                                c.hostName
-                                                    .toLowerCase()
-                                                    .contains(query) ||
-                                                c.clubName
-                                                    .toLowerCase()
-                                                    .contains(query))
+                                                c?.hostName
+                                                    ?.toLowerCase()
+                                                    ?.contains(query) ??
+                                                false ||
+                                                    c.clubName
+                                                        .toLowerCase()
+                                                        .contains(query))
                                             .toList();
                                       }
 
-                                      return ListView.separated(
-                                        shrinkWrap: true,
-                                        physics: const BouncingScrollPhysics(),
-                                        padding: const EdgeInsets.only(
-                                          bottom: 15.0,
-                                        ),
-                                        itemBuilder: (_, index) {
-                                          var club = query.isNotEmpty
-                                              ? _filteredClubs[index]
-                                              : _clubs[index];
-                                          return InkWell(
-                                            onTap: () => Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (_) =>
-                                                    ClubMainScreen(),
+                                      /*
+                                      * An animated switcher is used to smooth
+                                      * the transition between the "Nothing Found" widget
+                                      * and the ListView containing club items widget
+                                      * */
+
+                                      return AnimatedSwitcher(
+                                        duration:
+                                            const Duration(milliseconds: 200),
+                                        reverseDuration:
+                                            const Duration(milliseconds: 200),
+                                        child: query.isNotEmpty &&
+                                                _filteredClubs.isEmpty
+
+                                            /* if filtered result is empty */
+
+                                            ? Center(
+                                                child: Text(
+                                                  'Nothing Found',
+                                                  style: AppStyles
+                                                      .clubItemInfoTextStyle
+                                                      .copyWith(
+                                                    fontSize: 30.0,
+                                                  ),
+                                                ),
+                                              )
+
+                                            /* list the club items, if present */
+
+                                            : ListView.separated(
+                                                physics:
+                                                    const BouncingScrollPhysics(),
+                                                padding: const EdgeInsets.only(
+                                                  bottom: 15.0,
+                                                ),
+                                                itemBuilder: (_, index) {
+                                                  var club = query.isNotEmpty
+                                                      ? _filteredClubs[index]
+                                                      : _clubs[index];
+                                                  return InkWell(
+                                                    onTap: () => Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                        builder: (_) =>
+                                                            ClubMainScreen(),
+                                                      ),
+                                                    ),
+                                                    child: ClubItem(
+                                                      club: club,
+                                                    ),
+                                                  );
+                                                },
+                                                separatorBuilder: (_, __) =>
+                                                    SizedBox(height: 10.0),
+                                                itemCount: query.isNotEmpty
+                                                    ? _filteredClubs.length
+                                                    : _clubs.length,
                                               ),
-                                            ),
-                                            child: ClubItem(
-                                              club: club,
-                                            ),
-                                          );
-                                        },
-                                        separatorBuilder: (_, __) =>
-                                            SizedBox(height: 10.0),
-                                        itemCount: query.isNotEmpty
-                                            ? _filteredClubs.length
-                                            : _clubs.length,
                                       );
                                     },
                                   ),
@@ -185,10 +253,6 @@ class _ClubsPageViewState extends State<ClubsPageView> {
                               ],
                             ),
                           ),
-
-                /*
-                * list of clubs
-                * */
               ],
             ),
           ),
