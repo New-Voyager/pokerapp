@@ -4,6 +4,15 @@ import 'package:pokerapp/widgets/card_form_text_field.dart';
 import 'package:pokerapp/widgets/text_button.dart';
 
 class CreateClubBottomSheet extends StatelessWidget {
+  final String name;
+  final String description;
+
+  // name and description needs to be passed, when the club details needed to be edited
+  CreateClubBottomSheet({
+    this.name,
+    this.description,
+  });
+
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final Map<String, String> clubDetails = {};
 

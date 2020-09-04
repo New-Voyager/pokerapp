@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/club_model.dart';
 import 'package:pokerapp/resources/app_assets.dart';
@@ -11,6 +12,7 @@ import 'package:pokerapp/screens/main_screens/clubs_page_view/widgets/club_item.
 import 'package:pokerapp/screens/main_screens/clubs_page_view/widgets/create_club_bottom_sheet.dart';
 import 'package:pokerapp/services/app/clubs_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
+import 'package:pokerapp/widgets/round_button.dart';
 import 'package:pokerapp/widgets/round_text_field.dart';
 import 'package:pokerapp/widgets/text_button.dart';
 import 'package:provider/provider.dart';
@@ -31,6 +33,93 @@ class _ClubsPageViewState extends State<ClubsPageView> {
       setState(() {
         _showLoading = !_showLoading;
       });
+  }
+
+  void _deleteClub(ClubModel club, BuildContext ctx) async {
+    // update the club with new details
+    bool status = await ClubsService.deleteClub(club.clubCode);
+
+    if (status) {
+      Alerts.showSnackBar(ctx, 'Delete successfully');
+      return _fetchClubs();
+    }
+
+    Alerts.showSnackBar(ctx, 'Could not delete');
+  }
+
+  void _editClub(ClubModel club, BuildContext ctx) async {
+    /* the bottom sheet returns
+    * 'name'
+    * 'description'
+    * keys, which are used by the API to create a new club */
+
+    Map<String, String> clubDetails = await showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (ctx) => CreateClubBottomSheet(
+        name: club.clubName,
+        description: '',
+      ),
+    );
+
+    if (clubDetails == null) return;
+
+    // these are the new club name and description
+    String clubName = clubDetails['name'];
+    String clubDescription = clubDetails['description'];
+
+    // update the club with new details
+    bool status = await ClubsService.updateClub(
+      club.clubCode,
+      clubName,
+      clubDescription,
+    );
+
+    if (status) {
+      Alerts.showSnackBar(ctx, 'Update successful');
+      return _fetchClubs();
+    }
+
+    return Alerts.showSnackBar(ctx, 'Could not update');
+  }
+
+  void _showClubOptions(ClubModel club, BuildContext ctx) async {
+    showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        child: Container(
+          padding: EdgeInsets.all(15.0),
+          color: AppColors.cardBackgroundColor,
+          width: MediaQuery.of(context).size.width * 0.60,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              /* delete club  */
+              RoundRaisedButton(
+                radius: 5.0,
+                color: AppColors.contentColor,
+                buttonText: 'Delete Club',
+                onButtonTap: () {
+                  Navigator.pop(context);
+                  _deleteClub(club, ctx);
+                },
+              ),
+              SizedBox(height: 10.0),
+              RoundRaisedButton(
+                radius: 5.0,
+                color: AppColors.contentColor,
+                buttonText: 'Edit Club',
+                onButtonTap: () {
+                  Navigator.pop(context);
+                  _editClub(club, ctx);
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   void _createClub(BuildContext ctx) async {
@@ -234,6 +323,11 @@ class _ClubsPageViewState extends State<ClubsPageView> {
                                                         builder: (_) =>
                                                             ClubMainScreen(),
                                                       ),
+                                                    ),
+                                                    onLongPress: () =>
+                                                        _showClubOptions(
+                                                      club,
+                                                      ctx,
                                                     ),
                                                     child: ClubItem(
                                                       club: club,

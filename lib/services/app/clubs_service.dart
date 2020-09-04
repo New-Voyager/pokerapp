@@ -7,6 +7,39 @@ import 'package:pokerapp/services/graphQL/mutations/clubs.dart';
 import 'package:pokerapp/services/graphQL/queries/clubs.dart';
 
 class ClubsService {
+  static Future<bool> deleteClub(String clubCode) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+    String _query = Club.deleteClub(clubCode);
+
+    QueryResult result = await _client.mutate(
+      MutationOptions(documentNode: gql(_query)),
+    );
+
+    if (result.hasException) return false;
+
+    return result.data['deleteClub'] ?? false;
+  }
+
+  static Future<bool> updateClub(
+    String clubCode,
+    String name,
+    String description,
+  ) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+
+    String _query = Club.updateClub(clubCode, name, description);
+
+    log(_query);
+
+    QueryResult result = await _client.mutate(
+      MutationOptions(documentNode: gql(_query)),
+    );
+
+    if (result.hasException) return false;
+
+    return result.data['updateClub'] ?? false;
+  }
+
   static Future<bool> createClub(String name, String description) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
 
