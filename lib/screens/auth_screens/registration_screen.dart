@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:pokerapp/enums/auth_type.dart';
 import 'package:pokerapp/models/auth_model.dart';
 import 'package:pokerapp/resources/app_strings.dart';
 import 'package:pokerapp/resources/app_styles.dart';

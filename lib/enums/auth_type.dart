@@ -1,0 +1,4 @@
+enum AuthType {
+  Guest,
+  Email,
+}

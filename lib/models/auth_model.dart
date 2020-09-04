@@ -1,9 +1,6 @@
 import 'dart:convert';
 
-enum AuthType {
-  Guest,
-  Email,
-}
+import 'package:pokerapp/enums/auth_type.dart';
 
 class AuthModel {
   String uuid;

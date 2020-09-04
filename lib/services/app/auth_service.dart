@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:flutter_udid/flutter_udid.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:pokerapp/enums/auth_type.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/auth_model.dart';
 import 'package:pokerapp/services/graphQL/mutations/create_player.dart';

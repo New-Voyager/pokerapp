@@ -69,6 +69,8 @@ class ClubsService {
       ),
     );
 
+    if (result.hasException) return [];
+
     var jsonResponse = result.data['myClubs'];
 
     return jsonResponse

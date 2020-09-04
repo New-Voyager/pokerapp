@@ -29,8 +29,11 @@ dependencies:
   # device id
   flutter_udid: ^1.0.1
 
-  # storage todo: MAY need to shift to a noSQL database at some later point
+  # storage
   shared_preferences: ^0.5.10
+
+  # formatter
+  intl: ^0.16.1
 
 
 dev_dependencies:

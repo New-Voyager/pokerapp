@@ -321,7 +321,11 @@ class _ClubsPageViewState extends State<ClubsPageView> {
                                                       context,
                                                       MaterialPageRoute(
                                                         builder: (_) =>
-                                                            ClubMainScreen(),
+                                                            Provider<ClubModel>(
+                                                          create: (_) => club,
+                                                          child:
+                                                              ClubMainScreen(),
+                                                        ),
                                                       ),
                                                     ),
                                                     onLongPress: () =>
