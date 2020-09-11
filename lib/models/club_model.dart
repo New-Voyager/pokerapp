@@ -1,9 +1,14 @@
 import 'dart:math';
 
-class MockClubData {
+class ClubModel {
   String clubName;
+  String clubCode;
+  String clubStatus;
+  int memberCount;
+  String imageID;
+  bool isPrivate;
+
   String hostName;
-  String memberCount;
   String joinDate;
   bool isActive;
   String balance;
@@ -12,10 +17,16 @@ class MockClubData {
   String invitationDate;
   bool outgoingRequest;
 
-  MockClubData({
+  ClubModel({
     this.clubName,
-    this.hostName,
+    this.clubCode,
+    this.clubStatus,
     this.memberCount,
+    this.imageID,
+    this.isPrivate,
+
+    /* extra (for now) */
+    this.hostName,
     this.joinDate,
     this.isActive,
     this.balance,
@@ -25,11 +36,24 @@ class MockClubData {
     this.outgoingRequest,
   });
 
-  static List<MockClubData> get(int numberOfClubs) {
+  // todo: at a later point, more fields can be added
+  ClubModel.fromJson(var jsonData) {
+    /* this function converts the server resonse
+    to app objcts, make sure the field names are correct */
+
+    this.clubName = jsonData['name'];
+    this.clubCode = jsonData['clubCode'];
+    this.clubStatus = jsonData['clubStatus'];
+    this.memberCount = jsonData['memberCount'];
+    this.imageID = jsonData['imageId'];
+    this.isPrivate = jsonData['private'];
+  }
+
+  static List<ClubModel> get(int numberOfClubs) {
     var r = Random();
     return List.generate(
       numberOfClubs,
-      (_) => MockClubData(
+      (_) => ClubModel(
         clubName: ([
           'Manchester Bus Station',
           'Club Haverhill',
@@ -46,7 +70,7 @@ class MockClubData {
           'Aditya',
         ]..shuffle())
             .first,
-        memberCount: r.nextInt(300).toString(),
+        memberCount: r.nextInt(300),
         joinDate: '08/07/2020',
         isActive: r.nextInt(3) == 0 ? true : false,
         balance: (r.nextInt(700) * (r.nextInt(3) == 0 ? -1 : 1)).toString(),

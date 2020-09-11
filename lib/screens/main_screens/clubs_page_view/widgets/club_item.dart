@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:pokerapp/mock_data/mock_club_data.dart';
+import 'package:pokerapp/models/club_model.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
@@ -8,13 +8,18 @@ import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/widgets/text_button.dart';
 
 class ClubItem extends StatelessWidget {
-  final MockClubData club;
+  final ClubModel club;
 
   ClubItem({
     @required this.club,
-  });
+  }) {
+    club.incomingRequest = false;
+    club.outgoingRequest = true;
+    club.isActive = false;
+    club.hasJoined = false;
+  }
 
-  Widget _buildSideAction(MockClubData club) {
+  Widget _buildSideAction(ClubModel club) {
     return Column(
       mainAxisAlignment: club.isActive
           ? MainAxisAlignment.center
@@ -150,7 +155,7 @@ class ClubItem extends StatelessWidget {
                         * */
 
                       Text(
-                        '${club.memberCount} Member${club.memberCount == '0' || club.memberCount == '1' ? '' : 's'}',
+                        '${club.memberCount} Member${club.memberCount == 0 || club.memberCount == 1 ? '' : 's'}',
                         style: AppStyles.itemInfoTextStyle,
                       ),
 
