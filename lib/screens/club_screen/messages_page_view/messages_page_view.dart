@@ -1,8 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:pokerapp/models/auth_model.dart';
 import 'package:pokerapp/models/club_message_model.dart';
 import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/screens/club_screen/messages_page_view/widgets/message_item.dart';
+import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/services/app/club_message_service.dart';
 
 class MessagesPageView extends StatefulWidget {
@@ -18,8 +21,9 @@ class MessagesPageView extends StatefulWidget {
 
 class _MessagesPageViewState extends State<MessagesPageView> {
   final ClubMessageModel _model = ClubMessageModel();
-
   final TextEditingController _textInputController = TextEditingController();
+
+  AuthModel _authModel;
 
   _sendMessage() {
     String text = _textInputController.text.trim();
@@ -32,6 +36,14 @@ class _MessagesPageViewState extends State<MessagesPageView> {
     _model.text = text;
 
     ClubMessageService.sendMessage(_model);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    /* this fetches the information regarding the current user */
+    AuthService.get().then((value) => _authModel = value);
   }
 
   @override
@@ -57,21 +69,27 @@ class _MessagesPageViewState extends State<MessagesPageView> {
                   child: CircularProgressIndicator(),
                 );
 
-              final List<ClubMessageModel> messages = snapshot.data;
-
-              return ListView.builder(
-                reverse: true,
-                padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                itemBuilder: (_, int index) => Container(
+              if (snapshot.data.isEmpty)
+                return Center(
                   child: Text(
-                    messages[index].text,
-                    style: TextStyle(
+                    'No Messages',
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 20.0,
                     ),
                   ),
+                );
+
+              return ListView.separated(
+                reverse: true,
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                itemBuilder: (_, int index) => MessageItem(
+                  messageModel: snapshot.data[index],
+                  currentUser: _authModel,
                 ),
-                itemCount: messages.length,
+                separatorBuilder: (_, __) => const SizedBox(height: 20.0),
+                itemCount: snapshot.data.length,
               );
             },
           ),

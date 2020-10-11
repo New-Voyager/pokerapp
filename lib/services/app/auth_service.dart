@@ -24,7 +24,7 @@ class AuthService {
     return sharedPreferences.remove(_prefKey);
   }
 
-  static Future<AuthModel> _get() async {
+  static Future<AuthModel> get() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     String jsonData = sharedPreferences.get(_prefKey);
 
@@ -34,7 +34,7 @@ class AuthService {
   /* methods exposed */
 
   /* method that returns back the uuid */
-  static Future<String> getJWT() async => (await _get())?.uuid;
+  static Future<String> getJWT() async => (await get())?.uuid;
 
   /* method that deletes the stored user contents and logs out */
   static Future<bool> logout() async => _remove();
