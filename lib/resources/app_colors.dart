@@ -17,4 +17,6 @@ class AppColors {
 
   static const Color chatMeColor = Color(0xff575757);
   static const Color chatOthersColor = Color(0xff313235);
+
+  static const Color lightGrayColor = Color(0xffdcdcdc);
 }

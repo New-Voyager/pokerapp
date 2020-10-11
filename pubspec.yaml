@@ -32,6 +32,10 @@ dependencies:
   # storage
   shared_preferences: ^0.5.10
 
+  # network images
+  cached_network_image: 2.3.2+1
+
+
   # formatter
   intl: ^0.16.1
 

@@ -4,6 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pokerapp/models/auth_model.dart';
 import 'package:pokerapp/models/club_message_model.dart';
 import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/screens/club_screen/messages_page_view/bottom_sheet/gif_drawer_sheet.dart';
 import 'package:pokerapp/screens/club_screen/messages_page_view/widgets/message_item.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/services/app/club_message_service.dart';
@@ -20,22 +21,43 @@ class MessagesPageView extends StatefulWidget {
 }
 
 class _MessagesPageViewState extends State<MessagesPageView> {
-  final ClubMessageModel _model = ClubMessageModel();
   final TextEditingController _textInputController = TextEditingController();
 
   AuthModel _authModel;
 
-  _sendMessage() {
+  void _sendMessage() {
     String text = _textInputController.text.trim();
     _textInputController.clear();
 
     if (text.isEmpty) return;
 
-    _model.clubCode = widget.clubCode;
-    _model.messageType = MessageType.TEXT;
-    _model.text = text;
+    ClubMessageModel _model = ClubMessageModel(
+      clubCode: widget.clubCode,
+      messageType: MessageType.TEXT,
+      text: text,
+    );
 
     ClubMessageService.sendMessage(_model);
+  }
+
+  void _sendGif(String url) {
+    ClubMessageModel _model = ClubMessageModel(
+      clubCode: widget.clubCode,
+      messageType: MessageType.GIPHY,
+      giphyLink: url,
+    );
+
+    ClubMessageService.sendMessage(_model);
+  }
+
+  void _openGifDrawer() async {
+    String gifUrl = await showModalBottomSheet<String>(
+      context: context,
+      isScrollControlled: true,
+      builder: (_) => GifDrawerSheet(),
+    );
+
+    if (gifUrl != null) _sendGif(gifUrl);
   }
 
   @override
@@ -101,11 +123,18 @@ class _MessagesPageViewState extends State<MessagesPageView> {
           ),
           child: Row(
             children: [
-              Icon(
-                FontAwesomeIcons.icons,
-                color: AppColors.appAccentColor,
-                size: 20.0,
+              /* app drawer open icon */
+              GestureDetector(
+                onTap: _openGifDrawer,
+                child: Icon(
+                  FontAwesomeIcons.icons,
+                  color: AppColors.appAccentColor,
+                  size: 20.0,
+                ),
               ),
+
+              /* text area - write message here */
+
               separator,
               Expanded(
                 child: Container(
@@ -133,6 +162,8 @@ class _MessagesPageViewState extends State<MessagesPageView> {
                   ),
                 ),
               ),
+
+              /* send message button */
               separator,
               GestureDetector(
                 onTap: _sendMessage,

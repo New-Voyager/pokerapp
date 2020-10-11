@@ -13,9 +13,6 @@ class ClubMessageService {
 
     final String mutation = await messageModel.mutationSendClubMessage();
 
-    // clear the message model after usage
-    messageModel.clear();
-
     log(mutation);
 
     _client.mutate(

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
@@ -51,13 +52,20 @@ class MessageItem extends StatelessWidget {
 
             /* body */
 
-            Text(
-              messageModel.text,
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 15.0,
-              ),
-            ),
+            messageModel.messageType == MessageType.GIPHY
+                ? CachedNetworkImage(
+                    imageUrl: messageModel.giphyLink,
+                    placeholder: (_, __) => Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  )
+                : Text(
+                    messageModel.text,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 15.0,
+                    ),
+                  ),
 
             /* show the message time */
             separator,

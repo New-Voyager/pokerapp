@@ -29,18 +29,6 @@ class ClubMessageModel {
     this.playerTags,
   });
 
-  clear() {
-    this.id = null;
-    this.clubCode = null;
-    this.messageType = null;
-    this.text = null;
-    this.gameNum = null;
-
-    this.handNum = null;
-    this.giphyLink = null;
-    this.playerTags = null;
-  }
-
   ClubMessageModel.fromJson(LazyCacheMap jsonData) {
     /* this function converts the server response
     to app objects */
