@@ -141,7 +141,7 @@ class ClubItem extends StatelessWidget {
                         * */
 
                       Text(
-                        "Host: ${club.hostName}",
+                        club.isOwner ? "Host: You" : "Host: ${club.hostName}",
                         style: AppStyles.clubItemInfoTextStyle,
                       ),
 

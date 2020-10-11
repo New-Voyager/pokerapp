@@ -46,7 +46,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         "You must provide a display name",
       );
 
-    // todo: also use a regular expression to validate the email
     if (_authModel.email == null || _authModel.email.isEmpty)
       return Alerts.showSnackBar(
         ctx,
@@ -73,12 +72,11 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
     _toggleLoading();
 
-    if (status)
+    if (status) {
       Alerts.showSnackBar(ctx, 'Registered successfully');
-    else
+      _move();
+    } else
       Alerts.showSnackBar(ctx, 'Something went wrong');
-
-    _move();
   }
 
   _registerAsGuest(BuildContext ctx) async {

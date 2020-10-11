@@ -1,4 +1,4 @@
-import 'dart:math';
+import 'package:graphql_flutter/graphql_flutter.dart';
 
 class ClubModel {
   String clubName;
@@ -7,6 +7,7 @@ class ClubModel {
   int memberCount;
   String imageID;
   bool isPrivate;
+  bool isOwner;
 
   String hostName;
   String joinDate;
@@ -24,6 +25,7 @@ class ClubModel {
     this.memberCount,
     this.imageID,
     this.isPrivate,
+    this.isOwner,
 
     /* extra (for now) */
     this.hostName,
@@ -37,9 +39,9 @@ class ClubModel {
   });
 
   // todo: at a later point, more fields can be added
-  ClubModel.fromJson(var jsonData) {
-    /* this function converts the server resonse
-    to app objcts, make sure the field names are correct */
+  ClubModel.fromJson(LazyCacheMap jsonData) {
+    /* this function converts the server response
+    to app objects */
 
     this.clubName = jsonData['name'];
     this.clubCode = jsonData['clubCode'];
@@ -47,38 +49,6 @@ class ClubModel {
     this.memberCount = jsonData['memberCount'];
     this.imageID = jsonData['imageId'];
     this.isPrivate = jsonData['private'];
-  }
-
-  static List<ClubModel> get(int numberOfClubs) {
-    var r = Random();
-    return List.generate(
-      numberOfClubs,
-      (_) => ClubModel(
-        clubName: ([
-          'Manchester Bus Station',
-          'Club Haverhill',
-          'Club Hyderabad',
-          'BU Warren Towers',
-          'Club Boston',
-        ]..shuffle())
-            .first,
-        hostName: ([
-          'Martinez',
-          'Manny',
-          'Yolo',
-          'Bobby',
-          'Aditya',
-        ]..shuffle())
-            .first,
-        memberCount: r.nextInt(300),
-        joinDate: '08/07/2020',
-        isActive: r.nextInt(3) == 0 ? true : false,
-        balance: (r.nextInt(700) * (r.nextInt(3) == 0 ? -1 : 1)).toString(),
-        hasJoined: r.nextInt(3) == 0 ? true : false,
-        incomingRequest: r.nextInt(3) == 0 ? true : false,
-        invitationDate: '05/08/2020',
-        outgoingRequest: r.nextInt(3) == 0 ? true : false,
-      ),
-    );
+    this.isOwner = jsonData['isOwner'];
   }
 }

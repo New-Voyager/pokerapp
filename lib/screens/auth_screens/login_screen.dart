@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:pokerapp/enums/auth_type.dart';
 import 'package:pokerapp/models/auth_model.dart';
 import 'package:pokerapp/resources/app_strings.dart';
 import 'package:pokerapp/resources/app_styles.dart';
@@ -13,13 +14,15 @@ import 'package:pokerapp/widgets/round_button.dart';
 // TODO: LOGIN IS NOT FULLY FUNCTIONAL AS THERE IS NO API TO LOGIN
 // TODO: THIS WILL BE CHANGED WHEN THERE WILL BE A LOGIN API IN FUTURE
 
+// FIXME: IF THERE IS NO LOGIN API THEN A DIRECT SIGN IN (AND REGISTRATION) CAN BE DONE USING THE REGISTER API -- DISCUSS WITH SOMA
+
 class LoginScreen extends StatefulWidget {
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  AuthModel _authModel = AuthModel();
+  AuthModel _authModel = AuthModel(authType: AuthType.Email);
 
   bool _showLoading = false;
 
@@ -31,6 +34,8 @@ class _LoginScreenState extends State<LoginScreen> {
     _toggleLoading();
 
     bool status = await AuthService.register(_authModel);
+
+    _toggleLoading();
 
     if (!status)
       return Alerts.showSnackBar(

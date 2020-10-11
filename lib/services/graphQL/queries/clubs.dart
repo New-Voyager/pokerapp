@@ -7,6 +7,7 @@ class Clubs {
         clubStatus
         memberCount
         imageId
+        isOwner
         private
       }
     }""";

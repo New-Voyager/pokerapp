@@ -46,14 +46,13 @@ class AuthService {
   static Future<bool> register(AuthModel authModel) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
 
-    // TODO REMOVE THIS WHEN THE SERVER CAN ALLOW PASSWORDS
-    authModel.password = null;
-
     if (authModel.authType == AuthType.Email)
       authModel.deviceID = null;
-    else {
+    else if (authModel.authType == AuthType.Guest) {
       authModel.email = null;
       authModel.deviceID = await FlutterUdid.udid;
+    } else {
+      return false;
     }
 
     String _query = CreatePlayer.createPlayer(authModel);
