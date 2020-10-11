@@ -20,7 +20,6 @@ class AuthModel {
   });
 
   AuthModel.fromJson(var jsonData) {
-    print(jsonData);
     this.uuid = jsonData['uuid'].toString();
     this.name = jsonData['name'].toString();
     this.email = jsonData['email'].toString();

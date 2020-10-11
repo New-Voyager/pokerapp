@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/club_model.dart';
+import 'package:pokerapp/models/club_model.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_icons.dart';
 import 'package:pokerapp/screens/club_screen/info_page_view/info_page_view.dart';
@@ -31,14 +32,16 @@ class _ClubMainScreenState extends State<ClubMainScreen>
 
   @override
   Widget build(BuildContext context) {
+    final clubModel = Provider.of<ClubModel>(
+      context,
+      listen: false,
+    );
+
     return Scaffold(
       backgroundColor: AppColors.screenBackgroundColor,
       appBar: AppBar(
         title: Text(
-          Provider.of<ClubModel>(
-            context,
-            listen: false,
-          ).clubName,
+          clubModel.clubName,
         ),
         elevation: 0.0,
         backgroundColor: AppColors.screenBackgroundColor,
@@ -51,7 +54,9 @@ class _ClubMainScreenState extends State<ClubMainScreen>
                 physics: NeverScrollableScrollPhysics(),
                 controller: _controller,
                 children: <Widget>[
-                  MessagesPageView(),
+                  MessagesPageView(
+                    clubCode: clubModel.clubCode,
+                  ),
                   GamesPageView(),
                   MembersPageView(),
                   InfoPageView(),
