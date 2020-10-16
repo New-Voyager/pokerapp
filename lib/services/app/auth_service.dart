@@ -50,7 +50,8 @@ class AuthService {
       authModel.deviceID = null;
     else if (authModel.authType == AuthType.Guest) {
       authModel.email = null;
-      authModel.deviceID = await FlutterUdid.udid;
+      authModel.deviceID =
+          '8ba53577-1318-4da3-adbd-0796234e405a'; // FIXME // await FlutterUdid.udid;
     } else {
       return false;
     }

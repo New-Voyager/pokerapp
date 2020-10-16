@@ -2,12 +2,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pokerapp/models/auth_model.dart';
+import 'package:pokerapp/models/club_members_model.dart';
 import 'package:pokerapp/models/club_message_model.dart';
+import 'package:pokerapp/models/club_model.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/screens/club_screen/messages_page_view/bottom_sheet/gif_drawer_sheet.dart';
 import 'package:pokerapp/screens/club_screen/messages_page_view/widgets/message_item.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
+import 'package:pokerapp/services/app/club_interior_service.dart';
 import 'package:pokerapp/services/app/club_message_service.dart';
+import 'package:provider/provider.dart';
 
 class MessagesPageView extends StatefulWidget {
   MessagesPageView({
@@ -24,6 +28,7 @@ class _MessagesPageViewState extends State<MessagesPageView> {
   final TextEditingController _textInputController = TextEditingController();
 
   AuthModel _authModel;
+  Map<String, String> _players;
 
   void _sendMessage() {
     String text = _textInputController.text.trim();
@@ -60,12 +65,33 @@ class _MessagesPageViewState extends State<MessagesPageView> {
     if (gifUrl != null) _sendGif(gifUrl);
   }
 
+  _fetchMembers() async {
+    String clubCode = Provider.of<ClubModel>(
+      context,
+      listen: false,
+    ).clubCode;
+
+    List<ClubMembersModel> _clubMembers =
+        await ClubInteriorService.getMembers(clubCode);
+
+    _players = Map<String, String>();
+
+    _clubMembers.forEach((member) {
+      _players[member.playerId] = member.name;
+    });
+
+    if (mounted) setState(() {});
+  }
+
   @override
   void initState() {
     super.initState();
 
     /* this fetches the information regarding the current user */
     AuthService.get().then((value) => _authModel = value);
+
+    /* this function fetches the members of the clubs - to show name corresponding to messages */
+    _fetchMembers();
   }
 
   @override
@@ -86,7 +112,7 @@ class _MessagesPageViewState extends State<MessagesPageView> {
           child: StreamBuilder<List<ClubMessageModel>>(
             stream: ClubMessageService.pollMessages(widget.clubCode),
             builder: (_, snapshot) {
-              if (!snapshot.hasData)
+              if (!snapshot.hasData || _players == null)
                 return Center(
                   child: CircularProgressIndicator(),
                 );
@@ -109,6 +135,7 @@ class _MessagesPageViewState extends State<MessagesPageView> {
                 itemBuilder: (_, int index) => MessageItem(
                   messageModel: snapshot.data[index],
                   currentUser: _authModel,
+                  players: _players,
                 ),
                 separatorBuilder: (_, __) => const SizedBox(height: 20.0),
                 itemCount: snapshot.data.length,

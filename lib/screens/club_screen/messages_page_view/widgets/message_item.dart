@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:intl/intl.dart';
 import 'package:pokerapp/models/auth_model.dart';
 import 'package:pokerapp/models/club_message_model.dart';
 import 'package:pokerapp/resources/app_colors.dart';
@@ -9,10 +10,12 @@ import 'package:pokerapp/resources/app_colors.dart';
 class MessageItem extends StatelessWidget {
   final ClubMessageModel messageModel;
   final AuthModel currentUser;
+  final Map<String, String> players;
 
   MessageItem({
     @required this.messageModel,
     @required this.currentUser,
+    @required this.players,
   });
 
   @override
@@ -40,9 +43,10 @@ class MessageItem extends StatelessWidget {
           crossAxisAlignment:
               isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
           children: [
-            /* user name */ // TODO: this needs to be passed in the player tags - think about this
             Text(
-              isMe ? 'You' : 'Somebody',
+              isMe
+                  ? 'You'
+                  : players[messageModel.playerTags ?? ''] ?? 'Somebody',
               style: TextStyle(
                 color: isMe ? Colors.white : AppColors.appAccentColor,
                 fontSize: infoFontSize,
@@ -70,7 +74,10 @@ class MessageItem extends StatelessWidget {
             /* show the message time */
             separator,
             Text(
-              '9:32 AM',
+              DateFormat('d MMM, h:mm a')
+                  .format(DateTime.fromMillisecondsSinceEpoch(
+                messageModel.messageTimeInEpoc * 1000,
+              )),
               style: TextStyle(
                 fontSize: infoFontSize,
                 color: Colors.white.withOpacity(0.40),

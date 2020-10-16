@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
 
@@ -16,8 +15,8 @@ class ClubMessageModel {
   int gameNum;
   int handNum;
   String giphyLink;
-
   String playerTags;
+  int messageTimeInEpoc;
 
   ClubMessageModel({
     this.clubCode,
@@ -55,12 +54,12 @@ class ClubMessageModel {
     this.handNum = jsonData['handNum'];
     this.giphyLink = jsonData['giphyLink'];
     this.playerTags = jsonData['playerTags'];
+    this.messageTimeInEpoc = jsonData['messageTimeInEpoc'];
   }
 
   // MUTATIONS
 
   Future<String> mutationSendClubMessage() async {
-    // TODO: THE PLAYER TAGS SHOULD CONTAIN PLAYER ID ALONG WITH PLAYER NAME
     this.playerTags = await AuthService.getJWT();
 
     assert(this.clubCode != null);
@@ -107,6 +106,7 @@ class ClubMessageModel {
       handNum
       giphyLink
       playerTags
+      messageTimeInEpoc
     }
   }""";
 

@@ -7,7 +7,7 @@ class CreatePlayer {
     name: "${authModel.name}"
     ${authModel.email == null ? '' : 'email: "${authModel.email}"'}
     ${authModel.deviceID == null ? '' : 'deviceId: "${authModel.deviceID}"'}
-    ${authModel.password == null ? '' : 'password: "${authModel.deviceID}"'}
+    ${authModel.password == null ? '' : 'password: "${authModel.password}"'}
   })
   }
   """;
