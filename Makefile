@@ -1,3 +1,9 @@
+.PHONY: pull
+pull: 
+	docker pull gcr.io/voyager-01-285603/api-server:latest
+	docker pull gcr.io/voyager-01-285603/game-server:latest
+	docker pull gcr.io/voyager-01-285603/nats-server:latest
+ 
 .PHONY: load-data
 load-data:
 	docker exec -it docker_api-server_1 node build/script-tests/testdriver.js ./script-tests/script/
