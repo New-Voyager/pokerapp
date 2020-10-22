@@ -41,21 +41,22 @@ class _GifDrawerSheetState extends State<GifDrawerSheet> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      color: AppColors.cardBackgroundColor,
       height: MediaQuery.of(context).size.height * 0.70,
       padding: const EdgeInsets.all(10.0),
       child: Column(
         children: [
-          Text('Powered by Giphy'),
-          const SizedBox(height: 10.0),
-
           /* search bar */
 
           Container(
             decoration: BoxDecoration(
-              color: AppColors.lightGrayColor,
+              color: AppColors.contentColor,
               borderRadius: BorderRadius.circular(10.0),
             ),
             child: TextField(
+              style: TextStyle(
+                color: AppColors.lightGrayColor,
+              ),
               onChanged: (String text) {
                 if (text.trim().isEmpty) return;
 
@@ -73,10 +74,13 @@ class _GifDrawerSheetState extends State<GifDrawerSheet> {
               decoration: InputDecoration(
                 prefixIcon: Icon(
                   FontAwesomeIcons.search,
-                  color: Colors.black,
+                  color: AppColors.lightGrayColor,
                   size: 18.0,
                 ),
-                hintText: 'Search GIFs',
+                hintText: 'Search GIFs via Giphy',
+                hintStyle: TextStyle(
+                  color: AppColors.lightGrayColor,
+                ),
                 border: InputBorder.none,
               ),
             ),

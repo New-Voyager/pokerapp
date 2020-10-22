@@ -3,6 +3,7 @@ import 'package:pokerapp/models/club_model.dart';
 import 'package:pokerapp/models/club_model.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_icons.dart';
+import 'package:pokerapp/screens/club_screen/games_page_view/clubs_games_page_view.dart';
 import 'package:pokerapp/screens/club_screen/info_page_view/info_page_view.dart';
 import 'package:pokerapp/screens/club_screen/members_page_view/members_page_view.dart';
 import 'package:pokerapp/screens/club_screen/messages_page_view/messages_page_view.dart';
@@ -57,7 +58,7 @@ class _ClubMainScreenState extends State<ClubMainScreen>
                   MessagesPageView(
                     clubCode: clubModel.clubCode,
                   ),
-                  GamesPageView(),
+                  ClubsGamePageView(),
                   MembersPageView(),
                   InfoPageView(),
                 ],

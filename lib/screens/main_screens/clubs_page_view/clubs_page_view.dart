@@ -182,7 +182,7 @@ class _ClubsPageViewState extends State<ClubsPageView> {
       style: const TextStyle(
         fontFamily: AppAssets.fontFamilyLato,
         color: Colors.white,
-        fontSize: 18.0,
+        fontSize: 30.0,
         fontWeight: FontWeight.w900,
       ),
     );
