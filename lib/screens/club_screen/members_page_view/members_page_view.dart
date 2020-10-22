@@ -39,10 +39,20 @@ class _MembersPageViewState extends State<MembersPageView> {
     _toggleLoading();
   }
 
+  _checkOwner() {
+    _isOwner = Provider.of<ClubModel>(
+      context,
+      listen: false,
+    ).isOwner;
+
+    log('isOwner: $_isOwner');
+  }
+
   @override
   void initState() {
     super.initState();
     _fetchMembers();
+    _checkOwner();
   }
 
   @override

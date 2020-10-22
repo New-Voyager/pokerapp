@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 
-class TextButton extends StatelessWidget {
-  TextButton({
+class CustomTextButton extends StatelessWidget {
+  CustomTextButton({
     @required this.text,
     @required this.onTap,
     this.split = false,

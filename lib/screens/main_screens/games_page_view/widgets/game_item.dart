@@ -6,7 +6,7 @@ import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/screens/main_screens/games_page_view/enums.dart';
-import 'package:pokerapp/widgets/text_button.dart';
+import 'package:pokerapp/widgets/custom_text_button.dart';
 
 class GameItem extends StatelessWidget {
   GameItem({
@@ -129,7 +129,7 @@ class GameItem extends StatelessWidget {
                   Align(
                     alignment: Alignment.centerRight,
                     child: gameStatus == GameStatus.LiveGames
-                        ? TextButton(
+                        ? CustomTextButton(
                             split: true,
                             text: game.openSeats == '0'
                                 ? 'Join Waitlist'

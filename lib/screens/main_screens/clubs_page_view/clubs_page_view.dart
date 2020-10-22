@@ -14,7 +14,7 @@ import 'package:pokerapp/services/app/clubs_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/widgets/round_button.dart';
 import 'package:pokerapp/widgets/round_text_field.dart';
-import 'package:pokerapp/widgets/text_button.dart';
+import 'package:pokerapp/widgets/custom_text_button.dart';
 import 'package:provider/provider.dart';
 
 class ClubsPageView extends StatefulWidget {
@@ -212,7 +212,7 @@ class _ClubsPageViewState extends State<ClubsPageView> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     _getTitleTextWidget('Clubs'),
-                    TextButton(
+                    CustomTextButton(
                       text: '+ Create Club',
                       onTap: () => _createClub(ctx),
                     ),

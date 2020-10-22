@@ -5,7 +5,7 @@ import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/resources/app_styles.dart';
-import 'package:pokerapp/widgets/text_button.dart';
+import 'package:pokerapp/widgets/custom_text_button.dart';
 
 class ClubItem extends StatelessWidget {
   final ClubModel club;
@@ -42,11 +42,11 @@ class ClubItem extends StatelessWidget {
             ]
           : club.incomingRequest
               ? [
-                  TextButton(
+                  CustomTextButton(
                     text: 'Join',
                     onTap: () {},
                   ),
-                  TextButton(
+                  CustomTextButton(
                     text: 'Decline',
                     onTap: () {},
                   ),
@@ -62,7 +62,7 @@ class ClubItem extends StatelessWidget {
                       ),
                     ]
                   : [
-                      TextButton(
+                      CustomTextButton(
                         text: 'Send Request',
                         split: true,
                         onTap: () {},

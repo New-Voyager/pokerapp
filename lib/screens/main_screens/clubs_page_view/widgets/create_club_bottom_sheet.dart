@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/widgets/card_form_text_field.dart';
-import 'package:pokerapp/widgets/text_button.dart';
+import 'package:pokerapp/widgets/custom_text_button.dart';
 
 class CreateClubBottomSheet extends StatelessWidget {
   final String name;
@@ -67,7 +67,7 @@ class CreateClubBottomSheet extends StatelessWidget {
             separator20,
             Align(
               alignment: Alignment.bottomRight,
-              child: TextButton(
+              child: CustomTextButton(
                 text: 'Create',
                 onTap: () {
                   if (!_formKey.currentState.validate()) return;
