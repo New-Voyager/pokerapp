@@ -14,8 +14,6 @@ class MembersPageView extends StatefulWidget {
 }
 
 class _MembersPageViewState extends State<MembersPageView> {
-  // TODO: CHECK IF USER IS ADMIN OF THIS GROUP
-  // TODO: for now this is the flag to toggle views
   bool _isOwner = false;
 
   bool _showLoading = false;
@@ -60,7 +58,7 @@ class _MembersPageViewState extends State<MembersPageView> {
     return _clubMembers == null
         ? Center(child: CircularProgressIndicator())
         /* owner of the group and the manager of the group will have privileged access */
-        : _isOwner
+        : true // FIXME: REVERT BACK TO CHECKING OF IS OWNER
             ? AdminView(clubMembers: _clubMembers)
             : GeneralView(clubMembers: _clubMembers);
   }
