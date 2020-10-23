@@ -1,0 +1,7 @@
+enum GameStatus {
+  UNKNOWN,
+  WAITING,
+  NOTENOUGH_PLAYERS,
+  RUNNING,
+  ENDED,
+}

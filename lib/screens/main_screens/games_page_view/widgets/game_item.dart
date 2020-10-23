@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
-import 'package:pokerapp/mock_data/mock_game_data.dart';
+import 'package:intl/intl.dart';
+import 'package:pokerapp/models/game_model.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
@@ -11,11 +12,11 @@ import 'package:pokerapp/widgets/custom_text_button.dart';
 class GameItem extends StatelessWidget {
   GameItem({
     @required this.game,
-    this.gameStatus = GameStatus.PlayedGames,
-  });
+    @required this.gameStatus,
+  }) : assert(game != null && gameStatus != null);
 
-  final MockGameData game;
-  final GameStatus gameStatus;
+  final GameModel game;
+  final LiveOrPlayedGames gameStatus;
 
   @override
   Widget build(BuildContext context) {
@@ -89,7 +90,7 @@ class GameItem extends StatelessWidget {
                       * */
 
                       Text(
-                        "${game.gameType}${'\t' * 10}buy in : ${game.buyIn}",
+                        "${'PLO 1/2'}${'\t' * 10}BUY IN : ${game.buyIn}",
                         style: AppStyles.itemInfoTextStyle,
                       ),
                       Spacer(),
@@ -99,7 +100,7 @@ class GameItem extends StatelessWidget {
                       * */
 
                       Text(
-                        'Game ID - ${game.gameID}',
+                        'Game ID - ${game.gameCode}',
                         style: AppStyles.itemInfoTextStyle,
                       ),
                       separator,
@@ -109,13 +110,13 @@ class GameItem extends StatelessWidget {
                       *  for live games - open seats and
                       * */
 
-                      gameStatus == GameStatus.LiveGames
+                      gameStatus == LiveOrPlayedGames.LiveGames
                           ? Text(
-                              "${game.openSeats == '0' ? 'No' : game.openSeats} Open Seat${game.openSeats == '1' ? '' : 's'}${'\t' * 4}${game.gameStartedAt}",
+                              "${'1' == '0' ? 'No' : '1'} Open Seat${'1' == '1' ? '' : 's'}${'\t' * 4}${'56'}",
                               style: AppStyles.itemInfoTextStyle,
                             )
                           : Text(
-                              "Session Time ${game.sessionTime}${'\t' * 4}Ended at : ${game.gameEndedAt}",
+                              "Session Time ${game.sessionTime}${'\t' * 4}Ended at : ${DateFormat('dd/yy hh:mm a').format(game.endedAt)}",
                               style: AppStyles.itemInfoTextStyle,
                             ),
                     ],
@@ -128,18 +129,18 @@ class GameItem extends StatelessWidget {
 
                   Align(
                     alignment: Alignment.centerRight,
-                    child: gameStatus == GameStatus.LiveGames
+                    child: gameStatus == LiveOrPlayedGames.LiveGames
                         ? CustomTextButton(
                             split: true,
-                            text: game.openSeats == '0'
+                            text: 'game.openSeats' == '0'
                                 ? 'Join Waitlist'
                                 : 'Join',
                             onTap: () {},
                           )
                         : Text(
-                            '${double.parse(game.profit) == 0 ? '' : (double.parse(game.profit) > 0 ? '+' : '-')}${game.profit}',
+                            '${double.parse('0') == 0 ? '' : (double.parse('10') > 0 ? '+' : '-')}${100}',
                             style: TextStyle(
-                              color: double.parse(game.profit) > 0
+                              color: double.parse('100') > 0
                                   ? Color(0xff31fe53)
                                   : Color(0xfffe3153),
                               fontFamily: AppAssets.fontFamilyLato,

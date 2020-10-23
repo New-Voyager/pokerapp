@@ -1,4 +1,4 @@
-enum GameStatus {
+enum LiveOrPlayedGames {
   LiveGames,
   PlayedGames,
 }
