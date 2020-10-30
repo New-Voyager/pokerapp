@@ -9,6 +9,7 @@ class AuthModel {
   String deviceID;
   String password;
   AuthType authType;
+  String jwt;
 
   AuthModel({
     this.uuid,
@@ -17,14 +18,16 @@ class AuthModel {
     this.deviceID,
     this.password,
     this.authType,
+    this.jwt,
   });
 
   AuthModel.fromJson(var jsonData) {
-    this.uuid = jsonData['uuid'].toString();
-    this.name = jsonData['name'].toString();
-    this.email = jsonData['email'].toString();
-    this.deviceID = jsonData['deviceID'].toString();
-    this.password = jsonData['password'].toString();
+    this.uuid = jsonData['uuid']?.toString();
+    this.name = jsonData['name']?.toString();
+    this.email = jsonData['email']?.toString();
+    this.deviceID = jsonData['deviceID']?.toString();
+    this.password = jsonData['password']?.toString();
+    this.jwt = jsonData['jwt']?.toString();
     this.authType = jsonData['authType'] != null
         ? AuthType.values[jsonData['authType']]
         : null;
@@ -36,6 +39,7 @@ class AuthModel {
         'email': this.email,
         'deviceID': this.deviceID,
         'password': this.password,
+        'jwt': this.jwt,
         'authType': this.authType?.index,
       });
 }

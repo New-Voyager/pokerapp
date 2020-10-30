@@ -60,7 +60,7 @@ class ClubMessageModel {
   // MUTATIONS
 
   Future<String> mutationSendClubMessage() async {
-    this.playerTags = await AuthService.getJWT();
+    this.playerTags = await AuthService.getUUID();
 
     assert(this.clubCode != null);
     assert(this.messageType != null);

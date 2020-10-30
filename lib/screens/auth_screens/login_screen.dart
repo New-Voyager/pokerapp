@@ -11,11 +11,6 @@ import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/widgets/card_form_text_field.dart';
 import 'package:pokerapp/widgets/round_button.dart';
 
-// TODO: LOGIN IS NOT FULLY FUNCTIONAL AS THERE IS NO API TO LOGIN
-// TODO: THIS WILL BE CHANGED WHEN THERE WILL BE A LOGIN API IN FUTURE
-
-// FIXME: IF THERE IS NO LOGIN API THEN A DIRECT SIGN IN (AND REGISTRATION) CAN BE DONE USING THE REGISTER API -- DISCUSS WITH SOMA
-
 class LoginScreen extends StatefulWidget {
   @override
   _LoginScreenState createState() => _LoginScreenState();
@@ -33,14 +28,17 @@ class _LoginScreenState extends State<LoginScreen> {
   void _handleLogin(BuildContext ctx) async {
     _toggleLoading();
 
-    bool status = await AuthService.register(_authModel);
+    Map<String, dynamic> s = await AuthService.login(_authModel);
+
+    bool status = s['status'];
+    String message = s['message'];
 
     _toggleLoading();
 
     if (!status)
       return Alerts.showSnackBar(
         ctx,
-        'Wrong credentials',
+        message,
       );
 
     Navigator.pushReplacement(
@@ -81,14 +79,15 @@ class _LoginScreenState extends State<LoginScreen> {
 
                   // user name field with label
                   Text(
-                    AppStrings.usernameText,
+                    AppStrings.emailText,
                     style: AppStyles.credentialsTextStyle,
                   ),
                   separator5,
                   CardFormTextField(
-                    hintText: AppStrings.usernameText,
+                    hintText: AppStrings.emailText,
+                    keyboardType: TextInputType.emailAddress,
                     onChanged: (String newValue) =>
-                        _authModel.name = newValue.trim(),
+                        _authModel.email = newValue.trim(),
                   ),
                   separator20,
 

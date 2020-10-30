@@ -5,11 +5,11 @@ import 'package:pokerapp/services/app/auth_service.dart';
 
 class GraphQLConfiguration {
   static HttpLink httpLink = HttpLink(
-    uri: AppApis.baseUrl,
+    uri: AppApis.graphQLBaseUrl,
   );
 
   static AuthLink authLink = AuthLink(
-    getToken: () async => 'Bearer ${await AuthService.getJWT()}',
+    getToken: () async => 'Bearer ${await AuthService.getUUID()}',
   );
 
   final ValueNotifier<GraphQLClient> client = ValueNotifier(
