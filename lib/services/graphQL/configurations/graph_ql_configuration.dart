@@ -9,7 +9,7 @@ class GraphQLConfiguration {
   );
 
   static AuthLink authLink = AuthLink(
-    getToken: () async => 'Bearer ${await AuthService.getUUID()}',
+    getToken: () async => 'jwt ${await AuthService.getJwt()}',
   );
 
   final ValueNotifier<GraphQLClient> client = ValueNotifier(
@@ -19,9 +19,9 @@ class GraphQLConfiguration {
     ),
   );
 
-  GraphQLClient clientToQuery() {
+  GraphQLClient clientToQuery({bool noAuthLink = false}) {
     return GraphQLClient(
-      link: authLink.concat(httpLink),
+      link: noAuthLink ? httpLink : authLink.concat(httpLink),
       cache: OptimisticCache(dataIdFromObject: typenameDataIdFromObject),
     );
   }

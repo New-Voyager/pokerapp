@@ -26,7 +26,7 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
 
     Future.delayed(Duration(milliseconds: 400), () async {
-      String jwt = await AuthService.getUUID();
+      String jwt = await AuthService.getJwt();
       if (jwt == null)
         _moveToLoginScreen();
       else

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:flutter_udid/flutter_udid.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -17,6 +18,8 @@ class AuthService {
   /* private methods */
 
   static Future<bool> _save(AuthModel authModel) async {
+    log(authModel.toJson());
+
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     return sharedPreferences.setString(_prefKey, authModel.toJson());
   }
@@ -36,7 +39,7 @@ class AuthService {
   /* methods exposed */
 
   /* method that returns back the uuid */
-  static Future<String> getUUID() async => (await get())?.uuid;
+  static Future<String> getUuid() async => (await get())?.uuid;
 
   static Future<String> getJwt() async => (await get())?.jwt;
 
@@ -45,14 +48,14 @@ class AuthService {
 
   /* method that talks to the graphQL server to get back a user (or create a new) */
   static Future<bool> register(AuthModel authModel) async {
-    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+    GraphQLClient _client =
+        graphQLConfiguration.clientToQuery(noAuthLink: true);
 
     if (authModel.authType == AuthType.Email)
       authModel.deviceID = null;
     else if (authModel.authType == AuthType.Guest) {
       authModel.email = null;
-      authModel.deviceID =
-          '8ba53577-1318-4da3-adbd-0796234e405a'; // FIXME // await FlutterUdid.udid;
+      authModel.deviceID = await FlutterUdid.udid;
     } else {
       return false;
     }
@@ -73,31 +76,48 @@ class AuthService {
     if (result.hasException) return false;
 
     authModel.uuid = (result.data as LazyCacheMap).data['createPlayer'];
-    authModel.password = null; // the password need not to be saved locally
 
-    return _save(authModel);
+    /* after account is created, login with the login API */
+
+    Map<String, dynamic> res = await login(authModel);
+
+    return res['status'];
   }
 
   static Future<Map<String, dynamic>> login(AuthModel authModel) async {
-    if (authModel.email == null || authModel.email.isEmpty)
-      return {
-        'status': false,
-        'message': "Email can't be empty",
-      };
-    if (authModel.password == null || authModel.password.isEmpty)
-      return {
-        'status': false,
-        'message': "Password can't be empty",
-      };
-
-    String body = jsonEncode({
-      'email': authModel.email,
-      'password': authModel.password,
-    });
-
     Map<String, String> header = {
       'Content-type': 'application/json',
     };
+
+    String body;
+
+    if (authModel.authType != AuthType.Guest) {
+      /* in case if authType is null or Email */
+
+      if (authModel.email == null || authModel.email.isEmpty)
+        return {
+          'status': false,
+          'message': "Email can't be empty",
+        };
+      if (authModel.password == null || authModel.password.isEmpty)
+        return {
+          'status': false,
+          'message': "Password can't be empty",
+        };
+
+      body = jsonEncode({
+        'email': authModel.email,
+        'password': authModel.password,
+      });
+    } else {
+      /* only if the authType is Guest */
+      body = jsonEncode({
+        'device-id': authModel.deviceID,
+        'uuid': authModel.uuid,
+      });
+    }
+
+    assert(body != null);
 
     http.Response response = await http.post(
       '${AppApis.baseUrl}/auth/login',
@@ -123,3 +143,9 @@ class AuthService {
     };
   }
 }
+/*
+{
+    "device-id":"dev-1234",
+    "uuid": "dev-1234"
+}
+ */
