@@ -138,14 +138,33 @@ class AuthService {
     authModel.jwt = jwt;
     authModel.password = null;
 
+    /* IF THE PLAYER UUID IS UNKNOWN, USE THE MY INFO API TO FETCH IT */
+    if (authModel.uuid == null) {
+      await _save(authModel); // this is done to save the JWT first
+      authModel.uuid = await fetchUUID();
+    }
+
     return {
       'status': await _save(authModel),
     };
   }
+
+  static Future<String> fetchUUID() async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+
+    String _query = """query{
+      myInfo{
+        uuid
+      }
+    }
+    """;
+
+    QueryResult result = await _client.query(
+      QueryOptions(documentNode: gql(_query)),
+    );
+
+    log(result.exception.toString());
+
+    return result.hasException ? null : result.data['myInfo']['uuid'];
+  }
 }
-/*
-{
-    "device-id":"dev-1234",
-    "uuid": "dev-1234"
-}
- */
