@@ -1,3 +1,5 @@
+DEFAULT_DOCKER_NET := game
+
 .PHONY: pull
 pull: 
 	docker pull gcr.io/voyager-01-285603/api-server:latest
@@ -8,8 +10,12 @@ pull:
 load-data:
 	docker exec -it docker_api-server_1 node build/script-tests/testdriver.js ./script-tests/script/
 
+.PHONY: create-network
+create-network:
+	@docker network create $(DEFAULT_DOCKER_NET) 2>/dev/null || true
+
 .PHONY: stack-up
-stack-up:
+stack-up: create-network
 	cd docker && docker-compose up -d
 
 .PHONY: stack-down
