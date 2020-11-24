@@ -2,7 +2,7 @@ version: '3'
 
 services:
   game-server:
-    image: gcr.io/voyager-01-285603/game-server:0.1.1
+    image: ${GAME_SERVER_IMAGE}
     tty: true
     restart: always
     ports:
@@ -24,7 +24,7 @@ services:
       - "sleep 10 && /app/game-server --server"
 
   nats:
-    image: gcr.io/voyager-01-285603/nats-server:0.1.1
+    image: ${NATS_SERVER_IMAGE}
     restart: always
     ports:
       - 4222:4222
@@ -32,13 +32,13 @@ services:
       - 9222:9222
 
   redis:
-    image: gcr.io/voyager-01-285603/redis:6.0.9
+    image: ${REDIS_IMAGE}
     restart: always
     ports:
       - 6379:6379
 
   api-server:
-    image: gcr.io/voyager-01-285603/api-server:0.1.16
+    image: ${API_SERVER_IMAGE}
     restart: always
     ports:
       - 9501:9501
@@ -51,7 +51,7 @@ services:
       - "sleep 5 && yarn run-docker"
 
   postgres:
-    image: gcr.io/voyager-01-285603/postgres:12.5
+    image: ${POSTGRES_IMAGE}
     restart: always
     volumes:
       - db-data:/var/lib/postgresql/data
