@@ -23,8 +23,8 @@ docker run -t --rm \
     -e API_SERVER_URL=http://api-server:9501 \
     -e NATS_HOST=nats \
     -e NATS_CLIENT_PORT=4222 \
-    -e PRINT_GAME_MSG=false \
-    -e PRINT_HAND_MSG=false \
+    -e PRINT_GAME_MSG=${PRINT_GAME_MSG:-true} \
+    -e PRINT_HAND_MSG=${PRINT_HAND_MSG:-true} \
     -v ${PWD}/botrunner_scripts:/app/botrunner_scripts \
     ${BOTRUNNER_IMAGE} \
     sh -c "./botrunner --config ./botrunner_scripts/${BOTRUNNER_SCRIPT}"
