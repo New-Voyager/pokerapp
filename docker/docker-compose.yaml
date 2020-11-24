@@ -2,25 +2,57 @@ version: '3'
 
 services:
   game-server:
-    image: gcr.io/voyager-01-285603/game-server:latest
+    image: gcr.io/voyager-01-285603/game-server:0.1.1
     tty: true
+    restart: always
+    ports:
+      - 8080:8080
     depends_on:
       - nats
+      - api-server
+    environment:
+      NATS_HOST: nats
+      NATS_CLIENT_PORT: 4222
+      PERSIST_METHOD: redis
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_DB: 0
+      API_SERVER_URL: http://api-server:9501
+    command:
+      - "/bin/sh"
+      - "-c"
+      - "sleep 10 && /app/game-server --server"
 
   nats:
-    image: gcr.io/voyager-01-285603/nats-server:latest
+    image: gcr.io/voyager-01-285603/nats-server:0.1.1
+    restart: always
     ports:
       - 4222:4222
       - 8222:8222
       - 9222:9222
 
+  redis:
+    image: gcr.io/voyager-01-285603/redis:6.0.9
+    restart: always
+    ports:
+      - 6379:6379
+
   api-server:
-    image: gcr.io/voyager-01-285603/api-server:latest
+    image: gcr.io/voyager-01-285603/api-server:0.1.16
+    restart: always
     ports:
       - 9501:9501
+    depends_on:
+      - postgres
+      - nats
+    command:
+      - "/bin/sh"
+      - "-c"
+      - "sleep 5 && yarn run-docker"
 
   postgres:
-    image: postgres
+    image: gcr.io/voyager-01-285603/postgres:12.5
+    restart: always
     volumes:
       - db-data:/var/lib/postgresql/data
     ports:
