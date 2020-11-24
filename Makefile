@@ -42,14 +42,12 @@ stack-down:
 stack-clean:
 	docker volume rm -f docker_db-data
 
+#
+# Usage:
+#
+# BOTRUNNER_SCRIPT=river-action-3-bots.yaml make botrunner
+# BOTRUNNER_SCRIPT=river-action-2-bots-1-human.yaml make botrunner
+#
 .PHONY: botrunner
 botrunner:
-	docker run -t --rm \
-		--network=$(DEFAULT_DOCKER_NET) \
-		-e API_SERVER_URL=http://api-server:9501 \
-		-e NATS_HOST=nats \
-		-e NATS_CLIENT_PORT=4222 \
-		-e PRINT_GAME_MSG=false \
-		-e PRINT_HAND_MSG=false \
-		$(BOTRUNNER_IMAGE) \
-		sh -c "./botrunner --config ./game_scripts/river-action.yaml"
+	@DOCKER_NET=$(DEFAULT_DOCKER_NET) BOTRUNNER_IMAGE=$(BOTRUNNER_IMAGE) BOTRUNNER_SCRIPT=$(BOTRUNNER_SCRIPT) ./botrunner.sh
