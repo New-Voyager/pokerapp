@@ -14,3 +14,27 @@ A few resources to get you started if this is your first Flutter project:
 For help getting started with Flutter, view our
 [online documentation](https://flutter.dev/docs), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
+
+## Testing with bot runner
+
+Download the server images.
+```
+make pull
+```
+
+Bring up the servers.
+```
+make stack-up
+docker ps
+```
+
+Run botrunner.
+```
+BOTRUNNER_SCRIPT=river-action-3-bots.yaml make botrunner
+BOTRUNNER_SCRIPT=river-action-2-bots-1-human.yaml make botrunner
+```
+
+Bring down the servers and clean up data.
+```
+make stack-down && make stack-clean
+```
