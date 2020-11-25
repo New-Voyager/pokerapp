@@ -52,5 +52,3 @@ buyIn:
     buyChips: 100
   - seatNo: 8
     buyChips: 100
-
-gameScript: game_scripts/river-action.yaml
