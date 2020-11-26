@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:pokerapp/screens/game_play_screen/board_view.dart';
+import 'package:pokerapp/screens/game_play_screen/main_views/board_view.dart';
+import 'package:pokerapp/screens/game_play_screen/main_views/footer_view.dart';
+import 'package:pokerapp/screens/game_play_screen/main_views/header_view.dart';
 
 /*
 * This is the screen which will have contact with the NATS server
@@ -17,13 +19,15 @@ class GamePlayScreen extends StatelessWidget {
           child: Column(
             children: [
               // header section
-              Container(height: 50.0),
+              HeaderView(),
 
               // main board view
-              Expanded(child: BoardView()),
+              Expanded(
+                child: BoardView(),
+              ),
 
               // footer section
-              Container(height: 150.0),
+              FooterView(),
             ],
           ),
         ),
