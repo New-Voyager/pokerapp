@@ -1,16 +1,22 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/game_play_screen/card_object.dart';
 import 'package:pokerapp/models/game_play_screen/user_object.dart';
+import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/screens/game_play_screen/card_views/hidden_card_view.dart';
+import 'package:pokerapp/screens/game_play_screen/card_views/stack_card_view.dart';
+import 'package:pokerapp/screens/game_play_screen/card_views/visible_card_view.dart';
 
 class UserView extends StatelessWidget {
   final UserObject userObject;
   final Alignment cardsAlignment;
+  final bool isMe;
 
   UserView({
     this.userObject,
     this.cardsAlignment = Alignment.centerRight,
+    this.isMe = false,
   });
 
   Widget _buildAvatar({String avatarUrl}) => Opacity(
@@ -31,7 +37,7 @@ class UserView extends StatelessWidget {
         child: Container(
           width: 90.0,
           padding: const EdgeInsets.symmetric(
-            horizontal: 20.0,
+            horizontal: 15.0,
             vertical: 5.0,
           ),
           decoration: BoxDecoration(
@@ -84,8 +90,20 @@ class UserView extends StatelessWidget {
       );
 
   // the following two widgets are only built for the current active player
-  Widget _buildVisibleCard() => Container();
+  Widget _buildVisibleCard({
+    List<CardObject> cards,
+  }) =>
+      Transform.translate(
+        offset: Offset(
+          -48.0,
+          -15.0,
+        ),
+        child: StackCardView(
+          cards: cards,
+        ),
+      );
 
+  // todo add the timer
   Widget _buildTimer() => Container();
 
   @override
@@ -106,7 +124,24 @@ class UserView extends StatelessWidget {
         ),
 
         // cards
-        _buildHiddenCard(alignment: this.cardsAlignment),
+        this.isMe
+            ? _buildVisibleCard(
+                cards: [
+                  CardObject(
+                    suit: '♤',
+                    label: 'A',
+                    color: Colors.black,
+                    smaller: true,
+                  ),
+                  CardObject(
+                    suit: '♡',
+                    label: '9',
+                    color: Colors.red,
+                    smaller: true,
+                  ),
+                ],
+              )
+            : _buildHiddenCard(alignment: this.cardsAlignment),
       ],
     );
   }

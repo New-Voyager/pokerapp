@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:pokerapp/resources/app_dimensions.dart';
 
 class HiddenCardView extends StatelessWidget {
   Widget _buildCardBack() => Container(
-        height: 38.0 * 1.1,
-        width: 30 * 1.1,
+        height: AppDimensions.cardHeight * 1.1,
+        width: AppDimensions.cardWidth * 1.1,
         decoration: BoxDecoration(
           boxShadow: [
             const BoxShadow(

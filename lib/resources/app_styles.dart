@@ -3,6 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 
 class AppStyles {
+  static const cardTextStyle = TextStyle(
+    fontSize: 1.0,
+    fontWeight: FontWeight.w900,
+    fontFamily: AppAssets.fontFamilyLato,
+  );
+
   static const itemInfoTextStyle = TextStyle(
     color: Color(0xff848484),
     fontSize: 12.0,
