@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 
@@ -5,6 +6,13 @@ class AppStyles {
   static const itemInfoTextStyle = TextStyle(
     color: Color(0xff848484),
     fontSize: 12.0,
+    fontFamily: AppAssets.fontFamilyLato,
+  );
+
+  static const itemInfoTextStyleHeavy = TextStyle(
+    color: Colors.white,
+    fontSize: 12.0,
+    fontWeight: FontWeight.w800,
     fontFamily: AppAssets.fontFamilyLato,
   );
 
