@@ -20,46 +20,55 @@ const heightMultiplier = 1.7;
 class BoardView extends StatelessWidget {
   final List<UserObject> _users = [
     UserObject(
+      seatPosition: 0,
       name: 'Bob',
       chips: 102,
       avatarUrl: 'assets/images/2.png',
     ),
     UserObject(
+      seatPosition: 1,
       name: 'John',
       chips: 1235,
       avatarUrl: 'assets/images/1.png',
     ),
     UserObject(
+      seatPosition: 2,
       name: 'Arjun',
       chips: 250,
       avatarUrl: 'assets/images/3.png',
     ),
     UserObject(
+      seatPosition: 3,
       name: 'Ajay',
       chips: 450,
       avatarUrl: 'assets/images/1.png',
     ),
     UserObject(
+      seatPosition: 4,
       name: 'Keith',
       chips: 500,
       avatarUrl: 'assets/images/3.png',
     ),
     UserObject(
+      seatPosition: 5,
       name: 'Baker',
       chips: 675,
       avatarUrl: 'assets/images/2.png',
     ),
     UserObject(
+      seatPosition: 6,
       name: 'Luck',
       chips: 800,
       avatarUrl: 'assets/images/2.png',
     ),
     UserObject(
+      seatPosition: 7,
       name: 'Ramando',
       chips: 735,
       avatarUrl: 'assets/images/1.png',
     ),
     UserObject(
+      seatPosition: 8,
       name: 'Aditya',
       chips: 900,
       avatarUrl: 'assets/images/1.png',
@@ -68,27 +77,27 @@ class BoardView extends StatelessWidget {
 
   final List<CardObject> _cards = [
     CardObject(
-      suit: AppConstants.cardClub,
+      suit: AppConstants.blackClub,
       label: 'Q',
       color: Colors.black,
     ),
     CardObject(
-      suit: AppConstants.cardHeart,
+      suit: AppConstants.redHeart,
       label: 'J',
       color: Colors.red,
     ),
     CardObject(
-      suit: AppConstants.cardDiamond,
+      suit: AppConstants.redDiamond,
       label: 'K',
-      color: Colors.black,
+      color: Colors.red,
     ),
     CardObject(
-      suit: AppConstants.cardHeart,
+      suit: AppConstants.redHeart,
       label: '6',
       color: Colors.red,
     ),
     CardObject(
-      suit: AppConstants.cardHeart,
+      suit: AppConstants.blackSpade,
       label: '5',
       color: Colors.black,
     ),
@@ -129,10 +138,13 @@ class BoardView extends StatelessWidget {
       );
 
   Widget _positionUser(
-      UserObject user, int index, double heightOfBoard, double widthOfBoard) {
+    UserObject user,
+    double heightOfBoard,
+    double widthOfBoard,
+  ) {
     double shiftDownConstant = heightOfBoard / 15;
 
-    switch (index) {
+    switch (user.seatPosition) {
       case 0:
         return Align(
           alignment: Alignment.bottomCenter,
@@ -314,12 +326,9 @@ class BoardView extends StatelessWidget {
 
           // position the users
           ..._users
-              .asMap()
-              .entries
               .map(
-                (u) => _positionUser(
-                  u.value,
-                  u.key,
+                (UserObject user) => _positionUser(
+                  user,
                   heightOfBoard,
                   widthOfBoard,
                 ),

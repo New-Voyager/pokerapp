@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/card_object.dart';
 import 'package:pokerapp/models/game_play_models/user_object.dart';
+import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/screens/game_play_screen/card_views/hidden_card_view.dart';
 import 'package:pokerapp/screens/game_play_screen/card_views/stack_card_view.dart';
@@ -148,13 +149,13 @@ class UserView extends StatelessWidget {
             ? _buildVisibleCard(
                 cards: [
                   CardObject(
-                    suit: '♤',
+                    suit: AppConstants.blackSpade,
                     label: 'A',
                     color: Colors.black,
                     smaller: true,
                   ),
                   CardObject(
-                    suit: '♡',
+                    suit: AppConstants.redHeart,
                     label: '9',
                     color: Colors.red,
                     smaller: true,

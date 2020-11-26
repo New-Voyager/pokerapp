@@ -4,8 +4,8 @@ class AppConstants {
 
   static const String giphyApiKey = 'IoanUNVNMRCaTnTpYzB2UDxUdatagMkQ';
 
-  static const String cardSpade = '♤';
-  static const String cardHeart = '♡';
-  static const String cardDiamond = '♢';
-  static const String cardClub = '♧';
+  static const String blackSpade = '♠';
+  static const String redHeart = '♥';
+  static const String blackClub = '♣';
+  static const String redDiamond = '♦';
 }

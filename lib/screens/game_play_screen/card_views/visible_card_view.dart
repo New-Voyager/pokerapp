@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:pokerapp/models/game_play_models/card_object.dart';
+import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 
@@ -50,9 +51,11 @@ class VisibleCardView extends StatelessWidget {
             Expanded(
               flex: 3,
               child: FittedBox(
-                child: Text(
-                  card.suit ?? 'S',
-                  style: textStyle,
+                child: RichText(
+                  text: TextSpan(
+                    text: card.suit ?? AppConstants.redHeart,
+                    style: textStyle,
+                  ),
                 ),
               ),
             ),
