@@ -91,7 +91,7 @@ class AuthService {
 
     String body;
 
-    if (authModel.authType != AuthType.Guest) {
+    if (authModel.authType == null || authModel.authType == AuthType.Email) {
       /* in case if authType is null or Email */
 
       if (authModel.email == null || authModel.email.isEmpty)
@@ -109,11 +109,16 @@ class AuthService {
         'email': authModel.email,
         'password': authModel.password,
       });
-    } else {
+    } else if (authModel.authType == AuthType.Guest) {
       /* only if the authType is Guest */
       body = jsonEncode({
         'device-id': authModel.deviceID,
         'uuid': authModel.uuid,
+      });
+    } else if (authModel.authType == AuthType.Name) {
+      // FIXME: THIS IS A TEMP AND DEBUG REQUIREMENT
+      body = jsonEncode({
+        'name': authModel.name,
       });
     }
 

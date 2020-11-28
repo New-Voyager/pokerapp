@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:pokerapp/enums/auth_type.dart';
@@ -10,6 +11,7 @@ import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/widgets/card_form_text_field.dart';
 import 'package:pokerapp/widgets/round_button.dart';
+import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -125,6 +127,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
                   Spacer(),
 
+                  _buildTempLogin(),
+
                   RoundRaisedButton(
                     buttonText: 'LOGIN',
                     radius: 100.0,
@@ -140,4 +144,52 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
+
+  _loginWithUsername(BuildContext context) {
+    String username = Provider.of<ValueNotifier<String>>(
+      context,
+      listen: false,
+    ).value;
+
+    _authModel.authType = AuthType.Name;
+    _authModel.name = username;
+
+    _handleLogin(context);
+  }
+
+  Widget _buildTempLogin() => ListenableProvider<ValueNotifier<String>>(
+        create: (_) => ValueNotifier<String>(''),
+        builder: (context, _) => Container(
+          margin: const EdgeInsets.symmetric(vertical: 20.0),
+          color: Colors.white,
+          padding: const EdgeInsets.symmetric(
+            horizontal: 10.0,
+            vertical: 5.0,
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  onChanged: (String s) => Provider.of<ValueNotifier<String>>(
+                    context,
+                    listen: false,
+                  ).value = s,
+                ),
+              ),
+              const SizedBox(width: 50.0),
+              InkWell(
+                onTap: () => _loginWithUsername(context),
+                child: Text(
+                  'LOGIN',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
 }

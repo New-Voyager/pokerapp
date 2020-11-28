@@ -7,7 +7,8 @@ import 'package:pokerapp/screens/main_screens/games_page_view/games_page_view.da
 import 'package:pokerapp/screens/main_screens/profile_page_view/profile_page_view.dart';
 import 'package:pokerapp/widgets/tab_bar_item.dart';
 
-const bool SKIP_TO_GAME_SCREEN = true;
+// todo: debug
+const bool SKIP_TO_GAME_SCREEN = false;
 
 class MainScreen extends StatefulWidget {
   @override
