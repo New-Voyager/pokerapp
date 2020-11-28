@@ -4,16 +4,19 @@ players:
     email: yong@gmail.com
     password: 340k7n0p
     bot: true
+    botActionPauseTime: 3000
   - name: brian
     deviceId: 4b93e2be-7992-45c3-a2dd-593c2f708cb7
     email: brian@hotmail.com
     password: 0x44m89w
     bot: true
+    botActionPauseTime: 3000
   - name: tom
     deviceId: 371e8c15-39cb-4bd9-a932-ced7a9dd6aac
     email: tom@yahoo.com
     password: n3rdr4x4
     bot: true
+    botActionPauseTime: 3000
 
 club:
   name: Bad Robots
