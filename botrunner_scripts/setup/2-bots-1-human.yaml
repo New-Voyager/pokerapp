@@ -35,7 +35,7 @@ game:
   rakeCap: 5.0
   buyInMin: 100
   buyInMax: 300
-  actionTime: 100
+  actionTime: 300
 
 sitIn:
   - seatNo: 1
