@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:pokerapp/models/game_play_models/card_object.dart';
-import 'package:pokerapp/models/game_play_models/user_object.dart';
+import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
+import 'package:pokerapp/models/game_play_models/ui/user_object.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/screens/game_play_screen/card_views/hidden_card_view.dart';
@@ -102,6 +102,32 @@ class UserView extends StatelessWidget {
         ),
       );
 
+  // TODO: this is only needed for the DEBUGGING Purpose
+  Widget _buildSeatNoIndicator() => Positioned(
+        top: 0,
+        left: 0,
+        child: Transform.translate(
+          offset: const Offset(0.0, -15.0),
+          child: Container(
+            padding: const EdgeInsets.all(8.0),
+            decoration: BoxDecoration(
+              color: const Color(0xff474747),
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: const Color(0xff14e81b),
+                width: 1.0,
+              ),
+            ),
+            child: Text(
+              (userObject.seatPosition + 1).toString(),
+              style: AppStyles.itemInfoTextStyle.copyWith(
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
+      );
+
   Widget _buildTimer({int time = 10}) => Positioned(
         top: 0,
         right: 0,
@@ -166,6 +192,9 @@ class UserView extends StatelessWidget {
 
         // timer
         this.isMe ? _buildTimer() : SizedBox.shrink(),
+
+        // TODO: ONLY FOR DEBUGGING
+        _buildSeatNoIndicator(),
       ],
     );
   }

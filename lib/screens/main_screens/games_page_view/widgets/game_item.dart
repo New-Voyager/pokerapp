@@ -6,6 +6,7 @@ import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/screens/game_play_screen/game_play_screen.dart';
 import 'package:pokerapp/screens/main_screens/games_page_view/enums.dart';
 import 'package:pokerapp/widgets/custom_text_button.dart';
 
@@ -17,6 +18,15 @@ class GameItem extends StatelessWidget {
 
   final GameModel game;
   final LiveOrPlayedGames gameStatus;
+
+  void _joinGame(BuildContext context) => Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => GamePlayScreen(
+            gameCode: game.gameCode,
+          ),
+        ),
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -135,7 +145,11 @@ class GameItem extends StatelessWidget {
                             text: 'game.openSeats' == '0'
                                 ? 'Join Waitlist'
                                 : 'Join',
-                            onTap: () {},
+                            onTap: () {
+                              // todo: need to decide what if wait listed
+                              // fixme: for now the game screen is opened
+                              _joinGame(context);
+                            },
                           )
                         : Text(
                             '${double.parse('0') == 0 ? '' : (double.parse('10') > 0 ? '+' : '-')}${100}',

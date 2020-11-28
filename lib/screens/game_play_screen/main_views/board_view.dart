@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:pokerapp/models/game_play_models/card_object.dart';
-import 'package:pokerapp/models/game_play_models/user_object.dart';
+import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
+import 'package:pokerapp/models/game_play_models/ui/user_object.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/resources/app_styles.dart';
@@ -18,89 +18,38 @@ const widthMultiplier = 0.80;
 const heightMultiplier = 1.7;
 
 class BoardView extends StatelessWidget {
-  final List<UserObject> _users = [
-    UserObject(
-      seatPosition: 0,
-      name: 'Bob',
-      chips: 102,
-      avatarUrl: 'assets/images/2.png',
-    ),
-    UserObject(
-      seatPosition: 1,
-      name: 'John',
-      chips: 1235,
-      avatarUrl: 'assets/images/1.png',
-    ),
-    UserObject(
-      seatPosition: 2,
-      name: 'Arjun',
-      chips: 250,
-      avatarUrl: 'assets/images/3.png',
-    ),
-    UserObject(
-      seatPosition: 3,
-      name: 'Ajay',
-      chips: 450,
-      avatarUrl: 'assets/images/1.png',
-    ),
-    UserObject(
-      seatPosition: 4,
-      name: 'Keith',
-      chips: 500,
-      avatarUrl: 'assets/images/3.png',
-    ),
-    UserObject(
-      seatPosition: 5,
-      name: 'Baker',
-      chips: 675,
-      avatarUrl: 'assets/images/2.png',
-    ),
-    UserObject(
-      seatPosition: 6,
-      name: 'Luck',
-      chips: 800,
-      avatarUrl: 'assets/images/2.png',
-    ),
-    UserObject(
-      seatPosition: 7,
-      name: 'Ramando',
-      chips: 735,
-      avatarUrl: 'assets/images/1.png',
-    ),
-    UserObject(
-      seatPosition: 8,
-      name: 'Aditya',
-      chips: 900,
-      avatarUrl: 'assets/images/1.png',
-    ),
-  ];
+  BoardView({
+    @required this.users,
+  }) : assert(users != null);
+
+  final List<UserObject> users;
 
   final List<CardObject> _cards = [
-    CardObject(
-      suit: AppConstants.blackClub,
-      label: 'Q',
-      color: Colors.black,
-    ),
-    CardObject(
-      suit: AppConstants.redHeart,
-      label: 'J',
-      color: Colors.red,
-    ),
-    CardObject(
-      suit: AppConstants.redDiamond,
-      label: 'K',
-      color: Colors.red,
-    ),
-    CardObject(
-      suit: AppConstants.redHeart,
-      label: '6',
-      color: Colors.red,
-    ),
-    CardObject(
-      suit: AppConstants.blackSpade,
-      label: '5',
-      color: Colors.black,
-    ),
+//    CardObject(
+//      suit: AppConstants.blackClub,
+//      label: 'Q',
+//      color: Colors.black,
+//    ),
+//    CardObject(
+//      suit: AppConstants.redHeart,
+//      label: 'J',
+//      color: Colors.red,
+//    ),
+//    CardObject(
+//      suit: AppConstants.redDiamond,
+//      label: 'K',
+//      color: Colors.red,
+//    ),
+//    CardObject(
+//      suit: AppConstants.redHeart,
+//      label: '6',
+//      color: Colors.red,
+//    ),
+//    CardObject(
+//      suit: AppConstants.blackSpade,
+//      label: '5',
+//      color: Colors.black,
+//    ),
   ];
 
   /* the following helper function builds the game board */
@@ -325,7 +274,7 @@ class BoardView extends StatelessWidget {
           _buildGameBoard(boardHeight: heightOfBoard, boardWidth: widthOfBoard),
 
           // position the users
-          ..._users
+          ...users
               .map(
                 (UserObject user) => _positionUser(
                   user,

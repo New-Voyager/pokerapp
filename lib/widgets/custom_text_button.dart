@@ -15,7 +15,7 @@ class CustomTextButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return InkWell(
       onTap: onTap,
       child: Text(
         split ? text?.replaceFirst(" ", "\n") ?? 'Text' : text ?? 'Text',
