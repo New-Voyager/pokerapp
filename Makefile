@@ -4,7 +4,7 @@ GAME_SERVER_IMAGE := gcr.io/voyager-01-285603/game-server:0.1.4
 NATS_SERVER_IMAGE := gcr.io/voyager-01-285603/nats-server:0.1.4
 REDIS_IMAGE := gcr.io/voyager-01-285603/redis:6.0.9
 POSTGRES_IMAGE := gcr.io/voyager-01-285603/postgres:12.5
-BOTRUNNER_IMAGE := gcr.io/voyager-01-285603/botrunner:0.1.6
+BOTRUNNER_IMAGE := gcr.io/voyager-01-285603/botrunner:0.1.7
 
 .PHONY: pull
 pull: 
