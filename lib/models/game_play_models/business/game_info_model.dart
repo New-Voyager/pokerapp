@@ -2,10 +2,12 @@ import 'package:pokerapp/models/game_play_models/business/player_in_seat_model.d
 
 class GameInfoModel {
   int buyInMax;
+  int buyInMin;
   int maxPlayers;
   String title;
   String gameType; // fixme: is it okay to use GameType or String?
-  int buyInMin;
+  String tableStatus;
+  String status;
   int smallBlind;
   int bigBlind;
   List<int> availableSeats;
@@ -27,6 +29,8 @@ class GameInfoModel {
     this.buyInMin = data['buyInMin'];
     this.smallBlind = data['smallBlind'];
     this.bigBlind = data['bigBlind'];
+    this.status = data['status'];
+    this.tableStatus = data['tableStatus'];
     this.availableSeats = data['seatInfo']['availableSeats']
         .map<int>((e) => int.parse(e.toString()))
         .toList();
@@ -51,10 +55,9 @@ class GameInfoModel {
       title
       gameType
       buyInMin
-      buyInMax
       smallBlind
       bigBlind
-      maxPlayers
+      tableStatus
       seatInfo {
         availableSeats
         playersInSeats {

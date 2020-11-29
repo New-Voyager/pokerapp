@@ -125,7 +125,7 @@ class AuthService {
     assert(body != null);
 
     http.Response response = await http.post(
-      '${AppApis.baseUrl}/auth/login',
+      '${AppApis.baseUrlWithDefaultPort}/auth/login',
       headers: header,
       body: body,
     );

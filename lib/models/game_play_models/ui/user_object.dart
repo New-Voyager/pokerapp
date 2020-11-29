@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 class UserObject {
+  bool isMe;
   int seatPosition;
   String name;
   int chips;
@@ -10,6 +11,7 @@ class UserObject {
     @required this.seatPosition,
     @required this.name,
     @required this.chips,
+    this.isMe,
     this.avatarUrl,
   });
 

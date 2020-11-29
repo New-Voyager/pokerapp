@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/game_play_models/business/player_in_seat_model.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/user_object.dart';
 import 'package:pokerapp/resources/app_constants.dart';
@@ -20,9 +21,22 @@ const heightMultiplier = 1.7;
 class BoardView extends StatelessWidget {
   BoardView({
     @required this.users,
+    @required this.onUserTap,
+    @required this.tableStatus,
   }) : assert(users != null);
 
-  final List<UserObject> users;
+  final Function(int index) onUserTap;
+  final List<PlayerInSeatModel> users;
+  final String tableStatus;
+
+  final List<UserObject> userObjects = List.generate(
+    9,
+    (index) => UserObject(
+      seatPosition: null,
+      name: null,
+      chips: null,
+    ),
+  );
 
   final List<CardObject> _cards = [
 //    CardObject(
@@ -90,17 +104,29 @@ class BoardView extends StatelessWidget {
     UserObject user,
     double heightOfBoard,
     double widthOfBoard,
+    int index,
   ) {
     double shiftDownConstant = heightOfBoard / 15;
 
-    switch (user.seatPosition) {
+    Alignment cardsAlignment = Alignment.centerRight;
+
+    // left for 5, 6, 7, 8
+    if (index == 5 || index == 6 || index == 7 || index == 8)
+      cardsAlignment = Alignment.centerLeft;
+
+    UserView userView = UserView(
+      index: index,
+      key: ValueKey(index),
+      userObject: user,
+      cardsAlignment: cardsAlignment,
+      onUserTap: onUserTap,
+    );
+
+    switch (index) {
       case 0:
         return Align(
           alignment: Alignment.bottomCenter,
-          child: UserView(
-            userObject: user,
-            isMe: true,
-          ),
+          child: userView,
         );
 
       case 1:
@@ -108,9 +134,7 @@ class BoardView extends StatelessWidget {
           alignment: Alignment.centerLeft,
           child: Transform.translate(
             offset: Offset(0.0, heightOfBoard / 4 + shiftDownConstant),
-            child: UserView(
-              userObject: user,
-            ),
+            child: userView,
           ),
         );
 
@@ -119,9 +143,7 @@ class BoardView extends StatelessWidget {
           alignment: Alignment.centerLeft,
           child: Transform.translate(
             offset: Offset(0.0, 0.0 + shiftDownConstant),
-            child: UserView(
-              userObject: user,
-            ),
+            child: userView,
           ),
         );
 
@@ -130,9 +152,7 @@ class BoardView extends StatelessWidget {
           alignment: Alignment.centerLeft,
           child: Transform.translate(
             offset: Offset(0.0, -heightOfBoard / 4 + shiftDownConstant),
-            child: UserView(
-              userObject: user,
-            ),
+            child: userView,
           ),
         );
 
@@ -141,9 +161,7 @@ class BoardView extends StatelessWidget {
           alignment: Alignment.topCenter,
           child: Transform.translate(
             offset: Offset(-widthOfBoard / 3, shiftDownConstant / 2),
-            child: UserView(
-              userObject: user,
-            ),
+            child: userView,
           ),
         );
 
@@ -152,10 +170,7 @@ class BoardView extends StatelessWidget {
           alignment: Alignment.topCenter,
           child: Transform.translate(
             offset: Offset(widthOfBoard / 3, shiftDownConstant / 2),
-            child: UserView(
-              userObject: user,
-              cardsAlignment: Alignment.centerLeft,
-            ),
+            child: userView,
           ),
         );
 
@@ -164,10 +179,7 @@ class BoardView extends StatelessWidget {
           alignment: Alignment.centerRight,
           child: Transform.translate(
             offset: Offset(0.0, -heightOfBoard / 4 + shiftDownConstant),
-            child: UserView(
-              userObject: user,
-              cardsAlignment: Alignment.centerLeft,
-            ),
+            child: userView,
           ),
         );
 
@@ -176,10 +188,7 @@ class BoardView extends StatelessWidget {
           alignment: Alignment.centerRight,
           child: Transform.translate(
             offset: Offset(0.0, 0.0 + shiftDownConstant),
-            child: UserView(
-              userObject: user,
-              cardsAlignment: Alignment.centerLeft,
-            ),
+            child: userView,
           ),
         );
 
@@ -188,10 +197,7 @@ class BoardView extends StatelessWidget {
           alignment: Alignment.centerRight,
           child: Transform.translate(
             offset: Offset(0.0, heightOfBoard / 4 + shiftDownConstant),
-            child: UserView(
-              userObject: user,
-              cardsAlignment: Alignment.centerLeft,
-            ),
+            child: userView,
           ),
         );
 
@@ -200,66 +206,112 @@ class BoardView extends StatelessWidget {
     }
   }
 
-  Widget _buildCenterCardView({
+  String _getText() {
+    switch (tableStatus) {
+      case AppConstants.TABLE_STATUS_NOT_ENOUGH_PLAYERS:
+        return 'Waiting for more players';
+      case AppConstants.TABLE_STATUS_WAITING_TO_BE_STARTED:
+        return 'Waiting to be started';
+    }
+
+    return '';
+  }
+
+  Widget _buildCenterView({
     List<CardObject> cards = const [],
     int potChips = 0,
-  }) =>
-      Align(
-        alignment: Alignment.center,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // card stacks
-            StackCardView(
-              cards: cards,
-              center: true,
-            ),
-
-            const SizedBox(height: AppDimensions.cardHeight / 2),
-
-            // pot value
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(100.0),
-                color: Colors.black26,
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  // chip image
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Image.asset(
-                      'assets/images/chips.png',
-                      height: 25.0,
-                    ),
-                  ),
-
-                  // pot amount text
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      right: 15.0,
-                      top: 5.0,
-                      bottom: 5.0,
-                      left: 5.0,
-                    ),
-                    child: Text(
-                      'Pot: $potChips.1 K',
-                      style: AppStyles.itemInfoTextStyleHeavy.copyWith(
-                        fontSize: 15,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
+  }) {
+    return Align(
+      alignment: Alignment.center,
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 10.0,
+          vertical: 5.0,
         ),
-      );
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(100.0),
+          color: Colors.black26,
+        ),
+        child: Text(
+          _getText(),
+          style: AppStyles.itemInfoTextStyleHeavy.copyWith(
+            fontSize: 15,
+          ),
+        ),
+      ),
+    );
+
+    /*
+    // showing the POT value along with the chips
+    return Align(
+      alignment: Alignment.center,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // card stacks
+          StackCardView(
+            cards: cards,
+            center: true,
+          ),
+
+          const SizedBox(height: AppDimensions.cardHeight / 2),
+
+          // pot value
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(100.0),
+              color: Colors.black26,
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                // chip image
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Image.asset(
+                    'assets/images/chips.png',
+                    height: 25.0,
+                  ),
+                ),
+
+                // pot amount text
+                Padding(
+                  padding: const EdgeInsets.only(
+                    right: 15.0,
+                    top: 5.0,
+                    bottom: 5.0,
+                    left: 5.0,
+                  ),
+                  child: Text(
+                    'Pot: $potChips.1 K',
+                    style: AppStyles.itemInfoTextStyleHeavy.copyWith(
+                      fontSize: 15,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );*/
+  }
+
+  void seatPlayers() {
+    for (PlayerInSeatModel model in users) {
+      int idx = model.seatNo - 1;
+      userObjects[idx].name = model.name;
+      userObjects[idx].seatPosition = model.seatNo - 1;
+      userObjects[idx].isMe = model.isMe;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    // this method runs in every frame
+    seatPlayers();
+
     double width = MediaQuery.of(context).size.width;
 
     double heightOfBoard = width * widthMultiplier * heightMultiplier;
@@ -274,18 +326,21 @@ class BoardView extends StatelessWidget {
           _buildGameBoard(boardHeight: heightOfBoard, boardWidth: widthOfBoard),
 
           // position the users
-          ...users
+          ...userObjects
+              .asMap()
+              .entries
               .map(
-                (UserObject user) => _positionUser(
-                  user,
+                (var u) => _positionUser(
+                  u.value,
                   heightOfBoard,
                   widthOfBoard,
+                  u.key,
                 ),
               )
               .toList(),
 
           // center view
-          _buildCenterCardView(
+          _buildCenterView(
             cards: _cards,
             potChips: 15,
           ),

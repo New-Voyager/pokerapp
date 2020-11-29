@@ -42,6 +42,18 @@ stack-down:
 stack-clean:
 	docker volume rm -f docker_db-data
 
+.PHONY: stack-reset
+stack-reset:
+	cd docker && docker-compose down
+	docker volume rm -f docker_db-data
+	cd docker && \
+		> .env && \
+		echo "API_SERVER_IMAGE=$(API_SERVER_IMAGE)" >> .env && \
+		echo "GAME_SERVER_IMAGE=$(GAME_SERVER_IMAGE)" >> .env && \
+		echo "NATS_SERVER_IMAGE=$(NATS_SERVER_IMAGE)" >> .env && \
+		echo "REDIS_IMAGE=$(REDIS_IMAGE)" >> .env && \
+		echo "POSTGRES_IMAGE=$(POSTGRES_IMAGE)" >> .env && \
+		docker-compose up -d
 #
 # Usage:
 #

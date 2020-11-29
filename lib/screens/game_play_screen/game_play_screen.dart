@@ -1,12 +1,13 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/auth_model.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
-import 'package:pokerapp/models/game_play_models/business/player_in_seat_model.dart';
-import 'package:pokerapp/models/game_play_models/ui/user_object.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/header_view.dart';
+import 'package:pokerapp/services/app/auth_service.dart';
+import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/services/game_play/game_info_service.dart';
 import 'package:pokerapp/services/game_play/join_game_service.dart';
 
@@ -28,84 +29,74 @@ class GamePlayScreen extends StatefulWidget {
 
 class _GamePlayScreenState extends State<GamePlayScreen> {
   GameInfoModel _gameInfoModel;
-  List<UserObject> _users;
+  GameComService _gameComService;
 
-  // firstly get the game details
-  void _getGameDetails() async {
-    _gameInfoModel = await GameInfoService.getGameInfo(widget.gameCode);
+  String myUUID;
 
-    if (_gameInfoModel != null && mounted) setState(() {});
+  // todo: figure out a way to enable or disable this callback function
+  void _joinGame(int index) async {
+    log('joining game with seat no ${index + 1}');
 
-    // get the users from the game info model
-    _users = _gameInfoModel.playersInSeats
-        .map<UserObject>((PlayerInSeatModel m) => UserObject(
-              seatPosition: m.seatNo - 1,
-              name: m.name,
-              chips: m.stack,
-            ))
-        .toList();
+    assert(index != null);
+    int seatNumber = index + 1;
 
-    // todo: nats subscribe the required channels
-
-    // todo: after a particular time, let the user select a seat
-    await Future.delayed(const Duration(seconds: 5));
-    int seatNo = await showDialog<int>(
-      barrierDismissible: false,
-      context: context,
-      child: Dialog(
-        child: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: _gameInfoModel.availableSeats
-                .map<Widget>((i) => InkWell(
-                      onTap: () => Navigator.pop(context, i),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 10.0,
-                        ),
-                        child: Text(i.toString()),
-                      ),
-                    ))
-                .toList(),
-          ),
-        ),
-      ),
-    );
-
-    log('seat no: $seatNo');
-
-    // fixme: this is not the usual join methodology, but this is for testing
-    String playerGameStatus = await JoinGameService.joinGame(
+    await JoinGameService.joinGame(
       widget.gameCode,
-      seatNo,
+      seatNumber,
     );
 
-    log('player game status: $playerGameStatus');
+    // fetch the game info again to get updated positions
+    await _fetchGameInfo();
 
-    // TODO: /*******************THE UI WILL BE REFRESHED IN A DIFFERENT WAY*********************/
+    // refresh the UI to show the new user
+    if (mounted) setState(() {});
+  }
 
-    // todo: this is just for debugging, if the code is working properly
+  /*
+  * _init function is run only for the very first time,
+  * and only once, the initial game screen is populated from here
+  * also the NATS channel subscriptions are done here
+  * */
+
+  Future<void> _fetchGameInfo() async {
     _gameInfoModel = await GameInfoService.getGameInfo(widget.gameCode);
+
+    // mark the isMe field
+    for (int i = 0; i < _gameInfoModel.playersInSeats.length; i++) {
+      if (_gameInfoModel.playersInSeats[i].playerUuid == myUUID)
+        _gameInfoModel.playersInSeats[i].isMe = true;
+    }
+  }
+
+  void _init() async {
+    myUUID = await AuthService.getUuid();
+
+    await _fetchGameInfo();
+
+    assert(_gameInfoModel != null);
+
+    // nats subscribe the required channels
+    _gameComService = GameComService(
+      gameToPlayerChannel: _gameInfoModel.gameToPlayerChannel,
+      handToAllChannel: _gameInfoModel.handToAllChannel,
+      handToPlayerChannel: _gameInfoModel.handToPlayerChannel,
+      playerToHandChannel: _gameInfoModel.playerToHandChannel,
+    );
+
     if (_gameInfoModel != null && mounted) setState(() {});
-    // get the users from the game info model
-    _users = _gameInfoModel.playersInSeats
-        .map<UserObject>((PlayerInSeatModel m) => UserObject(
-              seatPosition: m.seatNo - 1,
-              name: m.name,
-              chips: m.stack,
-            ))
-        .toList();
+
+    // todo: after init if the user is here to play the game, show a kind of popup to let them know that they can now choose a seat
   }
 
   @override
   void initState() {
-    _getGameDetails();
+    _init();
     super.initState();
   }
 
   @override
   void dispose() {
+    _gameComService?.dispose();
     super.dispose();
   }
 
@@ -128,7 +119,9 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                     // main board view
                     Expanded(
                       child: BoardView(
-                        users: _users,
+                        users: _gameInfoModel.playersInSeats,
+                        onUserTap: _joinGame,
+                        tableStatus: _gameInfoModel.tableStatus,
                       ),
                     ),
 

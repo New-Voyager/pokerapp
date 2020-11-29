@@ -26,6 +26,7 @@ dependencies:
   # networking
   graphql_flutter: ^3.1.0
   http: ^0.12.2
+  dart_nats: ^0.1.8
 
   # device id
   flutter_udid: ^1.0.1
@@ -35,7 +36,6 @@ dependencies:
 
   # network images
   cached_network_image: 2.3.2+1
-
 
   # formatter
   intl: ^0.16.1
