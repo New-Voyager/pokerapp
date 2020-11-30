@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:pokerapp/services/game_play/game_play_utils/buy_in_service.dart';
+import 'package:pokerapp/services/game_play/graphql/game_play_utils/buy_in_service.dart';
 import 'package:pokerapp/widgets/round_button.dart';
 
 class ChipBuyPopUp extends StatelessWidget {

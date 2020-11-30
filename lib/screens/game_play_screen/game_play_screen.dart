@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
@@ -9,8 +10,8 @@ import 'package:pokerapp/screens/game_play_screen/main_views/header_view.dart';
 import 'package:pokerapp/screens/game_play_screen/pop_ups/chip_buy_pop_up.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
-import 'package:pokerapp/services/game_play/game_info_service.dart';
-import 'package:pokerapp/services/game_play/join_game_service.dart';
+import 'package:pokerapp/services/game_play/graphql/game_info_service.dart';
+import 'package:pokerapp/services/game_play/graphql/join_game_service.dart';
 
 /*
 * todo: instead of calling fetch game info multiple times, if the NATS gives update about player joining, or player buying chips, the UI update would be ease
@@ -62,6 +63,16 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
     await _fetchGameInfo();
 
     if (mounted) setState(() {});
+
+    // fixme, remove this, this is just for testing
+    String playerID = await AuthService.getPlayerID();
+    bool value = _gameComService.sendPlayerToHandChannel("""
+      {
+        "gameCode": "${widget.gameCode}",
+        "messageType": "QUERY_CURRENT_HAND",
+        "playerId": "$playerID"
+      }""");
+    log('value: $value');
   }
 
   // todo: figure out a way to enable or disable this callback function

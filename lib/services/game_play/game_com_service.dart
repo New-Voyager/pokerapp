@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:dart_nats/dart_nats.dart';
 import 'package:flutter/foundation.dart';
 import 'package:pokerapp/resources/app_apis.dart';
@@ -24,8 +26,13 @@ class GameComService {
     _client.connect(AppApis.baseUrl);
 
     // subscribe
+    log('subscribing to ${this.gameToPlayerChannel}');
     _gameToPlayerChannelSubs = _client.sub(this.gameToPlayerChannel);
+
+    log('subscribing to ${this.handToAllChannel}');
     _handToAllChannelSubs = _client.sub(this.handToAllChannel);
+
+    log('subscribing to ${this.handToPlayerChannel}');
     _handToPlayerChannelSubs = _client.sub(this.handToPlayerChannel);
   }
 
@@ -42,7 +49,9 @@ class GameComService {
 
   Stream<Message> get gameToPlayerChannelStream =>
       _gameToPlayerChannelSubs.stream;
+
   Stream<Message> get handToAllChannelStream => _handToAllChannelSubs.stream;
+
   Stream<Message> get handToPlayerChannelStream =>
       _handToPlayerChannelSubs.stream;
 }

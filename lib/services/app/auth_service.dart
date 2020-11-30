@@ -38,6 +38,14 @@ class AuthService {
 
   /* methods exposed */
 
+  /* get player ID from the JWT */
+  static Future<String> getPlayerID() async {
+    String jwt = await getJwt();
+    String tmp = jwt.split('.')[1];
+    var data = jsonDecode(utf8.decode(base64.decode(base64.normalize(tmp))));
+    return data['id'].toString();
+  }
+
   /* method that returns back the uuid */
   static Future<String> getUuid() async => (await get())?.uuid;
 
