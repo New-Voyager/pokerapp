@@ -1,15 +1,20 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:pokerapp/models/auth_model.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
+import 'package:pokerapp/models/game_play_models/business/player_in_seat_model.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/header_view.dart';
+import 'package:pokerapp/screens/game_play_screen/pop_ups/chip_buy_pop_up.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/services/game_play/game_info_service.dart';
 import 'package:pokerapp/services/game_play/join_game_service.dart';
+
+/*
+* todo: instead of calling fetch game info multiple times, if the NATS gives update about player joining, or player buying chips, the UI update would be ease
+* */
 
 /*
 * This is the screen which will have contact with the NATS server
@@ -33,6 +38,32 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
 
   String myUUID;
 
+  // todo: we need a timer for the prompt, or else, throw the player out of the game
+  void _promptBuyIn() async {
+    // check if prompt is necessary
+    PlayerInSeatModel player =
+        _gameInfoModel.playersInSeats.firstWhere((e) => e.isMe, orElse: null);
+
+    if (player == null) return; // current user is not in game
+
+    if (player.stack != 0) return; // buy is prompt only when stack is 0
+
+    await showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => ChipBuyPopUp(
+        gameCode: widget.gameCode,
+        minBuyIn: _gameInfoModel.buyInMin,
+        maxBuyIn: _gameInfoModel.buyInMax,
+      ),
+    );
+
+    // fetch game info to get updated values
+    await _fetchGameInfo();
+
+    if (mounted) setState(() {});
+  }
+
   // todo: figure out a way to enable or disable this callback function
   void _joinGame(int index) async {
     log('joining game with seat no ${index + 1}');
@@ -50,6 +81,9 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
 
     // refresh the UI to show the new user
     if (mounted) setState(() {});
+
+    // whenever stack is 0 for me prompt for more chips buy in
+    _promptBuyIn();
   }
 
   /*
@@ -85,7 +119,19 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
 
     if (_gameInfoModel != null && mounted) setState(() {});
 
-    // todo: after init if the user is here to play the game, show a kind of popup to let them know that they can now choose a seat
+    // todo: use of provider here, to update and push to objects as per changes, and the UI can be instantly updated anywhere down the hierarchy
+
+    _gameComService.gameToPlayerChannelStream.listen((message) {
+      log('gameToPlayerChannel: ${message.string}');
+    });
+
+    _gameComService.handToAllChannelStream.listen((message) {
+      log('handToAllChannel: ${message.string}');
+    });
+
+    _gameComService.handToPlayerChannelStream.listen((message) {
+      log('handToPlayerChannel: ${message.string}');
+    });
   }
 
   @override

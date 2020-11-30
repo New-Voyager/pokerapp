@@ -42,7 +42,7 @@ class GameComService {
 
   Stream<Message> get gameToPlayerChannelStream =>
       _gameToPlayerChannelSubs.stream;
-  Stream<Message> get handToAlChannelStream => _handToAllChannelSubs.stream;
+  Stream<Message> get handToAllChannelStream => _handToAllChannelSubs.stream;
   Stream<Message> get handToPlayerChannelStream =>
       _handToPlayerChannelSubs.stream;
 }

@@ -34,7 +34,7 @@ class BoardView extends StatelessWidget {
     (index) => UserObject(
       seatPosition: null,
       name: null,
-      chips: null,
+      stack: null,
     ),
   );
 
@@ -304,6 +304,7 @@ class BoardView extends StatelessWidget {
       userObjects[idx].name = model.name;
       userObjects[idx].seatPosition = model.seatNo - 1;
       userObjects[idx].isMe = model.isMe;
+      userObjects[idx].stack = model.stack;
     }
   }
 

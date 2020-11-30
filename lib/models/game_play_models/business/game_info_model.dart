@@ -57,6 +57,7 @@ class GameInfoModel {
       buyInMin
       smallBlind
       bigBlind
+      status
       tableStatus
       seatInfo {
         availableSeats
@@ -64,6 +65,8 @@ class GameInfoModel {
           name
           seatNo
           playerUuid
+          stack
+          buyIn
         }
       }
       gameToken

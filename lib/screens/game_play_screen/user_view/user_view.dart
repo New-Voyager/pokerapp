@@ -78,7 +78,7 @@ class UserView extends StatelessWidget {
                       const SizedBox(width: 5.0),
 
                       Text(
-                        chips?.toString() ?? '100',
+                        chips?.toString() ?? 'XX',
                         style: AppStyles.itemInfoTextStyleHeavy,
                       ),
                     ],
@@ -186,7 +186,7 @@ class UserView extends StatelessWidget {
               ),
               _buildPlayerInfo(
                 name: this.userObject.name,
-                chips: this.userObject.chips,
+                chips: this.userObject.stack,
                 emptySeat: emptySeat,
               ),
             ],

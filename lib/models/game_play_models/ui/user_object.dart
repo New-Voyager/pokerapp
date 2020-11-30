@@ -4,13 +4,13 @@ class UserObject {
   bool isMe;
   int seatPosition;
   String name;
-  int chips;
+  int stack;
   String avatarUrl;
 
   UserObject({
     @required this.seatPosition,
     @required this.name,
-    @required this.chips,
+    @required this.stack,
     this.isMe,
     this.avatarUrl,
   });
