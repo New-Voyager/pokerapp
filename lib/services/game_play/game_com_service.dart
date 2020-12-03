@@ -6,6 +6,7 @@ import 'package:pokerapp/resources/app_apis.dart';
 
 class GameComService {
   Client _client;
+  bool initiated;
 
   String gameToPlayerChannel;
   String handToAllChannel;
@@ -23,7 +24,11 @@ class GameComService {
     @required this.playerToHandChannel,
   }) {
     _client = Client();
-    _client.connect(AppApis.baseUrl);
+    this.initiated = false;
+  }
+
+  Future<void> init() async {
+    await _client.connect(AppApis.host);
 
     // subscribe
     log('subscribing to ${this.gameToPlayerChannel}');
@@ -34,24 +39,35 @@ class GameComService {
 
     log('subscribing to ${this.handToPlayerChannel}');
     _handToPlayerChannelSubs = _client.sub(this.handToPlayerChannel);
+
+    this.initiated = true;
   }
 
-  bool sendPlayerToHandChannel(String data) =>
-      this._client.pubString(this.playerToHandChannel, data);
+  void sendPlayerToHandChannel(String data) {
+    assert(initiated);
+    this._client.pubString(this.playerToHandChannel, data);
+  }
 
   void dispose() {
-    _gameToPlayerChannelSubs.unSub();
-    _handToAllChannelSubs.unSub();
-    _handToPlayerChannelSubs.unSub();
-
+    _gameToPlayerChannelSubs?.unSub();
+    _handToAllChannelSubs?.unSub();
+    _handToPlayerChannelSubs?.unSub();
+    initiated = false;
     _client?.close();
   }
 
-  Stream<Message> get gameToPlayerChannelStream =>
-      _gameToPlayerChannelSubs.stream;
+  Stream<Message> get gameToPlayerChannelStream {
+    assert(initiated);
+    return _gameToPlayerChannelSubs.stream;
+  }
 
-  Stream<Message> get handToAllChannelStream => _handToAllChannelSubs.stream;
+  Stream<Message> get handToAllChannelStream {
+    assert(initiated);
+    return _handToAllChannelSubs.stream;
+  }
 
-  Stream<Message> get handToPlayerChannelStream =>
-      _handToPlayerChannelSubs.stream;
+  Stream<Message> get handToPlayerChannelStream {
+    assert(initiated);
+    return _handToPlayerChannelSubs.stream;
+  }
 }

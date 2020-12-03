@@ -2,8 +2,11 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
-import 'package:pokerapp/models/game_play_models/business/player_in_seat_model.dart';
+import 'package:pokerapp/models/game_play_models/business/player_model.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
+import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/header_view.dart';
@@ -12,6 +15,8 @@ import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/services/game_play/graphql/game_info_service.dart';
 import 'package:pokerapp/services/game_play/graphql/join_game_service.dart';
+import 'package:provider/provider.dart';
+import 'package:provider/single_child_widget.dart';
 
 /*
 * todo: instead of calling fetch game info multiple times, if the NATS gives update about player joining, or player buying chips, the UI update would be ease
@@ -34,93 +39,56 @@ class GamePlayScreen extends StatefulWidget {
 }
 
 class _GamePlayScreenState extends State<GamePlayScreen> {
-  GameInfoModel _gameInfoModel;
   GameComService _gameComService;
+  BuildContext _providerContext;
 
-  String myUUID;
+  /*
+  * Call back function, which lets the current player join the game
+  * the passed setPosition info is used to join the game
+  * This function can be disabled, when the current user get's in the game */
 
-  // todo: we need a timer for the prompt, or else, throw the player out of the game
-  void _promptBuyIn() async {
-    // check if prompt is necessary
-    PlayerInSeatModel player =
-        _gameInfoModel.playersInSeats.firstWhere((e) => e.isMe, orElse: null);
+  void _joinGame(int seatPos) async {
+    assert(seatPos != null);
 
-    if (player == null) return; // current user is not in game
+    log('joining game with seat no $seatPos');
 
-    if (player.stack != 0) return; // buy is prompt only when stack is 0
+    // if setPos is -1 that means block this function call
+    if (seatPos == -1) return;
 
-    await showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => ChipBuyPopUp(
-        gameCode: widget.gameCode,
-        minBuyIn: _gameInfoModel.buyInMin,
-        maxBuyIn: _gameInfoModel.buyInMax,
-      ),
-    );
-
-    // fetch game info to get updated values
-    await _fetchGameInfo();
-
-    if (mounted) setState(() {});
-
-    // fixme, remove this, this is just for testing
-    String playerID = await AuthService.getPlayerID();
-    bool value = _gameComService.sendPlayerToHandChannel("""
-      {
-        "gameCode": "${widget.gameCode}",
-        "messageType": "QUERY_CURRENT_HAND",
-        "playerId": "$playerID"
-      }""");
-    log('value: $value');
-  }
-
-  // todo: figure out a way to enable or disable this callback function
-  void _joinGame(int index) async {
-    log('joining game with seat no ${index + 1}');
-
-    assert(index != null);
-    int seatNumber = index + 1;
-
+    int seatNumber = seatPos;
     await JoinGameService.joinGame(
       widget.gameCode,
       seatNumber,
     );
-
-    // fetch the game info again to get updated positions
-    await _fetchGameInfo();
-
-    // refresh the UI to show the new user
-    if (mounted) setState(() {});
-
-    // whenever stack is 0 for me prompt for more chips buy in
-    _promptBuyIn();
   }
 
   /*
   * _init function is run only for the very first time,
   * and only once, the initial game screen is populated from here
-  * also the NATS channel subscriptions are done here
-  * */
+  * also the NATS channel subscriptions are done here */
 
-  Future<void> _fetchGameInfo() async {
-    _gameInfoModel = await GameInfoService.getGameInfo(widget.gameCode);
+  Future<GameInfoModel> _fetchGameInfo() async {
+    GameInfoModel _gameInfoModel =
+        await GameInfoService.getGameInfo(widget.gameCode);
+
+    String myUUID = await AuthService.getUuid();
 
     // mark the isMe field
     for (int i = 0; i < _gameInfoModel.playersInSeats.length; i++) {
       if (_gameInfoModel.playersInSeats[i].playerUuid == myUUID)
         _gameInfoModel.playersInSeats[i].isMe = true;
     }
+
+    return _gameInfoModel;
   }
 
-  void _init() async {
-    myUUID = await AuthService.getUuid();
+  /*
+  * The init method returns a Future of all the initial game constants
+  * This method is also responsible for subscribing to the NATS channels */
 
-    await _fetchGameInfo();
+  Future<GameInfoModel> _init() async {
+    GameInfoModel _gameInfoModel = await _fetchGameInfo();
 
-    assert(_gameInfoModel != null);
-
-    // nats subscribe the required channels
     _gameComService = GameComService(
       gameToPlayerChannel: _gameInfoModel.gameToPlayerChannel,
       handToAllChannel: _gameInfoModel.handToAllChannel,
@@ -128,29 +96,77 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
       playerToHandChannel: _gameInfoModel.playerToHandChannel,
     );
 
-    if (_gameInfoModel != null && mounted) setState(() {});
+    // subscribe the NATs channels
+    await _gameComService.init();
 
-    // todo: use of provider here, to update and push to objects as per changes, and the UI can be instantly updated anywhere down the hierarchy
+    /* setup the listeners to the channels
+    * Any messages received from these channel updates,
+    * will be taken care of by the respective class
+    * and actions will be taken in the UI
+    * as there will be Listeners implemented down this hierarchy level */
 
     _gameComService.gameToPlayerChannelStream.listen((message) {
-      log('gameToPlayerChannel: ${message.string}');
+      log('gameToPlayerChannel(${message.subject}): ${message.string}');
     });
 
     _gameComService.handToAllChannelStream.listen((message) {
-      log('handToAllChannel: ${message.string}');
+      log('handToAllChannel(${message.subject}): ${message.string}');
     });
 
     _gameComService.handToPlayerChannelStream.listen((message) {
-      log('handToPlayerChannel: ${message.string}');
+      log('handToPlayerChannel(${message.subject}): ${message.string}');
     });
+
+    return _gameInfoModel;
   }
 
-  @override
-  void initState() {
-    _init();
-    super.initState();
-  }
+  /* provider method, returns list of all the providers used in the below hierarchy */
+  List<SingleChildWidget> _getProviders({
+    @required GameInfoModel gameInfoModel,
+  }) =>
+      [
+        /* a copy of Game Info Model is kept in the provider
+        * This is used to get the max or min BuyIn amounts
+        * or the game code, or for further info about the game */
+        ListenableProvider<ValueNotifier<GameInfoModel>>(
+          create: (_) => ValueNotifier(gameInfoModel),
+        ),
 
+        /*
+        * This Listenable Provider updates the activities of players
+        *  Player joins, buy Ins, Stacks, everything is notified by the Players objects
+        * */
+        ListenableProvider<Players>(
+          create: (_) => Players(
+            players: gameInfoModel.playersInSeats,
+          ),
+        ),
+
+        /* TableStatus is updated as a string value */
+        ListenableProvider<ValueNotifier<String>>(
+          create: (_) => ValueNotifier<String>(
+            gameInfoModel.tableStatus,
+          ),
+        ),
+
+        /* This provider, holds the current user's cards (DEAL) */
+        ListenableProvider<ValueNotifier<List<CardObject>>>(
+          create: (_) => ValueNotifier(
+            List<CardObject>.empty(),
+          ),
+        ),
+
+        /* footer view, is maintained by this Provider - either how action buttons,
+        * OR prompt for buy in, OR todo: more functionalities can be added
+        * */
+        ListenableProvider<ValueNotifier<FooterStatus>>(
+          create: (_) => ValueNotifier(
+            FooterStatus.Prompt,
+          ), // todo: change this to NONE
+        ),
+      ];
+
+  /* dispose method for closing connections and un subscribing to channels */
   @override
   void dispose() {
     _gameComService?.dispose();
@@ -158,35 +174,50 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext _) {
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.black,
-        body: _gameInfoModel == null
-            ? Center(
-                child: CircularProgressIndicator(),
-              )
-            : Container(
-                decoration: _screenBackgroundDecoration,
-                child: Column(
-                  children: [
-                    // header section
-                    HeaderView(),
+        body: FutureBuilder<GameInfoModel>(
+          future: _init(),
+          initialData: null,
+          builder: (_, AsyncSnapshot<GameInfoModel> snapshot) {
+            GameInfoModel _gameInfoModel = snapshot.data;
 
-                    // main board view
-                    Expanded(
-                      child: BoardView(
-                        users: _gameInfoModel.playersInSeats,
-                        onUserTap: _joinGame,
-                        tableStatus: _gameInfoModel.tableStatus,
-                      ),
-                    ),
+            // show a progress indicator if the game info object is null
+            if (_gameInfoModel == null)
+              return Center(child: CircularProgressIndicator());
 
-                    // footer section
-                    FooterView(),
-                  ],
-                ),
+            return MultiProvider(
+              providers: _getProviders(
+                gameInfoModel: _gameInfoModel,
               ),
+              builder: (BuildContext context, _) {
+                this._providerContext = context;
+
+                return Container(
+                  decoration: _screenBackgroundDecoration,
+                  child: Column(
+                    children: [
+                      // header section
+                      HeaderView(),
+
+                      // main board view
+                      Expanded(
+                        child: BoardView(
+                          onUserTap: _joinGame,
+                        ),
+                      ),
+
+                      // footer section
+                      FooterView(),
+                    ],
+                  ),
+                );
+              },
+            );
+          },
+        ),
       ),
     );
   }

@@ -1,6 +1,7 @@
 class AppApis {
-  // 'http://10.0.2.2:9501';
-  static final String baseUrl = 'http://10.0.2.2'; //'http://192.168.1.103';
+  static final String host = '192.168.1.104'; // '10.0.2.2:9501';
+
+  static final String baseUrl = 'http://$host';
 
   static final String baseUrlWithDefaultPort = '$baseUrl:9501';
 

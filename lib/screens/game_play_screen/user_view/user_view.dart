@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/user_object.dart';
@@ -6,18 +5,19 @@ import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/screens/game_play_screen/card_views/hidden_card_view.dart';
 import 'package:pokerapp/screens/game_play_screen/card_views/stack_card_view.dart';
+import 'package:provider/provider.dart';
 
 const shrinkSizedBox = const SizedBox.shrink();
 
 class UserView extends StatelessWidget {
-  final int index;
+  final int seatPos;
   final UserObject userObject;
   final Alignment cardsAlignment;
   final Function(int) onUserTap;
 
   UserView({
     Key key,
-    @required this.index,
+    @required this.seatPos,
     @required this.userObject,
     @required this.onUserTap,
     this.cardsAlignment = Alignment.centerRight,
@@ -132,7 +132,7 @@ class UserView extends StatelessWidget {
               ),
             ),
             child: Text(
-              (userObject.seatPosition + 1).toString(),
+              userObject.serverSeatPos.toString(),
               style: AppStyles.itemInfoTextStyle.copyWith(
                 color: Colors.white,
               ),
@@ -172,7 +172,7 @@ class UserView extends StatelessWidget {
     bool isMe = userObject.isMe ?? false;
 
     return InkWell(
-      onTap: emptySeat ? () => onUserTap(index) : null,
+      onTap: emptySeat ? () => onUserTap(seatPos) : null,
       child: Stack(
         alignment: Alignment.center,
         children: [
@@ -194,21 +194,11 @@ class UserView extends StatelessWidget {
 
           // cards
           isMe
-              ? _buildVisibleCard(
-                  cards: [
-                    CardObject(
-                      suit: AppConstants.blackSpade,
-                      label: 'A',
-                      color: Colors.black,
-                      smaller: true,
-                    ),
-                    CardObject(
-                      suit: AppConstants.redHeart,
-                      label: '9',
-                      color: Colors.red,
-                      smaller: true,
-                    ),
-                  ],
+              ? Consumer<ValueNotifier<List<CardObject>>>(
+                  builder: (_, valueNotifierListOfCards, __) =>
+                      _buildVisibleCard(
+                    cards: valueNotifierListOfCards.value,
+                  ),
                 )
               : emptySeat
                   ? shrinkSizedBox

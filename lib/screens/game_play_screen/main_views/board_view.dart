@@ -1,6 +1,9 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:pokerapp/models/game_play_models/business/player_in_seat_model.dart';
+import 'package:pokerapp/models/game_play_models/business/player_model.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/user_object.dart';
 import 'package:pokerapp/resources/app_constants.dart';
@@ -8,6 +11,7 @@ import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/screens/game_play_screen/card_views/stack_card_view.dart';
 import 'package:pokerapp/screens/game_play_screen/user_view/user_view.dart';
+import 'package:provider/provider.dart';
 
 // user are seated as per array index starting from the bottom center as 0 and moving in clockwise direction
 
@@ -20,23 +24,10 @@ const heightMultiplier = 1.7;
 
 class BoardView extends StatelessWidget {
   BoardView({
-    @required this.users,
     @required this.onUserTap,
-    @required this.tableStatus,
-  }) : assert(users != null);
+  });
 
   final Function(int index) onUserTap;
-  final List<PlayerInSeatModel> users;
-  final String tableStatus;
-
-  final List<UserObject> userObjects = List.generate(
-    9,
-    (index) => UserObject(
-      seatPosition: null,
-      name: null,
-      stack: null,
-    ),
-  );
 
   final List<CardObject> _cards = [
 //    CardObject(
@@ -100,36 +91,38 @@ class BoardView extends StatelessWidget {
         ),
       );
 
-  Widget _positionUser(
+  Widget _positionUser({
     UserObject user,
     double heightOfBoard,
     double widthOfBoard,
-    int index,
-  ) {
-    double shiftDownConstant = heightOfBoard / 15;
+    int seatPos,
+    bool isPresent,
+  }) {
+    seatPos++;
 
+    double shiftDownConstant = heightOfBoard / 15;
     Alignment cardsAlignment = Alignment.centerRight;
 
-    // left for 5, 6, 7, 8
-    if (index == 5 || index == 6 || index == 7 || index == 8)
+    // left for 6, 7, 8, 9
+    if (seatPos == 6 || seatPos == 7 || seatPos == 8 || seatPos == 9)
       cardsAlignment = Alignment.centerLeft;
 
     UserView userView = UserView(
-      index: index,
-      key: ValueKey(index),
+      seatPos: isPresent ? -1 : seatPos,
+      key: ValueKey(seatPos),
       userObject: user,
       cardsAlignment: cardsAlignment,
       onUserTap: onUserTap,
     );
 
-    switch (index) {
-      case 0:
+    switch (seatPos) {
+      case 1:
         return Align(
           alignment: Alignment.bottomCenter,
           child: userView,
         );
 
-      case 1:
+      case 2:
         return Align(
           alignment: Alignment.centerLeft,
           child: Transform.translate(
@@ -138,7 +131,7 @@ class BoardView extends StatelessWidget {
           ),
         );
 
-      case 2:
+      case 3:
         return Align(
           alignment: Alignment.centerLeft,
           child: Transform.translate(
@@ -147,20 +140,11 @@ class BoardView extends StatelessWidget {
           ),
         );
 
-      case 3:
+      case 4:
         return Align(
           alignment: Alignment.centerLeft,
           child: Transform.translate(
             offset: Offset(0.0, -heightOfBoard / 4 + shiftDownConstant),
-            child: userView,
-          ),
-        );
-
-      case 4:
-        return Align(
-          alignment: Alignment.topCenter,
-          child: Transform.translate(
-            offset: Offset(-widthOfBoard / 3, shiftDownConstant / 2),
             child: userView,
           ),
         );
@@ -169,16 +153,16 @@ class BoardView extends StatelessWidget {
         return Align(
           alignment: Alignment.topCenter,
           child: Transform.translate(
-            offset: Offset(widthOfBoard / 3, shiftDownConstant / 2),
+            offset: Offset(-widthOfBoard / 3, shiftDownConstant / 2),
             child: userView,
           ),
         );
 
       case 6:
         return Align(
-          alignment: Alignment.centerRight,
+          alignment: Alignment.topCenter,
           child: Transform.translate(
-            offset: Offset(0.0, -heightOfBoard / 4 + shiftDownConstant),
+            offset: Offset(widthOfBoard / 3, shiftDownConstant / 2),
             child: userView,
           ),
         );
@@ -187,12 +171,21 @@ class BoardView extends StatelessWidget {
         return Align(
           alignment: Alignment.centerRight,
           child: Transform.translate(
-            offset: Offset(0.0, 0.0 + shiftDownConstant),
+            offset: Offset(0.0, -heightOfBoard / 4 + shiftDownConstant),
             child: userView,
           ),
         );
 
       case 8:
+        return Align(
+          alignment: Alignment.centerRight,
+          child: Transform.translate(
+            offset: Offset(0.0, 0.0 + shiftDownConstant),
+            child: userView,
+          ),
+        );
+
+      case 9:
         return Align(
           alignment: Alignment.centerRight,
           child: Transform.translate(
@@ -206,7 +199,7 @@ class BoardView extends StatelessWidget {
     }
   }
 
-  String _getText() {
+  String _getText(String tableStatus) {
     switch (tableStatus) {
       case AppConstants.TABLE_STATUS_NOT_ENOUGH_PLAYERS:
         return 'Waiting for more players';
@@ -214,32 +207,37 @@ class BoardView extends StatelessWidget {
         return 'Waiting to be started';
     }
 
-    return '';
+    return null;
   }
 
   Widget _buildCenterView({
     List<CardObject> cards = const [],
     int potChips = 0,
+    String tableStatus,
   }) {
-    return Align(
-      alignment: Alignment.center,
-      child: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 10.0,
-          vertical: 5.0,
-        ),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(100.0),
-          color: Colors.black26,
-        ),
-        child: Text(
-          _getText(),
-          style: AppStyles.itemInfoTextStyleHeavy.copyWith(
-            fontSize: 15,
-          ),
-        ),
-      ),
-    );
+    String _text = _getText(tableStatus);
+
+    return _text == null
+        ? const SizedBox.shrink()
+        : Align(
+            alignment: Alignment.center,
+            child: Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 10.0,
+                vertical: 5.0,
+              ),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(100.0),
+                color: Colors.black26,
+              ),
+              child: Text(
+                _text,
+                style: AppStyles.itemInfoTextStyleHeavy.copyWith(
+                  fontSize: 15,
+                ),
+              ),
+            ),
+          );
 
     /*
     // showing the POT value along with the chips
@@ -298,25 +296,73 @@ class BoardView extends StatelessWidget {
     );*/
   }
 
-  void seatPlayers() {
-    for (PlayerInSeatModel model in users) {
+  /* this function is the link between the player model and the actual user shown in the table */
+  List<UserObject> getUserObjects(List<PlayerModel> users) {
+    /* build an empty user object list
+    *  This is done, because all the empty seats are
+    *  also UserObject objects, and we need all
+    * the 9 objects in an array to build the entire table + users
+    * */
+
+    final List<UserObject> userObjects = List.generate(
+      9,
+      (index) => UserObject(
+        serverSeatPos: null,
+        name: null,
+        stack: null,
+      ),
+    );
+
+    for (PlayerModel model in users) {
+      log(model.seatNo.toString());
       int idx = model.seatNo - 1;
+
       userObjects[idx].name = model.name;
-      userObjects[idx].seatPosition = model.seatNo - 1;
+      userObjects[idx].serverSeatPos = model.seatNo;
       userObjects[idx].isMe = model.isMe;
       userObjects[idx].stack = model.stack;
     }
+
+    return userObjects;
+  }
+
+  int _getAdjustedSeatPosition(int pos, bool isPresent, int currentUserSeatNo) {
+    /*
+    * if the current user is present, then the localSeatNo would be different from that of server seat number
+    * This is done, so that the current user can stay at the bottom center of the table
+    */
+
+    /*
+    * 1 -> the bottom center seat
+    * 9 -> total available seats
+    * shifts (rotates) the local seat position by the x amount (x => current user seat NO.)
+    * This is done so that current user is at seat 1 always
+    * */
+    if (isPresent) return (pos - currentUserSeatNo + 1) % 9;
+
+    return pos;
   }
 
   @override
   Widget build(BuildContext context) {
-    // this method runs in every frame
-    seatPlayers();
-
     double width = MediaQuery.of(context).size.width;
-
     double heightOfBoard = width * widthMultiplier * heightMultiplier;
     double widthOfBoard = width * widthMultiplier;
+
+    /* dealing with the players */
+    Players players = Provider.of<Players>(
+      context,
+    );
+
+    PlayerModel tmp = players.players.firstWhere(
+      (u) => u.isMe,
+      orElse: () => null,
+    );
+    bool isPresent = tmp != null;
+
+    /* dealing with the cards */
+
+    /* finally the view */
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10.0),
@@ -324,26 +370,38 @@ class BoardView extends StatelessWidget {
         alignment: Alignment.center,
         children: [
           // game board
-          _buildGameBoard(boardHeight: heightOfBoard, boardWidth: widthOfBoard),
+          _buildGameBoard(
+            boardHeight: heightOfBoard,
+            boardWidth: widthOfBoard,
+          ),
 
           // position the users
-          ...userObjects
+          ...getUserObjects(players.players)
               .asMap()
               .entries
               .map(
                 (var u) => _positionUser(
-                  u.value,
-                  heightOfBoard,
-                  widthOfBoard,
-                  u.key,
+                  user: u.value,
+                  heightOfBoard: heightOfBoard,
+                  widthOfBoard: widthOfBoard,
+                  seatPos: _getAdjustedSeatPosition(
+                    u.key,
+                    isPresent,
+                    tmp?.seatNo,
+                  ),
+                  isPresent: isPresent,
                 ),
               )
               .toList(),
 
+          // todo: may be it's better if a new class is created just to hold the table_status, pots and communityCards?
           // center view
-          _buildCenterView(
-            cards: _cards,
-            potChips: 15,
+          Consumer<ValueNotifier<String>>(
+            builder: (_, valueNotifierTableStatus, __) => _buildCenterView(
+              cards: _cards,
+              potChips: 15,
+              tableStatus: valueNotifierTableStatus.value,
+            ),
           ),
         ],
       ),

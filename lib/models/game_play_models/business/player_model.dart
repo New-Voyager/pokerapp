@@ -1,4 +1,4 @@
-class PlayerInSeatModel {
+class PlayerModel {
   bool isMe;
   String name;
   int seatNo;
@@ -6,7 +6,7 @@ class PlayerInSeatModel {
   int buyIn;
   int stack;
 
-  PlayerInSeatModel.fromJson(var data) {
+  PlayerModel.fromJson(var data) {
     this.isMe = false; // by default keep this value false
     this.name = data['name'];
     this.seatNo = data['seatNo'];
@@ -14,4 +14,7 @@ class PlayerInSeatModel {
     this.buyIn = data['buyIn'];
     this.stack = data['stack'];
   }
+
+  @override
+  String toString() => this.name;
 }

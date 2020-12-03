@@ -1,6 +1,7 @@
-import 'package:pokerapp/models/game_play_models/business/player_in_seat_model.dart';
+import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 
 class GameInfoModel {
+  String gameCode;
   int buyInMax;
   int buyInMin;
   int maxPlayers;
@@ -11,7 +12,7 @@ class GameInfoModel {
   int smallBlind;
   int bigBlind;
   List<int> availableSeats;
-  List<PlayerInSeatModel> playersInSeats;
+  List<PlayerModel> playersInSeats;
   String gameToken;
   String playerGameStatus;
 
@@ -22,6 +23,7 @@ class GameInfoModel {
   String handToPlayerChannel;
 
   GameInfoModel.fromJson(var data) {
+    this.gameCode = data['gameCode'];
     this.buyInMax = data['buyInMax'];
     this.maxPlayers = data['maxPlayers'];
     this.title = data['title'];
@@ -35,7 +37,7 @@ class GameInfoModel {
         .map<int>((e) => int.parse(e.toString()))
         .toList();
     this.playersInSeats = data['seatInfo']['playersInSeats']
-        .map<PlayerInSeatModel>((e) => PlayerInSeatModel.fromJson(e))
+        .map<PlayerModel>((e) => PlayerModel.fromJson(e))
         .toList();
     this.gameToken = data['gameToken'];
     this.playerGameStatus = data['playerGameStatus'];
@@ -50,6 +52,7 @@ class GameInfoModel {
   // graph ql queries
   static String query(String gameCode) => """query gameInfo {
     gameInfo(gameCode:"$gameCode") {
+      gameCode
       buyInMax
       maxPlayers
       title
