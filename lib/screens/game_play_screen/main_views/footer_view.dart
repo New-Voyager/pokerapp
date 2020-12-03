@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/resources/app_colors.dart';
@@ -88,24 +86,24 @@ class FooterView extends StatelessWidget {
   // todo: a better way to implement this functionality?
   Widget _buildBuyInPromptButton() {
     int _timeLeft = AppConstants.buyInTimeOutSeconds;
-
-    Function ss;
-
-    Timer timer = Timer.periodic(
-      const Duration(seconds: 1),
-      (_) {
-        _timeLeft--;
-        ss(() {});
-      },
-    );
+//
+//    Function ss;
+//
+//    Timer timer = Timer.periodic(
+//      const Duration(seconds: 1),
+//      (_) {
+//        _timeLeft--;
+////        ss(() {});
+//      },
+//    );
 
     return Container(
       child: Center(
         child: StatefulBuilder(
           builder: (BuildContext context, setState) {
-            ss = setState;
+//            ss = setState;
 
-            if (_timeLeft <= 0) timer.cancel();
+//            if (_timeLeft <= 0) timer.cancel();
 
             return Row(
               mainAxisSize: MainAxisSize.min,

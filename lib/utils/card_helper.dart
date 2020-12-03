@@ -1,0 +1,119 @@
+import 'dart:typed_data';
+
+import 'package:flutter/material.dart';
+import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
+import 'package:pokerapp/resources/app_constants.dart';
+
+const Map<int, String> _cardValues = {
+  1: '2♠',
+  2: '2❤',
+  4: '2♦',
+  8: '2♣',
+  17: '3♠',
+  18: '3❤',
+  20: '3♦',
+  24: '3♣',
+  40: '4♣',
+  33: '4♠',
+  34: '4❤',
+  36: '4♦',
+  50: '5❤',
+  52: '5♦',
+  56: '5♣',
+  49: '5♠',
+  65: '6♠',
+  66: '6❤',
+  68: '6♦',
+  72: '6♣',
+  81: '7♠',
+  82: '7❤',
+  84: '7♦',
+  88: '7♣',
+  97: '8♠',
+  98: '8❤',
+  100: '8♦',
+  104: '8♣',
+  113: '9♠',
+  114: '9❤',
+  116: '9♦',
+  120: '9♣',
+  130: 'T❤',
+  132: 'T♦',
+  136: 'T♣',
+  129: 'T♠',
+  152: 'J♣',
+  145: 'J♠',
+  146: 'J❤',
+  148: 'J♦',
+  161: 'Q♠',
+  162: 'Q❤',
+  164: 'Q♦',
+  168: 'Q♣',
+  177: 'K♠',
+  178: 'K❤',
+  180: 'K♦',
+  184: 'K♣',
+  200: 'A♣',
+  193: 'A♠',
+  194: 'A❤',
+  196: 'A♦',
+};
+
+class CardHelper {
+  CardHelper._();
+
+  /* following util methods deals with the raw card values and data */
+  static String _getCardFromNumber(int number) => _cardValues[number];
+
+  static Uint8List _int64LittleEndianBytes(int v) =>
+      Uint8List(8)..buffer.asByteData().setInt64(0, v, Endian.little);
+
+  static List<String> _getCards(String number) {
+    int n = int.parse(number);
+    List<int> tmp = _int64LittleEndianBytes(n);
+
+    List<String> cards = List<String>();
+    for (int t in tmp) if (t != 0) cards.add(_getCardFromNumber(t));
+
+    return cards;
+  }
+
+  /* card color util */
+  static Color _getColor(String suit) {
+    switch (suit) {
+      case AppConstants.blackSpade:
+        return Colors.black;
+      case AppConstants.redHeart:
+        return Colors.red;
+      case AppConstants.blackClub:
+        return Colors.black;
+      case AppConstants.redDiamond:
+        return Colors.red;
+    }
+
+    return Colors.black;
+  }
+
+  /* methods that returns Card Objects */
+
+  static CardObject _getCardFromCardValues(String card) {
+    String label = card[0];
+    String suit = card[1];
+
+    return CardObject(
+      suit: suit,
+      label: label,
+      color: _getColor(suit),
+    );
+  }
+
+  /* the following two methods are made public */
+
+  static CardObject getCard(int n) => _getCardFromCardValues(
+        _getCardFromNumber(n),
+      );
+
+  static List<CardObject> getCards(String s) => _getCards(s)
+      .map<CardObject>((String card) => _getCardFromCardValues(card))
+      .toList();
+}

@@ -161,8 +161,8 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
         * */
         ListenableProvider<ValueNotifier<FooterStatus>>(
           create: (_) => ValueNotifier(
-            FooterStatus.Prompt,
-          ), // todo: change this to NONE
+            FooterStatus.None,
+          ),
         ),
       ];
 
