@@ -33,14 +33,17 @@ class PlayerActedService {
     Provider.of<Players>(
       context,
       listen: false,
-    ).updateStatus(idx, "${playerActed['action']} ${playerActed['amount']}");
+    ).updateStatus(
+      idx,
+      "${playerActed['action']}${playerActed['amount'] ?? ''}",
+    );
 
-    await Future.delayed(AppConstants.popUpAnimationDuration);
+    await Future.delayed(AppConstants.userPopUpMessageHoldDuration);
 
     // remove the status message
     Provider.of<Players>(
       context,
       listen: false,
-    ).updateHighlight(idx, null);
+    ).updateStatus(idx, null);
   }
 }

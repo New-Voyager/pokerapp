@@ -14,6 +14,8 @@ class Action {
 
 const String FOLD = 'FOLD';
 const String CALL = 'CALL';
+const String CHECK = 'CHECK';
+const String BET = 'BET';
 const String RAISE = 'RAISE';
 const String ALLIN = 'ALLIN';
 
@@ -23,7 +25,9 @@ class PlayerAction {
   PlayerAction(var seatAction) {
     _actions = List<Action>();
 
-    seatAction['availableActions'].forEach((String actionName) {
+    seatAction['availableActions']
+        .map<String>((s) => s.toString())
+        .forEach((String actionName) {
       Action action = Action(
         actionName: actionName,
       );

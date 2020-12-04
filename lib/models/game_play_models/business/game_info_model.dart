@@ -2,6 +2,7 @@ import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 
 class GameInfoModel {
   String gameCode;
+  int actionTime;
   int buyInMax;
   int buyInMin;
   int maxPlayers;
@@ -25,6 +26,7 @@ class GameInfoModel {
   GameInfoModel.fromJson(var data) {
     this.gameCode = data['gameCode'];
     this.buyInMax = data['buyInMax'];
+    this.actionTime = data['actionTime'];
     this.maxPlayers = data['maxPlayers'];
     this.title = data['title'];
     this.gameType = data['gameType'];
@@ -72,6 +74,7 @@ class GameInfoModel {
           buyIn
         }
       }
+      actionTime
       gameToken
       playerGameStatus
       gameToPlayerChannel

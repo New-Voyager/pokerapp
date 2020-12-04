@@ -12,7 +12,9 @@ class DealService {
   }) {
     String cards = data['dealCards']['cards'];
 
-    Provider.of<ValueNotifier<List<CardObject>>>(context).value =
-        CardHelper.getCards(cards);
+    Provider.of<ValueNotifier<List<CardObject>>>(
+      context,
+      listen: false,
+    ).value = CardHelper.getCards(cards);
   }
 }

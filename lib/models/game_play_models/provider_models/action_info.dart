@@ -1,7 +1,7 @@
 class ActionInfo {
-  int clubID;
-  int gameID;
-  int seatNo;
+  String clubID;
+  String gameID;
+  String seatNo;
 
   ActionInfo({
     this.clubID,

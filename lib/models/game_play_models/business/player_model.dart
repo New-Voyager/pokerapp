@@ -38,7 +38,7 @@ class PlayerModel {
     this.seatNo = seatNo ?? this.seatNo;
     this.buyIn = buyIn ?? this.buyIn;
     this.stack = stack ?? this.stack;
-    this.status = status ?? this.status;
+    this.status = status;
     this.showBuyIn = showBuyIn ?? this.showBuyIn;
     this.playerType = playerType ?? this.playerType;
   }

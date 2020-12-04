@@ -11,6 +11,7 @@ class UserObject {
 
   // this status is shown to all the players, by showing a little pop up below the user object
   String status;
+  bool highlight;
 
   UserObject({
     @required this.serverSeatPos,

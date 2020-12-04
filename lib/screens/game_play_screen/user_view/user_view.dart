@@ -1,4 +1,5 @@
-import 'package:flutter/cupertino.dart';
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
@@ -9,7 +10,10 @@ import 'package:pokerapp/screens/game_play_screen/card_views/hidden_card_view.da
 import 'package:pokerapp/screens/game_play_screen/card_views/stack_card_view.dart';
 import 'package:provider/provider.dart';
 
+// TODO: a way to highlight the current user
+
 const shrinkedSizedBox = const SizedBox.shrink();
+const highlightColor = const Color(0xfff2a365);
 
 class UserView extends StatelessWidget {
   final int seatPos;
@@ -32,10 +36,21 @@ class UserView extends StatelessWidget {
       AnimatedOpacity(
         duration: AppConstants.userOpacityAnimationDuration,
         opacity: emptySeat ? 0.0 : 0.70,
-        child: CircleAvatar(
-          radius: 28.0,
-          /* todo: this needs to be replaced with NetworkImage */
-          backgroundImage: AssetImage(avatarUrl ?? 'assets/images/1.png'),
+        child: Container(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(
+              width: 2.0,
+              color: userObject.highlight ?? false
+                  ? highlightColor
+                  : Colors.transparent,
+            ),
+          ),
+          child: CircleAvatar(
+            radius: 26.0,
+            /* todo: this needs to be replaced with NetworkImage */
+            backgroundImage: AssetImage(avatarUrl ?? 'assets/images/2.png'),
+          ),
         ),
       );
 
@@ -55,6 +70,12 @@ class UserView extends StatelessWidget {
           decoration: BoxDecoration(
             color: const Color(0xff474747),
             borderRadius: BorderRadius.circular(5.0),
+            border: Border.all(
+              color: userObject.highlight ?? false
+                  ? highlightColor
+                  : Colors.transparent,
+              width: 2.0,
+            ),
           ),
           child: AnimatedOpacity(
             duration: AppConstants.userOpacityAnimationDuration,
@@ -173,14 +194,17 @@ class UserView extends StatelessWidget {
   Widget _buildUserStatus(bool emptySeat) {
     if (emptySeat) return shrinkedSizedBox;
 
-    String status = userObject.status;
+    String status;
 
-    if (status == AppConstants.WAIT_FOR_BUYIN)
+    log('status: $status');
+
+    if (userObject.status != null && userObject.status.isNotEmpty)
+      status = userObject.status;
+
+    if (userObject.status == AppConstants.WAIT_FOR_BUYIN)
       status = 'Waiting for Buy In';
-    else if (userObject.buyIn != null)
-      status = 'Buy In ${userObject.buyIn} amount';
-    else
-      status = null;
+
+    if (userObject.buyIn != null) status = 'Buy In ${userObject.buyIn} amount';
 
     return AnimatedSwitcher(
       duration: AppConstants.popUpAnimationDuration,
@@ -222,20 +246,28 @@ class UserView extends StatelessWidget {
         alignment: Alignment.center,
         children: [
           // main user body
-          Column(
-            mainAxisSize: MainAxisSize.min,
+          Stack(
+            alignment: Alignment.bottomCenter,
             children: [
-              _buildAvatar(
-                avatarUrl: userObject.avatarUrl,
-                emptySeat: emptySeat,
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _buildAvatar(
+                    avatarUrl: userObject.avatarUrl,
+                    emptySeat: emptySeat,
+                  ),
+                  _buildPlayerInfo(
+                    name: this.userObject.name,
+                    chips: this.userObject.stack,
+                    emptySeat: emptySeat,
+                  ),
+                ],
               ),
-              _buildPlayerInfo(
-                name: this.userObject.name,
-                chips: this.userObject.stack,
-                emptySeat: emptySeat,
-              ),
-              _buildUserStatus(
-                emptySeat,
+              Transform.translate(
+                offset: Offset(0.0, 25.0),
+                child: _buildUserStatus(
+                  emptySeat,
+                ),
               ),
             ],
           ),
@@ -245,7 +277,8 @@ class UserView extends StatelessWidget {
               ? Consumer<ValueNotifier<List<CardObject>>>(
                   builder: (_, valueNotifierListOfCards, __) =>
                       _buildVisibleCard(
-                    cards: valueNotifierListOfCards.value,
+                    cards: valueNotifierListOfCards.value
+                      ..forEach((c) => c.smaller = true),
                   ),
                 )
               : emptySeat
@@ -253,7 +286,7 @@ class UserView extends StatelessWidget {
                   : _buildHiddenCard(alignment: this.cardsAlignment),
 
           // timer
-          isMe ? _buildTimer() : shrinkedSizedBox,
+          isMe && userObject.highlight ? _buildTimer() : shrinkedSizedBox,
 
           // TODO: ONLY FOR DEBUGGING
           emptySeat ? shrinkedSizedBox : _buildSeatNoIndicator(),

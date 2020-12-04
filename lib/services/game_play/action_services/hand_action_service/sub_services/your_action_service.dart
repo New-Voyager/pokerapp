@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/action_info.dart';
@@ -13,9 +15,9 @@ class YourActionService {
   }) {
     var seatAction = data['seatAction'];
 
-    int clubID = data['clubId'];
-    int gameID = data['gameId'];
-    int seatNo = seatAction['seatNo'];
+    String clubID = data['clubId'].toString();
+    String gameID = data['gameId'].toString();
+    String seatNo = seatAction['seatNo'].toString();
 
     Provider.of<ValueNotifier<ActionInfo>>(
       context,

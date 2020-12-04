@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
@@ -47,10 +49,11 @@ class PlayerUpdateService {
       ).addNewPlayer(newPlayerModel);
 
       // if the newPlayer has 0 stack then prompt for buyin
-      Provider.of<ValueNotifier<FooterStatus>>(
-        context,
-        listen: false,
-      ).value = FooterStatus.Prompt;
+      if (newPlayerModel.stack == 0)
+        Provider.of<ValueNotifier<FooterStatus>>(
+          context,
+          listen: false,
+        ).value = FooterStatus.Prompt;
     } else {
       // the player at "idx" th index is updated
       /* new stack value / buyIn amount / change in status*/
@@ -60,7 +63,7 @@ class PlayerUpdateService {
         stack: playerUpdate['stack'],
         buyIn: playerUpdate['buyIn'],
         showBuyIn: true,
-        status: playerUpdate['status'],
+        status: null,
       );
 
       Provider.of<Players>(
@@ -78,7 +81,7 @@ class PlayerUpdateService {
       updatedPlayer.update(
         stack: playerUpdate['stack'],
         showBuyIn: false,
-        status: playerUpdate['status'],
+        status: null,
       );
 
       Provider.of<Players>(

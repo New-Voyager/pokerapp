@@ -321,6 +321,7 @@ class BoardView extends StatelessWidget {
       userObjects[idx].stack = model.stack;
       userObjects[idx].status = model.status;
       userObjects[idx].buyIn = (model.showBuyIn ?? false) ? model.buyIn : null;
+      userObjects[idx].highlight = model.highlight ?? false;
     }
 
     return userObjects;
@@ -349,61 +350,61 @@ class BoardView extends StatelessWidget {
     double heightOfBoard = width * widthMultiplier * heightMultiplier;
     double widthOfBoard = width * widthMultiplier;
 
-    /* dealing with the players */
-    Players players = Provider.of<Players>(
-      context,
-    );
-
-    PlayerModel tmp = players.players.firstWhere(
-      (u) => u.isMe,
-      orElse: () => null,
-    );
-    bool isPresent = tmp != null;
-
-    /* dealing with the cards */
+    /* todo dealing with the cards */
 
     /* finally the view */
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10.0),
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          // game board
-          _buildGameBoard(
-            boardHeight: heightOfBoard,
-            boardWidth: widthOfBoard,
-          ),
+    return Consumer<Players>(
+      builder: (_, Players players, __) {
+        // dealing with players
+        PlayerModel tmp = players.players.firstWhere(
+          (u) => u.isMe,
+          orElse: () => null,
+        );
+        bool isPresent = tmp != null;
 
-          // position the users
-          ...getUserObjects(players.players)
-              .asMap()
-              .entries
-              .map(
-                (var u) => _positionUser(
-                  user: u.value,
-                  heightOfBoard: heightOfBoard,
-                  widthOfBoard: widthOfBoard,
-                  seatPos: _getAdjustedSeatPosition(
-                    u.key,
-                    isPresent,
-                    tmp?.seatNo,
-                  ),
-                  isPresent: isPresent,
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              // game board
+              _buildGameBoard(
+                boardHeight: heightOfBoard,
+                boardWidth: widthOfBoard,
+              ),
+
+              // position the users
+              ...getUserObjects(players.players)
+                  .asMap()
+                  .entries
+                  .map(
+                    (var u) => _positionUser(
+                      user: u.value,
+                      heightOfBoard: heightOfBoard,
+                      widthOfBoard: widthOfBoard,
+                      seatPos: _getAdjustedSeatPosition(
+                        u.key,
+                        isPresent,
+                        tmp?.seatNo,
+                      ),
+                      isPresent: isPresent,
+                    ),
+                  )
+                  .toList(),
+
+              // todo: may be it's better if a new class is created just to hold the table_status, pots and communityCards?
+              // center view
+              Consumer<ValueNotifier<String>>(
+                builder: (_, valueNotifierTableStatus, __) => _buildCenterView(
+                  cards: _cards,
+                  potChips: 15,
+                  tableStatus: valueNotifierTableStatus.value,
                 ),
-              )
-              .toList(),
-
-          // todo: may be it's better if a new class is created just to hold the table_status, pots and communityCards?
-          // center view
-          Consumer<ValueNotifier<String>>(
-            builder: (_, valueNotifierTableStatus, __) => _buildCenterView(
-              cards: _cards,
-              potChips: 15,
-              tableStatus: valueNotifierTableStatus.value,
-            ),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

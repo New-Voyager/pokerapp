@@ -1,4 +1,6 @@
 class AppConstants {
+  AppConstants._();
+
   static const int buyInTimeOutSeconds = 100;
 
   static const Duration userOpacityAnimationDuration = const Duration(
@@ -6,7 +8,7 @@ class AppConstants {
   );
 
   static const Duration popUpAnimationDuration = const Duration(
-    milliseconds: 800,
+    milliseconds: 300,
   );
 
   static const Duration clubMessagePollDuration = const Duration(

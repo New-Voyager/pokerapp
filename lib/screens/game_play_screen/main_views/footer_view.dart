@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
+import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/action_info.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/player_action.dart';
 import 'package:pokerapp/resources/app_colors.dart';
@@ -18,8 +19,8 @@ class FooterView extends StatelessWidget {
       InkWell(
         onTap: onTap,
         child: Container(
-          height: 80.0,
-          width: 80.0,
+          height: 70.0,
+          width: 70.0,
           padding: const EdgeInsets.all(10.0),
           decoration: BoxDecoration(
             shape: BoxShape.circle,
@@ -33,7 +34,7 @@ class FooterView extends StatelessWidget {
               text.toUpperCase(),
               textAlign: TextAlign.center,
               style: AppStyles.clubItemInfoTextStyle.copyWith(
-                fontSize: 15.0,
+                fontSize: 11.0,
               ),
             ),
           ),
@@ -68,7 +69,6 @@ class FooterView extends StatelessWidget {
   }) async {
     assert(context != null);
     assert(action != null);
-    assert(amount != null);
 
     String playerID = await AuthService.getPlayerID();
 
@@ -111,6 +111,17 @@ class FooterView extends StatelessWidget {
     _actionTaken(context);
   }
 
+  void _check({
+    BuildContext context,
+  }) {
+    _takeAction(
+      context: context,
+      action: CHECK,
+      amount: null,
+    );
+    _actionTaken(context);
+  }
+
   void _call(
     int amount, {
     BuildContext context,
@@ -118,6 +129,20 @@ class FooterView extends StatelessWidget {
     _takeAction(
       context: context,
       action: CALL,
+      amount: amount,
+    );
+    _actionTaken(context);
+  }
+
+  void _bet({
+    BuildContext context,
+  }) {
+    // todo: show a dialog to let user choose an amount
+    int amount = 0;
+
+    _takeAction(
+      context: context,
+      action: BET,
       amount: amount,
     );
     _actionTaken(context);
@@ -166,6 +191,20 @@ class FooterView extends StatelessWidget {
                       context: context,
                     ),
                   );
+                case CHECK:
+                  return _buildRoundButton(
+                    text: playerAction.actionName,
+                    onTap: () => _check(
+                      context: context,
+                    ),
+                  );
+                case BET:
+                  return _buildRoundButton(
+                    text: playerAction.actionName,
+                    onTap: () => _bet(
+                      context: context,
+                    ),
+                  );
                 case CALL:
                   return _buildRoundButton(
                     text: playerAction.actionName +
@@ -199,37 +238,38 @@ class FooterView extends StatelessWidget {
                   );
               }
 
-              return _buildRoundButton();
+              return SizedBox.shrink();
             },
           ).toList(),
         ),
       );
 
-  Widget _buildTimer({int time = 10}) => Transform.translate(
-        offset: const Offset(0, -15.0),
-        child: Container(
-          padding: const EdgeInsets.all(8.0),
-          decoration: BoxDecoration(
-            color: const Color(0xff474747),
-            shape: BoxShape.circle,
-            border: Border.all(
-              color: const Color(0xff14e81b),
-              width: 1.0,
-            ),
+  Widget _buildTimer({int time = 10}) => Container(
+        padding: const EdgeInsets.all(8.0),
+        decoration: BoxDecoration(
+          color: const Color(0xff474747),
+          shape: BoxShape.circle,
+          border: Border.all(
+            color: const Color(0xff14e81b),
+            width: 1.0,
           ),
-          child: Text(
-            time.toString(),
-            style: AppStyles.itemInfoTextStyle.copyWith(
-              color: Colors.white,
-            ),
+        ),
+        child: Text(
+          time.toString(),
+          style: AppStyles.itemInfoTextStyle.copyWith(
+            color: Colors.white,
           ),
         ),
       );
 
   // todo: a better way to dispose off the timer?
   // todo: a better way to implement this functionality?
-  Widget _buildBuyInPromptButton() {
-    int _timeLeft = AppConstants.buyInTimeOutSeconds;
+  Widget _buildBuyInPromptButton(BuildContext context) {
+    int _timeLeft = Provider.of<ValueNotifier<GameInfoModel>>(
+          context,
+          listen: false,
+        ).value.actionTime ??
+        AppConstants.buyInTimeOutSeconds;
 //
 //    Function ss;
 //
@@ -249,9 +289,12 @@ class FooterView extends StatelessWidget {
 
 //            if (_timeLeft <= 0) timer.cancel();
 
-            return Row(
+            return Column(
               mainAxisSize: MainAxisSize.min,
               children: [
+                _buildTimer(
+                  time: _timeLeft,
+                ),
                 RoundRaisedButton(
                   color: AppColors.appAccentColor,
                   buttonText: 'Buy Chips',
@@ -260,9 +303,6 @@ class FooterView extends StatelessWidget {
                       : () => FooterServices.promptBuyIn(
                             context: context,
                           ),
-                ),
-                _buildTimer(
-                  time: _timeLeft,
                 ),
               ],
             );
@@ -280,7 +320,7 @@ class FooterView extends StatelessWidget {
       case FooterStatus.Action:
         return _buildActionButtons(context);
       case FooterStatus.Prompt:
-        return _buildBuyInPromptButton();
+        return _buildBuyInPromptButton(context);
       case FooterStatus.None:
         return null;
     }

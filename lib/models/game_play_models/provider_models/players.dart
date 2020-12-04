@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_play_enums/player_type.dart';
-import 'package:pokerapp/enums/player_status.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
 
@@ -33,6 +32,7 @@ class Players with ChangeNotifier {
   }
 
   void addNewPlayer(PlayerModel playerModel) {
+    _players.add(playerModel);
     _notify();
   }
 
