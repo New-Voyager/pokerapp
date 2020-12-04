@@ -66,15 +66,15 @@ hands:
     river-action:
       seat-actions:
         - 5, BET, 10
-        - 1, FOLD
+        - 1, CALL, 10
       verify:
         state: RESULT
 
     result:
       winners:
-        - seat: 5
-          receive: 46.0
-      action-ended: RIVER
+        - seat: 1
+          receive: 56.0
+      action-ended: SHOW_DOWN
       
       # balance indicates the player balance after the hand
       # bb player won a chip
