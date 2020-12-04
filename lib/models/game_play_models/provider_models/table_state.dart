@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 
-class TableState with ChangeNotifier {
+class TableState extends ChangeNotifier {
   /* This object holds the table status, pot chips, and community cards */
 
   String _tableStatus;

@@ -1,9 +1,13 @@
+import 'dart:developer';
+
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
 
 class GameService {
+  GameService._();
+
   /* The following method returns back the Game Info Model */
   static Future<GameInfoModel> getGameInfo(String gameCode) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();

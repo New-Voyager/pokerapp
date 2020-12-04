@@ -143,7 +143,7 @@ class UserView extends StatelessWidget {
   // this widget is only shown to the dealer
   Widget _buildDealerButton({Alignment alignment}) => Transform.translate(
         offset: Offset(
-          alignment == Alignment.centerRight ? 78.0 : -88.0,
+          alignment == Alignment.centerRight ? 88.0 : -88.0,
           0.0,
         ),
         child: Container(
@@ -158,8 +158,8 @@ class UserView extends StatelessWidget {
             boxShadow: [
               BoxShadow(
                 color: Colors.white24,
-                blurRadius: 5.0,
-                spreadRadius: 5.0,
+                blurRadius: 2.0,
+                spreadRadius: 2.0,
               )
             ],
           ),

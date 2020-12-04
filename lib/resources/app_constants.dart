@@ -31,6 +31,7 @@ class AppConstants {
       'WAITING_TO_BE_STARTED';
   static const String TABLE_STATUS_NOT_ENOUGH_PLAYERS = 'NOT_ENOUGH_PLAYERS';
   static const String TABLE_STATUS_GAME_RUNNING = 'TABLE_STATUS_GAME_RUNNING';
+  static const String GAME_RUNNING = 'GAME_RUNNING';
 
   /* extra identifiers */
   static const String WAIT_FOR_BUYIN = 'WAIT_FOR_BUYIN';

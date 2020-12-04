@@ -9,7 +9,7 @@ import 'package:pokerapp/services/app/auth_service.dart';
 * so, there might b many methods, which handles different updates
 * */
 
-class Players with ChangeNotifier {
+class Players extends ChangeNotifier {
   List<PlayerModel> _players;
 
   Players({

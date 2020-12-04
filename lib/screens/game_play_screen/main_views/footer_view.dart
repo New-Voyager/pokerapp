@@ -6,6 +6,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/player_action.d
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/screens/game_play_screen/pop_ups/chip_amount_pop_up.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/services/game_play/footer_services.dart';
 import 'package:pokerapp/widgets/round_button.dart';
@@ -137,9 +138,17 @@ class FooterView extends StatelessWidget {
 
   void _bet({
     BuildContext context,
-  }) {
-    // todo: show a dialog to let user choose an amount
-    int amount = 0;
+  }) async {
+    // show a dialog to let user choose an amount
+    int amount = await showDialog<int>(
+      context: context,
+      barrierDismissible: false,
+      child: ChipAmountPopUp(
+        titleText: 'BET',
+      ),
+    );
+
+    if (amount == null) return;
 
     _takeAction(
       context: context,
@@ -152,11 +161,20 @@ class FooterView extends StatelessWidget {
   void _raise(
     int minAmount, {
     BuildContext context,
-  }) {
-    // todo: show a dialog to let user choose an amount
-    int amount = minAmount;
+  }) async {
+    //  show a dialog to let user choose an amount
+    int amount = await showDialog<int>(
+      context: context,
+      barrierDismissible: false,
+      child: ChipAmountPopUp(
+        titleText: 'RAISE',
+      ),
+    );
 
-    assert(amount >= minAmount);
+    if (amount == null) return;
+
+    if (amount < minAmount) return;
+
     _takeAction(
       context: context,
       action: RAISE,

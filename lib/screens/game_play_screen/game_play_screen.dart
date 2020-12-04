@@ -9,6 +9,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/player_action.d
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
+import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/header_view.dart';
@@ -19,10 +20,6 @@ import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/services/game_play/graphql/game_service.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
-
-/*
-* todo: instead of calling fetch game info multiple times, if the NATS gives update about player joining, or player buying chips, the UI update would be ease
-* */
 
 /*
 * This is the screen which will have contact with the NATS server
@@ -245,6 +242,14 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
             // show a progress indicator if the game info object is null
             if (_gameInfoModel == null)
               return Center(child: CircularProgressIndicator());
+
+            if (_gameInfoModel.tableStatus == AppConstants.GAME_RUNNING) {
+              // query current hand to get game update
+              GameService.queryCurrentHand(
+                _gameInfoModel.gameCode,
+                _gameComService.sendPlayerToHandChannel,
+              );
+            }
 
             return MultiProvider(
               providers: _getProviders(
