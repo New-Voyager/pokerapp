@@ -46,6 +46,9 @@ dependencies:
   # formatter
   intl: ^0.16.1
 
+  # timer
+  timer_count_down: ^1.0.4+1
+
 
 dev_dependencies:
   flutter_test:

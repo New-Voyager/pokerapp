@@ -10,6 +10,7 @@ import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/services/game_play/footer_services.dart';
 import 'package:pokerapp/widgets/round_button.dart';
 import 'package:provider/provider.dart';
+import 'package:timer_count_down/timer_count_down.dart';
 
 class FooterView extends StatelessWidget {
   Widget _buildRoundButton({
@@ -254,60 +255,42 @@ class FooterView extends StatelessWidget {
             width: 1.0,
           ),
         ),
-        child: Text(
-          time.toString(),
-          style: AppStyles.itemInfoTextStyle.copyWith(
-            color: Colors.white,
+        child: Countdown(
+          seconds: time,
+          onFinished: () {
+            // TODO: HANDLE TIME UP EVENT
+          },
+          build: (_, time) => Text(
+            time.toStringAsFixed(0),
+            style: AppStyles.itemInfoTextStyle.copyWith(
+              color: Colors.white,
+            ),
           ),
         ),
       );
 
-  // todo: a better way to dispose off the timer?
-  // todo: a better way to implement this functionality?
   Widget _buildBuyInPromptButton(BuildContext context) {
-    int _timeLeft = Provider.of<ValueNotifier<GameInfoModel>>(
+    int _endTime = Provider.of<ValueNotifier<GameInfoModel>>(
           context,
           listen: false,
         ).value.actionTime ??
         AppConstants.buyInTimeOutSeconds;
-//
-//    Function ss;
-//
-//    Timer timer = Timer.periodic(
-//      const Duration(seconds: 1),
-//      (_) {
-//        _timeLeft--;
-////        ss(() {});
-//      },
-//    );
 
-    return Container(
-      child: Center(
-        child: StatefulBuilder(
-          builder: (BuildContext context, setState) {
-//            ss = setState;
-
-//            if (_timeLeft <= 0) timer.cancel();
-
-            return Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                _buildTimer(
-                  time: _timeLeft,
-                ),
-                RoundRaisedButton(
-                  color: AppColors.appAccentColor,
-                  buttonText: 'Buy Chips',
-                  onButtonTap: _timeLeft <= 0
-                      ? null
-                      : () => FooterServices.promptBuyIn(
-                            context: context,
-                          ),
-                ),
-              ],
-            );
-          },
-        ),
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _buildTimer(
+            time: _endTime,
+          ),
+          RoundRaisedButton(
+            color: AppColors.appAccentColor,
+            buttonText: 'Buy Chips',
+            onButtonTap: () => FooterServices.promptBuyIn(
+              context: context,
+            ),
+          ),
+        ],
       ),
     );
   }

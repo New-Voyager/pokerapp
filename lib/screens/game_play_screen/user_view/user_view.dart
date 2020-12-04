@@ -9,6 +9,7 @@ import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/screens/game_play_screen/card_views/hidden_card_view.dart';
 import 'package:pokerapp/screens/game_play_screen/card_views/stack_card_view.dart';
 import 'package:provider/provider.dart';
+import 'package:timer_count_down/timer_count_down.dart';
 
 // TODO: a way to highlight the current user
 
@@ -170,7 +171,7 @@ class UserView extends StatelessWidget {
         top: 0,
         right: 0,
         child: Transform.translate(
-          offset: const Offset(15.0, -15.0),
+          offset: const Offset(0.0, -15.0),
           child: Container(
             padding: const EdgeInsets.all(8.0),
             decoration: BoxDecoration(
@@ -181,10 +182,13 @@ class UserView extends StatelessWidget {
                 width: 1.0,
               ),
             ),
-            child: Text(
-              time.toString(),
-              style: AppStyles.itemInfoTextStyle.copyWith(
-                color: Colors.white,
+            child: Countdown(
+              seconds: time,
+              build: (_, time) => Text(
+                time.toStringAsFixed(0),
+                style: AppStyles.itemInfoTextStyle.copyWith(
+                  color: Colors.white,
+                ),
               ),
             ),
           ),
@@ -285,8 +289,10 @@ class UserView extends StatelessWidget {
                   ? shrinkedSizedBox
                   : _buildHiddenCard(alignment: this.cardsAlignment),
 
-          // timer
-          isMe && userObject.highlight ? _buildTimer() : shrinkedSizedBox,
+          /* timer
+          * the timer is show to the highlighted user
+          * */
+          userObject.highlight ?? false ? _buildTimer() : shrinkedSizedBox,
 
           // TODO: ONLY FOR DEBUGGING
           emptySeat ? shrinkedSizedBox : _buildSeatNoIndicator(),
