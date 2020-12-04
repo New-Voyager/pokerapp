@@ -1,8 +1,21 @@
 class AppConstants {
   static const int buyInTimeOutSeconds = 100;
 
-  static const Duration clubMessagePollDuration =
-      const Duration(milliseconds: 500);
+  static const Duration userOpacityAnimationDuration = const Duration(
+    milliseconds: 900,
+  );
+
+  static const Duration popUpAnimationDuration = const Duration(
+    milliseconds: 800,
+  );
+
+  static const Duration clubMessagePollDuration = const Duration(
+    milliseconds: 500,
+  );
+
+  static const Duration userPopUpMessageHoldDuration = const Duration(
+    seconds: 2,
+  );
 
   static const String giphyApiKey = 'IoanUNVNMRCaTnTpYzB2UDxUdatagMkQ';
 
@@ -27,6 +40,7 @@ class AppConstants {
   static const String NEW_HAND = 'NEW_HAND';
   static const String DEAL = 'DEAL';
   static const String NEXT_ACTION = 'NEXT_ACTION';
+  static const String PLAYER_ACTED = 'PLAYER_ACTED';
   static const String YOUR_ACTION = 'YOUR_ACTION';
   static const String QUERY_CURRENT_HAND = 'QUERY_CURRENT_HAND';
 }

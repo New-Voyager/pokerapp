@@ -1,20 +1,21 @@
-import 'dart:convert';
 import 'dart:developer';
 
+import 'package:dart_nats/dart_nats.dart' as nats;
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
-import 'package:pokerapp/models/game_play_models/business/player_model.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/action_info.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/player_action.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/header_view.dart';
-import 'package:pokerapp/screens/game_play_screen/pop_ups/chip_buy_pop_up.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
+import 'package:pokerapp/services/game_play/action_services/game_action_service/game_action_service.dart';
+import 'package:pokerapp/services/game_play/action_services/hand_action_service/hand_action_service.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
-import 'package:pokerapp/services/game_play/graphql/game_info_service.dart';
-import 'package:pokerapp/services/game_play/graphql/join_game_service.dart';
+import 'package:pokerapp/services/game_play/graphql/game_service.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
@@ -56,7 +57,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
     if (seatPos == -1) return;
 
     int seatNumber = seatPos;
-    await JoinGameService.joinGame(
+    await GameService.joinGame(
       widget.gameCode,
       seatNumber,
     );
@@ -69,7 +70,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
 
   Future<GameInfoModel> _fetchGameInfo() async {
     GameInfoModel _gameInfoModel =
-        await GameInfoService.getGameInfo(widget.gameCode);
+        await GameService.getGameInfo(widget.gameCode);
 
     String myUUID = await AuthService.getUuid();
 
@@ -105,16 +106,47 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
     * and actions will be taken in the UI
     * as there will be Listeners implemented down this hierarchy level */
 
-    _gameComService.gameToPlayerChannelStream.listen((message) {
+    _gameComService.gameToPlayerChannelStream.listen((nats.Message message) {
       log('gameToPlayerChannel(${message.subject}): ${message.string}');
+
+      /* This stream will receive game related messages
+      * e.g.
+      * 1. Player Actions - Sitting on table, getting more chips, leaving game, taking break,
+      * 2. Game Actions - New hand, informing about Next actions, PLayer Acted
+      *  */
+
+      GameActionService.handle(
+        context: _providerContext,
+        message: message.string,
+      );
     });
 
-    _gameComService.handToAllChannelStream.listen((message) {
+    _gameComService.handToAllChannelStream.listen((nats.Message message) {
       log('handToAllChannel(${message.subject}): ${message.string}');
+
+      /* This stream receives hand related messages that is common to all players
+      * e.g
+      * New Hand - contains hand status, dealerPos, sbPos, bbPos, nextActionSeat
+      * Next Action - contains the seat No which is to act next
+      *
+      * This stream also contains the output for the query of current hand*/
+      HandActionService.handle(
+        context: _providerContext,
+        message: message.string,
+      );
     });
 
-    _gameComService.handToPlayerChannelStream.listen((message) {
+    _gameComService.handToPlayerChannelStream.listen((nats.Message message) {
       log('handToPlayerChannel(${message.subject}): ${message.string}');
+
+      /* This stream receives hand related messages that is specific to THIS player only
+      * e.g
+      * Deal - contains seat No and cards
+      * Your Action - seat No, available actions & amounts */
+      HandActionService.handle(
+        context: _providerContext,
+        message: message.string,
+      );
     });
 
     return _gameInfoModel;
@@ -157,12 +189,37 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
         ),
 
         /* footer view, is maintained by this Provider - either how action buttons,
-        * OR prompt for buy in, OR todo: more functionalities can be added
+        * OR prompt for buy in are shown
         * */
         ListenableProvider<ValueNotifier<FooterStatus>>(
           create: (_) => ValueNotifier(
             FooterStatus.None,
           ),
+        ),
+
+        /* This provider gets a value when YOUR_ACTION message is received,
+        * other time this value is kept null, signifying,
+        * there is no action to take on THIS user's end
+        * */
+        ListenableProvider<ValueNotifier<PlayerAction>>(
+          create: (_) => ValueNotifier<PlayerAction>(
+            null,
+          ),
+        ),
+
+        /* This provider contains and updates the game info
+        * required for player to make an action
+        * this provider holds --> clubID, gameID and seatNo */
+        ListenableProvider<ValueNotifier<ActionInfo>>(
+          create: (_) => ValueNotifier<ActionInfo>(
+            null,
+          ),
+        ),
+
+        /* This provider contains the sendPlayerToHandChannel function
+        * so that the function can be called from anywhere down the widget tree */
+        Provider<Function(String)>(
+          create: (_) => _gameComService.sendPlayerToHandChannel,
         ),
       ];
 

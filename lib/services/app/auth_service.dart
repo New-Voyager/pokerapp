@@ -13,6 +13,8 @@ import 'package:pokerapp/services/graphQL/mutations/create_player.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService {
+  AuthService._();
+
   static final String _prefKey = 'auth_service_pref_key';
 
   /* private methods */

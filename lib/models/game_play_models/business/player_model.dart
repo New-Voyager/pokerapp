@@ -1,18 +1,46 @@
+import 'package:pokerapp/enums/game_play_enums/player_type.dart';
+
 class PlayerModel {
   bool isMe;
   String name;
   int seatNo;
   String playerUuid;
   int buyIn;
+  bool showBuyIn;
   int stack;
 
+  String status;
+  PlayerType playerType;
+  bool highlight;
+
   PlayerModel.fromJson(var data) {
-    this.isMe = false; // by default keep this value false
     this.name = data['name'];
     this.seatNo = data['seatNo'];
     this.playerUuid = data['playerUuid'];
     this.buyIn = data['buyIn'];
     this.stack = data['stack'];
+
+    // default values
+    this.isMe = false;
+    this.playerType = PlayerType.None;
+    this.highlight = false;
+  }
+
+  // a util method for updating the class variables
+  void update({
+    int seatNo,
+    int buyIn,
+    int stack,
+    String status,
+    bool showBuyIn,
+    PlayerType playerType,
+  }) {
+    this.seatNo = seatNo ?? this.seatNo;
+    this.buyIn = buyIn ?? this.buyIn;
+    this.stack = stack ?? this.stack;
+    this.status = status ?? this.status;
+    this.showBuyIn = showBuyIn ?? this.showBuyIn;
+    this.playerType = playerType ?? this.playerType;
   }
 
   @override

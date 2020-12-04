@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/user_object.dart';
 import 'package:pokerapp/resources/app_constants.dart';
@@ -7,7 +9,7 @@ import 'package:pokerapp/screens/game_play_screen/card_views/hidden_card_view.da
 import 'package:pokerapp/screens/game_play_screen/card_views/stack_card_view.dart';
 import 'package:provider/provider.dart';
 
-const shrinkSizedBox = const SizedBox.shrink();
+const shrinkedSizedBox = const SizedBox.shrink();
 
 class UserView extends StatelessWidget {
   final int seatPos;
@@ -27,7 +29,8 @@ class UserView extends StatelessWidget {
     String avatarUrl,
     bool emptySeat,
   }) =>
-      Opacity(
+      AnimatedOpacity(
+        duration: AppConstants.userOpacityAnimationDuration,
         opacity: emptySeat ? 0.0 : 0.70,
         child: CircleAvatar(
           radius: 28.0,
@@ -53,7 +56,8 @@ class UserView extends StatelessWidget {
             color: const Color(0xff474747),
             borderRadius: BorderRadius.circular(5.0),
           ),
-          child: Opacity(
+          child: AnimatedOpacity(
+            duration: AppConstants.userOpacityAnimationDuration,
             opacity: emptySeat ? 0.0 : 1.0,
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -166,6 +170,47 @@ class UserView extends StatelessWidget {
         ),
       );
 
+  Widget _buildUserStatus(bool emptySeat) {
+    if (emptySeat) return shrinkedSizedBox;
+
+    String status = userObject.status;
+
+    if (status == AppConstants.WAIT_FOR_BUYIN)
+      status = 'Waiting for Buy In';
+    else if (userObject.buyIn != null)
+      status = 'Buy In ${userObject.buyIn} amount';
+    else
+      status = null;
+
+    return AnimatedSwitcher(
+      duration: AppConstants.popUpAnimationDuration,
+      reverseDuration: AppConstants.popUpAnimationDuration,
+      switchInCurve: Curves.bounceInOut,
+      switchOutCurve: Curves.bounceInOut,
+      transitionBuilder: (widget, animation) => ScaleTransition(
+        alignment: Alignment.topCenter,
+        scale: animation,
+        child: widget,
+      ),
+      child: status == null
+          ? shrinkedSizedBox
+          : Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 10.0,
+                vertical: 5.0,
+              ),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(5.0),
+              ),
+              child: Text(
+                status,
+                style: AppStyles.userPopUpMessageTextStyle,
+              ),
+            ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     bool emptySeat = userObject.name == null;
@@ -189,6 +234,9 @@ class UserView extends StatelessWidget {
                 chips: this.userObject.stack,
                 emptySeat: emptySeat,
               ),
+              _buildUserStatus(
+                emptySeat,
+              ),
             ],
           ),
 
@@ -201,14 +249,14 @@ class UserView extends StatelessWidget {
                   ),
                 )
               : emptySeat
-                  ? shrinkSizedBox
+                  ? shrinkedSizedBox
                   : _buildHiddenCard(alignment: this.cardsAlignment),
 
           // timer
-          isMe ? _buildTimer() : shrinkSizedBox,
+          isMe ? _buildTimer() : shrinkedSizedBox,
 
           // TODO: ONLY FOR DEBUGGING
-          emptySeat ? shrinkSizedBox : _buildSeatNoIndicator(),
+          emptySeat ? shrinkedSizedBox : _buildSeatNoIndicator(),
         ],
       ),
     );

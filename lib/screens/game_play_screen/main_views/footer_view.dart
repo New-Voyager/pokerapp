@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/action_info.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/player_action.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/services/game_play/footer_services.dart';
 import 'package:pokerapp/widgets/round_button.dart';
 import 'package:provider/provider.dart';
@@ -37,28 +40,169 @@ class FooterView extends StatelessWidget {
         ),
       );
 
-  void _fold() {}
+  /* This util function updates the UI and notifies
+  * the provider that action has been taken
+  * */
+  void _actionTaken(BuildContext context) {
+    assert(context != null);
 
-  void _call100() {}
+    // put PlayerAction to null
+    Provider.of<ValueNotifier<PlayerAction>>(
+      context,
+      listen: false,
+    ).value = null;
 
-  void _raise() {}
+    // change FooterStatus to NONE
+    Provider.of<ValueNotifier<FooterStatus>>(
+      context,
+      listen: false,
+    ).value = FooterStatus.None;
+  }
 
-  Widget _buildActionButtons() => Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          _buildRoundButton(
-            text: 'Fold',
-            onTap: _fold,
-          ),
-          _buildRoundButton(
-            text: 'call 100',
-            onTap: _call100,
-          ),
-          _buildRoundButton(
-            text: 'raise',
-            onTap: _raise,
-          ),
-        ],
+  /* this function actually makes the connection with the GameComService
+  * and sends the message in the Player to Server channel */
+  void _takeAction({
+    BuildContext context,
+    String action,
+    int amount,
+  }) async {
+    assert(context != null);
+    assert(action != null);
+    assert(amount != null);
+
+    String playerID = await AuthService.getPlayerID();
+
+    ActionInfo actionInfo = Provider.of<ValueNotifier<ActionInfo>>(
+      context,
+      listen: false,
+    ).value;
+
+    String message = """{
+      "clubId": ${actionInfo.clubID},
+      "gameId": "${actionInfo.gameID}",
+      "playerId": "$playerID",
+      "messageType": "PLAYER_ACTED",
+      "playerActed": {
+        "seatNo": ${actionInfo.seatNo},
+        "action": "$action",
+        "amount": $amount
+      }
+    }""";
+
+    // todo: will this work?
+    // delegate the request to the GameComService
+    Provider.of<Function(String)>(
+      context,
+      listen: false,
+    )(message);
+  }
+
+  /* These utility function actually takes actions */
+
+  void _fold(
+    int amount, {
+    BuildContext context,
+  }) {
+    _takeAction(
+      context: context,
+      action: FOLD,
+      amount: amount,
+    );
+    _actionTaken(context);
+  }
+
+  void _call(
+    int amount, {
+    BuildContext context,
+  }) {
+    _takeAction(
+      context: context,
+      action: CALL,
+      amount: amount,
+    );
+    _actionTaken(context);
+  }
+
+  void _raise(
+    int minAmount, {
+    BuildContext context,
+  }) {
+    // todo: show a dialog to let user choose an amount
+    int amount = minAmount;
+
+    assert(amount >= minAmount);
+    _takeAction(
+      context: context,
+      action: RAISE,
+      amount: amount,
+    );
+    _actionTaken(context);
+  }
+
+  void _allIn({
+    int amount,
+    BuildContext context,
+  }) {
+    _takeAction(
+      context: context,
+      action: ALLIN,
+      amount: amount,
+    );
+    _actionTaken(context);
+  }
+
+  Widget _buildActionButtons(BuildContext context) =>
+      Consumer<ValueNotifier<PlayerAction>>(
+        builder: (_, playerActionValueNotifier, __) => Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: playerActionValueNotifier.value.actions.map<Widget>(
+            (playerAction) {
+              switch (playerAction.actionName) {
+                case FOLD:
+                  return _buildRoundButton(
+                    text: playerAction.actionName,
+                    onTap: () => _fold(
+                      playerAction.actionValue,
+                      context: context,
+                    ),
+                  );
+                case CALL:
+                  return _buildRoundButton(
+                    text: playerAction.actionName +
+                        '\n' +
+                        playerAction.actionValue.toString(),
+                    onTap: () => _call(
+                      playerAction.actionValue,
+                      context: context,
+                    ),
+                  );
+                case RAISE:
+                  return _buildRoundButton(
+                    text: playerAction.actionName +
+                        '\n' +
+                        'MIN: ' +
+                        playerAction.minActionValue.toString(),
+                    onTap: () => _raise(
+                      playerAction.minActionValue,
+                      context: context,
+                    ),
+                  );
+                case ALLIN:
+                  return _buildRoundButton(
+                    text: playerAction.actionName +
+                        '\n' +
+                        playerAction.actionValue.toString(),
+                    onTap: () => _allIn(
+                      amount: playerAction.actionValue,
+                      context: context,
+                    ),
+                  );
+              }
+
+              return _buildRoundButton();
+            },
+          ).toList(),
+        ),
       );
 
   Widget _buildTimer({int time = 10}) => Transform.translate(
@@ -129,11 +273,12 @@ class FooterView extends StatelessWidget {
   }
 
   Widget _build(
-    FooterStatus footerStatus,
-  ) {
+    FooterStatus footerStatus, {
+    BuildContext context,
+  }) {
     switch (footerStatus) {
       case FooterStatus.Action:
-        return _buildActionButtons();
+        return _buildActionButtons(context);
       case FooterStatus.Prompt:
         return _buildBuyInPromptButton();
       case FooterStatus.None:
@@ -149,6 +294,7 @@ class FooterView extends StatelessWidget {
           height: 200,
           child: _build(
             footerStatusValueNotifier.value,
+            context: context,
           ),
         ),
       );

@@ -7,9 +7,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/user_object.dart';
 import 'package:pokerapp/resources/app_constants.dart';
-import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/resources/app_styles.dart';
-import 'package:pokerapp/screens/game_play_screen/card_views/stack_card_view.dart';
 import 'package:pokerapp/screens/game_play_screen/user_view/user_view.dart';
 import 'package:provider/provider.dart';
 
@@ -321,6 +319,8 @@ class BoardView extends StatelessWidget {
       userObjects[idx].serverSeatPos = model.seatNo;
       userObjects[idx].isMe = model.isMe;
       userObjects[idx].stack = model.stack;
+      userObjects[idx].status = model.status;
+      userObjects[idx].buyIn = (model.showBuyIn ?? false) ? model.buyIn : null;
     }
 
     return userObjects;
@@ -363,7 +363,6 @@ class BoardView extends StatelessWidget {
     /* dealing with the cards */
 
     /* finally the view */
-
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10.0),
       child: Stack(

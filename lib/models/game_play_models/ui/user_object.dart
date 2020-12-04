@@ -5,8 +5,12 @@ class UserObject {
   String name;
   int stack;
   String avatarUrl;
+  int buyIn;
 
   int serverSeatPos;
+
+  // this status is shown to all the players, by showing a little pop up below the user object
+  String status;
 
   UserObject({
     @required this.serverSeatPos,

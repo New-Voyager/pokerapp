@@ -9,6 +9,12 @@ class AppStyles {
     fontFamily: AppAssets.fontFamilyLato,
   );
 
+  static const userPopUpMessageTextStyle = TextStyle(
+    color: Colors.black,
+    fontSize: 12.0,
+    fontFamily: AppAssets.fontFamilyLato,
+  );
+
   static const itemInfoTextStyle = TextStyle(
     color: Color(0xff848484),
     fontSize: 12.0,

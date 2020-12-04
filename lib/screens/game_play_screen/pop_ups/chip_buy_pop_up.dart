@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:pokerapp/services/game_play/graphql/game_play_utils/buy_in_service.dart';
+import 'package:pokerapp/services/game_play/graphql/game_service.dart';
 import 'package:pokerapp/widgets/round_button.dart';
 
 class ChipBuyPopUp extends StatelessWidget {
@@ -28,10 +28,10 @@ class ChipBuyPopUp extends StatelessWidget {
     if (!_valid(amount)) return;
 
     // buy chips
-    await BuyInService.buyIn(gameCode, amount);
+    await GameService.buyIn(gameCode, amount);
 
     // finally close the dialog
-    Navigator.pop(context);
+    Navigator.pop(context, true);
   }
 
   @override
