@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:provider/provider.dart';
 
 class NextActionService {
@@ -24,5 +25,16 @@ class NextActionService {
       context,
       listen: false,
     ).updateHighlight(idx, true);
+
+    /* check if pot is available, if true, update the pot value in the table state object */
+    var pots = data['actionChange']['pots'];
+    int pot = pots[0]['pot'];
+
+    if (pot == null) return;
+
+    Provider.of<TableState>(
+      context,
+      listen: false,
+    ).updatePostChips(pot);
   }
 }

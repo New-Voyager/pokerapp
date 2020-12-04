@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_service/sub_services/deal_service.dart';
+import 'package:pokerapp/services/game_play/action_services/hand_action_service/sub_services/stage_update_service.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_service/sub_services/new_hand_update_service.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_service/sub_services/next_action_service.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_service/sub_services/player_acted_service.dart';
@@ -59,6 +60,27 @@ class HandActionService {
         return YourActionService.handle(
           context: context,
           data: data,
+        );
+
+      case AppConstants.FLOP:
+        return StageUpdateService.handle(
+          context: context,
+          data: data,
+          key: 'flop',
+        );
+
+      case AppConstants.TURN:
+        return StageUpdateService.handle(
+          context: context,
+          data: data,
+          key: 'turn',
+        );
+
+      case AppConstants.RIVER:
+        return StageUpdateService.handle(
+          context: context,
+          data: data,
+          key: 'river',
         );
     }
   }

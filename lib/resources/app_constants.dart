@@ -3,7 +3,7 @@ class AppConstants {
 
   static const int buyInTimeOutSeconds = 100;
 
-  static const Duration userOpacityAnimationDuration = const Duration(
+  static const Duration opacityAnimationDuration = const Duration(
     milliseconds: 900,
   );
 
@@ -45,4 +45,9 @@ class AppConstants {
   static const String PLAYER_ACTED = 'PLAYER_ACTED';
   static const String YOUR_ACTION = 'YOUR_ACTION';
   static const String QUERY_CURRENT_HAND = 'QUERY_CURRENT_HAND';
+
+  static const String PREFLOP = 'PREFLOP';
+  static const String FLOP = 'FLOP';
+  static const String TURN = 'TURN';
+  static const String RIVER = 'RIVER';
 }

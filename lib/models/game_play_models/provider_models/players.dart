@@ -60,6 +60,11 @@ class Players with ChangeNotifier {
     _notify();
   }
 
+  void subtractStack(int idx, int amountToSubtract) {
+    _players[idx].stack -= amountToSubtract;
+    _notify();
+  }
+
   // todo: how to identify a player that needs to be removed?
   void removePlayer(int idx) {}
 }

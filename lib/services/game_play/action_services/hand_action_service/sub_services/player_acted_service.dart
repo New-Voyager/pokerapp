@@ -35,8 +35,23 @@ class PlayerActedService {
       listen: false,
     ).updateStatus(
       idx,
-      "${playerActed['action']}${playerActed['amount'] ?? ''}",
+      "${playerActed['action']} ${playerActed['amount'] ?? ''}",
     );
+
+    /* FIXME: IS THIS INTENDED TO BE DONE LOCALLY?
+        update the stack amount */
+    int amountUsed = playerActed['amount'];
+
+    if (amountUsed != null) {
+      // subtract the amountUsed from the stack of the current player
+      Provider.of<Players>(
+        context,
+        listen: false,
+      ).subtractStack(
+        idx,
+        amountUsed,
+      );
+    }
 
     await Future.delayed(AppConstants.userPopUpMessageHoldDuration);
 

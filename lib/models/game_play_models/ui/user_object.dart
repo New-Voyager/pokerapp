@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:pokerapp/enums/game_play_enums/player_type.dart';
 
 class UserObject {
   bool isMe;
@@ -12,6 +13,7 @@ class UserObject {
   // this status is shown to all the players, by showing a little pop up below the user object
   String status;
   bool highlight;
+  PlayerType playerType;
 
   UserObject({
     @required this.serverSeatPos,

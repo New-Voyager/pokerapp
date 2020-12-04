@@ -4,10 +4,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/user_object.dart';
 import 'package:pokerapp/resources/app_constants.dart';
+import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/screens/game_play_screen/card_views/stack_card_view.dart';
 import 'package:pokerapp/screens/game_play_screen/user_view/user_view.dart';
 import 'package:provider/provider.dart';
 
@@ -26,34 +29,6 @@ class BoardView extends StatelessWidget {
   });
 
   final Function(int index) onUserTap;
-
-  final List<CardObject> _cards = [
-//    CardObject(
-//      suit: AppConstants.blackClub,
-//      label: 'Q',
-//      color: Colors.black,
-//    ),
-//    CardObject(
-//      suit: AppConstants.redHeart,
-//      label: 'J',
-//      color: Colors.red,
-//    ),
-//    CardObject(
-//      suit: AppConstants.redDiamond,
-//      label: 'K',
-//      color: Colors.red,
-//    ),
-//    CardObject(
-//      suit: AppConstants.redHeart,
-//      label: '6',
-//      color: Colors.red,
-//    ),
-//    CardObject(
-//      suit: AppConstants.blackSpade,
-//      label: '5',
-//      color: Colors.black,
-//    ),
-  ];
 
   /* the following helper function builds the game board */
   Widget _buildGameBoard({double boardHeight, double boardWidth}) => Container(
@@ -209,37 +184,42 @@ class BoardView extends StatelessWidget {
   }
 
   Widget _buildCenterView({
-    List<CardObject> cards = const [],
-    int potChips = 0,
+    List<CardObject> cards,
+    int potChips,
     String tableStatus,
   }) {
     String _text = _getText(tableStatus);
 
-    return _text == null
-        ? const SizedBox.shrink()
-        : Align(
-            alignment: Alignment.center,
-            child: Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 10.0,
-                vertical: 5.0,
-              ),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(100.0),
-                color: Colors.black26,
-              ),
-              child: Text(
-                _text,
-                style: AppStyles.itemInfoTextStyleHeavy.copyWith(
-                  fontSize: 15,
-                ),
-              ),
-            ),
-          );
+    Widget tableStatusWidget = Align(
+      key: ValueKey('tableStatusWidget'),
+      alignment: Alignment.center,
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 10.0,
+          vertical: 5.0,
+        ),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(100.0),
+          color: Colors.black26,
+        ),
+        child: Text(
+          _text ?? '',
+          style: AppStyles.itemInfoTextStyleHeavy.copyWith(
+            fontSize: 15,
+          ),
+        ),
+      ),
+    );
 
-    /*
-    // showing the POT value along with the chips
-    return Align(
+    /* if reached here, means, the game is RUNNING */
+    /* The following view, shows the community cards
+    * and the pot chips, if they are nulls, put the default values */
+
+    if (potChips == null) potChips = 0;
+    if (cards == null) cards = const [];
+
+    Widget tablePotAndCardWidget = Align(
+      key: ValueKey('tablePotAndCardWidget'),
       alignment: Alignment.center,
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -280,7 +260,7 @@ class BoardView extends StatelessWidget {
                     left: 5.0,
                   ),
                   child: Text(
-                    'Pot: $potChips.1 K',
+                    'Pot: $potChips',
                     style: AppStyles.itemInfoTextStyleHeavy.copyWith(
                       fontSize: 15,
                     ),
@@ -291,7 +271,15 @@ class BoardView extends StatelessWidget {
           ),
         ],
       ),
-    );*/
+    );
+
+    return AnimatedSwitcher(
+      switchInCurve: Curves.easeInOut,
+      switchOutCurve: Curves.easeInOut,
+      duration: AppConstants.opacityAnimationDuration,
+      reverseDuration: AppConstants.opacityAnimationDuration,
+      child: _text != null ? tableStatusWidget : tablePotAndCardWidget,
+    );
   }
 
   /* this function is the link between the player model and the actual user shown in the table */
@@ -321,7 +309,8 @@ class BoardView extends StatelessWidget {
       userObjects[idx].stack = model.stack;
       userObjects[idx].status = model.status;
       userObjects[idx].buyIn = (model.showBuyIn ?? false) ? model.buyIn : null;
-      userObjects[idx].highlight = model.highlight ?? false;
+      userObjects[idx].highlight = model.highlight;
+      userObjects[idx].playerType = model.playerType;
     }
 
     return userObjects;
@@ -392,13 +381,12 @@ class BoardView extends StatelessWidget {
                   )
                   .toList(),
 
-              // todo: may be it's better if a new class is created just to hold the table_status, pots and communityCards?
               // center view
-              Consumer<ValueNotifier<String>>(
-                builder: (_, valueNotifierTableStatus, __) => _buildCenterView(
-                  cards: _cards,
-                  potChips: 15,
-                  tableStatus: valueNotifierTableStatus.value,
+              Consumer<TableState>(
+                builder: (_, TableState tableState, __) => _buildCenterView(
+                  cards: tableState.cards,
+                  potChips: tableState.potChips,
+                  tableStatus: tableState.tableStatus,
                 ),
               ),
             ],

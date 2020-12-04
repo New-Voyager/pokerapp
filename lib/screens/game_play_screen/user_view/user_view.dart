@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:pokerapp/enums/game_play_enums/player_type.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/user_object.dart';
 import 'package:pokerapp/resources/app_constants.dart';
@@ -10,8 +11,6 @@ import 'package:pokerapp/screens/game_play_screen/card_views/hidden_card_view.da
 import 'package:pokerapp/screens/game_play_screen/card_views/stack_card_view.dart';
 import 'package:provider/provider.dart';
 import 'package:timer_count_down/timer_count_down.dart';
-
-// TODO: a way to highlight the current user
 
 const shrinkedSizedBox = const SizedBox.shrink();
 const highlightColor = const Color(0xfff2a365);
@@ -35,7 +34,7 @@ class UserView extends StatelessWidget {
     bool emptySeat,
   }) =>
       AnimatedOpacity(
-        duration: AppConstants.userOpacityAnimationDuration,
+        duration: AppConstants.opacityAnimationDuration,
         opacity: emptySeat ? 0.0 : 0.70,
         child: Container(
           decoration: BoxDecoration(
@@ -79,7 +78,7 @@ class UserView extends StatelessWidget {
             ),
           ),
           child: AnimatedOpacity(
-            duration: AppConstants.userOpacityAnimationDuration,
+            duration: AppConstants.opacityAnimationDuration,
             opacity: emptySeat ? 0.0 : 1.0,
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -138,6 +137,37 @@ class UserView extends StatelessWidget {
         ),
         child: StackCardView(
           cards: cards,
+        ),
+      );
+
+  // this widget is only shown to the dealer
+  Widget _buildDealerButton({Alignment alignment}) => Transform.translate(
+        offset: Offset(
+          alignment == Alignment.centerRight ? 78.0 : -88.0,
+          0.0,
+        ),
+        child: Container(
+          padding: const EdgeInsets.all(8.0),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            shape: BoxShape.circle,
+            border: Border.all(
+              color: Colors.black,
+              width: 2.0,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.white24,
+                blurRadius: 5.0,
+                spreadRadius: 5.0,
+              )
+            ],
+          ),
+          child: const Text(
+            'D',
+            textAlign: TextAlign.center,
+            style: AppStyles.dealerTextStyle,
+          ),
         ),
       );
 
@@ -288,6 +318,14 @@ class UserView extends StatelessWidget {
               : emptySeat
                   ? shrinkedSizedBox
                   : _buildHiddenCard(alignment: this.cardsAlignment),
+
+          // show dealer button, if user is a dealer
+          userObject.playerType != null &&
+                  userObject.playerType == PlayerType.Dealer
+              ? _buildDealerButton(
+                  alignment: this.cardsAlignment,
+                )
+              : shrinkedSizedBox,
 
           /* timer
           * the timer is show to the highlighted user

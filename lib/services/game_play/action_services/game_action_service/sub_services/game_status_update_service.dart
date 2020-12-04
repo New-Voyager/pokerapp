@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:provider/provider.dart';
 
 class GameStatusUpdateService {
@@ -8,9 +9,9 @@ class GameStatusUpdateService {
     BuildContext context,
     var status,
   }) {
-    Provider.of<ValueNotifier<String>>(
+    Provider.of<TableState>(
       context,
       listen: false,
-    ).value = status['tableStatus'];
+    ).updateTableStatus(status['tableStatus']);
   }
 }

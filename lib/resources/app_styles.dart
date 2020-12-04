@@ -28,6 +28,13 @@ class AppStyles {
     fontFamily: AppAssets.fontFamilyLato,
   );
 
+  static const dealerTextStyle = TextStyle(
+    color: Colors.black,
+    fontSize: 15.0,
+    fontWeight: FontWeight.w800,
+    fontFamily: AppAssets.fontFamilyLato,
+  );
+
   static const itemInfoSecondaryTextStyle = TextStyle(
     color: Color(0xff848484),
     fontSize: 16.0,

@@ -7,6 +7,7 @@ import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/action_info.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/player_action.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view.dart';
@@ -175,9 +176,9 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
         ),
 
         /* TableStatus is updated as a string value */
-        ListenableProvider<ValueNotifier<String>>(
-          create: (_) => ValueNotifier<String>(
-            gameInfoModel.tableStatus,
+        ListenableProvider<TableState>(
+          create: (_) => TableState(
+            tableStatus: gameInfoModel.tableStatus,
           ),
         ),
 
