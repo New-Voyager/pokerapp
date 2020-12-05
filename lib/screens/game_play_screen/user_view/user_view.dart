@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:pokerapp/enums/game_play_enums/player_type.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/remaining_time.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/user_object.dart';
 import 'package:pokerapp/resources/app_constants.dart';
@@ -202,20 +203,12 @@ class UserView extends StatelessWidget {
     int time = 10,
     BuildContext context,
   }) {
-    int remainingTime = Provider.of<ValueNotifier<int>>(
+    int remainingTime = Provider.of<RemainingTime>(
       context,
       listen: false,
-    ).value;
+    ).getRemainingTime();
 
-    if (remainingTime == null)
-      remainingTime = time;
-    else
-      /* if remainingTimeProvider value is not null, then after fetching the value
-      * we make this provider value to be null */
-      Provider.of<ValueNotifier<int>>(
-        context,
-        listen: false,
-      ).value = null;
+    if (remainingTime == null) remainingTime = time;
 
     return Positioned(
       top: 0,

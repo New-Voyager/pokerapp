@@ -7,6 +7,7 @@ import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/action_info.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/player_action.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/remaining_time.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/resources/app_constants.dart';
@@ -222,8 +223,8 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
 
         /* This provider contains the remainingActionTime - this provider
         * is used only when QUERY_CURRENT_HAND message is processed */
-        ListenableProvider<ValueNotifier<int>>(
-          create: (_) => ValueNotifier<int>(null),
+        ListenableProvider<RemainingTime>(
+          create: (_) => RemainingTime(),
         ),
       ];
 

@@ -46,6 +46,7 @@ class AppConstants {
   static const String PLAYER_ACTED = 'PLAYER_ACTED';
   static const String YOUR_ACTION = 'YOUR_ACTION';
   static const String QUERY_CURRENT_HAND = 'QUERY_CURRENT_HAND';
+  static const String RESULT = 'RESULT';
 
   static const String PREFLOP = 'PREFLOP';
   static const String FLOP = 'FLOP';

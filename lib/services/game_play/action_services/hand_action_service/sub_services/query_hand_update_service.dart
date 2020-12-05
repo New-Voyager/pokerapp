@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/remaining_time.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_service/sub_services/next_action_service.dart';
@@ -65,8 +66,10 @@ class QueryHandUpdateService {
         int.parse(currentHandState['remainingActionTime'].toString());
 
     // put the remaining time in the provider
-    Provider.of<ValueNotifier<int>>(context, listen: false).value =
-        remainingActionTime;
+    Provider.of<RemainingTime>(
+      context,
+      listen: false,
+    ).time = remainingActionTime;
 
     // todo: put the playersStack value
     Provider.of<Players>(

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_service/sub_services/deal_service.dart';
+import 'package:pokerapp/services/game_play/action_services/hand_action_service/sub_services/result_service.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_service/sub_services/stage_update_service.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_service/sub_services/new_hand_update_service.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_service/sub_services/next_action_service.dart';
@@ -26,6 +27,12 @@ class HandActionService {
 
     // delegate further actions to sub services as per messageType
     switch (messageType) {
+      case AppConstants.RESULT:
+        return ResultService.handle(
+          context: context,
+          data: data,
+        );
+
       case AppConstants.NEW_HAND:
         return NewHandUpdateService.handle(
           context: context,
