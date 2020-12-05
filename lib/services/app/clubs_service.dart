@@ -29,8 +29,6 @@ class ClubsService {
 
     String _query = Club.updateClub(clubCode, name, description);
 
-    log(_query);
-
     QueryResult result = await _client.mutate(
       MutationOptions(documentNode: gql(_query)),
     );
@@ -45,8 +43,6 @@ class ClubsService {
 
     String _query = Club.createClub(name, description);
 
-    log(_query);
-
     QueryResult result = await _client.mutate(
       MutationOptions(documentNode: gql(_query)),
     );
@@ -54,8 +50,6 @@ class ClubsService {
     if (result.hasException) return false;
 
     String clubID = result.data['createClub'];
-
-    log(clubID);
 
     return clubID.isNotEmpty;
   }

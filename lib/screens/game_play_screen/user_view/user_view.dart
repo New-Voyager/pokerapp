@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:pokerapp/enums/game_play_enums/player_type.dart';
+import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/user_object.dart';
 import 'package:pokerapp/resources/app_constants.dart';
@@ -197,40 +198,58 @@ class UserView extends StatelessWidget {
         ),
       );
 
-  Widget _buildTimer({int time = 10}) => Positioned(
-        top: 0,
-        right: 0,
-        child: Transform.translate(
-          offset: const Offset(0.0, -15.0),
-          child: Container(
-            padding: const EdgeInsets.all(8.0),
-            decoration: BoxDecoration(
-              color: const Color(0xff474747),
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: const Color(0xff14e81b),
-                width: 1.0,
-              ),
+  Widget _buildTimer({
+    int time = 10,
+    BuildContext context,
+  }) {
+    int remainingTime = Provider.of<ValueNotifier<int>>(
+      context,
+      listen: false,
+    ).value;
+
+    if (remainingTime == null)
+      remainingTime = time;
+    else
+      /* if remainingTimeProvider value is not null, then after fetching the value
+      * we make this provider value to be null */
+      Provider.of<ValueNotifier<int>>(
+        context,
+        listen: false,
+      ).value = null;
+
+    return Positioned(
+      top: 0,
+      right: 0,
+      child: Transform.translate(
+        offset: const Offset(0.0, -15.0),
+        child: Container(
+          padding: const EdgeInsets.all(8.0),
+          decoration: BoxDecoration(
+            color: const Color(0xff474747),
+            shape: BoxShape.circle,
+            border: Border.all(
+              color: const Color(0xff14e81b),
+              width: 1.0,
             ),
-            child: Countdown(
-              seconds: time,
-              build: (_, time) => Text(
-                time.toStringAsFixed(0),
-                style: AppStyles.itemInfoTextStyle.copyWith(
-                  color: Colors.white,
-                ),
+          ),
+          child: Countdown(
+            seconds: remainingTime,
+            build: (_, time) => Text(
+              time.toStringAsFixed(0),
+              style: AppStyles.itemInfoTextStyle.copyWith(
+                color: Colors.white,
               ),
             ),
           ),
         ),
-      );
+      ),
+    );
+  }
 
   Widget _buildUserStatus(bool emptySeat) {
     if (emptySeat) return shrinkedSizedBox;
 
     String status;
-
-    log('status: $status');
 
     if (userObject.status != null && userObject.status.isNotEmpty)
       status = userObject.status;
@@ -273,6 +292,11 @@ class UserView extends StatelessWidget {
   Widget build(BuildContext context) {
     bool emptySeat = userObject.name == null;
     bool isMe = userObject.isMe ?? false;
+
+    int actionTime = Provider.of<ValueNotifier<GameInfoModel>>(
+      context,
+      listen: false,
+    ).value.actionTime;
 
     return InkWell(
       onTap: emptySeat ? () => onUserTap(seatPos) : null,
@@ -330,7 +354,12 @@ class UserView extends StatelessWidget {
           /* timer
           * the timer is show to the highlighted user
           * */
-          userObject.highlight ?? false ? _buildTimer() : shrinkedSizedBox,
+          userObject.highlight ?? false
+              ? _buildTimer(
+                  context: context,
+                  time: actionTime,
+                )
+              : shrinkedSizedBox,
 
           // TODO: ONLY FOR DEBUGGING
           emptySeat ? shrinkedSizedBox : _buildSeatNoIndicator(),

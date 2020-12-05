@@ -164,8 +164,6 @@ class _ClubsPageViewState extends State<ClubsPageView> {
 
     _clubs = await ClubsService.getMyClubs();
 
-    log(_clubs.toString());
-
     _toggleLoading();
   }
 

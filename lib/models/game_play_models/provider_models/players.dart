@@ -60,6 +60,16 @@ class Players extends ChangeNotifier {
     _notify();
   }
 
+  void updateStack(Map<int, int> stacks) {
+    // stacks contains, <seatNo, stack> mapping
+
+    stacks.forEach((seatNo, stack) {
+      int idx = _players.indexWhere((p) => p.seatNo == seatNo);
+      _players[idx].stack = stack;
+    });
+    _notify();
+  }
+
   void subtractStack(int idx, int amountToSubtract) {
     _players[idx].stack -= amountToSubtract;
     _notify();

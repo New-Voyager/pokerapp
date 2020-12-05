@@ -332,7 +332,7 @@ class FooterView extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Consumer<ValueNotifier<FooterStatus>>(
         builder: (_, footerStatusValueNotifier, __) => Container(
-          height: 200,
+          height: 150,
           child: _build(
             footerStatusValueNotifier.value,
             context: context,

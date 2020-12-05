@@ -62,9 +62,6 @@ class _GamesPageViewState extends State<GamesPageView> {
     _liveGames = await UserGamesService.fetchLiveGames();
     _playedGames = await UserGamesService.fetchPlayedGames();
 
-    print(_liveGames);
-    print(_playedGames);
-
     _toggleLoading();
   }
 

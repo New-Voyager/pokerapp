@@ -219,6 +219,12 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
         Provider<Function(String)>(
           create: (_) => _gameComService.sendPlayerToHandChannel,
         ),
+
+        /* This provider contains the remainingActionTime - this provider
+        * is used only when QUERY_CURRENT_HAND message is processed */
+        ListenableProvider<ValueNotifier<int>>(
+          create: (_) => ValueNotifier<int>(null),
+        ),
       ];
 
   /* dispose method for closing connections and un subscribing to channels */
@@ -229,7 +235,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
   }
 
   @override
-  Widget build(BuildContext _) {
+  Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.black,

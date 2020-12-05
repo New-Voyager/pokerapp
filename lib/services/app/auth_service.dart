@@ -20,8 +20,6 @@ class AuthService {
   /* private methods */
 
   static Future<bool> _save(AuthModel authModel) async {
-    log(authModel.toJson());
-
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     return sharedPreferences.setString(_prefKey, authModel.toJson());
   }
@@ -70,18 +68,11 @@ class AuthService {
       return false;
     }
 
-    log(authModel.toJson());
-
     String _query = CreatePlayer.createPlayer(authModel);
-
-    log(_query);
 
     QueryResult result = await _client.mutate(
       MutationOptions(documentNode: gql(_query)),
     );
-
-    print(result.exception);
-    print(result.data);
 
     if (result.hasException) return false;
 
@@ -177,8 +168,6 @@ class AuthService {
     QueryResult result = await _client.query(
       QueryOptions(documentNode: gql(_query)),
     );
-
-    log(result.exception.toString());
 
     return result.hasException ? null : result.data['myInfo']['uuid'];
   }

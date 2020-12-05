@@ -19,7 +19,7 @@ class VisibleCardView extends StatelessWidget {
     );
 
     return Transform.scale(
-      scale: card.smaller ? 0.8 : 1.2,
+      scale: card.smaller ? 0.8 : 1.1,
       child: Container(
         padding: const EdgeInsets.all(5.0),
         height: AppDimensions.cardHeight * 1.5,

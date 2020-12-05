@@ -20,7 +20,8 @@ class StackCardView extends StatelessWidget {
       alignment: Alignment.center,
       children: cards.isEmpty
           ? [SizedBox.shrink()]
-          : cards
+          : cards.reversed
+              .toList()
               .asMap()
               .entries
               .map(

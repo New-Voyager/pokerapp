@@ -299,7 +299,6 @@ class BoardView extends StatelessWidget {
     );
 
     for (PlayerModel model in users) {
-      log(model.seatNo.toString());
       int idx = model.seatNo - 1;
 
       userObjects[idx].name = model.name;

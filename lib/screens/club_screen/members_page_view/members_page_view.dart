@@ -42,8 +42,6 @@ class _MembersPageViewState extends State<MembersPageView> {
       context,
       listen: false,
     ).isOwner;
-
-    log('isOwner: $_isOwner');
   }
 
   @override
