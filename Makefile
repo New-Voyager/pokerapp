@@ -34,6 +34,10 @@ stack-up: create-network
 		echo "POSTGRES_IMAGE=$(POSTGRES_IMAGE)" >> .env && \
 		docker-compose up -d
 
+.PHONY: stack-logs
+stack-logs:
+	cd docker && docker-compose logs -f
+
 .PHONY: stack-down
 stack-down:
 	cd docker && docker-compose down
