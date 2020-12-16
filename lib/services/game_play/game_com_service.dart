@@ -28,7 +28,8 @@ class GameComService {
   }
 
   Future<void> init() async {
-    await _client.connect(AppApis.host);
+    // todo: better way to do this?
+    await _client.connect(AppApis.natsHost);
 
     // subscribe
     log('subscribing to ${this.gameToPlayerChannel}');
