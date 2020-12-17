@@ -1,3 +1,6 @@
+import 'dart:developer';
+
+import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 
 class GameInfoModel {

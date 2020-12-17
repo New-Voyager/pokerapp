@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pokerapp/main.dart';
 import 'package:pokerapp/screens/auth_screens/login_screen.dart';
 import 'package:pokerapp/screens/main_screens/main_screen.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
@@ -27,6 +28,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
     Future.delayed(Duration(milliseconds: 400), () async {
       String jwt = await AuthService.getJwt();
+      await graphQLConfiguration.init();
       if (jwt == null)
         _moveToLoginScreen();
       else

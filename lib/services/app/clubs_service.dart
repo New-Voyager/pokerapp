@@ -47,6 +47,8 @@ class ClubsService {
       MutationOptions(documentNode: gql(_query)),
     );
 
+    print(result.exception);
+
     if (result.hasException) return false;
 
     String clubID = result.data['createClub'];
