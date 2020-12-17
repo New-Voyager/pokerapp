@@ -9,6 +9,8 @@ import 'package:pokerapp/enums/auth_type.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/auth_model.dart';
 import 'package:pokerapp/resources/app_apis.dart';
+import 'package:pokerapp/resources/app_constants.dart';
+import 'package:pokerapp/resources/app_host_urls.dart';
 import 'package:pokerapp/services/graphQL/mutations/create_player.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -125,8 +127,11 @@ class AuthService {
 
     assert(body != null);
 
+    String apiServerUrl = (await SharedPreferences.getInstance())
+        .getString(AppConstants.API_SERVER_URL);
+
     http.Response response = await http.post(
-      '${AppApis.baseUrlWithDefaultPort}/auth/login',
+      'http://$apiServerUrl:9501/auth/login',
       headers: header,
       body: body,
     );

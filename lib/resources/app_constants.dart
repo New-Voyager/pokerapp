@@ -1,6 +1,9 @@
 class AppConstants {
   AppConstants._();
 
+  static const String NATS_URL = 'NATS_URL';
+  static const String API_SERVER_URL = 'API_SERVER_URL';
+
   static const int buyInTimeOutSeconds = 100;
 
   static const Duration animationDuration = const Duration(
