@@ -3,6 +3,8 @@ import 'dart:developer';
 import 'package:dart_nats/dart_nats.dart';
 import 'package:flutter/foundation.dart';
 import 'package:pokerapp/resources/app_apis.dart';
+import 'package:pokerapp/resources/app_constants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class GameComService {
   Client _client;
@@ -28,8 +30,8 @@ class GameComService {
   }
 
   Future<void> init() async {
-    // todo: better way to do this?
-    await _client.connect(AppApis.natsHost);
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    await _client.connect(sharedPreferences.getString(AppConstants.NATS_URL));
 
     // subscribe
     log('subscribing to ${this.gameToPlayerChannel}');

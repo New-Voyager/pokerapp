@@ -1,8 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:pokerapp/enums/auth_type.dart';
 import 'package:pokerapp/models/auth_model.dart';
+import 'package:pokerapp/resources/app_constants.dart';
+import 'package:pokerapp/resources/app_host_urls.dart';
 import 'package:pokerapp/resources/app_strings.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/screens/auth_screens/registration_screen.dart';
@@ -12,6 +13,9 @@ import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/widgets/card_form_text_field.dart';
 import 'package:pokerapp/widgets/round_button.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../main.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -19,6 +23,51 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  String nats;
+  String apiServer;
+
+  void setUrls(BuildContext ctx) async {
+    if ((nats == null || nats.isEmpty) ||
+        (apiServer == null || apiServer.isEmpty))
+      return Alerts.showSnackBar(ctx, 'Nats and API urls are needed');
+
+    // FIRST SET THE URLS
+    await AppHostUrls.save(
+      nats: nats,
+      apiServer: apiServer,
+    );
+
+    await graphQLConfiguration.init();
+
+    if (mounted) setState(() {});
+
+    Alerts.showSnackBar(ctx, 'Nats and API urls SET');
+  }
+
+  Widget _buildHostUrlWidget(BuildContext ctx) => Column(
+        children: [
+          CardFormTextField(
+            hintText: 'API SERVER ($apiServer)',
+            keyboardType: TextInputType.text,
+            onChanged: (String newValue) => apiServer = newValue.trim(),
+          ),
+          const SizedBox(height: 10),
+          CardFormTextField(
+            hintText: 'NATS SERVER ($nats)',
+            keyboardType: TextInputType.text,
+            onChanged: (String newValue) => nats = newValue.trim(),
+          ),
+          const SizedBox(height: 10),
+          RoundRaisedButton(
+            buttonText: 'SET',
+            radius: 100.0,
+            color: Color(0xff319ffe),
+            verticalPadding: 15.0,
+            onButtonTap: () => setUrls(ctx),
+          ),
+        ],
+      );
+
   AuthModel _authModel = AuthModel(authType: AuthType.Email);
 
   bool _showLoading = false;
@@ -51,6 +100,21 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
+  void fetchUrls() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    nats = sharedPreferences.getString(AppConstants.NATS_URL);
+    apiServer = sharedPreferences.getString(AppConstants.API_SERVER_URL);
+
+    if (mounted) setState(() {});
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    fetchUrls();
+  }
+
   @override
   Widget build(BuildContext context) {
     final separator30 = SizedBox(height: 30.0);
@@ -68,8 +132,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 horizontal: 23.0,
                 vertical: 28.0,
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
+              child: ListView(
+                physics: BouncingScrollPhysics(),
                 children: <Widget>[
                   // welcome text
                   Text(
@@ -125,7 +189,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
 
-                  Spacer(),
+                  separator30,
+
+                  _buildHostUrlWidget(ctx),
 
                   _buildTempLogin(),
 
