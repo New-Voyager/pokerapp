@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
@@ -20,7 +18,7 @@ const innerWidth = 5.0;
 const outerWidth = 15.0;
 
 const widthMultiplier = 0.80;
-const heightMultiplier = 1.7;
+const heightMultiplier = 1.55;
 
 class BoardView extends StatelessWidget {
   BoardView({
@@ -72,7 +70,8 @@ class BoardView extends StatelessWidget {
   }) {
     seatPos++;
 
-    double shiftDownConstant = heightOfBoard / 15;
+    double shiftDownConstant = heightOfBoard / 12;
+    double shiftHorizontalConstant = widthOfBoard / 15;
     Alignment cardsAlignment = Alignment.centerRight;
 
     // left for 6, 7, 8, 9
@@ -80,6 +79,7 @@ class BoardView extends StatelessWidget {
       cardsAlignment = Alignment.centerLeft;
 
     UserView userView = UserView(
+      isPresent: isPresent,
       seatPos: isPresent ? -1 : seatPos,
       key: ValueKey(seatPos),
       userObject: user,
@@ -90,7 +90,7 @@ class BoardView extends StatelessWidget {
     switch (seatPos) {
       case 1:
         return Transform.translate(
-          offset: Offset(0.0, shiftDownConstant),
+          offset: Offset(0.0, 0.0),
           child: Align(
             alignment: Alignment.bottomCenter,
             child: userView,
@@ -101,7 +101,10 @@ class BoardView extends StatelessWidget {
         return Align(
           alignment: Alignment.centerLeft,
           child: Transform.translate(
-            offset: Offset(0.0, heightOfBoard / 4 + shiftDownConstant),
+            offset: Offset(
+              shiftHorizontalConstant,
+              heightOfBoard / 4 + shiftDownConstant,
+            ),
             child: userView,
           ),
         );
@@ -128,7 +131,10 @@ class BoardView extends StatelessWidget {
         return Align(
           alignment: Alignment.topCenter,
           child: Transform.translate(
-            offset: Offset(-widthOfBoard / 3, shiftDownConstant / 2),
+            offset: Offset(
+              -widthOfBoard / 3 + shiftHorizontalConstant,
+              shiftDownConstant / 2,
+            ),
             child: userView,
           ),
         );
@@ -137,7 +143,10 @@ class BoardView extends StatelessWidget {
         return Align(
           alignment: Alignment.topCenter,
           child: Transform.translate(
-            offset: Offset(widthOfBoard / 3, shiftDownConstant / 2),
+            offset: Offset(
+              widthOfBoard / 3 - shiftHorizontalConstant,
+              shiftDownConstant / 2,
+            ),
             child: userView,
           ),
         );
@@ -164,7 +173,10 @@ class BoardView extends StatelessWidget {
         return Align(
           alignment: Alignment.centerRight,
           child: Transform.translate(
-            offset: Offset(0.0, heightOfBoard / 4 + shiftDownConstant),
+            offset: Offset(
+              -shiftHorizontalConstant,
+              heightOfBoard / 4 + shiftDownConstant,
+            ),
             child: userView,
           ),
         );
@@ -187,7 +199,8 @@ class BoardView extends StatelessWidget {
 
   Widget _buildCenterView({
     List<CardObject> cards,
-    int potChips,
+    List<int> potChips,
+    int potChipsUpdates,
     String tableStatus,
   }) {
     String _text = _getText(tableStatus);
@@ -207,7 +220,7 @@ class BoardView extends StatelessWidget {
         child: Text(
           _text ?? '',
           style: AppStyles.itemInfoTextStyleHeavy.copyWith(
-            fontSize: 15,
+            fontSize: 13,
           ),
         ),
       ),
@@ -217,7 +230,8 @@ class BoardView extends StatelessWidget {
     /* The following view, shows the community cards
     * and the pot chips, if they are nulls, put the default values */
 
-    if (potChips == null) potChips = 0;
+    if (potChips == null) potChips = [0];
+    if (potChipsUpdates == null) potChipsUpdates = 0;
     if (cards == null) cards = const [];
 
     Widget tablePotAndCardWidget = Align(
@@ -262,13 +276,24 @@ class BoardView extends StatelessWidget {
                     left: 5.0,
                   ),
                   child: Text(
-                    'Pot: $potChips',
+                    'Pot: ${potChips[0]}', // todo: at later point might need to show multiple pots - need to design UI
                     style: AppStyles.itemInfoTextStyleHeavy.copyWith(
                       fontSize: 15,
                     ),
                   ),
                 ),
               ],
+            ),
+          ),
+
+          const SizedBox(height: AppDimensions.cardHeight / 3),
+
+          /* potUpdates view */
+          Text(
+            'Pot Updates: $potChipsUpdates',
+            style: AppStyles.itemInfoTextStyleHeavy.copyWith(
+              fontSize: 13,
+              fontWeight: FontWeight.w400,
             ),
           ),
         ],
@@ -278,8 +303,8 @@ class BoardView extends StatelessWidget {
     return AnimatedSwitcher(
       switchInCurve: Curves.easeInOut,
       switchOutCurve: Curves.easeInOut,
-      duration: AppConstants.opacityAnimationDuration,
-      reverseDuration: AppConstants.opacityAnimationDuration,
+      duration: AppConstants.animationDuration,
+      reverseDuration: AppConstants.animationDuration,
       child: _text != null ? tableStatusWidget : tablePotAndCardWidget,
     );
   }
@@ -312,6 +337,7 @@ class BoardView extends StatelessWidget {
       userObjects[idx].buyIn = (model.showBuyIn ?? false) ? model.buyIn : null;
       userObjects[idx].highlight = model.highlight;
       userObjects[idx].playerType = model.playerType;
+      userObjects[idx].avatarUrl = model.avatarUrl;
     }
 
     return userObjects;
@@ -339,8 +365,6 @@ class BoardView extends StatelessWidget {
     double width = MediaQuery.of(context).size.width;
     double heightOfBoard = width * widthMultiplier * heightMultiplier;
     double widthOfBoard = width * widthMultiplier;
-
-    /* todo dealing with the cards */
 
     /* finally the view */
     return Consumer<Players>(
@@ -387,6 +411,7 @@ class BoardView extends StatelessWidget {
                 builder: (_, TableState tableState, __) => _buildCenterView(
                   cards: tableState.cards,
                   potChips: tableState.potChips,
+                  potChipsUpdates: tableState.potChipsUpdates,
                   tableStatus: tableState.tableStatus,
                 ),
               ),

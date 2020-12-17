@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
-import 'package:pokerapp/resources/app_constants.dart';
 import 'package:provider/provider.dart';
 
 class PlayerActedService {
@@ -28,7 +27,6 @@ class PlayerActedService {
       listen: false,
     ).updateHighlight(idx, false);
 
-    // todo: how should the UI be updated?
     // show the status message
     Provider.of<Players>(
       context,
@@ -38,27 +36,14 @@ class PlayerActedService {
       "${playerActed['action']} ${playerActed['amount'] ?? ''}",
     );
 
-    /* FIXME: IS THIS INTENDED TO BE DONE LOCALLY?
-        update the stack amount */
-    int amountUsed = playerActed['amount'];
-
-    if (amountUsed != null) {
-      // subtract the amountUsed from the stack of the current player
+    int stack = playerActed['stack'];
+    if (stack != null)
       Provider.of<Players>(
         context,
         listen: false,
-      ).subtractStack(
+      ).updateStackWithValue(
         idx,
-        amountUsed,
+        stack,
       );
-    }
-
-    await Future.delayed(AppConstants.userPopUpMessageHoldDuration);
-
-    // remove the status message
-    Provider.of<Players>(
-      context,
-      listen: false,
-    ).updateStatus(idx, null);
   }
 }

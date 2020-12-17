@@ -31,6 +31,12 @@ class Players extends ChangeNotifier {
     notifyListeners();
   }
 
+  void removeMarkersFromAllPlayer() {
+    for (int i = 0; i < _players.length; i++)
+      _players[i].playerType = PlayerType.None;
+    _notify();
+  }
+
   void addNewPlayer(PlayerModel playerModel) {
     _players.add(playerModel);
     _notify();
@@ -60,9 +66,18 @@ class Players extends ChangeNotifier {
     _notify();
   }
 
-  void updateStack(Map<int, int> stacks) {
-    // stacks contains, <seatNo, stack> mapping
+  void removeAllPlayersStatus() {
+    for (int i = 0; i < _players.length; i++) _players[i].status = null;
+    _notify();
+  }
 
+  void updateStack(var stacksData) {
+    Map<int, int> stacks = Map<int, int>();
+
+    stacksData.forEach((key, value) =>
+        stacks[int.parse(key.toString())] = int.parse(value.toString()));
+
+    // stacks contains, <seatNo, stack> mapping
     stacks.forEach((seatNo, stack) {
       int idx = _players.indexWhere((p) => p.seatNo == seatNo);
       _players[idx].stack = stack;
@@ -70,8 +85,8 @@ class Players extends ChangeNotifier {
     _notify();
   }
 
-  void subtractStack(int idx, int amountToSubtract) {
-    _players[idx].stack -= amountToSubtract;
+  void updateStackWithValue(int idx, int newStack) {
+    _players[idx].stack = newStack;
     _notify();
   }
 

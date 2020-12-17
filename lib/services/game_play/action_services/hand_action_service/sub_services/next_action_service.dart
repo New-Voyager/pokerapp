@@ -10,7 +10,9 @@ class NextActionService {
     BuildContext context,
     var data,
   }) {
-    int seatNo = data['actionChange']['seatNo'];
+    var actionChange = data['actionChange'];
+
+    int seatNo = actionChange['seatNo'];
 
     // highlight the current seat No
     Players players = Provider.of<Players>(
@@ -27,14 +29,19 @@ class NextActionService {
     ).updateHighlight(idx, true);
 
     /* check if pot is available, if true, update the pot value in the table state object */
-    var pots = data['actionChange']['pots'];
-    int pot = pots[0]['pot'];
+    try {
+      List<int> pots = actionChange['pots']
+          ?.map<int>((e) => int.parse(e.toString()))
+          ?.toList();
+      var potUpdates = actionChange['potUpdates'];
 
-    if (pot == null) return;
-
-    Provider.of<TableState>(
-      context,
-      listen: false,
-    ).updatePostChips(pot);
+      Provider.of<TableState>(
+        context,
+        listen: false,
+      ).updatePostChips(
+        potChips: pots,
+        potUpdatesChips: potUpdates,
+      );
+    } catch (e) {}
   }
 }

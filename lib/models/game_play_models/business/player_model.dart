@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:pokerapp/enums/game_play_enums/player_type.dart';
 
 class PlayerModel {
@@ -8,6 +10,7 @@ class PlayerModel {
   int buyIn;
   bool showBuyIn;
   int stack;
+  String avatarUrl;
 
   String status;
   PlayerType playerType;
@@ -24,6 +27,11 @@ class PlayerModel {
     this.isMe = false;
     this.playerType = PlayerType.None;
     this.highlight = false;
+
+    // todo: at later point data may contain the player avatar
+    // for now randomly choose from the asset files
+    int tmpN = Random().nextInt(6) + 1;
+    this.avatarUrl = 'assets/images/$tmpN.png';
   }
 
   // a util method for updating the class variables

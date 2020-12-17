@@ -10,8 +10,8 @@ class AppStyles {
   );
 
   static const userPopUpMessageTextStyle = TextStyle(
-    color: Colors.black,
-    fontSize: 12.0,
+    fontSize: 10.0,
+    fontWeight: FontWeight.w800,
     fontFamily: AppAssets.fontFamilyLato,
   );
 
@@ -28,9 +28,23 @@ class AppStyles {
     fontFamily: AppAssets.fontFamilyLato,
   );
 
+  static const gamePlayScreenPlayerName = TextStyle(
+    color: Colors.white,
+    fontSize: 9.0,
+    fontWeight: FontWeight.w800,
+    fontFamily: AppAssets.fontFamilyLato,
+  );
+
+  static const gamePlayScreenPlayerChips = TextStyle(
+    color: Colors.white,
+    fontSize: 12.0,
+    fontWeight: FontWeight.w800,
+    fontFamily: AppAssets.fontFamilyLato,
+  );
+
   static const dealerTextStyle = TextStyle(
     color: Colors.black,
-    fontSize: 15.0,
+    fontSize: 12.0,
     fontWeight: FontWeight.w800,
     fontFamily: AppAssets.fontFamilyLato,
   );
@@ -45,6 +59,13 @@ class AppStyles {
   static const clubItemInfoTextStyle = TextStyle(
     color: Color(0xff319ffe),
     fontSize: 12.0,
+    fontFamily: AppAssets.fontFamilyLato,
+  );
+
+  static const openSeatTextStyle = TextStyle(
+    color: Color(0xff319ffe),
+    fontSize: 10.0,
+    fontWeight: FontWeight.w800,
     fontFamily: AppAssets.fontFamilyLato,
   );
 
