@@ -26,6 +26,12 @@ class NewHandUpdateService {
       listen: false,
     );
 
+    // before marking the small, big blind or the dealer, remove any marking from the old hand
+    Provider.of<Players>(
+      context,
+      listen: false,
+    ).removeMarkersFromAllPlayer();
+
     /* marking the small blind */
     int smallBlindIdx = players.players.indexWhere((p) => p.seatNo == sbPos);
     assert(smallBlindIdx != -1);
@@ -37,7 +43,7 @@ class NewHandUpdateService {
       PlayerType.SmallBlind,
     );
 
-    /* marking the dealer */
+    /* marking the big blind */
     int bigBlindIdx = players.players.indexWhere((p) => p.seatNo == bbPos);
     assert(bigBlindIdx != -1);
     Provider.of<Players>(
@@ -50,6 +56,7 @@ class NewHandUpdateService {
 
     /* marking the dealer */
     int dealerIdx = players.players.indexWhere((p) => p.seatNo == dealerPos);
+    print('dealer index: $dealerIdx');
     assert(dealerIdx != -1);
     Provider.of<Players>(
       context,

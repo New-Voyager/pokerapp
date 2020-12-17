@@ -18,8 +18,10 @@ class VisibleCardView extends StatelessWidget {
       color: card.color,
     );
 
+    /* for visible cards, the smaller card size is shown to the left of user,
+    * and the bigger size is shown as the community card */
     return Transform.scale(
-      scale: card.smaller ? 0.8 : 1.1,
+      scale: card.smaller ? 0.90 : 1.1,
       child: Container(
         padding: const EdgeInsets.all(5.0),
         height: AppDimensions.cardHeight * 1.5,

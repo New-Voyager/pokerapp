@@ -1,5 +1,5 @@
 class AppApis {
-  static final String host = '192.168.1.104'; // '10.0.2.2:9501';
+  static final String host = '10.0.2.2';
 
   static final String baseUrl = 'http://$host';
 

@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:pokerapp/enums/game_play_enums/player_type.dart';
@@ -22,12 +20,14 @@ class UserView extends StatelessWidget {
   final UserObject userObject;
   final Alignment cardsAlignment;
   final Function(int) onUserTap;
+  final bool isPresent;
 
   UserView({
     Key key,
     @required this.seatPos,
     @required this.userObject,
     @required this.onUserTap,
+    @required this.isPresent,
     this.cardsAlignment = Alignment.centerRight,
   }) : super(key: key);
 
@@ -36,9 +36,10 @@ class UserView extends StatelessWidget {
     bool emptySeat,
   }) =>
       AnimatedOpacity(
-        duration: AppConstants.opacityAnimationDuration,
-        opacity: emptySeat ? 0.0 : 0.70,
-        child: Container(
+        duration: AppConstants.animationDuration,
+        opacity: emptySeat ? 0.0 : 0.90,
+        child: AnimatedContainer(
+          duration: AppConstants.animationDuration,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             border: Border.all(
@@ -49,7 +50,7 @@ class UserView extends StatelessWidget {
             ),
           ),
           child: CircleAvatar(
-            radius: 26.0,
+            radius: 19.50,
             /* todo: this needs to be replaced with NetworkImage */
             backgroundImage: AssetImage(avatarUrl ?? 'assets/images/2.png'),
           ),
@@ -63,15 +64,19 @@ class UserView extends StatelessWidget {
   }) =>
       Transform.translate(
         offset: Offset(0.0, -5.0),
-        child: Container(
+        child: AnimatedContainer(
+          duration: AppConstants.animationDuration,
           width: 90.0,
-          padding: const EdgeInsets.symmetric(
-            horizontal: 15.0,
-            vertical: 5.0,
-          ),
+          padding: (emptySeat && !isPresent)
+              ? const EdgeInsets.all(10.0)
+              : const EdgeInsets.symmetric(
+                  horizontal: 15.0,
+                  vertical: 5.0,
+                ),
           decoration: BoxDecoration(
+            shape: emptySeat ? BoxShape.circle : BoxShape.rectangle,
+            borderRadius: emptySeat ? null : BorderRadius.circular(5.0),
             color: const Color(0xff474747),
-            borderRadius: BorderRadius.circular(5.0),
             border: Border.all(
               color: userObject.highlight ?? false
                   ? highlightColor
@@ -79,47 +84,58 @@ class UserView extends StatelessWidget {
               width: 2.0,
             ),
           ),
-          child: AnimatedOpacity(
-            duration: AppConstants.opacityAnimationDuration,
-            opacity: emptySeat ? 0.0 : 1.0,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                FittedBox(
-                  child: Text(
-                    name?.toUpperCase() ?? 'name',
-                    style: AppStyles.itemInfoTextStyleHeavy,
-                  ),
-                ),
-                const SizedBox(height: 3.0),
-                FittedBox(
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      // chip asset image
-                      Image.asset(
-                        'assets/images/chips.png',
-                        height: 15.0,
-                      ),
+          child: AnimatedSwitcher(
+            duration: AppConstants.animationDuration,
+            reverseDuration: AppConstants.animationDuration,
+            child: (emptySeat && !isPresent)
+                ? InkWell(
+                    child: Text(
+                      'OPEN',
+                      style: AppStyles.openSeatTextStyle,
+                    ),
+                  )
+                : AnimatedOpacity(
+                    duration: AppConstants.animationDuration,
+                    opacity: emptySeat ? 0.0 : 1.0,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        FittedBox(
+                          child: Text(
+                            name?.toUpperCase() ?? 'name',
+                            style: AppStyles.gamePlayScreenPlayerName,
+                          ),
+                        ),
+                        const SizedBox(height: 3.0),
+                        FittedBox(
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              // chip asset image
+                              Image.asset(
+                                'assets/images/chips.png',
+                                height: 13.0,
+                              ),
 
-                      const SizedBox(width: 5.0),
+                              const SizedBox(width: 5.0),
 
-                      Text(
-                        chips?.toString() ?? 'XX',
-                        style: AppStyles.itemInfoTextStyleHeavy,
-                      ),
-                    ],
+                              Text(
+                                chips?.toString() ?? 'XX',
+                                style: AppStyles.gamePlayScreenPlayerChips,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
-            ),
           ),
         ),
       );
 
   Widget _buildHiddenCard({Alignment alignment}) => Transform.translate(
         offset: Offset(
-          alignment == Alignment.centerRight ? 38.0 : -48.0,
+          alignment == Alignment.centerRight ? 35.0 : -45.0,
           -15.0,
         ),
         child: Transform.rotate(
@@ -135,7 +151,7 @@ class UserView extends StatelessWidget {
       Transform.translate(
         offset: Offset(
           -48.0,
-          -15.0,
+          0.0,
         ),
         child: StackCardView(
           cards: cards,
@@ -143,13 +159,17 @@ class UserView extends StatelessWidget {
       );
 
   // this widget is only shown to the dealer
-  Widget _buildDealerButton({Alignment alignment}) => Transform.translate(
+  Widget _buildDealerButton({
+    Alignment alignment,
+    bool isMe,
+  }) =>
+      Transform.translate(
         offset: Offset(
-          alignment == Alignment.centerRight ? 88.0 : -88.0,
-          0.0,
+          alignment == Alignment.centerRight ? 60.0 : -60.0,
+          18.0,
         ),
         child: Container(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(5.0),
           decoration: BoxDecoration(
             color: Colors.white,
             shape: BoxShape.circle,
@@ -341,6 +361,7 @@ class UserView extends StatelessWidget {
                   userObject.playerType == PlayerType.Dealer
               ? _buildDealerButton(
                   alignment: this.cardsAlignment,
+                  isMe: isMe,
                 )
               : shrinkedSizedBox,
 

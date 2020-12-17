@@ -49,17 +49,32 @@ class QueryHandUpdateService {
     ).value = CardHelper.getCards(playerCards);
 
     // boardCards update if available
-    // todo: we don't get the pot value here?
     try {
-      String boardCards = currentHandState['boardCards'];
-      if (boardCards != null)
+      List<int> boardCardsNum = currentHandState['boardCards']
+          .map<int>((e) => int.parse(e.toString()))
+          .toList();
+      if (boardCardsNum != null)
         Provider.of<TableState>(
           context,
           listen: false,
         ).updateCommunityCards(
-          CardHelper.getCards(boardCards),
+          boardCardsNum.map<CardObject>((c) => CardHelper.getCard(c)).toList(),
         );
     } catch (e) {}
+
+    // update the pot values
+    List<int> pots = currentHandState['pots']
+        ?.map<int>((e) => int.parse(e.toString()))
+        ?.toList();
+    var potUpdates = currentHandState['potUpdates'];
+
+    Provider.of<TableState>(
+      context,
+      listen: false,
+    ).updatePostChips(
+      potChips: pots,
+      potUpdatesChips: potUpdates,
+    );
 
     // remainingActionTime
     int remainingActionTime =

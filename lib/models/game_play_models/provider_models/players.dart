@@ -31,6 +31,11 @@ class Players extends ChangeNotifier {
     notifyListeners();
   }
 
+  void removeMarkersFromAllPlayer() {
+    for (int i = 0; i < _players.length; i++)
+      _players[i].playerType = PlayerType.None;
+  }
+
   void addNewPlayer(PlayerModel playerModel) {
     _players.add(playerModel);
     _notify();

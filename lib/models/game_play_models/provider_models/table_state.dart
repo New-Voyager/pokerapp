@@ -5,17 +5,20 @@ class TableState extends ChangeNotifier {
   /* This object holds the table status, pot chips, and community cards */
 
   String _tableStatus;
-  int _potChips;
+  List<int> _potChips;
+  int _potUpdatesChips;
   List<CardObject> _communityCards;
 
   TableState({
     String tableStatus,
-    int potChips,
+    List<int> potChips,
+    int potUpdatesChips,
     List<CardObject> communityCards,
   }) {
     this._tableStatus = tableStatus;
     this._potChips = potChips;
     this._communityCards = communityCards;
+    this._potUpdatesChips = potUpdatesChips;
   }
 
   /* public methods for updating values into our TableState */
@@ -26,10 +29,13 @@ class TableState extends ChangeNotifier {
     notifyListeners();
   }
 
-  void updatePostChips(int potChips) {
+  // todo: add the another potUpdate
+  void updatePostChips({List<int> potChips, int potUpdatesChips}) {
     if (this._potChips == potChips) return;
+    if (this._potUpdatesChips == potUpdatesChips) return;
 
     this._potChips = potChips;
+    this._potUpdatesChips = potUpdatesChips;
     notifyListeners();
   }
 
@@ -40,6 +46,7 @@ class TableState extends ChangeNotifier {
 
   /* getters */
   String get tableStatus => _tableStatus;
-  int get potChips => _potChips;
+  List<int> get potChips => _potChips;
+  int get potChipsUpdates => _potUpdatesChips;
   List<CardObject> get cards => _communityCards;
 }
