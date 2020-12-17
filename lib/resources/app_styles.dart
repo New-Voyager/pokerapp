@@ -10,8 +10,8 @@ class AppStyles {
   );
 
   static const userPopUpMessageTextStyle = TextStyle(
-    color: Colors.black,
-    fontSize: 12.0,
+    fontSize: 10.0,
+    fontWeight: FontWeight.w800,
     fontFamily: AppAssets.fontFamilyLato,
   );
 

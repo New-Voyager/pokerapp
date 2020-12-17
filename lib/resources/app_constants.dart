@@ -7,7 +7,7 @@ class AppConstants {
   static const int buyInTimeOutSeconds = 100;
 
   static const Duration animationDuration = const Duration(
-    milliseconds: 900,
+    milliseconds: 700,
   );
 
   static const Duration popUpAnimationDuration = const Duration(

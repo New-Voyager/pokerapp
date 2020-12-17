@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/utils/card_helper.dart';
@@ -30,5 +31,11 @@ class StageUpdateService {
       context,
       listen: false,
     ).updateCommunityCards(cards);
+
+    // remove all the status (last action) of all the players
+    Provider.of<Players>(
+      context,
+      listen: false,
+    ).removeAllPlayersStatus();
   }
 }

@@ -18,7 +18,7 @@ const innerWidth = 5.0;
 const outerWidth = 15.0;
 
 const widthMultiplier = 0.80;
-const heightMultiplier = 1.7;
+const heightMultiplier = 1.55;
 
 class BoardView extends StatelessWidget {
   BoardView({
@@ -70,7 +70,8 @@ class BoardView extends StatelessWidget {
   }) {
     seatPos++;
 
-    double shiftDownConstant = heightOfBoard / 15;
+    double shiftDownConstant = heightOfBoard / 12;
+    double shiftHorizontalConstant = widthOfBoard / 15;
     Alignment cardsAlignment = Alignment.centerRight;
 
     // left for 6, 7, 8, 9
@@ -89,7 +90,7 @@ class BoardView extends StatelessWidget {
     switch (seatPos) {
       case 1:
         return Transform.translate(
-          offset: Offset(0.0, shiftDownConstant),
+          offset: Offset(0.0, 0.0),
           child: Align(
             alignment: Alignment.bottomCenter,
             child: userView,
@@ -100,7 +101,10 @@ class BoardView extends StatelessWidget {
         return Align(
           alignment: Alignment.centerLeft,
           child: Transform.translate(
-            offset: Offset(0.0, heightOfBoard / 4 + shiftDownConstant),
+            offset: Offset(
+              shiftHorizontalConstant,
+              heightOfBoard / 4 + shiftDownConstant,
+            ),
             child: userView,
           ),
         );
@@ -127,7 +131,10 @@ class BoardView extends StatelessWidget {
         return Align(
           alignment: Alignment.topCenter,
           child: Transform.translate(
-            offset: Offset(-widthOfBoard / 3, shiftDownConstant / 2),
+            offset: Offset(
+              -widthOfBoard / 3 + shiftHorizontalConstant,
+              shiftDownConstant / 2,
+            ),
             child: userView,
           ),
         );
@@ -136,7 +143,10 @@ class BoardView extends StatelessWidget {
         return Align(
           alignment: Alignment.topCenter,
           child: Transform.translate(
-            offset: Offset(widthOfBoard / 3, shiftDownConstant / 2),
+            offset: Offset(
+              widthOfBoard / 3 - shiftHorizontalConstant,
+              shiftDownConstant / 2,
+            ),
             child: userView,
           ),
         );
@@ -163,7 +173,10 @@ class BoardView extends StatelessWidget {
         return Align(
           alignment: Alignment.centerRight,
           child: Transform.translate(
-            offset: Offset(0.0, heightOfBoard / 4 + shiftDownConstant),
+            offset: Offset(
+              -shiftHorizontalConstant,
+              heightOfBoard / 4 + shiftDownConstant,
+            ),
             child: userView,
           ),
         );

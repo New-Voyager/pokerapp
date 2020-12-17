@@ -133,14 +133,30 @@ class UserView extends StatelessWidget {
         ),
       );
 
-  Widget _buildHiddenCard({Alignment alignment}) => Transform.translate(
+  Widget _buildHiddenCardAndLastStatus({
+    Alignment alignment,
+    bool emptySeat = true,
+  }) =>
+      Transform.translate(
         offset: Offset(
           alignment == Alignment.centerRight ? 35.0 : -45.0,
           -15.0,
         ),
-        child: Transform.rotate(
-          angle: 0.08,
-          child: HiddenCardView(),
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            // hidden card
+            Transform.rotate(
+              angle: 0.08,
+              child: HiddenCardView(),
+            ),
+
+            // showing user status
+            Transform.translate(
+              offset: Offset(0, -30),
+              child: _buildUserStatus(emptySeat),
+            ),
+          ],
         ),
       );
 
@@ -195,7 +211,7 @@ class UserView extends StatelessWidget {
 
   // TODO: this is only needed for the DEBUGGING Purpose
   Widget _buildSeatNoIndicator() => Positioned(
-        top: 0,
+        bottom: 0,
         left: 0,
         child: Transform.translate(
           offset: const Offset(0.0, -15.0),
@@ -260,7 +276,10 @@ class UserView extends StatelessWidget {
   }
 
   Widget _buildUserStatus(bool emptySeat) {
-    if (emptySeat) return shrinkedSizedBox;
+    /* The status message is not shown, if
+    * 1. The seat is empty - nothing to show
+    * 2. The current user is to act - the current user is highlighted */
+    if (emptySeat || userObject.highlight) return shrinkedSizedBox;
 
     String status;
 
@@ -271,6 +290,19 @@ class UserView extends StatelessWidget {
       status = 'Waiting for Buy In';
 
     if (userObject.buyIn != null) status = 'Buy In ${userObject.buyIn} amount';
+
+    // decide color from the status message
+    // raise, bet -> red
+    // check, call -> green
+    Color statusColor = Colors.white; // default color be white
+
+    if (status != null) {
+      if (status.toUpperCase().contains('CHECK') ||
+          status.toUpperCase().contains('CALL'))
+        statusColor = Colors.green;
+      else if (status.toUpperCase().contains('RAISE') ||
+          status.toUpperCase().contains('BET')) statusColor = Colors.red;
+    }
 
     return AnimatedSwitcher(
       duration: AppConstants.popUpAnimationDuration,
@@ -284,18 +316,10 @@ class UserView extends StatelessWidget {
       ),
       child: status == null
           ? shrinkedSizedBox
-          : Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 10.0,
-                vertical: 5.0,
-              ),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(5.0),
-              ),
-              child: Text(
-                status,
-                style: AppStyles.userPopUpMessageTextStyle,
+          : Text(
+              status,
+              style: AppStyles.userPopUpMessageTextStyle.copyWith(
+                color: statusColor,
               ),
             ),
     );
@@ -334,12 +358,6 @@ class UserView extends StatelessWidget {
                   ),
                 ],
               ),
-              Transform.translate(
-                offset: Offset(0.0, 25.0),
-                child: _buildUserStatus(
-                  emptySeat,
-                ),
-              ),
             ],
           ),
 
@@ -354,7 +372,10 @@ class UserView extends StatelessWidget {
                 )
               : emptySeat
                   ? shrinkedSizedBox
-                  : _buildHiddenCard(alignment: this.cardsAlignment),
+                  : _buildHiddenCardAndLastStatus(
+                      alignment: this.cardsAlignment,
+                      emptySeat: emptySeat,
+                    ),
 
           // show dealer button, if user is a dealer
           userObject.playerType != null &&
@@ -374,9 +395,6 @@ class UserView extends StatelessWidget {
                   time: actionTime,
                 )
               : shrinkedSizedBox,
-
-          // TODO: ONLY FOR DEBUGGING
-          emptySeat ? shrinkedSizedBox : _buildSeatNoIndicator(),
         ],
       ),
     );

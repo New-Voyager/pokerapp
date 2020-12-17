@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
@@ -13,27 +12,6 @@ import 'package:provider/provider.dart';
 
 class QueryHandUpdateService {
   QueryHandUpdateService._();
-
-  // todo: this function is not needed after the server issue is fixed
-  static Map<int, int> _getStack(var currentHandState) {
-    List<int> seatNos = [];
-    Map<String, dynamic> playersActed = currentHandState['playersActed'];
-
-    playersActed.forEach((key, value) {
-      seatNos.add(int.parse(key));
-    });
-
-    Map<int, int> output = {};
-
-    int i = 0;
-    Map<String, dynamic> playersStack = currentHandState['playersStack'];
-    playersStack.forEach((key, value) {
-      output[seatNos[i]] = int.parse(value.toString());
-      i++;
-    });
-
-    return output;
-  }
 
   static void handle({
     BuildContext context,
@@ -86,12 +64,11 @@ class QueryHandUpdateService {
       listen: false,
     ).time = remainingActionTime;
 
-    // todo: put the playersStack value
     Provider.of<Players>(
       context,
       listen: false,
     ).updateStack(
-      _getStack(currentHandState),
+      currentHandState['playersStack'],
     );
 
     // next seat to ACT - handle using Next_Action service
