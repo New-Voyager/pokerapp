@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
+import 'package:pokerapp/models/game_play_models/ui/header_object.dart';
 import 'package:provider/provider.dart';
 
 class NextActionService {
@@ -10,8 +11,13 @@ class NextActionService {
     BuildContext context,
     var data,
   }) {
-    var actionChange = data['actionChange'];
+    int handNum = data['handNum'];
+    Provider.of<HeaderObject>(
+      context,
+      listen: false,
+    ).currentHandNum = handNum;
 
+    var actionChange = data['actionChange'];
     int seatNo = actionChange['seatNo'];
 
     // highlight the current seat No

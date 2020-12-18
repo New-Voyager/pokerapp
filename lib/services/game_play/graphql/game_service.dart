@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
@@ -46,13 +48,17 @@ class GameService {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
 
     String _mutation = """mutation{
-      buyIn(gameCode:"$gameCode", amount: $amount)
+      buyIn(gameCode:"$gameCode", amount: $amount){
+        approved
+      }
     }
     """;
 
     QueryResult result = await _client.mutate(
       MutationOptions(documentNode: gql(_mutation)),
     );
+
+    log(result.exception.toString());
 
     if (result.hasException) return null;
 

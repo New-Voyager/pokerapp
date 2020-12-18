@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/action_info.dart';
@@ -13,8 +11,6 @@ class YourActionService {
     BuildContext context,
     var data,
   }) {
-    log('YOUR_ACTION_DATA: $data');
-
     var seatAction = data['seatAction'];
 
     String clubID = data['clubId'].toString();

@@ -10,6 +10,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/remaining_time.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
+import 'package:pokerapp/models/game_play_models/ui/header_object.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view.dart';
@@ -156,6 +157,15 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
     @required GameInfoModel gameInfoModel,
   }) =>
       [
+        /* a header object is used to update the header section of
+        * the game screen - it contains data regarding the current hand no, club name,
+        * club code and so on */
+        ListenableProvider<HeaderObject>(
+          create: (_) => HeaderObject(
+            gameCode: widget.gameCode,
+          ),
+        ),
+
         /* a copy of Game Info Model is kept in the provider
         * This is used to get the max or min BuyIn amounts
         * or the game code, or for further info about the game */

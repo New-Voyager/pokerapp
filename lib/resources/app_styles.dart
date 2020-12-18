@@ -9,6 +9,18 @@ class AppStyles {
     fontFamily: AppAssets.fontFamilyLato,
   );
 
+  static const gamePlayScreenHeaderTextStyle1 = TextStyle(
+    fontSize: 12.0,
+    color: Colors.white,
+    fontFamily: AppAssets.fontFamilyLato,
+  );
+
+  static const gamePlayScreenHeaderTextStyle2 = TextStyle(
+    fontSize: 12.0,
+    color: const Color(0xfff2a365),
+    fontFamily: AppAssets.fontFamilyLato,
+  );
+
   static const userPopUpMessageTextStyle = TextStyle(
     fontSize: 10.0,
     fontWeight: FontWeight.w800,
