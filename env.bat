@@ -1,5 +1,5 @@
 SET DEFAULT_DOCKER_NET=game
-SET API_SERVER_IMAGE=gcr.io/voyager-01-285603/api-server:0.1.42
+SET API_SERVER_IMAGE=gcr.io/voyager-01-285603/api-server:0.1.43
 SET GAME_SERVER_IMAGE=gcr.io/voyager-01-285603/game-server:0.1.21
 SET BOTRUNNER_IMAGE=gcr.io/voyager-01-285603/botrunner:0.1.32
 
