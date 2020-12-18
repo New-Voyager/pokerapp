@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
+import 'package:pokerapp/resources/app_constants.dart';
 import 'package:provider/provider.dart';
 
 class PlayerActedService {
@@ -35,6 +36,16 @@ class PlayerActedService {
       idx,
       "${playerActed['action']} ${playerActed['amount'] ?? ''}",
     );
+
+    // check if player folded
+    if (playerActed['action'] == AppConstants.FOLD)
+      Provider.of<Players>(
+        context,
+        listen: false,
+      ).updatePlayerFoldedStatus(
+        idx,
+        true,
+      );
 
     int stack = playerActed['stack'];
     if (stack != null)

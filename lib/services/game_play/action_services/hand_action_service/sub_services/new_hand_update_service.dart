@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_play_enums/player_type.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:provider/provider.dart';
 
 class NewHandUpdateService {
@@ -31,6 +32,24 @@ class NewHandUpdateService {
       context,
       listen: false,
     ).removeMarkersFromAllPlayer();
+
+    // remove all the status (last action) of all the players
+    Provider.of<Players>(
+      context,
+      listen: false,
+    ).removeAllPlayersStatus();
+
+    // remove all the folder players
+    Provider.of<Players>(
+      context,
+      listen: false,
+    ).removeAllFoldedPlayers();
+
+    // remove all the community cards
+    Provider.of<TableState>(
+      context,
+      listen: false,
+    ).updateCommunityCards([]);
 
     /* marking the small blind */
     int smallBlindIdx = players.players.indexWhere((p) => p.seatNo == sbPos);

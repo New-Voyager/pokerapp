@@ -31,6 +31,16 @@ class Players extends ChangeNotifier {
     notifyListeners();
   }
 
+  void updatePlayerFoldedStatus(int idx, bool folded) {
+    _players[idx].playerFolded = folded;
+    _notify();
+  }
+
+  void removeAllFoldedPlayers() {
+    for (int i = 0; i < _players.length; i++) _players[i].playerFolded = null;
+    _notify();
+  }
+
   void removeMarkersFromAllPlayer() {
     for (int i = 0; i < _players.length; i++)
       _players[i].playerType = PlayerType.None;

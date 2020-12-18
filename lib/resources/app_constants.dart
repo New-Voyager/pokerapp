@@ -39,6 +39,7 @@ class AppConstants {
   /* extra identifiers */
   static const String WAIT_FOR_BUYIN = 'WAIT_FOR_BUYIN';
   static const String PLAYING = 'PLAYING';
+  static const String FOLD = 'FOLD';
 
   /* message types */
   static const String PLAYER_UPDATE = 'PLAYER_UPDATE';

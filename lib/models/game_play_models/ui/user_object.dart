@@ -14,6 +14,7 @@ class UserObject {
   String status;
   bool highlight;
   PlayerType playerType;
+  bool playerFolded;
 
   UserObject({
     @required this.serverSeatPos,
