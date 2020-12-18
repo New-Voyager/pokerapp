@@ -11,8 +11,8 @@ class PlayerModel {
   bool showBuyIn;
   int stack;
   String avatarUrl;
-
   String status;
+
   PlayerType playerType;
   bool highlight;
 
@@ -22,6 +22,7 @@ class PlayerModel {
     this.playerUuid = data['playerUuid'];
     this.buyIn = data['buyIn'];
     this.stack = data['stack'];
+    this.status = data['status'];
 
     // default values
     this.isMe = false;

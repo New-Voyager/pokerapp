@@ -228,6 +228,26 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
         ),
       ];
 
+  /* After the entire table is drawn, if the current player (isMe == true)
+    * is waiting for buyIn,then show the footer prompt */
+  void _checkForCurrentUserPrompt(BuildContext context) => Provider.of<Players>(
+        context,
+        listen: false,
+      ).players.forEach((p) {
+        if (p.isMe && p.stack == 0)
+          Provider.of<ValueNotifier<FooterStatus>>(
+            context,
+            listen: false,
+          ).value = FooterStatus.Prompt;
+      });
+
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {});
+  }
+
   /* dispose method for closing connections and un subscribing to channels */
   @override
   void dispose() {
@@ -264,6 +284,13 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
               ),
               builder: (BuildContext context, _) {
                 this._providerContext = context;
+
+                // check for the current user prompt, after the following tree is built
+                // waiting for 100 ms should suffice
+                Future.delayed(
+                  const Duration(milliseconds: 100),
+                  () => _checkForCurrentUserPrompt(context),
+                );
 
                 return Container(
                   decoration: _screenBackgroundDecoration,

@@ -291,6 +291,8 @@ class UserView extends StatelessWidget {
 
     if (userObject.buyIn != null) status = 'Buy In ${userObject.buyIn} amount';
 
+    if (userObject.status == AppConstants.PLAYING) status = null;
+
     // decide color from the status message
     // raise, bet -> red
     // check, call -> green

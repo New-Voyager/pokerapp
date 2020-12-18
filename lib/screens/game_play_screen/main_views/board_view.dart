@@ -289,11 +289,21 @@ class BoardView extends StatelessWidget {
           const SizedBox(height: AppDimensions.cardHeight / 3),
 
           /* potUpdates view */
-          Text(
-            'Pot Updates: $potChipsUpdates',
-            style: AppStyles.itemInfoTextStyleHeavy.copyWith(
-              fontSize: 13,
-              fontWeight: FontWeight.w400,
+          Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 10.0,
+              vertical: 5.0,
+            ),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(100.0),
+              color: Colors.black26,
+            ),
+            child: Text(
+              'Updated Pot: $potChipsUpdates',
+              style: AppStyles.itemInfoTextStyleHeavy.copyWith(
+                fontSize: 13,
+                fontWeight: FontWeight.w400,
+              ),
             ),
           ),
         ],

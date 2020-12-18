@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
@@ -14,6 +13,8 @@ class YourActionService {
     BuildContext context,
     var data,
   }) {
+    log('YOUR_ACTION_DATA: $data');
+
     var seatAction = data['seatAction'];
 
     String clubID = data['clubId'].toString();

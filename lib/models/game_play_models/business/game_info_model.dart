@@ -75,6 +75,7 @@ class GameInfoModel {
           playerUuid
           stack
           buyIn
+          status
         }
       }
       actionTime
