@@ -5,10 +5,12 @@ import 'package:pokerapp/resources/app_dimensions.dart';
 class StackCardView extends StatelessWidget {
   final List<CardObject> cards;
   final bool center;
+  final bool deactivated;
 
   StackCardView({
     @required this.cards,
     this.center = false,
+    this.deactivated = false,
   });
 
   @override
@@ -30,7 +32,7 @@ class StackCardView extends StatelessWidget {
                     -AppDimensions.cardWidth * (c.key - n / 2) - ctr,
                     0.0,
                   ),
-                  child: c.value.widget,
+                  child: deactivated ? c.value.grayedWidget : c.value.widget,
                 ),
               )
               .toList()

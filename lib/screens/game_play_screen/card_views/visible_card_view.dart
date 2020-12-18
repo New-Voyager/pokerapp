@@ -7,9 +7,11 @@ import 'package:pokerapp/resources/app_styles.dart';
 
 class VisibleCardView extends StatelessWidget {
   final CardObject card;
+  final bool grayOut;
 
   VisibleCardView({
     @required this.card,
+    this.grayOut = false,
   });
 
   @override
@@ -26,6 +28,12 @@ class VisibleCardView extends StatelessWidget {
         padding: const EdgeInsets.all(5.0),
         height: AppDimensions.cardHeight * 1.5,
         width: AppDimensions.cardWidth * 1.5,
+        foregroundDecoration: grayOut
+            ? BoxDecoration(
+                color: Colors.black54,
+                backgroundBlendMode: BlendMode.darken,
+              )
+            : null,
         decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(5.0),

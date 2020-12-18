@@ -148,7 +148,12 @@ class UserView extends StatelessWidget {
             // hidden card
             Transform.rotate(
               angle: 0.08,
-              child: HiddenCardView(),
+              child: AnimatedSwitcher(
+                duration: AppConstants.animationDuration,
+                child: (userObject.playerFolded ?? false)
+                    ? const SizedBox.shrink()
+                    : HiddenCardView(),
+              ),
             ),
 
             // showing user status
@@ -171,6 +176,7 @@ class UserView extends StatelessWidget {
         ),
         child: StackCardView(
           cards: cards,
+          deactivated: userObject.playerFolded ?? false,
         ),
       );
 
@@ -369,7 +375,9 @@ class UserView extends StatelessWidget {
                   builder: (_, valueNotifierListOfCards, __) =>
                       _buildVisibleCard(
                     cards: valueNotifierListOfCards.value
-                      ..forEach((c) => c.smaller = true),
+                      ..forEach(
+                        (c) => c.smaller = true,
+                      ),
                   ),
                 )
               : emptySeat

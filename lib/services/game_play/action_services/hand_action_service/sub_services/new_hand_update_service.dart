@@ -39,6 +39,12 @@ class NewHandUpdateService {
       listen: false,
     ).removeAllPlayersStatus();
 
+    // remove all the folder players
+    Provider.of<Players>(
+      context,
+      listen: false,
+    ).removeAllFoldedPlayers();
+
     // remove all the community cards
     Provider.of<TableState>(
       context,

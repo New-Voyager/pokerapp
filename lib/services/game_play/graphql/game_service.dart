@@ -58,11 +58,9 @@ class GameService {
       MutationOptions(documentNode: gql(_mutation)),
     );
 
-    log(result.exception.toString());
-
     if (result.hasException) return null;
 
-    return result.data['buyIn'];
+    return result.data['approved'];
   }
 
   /* query current hand method is to get in between insight in a game */
