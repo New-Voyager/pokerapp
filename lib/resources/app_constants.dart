@@ -6,6 +6,10 @@ class AppConstants {
 
   static const int buyInTimeOutSeconds = 100;
 
+  static const Duration communityCardPushDuration = const Duration(
+    milliseconds: 500,
+  );
+
   static const Duration animationDuration = const Duration(
     milliseconds: 700,
   );

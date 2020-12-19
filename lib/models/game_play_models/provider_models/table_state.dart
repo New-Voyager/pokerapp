@@ -39,6 +39,12 @@ class TableState extends ChangeNotifier {
     notifyListeners();
   }
 
+  void addCommunityCard(CardObject card) {
+    if (this._communityCards == null) this._communityCards = List<CardObject>();
+    this._communityCards.add(card);
+    notifyListeners();
+  }
+
   void updateCommunityCards(List<CardObject> cards) {
     this._communityCards = cards;
     notifyListeners();

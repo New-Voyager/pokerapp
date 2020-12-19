@@ -27,7 +27,9 @@ class VisibleCardView extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(5.0),
         height: AppDimensions.cardHeight * 1.5,
-        width: AppDimensions.cardWidth * 1.5,
+        width: card.smaller
+            ? AppDimensions.cardWidth * 1.5
+            : AppDimensions.cardWidth * 1.1,
         foregroundDecoration: grayOut
             ? BoxDecoration(
                 color: Colors.black54,
