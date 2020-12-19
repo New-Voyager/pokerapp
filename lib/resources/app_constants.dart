@@ -6,6 +6,10 @@ class AppConstants {
 
   static const int buyInTimeOutSeconds = 100;
 
+  static const Duration communityCardPushDuration = const Duration(
+    milliseconds: 500,
+  );
+
   static const Duration animationDuration = const Duration(
     milliseconds: 700,
   );
@@ -39,6 +43,7 @@ class AppConstants {
   /* extra identifiers */
   static const String WAIT_FOR_BUYIN = 'WAIT_FOR_BUYIN';
   static const String PLAYING = 'PLAYING';
+  static const String FOLD = 'FOLD';
 
   /* message types */
   static const String PLAYER_UPDATE = 'PLAYER_UPDATE';

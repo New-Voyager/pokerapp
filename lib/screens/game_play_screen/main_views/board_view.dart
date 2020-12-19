@@ -133,7 +133,7 @@ class BoardView extends StatelessWidget {
           child: Transform.translate(
             offset: Offset(
               -widthOfBoard / 3 + shiftHorizontalConstant,
-              shiftDownConstant / 2,
+              -shiftDownConstant / 5,
             ),
             child: userView,
           ),
@@ -145,7 +145,7 @@ class BoardView extends StatelessWidget {
           child: Transform.translate(
             offset: Offset(
               widthOfBoard / 3 - shiftHorizontalConstant,
-              shiftDownConstant / 2,
+              -shiftDownConstant / 5,
             ),
             child: userView,
           ),
@@ -289,11 +289,21 @@ class BoardView extends StatelessWidget {
           const SizedBox(height: AppDimensions.cardHeight / 3),
 
           /* potUpdates view */
-          Text(
-            'Pot Updates: $potChipsUpdates',
-            style: AppStyles.itemInfoTextStyleHeavy.copyWith(
-              fontSize: 13,
-              fontWeight: FontWeight.w400,
+          Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 10.0,
+              vertical: 5.0,
+            ),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(100.0),
+              color: Colors.black26,
+            ),
+            child: Text(
+              'Updated Pot: $potChipsUpdates',
+              style: AppStyles.itemInfoTextStyleHeavy.copyWith(
+                fontSize: 13,
+                fontWeight: FontWeight.w400,
+              ),
             ),
           ),
         ],
@@ -338,6 +348,7 @@ class BoardView extends StatelessWidget {
       userObjects[idx].highlight = model.highlight;
       userObjects[idx].playerType = model.playerType;
       userObjects[idx].avatarUrl = model.avatarUrl;
+      userObjects[idx].playerFolded = model.playerFolded;
     }
 
     return userObjects;

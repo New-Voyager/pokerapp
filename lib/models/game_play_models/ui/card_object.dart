@@ -20,4 +20,9 @@ class CardObject {
   Widget get widget => VisibleCardView(
         card: this,
       );
+
+  Widget get grayedWidget => VisibleCardView(
+        card: this,
+        grayOut: true,
+      );
 }

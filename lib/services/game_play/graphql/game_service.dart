@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
@@ -46,7 +48,9 @@ class GameService {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
 
     String _mutation = """mutation{
-      buyIn(gameCode:"$gameCode", amount: $amount)
+      buyIn(gameCode:"$gameCode", amount: $amount){
+        approved
+      }
     }
     """;
 
@@ -56,7 +60,7 @@ class GameService {
 
     if (result.hasException) return null;
 
-    return result.data['buyIn'];
+    return result.data['approved'];
   }
 
   /* query current hand method is to get in between insight in a game */
