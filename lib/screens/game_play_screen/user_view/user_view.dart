@@ -410,14 +410,16 @@ class UserView extends StatelessWidget {
 
           // cards
           isMe
-              ? Consumer<ValueNotifier<List<CardObject>>>(
-                  builder: (_, valueNotifierListOfCards, __) =>
-                      _buildVisibleCard(
-                    cards: valueNotifierListOfCards.value
-                      ..forEach(
-                        (c) => c.smaller = true,
-                      ),
-                  ),
+              ? _buildVisibleCard(
+                  cards: userObject.cards?.map(
+                        (int c) {
+                          CardObject card = CardHelper.getCard(c);
+                          card.smaller = true;
+
+                          return card;
+                        },
+                      )?.toList() ??
+                      List<CardObject>(),
                 )
               : emptySeat
                   ? shrinkedSizedBox

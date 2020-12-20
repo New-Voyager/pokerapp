@@ -68,12 +68,12 @@ class CardHelper {
   static Uint8List _int64LittleEndianBytes(int v) =>
       Uint8List(8)..buffer.asByteData().setInt64(0, v, Endian.little);
 
-  static List<String> _getCards(String number) {
+  static List<int> getRawCardNumbers(String number) {
     int n = int.parse(number);
     List<int> tmp = _int64LittleEndianBytes(n);
 
-    List<String> cards = List<String>();
-    for (int t in tmp) if (t != 0) cards.add(_getCardFromNumber(t));
+    List<int> cards = List<int>();
+    for (int t in tmp) if (t != 0) cards.add(t);
 
     return cards;
   }
@@ -113,8 +113,8 @@ class CardHelper {
         _getCardFromNumber(n),
       );
 
-  static List<CardObject> getCards(String s) => _getCards(s)
-      .map<CardObject>((String card) => _getCardFromCardValues(card))
+  static List<CardObject> getCards(String s) => getRawCardNumbers(s)
+      .map<CardObject>((int c) => _getCardFromCardValues(_getCardFromNumber(c)))
       .toList();
 
   /* get raw card number from "label:suit" string */

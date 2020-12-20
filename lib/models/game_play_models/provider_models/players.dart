@@ -120,6 +120,13 @@ class Players extends ChangeNotifier {
     _notify();
   }
 
+  void updateCard(int seatNo, List<int> cards) {
+    int idx = _players.indexWhere((p) => p.seatNo == seatNo);
+    _players[idx].cards = cards;
+
+    _notify();
+  }
+
   // todo: how to identify a player that needs to be removed?
   void removePlayer(int idx) {}
 }

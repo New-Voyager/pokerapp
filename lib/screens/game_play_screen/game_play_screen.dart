@@ -191,14 +191,6 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
           ),
         ),
 
-        // TODO: A BETTER WAY WOULD BE TO HOLD THE CARD OBJECTS DIRECTLY IN THE USER
-        /* This provider, holds the current user's cards (DEAL) */
-        ListenableProvider<ValueNotifier<List<CardObject>>>(
-          create: (_) => ValueNotifier(
-            List<CardObject>.empty(),
-          ),
-        ),
-
         /* footer view, is maintained by this Provider - either how action buttons,
         * OR prompt for buy in are shown
         * */
