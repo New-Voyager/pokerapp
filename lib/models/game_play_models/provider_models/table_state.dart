@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
+import 'package:pokerapp/utils/card_helper.dart';
 
 class TableState extends ChangeNotifier {
   /* This object holds the table status, pot chips, and community cards */
@@ -30,7 +31,7 @@ class TableState extends ChangeNotifier {
   }
 
   // todo: add the another potUpdate
-  void updatePostChips({List<int> potChips, int potUpdatesChips}) {
+  void updatePotChips({List<int> potChips, int potUpdatesChips}) {
     if (this._potChips == potChips) return;
     if (this._potUpdatesChips == potUpdatesChips) return;
 
@@ -48,6 +49,18 @@ class TableState extends ChangeNotifier {
   void updateCommunityCards(List<CardObject> cards) {
     this._communityCards = cards;
     notifyListeners();
+  }
+
+  /* this method highlights all community cards */
+  void highlightCards(List<int> rawCards) {
+    for (int i = 0; i < _communityCards.length; i++) {
+      String label = _communityCards[i].label;
+      String suit = _communityCards[i].suit;
+
+      int rawCardNumber = CardHelper.getRawCardNumber('$label$suit');
+      if (rawCards.any((rc) => rc == rawCardNumber))
+        _communityCards[i].highlight = true;
+    }
   }
 
   /* getters */

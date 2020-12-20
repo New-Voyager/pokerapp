@@ -13,6 +13,9 @@ class PlayerModel {
   String avatarUrl;
   String status;
 
+  List<int> cards;
+  List<int> highlightCards;
+
   PlayerType playerType;
   bool highlight;
   bool playerFolded;

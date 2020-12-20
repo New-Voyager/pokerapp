@@ -20,6 +20,8 @@ class VisibleCardView extends StatelessWidget {
       color: card.color,
     );
 
+    bool highlight = card.highlight ?? false;
+
     /* for visible cards, the smaller card size is shown to the left of user,
     * and the bigger size is shown as the community card */
     return Transform.scale(
@@ -37,7 +39,13 @@ class VisibleCardView extends StatelessWidget {
               )
             : null,
         decoration: BoxDecoration(
-            color: Colors.white,
+            color: highlight ? Colors.green.shade100 : Colors.white,
+            border: highlight
+                ? Border.all(
+                    color: Colors.green,
+                    width: 1.5,
+                  )
+                : null,
             borderRadius: BorderRadius.circular(5.0),
             boxShadow: const [
               const BoxShadow(

@@ -56,7 +56,7 @@ class QueryHandUpdateService {
     Provider.of<TableState>(
       context,
       listen: false,
-    ).updatePostChips(
+    ).updatePotChips(
       potChips: pots,
       potUpdatesChips: potUpdates,
     );

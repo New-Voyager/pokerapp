@@ -71,6 +71,12 @@ class Players extends ChangeNotifier {
     _notify();
   }
 
+  void highlightCards({int seatNo, List<int> cards}) {
+    int idx = _players.indexWhere((p) => p.seatNo == seatNo);
+    _players[idx].highlightCards = cards;
+    _notify();
+  }
+
   void updateStatus(int idx, String status) {
     _players[idx].status = status;
     _notify();
@@ -81,10 +87,10 @@ class Players extends ChangeNotifier {
     _notify();
   }
 
-  void updateStack(var stacksData) {
+  void updateStackSilent(var stackData) {
     Map<int, int> stacks = Map<int, int>();
 
-    stacksData.forEach((key, value) =>
+    stackData.forEach((key, value) =>
         stacks[int.parse(key.toString())] = int.parse(value.toString()));
 
     // stacks contains, <seatNo, stack> mapping
@@ -92,11 +98,32 @@ class Players extends ChangeNotifier {
       int idx = _players.indexWhere((p) => p.seatNo == seatNo);
       _players[idx].stack = stack;
     });
+  }
+
+  void updateStack(var stackData) {
+    updateStackSilent(stackData);
     _notify();
   }
 
   void updateStackWithValue(int idx, int newStack) {
     _players[idx].stack = newStack;
+    _notify();
+  }
+
+  void updateUserCards(Map<int, List<int>> data) {
+    /* seat-no, list of cards */
+    data.forEach((seatNo, cards) {
+      int idx = _players.indexWhere((p) => p.seatNo == seatNo);
+      if (idx != -1) _players[idx].cards = cards;
+    });
+
+    _notify();
+  }
+
+  void updateCard(int seatNo, List<int> cards) {
+    int idx = _players.indexWhere((p) => p.seatNo == seatNo);
+    _players[idx].cards = cards;
+
     _notify();
   }
 

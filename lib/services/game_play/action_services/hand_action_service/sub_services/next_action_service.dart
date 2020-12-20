@@ -44,7 +44,7 @@ class NextActionService {
       Provider.of<TableState>(
         context,
         listen: false,
-      ).updatePostChips(
+      ).updatePotChips(
         potChips: pots,
         potUpdatesChips: potUpdates,
       );

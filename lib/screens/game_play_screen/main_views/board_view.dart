@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
@@ -190,7 +191,7 @@ class BoardView extends StatelessWidget {
     switch (tableStatus) {
       case AppConstants.TABLE_STATUS_NOT_ENOUGH_PLAYERS:
         return 'Waiting for more players';
-      case AppConstants.TABLE_STATUS_WAITING_TO_BE_STARTED:
+      case AppConstants.WAITING_TO_BE_STARTED:
         return 'Waiting to be started';
     }
 
@@ -202,8 +203,9 @@ class BoardView extends StatelessWidget {
     List<int> potChips,
     int potChipsUpdates,
     String tableStatus,
+    bool showDown = false,
   }) {
-    String _text = _getText(tableStatus);
+    String _text = showDown ? null : _getText(tableStatus);
 
     Widget tableStatusWidget = Align(
       key: ValueKey('tableStatusWidget'),
@@ -231,7 +233,6 @@ class BoardView extends StatelessWidget {
     * and the pot chips, if they are nulls, put the default values */
 
     if (potChips == null) potChips = [0];
-    if (potChipsUpdates == null) potChipsUpdates = 0;
     if (cards == null) cards = const [];
 
     Widget tablePotAndCardWidget = Align(
@@ -289,20 +290,23 @@ class BoardView extends StatelessWidget {
           const SizedBox(height: AppDimensions.cardHeight / 3),
 
           /* potUpdates view */
-          Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 10.0,
-              vertical: 5.0,
-            ),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(100.0),
-              color: Colors.black26,
-            ),
-            child: Text(
-              'Updated Pot: $potChipsUpdates',
-              style: AppStyles.itemInfoTextStyleHeavy.copyWith(
-                fontSize: 13,
-                fontWeight: FontWeight.w400,
+          Opacity(
+            opacity: potChipsUpdates == null ? 0 : 1,
+            child: Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 10.0,
+                vertical: 5.0,
+              ),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(100.0),
+                color: Colors.black26,
+              ),
+              child: Text(
+                'Updated Pot: $potChipsUpdates',
+                style: AppStyles.itemInfoTextStyleHeavy.copyWith(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w400,
+                ),
               ),
             ),
           ),
@@ -349,6 +353,8 @@ class BoardView extends StatelessWidget {
       userObjects[idx].playerType = model.playerType;
       userObjects[idx].avatarUrl = model.avatarUrl;
       userObjects[idx].playerFolded = model.playerFolded;
+      userObjects[idx].cards = model.cards;
+      userObjects[idx].highlightCards = model.highlightCards;
     }
 
     return userObjects;
@@ -418,12 +424,18 @@ class BoardView extends StatelessWidget {
                   .toList(),
 
               // center view
-              Consumer<TableState>(
-                builder: (_, TableState tableState, __) => _buildCenterView(
+              Consumer2<TableState, ValueNotifier<FooterStatus>>(
+                builder: (_,
+                        TableState tableState,
+                        ValueNotifier<FooterStatus> valueNotifierFooterStatus,
+                        __) =>
+                    _buildCenterView(
                   cards: tableState.cards,
                   potChips: tableState.potChips,
                   potChipsUpdates: tableState.potChipsUpdates,
                   tableStatus: tableState.tableStatus,
+                  showDown:
+                      valueNotifierFooterStatus.value == FooterStatus.Result,
                 ),
               ),
             ],

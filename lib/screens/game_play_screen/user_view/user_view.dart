@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/enums/game_play_enums/player_type.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/remaining_time.dart';
@@ -9,6 +10,7 @@ import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/screens/game_play_screen/card_views/hidden_card_view.dart';
 import 'package:pokerapp/screens/game_play_screen/card_views/stack_card_view.dart';
+import 'package:pokerapp/utils/card_helper.dart';
 import 'package:provider/provider.dart';
 import 'package:timer_count_down/timer_count_down.dart';
 
@@ -133,36 +135,73 @@ class UserView extends StatelessWidget {
         ),
       );
 
+  /* if the footer status becomes footer result
+  * then we need to show the user cards
+  * as it's a show down time */
+
   Widget _buildHiddenCardAndLastStatus({
     Alignment alignment,
     bool emptySeat = true,
   }) =>
-      Transform.translate(
-        offset: Offset(
-          alignment == Alignment.centerRight ? 35.0 : -45.0,
-          -15.0,
-        ),
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            // hidden card
-            Transform.rotate(
-              angle: 0.08,
-              child: AnimatedSwitcher(
-                duration: AppConstants.animationDuration,
-                child: (userObject.playerFolded ?? false)
-                    ? const SizedBox.shrink()
-                    : HiddenCardView(),
-              ),
-            ),
+      Consumer<ValueNotifier<FooterStatus>>(
+        builder: (_, valueNotifierFooterStatus, __) {
+          bool showDown =
+              valueNotifierFooterStatus.value == FooterStatus.Result;
 
-            // showing user status
-            Transform.translate(
-              offset: Offset(0, -30),
-              child: _buildUserStatus(emptySeat),
+          double xOffset;
+          if (showDown)
+            xOffset = (alignment == Alignment.centerRight ? 1 : -1) *
+                25.0 *
+                userObject.cards.length;
+          else
+            xOffset = (alignment == Alignment.centerRight ? 35.0 : -45.0);
+
+          return Transform.translate(
+            offset: Offset(
+              xOffset,
+              -15.0,
             ),
-          ],
-        ),
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                // hidden card
+                Transform.rotate(
+                  angle: showDown ? 0.0 : 0.08,
+                  child: Transform.scale(
+                    scale: showDown ? 0.70 : 1.0,
+                    child: AnimatedSwitcher(
+                      duration: AppConstants.animationDuration,
+                      child: (userObject.playerFolded ?? false)
+                          ? const SizedBox.shrink()
+                          : showDown
+                              ? StackCardView(
+                                  center: true,
+                                  cards: userObject.cards.map((int c) {
+                                    List<int> highlightedCards =
+                                        userObject.highlightCards;
+                                    CardObject card = CardHelper.getCard(c);
+
+                                    card.smaller = true;
+                                    if (highlightedCards?.contains(c) ?? false)
+                                      card.highlight = true;
+
+                                    return card;
+                                  }).toList(),
+                                )
+                              : HiddenCardView(),
+                    ),
+                  ),
+                ),
+
+                // showing user status
+                Transform.translate(
+                  offset: Offset(0, -30),
+                  child: _buildUserStatus(emptySeat),
+                ),
+              ],
+            ),
+          );
+        },
       );
 
   // the following two widgets are only built for the current active player
@@ -371,14 +410,16 @@ class UserView extends StatelessWidget {
 
           // cards
           isMe
-              ? Consumer<ValueNotifier<List<CardObject>>>(
-                  builder: (_, valueNotifierListOfCards, __) =>
-                      _buildVisibleCard(
-                    cards: valueNotifierListOfCards.value
-                      ..forEach(
-                        (c) => c.smaller = true,
-                      ),
-                  ),
+              ? _buildVisibleCard(
+                  cards: userObject.cards?.map(
+                        (int c) {
+                          CardObject card = CardHelper.getCard(c);
+                          card.smaller = true;
+
+                          return card;
+                        },
+                      )?.toList() ??
+                      List<CardObject>(),
                 )
               : emptySeat
                   ? shrinkedSizedBox
