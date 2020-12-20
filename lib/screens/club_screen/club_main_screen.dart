@@ -4,10 +4,12 @@ import 'package:pokerapp/models/club_model.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_icons.dart';
 import 'package:pokerapp/screens/club_screen/games_page_view/clubs_games_page_view.dart';
+import 'package:pokerapp/screens/club_screen/games_page_view/new_game_settings/new_game_settings.dart';
 import 'package:pokerapp/screens/club_screen/info_page_view/info_page_view.dart';
 import 'package:pokerapp/screens/club_screen/members_page_view/members_page_view.dart';
 import 'package:pokerapp/screens/club_screen/messages_page_view/messages_page_view.dart';
 import 'package:pokerapp/screens/main_screens/games_page_view/games_page_view.dart';
+import 'package:pokerapp/widgets/custom_text_button.dart';
 import 'package:pokerapp/widgets/tab_bar_item.dart';
 import 'package:provider/provider.dart';
 
@@ -41,6 +43,19 @@ class _ClubMainScreenState extends State<ClubMainScreen>
     return Scaffold(
       backgroundColor: AppColors.screenBackgroundColor,
       appBar: AppBar(
+        actions: [
+          Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: CustomTextButton(
+                text: "+create game",
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      new MaterialPageRoute(
+                          builder: (context) => NewGameSettings()));
+                }),
+          )
+        ],
         title: Text(
           clubModel.clubName,
         ),
