@@ -354,6 +354,7 @@ class BoardView extends StatelessWidget {
       userObjects[idx].avatarUrl = model.avatarUrl;
       userObjects[idx].playerFolded = model.playerFolded;
       userObjects[idx].cards = model.cards;
+      userObjects[idx].highlightCards = model.highlightCards;
     }
 
     return userObjects;

@@ -107,7 +107,7 @@ class CardHelper {
     );
   }
 
-  /* the following two methods are made public */
+  /* the following three methods are made public */
 
   static CardObject getCard(int n) => _getCardFromCardValues(
         _getCardFromNumber(n),
@@ -116,4 +116,16 @@ class CardHelper {
   static List<CardObject> getCards(String s) => _getCards(s)
       .map<CardObject>((String card) => _getCardFromCardValues(card))
       .toList();
+
+  /* get raw card number from "label:suit" string */
+  static int getRawCardNumber(String s) {
+    int rawCardNumber;
+
+    _cardValues.forEach((rawNo, value) {
+      if (value == s) rawCardNumber = rawNo;
+    });
+
+    assert(rawCardNumber != null);
+    return rawCardNumber;
+  }
 }

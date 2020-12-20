@@ -71,6 +71,12 @@ class Players extends ChangeNotifier {
     _notify();
   }
 
+  void highlightCards({int seatNo, List<int> cards}) {
+    int idx = _players.indexWhere((p) => p.seatNo == seatNo);
+    _players[idx].highlightCards = cards;
+    _notify();
+  }
+
   void updateStatus(int idx, String status) {
     _players[idx].status = status;
     _notify();

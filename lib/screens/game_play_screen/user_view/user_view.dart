@@ -151,7 +151,7 @@ class UserView extends StatelessWidget {
           double xOffset;
           if (showDown)
             xOffset = (alignment == Alignment.centerRight ? 1 : -1) *
-                30.0 *
+                25.0 *
                 userObject.cards.length;
           else
             xOffset = (alignment == Alignment.centerRight ? 35.0 : -45.0);
@@ -176,11 +176,17 @@ class UserView extends StatelessWidget {
                           : showDown
                               ? StackCardView(
                                   center: true,
-                                  cards: userObject.cards?.map((c) {
+                                  cards: userObject.cards.map((int c) {
+                                    List<int> highlightedCards =
+                                        userObject.highlightCards;
                                     CardObject card = CardHelper.getCard(c);
+
                                     card.smaller = true;
+                                    if (highlightedCards?.contains(c) ?? false)
+                                      card.highlight = true;
+
                                     return card;
-                                  })?.toList(),
+                                  }).toList(),
                                 )
                               : HiddenCardView(),
                     ),

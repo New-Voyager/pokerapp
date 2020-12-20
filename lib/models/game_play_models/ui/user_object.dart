@@ -11,6 +11,7 @@ class UserObject {
   int serverSeatPos;
 
   List<int> cards;
+  List<int> highlightCards;
 
   // this status is shown to all the players, by showing a little pop up below the user object
   String status;

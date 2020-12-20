@@ -191,6 +191,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
           ),
         ),
 
+        // TODO: A BETTER WAY WOULD BE TO HOLD THE CARD OBJECTS DIRECTLY IN THE USER
         /* This provider, holds the current user's cards (DEAL) */
         ListenableProvider<ValueNotifier<List<CardObject>>>(
           create: (_) => ValueNotifier(

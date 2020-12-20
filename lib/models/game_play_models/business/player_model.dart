@@ -14,6 +14,8 @@ class PlayerModel {
   String status;
 
   List<int> cards;
+  List<int> highlightCards;
+
   PlayerType playerType;
   bool highlight;
   bool playerFolded;
