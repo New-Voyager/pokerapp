@@ -15,6 +15,8 @@ class StackCardView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (cards == null) return const SizedBox.shrink();
+
     int n = center ? cards.length : 0;
     double ctr = center ? AppDimensions.cardWidth / 2 : 0;
 

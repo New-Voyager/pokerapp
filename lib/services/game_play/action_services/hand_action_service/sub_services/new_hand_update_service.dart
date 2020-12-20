@@ -51,6 +51,14 @@ class NewHandUpdateService {
       listen: false,
     ).updateCommunityCards([]);
 
+    Provider.of<TableState>(
+      context,
+      listen: false,
+    ).updatePotChips(
+      potChips: null,
+      potUpdatesChips: null,
+    );
+
     /* marking the small blind */
     int smallBlindIdx = players.players.indexWhere((p) => p.seatNo == sbPos);
     assert(smallBlindIdx != -1);

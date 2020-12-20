@@ -30,7 +30,7 @@ class TableState extends ChangeNotifier {
   }
 
   // todo: add the another potUpdate
-  void updatePostChips({List<int> potChips, int potUpdatesChips}) {
+  void updatePotChips({List<int> potChips, int potUpdatesChips}) {
     if (this._potChips == potChips) return;
     if (this._potUpdatesChips == potUpdatesChips) return;
 

@@ -16,6 +16,22 @@ class StageUpdateService {
   }) async {
     assert(key != null);
 
+    // remove the updatedPot and store the pots info
+    try {
+      List<int> pots =
+          data[key]['pots']?.map<int>((e) => int.parse(e.toString()))?.toList();
+
+      Provider.of<TableState>(
+        context,
+        listen: false,
+      ).updatePotChips(
+        potChips: pots,
+        potUpdatesChips: null,
+      );
+    } catch (e) {}
+
+    // update the community cards
+
     if (key == 'flop') {
       var board = data[key]['board'];
 

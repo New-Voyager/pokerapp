@@ -10,11 +10,16 @@ class CardObject {
   // ui params
   bool smaller;
 
+  /* this is needed in showdown and
+  while highlighting a winner */
+  bool highlight;
+
   CardObject({
     @required this.suit,
     @required this.label,
     @required this.color,
     this.smaller = false,
+    this.highlight = false,
   });
 
   Widget get widget => VisibleCardView(
