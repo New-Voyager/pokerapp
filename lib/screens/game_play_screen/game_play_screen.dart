@@ -161,7 +161,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
         /* a simple value notifier, holding INT which
         * resembles number of cards to deal with */
         ListenableProvider<ValueNotifier<int>>(
-          create: (_) => ValueNotifier(null),
+          create: (_) => ValueNotifier(2), // todo: default be 2?
         ),
 
         /* a header object is used to update the header section of

@@ -22,6 +22,13 @@ class NewHandUpdateService {
     int dealerPos = newHand['buttonPos'];
     int sbPos = newHand['sbPos'];
     int bbPos = newHand['bbPos'];
+    int noCards = newHand['noCards'];
+
+    // put the no Cards information
+    Provider.of<ValueNotifier<int>>(
+      context,
+      listen: false,
+    ).value = noCards;
 
     // get the players list
     Players players = Provider.of<Players>(
