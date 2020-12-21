@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/screens/club_screen/games_page_view/new_game_settings/ingame_settings/game_type_select.dart';
 import 'package:pokerapp/widgets/custom_text_button.dart';
 
 class NewGameSettings extends StatefulWidget {
@@ -260,19 +261,20 @@ class _NewGameSettingsState extends State<NewGameSettings> {
                 backgroundColor: Color(0xff319ffe),
               ),
               title: Text(
-                "Thursday Night Game",
-                style: TextStyle(color: Colors.white),
-              ),
-              subtitle: Text(
                 "No Limit Holdem",
-                style: TextStyle(color: Color(0xff848484)),
+                style: TextStyle(color: Colors.white),
               ),
               trailing: IconButton(
                   icon: Icon(
                     Icons.arrow_forward_ios,
                     color: Colors.white,
                   ),
-                  onPressed: null),
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        new MaterialPageRoute(
+                            builder: (context) => GameTypeSelect()));
+                  }),
             ),
             Padding(
               padding: const EdgeInsets.only(left: 70.0),
