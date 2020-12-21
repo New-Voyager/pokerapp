@@ -143,10 +143,17 @@ class UserView extends StatelessWidget {
     Alignment alignment,
     bool emptySeat = true,
   }) =>
-      Consumer<ValueNotifier<FooterStatus>>(
-        builder: (_, valueNotifierFooterStatus, __) {
+      Consumer2<ValueNotifier<FooterStatus>, ValueNotifier<int>>(
+        builder: (_, valueNotifierFooterStatus, valueNotifierCardNo, __) {
           bool showDown =
               valueNotifierFooterStatus.value == FooterStatus.Result;
+
+          double shiftMultiplier = 1.0;
+          int cardNo = valueNotifierCardNo.value;
+
+          if (cardNo == 5) shiftMultiplier = 1.7;
+          if (cardNo == 4) shiftMultiplier = 1.45;
+          if (cardNo == 3) shiftMultiplier = 1.25;
 
           double xOffset;
           if (showDown)
@@ -154,7 +161,9 @@ class UserView extends StatelessWidget {
                 25.0 *
                 userObject.cards.length;
           else
-            xOffset = (alignment == Alignment.centerRight ? 35.0 : -45.0);
+            xOffset = (alignment == Alignment.centerRight
+                ? 35.0
+                : -45.0 * shiftMultiplier);
 
           return Transform.translate(
             offset: Offset(
@@ -167,29 +176,26 @@ class UserView extends StatelessWidget {
                 // hidden card
                 AnimatedSwitcher(
                   duration: AppConstants.fastAnimationDuration,
-                  child: Transform.rotate(
-                    angle: showDown ? 0.0 : 0.08,
-                    child: Transform.scale(
-                      scale: showDown ? 0.70 : 1.0,
-                      child: (userObject.playerFolded ?? false)
-                          ? const SizedBox.shrink()
-                          : showDown
-                              ? StackCardView(
-                                  center: true,
-                                  cards: userObject.cards.map((int c) {
-                                    List<int> highlightedCards =
-                                        userObject.highlightCards;
-                                    CardObject card = CardHelper.getCard(c);
+                  child: Transform.scale(
+                    scale: showDown ? 0.70 : 1.0,
+                    child: (userObject.playerFolded ?? false)
+                        ? const SizedBox.shrink()
+                        : showDown
+                            ? StackCardView(
+                                center: true,
+                                cards: userObject.cards.map((int c) {
+                                  List<int> highlightedCards =
+                                      userObject.highlightCards;
+                                  CardObject card = CardHelper.getCard(c);
 
-                                    card.smaller = true;
-                                    if (highlightedCards?.contains(c) ?? false)
-                                      card.highlight = true;
+                                  card.smaller = true;
+                                  if (highlightedCards?.contains(c) ?? false)
+                                    card.highlight = true;
 
-                                    return card;
-                                  }).toList(),
-                                )
-                              : HiddenCardView(),
-                    ),
+                                  return card;
+                                }).toList(),
+                              )
+                            : HiddenCardView(),
                   ),
                 ),
 

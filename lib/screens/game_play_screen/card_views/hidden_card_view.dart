@@ -1,7 +1,8 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
-import 'package:pokerapp/resources/card_back_assets.dart';
 import 'package:provider/provider.dart';
 
 const kDisplacementConstant = 10.0;
@@ -49,13 +50,13 @@ class HiddenCardView extends StatelessWidget {
     return Stack(
       children: List.generate(
         noOfCards,
-        (i) => Transform.rotate(
-          angle: i * 0.05,
-          child: Transform.translate(
-            offset: Offset(
-              kDisplacementConstant * i,
-              0.0,
-            ),
+        (i) => Transform.translate(
+          offset: Offset(
+            kDisplacementConstant * i,
+            0.0,
+          ),
+          child: Transform.rotate(
+            angle: i * 0.03,
             child: _buildCardBack(),
           ),
         ),
