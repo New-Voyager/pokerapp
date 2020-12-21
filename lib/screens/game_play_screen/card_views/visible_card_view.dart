@@ -60,7 +60,7 @@ class VisibleCardView extends StatelessWidget {
               flex: 2,
               child: FittedBox(
                 child: Text(
-                  card.label ?? 'L',
+                  card.label == 'T' ? '10' : card.label,
                   style: textStyle,
                 ),
               ),
