@@ -41,7 +41,7 @@ class UserView extends StatelessWidget {
         duration: AppConstants.animationDuration,
         opacity: emptySeat ? 0.0 : 0.90,
         child: AnimatedContainer(
-          duration: AppConstants.animationDuration,
+          duration: AppConstants.fastAnimationDuration,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             border: Border.all(
