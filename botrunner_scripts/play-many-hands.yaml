@@ -1,3 +1,3 @@
-setup-script: botrunner_scripts/setup/3-bots.yaml
+setup-script: botrunner_scripts/setup/bots-full-table.yaml
 game:
   auto-play: true
