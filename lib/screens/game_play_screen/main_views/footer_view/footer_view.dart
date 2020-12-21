@@ -208,6 +208,7 @@ class FooterView extends StatelessWidget {
 
   Widget _buildActionButtons(BuildContext context) =>
       Consumer<ValueNotifier<PlayerAction>>(
+        key: ValueKey('buildActionButtons'),
         builder: (_, playerActionValueNotifier, __) => Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: playerActionValueNotifier.value.actions.map<Widget>(
@@ -306,6 +307,7 @@ class FooterView extends StatelessWidget {
         AppConstants.buyInTimeOutSeconds;
 
     return Center(
+      key: ValueKey('buildBuyInPrompt'),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -334,7 +336,12 @@ class FooterView extends StatelessWidget {
       case FooterStatus.Prompt:
         return _buildBuyInPromptButton(context);
       case FooterStatus.Result:
-        return FooterResultView();
+        return Consumer<FooterResult>(
+          key: ValueKey('buildFooterResult'),
+          builder: (_, FooterResult footerResult, __) => FooterResultView(
+            footerResult: footerResult,
+          ),
+        );
       case FooterStatus.None:
         return null;
     }
@@ -346,9 +353,12 @@ class FooterView extends StatelessWidget {
   Widget build(BuildContext context) => Consumer<ValueNotifier<FooterStatus>>(
         builder: (_, footerStatusValueNotifier, __) => Container(
           height: 180,
-          child: _build(
-            footerStatusValueNotifier.value,
-            context: context,
+          child: AnimatedSwitcher(
+            duration: AppConstants.animationDuration,
+            child: _build(
+              footerStatusValueNotifier.value,
+              context: context,
+            ),
           ),
         ),
       );

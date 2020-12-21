@@ -10,6 +10,12 @@ import 'package:pokerapp/utils/card_helper.dart';
 import 'package:provider/provider.dart';
 
 class FooterResultView extends StatefulWidget {
+  final FooterResult footerResult;
+
+  FooterResultView({
+    @required this.footerResult,
+  });
+
   @override
   _FooterResultViewState createState() => _FooterResultViewState();
 }
@@ -17,8 +23,10 @@ class FooterResultView extends StatefulWidget {
 /* building the footer result view, which shows the winners
  * along with their highlighted cards with the community cards */
 
-class _FooterResultViewState extends State<FooterResultView> {
-  final ScrollController scrollController = ScrollController();
+class _FooterResultViewState extends State<FooterResultView>
+    with SingleTickerProviderStateMixin {
+  TabController _tabController;
+
   int currentIndex = 0;
 
   Widget getCardRowView({
@@ -70,7 +78,7 @@ class _FooterResultViewState extends State<FooterResultView> {
         .toList();
   }
 
-  Widget _buildFooterResultCommunitySection() {
+  Widget _buildFooterResultCommunitySection(List<int> cardsToHighlight) {
     List<CardObject> _communityCards = Provider.of<TableState>(
       context,
       listen: false,
@@ -100,6 +108,7 @@ class _FooterResultViewState extends State<FooterResultView> {
           flex: 3,
           child: getCardRowView(
             cards: cards,
+            cardsToHighlight: cardsToHighlight,
           ),
         ),
       ],
@@ -152,9 +161,8 @@ class _FooterResultViewState extends State<FooterResultView> {
   Widget _buildFooterResultWinnersSection(
     List<HiWinnersModel> winners,
   ) =>
-      ListView(
-        controller: scrollController,
-        scrollDirection: Axis.horizontal,
+      TabBarView(
+        controller: _tabController,
         physics: BouncingScrollPhysics(),
         children: winners.map(
           (HiWinnersModel winner) {
@@ -171,6 +179,7 @@ class _FooterResultViewState extends State<FooterResultView> {
             );
 
             return Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 /* winner name and card/s */
                 _buildUserNameAndCards(
@@ -194,45 +203,63 @@ class _FooterResultViewState extends State<FooterResultView> {
         ).toList(),
       );
 
-  Widget _buildFooterResult() => Consumer<FooterResult>(
-        builder: (_, FooterResult footerResult, __) {
-          List<HiWinnersModel> winners = footerResult.potWinners;
+  Widget _buildFooterResult() {
+    List<HiWinnersModel> winners = widget.footerResult.potWinners;
 
-          return Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 10.0,
-              vertical: 5.0,
-            ),
-            margin: const EdgeInsets.symmetric(
-              horizontal: 20.0,
-              vertical: 5.0,
-            ),
-            decoration: BoxDecoration(
-              color: AppColors.cardBackgroundColor,
-              borderRadius: BorderRadius.circular(
-                5.0,
-              ),
-            ),
-            child: Column(
-              children: [
-                /* community cards */
-                _buildFooterResultCommunitySection(),
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 10.0,
+        vertical: 5.0,
+      ),
+      margin: const EdgeInsets.symmetric(
+        horizontal: 20.0,
+        vertical: 5.0,
+      ),
+      decoration: BoxDecoration(
+        color: AppColors.cardBackgroundColor,
+        borderRadius: BorderRadius.circular(
+          5.0,
+        ),
+      ),
+      child: Column(
+        children: [
+          /* community cards */
+          _buildFooterResultCommunitySection(
+            winners[currentIndex].winningCards,
+          ),
 
-                /* winner text */
-                Text(
-                  'Winner${winners.length > 1 ? 's' : ''}',
-                  style: AppStyles.footerResultTextStyle2,
-                ),
+          /* winner text */
+          Text(
+            'Winner${winners.length > 1 ? 's' : ''}',
+            style: AppStyles.footerResultTextStyle2,
+          ),
 
-                /* displaying the winner, winner cards, rankStr */
-                Flexible(
-                  child: _buildFooterResultWinnersSection(winners),
-                ),
-              ],
+          /* displaying the winner, winner cards, rankStr */
+          Flexible(
+            child: _buildFooterResultWinnersSection(
+              winners,
             ),
-          );
-        },
-      );
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    _tabController = TabController(
+      length: widget.footerResult.potWinners.length,
+      vsync: this,
+    );
+
+    _tabController.addListener(
+      () => setState(
+        () => currentIndex = _tabController.index,
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) => _buildFooterResult();

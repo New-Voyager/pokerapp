@@ -296,9 +296,9 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                 this._providerContext = context;
 
                 // check for the current user prompt, after the following tree is built
-                // waiting for 100 ms should suffice
+                // waiting for a brief moment should suffice
                 Future.delayed(
-                  const Duration(milliseconds: 100),
+                  AppConstants.buildWaitDuration,
                   () => _checkForCurrentUserPrompt(context),
                 );
 
