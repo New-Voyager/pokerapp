@@ -13,6 +13,7 @@ class CardObject {
   /* this is needed in showdown and
   while highlighting a winner */
   bool highlight;
+  bool otherHighlightColor;
 
   CardObject({
     @required this.suit,

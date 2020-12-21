@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/footer_result.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
@@ -241,6 +242,36 @@ class BoardView extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
+          /* rankStr --> needs to be shown only when footer result is not null */
+          Consumer<FooterResult>(
+            builder: (_, FooterResult footerResult, __) => AnimatedSwitcher(
+              duration: AppConstants.animationDuration,
+              reverseDuration: AppConstants.animationDuration,
+              child: footerResult.isEmpty
+                  ? const SizedBox.shrink()
+                  : Transform.translate(
+                      offset: Offset(
+                        0.0,
+                        -AppDimensions.cardHeight / 2,
+                      ),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10.0,
+                          vertical: 5.0,
+                        ),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(100.0),
+                          color: Colors.black26,
+                        ),
+                        child: Text(
+                          footerResult.potWinners.first.rankStr,
+                          style: AppStyles.footerResultTextStyle4,
+                        ),
+                      ),
+                    ),
+            ),
+          ),
+
           // card stacks
           StackCardView(
             cards: cards,

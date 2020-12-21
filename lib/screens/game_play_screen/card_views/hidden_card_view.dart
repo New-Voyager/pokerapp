@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
+import 'package:provider/provider.dart';
+
+const kDisplacementConstant = 10.0;
 
 class HiddenCardView extends StatelessWidget {
   Widget _buildCardBack() => Container(
@@ -31,17 +34,25 @@ class HiddenCardView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    int noOfCards = Provider.of<ValueNotifier<int>>(
+      context,
+      listen: false,
+    ).value;
+
     return Stack(
-      children: [
-        _buildCardBack(),
-        Transform.rotate(
-          angle: 0.05,
+      children: List.generate(
+        noOfCards,
+        (i) => Transform.rotate(
+          angle: i * 0.05,
           child: Transform.translate(
-            offset: Offset(10.0, 0.0),
+            offset: Offset(
+              kDisplacementConstant * i,
+              0.0,
+            ),
             child: _buildCardBack(),
           ),
         ),
-      ],
+      ),
     );
   }
 }

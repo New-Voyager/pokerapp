@@ -1,14 +1,25 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
+import 'package:flutter/widgets.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
+import 'package:pokerapp/models/game_play_models/business/hi_winners_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/action_info.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/footer_result.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/player_action.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
+import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_constants.dart';
+import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/footer_result_view.dart';
 import 'package:pokerapp/screens/game_play_screen/pop_ups/chip_amount_pop_up.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/services/game_play/footer_services.dart';
+import 'package:pokerapp/utils/card_helper.dart';
 import 'package:pokerapp/widgets/round_button.dart';
 import 'package:provider/provider.dart';
 import 'package:timer_count_down/timer_count_down.dart';
@@ -197,6 +208,7 @@ class FooterView extends StatelessWidget {
 
   Widget _buildActionButtons(BuildContext context) =>
       Consumer<ValueNotifier<PlayerAction>>(
+        key: ValueKey('buildActionButtons'),
         builder: (_, playerActionValueNotifier, __) => Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: playerActionValueNotifier.value.actions.map<Widget>(
@@ -295,6 +307,7 @@ class FooterView extends StatelessWidget {
         AppConstants.buyInTimeOutSeconds;
 
     return Center(
+      key: ValueKey('buildBuyInPrompt'),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -322,6 +335,13 @@ class FooterView extends StatelessWidget {
         return _buildActionButtons(context);
       case FooterStatus.Prompt:
         return _buildBuyInPromptButton(context);
+      case FooterStatus.Result:
+        return Consumer<FooterResult>(
+          key: ValueKey('buildFooterResult'),
+          builder: (_, FooterResult footerResult, __) => FooterResultView(
+            footerResult: footerResult,
+          ),
+        );
       case FooterStatus.None:
         return null;
     }
@@ -332,10 +352,13 @@ class FooterView extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Consumer<ValueNotifier<FooterStatus>>(
         builder: (_, footerStatusValueNotifier, __) => Container(
-          height: 150,
-          child: _build(
-            footerStatusValueNotifier.value,
-            context: context,
+          height: 180,
+          child: AnimatedSwitcher(
+            duration: AppConstants.animationDuration,
+            child: _build(
+              footerStatusValueNotifier.value,
+              context: context,
+            ),
           ),
         ),
       );

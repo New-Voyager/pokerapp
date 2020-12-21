@@ -14,7 +14,7 @@ import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/header_object.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view.dart';
-import 'package:pokerapp/screens/game_play_screen/main_views/footer_view.dart';
+import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/footer_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/header_view.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/services/game_play/action_services/game_action_service/game_action_service.dart';
@@ -158,6 +158,12 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
     @required GameInfoModel gameInfoModel,
   }) =>
       [
+        /* a simple value notifier, holding INT which
+        * resembles number of cards to deal with */
+        ListenableProvider<ValueNotifier<int>>(
+          create: (_) => ValueNotifier(2), // todo: default be 2?
+        ),
+
         /* a header object is used to update the header section of
         * the game screen - it contains data regarding the current hand no, club name,
         * club code and so on */
@@ -296,9 +302,9 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                 this._providerContext = context;
 
                 // check for the current user prompt, after the following tree is built
-                // waiting for 100 ms should suffice
+                // waiting for a brief moment should suffice
                 Future.delayed(
-                  const Duration(milliseconds: 100),
+                  AppConstants.buildWaitDuration,
                   () => _checkForCurrentUserPrompt(context),
                 );
 

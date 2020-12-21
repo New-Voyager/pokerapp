@@ -165,12 +165,12 @@ class UserView extends StatelessWidget {
               alignment: Alignment.center,
               children: [
                 // hidden card
-                Transform.rotate(
-                  angle: showDown ? 0.0 : 0.08,
-                  child: Transform.scale(
-                    scale: showDown ? 0.70 : 1.0,
-                    child: AnimatedSwitcher(
-                      duration: AppConstants.animationDuration,
+                AnimatedSwitcher(
+                  duration: AppConstants.fastAnimationDuration,
+                  child: Transform.rotate(
+                    angle: showDown ? 0.0 : 0.08,
+                    child: Transform.scale(
+                      scale: showDown ? 0.70 : 1.0,
                       child: (userObject.playerFolded ?? false)
                           ? const SizedBox.shrink()
                           : showDown

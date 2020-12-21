@@ -6,7 +6,15 @@ class AppConstants {
 
   static const int buyInTimeOutSeconds = 100;
 
+  static const Duration buildWaitDuration = const Duration(
+    milliseconds: 100,
+  );
+
   static const Duration communityCardPushDuration = const Duration(
+    milliseconds: 300,
+  );
+
+  static const Duration fastAnimationDuration = const Duration(
     milliseconds: 300,
   );
 
