@@ -36,13 +36,14 @@ class QueryHandUpdateService {
 
     /* store the cards of the current player */
     int idxOfMe = players.players.indexWhere((p) => p.isMe);
-    Provider.of<Players>(
-      context,
-      listen: false,
-    ).updateCard(
-      players.players[idxOfMe].seatNo,
-      CardHelper.getRawCardNumbers(playerCards),
-    );
+    if (idxOfMe != -1)
+      Provider.of<Players>(
+        context,
+        listen: false,
+      ).updateCard(
+        players.players[idxOfMe].seatNo,
+        CardHelper.getRawCardNumbers(playerCards),
+      );
 
     // boardCards update if available
     try {
