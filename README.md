@@ -32,6 +32,7 @@ Run botrunner.
 ```
 BOTRUNNER_SCRIPT=river-action-3-bots.yaml make botrunner
 BOTRUNNER_SCRIPT=river-action-2-bots-1-human.yaml make botrunner
+BOTRUNNER_SCRIPT=play-many-hands.yaml make botrunner
 
 # You can disable nats messages using PRINT_GAME_MSG and PRINT_HAND_MSG variables.
 BOTRUNNER_SCRIPT=river-action-3-bots.yaml PRINT_GAME_MSG=false PRINT_HAND_MSG=false make botrunner
