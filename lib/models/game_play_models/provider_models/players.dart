@@ -77,6 +77,11 @@ class Players extends ChangeNotifier {
     _notify();
   }
 
+  void removeCardsFromAll() {
+    for (int i = 0; i < _players.length; i++) _players[i].cards = null;
+    _notify();
+  }
+
   void updateStatus(int idx, String status) {
     _players[idx].status = status;
     _notify();

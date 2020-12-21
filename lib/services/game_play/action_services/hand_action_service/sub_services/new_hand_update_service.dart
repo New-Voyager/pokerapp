@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/enums/game_play_enums/player_type.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/footer_result.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:provider/provider.dart';
@@ -58,6 +60,18 @@ class NewHandUpdateService {
       potChips: null,
       potUpdatesChips: null,
     );
+
+    /* clean up from result views */
+    /* set footer status to none  */
+    Provider.of<ValueNotifier<FooterStatus>>(
+      context,
+      listen: false,
+    ).value = FooterStatus.None;
+    /* clearing the footer result */
+    Provider.of<FooterResult>(
+      context,
+      listen: false,
+    ).reset();
 
     /* marking the small blind */
     int smallBlindIdx = players.players.indexWhere((p) => p.seatNo == sbPos);

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pokerapp/models/game_play_models/ui/header_object.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:provider/provider.dart';
@@ -23,19 +24,37 @@ class HeaderView extends StatelessWidget {
             horizontal: 10.0,
             vertical: 10.0,
           ),
-          child: Column(
+          child: Stack(
+            alignment: Alignment.center,
             children: [
-              /* game code */
-              _buildText(
-                'GAME CODE: ${obj.gameCode}',
+              /* main content view */
+              Column(
+                children: [
+                  /* game code */
+                  _buildText(
+                    'GAME CODE: ${obj.gameCode}',
+                  ),
+
+                  /* hand num */
+                  _buildText(
+                    obj.currentHandNum == null
+                        ? ''
+                        : 'Hand: #${obj.currentHandNum}',
+                    whiteColor: false,
+                  ),
+                ],
               ),
 
-              /* hand num */
-              _buildText(
-                obj.currentHandNum == null
-                    ? ''
-                    : 'Hand: #${obj.currentHandNum}',
-                whiteColor: false,
+              /* back button */
+              Align(
+                alignment: Alignment.centerLeft,
+                child: InkWell(
+                  onTap: () => Navigator.pop(context),
+                  child: Icon(
+                    FontAwesomeIcons.chevronLeft,
+                    color: Colors.white,
+                  ),
+                ),
               ),
             ],
           ),

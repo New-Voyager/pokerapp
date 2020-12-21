@@ -14,6 +14,10 @@ class AppConstants {
     milliseconds: 300,
   );
 
+  static const Duration fastAnimationDuration = const Duration(
+    milliseconds: 300,
+  );
+
   static const Duration animationDuration = const Duration(
     milliseconds: 600,
   );

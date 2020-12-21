@@ -52,9 +52,16 @@ class GameComService {
   }
 
   void dispose() {
+    log('game com service -- disposing');
     _gameToPlayerChannelSubs?.unSub();
+    _gameToPlayerChannelSubs?.close();
+
     _handToAllChannelSubs?.unSub();
+    _handToAllChannelSubs?.close();
+
     _handToPlayerChannelSubs?.unSub();
+    _handToPlayerChannelSubs?.close();
+
     initiated = false;
     _client?.close();
   }

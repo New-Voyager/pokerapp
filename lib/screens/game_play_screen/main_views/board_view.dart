@@ -247,7 +247,7 @@ class BoardView extends StatelessWidget {
             builder: (_, FooterResult footerResult, __) => AnimatedSwitcher(
               duration: AppConstants.animationDuration,
               reverseDuration: AppConstants.animationDuration,
-              child: footerResult == null
+              child: footerResult.isEmpty
                   ? const SizedBox.shrink()
                   : Transform.translate(
                       offset: Offset(

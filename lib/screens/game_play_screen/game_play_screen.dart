@@ -158,6 +158,12 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
     @required GameInfoModel gameInfoModel,
   }) =>
       [
+        /* a simple value notifier, holding INT which
+        * resembles number of cards to deal with */
+        ListenableProvider<ValueNotifier<int>>(
+          create: (_) => ValueNotifier(null),
+        ),
+
         /* a header object is used to update the header section of
         * the game screen - it contains data regarding the current hand no, club name,
         * club code and so on */
