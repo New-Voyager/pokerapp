@@ -15,6 +15,30 @@ class AppStyles {
     fontFamily: AppAssets.fontFamilyLato,
   );
 
+  static const footerResultTextStyle1 = TextStyle(
+    fontSize: 14.0,
+    color: Colors.greenAccent,
+    fontFamily: AppAssets.fontFamilyLato,
+  );
+
+  static const footerResultTextStyle2 = TextStyle(
+    fontSize: 16.0,
+    color: Colors.white,
+    fontFamily: AppAssets.fontFamilyLato,
+  );
+
+  static const footerResultTextStyle3 = TextStyle(
+    fontSize: 14.0,
+    color: const Color(0xfff2a365),
+    fontFamily: AppAssets.fontFamilyLato,
+  );
+
+  static const footerResultTextStyle4 = TextStyle(
+    fontSize: 14.0,
+    color: const Color(0xffCEE5F1),
+    fontFamily: AppAssets.fontFamilyLato,
+  );
+
   static const gamePlayScreenHeaderTextStyle2 = TextStyle(
     fontSize: 12.0,
     color: const Color(0xfff2a365),

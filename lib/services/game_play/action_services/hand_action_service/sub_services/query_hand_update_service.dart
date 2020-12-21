@@ -28,10 +28,21 @@ class QueryHandUpdateService {
 
     // current players cards
     String playerCards = currentHandState['playerCards'];
-    Provider.of<ValueNotifier<List<CardObject>>>(
+
+    Players players = Provider.of<Players>(
       context,
       listen: false,
-    ).value = CardHelper.getCards(playerCards);
+    );
+
+    /* store the cards of the current player */
+    int idxOfMe = players.players.indexWhere((p) => p.isMe);
+    Provider.of<Players>(
+      context,
+      listen: false,
+    ).updateCard(
+      players.players[idxOfMe].seatNo,
+      CardHelper.getRawCardNumbers(playerCards),
+    );
 
     // boardCards update if available
     try {
@@ -80,10 +91,6 @@ class QueryHandUpdateService {
 
     // next seat to ACT - handle using Next_Action service
     int nextSeatToAct = int.parse(currentHandState['nextSeatToAct'].toString());
-    Players players = Provider.of<Players>(
-      context,
-      listen: false,
-    );
     int idx = players.players.indexWhere((p) => p.seatNo == nextSeatToAct);
 
     if (players.players[idx].isMe) {
