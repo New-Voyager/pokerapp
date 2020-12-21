@@ -135,7 +135,7 @@ class BoardView extends StatelessWidget {
           child: Transform.translate(
             offset: Offset(
               -widthOfBoard / 3 + shiftHorizontalConstant,
-              -shiftDownConstant / 5,
+              shiftDownConstant / 3,
             ),
             child: userView,
           ),
@@ -147,7 +147,7 @@ class BoardView extends StatelessWidget {
           child: Transform.translate(
             offset: Offset(
               widthOfBoard / 3 - shiftHorizontalConstant,
-              -shiftDownConstant / 5,
+              shiftDownConstant / 3,
             ),
             child: userView,
           ),
