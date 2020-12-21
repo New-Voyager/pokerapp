@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
+import 'package:pokerapp/resources/card_back_assets.dart';
 import 'package:provider/provider.dart';
 
 const kDisplacementConstant = 10.0;
 
 class HiddenCardView extends StatelessWidget {
   Widget _buildCardBack() => Container(
-        height: AppDimensions.cardHeight * 0.80,
-        width: AppDimensions.cardWidth * 0.80,
+        height: AppDimensions.cardHeight * 0.90,
+        width: AppDimensions.cardWidth * 0.90,
         decoration: BoxDecoration(
           boxShadow: [
             const BoxShadow(
@@ -16,18 +18,23 @@ class HiddenCardView extends StatelessWidget {
               blurRadius: 2.0,
             )
           ],
-          borderRadius: BorderRadius.circular(5.0),
-          border: Border.all(
-            color: Colors.white,
-            width: 1.0,
-          ),
-          gradient: const LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: const [
-              const Color(0xff0d4b74),
-              const Color(0xff07263a),
-            ],
+//          borderRadius: BorderRadius.circular(5.0),
+//          border: Border.all(
+//            color: Colors.white,
+//            width: 1.0,
+//          ),
+//          gradient: const LinearGradient(
+//            begin: Alignment.topCenter,
+//            end: Alignment.bottomCenter,
+//            colors: const [
+//              const Color(0xff0d4b74),
+//              const Color(0xff07263a),
+//            ],
+//          ),
+        ),
+        child: Consumer<ValueNotifier<String>>(
+          builder: (_, valueNotifierAsset, __) => SvgPicture.asset(
+            valueNotifierAsset.value,
           ),
         ),
       );
