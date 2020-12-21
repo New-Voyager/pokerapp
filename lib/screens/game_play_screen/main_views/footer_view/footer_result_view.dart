@@ -262,5 +262,11 @@ class _FooterResultViewState extends State<FooterResultView>
   }
 
   @override
-  Widget build(BuildContext context) => _buildFooterResult();
+  Widget build(BuildContext context) {
+    try {
+      return _buildFooterResult();
+    } catch (e) {
+      return const SizedBox.shrink();
+    }
+  }
 }
