@@ -2,7 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/screens/club_screen/games_page_view/new_game_settings/ingame_settings/game_type_select.dart';
+import 'package:pokerapp/services/game_play/new_game_settings_services/new_game_settings_services.dart';
 import 'package:pokerapp/widgets/custom_text_button.dart';
+import 'package:provider/provider.dart';
 
 class NewGameSettings extends StatefulWidget {
   @override
@@ -254,175 +256,181 @@ class _NewGameSettingsState extends State<NewGameSettings> {
       ),
       child: Padding(
         padding: const EdgeInsets.only(bottom: 8.0),
-        child: Column(
-          children: [
-            ListTile(
-              leading: CircleAvatar(
-                backgroundColor: Color(0xff319ffe),
+        child: Consumer<NewGameSettingsServices>(
+          builder: (context, data, child) => Column(
+            children: [
+              ListTile(
+                leading: CircleAvatar(
+                  backgroundColor: Color(0xff319ffe),
+                ),
+                title: Text(
+                  data.currentGameType,
+                  style: TextStyle(color: Colors.white),
+                ),
+                trailing: IconButton(
+                    icon: Icon(
+                      Icons.arrow_forward_ios,
+                      color: Colors.white,
+                    ),
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          new MaterialPageRoute(
+                            builder: (context) => ChangeNotifierProvider.value(
+                              value: data,
+                              child: GameTypeSelect(),
+                            ),
+                          ));
+                    }),
               ),
-              title: Text(
-                "No Limit Holdem",
-                style: TextStyle(color: Colors.white),
+              Padding(
+                padding: const EdgeInsets.only(left: 70.0),
+                child: Divider(
+                  color: Color(0xff707070),
+                ),
               ),
-              trailing: IconButton(
-                  icon: Icon(
-                    Icons.arrow_forward_ios,
-                    color: Colors.white,
-                  ),
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        new MaterialPageRoute(
-                            builder: (context) => GameTypeSelect()));
-                  }),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 70.0),
-              child: Divider(
-                color: Color(0xff707070),
+              ListTile(
+                leading: CircleAvatar(
+                  backgroundColor: Color(0xff319ffe),
+                ),
+                title: Text(
+                  "Big Blind",
+                  style: TextStyle(color: Colors.white),
+                ),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(
+                      "2.0",
+                      style: TextStyle(color: Color(0xff848484)),
+                    ),
+                    IconButton(
+                        icon: Icon(
+                          Icons.arrow_forward_ios,
+                          color: Colors.white,
+                        ),
+                        onPressed: null),
+                  ],
+                ),
               ),
-            ),
-            ListTile(
-              leading: CircleAvatar(
-                backgroundColor: Color(0xff319ffe),
+              Padding(
+                padding: const EdgeInsets.only(left: 70.0),
+                child: Divider(
+                  color: Color(0xff707070),
+                ),
               ),
-              title: Text(
-                "Big Blind",
-                style: TextStyle(color: Colors.white),
+              ListTile(
+                leading: CircleAvatar(
+                  backgroundColor: Color(0xff319ffe),
+                ),
+                title: Text(
+                  "Buy In",
+                  style: TextStyle(color: Colors.white),
+                ),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(
+                      "100/300",
+                      style: TextStyle(color: Color(0xff848484)),
+                    ),
+                    IconButton(
+                        icon: Icon(
+                          Icons.arrow_forward_ios,
+                          color: Colors.white,
+                        ),
+                        onPressed: null),
+                  ],
+                ),
               ),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Text(
-                    "2.0",
-                    style: TextStyle(color: Color(0xff848484)),
-                  ),
-                  IconButton(
-                      icon: Icon(
-                        Icons.arrow_forward_ios,
-                        color: Colors.white,
-                      ),
-                      onPressed: null),
-                ],
+              Padding(
+                padding: const EdgeInsets.only(left: 70.0),
+                child: Divider(
+                  color: Color(0xff707070),
+                ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 70.0),
-              child: Divider(
-                color: Color(0xff707070),
+              ListTile(
+                leading: CircleAvatar(
+                  backgroundColor: Color(0xff319ffe),
+                ),
+                title: Text(
+                  "Max Players",
+                  style: TextStyle(color: Colors.white),
+                ),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(
+                      "9",
+                      style: TextStyle(color: Color(0xff848484)),
+                    ),
+                    IconButton(
+                        icon: Icon(
+                          Icons.arrow_forward_ios,
+                          color: Colors.white,
+                        ),
+                        onPressed: null),
+                  ],
+                ),
               ),
-            ),
-            ListTile(
-              leading: CircleAvatar(
-                backgroundColor: Color(0xff319ffe),
+              Padding(
+                padding: const EdgeInsets.only(left: 70.0),
+                child: Divider(
+                  color: Color(0xff707070),
+                ),
               ),
-              title: Text(
-                "Buy In",
-                style: TextStyle(color: Colors.white),
+              ListTile(
+                leading: CircleAvatar(
+                  backgroundColor: Color(0xff319ffe),
+                ),
+                title: Text(
+                  "Club Tips",
+                  style: TextStyle(color: Colors.white),
+                ),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(
+                      "5% or 5 cap",
+                      style: TextStyle(color: Color(0xff848484)),
+                    ),
+                    IconButton(
+                        icon: Icon(
+                          Icons.arrow_forward_ios,
+                          color: Colors.white,
+                        ),
+                        onPressed: null),
+                  ],
+                ),
               ),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Text(
-                    "100/300",
-                    style: TextStyle(color: Color(0xff848484)),
-                  ),
-                  IconButton(
-                      icon: Icon(
-                        Icons.arrow_forward_ios,
-                        color: Colors.white,
-                      ),
-                      onPressed: null),
-                ],
+              Padding(
+                padding: const EdgeInsets.only(left: 70.0),
+                child: Divider(
+                  color: Color(0xff707070),
+                ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 70.0),
-              child: Divider(
-                color: Color(0xff707070),
+              ListTile(
+                leading: CircleAvatar(
+                  backgroundColor: Color(0xff319ffe),
+                ),
+                title: Text(
+                  "Straddle(UTG)",
+                  style: TextStyle(color: Colors.white),
+                ),
+                trailing: CupertinoSwitch(
+                    value: straddleSwitch,
+                    onChanged: (value) {
+                      setState(() {
+                        straddleSwitch = value;
+                      });
+                    }),
               ),
-            ),
-            ListTile(
-              leading: CircleAvatar(
-                backgroundColor: Color(0xff319ffe),
-              ),
-              title: Text(
-                "Max Players",
-                style: TextStyle(color: Colors.white),
-              ),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Text(
-                    "9",
-                    style: TextStyle(color: Color(0xff848484)),
-                  ),
-                  IconButton(
-                      icon: Icon(
-                        Icons.arrow_forward_ios,
-                        color: Colors.white,
-                      ),
-                      onPressed: null),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 70.0),
-              child: Divider(
-                color: Color(0xff707070),
-              ),
-            ),
-            ListTile(
-              leading: CircleAvatar(
-                backgroundColor: Color(0xff319ffe),
-              ),
-              title: Text(
-                "Club Tips",
-                style: TextStyle(color: Colors.white),
-              ),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Text(
-                    "5% or 5 cap",
-                    style: TextStyle(color: Color(0xff848484)),
-                  ),
-                  IconButton(
-                      icon: Icon(
-                        Icons.arrow_forward_ios,
-                        color: Colors.white,
-                      ),
-                      onPressed: null),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 70.0),
-              child: Divider(
-                color: Color(0xff707070),
-              ),
-            ),
-            ListTile(
-              leading: CircleAvatar(
-                backgroundColor: Color(0xff319ffe),
-              ),
-              title: Text(
-                "Straddle(UTG)",
-                style: TextStyle(color: Colors.white),
-              ),
-              trailing: CupertinoSwitch(
-                  value: straddleSwitch,
-                  onChanged: (value) {
-                    setState(() {
-                      straddleSwitch = value;
-                    });
-                  }),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

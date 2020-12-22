@@ -9,6 +9,7 @@ import 'package:pokerapp/screens/club_screen/info_page_view/info_page_view.dart'
 import 'package:pokerapp/screens/club_screen/members_page_view/members_page_view.dart';
 import 'package:pokerapp/screens/club_screen/messages_page_view/messages_page_view.dart';
 import 'package:pokerapp/screens/main_screens/games_page_view/games_page_view.dart';
+import 'package:pokerapp/services/game_play/new_game_settings_services/new_game_settings_services.dart';
 import 'package:pokerapp/widgets/custom_text_button.dart';
 import 'package:pokerapp/widgets/tab_bar_item.dart';
 import 'package:provider/provider.dart';
@@ -52,7 +53,11 @@ class _ClubMainScreenState extends State<ClubMainScreen>
                   Navigator.push(
                       context,
                       new MaterialPageRoute(
-                          builder: (context) => NewGameSettings()));
+                          builder: (context) => ChangeNotifierProvider(
+                                create: (_) => NewGameSettingsServices(),
+                                child: NewGameSettings(),
+                                lazy: false,
+                              )));
                 }),
           )
         ],

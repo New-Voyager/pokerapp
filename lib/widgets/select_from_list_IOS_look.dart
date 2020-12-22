@@ -4,8 +4,9 @@ import 'package:pokerapp/resources/app_colors.dart';
 class IOSLikeCheckList extends StatefulWidget {
   final List<String> list;
   final int selectedIndex;
+  final Function(int) onTap;
 
-  IOSLikeCheckList({this.list, this.selectedIndex});
+  IOSLikeCheckList({this.list, this.selectedIndex, this.onTap});
 
   @override
   _IOSLikeCheckListState createState() => _IOSLikeCheckListState();
@@ -32,6 +33,7 @@ class _IOSLikeCheckListState extends State<IOSLikeCheckList> {
               setState(() {
                 isSelected = index;
               });
+              widget.onTap(index);
             },
             leading: isSelected == index
                 ? Icon(
