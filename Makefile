@@ -1,5 +1,5 @@
 DEFAULT_DOCKER_NET := game
-API_SERVER_IMAGE := gcr.io/voyager-01-285603/api-server:0.1.50
+API_SERVER_IMAGE := gcr.io/voyager-01-285603/api-server:0.1.51
 GAME_SERVER_IMAGE := gcr.io/voyager-01-285603/game-server:0.1.29
 BOTRUNNER_IMAGE := gcr.io/voyager-01-285603/botrunner:0.1.47
 NATS_SERVER_IMAGE := gcr.io/voyager-01-285603/nats-server:0.1.20
