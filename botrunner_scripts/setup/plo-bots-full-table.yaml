@@ -73,7 +73,7 @@ players:
     botActionPauseTime: 500
 
 club:
-  name: Bad Robots
+  name: PLO Club
   description: Club used for testing with the bot runner
   rewards:
     - name: High Hand
@@ -83,7 +83,7 @@ club:
 
 game:
   create: true
-  title: "Bot Testing Game"
+  title: "PLO Bot Game"
   gameType: "OMAHA"
   smallBlind: 1.0
   bigBlind: 2.0

@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class GameComService {
   Client _client;
+  Client _clientPub;
   bool initiated;
 
   String gameToPlayerChannel;
@@ -26,12 +27,14 @@ class GameComService {
     @required this.playerToHandChannel,
   }) {
     _client = Client();
+    _clientPub = Client();
     this.initiated = false;
   }
 
   Future<void> init() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     await _client.connect(sharedPreferences.getString(AppConstants.NATS_URL));
+    await _clientPub.connect(sharedPreferences.getString(AppConstants.NATS_URL));
 
     // subscribe
     log('subscribing to ${this.gameToPlayerChannel}');
@@ -48,7 +51,7 @@ class GameComService {
 
   void sendPlayerToHandChannel(String data) {
     assert(initiated);
-    this._client.pubString(this.playerToHandChannel, data);
+    this._clientPub.pubString(this.playerToHandChannel, data);
   }
 
   void dispose() {

@@ -344,13 +344,14 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
 
 /* design constants */
 const _screenBackgroundDecoration = const BoxDecoration(
-  gradient: const LinearGradient(
-    begin: Alignment.topCenter,
-    end: Alignment.bottomCenter,
-    colors: [
-      const Color(0xff353535),
-      const Color(0xff464646),
-      Colors.black,
-    ],
-  ),
+  color: Colors.black,
+  // gradient: const LinearGradient(
+  //   begin: Alignment.topCenter,
+  //   end: Alignment.bottomCenter,
+  //   colors: [
+  //     const Color(0xff353535),
+  //     const Color(0xff464646),
+  //     Colors.black,
+  //   ],
+  // ),
 );
