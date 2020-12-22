@@ -35,7 +35,7 @@ BOTRUNNER_SCRIPT=river-action-2-bots-1-human.yaml make botrunner
 BOTRUNNER_SCRIPT=play-many-hands.yaml make botrunner
 
 Use the following commands to run 4-card PLO
-BOTRUNNER_SCRIPT=plo-play-many-hands.yaml make botrunner
+BOTRUNNER_SCRIPT=plo-many-hands.yaml make botrunner
 
 # You can disable nats messages using PRINT_GAME_MSG and PRINT_HAND_MSG variables.
 BOTRUNNER_SCRIPT=river-action-3-bots.yaml PRINT_GAME_MSG=false PRINT_HAND_MSG=false make botrunner
@@ -45,3 +45,21 @@ Bring down the servers and clean up data.
 ```
 make stack-down && make stack-clean
 ```
+
+## Run the project on a physical device (Android).
+Enable USB debugging on your phone (https://developer.android.com/studio/debug/dev-options).
+
+Connect the phone to your PC via USB cable.
+
+Verify your phone is recognized in `adb devices` command.
+```
+$ adb devices
+
+List of devices attached
+01000b1c7c6ecbb5        device
+```
+
+On the Android Studio, your phone should now show up 
+on the devices drop-down along with the emulator.
+
+Select your phone on the devices drop-down then Run main.dart.
