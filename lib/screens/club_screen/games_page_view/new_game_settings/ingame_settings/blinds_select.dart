@@ -87,7 +87,7 @@ class BlindsSelect extends StatelessWidget {
                 child: TextField(
                   onChanged: (value) {
                     Provider.of<NewGameSettingsServices>(context, listen: false)
-                        .updateStraddle(int.parse(value));
+                        .updateBlindStraddle(int.parse(value));
                   },
                   controller: straddle,
                   decoration: InputDecoration(

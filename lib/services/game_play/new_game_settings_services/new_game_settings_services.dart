@@ -19,7 +19,7 @@ class NewGameSettingsServices extends ChangeNotifier {
   int _currentGameIndex = 0;
   int _smallBlind = 1;
   int _bigBlind = 2;
-  int _straddle = 4;
+  int _blindStraddle = 4;
   int _ante = 0;
   int _minChips = 20;
   int _maxChips = 80;
@@ -29,7 +29,7 @@ class NewGameSettingsServices extends ChangeNotifier {
   int get currentGameIndex => _currentGameIndex;
   int get smallBlind => _smallBlind;
   int get bigBlind => _bigBlind;
-  int get straddle => _straddle;
+  int get blindStraddle => _blindStraddle;
   int get ante => _ante;
   int get minChips => _minChips;
   int get maxChips => _maxChips;
@@ -62,6 +62,18 @@ class NewGameSettingsServices extends ChangeNotifier {
 
   // Ending Club Tips
 
+  // Starting Straddle
+
+  // Straddle variable
+  bool _straddle = true;
+  bool get straddle => _straddle;
+
+  // Straddle methods
+  updateStraddle(bool s) {
+    _straddle = s;
+    notifyListeners();
+  }
+
   updateGameType(int index) {
     _currentGameIndex = index;
     _currentGameType = _gameTypes[index];
@@ -78,8 +90,8 @@ class NewGameSettingsServices extends ChangeNotifier {
     notifyListeners();
   }
 
-  updateStraddle(int straddle) {
-    _straddle = straddle;
+  updateBlindStraddle(int s) {
+    _blindStraddle = s;
     notifyListeners();
   }
 

@@ -481,11 +481,9 @@ class _NewGameSettingsState extends State<NewGameSettings> {
                   style: TextStyle(color: Colors.white),
                 ),
                 trailing: CupertinoSwitch(
-                    value: straddleSwitch,
+                    value: data.straddle,
                     onChanged: (value) {
-                      setState(() {
-                        straddleSwitch = value;
-                      });
+                      data.updateStraddle(value);
                     }),
               ),
             ],
