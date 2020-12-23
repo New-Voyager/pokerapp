@@ -38,6 +38,30 @@ class NewGameSettingsServices extends ChangeNotifier {
   List<String> get gameTypes => _gameTypes;
   List<String> get numberOfPlayers => _numberOfPlayers;
 
+  // Starting Club Tips
+
+  // Club Tips Variable
+  int _percentage = 2;
+  int _cap = 5;
+
+  // Club Tips getter
+  int get percentage => _percentage;
+  int get cap => _cap;
+
+  // Club Tips methods
+
+  updatePercentage(int p) {
+    _percentage = p;
+    notifyListeners();
+  }
+
+  updateCap(int c) {
+    _cap = c;
+    notifyListeners();
+  }
+
+  // Ending Club Tips
+
   updateGameType(int index) {
     _currentGameIndex = index;
     _currentGameType = _gameTypes[index];

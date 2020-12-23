@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/screens/club_screen/games_page_view/new_game_settings/ingame_settings/blinds_select.dart';
 import 'package:pokerapp/screens/club_screen/games_page_view/new_game_settings/ingame_settings/buyin_ranges_select.dart';
+import 'package:pokerapp/screens/club_screen/games_page_view/new_game_settings/ingame_settings/club_tips_select.dart';
 import 'package:pokerapp/screens/club_screen/games_page_view/new_game_settings/ingame_settings/game_type_select.dart';
 import 'package:pokerapp/screens/club_screen/games_page_view/new_game_settings/ingame_settings/max_player_select.dart';
 import 'package:pokerapp/services/game_play/new_game_settings_services/new_game_settings_services.dart';
@@ -440,7 +441,10 @@ class _NewGameSettingsState extends State<NewGameSettings> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     Text(
-                      "5% or 5 cap",
+                      data.percentage.toString() +
+                          "% or " +
+                          data.cap.toString() +
+                          " cap",
                       style: TextStyle(color: Color(0xff848484)),
                     ),
                     IconButton(
@@ -448,7 +452,17 @@ class _NewGameSettingsState extends State<NewGameSettings> {
                           Icons.arrow_forward_ios,
                           color: Colors.white,
                         ),
-                        onPressed: null),
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              new MaterialPageRoute(
+                                builder: (context) =>
+                                    ChangeNotifierProvider.value(
+                                  value: data,
+                                  child: ClubTipsSelect(),
+                                ),
+                              ));
+                        }),
                   ],
                 ),
               ),
