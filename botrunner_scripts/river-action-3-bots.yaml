@@ -45,11 +45,8 @@ hands:
     flop-action:
       seat-actions:
         - 5, CHECK
-        - 8, BET, 2
-        - 1, CALL, 2
-        - 5, RAISE, 4
         - 8, FOLD
-        - 1, CALL, 4
+        - 1, CHECK
       verify:
         state: TURN
         board: ["Ac", "Ad", "2c", "Td"]
@@ -57,31 +54,14 @@ hands:
     turn-action:
       seat-actions:
         - 5, CHECK
-        - 1, BET, 10
-        - 5, CALL, 10
+        - 1, CHECK
       verify:
         state: RIVER
         board: ["Ac", "Ad", "2c", "Td", "4s"]
 
     river-action:
       seat-actions:
-        - 5, BET, 10
-        - 1, CALL, 10
+        - 5, CHECK
+        - 1, CHECK
       verify:
         state: RESULT
-
-    result:
-      winners:
-        - seat: 1
-          receive: 56.0
-      action-ended: SHOW_DOWN
-      
-      # balance indicates the player balance after the hand
-      # bb player won a chip
-      stacks:
-        - seat: 1
-          stack: 84
-        - seat: 5
-          stack: 120
-        - seat: 8
-          stack: 96

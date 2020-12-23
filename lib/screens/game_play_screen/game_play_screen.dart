@@ -13,6 +13,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/table_state.dar
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/header_object.dart';
 import 'package:pokerapp/resources/app_constants.dart';
+import 'package:pokerapp/resources/card_back_assets.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/footer_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/header_view.dart';
@@ -158,6 +159,11 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
     @required GameInfoModel gameInfoModel,
   }) =>
       [
+        /* this is for having random card back for every new hand */
+        ListenableProvider<ValueNotifier<String>>(
+          create: (_) => ValueNotifier<String>(CardBackAssets.getRandom()),
+        ),
+
         /* a simple value notifier, holding INT which
         * resembles number of cards to deal with */
         ListenableProvider<ValueNotifier<int>>(
@@ -338,13 +344,14 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
 
 /* design constants */
 const _screenBackgroundDecoration = const BoxDecoration(
-  gradient: const LinearGradient(
-    begin: Alignment.topCenter,
-    end: Alignment.bottomCenter,
-    colors: [
-      const Color(0xff353535),
-      const Color(0xff464646),
-      Colors.black,
-    ],
-  ),
+  color: Colors.black,
+  // gradient: const LinearGradient(
+  //   begin: Alignment.topCenter,
+  //   end: Alignment.bottomCenter,
+  //   colors: [
+  //     const Color(0xff353535),
+  //     const Color(0xff464646),
+  //     Colors.black,
+  //   ],
+  // ),
 );
