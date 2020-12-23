@@ -23,7 +23,7 @@ class NewGameSettingsServices extends ChangeNotifier {
   int _ante = 0;
   int _minChips = 20;
   int _maxChips = 80;
-  String _choosenMaxPlayer = "9";
+  int _choosenMaxPlayer = 7;
 
   String get currentGameType => _currentGameType;
   int get currentGameIndex => _currentGameIndex;
@@ -33,7 +33,7 @@ class NewGameSettingsServices extends ChangeNotifier {
   int get ante => _ante;
   int get minChips => _minChips;
   int get maxChips => _maxChips;
-  String get choosenMaxPlayer => _choosenMaxPlayer;
+  int get choosenMaxPlayer => _choosenMaxPlayer;
 
   List<String> get gameTypes => _gameTypes;
   List<String> get numberOfPlayers => _numberOfPlayers;
@@ -76,7 +76,7 @@ class NewGameSettingsServices extends ChangeNotifier {
   }
 
   updateChooseMaxPlayer(int index) {
-    _choosenMaxPlayer = _numberOfPlayers[index];
+    _choosenMaxPlayer = index;
     notifyListeners();
   }
 }

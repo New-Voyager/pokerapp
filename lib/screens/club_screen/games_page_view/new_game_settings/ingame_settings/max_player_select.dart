@@ -17,7 +17,7 @@ class MaxPlayerSelect extends StatelessWidget {
       body: Consumer<NewGameSettingsServices>(
         builder: (context, data, child) => IOSLikeCheckList(
           list: data.numberOfPlayers,
-          selectedIndex: data.currentGameIndex,
+          selectedIndex: data.choosenMaxPlayer,
           onTap: (index) {
             data.updateChooseMaxPlayer(index);
           },

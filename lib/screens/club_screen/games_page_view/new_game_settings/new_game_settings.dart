@@ -399,7 +399,7 @@ class _NewGameSettingsState extends State<NewGameSettings> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     Text(
-                      data.choosenMaxPlayer,
+                      data.numberOfPlayers[data.choosenMaxPlayer],
                       style: TextStyle(color: Color(0xff848484)),
                     ),
                     IconButton(
