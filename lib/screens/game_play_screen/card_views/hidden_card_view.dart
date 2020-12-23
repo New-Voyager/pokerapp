@@ -19,23 +19,27 @@ class HiddenCardView extends StatelessWidget {
               blurRadius: 2.0,
             )
           ],
-//          borderRadius: BorderRadius.circular(5.0),
-//          border: Border.all(
-//            color: Colors.white,
-//            width: 1.0,
-//          ),
-//          gradient: const LinearGradient(
-//            begin: Alignment.topCenter,
-//            end: Alignment.bottomCenter,
-//            colors: const [
-//              const Color(0xff0d4b74),
-//              const Color(0xff07263a),
-//            ],
-//          ),
         ),
         child: Consumer<ValueNotifier<String>>(
           builder: (_, valueNotifierAsset, __) => SvgPicture.asset(
             valueNotifierAsset.value,
+            placeholderBuilder: (_) => Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(5.0),
+                border: Border.all(
+                  color: Colors.white,
+                  width: 1.0,
+                ),
+                gradient: const LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: const [
+                    const Color(0xff0d4b74),
+                    const Color(0xff07263a),
+                  ],
+                ),
+              ),
+            ),
           ),
         ),
       );
