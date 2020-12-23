@@ -28,12 +28,6 @@ dependencies:
   http: ^0.12.2
   dart_nats: ^0.1.8
 
-  # new dart nats package
-  nats:
-    git:
-      url: git://github.com/c16a/nats-dart
-      ref: master
-
   # device id
   flutter_udid: ^1.0.1
 
