@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/screens/club_screen/games_page_view/new_game_settings/game_timing_settings/action_time_select.dart';
 import 'package:pokerapp/screens/club_screen/games_page_view/new_game_settings/ingame_settings/blinds_select.dart';
 import 'package:pokerapp/screens/club_screen/games_page_view/new_game_settings/ingame_settings/buyin_ranges_select.dart';
 import 'package:pokerapp/screens/club_screen/games_page_view/new_game_settings/ingame_settings/club_tips_select.dart';
@@ -188,65 +189,77 @@ class _NewGameSettingsState extends State<NewGameSettings> {
       ),
       child: Padding(
         padding: const EdgeInsets.only(bottom: 8.0),
-        child: Column(
-          children: [
-            ListTile(
-              leading: CircleAvatar(
-                backgroundColor: Color(0xff319ffe),
+        child: Consumer<NewGameSettingsServices>(
+          builder: (context, data, child) => Column(
+            children: [
+              ListTile(
+                leading: CircleAvatar(
+                  backgroundColor: Color(0xff319ffe),
+                ),
+                title: Text(
+                  "Game Length",
+                  style: TextStyle(color: Colors.white),
+                ),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(
+                      "4 hours",
+                      style: TextStyle(color: Color(0xff848484)),
+                    ),
+                    IconButton(
+                        icon: Icon(
+                          Icons.arrow_forward_ios,
+                          color: Colors.white,
+                        ),
+                        onPressed: null),
+                  ],
+                ),
               ),
-              title: Text(
-                "Game Length",
-                style: TextStyle(color: Colors.white),
+              Padding(
+                padding: const EdgeInsets.only(left: 70.0),
+                child: Divider(
+                  color: Color(0xff707070),
+                ),
               ),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Text(
-                    "4 hours",
-                    style: TextStyle(color: Color(0xff848484)),
-                  ),
-                  IconButton(
-                      icon: Icon(
-                        Icons.arrow_forward_ios,
-                        color: Colors.white,
-                      ),
-                      onPressed: null),
-                ],
+              ListTile(
+                leading: CircleAvatar(
+                  backgroundColor: Color(0xff319ffe),
+                ),
+                title: Text(
+                  "Action Time",
+                  style: TextStyle(color: Colors.white),
+                ),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(
+                      data.actionTimeList[data.choosenActionTimeIndex],
+                      style: TextStyle(color: Color(0xff848484)),
+                    ),
+                    IconButton(
+                        icon: Icon(
+                          Icons.arrow_forward_ios,
+                          color: Colors.white,
+                        ),
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              new MaterialPageRoute(
+                                builder: (context) =>
+                                    ChangeNotifierProvider.value(
+                                  value: data,
+                                  child: ActionTimeSelect(),
+                                ),
+                              ));
+                        }),
+                  ],
+                ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 70.0),
-              child: Divider(
-                color: Color(0xff707070),
-              ),
-            ),
-            ListTile(
-              leading: CircleAvatar(
-                backgroundColor: Color(0xff319ffe),
-              ),
-              title: Text(
-                "Action Time",
-                style: TextStyle(color: Colors.white),
-              ),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Text(
-                    "20 seconds",
-                    style: TextStyle(color: Color(0xff848484)),
-                  ),
-                  IconButton(
-                      icon: Icon(
-                        Icons.arrow_forward_ios,
-                        color: Colors.white,
-                      ),
-                      onPressed: null),
-                ],
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -307,7 +320,7 @@ class _NewGameSettingsState extends State<NewGameSettings> {
                       ", BB: " +
                       data.bigBlind.toString() +
                       ", Straddle: " +
-                      data.straddle.toString() +
+                      data.blindStraddle.toString() +
                       ", Ante: " +
                       data.ante.toString() +
                       ")",

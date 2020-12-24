@@ -74,6 +74,40 @@ class NewGameSettingsServices extends ChangeNotifier {
     notifyListeners();
   }
 
+  // Ending Straddle
+
+  // Starting Action Time
+
+  // Action Time variables
+
+  List<String> _actionTimeList = [
+    "10 Seconds",
+    "20 Seconds",
+    "25 Seconds",
+    "30 Seconds",
+    "45 Seconds",
+    "1 minute",
+    "2 minute",
+    "5 minute"
+  ];
+
+  int _choosenActionTimeIndex = 1;
+
+  // Action Time getter
+
+  List<String> get actionTimeList => _actionTimeList;
+
+  int get choosenActionTimeIndex => _choosenActionTimeIndex;
+
+  // Action Time methods
+
+  updateActionTime(int i) {
+    _choosenActionTimeIndex = i;
+    notifyListeners();
+  }
+
+  // Ending Action Time
+
   updateGameType(int index) {
     _currentGameIndex = index;
     _currentGameType = _gameTypes[index];
