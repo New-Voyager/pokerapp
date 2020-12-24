@@ -285,7 +285,7 @@ class UserView extends StatelessWidget {
   }) =>
       Transform.translate(
         offset: Offset(
-          alignment == Alignment.centerRight ? 60.0 : -60.0,
+          alignment == Alignment.centerRight ? 50.0 : -50.0,
           18.0,
         ),
         child: Container(

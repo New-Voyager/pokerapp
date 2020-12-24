@@ -49,7 +49,7 @@ class HiddenCardView extends StatelessWidget {
       listen: false,
     ).value;
 
-    double mid = -(noOfCards ~/ 2) * 0.20;
+    double mid = (noOfCards ~/ 2) * 0.80;
 
     return Stack(
       children: List.generate(
