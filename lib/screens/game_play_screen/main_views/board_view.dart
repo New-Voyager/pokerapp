@@ -276,6 +276,7 @@ class BoardView extends StatelessWidget {
           StackCardView(
             cards: cards,
             center: true,
+            isCommunity: true,
           ),
 
           const SizedBox(height: AppDimensions.cardHeight / 2),

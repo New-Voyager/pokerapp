@@ -211,67 +211,68 @@ class FooterView extends StatelessWidget {
         key: ValueKey('buildActionButtons'),
         builder: (_, playerActionValueNotifier, __) => Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: playerActionValueNotifier.value.actions.map<Widget>(
-            (playerAction) {
-              switch (playerAction.actionName) {
-                case FOLD:
-                  return _buildRoundButton(
-                    text: playerAction.actionName,
-                    onTap: () => _fold(
-                      playerAction.actionValue,
-                      context: context,
-                    ),
-                  );
-                case CHECK:
-                  return _buildRoundButton(
-                    text: playerAction.actionName,
-                    onTap: () => _check(
-                      context: context,
-                    ),
-                  );
-                case BET:
-                  return _buildRoundButton(
-                    text: playerAction.actionName,
-                    onTap: () => _bet(
-                      context: context,
-                    ),
-                  );
-                case CALL:
-                  return _buildRoundButton(
-                    text: playerAction.actionName +
-                        '\n' +
-                        playerAction.actionValue.toString(),
-                    onTap: () => _call(
-                      playerAction.actionValue,
-                      context: context,
-                    ),
-                  );
-                case RAISE:
-                  return _buildRoundButton(
-                    text: playerAction.actionName +
-                        '\n' +
-                        'MIN: ' +
-                        playerAction.minActionValue.toString(),
-                    onTap: () => _raise(
-                      playerAction.minActionValue,
-                      context: context,
-                    ),
-                  );
-                case ALLIN:
-                  return _buildRoundButton(
-                    text: playerAction.actionName +
-                        '\n' +
-                        playerAction.actionValue.toString(),
-                    onTap: () => _allIn(
-                      amount: playerAction.actionValue,
-                      context: context,
-                    ),
-                  );
-              }
+          children: playerActionValueNotifier.value?.actions?.map<Widget>(
+                (playerAction) {
+                  switch (playerAction.actionName) {
+                    case FOLD:
+                      return _buildRoundButton(
+                        text: playerAction.actionName,
+                        onTap: () => _fold(
+                          playerAction.actionValue,
+                          context: context,
+                        ),
+                      );
+                    case CHECK:
+                      return _buildRoundButton(
+                        text: playerAction.actionName,
+                        onTap: () => _check(
+                          context: context,
+                        ),
+                      );
+                    case BET:
+                      return _buildRoundButton(
+                        text: playerAction.actionName,
+                        onTap: () => _bet(
+                          context: context,
+                        ),
+                      );
+                    case CALL:
+                      return _buildRoundButton(
+                        text: playerAction.actionName +
+                            '\n' +
+                            playerAction.actionValue.toString(),
+                        onTap: () => _call(
+                          playerAction.actionValue,
+                          context: context,
+                        ),
+                      );
+                    case RAISE:
+                      return _buildRoundButton(
+                        text: playerAction.actionName +
+                            '\n' +
+                            'MIN: ' +
+                            playerAction.minActionValue.toString(),
+                        onTap: () => _raise(
+                          playerAction.minActionValue,
+                          context: context,
+                        ),
+                      );
+                    case ALLIN:
+                      return _buildRoundButton(
+                        text: playerAction.actionName +
+                            '\n' +
+                            playerAction.actionValue.toString(),
+                        onTap: () => _allIn(
+                          amount: playerAction.actionValue,
+                          context: context,
+                        ),
+                      );
+                  }
 
-              return SizedBox.shrink();
-            },
-          ).toList(),
+                  return SizedBox.shrink();
+                },
+              )?.toList() ??
+              [],
         ),
       );
 
