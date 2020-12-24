@@ -29,7 +29,7 @@ class StackCardView extends StatelessWidget {
                 .toList()
                 .map(
                   (c) => Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 3.0),
+                    padding: EdgeInsets.symmetric(horizontal: 2.0),
                     child: deactivated ? c.grayedWidget : c.widget,
                   ),
                 )
