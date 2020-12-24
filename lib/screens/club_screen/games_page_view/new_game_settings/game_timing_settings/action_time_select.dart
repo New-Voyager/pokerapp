@@ -14,15 +14,20 @@ class ActionTimeSelect extends StatelessWidget {
         title: Text("Action Time"),
         elevation: 0.0,
       ),
-      body: Consumer<NewGameSettingsServices>(
-        builder: (context, data, child) => IOSLikeCheckList(
-          list: data.actionTimeList,
+      body: Consumer<NewGameSettingsServices>(builder: (context, data, child) {
+        List<String> myList = [];
+        data.actionTimeList.forEach((element) {
+          myList.add(element.time);
+        });
+
+        return IOSLikeCheckList(
+          list: myList,
           selectedIndex: data.choosenActionTimeIndex,
           onTap: (index) {
             data.updateActionTime(index);
           },
-        ),
-      ),
+        );
+      }),
     );
   }
 }

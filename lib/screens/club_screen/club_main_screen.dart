@@ -54,7 +54,8 @@ class _ClubMainScreenState extends State<ClubMainScreen>
                       context,
                       new MaterialPageRoute(
                           builder: (context) => ChangeNotifierProvider(
-                                create: (_) => NewGameSettingsServices(),
+                                create: (_) =>
+                                    new NewGameSettingsServices(clubModel),
                                 child: NewGameSettings(),
                                 lazy: false,
                               )));

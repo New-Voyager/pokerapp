@@ -1,6 +1,29 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:pokerapp/models/club_model.dart';
+import 'package:pokerapp/models/create_game_input.dart';
+import 'package:pokerapp/services/graphQL/mutations/create_game.dart';
+
+import '../../../main.dart';
 
 class NewGameSettingsServices extends ChangeNotifier {
+  // ClubModel
+  ClubModel _clubModel;
+  ClubModel get clubModel => _clubModel;
+
+  NewGameSettingsServices(this._clubModel);
+
+  // general boolean
+  bool _general = false;
+  bool get general => _general;
+
+  updateGeneral(bool general) {
+    _general = general;
+    notifyListeners();
+  }
+
   final List<String> _gameTypes = [
     "No Limit Heldom",
     "PLO",
@@ -80,22 +103,22 @@ class NewGameSettingsServices extends ChangeNotifier {
 
   // Action Time variables
 
-  List<String> _actionTimeList = [
-    "10 Seconds",
-    "20 Seconds",
-    "25 Seconds",
-    "30 Seconds",
-    "45 Seconds",
-    "1 minute",
-    "2 minute",
-    "5 minute"
+  List<ActionTime> _actionTimeList = [
+    ActionTime(time: "10 Seconds", originTime: 10),
+    ActionTime(time: "20 Seconds", originTime: 10),
+    ActionTime(time: "25 Seconds", originTime: 10),
+    ActionTime(time: "30 Seconds", originTime: 10),
+    ActionTime(time: "45 Seconds", originTime: 10),
+    ActionTime(time: "1 minute", originTime: 10),
+    ActionTime(time: "2 minute", originTime: 10),
+    ActionTime(time: "5 minute", originTime: 10)
   ];
 
   int _choosenActionTimeIndex = 1;
 
   // Action Time getter
 
-  List<String> get actionTimeList => _actionTimeList;
+  List<ActionTime> get actionTimeList => _actionTimeList;
 
   int get choosenActionTimeIndex => _choosenActionTimeIndex;
 
@@ -149,4 +172,50 @@ class NewGameSettingsServices extends ChangeNotifier {
     _choosenMaxPlayer = index;
     notifyListeners();
   }
+
+  // Start the Game
+
+  Future<bool> startGame() async {
+    CreateGameInput createGameInput = CreateGameInput(
+        title: "Testing Game",
+        gameType: _currentGameType,
+        smallBlind: _smallBlind,
+        bigBlind: _bigBlind,
+        utgStraddleAllowed: _straddle,
+        straddleBet: _blindStraddle,
+        minPlayers: 2,
+        maxPlayers: int.parse(_numberOfPlayers[_choosenMaxPlayer]),
+        gameLength: 60,
+        buyInApproval: false,
+        rakePercentage: _percentage,
+        rakeCap: _cap,
+        buyInMin: _minChips,
+        buyInMax: _maxChips,
+        actionTime: _actionTimeList[_choosenActionTimeIndex].originTime);
+
+    String input = CreateGame.createGameInput(createGameInput);
+
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+
+    String _query = CreateGame.createGame(_clubModel.clubCode, input);
+
+    QueryResult result = await _client.mutate(
+      MutationOptions(documentNode: gql(_query)),
+    );
+
+    print(result.exception);
+
+    if (result.hasException) return false;
+
+    log(result.data());
+
+    return true;
+  }
+}
+
+class ActionTime {
+  String time;
+  int originTime;
+
+  ActionTime({this.time, this.originTime});
 }

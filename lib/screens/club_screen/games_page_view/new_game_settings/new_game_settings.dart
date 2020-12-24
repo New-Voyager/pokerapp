@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/club_model.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/screens/club_screen/games_page_view/new_game_settings/game_timing_settings/action_time_select.dart';
 import 'package:pokerapp/screens/club_screen/games_page_view/new_game_settings/ingame_settings/blinds_select.dart';
@@ -11,14 +12,7 @@ import 'package:pokerapp/services/game_play/new_game_settings_services/new_game_
 import 'package:pokerapp/widgets/custom_text_button.dart';
 import 'package:provider/provider.dart';
 
-class NewGameSettings extends StatefulWidget {
-  @override
-  _NewGameSettingsState createState() => _NewGameSettingsState();
-}
-
-class _NewGameSettingsState extends State<NewGameSettings> {
-  bool straddleSwitch = false;
-
+class NewGameSettings extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,64 +23,69 @@ class _NewGameSettingsState extends State<NewGameSettings> {
         elevation: 0.0,
       ),
       body: SingleChildScrollView(
-        child: Column(
-          children: [
-            SizedBox(
-              height: 10.0,
-            ),
-            Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  CustomTextButton(
-                    text: "Start",
-                    onTap: () {},
-                  ),
-                  Container(
-                    width: 120.0,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        CustomTextButton(
-                          text: "Load",
-                          onTap: () {},
-                        ),
-                        CustomTextButton(
-                          text: "Save",
-                          onTap: () {},
-                        ),
-                      ],
-                    ),
-                  )
-                ],
+        child: Consumer<NewGameSettingsServices>(
+          builder: (context, data, child) => Column(
+            children: [
+              SizedBox(
+                height: 10.0,
               ),
-            ),
-            SizedBox(
-              height: 10.0,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 12.0, right: 12.0),
-              child: firstList(),
-            ),
-            SizedBox(
-              height: 20.0,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 12.0, right: 12.0),
-              child: secondList(),
-            ),
-            SizedBox(
-              height: 20.0,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 12.0, right: 12.0),
-              child: thirdList(),
-            ),
-            SizedBox(
-              height: 20.0,
-            ),
-          ],
+              Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    CustomTextButton(
+                      text: "Start",
+                      onTap: () async {
+                        bool status = await data.startGame();
+                        print(status);
+                      },
+                    ),
+                    Container(
+                      width: 120.0,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          CustomTextButton(
+                            text: "Load",
+                            onTap: () {},
+                          ),
+                          CustomTextButton(
+                            text: "Save",
+                            onTap: () {},
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: 10.0,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 12.0, right: 12.0),
+                child: firstList(),
+              ),
+              SizedBox(
+                height: 20.0,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 12.0, right: 12.0),
+                child: secondList(),
+              ),
+              SizedBox(
+                height: 20.0,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 12.0, right: 12.0),
+                child: thirdList(),
+              ),
+              SizedBox(
+                height: 20.0,
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -100,82 +99,76 @@ class _NewGameSettingsState extends State<NewGameSettings> {
       ),
       child: Padding(
         padding: const EdgeInsets.only(bottom: 8.0),
-        child: Column(
-          children: [
-            ListTile(
-              leading: CircleAvatar(
-                backgroundColor: Color(0xff319ffe),
+        child: Consumer<NewGameSettingsServices>(
+          builder: (context, data, child) => Column(
+            children: [
+              ListTile(
+                leading: CircleAvatar(
+                  backgroundColor: Color(0xff319ffe),
+                ),
+                title: Text(
+                  "Location Check",
+                  style: TextStyle(color: Colors.white),
+                ),
+                trailing: CupertinoSwitch(
+                    value: data.general,
+                    onChanged: (value) {
+                      data.updateGeneral(value);
+                    }),
               ),
-              title: Text(
-                "Location Check",
-                style: TextStyle(color: Colors.white),
+              Divider(
+                color: Color(0xff707070),
               ),
-              trailing: CupertinoSwitch(
-                  value: straddleSwitch,
-                  onChanged: (value) {
-                    setState(() {
-                      straddleSwitch = value;
-                    });
-                  }),
-            ),
-            Divider(
-              color: Color(0xff707070),
-            ),
-            ListTile(
-              leading: CircleAvatar(
-                backgroundColor: Color(0xff319ffe),
+              ListTile(
+                leading: CircleAvatar(
+                  backgroundColor: Color(0xff319ffe),
+                ),
+                title: Text(
+                  "WaitList",
+                  style: TextStyle(color: Colors.white),
+                ),
+                trailing: CupertinoSwitch(
+                    value: data.general,
+                    onChanged: (value) {
+                      data.updateGeneral(value);
+                    }),
               ),
-              title: Text(
-                "WaitList",
-                style: TextStyle(color: Colors.white),
+              Divider(
+                color: Color(0xff707070),
               ),
-              trailing: CupertinoSwitch(
-                  value: straddleSwitch,
-                  onChanged: (value) {
-                    setState(() {
-                      straddleSwitch = value;
-                    });
-                  }),
-            ),
-            Divider(
-              color: Color(0xff707070),
-            ),
-            ListTile(
-              leading: CircleAvatar(
-                backgroundColor: Color(0xff319ffe),
+              ListTile(
+                leading: CircleAvatar(
+                  backgroundColor: Color(0xff319ffe),
+                ),
+                title: Text(
+                  "Don't Show Losing Hand",
+                  style: TextStyle(color: Colors.white),
+                ),
+                trailing: CupertinoSwitch(
+                    value: data.general,
+                    onChanged: (value) {
+                      data.updateGeneral(value);
+                    }),
               ),
-              title: Text(
-                "Don't Show Losing Hand",
-                style: TextStyle(color: Colors.white),
+              Divider(
+                color: Color(0xff707070),
               ),
-              trailing: CupertinoSwitch(
-                  value: straddleSwitch,
-                  onChanged: (value) {
-                    setState(() {
-                      straddleSwitch = value;
-                    });
-                  }),
-            ),
-            Divider(
-              color: Color(0xff707070),
-            ),
-            ListTile(
-              leading: CircleAvatar(
-                backgroundColor: Color(0xff319ffe),
+              ListTile(
+                leading: CircleAvatar(
+                  backgroundColor: Color(0xff319ffe),
+                ),
+                title: Text(
+                  "Run it Twice",
+                  style: TextStyle(color: Colors.white),
+                ),
+                trailing: CupertinoSwitch(
+                    value: data.general,
+                    onChanged: (value) {
+                      data.updateGeneral(value);
+                    }),
               ),
-              title: Text(
-                "Run it Twice",
-                style: TextStyle(color: Colors.white),
-              ),
-              trailing: CupertinoSwitch(
-                  value: straddleSwitch,
-                  onChanged: (value) {
-                    setState(() {
-                      straddleSwitch = value;
-                    });
-                  }),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -236,7 +229,7 @@ class _NewGameSettingsState extends State<NewGameSettings> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     Text(
-                      data.actionTimeList[data.choosenActionTimeIndex],
+                      data.actionTimeList[data.choosenActionTimeIndex].time,
                       style: TextStyle(color: Color(0xff848484)),
                     ),
                     IconButton(
