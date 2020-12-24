@@ -9,8 +9,8 @@ const kDisplacementConstant = 10.0;
 
 class HiddenCardView extends StatelessWidget {
   Widget _buildCardBack() => Container(
-        height: AppDimensions.cardHeight * 0.90,
-        width: AppDimensions.cardWidth * 0.90,
+        height: AppDimensions.cardHeight * 0.50,
+        width: AppDimensions.cardWidth * 0.50,
         decoration: BoxDecoration(
           boxShadow: [
             const BoxShadow(

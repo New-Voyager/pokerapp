@@ -16,10 +16,12 @@ class VisibleCardView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TextStyle textStyle = AppStyles.cardTextStyle.copyWith(
+    TextStyle cardTextStyle = AppStyles.cardTextStyle.copyWith(
       color: card.color,
     );
-
+    TextStyle suitTextStyle = AppStyles.cardTextStyle.copyWith(
+      color: card.color,
+    );
     bool highlight = card.highlight ?? false;
     Color highlightColor = (card.otherHighlightColor ?? false)
         ? Colors.blue.shade100
@@ -28,7 +30,7 @@ class VisibleCardView extends StatelessWidget {
     /* for visible cards, the smaller card size is shown to the left of user,
     * and the bigger size is shown as the community card */
     return Transform.scale(
-      scale: card.smaller ? 0.90 : 1.1,
+      scale: card.smaller ? 0.90 : 1.2,
       child: Container(
         padding: const EdgeInsets.all(5.0),
         height: AppDimensions.cardHeight * 1.5,
@@ -57,21 +59,22 @@ class VisibleCardView extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Expanded(
-              flex: 2,
+              flex: 10,
               child: FittedBox(
                 child: Text(
                   card.label == 'T' ? '10' : card.label,
-                  style: textStyle,
+                  style: cardTextStyle,
+                  textAlign: TextAlign.center,
                 ),
               ),
             ),
             Expanded(
-              flex: 3,
+              flex: 5,
               child: FittedBox(
                 child: RichText(
                   text: TextSpan(
                     text: card.suit ?? AppConstants.redHeart,
-                    style: textStyle,
+                    style: suitTextStyle,
                   ),
                 ),
               ),
