@@ -355,7 +355,7 @@ class FooterView extends StatelessWidget {
         builder: (_, footerStatusValueNotifier, __) => Container(
           height: 180,
           child: AnimatedSwitcher(
-            duration: AppConstants.animationDuration,
+            duration: AppConstants.fastAnimationDuration,
             child: _build(
               footerStatusValueNotifier.value,
               context: context,

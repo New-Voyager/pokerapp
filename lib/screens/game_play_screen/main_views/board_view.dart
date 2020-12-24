@@ -92,7 +92,7 @@ class BoardView extends StatelessWidget {
     switch (seatPos) {
       case 1:
         return Transform.translate(
-          offset: Offset(0.0, 0.0),
+          offset: Offset(0.0, shiftDownConstant / 5),
           child: Align(
             alignment: Alignment.bottomCenter,
             child: userView,
@@ -104,7 +104,7 @@ class BoardView extends StatelessWidget {
           alignment: Alignment.centerLeft,
           child: Transform.translate(
             offset: Offset(
-              shiftHorizontalConstant,
+              shiftHorizontalConstant * 1.5,
               heightOfBoard / 4 + shiftDownConstant,
             ),
             child: userView,
@@ -135,7 +135,7 @@ class BoardView extends StatelessWidget {
           child: Transform.translate(
             offset: Offset(
               -widthOfBoard / 3 + shiftHorizontalConstant,
-              shiftDownConstant / 3,
+              0.0,
             ),
             child: userView,
           ),
@@ -147,7 +147,7 @@ class BoardView extends StatelessWidget {
           child: Transform.translate(
             offset: Offset(
               widthOfBoard / 3 - shiftHorizontalConstant,
-              shiftDownConstant / 3,
+              0.0,
             ),
             child: userView,
           ),
@@ -176,7 +176,7 @@ class BoardView extends StatelessWidget {
           alignment: Alignment.centerRight,
           child: Transform.translate(
             offset: Offset(
-              -shiftHorizontalConstant,
+              -shiftHorizontalConstant * 1.5,
               heightOfBoard / 4 + shiftDownConstant,
             ),
             child: userView,
@@ -426,7 +426,7 @@ class BoardView extends StatelessWidget {
         bool isPresent = tmp != null;
 
         return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+          padding: const EdgeInsets.symmetric(horizontal: 20.0),
           child: Stack(
             alignment: Alignment.center,
             children: [
