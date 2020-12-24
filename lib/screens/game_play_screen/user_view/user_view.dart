@@ -443,7 +443,7 @@ class UserView extends StatelessWidget {
 
     return InkWell(
       onTap: emptySeat ? () => onUserTap(seatPos) : null,
-      child: Stack(
+      child: emptySeat ? null : Stack(
         alignment: Alignment.center,
         children: [
           // main user body
