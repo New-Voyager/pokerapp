@@ -46,6 +46,10 @@ class TableState extends ChangeNotifier {
     notifyListeners();
   }
 
+  void updateCommunityCardsSilent(List<CardObject> cards) {
+    this._communityCards = cards;
+  }
+
   void updateCommunityCards(List<CardObject> cards) {
     this._communityCards = cards;
     notifyListeners();

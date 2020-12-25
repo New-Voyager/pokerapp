@@ -37,6 +37,7 @@ class _FooterResultViewState extends State<FooterResultView>
         scale: 0.80,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: cards.map((c) {
             if (cardsToHighlight != null) {
               int rawCardNumber =
@@ -142,6 +143,7 @@ class _FooterResultViewState extends State<FooterResultView>
     List<CardObject> winningCards,
   }) =>
       Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           /* winning cards */
           getCardRowView(

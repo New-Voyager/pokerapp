@@ -353,9 +353,16 @@ class FooterView extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Consumer<ValueNotifier<FooterStatus>>(
         builder: (_, footerStatusValueNotifier, __) => Container(
-          height: 180,
+          height: 190,
           child: AnimatedSwitcher(
+            switchInCurve: Curves.bounceInOut,
+            switchOutCurve: Curves.bounceInOut,
             duration: AppConstants.fastAnimationDuration,
+            reverseDuration: AppConstants.fastAnimationDuration,
+            transitionBuilder: (widget, animation) => ScaleTransition(
+              scale: animation,
+              child: widget,
+            ),
             child: _build(
               footerStatusValueNotifier.value,
               context: context,
