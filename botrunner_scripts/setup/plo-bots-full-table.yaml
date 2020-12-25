@@ -84,7 +84,7 @@ club:
 game:
   create: true
   title: "PLO Bot Game"
-  gameType: "OMAHA"
+  gameType: "PLO"
   smallBlind: 1.0
   bigBlind: 2.0
   utgStraddleAllowed: true
