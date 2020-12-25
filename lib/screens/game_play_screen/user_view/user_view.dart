@@ -65,9 +65,9 @@ class UserView extends StatelessWidget {
                     boxShadow: userObject.highlight ?? false
                         ? [
                             BoxShadow(
-                              color: highlightColor.withAlpha(200),
-                              blurRadius: 6.0,
-                              spreadRadius: 5.0,
+                              color: highlightColor.withAlpha(120),
+                              blurRadius: 20.0,
+                              spreadRadius: 20.0,
                             ),
                           ]
                         : [],
@@ -153,9 +153,9 @@ class UserView extends StatelessWidget {
             boxShadow: userObject.highlight ?? false
                 ? [
                     BoxShadow(
-                      color: highlightColor.withAlpha(200),
-                      blurRadius: 6.0,
-                      spreadRadius: 5.0,
+                      color: highlightColor.withAlpha(120),
+                      blurRadius: 20.0,
+                      spreadRadius: 20.0,
                     ),
                   ]
                 : [],
@@ -443,70 +443,72 @@ class UserView extends StatelessWidget {
 
     return InkWell(
       onTap: emptySeat ? () => onUserTap(seatPos) : null,
-      child: emptySeat ? null : Stack(
-        alignment: Alignment.center,
-        children: [
-          // main user body
-          Stack(
-            alignment: Alignment.bottomCenter,
-            children: [
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  _buildAvatarAndLastAction(
-                    avatarUrl: userObject.avatarUrl,
-                    emptySeat: emptySeat,
-                  ),
-                  _buildPlayerInfo(
-                    name: this.userObject.name,
-                    chips: this.userObject.stack,
-                    emptySeat: emptySeat,
-                  ),
-                ],
-              ),
-            ],
-          ),
-
-          // cards
-          isMe
-              ? _buildVisibleCard(
-                  cards: userObject.cards?.map(
-                        (int c) {
-                          CardObject card = CardHelper.getCard(c);
-                          card.smaller = true;
-
-                          return card;
-                        },
-                      )?.toList() ??
-                      List<CardObject>(),
-                )
-              : emptySeat
-                  ? shrinkedSizedBox
-                  : _buildHiddenCard(
-                      alignment: this.cardsAlignment,
-                      emptySeat: emptySeat,
+      child: emptySeat
+          ? null
+          : Stack(
+              alignment: Alignment.center,
+              children: [
+                // main user body
+                Stack(
+                  alignment: Alignment.bottomCenter,
+                  children: [
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        _buildAvatarAndLastAction(
+                          avatarUrl: userObject.avatarUrl,
+                          emptySeat: emptySeat,
+                        ),
+                        _buildPlayerInfo(
+                          name: this.userObject.name,
+                          chips: this.userObject.stack,
+                          emptySeat: emptySeat,
+                        ),
+                      ],
                     ),
+                  ],
+                ),
 
-          // show dealer button, if user is a dealer
-          userObject.playerType != null &&
-                  userObject.playerType == PlayerType.Dealer
-              ? _buildDealerButton(
-                  alignment: this.cardsAlignment,
-                  isMe: isMe,
-                )
-              : shrinkedSizedBox,
+                // cards
+                isMe
+                    ? _buildVisibleCard(
+                        cards: userObject.cards?.map(
+                              (int c) {
+                                CardObject card = CardHelper.getCard(c);
+                                card.smaller = true;
 
-          /* timer
+                                return card;
+                              },
+                            )?.toList() ??
+                            List<CardObject>(),
+                      )
+                    : emptySeat
+                        ? shrinkedSizedBox
+                        : _buildHiddenCard(
+                            alignment: this.cardsAlignment,
+                            emptySeat: emptySeat,
+                          ),
+
+                // show dealer button, if user is a dealer
+                userObject.playerType != null &&
+                        userObject.playerType == PlayerType.Dealer
+                    ? _buildDealerButton(
+                        alignment: this.cardsAlignment,
+                        isMe: isMe,
+                      )
+                    : shrinkedSizedBox,
+
+                /* timer
           * the timer is show to the highlighted user
           * */
-          userObject.highlight ?? false
-              ? _buildTimer(
-                  context: context,
-                  time: actionTime,
-                )
-              : shrinkedSizedBox,
-        ],
-      ),
+                userObject.highlight ?? false
+                    ? _buildTimer(
+                        context: context,
+                        time: actionTime,
+                      )
+                    : shrinkedSizedBox,
+              ],
+            ),
     );
   }
 }
