@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/game/new_game_provider.dart';
 import 'package:pokerapp/resources/app_colors.dart';
-import 'package:pokerapp/services/game_play/new_game_settings_services/new_game_settings_services.dart';
 import 'package:provider/provider.dart';
 
 class ClubTipsSelect extends StatelessWidget {
@@ -12,7 +12,7 @@ class ClubTipsSelect extends StatelessWidget {
         title: Text("Club Tips"),
         backgroundColor: AppColors.screenBackgroundColor,
       ),
-      body: Consumer<NewGameSettingsServices>(
+      body: Consumer<NewGameModelProvider>(
         builder: (context, providerData, child) => Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
@@ -31,18 +31,18 @@ class ClubTipsSelect extends StatelessWidget {
                     width: 10.0,
                   ),
                   Text(
-                    providerData.percentage.toString() + " %",
+                    providerData.rakePercentage.toString() + " %",
                     style: TextStyle(color: Color(0xff848484)),
                   ),
                 ],
               ),
               Slider(
-                value: providerData.percentage.toDouble(),
+                value: providerData.rakePercentage.toDouble(),
                 onChanged: (value) =>
-                    providerData.updatePercentage(value.toInt()),
-                min: 1,
-                max: 100,
-                divisions: 100,
+                    providerData.rakePercentage = value.toDouble(),
+                min: 0,
+                max: 40,
+                divisions: 40,
               ),
               SizedBox(
                 height: 20.0,
@@ -60,7 +60,7 @@ class ClubTipsSelect extends StatelessWidget {
                     width: 100.0,
                     child: TextField(
                       onChanged: (value) {
-                        providerData.updateCap(int.parse(value));
+                        providerData.rakeCap = int.parse(value);
                       },
                       decoration: InputDecoration(
                         hintText: "5",

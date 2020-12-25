@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/game/new_game_provider.dart';
 import 'package:pokerapp/resources/app_colors.dart';
-import 'package:pokerapp/services/game_play/new_game_settings_services/new_game_settings_services.dart';
 import 'package:provider/provider.dart';
 
 class BuyInRangesSelect extends StatelessWidget {
@@ -12,7 +12,7 @@ class BuyInRangesSelect extends StatelessWidget {
         title: Text("BuyIn Ranges"),
         backgroundColor: AppColors.screenBackgroundColor,
       ),
-      body: Consumer<NewGameSettingsServices>(
+      body: Consumer<NewGameModelProvider>(
         builder: (context, providerData, child) => Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
@@ -31,15 +31,15 @@ class BuyInRangesSelect extends StatelessWidget {
                     width: 10.0,
                   ),
                   Text(
-                    providerData.minChips.toString() + " BB",
+                    providerData.buyInMin.toString() + " BB",
                     style: TextStyle(color: Color(0xff848484)),
                   ),
                 ],
               ),
               Slider(
-                value: providerData.minChips.toDouble(),
+                value: providerData.buyInMin.toDouble(),
                 onChanged: (value) =>
-                    providerData.updateMinChips(value.toInt()),
+                    providerData.buyInMin = value.toInt(),
                 min: 20,
                 max: 500,
                 divisions: 500,
@@ -57,16 +57,16 @@ class BuyInRangesSelect extends StatelessWidget {
                     width: 10.0,
                   ),
                   Text(
-                    providerData.maxChips.toString() + " BB",
+                    providerData.buyInMax.toString() + " BB",
                     style: TextStyle(color: Color(0xff848484)),
                   ),
                 ],
               ),
               Slider(
-                value: providerData.maxChips.toDouble(),
+                value: providerData.buyInMax.toDouble(),
                 onChanged: (value) =>
-                    providerData.updateMaxChips(value.toInt()),
-                min: providerData.minChips.toDouble(),
+                    providerData.buyInMax = value.toInt(),
+                min: providerData.buyInMin.toDouble(),
                 max: 1000,
                 divisions: 500,
               ),

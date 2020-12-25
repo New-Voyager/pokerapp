@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:pokerapp/main.dart';
+import 'package:pokerapp/models/game/new_game_model.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
 
@@ -76,5 +77,30 @@ class GameService {
     }""";
 
     send(_query);
+  }
+
+  static Future<String> configureClubGame(String clubCode, NewGameModel input) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+    String _query = """
+          mutation (\$clubCode: String!, \$gameInput: GameCreateInput!){
+            configuredGame: configureGame(clubCode: \$clubCode, game: \$gameInput) {
+              gameCode
+            }
+          }
+          """;
+    Map<String, dynamic> variables = {
+      "clubCode": clubCode,
+      "gameInput":  input.toJson(),
+    };
+
+    QueryResult result = await _client.mutate(
+      MutationOptions(documentNode: gql(_query), variables: variables),
+    );
+
+    if (result.hasException) return null;
+    Map game = (result.data as LazyCacheMap).data['configuredGame'];
+    String gameCode = game["gameCode"];
+    log('Created game: $gameCode');
+    return gameCode;
   }
 }

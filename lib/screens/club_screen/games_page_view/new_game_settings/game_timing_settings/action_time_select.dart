@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/game/new_game_provider.dart';
 import 'package:pokerapp/resources/app_colors.dart';
-import 'package:pokerapp/services/game_play/new_game_settings_services/new_game_settings_services.dart';
 import 'package:pokerapp/widgets/select_from_list_IOS_look.dart';
 import 'package:provider/provider.dart';
 
@@ -14,17 +14,12 @@ class ActionTimeSelect extends StatelessWidget {
         title: Text("Action Time"),
         elevation: 0.0,
       ),
-      body: Consumer<NewGameSettingsServices>(builder: (context, data, child) {
-        List<String> myList = [];
-        data.actionTimeList.forEach((element) {
-          myList.add(element.time);
-        });
-
+      body: Consumer<NewGameModelProvider>(builder: (context, data, child) {
         return IOSLikeCheckList(
-          list: myList,
-          selectedIndex: data.choosenActionTimeIndex,
+          list: data.actionTimes,
+          selectedIndex: data.selectedActionTime,
           onTap: (index) {
-            data.updateActionTime(index);
+            data.selectedActionTime = index;
           },
         );
       }),

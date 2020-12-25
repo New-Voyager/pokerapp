@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/game/new_game_provider.dart';
 import 'package:pokerapp/resources/app_colors.dart';
-import 'package:pokerapp/services/game_play/new_game_settings_services/new_game_settings_services.dart';
 import 'package:provider/provider.dart';
+import 'package:pokerapp/models/game/new_game_model.dart';
 
 class BlindsSelect extends StatelessWidget {
   final TextEditingController sb = new TextEditingController();
@@ -11,6 +12,12 @@ class BlindsSelect extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Blinds blinds = Provider.of<NewGameModelProvider>(context).blinds;
+    sb.value = new TextEditingValue(text: blinds.smallBlind.toString());
+    bb.value = new TextEditingValue(text: blinds.bigBlind.toString());
+    straddle.value = new TextEditingValue(text: blinds.straddle.toString());
+    ante.value = new TextEditingValue(text: blinds.ante.toString());
+
     return Scaffold(
       backgroundColor: AppColors.screenBackgroundColor,
       appBar: new AppBar(
@@ -34,8 +41,8 @@ class BlindsSelect extends StatelessWidget {
                 width: 100.0,
                 child: TextField(
                   onChanged: (value) {
-                    Provider.of<NewGameSettingsServices>(context, listen: false)
-                        .updateSmallBlind(int.parse(value));
+                    Provider.of<NewGameModelProvider>(context, listen: false)
+                        .smallBlind = double.parse(value);
                   },
                   controller: sb,
                   decoration: InputDecoration(
@@ -60,8 +67,8 @@ class BlindsSelect extends StatelessWidget {
                 width: 100.0,
                 child: TextField(
                   onChanged: (value) {
-                    Provider.of<NewGameSettingsServices>(context, listen: false)
-                        .updateBigBlind(int.parse(value));
+                    Provider.of<NewGameModelProvider>(context, listen: false)
+                        .bigBlind = double.parse(value);
                   },
                   controller: bb,
                   decoration: InputDecoration(
@@ -86,8 +93,8 @@ class BlindsSelect extends StatelessWidget {
                 width: 100.0,
                 child: TextField(
                   onChanged: (value) {
-                    Provider.of<NewGameSettingsServices>(context, listen: false)
-                        .updateBlindStraddle(int.parse(value));
+                    Provider.of<NewGameModelProvider>(context, listen: false)
+                        .straddleBet = double.parse(value);
                   },
                   controller: straddle,
                   decoration: InputDecoration(
@@ -112,8 +119,8 @@ class BlindsSelect extends StatelessWidget {
                 width: 100.0,
                 child: TextField(
                   onChanged: (value) {
-                    Provider.of<NewGameSettingsServices>(context, listen: false)
-                        .updateAnte(int.parse(value));
+                    Provider.of<NewGameModelProvider>(context, listen: false)
+                        .ante = double.parse(value);
                   },
                   controller: ante,
                   decoration: InputDecoration(

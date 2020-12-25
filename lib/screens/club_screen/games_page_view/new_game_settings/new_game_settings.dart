@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:pokerapp/models/club_model.dart';
+import 'package:pokerapp/models/game/new_game_provider.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/screens/club_screen/games_page_view/new_game_settings/game_timing_settings/action_time_select.dart';
 import 'package:pokerapp/screens/club_screen/games_page_view/new_game_settings/ingame_settings/blinds_select.dart';
@@ -8,13 +8,15 @@ import 'package:pokerapp/screens/club_screen/games_page_view/new_game_settings/i
 import 'package:pokerapp/screens/club_screen/games_page_view/new_game_settings/ingame_settings/club_tips_select.dart';
 import 'package:pokerapp/screens/club_screen/games_page_view/new_game_settings/ingame_settings/game_type_select.dart';
 import 'package:pokerapp/screens/club_screen/games_page_view/new_game_settings/ingame_settings/max_player_select.dart';
-import 'package:pokerapp/services/game_play/new_game_settings_services/new_game_settings_services.dart';
 import 'package:pokerapp/widgets/custom_text_button.dart';
 import 'package:provider/provider.dart';
 
 class NewGameSettings extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    NewGameModelProvider data = Provider.of<NewGameModelProvider>(context);
+    print(data);
+
     return Scaffold(
       backgroundColor: AppColors.screenBackgroundColor,
       appBar: AppBar(
@@ -23,7 +25,7 @@ class NewGameSettings extends StatelessWidget {
         elevation: 0.0,
       ),
       body: SingleChildScrollView(
-        child: Consumer<NewGameSettingsServices>(
+        child: Consumer<NewGameModelProvider>(
           builder: (context, data, child) => Column(
             children: [
               SizedBox(
@@ -37,8 +39,8 @@ class NewGameSettings extends StatelessWidget {
                     CustomTextButton(
                       text: "Start",
                       onTap: () async {
-                        bool status = await data.startGame();
-                        print(status);
+                        //bool status = await data.startGame();
+                        print("Starting game...");
                       },
                     ),
                     Container(
@@ -65,7 +67,7 @@ class NewGameSettings extends StatelessWidget {
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 12.0, right: 12.0),
-                child: firstList(),
+                child: firstList(context),
               ),
               SizedBox(
                 height: 20.0,
@@ -99,7 +101,7 @@ class NewGameSettings extends StatelessWidget {
       ),
       child: Padding(
         padding: const EdgeInsets.only(bottom: 8.0),
-        child: Consumer<NewGameSettingsServices>(
+        child: Consumer<NewGameModelProvider>(
           builder: (context, data, child) => Column(
             children: [
               ListTile(
@@ -111,9 +113,9 @@ class NewGameSettings extends StatelessWidget {
                   style: TextStyle(color: Colors.white),
                 ),
                 trailing: CupertinoSwitch(
-                    value: data.general,
+                    value: data.locationCheck,
                     onChanged: (value) {
-                      data.updateGeneral(value);
+                      data.locationCheck = value;
                     }),
               ),
               Divider(
@@ -128,9 +130,9 @@ class NewGameSettings extends StatelessWidget {
                   style: TextStyle(color: Colors.white),
                 ),
                 trailing: CupertinoSwitch(
-                    value: data.general,
+                    value: data.waitList,
                     onChanged: (value) {
-                      data.updateGeneral(value);
+                      data.waitList = value;
                     }),
               ),
               Divider(
@@ -145,9 +147,9 @@ class NewGameSettings extends StatelessWidget {
                   style: TextStyle(color: Colors.white),
                 ),
                 trailing: CupertinoSwitch(
-                    value: data.general,
+                    value: data.dontShowLosingHand,
                     onChanged: (value) {
-                      data.updateGeneral(value);
+                      data.dontShowLosingHand = value;
                     }),
               ),
               Divider(
@@ -162,9 +164,9 @@ class NewGameSettings extends StatelessWidget {
                   style: TextStyle(color: Colors.white),
                 ),
                 trailing: CupertinoSwitch(
-                    value: data.general,
+                    value: data.runItTwice,
                     onChanged: (value) {
-                      data.updateGeneral(value);
+                      data.runItTwice = value;
                     }),
               ),
             ],
@@ -182,7 +184,7 @@ class NewGameSettings extends StatelessWidget {
       ),
       child: Padding(
         padding: const EdgeInsets.only(bottom: 8.0),
-        child: Consumer<NewGameSettingsServices>(
+        child: Consumer<NewGameModelProvider>(
           builder: (context, data, child) => Column(
             children: [
               ListTile(
@@ -229,7 +231,7 @@ class NewGameSettings extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     Text(
-                      data.actionTimeList[data.choosenActionTimeIndex].time,
+                      data.selectedActionTimeText,
                       style: TextStyle(color: Color(0xff848484)),
                     ),
                     IconButton(
@@ -258,7 +260,9 @@ class NewGameSettings extends StatelessWidget {
     );
   }
 
-  Widget firstList() {
+  Widget firstList(context) {
+    NewGameModelProvider data = Provider.of<NewGameModelProvider>(context);
+    print(data);
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10.0),
@@ -266,7 +270,7 @@ class NewGameSettings extends StatelessWidget {
       ),
       child: Padding(
         padding: const EdgeInsets.only(bottom: 8.0),
-        child: Consumer<NewGameSettingsServices>(
+        child: Consumer<NewGameModelProvider>(
           builder: (context, data, child) => Column(
             children: [
               ListTile(
@@ -274,7 +278,7 @@ class NewGameSettings extends StatelessWidget {
                   backgroundColor: Color(0xff319ffe),
                 ),
                 title: Text(
-                  data.currentGameType,
+                  data.selectedGameTypeText,
                   style: TextStyle(color: Colors.white),
                 ),
                 trailing: IconButton(
@@ -309,13 +313,13 @@ class NewGameSettings extends StatelessWidget {
                 ),
                 subtitle: Text(
                   "(SB: " +
-                      data.smallBlind.toString() +
+                      data.blinds.smallBlind.toString() +
                       ", BB: " +
-                      data.bigBlind.toString() +
+                      data.blinds.bigBlind.toString() +
                       ", Straddle: " +
-                      data.blindStraddle.toString() +
+                      data.blinds.straddle.toString() +
                       ", Ante: " +
-                      data.ante.toString() +
+                      data.blinds.ante.toString() +
                       ")",
                   style: TextStyle(color: Color(0xff848484), fontSize: 13.0),
                 ),
@@ -324,7 +328,7 @@ class NewGameSettings extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     Text(
-                      data.bigBlind.toString(),
+                      data.blinds.bigBlind.toString(),
                       style: TextStyle(color: Color(0xff848484)),
                     ),
                     IconButton(
@@ -365,7 +369,7 @@ class NewGameSettings extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     Text(
-                      data.minChips.toString() + "/" + data.maxChips.toString(),
+                      data.buyInMin.toString() + "/" + data.buyInMax.toString(),
                       style: TextStyle(color: Color(0xff848484)),
                     ),
                     IconButton(
@@ -406,7 +410,7 @@ class NewGameSettings extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     Text(
-                      data.numberOfPlayers[data.choosenMaxPlayer],
+                      data.maxPlayers.toString(),
                       style: TextStyle(color: Color(0xff848484)),
                     ),
                     IconButton(
@@ -447,9 +451,9 @@ class NewGameSettings extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     Text(
-                      data.percentage.toString() +
+                      data.rakePercentage.toString() +
                           "% or " +
-                          data.cap.toString() +
+                          data.rakeCap.toString() +
                           " cap",
                       style: TextStyle(color: Color(0xff848484)),
                     ),
@@ -487,9 +491,9 @@ class NewGameSettings extends StatelessWidget {
                   style: TextStyle(color: Colors.white),
                 ),
                 trailing: CupertinoSwitch(
-                    value: data.straddle,
+                    value: data.straddleAllowed,
                     onChanged: (value) {
-                      data.updateStraddle(value);
+                      data.straddleAllowed = value;
                     }),
               ),
             ],

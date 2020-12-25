@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/game/new_game_provider.dart';
 import 'package:pokerapp/resources/app_colors.dart';
-import 'package:pokerapp/services/game_play/new_game_settings_services/new_game_settings_services.dart';
 import 'package:pokerapp/widgets/select_from_list_IOS_look.dart';
 import 'package:provider/provider.dart';
 
@@ -14,12 +14,12 @@ class GameTypeSelect extends StatelessWidget {
         title: Text("Game Type"),
         elevation: 0.0,
       ),
-      body: Consumer<NewGameSettingsServices>(
+      body: Consumer<NewGameModelProvider>(
         builder: (context, data, child) => IOSLikeCheckList(
           list: data.gameTypes,
-          selectedIndex: data.currentGameIndex,
+          selectedIndex: data.selectedGameType,
           onTap: (index) {
-            data.updateGameType(index);
+            data.selectedGameType = index;
           },
         ),
       ),
