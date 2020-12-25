@@ -1,11 +1,11 @@
 import 'package:pokerapp/models/create_game_input.dart';
 
 class CreateGame {
-  static String createGame(String clubCode, String gameInput) => """
-  mutation{
-  configuredGame: configureGame(clubCode: $clubCode, game: $gameInput) {
-    gameCode
-  }
+  static String createGameQuery = """
+  mutation (\$clubCode: String!, \$gameInput: GameCreateInput!){
+    configuredGame: configureGame(clubCode: \$clubCode, game: \$gameInput) {
+      gameCode
+    }
   }
   """;
 

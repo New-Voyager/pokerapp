@@ -12,7 +12,7 @@ class NewGameSettingsServices extends ChangeNotifier {
   // ClubModel
   ClubModel _clubModel;
   ClubModel get clubModel => _clubModel;
-
+  String _gameCode;
   NewGameSettingsServices(this._clubModel);
 
   // general boolean
@@ -25,20 +25,28 @@ class NewGameSettingsServices extends ChangeNotifier {
   }
 
   final List<String> _gameTypes = [
-    "No Limit Heldom",
+    "No Limit Holdem",
     "PLO",
     "PLO(Hi-Lo)",
     "5 Card PLO",
     "5 Card PLO(Hi-Lo)",
-    "ROE(NLH, PLO)",
-    "ROE(NLH, PLO, PLO Hi-Lo)",
-    "ROE(PLO, PLO Hi-Lo)",
-    "ROE(5 Card PLO, 5 Card PLO Hi-Lo)"
+    // "ROE(NLH, PLO)",
+    // "ROE(NLH, PLO, PLO Hi-Lo)",
+    // "ROE(PLO, PLO Hi-Lo)",
+    // "ROE(5 Card PLO, 5 Card PLO Hi-Lo)"
   ];
+
+  final Map<String, String> _gameTypesValues = {
+    "No Limit Holdem": "HOLDEM",
+    "PLO": "PLO",
+    "PLO(Hi-Lo)": "PLO_HILO",
+    "5 Card PLO": "FIVE_CARD_PLO",
+    "5 Card PLO(Hi-Lo)": "FIVE_CARD_PLO_HILO"
+  };
 
   List<String> _numberOfPlayers = ["2", "3", "4", "5", "6", "7", "8", "9"];
 
-  String _currentGameType = "No Limit Heldom";
+  String _currentGameType = "No Limit Holdem";
   int _currentGameIndex = 0;
   int _smallBlind = 1;
   int _bigBlind = 2;
@@ -177,8 +185,8 @@ class NewGameSettingsServices extends ChangeNotifier {
 
   Future<bool> startGame() async {
     CreateGameInput createGameInput = CreateGameInput(
-        title: "Testing Game",
-        gameType: _currentGameType,
+        title: _currentGameType,
+        gameType: _gameTypesValues[_currentGameType],
         smallBlind: _smallBlind,
         bigBlind: _bigBlind,
         utgStraddleAllowed: _straddle,
@@ -193,22 +201,25 @@ class NewGameSettingsServices extends ChangeNotifier {
         buyInMax: _maxChips,
         actionTime: _actionTimeList[_choosenActionTimeIndex].originTime);
 
-    String input = CreateGame.createGameInput(createGameInput);
-
+    Map<String, dynamic> variables = {
+      "clubCode": _clubModel.clubCode,
+      "gameInput":  createGameInput.toJson(),
+    };
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
 
-    String _query = CreateGame.createGame(_clubModel.clubCode, input);
+    String _query = CreateGame.createGameQuery;
 
     QueryResult result = await _client.mutate(
-      MutationOptions(documentNode: gql(_query)),
+      MutationOptions(documentNode: gql(_query), variables: variables),
     );
 
-    print(result.exception);
+    //print(result.exception);
 
     if (result.hasException) return false;
 
-    log(result.data());
-
+    Map game = (result.data as LazyCacheMap).data['configuredGame'];
+    _gameCode = game['gameCode'];
+    log('Created game: $_gameCode');
     return true;
   }
 }
