@@ -12,7 +12,7 @@ import 'package:pokerapp/screens/main_screens/clubs_page_view/widgets/club_item.
 import 'package:pokerapp/screens/main_screens/clubs_page_view/widgets/create_club_bottom_sheet.dart';
 import 'package:pokerapp/services/app/clubs_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
-import 'package:pokerapp/widgets/round_button.dart';
+import 'package:pokerapp/widgets/round_raised_button.dart';
 import 'package:pokerapp/widgets/round_text_field.dart';
 import 'package:pokerapp/widgets/custom_text_button.dart';
 import 'package:provider/provider.dart';

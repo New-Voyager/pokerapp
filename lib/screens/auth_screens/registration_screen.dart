@@ -8,7 +8,7 @@ import 'package:pokerapp/screens/main_screens/main_screen.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/widgets/card_form_text_field.dart';
-import 'package:pokerapp/widgets/round_button.dart';
+import 'package:pokerapp/widgets/round_raised_button.dart';
 
 class RegistrationScreen extends StatefulWidget {
   @override

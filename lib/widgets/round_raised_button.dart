@@ -8,8 +8,10 @@ class RoundRaisedButton extends StatelessWidget {
     this.color,
     this.radius,
     this.verticalPadding,
+    this.fontSize = 18.0,
   });
 
+  final double fontSize;
   final Function onButtonTap;
   final String buttonText;
   final Color color;
@@ -32,10 +34,10 @@ class RoundRaisedButton extends StatelessWidget {
         ),
         child: Text(
           buttonText ?? 'Button Text Goes Here',
-          style: const TextStyle(
+          style: TextStyle(
             color: Colors.white,
             fontFamily: AppAssets.fontFamilyLato,
-            fontSize: 18.0,
+            fontSize: fontSize,
             fontWeight: FontWeight.w700,
           ),
         ),
