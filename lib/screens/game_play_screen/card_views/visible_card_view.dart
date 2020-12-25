@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
@@ -28,12 +27,12 @@ class VisibleCardView extends StatelessWidget {
         ? Colors.blue.shade100
         : Colors.green.shade100;
 
-    bool isCommunityCard = card.smaller;
+    bool isNotCommunityCard = card.smaller;
 
     /* for visible cards, the smaller card size is shown to the left of user,
     * and the bigger size is shown as the community card */
     return Transform.scale(
-      scale: isCommunityCard ? 0.90 : 1.05,
+      scale: isNotCommunityCard ? 0.70 : 1.05,
       child: Container(
         padding: const EdgeInsets.all(1.0),
         height: AppDimensions.cardHeight * 1.5,

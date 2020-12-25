@@ -269,7 +269,7 @@ class UserView extends StatelessWidget {
   }) =>
       Transform.translate(
         offset: Offset(
-          -48.0,
+          -40.0,
           0.0,
         ),
         child: StackCardView(
@@ -443,72 +443,70 @@ class UserView extends StatelessWidget {
 
     return InkWell(
       onTap: emptySeat ? () => onUserTap(seatPos) : null,
-      child: emptySeat
-          ? null
-          : Stack(
-              alignment: Alignment.center,
-              children: [
-                // main user body
-                Stack(
-                  alignment: Alignment.bottomCenter,
-                  children: [
-                    Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        _buildAvatarAndLastAction(
-                          avatarUrl: userObject.avatarUrl,
-                          emptySeat: emptySeat,
-                        ),
-                        _buildPlayerInfo(
-                          name: this.userObject.name,
-                          chips: this.userObject.stack,
-                          emptySeat: emptySeat,
-                        ),
-                      ],
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          // main user body
+          Stack(
+            alignment: Alignment.bottomCenter,
+            children: [
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _buildAvatarAndLastAction(
+                    avatarUrl: userObject.avatarUrl,
+                    emptySeat: emptySeat,
+                  ),
+                  _buildPlayerInfo(
+                    name: this.userObject.name,
+                    chips: this.userObject.stack,
+                    emptySeat: emptySeat,
+                  ),
+                ],
+              ),
+            ],
+          ),
+
+          // cards
+          isMe
+              ? _buildVisibleCard(
+                  cards: userObject.cards?.map(
+                        (int c) {
+                          CardObject card = CardHelper.getCard(c);
+                          card.smaller = true;
+
+                          return card;
+                        },
+                      )?.toList() ??
+                      List<CardObject>(),
+                )
+              : emptySeat
+                  ? shrinkedSizedBox
+                  : _buildHiddenCard(
+                      alignment: this.cardsAlignment,
+                      emptySeat: emptySeat,
                     ),
-                  ],
-                ),
 
-                // cards
-                isMe
-                    ? _buildVisibleCard(
-                        cards: userObject.cards?.map(
-                              (int c) {
-                                CardObject card = CardHelper.getCard(c);
-                                card.smaller = true;
+          // show dealer button, if user is a dealer
+          userObject.playerType != null &&
+                  userObject.playerType == PlayerType.Dealer
+              ? _buildDealerButton(
+                  alignment: this.cardsAlignment,
+                  isMe: isMe,
+                )
+              : shrinkedSizedBox,
 
-                                return card;
-                              },
-                            )?.toList() ??
-                            List<CardObject>(),
-                      )
-                    : emptySeat
-                        ? shrinkedSizedBox
-                        : _buildHiddenCard(
-                            alignment: this.cardsAlignment,
-                            emptySeat: emptySeat,
-                          ),
-
-                // show dealer button, if user is a dealer
-                userObject.playerType != null &&
-                        userObject.playerType == PlayerType.Dealer
-                    ? _buildDealerButton(
-                        alignment: this.cardsAlignment,
-                        isMe: isMe,
-                      )
-                    : shrinkedSizedBox,
-
-                /* timer
+          /* timer
           * the timer is show to the highlighted user
           * */
-                userObject.highlight ?? false
-                    ? _buildTimer(
-                        context: context,
-                        time: actionTime,
-                      )
-                    : shrinkedSizedBox,
-              ],
-            ),
+          userObject.highlight ?? false
+              ? _buildTimer(
+                  context: context,
+                  time: actionTime,
+                )
+              : shrinkedSizedBox,
+        ],
+      ),
     );
   }
 }
