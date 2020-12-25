@@ -64,6 +64,12 @@ class ResultService {
       listen: false,
     ).updateStackSilent(_getUpdatedStack(data));
 
+    /* remove all highlight - silently */
+    Provider.of<Players>(
+      context,
+      listen: false,
+    ).removeAllHighlights();
+
     /* footer status -> showing the result */
     /* set the footer result data */
     Provider.of<FooterResult>(

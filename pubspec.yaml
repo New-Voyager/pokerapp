@@ -71,6 +71,10 @@ flutter:
          weight: 700
        - asset: assets/fonts/Lato-Black.ttf
          weight: 900
+   - family: NoticiaText
+     fonts:
+       - asset: assets/fonts/NoticiaText-Bold.ttf
+         weight: 700
 
     # icon packs
    - family: AppIcons

@@ -31,6 +31,8 @@ docker ps
 Run botrunner.
 ```
 BOTRUNNER_SCRIPT=river-action-3-bots.yaml make botrunner
+        Club Owner: c2dc2c3d-13da-46cc-8c66-caa0c77459de
+        Club Player: 4b93e2be-7992-45c3-a2dd-593c2f708cb7
 BOTRUNNER_SCRIPT=river-action-2-bots-1-human.yaml make botrunner
 BOTRUNNER_SCRIPT=play-many-hands.yaml make botrunner
 

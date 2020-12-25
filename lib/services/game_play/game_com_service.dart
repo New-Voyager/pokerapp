@@ -9,7 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class GameComService {
   Client _client;
   Client _clientPub;
-  bool initiated;
+  bool active;
 
   String gameToPlayerChannel;
   String handToAllChannel;
@@ -28,13 +28,14 @@ class GameComService {
   }) {
     _client = Client();
     _clientPub = Client();
-    this.initiated = false;
+    this.active = false;
   }
 
   Future<void> init() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     await _client.connect(sharedPreferences.getString(AppConstants.NATS_URL));
-    await _clientPub.connect(sharedPreferences.getString(AppConstants.NATS_URL));
+    await _clientPub
+        .connect(sharedPreferences.getString(AppConstants.NATS_URL));
 
     // subscribe
     log('subscribing to ${this.gameToPlayerChannel}');
@@ -46,11 +47,11 @@ class GameComService {
     log('subscribing to ${this.handToPlayerChannel}');
     _handToPlayerChannelSubs = _client.sub(this.handToPlayerChannel);
 
-    this.initiated = true;
+    this.active = true;
   }
 
   void sendPlayerToHandChannel(String data) {
-    assert(initiated);
+    assert(active);
     this._clientPub.pubString(this.playerToHandChannel, data);
   }
 
@@ -65,22 +66,22 @@ class GameComService {
     _handToPlayerChannelSubs?.unSub();
     _handToPlayerChannelSubs?.close();
 
-    initiated = false;
+    active = false;
     _client?.close();
   }
 
   Stream<Message> get gameToPlayerChannelStream {
-    assert(initiated);
+    assert(active);
     return _gameToPlayerChannelSubs.stream;
   }
 
   Stream<Message> get handToAllChannelStream {
-    assert(initiated);
+    assert(active);
     return _handToAllChannelSubs.stream;
   }
 
   Stream<Message> get handToPlayerChannelStream {
-    assert(initiated);
+    assert(active);
     return _handToPlayerChannelSubs.stream;
   }
 }

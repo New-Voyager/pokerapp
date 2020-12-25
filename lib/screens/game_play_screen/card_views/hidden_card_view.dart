@@ -1,16 +1,14 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:provider/provider.dart';
 
-const kDisplacementConstant = 10.0;
+const kDisplacementConstant = 3.0;
 
 class HiddenCardView extends StatelessWidget {
   Widget _buildCardBack() => Container(
-        height: AppDimensions.cardHeight * 0.90,
-        width: AppDimensions.cardWidth * 0.90,
+        height: AppDimensions.cardHeight * 0.50,
+        width: AppDimensions.cardWidth * 0.50,
         decoration: BoxDecoration(
           boxShadow: [
             const BoxShadow(
@@ -51,16 +49,19 @@ class HiddenCardView extends StatelessWidget {
       listen: false,
     ).value;
 
+    double mid = (noOfCards ~/ 2) * 0.80;
+
     return Stack(
       children: List.generate(
         noOfCards,
         (i) => Transform.translate(
           offset: Offset(
             kDisplacementConstant * i,
-            0.0,
+            -i * 1.50,
           ),
           child: Transform.rotate(
-            angle: i * 0.03,
+            alignment: Alignment.bottomLeft,
+            angle: (i - mid) * 0.20,
             child: _buildCardBack(),
           ),
         ),

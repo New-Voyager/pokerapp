@@ -109,6 +109,8 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
     * as there will be Listeners implemented down this hierarchy level */
 
     _gameComService.gameToPlayerChannelStream.listen((nats.Message message) {
+      if (!_gameComService.active) return;
+
       log('gameToPlayerChannel(${message.subject}): ${message.string}');
 
       /* This stream will receive game related messages
@@ -124,6 +126,8 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
     });
 
     _gameComService.handToAllChannelStream.listen((nats.Message message) {
+      if (!_gameComService.active) return;
+
       log('handToAllChannel(${message.subject}): ${message.string}');
 
       /* This stream receives hand related messages that is common to all players
@@ -139,6 +143,8 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
     });
 
     _gameComService.handToPlayerChannelStream.listen((nats.Message message) {
+      if (!_gameComService.active) return;
+
       log('handToPlayerChannel(${message.subject}): ${message.string}');
 
       /* This stream receives hand related messages that is specific to THIS player only
