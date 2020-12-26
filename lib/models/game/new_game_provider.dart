@@ -7,12 +7,17 @@ class NewGameModelProvider extends ChangeNotifier {
   String clubCode;
   List<String> actionTimes = new List<String>();
   List<String> gameTypes = new List<String>();
+  List<String> gameLengths = new List<String>();
 
   NewGameModelProvider(String clubCode) {
     settings = NewGameModel.withDefault(clubCode);
     settings.clubCode = clubCode;
     NewGameConstants.ACTION_TIMES.forEach((key, value) {
       actionTimes.add(value);
+    });
+
+    NewGameConstants.GAME_LENGTH.forEach((key, value) {
+      gameLengths.add(value);
     });
 
     NewGameConstants.SUPPORTED_GAMES.forEach((key, value) {
@@ -65,6 +70,35 @@ class NewGameModelProvider extends ChangeNotifier {
   set blinds(Blinds blinds) {
     settings.setBlinds(blinds);
     notifyListeners();
+  }
+
+  int get gameLength => settings.gameLength;
+  int get selectedGameLength {
+    return gameLengths
+        .indexOf(NewGameConstants.GAME_LENGTH[settings.gameLength]);
+  }
+
+  set selectedGameLength(int index) {
+    if (index == -1) {
+    } else {
+      String selectedValue = gameLengths[index];
+      for (MapEntry e in NewGameConstants.GAME_LENGTH.entries) {
+        if (e.value == selectedValue) {
+          settings.gameLength = e.key;
+          break;
+        }
+      }
+    }
+    notifyListeners();
+  }
+
+  String get selectedGameLengthText {
+    int index =
+        gameLengths.indexOf(NewGameConstants.GAME_LENGTH[settings.gameLength]);
+    if (index != -1) {
+      return gameLengths[index];
+    }
+    return "";
   }
 
   int get actionTime => settings.actionTime;

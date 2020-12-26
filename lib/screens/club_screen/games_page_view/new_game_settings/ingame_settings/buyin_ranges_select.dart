@@ -38,11 +38,10 @@ class BuyInRangesSelect extends StatelessWidget {
               ),
               Slider(
                 value: providerData.buyInMin.toDouble(),
-                onChanged: (value) =>
-                    providerData.buyInMin = value.toInt(),
+                onChanged: (value) => providerData.buyInMin = value.toInt(),
                 min: 20,
                 max: 500,
-                divisions: 500,
+                divisions: 96,
               ),
               SizedBox(
                 height: 20.0,
@@ -64,11 +63,10 @@ class BuyInRangesSelect extends StatelessWidget {
               ),
               Slider(
                 value: providerData.buyInMax.toDouble(),
-                onChanged: (value) =>
-                    providerData.buyInMax = value.toInt(),
+                onChanged: (value) => providerData.buyInMax = value.toInt(),
                 min: providerData.buyInMin.toDouble(),
                 max: 1000,
-                divisions: 500,
+                divisions: (1000 - providerData.buyInMin) ~/ 5,
               ),
             ],
           ),

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game/new_game_provider.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/screens/club_screen/games_page_view/new_game_settings/game_timing_settings/action_time_select.dart';
+import 'package:pokerapp/screens/club_screen/games_page_view/new_game_settings/game_timing_settings/game_length_select.dart';
 import 'package:pokerapp/screens/club_screen/games_page_view/new_game_settings/ingame_settings/blinds_select.dart';
 import 'package:pokerapp/screens/club_screen/games_page_view/new_game_settings/ingame_settings/buyin_ranges_select.dart';
 import 'package:pokerapp/screens/club_screen/games_page_view/new_game_settings/ingame_settings/club_tips_select.dart';
@@ -15,13 +16,13 @@ import 'package:provider/provider.dart';
 
 class NewGameSettings extends StatelessWidget {
   void _joinGame(BuildContext context, String gameCode) => Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (_) => GamePlayScreen(
-        gameCode: gameCode,
-      ),
-    ),
-  );
+        context,
+        MaterialPageRoute(
+          builder: (_) => GamePlayScreen(
+            gameCode: gameCode,
+          ),
+        ),
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +51,8 @@ class NewGameSettings extends StatelessWidget {
                     CustomTextButton(
                       text: "Start",
                       onTap: () async {
-                        String gameCode = await GameService.configureClubGame(data.settings.clubCode, data.settings);
+                        String gameCode = await GameService.configureClubGame(
+                            data.settings.clubCode, data.settings);
                         print('Configured game: $gameCode');
 
                         // join the game
@@ -231,7 +233,7 @@ class NewGameSettings extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     Text(
-                      "4 hours",
+                      data.selectedGameLengthText,
                       style: TextStyle(color: Color(0xff848484)),
                     ),
                     IconButton(
@@ -239,7 +241,17 @@ class NewGameSettings extends StatelessWidget {
                           Icons.arrow_forward_ios,
                           color: Colors.white,
                         ),
-                        onPressed: null),
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              new MaterialPageRoute(
+                                builder: (context) =>
+                                    ChangeNotifierProvider.value(
+                                  value: data,
+                                  child: GameLengthSelect(),
+                                ),
+                              ));
+                        }),
                   ],
                 ),
               ),
