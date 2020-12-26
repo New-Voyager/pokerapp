@@ -68,6 +68,18 @@ class Players extends ChangeNotifier {
     _players[idx].playerType = playerType;
   }
 
+  void highlightWinner(seatNo) {
+    int idx = _players.indexWhere((p) => p.seatNo == seatNo);
+    log('\n\n\n\n\n\n winner index :$idx seatNo: $seatNo \n\n\n\n\n\n');
+    if (idx != -1) _players[idx].winner = true;
+    _notify();
+  }
+
+  void removeWinnerHighlight() {
+    for (int i = 0; i < _players.length; i++) _players[i].winner = null;
+    _notify();
+  }
+
   void updateHighlight(int idx, bool highlight) {
     _players[idx].highlight = highlight;
     _notify();

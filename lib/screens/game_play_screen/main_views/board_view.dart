@@ -201,7 +201,6 @@ class BoardView extends StatelessWidget {
     return null;
   }
 
-
   Widget _buildCenterView({
     List<CardObject> cards,
     List<int> potChips,
@@ -219,23 +218,21 @@ class BoardView extends StatelessWidget {
             onStartGame();
           },
           child: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 10.0,
-          vertical: 5.0,
-        ),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(100.0),
-          color: Colors.black26,
-        ),
-        child: Text(
-          _text ?? '',
-          style: AppStyles.itemInfoTextStyleHeavy.copyWith(
-            fontSize: 13,
-          ),
-
-        ),
-      )
-      ),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 10.0,
+              vertical: 5.0,
+            ),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(100.0),
+              color: Colors.black26,
+            ),
+            child: Text(
+              _text ?? '',
+              style: AppStyles.itemInfoTextStyleHeavy.copyWith(
+                fontSize: 13,
+              ),
+            ),
+          )),
     );
 
     /* if reached here, means, the game is RUNNING */
@@ -396,6 +393,7 @@ class BoardView extends StatelessWidget {
       userObjects[idx].playerFolded = model.playerFolded;
       userObjects[idx].cards = model.cards;
       userObjects[idx].highlightCards = model.highlightCards;
+      userObjects[idx].winner = model.winner;
     }
 
     return userObjects;

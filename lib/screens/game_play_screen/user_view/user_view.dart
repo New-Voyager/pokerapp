@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
@@ -152,15 +154,23 @@ class UserView extends StatelessWidget {
                   : Colors.transparent,
               width: 2.0,
             ),
-            boxShadow: userObject.highlight ?? false
+            boxShadow: (userObject.winner ?? false)
                 ? [
                     BoxShadow(
-                      color: highlightColor.withAlpha(120),
-                      blurRadius: 20.0,
+                      color: Colors.green,
+                      blurRadius: 50.0,
                       spreadRadius: 20.0,
                     ),
                   ]
-                : [],
+                : userObject.highlight ?? false
+                    ? [
+                        BoxShadow(
+                          color: highlightColor.withAlpha(120),
+                          blurRadius: 20.0,
+                          spreadRadius: 20.0,
+                        ),
+                      ]
+                    : [],
           ),
           child: AnimatedSwitcher(
             duration: AppConstants.animationDuration,

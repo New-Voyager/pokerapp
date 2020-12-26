@@ -9,7 +9,7 @@ class FooterResult extends ChangeNotifier {
     _isEmpty = true;
   }
 
-  void updateWinners(var potWinners) {
+  List<HiWinnersModel> updateWinners(var potWinners) {
     // todo: there could be multiple pots, but for now handle for single one
 
     _potWinners = potWinners['0']['hiWinners']
@@ -19,6 +19,8 @@ class FooterResult extends ChangeNotifier {
 
     _isEmpty = false;
     notifyListeners();
+
+    return _potWinners;
   }
 
   void reset() {

@@ -18,6 +18,7 @@ class UserObject {
   bool highlight;
   PlayerType playerType;
   bool playerFolded;
+  bool winner;
 
   UserObject({
     @required this.serverSeatPos,
