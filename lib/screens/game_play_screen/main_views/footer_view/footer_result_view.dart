@@ -9,25 +9,15 @@ import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:provider/provider.dart';
 
-class FooterResultView extends StatefulWidget {
+/* building the footer result view, which shows the winners
+ * along with their highlighted cards with the community cards */
+
+class FooterResultView extends StatelessWidget {
   final FooterResult footerResult;
 
   FooterResultView({
     @required this.footerResult,
   });
-
-  @override
-  _FooterResultViewState createState() => _FooterResultViewState();
-}
-
-/* building the footer result view, which shows the winners
- * along with their highlighted cards with the community cards */
-
-class _FooterResultViewState extends State<FooterResultView>
-    with SingleTickerProviderStateMixin {
-  TabController _tabController;
-
-  int currentIndex = 0;
 
   Widget getCardRowView({
     List<CardObject> cards,
@@ -42,6 +32,7 @@ class _FooterResultViewState extends State<FooterResultView>
             if (cardsToHighlight != null) {
               int rawCardNumber =
                   CardHelper.getRawCardNumber('${c.label}${c.suit}');
+
               if (cardsToHighlight.contains(rawCardNumber)) c.highlight = true;
             }
 
@@ -78,7 +69,8 @@ class _FooterResultViewState extends State<FooterResultView>
         .toList();
   }
 
-  Widget _buildFooterResultCommunitySection(List<int> cardsToHighlight) {
+  Widget _buildFooterResultCommunitySection(
+      List<int> cardsToHighlight, BuildContext context) {
     List<CardObject> _communityCards = Provider.of<TableState>(
       context,
       listen: false,
@@ -159,52 +151,53 @@ class _FooterResultViewState extends State<FooterResultView>
       );
 
   Widget _buildFooterResultWinnersSection(
-    List<HiWinnersModel> winners,
-  ) =>
-      TabBarView(
-        controller: _tabController,
-        physics: BouncingScrollPhysics(),
-        children: winners.map(
-          (HiWinnersModel winner) {
-            /* name */
-            String winnerName = getNameFromSeatNo(
-              winner.seatNo,
-              context: context,
-            );
+    HiWinnersModel winner,
+    BuildContext context,
+  ) {
+    /* name */
+    String winnerName = getNameFromSeatNo(
+      winner.seatNo,
+      context: context,
+    );
 
-            /* cards */
-            List<CardObject> winnerCards = getCardsFromSeatNo(
-              winner.seatNo,
-              context: context,
-            );
+    /* cards */
+    List<CardObject> winnerCards = getCardsFromSeatNo(
+      winner.seatNo,
+      context: context,
+    );
 
-            return Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                /* winner name and card/s */
-                _buildUserNameAndCards(
-                  winnerCards: winnerCards,
-                  winnerName: winnerName,
-                  cardsToHighlight: winner.playerCards,
-                ),
+    return Row(
+      children: [
+        /* winner name and card/s */
+        Expanded(
+          child: FittedBox(
+            child: _buildUserNameAndCards(
+              winnerCards: winnerCards,
+              winnerName: winnerName,
+              cardsToHighlight: winner.playerCards,
+            ),
+          ),
+        ),
 
-                /* winning cards and rankStr */
-                _buildWinningCardsAndRankStr(
-                  winningCards: winner.winningCards
-                      .map<CardObject>(
-                        (c) => CardHelper.getCard(c),
-                      )
-                      .toList(),
-                  rankStr: winner.rankStr,
-                ),
-              ],
-            );
-          },
-        ).toList(),
-      );
+        /* winning cards and rankStr */
+        Expanded(
+          child: FittedBox(
+            child: _buildWinningCardsAndRankStr(
+              winningCards: winner.winningCards
+                  .map<CardObject>(
+                    (c) => CardHelper.getCard(c),
+                  )
+                  .toList(),
+              rankStr: winner.rankStr,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
 
-  Widget _buildFooterResult() {
-    List<HiWinnersModel> winners = widget.footerResult.potWinners;
+  Widget _buildFooterResult(BuildContext context) {
+    List<HiWinnersModel> winners = footerResult.potWinners;
 
     return Container(
       padding: const EdgeInsets.symmetric(
@@ -212,7 +205,7 @@ class _FooterResultViewState extends State<FooterResultView>
         vertical: 5.0,
       ),
       margin: const EdgeInsets.symmetric(
-        horizontal: 20.0,
+        horizontal: 10.0,
         vertical: 5.0,
       ),
       decoration: BoxDecoration(
@@ -222,22 +215,28 @@ class _FooterResultViewState extends State<FooterResultView>
         ),
       ),
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           /* community cards */
           _buildFooterResultCommunitySection(
-            winners[currentIndex].winningCards,
+            winners.first.winningCards,
+            context,
           ),
 
           /* winner text */
-          Text(
-            'Winner${winners.length > 1 ? 's' : ''}',
-            style: AppStyles.footerResultTextStyle2,
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10.0),
+            child: Text(
+              'Winner${winners.length > 1 ? 's' : ''}',
+              style: AppStyles.footerResultTextStyle2,
+            ),
           ),
 
           /* displaying the winner, winner cards, rankStr */
           Flexible(
             child: _buildFooterResultWinnersSection(
-              winners,
+              winners.first,
+              context,
             ),
           ),
         ],
@@ -246,25 +245,9 @@ class _FooterResultViewState extends State<FooterResultView>
   }
 
   @override
-  void initState() {
-    super.initState();
-
-    _tabController = TabController(
-      length: widget.footerResult.potWinners.length,
-      vsync: this,
-    );
-
-    _tabController.addListener(
-      () => setState(
-        () => currentIndex = _tabController.index,
-      ),
-    );
-  }
-
-  @override
   Widget build(BuildContext context) {
     try {
-      return _buildFooterResult();
+      return _buildFooterResult(context);
     } catch (e) {
       return const SizedBox.shrink();
     }
