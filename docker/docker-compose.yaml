@@ -49,6 +49,8 @@ services:
       - "/bin/sh"
       - "-c"
       - "sleep 5 && yarn run-docker"
+    environment:
+      BOTRUNNER_URL: http://botrunner:8081
 
   postgres:
     image: ${POSTGRES_IMAGE}
@@ -60,6 +62,23 @@ services:
     environment:
       POSTGRES_USER: 'game'
       POSTGRES_PASSWORD: 'game'
+
+  botrunner:
+    image: ${BOTRUNNER_IMAGE}
+    tty: true
+    restart: always
+    ports:
+      - 8081:8081
+    depends_on:
+      - api-server
+    environment:
+      API_SERVER_URL: http://api-server:9501
+      NATS_HOST: nats
+      NATS_CLIENT_PORT: 4222
+      PERSIST_METHOD: redis
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_DB: 0
 
 volumes:
   db-data:
