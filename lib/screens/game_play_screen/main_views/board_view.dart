@@ -25,9 +25,11 @@ const heightMultiplier = 1.55;
 class BoardView extends StatelessWidget {
   BoardView({
     @required this.onUserTap,
+    @required this.onStartGame,
   });
 
   final Function(int index) onUserTap;
+  final Function() onStartGame;
 
   /* the following helper function builds the game board */
   Widget _buildGameBoard({double boardHeight, double boardWidth}) => Container(
@@ -193,11 +195,12 @@ class BoardView extends StatelessWidget {
       case AppConstants.TABLE_STATUS_NOT_ENOUGH_PLAYERS:
         return 'Waiting for more players';
       case AppConstants.WAITING_TO_BE_STARTED:
-        return 'Waiting to be started';
+        return 'Tap to start the game';
     }
 
     return null;
   }
+
 
   Widget _buildCenterView({
     List<CardObject> cards,
@@ -211,7 +214,11 @@ class BoardView extends StatelessWidget {
     Widget tableStatusWidget = Align(
       key: ValueKey('tableStatusWidget'),
       alignment: Alignment.center,
-      child: Container(
+      child: GestureDetector(
+          onTap: () {
+            onStartGame();
+          },
+          child: Container(
         padding: const EdgeInsets.symmetric(
           horizontal: 10.0,
           vertical: 5.0,
@@ -225,7 +232,9 @@ class BoardView extends StatelessWidget {
           style: AppStyles.itemInfoTextStyleHeavy.copyWith(
             fontSize: 13,
           ),
+
         ),
+      )
       ),
     );
 

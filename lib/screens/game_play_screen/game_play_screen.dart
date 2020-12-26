@@ -65,6 +65,12 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
     );
   }
 
+  void _startGame() async {
+    log('Starting the game...');
+    await GameService.startGame(
+      widget.gameCode
+    );
+  }
   /*
   * _init function is run only for the very first time,
   * and only once, the initial game screen is populated from here
@@ -331,6 +337,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                       Expanded(
                         child: BoardView(
                           onUserTap: _joinGame,
+                          onStartGame: _startGame,
                         ),
                       ),
 

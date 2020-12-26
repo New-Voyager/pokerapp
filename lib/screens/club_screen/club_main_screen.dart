@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/club_model.dart';
-import 'package:pokerapp/models/club_model.dart';
+import 'package:pokerapp/models/game/new_game_provider.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_icons.dart';
 import 'package:pokerapp/screens/club_screen/games_page_view/clubs_games_page_view.dart';
@@ -8,7 +8,6 @@ import 'package:pokerapp/screens/club_screen/games_page_view/new_game_settings/n
 import 'package:pokerapp/screens/club_screen/info_page_view/info_page_view.dart';
 import 'package:pokerapp/screens/club_screen/members_page_view/members_page_view.dart';
 import 'package:pokerapp/screens/club_screen/messages_page_view/messages_page_view.dart';
-import 'package:pokerapp/screens/main_screens/games_page_view/games_page_view.dart';
 import 'package:pokerapp/widgets/custom_text_button.dart';
 import 'package:pokerapp/widgets/tab_bar_item.dart';
 import 'package:provider/provider.dart';
@@ -49,10 +48,16 @@ class _ClubMainScreenState extends State<ClubMainScreen>
             child: CustomTextButton(
                 text: "+create game",
                 onTap: () {
+                  NewGameModelProvider data = new NewGameModelProvider(clubModel.clubCode);
+                  print(data);
                   Navigator.push(
                       context,
                       new MaterialPageRoute(
-                          builder: (context) => NewGameSettings()));
+                          builder: (context) => ChangeNotifierProvider(
+                                create: (_) => data,
+                                child: NewGameSettings(),
+                                lazy: false,
+                              )));
                 }),
           )
         ],
