@@ -19,6 +19,7 @@ class PlayerModel {
   PlayerType playerType;
   bool highlight;
   bool playerFolded;
+  bool winner;
 
   PlayerModel.fromJson(var data) {
     this.name = data['name'];

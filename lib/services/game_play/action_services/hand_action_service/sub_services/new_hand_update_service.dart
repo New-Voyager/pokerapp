@@ -38,6 +38,12 @@ class NewHandUpdateService {
       listen: false,
     );
 
+    // remove all highlight winners
+    Provider.of<Players>(
+      context,
+      listen: false,
+    ).removeWinnerHighlight();
+
     // before marking the small, big blind or the dealer, remove any marking from the old hand
     Provider.of<Players>(
       context,
