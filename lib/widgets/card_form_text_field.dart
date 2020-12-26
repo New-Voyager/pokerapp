@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 
 class CardFormTextField extends StatelessWidget {
@@ -13,9 +14,11 @@ class CardFormTextField extends StatelessWidget {
     this.elevation = 10.0,
     this.validator,
     this.onSaved,
+    this.inputFormatters,
   });
 
   final Function onSaved;
+  final List<TextInputFormatter> inputFormatters;
   final Function validator;
   final double elevation;
   final Color color;
@@ -42,6 +45,7 @@ class CardFormTextField extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
         child: TextFormField(
+          inputFormatters: inputFormatters,
           validator: validator,
           onSaved: onSaved,
           onChanged: onChanged,

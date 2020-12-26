@@ -27,7 +27,10 @@ dependencies:
   # networking
   graphql_flutter: ^3.1.0
   http: ^0.12.2
-  dart_nats: ^0.1.8
+  dart_nats:
+    git:
+      url: https://github.com/jyotirmoy-paul/dart-nats.git
+      ref: master
 
   # device id
   flutter_udid: ^1.0.1
@@ -68,6 +71,10 @@ flutter:
          weight: 700
        - asset: assets/fonts/Lato-Black.ttf
          weight: 900
+   - family: NoticiaText
+     fonts:
+       - asset: assets/fonts/NoticiaText-Bold.ttf
+         weight: 700
 
     # icon packs
    - family: AppIcons

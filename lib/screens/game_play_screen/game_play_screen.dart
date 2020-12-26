@@ -6,7 +6,7 @@ import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/action_info.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/footer_result.dart';
-import 'package:pokerapp/models/game_play_models/provider_models/player_action.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/player_action/player_action.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/remaining_time.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
@@ -65,6 +65,12 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
     );
   }
 
+  void _startGame() async {
+    log('Starting the game...');
+    await GameService.startGame(
+      widget.gameCode
+    );
+  }
   /*
   * _init function is run only for the very first time,
   * and only once, the initial game screen is populated from here
@@ -109,6 +115,8 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
     * as there will be Listeners implemented down this hierarchy level */
 
     _gameComService.gameToPlayerChannelStream.listen((nats.Message message) {
+      if (!_gameComService.active) return;
+
       log('gameToPlayerChannel(${message.subject}): ${message.string}');
 
       /* This stream will receive game related messages
@@ -124,6 +132,8 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
     });
 
     _gameComService.handToAllChannelStream.listen((nats.Message message) {
+      if (!_gameComService.active) return;
+
       log('handToAllChannel(${message.subject}): ${message.string}');
 
       /* This stream receives hand related messages that is common to all players
@@ -139,6 +149,8 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
     });
 
     _gameComService.handToPlayerChannelStream.listen((nats.Message message) {
+      if (!_gameComService.active) return;
+
       log('handToPlayerChannel(${message.subject}): ${message.string}');
 
       /* This stream receives hand related messages that is specific to THIS player only
@@ -325,6 +337,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                       Expanded(
                         child: BoardView(
                           onUserTap: _joinGame,
+                          onStartGame: _startGame,
                         ),
                       ),
 

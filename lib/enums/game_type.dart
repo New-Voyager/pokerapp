@@ -1,7 +1,8 @@
 enum GameType {
   UNKNOWN,
-  HOLDEN,
-  OMAHA,
-  OMAHA_HILO,
-  HILO,
+  HOLDEM,
+  PLO,
+  PLO_HILO,
+  FIVE_CARD_PLO,
+  FIVE_CARD_PLO_HILO,
 }

@@ -4,11 +4,15 @@ import 'package:pokerapp/resources/app_assets.dart';
 
 class AppStyles {
   static const cardTextStyle = TextStyle(
-    fontSize: 1.0,
-    fontWeight: FontWeight.w900,
-    fontFamily: AppAssets.fontFamilyLato,
+    fontSize: 15.0,
+    fontWeight: FontWeight.w700,
+    fontFamily: AppAssets.fontFamilyNoticia,
   );
-
+  static const suitTextStyle = TextStyle(
+    fontSize: 15.0,
+    fontWeight: FontWeight.w700,
+    fontFamily: AppAssets.fontFamilyNoticia,
+  );
   static const gamePlayScreenHeaderTextStyle1 = TextStyle(
     fontSize: 12.0,
     color: Colors.white,

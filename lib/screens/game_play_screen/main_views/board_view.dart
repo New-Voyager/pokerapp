@@ -25,9 +25,11 @@ const heightMultiplier = 1.55;
 class BoardView extends StatelessWidget {
   BoardView({
     @required this.onUserTap,
+    @required this.onStartGame,
   });
 
   final Function(int index) onUserTap;
+  final Function() onStartGame;
 
   /* the following helper function builds the game board */
   Widget _buildGameBoard({double boardHeight, double boardWidth}) => Container(
@@ -92,7 +94,7 @@ class BoardView extends StatelessWidget {
     switch (seatPos) {
       case 1:
         return Transform.translate(
-          offset: Offset(0.0, 0.0),
+          offset: Offset(0.0, shiftDownConstant / 5),
           child: Align(
             alignment: Alignment.bottomCenter,
             child: userView,
@@ -104,7 +106,7 @@ class BoardView extends StatelessWidget {
           alignment: Alignment.centerLeft,
           child: Transform.translate(
             offset: Offset(
-              shiftHorizontalConstant,
+              shiftHorizontalConstant * 1.5,
               heightOfBoard / 4 + shiftDownConstant,
             ),
             child: userView,
@@ -135,7 +137,7 @@ class BoardView extends StatelessWidget {
           child: Transform.translate(
             offset: Offset(
               -widthOfBoard / 3 + shiftHorizontalConstant,
-              shiftDownConstant / 3,
+              0.0,
             ),
             child: userView,
           ),
@@ -147,7 +149,7 @@ class BoardView extends StatelessWidget {
           child: Transform.translate(
             offset: Offset(
               widthOfBoard / 3 - shiftHorizontalConstant,
-              shiftDownConstant / 3,
+              0.0,
             ),
             child: userView,
           ),
@@ -176,7 +178,7 @@ class BoardView extends StatelessWidget {
           alignment: Alignment.centerRight,
           child: Transform.translate(
             offset: Offset(
-              -shiftHorizontalConstant,
+              -shiftHorizontalConstant * 1.5,
               heightOfBoard / 4 + shiftDownConstant,
             ),
             child: userView,
@@ -193,11 +195,12 @@ class BoardView extends StatelessWidget {
       case AppConstants.TABLE_STATUS_NOT_ENOUGH_PLAYERS:
         return 'Waiting for more players';
       case AppConstants.WAITING_TO_BE_STARTED:
-        return 'Waiting to be started';
+        return 'Tap to start the game';
     }
 
     return null;
   }
+
 
   Widget _buildCenterView({
     List<CardObject> cards,
@@ -211,7 +214,11 @@ class BoardView extends StatelessWidget {
     Widget tableStatusWidget = Align(
       key: ValueKey('tableStatusWidget'),
       alignment: Alignment.center,
-      child: Container(
+      child: GestureDetector(
+          onTap: () {
+            onStartGame();
+          },
+          child: Container(
         padding: const EdgeInsets.symmetric(
           horizontal: 10.0,
           vertical: 5.0,
@@ -225,7 +232,9 @@ class BoardView extends StatelessWidget {
           style: AppStyles.itemInfoTextStyleHeavy.copyWith(
             fontSize: 13,
           ),
+
         ),
+      )
       ),
     );
 
@@ -276,6 +285,7 @@ class BoardView extends StatelessWidget {
           StackCardView(
             cards: cards,
             center: true,
+            isCommunity: true,
           ),
 
           const SizedBox(height: AppDimensions.cardHeight / 2),
@@ -425,7 +435,7 @@ class BoardView extends StatelessWidget {
         bool isPresent = tmp != null;
 
         return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+          padding: const EdgeInsets.symmetric(horizontal: 20.0),
           child: Stack(
             alignment: Alignment.center,
             children: [

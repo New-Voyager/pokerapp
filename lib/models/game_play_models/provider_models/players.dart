@@ -71,6 +71,10 @@ class Players extends ChangeNotifier {
     _notify();
   }
 
+  void removeAllHighlights() {
+    for (int i = 0; i < _players.length; i++) _players[i].highlight = false;
+  }
+
   void highlightCards({int seatNo, List<int> cards}) {
     int idx = _players.indexWhere((p) => p.seatNo == seatNo);
     _players[idx].highlightCards = cards;

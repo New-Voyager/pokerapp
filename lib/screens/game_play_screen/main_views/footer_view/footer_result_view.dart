@@ -32,27 +32,27 @@ class _FooterResultViewState extends State<FooterResultView>
   Widget getCardRowView({
     List<CardObject> cards,
     List<int> cardsToHighlight,
-    bool allCardsToHighlight = false,
   }) =>
       Transform.scale(
         scale: 0.80,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: cards.map((c) {
-            if (allCardsToHighlight)
-              c.highlight = true;
-            else {
-              if (cardsToHighlight != null) {
-                int rawCardNumber =
-                    CardHelper.getRawCardNumber('${c.label}${c.suit}');
-                if (cardsToHighlight.contains(rawCardNumber))
-                  c.highlight = true;
-              }
+            if (cardsToHighlight != null) {
+              int rawCardNumber =
+                  CardHelper.getRawCardNumber('${c.label}${c.suit}');
+              if (cardsToHighlight.contains(rawCardNumber)) c.highlight = true;
             }
 
             c.otherHighlightColor = true;
-            c.smaller = true;
-            return c.widget;
+            c.smaller = false;
+            return Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 2.0,
+              ),
+              child: c.widget,
+            );
           }).toList(),
         ),
       );
@@ -143,11 +143,11 @@ class _FooterResultViewState extends State<FooterResultView>
     List<CardObject> winningCards,
   }) =>
       Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           /* winning cards */
           getCardRowView(
             cards: winningCards,
-            allCardsToHighlight: true,
           ),
 
           /* rank Str */

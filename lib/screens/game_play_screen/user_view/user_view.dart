@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/enums/game_play_enums/player_type.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/footer_result.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/remaining_time.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/user_object.dart';
@@ -33,30 +34,93 @@ class UserView extends StatelessWidget {
     this.cardsAlignment = Alignment.centerRight,
   }) : super(key: key);
 
-  Widget _buildAvatar({
+  Widget _buildAvatarAndLastAction({
     String avatarUrl,
     bool emptySeat,
   }) =>
-      AnimatedOpacity(
-        duration: AppConstants.animationDuration,
-        opacity: emptySeat ? 0.0 : 0.90,
-        child: AnimatedContainer(
-          duration: AppConstants.fastAnimationDuration,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            border: Border.all(
-              width: 2.0,
-              color: userObject.highlight ?? false
-                  ? highlightColor
-                  : Colors.transparent,
+      Stack(
+        alignment: Alignment.center,
+        children: [
+          /* displaying the avatar view */
+          Consumer<ValueNotifier<FooterStatus>>(
+            builder: (_, valueNotifierFooterStatus, __) {
+              bool showDown =
+                  valueNotifierFooterStatus.value == FooterStatus.Result;
+
+              Widget avatarWidget = AnimatedOpacity(
+                duration: AppConstants.animationDuration,
+                curve: Curves.bounceInOut,
+                opacity: emptySeat ? 0.0 : 0.90,
+                child: AnimatedContainer(
+                  duration: AppConstants.fastAnimationDuration,
+                  curve: Curves.bounceInOut,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      width: 2.0,
+                      color: userObject.highlight ?? false
+                          ? highlightColor
+                          : Colors.transparent,
+                    ),
+                    boxShadow: userObject.highlight ?? false
+                        ? [
+                            BoxShadow(
+                              color: highlightColor.withAlpha(120),
+                              blurRadius: 20.0,
+                              spreadRadius: 20.0,
+                            ),
+                          ]
+                        : [],
+                  ),
+                  child: CircleAvatar(
+                    radius: 19.50,
+                    /* todo: this needs to be replaced with NetworkImage */
+                    backgroundImage:
+                        AssetImage(avatarUrl ?? 'assets/images/2.png'),
+                  ),
+                ),
+              );
+
+              return Container(
+                height: 19.50 * 3,
+                child: AnimatedSwitcher(
+                  duration: AppConstants.fastAnimationDuration,
+                  child: showDown
+                      ? userObject.isMe
+                          ? avatarWidget
+                          : Transform.scale(
+                              scale: 0.70,
+                              child: StackCardView(
+                                center: true,
+                                cards: userObject.cards.map((int c) {
+                                  List<int> highlightedCards =
+                                      userObject.highlightCards;
+                                  CardObject card = CardHelper.getCard(c);
+
+                                  card.smaller = true;
+                                  if (highlightedCards?.contains(c) ?? false)
+                                    card.highlight = true;
+
+                                  return card;
+                                }).toList(),
+                              ),
+                            )
+                      : avatarWidget,
+                ),
+              );
+            },
+          ),
+
+          /* showing the user last action */
+          // showing user status
+          Transform.translate(
+            offset: Offset(
+              cardsAlignment == Alignment.centerRight ? 45 : -45,
+              5.0,
             ),
+            child: _buildUserStatus(emptySeat),
           ),
-          child: CircleAvatar(
-            radius: 19.50,
-            /* todo: this needs to be replaced with NetworkImage */
-            backgroundImage: AssetImage(avatarUrl ?? 'assets/images/2.png'),
-          ),
-        ),
+        ],
       );
 
   Widget _buildPlayerInfo({
@@ -65,10 +129,11 @@ class UserView extends StatelessWidget {
     bool emptySeat,
   }) =>
       Transform.translate(
-        offset: Offset(0.0, -5.0),
+        offset: Offset(0.0, -10.0),
         child: AnimatedContainer(
-          duration: AppConstants.animationDuration,
-          width: 90.0,
+          duration: AppConstants.fastAnimationDuration,
+          curve: Curves.bounceInOut,
+          width: 70.0,
           padding: (emptySeat && !isPresent)
               ? const EdgeInsets.all(10.0)
               : const EdgeInsets.symmetric(
@@ -85,6 +150,15 @@ class UserView extends StatelessWidget {
                   : Colors.transparent,
               width: 2.0,
             ),
+            boxShadow: userObject.highlight ?? false
+                ? [
+                    BoxShadow(
+                      color: highlightColor.withAlpha(120),
+                      blurRadius: 20.0,
+                      spreadRadius: 20.0,
+                    ),
+                  ]
+                : [],
           ),
           child: AnimatedSwitcher(
             duration: AppConstants.animationDuration,
@@ -139,7 +213,7 @@ class UserView extends StatelessWidget {
   * then we need to show the user cards
   * as it's a show down time */
 
-  Widget _buildHiddenCardAndLastStatus({
+  Widget _buildHiddenCard({
     Alignment alignment,
     bool emptySeat = true,
   }) =>
@@ -157,54 +231,33 @@ class UserView extends StatelessWidget {
 
           double xOffset;
           if (showDown)
-            xOffset = (alignment == Alignment.centerRight ? 1 : -1) *
+            xOffset = (alignment == Alignment.centerLeft ? 1 : -1) *
                 25.0 *
                 userObject.cards.length;
           else
-            xOffset = (alignment == Alignment.centerRight
+            xOffset = (alignment == Alignment.centerLeft
                 ? 35.0
                 : -45.0 * shiftMultiplier);
 
           return Transform.translate(
             offset: Offset(
-              xOffset,
-              -15.0,
+              xOffset * 0.50,
+              45.0,
             ),
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                // hidden card
-                AnimatedSwitcher(
-                  duration: AppConstants.fastAnimationDuration,
-                  child: Transform.scale(
-                    scale: showDown ? 0.70 : 1.0,
-                    child: (userObject.playerFolded ?? false)
-                        ? const SizedBox.shrink()
-                        : showDown
-                            ? StackCardView(
-                                center: true,
-                                cards: userObject.cards.map((int c) {
-                                  List<int> highlightedCards =
-                                      userObject.highlightCards;
-                                  CardObject card = CardHelper.getCard(c);
-
-                                  card.smaller = true;
-                                  if (highlightedCards?.contains(c) ?? false)
-                                    card.highlight = true;
-
-                                  return card;
-                                }).toList(),
-                              )
-                            : HiddenCardView(),
-                  ),
-                ),
-
-                // showing user status
-                Transform.translate(
-                  offset: Offset(0, -30),
-                  child: _buildUserStatus(emptySeat),
-                ),
-              ],
+            child: AnimatedSwitcher(
+              duration: AppConstants.fastAnimationDuration,
+              child: Transform.scale(
+                scale: 1.0,
+                child: (userObject.playerFolded ?? false)
+                    ? const SizedBox.shrink(
+                        key: ValueKey('one'),
+                      )
+                    : showDown
+                        ? const SizedBox.shrink(
+                            key: ValueKey('two'),
+                          )
+                        : HiddenCardView(),
+              ),
             ),
           );
         },
@@ -216,7 +269,7 @@ class UserView extends StatelessWidget {
   }) =>
       Transform.translate(
         offset: Offset(
-          -48.0,
+          -40.0,
           0.0,
         ),
         child: StackCardView(
@@ -232,7 +285,7 @@ class UserView extends StatelessWidget {
   }) =>
       Transform.translate(
         offset: Offset(
-          alignment == Alignment.centerRight ? 60.0 : -60.0,
+          alignment == Alignment.centerRight ? 50.0 : -50.0,
           18.0,
         ),
         child: Container(
@@ -400,7 +453,7 @@ class UserView extends StatelessWidget {
               Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  _buildAvatar(
+                  _buildAvatarAndLastAction(
                     avatarUrl: userObject.avatarUrl,
                     emptySeat: emptySeat,
                   ),
@@ -429,7 +482,7 @@ class UserView extends StatelessWidget {
                 )
               : emptySeat
                   ? shrinkedSizedBox
-                  : _buildHiddenCardAndLastStatus(
+                  : _buildHiddenCard(
                       alignment: this.cardsAlignment,
                       emptySeat: emptySeat,
                     ),

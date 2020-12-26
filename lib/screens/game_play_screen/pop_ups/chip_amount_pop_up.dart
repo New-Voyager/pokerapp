@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:pokerapp/widgets/round_button.dart';
+import 'package:pokerapp/widgets/round_raised_button.dart';
 
 class ChipAmountPopUp extends StatelessWidget {
   final titleText;
