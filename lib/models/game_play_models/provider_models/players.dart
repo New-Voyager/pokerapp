@@ -125,7 +125,6 @@ class Players extends ChangeNotifier {
     /* seat-no, list of cards */
     data.forEach((seatNo, cards) {
       int idx = _players.indexWhere((p) => p.seatNo == seatNo);
-      log('\n\n\n\n\n$idx $_players\n\n\n\n\n\n');
       if (idx != -1) _players[idx].cards = cards;
     });
 

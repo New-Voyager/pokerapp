@@ -86,7 +86,7 @@ class UserView extends StatelessWidget {
                 child: AnimatedSwitcher(
                   duration: AppConstants.fastAnimationDuration,
                   child: showDown
-                      ? userObject.isMe
+                      ? (userObject?.isMe ?? false)
                           ? avatarWidget
                           : Transform.scale(
                               scale: 0.70,
