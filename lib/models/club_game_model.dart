@@ -1,11 +1,12 @@
 class ClubGameModel {
   final String gameTitle;
-  final String buyIn;
-  final String waitList;
-  final String seatsAvailable;
-  final String smallBlind;
-  final String bigBlind;
+  final int buyInMin;
+  final int buyInMax;
+  final int waitList;
+  final int seatsAvailable;
+  final double smallBlind;
+  final double bigBlind;
 
-  ClubGameModel(this.gameTitle, this.buyIn, this.waitList, this.seatsAvailable,
-      this.smallBlind, this.bigBlind);
+  ClubGameModel(this.gameTitle, this.buyInMin, this.buyInMax, this.waitList,
+      this.seatsAvailable, this.smallBlind, this.bigBlind);
 }

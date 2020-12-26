@@ -16,7 +16,6 @@ class ClubActionButton extends StatelessWidget {
       onTap: () {
         switch (_action) {
           case ClubActions.GAME_HISTORY:
-            // TODO: Handle this case.
             break;
           case ClubActions.MEMBERS:
             Navigator.push(

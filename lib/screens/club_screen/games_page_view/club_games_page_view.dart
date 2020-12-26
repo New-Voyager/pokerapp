@@ -9,11 +9,11 @@ class ClubGamesPageView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    gamesList.add(new ClubGameModel("5 Card PLO", "BUY IN:100/300",
-        "5 in the waiting list", "2 open seats", "2.0", "4.0"));
+    gamesList.add(new ClubGameModel("5 Card PLO", 100, 300, 5, 2, 2.0, 4.0));
 
-    gamesList.add(new ClubGameModel("5 Card PLO", "BUY IN:100/300",
-        "5 in the waiting list", "2 open seats", "2.0", "4.0"));
+    gamesList
+        .add(new ClubGameModel("No Limit Holdem", 100, 300, 0, 0, 1.0, 2.0));
+
     return Container(
       margin: EdgeInsets.all(10.0),
       child: Column(

@@ -18,7 +18,7 @@ class ClubGameItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.fromLTRB(0, 15, 0, 15),
+      margin: EdgeInsets.fromLTRB(0, 5.0, 0, 5.0),
       decoration: BoxDecoration(
           color: AppColors.cardBackgroundColor,
           boxShadow: AppStyles.cardBoxShadow,
@@ -59,9 +59,9 @@ class ClubGameItem extends StatelessWidget {
                         Expanded(
                           flex: 5,
                           child: Text(
-                            _clubGameModel.smallBlind +
+                            _clubGameModel.smallBlind.toString() +
                                 "/" +
-                                _clubGameModel.bigBlind,
+                                _clubGameModel.bigBlind.toString(),
                             textAlign: TextAlign.left,
                             style: TextStyle(
                               color: AppColors.contentColor,
@@ -74,7 +74,10 @@ class ClubGameItem extends StatelessWidget {
                         Expanded(
                           flex: 5,
                           child: Text(
-                            _clubGameModel.buyIn,
+                            "BUY IN : " +
+                                _clubGameModel.buyInMin.toString() +
+                                "/" +
+                                _clubGameModel.buyInMax.toString(),
                             textAlign: TextAlign.left,
                             style: TextStyle(
                               color: AppColors.contentColor,
@@ -94,7 +97,10 @@ class ClubGameItem extends StatelessWidget {
                         Expanded(
                           flex: 5,
                           child: Text(
-                            _clubGameModel.seatsAvailable,
+                            _clubGameModel.seatsAvailable == 0
+                                ? "Table is full"
+                                : _clubGameModel.seatsAvailable.toString() +
+                                    " open seats",
                             textAlign: TextAlign.left,
                             style: TextStyle(
                               color: AppColors.contentColor,
@@ -107,7 +113,10 @@ class ClubGameItem extends StatelessWidget {
                         Expanded(
                           flex: 5,
                           child: Text(
-                            _clubGameModel.waitList,
+                            _clubGameModel.waitList != 0
+                                ? _clubGameModel.waitList.toString() +
+                                    " in the waiting list"
+                                : "",
                             textAlign: TextAlign.left,
                             style: TextStyle(
                               color: AppColors.contentColor,
@@ -128,7 +137,7 @@ class ClubGameItem extends StatelessWidget {
             flex: 2,
             child: Container(
               child: Text(
-                "Join",
+                _clubGameModel.waitList == 0 ? "Join" : "Join Waitlist",
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: AppColors.appAccentColor,
