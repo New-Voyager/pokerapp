@@ -4,6 +4,7 @@ import 'package:pokerapp/enums/game_play_enums/player_type.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/footer_result.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
+import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/card_back_assets.dart';
 import 'package:provider/provider.dart';
 
@@ -13,7 +14,7 @@ class NewHandUpdateService {
   static void handle({
     BuildContext context,
     var data,
-  }) {
+  }) async {
     /* data contains the dealer, small blind and big blind seat Positions
     * Update the Players object with these information */
 
@@ -54,20 +55,6 @@ class NewHandUpdateService {
       context,
       listen: false,
     ).removeAllFoldedPlayers();
-
-    // remove all the community cards
-    Provider.of<TableState>(
-      context,
-      listen: false,
-    ).updateCommunityCards([]);
-
-    Provider.of<TableState>(
-      context,
-      listen: false,
-    ).updatePotChips(
-      potChips: null,
-      potUpdatesChips: null,
-    );
 
     /* clean up from result views */
     /* set footer status to none  */
@@ -120,5 +107,23 @@ class NewHandUpdateService {
       context,
       listen: false,
     ).value = CardBackAssets.getRandom();
+
+    // wait for the fastAnimationDuration completion
+    // this is done to wait until the footerResult section is removed
+    await Future.delayed(AppConstants.fastAnimationDuration);
+
+    // remove all the community cards
+    Provider.of<TableState>(
+      context,
+      listen: false,
+    ).updateCommunityCardsSilent([]);
+
+    Provider.of<TableState>(
+      context,
+      listen: false,
+    ).updatePotChips(
+      potChips: null,
+      potUpdatesChips: null,
+    );
   }
 }

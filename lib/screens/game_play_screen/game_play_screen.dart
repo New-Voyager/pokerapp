@@ -6,7 +6,7 @@ import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/action_info.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/footer_result.dart';
-import 'package:pokerapp/models/game_play_models/provider_models/player_action.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/player_action/player_action.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/remaining_time.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
