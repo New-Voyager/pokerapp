@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/footer_result.dart';
@@ -90,6 +92,7 @@ class ResultService {
       context,
       listen: false,
     ).removeAllPlayersStatus();
+
     Provider.of<Players>(
       context,
       listen: false,

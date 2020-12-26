@@ -14,14 +14,15 @@ import 'package:pokerapp/widgets/custom_text_button.dart';
 import 'package:provider/provider.dart';
 
 class NewGameSettings extends StatelessWidget {
-  void _joinGame(BuildContext context, String gameCode) => Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (_) => GamePlayScreen(
-        gameCode: gameCode,
-      ),
-    ),
-  );
+  void _joinGame(BuildContext context, String gameCode) =>
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (_) => GamePlayScreen(
+            gameCode: gameCode,
+          ),
+        ),
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +51,8 @@ class NewGameSettings extends StatelessWidget {
                     CustomTextButton(
                       text: "Start",
                       onTap: () async {
-                        String gameCode = await GameService.configureClubGame(data.settings.clubCode, data.settings);
+                        String gameCode = await GameService.configureClubGame(
+                            data.settings.clubCode, data.settings);
                         print('Configured game: $gameCode');
 
                         // join the game

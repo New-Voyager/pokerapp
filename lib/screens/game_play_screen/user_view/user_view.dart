@@ -92,17 +92,18 @@ class UserView extends StatelessWidget {
                               scale: 0.70,
                               child: StackCardView(
                                 center: true,
-                                cards: userObject.cards.map((int c) {
-                                  List<int> highlightedCards =
-                                      userObject.highlightCards;
-                                  CardObject card = CardHelper.getCard(c);
+                                cards: userObject.cards?.map((int c) {
+                                      List<int> highlightedCards =
+                                          userObject.highlightCards;
+                                      CardObject card = CardHelper.getCard(c);
 
-                                  card.smaller = true;
-                                  if (highlightedCards?.contains(c) ?? false)
-                                    card.highlight = true;
+                                      card.smaller = true;
+                                      if (highlightedCards?.contains(c) ??
+                                          false) card.highlight = true;
 
-                                  return card;
-                                }).toList(),
+                                      return card;
+                                    })?.toList() ??
+                                    [],
                               ),
                             )
                       : avatarWidget,
@@ -130,9 +131,10 @@ class UserView extends StatelessWidget {
   }) =>
       Transform.translate(
         offset: Offset(0.0, -10.0),
-        child: AnimatedContainer(
-          duration: AppConstants.fastAnimationDuration,
-          curve: Curves.bounceInOut,
+        child: Container(
+          // FIXME: the animation is causing to crash
+//          duration: AppConstants.fastAnimationDuration,
+//          curve: Curves.bounceInOut,
           width: 70.0,
           padding: (emptySeat && !isPresent)
               ? const EdgeInsets.all(10.0)
@@ -141,8 +143,8 @@ class UserView extends StatelessWidget {
                   vertical: 5.0,
                 ),
           decoration: BoxDecoration(
-            shape: emptySeat ? BoxShape.circle : BoxShape.rectangle,
             borderRadius: emptySeat ? null : BorderRadius.circular(5.0),
+            shape: emptySeat ? BoxShape.circle : BoxShape.rectangle,
             color: const Color(0xff474747),
             border: Border.all(
               color: userObject.highlight ?? false
@@ -233,7 +235,7 @@ class UserView extends StatelessWidget {
           if (showDown)
             xOffset = (alignment == Alignment.centerLeft ? 1 : -1) *
                 25.0 *
-                userObject.cards.length;
+                (userObject.cards?.length ?? 0.0);
           else
             xOffset = (alignment == Alignment.centerLeft
                 ? 35.0
