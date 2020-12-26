@@ -3,7 +3,7 @@ import 'package:pokerapp/models/game/new_game_model.dart';
 
 class NewGameModelProvider extends ChangeNotifier {
   /* This object holds new game settings */
-  NewGameModel  settings;
+  NewGameModel settings;
   String clubCode;
   List<String> actionTimes = new List<String>();
   List<String> gameTypes = new List<String>();
@@ -35,10 +35,11 @@ class NewGameModelProvider extends ChangeNotifier {
   }
 
   get selectedGameType {
-    return gameTypes.indexOf(NewGameConstants.SUPPORTED_GAMES[settings.gameType]);
+    return gameTypes
+        .indexOf(NewGameConstants.SUPPORTED_GAMES[settings.gameType]);
   }
 
-  set selectedGameType (int index) {
+  set selectedGameType(int index) {
     if (index == -1) {
     } else {
       String selectedValue = gameTypes[index];
@@ -53,7 +54,8 @@ class NewGameModelProvider extends ChangeNotifier {
   }
 
   String get selectedGameTypeText {
-    int index = gameTypes.indexOf(NewGameConstants.SUPPORTED_GAMES[settings.gameType]);
+    int index =
+        gameTypes.indexOf(NewGameConstants.SUPPORTED_GAMES[settings.gameType]);
     if (index != -1) {
       return gameTypes[index];
     }
@@ -67,7 +69,8 @@ class NewGameModelProvider extends ChangeNotifier {
 
   int get actionTime => settings.actionTime;
   int get selectedActionTime {
-    return actionTimes.indexOf(NewGameConstants.ACTION_TIMES[settings.actionTime]);
+    return actionTimes
+        .indexOf(NewGameConstants.ACTION_TIMES[settings.actionTime]);
   }
 
   set selectedActionTime(int index) {
@@ -85,7 +88,8 @@ class NewGameModelProvider extends ChangeNotifier {
   }
 
   String get selectedActionTimeText {
-    int index = actionTimes.indexOf(NewGameConstants.ACTION_TIMES[settings.actionTime]);
+    int index =
+        actionTimes.indexOf(NewGameConstants.ACTION_TIMES[settings.actionTime]);
     if (index != -1) {
       return actionTimes[index];
     }
@@ -93,10 +97,11 @@ class NewGameModelProvider extends ChangeNotifier {
   }
 
   Blinds get blinds {
-    return Blinds(smallBlind: settings.smallBlind,
-            bigBlind: settings.bigBlind,
-            straddle: settings.straddleBet,
-            ante: settings.ante);
+    return Blinds(
+        smallBlind: settings.smallBlind,
+        bigBlind: settings.bigBlind,
+        straddle: settings.straddleBet,
+        ante: settings.ante);
   }
 
   set smallBlind(double value) {
@@ -124,6 +129,9 @@ class NewGameModelProvider extends ChangeNotifier {
 
   set buyInMin(int value) {
     settings.buyInMin = value;
+    if (settings.buyInMax <= settings.buyInMin) {
+      settings.buyInMax = value + 100;
+    }
     notifyListeners();
   }
 
