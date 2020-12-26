@@ -103,4 +103,26 @@ class GameService {
     log('Created game: $gameCode');
     return gameCode;
   }
+
+
+  static Future<String> startGame(String gameCode) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+    String _query = """
+          mutation (\$gameCode: String!){
+            status: startGame(gameCode: \$gameCode)
+          }""";
+    Map<String, dynamic> variables = {
+      "gameCode": gameCode,
+    };
+
+    QueryResult result = await _client.mutate(
+      MutationOptions(documentNode: gql(_query), variables: variables),
+    );
+
+    if (result.hasException) return null;
+    Map game = (result.data as LazyCacheMap).data;
+    String status = game["status"];
+    log('Gamecode: $gameCode status: $status');
+    return status;
+  }
 }

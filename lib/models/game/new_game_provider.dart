@@ -184,4 +184,9 @@ class NewGameModelProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  get botGame => settings.botGame;
+  set botGame(bool value) {
+    settings.botGame = value;
+    notifyListeners();
+  }
 }

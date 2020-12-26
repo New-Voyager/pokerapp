@@ -8,10 +8,21 @@ import 'package:pokerapp/screens/club_screen/games_page_view/new_game_settings/i
 import 'package:pokerapp/screens/club_screen/games_page_view/new_game_settings/ingame_settings/club_tips_select.dart';
 import 'package:pokerapp/screens/club_screen/games_page_view/new_game_settings/ingame_settings/game_type_select.dart';
 import 'package:pokerapp/screens/club_screen/games_page_view/new_game_settings/ingame_settings/max_player_select.dart';
+import 'package:pokerapp/screens/game_play_screen/game_play_screen.dart';
+import 'package:pokerapp/services/game_play/graphql/game_service.dart';
 import 'package:pokerapp/widgets/custom_text_button.dart';
 import 'package:provider/provider.dart';
 
 class NewGameSettings extends StatelessWidget {
+  void _joinGame(BuildContext context, String gameCode) => Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (_) => GamePlayScreen(
+        gameCode: gameCode,
+      ),
+    ),
+  );
+
   @override
   Widget build(BuildContext context) {
     NewGameModelProvider data = Provider.of<NewGameModelProvider>(context);
@@ -39,8 +50,11 @@ class NewGameSettings extends StatelessWidget {
                     CustomTextButton(
                       text: "Start",
                       onTap: () async {
-                        //bool status = await data.startGame();
-                        print("Starting game...");
+                        String gameCode = await GameService.configureClubGame(data.settings.clubCode, data.settings);
+                        print('Configured game: $gameCode');
+
+                        // join the game
+                        _joinGame(context, gameCode);
                       },
                     ),
                     Container(
@@ -104,6 +118,23 @@ class NewGameSettings extends StatelessWidget {
         child: Consumer<NewGameModelProvider>(
           builder: (context, data, child) => Column(
             children: [
+              ListTile(
+                leading: CircleAvatar(
+                  backgroundColor: Color(0xff319ffe),
+                ),
+                title: Text(
+                  "BOT players",
+                  style: TextStyle(color: Colors.white),
+                ),
+                trailing: CupertinoSwitch(
+                    value: data.botGame,
+                    onChanged: (value) {
+                      data.botGame = value;
+                    }),
+              ),
+              Divider(
+                color: Color(0xff707070),
+              ),
               ListTile(
                 leading: CircleAvatar(
                   backgroundColor: Color(0xff319ffe),

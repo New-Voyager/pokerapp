@@ -65,6 +65,7 @@ class NewGameModel {
   bool runItTwice = false;
   bool seatChangeAllowed = false;
   bool waitList = false;
+  bool botGame = true;
   NewGameModel(
       {this.clubCode,
       this.title,
@@ -87,7 +88,8 @@ class NewGameModel {
       this.runItTwice,
       this.ipCheck,
       this.locationCheck,
-      this.waitList});
+      this.waitList,
+      this.botGame});
 
   NewGameModel.withDefault(String clubCode) {
     this.clubCode = clubCode;
@@ -110,12 +112,13 @@ class NewGameModel {
     buyInMin = json['buyInMin'];
     buyInMax = json['buyInMax'];
     actionTime = json['actionTime'];
+    botGame = json['botGame'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['title'] = this.title;
-    data['gameType'] = this.gameType;
+    data['gameType'] = this.gameType.toString().replaceFirst('GameType.', '');
     data['smallBlind'] = this.smallBlind;
     data['bigBlind'] = this.bigBlind;
     data['utgStraddleAllowed'] = this.utgStraddleAllowed;
@@ -129,6 +132,7 @@ class NewGameModel {
     data['buyInMin'] = this.buyInMin;
     data['buyInMax'] = this.buyInMax;
     data['actionTime'] = this.actionTime;
+    data['botGame'] = this.botGame;
     return data;
   }
 
