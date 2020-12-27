@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
@@ -86,23 +88,24 @@ class UserView extends StatelessWidget {
                 child: AnimatedSwitcher(
                   duration: AppConstants.fastAnimationDuration,
                   child: showDown
-                      ? userObject.isMe
+                      ? (userObject?.isMe ?? false)
                           ? avatarWidget
                           : Transform.scale(
                               scale: 0.70,
                               child: StackCardView(
                                 center: true,
-                                cards: userObject.cards.map((int c) {
-                                  List<int> highlightedCards =
-                                      userObject.highlightCards;
-                                  CardObject card = CardHelper.getCard(c);
+                                cards: userObject.cards?.map((int c) {
+                                      List<int> highlightedCards =
+                                          userObject.highlightCards;
+                                      CardObject card = CardHelper.getCard(c);
 
-                                  card.smaller = true;
-                                  if (highlightedCards?.contains(c) ?? false)
-                                    card.highlight = true;
+                                      card.smaller = true;
+                                      if (highlightedCards?.contains(c) ??
+                                          false) card.highlight = true;
 
-                                  return card;
-                                }).toList(),
+                                      return card;
+                                    })?.toList() ??
+                                    [],
                               ),
                             )
                       : avatarWidget,
@@ -130,9 +133,10 @@ class UserView extends StatelessWidget {
   }) =>
       Transform.translate(
         offset: Offset(0.0, -10.0),
-        child: AnimatedContainer(
-          duration: AppConstants.fastAnimationDuration,
-          curve: Curves.bounceInOut,
+        child: Container(
+          // FIXME: the animation is causing to crash
+//          duration: AppConstants.fastAnimationDuration,
+//          curve: Curves.bounceInOut,
           width: 70.0,
           padding: (emptySeat && !isPresent)
               ? const EdgeInsets.all(10.0)
@@ -141,8 +145,8 @@ class UserView extends StatelessWidget {
                   vertical: 5.0,
                 ),
           decoration: BoxDecoration(
-            shape: emptySeat ? BoxShape.circle : BoxShape.rectangle,
             borderRadius: emptySeat ? null : BorderRadius.circular(5.0),
+            shape: emptySeat ? BoxShape.circle : BoxShape.rectangle,
             color: const Color(0xff474747),
             border: Border.all(
               color: userObject.highlight ?? false
@@ -150,15 +154,23 @@ class UserView extends StatelessWidget {
                   : Colors.transparent,
               width: 2.0,
             ),
-            boxShadow: userObject.highlight ?? false
+            boxShadow: (userObject.winner ?? false)
                 ? [
                     BoxShadow(
-                      color: highlightColor.withAlpha(120),
-                      blurRadius: 20.0,
+                      color: Colors.green,
+                      blurRadius: 50.0,
                       spreadRadius: 20.0,
                     ),
                   ]
-                : [],
+                : userObject.highlight ?? false
+                    ? [
+                        BoxShadow(
+                          color: highlightColor.withAlpha(120),
+                          blurRadius: 20.0,
+                          spreadRadius: 20.0,
+                        ),
+                      ]
+                    : [],
           ),
           child: AnimatedSwitcher(
             duration: AppConstants.animationDuration,
@@ -233,7 +245,7 @@ class UserView extends StatelessWidget {
           if (showDown)
             xOffset = (alignment == Alignment.centerLeft ? 1 : -1) *
                 25.0 *
-                userObject.cards.length;
+                (userObject.cards?.length ?? 0.0);
           else
             xOffset = (alignment == Alignment.centerLeft
                 ? 35.0

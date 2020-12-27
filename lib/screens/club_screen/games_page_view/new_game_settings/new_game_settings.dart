@@ -15,7 +15,8 @@ import 'package:pokerapp/widgets/custom_text_button.dart';
 import 'package:provider/provider.dart';
 
 class NewGameSettings extends StatelessWidget {
-  void _joinGame(BuildContext context, String gameCode) => Navigator.push(
+  void _joinGame(BuildContext context, String gameCode) =>
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(
           builder: (_) => GamePlayScreen(

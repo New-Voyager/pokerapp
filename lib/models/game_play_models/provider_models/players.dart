@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_play_enums/player_type.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
@@ -64,6 +66,18 @@ class Players extends ChangeNotifier {
 
   void updatePlayerTypeInSilent(int idx, PlayerType playerType) {
     _players[idx].playerType = playerType;
+  }
+
+  void highlightWinner(seatNo) {
+    int idx = _players.indexWhere((p) => p.seatNo == seatNo);
+    log('\n\n\n\n\n\n winner index :$idx seatNo: $seatNo \n\n\n\n\n\n');
+    if (idx != -1) _players[idx].winner = true;
+    _notify();
+  }
+
+  void removeWinnerHighlight() {
+    for (int i = 0; i < _players.length; i++) _players[i].winner = null;
+    _notify();
   }
 
   void updateHighlight(int idx, bool highlight) {

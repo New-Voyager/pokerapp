@@ -1,4 +1,4 @@
-package com.paul.pokerapp
+package com.voyagerent.pokerclubtest
 
 import io.flutter.embedding.android.FlutterActivity
 
