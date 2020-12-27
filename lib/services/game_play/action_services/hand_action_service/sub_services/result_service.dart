@@ -1,5 +1,8 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
+import 'package:pokerapp/models/game_play_models/business/hi_winners_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/footer_result.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
@@ -72,12 +75,21 @@ class ResultService {
 
     /* footer status -> showing the result */
     /* set the footer result data */
-    Provider.of<FooterResult>(
+    List<HiWinnersModel> winners = Provider.of<FooterResult>(
       context,
       listen: false,
     ).updateWinners(
       data['handResult']['handLog']['potWinners'],
     );
+
+    // get the winner seat No and highlight the winner
+    winners.forEach((winner) {
+      // highlight the winner seat No
+      Provider.of<Players>(
+        context,
+        listen: false,
+      ).highlightWinner(winner.seatNo);
+    });
 
     /* then, change the status of the footer to show the result */
     Provider.of<ValueNotifier<FooterStatus>>(
@@ -90,6 +102,7 @@ class ResultService {
       context,
       listen: false,
     ).removeAllPlayersStatus();
+
     Provider.of<Players>(
       context,
       listen: false,

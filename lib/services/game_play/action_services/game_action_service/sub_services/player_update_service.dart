@@ -39,7 +39,7 @@ class PlayerUpdateService {
       ); // this must return a PLayerModel object
 
       // put the status of the fetched player
-      newPlayerModel.status = playerUpdate['status'];
+      newPlayerModel?.status = playerUpdate['status'];
 
       assert(newPlayerModel != null);
 
