@@ -62,9 +62,10 @@ class ClubTipsSelect extends StatelessWidget {
                       onChanged: (value) {
                         providerData.rakeCap = int.parse(value);
                       },
+                      keyboardType: TextInputType.number,
                       decoration: InputDecoration(
-                        hintText: "5",
-                        hintStyle: TextStyle(color: Colors.grey[800]),
+                        hintText: providerData.rakeCap.toString(),
+                        hintStyle: TextStyle(color: Colors.grey),
                       ),
                       style: TextStyle(color: Colors.white),
                     ),
