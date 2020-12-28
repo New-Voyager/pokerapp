@@ -52,6 +52,7 @@ class AppConstants {
   static const String PLAYING = 'PLAYING';
 
   static const String FOLD = 'FOLD';
+  static const String CHECK = 'CHECK';
   static const String RAISE = 'RAISE';
   static const String BET = 'BET';
 
