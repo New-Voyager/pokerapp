@@ -32,9 +32,9 @@ class VisibleCardView extends StatelessWidget {
     /* for visible cards, the smaller card size is shown to the left of user,
     * and the bigger size is shown as the community card */
     return Transform.scale(
-      scale: isNotCommunityCard ? 0.70 : 1.05,
+      scale: isNotCommunityCard ? 0.85 : 1.05,
       child: Container(
-        padding: const EdgeInsets.all(1.0),
+        padding: const EdgeInsets.only(bottom: 3.0),
         height: AppDimensions.cardHeight * 1.5,
         width: card.smaller
             ? AppDimensions.cardWidth * 1.5
@@ -46,20 +46,19 @@ class VisibleCardView extends StatelessWidget {
               )
             : null,
         decoration: BoxDecoration(
-            color: highlight ? highlightColor : Colors.white,
-            borderRadius: BorderRadius.circular(5.0),
-            boxShadow: const [
-              const BoxShadow(
-                color: Colors.black26,
-                blurRadius: 5.0,
-                spreadRadius: 5.0,
-              )
-            ]),
+          color: highlight ? highlightColor : Colors.white,
+          borderRadius: BorderRadius.circular(5.0),
+          boxShadow: const [
+            const BoxShadow(
+              color: Colors.black26,
+              blurRadius: 5.0,
+              spreadRadius: 5.0,
+            )
+          ],
+        ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: card.smaller
-              ? CrossAxisAlignment.start
-              : CrossAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Expanded(

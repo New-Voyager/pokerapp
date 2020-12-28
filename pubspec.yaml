@@ -47,6 +47,8 @@ dependencies:
   # timer
   timer_count_down: ^1.0.4+1
 
+  # audio playing
+  audioplayers: ^0.17.0
 
 dev_dependencies:
   flutter_test:
@@ -58,6 +60,7 @@ flutter:
    - assets/images/
    - assets/images/card_back/set1/
    - assets/images/card_back/set2/
+   - assets/sound_effects/
 
   fonts:
    - family: Lato
@@ -80,3 +83,8 @@ flutter:
    - family: AppIcons
      fonts:
        - asset: assets/icons/app_icons.ttf
+
+    # club screen icons
+   - family:  ClubScreenIcons
+     fonts:
+       - asset: assets/icons/club_screen_icons.ttf

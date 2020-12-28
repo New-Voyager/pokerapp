@@ -1,9 +1,11 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:pokerapp/enums/club_actions.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/resources/club_screen_icons_icons.dart';
 import 'package:pokerapp/screens/club_screen/club_action_buttons_view/club_action_button.dart';
 import 'package:pokerapp/screens/club_screen/games_page_view/high_hand/high_hand.dart';
 
@@ -22,8 +24,8 @@ class ClubActionButtonsView extends StatelessWidget {
                   ClubActions.GAME_HISTORY,
                   "Game History",
                   Icon(
-                    Icons.history,
-                    color: Colors.blue,
+                    ClubScreenIcons.history,
+                    color: AppColors.appAccentColor,
                   ),
                 ),
               ),
@@ -33,8 +35,8 @@ class ClubActionButtonsView extends StatelessWidget {
                   ClubActions.MEMBERS,
                   "Members",
                   Icon(
-                    Icons.card_membership,
-                    color: Colors.blue,
+                    ClubScreenIcons.membership,
+                    color: AppColors.appAccentColor,
                   ),
                 ),
               ),
@@ -44,7 +46,7 @@ class ClubActionButtonsView extends StatelessWidget {
                   ClubActions.CHAT,
                   "Chat",
                   Icon(
-                    Icons.connect_without_contact,
+                    Icons.access_alarm,
                     color: Colors.blue,
                   ),
                 ),
@@ -59,8 +61,8 @@ class ClubActionButtonsView extends StatelessWidget {
                   ClubActions.BOOKMARKED_HANDS,
                   "Bookmarked Hands",
                   Icon(
-                    Icons.bookmark,
-                    color: Colors.blue,
+                    ClubScreenIcons.bookmark,
+                    color: AppColors.appAccentColor,
                   ),
                 ),
               ),
@@ -70,8 +72,8 @@ class ClubActionButtonsView extends StatelessWidget {
                   ClubActions.ANALYSIS,
                   "Analysis",
                   Icon(
-                    Icons.pie_chart,
-                    color: Colors.blue,
+                    ClubScreenIcons.pie_chart,
+                    color: AppColors.appAccentColor,
                   ),
                 ),
               ),
@@ -81,8 +83,8 @@ class ClubActionButtonsView extends StatelessWidget {
                   ClubActions.ANNOUNCEMETS,
                   "Announcements",
                   Icon(
-                    Icons.speaker,
-                    color: Colors.blue,
+                    ClubScreenIcons.announcements,
+                    color: AppColors.appAccentColor,
                   ),
                 ),
               ),
@@ -96,8 +98,8 @@ class ClubActionButtonsView extends StatelessWidget {
                   ClubActions.MESSAGE_HOST,
                   "Message Host",
                   Icon(
-                    Icons.message,
-                    color: Colors.blue,
+                    ClubScreenIcons.message,
+                    color: AppColors.appAccentColor,
                   ),
                 ),
               ),
@@ -107,8 +109,8 @@ class ClubActionButtonsView extends StatelessWidget {
                   ClubActions.MANAGE_CHIPS,
                   "Manage Chips",
                   Icon(
-                    Icons.ac_unit,
-                    color: Colors.blue,
+                    ClubScreenIcons.coin_stack,
+                    color: AppColors.appAccentColor,
                   ),
                 ),
               ),

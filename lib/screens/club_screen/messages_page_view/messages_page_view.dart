@@ -66,13 +66,8 @@ class _MessagesPageViewState extends State<MessagesPageView> {
   }
 
   _fetchMembers() async {
-    String clubCode = Provider.of<ClubModel>(
-      context,
-      listen: false,
-    ).clubCode;
-
     List<ClubMembersModel> _clubMembers =
-        await ClubInteriorService.getMembers(clubCode);
+        await ClubInteriorService.getMembers(widget.clubCode);
 
     _players = Map<String, String>();
 
@@ -105,105 +100,108 @@ class _MessagesPageViewState extends State<MessagesPageView> {
   Widget build(BuildContext context) {
     final separator = const SizedBox(width: 20.0);
 
-    return Column(
-      children: [
-        /* main view to show messages */
-        Expanded(
-          child: StreamBuilder<List<ClubMessageModel>>(
-            stream: ClubMessageService.pollMessages(widget.clubCode),
-            builder: (_, snapshot) {
-              if (!snapshot.hasData || _players == null)
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
+    return Scaffold(
+      backgroundColor: AppColors.screenBackgroundColor,
+      body: Column(
+        children: [
+          /* main view to show messages */
+          Expanded(
+            child: StreamBuilder<List<ClubMessageModel>>(
+              stream: ClubMessageService.pollMessages(widget.clubCode),
+              builder: (_, snapshot) {
+                if (!snapshot.hasData || _players == null)
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
 
-              if (snapshot.data.isEmpty)
-                return Center(
-                  child: Text(
-                    'No Messages',
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 20.0,
-                    ),
-                  ),
-                );
-
-              return ListView.separated(
-                reverse: true,
-                padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                itemBuilder: (_, int index) => MessageItem(
-                  messageModel: snapshot.data[index],
-                  currentUser: _authModel,
-                  players: _players,
-                ),
-                separatorBuilder: (_, __) => const SizedBox(height: 20.0),
-                itemCount: snapshot.data.length,
-              );
-            },
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(
-            vertical: 10.0,
-            horizontal: 20.0,
-          ),
-          child: Row(
-            children: [
-              /* app drawer open icon */
-              GestureDetector(
-                onTap: _openGifDrawer,
-                child: Icon(
-                  FontAwesomeIcons.icons,
-                  color: AppColors.appAccentColor,
-                  size: 20.0,
-                ),
-              ),
-
-              /* text area - write message here */
-
-              separator,
-              Expanded(
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(50.0),
-                    color: AppColors.cardBackgroundColor,
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                    child: TextField(
-                      controller: _textInputController,
+                if (snapshot.data.isEmpty)
+                  return Center(
+                    child: Text(
+                      'No Messages',
+                      textAlign: TextAlign.center,
                       style: const TextStyle(
                         color: Colors.white,
-                        fontSize: 15.0,
+                        fontSize: 20.0,
                       ),
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        hintText: 'Type a message',
-                        hintStyle: TextStyle(
-                          color: AppColors.contentColor,
+                    ),
+                  );
+
+                return ListView.separated(
+                  reverse: true,
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  itemBuilder: (_, int index) => MessageItem(
+                    messageModel: snapshot.data[index],
+                    currentUser: _authModel,
+                    players: _players,
+                  ),
+                  separatorBuilder: (_, __) => const SizedBox(height: 20.0),
+                  itemCount: snapshot.data.length,
+                );
+              },
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: 10.0,
+              horizontal: 20.0,
+            ),
+            child: Row(
+              children: [
+                /* app drawer open icon */
+                GestureDetector(
+                  onTap: _openGifDrawer,
+                  child: Icon(
+                    FontAwesomeIcons.icons,
+                    color: AppColors.appAccentColor,
+                    size: 20.0,
+                  ),
+                ),
+
+                /* text area - write message here */
+
+                separator,
+                Expanded(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(50.0),
+                      color: AppColors.cardBackgroundColor,
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                      child: TextField(
+                        controller: _textInputController,
+                        style: const TextStyle(
+                          color: Colors.white,
                           fontSize: 15.0,
+                        ),
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          hintText: 'Type a message',
+                          hintStyle: TextStyle(
+                            color: AppColors.contentColor,
+                            fontSize: 15.0,
+                          ),
                         ),
                       ),
                     ),
                   ),
                 ),
-              ),
 
-              /* send message button */
-              separator,
-              GestureDetector(
-                onTap: _sendMessage,
-                child: Icon(
-                  FontAwesomeIcons.play,
-                  color: AppColors.appAccentColor,
-                  size: 20.0,
+                /* send message button */
+                separator,
+                GestureDetector(
+                  onTap: _sendMessage,
+                  child: Icon(
+                    FontAwesomeIcons.play,
+                    color: AppColors.appAccentColor,
+                    size: 20.0,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
