@@ -17,4 +17,9 @@ class Audio {
       ).playBytes(
         (await rootBundle.load(assetFile)).buffer.asUint8List(),
       );
+
+  static Future<int> stop({BuildContext context}) => Provider.of<AudioPlayer>(
+        context,
+        listen: false,
+      ).stop();
 }
