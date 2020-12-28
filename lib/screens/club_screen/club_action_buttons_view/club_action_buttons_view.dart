@@ -43,7 +43,7 @@ class ClubActionButtonsView extends StatelessWidget {
                   ClubActions.CHAT,
                   "Chat",
                   Icon(
-                    Icons.connect_without_contact,
+                    Icons.access_alarm,
                     color: Colors.blue,
                   ),
                 ),
