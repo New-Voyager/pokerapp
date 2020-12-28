@@ -9,5 +9,6 @@ enum ClubMemberStatus {
   ALL,
   INACTIVE,
   UNSETTLED,
+  OUTSTANDING,
   MANAGERS,
 }
