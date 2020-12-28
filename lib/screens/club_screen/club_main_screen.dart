@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/club_model.dart';
-import 'package:pokerapp/models/game/new_game_provider.dart';
+import 'package:pokerapp/models/club_model.dart';
+import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_icons.dart';
-import 'package:pokerapp/screens/club_screen/games_page_view/clubs_games_page_view.dart';
+import 'package:pokerapp/screens/club_screen/club_banner_view/club_banner_view.dart';
+import 'package:pokerapp/screens/club_screen/games_page_view/club_games_page_view.dart';
 import 'package:pokerapp/screens/club_screen/games_page_view/new_game_settings/new_game_settings.dart';
 import 'package:pokerapp/screens/club_screen/info_page_view/info_page_view.dart';
 import 'package:pokerapp/screens/club_screen/members_page_view/members_page_view.dart';
@@ -11,6 +13,8 @@ import 'package:pokerapp/screens/club_screen/messages_page_view/messages_page_vi
 import 'package:pokerapp/widgets/custom_text_button.dart';
 import 'package:pokerapp/widgets/tab_bar_item.dart';
 import 'package:provider/provider.dart';
+
+import 'club_action_buttons_view/club_action_buttons_view.dart';
 
 class ClubMainScreen extends StatefulWidget {
   @override
@@ -42,81 +46,61 @@ class _ClubMainScreenState extends State<ClubMainScreen>
     return Scaffold(
       backgroundColor: AppColors.screenBackgroundColor,
       appBar: AppBar(
-        actions: [
-          Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: CustomTextButton(
-                text: "+create game",
-                onTap: () {
-                  NewGameModelProvider data = new NewGameModelProvider(clubModel.clubCode);
-                  print(data);
-                  Navigator.push(
-                      context,
-                      new MaterialPageRoute(
-                          builder: (context) => ChangeNotifierProvider(
-                                create: (_) => data,
-                                child: NewGameSettings(),
-                                lazy: false,
-                              )));
-                }),
-          )
-        ],
-        title: Text(
-          clubModel.clubName,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios, color: Colors.white),
+          onPressed: () => Navigator.of(context).pop(),
         ),
         elevation: 0.0,
         backgroundColor: AppColors.screenBackgroundColor,
       ),
-      body: SafeArea(
-        child: Column(
-          children: <Widget>[
-            Expanded(
-              child: TabBarView(
-                physics: NeverScrollableScrollPhysics(),
-                controller: _controller,
-                children: <Widget>[
-                  MessagesPageView(
-                    clubCode: clubModel.clubCode,
+      body: SingleChildScrollView(
+        child: SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              ClubBannerView(),
+              Container(
+                margin: EdgeInsets.all(8.0),
+                child: Card(
+                  color: AppColors.cardBackgroundColor,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        margin: EdgeInsets.all(20.0),
+                        child: Text(
+                          "Outstanding Chips Balance",
+                          textAlign: TextAlign.left,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 14.0,
+                            fontFamily: AppAssets.fontFamilyLato,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.all(20.0),
+                        child: Text(
+                          "+400",
+                          textAlign: TextAlign.left,
+                          style: TextStyle(
+                            color: AppColors.negativeColor,
+                            fontSize: 14.0,
+                            fontFamily: AppAssets.fontFamilyLato,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                  ClubsGamePageView(),
-                  MembersPageView(),
-                  InfoPageView(),
-                ],
-              ),
-            ),
-            Container(
-              color: AppColors.widgetBackgroundColor,
-              child: TabBar(
-                isScrollable: false,
-                controller: _controller,
-                indicatorColor: Colors.transparent,
-                labelColor: AppColors.appAccentColor,
-                unselectedLabelColor: AppColors.unselectedColor,
-                labelPadding: const EdgeInsets.only(
-                  top: 10.0,
-                  bottom: 10.0,
+                  elevation: 5.5,
                 ),
-                tabs: <Widget>[
-                  TabBarItem(
-                    iconData: AppIcons.message,
-                    title: 'Messages',
-                  ),
-                  TabBarItem(
-                    iconData: AppIcons.playing_card,
-                    title: 'Games',
-                  ),
-                  TabBarItem(
-                    iconData: AppIcons.membership,
-                    title: 'Members',
-                  ),
-                  TabBarItem(
-                    iconData: Icons.info,
-                    title: 'Info',
-                  ),
-                ],
               ),
-            )
-          ],
+              ClubGamesPageView(),
+              ClubActionButtonsView()
+            ],
+          ),
         ),
       ),
     );
