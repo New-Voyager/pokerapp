@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/club_actions.dart';
+import 'package:pokerapp/models/club_members_model.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
-import 'package:pokerapp/screens/club_screen/club_action_screens/club_mebers_view.dart';
+import 'package:pokerapp/screens/club_screen/club_action_screens/club_members_view.dart';
+import 'package:pokerapp/resources/app_assets.dart';
+import 'package:pokerapp/resources/app_colors.dart';
 
 class ClubActionButton extends StatelessWidget {
   final ClubActions _action;
@@ -20,7 +23,12 @@ class ClubActionButton extends StatelessWidget {
           case ClubActions.MEMBERS:
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => ClubMembersView()),
+              MaterialPageRoute(
+                builder: (context) => ClubMembersView(
+                  false,
+                  new List<ClubMembersModel>(),
+                ),
+              ),
             );
             break;
           case ClubActions.CHAT:
