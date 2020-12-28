@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/resources/app_assets.dart';
@@ -7,6 +9,8 @@ import 'package:provider/provider.dart';
 
 class DealService {
   DealService._();
+
+  static Uint8List dealSoundBytes;
 
   static void handle({
     BuildContext context,

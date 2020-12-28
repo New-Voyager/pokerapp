@@ -55,6 +55,7 @@ class AppConstants {
   static const String CHECK = 'CHECK';
   static const String RAISE = 'RAISE';
   static const String BET = 'BET';
+  static const String CALL = 'CALL';
 
   /* message types */
   static const String PLAYER_UPDATE = 'PLAYER_UPDATE';

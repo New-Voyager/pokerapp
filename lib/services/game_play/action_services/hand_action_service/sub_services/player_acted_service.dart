@@ -52,7 +52,9 @@ class PlayerActedService {
       );
 
     // play the bet-raise sound effect
-    if (action == AppConstants.BET || action == AppConstants.RAISE)
+    if (action == AppConstants.BET ||
+        action == AppConstants.RAISE ||
+        action == AppConstants.CALL)
       Audio.play(
         context: context,
         assetFile: AppAssets.betRaiseSound,
