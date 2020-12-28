@@ -37,21 +37,14 @@ class _ClubMainScreenState extends State<ClubMainScreen> {
         ),
         actions: [
           TextButton(
-            onPressed: () {
-              NewGameModelProvider data =
-                  new NewGameModelProvider(clubModel.clubCode);
-
-              Navigator.push(
-                context,
-                new MaterialPageRoute(
-                  builder: (context) => ChangeNotifierProvider(
-                    create: (_) => data,
-                    child: NewGameSettings(),
-                    lazy: false,
-                  ),
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => NewGameSettings(
+                  clubCode: clubModel.clubCode,
                 ),
-              );
-            },
+              ),
+            ),
             child: Text(
               '+ Create Game',
               style: TextStyle(
