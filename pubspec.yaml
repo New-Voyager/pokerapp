@@ -80,3 +80,8 @@ flutter:
    - family: AppIcons
      fonts:
        - asset: assets/icons/app_icons.ttf
+
+    # club screen icons
+   - family:  ClubScreenIcons
+     fonts:
+       - asset: assets/icons/club_screen_icons.ttf
