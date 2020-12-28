@@ -9,6 +9,10 @@ class ClubMembersModel {
   bool isOwner;
   bool isManager;
   String playerId;
+  String countryCode;
+  String contactNumber;
+  String balance;
+  String imageUrl;
 
   /*
 
@@ -52,5 +56,9 @@ class ClubMembersModel {
     this.isOwner = jsonData['isOwner'];
     this.isManager = jsonData['isManager'];
     this.playerId = jsonData['playerId'];
+    this.countryCode = jsonData['countryCode'];
+    this.contactNumber = jsonData['contactNumber'];
+    this.balance = jsonData['balance'];
+    this.imageUrl = jsonData['imageUrl'];
   }
 }

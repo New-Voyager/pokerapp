@@ -19,7 +19,7 @@ samples, guidance on mobile development, and a full API reference.
 
 Download the server images.
 ```
-make pull
+make pullver is 
 ```
 
 Bring up the servers.
