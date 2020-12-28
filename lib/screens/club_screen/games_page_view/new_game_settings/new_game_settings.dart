@@ -15,6 +15,11 @@ import 'package:pokerapp/widgets/custom_text_button.dart';
 import 'package:provider/provider.dart';
 
 class NewGameSettings extends StatelessWidget {
+  final String clubCode;
+  NewGameSettings({
+    @required this.clubCode,
+  }) : assert(clubCode != null);
+
   void _joinGame(BuildContext context, String gameCode) =>
       Navigator.pushReplacement(
         context,
@@ -27,83 +32,86 @@ class NewGameSettings extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    NewGameModelProvider data = Provider.of<NewGameModelProvider>(context);
-    print(data);
+    return ChangeNotifierProvider<NewGameModelProvider>(
+      create: (_) => NewGameModelProvider(clubCode),
+      builder: (BuildContext context, _) => Consumer<NewGameModelProvider>(
+        builder: (_, NewGameModelProvider data, __) => Scaffold(
+          backgroundColor: AppColors.screenBackgroundColor,
+          appBar: AppBar(
+            backgroundColor: AppColors.screenBackgroundColor,
+            title: Text("New Game Settings"),
+            elevation: 0.0,
+          ),
+          body: SingleChildScrollView(
+            child: Consumer<NewGameModelProvider>(
+              builder: (context, data, child) => Column(
+                children: [
+                  SizedBox(
+                    height: 10.0,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        CustomTextButton(
+                          text: "Start",
+                          onTap: () async {
+                            String gameCode =
+                                await GameService.configureClubGame(
+                                    data.settings.clubCode, data.settings);
+                            print('Configured game: $gameCode');
 
-    return Scaffold(
-      backgroundColor: AppColors.screenBackgroundColor,
-      appBar: AppBar(
-        backgroundColor: AppColors.screenBackgroundColor,
-        title: Text("New Game Settings"),
-        elevation: 0.0,
-      ),
-      body: SingleChildScrollView(
-        child: Consumer<NewGameModelProvider>(
-          builder: (context, data, child) => Column(
-            children: [
-              SizedBox(
-                height: 10.0,
-              ),
-              Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    CustomTextButton(
-                      text: "Start",
-                      onTap: () async {
-                        String gameCode = await GameService.configureClubGame(
-                            data.settings.clubCode, data.settings);
-                        print('Configured game: $gameCode');
-
-                        // join the game
-                        _joinGame(context, gameCode);
-                      },
+                            // join the game
+                            _joinGame(context, gameCode);
+                          },
+                        ),
+                        Container(
+                          width: 120.0,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              CustomTextButton(
+                                text: "Load",
+                                onTap: () {},
+                              ),
+                              CustomTextButton(
+                                text: "Save",
+                                onTap: () {},
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
                     ),
-                    Container(
-                      width: 120.0,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          CustomTextButton(
-                            text: "Load",
-                            onTap: () {},
-                          ),
-                          CustomTextButton(
-                            text: "Save",
-                            onTap: () {},
-                          ),
-                        ],
-                      ),
-                    )
-                  ],
-                ),
+                  ),
+                  SizedBox(
+                    height: 10.0,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 12.0, right: 12.0),
+                    child: firstList(context),
+                  ),
+                  SizedBox(
+                    height: 20.0,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 12.0, right: 12.0),
+                    child: secondList(),
+                  ),
+                  SizedBox(
+                    height: 20.0,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 12.0, right: 12.0),
+                    child: thirdList(),
+                  ),
+                  SizedBox(
+                    height: 20.0,
+                  ),
+                ],
               ),
-              SizedBox(
-                height: 10.0,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 12.0, right: 12.0),
-                child: firstList(context),
-              ),
-              SizedBox(
-                height: 20.0,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 12.0, right: 12.0),
-                child: secondList(),
-              ),
-              SizedBox(
-                height: 20.0,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 12.0, right: 12.0),
-                child: thirdList(),
-              ),
-              SizedBox(
-                height: 20.0,
-              ),
-            ],
+            ),
           ),
         ),
       ),
