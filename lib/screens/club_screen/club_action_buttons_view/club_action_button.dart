@@ -3,6 +3,7 @@ import 'package:pokerapp/enums/club_actions.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/screens/club_screen/club_action_screens/club_mebers_view.dart';
+import 'package:pokerapp/screens/club_screen/games_page_view/high_hand/high_hand.dart';
 
 class ClubActionButton extends StatelessWidget {
   final ClubActions _action;
@@ -27,6 +28,8 @@ class ClubActionButton extends StatelessWidget {
             // TODO: Handle this case.
             break;
           case ClubActions.BOOKMARKED_HANDS:
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => HighHand()));
             // TODO: Handle this case.
             break;
           case ClubActions.ANALYSIS:
