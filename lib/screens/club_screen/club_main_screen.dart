@@ -6,6 +6,7 @@ import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/screens/club_screen/club_banner_view/club_banner_view.dart';
 import 'package:pokerapp/screens/club_screen/games_page_view/club_games_page_view.dart';
 import 'package:pokerapp/screens/club_screen/games_page_view/new_game_settings/new_game_settings.dart';
+import 'package:pokerapp/widgets/custom_text_button.dart';
 import 'package:provider/provider.dart';
 
 import 'club_action_buttons_view/club_action_buttons_view.dart';
@@ -36,21 +37,18 @@ class _ClubMainScreenState extends State<ClubMainScreen> {
           onPressed: () => Navigator.of(context).pop(),
         ),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => NewGameSettings(
-                  clubCode: clubModel.clubCode,
+          Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: CustomTextButton(
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => NewGameSettings(
+                    clubCode: clubModel.clubCode,
+                  ),
                 ),
               ),
-            ),
-            child: Text(
-              '+ Create Game',
-              style: TextStyle(
-                color: AppColors.appAccentColor,
-                fontSize: 18.0,
-              ),
+              text: '+ Create Game',
             ),
           ),
         ],
