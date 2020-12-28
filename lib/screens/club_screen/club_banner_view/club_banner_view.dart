@@ -1,9 +1,20 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/club_model.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 
 class ClubBannerView extends StatelessWidget {
+  final ClubModel clubModel;
+
+  ClubBannerView({
+    @required this.clubModel,
+  });
+
+  String _getClubShortName() {
+    return 'BR';
+  }
+
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -14,7 +25,7 @@ class ClubBannerView extends StatelessWidget {
                   .withOpacity(1.0),
           radius: 40,
           child: Text(
-            'BU',
+            _getClubShortName(),
             style: TextStyle(
               color: Colors.white,
               fontSize: 25.0,
@@ -26,7 +37,7 @@ class ClubBannerView extends StatelessWidget {
         Padding(
           padding: EdgeInsets.all(5.0),
           child: Text(
-            "Boston University Poker Club",
+            clubModel.clubName,
             style: TextStyle(
               color: Colors.white,
               fontSize: 25.0,

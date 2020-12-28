@@ -60,7 +60,9 @@ class _ClubMainScreenState extends State<ClubMainScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              ClubBannerView(),
+              ClubBannerView(
+                clubModel: clubModel,
+              ),
               Container(
                 margin: EdgeInsets.all(8.0),
                 child: Card(
