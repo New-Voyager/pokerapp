@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:audioplayers/audioplayers.dart';
 import 'package:dart_nats/dart_nats.dart' as nats;
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
@@ -67,9 +68,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
 
   void _startGame() async {
     log('Starting the game...');
-    await GameService.startGame(
-      widget.gameCode
-    );
+    await GameService.startGame(widget.gameCode);
   }
   /*
   * _init function is run only for the very first time,
@@ -253,6 +252,12 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
         * so that the function can be called from anywhere down the widget tree */
         Provider<Function(String)>(
           create: (_) => _gameComService.sendPlayerToHandChannel,
+        ),
+
+        /* This provider holds the audioPlayer object, which facilitates playing
+        * audio in the game */
+        Provider<AudioPlayer>(
+          create: (_) => AudioPlayer(),
         ),
 
         /* This provider contains the remainingActionTime - this provider
