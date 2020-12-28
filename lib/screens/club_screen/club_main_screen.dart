@@ -1,17 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/club_model.dart';
-import 'package:pokerapp/models/club_model.dart';
+import 'package:pokerapp/models/game/new_game_provider.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
-import 'package:pokerapp/resources/app_icons.dart';
 import 'package:pokerapp/screens/club_screen/club_banner_view/club_banner_view.dart';
 import 'package:pokerapp/screens/club_screen/games_page_view/club_games_page_view.dart';
 import 'package:pokerapp/screens/club_screen/games_page_view/new_game_settings/new_game_settings.dart';
-import 'package:pokerapp/screens/club_screen/info_page_view/info_page_view.dart';
-import 'package:pokerapp/screens/club_screen/members_page_view/members_page_view.dart';
-import 'package:pokerapp/screens/club_screen/messages_page_view/messages_page_view.dart';
-import 'package:pokerapp/widgets/custom_text_button.dart';
-import 'package:pokerapp/widgets/tab_bar_item.dart';
 import 'package:provider/provider.dart';
 
 import 'club_action_buttons_view/club_action_buttons_view.dart';
@@ -21,19 +15,10 @@ class ClubMainScreen extends StatefulWidget {
   _ClubMainScreenState createState() => _ClubMainScreenState();
 }
 
-class _ClubMainScreenState extends State<ClubMainScreen>
-    with SingleTickerProviderStateMixin {
-  TabController _controller;
-
+class _ClubMainScreenState extends State<ClubMainScreen> {
   @override
   void initState() {
     super.initState();
-
-    _controller = TabController(
-      initialIndex: 1,
-      vsync: this,
-      length: 4,
-    );
   }
 
   @override
@@ -50,6 +35,32 @@ class _ClubMainScreenState extends State<ClubMainScreen>
           icon: Icon(Icons.arrow_back_ios, color: Colors.white),
           onPressed: () => Navigator.of(context).pop(),
         ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              NewGameModelProvider data =
+                  new NewGameModelProvider(clubModel.clubCode);
+
+              Navigator.push(
+                context,
+                new MaterialPageRoute(
+                  builder: (context) => ChangeNotifierProvider(
+                    create: (_) => data,
+                    child: NewGameSettings(),
+                    lazy: false,
+                  ),
+                ),
+              );
+            },
+            child: Text(
+              '+ Create Game',
+              style: TextStyle(
+                color: AppColors.appAccentColor,
+                fontSize: 18.0,
+              ),
+            ),
+          ),
+        ],
         elevation: 0.0,
         backgroundColor: AppColors.screenBackgroundColor,
       ),
