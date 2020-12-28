@@ -12,7 +12,12 @@ class ClubBannerView extends StatelessWidget {
   });
 
   String _getClubShortName() {
-    return 'BR';
+    String clubName = clubModel.clubName;
+    var clubNameSplit = clubName.split(' ');
+    if (clubNameSplit.length >= 2)
+      return '${clubNameSplit[0].substring(0, 1)}${clubNameSplit[1].substring(0, 1)}'
+          .toUpperCase();
+    return '${clubName.substring(0, 2)}'.toUpperCase();
   }
 
   @override
