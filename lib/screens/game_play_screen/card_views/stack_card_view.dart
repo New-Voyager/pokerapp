@@ -1,7 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
+
+const double pullUpOffset = -15.0;
 
 class StackCardView extends StatelessWidget {
   final List<CardObject> cards;
@@ -28,9 +29,15 @@ class StackCardView extends StatelessWidget {
             : cards.reversed
                 .toList()
                 .map(
-                  (c) => Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 2.0),
-                    child: deactivated ? c.grayedWidget : c.widget,
+                  (c) => Transform.translate(
+                    offset: Offset(
+                      0.0,
+                      c.highlight ? pullUpOffset : 0.0,
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 2.0),
+                      child: deactivated ? c.grayedWidget : c.widget,
+                    ),
                   ),
                 )
                 .toList()
@@ -53,7 +60,7 @@ class StackCardView extends StatelessWidget {
                 (c) => Transform.translate(
                   offset: Offset(
                     -AppDimensions.cardWidth * (c.key - n / 2) - ctr,
-                    0.0,
+                    c.value.highlight ? pullUpOffset : 0.0,
                   ),
                   child: deactivated ? c.value.grayedWidget : c.value.widget,
                 ),

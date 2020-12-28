@@ -1,11 +1,8 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/enums/game_play_enums/player_type.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
-import 'package:pokerapp/models/game_play_models/provider_models/footer_result.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/remaining_time.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/user_object.dart';
@@ -130,96 +127,112 @@ class UserView extends StatelessWidget {
     String name,
     int chips,
     bool emptySeat,
-  }) =>
-      Transform.translate(
-        offset: Offset(0.0, -10.0),
-        child: Container(
-          // FIXME: the animation is causing to crash
+  }) {
+    /* changing background color as per last action
+    * check/call -> green
+    * raise/bet -> shade of yellow / blue might b? */
+
+    Color statusColor = const Color(0xff474747); // default color
+
+    String status = userObject.status;
+    if (status != null) {
+      if (status.toUpperCase().contains('CHECK') ||
+          status.toUpperCase().contains('CALL'))
+        statusColor = Colors.green;
+      else if (status.toUpperCase().contains('RAISE') ||
+          status.toUpperCase().contains('BET')) statusColor = Colors.red;
+    }
+
+    return Transform.translate(
+      offset: Offset(0.0, -10.0),
+      child: Container(
+        // FIXME: the animation is causing to crash
 //          duration: AppConstants.fastAnimationDuration,
 //          curve: Curves.bounceInOut,
-          width: 70.0,
-          padding: (emptySeat && !isPresent)
-              ? const EdgeInsets.all(10.0)
-              : const EdgeInsets.symmetric(
-                  horizontal: 15.0,
-                  vertical: 5.0,
-                ),
-          decoration: BoxDecoration(
-            borderRadius: emptySeat ? null : BorderRadius.circular(5.0),
-            shape: emptySeat ? BoxShape.circle : BoxShape.rectangle,
-            color: const Color(0xff474747),
-            border: Border.all(
-              color: userObject.highlight ?? false
-                  ? highlightColor
-                  : Colors.transparent,
-              width: 2.0,
-            ),
-            boxShadow: (userObject.winner ?? false)
-                ? [
-                    BoxShadow(
-                      color: Colors.green,
-                      blurRadius: 50.0,
-                      spreadRadius: 20.0,
-                    ),
-                  ]
-                : userObject.highlight ?? false
-                    ? [
-                        BoxShadow(
-                          color: highlightColor.withAlpha(120),
-                          blurRadius: 20.0,
-                          spreadRadius: 20.0,
-                        ),
-                      ]
-                    : [],
+        width: 70.0,
+        padding: (emptySeat && !isPresent)
+            ? const EdgeInsets.all(10.0)
+            : const EdgeInsets.symmetric(
+                horizontal: 15.0,
+                vertical: 5.0,
+              ),
+        decoration: BoxDecoration(
+          borderRadius: emptySeat ? null : BorderRadius.circular(5.0),
+          shape: emptySeat ? BoxShape.circle : BoxShape.rectangle,
+          color: statusColor,
+          border: Border.all(
+            color: userObject.highlight ?? false
+                ? highlightColor
+                : Colors.transparent,
+            width: 2.0,
           ),
-          child: AnimatedSwitcher(
-            duration: AppConstants.animationDuration,
-            reverseDuration: AppConstants.animationDuration,
-            child: (emptySeat && !isPresent)
-                ? InkWell(
-                    child: Text(
-                      'OPEN',
-                      style: AppStyles.openSeatTextStyle,
-                    ),
-                  )
-                : AnimatedOpacity(
-                    duration: AppConstants.animationDuration,
-                    opacity: emptySeat ? 0.0 : 1.0,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        FittedBox(
-                          child: Text(
-                            name?.toUpperCase() ?? 'name',
-                            style: AppStyles.gamePlayScreenPlayerName,
-                          ),
-                        ),
-                        const SizedBox(height: 3.0),
-                        FittedBox(
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              // chip asset image
-                              Image.asset(
-                                'assets/images/chips.png',
-                                height: 13.0,
-                              ),
-
-                              const SizedBox(width: 5.0),
-
-                              Text(
-                                chips?.toString() ?? 'XX',
-                                style: AppStyles.gamePlayScreenPlayerChips,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
+          boxShadow: (userObject.winner ?? false)
+              ? [
+                  BoxShadow(
+                    color: Colors.white,
+                    blurRadius: 50.0,
+                    spreadRadius: 20.0,
                   ),
-          ),
+                ]
+              : userObject.highlight ?? false
+                  ? [
+                      BoxShadow(
+                        color: highlightColor.withAlpha(120),
+                        blurRadius: 20.0,
+                        spreadRadius: 20.0,
+                      ),
+                    ]
+                  : [],
         ),
-      );
+        child: AnimatedSwitcher(
+          duration: AppConstants.animationDuration,
+          reverseDuration: AppConstants.animationDuration,
+          child: (emptySeat && !isPresent)
+              ? InkWell(
+                  child: Text(
+                    'OPEN',
+                    style: AppStyles.openSeatTextStyle,
+                  ),
+                )
+              : AnimatedOpacity(
+                  duration: AppConstants.animationDuration,
+                  opacity: emptySeat ? 0.0 : 1.0,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      FittedBox(
+                        child: Text(
+                          name?.toUpperCase() ?? 'name',
+                          style: AppStyles.gamePlayScreenPlayerName,
+                        ),
+                      ),
+                      const SizedBox(height: 3.0),
+                      FittedBox(
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            // chip asset image
+                            Image.asset(
+                              'assets/images/chips.png',
+                              height: 13.0,
+                            ),
+
+                            const SizedBox(width: 5.0),
+
+                            Text(
+                              chips?.toString() ?? 'XX',
+                              style: AppStyles.gamePlayScreenPlayerChips,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+        ),
+      ),
+    );
+  }
 
   /* if the footer status becomes footer result
   * then we need to show the user cards

@@ -5,7 +5,7 @@ import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_service/sub_services/deal_service.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_service/sub_services/result_service.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_service/sub_services/stage_update_service.dart';
-import 'package:pokerapp/services/game_play/action_services/hand_action_service/sub_services/new_hand_update_service.dart';
+import 'package:pokerapp/services/game_play/action_services/hand_action_service/sub_services/new_hand_service.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_service/sub_services/next_action_service.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_service/sub_services/player_acted_service.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_service/sub_services/query_hand_update_service.dart';
@@ -34,7 +34,7 @@ class HandActionService {
         );
 
       case AppConstants.NEW_HAND:
-        return NewHandUpdateService.handle(
+        return NewHandService.handle(
           context: context,
           data: data,
         );

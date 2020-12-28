@@ -50,7 +50,12 @@ class AppConstants {
   /* extra identifiers */
   static const String WAIT_FOR_BUYIN = 'WAIT_FOR_BUYIN';
   static const String PLAYING = 'PLAYING';
+
   static const String FOLD = 'FOLD';
+  static const String CHECK = 'CHECK';
+  static const String RAISE = 'RAISE';
+  static const String BET = 'BET';
+  static const String CALL = 'CALL';
 
   /* message types */
   static const String PLAYER_UPDATE = 'PLAYER_UPDATE';

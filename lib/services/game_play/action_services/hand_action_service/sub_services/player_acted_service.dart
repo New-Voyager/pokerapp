@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
+import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
+import 'package:pokerapp/services/game_play/utils/audio.dart';
 import 'package:provider/provider.dart';
 
 class PlayerActedService {
@@ -34,17 +36,40 @@ class PlayerActedService {
       listen: false,
     ).updateStatus(
       idx,
-      "${playerActed['action']} ${playerActed['amount'] ?? ''}",
+      "${playerActed['action']}",
     );
 
+    String action = playerActed['action'];
+
     // check if player folded
-    if (playerActed['action'] == AppConstants.FOLD)
+    if (action == AppConstants.FOLD)
       Provider.of<Players>(
         context,
         listen: false,
       ).updatePlayerFoldedStatus(
         idx,
         true,
+      );
+
+    // play the bet-raise sound effect
+    if (action == AppConstants.BET ||
+        action == AppConstants.RAISE ||
+        action == AppConstants.CALL)
+      Audio.play(
+        context: context,
+        assetFile: AppAssets.betRaiseSound,
+      );
+
+    if (action == AppConstants.FOLD)
+      Audio.play(
+        context: context,
+        assetFile: AppAssets.foldSound,
+      );
+
+    if (action == AppConstants.CHECK)
+      Audio.play(
+        context: context,
+        assetFile: AppAssets.checkSound,
       );
 
     int stack = playerActed['stack'];

@@ -45,8 +45,8 @@ class ClubActionButtonsView extends StatelessWidget {
                   ClubActions.CHAT,
                   "Chat",
                   Icon(
-                    ClubScreenIcons.chat,
-                    color: AppColors.appAccentColor,
+                    Icons.access_alarm,
+                    color: Colors.blue,
                   ),
                 ),
               ),
