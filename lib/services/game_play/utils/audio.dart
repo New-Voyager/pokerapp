@@ -24,7 +24,7 @@ class Audio {
 
     stop(context: context);
 
-    Provider.of<AudioPlayer>(
+    return Provider.of<AudioPlayer>(
       context,
       listen: false,
     ).playBytes(audioBytes);

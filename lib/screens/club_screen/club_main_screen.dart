@@ -22,89 +22,91 @@ class _ClubMainScreenState extends State<ClubMainScreen> {
     super.initState();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final clubModel = Provider.of<ClubModel>(
-      context,
-      listen: false,
-    );
-
-    return Scaffold(
-      backgroundColor: AppColors.screenBackgroundColor,
-      appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios, color: Colors.white),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: CustomTextButton(
-              onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => NewGameSettings(
-                    clubCode: clubModel.clubCode,
-                  ),
+  List<Widget> _buildActions(String clubCode) => [
+        Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: CustomTextButton(
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => NewGameSettings(
+                  clubCode: clubCode,
                 ),
               ),
-              text: '+ Create Game',
             ),
+            text: '+ Create Game',
           ),
-        ],
-        elevation: 0.0,
-        backgroundColor: AppColors.screenBackgroundColor,
-      ),
-      body: SingleChildScrollView(
-        child: SafeArea(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+        ),
+      ];
+
+  Widget _buildOutstandingBalanceWidget(ClubModel clubModel) => Container(
+        margin: EdgeInsets.all(8.0),
+        child: Card(
+          color: AppColors.cardBackgroundColor,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              ClubBannerView(),
               Container(
-                margin: EdgeInsets.all(8.0),
-                child: Card(
-                  color: AppColors.cardBackgroundColor,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Container(
-                        margin: EdgeInsets.all(20.0),
-                        child: Text(
-                          "Outstanding Chips Balance",
-                          textAlign: TextAlign.left,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 14.0,
-                            fontFamily: AppAssets.fontFamilyLato,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.all(20.0),
-                        child: Text(
-                          "+400",
-                          textAlign: TextAlign.left,
-                          style: TextStyle(
-                            color: AppColors.negativeColor,
-                            fontSize: 14.0,
-                            fontFamily: AppAssets.fontFamilyLato,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                      ),
-                    ],
+                margin: EdgeInsets.all(20.0),
+                child: Text(
+                  "Outstanding Chips Balance",
+                  textAlign: TextAlign.left,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 14.0,
+                    fontFamily: AppAssets.fontFamilyLato,
+                    fontWeight: FontWeight.w400,
                   ),
-                  elevation: 5.5,
                 ),
               ),
-              ClubGamesPageView(),
-              ClubActionButtonsView()
+              Container(
+                margin: EdgeInsets.all(20.0),
+                child: Text(
+                  clubModel.balance ?? '100',
+                  textAlign: TextAlign.left,
+                  style: TextStyle(
+                    // todo: change color as per balance value
+                    color: AppColors.negativeColor,
+                    fontSize: 14.0,
+                    fontFamily: AppAssets.fontFamilyLato,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+              ),
             ],
           ),
+          elevation: 5.5,
         ),
-      ),
-    );
-  }
+      );
+
+  @override
+  Widget build(BuildContext context) => Consumer<ClubModel>(
+        builder: (_, ClubModel clubModel, __) => Scaffold(
+          backgroundColor: AppColors.screenBackgroundColor,
+          appBar: AppBar(
+            leading: IconButton(
+              icon: Icon(Icons.arrow_back_ios, color: Colors.white),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            actions: _buildActions(clubModel.clubCode),
+            elevation: 0.0,
+            backgroundColor: AppColors.screenBackgroundColor,
+          ),
+          body: SingleChildScrollView(
+            child: SafeArea(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  ClubBannerView(
+                    clubModel: clubModel,
+                  ),
+                  _buildOutstandingBalanceWidget(clubModel),
+                  ClubGamesPageView(),
+                  ClubActionButtonsView()
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
 }
