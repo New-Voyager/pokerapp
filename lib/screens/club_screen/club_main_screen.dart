@@ -1,25 +1,45 @@
 import 'package:flutter/material.dart';
-import 'package:pokerapp/models/club_model.dart';
-import 'package:pokerapp/models/game/new_game_provider.dart';
+import 'package:pokerapp/models/club_homepage_model.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/screens/club_screen/club_banner_view/club_banner_view.dart';
 import 'package:pokerapp/screens/club_screen/games_page_view/club_games_page_view.dart';
 import 'package:pokerapp/screens/club_screen/games_page_view/new_game_settings/new_game_settings.dart';
+import 'package:pokerapp/services/app/clubs_service.dart';
 import 'package:pokerapp/widgets/custom_text_button.dart';
 import 'package:provider/provider.dart';
 
 import 'club_action_buttons_view/club_action_buttons_view.dart';
 
 class ClubMainScreen extends StatefulWidget {
+  ClubHomePageModel data;
+  ClubMainScreen(ClubHomePageModel data) {
+    this.data = data;
+  }
   @override
-  _ClubMainScreenState createState() => _ClubMainScreenState();
+  _ClubMainScreenState createState() => _ClubMainScreenState(data);
 }
 
 class _ClubMainScreenState extends State<ClubMainScreen> {
+  bool _isLoading = false;
+  void _toggleLoading() => setState(() => _isLoading = !_isLoading);
+  String clubCode;
+  ClubHomePageModel data;
+
+  _ClubMainScreenState(ClubHomePageModel data) {
+    this.data = data;
+  }
+  void _fetchData() async {
+    _toggleLoading();
+    this.data = await ClubsService.getClubHomePageData(this.clubCode);
+    _toggleLoading();
+    this.data.notifyListeners();
+  }
+
   @override
   void initState() {
     super.initState();
+    //_fetchData();
   }
 
   List<Widget> _buildActions(String clubCode) => [
@@ -39,7 +59,7 @@ class _ClubMainScreenState extends State<ClubMainScreen> {
         ),
       ];
 
-  Widget _buildOutstandingBalanceWidget(ClubModel clubModel) => Container(
+  Widget _buildOutstandingBalanceWidget(ClubHomePageModel data) => Container(
         margin: EdgeInsets.all(8.0),
         child: Card(
           color: AppColors.cardBackgroundColor,
@@ -49,7 +69,7 @@ class _ClubMainScreenState extends State<ClubMainScreen> {
               Container(
                 margin: EdgeInsets.all(20.0),
                 child: Text(
-                  "Outstanding Chips Balance",
+                  "Outstanding Chips",
                   textAlign: TextAlign.left,
                   style: TextStyle(
                     color: Colors.white,
@@ -62,7 +82,9 @@ class _ClubMainScreenState extends State<ClubMainScreen> {
               Container(
                 margin: EdgeInsets.all(20.0),
                 child: Text(
-                  clubModel.balance ?? '100',
+                  data.playerBalance == null
+                      ? '0.0'
+                      : data.playerBalance.toString(),
                   textAlign: TextAlign.left,
                   style: TextStyle(
                     // todo: change color as per balance value
@@ -80,8 +102,8 @@ class _ClubMainScreenState extends State<ClubMainScreen> {
       );
 
   @override
-  Widget build(BuildContext context) => Consumer<ClubModel>(
-        builder: (_, ClubModel clubModel, __) => Scaffold(
+  Widget build(BuildContext context) => Consumer<ClubHomePageModel>(
+        builder: (_, ClubHomePageModel clubModel, __) => Scaffold(
           backgroundColor: AppColors.screenBackgroundColor,
           appBar: AppBar(
             leading: IconButton(
@@ -101,7 +123,7 @@ class _ClubMainScreenState extends State<ClubMainScreen> {
                     clubModel: clubModel,
                   ),
                   _buildOutstandingBalanceWidget(clubModel),
-                  ClubGamesPageView(),
+                  ClubGamesPageView(clubModel),
                   ClubActionButtonsView()
                 ],
               ),

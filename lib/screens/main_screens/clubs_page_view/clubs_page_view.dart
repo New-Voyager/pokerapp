@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/club_homepage_model.dart';
 import 'package:pokerapp/models/club_model.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
@@ -186,6 +187,21 @@ class _ClubsPageViewState extends State<ClubsPageView> {
     );
   }
 
+  void openClub(BuildContext context, ClubModel club) async {
+    ClubHomePageModel data  = await ClubsService.getClubHomePageData(club.clubCode);// new ClubHomePageModel(club.clubCode, club.clubName); // await ClubsService.getClubHomePageData(clubCode);
+    ClubMainScreen screen = ClubMainScreen(data);
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) =>
+            ChangeNotifierProvider<ClubHomePageModel>(
+              create: (_) => data,
+              child: screen,
+            ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final separator = SizedBox(height: 14.0);
@@ -315,17 +331,7 @@ class _ClubsPageViewState extends State<ClubsPageView> {
                                                       ? _filteredClubs[index]
                                                       : _clubs[index];
                                                   return InkWell(
-                                                    onTap: () => Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                        builder: (_) =>
-                                                            Provider<ClubModel>(
-                                                          create: (_) => club,
-                                                          child:
-                                                              ClubMainScreen(),
-                                                        ),
-                                                      ),
-                                                    ),
+                                                    onTap: () => this.openClub(context, club),
                                                     onLongPress: () =>
                                                         _showClubOptions(
                                                       club,

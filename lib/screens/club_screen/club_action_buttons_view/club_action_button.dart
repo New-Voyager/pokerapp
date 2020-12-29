@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/club_actions.dart';
-import 'package:pokerapp/models/club_model.dart';
+import 'package:pokerapp/models/club_homepage_model.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/screens/club_screen/club_action_screens/club_members_view.dart';
@@ -20,8 +20,8 @@ class ClubActionButton extends StatelessWidget {
   );
   @override
   Widget build(BuildContext context) {
-    return Consumer<ClubModel>(
-      builder: (_, ClubModel clubModel, __) => GestureDetector(
+    return Consumer<ClubHomePageModel>(
+      builder: (_, ClubHomePageModel clubModel, __) => GestureDetector(
         onTap: () {
           switch (_action) {
             case ClubActions.GAME_HISTORY:
