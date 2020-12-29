@@ -50,6 +50,9 @@ dependencies:
   # audio playing
   audioplayers: ^0.17.0
 
+  # utils
+  path_provider: ^1.6.24
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
