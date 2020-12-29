@@ -8,30 +8,33 @@ import 'package:provider/provider.dart';
 
 class Audio {
   Audio._();
-  static Map<String, Uint8List> audioData = new Map<String, Uint8List>();
 
   static Future<int> play({
     BuildContext context,
     String assetFile,
   }) async {
-    Uint8List audioBytes;
-    if (Audio.audioData.containsKey(assetFile)) {
-      audioBytes = Audio.audioData[assetFile];
-    } else {
-      audioBytes = (await rootBundle.load(assetFile)).buffer.asUint8List();
-      Audio.audioData[assetFile] = audioBytes;
-    }
-
-    stop(context: context);
+    String tempAssetFile = Provider.of<ValueNotifier<Map<String, String>>>(
+      context,
+      listen: false,
+    ).value[assetFile];
 
     return Provider.of<AudioPlayer>(
       context,
       listen: false,
-    ).playBytes(audioBytes);
+    ).play(
+      tempAssetFile,
+      isLocal: true,
+    );
   }
 
   static Future<int> stop({BuildContext context}) => Provider.of<AudioPlayer>(
         context,
         listen: false,
       ).stop();
+
+  static Future<void> dispose({BuildContext context}) =>
+      Provider.of<AudioPlayer>(
+        context,
+        listen: false,
+      ).dispose();
 }

@@ -5,6 +5,7 @@ import 'package:dart_nats/dart_nats.dart' as nats;
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
+import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/action_info.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/footer_result.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/player_action/player_action.dart';
@@ -23,6 +24,8 @@ import 'package:pokerapp/services/game_play/action_services/game_action_service/
 import 'package:pokerapp/services/game_play/action_services/hand_action_service/hand_action_service.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/services/game_play/graphql/game_service.dart';
+import 'package:pokerapp/services/game_play/utils/audio.dart';
+import 'package:pokerapp/services/game_play/utils/audio_buffer.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
@@ -257,7 +260,16 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
         /* This provider holds the audioPlayer object, which facilitates playing
         * audio in the game */
         Provider<AudioPlayer>(
-          create: (_) => AudioPlayer(),
+          create: (_) => AudioPlayer(
+            mode: PlayerMode.LOW_LATENCY,
+          ),
+        ),
+
+        /* managing audio assets as temporary files */
+        ListenableProvider<ValueNotifier<Map<String, String>>>(
+          create: (_) => ValueNotifier(
+            Map<String, String>(),
+          ),
         ),
 
         /* This provider contains the remainingActionTime - this provider
@@ -291,6 +303,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
   @override
   void dispose() {
     _gameComService?.dispose();
+    Audio.dispose(context: _providerContext);
     super.dispose();
   }
 
@@ -323,6 +336,13 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
               ),
               builder: (BuildContext context, _) {
                 this._providerContext = context;
+
+                AudioBufferService.create().then(
+                    (Map<String, String> tmpAudioFiles) =>
+                        Provider.of<ValueNotifier<Map<String, String>>>(
+                          context,
+                          listen: false,
+                        ).value = tmpAudioFiles);
 
                 // check for the current user prompt, after the following tree is built
                 // waiting for a brief moment should suffice
