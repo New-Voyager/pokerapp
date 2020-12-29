@@ -24,6 +24,7 @@ import 'package:pokerapp/services/game_play/action_services/game_action_service/
 import 'package:pokerapp/services/game_play/action_services/hand_action_service/hand_action_service.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/services/game_play/graphql/game_service.dart';
+import 'package:pokerapp/services/game_play/utils/audio.dart';
 import 'package:pokerapp/services/game_play/utils/audio_buffer.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
@@ -302,6 +303,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
   @override
   void dispose() {
     _gameComService?.dispose();
+    Audio.dispose(context: _providerContext);
     super.dispose();
   }
 

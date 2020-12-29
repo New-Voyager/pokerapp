@@ -31,4 +31,10 @@ class Audio {
         context,
         listen: false,
       ).stop();
+
+  static Future<void> dispose({BuildContext context}) =>
+      Provider.of<AudioPlayer>(
+        context,
+        listen: false,
+      ).dispose();
 }
