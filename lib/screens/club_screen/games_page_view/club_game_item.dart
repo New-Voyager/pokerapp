@@ -1,19 +1,20 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'package:pokerapp/models/club_game_model.dart';
+import 'package:pokerapp/models/game_model.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
-import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/screens/game_play_screen/game_play_screen.dart';
+import 'package:pokerapp/widgets/custom_text_button.dart';
 
 class ClubGameItem extends StatelessWidget {
-  final ClubGameModel _clubGameModel;
+  final GameModel _clubGameModel;
 
   const ClubGameItem(this._clubGameModel);
 
-  ClubGameModel get clubGameModel => _clubGameModel;
+  GameModel get clubGameModel => _clubGameModel;
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +44,7 @@ class ClubGameItem extends StatelessWidget {
                   Padding(
                     padding: EdgeInsets.only(top: 2.0, bottom: 2.0),
                     child: Text(
-                      _clubGameModel.gameTitle,
+                      _clubGameModel.title,
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 19.0,
@@ -136,14 +137,15 @@ class ClubGameItem extends StatelessWidget {
           Expanded(
             flex: 2,
             child: Container(
-              child: Text(
-                _clubGameModel.waitList == 0 ? "Join" : "Join Waitlist",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: AppColors.appAccentColor,
-                  fontSize: 16.0,
-                  fontFamily: AppAssets.fontFamilyLato,
-                  fontWeight: FontWeight.w700,
+              child: CustomTextButton(
+                text: _clubGameModel.waitList == 0 ? "Join" : "Join Waitlist",
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => GamePlayScreen(
+                      gameCode: clubGameModel.gameCode,
+                    ),
+                  ),
                 ),
               ),
             ),

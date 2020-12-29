@@ -1,11 +1,11 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'package:pokerapp/models/club_model.dart';
+import 'package:pokerapp/models/club_homepage_model.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 
 class ClubBannerView extends StatelessWidget {
-  final ClubModel clubModel;
+  final ClubHomePageModel clubModel;
 
   ClubBannerView({
     @required this.clubModel,

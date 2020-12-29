@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:pokerapp/main.dart';
+import 'package:pokerapp/models/club_homepage_model.dart';
 import 'package:pokerapp/models/club_model.dart';
 import 'package:pokerapp/services/graphQL/mutations/clubs.dart';
 import 'package:pokerapp/services/graphQL/queries/clubs.dart';
@@ -72,5 +73,26 @@ class ClubsService {
     return jsonResponse
         .map<ClubModel>((var clubItem) => ClubModel.fromJson(clubItem))
         .toList();
+  }
+
+  static Future<ClubHomePageModel> getClubHomePageData(String clubCode) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+
+    Map<String, dynamic> variables = {
+      'clubCode': clubCode,
+    };
+
+    QueryResult result = await _client.query(
+      QueryOptions(
+        documentNode: gql(ClubHomePageModel.query),
+        variables: variables,
+      ),
+    );
+
+    log('query result: ${result.exception}');
+
+    if (result.hasException) return null;
+
+    return ClubHomePageModel.fromGQLResponse(clubCode, result.data);
   }
 }
