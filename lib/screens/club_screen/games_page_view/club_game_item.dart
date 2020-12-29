@@ -6,6 +6,8 @@ import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/screens/game_play_screen/game_play_screen.dart';
+import 'package:pokerapp/widgets/custom_text_button.dart';
 
 class ClubGameItem extends StatelessWidget {
   final GameModel _clubGameModel;
@@ -135,14 +137,15 @@ class ClubGameItem extends StatelessWidget {
           Expanded(
             flex: 2,
             child: Container(
-              child: Text(
-                _clubGameModel.waitList == 0 ? "Join" : "Join Waitlist",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: AppColors.appAccentColor,
-                  fontSize: 16.0,
-                  fontFamily: AppAssets.fontFamilyLato,
-                  fontWeight: FontWeight.w700,
+              child: CustomTextButton(
+                text: _clubGameModel.waitList == 0 ? "Join" : "Join Waitlist",
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => GamePlayScreen(
+                      gameCode: clubGameModel.gameCode,
+                    ),
+                  ),
                 ),
               ),
             ),

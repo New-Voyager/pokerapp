@@ -35,47 +35,52 @@ class ClubMainScreen extends StatelessWidget {
         ),
       ];
 
-  Widget _buildOutstandingBalanceWidget(ClubHomePageModel data) => Container(
-        margin: EdgeInsets.all(8.0),
-        child: Card(
-          color: AppColors.cardBackgroundColor,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(
-                margin: EdgeInsets.all(20.0),
-                child: Text(
-                  "Outstanding Chips",
-                  textAlign: TextAlign.left,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 14.0,
-                    fontFamily: AppAssets.fontFamilyLato,
-                    fontWeight: FontWeight.w400,
-                  ),
+  Widget _buildOutstandingBalanceWidget(ClubHomePageModel data) {
+    double outstandingChips = data.playerBalance ?? 0.0;
+
+    return Container(
+      margin: EdgeInsets.all(8.0),
+      child: Card(
+        color: AppColors.cardBackgroundColor,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Container(
+              margin: EdgeInsets.all(20.0),
+              child: Text(
+                "Outstanding Chips",
+                textAlign: TextAlign.left,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 14.0,
+                  fontFamily: AppAssets.fontFamilyLato,
+                  fontWeight: FontWeight.w400,
                 ),
               ),
-              Container(
-                margin: EdgeInsets.all(20.0),
-                child: Text(
-                  data.playerBalance == null
-                      ? '0.0'
-                      : data.playerBalance.toString(),
-                  textAlign: TextAlign.left,
-                  style: TextStyle(
-                    // todo: change color as per balance value
-                    color: AppColors.negativeColor,
-                    fontSize: 14.0,
-                    fontFamily: AppAssets.fontFamilyLato,
-                    fontWeight: FontWeight.w400,
-                  ),
+            ),
+            Container(
+              margin: EdgeInsets.all(20.0),
+              child: Text(
+                outstandingChips.toStringAsFixed(2),
+                textAlign: TextAlign.left,
+                style: TextStyle(
+                  color: outstandingChips == 0.0
+                      ? Colors.white
+                      : outstandingChips > 0.0
+                          ? AppColors.positiveColor
+                          : AppColors.negativeColor,
+                  fontSize: 14.0,
+                  fontFamily: AppAssets.fontFamilyLato,
+                  fontWeight: FontWeight.w400,
                 ),
               ),
-            ],
-          ),
-          elevation: 5.5,
+            ),
+          ],
         ),
-      );
+        elevation: 5.5,
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) => FutureBuilder<ClubHomePageModel>(
@@ -115,7 +120,7 @@ class ClubMainScreen extends StatelessWidget {
                               clubModel: clubModel,
                             ),
                             _buildOutstandingBalanceWidget(clubModel),
-                            ClubGamesPageView(clubModel),
+                            ClubGamesPageView(),
                             ClubActionButtonsView()
                           ],
                         ),
