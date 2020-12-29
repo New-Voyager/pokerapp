@@ -15,7 +15,7 @@ class DealService {
   static void handle({
     BuildContext context,
     var data,
-  }) async {
+  }) {
     // play the deal sound effect
     Audio.play(
       context: context,

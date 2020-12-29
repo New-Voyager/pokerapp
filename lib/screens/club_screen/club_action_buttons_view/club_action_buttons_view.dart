@@ -7,6 +7,7 @@ import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/club_screen_icons_icons.dart';
 import 'package:pokerapp/screens/club_screen/club_action_buttons_view/club_action_button.dart';
+import 'package:pokerapp/screens/club_screen/games_page_view/high_hand/high_hand.dart';
 
 class ClubActionButtonsView extends StatelessWidget {
   @override
