@@ -11,38 +11,14 @@ import 'package:provider/provider.dart';
 
 import 'club_action_buttons_view/club_action_buttons_view.dart';
 
-class ClubMainScreen extends StatefulWidget {
-  ClubHomePageModel data;
-  ClubMainScreen(ClubHomePageModel data) {
-    this.data = data;
-  }
-  @override
-  _ClubMainScreenState createState() => _ClubMainScreenState(data);
-}
+class ClubMainScreen extends StatelessWidget {
+  final String clubCode;
 
-class _ClubMainScreenState extends State<ClubMainScreen> {
-  bool _isLoading = false;
-  void _toggleLoading() => setState(() => _isLoading = !_isLoading);
-  String clubCode;
-  ClubHomePageModel data;
+  ClubMainScreen({
+    @required this.clubCode,
+  });
 
-  _ClubMainScreenState(ClubHomePageModel data) {
-    this.data = data;
-  }
-  void _fetchData() async {
-    _toggleLoading();
-    this.data = await ClubsService.getClubHomePageData(this.clubCode);
-    _toggleLoading();
-    this.data.notifyListeners();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    //_fetchData();
-  }
-
-  List<Widget> _buildActions(String clubCode) => [
+  List<Widget> _buildActions(String clubCode, BuildContext context) => [
         Padding(
           padding: const EdgeInsets.all(10.0),
           child: CustomTextButton(
@@ -102,33 +78,51 @@ class _ClubMainScreenState extends State<ClubMainScreen> {
       );
 
   @override
-  Widget build(BuildContext context) => Consumer<ClubHomePageModel>(
-        builder: (_, ClubHomePageModel clubModel, __) => Scaffold(
-          backgroundColor: AppColors.screenBackgroundColor,
-          appBar: AppBar(
-            leading: IconButton(
-              icon: Icon(Icons.arrow_back_ios, color: Colors.white),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-            actions: _buildActions(clubModel.clubCode),
-            elevation: 0.0,
+  Widget build(BuildContext context) => FutureBuilder<ClubHomePageModel>(
+        initialData: null,
+        future: ClubsService.getClubHomePageData(clubCode),
+        builder: (BuildContext context, snapshot) {
+          ClubHomePageModel clubModel = snapshot.data;
+
+          return Scaffold(
             backgroundColor: AppColors.screenBackgroundColor,
-          ),
-          body: SingleChildScrollView(
-            child: SafeArea(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  ClubBannerView(
-                    clubModel: clubModel,
-                  ),
-                  _buildOutstandingBalanceWidget(clubModel),
-                  ClubGamesPageView(clubModel),
-                  ClubActionButtonsView()
-                ],
+            appBar: AppBar(
+              leading: IconButton(
+                icon: Icon(Icons.arrow_back_ios, color: Colors.white),
+                onPressed: () => Navigator.of(context).pop(),
               ),
+              actions: clubModel == null
+                  ? null
+                  : _buildActions(
+                      clubModel.clubCode,
+                      context,
+                    ),
+              elevation: 0.0,
+              backgroundColor: AppColors.screenBackgroundColor,
             ),
-          ),
-        ),
+            body: clubModel == null
+                ? Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : ListenableProvider<ClubHomePageModel>(
+                    create: (_) => clubModel,
+                    child: SingleChildScrollView(
+                      child: SafeArea(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            ClubBannerView(
+                              clubModel: clubModel,
+                            ),
+                            _buildOutstandingBalanceWidget(clubModel),
+                            ClubGamesPageView(clubModel),
+                            ClubActionButtonsView()
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+          );
+        },
       );
 }

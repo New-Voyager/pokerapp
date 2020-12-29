@@ -188,16 +188,12 @@ class _ClubsPageViewState extends State<ClubsPageView> {
   }
 
   void openClub(BuildContext context, ClubModel club) async {
-    ClubHomePageModel data  = await ClubsService.getClubHomePageData(club.clubCode);// new ClubHomePageModel(club.clubCode, club.clubName); // await ClubsService.getClubHomePageData(clubCode);
-    ClubMainScreen screen = ClubMainScreen(data);
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) =>
-            ChangeNotifierProvider<ClubHomePageModel>(
-              create: (_) => data,
-              child: screen,
-            ),
+        builder: (_) => ClubMainScreen(
+          clubCode: club.clubCode,
+        ),
       ),
     );
   }
@@ -331,7 +327,8 @@ class _ClubsPageViewState extends State<ClubsPageView> {
                                                       ? _filteredClubs[index]
                                                       : _clubs[index];
                                                   return InkWell(
-                                                    onTap: () => this.openClub(context, club),
+                                                    onTap: () => this.openClub(
+                                                        context, club),
                                                     onLongPress: () =>
                                                         _showClubOptions(
                                                       club,

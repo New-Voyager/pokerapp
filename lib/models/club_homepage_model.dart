@@ -44,16 +44,14 @@ class ClubHomePageModel extends ChangeNotifier {
   }
 
   // build data from the graphql response
-  ClubHomePageModel.fromGQLResponse(String clubCode, LazyCacheMap data) {
+  ClubHomePageModel.fromGQLResponse(String clubCode, var data) {
+    var member = data['member'];
+
+    this.clubName = member['name'];
     this.clubCode = clubCode;
-    LazyCacheMap member = data['member'];
-    playerBalance = double.parse(member['myBalance'].toString());
-    clubName = member['name'].toString();
-    List<Object> _liveGames = data['liveGames'];
-    liveGames = new List<GameModel>();
-    for (LazyCacheMap game in _liveGames) {
-      GameModel liveGame = GameModel.fromJson(game);
-      liveGames.add(liveGame);
-    }
+    this.playerBalance = double.parse(member['myBalance'].toString());
+    this.liveGames = data['liveGames']
+        .map<GameModel>((game) => GameModel.fromJson(game))
+        .toList();
   }
 }

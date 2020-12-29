@@ -89,9 +89,10 @@ class ClubsService {
       ),
     );
 
+    log('query result: ${result.exception}');
+
     if (result.hasException) return null;
 
-    ClubHomePageModel data = ClubHomePageModel.fromGQLResponse(clubCode, result.data);
-    return data;
+    return ClubHomePageModel.fromGQLResponse(clubCode, result.data);
   }
 }
