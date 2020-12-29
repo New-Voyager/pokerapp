@@ -1,14 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:provider/provider.dart';
 
 const kDisplacementConstant = 3.0;
 
+//var kDefaultCards = Container(
+//  decoration: BoxDecoration(
+//    borderRadius: BorderRadius.circular(5.0),
+//    border: Border.all(
+//      color: Colors.white,
+//      width: 1.0,
+//    ),
+//    gradient: const LinearGradient(
+//      begin: Alignment.topCenter,
+//      end: Alignment.bottomCenter,
+//      colors: const [
+//        const Color(0xff0d4b74),
+//        const Color(0xff07263a),
+//      ],
+//    ),
+//  ),
+//);
+
 class HiddenCardView extends StatelessWidget {
   Widget _buildCardBack() => Container(
-        height: AppDimensions.cardHeight * 0.50,
-        width: AppDimensions.cardWidth * 0.50,
+        height: AppDimensions.cardHeight * 0.60,
+        width: AppDimensions.cardWidth * 0.60,
         decoration: BoxDecoration(
           boxShadow: [
             const BoxShadow(
@@ -19,25 +36,8 @@ class HiddenCardView extends StatelessWidget {
           ],
         ),
         child: Consumer<ValueNotifier<String>>(
-          builder: (_, valueNotifierAsset, __) => SvgPicture.asset(
+          builder: (_, valueNotifierAsset, __) => Image.asset(
             valueNotifierAsset.value,
-            placeholderBuilder: (_) => Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(5.0),
-                border: Border.all(
-                  color: Colors.white,
-                  width: 1.0,
-                ),
-                gradient: const LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: const [
-                    const Color(0xff0d4b74),
-                    const Color(0xff07263a),
-                  ],
-                ),
-              ),
-            ),
           ),
         ),
       );

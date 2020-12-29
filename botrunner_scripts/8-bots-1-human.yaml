@@ -1,0 +1,3 @@
+setup-script: botrunner_scripts/setup/8-bots-1-human.yaml
+game:
+  auto-play: true

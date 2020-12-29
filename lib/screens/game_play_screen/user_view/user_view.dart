@@ -10,6 +10,7 @@ import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/screens/game_play_screen/card_views/hidden_card_view.dart';
 import 'package:pokerapp/screens/game_play_screen/card_views/stack_card_view.dart';
+import 'package:pokerapp/screens/game_play_screen/user_view/count_down_timer.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:provider/provider.dart';
 import 'package:timer_count_down/timer_count_down.dart';
@@ -378,28 +379,22 @@ class UserView extends StatelessWidget {
     return Positioned(
       top: 0,
       right: 0,
-      child: Transform.translate(
-        offset: const Offset(0.0, -15.0),
-        child: Container(
-          padding: const EdgeInsets.all(8.0),
-          decoration: BoxDecoration(
-            color: const Color(0xff474747),
-            shape: BoxShape.circle,
-            border: Border.all(
-              color: const Color(0xff14e81b),
-              width: 1.0,
-            ),
-          ),
-          child: Countdown(
-            seconds: remainingTime,
-            build: (_, time) => Text(
-              time.toStringAsFixed(0),
-              style: AppStyles.itemInfoTextStyle.copyWith(
-                color: Colors.white,
-              ),
-            ),
-          ),
-        ),
+      child: AnimatedSwitcher(
+        duration: AppConstants.fastAnimationDuration,
+        reverseDuration: AppConstants.fastAnimationDuration,
+        switchOutCurve: Curves.bounceInOut,
+        switchInCurve: Curves.bounceInOut,
+        child: userObject.highlight ?? false
+            ? Transform.translate(
+                offset: const Offset(0.0, -15.0),
+                child: Transform.scale(
+                  scale: 0.80,
+                  child: CountDownTimer(
+                    remainingTime: remainingTime,
+                  ),
+                ),
+              )
+            : shrinkedSizedBox,
       ),
     );
   }
@@ -524,12 +519,10 @@ class UserView extends StatelessWidget {
           /* timer
           * the timer is show to the highlighted user
           * */
-          userObject.highlight ?? false
-              ? _buildTimer(
-                  context: context,
-                  time: actionTime,
-                )
-              : shrinkedSizedBox,
+          _buildTimer(
+            context: context,
+            time: actionTime,
+          ),
         ],
       ),
     );

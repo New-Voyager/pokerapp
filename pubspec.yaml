@@ -14,7 +14,6 @@ dependencies:
 
   # ui
   cupertino_icons: ^0.1.3
-  flutter_svg: ^0.18.0
 
   modal_progress_hud: ^0.1.3
 
@@ -49,6 +48,9 @@ dependencies:
 
   # audio playing
   audioplayers: ^0.17.0
+
+  # utils
+  path_provider: ^1.6.24
 
 dev_dependencies:
   flutter_test:
