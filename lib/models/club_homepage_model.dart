@@ -45,6 +45,7 @@ class ClubHomePageModel extends ChangeNotifier {
 
   // build data from the graphql response
   ClubHomePageModel.fromGQLResponse(String clubCode, LazyCacheMap data) {
+    this.clubCode = clubCode;
     LazyCacheMap member = data['member'];
     playerBalance = double.parse(member['myBalance'].toString());
     clubName = member['name'].toString();
