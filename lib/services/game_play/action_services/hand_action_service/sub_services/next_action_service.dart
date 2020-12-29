@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/header_object.dart';
-import 'package:pokerapp/services/game_play/utils/audio.dart';
 import 'package:provider/provider.dart';
 
 class NextActionService {
@@ -12,7 +11,7 @@ class NextActionService {
     BuildContext context,
     var data,
   }) {
-    Audio.stop(context: context);
+//    Audio.stop(context: context); fixme: this also does not play when we need to notify the user of his/her turn
 
     int handNum = data['handNum'];
     Provider.of<HeaderObject>(

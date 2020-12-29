@@ -9,7 +9,7 @@ class AppAssets {
   static const String foldSound = 'assets/sound_effects/fold.mp3';
   static const String checkSound = 'assets/sound_effects/check.mp3';
   static const String dealSound = 'assets/sound_effects/deal.mp3';
-  static const String newHandSound = 'assets/sound_effects/new_hand.wav';
+  static const String newHandSound = 'assets/sound_effects/new_hand.mp3';
   static const String playerTurnSound = 'assets/sound_effects/player_turn.mp3';
 
   static const List<String> soundEffects = [
@@ -21,5 +21,4 @@ class AppAssets {
     newHandSound,
     playerTurnSound,
   ];
-
 }
