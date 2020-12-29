@@ -87,7 +87,12 @@ class ClubMembersView extends StatelessWidget {
         body: Container(
           color: AppColors.screenBackgroundColor,
           child: Center(
-            child: Text("Members Screen"),
+            child: ListView.builder(
+              itemCount: _membersList.length,
+              itemBuilder: (context, index) {
+                return Text("Member Item");
+              },
+            ),
           ),
         ),
       );
