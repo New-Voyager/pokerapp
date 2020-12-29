@@ -1,8 +1,11 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/club_member_status.dart';
 import 'package:pokerapp/models/club_members_model.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/resources/app_icons.dart';
 
 import 'club_members_list_view.dart';
 
@@ -56,10 +59,10 @@ class ClubMembersView extends StatelessWidget {
           ),
           body: TabBarView(
             children: [
-              ClubMembersListView(ClubMemberStatus.ALL),
-              ClubMembersListView(ClubMemberStatus.UNSETTLED),
-              ClubMembersListView(ClubMemberStatus.MANAGERS),
-              ClubMembersListView(ClubMemberStatus.INACTIVE),
+              ClubMembersListView(_membersList, ClubMemberStatus.ALL),
+              ClubMembersListView(_membersList, ClubMemberStatus.UNSETTLED),
+              ClubMembersListView(_membersList, ClubMemberStatus.MANAGERS),
+              ClubMembersListView(_membersList, ClubMemberStatus.INACTIVE),
             ],
           ),
         ),
@@ -86,11 +89,51 @@ class ClubMembersView extends StatelessWidget {
         ),
         body: Container(
           color: AppColors.screenBackgroundColor,
-          child: Center(
-            child: ListView.builder(
+          child: Container(
+            margin: EdgeInsets.all(15),
+            child: ListView.separated(
               itemCount: _membersList.length,
               itemBuilder: (context, index) {
-                return Text("Member Item");
+                return Container(
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                        flex: 2,
+                        child: CircleAvatar(
+                          radius: 30,
+                          backgroundColor: Color(
+                                  (math.Random().nextDouble() * 0xFFFFFF)
+                                      .toInt())
+                              .withOpacity(1.0),
+                          child: ClipOval(
+                            child: _membersList[index].imageUrl == null
+                                ? Icon(AppIcons.user)
+                                : Image.network(
+                                    _membersList[index].imageUrl,
+                                  ),
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        flex: 8,
+                        child: Text(
+                          _membersList[index].name,
+                          textAlign: TextAlign.left,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 17,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+              separatorBuilder: (context, index) {
+                return new Divider(
+                  color: AppColors.listViewDividerColor,
+                );
               },
             ),
           ),

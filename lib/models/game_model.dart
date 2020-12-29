@@ -45,9 +45,8 @@ class GameModel {
     this.tableCount = jsonData["tableCount"] == null
         ? 0
         : int.parse(jsonData['tableCount'].toString());
-    this.isTableFull = jsonData["tableFull"] == null
-        ? false
-        : jsonData['tableFull'];
+    this.isTableFull =
+        jsonData["tableFull"] == null ? false : jsonData['tableFull'];
     this.maxPlayers = jsonData["maxPlayers"] == null
         ? 0
         : int.parse(jsonData['maxPlayers'].toString());
@@ -78,6 +77,9 @@ class GameModel {
         break;
       case GameType.FIVE_CARD_PLO_HILO:
         gameTypeStr = '5 Card PLO HiLo';
+        break;
+      case GameType.UNKNOWN:
+        // TODO: Handle this case.
         break;
     }
 
