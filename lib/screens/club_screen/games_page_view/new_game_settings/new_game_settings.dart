@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:pokerapp/models/game/new_game_provider.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/screens/club_screen/games_page_view/new_game_settings/game_timing_settings/action_time_select.dart';
@@ -130,9 +131,6 @@ class NewGameSettings extends StatelessWidget {
           builder: (context, data, child) => Column(
             children: [
               ListTile(
-                leading: CircleAvatar(
-                  backgroundColor: Color(0xff319ffe),
-                ),
                 title: Text(
                   "BOT players",
                   style: TextStyle(color: Colors.white),
@@ -147,9 +145,6 @@ class NewGameSettings extends StatelessWidget {
                 color: Color(0xff707070),
               ),
               ListTile(
-                leading: CircleAvatar(
-                  backgroundColor: Color(0xff319ffe),
-                ),
                 title: Text(
                   "Location Check",
                   style: TextStyle(color: Colors.white),
@@ -164,9 +159,6 @@ class NewGameSettings extends StatelessWidget {
                 color: Color(0xff707070),
               ),
               ListTile(
-                leading: CircleAvatar(
-                  backgroundColor: Color(0xff319ffe),
-                ),
                 title: Text(
                   "WaitList",
                   style: TextStyle(color: Colors.white),
@@ -181,9 +173,6 @@ class NewGameSettings extends StatelessWidget {
                 color: Color(0xff707070),
               ),
               ListTile(
-                leading: CircleAvatar(
-                  backgroundColor: Color(0xff319ffe),
-                ),
                 title: Text(
                   "Don't Show Losing Hand",
                   style: TextStyle(color: Colors.white),
@@ -198,9 +187,6 @@ class NewGameSettings extends StatelessWidget {
                 color: Color(0xff707070),
               ),
               ListTile(
-                leading: CircleAvatar(
-                  backgroundColor: Color(0xff319ffe),
-                ),
                 title: Text(
                   "Run it Twice",
                   style: TextStyle(color: Colors.white),
@@ -231,7 +217,10 @@ class NewGameSettings extends StatelessWidget {
             children: [
               ListTile(
                 leading: CircleAvatar(
-                  backgroundColor: Color(0xff319ffe),
+                  child: SvgPicture.asset(
+                      'assets/images/gamesettings/clock.svg',
+                      color: Colors.white),
+                  backgroundColor: Color(0xffef9712),
                 ),
                 title: Text(
                   "Game Length",
@@ -272,6 +261,8 @@ class NewGameSettings extends StatelessWidget {
               ),
               ListTile(
                 leading: CircleAvatar(
+                  child: SvgPicture.asset('assets/images/gamesettings/card.svg',
+                      color: Colors.white),
                   backgroundColor: Color(0xff319ffe),
                 ),
                 title: Text(
@@ -327,6 +318,9 @@ class NewGameSettings extends StatelessWidget {
             children: [
               ListTile(
                 leading: CircleAvatar(
+                  child: SvgPicture.asset(
+                      'assets/images/gamesettings/casino.svg',
+                      color: Colors.white),
                   backgroundColor: Color(0xff319ffe),
                 ),
                 title: Text(
@@ -357,7 +351,10 @@ class NewGameSettings extends StatelessWidget {
               ),
               ListTile(
                 leading: CircleAvatar(
-                  backgroundColor: Color(0xff319ffe),
+                  child: SvgPicture.asset(
+                      'assets/images/gamesettings/bigblind.svg',
+                      color: Colors.white),
+                  backgroundColor: Color(0xffef9712),
                 ),
                 title: Text(
                   "Blinds",
@@ -410,7 +407,10 @@ class NewGameSettings extends StatelessWidget {
               ),
               ListTile(
                 leading: CircleAvatar(
-                  backgroundColor: Color(0xff319ffe),
+                  child: SvgPicture.asset(
+                      'assets/images/gamesettings/gambling.svg',
+                      color: Colors.white),
+                  backgroundColor: Color(0xfff27865),
                 ),
                 title: Text(
                   "Buy In",
@@ -451,7 +451,10 @@ class NewGameSettings extends StatelessWidget {
               ),
               ListTile(
                 leading: CircleAvatar(
-                  backgroundColor: Color(0xff319ffe),
+                  child: SvgPicture.asset(
+                      'assets/images/gamesettings/group.svg',
+                      color: Colors.white),
+                  backgroundColor: Color(0xff3ec506),
                 ),
                 title: Text(
                   "Max Players",
@@ -492,7 +495,13 @@ class NewGameSettings extends StatelessWidget {
               ),
               ListTile(
                 leading: CircleAvatar(
-                  backgroundColor: Color(0xff319ffe),
+                  child: SvgPicture.asset(
+                    'assets/images/gamesettings/coin-stack.svg',
+                    color: Colors.white,
+                    height: 25.0,
+                    width: 25.0,
+                  ),
+                  backgroundColor: Color(0xff15dcc1),
                 ),
                 title: Text(
                   "Club Tips",
@@ -536,7 +545,9 @@ class NewGameSettings extends StatelessWidget {
               ),
               ListTile(
                 leading: CircleAvatar(
-                  backgroundColor: Color(0xff319ffe),
+                  child: SvgPicture.asset('assets/images/gamesettings/coin.svg',
+                      color: Colors.white),
+                  backgroundColor: Color(0xffef1212),
                 ),
                 title: Text(
                   "Straddle(UTG)",

@@ -67,6 +67,7 @@ flutter:
    - assets/images/card_back/set1/
    - assets/images/card_back/set2/
    - assets/sound_effects/
+   - assets/images/gamesettings/
 
   fonts:
    - family: Lato
