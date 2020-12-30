@@ -5,6 +5,7 @@ import 'package:pokerapp/enums/club_member_status.dart';
 import 'package:pokerapp/models/club_members_model.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_icons.dart';
 
 import 'club_members_list_view.dart';
@@ -24,12 +25,19 @@ class ClubMembersView extends StatelessWidget {
           backgroundColor: AppColors.screenBackgroundColor,
           appBar: AppBar(
             leading: IconButton(
-              icon: Icon(Icons.arrow_back_ios, color: Colors.white),
+              icon: Icon(
+                Icons.arrow_back_ios,
+                size: 14,
+                color: AppColors.appAccentColor,
+              ),
               onPressed: () => Navigator.of(context).pop(),
             ),
+            titleSpacing: 0,
             elevation: 0.0,
             backgroundColor: AppColors.screenBackgroundColor,
             bottom: TabBar(
+              labelColor: AppColors.appAccentColor,
+              unselectedLabelColor: Colors.white,
               isScrollable: true,
               tabs: [
                 Tab(
@@ -50,8 +58,8 @@ class ClubMembersView extends StatelessWidget {
               "Boston University Poker Club",
               textAlign: TextAlign.left,
               style: TextStyle(
-                color: Colors.white,
-                fontSize: 24.0,
+                color: AppColors.appAccentColor,
+                fontSize: 14.0,
                 fontFamily: AppAssets.fontFamilyLato,
                 fontWeight: FontWeight.w600,
               ),
@@ -71,17 +79,22 @@ class ClubMembersView extends StatelessWidget {
       return Scaffold(
         appBar: AppBar(
           leading: IconButton(
-            icon: Icon(Icons.arrow_back_ios, color: Colors.white),
+            icon: Icon(
+              Icons.arrow_back_ios,
+              size: 14.0,
+              color: AppColors.appAccentColor,
+            ),
             onPressed: () => Navigator.of(context).pop(),
           ),
+          titleSpacing: 0,
           elevation: 0.0,
           backgroundColor: AppColors.screenBackgroundColor,
           title: Text(
             "Boston University Poker Club",
             textAlign: TextAlign.left,
             style: TextStyle(
-              color: Colors.white,
-              fontSize: 24.0,
+              color: AppColors.appAccentColor,
+              fontSize: 14.0,
               fontFamily: AppAssets.fontFamilyLato,
               fontWeight: FontWeight.w600,
             ),
@@ -95,7 +108,9 @@ class ClubMembersView extends StatelessWidget {
               itemCount: _membersList.length,
               itemBuilder: (context, index) {
                 return Container(
+                  margin: EdgeInsets.all(10),
                   child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Expanded(
                         flex: 2,
@@ -116,13 +131,22 @@ class ClubMembersView extends StatelessWidget {
                       ),
                       Expanded(
                         flex: 8,
-                        child: Text(
-                          _membersList[index].name,
-                          textAlign: TextAlign.left,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 17,
-                            fontWeight: FontWeight.w600,
+                        child: Container(
+                          margin: EdgeInsets.all(5),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Text(
+                                _membersList[index].name,
+                                textAlign: TextAlign.left,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
@@ -131,7 +155,7 @@ class ClubMembersView extends StatelessWidget {
                 );
               },
               separatorBuilder: (context, index) {
-                return new Divider(
+                return Divider(
                   color: AppColors.listViewDividerColor,
                 );
               },

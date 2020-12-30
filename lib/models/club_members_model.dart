@@ -28,7 +28,9 @@ class ClubMembersModel {
       this.rake,
       this.lastPlayedDate,
       this.balance,
-      this.imageUrl);
+      this.imageUrl,
+      this.isOwner,
+      this.isManager);
 
   /*
 
