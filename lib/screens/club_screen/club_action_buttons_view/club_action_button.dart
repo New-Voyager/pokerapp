@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/club_actions.dart';
+import 'package:pokerapp/enums/club_member_status.dart';
 import 'package:pokerapp/models/club_homepage_model.dart';
+import 'package:pokerapp/models/club_members_model.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/screens/club_screen/club_action_screens/club_members_view.dart';
@@ -20,6 +22,63 @@ class ClubActionButton extends StatelessWidget {
   );
   @override
   Widget build(BuildContext context) {
+    List<ClubMembersModel> _sampleList = new List<ClubMembersModel>();
+    _sampleList.add(new ClubMembersModel(
+        ClubMemberStatus.ACTIVE,
+        "Niveda",
+        "+91",
+        "345-657-9786",
+        "23303",
+        "-2020",
+        "500",
+        new DateTime.now(),
+        "0",
+        null));
+    _sampleList.add(new ClubMembersModel(
+        ClubMemberStatus.INACTIVE,
+        "Soma",
+        "+1",
+        "678-345-0098",
+        "54678",
+        "5600",
+        "235",
+        new DateTime.now(),
+        "230",
+        "https://www.bsn.eu/wp-content/uploads/2016/12/user-icon-image-placeholder.jpg"));
+    _sampleList.add(new ClubMembersModel(
+        ClubMemberStatus.MANAGERS,
+        "Jyoti Paul",
+        "+91",
+        "878-006-4567",
+        "12345",
+        "789",
+        "346",
+        new DateTime.now(),
+        "-100",
+        "https://www.bsn.eu/wp-content/uploads/2016/12/user-icon-image-placeholder.jpg"));
+    _sampleList.add(new ClubMembersModel(
+        ClubMemberStatus.UNSETTLED,
+        "Yong",
+        "+1",
+        "355-897-1257",
+        "34532",
+        "900",
+        "-200",
+        new DateTime.now(),
+        "230",
+        null));
+    _sampleList.add(new ClubMembersModel(
+        ClubMemberStatus.PENDING,
+        "Akash",
+        "+91",
+        "908-345-2345",
+        "7685",
+        "1000",
+        "0",
+        new DateTime.now(),
+        "80",
+        "https://www.bsn.eu/wp-content/uploads/2016/12/user-icon-image-placeholder.jpg"));
+
     return Consumer<ClubHomePageModel>(
       builder: (_, ClubHomePageModel clubModel, __) => GestureDetector(
         onTap: () {
@@ -31,7 +90,7 @@ class ClubActionButton extends StatelessWidget {
               return Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => ClubMembersView(false, new List())),
+                    builder: (context) => ClubMembersView(true, _sampleList)),
               );
 
             case ClubActions.CHAT:

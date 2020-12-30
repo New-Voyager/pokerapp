@@ -3,6 +3,7 @@ import 'package:pokerapp/enums/club_member_status.dart';
 class ClubMembersModel {
   String name;
   DateTime joinedDate;
+  DateTime lastPlayedDate;
   ClubMemberStatus status;
   String lastGamePlayedDate;
   String imageId;
@@ -13,6 +14,21 @@ class ClubMembersModel {
   String contactNumber;
   String balance;
   String imageUrl;
+  String buyIn;
+  String profit;
+  String rake;
+
+  ClubMembersModel(
+      this.status,
+      this.name,
+      this.countryCode,
+      this.contactNumber,
+      this.buyIn,
+      this.profit,
+      this.rake,
+      this.lastPlayedDate,
+      this.balance,
+      this.imageUrl);
 
   /*
 

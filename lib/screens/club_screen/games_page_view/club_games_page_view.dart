@@ -15,7 +15,9 @@ class ClubGamesPageView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "Live Games",
+                clubModel.liveGames.length == 0
+                    ? "No Live Games"
+                    : "Live Games",
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 18.0,
