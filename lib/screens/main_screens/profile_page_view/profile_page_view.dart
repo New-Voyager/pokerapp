@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/screens/auth_screens/login_screen.dart';
+import 'package:pokerapp/screens/club_screen/games_page_view/high_history/high_history.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
 
 class ProfilePageView extends StatefulWidget {

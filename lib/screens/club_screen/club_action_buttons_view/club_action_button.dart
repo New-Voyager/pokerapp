@@ -7,6 +7,7 @@ import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/screens/club_screen/club_action_screens/club_members_view.dart';
 import 'package:pokerapp/screens/club_screen/games_page_view/high_hand/high_hand.dart';
+import 'package:pokerapp/screens/club_screen/games_page_view/high_history/high_history.dart';
 import 'package:pokerapp/screens/club_screen/messages_page_view/messages_page_view.dart';
 import 'package:provider/provider.dart';
 
@@ -103,8 +104,6 @@ class ClubActionButton extends StatelessWidget {
               );
             case ClubActions.BOOKMARKED_HANDS:
               // TODO: Temporary place to show high hand.
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => HighHand()));
               // TODO: Handle this case.
               break;
             case ClubActions.ANALYSIS:

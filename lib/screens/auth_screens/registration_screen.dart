@@ -97,12 +97,11 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
     _toggleLoading();
 
-    if (status)
+    if (status) {
       Alerts.showSnackBar(ctx, 'Registered as guest');
-    else
+      _move();
+    } else
       Alerts.showSnackBar(ctx, 'Something went wrong');
-
-    _move();
   }
 
   @override
