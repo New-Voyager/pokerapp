@@ -1,8 +1,10 @@
 class AppConstants {
   AppConstants._();
 
-  static const String NATS_URL = 'NATS_URL';
   static const String API_SERVER_URL = 'API_SERVER_URL';
+
+  // DO URLs
+  static const String DO_API_URL = 'https://api.pokerapp.club/graphql';
 
   static const int buyInTimeOutSeconds = 100;
 

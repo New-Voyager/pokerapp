@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:math';
 
 import 'package:flutter_udid/flutter_udid.dart';
 import 'package:http/http.dart' as http;
@@ -87,6 +88,32 @@ class AuthService {
     return res['status'];
   }
 
+  static Future<String> getNatsURL() async {
+    String apiServerUrl = (await SharedPreferences.getInstance())
+        .getString(AppConstants.API_SERVER_URL);
+
+    // if API server URL is not https://, then we are running in dev/docker environment
+    // use API server hostname for NATS host
+    if (apiServerUrl.contains('http://')) {
+      String natsUrl = apiServerUrl
+          .replaceFirst('http://', 'nats://')
+          .replaceFirst(':9501', '');
+      return natsUrl;
+    }
+
+    http.Response response = await http.get('$apiServerUrl/nats-urls');
+
+    String resBody = response.body;
+
+    if (response.statusCode != 200)
+      throw new Exception('Failed to get NATS urls');
+
+    // take one of the urls
+    List<String> urls = jsonDecode(resBody)['urls'].toString().split(',');
+    int i = (new Random()).nextInt(urls.length);
+    return urls[i];
+  }
+
   static Future<Map<String, dynamic>> login(AuthModel authModel) async {
     Map<String, String> header = {
       'Content-type': 'application/json',
@@ -131,7 +158,7 @@ class AuthService {
         .getString(AppConstants.API_SERVER_URL);
 
     http.Response response = await http.post(
-      'http://$apiServerUrl:9501/auth/login',
+      '$apiServerUrl/auth/login',
       headers: header,
       body: body,
     );
