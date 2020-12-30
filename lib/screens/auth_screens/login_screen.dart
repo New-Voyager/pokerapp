@@ -105,6 +105,14 @@ class _LoginScreenState extends State<LoginScreen> {
     nats = sharedPreferences.getString(AppConstants.NATS_URL);
     apiServer = sharedPreferences.getString(AppConstants.API_SERVER_URL);
 
+    if (nats == null) {
+      nats = AppConstants.DO_NATS_URL;
+    }
+
+    if (apiServer == null) {
+      apiServer = AppConstants.DO_API_URL;
+    }
+
     if (mounted) setState(() {});
   }
 
