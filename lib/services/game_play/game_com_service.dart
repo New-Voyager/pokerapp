@@ -4,6 +4,7 @@ import 'package:dart_nats/dart_nats.dart';
 import 'package:flutter/foundation.dart';
 import 'package:pokerapp/resources/app_apis.dart';
 import 'package:pokerapp/resources/app_constants.dart';
+import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class GameComService {
@@ -33,9 +34,14 @@ class GameComService {
 
   Future<void> init() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    await _client.connect(sharedPreferences.getString(AppConstants.NATS_URL));
-    await _clientPub
-        .connect(sharedPreferences.getString(AppConstants.NATS_URL));
+
+    String natsUrl = await AuthService.getNatsURL();
+    // chop the scheme and port number
+    natsUrl = natsUrl.replaceFirst('nats://', '')
+              .replaceFirst('tls://', '')
+              .replaceFirst(':4222', '');
+    await _client.connect(natsUrl);
+    await _clientPub.connect(natsUrl);
 
     // subscribe
     log('subscribing to ${this.gameToPlayerChannel}');

@@ -10,7 +10,8 @@ class GraphQLConfiguration {
 
   Future<void> init() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    this.apiURL = sharedPreferences.getString(AppConstants.API_SERVER_URL);
+    String apiUrl = sharedPreferences.getString(AppConstants.API_SERVER_URL);
+    this.apiURL = '$apiUrl/graphql';
     print(apiURL);
   }
 
@@ -31,7 +32,7 @@ class GraphQLConfiguration {
 
   GraphQLClient clientToQuery({bool noAuthLink = false}) {
     final HttpLink hl = HttpLink(
-      uri: 'http://$apiURL:9501/graphql',
+      uri: apiURL,
     );
 
     return GraphQLClient(
