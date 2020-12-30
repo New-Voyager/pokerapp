@@ -92,6 +92,14 @@ class AuthService {
     String apiServerUrl = (await SharedPreferences.getInstance())
         .getString(AppConstants.API_SERVER_URL);
 
+    // if API server URL is not https://, then we are running in dev/docker environment
+    // use API server hostname for NATS host
+    if (apiServerUrl.contains('http://')) {
+      String natsUrl = apiServerUrl.replaceFirst('http://', 'nats://')
+                            .replaceFirst(':9501', '');
+      return natsUrl;
+    }
+
     http.Response response = await http.get(
       '$apiServerUrl/nats-urls'
     );

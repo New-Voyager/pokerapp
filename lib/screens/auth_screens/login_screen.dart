@@ -23,17 +23,14 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  String nats;
   String apiServer;
 
   void setUrls(BuildContext ctx) async {
-    if ((nats == null || nats.isEmpty) ||
-        (apiServer == null || apiServer.isEmpty))
-      return Alerts.showSnackBar(ctx, 'Nats and API urls are needed');
+    if ((apiServer == null || apiServer.isEmpty))
+      return Alerts.showSnackBar(ctx, 'API url is needed');
 
     // FIRST SET THE URLS
     await AppHostUrls.save(
-      nats: nats,
       apiServer: apiServer,
     );
 
@@ -41,7 +38,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     if (mounted) setState(() {});
 
-    Alerts.showSnackBar(ctx, 'Nats and API urls SET');
+    Alerts.showSnackBar(ctx, 'API url is SET');
   }
 
   Widget _buildHostUrlWidget(BuildContext ctx) => Column(
@@ -52,11 +49,6 @@ class _LoginScreenState extends State<LoginScreen> {
             onChanged: (String newValue) => apiServer = newValue.trim(),
           ),
           const SizedBox(height: 10),
-          CardFormTextField(
-            hintText: 'NATS SERVER ($nats)',
-            keyboardType: TextInputType.text,
-            onChanged: (String newValue) => nats = newValue.trim(),
-          ),
           const SizedBox(height: 10),
           RoundRaisedButton(
             buttonText: 'SET',
@@ -102,12 +94,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void fetchUrls() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    nats = sharedPreferences.getString(AppConstants.NATS_URL);
     apiServer = sharedPreferences.getString(AppConstants.API_SERVER_URL);
-
-    if (nats == null) {
-      nats = AppConstants.DO_NATS_URL;
-    }
 
     if (apiServer == null) {
       apiServer = AppConstants.DO_API_URL;

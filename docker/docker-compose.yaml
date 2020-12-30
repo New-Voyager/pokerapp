@@ -11,7 +11,6 @@ services:
       - nats
       - api-server
     environment:
-      NATS_URL: nats://nats:4222
       PERSIST_METHOD: redis
       REDIS_HOST: redis
       REDIS_PORT: 6379
@@ -49,6 +48,7 @@ services:
       - "-c"
       - "sleep 5 && yarn run-docker"
     environment:
+      NATS_URL: nats://nats:4222
       BOTRUNNER_URL: http://botrunner:8081
 
   postgres:
@@ -72,7 +72,6 @@ services:
       - api-server
     environment:
       API_SERVER_URL: http://api-server:9501
-      NATS_URL: nats://nats:4222
       PERSIST_METHOD: redis
       REDIS_HOST: redis
       REDIS_PORT: 6379
