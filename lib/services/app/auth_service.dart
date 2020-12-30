@@ -95,20 +95,19 @@ class AuthService {
     // if API server URL is not https://, then we are running in dev/docker environment
     // use API server hostname for NATS host
     if (apiServerUrl.contains('http://')) {
-      String natsUrl = apiServerUrl.replaceFirst('http://', 'nats://')
-                            .replaceFirst(':9501', '');
+      String natsUrl = apiServerUrl
+          .replaceFirst('http://', 'nats://')
+          .replaceFirst(':9501', '');
       return natsUrl;
     }
 
-    http.Response response = await http.get(
-      '$apiServerUrl/nats-urls'
-    );
+    http.Response response = await http.get('$apiServerUrl/nats-urls');
 
     String resBody = response.body;
 
     if (response.statusCode != 200)
       throw new Exception('Failed to get NATS urls');
-    
+
     // take one of the urls
     List<String> urls = jsonDecode(resBody)['urls'].toString().split(',');
     int i = (new Random()).nextInt(urls.length);
