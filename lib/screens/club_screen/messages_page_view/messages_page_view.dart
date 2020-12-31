@@ -66,7 +66,7 @@ class _MessagesPageViewState extends State<MessagesPageView> {
   }
 
   _fetchMembers() async {
-    List<ClubMembersModel> _clubMembers =
+    List<ClubMemberModel> _clubMembers =
         await ClubInteriorService.getMembers(widget.clubCode);
 
     _players = Map<String, String>();

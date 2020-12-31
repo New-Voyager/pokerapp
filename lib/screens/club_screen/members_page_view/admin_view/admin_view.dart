@@ -11,13 +11,13 @@ enum MemberStatus {
 }
 
 class AdminView extends StatelessWidget {
-  final List<ClubMembersModel> clubMembers;
+  final List<ClubMemberModel> clubMembers;
 
   AdminView({
     @required this.clubMembers,
   });
 
-  Widget _buildWidgetList(List<ClubMembersModel> members) {
+  Widget _buildWidgetList(List<ClubMemberModel> members) {
     if (members.isEmpty)
       return Center(
         child: const Text(

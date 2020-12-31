@@ -18,7 +18,7 @@ class _MembersPageViewState extends State<MembersPageView> {
 
   bool _showLoading = false;
 
-  List<ClubMembersModel> _clubMembers;
+  List<ClubMemberModel> _clubMembers;
 
   _toggleLoading() => setState(() {
         _showLoading = !_showLoading;
