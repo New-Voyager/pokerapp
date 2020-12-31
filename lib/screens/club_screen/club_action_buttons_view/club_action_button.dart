@@ -15,80 +15,18 @@ class ClubActionButton extends StatelessWidget {
   final ClubActions _action;
   final String _actionName;
   final Icon _actionIcon;
+  final ClubHomePageModel _clubModel;
 
   ClubActionButton(
+    this._clubModel,
     this._action,
     this._actionName,
     this._actionIcon,
   );
   @override
   Widget build(BuildContext context) {
-    List<ClubMembersModel> _sampleList = new List<ClubMembersModel>();
-    _sampleList.add(new ClubMembersModel(
-        ClubMemberStatus.ACTIVE,
-        "Niveda",
-        "+91",
-        "345-657-9786",
-        "23303",
-        "-2020",
-        "500",
-        new DateTime.now(),
-        "0",
-        null,
-        false,
-        false));
-    _sampleList.add(new ClubMembersModel(
-        ClubMemberStatus.INACTIVE,
-        "Soma",
-        "+1",
-        "678-345-0098",
-        "54678",
-        "5600",
-        "235",
-        new DateTime.now(),
-        "230",
-        "https://www.bsn.eu/wp-content/uploads/2016/12/user-icon-image-placeholder.jpg",
-        false,
-        true));
-    _sampleList.add(new ClubMembersModel(
-        ClubMemberStatus.MANAGERS,
-        "Jyoti Paul",
-        "+91",
-        "878-006-4567",
-        "12345",
-        "789",
-        "346",
-        new DateTime.now(),
-        "-100",
-        "https://www.bsn.eu/wp-content/uploads/2016/12/user-icon-image-placeholder.jpg",
-        true,
-        false));
-    _sampleList.add(new ClubMembersModel(
-        ClubMemberStatus.UNSETTLED,
-        "Yong",
-        "+1",
-        "355-897-1257",
-        "34532",
-        "900",
-        "-200",
-        new DateTime.now(),
-        "230",
-        null,
-        false,
-        false));
-    _sampleList.add(new ClubMembersModel(
-        ClubMemberStatus.PENDING,
-        "Akash",
-        "+91",
-        "908-345-2345",
-        "7685",
-        "1000",
-        "0",
-        new DateTime.now(),
-        "80",
-        "https://www.bsn.eu/wp-content/uploads/2016/12/user-icon-image-placeholder.jpg",
-        false,
-        false));
+    List<ClubMemberModel> _sampleList = new List<ClubMemberModel>();
+
 
     return Consumer<ClubHomePageModel>(
       builder: (_, ClubHomePageModel clubModel, __) => GestureDetector(
@@ -101,7 +39,7 @@ class ClubActionButton extends StatelessWidget {
               return Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => ClubMembersView(true, _sampleList)),
+                    builder: (context) => ClubMembersView(this._clubModel)),
               );
 
             case ClubActions.CHAT:

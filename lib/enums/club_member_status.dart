@@ -6,9 +6,4 @@ enum ClubMemberStatus {
   ACTIVE,
   LEFT,
   KICKEDOUT,
-  ALL,
-  INACTIVE,
-  UNSETTLED,
-  OUTSTANDING,
-  MANAGERS,
 }

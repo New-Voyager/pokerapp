@@ -12,7 +12,7 @@ class AppColors {
 
   static const Color contentColor = Color(0xff848484);
 
-  static const Color negativeColor = Color(0xffef1212);
+  static const Color negativeColor = Color(0xffff1212);
   static const Color positiveColor = Color(0xff1aff22);
 
   static const Color chatMeColor = Color(0xff575757);

@@ -8,13 +8,17 @@ import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_icons.dart';
 
-class ClubMembersListView extends StatelessWidget {
-  final ClubMemberStatus _membersStatus;
-  final List<ClubMembersModel> _membersList;
 
-  ClubMembersListView(this._membersList, this._membersStatus);
+class ClubMembersListView extends StatelessWidget {
+  final List<ClubMemberModel> _membersList;
+
+  ClubMembersListView(this._membersList);
 
   Color getTextColor(String number) {
+    if (number == null || number == '') {
+      return Colors.white;
+    }
+
     return int.parse(number) == 0
         ? Colors.white
         : int.parse(number) > 0
@@ -24,13 +28,9 @@ class ClubMembersListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<ClubMembersModel> _filteredList;
-    if (_membersStatus == ClubMemberStatus.ALL) {
-      _filteredList = _membersList;
-    } else {
-      _filteredList =
-          _membersList.where((i) => i.status == _membersStatus).toList();
-    }
+    List<ClubMemberModel> _filteredList;
+    _filteredList = _membersList;
+
     return Container(
       margin: EdgeInsets.all(15),
       child: ListView.separated(
@@ -75,19 +75,15 @@ class ClubMembersListView extends StatelessWidget {
                                   style: TextStyle(
                                     fontFamily: AppAssets.fontFamilyLato,
                                     color: Colors.white,
-                                    fontSize: 17,
-                                    fontWeight: FontWeight.w500,
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
                               ),
                               Expanded(
                                 flex: 1,
                                 child: Text(
-                                  "(" +
-                                      _filteredList[index].countryCode +
-                                      " " +
-                                      _filteredList[index].contactNumber +
-                                      ")",
+                                  _filteredList[index].contactInfo,
                                   textAlign: TextAlign.left,
                                   style: TextStyle(
                                     fontFamily: AppAssets.fontFamilyLato,
@@ -100,104 +96,104 @@ class ClubMembersListView extends StatelessWidget {
                             ],
                           ),
                         ),
-                        Visibility(
-                          visible: _filteredList[index].status !=
-                              ClubMemberStatus.PENDING,
-                          child: Padding(
-                            padding: EdgeInsets.only(top: 5, bottom: 5),
-                            child: Row(
-                              children: <Widget>[
-                                Expanded(
-                                  flex: 3,
-                                  child: Column(
-                                    children: [
-                                      Text(
-                                        "Buy In : ",
-                                        textAlign: TextAlign.left,
-                                        style: TextStyle(
-                                          fontFamily: AppAssets.fontFamilyLato,
-                                          color: Colors.white,
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w400,
-                                        ),
-                                      ),
-                                      Text(
-                                        _filteredList[index].buyIn,
-                                        textAlign: TextAlign.left,
-                                        style: TextStyle(
-                                          fontFamily: AppAssets.fontFamilyLato,
-                                          color: getTextColor(
-                                            _filteredList[index].buyIn,
-                                          ),
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w400,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Expanded(
-                                  flex: 4,
-                                  child: Column(
-                                    children: [
-                                      Text(
-                                        "Profit : ",
-                                        textAlign: TextAlign.left,
-                                        style: TextStyle(
-                                          fontFamily: AppAssets.fontFamilyLato,
-                                          color: Colors.white,
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w400,
-                                        ),
-                                      ),
-                                      Text(
-                                        _filteredList[index].profit,
-                                        textAlign: TextAlign.left,
-                                        style: TextStyle(
-                                          fontFamily: AppAssets.fontFamilyLato,
-                                          color: getTextColor(
-                                            _filteredList[index].profit,
-                                          ),
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w400,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Expanded(
-                                  flex: 3,
-                                  child: Column(
-                                    children: [
-                                      Text(
-                                        "Rake : ",
-                                        textAlign: TextAlign.left,
-                                        style: TextStyle(
-                                          fontFamily: AppAssets.fontFamilyLato,
-                                          color: Colors.white,
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w400,
-                                        ),
-                                      ),
-                                      Text(
-                                        _filteredList[index].rake,
-                                        textAlign: TextAlign.left,
-                                        style: TextStyle(
-                                          fontFamily: AppAssets.fontFamilyLato,
-                                          color: getTextColor(
-                                            _filteredList[index].rake,
-                                          ),
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w400,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
+                        // Visibility(
+                        //   visible: _filteredList[index].status !=
+                        //       ClubMemberStatus.PENDING,
+                        //   child: Padding(
+                        //     padding: EdgeInsets.only(top: 5, bottom: 5),
+                        //     child: Row(
+                        //       children: <Widget>[
+                        //         Expanded(
+                        //           flex: 3,
+                        //           child: Column(
+                        //             children: [
+                        //               Text(
+                        //                 "Buy In : ",
+                        //                 textAlign: TextAlign.left,
+                        //                 style: TextStyle(
+                        //                   fontFamily: AppAssets.fontFamilyLato,
+                        //                   color: Colors.white,
+                        //                   fontSize: 12,
+                        //                   fontWeight: FontWeight.w400,
+                        //                 ),
+                        //               ),
+                        //               Text(
+                        //                 _filteredList[index].buyIn ?? "",
+                        //                 textAlign: TextAlign.left,
+                        //                 style: TextStyle(
+                        //                   fontFamily: AppAssets.fontFamilyLato,
+                        //                   color: getTextColor(
+                        //                     _filteredList[index].buyIn,
+                        //                   ),
+                        //                   fontSize: 12,
+                        //                   fontWeight: FontWeight.w400,
+                        //                 ),
+                        //               ),
+                        //             ],
+                        //           ),
+                        //         ),
+                        //         Expanded(
+                        //           flex: 4,
+                        //           child: Column(
+                        //             children: [
+                        //               Text(
+                        //                 "Profit : ",
+                        //                 textAlign: TextAlign.left,
+                        //                 style: TextStyle(
+                        //                   fontFamily: AppAssets.fontFamilyLato,
+                        //                   color: Colors.white,
+                        //                   fontSize: 12,
+                        //                   fontWeight: FontWeight.w400,
+                        //                 ),
+                        //               ),
+                        //               Text(
+                        //                 _filteredList[index].profit ?? "",
+                        //                 textAlign: TextAlign.left,
+                        //                 style: TextStyle(
+                        //                   fontFamily: AppAssets.fontFamilyLato,
+                        //                   color: getTextColor(
+                        //                     _filteredList[index].profit,
+                        //                   ),
+                        //                   fontSize: 12,
+                        //                   fontWeight: FontWeight.w400,
+                        //                 ),
+                        //               ),
+                        //             ],
+                        //           ),
+                        //         ),
+                        //         Expanded(
+                        //           flex: 3,
+                        //           child: Column(
+                        //             children: [
+                        //               Text(
+                        //                 "Rake : ",
+                        //                 textAlign: TextAlign.left,
+                        //                 style: TextStyle(
+                        //                   fontFamily: AppAssets.fontFamilyLato,
+                        //                   color: Colors.white,
+                        //                   fontSize: 12,
+                        //                   fontWeight: FontWeight.w400,
+                        //                 ),
+                        //               ),
+                        //               Text(
+                        //                 _filteredList[index].rake ?? "",
+                        //                 textAlign: TextAlign.left,
+                        //                 style: TextStyle(
+                        //                   fontFamily: AppAssets.fontFamilyLato,
+                        //                   color: getTextColor(
+                        //                     _filteredList[index].rake,
+                        //                   ),
+                        //                   fontSize: 12,
+                        //                   fontWeight: FontWeight.w400,
+                        //                 ),
+                        //               ),
+                        //             ],
+                        //           ),
+                        //         ),
+                        //       ],
+                        //     ),
+                        //   ),
+                        // ),
                         Visibility(
                           visible: _filteredList[index].status !=
                               ClubMemberStatus.PENDING,
@@ -206,19 +202,7 @@ class ClubMembersListView extends StatelessWidget {
                             child: Row(
                               children: <Widget>[
                                 Text(
-                                  "Last Played : ",
-                                  textAlign: TextAlign.left,
-                                  style: TextStyle(
-                                    fontFamily: AppAssets.fontFamilyLato,
-                                    color: Colors.white,
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                ),
-                                Text(
-                                  DateFormat("MM/dd/yyyy").format(
-                                    _filteredList[index].lastPlayedDate,
-                                  ),
+                                  _filteredList[index].lastPlayedDate,
                                   textAlign: TextAlign.left,
                                   style: TextStyle(
                                     fontFamily: AppAssets.fontFamilyLato,
@@ -302,37 +286,14 @@ class ClubMembersListView extends StatelessWidget {
                         child: Column(
                           children: [
                             Text(
-                              "Balance",
-                              style: TextStyle(
-                                fontFamily: AppAssets.fontFamilyLato,
-                                color: Colors.white,
-                                fontSize: 17,
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
-                            Text(
                               _filteredList[index].balance,
                               style: TextStyle(
                                 fontFamily: AppAssets.fontFamilyLato,
                                 color: getTextColor(
                                   _filteredList[index].balance,
                                 ),
-                                fontSize: 14,
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
-                            GestureDetector(
-                              child: Padding(
-                                padding: EdgeInsets.only(top: 8, bottom: 8),
-                                child: Text(
-                                  "Boot",
-                                  style: TextStyle(
-                                    fontFamily: AppAssets.fontFamilyLato,
-                                    fontSize: 17,
-                                    fontWeight: FontWeight.w400,
-                                    color: AppColors.appAccentColor,
-                                  ),
-                                ),
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
                             Visibility(
