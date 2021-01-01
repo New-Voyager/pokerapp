@@ -73,6 +73,7 @@ class AppStyles {
     fontWeight: FontWeight.bold,
     fontFamily: AppAssets.fontFamilyLato,
   );
+
   static const sessionTimeTextStyle = TextStyle(
     color: Color(0xffffffff),
     fontSize: 14.0,
@@ -82,6 +83,12 @@ class AppStyles {
   static const blindsTextStyle = TextStyle(
     color: Color(0xffffff84),
     fontSize: 16.0,
+    fontFamily: AppAssets.fontFamilyLato,
+  );
+
+  static const gameCodeTextStyle = TextStyle(
+    color: Colors.white60,
+    fontSize: 10.0,
     fontFamily: AppAssets.fontFamilyLato,
   );
 

@@ -45,7 +45,7 @@ class GameHistoryItem extends StatelessWidget {
     var colRunTimeSeparator = SizedBox(width: 5.0);
 
     return Container(
-      height: 135.0,
+      height: 140.0,
       decoration: const BoxDecoration(
         color: AppColors.cardBackgroundColor,
         borderRadius: BorderRadius.all(
@@ -53,7 +53,9 @@ class GameHistoryItem extends StatelessWidget {
         ),
         boxShadow: AppStyles.cardBoxShadow,
       ),
-      child: Row(
+      child: Stack(
+        children: [
+          Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           /*
@@ -194,6 +196,24 @@ class GameHistoryItem extends StatelessWidget {
           ),
         ],
       ),
+        Visibility(
+          visible: item.gameNum != 0,
+          child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Text(
+                  item.gameCode,
+                  style: AppStyles.gameCodeTextStyle,
+                ),
+                colSeparator,
+                Text(
+                  '#' + item.gameNum.toString(),
+                  style: AppStyles.hostNameTextStyle,
+                ),
+              ]),
+        ),
+      ],
+    )
     );
   }
 }

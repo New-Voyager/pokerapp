@@ -37,6 +37,7 @@ class ClubInteriorService {
             gameHistory: clubGames(clubCode: \$clubCode) {
               gameType
               gameCode
+              gameNum
               startedBy
               startedAt
               endedBy
