@@ -125,4 +125,25 @@ class GameService {
     log('Gamecode: $gameCode status: $status');
     return status;
   }
+
+
+  /* this method joins the game at a particular seat number */
+  static Future<String> endGame(String gameCode) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+
+    String _mutation = """mutation (\$gameCode: String!) {  
+        endGame(gameCode: \$gameCode)
+    }""";
+    Map<String, dynamic> variables = {
+        "gameCode": gameCode,
+    };
+    QueryResult result = await _client.mutate(
+      MutationOptions(documentNode: gql(_mutation), variables: variables),
+    );
+
+    if (result.hasException) return null;
+
+    // FIXME: We need to get the proper return value
+    return "ended";
+  }
 }

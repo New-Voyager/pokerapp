@@ -6,6 +6,7 @@ import 'package:pokerapp/models/club_members_model.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/screens/club_screen/club_action_screens/club_members_view/club_members_view.dart';
+import 'package:pokerapp/screens/club_screen/game_history_view/game_history_view.dart';
 import 'package:pokerapp/screens/club_screen/games_page_view/high_hand/high_hand.dart';
 import 'package:pokerapp/screens/club_screen/games_page_view/high_history/high_history.dart';
 import 'package:pokerapp/screens/club_screen/messages_page_view/messages_page_view.dart';
@@ -33,6 +34,13 @@ class ClubActionButton extends StatelessWidget {
         onTap: () {
           switch (_action) {
             case ClubActions.GAME_HISTORY:
+              return Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) =>
+                      GameHistoryView(clubModel.clubCode),
+                ),
+              );
               break;
 
             case ClubActions.MEMBERS:

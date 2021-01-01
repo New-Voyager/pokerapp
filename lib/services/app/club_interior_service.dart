@@ -1,6 +1,7 @@
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/club_members_model.dart';
+import 'package:pokerapp/models/game_history_model.dart';
 
 enum MemberListOptions {
   ALL,
@@ -30,6 +31,27 @@ class ClubInteriorService {
           autoBuyinApproval
         }
       }""";
+
+    static String gameHistoryQuery = """
+          query (\$clubCode: String!) {
+            gameHistory: clubGames(clubCode: \$clubCode) {
+              gameType
+              gameCode
+              startedBy
+              startedAt
+              endedBy
+              endedAt
+              sessionTime
+              sessionTimeStr
+              handsPlayed
+              runTime
+              runTimeStr
+              smallBlind
+              bigBlind
+              balance
+            }
+          }    
+    """;
 
 
     static Future<List<ClubMemberModel>> getMembers(String clubCode) async {
@@ -84,4 +106,24 @@ class ClubInteriorService {
 
       return getMembersHelper(clubCode, filter);
     }
+
+  static Future<List<GameHistoryModel>> getGameHistory(String clubCode) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+    Map<String, dynamic> variables = {
+      "clubCode": clubCode,
+    };
+    QueryResult result = await _client.query(
+        QueryOptions(documentNode: gql(gameHistoryQuery), variables: variables)
+    );
+
+    if (result.hasException) return [];
+
+    final jsonResponse = result.data['gameHistory'];
+
+    return jsonResponse
+        .map<GameHistoryModel>(
+            (var item) => GameHistoryModel.fromJson(item))
+        .toList();
+  }
+
 }
