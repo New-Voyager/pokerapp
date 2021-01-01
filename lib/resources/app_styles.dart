@@ -73,7 +73,6 @@ class AppStyles {
     fontWeight: FontWeight.bold,
     fontFamily: AppAssets.fontFamilyLato,
   );
-
   static const sessionTimeTextStyle = TextStyle(
     color: Color(0xffffffff),
     fontSize: 14.0,
