@@ -34,7 +34,7 @@ class ClubInteriorService {
 
     static String gameHistoryQuery = """
           query (\$clubCode: String!) {
-            gameHistory: clubGames(clubCode: \$clubCode) {
+            gameHistory: clubGames(clubCode: \$clubCode, completedGames: true) {
               gameType
               gameCode
               gameNum
