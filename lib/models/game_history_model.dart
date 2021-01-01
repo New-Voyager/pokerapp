@@ -5,6 +5,7 @@ class GameHistoryModel {
   String gameTypeStr;
   String gameCode;
   double smallBlind;
+  int gameNum;
   double bigBlind;
   String startedBy;
   DateTime startedAt;
@@ -43,6 +44,9 @@ class GameHistoryModel {
     }
     if (jsonData["sessionTimeStr"] != null) {
       sessionTimeStr = jsonData["sessionTimeStr"].toString();
+    }
+    if (jsonData["gameNum"] != null) {
+      gameNum = int.parse(jsonData["gameNum"].toString());
     }
   }
 
