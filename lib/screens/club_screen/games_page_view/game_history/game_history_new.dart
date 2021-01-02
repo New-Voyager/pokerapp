@@ -52,6 +52,72 @@ class GameHistoryNew extends StatelessWidget {
                 ),
               ],
             ),
+            seprator,
+            highHandTile(),
+            seprator,
+            listTile(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget listTile() {
+    return Container(
+      decoration: BoxDecoration(
+        color: Color(0xff313235),
+        borderRadius: BorderRadius.all(
+          Radius.circular(AppDimensions.cardRadius),
+        ),
+      ),
+      child: Column(
+        children: [
+          ListTile(
+            leading: CircleAvatar(
+              backgroundColor: Colors.teal,
+            ),
+            title: Text(
+              "Hand History",
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+          Divider(
+            color: Colors.white,
+          ),
+          ListTile(
+            leading: CircleAvatar(
+              backgroundColor: Colors.teal,
+            ),
+            title: Text(
+              "Table Result",
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+          Divider(
+            color: Colors.white,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget highHandTile() {
+    return Container(
+      height: 60.0,
+      decoration: BoxDecoration(
+        color: Color(0xff313235),
+        borderRadius: BorderRadius.all(
+          Radius.circular(AppDimensions.cardRadius),
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          children: [
+            Text(
+              "High Hand is not tracked",
+              style: TextStyle(color: Colors.white),
+            ),
           ],
         ),
       ),
