@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
+import 'package:pokerapp/screens/game_play_screen/card_views/visible_card_view.dart';
 
 class GameHistoryNew extends StatelessWidget {
   final seprator = SizedBox(
@@ -16,46 +20,51 @@ class GameHistoryNew extends StatelessWidget {
         title: Text("Game History"),
         elevation: 0.0,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
+      body: SingleChildScrollView(
         child: Column(
           children: [
-            Row(
-              children: [
-                Flexible(
-                  flex: 7,
-                  child: gameTypeTile(),
-                ),
-                SizedBox(
-                  width: 5.0,
-                ),
-                Flexible(
-                  flex: 3,
-                  child: balanceTile(),
-                ),
-              ],
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  Flexible(
+                    flex: 7,
+                    child: gameTypeTile(),
+                  ),
+                  SizedBox(
+                    width: 5.0,
+                  ),
+                  Flexible(
+                    flex: 3,
+                    child: balanceTile(),
+                  ),
+                ],
+              ),
             ),
             seprator,
-            Row(
-              children: [
-                Flexible(
-                  flex: 4,
-                  child: stackTile(),
-                ),
-                Flexible(
-                  flex: 3,
-                  child: resultTile(),
-                ),
-                Flexible(
-                  flex: 3,
-                  child: actionTile(),
-                ),
-              ],
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  Flexible(
+                    flex: 4,
+                    child: stackTile(),
+                  ),
+                  Flexible(
+                    flex: 3,
+                    child: resultTile(),
+                  ),
+                  Flexible(
+                    flex: 3,
+                    child: actionTile(),
+                  ),
+                ],
+              ),
             ),
+            // seprator,
+            // highHandTile(),
             seprator,
-            highHandTile(),
-            seprator,
-            listTile(),
+            getLowerCard()
           ],
         ),
       ),
@@ -367,6 +376,220 @@ class GameHistoryNew extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  getCards() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        VisibleCardView(
+            card: CardObject(
+                suit: AppConstants.redHeart, label: "B", color: Colors.red)),
+        VisibleCardView(
+            card: CardObject(
+                suit: AppConstants.redHeart, label: "9", color: Colors.red)),
+        VisibleCardView(
+            card: CardObject(
+                suit: AppConstants.blackSpade,
+                label: "A",
+                color: Colors.black)),
+        VisibleCardView(
+            card: CardObject(
+                suit: AppConstants.blackSpade,
+                label: "J",
+                color: Colors.black)),
+        VisibleCardView(
+            card: CardObject(
+                suit: AppConstants.blackSpade,
+                label: "J",
+                color: Colors.black)),
+      ],
+    );
+  }
+
+  Widget getLowerCard() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Color(0xff313235),
+          borderRadius: BorderRadius.all(
+            Radius.circular(AppDimensions.cardRadius),
+          ),
+        ),
+        child: Column(
+          children: [
+            ListTile(
+                leading: CircleAvatar(
+                  child: SvgPicture.asset('assets/images/casino.svg',
+                      color: Colors.white),
+                  backgroundColor: Color(0xfffe5b31),
+                ),
+                title: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    seprator,
+                    Text(
+                      "High Hand Winners",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    seprator,
+                    Text(
+                      "Reward: 100",
+                      style: TextStyle(color: Color(0xff848484)),
+                    ),
+                    seprator,
+                    Text(
+                      "Aditya C",
+                      style: TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.w600),
+                    ),
+                    seprator,
+                    Row(
+                      children: [
+                        Flexible(
+                          flex: 6,
+                          child: getCards(),
+                        ),
+                        Flexible(
+                          flex: 5,
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 8.0),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Game Code: ABCDEF",
+                                  style: TextStyle(
+                                      color: Color(0xff848484), fontSize: 12.0),
+                                  overflow: TextOverflow.clip,
+                                ),
+                                Text(
+                                  "#Hand:212",
+                                  style: TextStyle(
+                                      color: Color(0xff848484), fontSize: 12.0),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    seprator,
+                    Text(
+                      "Paul",
+                      style: TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.w600),
+                    ),
+                    seprator,
+                    Row(
+                      children: [
+                        Flexible(
+                          flex: 6,
+                          child: getCards(),
+                        ),
+                        Flexible(
+                          flex: 5,
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 8.0),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Game Code: XXYYZY",
+                                  style: TextStyle(
+                                      color: Color(0xff848484), fontSize: 12.0),
+                                  overflow: TextOverflow.clip,
+                                ),
+                                Text(
+                                  "#Hand:214",
+                                  style: TextStyle(
+                                      color: Color(0xff848484), fontSize: 12.0),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    seprator,
+                  ],
+                )),
+            Padding(
+              padding: const EdgeInsets.only(left: 70.0),
+              child: Divider(
+                color: Color(0xff707070),
+              ),
+            ),
+            ListTile(
+              leading: CircleAvatar(
+                child: SvgPicture.asset('assets/images/casino.svg',
+                    color: Colors.white),
+                backgroundColor: Color(0xff319ffe),
+              ),
+              title: Text(
+                "Hand History",
+                style: TextStyle(color: Colors.white),
+              ),
+              trailing: IconButton(
+                  icon: Icon(
+                    Icons.arrow_forward_ios,
+                    color: Colors.white,
+                  ),
+                  onPressed: () {}),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 70.0),
+              child: Divider(
+                color: Color(0xff707070),
+              ),
+            ),
+            ListTile(
+              leading: CircleAvatar(
+                child: SvgPicture.asset('assets/images/casino.svg',
+                    color: Colors.white),
+                backgroundColor: Color(0xffef9712),
+              ),
+              title: Text(
+                "Table Record",
+                style: TextStyle(color: Colors.white),
+              ),
+              trailing: IconButton(
+                  icon: Icon(
+                    Icons.arrow_forward_ios,
+                    color: Colors.white,
+                  ),
+                  onPressed: () {}),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 70.0),
+              child: Divider(
+                color: Color(0xff707070),
+              ),
+            ),
+            ListTile(
+              leading: CircleAvatar(
+                child: SvgPicture.asset('assets/images/casino.svg',
+                    color: Colors.white),
+                backgroundColor: Color(0xff0fc915),
+              ),
+              title: Text(
+                "High Hand Log",
+                style: TextStyle(color: Colors.white),
+              ),
+              trailing: IconButton(
+                  icon: Icon(
+                    Icons.arrow_forward_ios,
+                    color: Colors.white,
+                  ),
+                  onPressed: () {}),
+            ),
+          ],
+        ),
       ),
     );
   }
