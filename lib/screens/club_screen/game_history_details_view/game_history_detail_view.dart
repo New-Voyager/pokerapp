@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:pokerapp/models/game_history_model.dart';
-import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/resources/app_colors.dart';
-import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/screens/club_screen/game_history_details_view/hands_chart_view.dart';
-import 'package:pokerapp/screens/game_play_screen/card_views/visible_card_view.dart';
-import 'package:pokerapp/screens/game_play_screen/card_views/visible_card_view.dart';
 import 'package:pokerapp/screens/club_screen/game_history_details_view/stack_chart_view.dart';
+
+import 'highhand_winners_view.dart';
 
 class GameHistoryDetailView extends StatefulWidget {
   final GameHistoryDetailModel data;
@@ -97,9 +95,18 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
                 ],
               ),
             ),
-            // seprator,
-            // highHandTile(),
             seprator,
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  Flexible(
+                    flex: 10,
+                    child: highHandTile(),
+                  ),
+                ],
+              ),
+            ),
             getLowerCard()
           ],
         ),
@@ -146,7 +153,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
     );
   }
 
-  Widget highHandTile() {
+  Widget highHandView() {
     return Container(
       height: 60.0,
       decoration: BoxDecoration(
@@ -238,7 +245,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
 
   Widget actionTile() {
     return Container(
-      height: 135.0,
+      height: 150.0,
       decoration: BoxDecoration(
         color: Color(0xff313235),
         borderRadius: BorderRadius.all(
@@ -283,7 +290,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
       print(_gameDetail.stack);
     }
     return Container(
-      height: 135.0,
+      height: 150.0,
       decoration: BoxDecoration(
         color: Color(0xff313235),
         borderRadius: BorderRadius.all(
@@ -390,7 +397,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "No Limit Heldom 1/2",
+                        "No Limit Holdem 1/2",
                         style: TextStyle(color: Colors.white, fontSize: 18.0),
                       ),
                       seprator,
@@ -421,32 +428,22 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
     );
   }
 
-  getCards() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        VisibleCardView(
-            card: CardObject(
-                suit: AppConstants.redHeart, label: "B", color: Colors.red)),
-        VisibleCardView(
-            card: CardObject(
-                suit: AppConstants.redHeart, label: "9", color: Colors.red)),
-        VisibleCardView(
-            card: CardObject(
-                suit: AppConstants.blackSpade,
-                label: "A",
-                color: Colors.black)),
-        VisibleCardView(
-            card: CardObject(
-                suit: AppConstants.blackSpade,
-                label: "J",
-                color: Colors.black)),
-        VisibleCardView(
-            card: CardObject(
-                suit: AppConstants.blackSpade,
-                label: "J",
-                color: Colors.black)),
-      ],
+  Widget highHandTile() {
+    return Container(
+      decoration: BoxDecoration(
+        color: Color(0xff313235),
+        borderRadius: BorderRadius.all(
+          Radius.circular(AppDimensions.cardRadius),
+        ),
+      ),
+      child: Expanded(
+        child: Visibility(
+          visible: this._gameDetail != null &&
+              this._gameDetail.hhWinners.length > 0 &&
+              this._gameDetail.hhTracked == true,
+          child: HighhandWinnersView(this._gameDetail),
+        ),
+      ),
     );
   }
 
@@ -462,104 +459,20 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
         ),
         child: Column(
           children: [
-            ListTile(
-                leading: CircleAvatar(
-                  child: SvgPicture.asset('assets/images/casino.svg',
-                      color: Colors.white),
-                  backgroundColor: Color(0xfffe5b31),
-                ),
-                title: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    seprator,
-                    Text(
-                      "High Hand Winners",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    seprator,
-                    Text(
-                      "Reward: 100",
-                      style: TextStyle(color: Color(0xff848484)),
-                    ),
-                    seprator,
-                    Text(
-                      "Aditya C",
-                      style: TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.w600),
-                    ),
-                    seprator,
-                    Row(
-                      children: [
-                        Flexible(
-                          flex: 6,
-                          child: getCards(),
-                        ),
-                        Flexible(
-                          flex: 5,
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 8.0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "Game Code: ABCDEF",
-                                  style: TextStyle(
-                                      color: Color(0xff848484), fontSize: 12.0),
-                                  overflow: TextOverflow.clip,
-                                ),
-                                Text(
-                                  "#Hand:212",
-                                  style: TextStyle(
-                                      color: Color(0xff848484), fontSize: 12.0),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    seprator,
-                    Text(
-                      "Paul",
-                      style: TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.w600),
-                    ),
-                    seprator,
-                    Row(
-                      children: [
-                        Flexible(
-                          flex: 6,
-                          child: getCards(),
-                        ),
-                        Flexible(
-                          flex: 5,
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 8.0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "Game Code: XXYYZY",
-                                  style: TextStyle(
-                                      color: Color(0xff848484), fontSize: 12.0),
-                                  overflow: TextOverflow.clip,
-                                ),
-                                Text(
-                                  "#Hand:214",
-                                  style: TextStyle(
-                                      color: Color(0xff848484), fontSize: 12.0),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    seprator,
-                  ],
-                )),
+            //   Visibility(
+            //     visible: this._gameDetail != null &&
+            //              this._gameDetail.hhWinners.length > 0 &&
+            //              this._gameDetail.hhTracked ==true,
+            //       child: ListTile(
+            //     leading: CircleAvatar(
+            //       child: SvgPicture.asset('assets/images/casino.svg',
+            //           color: Colors.white),
+            //       backgroundColor: Color(0xfffe5b31),
+            //     ),
+            //     title: HighhandWinnersView(this._gameDetail),
+            //       )
+            //
+            // ),
             Padding(
               padding: const EdgeInsets.only(left: 70.0),
               child: Divider(

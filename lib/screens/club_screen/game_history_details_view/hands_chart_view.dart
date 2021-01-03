@@ -30,13 +30,12 @@ class HandsPieChart extends StatelessWidget {
             horizontalFirst: false,
             // By setting this value to 2, the legend entries will grow up to two
             // rows before adding a new column.
-            desiredMaxRows: 4,
+            desiredMaxRows: 5,
             // This defines the padding around each legend entry.
             cellPadding: new EdgeInsets.only(right: 4.0, bottom: 4.0),
             // Render the legend entry text with custom styles.
             entryTextStyle: charts.TextStyleSpec(
-                color: charts.MaterialPalette.white,
-                fontSize: 11),
+                color: charts.MaterialPalette.white, fontSize: 10),
           )
         ],
 
@@ -44,12 +43,14 @@ class HandsPieChart extends StatelessWidget {
         // the chart will be left as a hole in the center.
         defaultRenderer: new charts.ArcRendererConfig(
           arcWidth: 20,
-
         ));
   }
 
   dynamic getColor(HandData hand) {
     if (hand != null) {
+      if (hand.round == 'Pre-flop') {
+        return charts.MaterialPalette.yellow.shadeDefault;
+      }
       if (hand.round == 'Flop') {
         return charts.MaterialPalette.yellow.shadeDefault;
       } else if (hand.round == 'Turn') {
