@@ -10,6 +10,7 @@ import 'package:pokerapp/resources/app_icons.dart';
 import 'package:pokerapp/services/app/club_interior_service.dart';
 
 import 'club_members_list_view.dart';
+
 class ClubMembersView extends StatefulWidget {
   final ClubHomePageModel _clubHomePageModel;
   ClubMembersView(this._clubHomePageModel);
@@ -31,10 +32,14 @@ class _ClubMembersView extends State<ClubMembersView> {
 
   void _fetchData() async {
     _toggleLoading();
-    _all = await ClubInteriorService.getClubMembers(_clubHomePageModel.clubCode, MemberListOptions.ALL);
-    _inactive = await ClubInteriorService.getClubMembers(_clubHomePageModel.clubCode, MemberListOptions.INACTIVE);
-    _managers = await ClubInteriorService.getClubMembers(_clubHomePageModel.clubCode, MemberListOptions.MANAGERS);
-    _unsettled = await ClubInteriorService.getClubMembers(_clubHomePageModel.clubCode, MemberListOptions.UNSETTLED);
+    _all = await ClubInteriorService.getClubMembers(
+        _clubHomePageModel.clubCode, MemberListOptions.ALL);
+    _inactive = await ClubInteriorService.getClubMembers(
+        _clubHomePageModel.clubCode, MemberListOptions.INACTIVE);
+    _managers = await ClubInteriorService.getClubMembers(
+        _clubHomePageModel.clubCode, MemberListOptions.MANAGERS);
+    _unsettled = await ClubInteriorService.getClubMembers(
+        _clubHomePageModel.clubCode, MemberListOptions.UNSETTLED);
     _toggleLoading();
   }
 
@@ -43,7 +48,6 @@ class _ClubMembersView extends State<ClubMembersView> {
     super.initState();
     _fetchData();
   }
-
 
   @override
   Widget build(BuildContext context) {

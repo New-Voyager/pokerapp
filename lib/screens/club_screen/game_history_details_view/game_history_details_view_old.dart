@@ -13,17 +13,17 @@ class GameHistoryDetailsViewOld extends StatefulWidget {
   GameHistoryDetailsViewOld(this.gameCode, this.isOwner);
 
   @override
-  _GameHistoryDetailsViewOld createState() => _GameHistoryDetailsViewOld(gameCode, isOwner);
+  _GameHistoryDetailsViewOld createState() =>
+      _GameHistoryDetailsViewOld(gameCode, isOwner);
 }
 
-class _GameHistoryDetailsViewOld extends State<GameHistoryDetailsViewOld>  {
+class _GameHistoryDetailsViewOld extends State<GameHistoryDetailsViewOld> {
   bool _isOwner = false;
   bool _showLoading = false;
   String _gameCode;
   //GameHistoryDetailModel _gameDetail;
 
-  _toggleLoading() =>
-      setState(() {
+  _toggleLoading() => setState(() {
         _showLoading = !_showLoading;
       });
 

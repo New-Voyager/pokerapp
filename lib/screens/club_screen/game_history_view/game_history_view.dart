@@ -3,6 +3,7 @@ import 'package:pokerapp/models/game_history_model.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/screens/club_screen/game_history_details_view/game_history_detail_view.dart';
 import 'package:pokerapp/services/app/club_interior_service.dart';
+import 'package:provider/provider.dart';
 
 import 'game_history_widget.dart';
 
@@ -14,7 +15,6 @@ class GameHistoryView extends StatefulWidget {
   _GameHistoryViewState createState() => _GameHistoryViewState(clubCode);
 }
 
-
 class _GameHistoryViewState extends State<GameHistoryView> {
   final String clubCode;
   _GameHistoryViewState(this.clubCode);
@@ -24,8 +24,7 @@ class _GameHistoryViewState extends State<GameHistoryView> {
 
   List<GameHistoryModel> _prevGames;
 
-  _toggleLoading() =>
-      setState(() {
+  _toggleLoading() => setState(() {
         _showLoading = !_showLoading;
       });
 
@@ -40,18 +39,43 @@ class _GameHistoryViewState extends State<GameHistoryView> {
     super.initState();
     _fetchData();
   }
+  /*
+  ChangeNotifierProvider<NewGameModelProvider>(
+      create: (_) => NewGameModelProvider(clubCode),
+      builder: (BuildContext context, _) => Consumer<NewGameModelProvider>(
+        builder: (_, NewGameModelProvider data, __) =>
+   */
+
+  Widget gameHistoryItem1(BuildContext context, int index) {
+    final data = GameHistoryDetailModel('', true);
+    return GestureDetector(
+        onTap: () => {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => GameHistoryDetailView(data)),
+              )
+            },
+        child: GameHistoryItem(item: _prevGames[index]));
+  }
 
   Widget gameHistoryItem(BuildContext context, int index) {
+    final model = GameHistoryDetailModel('', true);
     return GestureDetector(
-        onTap: ()  =>
-        {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => GameHistoryDetailView('', true)),
-          )
-        },
-        child: GameHistoryItem(item: _prevGames[index])
-    );
+        onTap: () => {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) =>
+                        ChangeNotifierProvider<GameHistoryDetailModel>(
+                            create: (_) => model,
+                            builder: (BuildContext context, _) =>
+                                Consumer<GameHistoryDetailModel>(
+                                    builder:
+                                        (_, GameHistoryDetailModel data, __) =>
+                                            GameHistoryDetailView(data))),
+                  ))
+            },
+        child: GameHistoryItem(item: _prevGames[index]));
   }
 
   Widget body() {
@@ -80,19 +104,20 @@ class _GameHistoryViewState extends State<GameHistoryView> {
       separatorBuilder: (_, __) => const SizedBox(height: 10.0),
     );
   }
+
   @override
   Widget build(BuildContext context) {
     return _prevGames == null
         ? Center(child: CircularProgressIndicator())
         : Scaffold(
-      backgroundColor: AppColors.screenBackgroundColor,
-      appBar: AppBar(
-        title: Text("Game History"),
-        backgroundColor: AppColors.screenBackgroundColor,
-        elevation: 0.0,
-        centerTitle: true,
-      ),
-      body: body(),
-    );
+            backgroundColor: AppColors.screenBackgroundColor,
+            appBar: AppBar(
+              title: Text("Game History"),
+              backgroundColor: AppColors.screenBackgroundColor,
+              elevation: 0.0,
+              centerTitle: true,
+            ),
+            body: body(),
+          );
   }
 }

@@ -21,7 +21,7 @@ class _ProfilePageViewState extends State<ProfilePageView> {
               MaterialPageRoute(
                 builder: (_) => LoginScreen(),
               ),
-                  (route) => false,
+              (route) => false,
             );
           },
         ),

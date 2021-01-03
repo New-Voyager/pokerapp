@@ -10,7 +10,8 @@ class MaxPlayerSelect extends StatelessWidget {
   Widget build(BuildContext context) {
     List<String> maxPlayersList = new List<String>();
     NewGameModelProvider data = Provider.of<NewGameModelProvider>(context);
-    int maxPlayersAllowed = NewGameConstants.MAX_PLAYERS[data.settings.gameType];
+    int maxPlayersAllowed =
+        NewGameConstants.MAX_PLAYERS[data.settings.gameType];
     for (int i = 2; i <= maxPlayersAllowed; i++) {
       maxPlayersList.add(i.toString());
     }
@@ -28,7 +29,7 @@ class MaxPlayerSelect extends StatelessWidget {
           list: maxPlayersList,
           selectedIndex: selectedIndex,
           onTap: (index) {
-            data.maxPlayers = index + 2;    //0 + 2 (first item)
+            data.maxPlayers = index + 2; //0 + 2 (first item)
           },
         ),
       ),

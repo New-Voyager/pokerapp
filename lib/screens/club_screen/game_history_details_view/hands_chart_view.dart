@@ -1,74 +1,76 @@
-/// Donut chart with labels example. This is a simple pie chart with a hole in
-/// the middle.
+/// Donut chart example. This is a simple pie chart with a hole in the middle.
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/game_history_model.dart';
 
 class HandsPieChart extends StatelessWidget {
-  final List<charts.Series> seriesList;
-  final bool animate;
-
-  HandsPieChart(this.seriesList, {this.animate});
-
-  /// Creates a [PieChart] with sample data and no transition.
-  factory HandsPieChart.withSampleData() {
-    return new HandsPieChart(
-      _createSampleData(),
-      // Disable animations for image tests.
-      animate: false,
-    );
-  }
-
+  bool animate;
+  final List<HandData> handsData;
+  HandsPieChart(this.handsData);
 
   @override
   Widget build(BuildContext context) {
-    return new charts.PieChart(seriesList,
+    return new charts.PieChart(data(),
         animate: animate,
+        behaviors: [
+          new charts.DatumLegend(
+            // Positions for "start" and "end" will be left and right respectively
+            // for widgets with a build context that has directionality ltr.
+            // For rtl, "start" and "end" will be right and left respectively.
+            // Since this example has directionality of ltr, the legend is
+            // positioned on the right side of the chart.
+            position: charts.BehaviorPosition.end,
+            // For a legend that is positioned on the left or right of the chart,
+            // setting the justification for [endDrawArea] is aligned to the
+            // bottom of the chart draw area.
+            outsideJustification: charts.OutsideJustification.endDrawArea,
+            // By default, if the position of the chart is on the left or right of
+            // the chart, [horizontalFirst] is set to false. This means that the
+            // legend entries will grow as new rows first instead of a new column.
+            horizontalFirst: false,
+            // By setting this value to 2, the legend entries will grow up to two
+            // rows before adding a new column.
+            desiredMaxRows: 4,
+            // This defines the padding around each legend entry.
+            cellPadding: new EdgeInsets.only(right: 4.0, bottom: 4.0),
+            // Render the legend entry text with custom styles.
+            entryTextStyle: charts.TextStyleSpec(
+                color: charts.MaterialPalette.white,
+                fontSize: 11),
+          )
+        ],
+
         // Configure the width of the pie slices to 60px. The remaining space in
         // the chart will be left as a hole in the center.
-        //
-        // [ArcLabelDecorator] will automatically position the label inside the
-        // arc if the label will fit. If the label will not fit, it will draw
-        // outside of the arc with a leader line. Labels can always display
-        // inside or outside using [LabelPosition].
-        //
-        // Text style for inside / outside can be controlled independently by
-        // setting [insideLabelStyleSpec] and [outsideLabelStyleSpec].
-        //
-        // Example configuring different styles for inside/outside:
-        //       new charts.ArcLabelDecorator(
-        //          insideLabelStyleSpec: new charts.TextStyleSpec(...),
-        //          outsideLabelStyleSpec: new charts.TextStyleSpec(...)),
         defaultRenderer: new charts.ArcRendererConfig(
-            arcWidth: 60,
-            arcRendererDecorators: [new charts.ArcLabelDecorator()]));
+          arcWidth: 20,
+
+        ));
   }
 
-  /// Create one series with sample hard coded data.
-  static List<charts.Series<LinearSales, int>> _createSampleData() {
-    final data = [
-      new LinearSales(0, 100),
-      new LinearSales(1, 75),
-      new LinearSales(2, 25),
-      new LinearSales(3, 5),
-    ];
+  dynamic getColor(HandData hand) {
+    if (hand != null) {
+      if (hand.round == 'Flop') {
+        return charts.MaterialPalette.yellow.shadeDefault;
+      } else if (hand.round == 'Turn') {
+        return charts.MaterialPalette.red.shadeDefault.lighter;
+      } else if (hand.round == 'River') {
+        return charts.MaterialPalette.blue.shadeDefault.darker;
+      } else if (hand.round == 'Showdown') {
+        return charts.MaterialPalette.teal.shadeDefault.darker;
+      }
+    }
+  }
 
+  List<charts.Series<HandData, String>> data() {
     return [
-      new charts.Series<LinearSales, int>(
-        id: 'Sales',
-        domainFn: (LinearSales sales, _) => sales.year,
-        measureFn: (LinearSales sales, _) => sales.sales,
-        data: data,
-        // Set a label accessor to control the text of the arc label.
-        labelAccessorFn: (LinearSales row, _) => '${row.year}: ${row.sales}',
+      new charts.Series<HandData, String>(
+        id: 'Hands',
+        domainFn: (HandData hand, _) => hand.round,
+        measureFn: (HandData hand, _) => hand.percent,
+        colorFn: (HandData hand, _) => getColor(hand),
+        data: handsData,
       )
     ];
   }
-}
-
-/// Sample linear data type.
-class LinearSales {
-  final int year;
-  final int sales;
-
-  LinearSales(this.year, this.sales);
 }

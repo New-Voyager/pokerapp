@@ -21,7 +21,8 @@ class NewGameSettings extends StatelessWidget {
     @required this.clubCode,
   }) : assert(clubCode != null);
 
-  Future<void> _showError(BuildContext context, String title, String error) async {
+  Future<void> _showError(
+      BuildContext context, String title, String error) async {
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
@@ -93,7 +94,8 @@ class NewGameSettings extends StatelessWidget {
                               // join the game
                               _joinGame(context, gameCode);
                             } else {
-                              _showError(context, 'Error', 'Creating game failed');
+                              _showError(
+                                  context, 'Error', 'Creating game failed');
                             }
                           },
                         ),
