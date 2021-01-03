@@ -372,10 +372,10 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
 
                       // end game button
                       CustomTextButton(
-                        text: 'End Game',
-                        onTap: () {
-                          GameService.endGame(_gameInfoModel.gameCode);
-                        }),
+                          text: 'End Game',
+                          onTap: () {
+                            GameService.endGame(_gameInfoModel.gameCode);
+                          }),
                     ],
                   ),
                 );

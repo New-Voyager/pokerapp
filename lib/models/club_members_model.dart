@@ -85,7 +85,7 @@ class ClubMemberModel {
         this.lastPlayedDate = '${diff.inDays} ago';
       } else if (diff.inDays < 30) {
         int weeks = diff.inDays ~/ 7;
-        if (diff.inDays%7 > 0) {
+        if (diff.inDays % 7 > 0) {
           weeks += 1;
         }
         String weekStr = "weeks";
@@ -95,7 +95,7 @@ class ClubMemberModel {
         this.lastPlayedDate = '$weeks $weekStr ago';
       } else if (diff.inDays < 365) {
         int months = diff.inDays ~/ 30;
-        if (diff.inDays%30 > 0) {
+        if (diff.inDays % 30 > 0) {
           months += 1;
         }
         String monthStr = "months";

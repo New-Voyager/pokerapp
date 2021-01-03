@@ -8,7 +8,6 @@ import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_icons.dart';
 
-
 class ClubMembersListView extends StatelessWidget {
   final List<ClubMemberModel> _membersList;
 

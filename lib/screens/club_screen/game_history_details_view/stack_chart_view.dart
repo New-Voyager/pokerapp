@@ -9,7 +9,8 @@ class StackChartView extends StatelessWidget {
   StackChartView(this.stack, {this.animate});
 
   charts.NumericTickProviderSpec getTickerSpec() {
-    final maxValue = stack.reduce((value, element) => value.balance > element.balance? value: element);
+    final maxValue = stack.reduce(
+        (value, element) => value.balance > element.balance ? value : element);
     return new charts.StaticNumericTickProviderSpec(
       <charts.TickSpec<num>>[
         charts.TickSpec<num>(maxValue.balance),
@@ -18,14 +19,16 @@ class StackChartView extends StatelessWidget {
   }
 
   charts.NumericAxisSpec getAxisSpec() {
-    return new charts.NumericAxisSpec(viewport: charts.NumericExtents(1, stack.last.handNum));
+    return new charts.NumericAxisSpec(
+        viewport: charts.NumericExtents(1, stack.last.handNum));
   }
 
   @override
   Widget build(BuildContext context) {
-    return new charts.LineChart(data(),
-        animate: animate,
-        domainAxis: getAxisSpec(),
+    return new charts.LineChart(
+      data(),
+      animate: animate,
+      domainAxis: getAxisSpec(),
       primaryMeasureAxis: new charts.NumericAxisSpec(
         renderSpec: charts.GridlineRendererSpec(
             labelOffsetFromAxisPx: -20,
@@ -36,15 +39,14 @@ class StackChartView extends StatelessWidget {
             lineStyle: charts.LineStyleSpec(
               color: charts.MaterialPalette.gray.shade500,
               thickness: 0,
-            )
-        ),
+            )),
         tickProviderSpec: getTickerSpec(),
-      ) ,
+      ),
     );
   }
 
   /// Create one series with sample hard coded data.
-    List<charts.Series<PlayerStack, int>> data() {
+  List<charts.Series<PlayerStack, int>> data() {
     return [
       new charts.Series<PlayerStack, int>(
         id: 'Sales',

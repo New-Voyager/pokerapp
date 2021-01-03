@@ -79,7 +79,8 @@ class GameService {
     send(_query);
   }
 
-  static Future<String> configureClubGame(String clubCode, NewGameModel input) async {
+  static Future<String> configureClubGame(
+      String clubCode, NewGameModel input) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
     String _query = """
           mutation (\$clubCode: String!, \$gameInput: GameCreateInput!){
@@ -90,7 +91,7 @@ class GameService {
           """;
     Map<String, dynamic> variables = {
       "clubCode": clubCode,
-      "gameInput":  input.toJson(),
+      "gameInput": input.toJson(),
     };
 
     QueryResult result = await _client.mutate(
@@ -103,7 +104,6 @@ class GameService {
     log('Created game: $gameCode');
     return gameCode;
   }
-
 
   static Future<String> startGame(String gameCode) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
@@ -126,7 +126,6 @@ class GameService {
     return status;
   }
 
-
   /* this method joins the game at a particular seat number */
   static Future<String> endGame(String gameCode) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
@@ -135,7 +134,7 @@ class GameService {
         endGame(gameCode: \$gameCode)
     }""";
     Map<String, dynamic> variables = {
-        "gameCode": gameCode,
+      "gameCode": gameCode,
     };
     QueryResult result = await _client.mutate(
       MutationOptions(documentNode: gql(_mutation), variables: variables),
