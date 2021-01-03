@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/screens/auth_screens/login_screen.dart';
+import 'package:pokerapp/screens/club_screen/games_page_view/game_history/game_history_new.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
 
 class ProfilePageView extends StatefulWidget {
@@ -16,12 +17,12 @@ class _ProfilePageViewState extends State<ProfilePageView> {
           child: Text('Logout'),
           onPressed: () {
             AuthService.logout();
-            Navigator.pushAndRemoveUntil(
+            Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (_) => LoginScreen(),
+                builder: (_) => GameHistoryNew(),
               ),
-              (route) => false,
+              // (route) => false,
             );
           },
         ),
