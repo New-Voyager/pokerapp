@@ -21,6 +21,33 @@ class NewGameSettings extends StatelessWidget {
     @required this.clubCode,
   }) : assert(clubCode != null);
 
+  Future<void> _showError(BuildContext context, String title, String error) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text(error),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            CustomTextButton(
+              text: 'OK',
+              onTap: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   void _joinGame(BuildContext context, String gameCode) =>
       Navigator.pushReplacement(
         context,
@@ -62,9 +89,12 @@ class NewGameSettings extends StatelessWidget {
                                 await GameService.configureClubGame(
                                     data.settings.clubCode, data.settings);
                             print('Configured game: $gameCode');
-
-                            // join the game
-                            _joinGame(context, gameCode);
+                            if (gameCode != null) {
+                              // join the game
+                              _joinGame(context, gameCode);
+                            } else {
+                              _showError(context, 'Error', 'Creating game failed');
+                            }
                           },
                         ),
                         Container(

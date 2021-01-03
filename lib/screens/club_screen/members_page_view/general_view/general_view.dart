@@ -7,7 +7,7 @@ import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 
 class GeneralView extends StatelessWidget {
-  final List<ClubMembersModel> clubMembers;
+  final List<ClubMemberModel> clubMembers;
 
   GeneralView({
     @required this.clubMembers,
@@ -20,7 +20,7 @@ class GeneralView extends StatelessWidget {
         horizontal: 20.0,
       ),
       itemBuilder: (_, int index) {
-        ClubMembersModel member = clubMembers[index];
+        ClubMemberModel member = clubMembers[index];
 
         return ListTile(
           title: Text(
@@ -28,9 +28,9 @@ class GeneralView extends StatelessWidget {
             style: AppStyles.credentialsTextStyle,
           ),
           subtitle: Text(
-            member.lastGamePlayedDate == null
+            member.lastPlayedDate == null
                 ? 'Never played'
-                : 'Last played on ${member.lastGamePlayedDate}',
+                : 'Last played on ${member.lastPlayedDate}',
             style: AppStyles.credentialsTextStyle.copyWith(
               fontSize: 14,
               color: AppColors.contentColor,

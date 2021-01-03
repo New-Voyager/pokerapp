@@ -26,6 +26,7 @@ import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/services/game_play/graphql/game_service.dart';
 import 'package:pokerapp/services/game_play/utils/audio.dart';
 import 'package:pokerapp/services/game_play/utils/audio_buffer.dart';
+import 'package:pokerapp/widgets/custom_text_button.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
@@ -368,6 +369,13 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
 
                       // footer section
                       FooterView(),
+
+                      // end game button
+                      CustomTextButton(
+                        text: 'End Game',
+                        onTap: () {
+                          GameService.endGame(_gameInfoModel.gameCode);
+                        }),
                     ],
                   ),
                 );

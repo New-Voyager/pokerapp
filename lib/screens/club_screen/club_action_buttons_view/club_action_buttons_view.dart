@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/club_actions.dart';
+import 'package:pokerapp/models/club_homepage_model.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/club_screen_icons_icons.dart';
 import 'package:pokerapp/screens/club_screen/club_action_buttons_view/club_action_button.dart';
 
 class ClubActionButtonsView extends StatelessWidget {
+  final ClubHomePageModel _clubHomePageModel;
+
+  ClubActionButtonsView(this._clubHomePageModel);
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -16,6 +21,7 @@ class ClubActionButtonsView extends StatelessWidget {
               Expanded(
                 flex: 3,
                 child: ClubActionButton(
+                  this._clubHomePageModel,
                   ClubActions.GAME_HISTORY,
                   "Game History",
                   Icon(
@@ -27,6 +33,7 @@ class ClubActionButtonsView extends StatelessWidget {
               Expanded(
                 flex: 3,
                 child: ClubActionButton(
+                  this._clubHomePageModel,
                   ClubActions.MEMBERS,
                   "Members",
                   Icon(
@@ -38,6 +45,7 @@ class ClubActionButtonsView extends StatelessWidget {
               Expanded(
                 flex: 3,
                 child: ClubActionButton(
+                  this._clubHomePageModel,
                   ClubActions.CHAT,
                   "Chat",
                   Icon(
@@ -53,6 +61,7 @@ class ClubActionButtonsView extends StatelessWidget {
               Expanded(
                 flex: 3,
                 child: ClubActionButton(
+                  this._clubHomePageModel,
                   ClubActions.BOOKMARKED_HANDS,
                   "Bookmarked Hands",
                   Icon(
@@ -64,6 +73,7 @@ class ClubActionButtonsView extends StatelessWidget {
               Expanded(
                 flex: 3,
                 child: ClubActionButton(
+                  this._clubHomePageModel,
                   ClubActions.ANALYSIS,
                   "Analysis",
                   Icon(
@@ -75,6 +85,7 @@ class ClubActionButtonsView extends StatelessWidget {
               Expanded(
                 flex: 3,
                 child: ClubActionButton(
+                  this._clubHomePageModel,
                   ClubActions.ANNOUNCEMETS,
                   "Announcements",
                   Icon(
@@ -90,6 +101,7 @@ class ClubActionButtonsView extends StatelessWidget {
               Expanded(
                 flex: 3,
                 child: ClubActionButton(
+                  this._clubHomePageModel,
                   ClubActions.MESSAGE_HOST,
                   "Message Host",
                   Icon(
@@ -101,6 +113,7 @@ class ClubActionButtonsView extends StatelessWidget {
               Expanded(
                 flex: 3,
                 child: ClubActionButton(
+                  this._clubHomePageModel,
                   ClubActions.MANAGE_CHIPS,
                   "Manage Chips",
                   Icon(

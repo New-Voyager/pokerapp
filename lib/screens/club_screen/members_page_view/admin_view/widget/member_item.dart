@@ -8,7 +8,7 @@ import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/widgets/custom_text_button.dart';
 
 class MemberItem extends StatelessWidget {
-  final ClubMembersModel member;
+  final ClubMemberModel member;
 
   MemberItem({
     @required this.member,
@@ -124,8 +124,8 @@ class MemberItem extends StatelessWidget {
                       /* last played on */
                       separator,
                       Text(
-                        member.lastGamePlayedDate != null
-                            ? 'Last Played on ${member.lastGamePlayedDate}'
+                        member.lastPlayedDate != null
+                            ? 'Last Played on ${member.lastPlayedDate}'
                             : 'Never Played',
                         style: AppStyles.itemInfoTextStyle,
                       ),

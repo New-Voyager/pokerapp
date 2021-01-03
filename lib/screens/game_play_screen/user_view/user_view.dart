@@ -189,12 +189,13 @@ class UserView extends StatelessWidget {
           duration: AppConstants.animationDuration,
           reverseDuration: AppConstants.animationDuration,
           child: (emptySeat && !isPresent)
-              ? InkWell(
+              ? Container(
+            child: InkWell(
                   child: Text(
-                    'OPEN',
+                    'Open',
                     style: AppStyles.openSeatTextStyle,
                   ),
-                )
+                ))
               : AnimatedOpacity(
                   duration: AppConstants.animationDuration,
                   opacity: emptySeat ? 0.0 : 1.0,

@@ -13,6 +13,8 @@ class ClubHomePageModel extends ChangeNotifier {
         joinedAt
         gamesPlayed
         status
+        isOwner
+        isManager
       }
       liveGames(clubCode: \$clubCode) {
         status
@@ -35,6 +37,8 @@ class ClubHomePageModel extends ChangeNotifier {
   String clubCode;
   double playerBalance;
   List<GameModel> liveGames;
+  bool isManager;
+  bool isOwner;
 
   ClubHomePageModel(String clubCode, String clubName) {
     this.clubCode = clubCode;
@@ -49,6 +53,8 @@ class ClubHomePageModel extends ChangeNotifier {
 
     this.clubName = member['name'];
     this.clubCode = clubCode;
+    this.isManager = member['isManager'];
+    this.isOwner = member['isOwner'];
     this.playerBalance = double.parse(member['myBalance'].toString());
     this.liveGames = data['liveGames']
         .map<GameModel>((game) => GameModel.fromJson(game))
