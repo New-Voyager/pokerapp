@@ -96,16 +96,53 @@ class HandData {
   HandData(this.round, this.percent);
 }
 
+class HighHandWinner {
+  String gameCode;
+  String playerUuid;
+  int handNum;
+  int rank;
+  String player;
+  List<int> playerCards = new List<int>();
+  List<int> boardCards = new List<int>();
+  List<int> hhCards = new List<int>();
+  DateTime handTime;
+  String highHandCards;
+
+  HighHandWinner.fromJson(dynamic data) {
+    gameCode = data['gameCode'];
+    handNum = data['handNum'];
+    rank = data['rank'];
+    player = data['playerName'];
+    playerUuid = data['playerUuid'];
+    List<dynamic> cards = json.decode(data['playerCards']);
+    for (dynamic card in cards) {
+      playerCards.add(int.parse(card.toString()));
+    }
+    cards = json.decode(data['boardCards']);
+    for (dynamic card in cards) {
+      boardCards.add(int.parse(card.toString()));
+    }
+    cards = json.decode(data['highHand']);
+    for (dynamic card in cards) {
+      hhCards.add(int.parse(card.toString()));
+    }
+    handTime = DateTime.parse(data['handTime'].toString());
+  }
+}
+
 class GameHistoryDetailModel extends ChangeNotifier {
   final String gameCode;
   final bool isOwner;
   List<PlayerStack> stack = new List<PlayerStack>();
+  int preflopHands;
   int flopHands;
   int turnHands;
   int riverHands;
   int showdownHands;
   int handsPlayed;
+  bool hhTracked = true;
   List<HandData> handsData = new List<HandData>();
+  List<HighHandWinner> hhWinners = new List<HighHandWinner>();
   dynamic jsonData;
 
   GameHistoryDetailModel(this.gameCode, this.isOwner);
@@ -119,6 +156,7 @@ class GameHistoryDetailModel extends ChangeNotifier {
             double.parse(e["after"].toString())))
         .toList();
 
+    preflopHands = int.parse(gameData['preflopHands'].toString());
     flopHands = int.parse(gameData['flopHands'].toString());
     turnHands = int.parse(gameData['turnHands'].toString());
     riverHands = int.parse(gameData['riverHands'].toString());
@@ -126,12 +164,20 @@ class GameHistoryDetailModel extends ChangeNotifier {
     handsPlayed = int.parse(gameData['handsPlayed'].toString());
 
     // build hands stats
+    handsData
+        .add(new HandData('Pre-flop', (preflopHands / handsPlayed) * 100.0));
     handsData.add(new HandData('Flop', (flopHands / handsPlayed) * 100.0));
     handsData.add(new HandData('Turn', (turnHands / handsPlayed) * 100.0));
     handsData.add(new HandData('River', (riverHands / handsPlayed) * 100.0));
     handsData
         .add(new HandData('Showdown', (showdownHands / handsPlayed) * 100.0));
+    if (hhTracked) {
+      List<dynamic> winners = gameData['hhWinners'];
 
+      for (dynamic winner in winners) {
+        hhWinners.add(HighHandWinner.fromJson(winner));
+      }
+    }
     notifyListeners();
   }
 
