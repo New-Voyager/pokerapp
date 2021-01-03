@@ -1,5 +1,9 @@
+import 'dart:convert';
+
 import 'package:pokerapp/enums/game_type.dart';
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:intl/intl.dart';
+
 class GameHistoryModel {
   GameType gameType;
   String gameTypeStr;
@@ -26,6 +30,9 @@ class GameHistoryModel {
       endedAt = DateTime.parse(jsonData["endedAt"].toString());
     }
     runTimeStr = jsonData["runTimeStr"];
+    if (runTimeStr == null) {
+      runTimeStr = "";
+    }
     runTime = jsonData["runTime"];
     if (jsonData["handsPlayed"] != null) {
       handsPlayed = int.parse(jsonData["handsPlayed"].toString());
@@ -72,5 +79,41 @@ class GameHistoryModel {
       return '5PLO';
     }
     return gameTypeStr;
+  }
+}
+
+class PlayerStack {
+  int handNum;
+  double balance;
+  PlayerStack(this.handNum, this.balance);
+}
+
+class GameHistoryDetailModel {
+  List<PlayerStack> stack = new List<PlayerStack>();
+  int flopHands;
+  int turnHands;
+  int riverHands;
+  int showdownHands;
+  int handsPlayed;
+
+  static Future<GameHistoryDetailModel> fromJson() async  {
+    String data = await rootBundle.loadString('assets/sample-data/completed-game.json');
+    final jsonData = json.decode(data);
+    print(jsonData);
+    GameHistoryDetailModel ret = new GameHistoryDetailModel();
+    final gameData = jsonData['data']['completedGame'];
+    final List playerStack = jsonData['data']['completedGame']['stackStat'];
+
+    ret.stack = playerStack.map((e) =>
+        new PlayerStack(int.parse(e["handNum"].toString()),
+            double.parse(e["after"].toString())))
+        .toList();
+
+    ret.flopHands = int.parse(gameData['flopHands'].toString());
+    ret.turnHands = int.parse(gameData['turnHands'].toString());
+    ret.riverHands = int.parse(gameData['riverHands'].toString());
+    ret.showdownHands = int.parse(gameData['showdownHands'].toString());
+    ret.handsPlayed = int.parse(gameData['handsPlayed'].toString());
+    return ret;
   }
 }

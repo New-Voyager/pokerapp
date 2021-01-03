@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:pokerapp/models/game_history_detail_model.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_constants.dart';
@@ -8,20 +7,20 @@ import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/screens/game_play_screen/card_views/visible_card_view.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 
-class GameHistoryDetailsView extends StatefulWidget {
+class GameHistoryDetailsViewOld extends StatefulWidget {
   final String gameCode;
   final bool isOwner;
-  GameHistoryDetailsView(this.gameCode, this.isOwner);
+  GameHistoryDetailsViewOld(this.gameCode, this.isOwner);
 
   @override
-  _GameHistoryDetailsView createState() => _GameHistoryDetailsView(gameCode, isOwner);
+  _GameHistoryDetailsViewOld createState() => _GameHistoryDetailsViewOld(gameCode, isOwner);
 }
 
-class _GameHistoryDetailsView extends State<GameHistoryDetailsView>  {
+class _GameHistoryDetailsViewOld extends State<GameHistoryDetailsViewOld>  {
   bool _isOwner = false;
   bool _showLoading = false;
   String _gameCode;
-  GameHistoryDetailModel _gameDetail;
+  //GameHistoryDetailModel _gameDetail;
 
   _toggleLoading() =>
       setState(() {
@@ -30,11 +29,11 @@ class _GameHistoryDetailsView extends State<GameHistoryDetailsView>  {
 
   _fetchData() async {
     _toggleLoading();
-    _gameDetail = await GameService.getGameHistoryDetail(_gameCode);
+    //_gameDetail = await GameService.getGameHistoryDetail(_gameCode);
     _toggleLoading();
   }
 
-  _GameHistoryDetailsView(this._gameCode, this._isOwner);
+  _GameHistoryDetailsViewOld(this._gameCode, this._isOwner);
 
   @override
   void initState() {

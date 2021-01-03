@@ -1,15 +1,54 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:pokerapp/models/game_history_model.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/screens/game_play_screen/card_views/visible_card_view.dart';
+import 'package:pokerapp/screens/game_play_screen/card_views/visible_card_view.dart';
+import 'package:pokerapp/screens/club_screen/game_history_details_view/stack_chart_view.dart';
 
-class GameHistoryNew extends StatelessWidget {
+class GameHistoryDetailView extends StatefulWidget {
+  final String gameCode;
+  final bool isOwner;
+  GameHistoryDetailView(this.gameCode, this.isOwner);
+
+  @override
+  _GameHistoryDetailView createState() => _GameHistoryDetailView(gameCode, isOwner);
+}
+
+class _GameHistoryDetailView extends State<GameHistoryDetailView> {
+  GameHistoryDetailModel data;
+  bool _isOwner = false;
   final seprator = SizedBox(
     height: 10.0,
   );
+
+  bool _showLoading = false;
+  bool loadingDone = false;
+  String _gameCode;
+  GameHistoryDetailModel _gameDetail;
+
+  _toggleLoading() =>
+      setState(() {
+        _showLoading = !_showLoading;
+      });
+
+  _fetchData() async {
+    _toggleLoading();
+    _gameDetail = await GameHistoryDetailModel.fromJson();
+    loadingDone = true;
+    _toggleLoading();
+  }
+
+  _GameHistoryDetailView(this._gameCode, this._isOwner);
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchData();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -245,6 +284,10 @@ class GameHistoryNew extends StatelessWidget {
   }
 
   Widget stackTile() {
+    if (loadingDone) {
+      // loading done
+      print(_gameDetail.stack);
+    }
     return Container(
       height: 135.0,
       decoration: BoxDecoration(
@@ -253,22 +296,27 @@ class GameHistoryNew extends StatelessWidget {
           Radius.circular(AppDimensions.cardRadius),
         ),
       ),
-      child: Row(
+      child: Column(
+          children: [
+            Row(
         children: [
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Column(
-              children: [
-                Text(
+            child: Text(
                   "Stack",
-                  style: TextStyle(color: Colors.white, fontSize: 18.0),
+                  style: TextStyle(color: Colors.white, fontSize: 14.0),
                 ),
-              ],
             ),
-          ),
-        ],
-      ),
-    );
+            ],
+            ),
+            Visibility(
+              child: Expanded(flex: 1,child: StackChartView(_gameDetail.stack)),
+              visible: loadingDone,
+            ),
+
+            ],
+            ),
+          );
   }
 
   Widget balanceTile() {

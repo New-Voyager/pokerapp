@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_history_model.dart';
 import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/screens/club_screen/game_history_details_view/game_history_detail_view.dart';
 import 'package:pokerapp/services/app/club_interior_service.dart';
 
 import 'game_history_widget.dart';
@@ -40,11 +41,24 @@ class _GameHistoryViewState extends State<GameHistoryView> {
     _fetchData();
   }
 
+  Widget gameHistoryItem(BuildContext context, int index) {
+    return GestureDetector(
+        onTap: ()  =>
+        {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => GameHistoryDetailView('', true)),
+          )
+        },
+        child: GameHistoryItem(item: _prevGames[index])
+    );
+  }
+
   Widget body() {
-    if (_prevGames.length == 0) {
+    if (_prevGames == null && _prevGames.length == 0) {
       return Center(
         child: const Text(
-          'No Members',
+          'No games played',
           style: const TextStyle(
             color: Colors.white,
             fontSize: 20.0,
@@ -61,9 +75,7 @@ class _GameHistoryViewState extends State<GameHistoryView> {
         vertical: 10.0,
         horizontal: 15.0,
       ),
-      itemBuilder: (_, int index) => GameHistoryItem(
-        item: _prevGames[index]
-      ),
+      itemBuilder: gameHistoryItem,
       itemCount: _prevGames.length,
       separatorBuilder: (_, __) => const SizedBox(height: 10.0),
     );
