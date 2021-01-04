@@ -62,14 +62,15 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
                 children: [
                   Flexible(
                     flex: 7,
-                    child: gameTypeTile(),
+                    child:
+                        Visibility(visible: loadingDone, child: gameTypeTile()),
                   ),
                   SizedBox(
                     width: 5.0,
                   ),
                   Flexible(
                     flex: 3,
-                    child: balanceTile(),
+                    child: Visibility(visible: loadingDone, child: balanceTile()),
                   ),
                 ],
               ),
@@ -267,7 +268,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
                   width: 10.0,
                 ),
                 Text(
-                  "14",
+                  _gameDetail.handsPlayedStr ?? '',
                   style: TextStyle(color: Colors.white),
                 ),
               ],
@@ -321,7 +322,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
 
   Widget balanceTile() {
     return Container(
-      height: 135.0,
+      height: 120.0,
       decoration: BoxDecoration(
         color: Color(0xff313235),
         borderRadius: BorderRadius.all(
@@ -339,20 +340,23 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
                   "Balance",
                   style: TextStyle(color: Colors.white),
                 ),
-                seprator,
+                SizedBox(height: 16,),
                 Text(
-                  "28",
-                  style: TextStyle(color: Colors.amber, fontSize: 20.0),
+                  _gameDetail.profitText ?? _gameDetail.profitText,
+                  style:
+                  _gameDetail.profit != null || _gameDetail.profit == 0 ?
+                  _gameDetail.profit < 0 ? TextStyle(color: Colors.red, fontSize: 20.0) : TextStyle(color: Colors.lightGreenAccent, fontSize: 20.0)
+                      : TextStyle(color: Colors.white, fontSize: 20.0)
+                ),
+                SizedBox(height: 10,),
+                Text(
+                  "Buy-in",
+                  style: TextStyle(color: Colors.blueGrey),
                 ),
                 seprator,
                 Text(
-                  "BuyIn",
-                  style: TextStyle(color: Colors.white),
-                ),
-                seprator,
-                Text(
-                  "1300",
-                  style: TextStyle(color: Colors.amber, fontSize: 20.0),
+                  _gameDetail.buyInText ?? _gameDetail.buyInText,
+                  style: TextStyle(color: Colors.white, fontSize: 12.0),
                 ),
               ],
             ),
@@ -364,7 +368,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
 
   Widget gameTypeTile() {
     return Container(
-      height: 135.0,
+      height: 120.0,
       decoration: BoxDecoration(
         color: Color(0xff313235),
         borderRadius: BorderRadius.all(
@@ -390,34 +394,50 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
             child: Padding(
               padding: const EdgeInsets.only(top: 12.0, bottom: 12.0),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        "No Limit Holdem 1/2",
-                        style: TextStyle(color: Colors.white, fontSize: 18.0),
-                      ),
+                      Visibility(
+                          visible: loadingDone && _gameDetail.gameTypeStr != null,
+                          child: Text(
+                            _gameDetail.gameTypeStr ?? '',
+                            style:
+                                TextStyle(color: Colors.white, fontSize: 24.0),
+                          )),
                       seprator,
-                      Text(
-                        "45 Hands dealt in 1 hour 33 minutes",
-                        style: TextStyle(
-                          color: Color(0xff848484),
-                        ),
-                      ),
+                      Visibility(
+                          visible: loadingDone && _gameDetail.gameHandsText != null,
+                          child: Text(
+                            _gameDetail.gameHandsText ?? '',
+                            style: TextStyle(
+                              color: Color(0xff848484),
+                            ),
+                          )),
                       seprator,
-                      Text(
-                        "You played 35 minutes",
-                        style: TextStyle(color: Color(0xff848484)),
-                      ),
+                      Visibility(
+                          visible: loadingDone && _gameDetail.playerHandsText != null,
+                          child: Text(
+                            _gameDetail.playerHandsText ?? '',
+                            style: TextStyle(color: Color(0xff848484)),
+                          )),
                       seprator
                     ],
                   ),
-                  Text(
-                    "Ended At 12:00 am",
-                    style: TextStyle(color: Color(0xff848484)),
+                  SizedBox(height: 15,),
+                  Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                    children:[
+                  Visibility(
+                    visible: loadingDone && _gameDetail.endedAt != null,
+                    child:
+                    Text(
+                      _gameDetail.endedAtStr != null ? 'Ended at ${_gameDetail.endedAtStr}': '',
+                      style: TextStyle(color: Color(0xff848484), fontSize: 12),
+                    ),
+                  )]
                   ),
                 ],
               ),
@@ -459,20 +479,6 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
         ),
         child: Column(
           children: [
-            //   Visibility(
-            //     visible: this._gameDetail != null &&
-            //              this._gameDetail.hhWinners.length > 0 &&
-            //              this._gameDetail.hhTracked ==true,
-            //       child: ListTile(
-            //     leading: CircleAvatar(
-            //       child: SvgPicture.asset('assets/images/casino.svg',
-            //           color: Colors.white),
-            //       backgroundColor: Color(0xfffe5b31),
-            //     ),
-            //     title: HighhandWinnersView(this._gameDetail),
-            //       )
-            //
-            // ),
             Padding(
               padding: const EdgeInsets.only(left: 70.0),
               child: Divider(
