@@ -8,7 +8,6 @@ import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_icons.dart';
 
-
 class ClubMembersListView extends StatelessWidget {
   final List<ClubMemberModel> _membersList;
 
@@ -45,18 +44,43 @@ class ClubMembersListView extends StatelessWidget {
                 children: <Widget>[
                   Expanded(
                     flex: 2,
-                    child: CircleAvatar(
-                      radius: 20,
-                      backgroundColor:
-                          Color((math.Random().nextDouble() * 0xFFFFFF).toInt())
+                    child: Column(
+                      children: [
+                        CircleAvatar(
+                          radius: 20,
+                          backgroundColor: Color(
+                                  (math.Random().nextDouble() * 0xFFFFFF)
+                                      .toInt())
                               .withOpacity(1.0),
-                      child: ClipOval(
-                        child: _filteredList[index].imageUrl == null
-                            ? Icon(AppIcons.user)
-                            : Image.network(
-                                _filteredList[index].imageUrl,
+                          child: ClipOval(
+                            child: _filteredList[index].imageUrl == null
+                                ? Icon(AppIcons.user)
+                                : Image.network(
+                                    _filteredList[index].imageUrl,
+                                  ),
+                          ),
+                        ),
+                        Visibility(
+                          visible: _filteredList[index].isManager ?? false,
+                          child: Container(
+                            padding: EdgeInsets.only(
+                              top: 10,
+                            ),
+                            child: Visibility(
+                              visible: _filteredList[index].isManager ?? false,
+                              child: Text(
+                                "Manager",
+                                style: TextStyle(
+                                  fontFamily: AppAssets.fontFamilyLato,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w400,
+                                  color: AppColors.contentColor,
+                                ),
                               ),
-                      ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   Expanded(
@@ -279,38 +303,74 @@ class ClubMembersListView extends StatelessWidget {
                     ),
                   ),
                   Visibility(
-                      visible: _filteredList[index].status !=
-                          ClubMemberStatus.PENDING,
-                      child: Expanded(
-                        flex: 2,
-                        child: Column(
-                          children: [
-                            Text(
-                              _filteredList[index].balance,
-                              style: TextStyle(
-                                fontFamily: AppAssets.fontFamilyLato,
-                                color: getTextColor(
-                                  _filteredList[index].balance,
-                                ),
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
+                    visible:
+                        _filteredList[index].status != ClubMemberStatus.PENDING,
+                    child: Expanded(
+                      flex: 1,
+                      child: Column(
+                        children: [
+                          Text(
+                            _filteredList[index].balance,
+                            style: TextStyle(
+                              fontFamily: AppAssets.fontFamilyLato,
+                              color: getTextColor(
+                                _filteredList[index].balance,
                               ),
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
                             ),
-                            Visibility(
-                              visible: _filteredList[index].isManager ?? false,
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(top: 10),
+                            child: Container(
+                              padding: EdgeInsets.all(3),
                               child: Text(
-                                "Manager",
+                                _filteredList[index].rake ?? "0",
                                 style: TextStyle(
                                   fontFamily: AppAssets.fontFamilyLato,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w400,
-                                  color: AppColors.contentColor,
+                                  color: Colors.white,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(3),
+                                color: AppColors.veryLightGrayColor,
+                              ),
                             ),
-                          ],
-                        ),
-                      )),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Visibility(
+                    visible:
+                        _filteredList[index].status != ClubMemberStatus.PENDING,
+                    child: Expanded(
+                      flex: 1,
+                      child: Column(
+                        children: [
+                          Icon(
+                            Icons.arrow_forward_ios,
+                            color: Colors.white,
+                            size: 10,
+                          )
+                          // Visibility(
+                          //   visible: _filteredList[index].isManager ?? false,
+                          //   child: Text(
+                          //     "Manager",
+                          //     style: TextStyle(
+                          //       fontFamily: AppAssets.fontFamilyLato,
+                          //       fontSize: 14,
+                          //       fontWeight: FontWeight.w400,
+                          //       color: AppColors.contentColor,
+                          //     ),
+                          //   ),
+                          // ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
