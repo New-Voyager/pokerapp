@@ -199,6 +199,8 @@ class BoardView extends StatelessWidget {
         return 'Waiting for more players';
       case AppConstants.WAITING_TO_BE_STARTED:
         return 'Tap to start the game';
+      case AppConstants.GAME_ENDED:
+        return 'Game Ended';
     }
 
     return null;
@@ -218,7 +220,9 @@ class BoardView extends StatelessWidget {
       alignment: Alignment.center,
       child: GestureDetector(
           onTap: () {
-            onStartGame();
+            if (tableStatus == AppConstants.WAITING_TO_BE_STARTED) {
+              onStartGame();
+            }
           },
           child: Container(
             padding: const EdgeInsets.symmetric(

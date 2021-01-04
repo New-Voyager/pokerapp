@@ -17,14 +17,17 @@ class Audio {
       context,
       listen: false,
     ).value[assetFile];
-
-    return Provider.of<AudioPlayer>(
-      context,
-      listen: false,
-    ).play(
-      tempAssetFile,
-      isLocal: true,
-    );
+    try {
+      return Provider.of<AudioPlayer>(
+        context,
+        listen: false,
+      ).play(
+        tempAssetFile,
+        isLocal: true,
+      );
+    } catch (Exception) {
+      // ignore this exception
+    }
   }
 
   static Future<int> stop({BuildContext context}) => Provider.of<AudioPlayer>(
