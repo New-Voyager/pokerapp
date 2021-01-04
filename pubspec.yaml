@@ -87,6 +87,10 @@ flutter:
      fonts:
        - asset: assets/fonts/NoticiaText-Bold.ttf
          weight: 700
+   - family: SourceSerif
+     fonts:
+       - asset: assets/fonts/SourceSerifPro-SemiBold.ttf
+         weight: 400
 
     # icon packs
    - family: AppIcons
