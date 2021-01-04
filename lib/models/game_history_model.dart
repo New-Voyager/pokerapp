@@ -262,7 +262,12 @@ class GameHistoryDetailModel extends ChangeNotifier {
     return handsPlayed.toString();
   }
 
-  String get endedAtStr => dateFormatter.format(this.endedAt);
+  String get endedAtStr {
+    if (this.endedAt == null) {
+      return '';
+    }
+    return dateFormatter.format(this.endedAt);
+  }
 
   void loadFromAsset() async {
     String data =
