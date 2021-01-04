@@ -28,7 +28,6 @@ class ClubActionButton extends StatelessWidget {
   Widget build(BuildContext context) {
     List<ClubMemberModel> _sampleList = new List<ClubMemberModel>();
 
-
     return Consumer<ClubHomePageModel>(
       builder: (_, ClubHomePageModel clubModel, __) => GestureDetector(
         onTap: () {
@@ -37,8 +36,7 @@ class ClubActionButton extends StatelessWidget {
               return Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (_) =>
-                      GameHistoryView(clubModel.clubCode),
+                  builder: (_) => GameHistoryView(clubModel.clubCode),
                 ),
               );
               break;

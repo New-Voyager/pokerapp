@@ -1,4 +1,3 @@
-
 import 'package:pokerapp/enums/game_type.dart';
 
 class NewGameConstants {
@@ -98,7 +97,8 @@ class NewGameModel {
   NewGameModel.fromJson(Map<String, dynamic> json) {
     String gameTypeTmp = json["gameType"];
     title = json['title'];
-    this.gameType = GameType.values.firstWhere((e) => e.toString() == 'GameType.' + gameTypeTmp);
+    this.gameType = GameType.values
+        .firstWhere((e) => e.toString() == 'GameType.' + gameTypeTmp);
     smallBlind = json['smallBlind'];
     bigBlind = json['bigBlind'];
     utgStraddleAllowed = json['utgStraddleAllowed'];
@@ -143,7 +143,6 @@ class NewGameModel {
     ante = blinds.ante;
   }
 }
-
 
 class Blinds {
   double smallBlind = 1.0;

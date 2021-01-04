@@ -54,6 +54,10 @@ class GameInfoModel {
     this.handToPlayerChannel = data['handToPlayerChannel'];
   }
 
+  void gameEnded() {
+    status = 'ENDED';
+  }
+
   // graph ql queries
   static String query(String gameCode) => """query gameInfo {
     gameInfo(gameCode:"$gameCode") {

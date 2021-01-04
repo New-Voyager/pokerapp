@@ -190,7 +190,7 @@ class UserView extends StatelessWidget {
           reverseDuration: AppConstants.animationDuration,
           child: (emptySeat && !isPresent)
               ? Container(
-            child: InkWell(
+                  child: InkWell(
                   child: Text(
                     'Open',
                     style: AppStyles.openSeatTextStyle,
