@@ -7,6 +7,7 @@ import 'package:pokerapp/models/club_members_model.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_icons.dart';
+import 'package:pokerapp/screens/club_screen/club_action_screens/club_member_detailed_view/club_member_detailed_view.dart';
 
 class ClubMembersListView extends StatelessWidget {
   final List<ClubMemberModel> _membersList;
@@ -36,9 +37,13 @@ class ClubMembersListView extends StatelessWidget {
         itemCount: _filteredList.length,
         itemBuilder: (context, index) {
           return Container(
-            child: GestureDetector(
+            child: InkWell(
               onTap: () {
-                print(_filteredList[index].name);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => ClubMembersDetailedView()),
+                );
               },
               child: Row(
                 children: <Widget>[
