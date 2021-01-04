@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class HeaderObject extends ChangeNotifier {
   String _gameCode;
   int _currentHandNum;
+  bool _gameEnded = false;
 
   HeaderObject({
     @required String gameCode,
@@ -17,6 +18,13 @@ class HeaderObject extends ChangeNotifier {
     notifyListeners();
   }
 
+  set gameEnded(bool ended) {
+    if (ended == _gameEnded) return;
+    this._gameEnded = ended;
+    notifyListeners();
+  }
+
   String get gameCode => _gameCode;
   int get currentHandNum => _currentHandNum;
+  bool get gameEnded => _gameEnded;
 }
