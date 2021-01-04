@@ -49,7 +49,7 @@ class HandsPieChart extends StatelessWidget {
   dynamic getColor(HandData hand) {
     if (hand != null) {
       if (hand.round == 'Pre-flop') {
-        return charts.MaterialPalette.yellow.shadeDefault;
+        return charts.MaterialPalette.gray.shadeDefault;
       }
       if (hand.round == 'Flop') {
         return charts.MaterialPalette.yellow.shadeDefault;
