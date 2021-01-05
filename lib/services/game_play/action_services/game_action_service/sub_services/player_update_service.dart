@@ -5,6 +5,7 @@ import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
+import 'package:pokerapp/models/game_play_models/ui/header_object.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/services/game_play/graphql/game_service.dart';
 import 'package:provider/provider.dart';
@@ -29,8 +30,13 @@ class PlayerUpdateService {
     if (idx == -1) {
       // fetch new player using GameInfo API and add to the game
       GameInfoModel _gameInfoModel = await GameService.getGameInfo(
-        data['gameCode'],
+        Provider.of<HeaderObject>(
+          context,
+          listen: false,
+        ).gameCode,
       );
+
+      assert(_gameInfoModel != null);
 
       List<PlayerModel> playerModels = _gameInfoModel.playersInSeats;
       PlayerModel newPlayerModel = playerModels.firstWhere(
