@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -125,6 +127,8 @@ class _FooterActionViewState extends State<FooterActionView> {
         "amount": $amount
       }
     }""";
+
+    log(message);
 
     // todo: will this work?
     // delegate the request to the GameComService
