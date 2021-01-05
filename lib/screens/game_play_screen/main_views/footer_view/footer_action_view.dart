@@ -5,10 +5,10 @@ import 'package:pokerapp/models/game_play_models/provider_models/action_info.dar
 import 'package:pokerapp/models/game_play_models/provider_models/player_action/option.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/player_action/player_action.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
+import 'package:pokerapp/models/game_play_models/ui/header_object.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_styles.dart';
-import 'package:pokerapp/screens/game_play_screen/pop_ups/chip_amount_pop_up.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/widgets/card_form_text_field.dart';
 import 'package:pokerapp/widgets/round_raised_button.dart';
@@ -107,11 +107,17 @@ class _FooterActionViewState extends State<FooterActionView> {
       context,
       listen: false,
     ).value;
+    // get current hand number
+    int handNum = Provider.of<HeaderObject>(
+      context,
+      listen: false,
+    ).currentHandNum;
 
     String message = """{
       "clubId": ${actionInfo.clubID},
       "gameId": "${actionInfo.gameID}",
       "playerId": "$playerID",
+      "handNum": $handNum,
       "messageType": "PLAYER_ACTED",
       "playerActed": {
         "seatNo": ${actionInfo.seatNo},
