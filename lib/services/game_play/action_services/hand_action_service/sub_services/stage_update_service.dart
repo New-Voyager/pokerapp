@@ -52,11 +52,26 @@ class StageUpdateService {
         ).addCommunityCard(cards[i]);
         await Future.delayed(AppConstants.communityCardPushDuration);
       }
-    } else
+
+      // wait for a brief moment, then flip the cards
+      await Future.delayed(AppConstants.communityCardPushDuration);
+      Provider.of<TableState>(
+        context,
+        listen: false,
+      ).flipCards();
+    } else {
       Provider.of<TableState>(
         context,
         listen: false,
       ).addCommunityCard(CardHelper.getCard(data[key]['${key}Card']));
+
+      // wait for a brief moment, then flip the last card
+      await Future.delayed(AppConstants.communityCardPushDuration);
+      Provider.of<TableState>(
+        context,
+        listen: false,
+      ).flipLastCard();
+    }
 
     // wait for a brief period of time, before removing the last actions of all players
     await Future.delayed(AppConstants.userPopUpMessageHoldDuration);

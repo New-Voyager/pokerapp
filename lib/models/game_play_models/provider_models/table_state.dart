@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
+import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 
 class TableState extends ChangeNotifier {
@@ -40,7 +41,21 @@ class TableState extends ChangeNotifier {
     notifyListeners();
   }
 
+  // this method flips all the cards after a short delay
+  void flipCards() async {
+    for (int i = 0; i < cards.length; i++) {
+      cards[i].flipCard();
+      notifyListeners();
+      await Future.delayed(AppConstants.communityCardPushDuration);
+    }
+  }
+
+  void flipLastCard() {
+    cards.last.flipCard();
+  }
+
   void addCommunityCard(CardObject card) {
+    card.isShownAtTable = true;
     if (this._communityCards == null) this._communityCards = List<CardObject>();
     this._communityCards.add(card);
     notifyListeners();
@@ -65,6 +80,7 @@ class TableState extends ChangeNotifier {
       if (rawCards.any((rc) => rc == rawCardNumber))
         _communityCards[i].highlight = true;
     }
+    notifyListeners();
   }
 
   /* getters */
