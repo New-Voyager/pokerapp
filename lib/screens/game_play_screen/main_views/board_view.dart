@@ -93,13 +93,13 @@ class BoardView extends StatelessWidget {
 
     switch (seatPos) {
       case 1:
-        return Transform.translate(
-          offset: Offset(
-            0.0,
-            shiftDownConstant,
-          ),
-          child: Align(
-            alignment: Alignment.bottomCenter,
+        return Align(
+          alignment: Alignment.bottomCenter,
+          child: Transform.translate(
+            offset: Offset(
+              0.0,
+              shiftDownConstant,
+            ),
             child: userView,
           ),
         );
