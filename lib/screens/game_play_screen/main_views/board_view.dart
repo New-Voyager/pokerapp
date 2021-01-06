@@ -401,7 +401,8 @@ class BoardView extends StatelessWidget {
       userObjects[idx].cards = model.cards;
       userObjects[idx].highlightCards = model.highlightCards;
       userObjects[idx].winner = model.winner;
-      userObjects[idx].chipAmount = model.chipAmount;
+      userObjects[idx].coinAmount = model.coinAmount;
+      userObjects[idx].animatingCoinMovement = model.animatingCoinMovement;
     }
 
     return userObjects;

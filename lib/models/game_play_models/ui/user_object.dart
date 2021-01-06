@@ -19,7 +19,8 @@ class UserObject {
   PlayerType playerType;
   bool playerFolded;
   bool winner;
-  int chipAmount;
+  int coinAmount;
+  bool animatingCoinMovement;
 
   UserObject({
     @required this.serverSeatPos,

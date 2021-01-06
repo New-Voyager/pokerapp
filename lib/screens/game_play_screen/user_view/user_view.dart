@@ -2,16 +2,19 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/enums/game_play_enums/player_type.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/remaining_time.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/user_object.dart';
+import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/screens/game_play_screen/card_views/hidden_card_view.dart';
 import 'package:pokerapp/screens/game_play_screen/card_views/stack_card_view.dart';
+import 'package:pokerapp/screens/game_play_screen/user_view/animating_widgets/chip_amount_animating_widget.dart';
 import 'package:pokerapp/screens/game_play_screen/user_view/animating_widgets/fold_card_animating_widget.dart';
 import 'package:pokerapp/screens/game_play_screen/user_view/count_down_timer.dart';
 import 'package:pokerapp/utils/card_helper.dart';
@@ -20,6 +23,18 @@ import 'package:timer_count_down/timer_count_down.dart';
 
 const shrinkedSizedBox = const SizedBox.shrink();
 const highlightColor = const Color(0xfff2a365);
+
+const Map<int, Offset> coinAmountWidgetOriginalOffsetMapping = {
+  1: Offset(0, -70),
+  2: Offset(50, -40),
+  3: Offset(50, -40),
+  4: Offset(50, -40),
+  5: Offset(30, 60),
+  6: Offset(-30, 60),
+  7: Offset(-50, -40),
+  8: Offset(-50, -40),
+  9: Offset(-50, -40),
+};
 
 class UserView extends StatelessWidget {
   final int seatPos;
@@ -453,19 +468,45 @@ class UserView extends StatelessWidget {
     );
   }
 
-  Widget _buildChipAmountWidget() => Transform.translate(
-        offset: Offset(0.0, 0.0),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-        ),
-      );
+  Widget _buildChipAmountWidget() {
+    Widget coinAmountWidget = Transform.translate(
+      offset: coinAmountWidgetOriginalOffsetMapping[seatPos],
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          /* show the coin svg */
+          Container(
+            height: 20,
+            width: 20.0,
+            child: SvgPicture.asset(
+              AppAssets.coinsImages,
+            ),
+          ),
+          const SizedBox(width: 5.0),
+
+          /* show the coin amount */
+          Text(
+            userObject.coinAmount.toString(),
+            style: AppStyles.gamePlayScreenPlayerChips,
+          ),
+        ],
+      ),
+    );
+
+    return userObject.coinAmount == null || userObject.coinAmount == 0
+        ? shrinkedSizedBox
+        : (userObject.animatingCoinMovement ?? false)
+            ? ChipAmountAnimatingWidget(
+                seatPos: seatPos,
+                child: coinAmountWidget,
+              )
+            : coinAmountWidget;
+  }
 
   @override
   Widget build(BuildContext context) {
     bool emptySeat = userObject.name == null;
     bool isMe = userObject.isMe ?? false;
-
-    log('seatNo: $seatPos, name: ${userObject.name}');
 
     int actionTime = Provider.of<ValueNotifier<GameInfoModel>>(
       context,
@@ -535,10 +576,8 @@ class UserView extends StatelessWidget {
             time: actionTime,
           ),
 
-          _buildSeatNoIndicator(),
-
           /* building the chip amount widget */
-          _buildChipAmountWidget(),
+          emptySeat ? shrinkedSizedBox : _buildChipAmountWidget(),
         ],
       ),
     );

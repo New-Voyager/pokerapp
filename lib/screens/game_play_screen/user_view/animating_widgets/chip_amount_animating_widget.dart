@@ -1,25 +1,25 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:pokerapp/resources/app_constants.dart';
-import 'package:pokerapp/screens/game_play_screen/card_views/hidden_card_view.dart';
 
 const Map<int, Offset> offsetMapping = {
-  1: Offset(20, -140),
-  2: Offset(80, -80),
-  3: Offset(80, -50),
-  4: Offset(80, -30),
+  1: Offset(0, -90),
+  2: Offset(30, -40),
+  3: Offset(20, 10),
+  4: Offset(30, 80),
   5: Offset(50, 50),
   6: Offset(-50, 50),
-  7: Offset(-80, -30),
-  8: Offset(-80, -50),
-  9: Offset(-80, -80),
+  7: Offset(-20, 80),
+  8: Offset(-20, 10),
+  9: Offset(-30, -40),
 };
 
-class FoldCardAnimatingWidget extends StatelessWidget {
-  final seatPos;
-  FoldCardAnimatingWidget({
+class ChipAmountAnimatingWidget extends StatelessWidget {
+  final int seatPos;
+  final Widget child;
+
+  ChipAmountAnimatingWidget({
     this.seatPos,
+    this.child,
   });
 
   @override
@@ -29,7 +29,7 @@ class FoldCardAnimatingWidget extends StatelessWidget {
           begin: Offset(0, 0),
           end: offsetMapping[seatPos],
         ),
-        child: HiddenCardView(),
+        child: child,
         duration: AppConstants.animationDuration,
         builder: (_, offset, child) {
           double offsetPercentageLeft =
