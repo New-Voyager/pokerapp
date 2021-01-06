@@ -4,13 +4,13 @@ import 'package:pokerapp/resources/app_constants.dart';
 const Map<int, Offset> offsetMapping = {
   1: Offset(0, -90),
   2: Offset(30, -40),
-  3: Offset(20, 10),
-  4: Offset(30, 80),
-  5: Offset(50, 50),
-  6: Offset(-50, 50),
+  3: Offset(40, 10),
+  4: Offset(50, 100),
+  5: Offset(50, 100),
+  6: Offset(-50, 100),
   7: Offset(-20, 80),
   8: Offset(-20, 10),
-  9: Offset(-30, -40),
+  9: Offset(-50, -50),
 };
 
 class ChipAmountAnimatingWidget extends StatelessWidget {
@@ -33,14 +33,11 @@ class ChipAmountAnimatingWidget extends StatelessWidget {
         duration: AppConstants.animationDuration,
         builder: (_, offset, child) {
           double offsetPercentageLeft =
-              1 - (offset.dx / offsetMapping[seatPos].dx);
-
-          // todo: the opacity change can be smoothed out
-
+              1 - (offset.dy / offsetMapping[seatPos].dy);
           return Transform.translate(
             offset: offset,
             child: Opacity(
-              opacity: offsetPercentageLeft == 0.0 ? 0.0 : 1.0,
+              opacity: offsetPercentageLeft,
               child: child,
             ),
           );
