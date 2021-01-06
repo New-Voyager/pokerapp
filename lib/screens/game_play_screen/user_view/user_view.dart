@@ -10,6 +10,7 @@ import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/screens/game_play_screen/card_views/hidden_card_view.dart';
 import 'package:pokerapp/screens/game_play_screen/card_views/stack_card_view.dart';
+import 'package:pokerapp/screens/game_play_screen/user_view/animating_widgets/fold_card_animating_widget.dart';
 import 'package:pokerapp/screens/game_play_screen/user_view/count_down_timer.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:provider/provider.dart';
@@ -276,13 +277,11 @@ class UserView extends StatelessWidget {
               child: Transform.scale(
                 scale: 1.0,
                 child: (userObject.playerFolded ?? false)
-                    ? const SizedBox.shrink(
-                        key: ValueKey('one'),
+                    ? FoldCardAnimatingWidget(
+                        seatPos: seatPos,
                       )
                     : showDown
-                        ? const SizedBox.shrink(
-                            key: ValueKey('two'),
-                          )
+                        ? const SizedBox.shrink()
                         : HiddenCardView(),
               ),
             ),
