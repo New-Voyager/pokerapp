@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/resources/app_constants.dart';
@@ -72,6 +74,7 @@ class TableState extends ChangeNotifier {
 
   /* this method highlights all community cards */
   void highlightCards(List<int> rawCards) {
+    if (_communityCards == null) return;
     for (int i = 0; i < _communityCards.length; i++) {
       String label = _communityCards[i].label;
       String suit = _communityCards[i].suit;
@@ -80,6 +83,10 @@ class TableState extends ChangeNotifier {
       if (rawCards.any((rc) => rc == rawCardNumber))
         _communityCards[i].highlight = true;
     }
+
+    log('\n\n\n\nrawCards: $rawCards\n\n\n\n');
+    log('\n\n\n\ncommunityCards: $_communityCards\n\n\n');
+
     notifyListeners();
   }
 

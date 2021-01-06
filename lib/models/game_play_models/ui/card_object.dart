@@ -40,4 +40,7 @@ class CardObject {
         card: this,
         grayOut: true,
       );
+
+  @override
+  String toString() => 'suit: $suit, label: $label, highlight: $highlight';
 }

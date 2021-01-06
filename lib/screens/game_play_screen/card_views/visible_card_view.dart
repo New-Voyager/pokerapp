@@ -5,7 +5,7 @@ import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/resources/app_styles.dart';
-import 'package:pokerapp/resources/card_back_assets.dart';
+import 'package:provider/provider.dart';
 
 class VisibleCardView extends StatelessWidget {
   final GlobalKey<FlipCardState> cardKey = GlobalKey<FlipCardState>();
@@ -18,7 +18,7 @@ class VisibleCardView extends StatelessWidget {
     this.grayOut = false,
   });
 
-  flipCard() => cardKey.currentState.toggleCard();
+  flipCard() => cardKey?.currentState?.toggleCard();
 
   @override
   Widget build(BuildContext context) {
@@ -104,10 +104,11 @@ class VisibleCardView extends StatelessWidget {
                 ),
                 child: FlipCard(
                   key: cardKey,
-                  front: Image.asset(
-                    CardBackAssets
-                        .asset1_1, // todo: update this to the current card back asset
-                    fit: BoxFit.fitHeight,
+                  front: Consumer<ValueNotifier<String>>(
+                    builder: (_, valueNotifier, __) => Image.asset(
+                      valueNotifier.value,
+                      fit: BoxFit.fitHeight,
+                    ),
                   ),
                   back: cardWidget,
                 ),

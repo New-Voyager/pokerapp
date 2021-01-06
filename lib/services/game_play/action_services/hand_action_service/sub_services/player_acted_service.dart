@@ -72,6 +72,17 @@ class PlayerActedService {
         assetFile: AppAssets.checkSound,
       );
 
+    int amount = playerActed['amount'];
+    // FIXME: THERE WOULD BE A SERVER SIDE CHANGE TO GET THE UPDATED COIN AMOUNT, FOR NOW, ADD LOCALLY
+    if (amount != null)
+      Provider.of<Players>(
+        context,
+        listen: false,
+      ).updateCoinAmount(
+        idx,
+        amount,
+      );
+
     int stack = playerActed['stack'];
     if (stack != null)
       Provider.of<Players>(
