@@ -84,7 +84,7 @@ class BoardView extends StatelessWidget {
 
     UserView userView = UserView(
       isPresent: isPresent,
-      seatPos: isPresent ? -1 : seatPos,
+      seatPos: seatPos,
       key: ValueKey(seatPos),
       userObject: user,
       cardsAlignment: cardsAlignment,
@@ -401,6 +401,7 @@ class BoardView extends StatelessWidget {
       userObjects[idx].cards = model.cards;
       userObjects[idx].highlightCards = model.highlightCards;
       userObjects[idx].winner = model.winner;
+      userObjects[idx].chipAmount = model.chipAmount;
     }
 
     return userObjects;

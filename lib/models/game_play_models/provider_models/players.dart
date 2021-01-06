@@ -105,8 +105,16 @@ class Players extends ChangeNotifier {
     _notify();
   }
 
+  void updateChipAmount(int idx, int amount) {
+    _players[idx].chipAmount = amount;
+    _notify();
+  }
+
   void removeAllPlayersStatus() {
-    for (int i = 0; i < _players.length; i++) _players[i].status = null;
+    for (int i = 0; i < _players.length; i++) {
+      _players[i].status = null;
+      _players[i].chipAmount = null;
+    }
     _notify();
   }
 

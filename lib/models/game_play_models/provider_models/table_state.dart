@@ -74,6 +74,7 @@ class TableState extends ChangeNotifier {
 
   /* this method highlights all community cards */
   void highlightCards(List<int> rawCards) {
+    if (_communityCards == null) return;
     for (int i = 0; i < _communityCards.length; i++) {
       String label = _communityCards[i].label;
       String suit = _communityCards[i].suit;

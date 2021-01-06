@@ -19,6 +19,7 @@ class UserObject {
   PlayerType playerType;
   bool playerFolded;
   bool winner;
+  int chipAmount;
 
   UserObject({
     @required this.serverSeatPos,

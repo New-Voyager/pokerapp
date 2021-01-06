@@ -18,7 +18,7 @@ class VisibleCardView extends StatelessWidget {
     this.grayOut = false,
   });
 
-  flipCard() => cardKey.currentState.toggleCard();
+  flipCard() => cardKey?.currentState?.toggleCard();
 
   @override
   Widget build(BuildContext context) {

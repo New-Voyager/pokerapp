@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
@@ -451,10 +453,19 @@ class UserView extends StatelessWidget {
     );
   }
 
+  Widget _buildChipAmountWidget() => Transform.translate(
+        offset: Offset(0.0, 0.0),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+        ),
+      );
+
   @override
   Widget build(BuildContext context) {
     bool emptySeat = userObject.name == null;
     bool isMe = userObject.isMe ?? false;
+
+    log('seatNo: $seatPos, name: ${userObject.name}');
 
     int actionTime = Provider.of<ValueNotifier<GameInfoModel>>(
       context,
@@ -462,7 +473,7 @@ class UserView extends StatelessWidget {
     ).value.actionTime;
 
     return InkWell(
-      onTap: emptySeat ? () => onUserTap(seatPos) : null,
+      onTap: emptySeat ? () => onUserTap(isPresent ? -1 : seatPos) : null,
       child: Stack(
         alignment: Alignment.center,
         children: [
@@ -523,6 +534,11 @@ class UserView extends StatelessWidget {
             context: context,
             time: actionTime,
           ),
+
+          _buildSeatNoIndicator(),
+
+          /* building the chip amount widget */
+          _buildChipAmountWidget(),
         ],
       ),
     );

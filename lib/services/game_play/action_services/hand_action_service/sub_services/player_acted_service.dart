@@ -72,6 +72,16 @@ class PlayerActedService {
         assetFile: AppAssets.checkSound,
       );
 
+    int amount = playerActed['amount'];
+    if (amount != null)
+      Provider.of<Players>(
+        context,
+        listen: false,
+      ).updateChipAmount(
+        idx,
+        amount,
+      );
+
     int stack = playerActed['stack'];
     if (stack != null)
       Provider.of<Players>(
