@@ -17,12 +17,12 @@ class _ProfilePageViewState extends State<ProfilePageView> {
           child: Text('Logout'),
           onPressed: () {
             AuthService.logout();
-            Navigator.push(
+            Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(
-                builder: (_) => PlayedHandsScreen(),
+                builder: (_) => LoginScreen(),
               ),
-              // (route) => false,
+              (route) => false,
             );
           },
         ),

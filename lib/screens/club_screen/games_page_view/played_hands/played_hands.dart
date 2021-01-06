@@ -11,6 +11,9 @@ class PlayedHandsScreen extends StatelessWidget {
     height: 10.0,
   );
 
+  bool _visible;
+  int c;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,9 +40,15 @@ class PlayedHandsScreen extends StatelessWidget {
           centerTitle: true,
           title: Text("Played Hands"),
         ),
-        body: ListView.builder(itemBuilder: (context, index) {
-          return getListItem();
-        }));
+        body: ListView.builder(
+          itemBuilder: (context, index) {
+            print(index.toString() + " " + _visible.toString());
+            _visible = index == 0 ? false : true;
+            c = index == 0 ? 1 : index + 1;
+            return getListItem();
+          },
+          itemCount: 5,
+        ));
   }
 
   getListItem() {
@@ -53,102 +62,131 @@ class PlayedHandsScreen extends StatelessWidget {
             Radius.circular(AppDimensions.cardRadius),
           ),
         ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 5.0, top: 10.0, right: 5.0),
-              child: Text("#54", style: TextStyle(color: Colors.white)),
-            ),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  seprator,
-                  Text(
-                    "Ended at Flop",
-                    style: TextStyle(color: Color(0xff848484)),
-                  ),
-                  seprator,
-                  Container(
-                      child: ListView.separated(
-                    shrinkWrap: true,
-                    physics: ClampingScrollPhysics(),
-                    itemBuilder: (context, index) {
-                      return Row(
-                        children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "Winner : Yong",
-                                  style: TextStyle(color: Color(0xff848484)),
-                                ),
-                                seprator,
-                                Text(
-                                  "Pot : 210",
-                                  style: TextStyle(
-                                      color: Color(0xff848484),
-                                      fontWeight: FontWeight.w600),
-                                ),
-                                seprator,
-                              ],
-                            ),
-                          ),
-                          getCards(),
-                        ],
-                      );
-                    },
-                    itemCount: 3,
-                    separatorBuilder: (context, index) {
-                      return SizedBox(
-                        height: 20.0,
-                      );
-                    },
-                  )),
-                ],
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding:
+                    const EdgeInsets.only(left: 8.0, top: 10.0, right: 8.0),
+                child: Text("#54", style: TextStyle(color: Colors.white)),
               ),
-            ),
-            // Icon(Icons.arrow_forward_ios),
-            IconButton(
-                icon: Icon(Icons.arrow_forward_ios),
-                onPressed: () {},
-                color: Colors.white),
-          ],
+              Expanded(
+                child: Row(
+                  children: [
+                    Flexible(
+                      flex: 9,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          seprator,
+                          Text(
+                            "Ended at Flop",
+                            style: TextStyle(color: Color(0xff848484)),
+                          ),
+                          seprator,
+                          Container(
+                              child: ListView.separated(
+                            shrinkWrap: true,
+                            physics: ClampingScrollPhysics(),
+                            itemBuilder: (context, index) {
+                              return Row(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Flexible(
+                                    flex: 4,
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "Winner : Yong",
+                                          style: TextStyle(
+                                              color: Color(0xff848484)),
+                                        ),
+                                        seprator,
+                                        Text(
+                                          "Pot : 210",
+                                          style: TextStyle(
+                                              color: Color(0xff848484),
+                                              fontWeight: FontWeight.w600),
+                                        ),
+                                        seprator,
+                                      ],
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 20.0,
+                                  ),
+                                  Flexible(
+                                    flex: 7,
+                                    child: Visibility(
+                                      child: getCards(),
+                                      visible: _visible,
+                                    ),
+                                  ),
+                                ],
+                              );
+                            },
+                            itemCount: c,
+                            separatorBuilder: (context, index) {
+                              return SizedBox(
+                                height: 20.0,
+                              );
+                            },
+                          )),
+                        ],
+                      ),
+                    ),
+                    Flexible(
+                      flex: 1,
+                      child: IconButton(
+                        icon: Icon(Icons.arrow_forward_ios),
+                        onPressed: () {},
+                        color: Colors.white,
+                        padding: EdgeInsets.only(left: 2.0, right: 2.0),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              // Icon(Icons.arrow_forward_ios),
+            ],
+          ),
         ),
       ),
     );
   }
 
   getCards() {
-    return Expanded(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          VisibleCardView(
-              card: CardObject(
-                  suit: AppConstants.redHeart, label: "B", color: Colors.red)),
-          VisibleCardView(
-              card: CardObject(
-                  suit: AppConstants.redHeart, label: "9", color: Colors.red)),
-          VisibleCardView(
-              card: CardObject(
-                  suit: AppConstants.blackSpade,
-                  label: "A",
-                  color: Colors.black)),
-          VisibleCardView(
-              card: CardObject(
-                  suit: AppConstants.blackSpade,
-                  label: "J",
-                  color: Colors.black)),
-          VisibleCardView(
-              card: CardObject(
-                  suit: AppConstants.blackSpade,
-                  label: "J",
-                  color: Colors.black)),
-        ],
-      ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        VisibleCardView(
+            card: CardObject(
+                suit: AppConstants.redHeart, label: "B", color: Colors.red)),
+        VisibleCardView(
+            card: CardObject(
+                suit: AppConstants.redHeart, label: "9", color: Colors.red)),
+        VisibleCardView(
+            card: CardObject(
+                suit: AppConstants.blackSpade,
+                label: "A",
+                color: Colors.black)),
+        VisibleCardView(
+            card: CardObject(
+                suit: AppConstants.blackSpade,
+                label: "J",
+                color: Colors.black)),
+        VisibleCardView(
+            card: CardObject(
+                suit: AppConstants.blackSpade,
+                label: "J",
+                color: Colors.black)),
+      ],
     );
   }
 }
