@@ -15,11 +15,14 @@ class ClubMembersView extends StatefulWidget {
   final ClubHomePageModel _clubHomePageModel;
   ClubMembersView(this._clubHomePageModel);
   @override
-  _ClubMembersView createState() => _ClubMembersView(this._clubHomePageModel);
+  _ClubMembersViewState createState() =>
+      _ClubMembersViewState(this._clubHomePageModel);
 }
 
-class _ClubMembersView extends State<ClubMembersView> {
+class _ClubMembersViewState extends State<ClubMembersView>
+    with SingleTickerProviderStateMixin {
   final ClubHomePageModel _clubHomePageModel;
+  TabController _controller;
   List<ClubMemberModel> _all = new List<ClubMemberModel>();
   List<ClubMemberModel> _inactive = new List<ClubMemberModel>();
   List<ClubMemberModel> _managers = new List<ClubMemberModel>();
@@ -28,7 +31,7 @@ class _ClubMembersView extends State<ClubMembersView> {
   bool _isLoading = false;
   void _toggleLoading() => setState(() => _isLoading = !_isLoading);
 
-  _ClubMembersView(this._clubHomePageModel);
+  _ClubMembersViewState(this._clubHomePageModel);
 
   void _fetchData() async {
     _toggleLoading();
@@ -47,6 +50,7 @@ class _ClubMembersView extends State<ClubMembersView> {
   void initState() {
     super.initState();
     _fetchData();
+    _controller = new TabController(length: 4, vsync: this);
   }
 
   @override
@@ -59,60 +63,81 @@ class _ClubMembersView extends State<ClubMembersView> {
 
     // data loaded
     if (_clubHomePageModel.isOwner) {
-      return DefaultTabController(
-        length: 4,
-        child: Scaffold(
+      return Scaffold(
+        backgroundColor: AppColors.screenBackgroundColor,
+        appBar: AppBar(
+          leading: IconButton(
+            icon: Icon(
+              Icons.arrow_back_ios,
+              size: 14,
+              color: AppColors.appAccentColor,
+            ),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          titleSpacing: 0,
+          elevation: 0.0,
           backgroundColor: AppColors.screenBackgroundColor,
-          appBar: AppBar(
-            leading: IconButton(
-              icon: Icon(
-                Icons.arrow_back_ios,
-                size: 14,
-                color: AppColors.appAccentColor,
-              ),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-            titleSpacing: 0,
-            elevation: 0.0,
-            backgroundColor: AppColors.screenBackgroundColor,
-            bottom: TabBar(
-              labelColor: AppColors.appAccentColor,
-              unselectedLabelColor: Colors.white,
-              isScrollable: true,
-              tabs: [
-                Tab(
-                  text: 'All',
-                ),
-                Tab(
-                  text: 'Unsettled',
-                ),
-                Tab(
-                  text: 'Managers',
-                ),
-                Tab(
-                  text: 'Inactive',
-                ),
-              ],
-            ),
-            title: Text(
-              _clubHomePageModel.clubName,
-              textAlign: TextAlign.left,
-              style: TextStyle(
-                color: AppColors.appAccentColor,
-                fontSize: 14.0,
-                fontFamily: AppAssets.fontFamilyLato,
-                fontWeight: FontWeight.w600,
-              ),
+          title: Text(
+            _clubHomePageModel.clubName,
+            textAlign: TextAlign.left,
+            style: TextStyle(
+              color: AppColors.appAccentColor,
+              fontSize: 14.0,
+              fontFamily: AppAssets.fontFamilyLato,
+              fontWeight: FontWeight.w600,
             ),
           ),
-          body: TabBarView(
-            children: [
-              ClubMembersListView(_all),
-              ClubMembersListView(_unsettled),
-              ClubMembersListView(_managers),
-              ClubMembersListView(_inactive),
-            ],
-          ),
+        ),
+        body: Column(
+          children: [
+            Container(
+              margin: EdgeInsets.only(left: 15, top: 5, bottom: 5, right: 15),
+              alignment: Alignment.centerLeft,
+              child: Text(
+                "Members",
+                style: const TextStyle(
+                  fontFamily: AppAssets.fontFamilyLato,
+                  color: Colors.white,
+                  fontSize: 30.0,
+                  fontWeight: FontWeight.w900,
+                ),
+              ),
+            ),
+            Container(
+              alignment: Alignment.topCenter,
+              child: TabBar(
+                controller: _controller,
+                labelColor: AppColors.appAccentColor,
+                unselectedLabelColor: Colors.white,
+                isScrollable: true,
+                tabs: [
+                  Tab(
+                    text: 'All',
+                  ),
+                  Tab(
+                    text: 'Unsettled',
+                  ),
+                  Tab(
+                    text: 'Managers',
+                  ),
+                  Tab(
+                    text: 'Inactive',
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: TabBarView(
+                controller: _controller,
+                children: <Widget>[
+                  ClubMembersListView(_all),
+                  ClubMembersListView(_unsettled),
+                  ClubMembersListView(_managers),
+                  ClubMembersListView(_inactive),
+                ],
+              ),
+            ),
+          ],
         ),
       );
     } else {

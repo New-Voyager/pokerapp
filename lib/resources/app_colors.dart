@@ -19,6 +19,7 @@ class AppColors {
   static const Color chatOthersColor = Color(0xff313235);
 
   static const Color lightGrayColor = Color(0xffdcdcdc);
+  static const Color veryLightGrayColor = Color(0x44D3D3D3);
 
   static const Color listViewDividerColor = Color(0xff707070);
 }
