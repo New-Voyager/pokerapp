@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_play_enums/player_type.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
+import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
 
 /*
@@ -105,8 +106,36 @@ class Players extends ChangeNotifier {
     _notify();
   }
 
-  void removeAllPlayersStatus() {
-    for (int i = 0; i < _players.length; i++) _players[i].status = null;
+  void updateCoinAmount(int idx, int amount) {
+    if (_players[idx].coinAmount == null)
+      _players[idx].coinAmount = amount;
+    else
+      _players[idx].coinAmount += amount;
+    _notify();
+  }
+
+  Future<void> moveCoinsToPot() async {
+    /* move all the coins to the pot  */
+    for (int i = 0; i < _players.length; i++) {
+      _players[i].animatingCoinMovement = true;
+    }
+    _notify();
+
+    // waiting for double the animation time
+    await Future.delayed(AppConstants.animationDuration);
+
+    for (int i = 0; i < _players.length; i++) {
+      _players[i].animatingCoinMovement = false;
+      _players[i].coinAmount = null;
+    }
+    _notify();
+  }
+
+  Future<void> removeAllPlayersStatus() async {
+    for (int i = 0; i < _players.length; i++) {
+      _players[i].status = null;
+      _players[i].coinAmount = null;
+    }
     _notify();
   }
 

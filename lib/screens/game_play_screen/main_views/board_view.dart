@@ -84,7 +84,7 @@ class BoardView extends StatelessWidget {
 
     UserView userView = UserView(
       isPresent: isPresent,
-      seatPos: isPresent ? -1 : seatPos,
+      seatPos: seatPos,
       key: ValueKey(seatPos),
       userObject: user,
       cardsAlignment: cardsAlignment,
@@ -93,13 +93,13 @@ class BoardView extends StatelessWidget {
 
     switch (seatPos) {
       case 1:
-        return Transform.translate(
-          offset: Offset(
-            0.0,
-            shiftDownConstant,
-          ),
-          child: Align(
-            alignment: Alignment.bottomCenter,
+        return Align(
+          alignment: Alignment.bottomCenter,
+          child: Transform.translate(
+            offset: Offset(
+              0.0,
+              shiftDownConstant,
+            ),
             child: userView,
           ),
         );
@@ -401,6 +401,8 @@ class BoardView extends StatelessWidget {
       userObjects[idx].cards = model.cards;
       userObjects[idx].highlightCards = model.highlightCards;
       userObjects[idx].winner = model.winner;
+      userObjects[idx].coinAmount = model.coinAmount;
+      userObjects[idx].animatingCoinMovement = model.animatingCoinMovement;
     }
 
     return userObjects;

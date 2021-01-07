@@ -5,6 +5,8 @@ class AppAssets {
   static const String fontFamilyNoticia = 'NoticiaText';
   static const String fontFamilySourceSerif = 'SourceSerif';
 
+  static const String coinsImages = 'assets/images/coins.svg';
+
   static const String betRaiseSound = 'assets/sound_effects/bet_call1.mp3';
   static const String allInSound = 'assets/sound_effects/allin.mp3';
   static const String foldSound = 'assets/sound_effects/fold.mp3';

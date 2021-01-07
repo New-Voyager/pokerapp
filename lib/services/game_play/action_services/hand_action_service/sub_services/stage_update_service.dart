@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
@@ -9,14 +11,7 @@ import 'package:provider/provider.dart';
 class StageUpdateService {
   StageUpdateService._();
 
-  static void handle({
-    BuildContext context,
-    var data,
-    String key,
-  }) async {
-    assert(key != null);
-
-    // remove the updatedPot and store the pots info
+  static void updatePot(var data, String key, BuildContext context) {
     try {
       List<int> pots =
           data[key]['pots']?.map<int>((e) => int.parse(e.toString()))?.toList();
@@ -28,10 +23,40 @@ class StageUpdateService {
         potChips: pots,
         potUpdatesChips: null,
       );
-    } catch (e) {}
+    } catch (e) {
+      log('exception from StageUpdateService: $e');
+    }
+  }
+
+  static void handle({
+    BuildContext context,
+    var data,
+    String key,
+  }) async {
+    assert(key != null);
+
+    // show the move coin to pot animation, after that update the pot
+    Provider.of<Players>(
+      context,
+      listen: false,
+    ).moveCoinsToPot().then(
+      (_) async {
+        // update the pot
+        updatePot(data, key, context);
+
+        // remove the last player status
+        // wait for a brief period of time, before removing the last actions of all players
+        await Future.delayed(AppConstants.userPopUpMessageHoldDuration);
+
+        // remove all the status (last action) of all the players
+        Provider.of<Players>(
+          context,
+          listen: false,
+        ).removeAllPlayersStatus();
+      },
+    );
 
     // update the community cards
-
     if (key == 'flop') {
       var board = data[key]['board'];
 
@@ -52,19 +77,25 @@ class StageUpdateService {
         ).addCommunityCard(cards[i]);
         await Future.delayed(AppConstants.communityCardPushDuration);
       }
-    } else
+
+      // wait for a brief moment, then flip the cards
+      await Future.delayed(AppConstants.communityCardPushDuration);
+      Provider.of<TableState>(
+        context,
+        listen: false,
+      ).flipCards();
+    } else {
       Provider.of<TableState>(
         context,
         listen: false,
       ).addCommunityCard(CardHelper.getCard(data[key]['${key}Card']));
 
-    // wait for a brief period of time, before removing the last actions of all players
-    await Future.delayed(AppConstants.userPopUpMessageHoldDuration);
-
-    // remove all the status (last action) of all the players
-    Provider.of<Players>(
-      context,
-      listen: false,
-    ).removeAllPlayersStatus();
+      // wait for a brief moment, then flip the last card
+      await Future.delayed(AppConstants.communityCardPushDuration);
+      Provider.of<TableState>(
+        context,
+        listen: false,
+      ).flipLastCard();
+    }
   }
 }

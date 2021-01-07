@@ -10,10 +10,14 @@ class CardObject {
   // ui params
   bool smaller;
 
+  bool isShownAtTable;
+
   /* this is needed in showdown and
   while highlighting a winner */
   bool highlight;
   bool otherHighlightColor;
+
+  VisibleCardView visibleCard;
 
   CardObject({
     @required this.suit,
@@ -21,14 +25,22 @@ class CardObject {
     @required this.color,
     this.smaller = false,
     this.highlight = false,
-  });
+    this.isShownAtTable = false, // this is true for the community cards
+  }) {
+    this.visibleCard = VisibleCardView(
+      card: this,
+    );
+  }
 
-  Widget get widget => VisibleCardView(
-        card: this,
-      );
+  void flipCard() => this.visibleCard.flipCard();
+
+  Widget get widget => this.visibleCard;
 
   Widget get grayedWidget => VisibleCardView(
         card: this,
         grayOut: true,
       );
+
+  @override
+  String toString() => 'suit: $suit, label: $label, highlight: $highlight';
 }
