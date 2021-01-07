@@ -20,7 +20,7 @@ class PlayedHandsScreen extends StatelessWidget {
         backgroundColor: AppColors.screenBackgroundColor,
         appBar: AppBar(
           elevation: 0.0,
-          leadingWidth: 100.0,
+          //leadingWidth: 100.0,
           backgroundColor: AppColors.screenBackgroundColor,
           leading: Padding(
             padding: const EdgeInsets.only(left: 8.0),

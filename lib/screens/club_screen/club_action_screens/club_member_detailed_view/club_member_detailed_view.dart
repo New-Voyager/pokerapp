@@ -1,7 +1,6 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'package:pokerapp/models/member_details_model.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_icons.dart';
@@ -156,7 +155,7 @@ class _ClubMembersDetailedViewState extends State<ClubMembersDetailedView> {
                                 child: Column(
                                   children: [
                                     Icon(
-                                      Icons.sensor_door,
+                                      Icons.settings,
                                       size: 20,
                                     ),
                                   ],
@@ -619,7 +618,7 @@ class _ClubMembersDetailedViewState extends State<ClubMembersDetailedView> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Icon(
-                      Icons.notes_outlined,
+                      Icons.highlight,
                       color: AppColors.appAccentColor,
                     ),
                     Container(
