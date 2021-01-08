@@ -4,7 +4,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:intl/intl.dart';
-final DateFormat dateFormatter = DateFormat.yMd().add_jm(); // internationalize this
+
+final DateFormat dateFormatter =
+    DateFormat.yMd().add_jm(); // internationalize this
 final NumberFormat chipsFormatter = new NumberFormat("0.00");
 final NumberFormat timeFormatter = new NumberFormat("00");
 
@@ -159,14 +161,14 @@ class GameHistoryDetailModel extends ChangeNotifier {
   GameHistoryDetailModel(this.gameCode, this.isOwner);
 
   void load() async {
-    final gameData = jsonData['data']['completedGame'];
-    final List playerStack = jsonData['data']['completedGame']['stackStat'];
+    final gameData = jsonData['completedGame'];
+    final List playerStack = jsonData['completedGame']['stackStat'];
 
     stack = playerStack
         .map((e) => new PlayerStack(int.parse(e["handNum"].toString()),
             double.parse(e["after"].toString())))
         .toList();
-    stack.sort((a,b) => a.handNum.compareTo(b.handNum));
+    stack.sort((a, b) => a.handNum.compareTo(b.handNum));
 
     preflopHands = int.parse(gameData['preflopHands'].toString());
     flopHands = int.parse(gameData['flopHands'].toString());
@@ -211,23 +213,27 @@ class GameHistoryDetailModel extends ChangeNotifier {
     mins = (sessionTime / 60).toInt();
     hour = (mins / 60).toInt();
     mins = (mins % 60);
-    sessionTimeStr = '${timeFormatter.format(hour)}:${timeFormatter.format(mins)}';
+    sessionTimeStr =
+        '${timeFormatter.format(hour)}:${timeFormatter.format(mins)}';
 
     endedAt = DateTime.parse(gameData['endedAt'].toString());
     balance = double.parse(gameData['balance'].toString());
     profit = double.parse(gameData['profit'].toString());
     buyIn = double.parse(gameData['buyIn'].toString());
-
-    notifyListeners();
   }
 
   String get gameHandsText {
     return '$gameHands hands dealt in $runTimeStr';
   }
 
-  String get playerHandsText => 'You played $handsPlayed hands in $sessionTimeStr';
+  String get playerHandsText =>
+      'You played $handsPlayed hands in $sessionTimeStr';
 
   String get balanceText {
+    if (balance == null) {
+      return '';
+    }
+
     if (balance == balance.round()) {
       return '${balance.toInt()}';
     } else {
@@ -236,6 +242,10 @@ class GameHistoryDetailModel extends ChangeNotifier {
   }
 
   String get buyInText {
+    if (buyIn == null) {
+      return '';
+    }
+
     if (buyIn == buyIn.round()) {
       return '${buyIn.toInt()}';
     } else {
@@ -244,6 +254,10 @@ class GameHistoryDetailModel extends ChangeNotifier {
   }
 
   String get profitText {
+    if (profit == null) {
+      return "";
+    }
+
     if (profit == profit.round()) {
       return '${profit.toInt()}';
     } else {
@@ -267,22 +281,5 @@ class GameHistoryDetailModel extends ChangeNotifier {
       return '';
     }
     return dateFormatter.format(this.endedAt);
-  }
-
-  void loadFromAsset() async {
-    String data =
-        await rootBundle.loadString('assets/sample-data/completed-game.json');
-    jsonData = json.decode(data);
-    load();
-  }
-
-  static Future<GameHistoryDetailModel> fromJson() async {
-    String data =
-        await rootBundle.loadString('assets/sample-data/completed-game.json');
-    final jsonData = json.decode(data);
-    print(jsonData);
-    GameHistoryDetailModel ret = new GameHistoryDetailModel('', true);
-    ret.jsonData = jsonData;
-    return ret;
   }
 }

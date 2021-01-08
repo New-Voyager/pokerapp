@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -19,10 +17,10 @@ import 'package:pokerapp/screens/game_play_screen/user_view/animating_widgets/fo
 import 'package:pokerapp/screens/game_play_screen/user_view/count_down_timer.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:provider/provider.dart';
-import 'package:timer_count_down/timer_count_down.dart';
 
 const shrinkedSizedBox = const SizedBox.shrink();
-const highlightColor = const Color(0xfff2a365);
+//const highlightColor = const Color(0xfff2a365);
+const highlightColor = const Color(0xfffffff);
 
 const Map<int, Offset> coinAmountWidgetOriginalOffsetMapping = {
   1: Offset(0, -70),
@@ -134,8 +132,11 @@ class UserView extends StatelessWidget {
           // showing user status
           Transform.translate(
             offset: Offset(
-              cardsAlignment == Alignment.centerRight ? 45 : -45,
-              5.0,
+              (cardsAlignment == Alignment.centerRight ||
+                      cardsAlignment == Alignment.bottomCenter)
+                  ? -15
+                  : 15,
+              10.0,
             ),
             child: _buildUserStatus(emptySeat),
           ),
@@ -152,6 +153,7 @@ class UserView extends StatelessWidget {
     * raise/bet -> shade of yellow / blue might b? */
 
     Color statusColor = const Color(0xff474747); // default color
+    Color boxColor = const Color(0xff474747); // default color
 
     String status = userObject.status;
     if (status != null) {
@@ -161,7 +163,14 @@ class UserView extends StatelessWidget {
       else if (status.toUpperCase().contains('RAISE') ||
           status.toUpperCase().contains('BET')) statusColor = Colors.red;
     }
-
+    dynamic borderColor = Colors.black12;
+    if (userObject != null &&
+        userObject.highlight != null &&
+        userObject.highlight) {
+      borderColor = highlightColor;
+    } else if (status != null) {
+      borderColor = statusColor;
+    }
     return Transform.translate(
       offset: Offset(0.0, -10.0),
       child: Container(
@@ -178,17 +187,18 @@ class UserView extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: emptySeat ? null : BorderRadius.circular(5.0),
           shape: emptySeat ? BoxShape.circle : BoxShape.rectangle,
-          color: statusColor,
+          color: boxColor,
           border: Border.all(
-            color: userObject.highlight ?? false
-                ? highlightColor
-                : Colors.transparent,
+            // color: userObject.highlight ?? false
+            //     ? highlightColor
+            //     : Colors.transparent,
+            color: borderColor,
             width: 2.0,
           ),
           boxShadow: (userObject.winner ?? false)
               ? [
                   BoxShadow(
-                    color: Colors.white,
+                    color: Colors.lightGreen,
                     blurRadius: 50.0,
                     spreadRadius: 20.0,
                   ),
@@ -312,7 +322,7 @@ class UserView extends StatelessWidget {
   }) =>
       Transform.translate(
         offset: Offset(
-          -40.0,
+          150.0,
           0.0,
         ),
         child: StackCardView(
@@ -325,36 +335,41 @@ class UserView extends StatelessWidget {
   Widget _buildDealerButton({
     Alignment alignment,
     bool isMe,
-  }) =>
-      Transform.translate(
-        offset: Offset(
-          alignment == Alignment.centerRight ? 50.0 : -50.0,
-          18.0,
-        ),
-        child: Container(
-          padding: const EdgeInsets.all(5.0),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            shape: BoxShape.circle,
-            border: Border.all(
-              color: Colors.black,
-              width: 2.0,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.white24,
-                blurRadius: 2.0,
-                spreadRadius: 2.0,
-              )
-            ],
+  }) {
+    dynamic pos = alignment == Alignment.centerRight ? -50.0 : 50.0;
+    if (isMe) {
+      pos = -50.0;
+    }
+    return Transform.translate(
+      offset: Offset(
+        pos,
+        18.0,
+      ),
+      child: Container(
+        padding: const EdgeInsets.all(5.0),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          shape: BoxShape.circle,
+          border: Border.all(
+            color: Colors.black,
+            width: 2.0,
           ),
-          child: const Text(
-            'D',
-            textAlign: TextAlign.center,
-            style: AppStyles.dealerTextStyle,
-          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.white24,
+              blurRadius: 2.0,
+              spreadRadius: 2.0,
+            )
+          ],
         ),
-      );
+        child: const Text(
+          'D',
+          textAlign: TextAlign.center,
+          style: AppStyles.dealerTextStyle,
+        ),
+      ),
+    );
+  }
 
   // TODO: this is only needed for the DEBUGGING Purpose
   Widget _buildSeatNoIndicator() => Positioned(
@@ -437,15 +452,6 @@ class UserView extends StatelessWidget {
     // decide color from the status message
     // raise, bet -> red
     // check, call -> green
-    Color statusColor = Colors.white; // default color be white
-
-    if (status != null) {
-      if (status.toUpperCase().contains('CHECK') ||
-          status.toUpperCase().contains('CALL'))
-        statusColor = Colors.green;
-      else if (status.toUpperCase().contains('RAISE') ||
-          status.toUpperCase().contains('BET')) statusColor = Colors.red;
-    }
 
     return AnimatedSwitcher(
       duration: AppConstants.popUpAnimationDuration,
@@ -459,13 +465,35 @@ class UserView extends StatelessWidget {
       ),
       child: status == null
           ? shrinkedSizedBox
-          : Text(
-              status,
-              style: AppStyles.userPopUpMessageTextStyle.copyWith(
-                color: statusColor,
+          : Container(
+              width: 80,
+              height: 14,
+              child: FittedBox(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(5.0),
+                  child: Text(
+                    status,
+                    style: getStatusTextStyle(status),
+                  ),
+                ),
               ),
             ),
     );
+  }
+
+  TextStyle getStatusTextStyle(String status) {
+    Color statusColor = Colors.white; // default color be white
+    if (status != null) {
+      if (status.toUpperCase().contains('CHECK') ||
+          status.toUpperCase().contains('CALL'))
+        statusColor = Colors.green;
+      else if (status.toUpperCase().contains('RAISE') ||
+          status.toUpperCase().contains('BET')) statusColor = Colors.red;
+    }
+
+    dynamic fgColor = Colors.white;
+    return AppStyles.userPopUpMessageTextStyle
+        .copyWith(fontSize: 10, color: fgColor, backgroundColor: statusColor);
   }
 
   Widget _buildChipAmountWidget() {
