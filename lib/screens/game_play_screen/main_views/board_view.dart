@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
+import 'package:pokerapp/models/game_play_models/business/card_distribution_model.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/footer_result.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
@@ -11,6 +12,7 @@ import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/screens/game_play_screen/card_views/animations/animating_shuffle_card_view.dart';
 import 'package:pokerapp/screens/game_play_screen/card_views/stack_card_view.dart';
+import 'package:pokerapp/screens/game_play_screen/main_views/animating_widgets/card_distribution_animating_widget.dart';
 import 'package:pokerapp/screens/game_play_screen/user_view/user_view.dart';
 import 'package:provider/provider.dart';
 
@@ -497,6 +499,9 @@ class BoardView extends StatelessWidget {
                       valueNotifierFooterStatus.value == FooterStatus.Result,
                 ),
               ),
+
+              /* distributing card animation widgets */
+              CardDistributionAnimatingWidget(),
             ],
           ),
         );

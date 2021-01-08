@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/game_play_models/business/card_distribution_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
@@ -40,12 +41,20 @@ class DealService {
     for (int i = 0; i < myCards.length; i++) {
       /* for distributing the ith card, go through all the players, and give them */
       for (int seatNo in seatNos) {
+        int localSeatNo =
+            mySeatNo == null ? seatNo : ((seatNo - mySeatNo) % 9) + 1;
+
+        // start the animation
+        Provider.of<CardDistributionModel>(
+          context,
+          listen: false,
+        ).seatNo = localSeatNo;
+        // wait for the animation to finish
+        await Future.delayed(AppConstants.cardDistributionAnimationDuration);
+
         if (seatNo == mySeatNo) {
+          // TODO: MAY BE THIS WILL HAVE A DIFFERENT ANIMATION?
           // this is me - give me my cards one by one
-
-          // TODO: SHOW ANIMATION HERE
-          await Future.delayed(AppConstants.cardDistributionAnimationDuration);
-
           Provider.of<Players>(
             context,
             listen: false,
@@ -54,9 +63,6 @@ class DealService {
             myCards.sublist(0, i + 1),
           );
         } else {
-          // TODO: SHOW ANIMATION HERE
-          await Future.delayed(AppConstants.cardDistributionAnimationDuration);
-
           Provider.of<Players>(
             context,
             listen: false,
@@ -64,5 +70,11 @@ class DealService {
         }
       }
     }
+
+    /* card distribution ends, put the value to NULL */
+    Provider.of<CardDistributionModel>(
+      context,
+      listen: false,
+    ).seatNo = null;
   }
 }
