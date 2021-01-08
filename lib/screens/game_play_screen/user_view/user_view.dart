@@ -136,7 +136,9 @@ class UserView extends StatelessWidget {
           Transform.translate(
             offset: Offset(
               (cardsAlignment == Alignment.centerRight ||
-                  cardsAlignment == Alignment.bottomCenter) ? -15 : 15,
+                      cardsAlignment == Alignment.bottomCenter)
+                  ? -15
+                  : 15,
               10.0,
             ),
             child: _buildUserStatus(emptySeat),
@@ -169,7 +171,7 @@ class UserView extends StatelessWidget {
         userObject.highlight != null &&
         userObject.highlight) {
       borderColor = highlightColor;
-    } else if(status != null) {
+    } else if (status != null) {
       borderColor = statusColor;
     }
     return Transform.translate(
@@ -308,9 +310,7 @@ class UserView extends StatelessWidget {
                     ? FoldCardAnimatingWidget(
                         seatPos: seatPos,
                       )
-                    : showDown
-                        ? const SizedBox.shrink()
-                        : HiddenCardView(),
+                    : showDown ? const SizedBox.shrink() : HiddenCardView(),
               ),
             ),
           );
@@ -323,7 +323,7 @@ class UserView extends StatelessWidget {
   }) =>
       Transform.translate(
         offset: Offset(
-          80.0,
+          150.0,
           0.0,
         ),
         child: StackCardView(
@@ -467,17 +467,18 @@ class UserView extends StatelessWidget {
       child: status == null
           ? shrinkedSizedBox
           : Container(
-            width: 80, height: 14,
-            child: FittedBox(
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(5.0),
-                child: Text(
+              width: 80,
+              height: 14,
+              child: FittedBox(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(5.0),
+                  child: Text(
                     status,
                     style: getStatusTextStyle(status),
+                  ),
                 ),
               ),
-          ),
-      ),
+            ),
     );
   }
 
@@ -492,7 +493,8 @@ class UserView extends StatelessWidget {
     }
 
     dynamic fgColor = Colors.white;
-    return AppStyles.userPopUpMessageTextStyle.copyWith(fontSize: 10, color: fgColor, backgroundColor: statusColor);
+    return AppStyles.userPopUpMessageTextStyle
+        .copyWith(fontSize: 10, color: fgColor, backgroundColor: statusColor);
   }
 
   Widget _buildChipAmountWidget() {

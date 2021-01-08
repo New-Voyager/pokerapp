@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:pokerapp/models/table_record.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 
 class TableResultScreen extends StatelessWidget {
+  TableRecord data;
+  TableResultScreen(this.data);
+
   final SizedBox seprator = SizedBox(
     height: 20.0,
   );

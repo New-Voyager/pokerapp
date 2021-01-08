@@ -39,12 +39,6 @@ class _GameHistoryViewState extends State<GameHistoryView> {
     super.initState();
     _fetchData();
   }
-  /*
-  ChangeNotifierProvider<NewGameModelProvider>(
-      create: (_) => NewGameModelProvider(clubCode),
-      builder: (BuildContext context, _) => Consumer<NewGameModelProvider>(
-        builder: (_, NewGameModelProvider data, __) =>
-   */
 
   Widget gameHistoryItem1(BuildContext context, int index) {
     final data = GameHistoryDetailModel('', true);
@@ -59,7 +53,8 @@ class _GameHistoryViewState extends State<GameHistoryView> {
   }
 
   Widget gameHistoryItem(BuildContext context, int index) {
-    final model = GameHistoryDetailModel('', true);
+    final item = this._prevGames[index];
+    final model = GameHistoryDetailModel(item.gameCode, true);
     return GestureDetector(
         onTap: () => {
               Navigator.push(

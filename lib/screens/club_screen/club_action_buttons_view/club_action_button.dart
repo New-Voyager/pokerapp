@@ -3,6 +3,7 @@ import 'package:pokerapp/enums/club_actions.dart';
 import 'package:pokerapp/enums/club_member_status.dart';
 import 'package:pokerapp/models/club_homepage_model.dart';
 import 'package:pokerapp/models/club_members_model.dart';
+import 'package:pokerapp/models/table_record.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/screens/club_screen/club_action_screens/club_members_view/club_members_view.dart';
@@ -10,6 +11,7 @@ import 'package:pokerapp/screens/club_screen/game_history_view/game_history_view
 import 'package:pokerapp/screens/club_screen/games_page_view/high_hand/high_hand.dart';
 import 'package:pokerapp/screens/club_screen/games_page_view/high_history/high_history.dart';
 import 'package:pokerapp/screens/club_screen/messages_page_view/messages_page_view.dart';
+import 'package:pokerapp/screens/game_screens/table_result/table_result.dart';
 import 'package:provider/provider.dart';
 
 class ClubActionButton extends StatelessWidget {
@@ -65,6 +67,16 @@ class ClubActionButton extends StatelessWidget {
               break;
             case ClubActions.ANNOUNCEMETS:
               // TODO: Handle this case.
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => ChangeNotifierProvider<TableRecord>(
+                        create: (_) => new TableRecord(),
+                        builder: (BuildContext context, _) =>
+                            Consumer<TableRecord>(
+                                builder: (_, TableRecord data, __) =>
+                                    TableResultScreen(data))),
+                  ));
               break;
             case ClubActions.MESSAGE_HOST:
               // TODO: Handle this case.
