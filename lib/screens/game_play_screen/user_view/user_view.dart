@@ -496,41 +496,6 @@ class UserView extends StatelessWidget {
         .copyWith(fontSize: 10, color: fgColor, backgroundColor: statusColor);
   }
 
-  Widget _buildChipAmountWidget() {
-    Widget coinAmountWidget = Transform.translate(
-      offset: coinAmountWidgetOriginalOffsetMapping[seatPos],
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          /* show the coin svg */
-          Container(
-            height: 20,
-            width: 20.0,
-            child: SvgPicture.asset(
-              AppAssets.coinsImages,
-            ),
-          ),
-          const SizedBox(width: 5.0),
-
-          /* show the coin amount */
-          Text(
-            userObject.coinAmount.toString(),
-            style: AppStyles.gamePlayScreenPlayerChips,
-          ),
-        ],
-      ),
-    );
-
-    return userObject.coinAmount == null || userObject.coinAmount == 0
-        ? shrinkedSizedBox
-        : (userObject.animatingCoinMovement ?? false)
-            ? ChipAmountAnimatingWidget(
-                seatPos: seatPos,
-                child: coinAmountWidget,
-              )
-            : coinAmountWidget;
-  }
-
   @override
   Widget build(BuildContext context) {
     bool emptySeat = userObject.name == null;
