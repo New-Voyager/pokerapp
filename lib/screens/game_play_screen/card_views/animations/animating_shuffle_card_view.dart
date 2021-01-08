@@ -143,9 +143,6 @@ class _AnimatingShuffleCardViewState extends State<AnimatingShuffleCardView> {
     await _playAnimation();
 
     /* this takes 500ms */
-    await _playAnimation();
-
-    /* this takes 500ms */
     await _playAnimation(reset: false);
 
     /* entire animation done in 2 seconds */

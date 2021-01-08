@@ -22,6 +22,8 @@ class UserObject {
   int coinAmount;
   bool animatingCoinMovement;
 
+  int noOfCardsVisible;
+
   UserObject({
     @required this.serverSeatPos,
     @required this.name,

@@ -27,7 +27,7 @@ const Map<int, Offset> coinAmountWidgetOriginalOffsetMapping = {
   2: Offset(50, -40),
   3: Offset(50, -40),
   4: Offset(50, -40),
-  5: Offset(30, 60),
+  5: Offset(20, 60),
   6: Offset(-30, 60),
   7: Offset(-50, -40),
   8: Offset(-50, -40),
@@ -271,14 +271,14 @@ class UserView extends StatelessWidget {
   Widget _buildHiddenCard({
     Alignment alignment,
     bool emptySeat = true,
+    int cardNo = 0,
   }) =>
-      Consumer2<ValueNotifier<FooterStatus>, ValueNotifier<int>>(
-        builder: (_, valueNotifierFooterStatus, valueNotifierCardNo, __) {
+      Consumer<ValueNotifier<FooterStatus>>(
+        builder: (_, valueNotifierFooterStatus, __) {
           bool showDown =
               valueNotifierFooterStatus.value == FooterStatus.Result;
 
           double shiftMultiplier = 1.0;
-          int cardNo = valueNotifierCardNo.value;
 
           if (cardNo == 5) shiftMultiplier = 1.7;
           if (cardNo == 4) shiftMultiplier = 1.45;
@@ -309,7 +309,9 @@ class UserView extends StatelessWidget {
                       )
                     : showDown
                         ? const SizedBox.shrink()
-                        : HiddenCardView(),
+                        : HiddenCardView(
+                            noOfCards: cardNo,
+                          ),
               ),
             ),
           );
@@ -322,7 +324,7 @@ class UserView extends StatelessWidget {
   }) =>
       Transform.translate(
         offset: Offset(
-          150.0,
+          80.0,
           0.0,
         ),
         child: StackCardView(
@@ -465,17 +467,11 @@ class UserView extends StatelessWidget {
       ),
       child: status == null
           ? shrinkedSizedBox
-          : Container(
-              width: 80,
-              height: 14,
-              child: FittedBox(
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(5.0),
-                  child: Text(
-                    status,
-                    style: getStatusTextStyle(status),
-                  ),
-                ),
+          : ClipRRect(
+              borderRadius: BorderRadius.circular(5.0),
+              child: Text(
+                status,
+                style: getStatusTextStyle(status),
               ),
             ),
     );
@@ -494,6 +490,41 @@ class UserView extends StatelessWidget {
     Color fgColor = Colors.white;
     return AppStyles.userPopUpMessageTextStyle
         .copyWith(fontSize: 10, color: fgColor, backgroundColor: statusColor);
+  }
+
+  Widget _buildChipAmountWidget() {
+    Widget coinAmountWidget = Transform.translate(
+      offset: coinAmountWidgetOriginalOffsetMapping[seatPos],
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          /* show the coin svg */
+          Container(
+            height: 20,
+            width: 20.0,
+            child: SvgPicture.asset(
+              AppAssets.coinsImages,
+            ),
+          ),
+          const SizedBox(width: 5.0),
+
+          /* show the coin amount */
+          Text(
+            userObject.coinAmount.toString(),
+            style: AppStyles.gamePlayScreenPlayerChips,
+          ),
+        ],
+      ),
+    );
+
+    return userObject.coinAmount == null || userObject.coinAmount == 0
+        ? shrinkedSizedBox
+        : (userObject.animatingCoinMovement ?? false)
+            ? ChipAmountAnimatingWidget(
+                seatPos: seatPos,
+                child: coinAmountWidget,
+              )
+            : coinAmountWidget;
   }
 
   @override
@@ -550,6 +581,7 @@ class UserView extends StatelessWidget {
                   : _buildHiddenCard(
                       alignment: this.cardsAlignment,
                       emptySeat: emptySeat,
+                      cardNo: userObject.noOfCardsVisible,
                     ),
 
           // show dealer button, if user is a dealer
@@ -570,7 +602,7 @@ class UserView extends StatelessWidget {
           ),
 
 //          /* building the chip amount widget */
-//          emptySeat ? shrinkedSizedBox : _buildChipAmountWidget(),
+          emptySeat ? shrinkedSizedBox : _buildChipAmountWidget(),
         ],
       ),
     );
