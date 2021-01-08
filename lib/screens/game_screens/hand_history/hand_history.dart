@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:pokerapp/models/hand_history_model.dart';
 import 'package:pokerapp/resources/app_colors.dart';
-import 'package:pokerapp/screens/club_screen/games_page_view/high_history/high_history_widget.dart';
+import 'package:pokerapp/screens/game_screens/hand_history/hand_history_widget.dart';
 
-class HighHistory extends StatefulWidget {
+class HandHistoryListView extends StatefulWidget {
+
+  final HandHistoryListModel data;
+  HandHistoryListView(this.data);
+
   @override
-  _HighHistoryState createState() => _HighHistoryState();
+  _HandHistoryState createState() => _HandHistoryState();
 }
 
-class _HighHistoryState extends State<HighHistory>
+class _HandHistoryState extends State<HandHistoryListView>
     with SingleTickerProviderStateMixin {
   TabController _tabController;
 
@@ -84,8 +89,8 @@ class _HighHistoryState extends State<HighHistory>
   getList() {
     return Column(
       children: [
-        HighHistoryWidget(),
-        HighHistoryWidget(
+        HandHistoryWidget(),
+        HandHistoryWidget(
           number: "124",
           name: "Aditya",
           ended: "Flop",
