@@ -569,8 +569,8 @@ class UserView extends StatelessWidget {
             time: actionTime,
           ),
 
-          /* building the chip amount widget */
-          emptySeat ? shrinkedSizedBox : _buildChipAmountWidget(),
+//          /* building the chip amount widget */
+//          emptySeat ? shrinkedSizedBox : _buildChipAmountWidget(),
         ],
       ),
     );
