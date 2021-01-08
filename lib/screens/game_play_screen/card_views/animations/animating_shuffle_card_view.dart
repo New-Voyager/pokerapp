@@ -9,6 +9,7 @@ import 'package:pokerapp/screens/game_play_screen/card_views/animations/card_bac
 import 'package:provider/provider.dart';
 
 const cardWidth = AppDimensions.cardWidth * 3.0;
+const delayConst = 10;
 
 class AnimatingShuffleCardView extends StatefulWidget {
   @override
@@ -16,19 +17,78 @@ class AnimatingShuffleCardView extends StatefulWidget {
       _AnimatingShuffleCardViewState();
 }
 
-class _AnimatingShuffleCardViewState extends State<AnimatingShuffleCardView>
-    with SingleTickerProviderStateMixin {
-  Animation<double> _animation;
+class _AnimatingShuffleCardViewState extends State<AnimatingShuffleCardView> {
+  String cardBackAsset;
 
-  double getXTarget(int i, var randomizer) {
-    double multiplier = randomizer.nextDouble() < 0.5 ? -1.0 : 1.0;
-    return ((i + 1) * cardWidth / 10 * randomizer.nextDouble()) * multiplier;
-  }
+  double getXTarget(int i, var randomizer) =>
+      (cardWidth / 2 + cardWidth * randomizer.nextDouble());
 
-  final _noOfCards = 20;
+  final _noOfCards = 52;
   final List<CardBack> _cards = [];
 
-  void init() {
+  void _animateCards() {
+    for (int i = 0; i < _cards.length; i++) _cards[i].animate();
+  }
+
+  void _animateCardsReverse() {
+    for (int i = 0; i < _cards.length; i++) _cards[i].animateReverse();
+  }
+
+  void _animateDispose() {
+    for (int i = 0; i < _cards.length; i++) _cards[i].animateDispose();
+  }
+
+  Future<void> _playAnimation() async {
+    _animateCards();
+
+    // wait till the fist half of animation finishes
+    await Future.delayed(AppConstants.animationDuration);
+
+    setState(() {
+      var tmp = _cards.reversed.toList();
+      _cards.clear();
+      _cards.addAll(tmp);
+    });
+
+    _animateCardsReverse();
+
+    // wait till the second half of animation finishes
+    await Future.delayed(AppConstants.animationDuration);
+
+    setState(() {
+      var tmp = _cards.reversed.toList();
+      _cards.clear();
+      _cards.addAll(tmp);
+    });
+  }
+
+  void _initAnimate() async {
+    var randomizer = math.Random();
+
+    for (int i = 0; i < _noOfCards; i++) {
+      CardBack card = CardBack(
+        cardBackImageAsset: cardBackAsset,
+        dx: 0,
+        dy: 0,
+        xTarget: getXTarget(i, randomizer),
+        yTarget: 0,
+        delay: delayConst * i,
+      );
+
+      if (randomizer.nextBool()) {
+        card.xTarget *= -1;
+      } else {}
+
+      _cards.add(card);
+    }
+
+    /* wait for a brief moment before starting animation */
+    await Future.delayed(AppConstants.animationDuration);
+
+    await _playAnimation();
+  }
+
+  void init() async {
     String cardBackAssetImage = CardBackAssets.getRandom();
 
     try {
@@ -36,68 +96,11 @@ class _AnimatingShuffleCardViewState extends State<AnimatingShuffleCardView>
         context,
         listen: false,
       ).value;
-    } catch (e) {
-      log('animating_shuffle_card_view.dart : $e');
-    }
+    } catch (e) {}
 
-    var randomizer = math.Random();
-    for (int i = 0; i < _noOfCards; i++) {
-      _cards.add(
-        CardBack(
-          cardBackImageAsset: cardBackAssetImage,
-          xTarget: getXTarget(i, randomizer),
-          yTarget: -i * 1 / 3,
-        ),
-      );
-    }
+    cardBackAsset = cardBackAssetImage;
 
-    AnimationController _animationController = AnimationController(
-      duration: AppConstants.animationDuration,
-      vsync: this,
-    );
-
-    _animation = Tween<double>(begin: 0, end: 1).animate(
-      CurvedAnimation(
-        parent: _animationController,
-        curve: Curves.easeInOutQuad,
-      ),
-    );
-
-    /* drive the animation forward */
-    _animationController.forward();
-    _animationController.addListener(() {
-      /* this block is reached only when the forward animation completes */
-      if (_animationController.isCompleted &&
-          _animationController.value == _animationController.upperBound) {
-        _animationController.reverse();
-      }
-
-      /* the following block is reached only when the backward animation completes */
-      if (_animationController.isDismissed &&
-          _animationController.value == _animationController.lowerBound) {
-        /* change the xTarget positions of the cards */
-        for (int i = 0; i < _cards.length; i++) {
-          _cards[i].xTarget = getXTarget(i, randomizer);
-        }
-
-        _animationController.forward();
-      }
-    });
-  }
-
-  List<Widget> getWidgets() {
-    double e = _animation.value;
-
-    List<Widget> widgets = [];
-
-    for (int i = 0; i < _cards.length; i++) {
-      _cards[i].dx = e * _cards[i].xTarget;
-      _cards[i].dy = e * _cards[i].yTarget;
-
-      widgets.add(_cards[i].widget);
-    }
-
-    return widgets.reversed.toList();
+    _initAnimate();
   }
 
   @override
@@ -107,13 +110,17 @@ class _AnimatingShuffleCardViewState extends State<AnimatingShuffleCardView>
   }
 
   @override
+  void dispose() {
+    super.dispose();
+
+    _animateDispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: _animation,
-      builder: (_, __) => Stack(
-        alignment: Alignment.center,
-        children: getWidgets(),
-      ),
+    return Stack(
+      alignment: Alignment.center,
+      children: _cards.map((c) => c.widget).toList(),
     );
   }
 }
