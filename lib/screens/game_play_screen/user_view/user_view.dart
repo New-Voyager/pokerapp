@@ -482,7 +482,7 @@ class UserView extends StatelessWidget {
   }
 
   TextStyle getStatusTextStyle(String status) {
-    Color statusColor = Colors.white; // default color be white
+    Color statusColor = Colors.black; // default color be black
     if (status != null) {
       if (status.toUpperCase().contains('CHECK') ||
           status.toUpperCase().contains('CALL'))
@@ -491,7 +491,7 @@ class UserView extends StatelessWidget {
           status.toUpperCase().contains('BET')) statusColor = Colors.red;
     }
 
-    dynamic fgColor = Colors.white;
+    Color fgColor = Colors.white;
     return AppStyles.userPopUpMessageTextStyle
         .copyWith(fontSize: 10, color: fgColor, backgroundColor: statusColor);
   }
