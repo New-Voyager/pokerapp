@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_history_model.dart';
 import 'package:pokerapp/resources/app_colors.dart';
-import 'package:pokerapp/screens/club_screen/game_history_details_view/game_history_detail_view.dart';
+import 'package:pokerapp/screens/game_screens/game_history_details_view/game_history_detail_view.dart';
 import 'package:pokerapp/services/app/club_interior_service.dart';
 import 'package:provider/provider.dart';
 
@@ -38,18 +38,6 @@ class _GameHistoryViewState extends State<GameHistoryView> {
   void initState() {
     super.initState();
     _fetchData();
-  }
-
-  Widget gameHistoryItem1(BuildContext context, int index) {
-    final data = GameHistoryDetailModel('', true);
-    return GestureDetector(
-        onTap: () => {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => GameHistoryDetailView(data)),
-              )
-            },
-        child: GameHistoryItem(item: _prevGames[index]));
   }
 
   Widget gameHistoryItem(BuildContext context, int index) {
