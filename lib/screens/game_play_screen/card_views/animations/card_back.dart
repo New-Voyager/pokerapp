@@ -84,15 +84,15 @@ class _CardBackWidgetState extends State<_CardBackWidget>
         child: Container(
           height: cardHeight,
           width: cardWidth,
-          decoration: BoxDecoration(
-            boxShadow: [
-              const BoxShadow(
-                color: Colors.black12,
-                blurRadius: 0.01,
-                offset: Offset(1.0, 2.0),
-              )
-            ],
-          ),
+//          decoration: BoxDecoration(
+//            boxShadow: [
+//              const BoxShadow(
+//                color: Colors.black12,
+//                blurRadius: 0.01,
+//                offset: Offset(1.0, 2.0),
+//              )
+//            ],
+//          ),
           child: Image.asset(
             widget.cardBack.cardBackImageAsset,
           ),

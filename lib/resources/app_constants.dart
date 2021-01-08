@@ -21,7 +21,7 @@ class AppConstants {
   );
 
   static const Duration animationDuration = const Duration(
-    milliseconds: 600,
+    milliseconds: 500,
   );
 
   static const Duration popUpAnimationDuration = const Duration(
