@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pokerapp/resources/app_colors.dart';
-import 'package:pokerapp/screens/club_screen/games_page_view/high_history/high_history_widget.dart';
+import 'package:pokerapp/screens/game_screens/hand_history/high_history_widget.dart';
 
 class HighHistory extends StatefulWidget {
   @override
