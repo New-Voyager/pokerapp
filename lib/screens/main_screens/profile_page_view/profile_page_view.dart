@@ -25,7 +25,10 @@ class _ProfilePageViewState extends State<ProfilePageView> {
             height: 200.0,
             width: double.infinity,
             child: showAnimation
-                ? AnimatingShuffleCardView()
+                ? Transform.scale(
+                    scale: 3.0,
+                    child: AnimatingShuffleCardView(),
+                  )
                 : Container(
                     child: Center(
                       child: Text(

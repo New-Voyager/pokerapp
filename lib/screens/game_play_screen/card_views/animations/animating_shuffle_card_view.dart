@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
@@ -8,8 +7,8 @@ import 'package:pokerapp/resources/card_back_assets.dart';
 import 'package:pokerapp/screens/game_play_screen/card_views/animations/card_back.dart';
 import 'package:provider/provider.dart';
 
-const cardWidth = AppDimensions.cardWidth * 3.0;
 const delayConst = 10;
+const restOffsetMultiplier = 1 / 10;
 
 class AnimatingShuffleCardView extends StatefulWidget {
   @override
@@ -18,20 +17,21 @@ class AnimatingShuffleCardView extends StatefulWidget {
 }
 
 class _AnimatingShuffleCardViewState extends State<AnimatingShuffleCardView> {
-  final _noOfCards = 52;
+  final _noOfCards = 40;
   final List<CardBack> _cards = [];
 
   String cardBackAsset;
 
   Future<void> _animationWait() => Future.delayed(
         Duration(
-          milliseconds: AppConstants.animationDuration.inMilliseconds +
-              _cards.length * delayConst,
+          milliseconds:
+              AppConstants.cardShufflingAnimationDuration.inMilliseconds +
+                  _noOfCards * delayConst,
         ),
       );
 
-  double getXTarget(int i, var randomizer) =>
-      (cardWidth / 2 + cardWidth / 2 * randomizer.nextDouble());
+  double getXTarget(int i, var randomizer) => (AppDimensions.cardWidth / 2 +
+      (AppDimensions.cardWidth / 1.5) * randomizer.nextDouble());
 
   void _animateCards() {
     for (int i = 0; i < _cards.length; i++) _cards[i].animate();
@@ -49,32 +49,32 @@ class _AnimatingShuffleCardViewState extends State<AnimatingShuffleCardView> {
   /* swap the positions of left and right cards, without changing their particular
   order in either left or right sides */
   void _processCards() {
-    int leftPtr = 0; // points to a -ve xTargetElement
-    int rightPtr = 0; // points to a +ve xTargetElement
+    int leftPtr = _noOfCards - 1; // points to a -ve xTargetElement
+    int rightPtr = _noOfCards - 1; // points to a +ve xTargetElement
 
-    while (leftPtr < _noOfCards && rightPtr < _noOfCards) {
+    while (leftPtr >= 0 && rightPtr >= 0) {
       // leftPtr find a -ve element
-      while (leftPtr < _noOfCards) {
+      while (leftPtr >= 0) {
         if (_cards[leftPtr].xTarget < 0)
           break;
         else
-          leftPtr++;
+          leftPtr--;
       }
 
-      if (leftPtr >= _noOfCards) break;
+      if (leftPtr < 0) break;
 
       // rightPtr find a +ve element
-      while (rightPtr < _noOfCards) {
+      while (rightPtr >= 0) {
         if (_cards[rightPtr].xTarget > 0)
           break;
         else
-          rightPtr++;
+          rightPtr--;
       }
 
-      if (rightPtr >= _noOfCards) break;
+      if (rightPtr < 0) break;
 
       // swap leftPtr element and rightPtr element
-      if (leftPtr < _noOfCards && rightPtr < _noOfCards) {
+      if (leftPtr >= 0 && rightPtr >= 0) {
         var temp = _cards[leftPtr];
         _cards[leftPtr] = _cards[rightPtr];
         _cards[rightPtr] = temp;
@@ -82,8 +82,8 @@ class _AnimatingShuffleCardViewState extends State<AnimatingShuffleCardView> {
         break;
       }
 
-      leftPtr++;
-      rightPtr++;
+      leftPtr--;
+      rightPtr--;
     }
   }
 
@@ -101,17 +101,18 @@ class _AnimatingShuffleCardViewState extends State<AnimatingShuffleCardView> {
     }
   }
 
-  Future<void> _playAnimation() async {
+  Future<void> _playAnimation({bool reset = true}) async {
     _animateCards();
 
     // wait till the fist half of animation finishes
     await _animationWait();
-    setState(() => _processCards());
+    if (mounted) setState(() => _processCards());
     _animateCardsReverse();
 
     // wait till the second half of animation finishes
     await _animationWait();
-    setState(() => _normalizeCards());
+
+    if (mounted && reset) setState(() => _normalizeCards());
   }
 
   void _initAnimate() async {
@@ -120,8 +121,8 @@ class _AnimatingShuffleCardViewState extends State<AnimatingShuffleCardView> {
     for (int i = 0; i < _noOfCards; i++) {
       CardBack card = CardBack(
         cardBackImageAsset: cardBackAsset,
-        dx: 0,
-        dy: 0,
+        dx: -i * restOffsetMultiplier,
+        dy: -i * restOffsetMultiplier,
         xTarget: getXTarget(i, randomizer),
         yTarget: 0,
         delay: delayConst * i,
@@ -135,14 +136,19 @@ class _AnimatingShuffleCardViewState extends State<AnimatingShuffleCardView> {
     }
 
     /* wait for a brief moment before starting animation */
-    await Future.delayed(AppConstants.animationDuration);
+    /* this waits for 400ms */
+    await Future.delayed(AppConstants.cardShufflingWaitDuration);
 
+    /* this takes 500ms */
     await _playAnimation();
+
+    /* this takes 500ms */
     await _playAnimation();
-    await _playAnimation();
-    await _playAnimation();
-    await _playAnimation();
-    await _playAnimation();
+
+    /* this takes 500ms */
+    await _playAnimation(reset: false);
+
+    /* entire animation done in 2 seconds */
   }
 
   void init() async {

@@ -8,6 +8,15 @@ class AppConstants {
 
   static const int buyInTimeOutSeconds = 100;
 
+  /* using the following two const durations, the entire shuffle animation takes 3 seconds */
+  /* waitTime + ( ( shuffle + delay [40*10] ) x 2 ) x 3 */
+  static const Duration cardShufflingWaitDuration = const Duration(
+    milliseconds: 200,
+  );
+  static const Duration cardShufflingAnimationDuration = const Duration(
+    milliseconds: 250,
+  );
+
   static const Duration buildWaitDuration = const Duration(
     milliseconds: 100,
   );

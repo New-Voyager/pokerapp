@@ -3,9 +3,6 @@ import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/resources/card_back_assets.dart';
 
-const cardHeight = AppDimensions.cardHeight * 3.0;
-const cardWidth = AppDimensions.cardWidth * 3.0;
-
 class CardBack {
   final GlobalKey<_CardBackWidgetState> _key = GlobalKey();
   String cardBackImageAsset;
@@ -82,17 +79,17 @@ class _CardBackWidgetState extends State<_CardBackWidget>
           dy,
         ),
         child: Container(
-          height: cardHeight,
-          width: cardWidth,
-//          decoration: BoxDecoration(
+          height: AppDimensions.cardHeight,
+          width: AppDimensions.cardWidth,
+          decoration: BoxDecoration(
 //            boxShadow: [
 //              const BoxShadow(
 //                color: Colors.black12,
-//                blurRadius: 0.01,
-//                offset: Offset(1.0, 2.0),
+//                blurRadius: 0.10,
+//                offset: Offset(-2.0, 2.0),
 //              )
 //            ],
-//          ),
+              ),
           child: Image.asset(
             widget.cardBack.cardBackImageAsset,
           ),
@@ -104,7 +101,7 @@ class _CardBackWidgetState extends State<_CardBackWidget>
     super.initState();
 
     _controller = AnimationController(
-      duration: AppConstants.animationDuration,
+      duration: AppConstants.cardShufflingAnimationDuration,
       vsync: this,
     );
 
