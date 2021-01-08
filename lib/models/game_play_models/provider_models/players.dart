@@ -96,11 +96,6 @@ class Players extends ChangeNotifier {
     _notify();
   }
 
-  void removeCardsFromAll() {
-    for (int i = 0; i < _players.length; i++) _players[i].cards = null;
-    _notify();
-  }
-
   void updateStatus(int idx, String status) {
     _players[idx].status = status;
     _notify();
@@ -176,6 +171,25 @@ class Players extends ChangeNotifier {
     int idx = _players.indexWhere((p) => p.seatNo == seatNo);
     _players[idx].cards = cards;
 
+    _notify();
+  }
+
+  void updateVisibleCardNumber(int seatNo, int n) {
+    int idx = _players.indexWhere((p) => p.seatNo == seatNo);
+    _players[idx].noOfCardsVisible = n;
+
+    _notify();
+  }
+
+  void visibleCardNumbersForAll(int n) {
+    for (int i = 0; i < _players.length; i++) _players[i].noOfCardsVisible = n;
+
+    _notify();
+  }
+
+  void removeCardsFromAll() {
+    for (int i = 0; i < _players.length; i++) _players[i].noOfCardsVisible = 0;
+    for (int i = 0; i < _players.length; i++) _players[i].cards = null;
     _notify();
   }
 

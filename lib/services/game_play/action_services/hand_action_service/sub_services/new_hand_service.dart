@@ -70,6 +70,12 @@ class NewHandService {
       listen: false,
     ).removeAllFoldedPlayers();
 
+    /* reset the noCardsVisible of each player and remove my cards too */
+    Provider.of<Players>(
+      context,
+      listen: false,
+    ).removeCardsFromAll();
+
     /* clean up from result views */
     /* set footer status to none  */
     Provider.of<ValueNotifier<FooterStatus>>(
@@ -139,5 +145,11 @@ class NewHandService {
       potChips: null,
       potUpdatesChips: null,
     );
+
+    /* put new hand message */
+    Provider.of<TableState>(
+      context,
+      listen: false,
+    ).updateTableStatus(AppConstants.NEW_HAND);
   }
 }

@@ -23,6 +23,8 @@ class PlayerModel {
   int coinAmount;
   bool animatingCoinMovement;
 
+  int noOfCardsVisible;
+
   PlayerModel.fromJson(var data) {
     this.name = data['name'];
     this.seatNo = data['seatNo'];

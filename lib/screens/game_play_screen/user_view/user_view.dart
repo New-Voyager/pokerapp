@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -19,7 +17,6 @@ import 'package:pokerapp/screens/game_play_screen/user_view/animating_widgets/fo
 import 'package:pokerapp/screens/game_play_screen/user_view/count_down_timer.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:provider/provider.dart';
-import 'package:timer_count_down/timer_count_down.dart';
 
 const shrinkedSizedBox = const SizedBox.shrink();
 //const highlightColor = const Color(0xfff2a365);
@@ -30,7 +27,7 @@ const Map<int, Offset> coinAmountWidgetOriginalOffsetMapping = {
   2: Offset(50, -40),
   3: Offset(50, -40),
   4: Offset(50, -40),
-  5: Offset(30, 60),
+  5: Offset(20, 60),
   6: Offset(-30, 60),
   7: Offset(-50, -40),
   8: Offset(-50, -40),
@@ -274,14 +271,14 @@ class UserView extends StatelessWidget {
   Widget _buildHiddenCard({
     Alignment alignment,
     bool emptySeat = true,
+    int cardNo = 0,
   }) =>
-      Consumer2<ValueNotifier<FooterStatus>, ValueNotifier<int>>(
-        builder: (_, valueNotifierFooterStatus, valueNotifierCardNo, __) {
+      Consumer<ValueNotifier<FooterStatus>>(
+        builder: (_, valueNotifierFooterStatus, __) {
           bool showDown =
               valueNotifierFooterStatus.value == FooterStatus.Result;
 
           double shiftMultiplier = 1.0;
-          int cardNo = valueNotifierCardNo.value;
 
           if (cardNo == 5) shiftMultiplier = 1.7;
           if (cardNo == 4) shiftMultiplier = 1.45;
@@ -310,7 +307,11 @@ class UserView extends StatelessWidget {
                     ? FoldCardAnimatingWidget(
                         seatPos: seatPos,
                       )
-                    : showDown ? const SizedBox.shrink() : HiddenCardView(),
+                    : showDown
+                        ? const SizedBox.shrink()
+                        : HiddenCardView(
+                            noOfCards: cardNo,
+                          ),
               ),
             ),
           );
@@ -323,7 +324,7 @@ class UserView extends StatelessWidget {
   }) =>
       Transform.translate(
         offset: Offset(
-          150.0,
+          80.0,
           0.0,
         ),
         child: StackCardView(
@@ -466,24 +467,18 @@ class UserView extends StatelessWidget {
       ),
       child: status == null
           ? shrinkedSizedBox
-          : Container(
-              width: 80,
-              height: 14,
-              child: FittedBox(
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(5.0),
-                  child: Text(
-                    status,
-                    style: getStatusTextStyle(status),
-                  ),
-                ),
+          : ClipRRect(
+              borderRadius: BorderRadius.circular(5.0),
+              child: Text(
+                status,
+                style: getStatusTextStyle(status),
               ),
             ),
     );
   }
 
   TextStyle getStatusTextStyle(String status) {
-    Color statusColor = Colors.white; // default color be white
+    Color statusColor = Colors.black; // default color be black
     if (status != null) {
       if (status.toUpperCase().contains('CHECK') ||
           status.toUpperCase().contains('CALL'))
@@ -492,7 +487,7 @@ class UserView extends StatelessWidget {
           status.toUpperCase().contains('BET')) statusColor = Colors.red;
     }
 
-    dynamic fgColor = Colors.white;
+    Color fgColor = Colors.white;
     return AppStyles.userPopUpMessageTextStyle
         .copyWith(fontSize: 10, color: fgColor, backgroundColor: statusColor);
   }
@@ -586,6 +581,7 @@ class UserView extends StatelessWidget {
                   : _buildHiddenCard(
                       alignment: this.cardsAlignment,
                       emptySeat: emptySeat,
+                      cardNo: userObject.noOfCardsVisible,
                     ),
 
           // show dealer button, if user is a dealer
@@ -605,7 +601,7 @@ class UserView extends StatelessWidget {
             time: actionTime,
           ),
 
-          /* building the chip amount widget */
+//          /* building the chip amount widget */
           emptySeat ? shrinkedSizedBox : _buildChipAmountWidget(),
         ],
       ),
