@@ -8,6 +8,18 @@ class AppConstants {
 
   static const int buyInTimeOutSeconds = 100;
 
+  static const Duration cardShufflingWaitDuration = const Duration(
+    milliseconds: 200,
+  );
+
+  static const Duration cardShufflingAnimationDuration = const Duration(
+    milliseconds: 250,
+  );
+
+  static const Duration cardDistributionAnimationDuration = const Duration(
+    milliseconds: 250,
+  );
+
   static const Duration buildWaitDuration = const Duration(
     milliseconds: 100,
   );
@@ -21,7 +33,7 @@ class AppConstants {
   );
 
   static const Duration animationDuration = const Duration(
-    milliseconds: 600,
+    milliseconds: 500,
   );
 
   static const Duration popUpAnimationDuration = const Duration(

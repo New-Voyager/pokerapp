@@ -17,7 +17,12 @@ class ClubBannerView extends StatelessWidget {
     if (clubNameSplit.length >= 2)
       return '${clubNameSplit[0].substring(0, 1)}${clubNameSplit[1].substring(0, 1)}'
           .toUpperCase();
-    return '${clubName.substring(0, 2)}'.toUpperCase();
+
+    try {
+      return '${clubName.substring(0, 2)}'.toUpperCase();
+    } catch (e) {
+      return clubName.toUpperCase();
+    }
   }
 
   @override
