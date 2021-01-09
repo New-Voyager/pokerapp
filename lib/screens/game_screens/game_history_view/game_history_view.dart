@@ -42,9 +42,9 @@ class _GameHistoryViewState extends State<GameHistoryView> {
 
   Widget gameHistoryItem(BuildContext context, int index) {
     final item = this._prevGames[index];
-    final model = GameHistoryDetailModel(item.gameCode, true);
     return GestureDetector(
-        onTap: () => {
+        onTap: () {
+              GameHistoryDetailModel model = GameHistoryDetailModel(item.gameCode, true);
               Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -56,7 +56,7 @@ class _GameHistoryViewState extends State<GameHistoryView> {
                                     builder:
                                         (_, GameHistoryDetailModel data, __) =>
                                             GameHistoryDetailView(data))),
-                  ))
+                  ));
             },
         child: GameHistoryItem(item: _prevGames[index]));
   }
