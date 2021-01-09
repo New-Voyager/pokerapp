@@ -1,6 +1,8 @@
+import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/club_member_status.dart';
 
-class ClubMemberModel {
+class ClubMemberModel extends ChangeNotifier {
+  String clubCode;
   String name;
   DateTime joinedDate;
   String lastPlayedDate;
@@ -9,25 +11,21 @@ class ClubMemberModel {
   bool isOwner;
   bool isManager;
   String playerId;
-  String contactInfo;
+  String _contactInfo;
   String balance;
   String imageUrl;
-  String buyIn;
-  String profit;
+  String totalBuyIns;
+  String totalWinnings;
+  String currentBalance;
   String rake;
+  bool autoBuyInApproval;
+  String _creditLimit;
+  String _notes;
+  String winnings;
+  String totalGames;
+  bool edited = false;
 
-  ClubMemberModel(
-      this.status,
-      this.name,
-      this.contactInfo,
-      this.buyIn,
-      this.profit,
-      this.rake,
-      this.lastPlayedDate,
-      this.balance,
-      this.imageUrl,
-      this.isOwner,
-      this.isManager);
+  ClubMemberModel();
 
   ClubMemberStatus _getPlayerStatus(String status) {
     switch (status) {
@@ -50,11 +48,60 @@ class ClubMemberModel {
     }
   }
 
+  String get creditLimit => this._creditLimit;
+  set creditLimit(String val) {
+    this._creditLimit = val;
+    this.edited = true;
+    notifyListeners();
+  }
+
+  String get notes => this._notes;
+  set notes(String val) {
+    this._notes = val;
+    this.edited = true;
+    notifyListeners();
+  }
+
+  String get contactInfo => this._contactInfo;
+  set contactInfo(String value) {
+    this._contactInfo = value;
+    this.edited = true;
+    notifyListeners();
+  }
+
+  static ClubMemberModel copyWith(ClubMemberModel copyValue) {
+    final data = new ClubMemberModel();
+    data.name = copyValue.name;
+    data.clubCode = copyValue.clubCode;
+    data.playerId = copyValue.playerId;
+    data.joinedDate = copyValue.joinedDate;
+    data.status = copyValue.status;
+    data.lastPlayedDate = copyValue.lastPlayedDate;
+    data._creditLimit = copyValue._creditLimit;
+    data.totalGames = copyValue.totalGames;
+    data.totalWinnings = copyValue.totalWinnings;
+    data.totalBuyIns = copyValue.totalBuyIns;
+    data.autoBuyInApproval = copyValue.autoBuyInApproval;
+    data.isOwner = copyValue.isOwner;
+    data.isManager = copyValue.isManager;
+    data.currentBalance = copyValue.currentBalance;
+    data.balance = copyValue.balance;
+    data.rake = copyValue.rake;
+    data._contactInfo = copyValue._contactInfo;
+    data._notes = copyValue._notes;
+    return data;
+  }
+
   ClubMemberModel.fromJson(var jsonData) {
     this.name = jsonData['name'];
     this.joinedDate = DateTime.parse(jsonData['joinedDate']);
     this.status = _getPlayerStatus(jsonData['status']);
     this.lastPlayedDate = "";
+    this._creditLimit = '';
+    this.totalGames = '';
+    this.totalWinnings = '';
+    this.totalBuyIns  = '';
+    this.autoBuyInApproval = false;
 
     if (jsonData['lastPlayedDate'] != null) {
       convertDate(jsonData["lastPlayedDate"]);
@@ -69,7 +116,43 @@ class ClubMemberModel {
     if (this.balance == '0') {
       this.balance = '';
     }
+    this.rake = '';
+    if (jsonData['rakePaid'] != null) {
+      this.rake = jsonData['rakePaid'].toString();
+      if (this.rake == '0') {
+        this.rake = null;
+      }
+    }
     this.imageUrl = jsonData['imageUrl'];
+
+
+    if (jsonData['totalGames'] != null) {
+      this.totalBuyIns = jsonData['totalGames'].toString();
+    }
+
+    if (jsonData['totalBuyins'] != null) {
+      this.totalBuyIns = jsonData['totalBuyins'].toString();
+    }
+
+    if (jsonData['totalWinnings'] != null) {
+      this.totalWinnings = jsonData['totalWinnings'].toString();
+    }
+
+    this.autoBuyInApproval = false;
+    if (jsonData['autoBuyinApproval'] != null) {
+      if (jsonData['autoBuyinApproval'].toString() == 'true') {
+        this.autoBuyInApproval = true;
+      }
+    }
+
+    if (jsonData['creditLimit'] != null) {
+      this._creditLimit = jsonData['creditLimit'].toString();
+    }
+
+    if (jsonData['notes'] != null) {
+      this._notes = jsonData['notes'].toString();
+    }
+    this.edited = false;
   }
 
   void convertDate(String date) {
