@@ -223,4 +223,12 @@ class GameHistoryDetailModel extends ChangeNotifier {
   }
 
   String get endedAtStr => DataFormatter.dateFormat(this.endedAt);
+
+  static GameHistoryDetailModel copyWith(GameHistoryDetailModel copy) {
+    String gameDetail = json.encode(copy.jsonData);
+    GameHistoryDetailModel ret = new GameHistoryDetailModel(copy.gameCode, copy.isOwner);
+    ret.jsonData = json.decode(gameDetail);
+    ret.load();
+    return ret;
+  }
 }
