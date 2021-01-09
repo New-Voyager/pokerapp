@@ -17,7 +17,7 @@ class _ProfilePageViewState extends State<ProfilePageView> {
           child: Text('Logout'),
           onPressed: () {
             AuthService.logout();
-            Navigator.push(
+            Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(
                 builder: (_) => LoginScreen(),
