@@ -17,11 +17,11 @@ services:
       REDIS_DB: 0
       API_SERVER_URL: http://api-server:9501
     volumes:
-      - '${PROJECT_ROOT}/gameserver-delays.yaml:/app/delays.yaml'
+      - '${PROJECT_ROOT}/dev/gameserver:/app/mounted'
     command:
       - "/bin/sh"
       - "-c"
-      - "sleep 10 && /app/game-server --server"
+      - "sleep 10 && ls /app/mounted/delays.yaml | entr -r /app/game-server --server --delays /app/mounted/delays.yaml"
 
   nats:
     image: ${NATS_SERVER_IMAGE}
