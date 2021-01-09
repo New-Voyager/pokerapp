@@ -55,60 +55,7 @@ class PlayedHandsScreen extends StatelessWidget {
         ),
         body: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.only(
-                left: 8.0,
-                right: 8.0,
-              ),
-              child: Container(
-                height: 50.0,
-                decoration: BoxDecoration(
-                  color: Color(0xff313235),
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(AppDimensions.cardRadius),
-                  ),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(6.0),
-                  child: Row(
-                    children: [
-                      Text("Hand",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 15.0,
-                          )),
-                      SizedBox(
-                        width: 20.0,
-                      ),
-                      Expanded(
-                        child: Row(
-                          children: [
-                            Flexible(
-                              flex: 5,
-                              fit: FlexFit.tight,
-                              child: Text("Winner",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 15.0,
-                                  )),
-                            ),
-                            Flexible(
-                              flex: 6,
-                              fit: FlexFit.tight,
-                              child: Text("Community",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 15.0,
-                                  )),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
+            getHeader(),
             SizedBox(
               height: 15.0,
             ),
@@ -128,6 +75,63 @@ class PlayedHandsScreen extends StatelessWidget {
             ),
           ],
         ));
+  }
+
+  getHeader() {
+    return Padding(
+      padding: const EdgeInsets.only(
+        left: 8.0,
+        right: 8.0,
+      ),
+      child: Container(
+        height: 50.0,
+        decoration: BoxDecoration(
+          color: Color(0xff313235),
+          borderRadius: BorderRadius.all(
+            Radius.circular(AppDimensions.cardRadius),
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(6.0),
+          child: Row(
+            children: [
+              Text("Hand",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 15.0,
+                  )),
+              SizedBox(
+                width: 20.0,
+              ),
+              Expanded(
+                child: Row(
+                  children: [
+                    Flexible(
+                      flex: 5,
+                      fit: FlexFit.tight,
+                      child: Text("Winner",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 15.0,
+                          )),
+                    ),
+                    Flexible(
+                      flex: 6,
+                      fit: FlexFit.tight,
+                      child: Text("Community",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 15.0,
+                          )),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   getListItem() {
