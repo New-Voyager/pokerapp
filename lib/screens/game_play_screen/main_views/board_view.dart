@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
+import 'package:pokerapp/models/game_play_models/business/card_distribution_model.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/footer_result.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
@@ -9,7 +10,9 @@ import 'package:pokerapp/models/game_play_models/ui/user_object.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/screens/game_play_screen/card_views/animations/animating_shuffle_card_view.dart';
 import 'package:pokerapp/screens/game_play_screen/card_views/stack_card_view.dart';
+import 'package:pokerapp/screens/game_play_screen/main_views/animating_widgets/card_distribution_animating_widget.dart';
 import 'package:pokerapp/screens/game_play_screen/user_view/user_view.dart';
 import 'package:provider/provider.dart';
 
@@ -84,7 +87,7 @@ class BoardView extends StatelessWidget {
 
     UserView userView = UserView(
       isPresent: isPresent,
-      seatPos: isPresent ? -1 : seatPos,
+      seatPos: seatPos,
       key: ValueKey(seatPos),
       userObject: user,
       cardsAlignment: cardsAlignment,
@@ -93,13 +96,13 @@ class BoardView extends StatelessWidget {
 
     switch (seatPos) {
       case 1:
-        return Transform.translate(
-          offset: Offset(
-            0.0,
-            shiftDownConstant,
-          ),
-          child: Align(
-            alignment: Alignment.bottomCenter,
+        return Align(
+          alignment: Alignment.bottomCenter,
+          child: Transform.translate(
+            offset: Offset(
+              0.0,
+              shiftDownConstant,
+            ),
             child: userView,
           ),
         );
@@ -201,6 +204,8 @@ class BoardView extends StatelessWidget {
         return 'Tap to start the game';
       case AppConstants.GAME_ENDED:
         return 'Game Ended';
+      case AppConstants.NEW_HAND:
+        return tableStatus;
     }
 
     return null;
@@ -214,6 +219,13 @@ class BoardView extends StatelessWidget {
     bool showDown = false,
   }) {
     String _text = showDown ? null : _getText(tableStatus);
+
+    /* in case of new hand, show the deck shuffling animation */
+    if (_text == AppConstants.NEW_HAND)
+      return Transform.scale(
+        scale: 1.5,
+        child: AnimatingShuffleCardView(),
+      );
 
     Widget tableStatusWidget = Align(
       key: ValueKey('tableStatusWidget'),
@@ -401,6 +413,9 @@ class BoardView extends StatelessWidget {
       userObjects[idx].cards = model.cards;
       userObjects[idx].highlightCards = model.highlightCards;
       userObjects[idx].winner = model.winner;
+      userObjects[idx].coinAmount = model.coinAmount;
+      userObjects[idx].animatingCoinMovement = model.animatingCoinMovement;
+      userObjects[idx].noOfCardsVisible = model.noOfCardsVisible ?? 0;
     }
 
     return userObjects;
@@ -484,6 +499,9 @@ class BoardView extends StatelessWidget {
                       valueNotifierFooterStatus.value == FooterStatus.Result,
                 ),
               ),
+
+              /* distributing card animation widgets */
+              CardDistributionAnimatingWidget(),
             ],
           ),
         );

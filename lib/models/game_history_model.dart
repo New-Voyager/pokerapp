@@ -1,15 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
-import 'package:pokerapp/enums/game_type.dart';
-import 'package:flutter/services.dart' show rootBundle;
-import 'package:intl/intl.dart';
-final DateFormat dateFormatter = DateFormat.yMd().add_jm(); // internationalize this
-final NumberFormat chipsFormatter = new NumberFormat("0.00");
-final NumberFormat timeFormatter = new NumberFormat("00");
+import 'package:pokerapp/utils/formatter.dart';
 
 class GameHistoryModel {
-  GameType gameType;
   String gameTypeStr;
   String gameCode;
   double smallBlind;
@@ -60,22 +54,18 @@ class GameHistoryModel {
     }
   }
 
-  String getGameTypeStr() {
+  String get GameType {
     if (gameTypeStr == 'HOLDEM') {
       return 'No Limit Holdem';
     }
     return gameTypeStr;
   }
 
-  String getStartedAt() {
-    return dateFormatter.format(this.startedAt);
-  }
+  String get StartedAt => DataFormatter.dateFormat(this.startedAt);
 
-  String blinds() {
-    return '$smallBlind/$bigBlind';
-  }
+  String get Blinds => '$smallBlind/$bigBlind';
 
-  String getShortGameType() {
+  String get ShortGameType {
     if (gameTypeStr == 'HOLDEM') {
       return 'NLH';
     } else if (gameTypeStr.contains('5 Card PLO')) {
@@ -159,14 +149,14 @@ class GameHistoryDetailModel extends ChangeNotifier {
   GameHistoryDetailModel(this.gameCode, this.isOwner);
 
   void load() async {
-    final gameData = jsonData['data']['completedGame'];
-    final List playerStack = jsonData['data']['completedGame']['stackStat'];
+    final gameData = jsonData['completedGame'];
+    final List playerStack = jsonData['completedGame']['stackStat'];
 
     stack = playerStack
         .map((e) => new PlayerStack(int.parse(e["handNum"].toString()),
             double.parse(e["after"].toString())))
         .toList();
-    stack.sort((a,b) => a.handNum.compareTo(b.handNum));
+    stack.sort((a, b) => a.handNum.compareTo(b.handNum));
 
     preflopHands = int.parse(gameData['preflopHands'].toString());
     flopHands = int.parse(gameData['flopHands'].toString());
@@ -199,57 +189,27 @@ class GameHistoryDetailModel extends ChangeNotifier {
     if (runTimeSec < 60) {
       runTimeSec = 60;
     }
-    int hour;
-    int mins = (runTimeSec / 60).toInt();
-    hour = (mins / 60).toInt();
-    mins = (mins % 60);
-    runTimeStr = '${timeFormatter.format(hour)}:${timeFormatter.format(mins)}';
-
-    if (sessionTime < 60) {
-      sessionTime = 60;
-    }
-    mins = (sessionTime / 60).toInt();
-    hour = (mins / 60).toInt();
-    mins = (mins % 60);
-    sessionTimeStr = '${timeFormatter.format(hour)}:${timeFormatter.format(mins)}';
+    runTimeStr = DataFormatter.timeFormat(runTimeSec);
+    sessionTimeStr = DataFormatter.timeFormat(sessionTime);
 
     endedAt = DateTime.parse(gameData['endedAt'].toString());
     balance = double.parse(gameData['balance'].toString());
     profit = double.parse(gameData['profit'].toString());
     buyIn = double.parse(gameData['buyIn'].toString());
-
-    notifyListeners();
   }
 
   String get gameHandsText {
     return '$gameHands hands dealt in $runTimeStr';
   }
 
-  String get playerHandsText => 'You played $handsPlayed hands in $sessionTimeStr';
+  String get playerHandsText =>
+      'You played $handsPlayed hands in $sessionTimeStr';
 
-  String get balanceText {
-    if (balance == balance.round()) {
-      return '${balance.toInt()}';
-    } else {
-      return chipsFormatter.format(balance);
-    }
-  }
+  String get balanceText => DataFormatter.chipsFormat(balance);
 
-  String get buyInText {
-    if (buyIn == buyIn.round()) {
-      return '${buyIn.toInt()}';
-    } else {
-      return chipsFormatter.format(buyIn);
-    }
-  }
+  String get buyInText => DataFormatter.chipsFormat(buyIn);
 
-  String get profitText {
-    if (profit == profit.round()) {
-      return '${profit.toInt()}';
-    } else {
-      return chipsFormatter.format(profit);
-    }
-  }
+  String get profitText => DataFormatter.chipsFormat(profit);
 
   String get gameTypeStr {
     if (gameType == 'HOLDEM') {
@@ -262,22 +222,13 @@ class GameHistoryDetailModel extends ChangeNotifier {
     return handsPlayed.toString();
   }
 
-  String get endedAtStr => dateFormatter.format(this.endedAt);
+  String get endedAtStr => DataFormatter.dateFormat(this.endedAt);
 
-  void loadFromAsset() async {
-    String data =
-        await rootBundle.loadString('assets/sample-data/completed-game.json');
-    jsonData = json.decode(data);
-    load();
-  }
-
-  static Future<GameHistoryDetailModel> fromJson() async {
-    String data =
-        await rootBundle.loadString('assets/sample-data/completed-game.json');
-    final jsonData = json.decode(data);
-    print(jsonData);
-    GameHistoryDetailModel ret = new GameHistoryDetailModel('', true);
-    ret.jsonData = jsonData;
+  static GameHistoryDetailModel copyWith(GameHistoryDetailModel copy) {
+    String gameDetail = json.encode(copy.jsonData);
+    GameHistoryDetailModel ret = new GameHistoryDetailModel(copy.gameCode, copy.isOwner);
+    ret.jsonData = json.decode(gameDetail);
+    ret.load();
     return ret;
   }
 }

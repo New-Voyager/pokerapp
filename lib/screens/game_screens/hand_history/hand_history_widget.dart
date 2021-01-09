@@ -3,16 +3,14 @@ import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/screens/game_play_screen/card_views/visible_card_view.dart';
 
-class HighHistoryWidget extends StatelessWidget {
-  // temp variable passing
-
+class HandHistoryWidget extends StatelessWidget {
   final String number;
   final String name;
   final String ended;
   final String won;
   final bool showCards;
 
-  HighHistoryWidget(
+  HandHistoryWidget(
       {this.name = "Paul",
       this.number = "123",
       this.ended = "Showdown",
@@ -55,7 +53,8 @@ class HighHistoryWidget extends StatelessWidget {
                       name,
                       style: TextStyle(color: Colors.blue),
                     ),
-                    RichText(
+
+                    /*RichText(
                       text: TextSpan(
                           text: "Ended At: ",
                           style: TextStyle(
@@ -66,11 +65,7 @@ class HighHistoryWidget extends StatelessWidget {
                                 text: ended,
                                 style: TextStyle(color: Colors.white)),
                           ]),
-                    ),
-                    Text(
-                      "Won: " + won,
-                      style: TextStyle(color: Color(0xff848484)),
-                    ),
+                    ),*/
                   ],
                 ),
               ),

@@ -40,7 +40,7 @@ class CountDownTimer extends StatelessWidget {
             Container(
               height: 35.0,
               width: 35.0,
-              padding: EdgeInsets.all(text.length > 3 ? 5.0 : 10.0),
+              padding: EdgeInsets.all(text.length >= 3 ? 5.0 : 10.0),
               decoration: BoxDecoration(
                 color: const Color(0xff474747),
                 shape: BoxShape.circle,

@@ -45,6 +45,16 @@ class QueryHandUpdateService {
         CardHelper.getRawCardNumbers(playerCards),
       );
 
+    /* set the noOfVisible cards for other players */
+    int noOfCards = Provider.of<ValueNotifier<int>>(
+      context,
+      listen: false,
+    ).value;
+    Provider.of<Players>(
+      context,
+      listen: false,
+    ).visibleCardNumbersForAll(noOfCards);
+
     // boardCards update if available
     try {
       List<int> boardCardsNum = currentHandState['boardCards']

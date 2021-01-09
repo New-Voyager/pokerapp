@@ -20,6 +20,10 @@ class PlayerModel {
   bool highlight;
   bool playerFolded;
   bool winner;
+  int coinAmount;
+  bool animatingCoinMovement;
+
+  int noOfCardsVisible;
 
   PlayerModel.fromJson(var data) {
     this.name = data['name'];

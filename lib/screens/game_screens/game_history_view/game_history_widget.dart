@@ -68,7 +68,7 @@ class GameHistoryItem extends StatelessWidget {
                         backgroundColor: getGameColor().withOpacity(1.0),
                         radius: 20,
                         child: Text(
-                          item.getShortGameType(),
+                          item.ShortGameType,
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 13.0,
@@ -94,7 +94,7 @@ class GameHistoryItem extends StatelessWidget {
                               children: [
                                 /* Game type */
                                 Text(
-                                  item.getGameTypeStr(),
+                                  item.GameType,
                                   style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 19.0,
@@ -106,7 +106,7 @@ class GameHistoryItem extends StatelessWidget {
                                 /* user since */
                                 separator,
                                 Text(
-                                  item.blinds(),
+                                  item.Blinds,
                                   style: AppStyles.blindsTextStyle,
                                 ),
                               ],
@@ -133,7 +133,7 @@ class GameHistoryItem extends StatelessWidget {
                               ),
                               colSeparator,
                               Text(
-                                item.getStartedAt(),
+                                item.StartedAt,
                                 style: AppStyles.hostNameTextStyle,
                               ),
                             ]),

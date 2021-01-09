@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_play_enums/player_type.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
+import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
 
 /*
@@ -95,18 +96,41 @@ class Players extends ChangeNotifier {
     _notify();
   }
 
-  void removeCardsFromAll() {
-    for (int i = 0; i < _players.length; i++) _players[i].cards = null;
-    _notify();
-  }
-
   void updateStatus(int idx, String status) {
     _players[idx].status = status;
     _notify();
   }
 
-  void removeAllPlayersStatus() {
-    for (int i = 0; i < _players.length; i++) _players[i].status = null;
+  void updateCoinAmount(int idx, int amount) {
+    if (_players[idx].coinAmount == null)
+      _players[idx].coinAmount = amount;
+    else
+      _players[idx].coinAmount += amount;
+    _notify();
+  }
+
+  Future<void> moveCoinsToPot() async {
+    /* move all the coins to the pot  */
+    for (int i = 0; i < _players.length; i++) {
+      _players[i].animatingCoinMovement = true;
+    }
+    _notify();
+
+    // waiting for double the animation time
+    await Future.delayed(AppConstants.animationDuration);
+
+    for (int i = 0; i < _players.length; i++) {
+      _players[i].animatingCoinMovement = false;
+      _players[i].coinAmount = null;
+    }
+    _notify();
+  }
+
+  Future<void> removeAllPlayersStatus() async {
+    for (int i = 0; i < _players.length; i++) {
+      _players[i].status = null;
+      _players[i].coinAmount = null;
+    }
     _notify();
   }
 
@@ -147,6 +171,25 @@ class Players extends ChangeNotifier {
     int idx = _players.indexWhere((p) => p.seatNo == seatNo);
     _players[idx].cards = cards;
 
+    _notify();
+  }
+
+  void updateVisibleCardNumber(int seatNo, int n) {
+    int idx = _players.indexWhere((p) => p.seatNo == seatNo);
+    _players[idx].noOfCardsVisible = n;
+
+    _notify();
+  }
+
+  void visibleCardNumbersForAll(int n) {
+    for (int i = 0; i < _players.length; i++) _players[i].noOfCardsVisible = n;
+
+    _notify();
+  }
+
+  void removeCardsFromAll() {
+    for (int i = 0; i < _players.length; i++) _players[i].noOfCardsVisible = 0;
+    for (int i = 0; i < _players.length; i++) _players[i].cards = null;
     _notify();
   }
 

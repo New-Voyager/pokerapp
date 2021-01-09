@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:pokerapp/models/game_history_model.dart';
+import 'package:pokerapp/models/hand_history_model.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
-import 'package:pokerapp/screens/club_screen/game_history_details_view/hands_chart_view.dart';
-import 'package:pokerapp/screens/club_screen/game_history_details_view/stack_chart_view.dart';
+import 'package:pokerapp/screens/game_screens/game_history_details_view/stack_chart_view.dart';
+import 'package:pokerapp/screens/game_screens/hand_history/hand_history.dart';
+import 'package:pokerapp/services/app/game_service.dart';
+import 'package:provider/provider.dart';
 
+import 'hands_chart_view.dart';
 import 'highhand_winners_view.dart';
 
 class GameHistoryDetailView extends StatefulWidget {
@@ -21,19 +25,15 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
     height: 1.0,
   );
 
-  bool _showLoading = false;
   bool loadingDone = false;
   GameHistoryDetailModel _gameDetail;
 
-  _toggleLoading() => setState(() {
-        _showLoading = !_showLoading;
-      });
-
   _fetchData() async {
-    _toggleLoading();
-    await _gameDetail.loadFromAsset();
+    await GameService.getGameHistoryDetail(_gameDetail);
     loadingDone = true;
-    _toggleLoading();
+    setState(() {
+      // update ui
+    });
   }
 
   _GameHistoryDetailView(this._gameDetail);
@@ -53,65 +53,68 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
         title: Text("Game History"),
         elevation: 0.0,
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
+      body: !loadingDone
+          ? Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
+              child: Column(
                 children: [
-                  Flexible(
-                    flex: 7,
-                    child:
-                        Visibility(visible: loadingDone, child: gameTypeTile()),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      children: [
+                        Flexible(
+                          flex: 7,
+                          child: Visibility(
+                              visible: loadingDone, child: gameTypeTile()),
+                        ),
+                        SizedBox(
+                          width: 5.0,
+                        ),
+                        Flexible(
+                          flex: 3,
+                          child: Visibility(
+                              visible: loadingDone, child: balanceTile()),
+                        ),
+                      ],
+                    ),
                   ),
-                  SizedBox(
-                    width: 5.0,
+                  seprator,
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      children: [
+                        Flexible(
+                          flex: 3,
+                          child: stackTile(),
+                        ),
+                        // Flexible(
+                        //   flex: 3,
+                        //   child: resultTile(),
+                        // ),
+                        SizedBox(width: 5),
+                        Flexible(
+                          flex: 3,
+                          child: actionTile(),
+                        ),
+                      ],
+                    ),
                   ),
-                  Flexible(
-                    flex: 3,
-                    child: Visibility(visible: loadingDone, child: balanceTile()),
+                  seprator,
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      children: [
+                        Flexible(
+                          flex: 10,
+                          child: highHandTile(),
+                        ),
+                      ],
+                    ),
                   ),
+                  getLowerCard()
                 ],
               ),
             ),
-            seprator,
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  Flexible(
-                    flex: 3,
-                    child: stackTile(),
-                  ),
-                  // Flexible(
-                  //   flex: 3,
-                  //   child: resultTile(),
-                  // ),
-                  SizedBox(width: 5),
-                  Flexible(
-                    flex: 3,
-                    child: actionTile(),
-                  ),
-                ],
-              ),
-            ),
-            seprator,
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  Flexible(
-                    flex: 10,
-                    child: highHandTile(),
-                  ),
-                ],
-              ),
-            ),
-            getLowerCard()
-          ],
-        ),
-      ),
     );
   }
 
@@ -340,15 +343,19 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
                   "Balance",
                   style: TextStyle(color: Colors.white),
                 ),
-                SizedBox(height: 16,),
-                Text(
-                  _gameDetail.profitText ?? _gameDetail.profitText,
-                  style:
-                  _gameDetail.profit != null || _gameDetail.profit == 0 ?
-                  _gameDetail.profit < 0 ? TextStyle(color: Colors.red, fontSize: 20.0) : TextStyle(color: Colors.lightGreenAccent, fontSize: 20.0)
-                      : TextStyle(color: Colors.white, fontSize: 20.0)
+                SizedBox(
+                  height: 16,
                 ),
-                SizedBox(height: 10,),
+                Text(_gameDetail.profitText ?? _gameDetail.profitText,
+                    style: _gameDetail.profit != null || _gameDetail.profit == 0
+                        ? _gameDetail.profit < 0
+                            ? TextStyle(color: Colors.red, fontSize: 20.0)
+                            : TextStyle(
+                                color: Colors.lightGreenAccent, fontSize: 20.0)
+                        : TextStyle(color: Colors.white, fontSize: 20.0)),
+                SizedBox(
+                  height: 10,
+                ),
                 Text(
                   "Buy-in",
                   style: TextStyle(color: Colors.blueGrey),
@@ -401,7 +408,8 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Visibility(
-                          visible: loadingDone && _gameDetail.gameTypeStr != null,
+                          visible:
+                              loadingDone && _gameDetail.gameTypeStr != null,
                           child: Text(
                             _gameDetail.gameTypeStr ?? '',
                             style:
@@ -409,7 +417,8 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
                           )),
                       seprator,
                       Visibility(
-                          visible: loadingDone && _gameDetail.gameHandsText != null,
+                          visible:
+                              loadingDone && _gameDetail.gameHandsText != null,
                           child: Text(
                             _gameDetail.gameHandsText ?? '',
                             style: TextStyle(
@@ -418,7 +427,8 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
                           )),
                       seprator,
                       Visibility(
-                          visible: loadingDone && _gameDetail.playerHandsText != null,
+                          visible: loadingDone &&
+                              _gameDetail.playerHandsText != null,
                           child: Text(
                             _gameDetail.playerHandsText ?? '',
                             style: TextStyle(color: Color(0xff848484)),
@@ -426,19 +436,21 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
                       seprator
                     ],
                   ),
-                  SizedBox(height: 15,),
-                  Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                    children:[
-                  Visibility(
-                    visible: loadingDone && _gameDetail.endedAt != null,
-                    child:
-                    Text(
-                      _gameDetail.endedAtStr != null ? 'Ended at ${_gameDetail.endedAtStr}': '',
-                      style: TextStyle(color: Color(0xff848484), fontSize: 12),
-                    ),
-                  )]
+                  SizedBox(
+                    height: 15,
                   ),
+                  Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
+                    Visibility(
+                      visible: loadingDone && _gameDetail.endedAt != null,
+                      child: Text(
+                        _gameDetail.endedAtStr != null
+                            ? 'Ended at ${_gameDetail.endedAtStr}'
+                            : '',
+                        style:
+                            TextStyle(color: Color(0xff848484), fontSize: 12),
+                      ),
+                    )
+                  ]),
                 ],
               ),
             ),
@@ -465,6 +477,21 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
         ),
       ),
     );
+  }
+
+  void onHandHistoryPressed(BuildContext context) {
+    final model =
+        HandHistoryListModel(_gameDetail.gameCode, _gameDetail.isOwner);
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => ChangeNotifierProvider<HandHistoryListModel>(
+              create: (_) => model,
+              builder: (BuildContext context, _) =>
+                  Consumer<HandHistoryListModel>(
+                      builder: (_, HandHistoryListModel data, __) =>
+                          HandHistoryListView(data))),
+        ));
   }
 
   Widget getLowerCard() {
@@ -500,7 +527,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
                     Icons.arrow_forward_ios,
                     color: Colors.white,
                   ),
-                  onPressed: () {}),
+                  onPressed: () => this.onHandHistoryPressed(context)),
             ),
             Padding(
               padding: const EdgeInsets.only(left: 70.0),

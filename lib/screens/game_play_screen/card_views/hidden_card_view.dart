@@ -23,6 +23,12 @@ const kDisplacementConstant = 3.0;
 //);
 
 class HiddenCardView extends StatelessWidget {
+  HiddenCardView({
+    this.noOfCards = 0,
+  });
+
+  final noOfCards;
+
   Widget _buildCardBack() => Container(
         height: AppDimensions.cardHeight * 0.60,
         width: AppDimensions.cardWidth * 0.60,
@@ -44,10 +50,7 @@ class HiddenCardView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    int noOfCards = Provider.of<ValueNotifier<int>>(
-      context,
-      listen: false,
-    ).value;
+    if (noOfCards == 0) return const SizedBox.shrink();
 
     double mid = (noOfCards ~/ 2) * 0.80;
 

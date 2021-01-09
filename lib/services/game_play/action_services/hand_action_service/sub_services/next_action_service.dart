@@ -51,5 +51,10 @@ class NextActionService {
         potUpdatesChips: potUpdates,
       );
     } catch (e) {}
+
+    Provider.of<TableState>(
+      context,
+      listen: false,
+    ).updateTableStatus(null);
   }
 }
