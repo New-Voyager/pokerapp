@@ -480,20 +480,19 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
   }
 
   void onHandHistoryPressed(BuildContext context) {
-    final model = HandHistoryListModel(_gameDetail.gameCode, _gameDetail.isOwner);
+    final model =
+        HandHistoryListModel(_gameDetail.gameCode, _gameDetail.isOwner);
     Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (_) =>
-              ChangeNotifierProvider<HandHistoryListModel>(
-                  create: (_) => model,
-                  builder: (BuildContext context, _) =>
-                      Consumer<HandHistoryListModel>(
-                          builder:
-                              (_, HandHistoryListModel data, __) =>
-                              HandHistoryListView(data))),
+          builder: (_) => ChangeNotifierProvider<HandHistoryListModel>(
+              create: (_) => model,
+              builder: (BuildContext context, _) =>
+                  Consumer<HandHistoryListModel>(
+                      builder: (_, HandHistoryListModel data, __) =>
+                          HandHistoryListView(data))),
         ));
-}
+  }
 
   Widget getLowerCard() {
     return Padding(

@@ -46,7 +46,10 @@ class QueryHandUpdateService {
       );
 
     /* set the noOfVisible cards for other players */
-    int noOfCards = Provider.of<ValueNotifier<int>>(context, listen: false,).value;
+    int noOfCards = Provider.of<ValueNotifier<int>>(
+      context,
+      listen: false,
+    ).value;
     Provider.of<Players>(
       context,
       listen: false,

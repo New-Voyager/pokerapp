@@ -29,6 +29,8 @@ class ClubInteriorService {
           contactInfo
           creditLimit
           autoBuyinApproval
+          notes
+          totalGames
         }
       }""";
 
@@ -54,6 +56,11 @@ class ClubInteriorService {
           }    
     """;
 
+  static String updateClubMemberMutation = """
+    mutation(\$clubCode: String!, \$playerUuid: String!, \$update: ClubMemberUpdateInput!) {
+      update: updateClubMember(clubCode: \$clubCode, playerUuid: \$playerUuid, update: \$update)
+    }
+  """;
   static Future<List<ClubMemberModel>> getMembers(String clubCode) async {
     return getClubMembers(clubCode, MemberListOptions.ALL);
   }
@@ -73,6 +80,17 @@ class ClubInteriorService {
         .map<ClubMemberModel>(
             (var memberItem) => ClubMemberModel.fromJson(memberItem))
         .toList();
+  }
+
+  static Future<ClubMemberModel> getClubMemberDetail(
+      String clubCode, String playerId) async {
+    Map<String, dynamic> filter = {"playerId": playerId};
+    final members = await getMembersHelper(clubCode, filter);
+    if (members.length == 0) {
+      return null;
+    }
+    members[0].clubCode = clubCode;
+    return members[0];
   }
 
   static Future<List<ClubMemberModel>> getClubMembers(
@@ -95,6 +113,29 @@ class ClubInteriorService {
     }
 
     return getMembersHelper(clubCode, filter);
+  }
+
+  static Future<bool> updateClubMember(ClubMemberModel data) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+    int creditLimit = 0;
+    if (data.creditLimit != '0' && data.creditLimit != '') {
+      creditLimit = int.parse(data.creditLimit.toString());
+    }
+    Map<String, dynamic> update = {
+      "contactInfo": data.contactInfo,
+      "notes": data.notes,
+      "creditLimit": creditLimit,
+      "autoBuyinApproval": data.autoBuyInApproval,
+    };
+    Map<String, dynamic> variables = {
+      "clubCode": data.clubCode,
+      "playerUuid": data.playerId,
+      "update": update,
+    };
+    QueryResult result = await _client.mutate(MutationOptions(
+        documentNode: gql(updateClubMemberMutation), variables: variables));
+    if (result.hasException) return false;
+    return true;
   }
 
   static Future<List<GameHistoryModel>> getGameHistory(String clubCode) async {
