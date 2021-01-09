@@ -16,16 +16,14 @@ class ClubMembersListView extends StatelessWidget {
 
   ClubMembersListView(this.clubCode, this._membersList);
 
-  Color getTextColor(String number) {
-    if (number == null || number == '') {
+  Color getBalanceColor(double number) {
+    if (number == null) {
       return Colors.white;
     }
 
-    return int.parse(number) == 0
+    return number == 0
         ? Colors.white
-        : int.parse(number) > 0
-            ? AppColors.positiveColor
-            : AppColors.negativeColor;
+        : number > 0 ? AppColors.positiveColor : AppColors.negativeColor;
   }
 
   @override
@@ -46,15 +44,13 @@ class ClubMembersListView extends StatelessWidget {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) =>
-                          ChangeNotifierProvider<ClubMemberModel>(
-                              create: (_) => data,
-                              builder: (BuildContext context, _) =>
-                                  Consumer<ClubMemberModel>(
-                                      builder:
-                                          (_, ClubMemberModel data, __) =>
-                                              // ignore: unnecessary_statements
-                                              ClubMembersDetailsView(data))),
+                      builder: (_) => ChangeNotifierProvider<ClubMemberModel>(
+                          create: (_) => data,
+                          builder: (BuildContext context, _) =>
+                              Consumer<ClubMemberModel>(
+                                  builder: (_, ClubMemberModel data, __) =>
+                                      // ignore: unnecessary_statements
+                                      ClubMembersDetailsView(data))),
                     ));
 
                 /*
@@ -335,10 +331,10 @@ class ClubMembersListView extends StatelessWidget {
                       child: Column(
                         children: [
                           Text(
-                            _filteredList[index].balance,
+                            _filteredList[index].balanceStr,
                             style: TextStyle(
                               fontFamily: AppAssets.fontFamilyLato,
-                              color: getTextColor(
+                              color: getBalanceColor(
                                 _filteredList[index].balance,
                               ),
                               fontSize: 16,
@@ -348,11 +344,12 @@ class ClubMembersListView extends StatelessWidget {
                           Padding(
                             padding: EdgeInsets.only(top: 10),
                             child: Visibility(
-                              visible: _filteredList[index].rake != null,
+                              visible: _filteredList[index].rake != null &&
+                                  _filteredList[index].rake != 0,
                               child: Container(
                                 padding: EdgeInsets.all(3),
                                 child: Text(
-                                  _filteredList[index].rake ?? "0",
+                                  _filteredList[index].rakeStr,
                                   style: TextStyle(
                                     fontFamily: AppAssets.fontFamilyLato,
                                     color: Colors.white,

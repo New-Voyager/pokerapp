@@ -4,7 +4,6 @@ import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/screens/game_play_screen/card_views/visible_card_view.dart';
 
 class HandHistoryWidget extends StatelessWidget {
-
   final String number;
   final String name;
   final String ended;
@@ -75,7 +74,6 @@ class HandHistoryWidget extends StatelessWidget {
               flex: 5,
               child: showCards ? getCards() : Container(),
             ),
-
             Flexible(
                 flex: 1,
                 child: IconButton(
@@ -85,9 +83,7 @@ class HandHistoryWidget extends StatelessWidget {
                     color: Colors.white,
                   ),
                 )),
-
           ],
-
         ),
       ),
     );

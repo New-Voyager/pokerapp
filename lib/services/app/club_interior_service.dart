@@ -82,7 +82,8 @@ class ClubInteriorService {
         .toList();
   }
 
-  static Future<ClubMemberModel> getClubMemberDetail(String clubCode, String playerId) async {
+  static Future<ClubMemberModel> getClubMemberDetail(
+      String clubCode, String playerId) async {
     Map<String, dynamic> filter = {"playerId": playerId};
     final members = await getMembersHelper(clubCode, filter);
     if (members.length == 0) {
@@ -118,22 +119,21 @@ class ClubInteriorService {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
     int creditLimit = 0;
     if (data.creditLimit != '0' && data.creditLimit != '') {
-      creditLimit = int.parse(data.creditLimit);
+      creditLimit = int.parse(data.creditLimit.toString());
     }
-    Map<String, dynamic>  update = {
+    Map<String, dynamic> update = {
       "contactInfo": data.contactInfo,
       "notes": data.notes,
       "creditLimit": creditLimit,
       "autoBuyinApproval": data.autoBuyInApproval,
-      };
+    };
     Map<String, dynamic> variables = {
-        "clubCode": data.clubCode,
-        "playerUuid": data.playerId,
-        "update": update,
-      };
-    QueryResult result = await _client.mutate(
-        MutationOptions(documentNode: gql(updateClubMemberMutation),
-                        variables: variables));
+      "clubCode": data.clubCode,
+      "playerUuid": data.playerId,
+      "update": update,
+    };
+    QueryResult result = await _client.mutate(MutationOptions(
+        documentNode: gql(updateClubMemberMutation), variables: variables));
     if (result.hasException) return false;
     return true;
   }
@@ -154,6 +154,4 @@ class ClubInteriorService {
         .map<GameHistoryModel>((var item) => GameHistoryModel.fromJson(item))
         .toList();
   }
-
-
 }

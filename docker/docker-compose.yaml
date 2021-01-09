@@ -16,6 +16,8 @@ services:
       REDIS_PORT: 6379
       REDIS_DB: 0
       API_SERVER_URL: http://api-server:9501
+    volumes:
+      - '${PROJECT_ROOT}/gameserver-delays.yaml:/app/delays.yaml'
     command:
       - "/bin/sh"
       - "-c"

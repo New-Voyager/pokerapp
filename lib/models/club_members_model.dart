@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/club_member_status.dart';
+import 'package:pokerapp/utils/formatter.dart';
 
 class ClubMemberModel extends ChangeNotifier {
   String clubCode;
@@ -12,17 +13,15 @@ class ClubMemberModel extends ChangeNotifier {
   bool isManager;
   String playerId;
   String _contactInfo;
-  String balance;
+  double _balance;
   String imageUrl;
-  String totalBuyIns;
-  String totalWinnings;
-  String currentBalance;
-  String rake;
+  double _totalBuyIns;
+  double _totalWinnings;
+  double _rake;
   bool autoBuyInApproval;
-  String _creditLimit;
+  int _creditLimit;
   String _notes;
-  String winnings;
-  String totalGames;
+  int _totalGames;
   bool edited = false;
 
   ClubMemberModel();
@@ -48,8 +47,8 @@ class ClubMemberModel extends ChangeNotifier {
     }
   }
 
-  String get creditLimit => this._creditLimit;
-  set creditLimit(String val) {
+  int get creditLimit => this._creditLimit ?? 0;
+  set creditLimit(int val) {
     this._creditLimit = val;
     this.edited = true;
     notifyListeners();
@@ -69,6 +68,17 @@ class ClubMemberModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  int get totalGames => this._totalGames ?? 0;
+
+  double get balance => this._balance ?? 0;
+  double get totalWinnings => this._totalWinnings ?? 0;
+  double get totalBuyIns => this._totalBuyIns ?? 0;
+  double get rake => this._rake ?? 0;
+  String get rakeStr => DataFormatter.chipsFormat(this._rake);
+  String get balanceStr => DataFormatter.chipsFormat(this._balance);
+  String get totalWinningsStr => DataFormatter.chipsFormat(this._totalWinnings);
+  String get totalBuyinStr => DataFormatter.chipsFormat(this._totalBuyIns);
+
   static ClubMemberModel copyWith(ClubMemberModel copyValue) {
     final data = new ClubMemberModel();
     data.name = copyValue.name;
@@ -78,15 +88,14 @@ class ClubMemberModel extends ChangeNotifier {
     data.status = copyValue.status;
     data.lastPlayedDate = copyValue.lastPlayedDate;
     data._creditLimit = copyValue._creditLimit;
-    data.totalGames = copyValue.totalGames;
-    data.totalWinnings = copyValue.totalWinnings;
-    data.totalBuyIns = copyValue.totalBuyIns;
+    data._totalGames = copyValue._totalGames;
+    data._totalWinnings = copyValue._totalWinnings;
+    data._totalBuyIns = copyValue._totalBuyIns;
     data.autoBuyInApproval = copyValue.autoBuyInApproval;
     data.isOwner = copyValue.isOwner;
     data.isManager = copyValue.isManager;
-    data.currentBalance = copyValue.currentBalance;
-    data.balance = copyValue.balance;
-    data.rake = copyValue.rake;
+    data._balance = copyValue._balance;
+    data._rake = copyValue._rake;
     data._contactInfo = copyValue._contactInfo;
     data._notes = copyValue._notes;
     return data;
@@ -97,10 +106,10 @@ class ClubMemberModel extends ChangeNotifier {
     this.joinedDate = DateTime.parse(jsonData['joinedDate']);
     this.status = _getPlayerStatus(jsonData['status']);
     this.lastPlayedDate = "";
-    this._creditLimit = '';
-    this.totalGames = '';
-    this.totalWinnings = '';
-    this.totalBuyIns  = '';
+    this._creditLimit = 0;
+    this._totalGames = 0;
+    this._totalWinnings = 0;
+    this._totalBuyIns = 0;
     this.autoBuyInApproval = false;
 
     if (jsonData['lastPlayedDate'] != null) {
@@ -112,30 +121,24 @@ class ClubMemberModel extends ChangeNotifier {
     this.isManager = jsonData['isManager'];
     this.playerId = jsonData['playerId'];
     this.contactInfo = jsonData['contactInfo'];
-    this.balance = jsonData['balance'].toString();
-    if (this.balance == '0') {
-      this.balance = '';
-    }
-    this.rake = '';
+    this._balance = double.parse(jsonData['balance'].toString());
+    this._rake = 0;
     if (jsonData['rakePaid'] != null) {
-      this.rake = jsonData['rakePaid'].toString();
-      if (this.rake == '0') {
-        this.rake = null;
-      }
+      this._rake = double.parse(jsonData['rakePaid'].toString());
     }
+
     this.imageUrl = jsonData['imageUrl'];
 
-
     if (jsonData['totalGames'] != null) {
-      this.totalBuyIns = jsonData['totalGames'].toString();
+      this._totalGames = int.parse(jsonData['totalGames'].toString());
     }
 
     if (jsonData['totalBuyins'] != null) {
-      this.totalBuyIns = jsonData['totalBuyins'].toString();
+      this._totalBuyIns = double.parse(jsonData['totalBuyins'].toString());
     }
 
     if (jsonData['totalWinnings'] != null) {
-      this.totalWinnings = jsonData['totalWinnings'].toString();
+      this._totalWinnings = double.parse(jsonData['totalWinnings'].toString());
     }
 
     this.autoBuyInApproval = false;
@@ -146,7 +149,7 @@ class ClubMemberModel extends ChangeNotifier {
     }
 
     if (jsonData['creditLimit'] != null) {
-      this._creditLimit = jsonData['creditLimit'].toString();
+      this._creditLimit = int.parse(jsonData['creditLimit'].toString());
     }
 
     if (jsonData['notes'] != null) {
