@@ -42,8 +42,10 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView> {
         _contactEditingController =
             TextEditingController(text: _data.contactInfo);
         _notesEditingController = TextEditingController(text: _data.notes);
-        _notesEditingController.addListener(() => _data.notes = _notesEditingController.text);
-        _contactEditingController.addListener(() => _data.contactInfo = _contactEditingController.text);
+        _notesEditingController
+            .addListener(() => _data.notes = _notesEditingController.text);
+        _contactEditingController.addListener(
+            () => _data.contactInfo = _contactEditingController.text);
       }
     });
   }
@@ -52,18 +54,6 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView> {
   void initState() {
     super.initState();
     _fetchData();
-  }
-
-  Color getTextColor(String number) {
-    if (number == null || number == '') {
-      return Colors.white;
-    }
-
-    return int.parse(number) == 0
-        ? Colors.white
-        : int.parse(number) > 0
-            ? AppColors.positiveColor
-            : AppColors.negativeColor;
   }
 
   void goBack(BuildContext context) async {
@@ -369,49 +359,57 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView> {
         ));
   }
 
-
   _showDialog(BuildContext context) async {
     final textField = new CupertinoTextField(
-      controller: TextEditingController(text: _data.creditLimit),
+      controller: TextEditingController(text: _data.creditLimit.toString()),
       autofocus: true,
       keyboardType: TextInputType.number,
-      onSubmitted: (value) => _data.creditLimit = value,
+      onSubmitted: (value) => _data.creditLimit = int.parse(value),
     );
 
     await showDialog<String>(
       context: context,
-      child: new _SystemPadding(child: new AlertDialog(
-        contentPadding: const EdgeInsets.all(8.0),
-
-        content: new Row(
-          children: <Widget>[
-            Text('Credit Limit'),
-            SizedBox(height: 10, width: 20),
-            new Expanded(
-              child: textField
-            )
+      child: new _SystemPadding(
+        child: new AlertDialog(
+          contentPadding: const EdgeInsets.all(8.0),
+          content: new Row(
+            children: <Widget>[
+              Text('Credit Limit'),
+              SizedBox(height: 10, width: 20),
+              new Expanded(child: textField)
+            ],
+          ),
+          actions: <Widget>[
+            new FlatButton(
+                child: const Text('Cancel'),
+                onPressed: () {
+                  Navigator.pop(context);
+                }),
+            new FlatButton(
+                child: const Text('Set'),
+                onPressed: () {
+                  String value = textField.controller.value.text;
+                  Navigator.pop(context);
+                  _data.creditLimit = int.parse(value);
+                })
           ],
         ),
-        actions: <Widget>[
-          new FlatButton(
-              child: const Text('Cancel'),
-              onPressed: () {
-                Navigator.pop(context);
-              }),
-          new FlatButton(
-              child: const Text('Set'),
-              onPressed: () {
-                String value = textField.controller.value.text;
-                Navigator.pop(context);
-                _data.creditLimit = value;
-              })
-        ],
-      ),),
+      ),
     );
   }
 
   void onCreditLimitEdit(BuildContext context) async {
     await _showDialog(context);
+  }
+
+  Color getBalanceColor(double number) {
+    if (number == null) {
+      return Colors.white;
+    }
+
+    return number == 0
+        ? Colors.white
+        : number > 0 ? AppColors.positiveColor : AppColors.negativeColor;
   }
 
   Widget detailTile() {
@@ -453,11 +451,11 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView> {
                   child: Padding(
                     padding: EdgeInsets.only(left: 5),
                     child: Text(
-                      _data.balance,
+                      _data.balanceStr,
                       textAlign: TextAlign.left,
                       style: TextStyle(
                         fontFamily: AppAssets.fontFamilyLato,
-                        color: getTextColor("450"),
+                        color: getBalanceColor(_data.balance),
                         fontSize: 20,
                       ),
                     ),
@@ -497,15 +495,15 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView> {
                 ),
                 Expanded(
                   flex: 3,
-                  child: Padding(
-                    padding: EdgeInsets.only(left: 5),
-                    child: GestureDetector(
-                      onTap: () => onCreditLimitEdit(context),
+                  child: GestureDetector(
+                    onTap: () => onCreditLimitEdit(context),
+                    child: Padding(
+                      padding: EdgeInsets.only(left: 5),
                       child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              _data.creditLimit,
+                              _data.creditLimit.toString(),
                               textAlign: TextAlign.left,
                               style: TextStyle(
                                 fontFamily: AppAssets.fontFamilyLato,
@@ -562,7 +560,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView> {
                   child: Padding(
                     padding: EdgeInsets.only(left: 5),
                     child: Text(
-                      _data.totalGames,
+                      _data.totalGames.toString(),
                       textAlign: TextAlign.left,
                       style: TextStyle(
                         fontFamily: AppAssets.fontFamilyLato,
@@ -609,7 +607,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView> {
                   child: Padding(
                     padding: EdgeInsets.only(left: 5),
                     child: Text(
-                      _data.totalBuyIns,
+                      _data.totalBuyinStr,
                       textAlign: TextAlign.left,
                       style: TextStyle(
                         fontFamily: AppAssets.fontFamilyLato,
@@ -656,7 +654,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView> {
                   child: Padding(
                     padding: EdgeInsets.only(left: 5),
                     child: Text(
-                      _data.totalWinnings,
+                      _data.totalWinningsStr,
                       textAlign: TextAlign.left,
                       style: TextStyle(
                         fontFamily: AppAssets.fontFamilyLato,
@@ -703,7 +701,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView> {
                   child: Padding(
                     padding: EdgeInsets.only(left: 5),
                     child: Text(
-                      _data.rake,
+                      _data.rakeStr,
                       textAlign: TextAlign.left,
                       style: TextStyle(
                         fontFamily: AppAssets.fontFamilyLato,

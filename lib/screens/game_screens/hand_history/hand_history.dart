@@ -5,7 +5,6 @@ import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/screens/game_screens/hand_history/hand_history_widget.dart';
 
 class HandHistoryListView extends StatefulWidget {
-
   final HandHistoryListModel data;
   HandHistoryListView(this.data);
 
