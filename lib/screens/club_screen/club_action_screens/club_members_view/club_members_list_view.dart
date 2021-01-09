@@ -8,11 +8,13 @@ import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_icons.dart';
 import 'package:pokerapp/screens/club_screen/club_action_screens/club_member_detailed_view/club_member_detailed_view.dart';
+import 'package:provider/provider.dart';
 
 class ClubMembersListView extends StatelessWidget {
   final List<ClubMemberModel> _membersList;
+  final String clubCode;
 
-  ClubMembersListView(this._membersList);
+  ClubMembersListView(this.clubCode, this._membersList);
 
   Color getTextColor(String number) {
     if (number == null || number == '') {
@@ -30,20 +32,38 @@ class ClubMembersListView extends StatelessWidget {
   Widget build(BuildContext context) {
     List<ClubMemberModel> _filteredList;
     _filteredList = _membersList;
-
     return Container(
       margin: EdgeInsets.all(15),
       child: ListView.separated(
         itemCount: _filteredList.length,
         itemBuilder: (context, index) {
+          final member = _membersList[index];
+          member.clubCode = this.clubCode;
+          final data = ClubMemberModel.copyWith(member);
           return Container(
             child: InkWell(
               onTap: () {
                 Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) =>
+                          ChangeNotifierProvider<ClubMemberModel>(
+                              create: (_) => data,
+                              builder: (BuildContext context, _) =>
+                                  Consumer<ClubMemberModel>(
+                                      builder:
+                                          (_, ClubMemberModel data, __) =>
+                                              // ignore: unnecessary_statements
+                                              ClubMembersDetailsView(data))),
+                    ));
+
+                /*
+                Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => ClubMembersDetailedView()),
+                      builder: (context) => ClubMembersDetailsView(clubCode, member.playerId)),
                 );
+                */
               },
               child: Row(
                 children: <Widget>[
@@ -321,26 +341,30 @@ class ClubMembersListView extends StatelessWidget {
                               color: getTextColor(
                                 _filteredList[index].balance,
                               ),
-                              fontSize: 20,
+                              fontSize: 16,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                           Padding(
                             padding: EdgeInsets.only(top: 10),
-                            child: Container(
-                              padding: EdgeInsets.all(3),
-                              child: Text(
-                                _filteredList[index].rake ?? "0",
-                                style: TextStyle(
-                                  fontFamily: AppAssets.fontFamilyLato,
-                                  color: Colors.white,
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.bold,
+                            child: Visibility(
+                              visible: _filteredList[index].rake != null,
+                              child: Container(
+                                padding: EdgeInsets.all(3),
+                                child: Text(
+                                  _filteredList[index].rake ?? "0",
+                                  style: TextStyle(
+                                    fontFamily: AppAssets.fontFamilyLato,
+                                    color: Colors.white,
+                                    backgroundColor: Colors.transparent,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
-                              ),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(3),
-                                color: AppColors.veryLightGrayColor,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(3),
+                                  color: AppColors.veryLightGrayColor,
+                                ),
                               ),
                             ),
                           ),
