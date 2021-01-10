@@ -44,20 +44,19 @@ class _GameHistoryViewState extends State<GameHistoryView> {
     final item = this._prevGames[index];
     return GestureDetector(
         onTap: () {
-              GameHistoryDetailModel model = GameHistoryDetailModel(item.gameCode, true);
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) =>
-                        ChangeNotifierProvider<GameHistoryDetailModel>(
-                            create: (_) => model,
-                            builder: (BuildContext context, _) =>
-                                Consumer<GameHistoryDetailModel>(
-                                    builder:
-                                        (_, GameHistoryDetailModel data, __) =>
-                                            GameHistoryDetailView(data))),
-                  ));
-            },
+          GameHistoryDetailModel model =
+              GameHistoryDetailModel(item.gameCode, true);
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => ChangeNotifierProvider<GameHistoryDetailModel>(
+                    create: (_) => model,
+                    builder: (BuildContext context, _) =>
+                        Consumer<GameHistoryDetailModel>(
+                            builder: (_, GameHistoryDetailModel data, __) =>
+                                GameHistoryDetailView(data))),
+              ));
+        },
         child: GameHistoryItem(item: _prevGames[index]));
   }
 
