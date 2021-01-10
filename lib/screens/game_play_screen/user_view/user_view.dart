@@ -23,15 +23,15 @@ const shrinkedSizedBox = const SizedBox.shrink();
 const highlightColor = const Color(0xfffffff);
 
 const Map<int, Offset> coinAmountWidgetOriginalOffsetMapping = {
-  1: Offset(0, -70),
-  2: Offset(50, -40),
-  3: Offset(50, -40),
-  4: Offset(50, -40),
-  5: Offset(20, 60),
-  6: Offset(-30, 60),
-  7: Offset(-50, -40),
-  8: Offset(-50, -40),
-  9: Offset(-50, -40),
+  1: Offset(0, -60),
+  2: Offset(60, 20),
+  3: Offset(60, 20),
+  4: Offset(60, 20),
+  5: Offset(0, 60),
+  6: Offset(0, 60),
+  7: Offset(-60, 20),
+  8: Offset(-60, 20),
+  9: Offset(-60, 20),
 };
 
 class UserView extends StatelessWidget {
@@ -101,7 +101,9 @@ class UserView extends StatelessWidget {
                 height: 19.50 * 3,
                 child: AnimatedSwitcher(
                   duration: AppConstants.fastAnimationDuration,
-                  child: showDown
+                  child: showDown &&
+                          (userObject.cards != null &&
+                              userObject.cards.isNotEmpty)
                       ? (userObject?.isMe ?? false)
                           ? avatarWidget
                           : Transform.scale(
