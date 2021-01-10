@@ -111,4 +111,8 @@ class HandHistoryListModel extends ChangeNotifier {
       return '$id';
     }
   }
+
+  List<HandHistoryItem> getAllHands() {
+    return this.allHands;
+  }
 }

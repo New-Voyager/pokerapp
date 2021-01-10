@@ -92,8 +92,8 @@ class _HandHistoryState extends State<HandHistoryListView>
           ? Center(child: CircularProgressIndicator())
           : TabBarView(
               children: [
-                new PlayedHandsScreen(_data.history),
-                new PlayedHandsScreen(_data.history),
+                new PlayedHandsScreen(_data.getAllHands()),
+                new PlayedHandsScreen(_data.getAllHands()),
               ],
               controller: _tabController,
             ),
