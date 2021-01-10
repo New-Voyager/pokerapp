@@ -60,9 +60,17 @@ class Players extends ChangeNotifier {
     _notify();
   }
 
-  void updatePlayerType(int idx, PlayerType playerType) {
+  void updatePlayerType(int idx, PlayerType playerType, {int coinAmount, bool notify}) {
     _players[idx].playerType = playerType;
-    _notify();
+    if (coinAmount != null) {
+      _players[idx].coinAmount = coinAmount;
+    }
+    if (notify == null) {
+      notify = true;
+    }
+    if (notify) {
+      _notify();
+    }
   }
 
   void updatePlayerTypeInSilent(int idx, PlayerType playerType) {
@@ -105,7 +113,7 @@ class Players extends ChangeNotifier {
     if (_players[idx].coinAmount == null)
       _players[idx].coinAmount = amount;
     else
-      _players[idx].coinAmount += amount;
+      _players[idx].coinAmount = amount;
     _notify();
   }
 

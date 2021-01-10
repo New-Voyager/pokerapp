@@ -47,7 +47,7 @@ dependencies:
   timer_count_down: ^1.0.4+1
 
   # audio playing
-  audioplayers: ^0.17.0
+  audioplayers: 0.17.0
 
   # utils
   path_provider: ^1.6.24
