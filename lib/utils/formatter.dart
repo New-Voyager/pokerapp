@@ -34,4 +34,18 @@ class DataFormatter {
     mins = (mins % 60);
     return '${_timeFormatter.format(hour)}:${_timeFormatter.format(mins)}';
   }
+
+  static String minuteFormat(int timeInSecs) {
+    int mins = timeInSecs ~/ 60;
+    int seconds = timeInSecs % 60;
+    String ret ='';
+    if (mins != 0) {
+      ret = '$mins minute${mins == 1 ? '' : 's'}';
+    }
+
+    if (seconds != 0) {
+      ret = ret + ' $seconds seconds';
+    }
+    return ret;
+  }
 }

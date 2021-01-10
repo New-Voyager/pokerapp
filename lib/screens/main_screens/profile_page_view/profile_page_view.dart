@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/screens/auth_screens/login_screen.dart';
-import 'package:pokerapp/screens/club_screen/games_page_view/played_hands/played_hands.dart';
 import 'package:pokerapp/screens/game_play_screen/card_views/animations/animating_shuffle_card_view.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
 
