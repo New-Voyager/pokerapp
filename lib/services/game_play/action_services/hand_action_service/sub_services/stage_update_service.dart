@@ -46,7 +46,7 @@ class StageUpdateService {
 
         // remove the last player status
         // wait for a brief period of time, before removing the last actions of all players
-        await Future.delayed(AppConstants.userPopUpMessageHoldDuration);
+        //await Future.delayed(AppConstants.userPopUpMessageHoldDuration);
 
         // remove all the status (last action) of all the players
         Provider.of<Players>(

@@ -33,6 +33,8 @@ class NewHandService {
     int sbPos = newHand['sbPos'];
     int bbPos = newHand['bbPos'];
     int noCards = newHand['noCards'];
+    int bigBlind = double.parse(newHand['bigBlind'].toString()).toInt();
+    int smallBlind = double.parse(newHand['smallBlind'].toString()).toInt();
 
     // put the no Cards information
     Provider.of<ValueNotifier<int>>(
@@ -91,13 +93,17 @@ class NewHandService {
     /* marking the small blind */
     int smallBlindIdx = players.players.indexWhere((p) => p.seatNo == sbPos);
     assert(smallBlindIdx != -1);
+
     Provider.of<Players>(
       context,
       listen: false,
-    ).updatePlayerTypeInSilent(
-      smallBlindIdx,
-      PlayerType.SmallBlind,
+    ).updatePlayerType(
+        smallBlindIdx,
+        PlayerType.SmallBlind,
+        coinAmount: smallBlind,
+        notify: false
     );
+
 
     /* marking the big blind */
     int bigBlindIdx = players.players.indexWhere((p) => p.seatNo == bbPos);
@@ -108,6 +114,7 @@ class NewHandService {
     ).updatePlayerType(
       bigBlindIdx,
       PlayerType.BigBlind,
+      coinAmount: bigBlind
     );
 
     /* marking the dealer */
