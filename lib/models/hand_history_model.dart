@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
+import 'package:pokerapp/utils/formatter.dart';
 
 class Winner {
   String name;
@@ -37,6 +38,7 @@ class HandHistoryItem {
   int noCards;
   List<int> community;
   List<int> community1;
+  String handTime;
 }
 
 class HandHistoryListModel extends ChangeNotifier {
@@ -54,6 +56,8 @@ class HandHistoryListModel extends ChangeNotifier {
       item.handNum = int.parse(hand['handNum'].toString());
       Map<String, dynamic> summary = json.decode(hand['summary']);
       item.noCards = int.parse(summary['noCards'].toString());
+      item.handTime = DataFormatter.minuteFormat(int.parse(hand['handTime'].toString()));
+
       dynamic boardCards = summary['boardCards'];
 
       if (boardCards != null) {
@@ -67,7 +71,6 @@ class HandHistoryListModel extends ChangeNotifier {
       }
       bool showCards = false;
       String wonAt = hand['wonAt'].toString();
-      wonAt = 'TURN';
       if (wonAt == 'SHOW_DOWN') {
         showCards = true;
       }
@@ -83,6 +86,10 @@ class HandHistoryListModel extends ChangeNotifier {
       List hiWinners = summary['hiWinners'] as List;
       item.winners = new List<Winner>();
       for (final winnnerData in hiWinners) {
+        item.winners.add(
+            Winner.fromJson(item.noCards, winnnerData, showCards: showCards));
+        item.winners.add(
+            Winner.fromJson(item.noCards, winnnerData, showCards: showCards));
         item.winners.add(
             Winner.fromJson(item.noCards, winnnerData, showCards: showCards));
       }

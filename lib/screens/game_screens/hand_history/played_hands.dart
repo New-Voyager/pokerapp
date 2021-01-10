@@ -99,8 +99,7 @@ class PlayedHandsScreen extends StatelessWidget {
   }
 
   getListItem(int index) {
-    List<Winner> winners = history[index].winners;
-    WinnerWidget widget = new WinnerWidget(winners, history[index].community);
+    WinnerWidget widget = new WinnerWidget(history[index]);
     return Padding(
       padding: const EdgeInsets.only(
         left: 8.0,
@@ -139,16 +138,23 @@ class PlayedHandsScreen extends StatelessWidget {
 }
 
 class WinnerWidget extends StatelessWidget {
-  List<Winner> winners;
-  List<int> community;
+  HandHistoryItem item;
 
-  WinnerWidget(List<Winner> winners, List<int> community) {
-    this.winners = winners;
-    this.community = community;
+  WinnerWidget(HandHistoryItem item) {
+    this.item = item;
   }
 
-  List<CommunityCardWidget> getCommunityCards() {
-    return [CommunityCardWidget(community, true)];
+  List<Widget> getCommunityCards() {
+    List<Widget> communityCards = [
+      CommunityCardWidget(item.community, true),
+      SizedBox(
+        height: 5,
+      ),
+    ];
+    if (item.community1 != null && item.community1.length > 0) {
+      communityCards.add(CommunityCardWidget(item.community, true));
+    }
+    return communityCards;
   }
 
   @override
@@ -178,10 +184,24 @@ class WinnerWidget extends StatelessWidget {
                   child: Container(
                       margin: EdgeInsets.only(left: 30.0),
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         mainAxisSize: MainAxisSize.min,
-                        children: getCommunityCards(),
+                        children: [
+                          Column(
+                            children: getCommunityCards(),
+                          ),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text(
+                                this.item.handTime,
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ],
+                          ),
+                        ],
                       )),
                 ),
               ],
@@ -204,14 +224,14 @@ class WinnerWidget extends StatelessWidget {
       shrinkWrap: true,
       physics: ClampingScrollPhysics(),
       itemBuilder: (context, index) {
-        final winner = this.winners[index];
+        final winner = this.item.winners[index];
         return getWinnerWidget(
             name: winner.name,
             cards: winner.cards,
             pot: winner.amount,
             showCards: winner.showCards);
       },
-      itemCount: winners.length,
+      itemCount: this.item.winners.length,
       separatorBuilder: (context, index) {
         return SizedBox(
           height: 20.0,

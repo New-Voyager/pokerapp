@@ -146,13 +146,11 @@ class CardsView extends StatelessWidget {
 }
 
 class CommunityCardWidget extends StatelessWidget {
-  List<int> cards;
+  final List<int> cards;
   List<CardObject> cardObjects;
-  bool show;
+  final bool show;
 
-  CommunityCardWidget(List<int> cards, bool show) {
-    this.cards = cards;
-    this.show = show;
+  CommunityCardWidget(this.cards, this.show) {
     this.cardObjects = cards.map((e) => CardHelper.getCard(e)).toList();
   }
 

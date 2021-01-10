@@ -14,6 +14,7 @@ class HandService {
             wonAt
             totalPot    
             summary
+            handTime
           }
         }
   """;
