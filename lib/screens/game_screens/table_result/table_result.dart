@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pokerapp/models/table_record.dart';
 import 'package:pokerapp/resources/app_colors.dart';
@@ -128,9 +129,13 @@ class _TableResultScreenState extends State<TableResultScreen> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
+                              SizedBox(
+                                width: 15,
+                              ),
                               Expanded(
                                   flex: widget.playerWidth,
-                                  child: Center(
+                                  child: Container(
+                                      alignment: Alignment.centerLeft,
                                       child: Text(
                                     "Player",
                                     style: TextStyle(color: Color(0xffef9712)),
@@ -180,9 +185,13 @@ class _TableResultScreenState extends State<TableResultScreen> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
+                              SizedBox(
+                                width: 15,
+                              ),
                               Expanded(
                                 flex: widget.playerWidth,
-                                child: Center(
+                                child: Container(
+                                    alignment: Alignment.centerLeft,
                                     child: Text(
                                   this.data.rows[dataIdx].playerName,
                                   style: TextStyle(color: Color(0xffa09f9e)),

@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 
-class TableRecord extends ChangeNotifier {
+class TableRecord {
   List<TableRecordRow> rows;
 
   TableRecord() {
