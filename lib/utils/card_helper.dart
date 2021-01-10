@@ -109,9 +109,12 @@ class CardHelper {
 
   /* the following three methods are made public */
 
-  static CardObject getCard(int n) => _getCardFromCardValues(
-        _getCardFromNumber(n),
-      );
+  static CardObject getCard(int n) {
+    if (n == 0) {
+      return CardObject.emptyCard();
+    }
+    return _getCardFromCardValues(_getCardFromNumber(n));
+  }
 
   static List<CardObject> getCards(String s) => getRawCardNumbers(s)
       .map<CardObject>((int c) => _getCardFromCardValues(_getCardFromNumber(c)))

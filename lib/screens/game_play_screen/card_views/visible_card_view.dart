@@ -12,10 +12,12 @@ class VisibleCardView extends StatelessWidget {
 
   final CardObject card;
   final bool grayOut;
+  final width;
 
   VisibleCardView({
     @required this.card,
     this.grayOut = false,
+    this.width = 1.5,
   });
 
   flipCard() => cardKey?.currentState?.toggleCard();
@@ -95,7 +97,7 @@ class VisibleCardView extends StatelessWidget {
       child: Container(
         height: AppDimensions.cardHeight * 1.5,
         width: card.smaller
-            ? AppDimensions.cardWidth * 1.5
+            ? AppDimensions.cardWidth * width
             : AppDimensions.cardWidth * 1.1,
         child: card.isShownAtTable
             ? ClipRRect(
