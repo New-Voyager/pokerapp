@@ -1,6 +1,7 @@
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/game_history_model.dart';
+import 'package:pokerapp/models/table_record.dart';
 
 class GameService {
   static String gameDetailQuery = """
@@ -67,5 +68,31 @@ class GameService {
     // instantiate game history detail object
     model.jsonData = result.data;
     model.load();
+  }
+
+  static String gameResultTableQuery = """
+      query game_result_table(\$gameCode: String!) {
+        gameResultTable(gameCode: \$gameCode) {
+          playerName
+          sessionTime
+          sessionTimeStr
+          handsPlayed
+          buyIn
+          profit
+          rakePaid
+        }
+      }
+  """;
+  static Future<TableRecord> getGameTableRecord(String gameCode) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+    Map<String, dynamic> variables = {
+      "gameCode": gameCode,
+    };
+    QueryResult result = await _client.query(
+        QueryOptions(documentNode: gql(gameResultTableQuery), variables: variables));
+
+    if (result.hasException) return null;
+
+    return TableRecord.fromJson(result.data['gameResultTable']);
   }
 }
