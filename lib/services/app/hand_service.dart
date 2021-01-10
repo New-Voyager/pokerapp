@@ -16,6 +16,10 @@ class HandService {
             summary
             handTime
           }
+          players: gamePlayers(gameCode: \$gameCode) {
+              id
+              name
+            }
         }
   """;
   static void getAllHands(HandHistoryListModel model) async {
@@ -23,6 +27,7 @@ class HandService {
     Map<String, dynamic> variables = {
       "gameCode": model.gameCode,
     };
+    print(allHands);
     QueryResult result = await _client
         .query(QueryOptions(documentNode: gql(allHands), variables: variables));
 
