@@ -6,6 +6,7 @@ class CardObject {
   String suit;
   String label;
   Color color;
+  bool empty; // card is not shown in the UI
 
   // ui params
   bool smaller;
@@ -30,7 +31,10 @@ class CardObject {
     this.visibleCard = VisibleCardView(
       card: this,
     );
+    this.empty = false;
   }
+
+  bool isEmpty() => this.empty;
 
   void flipCard() => this.visibleCard.flipCard();
 
@@ -42,5 +46,12 @@ class CardObject {
       );
 
   @override
-  String toString() => 'suit: $suit, label: $label, highlight: $highlight';
+  String toString() =>
+      'suit: $suit, label: $label, highlight: $highlight empty: $empty';
+
+  static CardObject emptyCard() {
+    CardObject card = new CardObject(suit: null, label: null, color: null);
+    card.empty = true;
+    return card;
+  }
 }
