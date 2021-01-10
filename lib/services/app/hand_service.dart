@@ -1,12 +1,11 @@
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:pokerapp/main.dart';
-import 'package:pokerapp/models/game_history_model.dart';
 import 'package:pokerapp/models/hand_history_model.dart';
 
 class HandService {
   static String allHands = """
         query (\$gameCode: String!) {
-          hands: allHandHistory(gameCode: \$gameCode) {
+          allHands: allHandHistory(gameCode: \$gameCode) {
             handNum
             showDown
             winningRank
@@ -16,6 +15,16 @@ class HandService {
             summary
             handTime
           }
+          winningHands: myWinningHands(gameCode: \$gameCode) {
+            handNum
+            showDown
+            winningRank
+            winningCards
+            wonAt
+            totalPot    
+            summary
+            handTime
+          }          
           players: gamePlayers(gameCode: \$gameCode) {
               id
               name

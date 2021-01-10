@@ -93,7 +93,7 @@ class _HandHistoryState extends State<HandHistoryListView>
           : TabBarView(
               children: [
                 new PlayedHandsScreen(_data.getAllHands()),
-                new PlayedHandsScreen(_data.getAllHands()),
+                new PlayedHandsScreen(_data.getWinningHands()),
               ],
               controller: _tabController,
             ),

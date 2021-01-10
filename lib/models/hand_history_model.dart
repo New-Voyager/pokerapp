@@ -46,23 +46,13 @@ class HandHistoryListModel extends ChangeNotifier {
   bool isOwner;
   dynamic jsonData;
   List<HandHistoryItem> allHands;
+  List<HandHistoryItem> winningHands;
+
   HandHistoryListModel(this.gameCode, this.isOwner);
   Map<int, String> players = new Map<int, String>();
 
-  void load() async {
-    allHands = new List<HandHistoryItem>();
-
-
-    final players = jsonData['players'] as List;
-    if (players != null) {
-      for (final playerData in players) {
-        int id = int.parse(playerData['id'].toString());
-        this.players[id] = playerData['name'].toString();
-      }
-    }
-
-    final hands = jsonData['hands'];
-    for (final hand in hands) {
+  void getHands(List handsData, List<HandHistoryItem> hands) {
+    for (final hand in handsData) {
       HandHistoryItem item = new HandHistoryItem();
       item.handNum = int.parse(hand['handNum'].toString());
       Map<String, dynamic> summary = json.decode(hand['summary']);
@@ -100,8 +90,24 @@ class HandHistoryListModel extends ChangeNotifier {
         item.winners.add(
             Winner.fromJson(this, item.noCards, winnnerData, showCards: showCards));
       }
-      allHands.add(item);
+      hands.add(item);
     }
+  }
+
+  void load() async {
+    allHands = new List<HandHistoryItem>();
+    winningHands = new List<HandHistoryItem>();
+
+    final players = jsonData['players'] as List;
+    if (players != null) {
+      for (final playerData in players) {
+        int id = int.parse(playerData['id'].toString());
+        this.players[id] = playerData['name'].toString();
+      }
+    }
+
+    this.getHands(jsonData['allHands'], this.allHands);
+    this.getHands(jsonData['winningHands'], this.winningHands);
   }
 
   String playerName(int id) {
@@ -114,5 +120,9 @@ class HandHistoryListModel extends ChangeNotifier {
 
   List<HandHistoryItem> getAllHands() {
     return this.allHands;
+  }
+
+  List<HandHistoryItem> getWinningHands() {
+    return this.winningHands;
   }
 }
