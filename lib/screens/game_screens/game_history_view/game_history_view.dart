@@ -62,7 +62,7 @@ class _GameHistoryViewState extends State<GameHistoryView> {
   }
 
   Widget body() {
-    if (_prevGames == null && _prevGames.length == 0) {
+    if (_prevGames == null || _prevGames.length == 0) {
       return Center(
         child: const Text(
           'No games played',
