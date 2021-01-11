@@ -35,6 +35,8 @@ class Players extends ChangeNotifier {
   }
 
   void updatePlayerFoldedStatus(int idx, bool folded) {
+    _players[idx].animatingFold = true;
+    _players[idx].playerFolded = true;
     _players[idx].playerFolded = folded;
     _notify();
   }

@@ -23,15 +23,15 @@ const shrinkedSizedBox = const SizedBox.shrink();
 const highlightColor = const Color(0xfffffff);
 
 const Map<int, Offset> coinAmountWidgetOriginalOffsetMapping = {
-  1: Offset(0, -60),
-  2: Offset(60, 20),
-  3: Offset(60, 20),
-  4: Offset(60, 20),
-  5: Offset(0, 60),
-  6: Offset(0, 60),
-  7: Offset(-60, 20),
-  8: Offset(-60, 20),
-  9: Offset(-60, 20),
+  1: Offset(0, -70),
+  2: Offset(55, 10),
+  3: Offset(55, 10),
+  4: Offset(50, -20),
+  5: Offset(20, 60),
+  6: Offset(-30, 60),
+  7: Offset(-50, -20),
+  8: Offset(-50, 20),
+  9: Offset(-50, 0),
 };
 
 class UserView extends StatelessWidget {
@@ -308,6 +308,7 @@ class UserView extends StatelessWidget {
                 child: (userObject.playerFolded ?? false)
                     ? FoldCardAnimatingWidget(
                         seatPos: seatPos,
+                        userObject: userObject,
                       )
                     : showDown
                         ? const SizedBox.shrink()
@@ -497,7 +498,7 @@ class UserView extends StatelessWidget {
   Widget _buildChipAmountWidget() {
     Widget coinAmountWidget = Transform.translate(
       offset: coinAmountWidgetOriginalOffsetMapping[seatPos],
-      child: Row(
+      child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           /* show the coin svg */
@@ -508,7 +509,7 @@ class UserView extends StatelessWidget {
               AppAssets.coinsImages,
             ),
           ),
-          const SizedBox(width: 5.0),
+          const SizedBox(height: 5.0),
 
           /* show the coin amount */
           Text(
@@ -585,6 +586,15 @@ class UserView extends StatelessWidget {
                       emptySeat: emptySeat,
                       cardNo: userObject.noOfCardsVisible,
                     ),
+
+          // hidden cards for me to show animation
+          isMe ?
+            _buildHiddenCard(
+              alignment: this.cardsAlignment,
+              emptySeat: emptySeat,
+              cardNo: userObject.noOfCardsVisible,
+            )
+              : shrinkedSizedBox,
 
           // show dealer button, if user is a dealer
           userObject.playerType != null &&

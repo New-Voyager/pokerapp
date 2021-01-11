@@ -62,12 +62,11 @@ class DealService {
             mySeatNo,
             myCards.sublist(0, i + 1),
           );
-        } else {
-          Provider.of<Players>(
-            context,
-            listen: false,
-          ).updateVisibleCardNumber(seatNo, i + 1);
         }
+        Provider.of<Players>(
+          context,
+          listen: false,
+        ).updateVisibleCardNumber(seatNo, i + 1);
       }
     }
 

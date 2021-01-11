@@ -23,7 +23,7 @@ const innerWidth = 5.0;
 const outerWidth = 15.0;
 
 const widthMultiplier = 0.78;
-const heightMultiplier = 1.55;
+const heightMultiplier = 1.40;
 
 class BoardView extends StatelessWidget {
   BoardView({
@@ -101,7 +101,7 @@ class BoardView extends StatelessWidget {
           child: Transform.translate(
             offset: Offset(
               0.0,
-              shiftDownConstant,
+              shiftDownConstant-30,
             ),
             child: userView,
           ),
@@ -123,7 +123,7 @@ class BoardView extends StatelessWidget {
         return Align(
           alignment: Alignment.centerLeft,
           child: Transform.translate(
-            offset: Offset(0.0, 0.0 + shiftDownConstant),
+            offset: Offset(0.0, -30.0 + shiftDownConstant),
             child: userView,
           ),
         );
@@ -132,7 +132,7 @@ class BoardView extends StatelessWidget {
         return Align(
           alignment: Alignment.centerLeft,
           child: Transform.translate(
-            offset: Offset(0.0, -heightOfBoard / 4 + shiftDownConstant),
+            offset: Offset(0.0, -heightOfBoard / 2.5 + shiftDownConstant),
             child: userView,
           ),
         );
@@ -165,7 +165,7 @@ class BoardView extends StatelessWidget {
         return Align(
           alignment: Alignment.centerRight,
           child: Transform.translate(
-            offset: Offset(0.0, -heightOfBoard / 4 + shiftDownConstant),
+            offset: Offset(0.0, -heightOfBoard / 2.5 + shiftDownConstant),
             child: userView,
           ),
         );
@@ -174,7 +174,7 @@ class BoardView extends StatelessWidget {
         return Align(
           alignment: Alignment.centerRight,
           child: Transform.translate(
-            offset: Offset(0.0, 0.0 + shiftDownConstant),
+            offset: Offset(0.0, -30.0 + shiftDownConstant),
             child: userView,
           ),
         );
@@ -358,13 +358,17 @@ class BoardView extends StatelessWidget {
                 borderRadius: BorderRadius.circular(100.0),
                 color: Colors.black26,
               ),
-              child: Text(
-                'Updated Pot: $potChipsUpdates',
-                style: AppStyles.itemInfoTextStyleHeavy.copyWith(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
+              child:
+                  Visibility(
+                    visible: potChipsUpdates != null && potChipsUpdates != 0,
+                    child: Text(
+                      'Current: $potChipsUpdates',
+                      style: AppStyles.itemInfoTextStyleHeavy.copyWith(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  )
             ),
           ),
         ],
@@ -416,6 +420,7 @@ class BoardView extends StatelessWidget {
       userObjects[idx].coinAmount = model.coinAmount;
       userObjects[idx].animatingCoinMovement = model.animatingCoinMovement;
       userObjects[idx].noOfCardsVisible = model.noOfCardsVisible ?? 0;
+      userObjects[idx].animatingFold = model.animatingFold;
     }
 
     return userObjects;
