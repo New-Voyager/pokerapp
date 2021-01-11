@@ -42,7 +42,7 @@ class PlayerActedService {
     String action = playerActed['action'];
 
     // check if player folded
-    if (action == AppConstants.FOLD)
+    if (action == AppConstants.FOLD) {
       Provider.of<Players>(
         context,
         listen: false,
@@ -50,6 +50,7 @@ class PlayerActedService {
         idx,
         true,
       );
+    }
 
     // play the bet-raise sound effect
     if (action == AppConstants.BET ||

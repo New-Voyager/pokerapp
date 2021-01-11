@@ -76,6 +76,7 @@ class AppConstants {
   static const String PLAYER_UPDATE = 'PLAYER_UPDATE';
   static const String GAME_STATUS = 'GAME_STATUS';
   static const String NEW_HAND = 'NEW_HAND';
+  static const String DEAL_STARTED = 'DEAL_STARTED';
   static const String DEAL = 'DEAL';
   static const String NEXT_ACTION = 'NEXT_ACTION';
   static const String PLAYER_ACTED = 'PLAYER_ACTED';

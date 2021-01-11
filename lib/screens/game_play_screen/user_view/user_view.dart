@@ -24,14 +24,14 @@ const highlightColor = const Color(0xfffffff);
 
 const Map<int, Offset> coinAmountWidgetOriginalOffsetMapping = {
   1: Offset(0, -70),
-  2: Offset(50, -40),
-  3: Offset(50, -40),
-  4: Offset(50, -40),
+  2: Offset(55, 10),
+  3: Offset(55, 10),
+  4: Offset(50, -20),
   5: Offset(20, 60),
   6: Offset(-30, 60),
-  7: Offset(-50, -40),
-  8: Offset(-50, -40),
-  9: Offset(-50, -40),
+  7: Offset(-50, -20),
+  8: Offset(-50, 20),
+  9: Offset(-50, 0),
 };
 
 class UserView extends StatelessWidget {
@@ -101,7 +101,9 @@ class UserView extends StatelessWidget {
                 height: 19.50 * 3,
                 child: AnimatedSwitcher(
                   duration: AppConstants.fastAnimationDuration,
-                  child: showDown
+                  child: showDown &&
+                          (userObject.cards != null &&
+                              userObject.cards.isNotEmpty)
                       ? (userObject?.isMe ?? false)
                           ? avatarWidget
                           : Transform.scale(
@@ -306,6 +308,7 @@ class UserView extends StatelessWidget {
                 child: (userObject.playerFolded ?? false)
                     ? FoldCardAnimatingWidget(
                         seatPos: seatPos,
+                        userObject: userObject,
                       )
                     : showDown
                         ? const SizedBox.shrink()
@@ -495,7 +498,7 @@ class UserView extends StatelessWidget {
   Widget _buildChipAmountWidget() {
     Widget coinAmountWidget = Transform.translate(
       offset: coinAmountWidgetOriginalOffsetMapping[seatPos],
-      child: Row(
+      child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           /* show the coin svg */
@@ -506,7 +509,7 @@ class UserView extends StatelessWidget {
               AppAssets.coinsImages,
             ),
           ),
-          const SizedBox(width: 5.0),
+          const SizedBox(height: 5.0),
 
           /* show the coin amount */
           Text(
@@ -583,6 +586,15 @@ class UserView extends StatelessWidget {
                       emptySeat: emptySeat,
                       cardNo: userObject.noOfCardsVisible,
                     ),
+
+          // hidden cards for me to show animation
+          isMe ?
+            _buildHiddenCard(
+              alignment: this.cardsAlignment,
+              emptySeat: emptySeat,
+              cardNo: userObject.noOfCardsVisible,
+            )
+              : shrinkedSizedBox,
 
           // show dealer button, if user is a dealer
           userObject.playerType != null &&

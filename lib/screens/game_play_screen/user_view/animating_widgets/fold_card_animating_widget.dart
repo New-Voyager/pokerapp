@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/game_play_models/ui/user_object.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/screens/game_play_screen/card_views/hidden_card_view.dart';
 
@@ -18,8 +19,10 @@ const Map<int, Offset> offsetMapping = {
 
 class FoldCardAnimatingWidget extends StatelessWidget {
   final seatPos;
+  final UserObject userObject;
   FoldCardAnimatingWidget({
     this.seatPos,
+    this.userObject,
   });
 
   @override
@@ -29,11 +32,16 @@ class FoldCardAnimatingWidget extends StatelessWidget {
           begin: Offset(0, 0),
           end: offsetMapping[seatPos],
         ),
-        child: HiddenCardView(),
+        child: HiddenCardView(noOfCards: userObject.noOfCardsVisible,),
+        onEnd: () {
+          print('fold animation done $seatPos');
+          userObject.animatingFold = false;
+        },
         duration: AppConstants.animationDuration,
         builder: (_, offset, child) {
           double offsetPercentageLeft =
               1 - (offset.dx / offsetMapping[seatPos].dx);
+          print('offset: $offset');
 
           // todo: the opacity change can be smoothed out
 

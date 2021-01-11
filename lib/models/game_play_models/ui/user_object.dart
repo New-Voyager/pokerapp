@@ -17,12 +17,13 @@ class UserObject {
   String status;
   bool highlight;
   PlayerType playerType;
-  bool playerFolded;
+  bool playerFolded = false;
   bool winner;
   int coinAmount;
   bool animatingCoinMovement;
 
   int noOfCardsVisible;
+  bool animatingFold = false;
 
   UserObject({
     @required this.serverSeatPos,
