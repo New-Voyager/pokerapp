@@ -6,6 +6,7 @@ import 'package:pokerapp/models/table_record.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/screens/club_screen/club_action_screens/club_members_view/club_members_view.dart';
+import 'package:pokerapp/screens/club_screen/hand_log_view/hand_log_view.dart';
 import 'package:pokerapp/screens/game_screens/game_history_view/game_history_view.dart';
 import 'package:pokerapp/screens/club_screen/messages_page_view/messages_page_view.dart';
 import 'package:pokerapp/screens/game_screens/table_result/table_result.dart';
@@ -44,7 +45,10 @@ class ClubActionButton extends StatelessWidget {
               return Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => ClubMembersView(this._clubModel)),
+                  builder: (context) => ClubMembersView(
+                    this._clubModel,
+                  ),
+                ),
               );
 
             case ClubActions.CHAT:
@@ -63,7 +67,11 @@ class ClubActionButton extends StatelessWidget {
               // TODO: Handle this case.
               break;
             case ClubActions.ANNOUNCEMETS:
-              // TODO: Handle this case.
+              // TODO: Will temporarily lead to HandLog screen
+              return Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => HandLogView()),
+              );
               break;
             case ClubActions.MESSAGE_HOST:
               // TODO: Handle this case.

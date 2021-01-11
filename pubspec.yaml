@@ -73,6 +73,7 @@ flutter:
    - assets/sound_effects/
    - assets/images/gamesettings/
    - assets/sample-data/completed-game.json
+   - assets/sample-data/handlog.json
 
   fonts:
    - family: Lato
