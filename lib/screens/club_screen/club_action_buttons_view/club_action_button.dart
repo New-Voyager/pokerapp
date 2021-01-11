@@ -64,16 +64,6 @@ class ClubActionButton extends StatelessWidget {
               break;
             case ClubActions.ANNOUNCEMETS:
               // TODO: Handle this case.
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => ChangeNotifierProvider<TableRecord>(
-                        create: (_) => new TableRecord(),
-                        builder: (BuildContext context, _) =>
-                            Consumer<TableRecord>(
-                                builder: (_, TableRecord data, __) =>
-                                    TableResultScreen(data))),
-                  ));
               break;
             case ClubActions.MESSAGE_HOST:
               // TODO: Handle this case.

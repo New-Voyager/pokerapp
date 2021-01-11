@@ -6,6 +6,7 @@ import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/screens/game_screens/game_history_details_view/stack_chart_view.dart';
 import 'package:pokerapp/screens/game_screens/hand_history/hand_history.dart';
+import 'package:pokerapp/screens/game_screens/table_result/table_result.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:provider/provider.dart';
 
@@ -551,6 +552,14 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
                     color: Colors.white,
                   ),
                   onPressed: () {}),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => TableResultScreen(_gameDetail.gameCode)
+                    )
+                );
+              }
             ),
             Padding(
               padding: const EdgeInsets.only(left: 70.0),
