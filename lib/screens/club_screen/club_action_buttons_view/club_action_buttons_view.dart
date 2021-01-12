@@ -124,7 +124,15 @@ class ClubActionButtonsView extends StatelessWidget {
               ),
               Expanded(
                 flex: 3,
-                child: Container(),
+                child: ClubActionButton(
+                  this._clubHomePageModel,
+                  ClubActions.REWARDS,
+                  "Rewards",
+                  Icon(
+                    ClubScreenIcons.coin_stack,
+                    color: AppColors.appAccentColor,
+                  ),
+                ),
               ),
             ],
           ),
