@@ -1,4 +1,6 @@
 import 'package:pokerapp/enums/game_stages.dart';
+import 'package:pokerapp/enums/hand_actions.dart';
+import 'package:pokerapp/services/game_play/action_services/hand_action_service/hand_action_service.dart';
 
 class HandLogModel {
   String gameId;
@@ -101,5 +103,55 @@ class WinnerDetailsModel {
     seatNum = jsonData["seatNo"] == null ? 0 : jsonData["seatNo"];
     amount = jsonData["amount"] == null ? 0 : jsonData["amount"];
     winningCards = jsonData["winningCards"] ?? jsonData["winningCards"];
+  }
+}
+
+class HandStageModel {
+  int potAmount;
+  List<ActionModel> stageActions = new List<ActionModel>();
+
+  HandStageModel.fromJson(var jsonData) {}
+}
+
+class ActionModel {
+  int seatNum;
+  HandActions action;
+  int amount;
+  bool timedOut;
+  int stack;
+
+  ActionModel.fromJson(var jsonData) {
+    seatNum = jsonData["seatNo"] == null ? 0 : jsonData["seatNo"];
+
+    switch (jsonData["action"]) {
+      case "SB":
+        action = HandActions.SB;
+        break;
+      case "BB":
+        action = HandActions.BB;
+        break;
+      case "CALL":
+        action = HandActions.CALL;
+        break;
+      case "CHECK":
+        action = HandActions.CHECK;
+        break;
+      case "RAISE":
+        action = HandActions.RAISE;
+        break;
+      case "FOLD":
+        action = HandActions.FOLD;
+        break;
+      case "STRADDLE":
+        action = HandActions.STRADDLE;
+        break;
+      default:
+        action = HandActions.UNKNOWN;
+        break;
+    }
+
+    amount = jsonData["amount"] == null ? 0 : jsonData["amount"];
+    timedOut = jsonData["timedOut"] == null ? true : jsonData["timedOut"];
+    stack = jsonData["stack"] == null ? 0 : jsonData["stack"];
   }
 }

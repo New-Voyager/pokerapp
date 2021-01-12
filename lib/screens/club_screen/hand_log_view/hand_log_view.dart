@@ -59,77 +59,63 @@ class _HandLogViewState extends State<HandLogView> {
               return Card(
                 elevation: 5.5,
                 color: AppColors.cardBackgroundColor,
-                child: Container(
-                  child: Column(
-                    children: [
-                      Container(
-                        margin: EdgeInsets.all(5),
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          "Pot: " +
-                              _handLogModel.potWinners[index].totalPotAmount
-                                  .toString(),
-                          style: const TextStyle(
-                            fontFamily: AppAssets.fontFamilyLato,
-                            color: Colors.white,
-                            fontSize: 14.0,
-                            fontWeight: FontWeight.w400,
+                child: ExpansionTile(
+                  title: Text(
+                    "Pot #" +
+                        _handLogModel.potWinners[index].potNumber.toString(),
+                    style: const TextStyle(
+                      fontFamily: AppAssets.fontFamilyLato,
+                      color: Colors.white,
+                      fontSize: 14.0,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                  trailing: Icon(
+                    Icons.arrow_drop_down,
+                    color: AppColors.appAccentColor,
+                  ),
+                  children: [
+                    Container(
+                      child: Column(
+                        children: [
+                          Container(
+                            margin: EdgeInsets.all(5),
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              "Pot: " +
+                                  _handLogModel.potWinners[index].totalPotAmount
+                                      .toString(),
+                              style: const TextStyle(
+                                fontFamily: AppAssets.fontFamilyLato,
+                                color: Colors.white,
+                                fontSize: 14.0,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.all(5),
-                        alignment: Alignment.centerRight,
-                        child: Container(
-                          child: ListView.builder(
-                            physics: NeverScrollableScrollPhysics(),
-                            itemCount: _handLogModel
-                                .potWinners[index].hiWinners.length,
-                            shrinkWrap: true,
-                            itemBuilder: (context, winnerIndex) {
-                              return Container(
-                                margin: EdgeInsets.only(left: 20),
-                                alignment: Alignment.centerLeft,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Padding(
-                                      padding: EdgeInsets.all(5),
-                                      child: Text(
-                                        _handLogModel.potWinners[index]
-                                            .hiWinners[winnerIndex].seatNum
-                                            .toString(),
-                                        style: const TextStyle(
-                                          fontFamily: AppAssets.fontFamilyLato,
-                                          color: Colors.white,
-                                          fontSize: 14.0,
-                                          fontWeight: FontWeight.w400,
-                                        ),
-                                        textAlign: TextAlign.left,
-                                      ),
-                                    ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                          Container(
+                            margin: EdgeInsets.all(5),
+                            alignment: Alignment.centerRight,
+                            child: Container(
+                              child: ListView.builder(
+                                physics: NeverScrollableScrollPhysics(),
+                                itemCount: _handLogModel
+                                    .potWinners[index].hiWinners.length,
+                                shrinkWrap: true,
+                                itemBuilder: (context, winnerIndex) {
+                                  return Container(
+                                    margin: EdgeInsets.only(left: 20),
+                                    alignment: Alignment.centerLeft,
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
-                                        CommunityCardWidget(
-                                          _handLogModel
-                                              .potWinners[index]
-                                              .hiWinners[winnerIndex]
-                                              .winningCards
-                                              .cast<int>()
-                                              .toList(),
-                                          true,
-                                        ),
                                         Padding(
                                           padding: EdgeInsets.all(5),
                                           child: Text(
-                                            "Received: " +
-                                                _handLogModel
-                                                    .potWinners[index]
-                                                    .hiWinners[winnerIndex]
-                                                    .amount
-                                                    .toString(),
+                                            _handLogModel.potWinners[index]
+                                                .hiWinners[winnerIndex].seatNum
+                                                .toString(),
                                             style: const TextStyle(
                                               fontFamily:
                                                   AppAssets.fontFamilyLato,
@@ -140,66 +126,28 @@ class _HandLogViewState extends State<HandLogView> {
                                             textAlign: TextAlign.left,
                                           ),
                                         ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-                      ),
-                      Visibility(
-                        visible:
-                            _handLogModel.potWinners[index].loWinners.length >
-                                0,
-                        child: Container(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Divider(
-                                color: AppColors.listViewDividerColor,
-                                indent: 5,
-                                endIndent: 5,
-                              ),
-                              Padding(
-                                padding: EdgeInsets.all(5),
-                                child: Text(
-                                  "Low Winners",
-                                  style: const TextStyle(
-                                    fontFamily: AppAssets.fontFamilyLato,
-                                    color: Colors.white,
-                                    fontSize: 14.0,
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                  textAlign: TextAlign.left,
-                                ),
-                              ),
-                              Container(
-                                margin: EdgeInsets.all(5),
-                                alignment: Alignment.centerRight,
-                                child: Container(
-                                  child: ListView.builder(
-                                    physics: NeverScrollableScrollPhysics(),
-                                    itemCount: _handLogModel
-                                        .potWinners[index].loWinners.length,
-                                    shrinkWrap: true,
-                                    itemBuilder: (context, winnerIndex) {
-                                      return Container(
-                                        margin: EdgeInsets.only(left: 20),
-                                        alignment: Alignment.centerLeft,
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
                                           children: [
+                                            CommunityCardWidget(
+                                              _handLogModel
+                                                  .potWinners[index]
+                                                  .hiWinners[winnerIndex]
+                                                  .winningCards
+                                                  .cast<int>()
+                                                  .toList(),
+                                              true,
+                                            ),
                                             Padding(
                                               padding: EdgeInsets.all(5),
                                               child: Text(
-                                                _handLogModel
-                                                    .potWinners[index]
-                                                    .loWinners[winnerIndex]
-                                                    .seatNum
-                                                    .toString(),
+                                                "Received: " +
+                                                    _handLogModel
+                                                        .potWinners[index]
+                                                        .hiWinners[winnerIndex]
+                                                        .amount
+                                                        .toString(),
                                                 style: const TextStyle(
                                                   fontFamily:
                                                       AppAssets.fontFamilyLato,
@@ -210,30 +158,66 @@ class _HandLogViewState extends State<HandLogView> {
                                                 textAlign: TextAlign.left,
                                               ),
                                             ),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                          ),
+                          Visibility(
+                            visible: _handLogModel
+                                    .potWinners[index].loWinners.length >
+                                0,
+                            child: Container(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Divider(
+                                    color: AppColors.listViewDividerColor,
+                                    indent: 5,
+                                    endIndent: 5,
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.all(5),
+                                    child: Text(
+                                      "Low Winners",
+                                      style: const TextStyle(
+                                        fontFamily: AppAssets.fontFamilyLato,
+                                        color: Colors.white,
+                                        fontSize: 14.0,
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                      textAlign: TextAlign.left,
+                                    ),
+                                  ),
+                                  Container(
+                                    margin: EdgeInsets.all(5),
+                                    alignment: Alignment.centerRight,
+                                    child: Container(
+                                      child: ListView.builder(
+                                        physics: NeverScrollableScrollPhysics(),
+                                        itemCount: _handLogModel
+                                            .potWinners[index].loWinners.length,
+                                        shrinkWrap: true,
+                                        itemBuilder: (context, winnerIndex) {
+                                          return Container(
+                                            margin: EdgeInsets.only(left: 20),
+                                            alignment: Alignment.centerLeft,
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
                                               children: [
-                                                CommunityCardWidget(
-                                                  _handLogModel
-                                                      .potWinners[index]
-                                                      .loWinners[winnerIndex]
-                                                      .winningCards
-                                                      .cast<int>()
-                                                      .toList(),
-                                                  true,
-                                                ),
                                                 Padding(
                                                   padding: EdgeInsets.all(5),
                                                   child: Text(
-                                                    "Received: " +
-                                                        _handLogModel
-                                                            .potWinners[index]
-                                                            .loWinners[
-                                                                winnerIndex]
-                                                            .amount
-                                                            .toString(),
+                                                    _handLogModel
+                                                        .potWinners[index]
+                                                        .loWinners[winnerIndex]
+                                                        .seatNum
+                                                        .toString(),
                                                     style: const TextStyle(
                                                       fontFamily: AppAssets
                                                           .fontFamilyLato,
@@ -245,21 +229,62 @@ class _HandLogViewState extends State<HandLogView> {
                                                     textAlign: TextAlign.left,
                                                   ),
                                                 ),
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    CommunityCardWidget(
+                                                      _handLogModel
+                                                          .potWinners[index]
+                                                          .loWinners[
+                                                              winnerIndex]
+                                                          .winningCards
+                                                          .cast<int>()
+                                                          .toList(),
+                                                      true,
+                                                    ),
+                                                    Padding(
+                                                      padding:
+                                                          EdgeInsets.all(5),
+                                                      child: Text(
+                                                        "Received: " +
+                                                            _handLogModel
+                                                                .potWinners[
+                                                                    index]
+                                                                .loWinners[
+                                                                    winnerIndex]
+                                                                .amount
+                                                                .toString(),
+                                                        style: const TextStyle(
+                                                          fontFamily: AppAssets
+                                                              .fontFamilyLato,
+                                                          color: Colors.white,
+                                                          fontSize: 14.0,
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                        ),
+                                                        textAlign:
+                                                            TextAlign.left,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
                                               ],
                                             ),
-                                          ],
-                                        ),
-                                      );
-                                    },
+                                          );
+                                        },
+                                      ),
+                                    ),
                                   ),
-                                ),
+                                ],
                               ),
-                            ],
+                            ),
                           ),
-                        ),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               );
             },
@@ -268,6 +293,8 @@ class _HandLogViewState extends State<HandLogView> {
       );
     }
   }
+
+  Widget buildStagesView() {}
 
   @override
   Widget build(BuildContext context) {
