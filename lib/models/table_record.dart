@@ -8,7 +8,8 @@ class TableRecord {
   }
 
   TableRecord.fromJson(List<dynamic> data) {
-    rows = List<TableRecordRow>.from(data.map((record) => TableRecordRow.fromJson(record)));
+    rows = List<TableRecordRow>.from(
+        data.map((record) => TableRecordRow.fromJson(record)));
   }
 
   String toString() {
@@ -44,7 +45,8 @@ class TableRecordRow {
   }
 
   String toString() {
-    String ret = 'TableRecordRow<${this.playerName}, ${this.sessionTimeStr}, ${this.handsPlayed}, ${this.buyIn}, ${this.profit}, ${this.rakePaid}>';
+    String ret =
+        'TableRecordRow<${this.playerName}, ${this.sessionTimeStr}, ${this.handsPlayed}, ${this.buyIn}, ${this.profit}, ${this.rakePaid}>';
     return ret;
   }
 }
