@@ -24,21 +24,6 @@ const shrinkedSizedBox = const SizedBox.shrink();
 //const highlightColor = const Color(0xfff2a365);
 const highlightColor = const Color(0xfffffff);
 
-<<<<<<< HEAD
-const Map<int, Offset> coinAmountWidgetOriginalOffsetMapping = {
-  1: Offset(0, -60),
-  2: Offset(60, 20),
-  3: Offset(60, 20),
-  4: Offset(60, 20),
-  5: Offset(0, 60),
-  6: Offset(0, 60),
-  7: Offset(-60, 20),
-  8: Offset(-60, 20),
-  9: Offset(-60, 20),
-};
-
-=======
->>>>>>> c125011d06199a53510454f071f7119824cca4fa
 class UserView extends StatelessWidget {
   final int seatPos;
   final UserObject userObject;
