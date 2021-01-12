@@ -53,6 +53,6 @@ class RewardService {
     final jsonResponse = result.data['rewards'];
 
     log(jsonResponse.toString());
-    return ["sdfs"];
+    return ["testing"];
   }
 }
