@@ -23,7 +23,9 @@ class ClubMembersListView extends StatelessWidget {
 
     return number == 0
         ? Colors.white
-        : number > 0 ? AppColors.positiveColor : AppColors.negativeColor;
+        : number > 0
+            ? AppColors.positiveColor
+            : AppColors.negativeColor;
   }
 
   @override

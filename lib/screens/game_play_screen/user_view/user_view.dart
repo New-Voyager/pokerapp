@@ -5,11 +5,13 @@ import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/enums/game_play_enums/player_type.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/remaining_time.dart';
+import 'package:pokerapp/models/game_play_models/ui/board_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/user_object.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/screens/game_play_screen/board_positions.dart';
 import 'package:pokerapp/screens/game_play_screen/card_views/hidden_card_view.dart';
 import 'package:pokerapp/screens/game_play_screen/card_views/stack_card_view.dart';
 import 'package:pokerapp/screens/game_play_screen/user_view/animating_widgets/chip_amount_animating_widget.dart';
@@ -22,24 +24,13 @@ const shrinkedSizedBox = const SizedBox.shrink();
 //const highlightColor = const Color(0xfff2a365);
 const highlightColor = const Color(0xfffffff);
 
-const Map<int, Offset> coinAmountWidgetOriginalOffsetMapping = {
-  1: Offset(0, -70),
-  2: Offset(55, 10),
-  3: Offset(55, 10),
-  4: Offset(50, -20),
-  5: Offset(20, 60),
-  6: Offset(-30, 60),
-  7: Offset(-50, -20),
-  8: Offset(-50, 20),
-  9: Offset(-50, 0),
-};
-
 class UserView extends StatelessWidget {
   final int seatPos;
   final UserObject userObject;
   final Alignment cardsAlignment;
   final Function(int) onUserTap;
   final bool isPresent;
+  final BoardObject board;
 
   UserView({
     Key key,
@@ -47,6 +38,7 @@ class UserView extends StatelessWidget {
     @required this.userObject,
     @required this.onUserTap,
     @required this.isPresent,
+    @required this.board,
     this.cardsAlignment = Alignment.centerRight,
   }) : super(key: key);
 
@@ -68,33 +60,35 @@ class UserView extends StatelessWidget {
                 curve: Curves.bounceInOut,
                 opacity: emptySeat ? 0.0 : 0.90,
                 child: AnimatedContainer(
-                  duration: AppConstants.fastAnimationDuration,
-                  curve: Curves.bounceInOut,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      width: 2.0,
-                      color: userObject.highlight ?? false
-                          ? highlightColor
-                          : Colors.transparent,
+                    duration: AppConstants.fastAnimationDuration,
+                    curve: Curves.bounceInOut,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        width: 2.0,
+                        color: userObject.highlight ?? false
+                            ? highlightColor
+                            : Colors.transparent,
+                      ),
+                      boxShadow: userObject.highlight ?? false
+                          ? [
+                              BoxShadow(
+                                color: highlightColor.withAlpha(120),
+                                blurRadius: 20.0,
+                                spreadRadius: 20.0,
+                              ),
+                            ]
+                          : [],
                     ),
-                    boxShadow: userObject.highlight ?? false
-                        ? [
-                            BoxShadow(
-                              color: highlightColor.withAlpha(120),
-                              blurRadius: 20.0,
-                              spreadRadius: 20.0,
-                            ),
-                          ]
-                        : [],
-                  ),
-                  child: CircleAvatar(
-                    radius: 19.50,
-                    /* todo: this needs to be replaced with NetworkImage */
-                    backgroundImage:
-                        AssetImage(avatarUrl ?? 'assets/images/2.png'),
-                  ),
-                ),
+                    child: Visibility(
+                      visible: board.horizontal ? false : true,
+                      child: CircleAvatar(
+                        radius: 19.50,
+                        /* todo: this needs to be replaced with NetworkImage */
+                        backgroundImage:
+                            AssetImage(avatarUrl ?? 'assets/images/2.png'),
+                      ),
+                    )),
               );
 
               return Container(
@@ -496,8 +490,18 @@ class UserView extends StatelessWidget {
   }
 
   Widget _buildChipAmountWidget() {
+    // to debug coin position
+    //userObject.coinAmount = 10;
+
+    Map<int, Offset> offsets;
+    if (board.horizontal) {
+      offsets = LAYOUT_COORDS[BoardLayout.HORIZONTAL][COIN_WIDGET_OFFSETS];
+    } else {
+      offsets = LAYOUT_COORDS[BoardLayout.VERTICAL][COIN_WIDGET_OFFSETS];
+    }
+
     Widget coinAmountWidget = Transform.translate(
-      offset: coinAmountWidgetOriginalOffsetMapping[seatPos],
+      offset: offsets[seatPos],
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -588,12 +592,12 @@ class UserView extends StatelessWidget {
                     ),
 
           // hidden cards for me to show animation
-          isMe ?
-            _buildHiddenCard(
-              alignment: this.cardsAlignment,
-              emptySeat: emptySeat,
-              cardNo: userObject.noOfCardsVisible,
-            )
+          isMe
+              ? _buildHiddenCard(
+                  alignment: this.cardsAlignment,
+                  emptySeat: emptySeat,
+                  cardNo: userObject.noOfCardsVisible,
+                )
               : shrinkedSizedBox,
 
           // show dealer button, if user is a dealer
@@ -614,7 +618,8 @@ class UserView extends StatelessWidget {
           ),
 
 //          /* building the chip amount widget */
-          emptySeat ? shrinkedSizedBox : _buildChipAmountWidget(),
+          _buildChipAmountWidget(),
+          //emptySeat ? shrinkedSizedBox : _buildChipAmountWidget(),
         ],
       ),
     );

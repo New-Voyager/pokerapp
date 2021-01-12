@@ -12,7 +12,8 @@ class Winner {
   bool showCards;
   bool low;
 
-  static Winner fromJson(HandHistoryListModel item, int noCards, dynamic jsonData,
+  static Winner fromJson(
+      HandHistoryListModel item, int noCards, dynamic jsonData,
       {bool low = false, bool showCards = false}) {
     Winner winner = new Winner();
     winner.id = int.parse(jsonData['playerId'].toString());
@@ -57,7 +58,8 @@ class HandHistoryListModel extends ChangeNotifier {
       item.handNum = int.parse(hand['handNum'].toString());
       Map<String, dynamic> summary = json.decode(hand['summary']);
       item.noCards = int.parse(summary['noCards'].toString());
-      item.handTime = DataFormatter.minuteFormat(int.parse(hand['handTime'].toString()));
+      item.handTime =
+          DataFormatter.minuteFormat(int.parse(hand['handTime'].toString()));
 
       dynamic boardCards = summary['boardCards'];
 
@@ -87,8 +89,8 @@ class HandHistoryListModel extends ChangeNotifier {
       List hiWinners = summary['hiWinners'] as List;
       item.winners = new List<Winner>();
       for (final winnnerData in hiWinners) {
-        item.winners.add(
-            Winner.fromJson(this, item.noCards, winnnerData, showCards: showCards));
+        item.winners.add(Winner.fromJson(this, item.noCards, winnnerData,
+            showCards: showCards));
       }
       hands.add(item);
     }

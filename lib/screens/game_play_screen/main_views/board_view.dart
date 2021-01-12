@@ -5,6 +5,7 @@ import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/footer_result.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
+import 'package:pokerapp/models/game_play_models/ui/board_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/user_object.dart';
 import 'package:pokerapp/resources/app_constants.dart';
@@ -16,6 +17,8 @@ import 'package:pokerapp/screens/game_play_screen/main_views/animating_widgets/c
 import 'package:pokerapp/screens/game_play_screen/user_view/user_view.dart';
 import 'package:provider/provider.dart';
 
+import '../board_positions.dart';
+
 // user are seated as per array index starting from the bottom center as 0 and moving in clockwise direction
 
 const horizontalPaddingWidth = 25.0;
@@ -24,6 +27,21 @@ const outerWidth = 15.0;
 
 const widthMultiplier = 0.78;
 const heightMultiplier = 1.40;
+const verticalBorderRadius = BorderRadius.all(
+  const Radius.circular(
+    1000.0,
+  ),
+);
+
+const horizontalBorderRadius = BorderRadius.all(
+  const Radius.elliptical(300.0, 500.0),
+);
+
+const _borderRadius = const BorderRadius.all(
+  const Radius.circular(
+    1000.0,
+  ),
+);
 
 class BoardView extends StatelessWidget {
   BoardView({
@@ -35,40 +53,46 @@ class BoardView extends StatelessWidget {
   final Function() onStartGame;
 
   /* the following helper function builds the game board */
-  Widget _buildGameBoard({double boardHeight, double boardWidth}) => Container(
-        width: boardWidth,
-        height: boardHeight,
-        padding: EdgeInsets.all(innerWidth),
+  Widget _buildGameBoard(@required BoardObject board,
+      {double boardHeight, double boardWidth}) {
+    return Container(
+      width: boardWidth,
+      height: boardHeight,
+      padding: EdgeInsets.all(innerWidth),
+      decoration: BoxDecoration(
+        boxShadow: [
+          const BoxShadow(
+            color: Colors.black,
+            blurRadius: 10.0,
+            spreadRadius: 1.0,
+          )
+        ],
+        color: const Color(0xff646464),
+        borderRadius:
+            board.horizontal ? horizontalBorderRadius : verticalBorderRadius,
+        border: Border.all(
+          color: const Color(0xff6b451f),
+          width: outerWidth,
+        ),
+      ),
+      child: Container(
         decoration: BoxDecoration(
-          boxShadow: [
-            const BoxShadow(
-              color: Colors.black,
-              blurRadius: 10.0,
-              spreadRadius: 1.0,
-            )
-          ],
-          color: const Color(0xff646464),
-          borderRadius: _borderRadius,
-          border: Border.all(
-            color: const Color(0xff6b451f),
-            width: outerWidth,
+          gradient: const RadialGradient(
+            radius: 0.80,
+            colors: const [
+              const Color(0xff0d47a1),
+              const Color(0xff08142b),
+            ],
           ),
+          borderRadius:
+              board.horizontal ? horizontalBorderRadius : verticalBorderRadius,
         ),
-        child: Container(
-          decoration: const BoxDecoration(
-            gradient: const RadialGradient(
-              radius: 0.80,
-              colors: const [
-                const Color(0xff0d47a1),
-                const Color(0xff08142b),
-              ],
-            ),
-            borderRadius: _borderRadius,
-          ),
-        ),
-      );
+      ),
+    );
+  }
 
   Widget _positionUser({
+    BoardObject board,
     UserObject user,
     double heightOfBoard,
     double widthOfBoard,
@@ -81,11 +105,16 @@ class BoardView extends StatelessWidget {
     double shiftHorizontalConstant = widthOfBoard / 15;
     Alignment cardsAlignment = Alignment.centerRight;
 
+    if (board.horizontal) {
+      shiftDownConstant -= 100;
+    }
+
     // left for 6, 7, 8, 9
     if (seatPos == 6 || seatPos == 7 || seatPos == 8 || seatPos == 9)
       cardsAlignment = Alignment.centerLeft;
 
     UserView userView = UserView(
+      board: board,
       isPresent: isPresent,
       seatPos: seatPos,
       key: ValueKey(seatPos),
@@ -101,7 +130,7 @@ class BoardView extends StatelessWidget {
           child: Transform.translate(
             offset: Offset(
               0.0,
-              shiftDownConstant-30,
+              shiftDownConstant - 30,
             ),
             child: userView,
           ),
@@ -112,7 +141,7 @@ class BoardView extends StatelessWidget {
           alignment: Alignment.centerLeft,
           child: Transform.translate(
             offset: Offset(
-              shiftHorizontalConstant,
+              shiftHorizontalConstant - 20,
               heightOfBoard / 4 + shiftDownConstant,
             ),
             child: userView,
@@ -123,7 +152,7 @@ class BoardView extends StatelessWidget {
         return Align(
           alignment: Alignment.centerLeft,
           child: Transform.translate(
-            offset: Offset(0.0, -30.0 + shiftDownConstant),
+            offset: Offset(-10.0, -30.0 + shiftDownConstant),
             child: userView,
           ),
         );
@@ -132,7 +161,7 @@ class BoardView extends StatelessWidget {
         return Align(
           alignment: Alignment.centerLeft,
           child: Transform.translate(
-            offset: Offset(0.0, -heightOfBoard / 2.5 + shiftDownConstant),
+            offset: Offset(0.0, -heightOfBoard / 2.8 + shiftDownConstant),
             child: userView,
           ),
         );
@@ -142,8 +171,10 @@ class BoardView extends StatelessWidget {
           alignment: Alignment.topCenter,
           child: Transform.translate(
             offset: Offset(
-              -widthOfBoard / 3.8 + shiftHorizontalConstant,
-              -shiftDownConstant / 1.5,
+              board.horizontal
+                  ? -widthOfBoard / 3.8 + shiftHorizontalConstant + 30
+                  : -widthOfBoard / 3.8 + shiftHorizontalConstant,
+              board.horizontal ? -80 : -shiftDownConstant / 1.5,
             ),
             child: userView,
           ),
@@ -155,7 +186,7 @@ class BoardView extends StatelessWidget {
           child: Transform.translate(
             offset: Offset(
               widthOfBoard / 3.8 - shiftHorizontalConstant,
-              -shiftDownConstant / 1.5,
+              board.horizontal ? -80 : -shiftDownConstant / 1.5,
             ),
             child: userView,
           ),
@@ -165,7 +196,7 @@ class BoardView extends StatelessWidget {
         return Align(
           alignment: Alignment.centerRight,
           child: Transform.translate(
-            offset: Offset(0.0, -heightOfBoard / 2.5 + shiftDownConstant),
+            offset: Offset(0.0, -heightOfBoard / 2.8 + shiftDownConstant),
             child: userView,
           ),
         );
@@ -212,6 +243,7 @@ class BoardView extends StatelessWidget {
   }
 
   Widget _buildCenterView({
+    BoardObject board,
     List<CardObject> cards,
     List<int> potChips,
     int potChipsUpdates,
@@ -261,119 +293,128 @@ class BoardView extends StatelessWidget {
     if (potChips == null) potChips = [0];
     if (cards == null) cards = const [];
 
+    EdgeInsets communityMargin = EdgeInsets.zero;
+    EdgeInsets potMargin = EdgeInsets.only(top: 140);
+    if (board.horizontal) {
+      communityMargin = EdgeInsets.only(bottom: 90.0);
+      potMargin = EdgeInsets.only(top: 80);
+    }
+
     Widget tablePotAndCardWidget = Align(
-      key: ValueKey('tablePotAndCardWidget'),
-      alignment: Alignment.center,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          /* rankStr --> needs to be shown only when footer result is not null */
-          Consumer<FooterResult>(
-            builder: (_, FooterResult footerResult, __) => AnimatedSwitcher(
-              duration: AppConstants.animationDuration,
-              reverseDuration: AppConstants.animationDuration,
-              child: footerResult.isEmpty
-                  ? const SizedBox.shrink()
-                  : Transform.translate(
-                      offset: Offset(
-                        0.0,
-                        -AppDimensions.cardHeight / 2,
-                      ),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 10.0,
-                          vertical: 5.0,
+        key: ValueKey('tablePotAndCardWidget'),
+        alignment: Alignment.topCenter,
+        child: Container(
+          margin: potMargin,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              /* rankStr --> needs to be shown only when footer result is not null */
+              Consumer<FooterResult>(
+                builder: (_, FooterResult footerResult, __) => AnimatedSwitcher(
+                  duration: AppConstants.animationDuration,
+                  reverseDuration: AppConstants.animationDuration,
+                  child: footerResult.isEmpty
+                      ? const SizedBox.shrink()
+                      : Transform.translate(
+                          offset: Offset(
+                            0.0,
+                            -AppDimensions.cardHeight / 2,
+                          ),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10.0,
+                              vertical: 5.0,
+                            ),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(100.0),
+                              color: Colors.black26,
+                            ),
+                            child: Text(
+                              footerResult.potWinners.first.rankStr,
+                              style: AppStyles.footerResultTextStyle4,
+                            ),
+                          ),
                         ),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(100.0),
-                          color: Colors.black26,
-                        ),
-                        child: Text(
-                          footerResult.potWinners.first.rankStr,
-                          style: AppStyles.footerResultTextStyle4,
-                        ),
-                      ),
-                    ),
-            ),
-          ),
-
-          // card stacks
-          StackCardView(
-            cards: cards,
-            center: true,
-            isCommunity: true,
-          ),
-
-          const SizedBox(height: AppDimensions.cardHeight / 2),
-
-          // pot value
-          Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(100.0),
-              color: Colors.black26,
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                // chip image
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Image.asset(
-                    'assets/images/chips.png',
-                    height: 25.0,
-                  ),
                 ),
+              ),
 
-                // pot amount text
-                Padding(
-                  padding: const EdgeInsets.only(
-                    right: 15.0,
-                    top: 5.0,
-                    bottom: 5.0,
-                    left: 5.0,
-                  ),
-                  child: Text(
-                    'Pot: ${potChips[0]}', // todo: at later point might need to show multiple pots - need to design UI
-                    style: AppStyles.itemInfoTextStyleHeavy.copyWith(
-                      fontSize: 15,
-                    ),
-                  ),
+              // pot value
+              Container(
+                margin: EdgeInsets.only(bottom: 10.0),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(100.0),
+                  color: Colors.black26,
                 ),
-              ],
-            ),
-          ),
-
-          const SizedBox(height: AppDimensions.cardHeight / 3),
-
-          /* potUpdates view */
-          Opacity(
-            opacity: potChipsUpdates == null ? 0 : 1,
-            child: Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 10.0,
-                vertical: 5.0,
-              ),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(100.0),
-                color: Colors.black26,
-              ),
-              child:
-                  Visibility(
-                    visible: potChipsUpdates != null && potChipsUpdates != 0,
-                    child: Text(
-                      'Current: $potChipsUpdates',
-                      style: AppStyles.itemInfoTextStyleHeavy.copyWith(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w400,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    // chip image
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Image.asset(
+                        'assets/images/chips.png',
+                        height: 25.0,
                       ),
                     ),
-                  )
-            ),
+
+                    // pot amount text
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        right: 15.0,
+                        top: 5.0,
+                        bottom: 5.0,
+                        left: 5.0,
+                      ),
+                      child: Text(
+                        'Pot: ${potChips[0]}', // todo: at later point might need to show multiple pots - need to design UI
+                        style: AppStyles.itemInfoTextStyleHeavy.copyWith(
+                          fontSize: 15,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              // card stacks
+              Container(
+                  margin: communityMargin,
+                  child: StackCardView(
+                    cards: cards,
+                    center: true,
+                    isCommunity: true,
+                  )),
+
+              const SizedBox(height: AppDimensions.cardHeight / 2),
+
+              const SizedBox(height: AppDimensions.cardHeight / 3),
+
+              /* potUpdates view */
+              Opacity(
+                opacity: potChipsUpdates == null ? 0 : 1,
+                child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10.0,
+                      vertical: 5.0,
+                    ),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(100.0),
+                      color: Colors.black26,
+                    ),
+                    child: Visibility(
+                      visible: potChipsUpdates != null && potChipsUpdates != 0,
+                      child: Text(
+                        'Current: $potChipsUpdates',
+                        style: AppStyles.itemInfoTextStyleHeavy.copyWith(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    )),
+              ),
+            ],
           ),
-        ],
-      ),
-    );
+        ));
 
     return AnimatedSwitcher(
       switchInCurve: Curves.easeInOut,
@@ -448,7 +489,14 @@ class BoardView extends StatelessWidget {
     double width = MediaQuery.of(context).size.width;
     double heightOfBoard = width * widthMultiplier * heightMultiplier;
     double widthOfBoard = width * widthMultiplier;
+    final boardState = Provider.of<BoardObject>(context);
 
+    if (boardState.horizontal) {
+      widthOfBoard = MediaQuery.of(context).size.width;
+      heightOfBoard = MediaQuery.of(context).size.height / 2.5;
+    }
+
+    final layoutCoords = LAYOUT_COORDS[BoardLayout.HORIZONTAL];
     /* finally the view */
     return Consumer<Players>(
       builder: (_, Players players, __) {
@@ -460,12 +508,15 @@ class BoardView extends StatelessWidget {
         bool isPresent = tmp != null;
 
         return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 25.0),
+          padding: EdgeInsets.symmetric(
+              horizontal: layoutCoords[SIDE_PADDING], vertical: 30),
           child: Stack(
-            alignment: Alignment.center,
+            alignment:
+                boardState.horizontal ? Alignment.topCenter : Alignment.center,
             children: [
               // game board
               _buildGameBoard(
+                boardState,
                 boardHeight: heightOfBoard,
                 boardWidth: widthOfBoard,
               ),
@@ -476,6 +527,7 @@ class BoardView extends StatelessWidget {
                   .entries
                   .map(
                     (var u) => _positionUser(
+                      board: boardState,
                       user: u.value,
                       heightOfBoard: heightOfBoard,
                       widthOfBoard: widthOfBoard,
@@ -496,6 +548,7 @@ class BoardView extends StatelessWidget {
                         ValueNotifier<FooterStatus> valueNotifierFooterStatus,
                         __) =>
                     _buildCenterView(
+                  board: boardState,
                   cards: tableState.cards,
                   potChips: tableState.potChips,
                   potChipsUpdates: tableState.potChipsUpdates,
@@ -514,9 +567,3 @@ class BoardView extends StatelessWidget {
     );
   }
 }
-
-const _borderRadius = const BorderRadius.all(
-  const Radius.circular(
-    1000.0,
-  ),
-);
