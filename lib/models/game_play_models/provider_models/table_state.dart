@@ -23,6 +23,16 @@ class TableState extends ChangeNotifier {
     this._potChips = potChips;
     this._communityCards = communityCards;
     this._potUpdatesChips = potUpdatesChips;
+    this._communityCards = new List<CardObject>();
+
+    /*
+    //debugging code
+    this._communityCards.add(CardHelper.getCard(168));
+    this._communityCards.add(CardHelper.getCard(168));
+    this._communityCards.add(CardHelper.getCard(168));
+    this._communityCards.add(CardHelper.getCard(168));
+    this._communityCards.add(CardHelper.getCard(168));
+     */
   }
 
   /* public methods for updating values into our TableState */

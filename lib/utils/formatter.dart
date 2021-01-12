@@ -38,7 +38,7 @@ class DataFormatter {
   static String minuteFormat(int timeInSecs) {
     int mins = timeInSecs ~/ 60;
     int seconds = timeInSecs % 60;
-    String ret ='';
+    String ret = '';
     if (mins != 0) {
       ret = '$mins minute${mins == 1 ? '' : 's'}';
     }

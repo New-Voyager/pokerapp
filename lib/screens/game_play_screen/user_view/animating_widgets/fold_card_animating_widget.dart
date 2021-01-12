@@ -32,7 +32,9 @@ class FoldCardAnimatingWidget extends StatelessWidget {
           begin: Offset(0, 0),
           end: offsetMapping[seatPos],
         ),
-        child: HiddenCardView(noOfCards: userObject.noOfCardsVisible,),
+        child: HiddenCardView(
+          noOfCards: userObject.noOfCardsVisible,
+        ),
         onEnd: () {
           print('fold animation done $seatPos');
           userObject.animatingFold = false;
