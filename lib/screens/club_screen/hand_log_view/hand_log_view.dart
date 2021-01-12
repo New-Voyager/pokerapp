@@ -348,7 +348,7 @@ class _HandLogViewState extends State<HandLogView> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        _handStageModel.stageActions[index].seatNum.toString(),
+                        _handStageModel.stageActions[index].name ?? "Player",
                         style: const TextStyle(
                           fontFamily: AppAssets.fontFamilyLato,
                           color: Colors.white,

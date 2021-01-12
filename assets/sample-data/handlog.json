@@ -486,6 +486,7 @@
     "9": {
       "id": "392",
       "cards": [49, 20],
+      "name" : "Steffi",
       "bestCards": [168, 17, 148, 132, 20],
       "rank": 5846,
       "playedUntil": "SHOW_DOWN",
