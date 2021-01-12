@@ -137,9 +137,10 @@ class _TableResultScreenState extends State<TableResultScreen> {
                                   child: Container(
                                       alignment: Alignment.centerLeft,
                                       child: Text(
-                                    "Player",
-                                    style: TextStyle(color: Color(0xffef9712)),
-                                  ))),
+                                        "Player",
+                                        style:
+                                            TextStyle(color: Color(0xffef9712)),
+                                      ))),
                               Expanded(
                                   flex: widget.sessionWidth,
                                   child: Center(
@@ -193,9 +194,10 @@ class _TableResultScreenState extends State<TableResultScreen> {
                                 child: Container(
                                     alignment: Alignment.centerLeft,
                                     child: Text(
-                                  this.data.rows[dataIdx].playerName,
-                                  style: TextStyle(color: Color(0xffa09f9e)),
-                                )),
+                                      this.data.rows[dataIdx].playerName,
+                                      style:
+                                          TextStyle(color: Color(0xffa09f9e)),
+                                    )),
                               ),
                               Expanded(
                                 flex: widget.sessionWidth,

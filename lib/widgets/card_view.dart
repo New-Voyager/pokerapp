@@ -1,4 +1,3 @@
-import 'package:flip_card/flip_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
@@ -13,12 +12,14 @@ final cardBackImage =
 class CardView extends StatelessWidget {
   final CardObject card;
   final bool grayOut;
-  final width;
+  double widthRatio;
+  double width;
   final bool back;
+  double height;
   CardView({
     @required this.card,
     this.grayOut = false,
-    this.width = 1.5,
+    this.widthRatio = 1.5,
     this.back = false,
   });
 
@@ -59,6 +60,10 @@ class CardView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return buildCardWidget(context);
+  }
+
+  Widget buildCardWidget(BuildContext context) {
     double cardWidth = AppDimensions.cardWidth * 1.1;
     double cardHeight = AppDimensions.cardHeight * 1.5;
     TextStyle cardTextStyle = AppStyles.cardTextStyle.copyWith(
@@ -88,12 +93,17 @@ class CardView extends StatelessWidget {
       suitTextStyle = AppStyles.cardTextStyle.copyWith(
         color: card.color,
       );
-      if (card.smaller) {
-        cardWidth = AppDimensions.cardWidth * 1.5;
-      }
     }
-    cardWidth = 22;
-    cardHeight = 32;
+    if (card.smaller) {
+      cardWidth = AppDimensions.cardWidth * 1.5;
+    } else {
+      cardWidth = 22;
+      cardHeight = 32;
+
+      // TODO: We need to revisit how to get width and height working with ratio
+      width = cardWidth+10;
+      height = cardHeight+10;
+    }
 
     Widget cardWidget = Container(
       height: cardHeight,
