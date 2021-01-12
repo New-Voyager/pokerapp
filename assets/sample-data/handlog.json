@@ -4,7 +4,7 @@
   "gameType": "HOLDEM",
   "handLog": {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
     "preflopActions": {
-      "pot": 3,
+      "pot": 45,
       "actions": [{
         "seatNo": 7,
         "action": "SB",
@@ -74,7 +74,7 @@
       }]
     },
     "flopActions": {
-      "pot": 0,
+      "pot": 60,
       "actions": [{
         "seatNo": 7,
         "action": "CHECK",
@@ -132,7 +132,7 @@
       }]
     },
     "turnActions": {
-      "pot": 0,
+      "pot": 200,
       "actions": [{
         "seatNo": 7,
         "action": "CHECK",
@@ -190,7 +190,7 @@
       }]
     },
     "riverActions": {
-      "pot": 0,
+      "pot": 350,
       "actions": [{
         "seatNo": 7,
         "action": "CHECK",
@@ -351,9 +351,9 @@
   "rewardTrackingIds": [13],
   "boardCards": [168, 17, 2, 148, 132],
   "boardCards2": [],
-  "flop": [168, 17, 2],
-  "turn": 148,
-  "river": 132,
+  "flopCards": [168, 17, 2],
+  "turnCards": [148],
+  "riverCards": [132],
   "players": {
     "1": {
       "id": "386",

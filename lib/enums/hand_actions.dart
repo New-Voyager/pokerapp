@@ -8,3 +8,7 @@ enum HandActions {
   STRADDLE,
   UNKNOWN,
 }
+
+String handActionsToString(HandActions action) {
+  return action.toString().split(".").last;
+}

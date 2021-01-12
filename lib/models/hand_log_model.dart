@@ -1,6 +1,5 @@
 import 'package:pokerapp/enums/game_stages.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
-import 'package:pokerapp/services/game_play/action_services/hand_action_service/hand_action_service.dart';
 
 class HandLogModel {
   String gameId;
@@ -10,6 +9,7 @@ class HandLogModel {
   List<dynamic> yourcards = new List<dynamic>();
   GameStages gameWonAt;
   List<PotWinnerDetailsModel> potWinners = new List<PotWinnerDetailsModel>();
+  HandStageModel preFlopActions, flopActions, turnActions, riverActions;
   String unknownString = "u/k";
   int unknownInt = 0;
 
@@ -63,6 +63,29 @@ class HandLogModel {
         .map<PotWinnerDetailsModel>(
             (potDetails) => PotWinnerDetailsModel.fromJson(potDetails))
         .toList();
+
+    var preFlopJson = jsonData["handLog"]["preflopActions"] ??
+        jsonData["handLog"]["preflopActions"];
+    preFlopActions =
+        HandStageModel.fromJson("PRE FLOP", preFlopJson, new List<int>());
+
+    var flopJson = jsonData["handLog"]["flopActions"] ??
+        jsonData["handLog"]["flopActions"];
+    var flopCards = jsonData["flopCards"] ?? jsonData["flopCards"];
+    flopActions = HandStageModel.fromJson(
+        "FLOP", flopJson, flopCards.cast<int>().toList());
+
+    var turnJson = jsonData["handLog"]["turnActions"] ??
+        jsonData["handLog"]["turnActions"];
+    var turnCards = jsonData["turnCards"] ?? jsonData["turnCards"];
+    turnActions = HandStageModel.fromJson(
+        "TURN", turnJson, turnCards.cast<int>().toList());
+
+    var riverJson = jsonData["handLog"]["riverActions"] ??
+        jsonData["handLog"]["riverActions"];
+    var riverCards = jsonData["riverCards"] ?? jsonData["riverCards"];
+    riverActions = HandStageModel.fromJson(
+        "RIVER", riverJson, riverCards.cast<int>().toList());
   }
 }
 
@@ -96,6 +119,7 @@ class PotWinnerDetailsModel {
 
 class WinnerDetailsModel {
   int seatNum;
+  String name; // TODO: get name from players list and add to the model
   int amount;
   List<dynamic> winningCards = new List<dynamic>();
 
@@ -107,10 +131,22 @@ class WinnerDetailsModel {
 }
 
 class HandStageModel {
+  String stageName;
   int potAmount;
+  List<int> stageCards = new List<int>();
   List<ActionModel> stageActions = new List<ActionModel>();
 
-  HandStageModel.fromJson(var jsonData) {}
+  HandStageModel.fromJson(String sName, var jsonData, List<int> cardsList) {
+    stageName = sName;
+    stageCards = cardsList;
+    potAmount = jsonData["pot"] == null ? 0 : jsonData["pot"];
+    var actionsJson = jsonData["actions"] ?? jsonData["actions"];
+    if (actionsJson != null) {
+      stageActions = actionsJson
+          .map<ActionModel>((actionsJson) => ActionModel.fromJson(actionsJson))
+          .toList();
+    }
+  }
 }
 
 class ActionModel {

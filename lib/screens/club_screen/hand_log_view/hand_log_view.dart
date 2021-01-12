@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_stages.dart';
+import 'package:pokerapp/enums/hand_actions.dart';
 import 'package:pokerapp/models/hand_log_model.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
@@ -16,6 +17,11 @@ class _HandLogViewState extends State<HandLogView> {
   HandLogModel _handLogModel;
   bool _isLoading = true;
   var handLogjson;
+
+  initState() {
+    super.initState();
+    loadJsonData();
+  }
 
   loadJsonData() async {
     String data = await DefaultAssetBundle.of(context)
@@ -294,12 +300,93 @@ class _HandLogViewState extends State<HandLogView> {
     }
   }
 
-  Widget buildStagesView() {}
+  Widget buildStagesView(HandStageModel _handStageModel) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          margin: EdgeInsets.only(left: 10, top: 5, bottom: 5, right: 10),
+          alignment: Alignment.centerLeft,
+          child: Text(
+            _handStageModel.stageName +
+                ": " +
+                _handStageModel.potAmount.toString(),
+            style: const TextStyle(
+              fontFamily: AppAssets.fontFamilyLato,
+              color: Colors.white,
+              fontSize: 16.0,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
+        Visibility(
+          visible: (_handStageModel.stageCards != null &&
+              _handStageModel.stageCards.length > 0),
+          child: Container(
+            margin: EdgeInsets.only(left: 10, top: 5, bottom: 10, right: 10),
+            alignment: Alignment.centerLeft,
+            child: CommunityCardWidget(
+              _handStageModel.stageCards,
+              true,
+            ),
+          ),
+        ),
+        Card(
+          margin: EdgeInsets.only(left: 10, right: 10, bottom: 5),
+          color: AppColors.cardBackgroundColor,
+          child: Container(
+            margin: EdgeInsets.all(10),
+            child: ListView.builder(
+              physics: NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              itemCount: _handStageModel.stageActions.length,
+              itemBuilder: (context, index) {
+                return Container(
+                  margin: EdgeInsets.only(top: 5, bottom: 5),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        _handStageModel.stageActions[index].seatNum.toString(),
+                        style: const TextStyle(
+                          fontFamily: AppAssets.fontFamilyLato,
+                          color: Colors.white,
+                          fontSize: 12.0,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      Text(
+                        handActionsToString(
+                            _handStageModel.stageActions[index].action),
+                        style: const TextStyle(
+                          fontFamily: AppAssets.fontFamilyLato,
+                          color: Colors.white,
+                          fontSize: 12.0,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      Text(
+                        _handStageModel.stageActions[index].amount.toString(),
+                        style: const TextStyle(
+                          fontFamily: AppAssets.fontFamilyLato,
+                          color: Colors.white,
+                          fontSize: 12.0,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+          ),
+        ),
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    loadJsonData();
-
     return Scaffold(
       backgroundColor: AppColors.screenBackgroundColor,
       appBar: AppBar(
@@ -496,6 +583,18 @@ class _HandLogViewState extends State<HandLogView> {
                   ),
                   Container(
                     child: buildWinnersView(),
+                  ),
+                  Container(
+                    child: buildStagesView(_handLogModel.preFlopActions),
+                  ),
+                  Container(
+                    child: buildStagesView(_handLogModel.flopActions),
+                  ),
+                  Container(
+                    child: buildStagesView(_handLogModel.turnActions),
+                  ),
+                  Container(
+                    child: buildStagesView(_handLogModel.riverActions),
                   ),
                 ],
               ),
