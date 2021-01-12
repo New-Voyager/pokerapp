@@ -31,6 +31,7 @@ class CardObject {
     this.visibleCard = VisibleCardView(
       card: this,
     );
+
     this.empty = false;
   }
 

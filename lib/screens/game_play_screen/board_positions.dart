@@ -19,7 +19,7 @@ const Map<int, Offset> horizontalCoinAmountWidgetOffsets = {
   2: Offset(45, 10),
   3: Offset(35, 50),
   4: Offset(45, 45),
-  5: Offset(10, 70),
+  5: Offset(-10, 70),
   6: Offset(-10, 70),
   7: Offset(-40, 30),
   8: Offset(-40, 45),
