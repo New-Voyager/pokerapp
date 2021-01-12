@@ -8,7 +8,6 @@ class HandLogModel {
   List<dynamic> yourcards = new List<dynamic>();
   GameStages gameWonAt;
   List<PotWinnerDetailsModel> potWinners = new List<PotWinnerDetailsModel>();
-
   String unknownString = "u/k";
   int unknownInt = 0;
 
@@ -83,7 +82,7 @@ class PotWinnerDetailsModel {
           .toList();
     }
 
-    var loWinnersJson = jsonData["loWinners"] ?? jsonData["loWinners"];
+    var loWinnersJson = jsonData["lowWinners"] ?? jsonData["lowWinners"];
     if (loWinnersJson != null) {
       loWinners = loWinnersJson
           .map<WinnerDetailsModel>(
@@ -94,10 +93,12 @@ class PotWinnerDetailsModel {
 }
 
 class WinnerDetailsModel {
+  int seatNum;
   int amount;
   List<dynamic> winningCards = new List<dynamic>();
 
   WinnerDetailsModel.fromJson(var jsonData) {
+    seatNum = jsonData["seatNo"] == null ? 0 : jsonData["seatNo"];
     amount = jsonData["amount"] == null ? 0 : jsonData["amount"];
     winningCards = jsonData["winningCards"] ?? jsonData["winningCards"];
   }

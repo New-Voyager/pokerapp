@@ -273,9 +273,9 @@
 					"boardCards": [200, 8, 33]
 				}],
 				"lowWinners": [{
-					"seatNo": 1,
+					"seatNo": 4,
 					"loCard": true,
-					"amount": 10,
+					"amount":30,
 					"winningCards": [50, 17, 200, 8, 33],
 					"winningCardsStr": "[ 5❤  3♠  A♣  2♣  4♠ ]",
 					"rankStr": "",
@@ -283,9 +283,55 @@
 					"playerCards": [50, 17],
 					"boardCards": [200, 8, 33]
 				}, {
-					"seatNo": 3,
+					"seatNo": 6,
 					"loCard": true,
+					"amount": 20,
+					"winningCards": [20, 56, 200, 8, 33],
+					"winningCardsStr": "[ 3♦  5♣  A♣  2♣  4♠ ]",
+					"rankStr": "",
+					"rank": 31,
+					"playerCards": [20, 56],
+					"boardCards": [200, 8, 33]
+				}]
+      }, 
+      {
+        "potNumber" : 1,
+        "totalPotAmount" : 200,
+				"hiWinners": [{
+					"seatNo": 1,
+					"loCard": false,
 					"amount": 10,
+					"winningCards": [50, 17, 200, 8, 33],
+					"winningCardsStr": "[ 5❤  3♠  A♣  2♣  4♠ ]",
+					"rankStr": "Straight",
+					"rank": 1609,
+					"playerCards": [50, 17],
+					"boardCards": [200, 8, 33]
+				}, {
+					"seatNo": 3,
+					"loCard": false,
+					"amount": 10,
+					"winningCards": [20, 56, 200, 8, 33],
+					"winningCardsStr": "[ 3♦  5♣  A♣  2♣  4♠ ]",
+					"rankStr": "Straight",
+					"rank": 1609,
+					"playerCards": [20, 56],
+					"boardCards": [200, 8, 33]
+				}],
+				"lowWinners": [{
+					"seatNo": 4,
+					"loCard": true,
+					"amount":30,
+					"winningCards": [50, 17, 200, 8, 33],
+					"winningCardsStr": "[ 5❤  3♠  A♣  2♣  4♠ ]",
+					"rankStr": "",
+					"rank": 31,
+					"playerCards": [50, 17],
+					"boardCards": [200, 8, 33]
+				}, {
+					"seatNo": 6,
+					"loCard": true,
+					"amount": 20,
 					"winningCards": [20, 56, 200, 8, 33],
 					"winningCardsStr": "[ 3♦  5♣  A♣  2♣  4♠ ]",
 					"rankStr": "",
