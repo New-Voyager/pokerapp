@@ -14,6 +14,7 @@ import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/screens/game_play_screen/card_views/animations/animating_shuffle_card_view.dart';
 import 'package:pokerapp/screens/game_play_screen/card_views/stack_card_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/animating_widgets/card_distribution_animating_widget.dart';
+import 'package:pokerapp/screens/game_play_screen/main_views/table_view.dart';
 import 'package:pokerapp/screens/game_play_screen/user_view/user_view.dart';
 import 'package:provider/provider.dart';
 
@@ -22,26 +23,9 @@ import '../board_positions.dart';
 // user are seated as per array index starting from the bottom center as 0 and moving in clockwise direction
 
 const horizontalPaddingWidth = 25.0;
-const innerWidth = 5.0;
-const outerWidth = 15.0;
 
 const widthMultiplier = 0.78;
 const heightMultiplier = 1.40;
-const verticalBorderRadius = BorderRadius.all(
-  const Radius.circular(
-    1000.0,
-  ),
-);
-
-const horizontalBorderRadius = BorderRadius.all(
-  const Radius.elliptical(300.0, 500.0),
-);
-
-const _borderRadius = const BorderRadius.all(
-  const Radius.circular(
-    1000.0,
-  ),
-);
 
 class BoardView extends StatelessWidget {
   BoardView({
@@ -51,45 +35,6 @@ class BoardView extends StatelessWidget {
 
   final Function(int index) onUserTap;
   final Function() onStartGame;
-
-  /* the following helper function builds the game board */
-  Widget _buildGameBoard(@required BoardObject board,
-      {double boardHeight, double boardWidth}) {
-    return Container(
-      width: boardWidth,
-      height: boardHeight,
-      padding: EdgeInsets.all(innerWidth),
-      decoration: BoxDecoration(
-        boxShadow: [
-          const BoxShadow(
-            color: Colors.black,
-            blurRadius: 10.0,
-            spreadRadius: 1.0,
-          )
-        ],
-        color: const Color(0xff646464),
-        borderRadius:
-            board.horizontal ? horizontalBorderRadius : verticalBorderRadius,
-        border: Border.all(
-          color: const Color(0xff6b451f),
-          width: outerWidth,
-        ),
-      ),
-      child: Container(
-        decoration: BoxDecoration(
-          gradient: const RadialGradient(
-            radius: 0.80,
-            colors: const [
-              const Color(0xff0d47a1),
-              const Color(0xff08142b),
-            ],
-          ),
-          borderRadius:
-              board.horizontal ? horizontalBorderRadius : verticalBorderRadius,
-        ),
-      ),
-    );
-  }
 
   Widget _positionUser({
     BoardObject board,
@@ -106,7 +51,7 @@ class BoardView extends StatelessWidget {
     Alignment cardsAlignment = Alignment.centerRight;
 
     if (board.horizontal) {
-      shiftDownConstant -= 100;
+      shiftDownConstant += 20;
     }
 
     // left for 6, 7, 8, 9
@@ -152,7 +97,11 @@ class BoardView extends StatelessWidget {
         return Align(
           alignment: Alignment.centerLeft,
           child: Transform.translate(
-            offset: Offset(-10.0, -30.0 + shiftDownConstant),
+            offset: Offset(
+                -10.0,
+                board.horizontal
+                    ? -50.0 + shiftDownConstant
+                    : -30.0 + shiftDownConstant),
             child: userView,
           ),
         );
@@ -161,7 +110,11 @@ class BoardView extends StatelessWidget {
         return Align(
           alignment: Alignment.centerLeft,
           child: Transform.translate(
-            offset: Offset(0.0, -heightOfBoard / 2.8 + shiftDownConstant),
+            offset: Offset(
+                0.0,
+                board.horizontal
+                    ? -heightOfBoard / 2
+                    : -heightOfBoard / 2.8 + shiftDownConstant),
             child: userView,
           ),
         );
@@ -174,7 +127,7 @@ class BoardView extends StatelessWidget {
               board.horizontal
                   ? -widthOfBoard / 3.8 + shiftHorizontalConstant + 30
                   : -widthOfBoard / 3.8 + shiftHorizontalConstant,
-              board.horizontal ? -80 : -shiftDownConstant / 1.5,
+              board.horizontal ? -50 : -shiftDownConstant / 1.5,
             ),
             child: userView,
           ),
@@ -186,7 +139,7 @@ class BoardView extends StatelessWidget {
           child: Transform.translate(
             offset: Offset(
               widthOfBoard / 3.8 - shiftHorizontalConstant,
-              board.horizontal ? -80 : -shiftDownConstant / 1.5,
+              board.horizontal ? -50 : -shiftDownConstant / 1.5,
             ),
             child: userView,
           ),
@@ -196,7 +149,11 @@ class BoardView extends StatelessWidget {
         return Align(
           alignment: Alignment.centerRight,
           child: Transform.translate(
-            offset: Offset(0.0, -heightOfBoard / 2.8 + shiftDownConstant),
+            offset: Offset(
+                0.0,
+                board.horizontal
+                    ? -heightOfBoard / 2
+                    : -heightOfBoard / 2.8 + shiftDownConstant),
             child: userView,
           ),
         );
@@ -205,7 +162,11 @@ class BoardView extends StatelessWidget {
         return Align(
           alignment: Alignment.centerRight,
           child: Transform.translate(
-            offset: Offset(0.0, -30.0 + shiftDownConstant),
+            offset: Offset(
+                0.0,
+                board.horizontal
+                    ? -50.0 + shiftDownConstant
+                    : -30.0 + shiftDownConstant),
             child: userView,
           ),
         );
@@ -491,12 +452,13 @@ class BoardView extends StatelessWidget {
     double widthOfBoard = width * widthMultiplier;
     final boardState = Provider.of<BoardObject>(context);
 
+    dynamic layoutCoords = LAYOUT_COORDS[BoardLayout.VERTICAL];
     if (boardState.horizontal) {
       widthOfBoard = MediaQuery.of(context).size.width;
-      heightOfBoard = MediaQuery.of(context).size.height / 2.5;
+      heightOfBoard = MediaQuery.of(context).size.height / 4;
+      layoutCoords = LAYOUT_COORDS[BoardLayout.HORIZONTAL];
     }
 
-    final layoutCoords = LAYOUT_COORDS[BoardLayout.HORIZONTAL];
     /* finally the view */
     return Consumer<Players>(
       builder: (_, Players players, __) {
@@ -509,17 +471,14 @@ class BoardView extends StatelessWidget {
 
         return Padding(
           padding: EdgeInsets.symmetric(
-              horizontal: layoutCoords[SIDE_PADDING], vertical: 30),
+              horizontal: layoutCoords[SIDE_PADDING],
+              vertical: boardState.horizontal ? 120 : 30),
           child: Stack(
             alignment:
                 boardState.horizontal ? Alignment.topCenter : Alignment.center,
             children: [
               // game board
-              _buildGameBoard(
-                boardState,
-                boardHeight: heightOfBoard,
-                boardWidth: widthOfBoard,
-              ),
+              TableView(heightOfBoard, widthOfBoard),
 
               // position the users
               ...getUserObjects(players.players)

@@ -9,12 +9,14 @@ class StackCardView extends StatelessWidget {
   final bool center;
   final bool deactivated;
   final bool isCommunity;
+  final bool horizontal;
 
   StackCardView({
     @required this.cards,
     this.center = false,
     this.deactivated = false,
     this.isCommunity = false,
+    this.horizontal = true,
   });
 
   @override
@@ -35,7 +37,7 @@ class StackCardView extends StatelessWidget {
                       c.highlight ? pullUpOffset : 0.0,
                     ),
                     child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 2.0),
+                      padding: EdgeInsets.symmetric(horizontal: 3.0),
                       child: deactivated ? c.grayedWidget : c.widget,
                     ),
                   ),
