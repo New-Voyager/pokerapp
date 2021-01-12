@@ -59,9 +59,10 @@ class HandLogModel {
 
     var potDetailsJson =
         jsonData["handLog"]["potWinners"] ?? jsonData["handLog"]["potWinners"];
+    var playersJson = jsonData["players"] ?? jsonData["players"];
     potWinners = potDetailsJson
-        .map<PotWinnerDetailsModel>(
-            (potDetails) => PotWinnerDetailsModel.fromJson(potDetails))
+        .map<PotWinnerDetailsModel>((potDetails) =>
+            PotWinnerDetailsModel.fromJson(potDetails, playersJson))
         .toList();
 
     var preFlopJson = jsonData["handLog"]["preflopActions"] ??
@@ -95,23 +96,24 @@ class PotWinnerDetailsModel {
   List<WinnerDetailsModel> hiWinners = new List<WinnerDetailsModel>();
   List<WinnerDetailsModel> loWinners = new List<WinnerDetailsModel>();
 
-  PotWinnerDetailsModel.fromJson(var jsonData) {
+  PotWinnerDetailsModel.fromJson(var jsonData, playersJson) {
     potNumber = jsonData["potNumber"] != null ? jsonData["potNumber"] : 0;
     totalPotAmount = jsonData["totalPotAmount"] ?? jsonData["totalPotAmount"];
 
     var hiWinnersJson = jsonData["hiWinners"] ?? jsonData["hiWinners"];
+
     if (hiWinnersJson != null) {
       hiWinners = hiWinnersJson
-          .map<WinnerDetailsModel>(
-              (hiWinnerJson) => WinnerDetailsModel.fromJson(hiWinnerJson))
+          .map<WinnerDetailsModel>((hiWinnerJson) =>
+              WinnerDetailsModel.fromJson(hiWinnerJson, playersJson))
           .toList();
     }
 
     var loWinnersJson = jsonData["lowWinners"] ?? jsonData["lowWinners"];
     if (loWinnersJson != null) {
       loWinners = loWinnersJson
-          .map<WinnerDetailsModel>(
-              (loWinnerJson) => WinnerDetailsModel.fromJson(loWinnerJson))
+          .map<WinnerDetailsModel>((loWinnerJson) =>
+              WinnerDetailsModel.fromJson(loWinnerJson, playersJson))
           .toList();
     }
   }
@@ -119,12 +121,15 @@ class PotWinnerDetailsModel {
 
 class WinnerDetailsModel {
   int seatNum;
-  String name; // TODO: get name from players list and add to the model
+  String name;
   int amount;
   List<dynamic> winningCards = new List<dynamic>();
 
-  WinnerDetailsModel.fromJson(var jsonData) {
+  WinnerDetailsModel.fromJson(var jsonData, var allPlayersJson) {
     seatNum = jsonData["seatNo"] == null ? 0 : jsonData["seatNo"];
+    name = allPlayersJson[seatNum.toString()]["name"] != null
+        ? allPlayersJson[seatNum.toString()]["name"]
+        : "";
     amount = jsonData["amount"] == null ? 0 : jsonData["amount"];
     winningCards = jsonData["winningCards"] ?? jsonData["winningCards"];
   }

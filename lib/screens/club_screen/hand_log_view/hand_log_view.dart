@@ -76,6 +76,7 @@ class _HandLogViewState extends State<HandLogView> {
                       fontWeight: FontWeight.w400,
                     ),
                   ),
+                  initiallyExpanded: (index == 0),
                   trailing: Icon(
                     Icons.arrow_drop_down,
                     color: AppColors.appAccentColor,
@@ -117,11 +118,11 @@ class _HandLogViewState extends State<HandLogView> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Padding(
-                                          padding: EdgeInsets.all(5),
+                                          padding: EdgeInsets.only(
+                                              bottom: 5, top: 5),
                                           child: Text(
                                             _handLogModel.potWinners[index]
-                                                .hiWinners[winnerIndex].seatNum
-                                                .toString(),
+                                                .hiWinners[winnerIndex].name,
                                             style: const TextStyle(
                                               fontFamily:
                                                   AppAssets.fontFamilyLato,
@@ -217,13 +218,13 @@ class _HandLogViewState extends State<HandLogView> {
                                                   CrossAxisAlignment.start,
                                               children: [
                                                 Padding(
-                                                  padding: EdgeInsets.all(5),
+                                                  padding: EdgeInsets.only(
+                                                      top: 5, bottom: 5),
                                                   child: Text(
                                                     _handLogModel
                                                         .potWinners[index]
                                                         .loWinners[winnerIndex]
-                                                        .seatNum
-                                                        .toString(),
+                                                        .name,
                                                     style: const TextStyle(
                                                       fontFamily: AppAssets
                                                           .fontFamilyLato,
