@@ -35,6 +35,8 @@ class Players extends ChangeNotifier {
   }
 
   void updatePlayerFoldedStatus(int idx, bool folded) {
+    _players[idx].animatingFold = true;
+    _players[idx].playerFolded = true;
     _players[idx].playerFolded = folded;
     _notify();
   }
@@ -60,7 +62,8 @@ class Players extends ChangeNotifier {
     _notify();
   }
 
-  void updatePlayerType(int idx, PlayerType playerType, {int coinAmount, bool notify}) {
+  void updatePlayerType(int idx, PlayerType playerType,
+      {int coinAmount, bool notify}) {
     _players[idx].playerType = playerType;
     if (coinAmount != null) {
       _players[idx].coinAmount = coinAmount;

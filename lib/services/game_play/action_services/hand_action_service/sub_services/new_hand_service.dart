@@ -97,13 +97,8 @@ class NewHandService {
     Provider.of<Players>(
       context,
       listen: false,
-    ).updatePlayerType(
-        smallBlindIdx,
-        PlayerType.SmallBlind,
-        coinAmount: smallBlind,
-        notify: false
-    );
-
+    ).updatePlayerType(smallBlindIdx, PlayerType.SmallBlind,
+        coinAmount: smallBlind, notify: false);
 
     /* marking the big blind */
     int bigBlindIdx = players.players.indexWhere((p) => p.seatNo == bbPos);
@@ -111,11 +106,7 @@ class NewHandService {
     Provider.of<Players>(
       context,
       listen: false,
-    ).updatePlayerType(
-      bigBlindIdx,
-      PlayerType.BigBlind,
-      coinAmount: bigBlind
-    );
+    ).updatePlayerType(bigBlindIdx, PlayerType.BigBlind, coinAmount: bigBlind);
 
     /* marking the dealer */
     int dealerIdx = players.players.indexWhere((p) => p.seatNo == dealerPos);
