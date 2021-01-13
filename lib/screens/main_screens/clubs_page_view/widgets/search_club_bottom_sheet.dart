@@ -135,7 +135,7 @@ class _SearchClubBottomSheetState extends State<SearchClubBottomSheet> {
                           width: MediaQuery.of(context).size.width,
                           child: searchClub == null
                               ? Text(
-                                  "A Club not found for the code '$searchClubCode' ",
+                                  "No clubs found for the code '$searchClubCode' ",
                                   style: TextStyle(
                                       color: Colors.white, fontSize: 20),
                                 )
@@ -144,7 +144,7 @@ class _SearchClubBottomSheetState extends State<SearchClubBottomSheet> {
                                       CrossAxisAlignment.stretch,
                                   children: [
                                     Text(
-                                      "A Club found for the code '$searchClubCode' ",
+                                      "A club is found for the code '$searchClubCode' ",
                                       style: TextStyle(
                                           color: Colors.white, fontSize: 20),
                                     ),
