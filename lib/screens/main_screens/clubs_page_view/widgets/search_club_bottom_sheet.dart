@@ -111,11 +111,10 @@ class _SearchClubBottomSheetState extends State<SearchClubBottomSheet> {
                         child: Container(
                           padding:
                               EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-                          color: Colors.white,
                           child: Icon(
                             Icons.search,
-                            color: Color(0xffff8b03),
                             size: 35,
+                            color: AppColors.appAccentColor,
                           ),
                         ),
                       )
@@ -136,7 +135,7 @@ class _SearchClubBottomSheetState extends State<SearchClubBottomSheet> {
                           width: MediaQuery.of(context).size.width,
                           child: searchClub == null
                               ? Text(
-                                  "A Club found for the code '$searchClubCode' ",
+                                  "A Club not found for the code '$searchClubCode' ",
                                   style: TextStyle(
                                       color: Colors.white, fontSize: 20),
                                 )
