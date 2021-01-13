@@ -222,7 +222,7 @@ class _ClubsPageViewState extends State<ClubsPageView> {
                 * title
                 * */
                 _getTitleTextWidget('Clubs'),
-
+                const SizedBox(height: 30),
                 /*
                 * create and search box
                 * */
@@ -230,12 +230,7 @@ class _ClubsPageViewState extends State<ClubsPageView> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     CustomTextButton(
-                      text: '+ Create Club',
-                      onTap: () => _createClub(ctx),
-                    ),
-                    const SizedBox(width: 10),
-                    CustomTextButton(
-                      text: 'Search Club',
+                      text: 'Search',
                       onTap: () async {
                         await showModalBottomSheet(
                           context: context,
@@ -244,9 +239,14 @@ class _ClubsPageViewState extends State<ClubsPageView> {
                         );
                       },
                     ),
+                    const SizedBox(width: 40),
+                    CustomTextButton(
+                      text: '+Create',
+                      onTap: () => _createClub(ctx),
+                    ),
                   ],
                 ),
-                const SizedBox(height: 5),
+                const SizedBox(height: 10),
                 _showLoading
                     ? Expanded(
                         child: Center(
@@ -267,18 +267,6 @@ class _ClubsPageViewState extends State<ClubsPageView> {
                         : Expanded(
                             child: Column(
                               children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(bottom: 15.0),
-                                  child: RoundTextField(
-                                    hintText: 'Search',
-                                    iconData: Icons.search,
-                                    onChanged: (query) =>
-                                        Provider.of<ValueNotifier<String>>(
-                                      ctx,
-                                      listen: false,
-                                    ).value = query,
-                                  ),
-                                ),
                                 Expanded(
                                   child: Consumer<ValueNotifier<String>>(
                                     builder: (_, valueNotifier, __) {

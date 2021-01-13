@@ -136,9 +136,10 @@ class ClubItem extends StatelessWidget {
                       ),
                       separator,
 
-                      /*
-                        * game type
-                        * */
+                      Text(
+                        "Club code: ${club.clubCode}",
+                        style: AppStyles.clubCodeStyle,
+                      ),
 
                       Text(
                         club.isOwner ? "Host: You" : "Host: ${club.hostName}",

@@ -128,6 +128,12 @@ class AppStyles {
   );
 
   // club item info text styles
+  static const clubCodeStyle = TextStyle(
+    color: Colors.white,
+    fontSize: 16.0,
+    fontFamily: AppAssets.fontFamilyLato,
+  );
+
   static const clubItemInfoTextStyle = TextStyle(
     color: Color(0xff319ffe),
     fontSize: 12.0,
