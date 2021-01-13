@@ -3,6 +3,8 @@ import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/widgets/card_form_text_field.dart';
 import 'package:pokerapp/widgets/custom_text_button.dart';
 
+import '../../../../resources/app_colors.dart';
+
 class CreateClubBottomSheet extends StatefulWidget {
   final String name;
   final String description;
@@ -52,7 +54,7 @@ class _CreateClubBottomSheetState extends State<CreateClubBottomSheet> {
               separator5,
               CardFormTextField(
                 elevation: 0.0,
-                color: Color(0xff313235),
+                color: AppColors.cardBackgroundColor,
                 hintText: 'Name',
                 validator: (String val) =>
                     val.trim().isEmpty ? 'You must provide a name' : null,
@@ -68,7 +70,7 @@ class _CreateClubBottomSheetState extends State<CreateClubBottomSheet> {
               separator5,
               CardFormTextField(
                 elevation: 0.0,
-                color: Color(0xff313235),
+                color: AppColors.cardBackgroundColor,
                 hintText: 'Description',
                 validator: (String val) => val.trim().isEmpty
                     ? 'You must provide a description'
