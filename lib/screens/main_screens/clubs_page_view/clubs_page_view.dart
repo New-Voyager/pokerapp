@@ -18,6 +18,8 @@ import 'package:pokerapp/widgets/round_text_field.dart';
 import 'package:pokerapp/widgets/custom_text_button.dart';
 import 'package:provider/provider.dart';
 
+import 'widgets/search_club_bottom_sheet.dart';
+
 class ClubsPageView extends StatefulWidget {
   @override
   _ClubsPageViewState createState() => _ClubsPageViewState();
@@ -214,26 +216,37 @@ class _ClubsPageViewState extends State<ClubsPageView> {
               right: AppDimensions.kMainPaddingHorizontal,
             ),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 /*
-                * title and create club button
+                * title
+                * */
+                _getTitleTextWidget('Clubs'),
+
+                /*
+                * create and search box
                 * */
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    _getTitleTextWidget('Clubs'),
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
                     CustomTextButton(
                       text: '+ Create Club',
                       onTap: () => _createClub(ctx),
                     ),
+                    const SizedBox(width: 10),
+                    CustomTextButton(
+                      text: 'Search Club',
+                      onTap: () async {
+                        await showModalBottomSheet(
+                          context: context,
+                          isScrollControlled: true,
+                          builder: (ctx) => SearchClubBottomSheet(),
+                        );
+                      },
+                    ),
                   ],
                 ),
-                separator,
-
-                /*
-                * search box
-                * */
-
+                const SizedBox(height: 5),
                 _showLoading
                     ? Expanded(
                         child: Center(
@@ -326,6 +339,7 @@ class _ClubsPageViewState extends State<ClubsPageView> {
                                                   var club = query.isNotEmpty
                                                       ? _filteredClubs[index]
                                                       : _clubs[index];
+
                                                   return InkWell(
                                                     onTap: () => this.openClub(
                                                         context, club),

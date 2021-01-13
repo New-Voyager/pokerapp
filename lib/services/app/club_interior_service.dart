@@ -2,6 +2,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/club_members_model.dart';
 import 'package:pokerapp/models/game_history_model.dart';
+import 'package:pokerapp/models/search_club_model.dart';
 
 enum MemberListOptions {
   ALL,
@@ -61,8 +62,30 @@ class ClubInteriorService {
       update: updateClubMember(clubCode: \$clubCode, playerUuid: \$playerUuid, update: \$update)
     }
   """;
+
+  static String searchClub = """
+    query (\$clubCode: String!) {
+  club: searchClub(clubCode: \$clubCode) {
+    name
+    ownerName
+    status
+  }
+}
+  """;
   static Future<List<ClubMemberModel>> getMembers(String clubCode) async {
     return getClubMembers(clubCode, MemberListOptions.ALL);
+  }
+
+  static Future<SearchClub> searchClubHelper(String clubCode) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+    Map<String, dynamic> variables = {"clubCode": clubCode};
+    QueryResult result = await _client.query(
+        QueryOptions(documentNode: gql(searchClub), variables: variables));
+    if (result.hasException) return null;
+
+    final jsonResponse = result.data['club'];
+
+    return SearchClub.fromJson(jsonResponse);
   }
 
   static Future<List<ClubMemberModel>> getMembersHelper(
