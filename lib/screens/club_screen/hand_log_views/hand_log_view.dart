@@ -72,7 +72,7 @@ class _HandLogViewState extends State<HandLogView> {
                         EdgeInsets.only(left: 10, top: 5, bottom: 5, right: 10),
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      "Hand LogBlahhh",
+                      "Hand Log",
                       style: const TextStyle(
                         fontFamily: AppAssets.fontFamilyLato,
                         color: Colors.white,
