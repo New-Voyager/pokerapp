@@ -3,9 +3,11 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_stages.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
+import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/hand_log_model.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/utils/card_helper.dart';
 import 'package:pokerapp/widgets/card_view.dart';
 
 class HandLogView extends StatefulWidget {
@@ -76,6 +78,7 @@ class _HandLogViewState extends State<HandLogView> {
                       fontWeight: FontWeight.w400,
                     ),
                   ),
+                  initiallyExpanded: (index == 0),
                   trailing: Icon(
                     Icons.arrow_drop_down,
                     color: AppColors.appAccentColor,
@@ -117,11 +120,11 @@ class _HandLogViewState extends State<HandLogView> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Padding(
-                                          padding: EdgeInsets.all(5),
+                                          padding: EdgeInsets.only(
+                                              bottom: 5, top: 5),
                                           child: Text(
                                             _handLogModel.potWinners[index]
-                                                .hiWinners[winnerIndex].seatNum
-                                                .toString(),
+                                                .hiWinners[winnerIndex].name,
                                             style: const TextStyle(
                                               fontFamily:
                                                   AppAssets.fontFamilyLato,
@@ -217,13 +220,13 @@ class _HandLogViewState extends State<HandLogView> {
                                                   CrossAxisAlignment.start,
                                               children: [
                                                 Padding(
-                                                  padding: EdgeInsets.all(5),
+                                                  padding: EdgeInsets.only(
+                                                      top: 5, bottom: 5),
                                                   child: Text(
                                                     _handLogModel
                                                         .potWinners[index]
                                                         .loWinners[winnerIndex]
-                                                        .seatNum
-                                                        .toString(),
+                                                        .name,
                                                     style: const TextStyle(
                                                       fontFamily: AppAssets
                                                           .fontFamilyLato,
@@ -301,6 +304,7 @@ class _HandLogViewState extends State<HandLogView> {
   }
 
   Widget buildStagesView(HandStageModel _handStageModel) {
+    print(_handStageModel.stageCards.length > 1);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -325,10 +329,16 @@ class _HandLogViewState extends State<HandLogView> {
           child: Container(
             margin: EdgeInsets.only(left: 10, top: 5, bottom: 10, right: 10),
             alignment: Alignment.centerLeft,
-            child: CommunityCardWidget(
-              _handStageModel.stageCards,
-              true,
-            ),
+            child: (_handStageModel.stageCards.length > 1
+                ? CommunityCardWidget(
+                    _handStageModel.stageCards,
+                    true,
+                  )
+                : _handStageModel.stageCards.length != 0
+                    ? CardView(
+                        card: CardHelper.getCard(_handStageModel.stageCards[0]),
+                      )
+                    : Container()),
           ),
         ),
         Card(
@@ -347,7 +357,7 @@ class _HandLogViewState extends State<HandLogView> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        _handStageModel.stageActions[index].seatNum.toString(),
+                        _handStageModel.stageActions[index].name ?? "Player",
                         style: const TextStyle(
                           fontFamily: AppAssets.fontFamilyLato,
                           color: Colors.white,

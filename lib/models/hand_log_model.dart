@@ -59,33 +59,34 @@ class HandLogModel {
 
     var potDetailsJson =
         jsonData["handLog"]["potWinners"] ?? jsonData["handLog"]["potWinners"];
+    var playersJson = jsonData["players"] ?? jsonData["players"];
     potWinners = potDetailsJson
-        .map<PotWinnerDetailsModel>(
-            (potDetails) => PotWinnerDetailsModel.fromJson(potDetails))
+        .map<PotWinnerDetailsModel>((potDetails) =>
+            PotWinnerDetailsModel.fromJson(potDetails, playersJson))
         .toList();
 
     var preFlopJson = jsonData["handLog"]["preflopActions"] ??
         jsonData["handLog"]["preflopActions"];
-    preFlopActions =
-        HandStageModel.fromJson("PRE FLOP", preFlopJson, new List<int>());
+    preFlopActions = HandStageModel.fromJson(
+        "PRE FLOP", preFlopJson, new List<int>(), playersJson);
 
     var flopJson = jsonData["handLog"]["flopActions"] ??
         jsonData["handLog"]["flopActions"];
     var flopCards = jsonData["flopCards"] ?? jsonData["flopCards"];
     flopActions = HandStageModel.fromJson(
-        "FLOP", flopJson, flopCards.cast<int>().toList());
+        "FLOP", flopJson, flopCards.cast<int>().toList(), playersJson);
 
     var turnJson = jsonData["handLog"]["turnActions"] ??
         jsonData["handLog"]["turnActions"];
     var turnCards = jsonData["turnCards"] ?? jsonData["turnCards"];
     turnActions = HandStageModel.fromJson(
-        "TURN", turnJson, turnCards.cast<int>().toList());
+        "TURN", turnJson, turnCards.cast<int>().toList(), playersJson);
 
     var riverJson = jsonData["handLog"]["riverActions"] ??
         jsonData["handLog"]["riverActions"];
     var riverCards = jsonData["riverCards"] ?? jsonData["riverCards"];
     riverActions = HandStageModel.fromJson(
-        "RIVER", riverJson, riverCards.cast<int>().toList());
+        "RIVER", riverJson, riverCards.cast<int>().toList(), playersJson);
   }
 }
 
@@ -95,23 +96,24 @@ class PotWinnerDetailsModel {
   List<WinnerDetailsModel> hiWinners = new List<WinnerDetailsModel>();
   List<WinnerDetailsModel> loWinners = new List<WinnerDetailsModel>();
 
-  PotWinnerDetailsModel.fromJson(var jsonData) {
+  PotWinnerDetailsModel.fromJson(var jsonData, playersJson) {
     potNumber = jsonData["potNumber"] != null ? jsonData["potNumber"] : 0;
     totalPotAmount = jsonData["totalPotAmount"] ?? jsonData["totalPotAmount"];
 
     var hiWinnersJson = jsonData["hiWinners"] ?? jsonData["hiWinners"];
+
     if (hiWinnersJson != null) {
       hiWinners = hiWinnersJson
-          .map<WinnerDetailsModel>(
-              (hiWinnerJson) => WinnerDetailsModel.fromJson(hiWinnerJson))
+          .map<WinnerDetailsModel>((hiWinnerJson) =>
+              WinnerDetailsModel.fromJson(hiWinnerJson, playersJson))
           .toList();
     }
 
     var loWinnersJson = jsonData["lowWinners"] ?? jsonData["lowWinners"];
     if (loWinnersJson != null) {
       loWinners = loWinnersJson
-          .map<WinnerDetailsModel>(
-              (loWinnerJson) => WinnerDetailsModel.fromJson(loWinnerJson))
+          .map<WinnerDetailsModel>((loWinnerJson) =>
+              WinnerDetailsModel.fromJson(loWinnerJson, playersJson))
           .toList();
     }
   }
@@ -119,12 +121,15 @@ class PotWinnerDetailsModel {
 
 class WinnerDetailsModel {
   int seatNum;
-  String name; // TODO: get name from players list and add to the model
+  String name;
   int amount;
   List<dynamic> winningCards = new List<dynamic>();
 
-  WinnerDetailsModel.fromJson(var jsonData) {
+  WinnerDetailsModel.fromJson(var jsonData, var allPlayersJson) {
     seatNum = jsonData["seatNo"] == null ? 0 : jsonData["seatNo"];
+    name = allPlayersJson[seatNum.toString()]["name"] != null
+        ? allPlayersJson[seatNum.toString()]["name"]
+        : "";
     amount = jsonData["amount"] == null ? 0 : jsonData["amount"];
     winningCards = jsonData["winningCards"] ?? jsonData["winningCards"];
   }
@@ -136,14 +141,16 @@ class HandStageModel {
   List<int> stageCards = new List<int>();
   List<ActionModel> stageActions = new List<ActionModel>();
 
-  HandStageModel.fromJson(String sName, var jsonData, List<int> cardsList) {
+  HandStageModel.fromJson(
+      String sName, var jsonData, List<int> cardsList, var playersData) {
     stageName = sName;
     stageCards = cardsList;
     potAmount = jsonData["pot"] == null ? 0 : jsonData["pot"];
     var actionsJson = jsonData["actions"] ?? jsonData["actions"];
     if (actionsJson != null) {
       stageActions = actionsJson
-          .map<ActionModel>((actionsJson) => ActionModel.fromJson(actionsJson))
+          .map<ActionModel>(
+              (actionsJson) => ActionModel.fromJson(actionsJson, playersData))
           .toList();
     }
   }
@@ -151,13 +158,15 @@ class HandStageModel {
 
 class ActionModel {
   int seatNum;
+  String name;
   HandActions action;
   int amount;
   bool timedOut;
   int stack;
 
-  ActionModel.fromJson(var jsonData) {
+  ActionModel.fromJson(var jsonData, var playersData) {
     seatNum = jsonData["seatNo"] == null ? 0 : jsonData["seatNo"];
+    name = playersData[seatNum.toString()]["name"];
 
     switch (jsonData["action"]) {
       case "SB":
