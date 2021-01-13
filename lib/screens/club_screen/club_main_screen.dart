@@ -121,7 +121,7 @@ class ClubMainScreen extends StatelessWidget {
                             ),
                             _buildOutstandingBalanceWidget(clubModel),
                             ClubGamesPageView(),
-                            ClubActionButtonsView(clubModel)
+                            ClubActionButtonsView(clubModel, this.clubCode)
                           ],
                         ),
                       ),

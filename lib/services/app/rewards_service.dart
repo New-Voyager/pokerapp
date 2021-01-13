@@ -1,6 +1,8 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:pokerapp/models/rewards_model.dart';
 
 import '../../main.dart';
 
@@ -42,17 +44,25 @@ class RewardService {
     }
     """;
 
-  static Future<List<String>> getRewards(String clubCode) async {
+  static Future<List<Rewards>> getRewards(String clubCode) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
-    Map<String, dynamic> variables = {"clubCode": "C-YPMXAK"};
+    Map<String, dynamic> variables = {"clubCode": clubCode};
     QueryResult result = await _client.query(
         QueryOptions(documentNode: gql(getRewardsQuery), variables: variables));
 
     if (result.hasException) return [];
 
-    final jsonResponse = result.data['rewards'];
+    final List jsonResponse = result.data['rewards'];
 
-    log(jsonResponse.toString());
-    return ["testing"];
+    // log(jsonEncode(jsonResponse).toString());
+    // List<Rewards> rewards = [];
+    // jsonResponse.forEach((element) {
+    //   rewards.add(Rewards.fromJson(element));
+    // });
+    // log(rewards.toString());
+    // return RewardsModel.fromJson(jsonEncode(jsonResponse));
+    return jsonResponse
+        .map<Rewards>((var reward) => Rewards.fromJson(reward))
+        .toList();
   }
 }

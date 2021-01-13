@@ -17,13 +17,11 @@ class ClubActionButton extends StatelessWidget {
   final String _actionName;
   final Icon _actionIcon;
   final ClubHomePageModel _clubModel;
+  final VoidCallback onTap;
 
   ClubActionButton(
-    this._clubModel,
-    this._action,
-    this._actionName,
-    this._actionIcon,
-  );
+      this._clubModel, this._action, this._actionName, this._actionIcon,
+      {this.onTap});
   @override
   Widget build(BuildContext context) {
     List<ClubMemberModel> _sampleList = new List<ClubMemberModel>();
@@ -70,11 +68,10 @@ class ClubActionButton extends StatelessWidget {
               // TODO: Handle this case.
               break;
             case ClubActions.MANAGE_CHIPS:
-            // TODO: Handle this case.
-
+              // TODO: Handle this case.
+              break;
             case ClubActions.REWARDS:
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => RewardsListScreen()));
+              this.onTap();
               break;
           }
         },
