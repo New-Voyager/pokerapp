@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:pokerapp/services/app/rewards_service.dart';
 
 class RewardsModelProvider extends ChangeNotifier {
   String clubCode;
@@ -7,6 +8,21 @@ class RewardsModelProvider extends ChangeNotifier {
 
   RewardsModelProvider(String clubCode) {
     this.clubCode = clubCode;
+    getRewards();
+  }
+
+  getRewards() async {
+    this.rewards = await RewardService.getRewards(this.clubCode);
+    notifyListeners();
+  }
+
+  createRewards(String name, String schedule, int amount, String type) async {
+    await RewardService.createReward(
+        name, schedule, amount, type, this.clubCode);
+    rewards = null;
+    notifyListeners();
+    await getRewards();
+    notifyListeners();
   }
 
   set setRewards(List<Rewards> rewards) {
@@ -44,8 +60,15 @@ class Rewards {
   int amount;
   String schedule;
   Null startHour;
+  String name;
 
-  Rewards({this.id, this.type, this.amount, this.schedule, this.startHour});
+  Rewards(
+      {this.id,
+      this.type,
+      this.amount,
+      this.schedule,
+      this.startHour,
+      this.name});
 
   Rewards.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -53,6 +76,7 @@ class Rewards {
     amount = json['amount'];
     schedule = json['schedule'];
     startHour = json['startHour'];
+    name = json['name'];
   }
 
   Map<String, dynamic> toJson() {
@@ -62,6 +86,7 @@ class Rewards {
     data['amount'] = this.amount;
     data['schedule'] = this.schedule;
     data['startHour'] = this.startHour;
+    data['name'] = this.name;
     return data;
   }
 }

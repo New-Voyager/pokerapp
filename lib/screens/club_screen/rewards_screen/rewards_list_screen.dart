@@ -12,65 +12,55 @@ class RewardsListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<Rewards>>(
-        future: RewardService.getRewards(
-            Provider.of<RewardsModelProvider>(context).clubCode),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            print("entered");
-            Provider.of<RewardsModelProvider>(context).setRewards =
-                snapshot.data;
-            return Scaffold(
-              resizeToAvoidBottomPadding: true,
-              key: _key,
-              backgroundColor: AppColors.screenBackgroundColor,
-              appBar: AppBar(
-                backgroundColor: AppColors.screenBackgroundColor,
-                title: Text("Rewards"),
-                elevation: 0.0,
-                centerTitle: true,
-                actions: _buildActions(context),
-              ),
-              body: Consumer<RewardsModelProvider>(
-                builder: (context, data, child) => ListView.separated(
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: ListTile(
-                        title: Text(
-                          data.rewards[index].type,
+    return Scaffold(
+      resizeToAvoidBottomPadding: true,
+      key: _key,
+      backgroundColor: AppColors.screenBackgroundColor,
+      appBar: AppBar(
+        backgroundColor: AppColors.screenBackgroundColor,
+        title: Text("Rewards"),
+        elevation: 0.0,
+        centerTitle: true,
+        actions: _buildActions(context),
+      ),
+      body: Consumer<RewardsModelProvider>(
+        builder: (context, data, child) => data.rewards != null
+            ? ListView.separated(
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ListTile(
+                      title: Text(
+                        data.rewards[index].name,
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      subtitle: Padding(
+                        padding: const EdgeInsets.only(top: 5.0),
+                        child: Text(
+                          "Rewards: ${data.rewards[index].amount}",
                           style: TextStyle(color: Colors.white),
                         ),
-                        subtitle: Padding(
-                          padding: const EdgeInsets.only(top: 5.0),
-                          child: Text(
-                            "Rewards: ${data.rewards[index].amount}",
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ),
-                        trailing: IconButton(
-                          onPressed: null,
-                          icon: Icon(
-                            Icons.delete,
-                            color: Colors.white,
-                          ),
+                      ),
+                      trailing: IconButton(
+                        onPressed: null,
+                        icon: Icon(
+                          Icons.delete,
+                          color: Colors.white,
                         ),
                       ),
-                    );
-                  },
-                  itemCount: snapshot.data.length,
-                  separatorBuilder: (context, index) {
-                    return Divider(
-                      color: Colors.white,
-                    );
-                  },
-                ),
-              ),
-            );
-          } else {
-            return Center(child: CircularProgressIndicator());
-          }
-        });
+                    ),
+                  );
+                },
+                itemCount: data.rewards.length,
+                separatorBuilder: (context, index) {
+                  return Divider(
+                    color: Colors.white,
+                  );
+                },
+              )
+            : Center(child: CircularProgressIndicator()),
+      ),
+    );
   }
 
   List<Widget> _buildActions(BuildContext context) => [
@@ -85,7 +75,10 @@ class RewardsListScreen extends StatelessWidget {
               //   ),
               // );
               _key.currentState
-                  .showBottomSheet((context) => CreateRewardsScreen());
+                  .showBottomSheet((context) => ChangeNotifierProvider.value(
+                        value: Provider.of<RewardsModelProvider>(context),
+                        child: CreateRewardsScreen(),
+                      ));
             },
             text: 'New',
           ),

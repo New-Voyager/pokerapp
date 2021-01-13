@@ -13,16 +13,17 @@ class RewardService {
     }
   """;
 
-  static Future<bool> createReward() async {
+  static Future<bool> createReward(String name, String schedule, int amount,
+      String type, String clubCode) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
     Map<String, dynamic> input = {
-      "name": "NLH High Hand",
-      "schedule": "ENTIRE_GAME",
-      "amount": 200,
-      "type": "HIGH_HAND"
+      "name": name,
+      "schedule": schedule,
+      "amount": amount,
+      "type": type
     };
     Map<String, dynamic> variables = {
-      "clubCode": "C-YPMXAK",
+      "clubCode": clubCode,
       "input": input,
     };
     QueryResult result = await _client.mutate(MutationOptions(
@@ -40,6 +41,7 @@ class RewardService {
         amount
         schedule
         startHour
+        name
       }
     }
     """;
