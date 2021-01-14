@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/club_homepage_model.dart';
+import 'package:pokerapp/models/club_weekly_activity_model.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/screens/club_screen/club_banner_view/club_banner_view.dart';
+import 'package:pokerapp/screens/club_screen/club_banner_view/club_graphics_view.dart';
 import 'package:pokerapp/screens/club_screen/games_page_view/club_games_page_view.dart';
 import 'package:pokerapp/screens/club_screen/games_page_view/new_game_settings/new_game_settings.dart';
 import 'package:pokerapp/services/app/clubs_service.dart';
@@ -13,6 +15,7 @@ import 'club_action_buttons_view/club_action_buttons_view.dart';
 
 class ClubMainScreen extends StatelessWidget {
   final String clubCode;
+  ClubWeeklyActivityModel weeklyActivity;
 
   ClubMainScreen({
     @required this.clubCode,
@@ -25,129 +28,15 @@ class ClubMainScreen extends StatelessWidget {
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => NewGameSettings(clubCode,),
+                builder: (context) => NewGameSettings(
+                  clubCode,
+                ),
               ),
             ),
             text: '+ Create Game',
           ),
         ),
       ];
-
-  Widget _buildGraphicsWidgets(ClubHomePageModel data) {
-    double unsettled = data.playerBalance ?? 0.0;
-
-    return Container(
-      margin: EdgeInsets.all(8.0),
-      child: IntrinsicHeight(
-        child: Row(
-          children: [
-            Expanded(
-              flex: 3,
-              child: Card(
-                color: AppColors.cardBackgroundColor,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Container(
-                      child: Text(
-                        "Unsettled",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 14.0,
-                          fontFamily: AppAssets.fontFamilyLato,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                    ),
-                    Container(
-                      child: Text(
-                        unsettled.toString(),
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 14.0,
-                          fontFamily: AppAssets.fontFamilyLato,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Expanded(
-              flex: 7,
-              child: Card(
-                color: AppColors.cardBackgroundColor,
-                child: Column(
-                  children: [
-                    Container(
-                      child: Text(
-                        "Weekly Activity",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 14.0,
-                          fontFamily: AppAssets.fontFamilyLato,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildOutstandingBalanceWidget(ClubHomePageModel data) {
-    double outstandingChips = data.playerBalance ?? 0.0;
-
-    return Container(
-      margin: EdgeInsets.all(8.0),
-      child: Card(
-        color: AppColors.cardBackgroundColor,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Container(
-              margin: EdgeInsets.all(20.0),
-              child: Text(
-                "Outstanding Chips",
-                textAlign: TextAlign.left,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 14.0,
-                  fontFamily: AppAssets.fontFamilyLato,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.all(20.0),
-              child: Text(
-                outstandingChips.toStringAsFixed(2),
-                textAlign: TextAlign.left,
-                style: TextStyle(
-                  color: outstandingChips == 0.0
-                      ? Colors.white
-                      : outstandingChips > 0.0
-                          ? AppColors.positiveColor
-                          : AppColors.negativeColor,
-                  fontSize: 14.0,
-                  fontFamily: AppAssets.fontFamilyLato,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-            ),
-          ],
-        ),
-        elevation: 5.5,
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) => FutureBuilder<ClubHomePageModel>(
@@ -186,7 +75,11 @@ class ClubMainScreen extends StatelessWidget {
                             ClubBannerView(
                               clubModel: clubModel,
                             ),
-                            _buildGraphicsWidgets(clubModel),
+                            IntrinsicHeight(
+                              child: ClubGraphicsView(
+                                  clubModel.playerBalance ?? 0.0,
+                                  clubModel.weeklyActivity),
+                            ),
                             ClubGamesPageView(),
                             ClubActionButtonsView(clubModel, this.clubCode)
                           ],
