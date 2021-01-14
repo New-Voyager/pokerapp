@@ -6,6 +6,7 @@ import 'package:pokerapp/models/table_record.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/screens/club_screen/club_action_screens/club_members_view/club_members_view.dart';
+import 'package:pokerapp/screens/club_screen/rewards_screen/rewards_list_screen.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_log_view.dart';
 import 'package:pokerapp/screens/game_screens/game_history_view/game_history_view.dart';
 import 'package:pokerapp/screens/club_screen/messages_page_view/messages_page_view.dart';
@@ -17,13 +18,11 @@ class ClubActionButton extends StatelessWidget {
   final String _actionName;
   final Icon _actionIcon;
   final ClubHomePageModel _clubModel;
+  final VoidCallback onTap;
 
   ClubActionButton(
-    this._clubModel,
-    this._action,
-    this._actionName,
-    this._actionIcon,
-  );
+      this._clubModel, this._action, this._actionName, this._actionIcon,
+      {this.onTap});
   @override
   Widget build(BuildContext context) {
     List<ClubMemberModel> _sampleList = new List<ClubMemberModel>();
@@ -78,6 +77,9 @@ class ClubActionButton extends StatelessWidget {
               break;
             case ClubActions.MANAGE_CHIPS:
               // TODO: Handle this case.
+              break;
+            case ClubActions.REWARDS:
+              this.onTap();
               break;
           }
         },
