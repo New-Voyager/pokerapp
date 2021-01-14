@@ -2,6 +2,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/club_members_model.dart';
 import 'package:pokerapp/models/game_history_model.dart';
+import 'package:pokerapp/models/search_club_model.dart';
 
 enum MemberListOptions {
   ALL,
@@ -61,8 +62,40 @@ class ClubInteriorService {
       update: updateClubMember(clubCode: \$clubCode, playerUuid: \$playerUuid, update: \$update)
     }
   """;
+
+  static String searchClub = """
+    query (\$clubCode: String!) {
+        club: searchClub(clubCode: \$clubCode) {
+          name
+          ownerName
+          status
+      }
+    }
+  """;
+
+  static String joinClubQuery = """
+    mutation (\$clubCode: String!) {
+        status: joinClub(clubCode: \$clubCode)
+    }
+  """;
+
   static Future<List<ClubMemberModel>> getMembers(String clubCode) async {
     return getClubMembers(clubCode, MemberListOptions.ALL);
+  }
+
+  static Future<SearchClub> searchClubHelper(String clubCode) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+    Map<String, dynamic> variables = {"clubCode": clubCode};
+    QueryResult result = await _client.query(
+        QueryOptions(documentNode: gql(searchClub), variables: variables));
+    if (result.hasException) return null;
+
+    final jsonResponse = result.data['club'];
+
+    if (jsonResponse == null) {
+      return null;
+    }
+    return SearchClub.fromJson(jsonResponse);
   }
 
   static Future<List<ClubMemberModel>> getMembersHelper(
@@ -153,5 +186,16 @@ class ClubInteriorService {
     return jsonResponse
         .map<GameHistoryModel>((var item) => GameHistoryModel.fromJson(item))
         .toList();
+  }
+
+  static Future<String> joinClub(String clubCode) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+    Map<String, dynamic> variables = {"clubCode": clubCode};
+    QueryResult result = await _client.mutate(
+        MutationOptions(documentNode: gql(joinClubQuery), variables: variables));
+    if (result.hasException) return null;
+
+    final jsonResponse = result.data['status'].toString();
+    return jsonResponse;
   }
 }

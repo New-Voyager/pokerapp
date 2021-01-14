@@ -5,7 +5,64 @@ import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/screens/game_play_screen/main_views/header_view.dart';
+import 'package:pokerapp/screens/game_play_screen/user_view/user_view.dart';
 import 'package:pokerapp/widgets/custom_text_button.dart';
+
+class ClubItemView extends StatelessWidget {
+  final ClubModel club;
+  ClubItemView(this.club);
+
+  @override
+  Widget build(BuildContext context) {
+    var separator = SizedBox(height: 10.0);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Text(
+          club.clubName,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 19.0,
+            fontFamily: AppAssets.fontFamilyLato,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        separator,
+
+        Text(
+          "Code: ${club.clubCode}",
+          style: AppStyles.clubCodeStyle,
+        ),
+
+        Text(
+          club.isOwner ? "Host: You" : "Host: ${club.hostName}",
+          style: AppStyles.clubItemInfoTextStyle,
+        ),
+
+        Spacer(),
+
+        Text(
+          '${club.memberCount} Member${club.memberCount == 0 || club.memberCount == 1 ? '' : 's'}',
+          style: AppStyles.itemInfoTextStyle,
+        ),
+
+        /* separator */
+        club.outgoingRequest || club.incomingRequest
+            ? SizedBox.shrink()
+            : separator,
+
+        club.outgoingRequest || club.incomingRequest
+            ? SizedBox.shrink()
+            : Text(
+          "Joined at ${club.joinDate}",
+          style: AppStyles.itemInfoTextStyle,
+        ),
+      ],
+    );
+  }
+}
 
 class ClubItem extends StatelessWidget {
   final ClubModel club;
@@ -20,60 +77,52 @@ class ClubItem extends StatelessWidget {
   }
 
   Widget _buildSideAction(ClubModel club) {
+    List<Widget> children = [];
+    if (club.memberStatus == 'ACTIVE') {
+      children = [
+        club.balance == '0' ? SizedBox(height: 0,) :
+        Text(
+          club.balance,
+          style: AppStyles.itemInfoSecondaryTextStyle.copyWith(
+            color: double.parse(club.balance) > 0
+                ? AppColors.positiveColor
+                : AppColors.negativeColor,
+          ),
+        ),
+      ];
+    } else if(club.memberStatus == 'INVITED') {
+      children = [
+        CustomTextButton(
+          text: 'Join',
+          onTap: () {},
+        ),
+        CustomTextButton(
+          text: 'Decline',
+          onTap: () {},
+        ),
+      ];
+    } else if(club.memberStatus == 'PENDING') {
+      children = [
+        Text(
+          'Waiting For Approval',
+          textAlign: TextAlign.center,
+          style: AppStyles.itemInfoTextStyle.copyWith(
+            fontSize: 16.0,
+          ),
+        ),
+      ];
+    }
+
     return Column(
       mainAxisAlignment: club.isActive
           ? MainAxisAlignment.center
           : MainAxisAlignment.spaceEvenly,
-      children: club.isActive
-          ? [
-              Text(
-                'Balance',
-                style: AppStyles.itemInfoSecondaryTextStyle,
-              ),
-              SizedBox(height: 5.0),
-              Text(
-                club.balance,
-                style: AppStyles.itemInfoSecondaryTextStyle.copyWith(
-                  color: double.parse(club.balance) > 0
-                      ? AppColors.positiveColor
-                      : AppColors.negativeColor,
-                ),
-              ),
-            ]
-          : club.incomingRequest
-              ? [
-                  CustomTextButton(
-                    text: 'Join',
-                    onTap: () {},
-                  ),
-                  CustomTextButton(
-                    text: 'Decline',
-                    onTap: () {},
-                  ),
-                ]
-              : club.outgoingRequest
-                  ? [
-                      Text(
-                        'Waiting For Approval',
-                        textAlign: TextAlign.center,
-                        style: AppStyles.itemInfoTextStyle.copyWith(
-                          fontSize: 16.0,
-                        ),
-                      ),
-                    ]
-                  : [
-                      CustomTextButton(
-                        text: 'Send Request',
-                        split: true,
-                        onTap: () {},
-                      ),
-                    ],
+      children: children,
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    var separator = SizedBox(height: 10.0);
 
     return Container(
       height: 135.0,
@@ -118,65 +167,7 @@ class ClubItem extends StatelessWidget {
               ),
               child: Stack(
                 children: <Widget>[
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      /*
-                        * club name
-                        * */
-
-                      Text(
-                        club.clubName,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 19.0,
-                          fontFamily: AppAssets.fontFamilyLato,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      separator,
-
-                      /*
-                        * game type
-                        * */
-
-                      Text(
-                        club.isOwner ? "Host: You" : "Host: ${club.hostName}",
-                        style: AppStyles.clubItemInfoTextStyle,
-                      ),
-
-                      /*
-                      * just a spacer
-                      * */
-                      Spacer(),
-
-                      /*
-                        * Game ID
-                        * */
-
-                      Text(
-                        '${club.memberCount} Member${club.memberCount == 0 || club.memberCount == 1 ? '' : 's'}',
-                        style: AppStyles.itemInfoTextStyle,
-                      ),
-
-                      /* separator */
-                      club.outgoingRequest || club.incomingRequest
-                          ? SizedBox.shrink()
-                          : separator,
-
-                      /*
-                        *  for played games -  session time and end time
-                        *  for live games - open seats and
-                        * */
-
-                      club.outgoingRequest || club.incomingRequest
-                          ? SizedBox.shrink()
-                          : Text(
-                              "Joined at ${club.joinDate}",
-                              style: AppStyles.itemInfoTextStyle,
-                            ),
-                    ],
-                  ),
+                  ClubItemView(club),
                   Align(
                     alignment: Alignment.bottomRight,
                     child: Text(
