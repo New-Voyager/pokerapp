@@ -37,4 +37,7 @@ class ClubScreenIcons {
       IconData(0xe806, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData history =
       IconData(0xe807, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+
+  static const IconData reward =
+      IconData(0xe804, fontFamily: _kFontFam, fontPackage: _kFontPkg);
 }

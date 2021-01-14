@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_constants.dart';
+import 'package:pokerapp/resources/club_screen_icons_icons.dart';
 import 'package:pokerapp/screens/game_play_screen/card_views/visible_card_view.dart';
 
 class HighHandWidget extends StatelessWidget {
@@ -55,13 +56,21 @@ class HighHandWidget extends StatelessWidget {
               ),
               seprator,
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Flexible(
                     flex: 5,
                     child: getCards(),
                   ),
                   Flexible(
-                    child: Container(),
+                    child: Center(
+                      child: Container(
+                        child: Icon(
+                          ClubScreenIcons.reward,
+                          color: Colors.yellow,
+                        ),
+                      ),
+                    ),
                     flex: 5,
                   ),
                 ],
