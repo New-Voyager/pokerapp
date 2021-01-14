@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/club_actions.dart';
 import 'package:pokerapp/models/club_homepage_model.dart';
+import 'package:pokerapp/models/rewards_model.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/club_screen_icons_icons.dart';
 import 'package:pokerapp/screens/club_screen/club_action_buttons_view/club_action_button.dart';
+import 'package:pokerapp/screens/club_screen/rewards_screen/rewards_list_screen.dart';
+import 'package:provider/provider.dart';
 
 class ClubActionButtonsView extends StatelessWidget {
   final ClubHomePageModel _clubHomePageModel;
+  final String clubCode;
 
-  ClubActionButtonsView(this._clubHomePageModel);
+  ClubActionButtonsView(this._clubHomePageModel, this.clubCode);
 
   @override
   Widget build(BuildContext context) {
@@ -129,8 +133,30 @@ class ClubActionButtonsView extends StatelessWidget {
                 ),
                 Expanded(
                   flex: 3,
-                  child: Container(),
+                  child: ClubActionButton(
+                    this._clubHomePageModel,
+                    ClubActions.REWARDS,
+                    "Rewards",
+                    Icon(
+                      ClubScreenIcons.reward,
+                      color: AppColors.appAccentColor,
+                    ),
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ChangeNotifierProvider(
+                                    create: (_) =>
+                                        RewardsModelProvider(this.clubCode),
+                                    child: RewardsListScreen(),
+                                  )));
+                    },
+                  ),
                 ),
+                // Expanded(
+                //   flex: 3,
+                //   child: Container(),
+                // ),
               ],
             ),
           ),

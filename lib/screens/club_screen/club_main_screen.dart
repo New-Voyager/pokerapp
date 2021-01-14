@@ -29,7 +29,7 @@ class ClubMainScreen extends StatelessWidget {
               context,
               MaterialPageRoute(
                 builder: (context) => NewGameSettings(
-                  clubCode: clubCode,
+                  clubCode,
                 ),
               ),
             ),
@@ -81,7 +81,7 @@ class ClubMainScreen extends StatelessWidget {
                                   clubModel.weeklyActivity),
                             ),
                             ClubGamesPageView(),
-                            ClubActionButtonsView(clubModel)
+                            ClubActionButtonsView(clubModel, this.clubCode)
                           ],
                         ),
                       ),
