@@ -25,10 +25,15 @@ class _SearchClubBottomSheetState extends State<SearchClubBottomSheet> {
       });
   }
 
+  void onJoin(BuildContext context) async {
+    await ClubInteriorService.joinClub(searchClubCode);
+    // close this popup
+    Navigator.pop(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     final separator10 = SizedBox(height: 10.0);
-    final separator8 = SizedBox(height: 8.0);
     final separator15 = SizedBox(height: 15.0);
 
     return Container(
@@ -58,7 +63,7 @@ class _SearchClubBottomSheetState extends State<SearchClubBottomSheet> {
                         style: AppStyles.subTitleTextStyle,
                       ),
                     ),
-                    separator8,
+                    separator15,
                     Text(
                       "Search Club",
                       style: AppStyles.titleTextStyle,
@@ -144,7 +149,7 @@ class _SearchClubBottomSheetState extends State<SearchClubBottomSheet> {
                                       CrossAxisAlignment.stretch,
                                   children: [
                                     Text(
-                                      "A club is found for the code '$searchClubCode' ",
+                                      "A club is found",
                                       style: TextStyle(
                                           color: Colors.white, fontSize: 20),
                                     ),
@@ -161,19 +166,23 @@ class _SearchClubBottomSheetState extends State<SearchClubBottomSheet> {
                                           color: Colors.white, fontSize: 20),
                                     ),
                                     separator15,
-                                    Center(
-                                      child: Container(
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal: 30, vertical: 10),
-                                        decoration: BoxDecoration(
-                                          color:
-                                              AppColors.buttonBackGroundColor,
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                        ),
-                                        child: Text(
-                                          "Join",
-                                          style: AppStyles.subTitleTextStyle,
+                                    GestureDetector(
+                                      onTap: () => onJoin(context),
+                                      child:
+                                      Center(
+                                        child: Container(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 30, vertical: 10),
+                                          decoration: BoxDecoration(
+                                            color:
+                                                AppColors.buttonBackGroundColor,
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                          ),
+                                          child: Text(
+                                            "Join",
+                                            style: AppStyles.subTitleTextStyle,
+                                          ),
                                         ),
                                       ),
                                     ),

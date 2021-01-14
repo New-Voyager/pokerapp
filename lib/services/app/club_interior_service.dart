@@ -65,13 +65,20 @@ class ClubInteriorService {
 
   static String searchClub = """
     query (\$clubCode: String!) {
-  club: searchClub(clubCode: \$clubCode) {
-    name
-    ownerName
-    status
-  }
-}
+        club: searchClub(clubCode: \$clubCode) {
+          name
+          ownerName
+          status
+      }
+    }
   """;
+
+  static String joinClubQuery = """
+    mutation (\$clubCode: String!) {
+        status: joinClub(clubCode: \$clubCode)
+    }
+  """;
+
   static Future<List<ClubMemberModel>> getMembers(String clubCode) async {
     return getClubMembers(clubCode, MemberListOptions.ALL);
   }
@@ -85,6 +92,9 @@ class ClubInteriorService {
 
     final jsonResponse = result.data['club'];
 
+    if (jsonResponse == null) {
+      return null;
+    }
     return SearchClub.fromJson(jsonResponse);
   }
 
@@ -176,5 +186,16 @@ class ClubInteriorService {
     return jsonResponse
         .map<GameHistoryModel>((var item) => GameHistoryModel.fromJson(item))
         .toList();
+  }
+
+  static Future<String> joinClub(String clubCode) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+    Map<String, dynamic> variables = {"clubCode": clubCode};
+    QueryResult result = await _client.mutate(
+        MutationOptions(documentNode: gql(joinClubQuery), variables: variables));
+    if (result.hasException) return null;
+
+    final jsonResponse = result.data['status'].toString();
+    return jsonResponse;
   }
 }

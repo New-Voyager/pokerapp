@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:pokerapp/models/club_homepage_model.dart';
 import 'package:pokerapp/models/club_model.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
@@ -14,7 +13,6 @@ import 'package:pokerapp/screens/main_screens/clubs_page_view/widgets/create_clu
 import 'package:pokerapp/services/app/clubs_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/widgets/round_raised_button.dart';
-import 'package:pokerapp/widgets/round_text_field.dart';
 import 'package:pokerapp/widgets/custom_text_button.dart';
 import 'package:provider/provider.dart';
 
@@ -190,14 +188,18 @@ class _ClubsPageViewState extends State<ClubsPageView> {
   }
 
   void openClub(BuildContext context, ClubModel club) async {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => ClubMainScreen(
-          clubCode: club.clubCode,
+
+    if (club.memberStatus == 'ACTIVE') {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) =>
+              ClubMainScreen(
+                clubCode: club.clubCode,
+              ),
         ),
-      ),
-    );
+      );
+    }
   }
 
   @override
@@ -237,6 +239,7 @@ class _ClubsPageViewState extends State<ClubsPageView> {
                           isScrollControlled: true,
                           builder: (ctx) => SearchClubBottomSheet(),
                         );
+                        _fetchClubs();
                       },
                     ),
                     const SizedBox(width: 40),
