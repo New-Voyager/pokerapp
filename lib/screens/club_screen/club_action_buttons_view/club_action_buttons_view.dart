@@ -133,7 +133,7 @@ class ClubActionButtonsView extends StatelessWidget {
                   ClubActions.REWARDS,
                   "Rewards",
                   Icon(
-                    ClubScreenIcons.coin_stack,
+                    ClubScreenIcons.reward,
                     color: AppColors.appAccentColor,
                   ),
                   onTap: () {

@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pokerapp/models/rewards_model.dart';
 import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/resources/club_screen_icons_icons.dart';
 import 'package:pokerapp/screens/club_screen/rewards_screen/create_rewards_screen.dart';
 import 'package:pokerapp/services/app/rewards_service.dart';
 import 'package:pokerapp/widgets/custom_text_button.dart';
@@ -18,7 +20,19 @@ class RewardsListScreen extends StatelessWidget {
       backgroundColor: AppColors.screenBackgroundColor,
       appBar: AppBar(
         backgroundColor: AppColors.screenBackgroundColor,
-        title: Text("Rewards"),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              ClubScreenIcons.reward,
+              color: Colors.yellow,
+            ),
+            SizedBox(
+              width: 10.0,
+            ),
+            Text("Rewards"),
+          ],
+        ),
         elevation: 0.0,
         centerTitle: true,
         actions: _buildActions(context),

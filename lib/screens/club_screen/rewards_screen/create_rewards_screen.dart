@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/rewards_model.dart';
 import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/resources/club_screen_icons_icons.dart';
 import 'package:pokerapp/widgets/custom_text_button.dart';
 import 'package:provider/provider.dart';
 
@@ -17,7 +18,19 @@ class CreateRewardsScreen extends StatelessWidget {
         children: [
           AppBar(
             backgroundColor: AppColors.screenBackgroundColor,
-            title: Text("New Reward"),
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  ClubScreenIcons.reward,
+                  color: Colors.yellow,
+                ),
+                SizedBox(
+                  width: 10.0,
+                ),
+                Text("New Reward"),
+              ],
+            ),
             elevation: 0.0,
             centerTitle: true,
             leading: Padding(
@@ -68,7 +81,6 @@ class CreateRewardsScreen extends StatelessWidget {
                     } else if (int.parse(text) < 0) {
                       return "Amount should be greater than 0!";
                     }
-                    return "";
                   },
                   controller: _amount,
                   keyboardType: TextInputType.number,
