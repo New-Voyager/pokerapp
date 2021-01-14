@@ -22,4 +22,6 @@ class AppColors {
   static const Color veryLightGrayColor = Color(0x44D3D3D3);
 
   static const Color listViewDividerColor = Color(0xff707070);
+
+  static const Color buttonBackGroundColor = Color(0xdddddc4);
 }

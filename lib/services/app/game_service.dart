@@ -88,8 +88,8 @@ class GameService {
     Map<String, dynamic> variables = {
       "gameCode": gameCode,
     };
-    QueryResult result = await _client.query(
-        QueryOptions(documentNode: gql(gameResultTableQuery), variables: variables));
+    QueryResult result = await _client.query(QueryOptions(
+        documentNode: gql(gameResultTableQuery), variables: variables));
 
     if (result.hasException) return null;
 

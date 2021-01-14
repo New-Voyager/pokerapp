@@ -15,8 +15,9 @@ class CardFormTextField extends StatelessWidget {
     this.validator,
     this.onSaved,
     this.inputFormatters,
+    this.hintColor,
   });
-
+  final Color hintColor;
   final Function onSaved;
   final List<TextInputFormatter> inputFormatters;
   final Function validator;
@@ -63,7 +64,7 @@ class CardFormTextField extends StatelessWidget {
             hintStyle: TextStyle(
               fontFamily: AppAssets.fontFamilyLato,
               fontWeight: FontWeight.w400,
-              color: Colors.white.withOpacity(0.21),
+              color: hintColor ?? Colors.white.withOpacity(0.21),
             ),
             border: InputBorder.none,
           ),

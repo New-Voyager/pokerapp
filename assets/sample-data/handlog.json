@@ -2,9 +2,9 @@
   "gameId": "60",
   "handNum": 7,
   "gameType": "HOLDEM",
-  "handLog": {
+  "handLog": {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
     "preflopActions": {
-      "pot": 3,
+      "pot": 45,
       "actions": [{
         "seatNo": 7,
         "action": "SB",
@@ -74,7 +74,7 @@
       }]
     },
     "flopActions": {
-      "pot": 0,
+      "pot": 60,
       "actions": [{
         "seatNo": 7,
         "action": "CHECK",
@@ -132,7 +132,7 @@
       }]
     },
     "turnActions": {
-      "pot": 0,
+      "pot": 200,
       "actions": [{
         "seatNo": 7,
         "action": "CHECK",
@@ -190,7 +190,7 @@
       }]
     },
     "riverActions": {
-      "pot": 0,
+      "pot": 350,
       "actions": [{
         "seatNo": 7,
         "action": "CHECK",
@@ -247,21 +247,102 @@
         "stack": 0
       }]
     },
-    "potWinners": {
-      "0": {
-        "hiWinners": [{
-          "seatNo": 2,
-          "loCard": false,
-          "amount": 17,
-          "winningCards": [168, 2, 132, 8, 129],
-          "winningCardsStr": "[ Q♣  2❤  T♦  2♣  T♠ ]",
-          "rankStr": "Two Pair",
-          "playerCards": [8, 129],
-          "boardCards": [168, 2, 132]
-        }],
-        "lowWinners": []
-      }
-    },
+    "potWinners": 
+			[{
+        "potNumber" : 0,
+        "totalPotAmount" : 20,
+				"hiWinners": [{
+					"seatNo": 1,
+					"loCard": false,
+					"amount": 10,
+					"winningCards": [50, 17, 200, 8, 33],
+					"winningCardsStr": "[ 5❤  3♠  A♣  2♣  4♠ ]",
+					"rankStr": "Straight",
+					"rank": 1609,
+					"playerCards": [50, 17],
+					"boardCards": [200, 8, 33]
+				}, {
+					"seatNo": 3,
+					"loCard": false,
+					"amount": 10,
+					"winningCards": [20, 56, 200, 8, 33],
+					"winningCardsStr": "[ 3♦  5♣  A♣  2♣  4♠ ]",
+					"rankStr": "Straight",
+					"rank": 1609,
+					"playerCards": [20, 56],
+					"boardCards": [200, 8, 33]
+				}],
+				"lowWinners": [{
+					"seatNo": 4,
+					"loCard": true,
+					"amount":30,
+					"winningCards": [50, 17, 200, 8, 33],
+					"winningCardsStr": "[ 5❤  3♠  A♣  2♣  4♠ ]",
+					"rankStr": "",
+					"rank": 31,
+					"playerCards": [50, 17],
+					"boardCards": [200, 8, 33]
+				}, {
+					"seatNo": 6,
+					"loCard": true,
+					"amount": 20,
+					"winningCards": [20, 56, 200, 8, 33],
+					"winningCardsStr": "[ 3♦  5♣  A♣  2♣  4♠ ]",
+					"rankStr": "",
+					"rank": 31,
+					"playerCards": [20, 56],
+					"boardCards": [200, 8, 33]
+				}]
+      }, 
+      {
+        "potNumber" : 1,
+        "totalPotAmount" : 200,
+				"hiWinners": [{
+					"seatNo": 1,
+					"loCard": false,
+					"amount": 10,
+					"winningCards": [50, 17, 200, 8, 33],
+					"winningCardsStr": "[ 5❤  3♠  A♣  2♣  4♠ ]",
+					"rankStr": "Straight",
+					"rank": 1609,
+					"playerCards": [50, 17],
+					"boardCards": [200, 8, 33]
+				}, {
+					"seatNo": 3,
+					"loCard": false,
+					"amount": 10,
+					"winningCards": [20, 56, 200, 8, 33],
+					"winningCardsStr": "[ 3♦  5♣  A♣  2♣  4♠ ]",
+					"rankStr": "Straight",
+					"rank": 1609,
+					"playerCards": [20, 56],
+					"boardCards": [200, 8, 33]
+				}],
+				"lowWinners": [{
+					"seatNo": 4,
+					"loCard": true,
+					"amount":30,
+					"winningCards": [50, 17, 200, 8, 33],
+					"winningCardsStr": "[ 5❤  3♠  A♣  2♣  4♠ ]",
+					"rankStr": "",
+					"rank": 31,
+					"playerCards": [50, 17],
+					"boardCards": [200, 8, 33]
+				}, {
+					"seatNo": 6,
+					"loCard": true,
+					"amount": 20,
+					"winningCards": [20, 56, 200, 8, 33],
+					"winningCardsStr": "[ 3♦  5♣  A♣  2♣  4♠ ]",
+					"rankStr": "",
+					"rank": 31,
+					"playerCards": [20, 56],
+					"boardCards": [200, 8, 33]
+				}]
+			}],
+    "buttonPos" : 2,
+    "sbPos" : 4,
+    "bbPos" : 5,
     "wonAt": "SHOW_DOWN",
     "showDown": null,
     "handStartedAt": "1609783130",
@@ -270,12 +351,13 @@
   "rewardTrackingIds": [13],
   "boardCards": [168, 17, 2, 148, 132],
   "boardCards2": [],
-  "flop": [168, 17, 2],
-  "turn": 148,
-  "river": 132,
+  "flopCards": [168, 17, 2],
+  "turnCards": [148],
+  "riverCards": [132],
   "players": {
     "1": {
       "id": "386",
+      "name": "Yong",
       "cards": [98, 146],
       "bestCards": [168, 148, 132, 98, 146],
       "rank": 4087,
@@ -291,6 +373,7 @@
     },
     "2": {
       "id": "387",
+      "name": "Soma",
       "cards": [8, 129],
       "bestCards": [168, 2, 132, 8, 129],
       "rank": 3009,
@@ -306,6 +389,7 @@
     },
     "3": {
       "id": "388",
+      "name": "Paul",
       "cards": [50, 66],
       "bestCards": [168, 148, 132, 50, 66],
       "rank": 7025,
@@ -321,6 +405,7 @@
     },
     "4": {
       "id": "389",
+      "name": "Niveda",
       "cards": [68, 18],
       "bestCards": [168, 17, 148, 132, 18],
       "rank": 5846,
@@ -336,6 +421,7 @@
     },
     "5": {
       "id": "390",
+      "name": "Peter",
       "cards": [40, 100],
       "bestCards": [168, 148, 132, 40, 100],
       "rank": 7017,
@@ -351,6 +437,7 @@
     },
     "6": {
       "id": "395",
+      "name": "Jason",
       "cards": [52, 33],
       "bestCards": [168, 148, 132, 52, 33],
       "rank": 7029,
@@ -366,6 +453,7 @@
     },
     "7": {
       "id": "396",
+      "name": "Ruth",
       "cards": [184, 56],
       "bestCards": [168, 148, 132, 184, 56],
       "rank": 6682,
@@ -381,6 +469,7 @@
     },
     "8": {
       "id": "397",
+      "name": "Ben",
       "cards": [82, 161],
       "bestCards": [168, 148, 132, 82, 161],
       "rank": 3868,
@@ -397,6 +486,7 @@
     "9": {
       "id": "392",
       "cards": [49, 20],
+      "name" : "Steffi",
       "bestCards": [168, 17, 148, 132, 20],
       "rank": 5846,
       "playedUntil": "SHOW_DOWN",

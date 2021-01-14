@@ -409,7 +409,9 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView> {
 
     return number == 0
         ? Colors.white
-        : number > 0 ? AppColors.positiveColor : AppColors.negativeColor;
+        : number > 0
+            ? AppColors.positiveColor
+            : AppColors.negativeColor;
   }
 
   Widget detailTile() {

@@ -1,4 +1,5 @@
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:pokerapp/utils/formatter.dart';
 
 class ClubModel {
   String clubName;
@@ -8,7 +9,6 @@ class ClubModel {
   String imageID;
   bool isPrivate;
   bool isOwner;
-
   String hostName;
   String joinDate;
   bool isActive;
@@ -17,6 +17,7 @@ class ClubModel {
   bool incomingRequest;
   String invitationDate;
   bool outgoingRequest;
+  String memberStatus;
 
   ClubModel({
     this.clubName,
@@ -26,16 +27,12 @@ class ClubModel {
     this.imageID,
     this.isPrivate,
     this.isOwner,
+    this.balance,
+    this.memberStatus,
 
     /* extra (for now) */
-    this.hostName,
     this.joinDate,
-    this.isActive,
-    this.balance,
-    this.hasJoined,
-    this.incomingRequest,
     this.invitationDate,
-    this.outgoingRequest,
   });
 
   // todo: at a later point, more fields can be added
@@ -50,5 +47,11 @@ class ClubModel {
     this.imageID = jsonData['imageId'];
     this.isPrivate = jsonData['private'];
     this.isOwner = jsonData['isOwner'];
+    this.memberStatus = jsonData['memberStatus'];
+    this.hostName = jsonData['host'];
+    if (jsonData['balance'] != null) {
+      jsonData['balance'] = double.parse(jsonData['balance'].toString());
+    }
+    this.balance = DataFormatter.chipsFormat(jsonData['balance']);
   }
 }

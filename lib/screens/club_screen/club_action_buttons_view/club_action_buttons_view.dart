@@ -20,135 +20,145 @@ class ClubActionButtonsView extends StatelessWidget {
       margin: EdgeInsets.all(8.0),
       child: Column(
         children: [
-          Row(
-            children: [
-              Expanded(
-                flex: 3,
-                child: ClubActionButton(
-                  this._clubHomePageModel,
-                  ClubActions.GAME_HISTORY,
-                  "Game History",
-                  Icon(
-                    ClubScreenIcons.history,
-                    color: AppColors.appAccentColor,
+          IntrinsicHeight(
+            child: Row(
+              children: [
+                Expanded(
+                  flex: 3,
+                  child: ClubActionButton(
+                    this._clubHomePageModel,
+                    ClubActions.GAME_HISTORY,
+                    "Game History",
+                    Icon(
+                      ClubScreenIcons.history,
+                      color: AppColors.appAccentColor,
+                    ),
                   ),
                 ),
-              ),
-              Expanded(
-                flex: 3,
-                child: ClubActionButton(
-                  this._clubHomePageModel,
-                  ClubActions.MEMBERS,
-                  "Members",
-                  Icon(
-                    ClubScreenIcons.membership,
-                    color: AppColors.appAccentColor,
+                Expanded(
+                  flex: 3,
+                  child: ClubActionButton(
+                    this._clubHomePageModel,
+                    ClubActions.MEMBERS,
+                    "Members",
+                    Icon(
+                      ClubScreenIcons.membership,
+                      color: AppColors.appAccentColor,
+                    ),
                   ),
                 ),
-              ),
-              Expanded(
-                flex: 3,
-                child: ClubActionButton(
-                  this._clubHomePageModel,
-                  ClubActions.CHAT,
-                  "Chat",
-                  Icon(
-                    Icons.access_alarm,
-                    color: Colors.blue,
+                Expanded(
+                  flex: 3,
+                  child: ClubActionButton(
+                    this._clubHomePageModel,
+                    ClubActions.CHAT,
+                    "Chat",
+                    Icon(
+                      Icons.access_alarm,
+                      color: Colors.blue,
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-          Row(
-            children: [
-              Expanded(
-                flex: 3,
-                child: ClubActionButton(
-                  this._clubHomePageModel,
-                  ClubActions.BOOKMARKED_HANDS,
-                  "Bookmarked Hands",
-                  Icon(
-                    ClubScreenIcons.bookmark,
-                    color: AppColors.appAccentColor,
+          IntrinsicHeight(
+            child: Row(
+              children: [
+                Expanded(
+                  flex: 3,
+                  child: ClubActionButton(
+                    this._clubHomePageModel,
+                    ClubActions.BOOKMARKED_HANDS,
+                    "Bookmarked Hands",
+                    Icon(
+                      ClubScreenIcons.bookmark,
+                      color: AppColors.appAccentColor,
+                    ),
                   ),
                 ),
-              ),
-              Expanded(
-                flex: 3,
-                child: ClubActionButton(
-                  this._clubHomePageModel,
-                  ClubActions.ANALYSIS,
-                  "Analysis",
-                  Icon(
-                    ClubScreenIcons.pie_chart,
-                    color: AppColors.appAccentColor,
+                Expanded(
+                  flex: 3,
+                  child: ClubActionButton(
+                    this._clubHomePageModel,
+                    ClubActions.ANALYSIS,
+                    "Analysis",
+                    Icon(
+                      ClubScreenIcons.pie_chart,
+                      color: AppColors.appAccentColor,
+                    ),
                   ),
                 ),
-              ),
-              Expanded(
-                flex: 3,
-                child: ClubActionButton(
-                  this._clubHomePageModel,
-                  ClubActions.ANNOUNCEMETS,
-                  "Announcements",
-                  Icon(
-                    ClubScreenIcons.announcements,
-                    color: AppColors.appAccentColor,
+                Expanded(
+                  flex: 3,
+                  child: ClubActionButton(
+                    this._clubHomePageModel,
+                    ClubActions.ANNOUNCEMETS,
+                    "Announcements",
+                    Icon(
+                      ClubScreenIcons.announcements,
+                      color: AppColors.appAccentColor,
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-          Row(
-            children: [
-              Expanded(
-                flex: 3,
-                child: ClubActionButton(
-                  this._clubHomePageModel,
-                  ClubActions.MESSAGE_HOST,
-                  "Message Host",
-                  Icon(
-                    ClubScreenIcons.message,
-                    color: AppColors.appAccentColor,
+          IntrinsicHeight(
+            child: Row(
+              children: [
+                Expanded(
+                  flex: 3,
+                  child: ClubActionButton(
+                    this._clubHomePageModel,
+                    ClubActions.MESSAGE_HOST,
+                    "Message Host",
+                    Icon(
+                      ClubScreenIcons.message,
+                      color: AppColors.appAccentColor,
+                    ),
                   ),
                 ),
-              ),
-              Expanded(
-                flex: 3,
-                child: ClubActionButton(
-                  this._clubHomePageModel,
-                  ClubActions.MANAGE_CHIPS,
-                  "Manage Chips",
-                  Icon(
-                    ClubScreenIcons.coin_stack,
-                    color: AppColors.appAccentColor,
+                Expanded(
+                  flex: 3,
+                  child: ClubActionButton(
+                    this._clubHomePageModel,
+                    ClubActions.MANAGE_CHIPS,
+                    "Manage Chips",
+                    Icon(
+                      ClubScreenIcons.coin_stack,
+                      color: AppColors.appAccentColor,
+                    ),
                   ),
                 ),
-              ),
-              Expanded(
-                flex: 3,
-                child: ClubActionButton(
-                  this._clubHomePageModel,
-                  ClubActions.REWARDS,
-                  "Rewards",
-                  Icon(
-                    ClubScreenIcons.reward,
-                    color: AppColors.appAccentColor,
+                Expanded(
+                  flex: 3,
+                  child: ClubActionButton(
+                    this._clubHomePageModel,
+                    ClubActions.REWARDS,
+                    "Rewards",
+                    Icon(
+                      ClubScreenIcons.reward,
+                      color: AppColors.appAccentColor,
+                    ),
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ChangeNotifierProvider(
+                                    create: (_) =>
+                                        RewardsModelProvider(this.clubCode),
+                                    child: RewardsListScreen(),
+                                  )));
+                    },
                   ),
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ChangeNotifierProvider(
-                                  create: (_) =>
-                                      RewardsModelProvider(this.clubCode),
-                                  child: RewardsListScreen(),
-                                )));
-                  },
                 ),
-              ),
-            ],
+                Expanded(
+                  flex: 3,
+                  child: Container(),
+                ),
+              ],
+            ),
           ),
         ],
       ),

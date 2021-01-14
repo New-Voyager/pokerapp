@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_service/sub_services/deal_service.dart';
+import 'package:pokerapp/services/game_play/action_services/hand_action_service/sub_services/deal_started_service.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_service/sub_services/result_service.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_service/sub_services/stage_update_service.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_service/sub_services/new_hand_service.dart';
@@ -37,6 +38,11 @@ class HandActionService {
         return NewHandService.handle(
           context: context,
           data: data,
+        );
+
+      case AppConstants.DEAL_STARTED:
+        return DealStartedService.handle(
+          context: context,
         );
 
       case AppConstants.DEAL:

@@ -60,6 +60,9 @@ dependencies:
   # animations
   flip_card: ^0.4.4
 
+  # for 3d table
+  zflutter: ^0.0.1+2
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -73,6 +76,7 @@ flutter:
    - assets/sound_effects/
    - assets/images/gamesettings/
    - assets/sample-data/completed-game.json
+   - assets/sample-data/handlog.json
 
   fonts:
    - family: Lato

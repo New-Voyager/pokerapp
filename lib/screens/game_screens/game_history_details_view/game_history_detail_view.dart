@@ -537,30 +537,28 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
               ),
             ),
             ListTile(
-              leading: CircleAvatar(
-                child: SvgPicture.asset('assets/images/casino.svg',
-                    color: Colors.white),
-                backgroundColor: Color(0xffef9712),
-              ),
-              title: Text(
-                "Table Record",
-                style: TextStyle(color: Colors.white),
-              ),
-              trailing: IconButton(
-                  icon: Icon(
-                    Icons.arrow_forward_ios,
-                    color: Colors.white,
-                  ),
-                  onPressed: () {}),
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => TableResultScreen(_gameDetail.gameCode)
-                    )
-                );
-              }
-            ),
+                leading: CircleAvatar(
+                  child: SvgPicture.asset('assets/images/casino.svg',
+                      color: Colors.white),
+                  backgroundColor: Color(0xffef9712),
+                ),
+                title: Text(
+                  "Table Record",
+                  style: TextStyle(color: Colors.white),
+                ),
+                trailing: IconButton(
+                    icon: Icon(
+                      Icons.arrow_forward_ios,
+                      color: Colors.white,
+                    ),
+                    onPressed: () {}),
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) =>
+                              TableResultScreen(_gameDetail.gameCode)));
+                }),
             Padding(
               padding: const EdgeInsets.only(left: 70.0),
               child: Divider(

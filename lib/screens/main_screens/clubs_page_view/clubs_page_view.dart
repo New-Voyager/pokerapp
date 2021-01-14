@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:pokerapp/models/club_homepage_model.dart';
 import 'package:pokerapp/models/club_model.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
@@ -14,9 +13,10 @@ import 'package:pokerapp/screens/main_screens/clubs_page_view/widgets/create_clu
 import 'package:pokerapp/services/app/clubs_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/widgets/round_raised_button.dart';
-import 'package:pokerapp/widgets/round_text_field.dart';
 import 'package:pokerapp/widgets/custom_text_button.dart';
 import 'package:provider/provider.dart';
+
+import 'widgets/search_club_bottom_sheet.dart';
 
 class ClubsPageView extends StatefulWidget {
   @override
@@ -188,14 +188,18 @@ class _ClubsPageViewState extends State<ClubsPageView> {
   }
 
   void openClub(BuildContext context, ClubModel club) async {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => ClubMainScreen(
-          clubCode: club.clubCode,
+
+    if (club.memberStatus == 'ACTIVE') {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) =>
+              ClubMainScreen(
+                clubCode: club.clubCode,
+              ),
         ),
-      ),
-    );
+      );
+    }
   }
 
   @override
@@ -214,26 +218,38 @@ class _ClubsPageViewState extends State<ClubsPageView> {
               right: AppDimensions.kMainPaddingHorizontal,
             ),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 /*
-                * title and create club button
+                * title
+                * */
+                _getTitleTextWidget('Clubs'),
+                const SizedBox(height: 30),
+                /*
+                * create and search box
                 * */
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    _getTitleTextWidget('Clubs'),
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
                     CustomTextButton(
-                      text: '+ Create Club',
+                      text: 'Search',
+                      onTap: () async {
+                        await showModalBottomSheet(
+                          context: context,
+                          isScrollControlled: true,
+                          builder: (ctx) => SearchClubBottomSheet(),
+                        );
+                        _fetchClubs();
+                      },
+                    ),
+                    const SizedBox(width: 40),
+                    CustomTextButton(
+                      text: '+Create',
                       onTap: () => _createClub(ctx),
                     ),
                   ],
                 ),
-                separator,
-
-                /*
-                * search box
-                * */
-
+                const SizedBox(height: 10),
                 _showLoading
                     ? Expanded(
                         child: Center(
@@ -254,18 +270,6 @@ class _ClubsPageViewState extends State<ClubsPageView> {
                         : Expanded(
                             child: Column(
                               children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(bottom: 15.0),
-                                  child: RoundTextField(
-                                    hintText: 'Search',
-                                    iconData: Icons.search,
-                                    onChanged: (query) =>
-                                        Provider.of<ValueNotifier<String>>(
-                                      ctx,
-                                      listen: false,
-                                    ).value = query,
-                                  ),
-                                ),
                                 Expanded(
                                   child: Consumer<ValueNotifier<String>>(
                                     builder: (_, valueNotifier, __) {
@@ -326,6 +330,7 @@ class _ClubsPageViewState extends State<ClubsPageView> {
                                                   var club = query.isNotEmpty
                                                       ? _filteredClubs[index]
                                                       : _clubs[index];
+
                                                   return InkWell(
                                                     onTap: () => this.openClub(
                                                         context, club),
