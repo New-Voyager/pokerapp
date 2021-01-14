@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:pokerapp/models/club_weekly_activity_model.dart';
 
 import 'game_model.dart';
 
@@ -39,6 +42,7 @@ class ClubHomePageModel extends ChangeNotifier {
   List<GameModel> liveGames;
   bool isManager;
   bool isOwner;
+  ClubWeeklyActivityModel weeklyActivity;
 
   ClubHomePageModel(String clubCode, String clubName) {
     this.clubCode = clubCode;
@@ -48,7 +52,7 @@ class ClubHomePageModel extends ChangeNotifier {
   }
 
   // build data from the graphql response
-  ClubHomePageModel.fromGQLResponse(String clubCode, var data) {
+  ClubHomePageModel.fromGQLResponse(String clubCode, var data, var activity) {
     var member = data['member'];
 
     this.clubName = member['name'];
@@ -59,5 +63,6 @@ class ClubHomePageModel extends ChangeNotifier {
     this.liveGames = data['liveGames']
         .map<GameModel>((game) => GameModel.fromJson(game))
         .toList();
+    this.weeklyActivity = activity;
   }
 }

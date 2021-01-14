@@ -7,45 +7,9 @@ import 'package:pokerapp/utils/club_weekly_activity_bar_chart.dart';
 
 class ClubGraphicsView extends StatelessWidget {
   final double _unsettledBalance;
-  final List<ClubWeeklyActivityModel> _weeklyActivity = [
-    ClubWeeklyActivityModel(
-      "Mon",
-      300,
-      400,
-    ),
-    ClubWeeklyActivityModel(
-      "Tue",
-      200,
-      100,
-    ),
-    ClubWeeklyActivityModel(
-      "Wed",
-      300,
-      40,
-    ),
-    ClubWeeklyActivityModel(
-      "Thu",
-      450,
-      200,
-    ),
-    ClubWeeklyActivityModel(
-      "Fri",
-      80,
-      200,
-    ),
-    ClubWeeklyActivityModel(
-      "Sat",
-      250,
-      500,
-    ),
-    ClubWeeklyActivityModel(
-      "Sun",
-      0,
-      0,
-    )
-  ];
+  final ClubWeeklyActivityModel _weeklyActivity;
 
-  ClubGraphicsView(this._unsettledBalance);
+  ClubGraphicsView(this._unsettledBalance, this._weeklyActivity);
 
   Color getBalanceColor(double number) {
     if (number == null) {
@@ -59,8 +23,11 @@ class ClubGraphicsView extends StatelessWidget {
             : AppColors.negativeColor;
   }
 
+  loadWeeklyActivityData() {}
+
   @override
   Widget build(BuildContext context) {
+    loadWeeklyActivityData();
     return Container(
       margin: EdgeInsets.all(8.0),
       child: IntrinsicHeight(
@@ -110,7 +77,7 @@ class ClubGraphicsView extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Expanded(
-                      flex: 3,
+                      flex: 2,
                       child: Padding(
                         padding: EdgeInsets.all(5),
                         child: Column(
@@ -124,21 +91,12 @@ class ClubGraphicsView extends StatelessWidget {
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
-                            Text(
-                              "(BuyIn - Balance)",
-                              style: TextStyle(
-                                color: AppColors.listViewDividerColor,
-                                fontSize: 12.0,
-                                fontFamily: AppAssets.fontFamilyLato,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
                           ],
                         ),
                       ),
                     ),
                     Expanded(
-                      flex: 7,
+                      flex: 8,
                       child: Padding(
                         padding: EdgeInsets.all(5),
                         child: ClubWeeklyActivityBarChart(_weeklyActivity),

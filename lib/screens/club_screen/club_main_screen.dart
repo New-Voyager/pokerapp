@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/club_homepage_model.dart';
+import 'package:pokerapp/models/club_weekly_activity_model.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/screens/club_screen/club_banner_view/club_banner_view.dart';
@@ -14,6 +15,7 @@ import 'club_action_buttons_view/club_action_buttons_view.dart';
 
 class ClubMainScreen extends StatelessWidget {
   final String clubCode;
+  ClubWeeklyActivityModel weeklyActivity;
 
   ClubMainScreen({
     @required this.clubCode,
@@ -75,7 +77,8 @@ class ClubMainScreen extends StatelessWidget {
                             ),
                             IntrinsicHeight(
                               child: ClubGraphicsView(
-                                  clubModel.playerBalance ?? 0.0),
+                                  clubModel.playerBalance ?? 0.0,
+                                  clubModel.weeklyActivity),
                             ),
                             ClubGamesPageView(),
                             ClubActionButtonsView(clubModel)

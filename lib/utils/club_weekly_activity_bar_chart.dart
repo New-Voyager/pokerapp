@@ -6,20 +6,19 @@ import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 
 class ClubWeeklyActivityBarChart extends StatelessWidget {
-  final List<ClubWeeklyActivityModel> _weeklyActivityData;
+  final ClubWeeklyActivityModel _weeklyActivityData;
 
   ClubWeeklyActivityBarChart(this._weeklyActivityData);
 
   @override
   Widget build(BuildContext context) {
-    List<charts.Series<ClubWeeklyActivityModel, String>> series = [
+    List<charts.Series<ClubDailyActivityModel, String>> series = [
       charts.Series(
           id: "Weekly Activity",
-          data: _weeklyActivityData,
-          domainFn: (ClubWeeklyActivityModel series, _) => series.dayOfWeek,
-          measureFn: (ClubWeeklyActivityModel series, _) =>
-              series.buyIn - series.balance,
-          colorFn: (ClubWeeklyActivityModel series, _) => series.color),
+          data: _weeklyActivityData.activityList,
+          domainFn: (ClubDailyActivityModel day, _) => day.dayOfWeek,
+          measureFn: (ClubDailyActivityModel day, _) => day.buyIn - day.balance,
+          colorFn: (ClubDailyActivityModel day, _) => day.color),
     ];
 
     return charts.BarChart(
@@ -32,7 +31,7 @@ class ClubWeeklyActivityBarChart extends StatelessWidget {
           desiredMaxTickCount: 7,
           desiredTickCount: 5,
         ),
-        showAxisLine: true,
+        showAxisLine: false,
         renderSpec: charts.GridlineRendererSpec(
           labelStyle: charts.TextStyleSpec(
             color: charts.MaterialPalette.white,
@@ -53,8 +52,7 @@ class ClubWeeklyActivityBarChart extends StatelessWidget {
             fontSize: 10,
           ),
           lineStyle: charts.LineStyleSpec(
-            color:
-                charts.ColorUtil.fromDartColor(AppColors.listViewDividerColor),
+            color: charts.Color.transparent,
           ),
         ),
       ),
