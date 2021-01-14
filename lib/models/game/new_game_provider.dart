@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game/new_game_model.dart';
+import 'package:pokerapp/models/rewards_model.dart';
+import 'package:pokerapp/services/app/rewards_service.dart';
 
 class NewGameModelProvider extends ChangeNotifier {
   /* This object holds new game settings */
@@ -8,6 +10,7 @@ class NewGameModelProvider extends ChangeNotifier {
   List<String> actionTimes = new List<String>();
   List<String> gameTypes = new List<String>();
   List<String> gameLengths = new List<String>();
+  List<Rewards> rewards = new List<Rewards>();
 
   NewGameModelProvider(String clubCode) {
     settings = NewGameModel.withDefault(clubCode);
@@ -23,6 +26,33 @@ class NewGameModelProvider extends ChangeNotifier {
     NewGameConstants.SUPPORTED_GAMES.forEach((key, value) {
       gameTypes.add(value);
     });
+  }
+
+  get selectedReward {
+    if (settings.rewards == null) {
+      return 0;
+    }
+    int index = rewards.indexWhere((element) => element.name == settings.rewards.name);
+    if (index == -1) {
+      return 0;
+    }
+    return index;
+  }
+
+  set selectedReward(int index) {
+
+    if (index == -1) {
+      settings.rewards = null;
+      return;
+    }
+
+    settings.rewards = rewards[index];
+    notifyListeners();
+  }
+
+  set setReward(Rewards rewards) {
+    settings.rewards = rewards;
+    notifyListeners();
   }
 
   set gameType(int index) {

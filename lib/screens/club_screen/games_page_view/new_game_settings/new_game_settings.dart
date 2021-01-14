@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:pokerapp/models/game/new_game_provider.dart';
+import 'package:pokerapp/models/rewards_model.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/screens/club_screen/games_page_view/new_game_settings/game_timing_settings/action_time_select.dart';
 import 'package:pokerapp/screens/club_screen/games_page_view/new_game_settings/game_timing_settings/game_length_select.dart';
@@ -10,16 +11,45 @@ import 'package:pokerapp/screens/club_screen/games_page_view/new_game_settings/i
 import 'package:pokerapp/screens/club_screen/games_page_view/new_game_settings/ingame_settings/club_tips_select.dart';
 import 'package:pokerapp/screens/club_screen/games_page_view/new_game_settings/ingame_settings/game_type_select.dart';
 import 'package:pokerapp/screens/club_screen/games_page_view/new_game_settings/ingame_settings/max_player_select.dart';
+import 'package:pokerapp/screens/club_screen/games_page_view/new_game_settings/ingame_settings/rewards_list.dart';
 import 'package:pokerapp/screens/game_play_screen/game_play_screen.dart';
+import 'package:pokerapp/services/app/rewards_service.dart';
 import 'package:pokerapp/services/game_play/graphql/game_service.dart';
 import 'package:pokerapp/widgets/custom_text_button.dart';
 import 'package:provider/provider.dart';
 
-class NewGameSettings extends StatelessWidget {
+class NewGameSettings extends StatefulWidget {
   final String clubCode;
-  NewGameSettings({
+  NewGameSettings(this.clubCode);
+
+  @override
+  _NewGameSettingsState createState() =>
+      _NewGameSettingsState(clubCode: clubCode);
+}
+
+class _NewGameSettingsState extends State<NewGameSettings> {
+  final String clubCode;
+  List<Rewards> rewards = new List<Rewards>();
+  _NewGameSettingsState({
     @required this.clubCode,
   }) : assert(clubCode != null);
+
+  bool loadingDone = false;
+
+  _fetchData() async {
+    this.rewards = await RewardService.getRewards(this.clubCode);
+    if (this.rewards != null && this.rewards.length > 0) {
+      this.rewards.insert(0, Rewards(id: 0, name: 'None'));
+    }
+    loadingDone = true;
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchData();
+  }
 
   Future<void> _showError(
       BuildContext context, String title, String error) async {
@@ -71,80 +101,152 @@ class NewGameSettings extends StatelessWidget {
             title: Text("New Game Settings"),
             elevation: 0.0,
           ),
-          body: SingleChildScrollView(
-            child: Consumer<NewGameModelProvider>(
-              builder: (context, data, child) => Column(
-                children: [
-                  SizedBox(
-                    height: 10.0,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          body: !loadingDone
+              ? Center(child: CircularProgressIndicator())
+              : SingleChildScrollView(
+                  child: Consumer<NewGameModelProvider>(
+                      builder: (context, data, child) {
+                    data.rewards = this.rewards;
+                    return Column(
                       children: [
-                        CustomTextButton(
-                          text: "Start",
-                          onTap: () async {
-                            String gameCode =
-                                await GameService.configureClubGame(
-                                    data.settings.clubCode, data.settings);
-                            print('Configured game: $gameCode');
-                            if (gameCode != null) {
-                              // join the game
-                              _joinGame(context, gameCode);
-                            } else {
-                              _showError(
-                                  context, 'Error', 'Creating game failed');
-                            }
-                          },
+                        SizedBox(
+                          height: 10.0,
                         ),
-                        Container(
-                          width: 120.0,
+                        Padding(
+                          padding: const EdgeInsets.all(12.0),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               CustomTextButton(
-                                text: "Load",
-                                onTap: () {},
+                                text: "Start",
+                                onTap: () async {
+                                  String gameCode =
+                                      await GameService.configureClubGame(
+                                          data.settings.clubCode,
+                                          data.settings);
+                                  print('Configured game: $gameCode');
+                                  if (gameCode != null) {
+                                    // join the game
+                                    _joinGame(context, gameCode);
+                                  } else {
+                                    _showError(context, 'Error',
+                                        'Creating game failed');
+                                  }
+                                },
                               ),
-                              CustomTextButton(
-                                text: "Save",
-                                onTap: () {},
-                              ),
+                              Container(
+                                width: 120.0,
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    CustomTextButton(
+                                      text: "Load",
+                                      onTap: () {},
+                                    ),
+                                    CustomTextButton(
+                                      text: "Save",
+                                      onTap: () {},
+                                    ),
+                                  ],
+                                ),
+                              )
                             ],
                           ),
-                        )
+                        ),
+                        SizedBox(
+                          height: 10.0,
+                        ),
+                        Padding(
+                          padding:
+                              const EdgeInsets.only(left: 12.0, right: 12.0),
+                          child: firstList(context),
+                        ),
+                        SizedBox(
+                          height: 20.0,
+                        ),
+                        Padding(
+                          padding:
+                              const EdgeInsets.only(left: 12.0, right: 12.0),
+                          child: rewardTile(),
+                        ),
+                        SizedBox(
+                          height: 20.0,
+                        ),
+                        Padding(
+                          padding:
+                              const EdgeInsets.only(left: 12.0, right: 12.0),
+                          child: secondList(),
+                        ),
+                        SizedBox(
+                          height: 20.0,
+                        ),
+                        Padding(
+                          padding:
+                              const EdgeInsets.only(left: 12.0, right: 12.0),
+                          child: thirdList(),
+                        ),
+                        SizedBox(
+                          height: 20.0,
+                        ),
                       ],
-                    ),
-                  ),
-                  SizedBox(
-                    height: 10.0,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 12.0, right: 12.0),
-                    child: firstList(context),
-                  ),
-                  SizedBox(
-                    height: 20.0,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 12.0, right: 12.0),
-                    child: secondList(),
-                  ),
-                  SizedBox(
-                    height: 20.0,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 12.0, right: 12.0),
-                    child: thirdList(),
-                  ),
-                  SizedBox(
-                    height: 20.0,
-                  ),
-                ],
+                    );
+                  }),
+                ),
+        ),
+      ),
+    );
+  }
+
+  Widget rewardTile() {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10.0),
+        color: Color(0xff313235),
+      ),
+      child: Consumer<NewGameModelProvider>(
+        builder: (context, data, child) => ListTile(
+          leading: CircleAvatar(
+            child: SvgPicture.asset('assets/images/gamesettings/clock.svg',
+                color: Colors.white),
+            backgroundColor: Color(0xffef9712),
+          ),
+          title: Text(
+            "Rewards",
+            style: TextStyle(color: Colors.white),
+          ),
+          subtitle: Text(
+            data.selectedReward == -1 ? 'None' : data.rewards[data.selectedReward].name,
+            style: TextStyle(color: Color(0xff848484)),
+          ),
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Text(
+                "",
+                style: TextStyle(color: Color(0xff848484)),
               ),
-            ),
+              IconButton(
+                  icon: Icon(
+                    Icons.arrow_forward_ios,
+                    color: Colors.white,
+                  ),
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => data.rewards == null
+                                ? Container(
+                                    child: Center(
+                                      child: CircularProgressIndicator(),
+                                    ),
+                                  )
+                                : ChangeNotifierProvider.value(
+                                    value: data,
+                                    child: RewardsList())));
+                  }),
+            ],
           ),
         ),
       ),

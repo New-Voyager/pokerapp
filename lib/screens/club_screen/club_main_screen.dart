@@ -25,15 +25,82 @@ class ClubMainScreen extends StatelessWidget {
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => NewGameSettings(
-                  clubCode: clubCode,
-                ),
+                builder: (context) => NewGameSettings(clubCode,),
               ),
             ),
             text: '+ Create Game',
           ),
         ),
       ];
+
+  Widget _buildGraphicsWidgets(ClubHomePageModel data) {
+    double unsettled = data.playerBalance ?? 0.0;
+
+    return Container(
+      margin: EdgeInsets.all(8.0),
+      child: IntrinsicHeight(
+        child: Row(
+          children: [
+            Expanded(
+              flex: 3,
+              child: Card(
+                color: AppColors.cardBackgroundColor,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Container(
+                      child: Text(
+                        "Unsettled",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 14.0,
+                          fontFamily: AppAssets.fontFamilyLato,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ),
+                    Container(
+                      child: Text(
+                        unsettled.toString(),
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 14.0,
+                          fontFamily: AppAssets.fontFamilyLato,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Expanded(
+              flex: 7,
+              child: Card(
+                color: AppColors.cardBackgroundColor,
+                child: Column(
+                  children: [
+                    Container(
+                      child: Text(
+                        "Weekly Activity",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 14.0,
+                          fontFamily: AppAssets.fontFamilyLato,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
   Widget _buildOutstandingBalanceWidget(ClubHomePageModel data) {
     double outstandingChips = data.playerBalance ?? 0.0;
@@ -119,9 +186,9 @@ class ClubMainScreen extends StatelessWidget {
                             ClubBannerView(
                               clubModel: clubModel,
                             ),
-                            _buildOutstandingBalanceWidget(clubModel),
+                            _buildGraphicsWidgets(clubModel),
                             ClubGamesPageView(),
-                            ClubActionButtonsView(clubModel)
+                            ClubActionButtonsView(clubModel, this.clubCode)
                           ],
                         ),
                       ),
