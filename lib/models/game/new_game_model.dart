@@ -136,6 +136,10 @@ class NewGameModel {
     data['buyInMax'] = this.buyInMax;
     data['actionTime'] = this.actionTime;
     data['botGame'] = this.botGame;
+
+    if (this.rewards != null && this.rewards.id != 0) {
+      data['rewardIds'] = [this.rewards.id];
+    }
     return data;
   }
 

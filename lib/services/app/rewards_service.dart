@@ -55,14 +55,6 @@ class RewardService {
     if (result.hasException) return [];
 
     final List jsonResponse = result.data['rewards'];
-
-    // log(jsonEncode(jsonResponse).toString());
-    // List<Rewards> rewards = [];
-    // jsonResponse.forEach((element) {
-    //   rewards.add(Rewards.fromJson(element));
-    // });
-    // log(rewards.toString());
-    // return RewardsModel.fromJson(jsonEncode(jsonResponse));
     return jsonResponse
         .map<Rewards>((var reward) => Rewards.fromJson(reward))
         .toList();

@@ -153,10 +153,10 @@ class ClubActionButtonsView extends StatelessWidget {
                     },
                   ),
                 ),
-                Expanded(
-                  flex: 3,
-                  child: Container(),
-                ),
+                // Expanded(
+                //   flex: 3,
+                //   child: Container(),
+                // ),
               ],
             ),
           ),

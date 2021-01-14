@@ -11,7 +11,6 @@ class NewGameModelProvider extends ChangeNotifier {
   List<String> gameTypes = new List<String>();
   List<String> gameLengths = new List<String>();
   List<Rewards> rewards = new List<Rewards>();
-  List<String> rewardsList = new List<String>();
 
   NewGameModelProvider(String clubCode) {
     settings = NewGameModel.withDefault(clubCode);
@@ -27,29 +26,27 @@ class NewGameModelProvider extends ChangeNotifier {
     NewGameConstants.SUPPORTED_GAMES.forEach((key, value) {
       gameTypes.add(value);
     });
-
-    getRewardsAPI();
-  }
-
-  getRewardsAPI() async {
-    rewards = await RewardService.getRewards(this.clubCode);
-    rewards.forEach((element) {
-      rewardsList.add(element.name);
-    });
-    notifyListeners();
   }
 
   get selectedReward {
-    return rewardsList.indexOf(settings.rewards.name);
+    if (settings.rewards == null) {
+      return 0;
+    }
+    int index = rewards.indexWhere((element) => element.name == settings.rewards.name);
+    if (index == -1) {
+      return 0;
+    }
+    return index;
   }
 
   set selectedReward(int index) {
+
     if (index == -1) {
-    } else {
-      String selectedValue = rewardsList[index];
-      settings.rewards = rewards[
-          rewards.indexWhere((element) => element.name == selectedValue)];
+      settings.rewards = null;
+      return;
     }
+
+    settings.rewards = rewards[index];
     notifyListeners();
   }
 

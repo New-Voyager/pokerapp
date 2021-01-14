@@ -25,9 +25,7 @@ class ClubMainScreen extends StatelessWidget {
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => NewGameSettings(
-                  clubCode: clubCode,
-                ),
+                builder: (context) => NewGameSettings(clubCode,),
               ),
             ),
             text: '+ Create Game',

@@ -16,7 +16,7 @@ class RewardsList extends StatelessWidget {
       ),
       body: Consumer<NewGameModelProvider>(
         builder: (context, data, child) => IOSLikeCheckList(
-          list: data.rewardsList,
+          list: data.rewards.map((e) => e.name).toList(),
           selectedIndex: data.selectedReward,
           onTap: (index) {
             data.selectedReward = index;
