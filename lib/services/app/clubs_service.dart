@@ -1,11 +1,15 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/club_homepage_model.dart';
 import 'package:pokerapp/models/club_model.dart';
+import 'package:pokerapp/models/club_weekly_activity_model.dart';
 import 'package:pokerapp/services/graphQL/mutations/clubs.dart';
 import 'package:pokerapp/services/graphQL/queries/clubs.dart';
+
+import 'package:flutter/services.dart' show rootBundle;
 
 class ClubsService {
   static Future<bool> deleteClub(String clubCode) async {
@@ -93,6 +97,12 @@ class ClubsService {
 
     if (result.hasException) return null;
 
-    return ClubHomePageModel.fromGQLResponse(clubCode, result.data);
+    String weeklyData =
+        await rootBundle.loadString("assets/sample-data/weekly-data.json");
+    ClubWeeklyActivityModel weeklyActivity =
+        ClubWeeklyActivityModel.fromJson(json.decode(weeklyData));
+
+    return ClubHomePageModel.fromGQLResponse(
+        clubCode, result.data, weeklyActivity);
   }
 }
