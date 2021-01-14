@@ -10,6 +10,7 @@ import 'package:pokerapp/screens/club_screen/games_page_view/new_game_settings/i
 import 'package:pokerapp/screens/club_screen/games_page_view/new_game_settings/ingame_settings/club_tips_select.dart';
 import 'package:pokerapp/screens/club_screen/games_page_view/new_game_settings/ingame_settings/game_type_select.dart';
 import 'package:pokerapp/screens/club_screen/games_page_view/new_game_settings/ingame_settings/max_player_select.dart';
+import 'package:pokerapp/screens/club_screen/games_page_view/new_game_settings/rewards_list.dart';
 import 'package:pokerapp/screens/game_play_screen/game_play_screen.dart';
 import 'package:pokerapp/services/game_play/graphql/game_service.dart';
 import 'package:pokerapp/widgets/custom_text_button.dart';
@@ -130,6 +131,13 @@ class NewGameSettings extends StatelessWidget {
                   ),
                   Padding(
                     padding: const EdgeInsets.only(left: 12.0, right: 12.0),
+                    child: rewardTile(),
+                  ),
+                  SizedBox(
+                    height: 20.0,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 12.0, right: 12.0),
                     child: secondList(),
                   ),
                   SizedBox(
@@ -145,6 +153,60 @@ class NewGameSettings extends StatelessWidget {
                 ],
               ),
             ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget rewardTile() {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10.0),
+        color: Color(0xff313235),
+      ),
+      child: Consumer<NewGameModelProvider>(
+        builder: (context, data, child) => ListTile(
+          leading: CircleAvatar(
+            child: SvgPicture.asset('assets/images/gamesettings/clock.svg',
+                color: Colors.white),
+            backgroundColor: Color(0xffef9712),
+          ),
+          title: Text(
+            "Rewards",
+            style: TextStyle(color: Colors.white),
+          ),
+          subtitle: Text(
+            data.settings.rewards ?? "None",
+            style: TextStyle(color: Color(0xff848484)),
+          ),
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Text(
+                "",
+                style: TextStyle(color: Color(0xff848484)),
+              ),
+              IconButton(
+                  icon: Icon(
+                    Icons.arrow_forward_ios,
+                    color: Colors.white,
+                  ),
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => data.rewards == null
+                                ? Container(
+                                    child: Center(
+                                      child: CircularProgressIndicator(),
+                                    ),
+                                  )
+                                : ChangeNotifierProvider.value(
+                                    value: data, child: RewardsList())));
+                  }),
+            ],
           ),
         ),
       ),

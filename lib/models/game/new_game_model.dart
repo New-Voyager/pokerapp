@@ -1,4 +1,5 @@
 import 'package:pokerapp/enums/game_type.dart';
+import 'package:pokerapp/models/rewards_model.dart';
 
 class NewGameConstants {
   static const Map<GameType, String> SUPPORTED_GAMES = {
@@ -65,6 +66,8 @@ class NewGameModel {
   bool seatChangeAllowed = false;
   bool waitList = false;
   bool botGame = true;
+  Rewards rewards;
+
   NewGameModel(
       {this.clubCode,
       this.title,
