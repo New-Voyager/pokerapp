@@ -1,8 +1,10 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:pokerapp/models/club_homepage_model.dart';
 import 'package:pokerapp/resources/app_assets.dart';
+import 'package:pokerapp/resources/app_colors.dart';
 
 class ClubBannerView extends StatelessWidget {
   final ClubHomePageModel clubModel;
@@ -54,6 +56,48 @@ class ClubBannerView extends StatelessWidget {
               fontFamily: AppAssets.fontFamilyLato,
               fontWeight: FontWeight.w700,
             ),
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.all(5.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                "Club code: " + clubModel.clubCode,
+                style: TextStyle(
+                  color: AppColors.lightGrayColor,
+                  fontSize: 14.0,
+                  fontFamily: AppAssets.fontFamilyLato,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+              GestureDetector(
+                child: Padding(
+                  padding: EdgeInsets.all(8),
+                  child: Icon(
+                    Icons.copy,
+                    color: AppColors.appAccentColor,
+                    size: 16,
+                  ),
+                ),
+                onTap: () {
+                  Clipboard.setData(
+                      new ClipboardData(text: clubModel.clubCode));
+                  Scaffold.of(context).showSnackBar(SnackBar(
+                    content: Text(
+                      "Club code copied to clipboard",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16.0,
+                        fontFamily: AppAssets.fontFamilyLato,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ));
+                },
+              ),
+            ],
           ),
         ),
       ]),

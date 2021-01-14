@@ -10,45 +10,38 @@ class ClubGraphicsView extends StatelessWidget {
   final List<ClubWeeklyActivityModel> _weeklyActivity = [
     ClubWeeklyActivityModel(
       "Mon",
-      50,
-      30,
-      charts.ColorUtil.fromDartColor(Colors.amber),
+      300,
+      400,
     ),
     ClubWeeklyActivityModel(
       "Tue",
-      50,
-      30,
-      charts.ColorUtil.fromDartColor(Colors.amber),
+      200,
+      100,
     ),
     ClubWeeklyActivityModel(
       "Wed",
-      50,
-      30,
-      charts.ColorUtil.fromDartColor(Colors.amber),
+      300,
+      40,
     ),
     ClubWeeklyActivityModel(
       "Thu",
-      50,
-      30,
-      charts.ColorUtil.fromDartColor(Colors.amber),
+      450,
+      200,
     ),
     ClubWeeklyActivityModel(
       "Fri",
-      50,
-      30,
-      charts.ColorUtil.fromDartColor(Colors.amber),
+      80,
+      200,
     ),
     ClubWeeklyActivityModel(
       "Sat",
-      50,
-      30,
-      charts.ColorUtil.fromDartColor(Colors.amber),
+      250,
+      500,
     ),
     ClubWeeklyActivityModel(
       "Sun",
-      50,
-      30,
-      charts.ColorUtil.fromDartColor(Colors.amber),
+      0,
+      0,
     )
   ];
 
@@ -79,7 +72,7 @@ class ClubGraphicsView extends StatelessWidget {
                 color: AppColors.cardBackgroundColor,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Container(
                       margin: EdgeInsets.all(5),
@@ -116,19 +109,41 @@ class ClubGraphicsView extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                      margin: EdgeInsets.all(5),
-                      child: Text(
-                        "Weekly Activity",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 18.0,
-                          fontFamily: AppAssets.fontFamilyLato,
-                          fontWeight: FontWeight.w600,
+                    Expanded(
+                      flex: 3,
+                      child: Padding(
+                        padding: EdgeInsets.all(5),
+                        child: Column(
+                          children: [
+                            Text(
+                              "Weekly Activity",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18.0,
+                                fontFamily: AppAssets.fontFamilyLato,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            Text(
+                              "(BuyIn - Balance)",
+                              style: TextStyle(
+                                color: AppColors.listViewDividerColor,
+                                fontSize: 12.0,
+                                fontFamily: AppAssets.fontFamilyLato,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
-                    ClubWeeklyActivityBarChart(_weeklyActivity),
+                    Expanded(
+                      flex: 7,
+                      child: Padding(
+                        padding: EdgeInsets.all(5),
+                        child: ClubWeeklyActivityBarChart(_weeklyActivity),
+                      ),
+                    ),
                   ],
                 ),
               ),

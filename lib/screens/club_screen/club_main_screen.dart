@@ -73,7 +73,10 @@ class ClubMainScreen extends StatelessWidget {
                             ClubBannerView(
                               clubModel: clubModel,
                             ),
-                            ClubGraphicsView(clubModel.playerBalance ?? 0.0),
+                            IntrinsicHeight(
+                              child: ClubGraphicsView(
+                                  clubModel.playerBalance ?? 0.0),
+                            ),
                             ClubGamesPageView(),
                             ClubActionButtonsView(clubModel)
                           ],
