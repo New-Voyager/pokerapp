@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 
+import 'app_colors.dart';
+
 class AppStyles {
   static const cardTextStyle = TextStyle(
     fontSize: 15.0,
@@ -126,6 +128,12 @@ class AppStyles {
   );
 
   // club item info text styles
+  static const clubCodeStyle = TextStyle(
+    color: Colors.white,
+    fontSize: 16.0,
+    fontFamily: AppAssets.fontFamilyLato,
+  );
+
   static const clubItemInfoTextStyle = TextStyle(
     color: Color(0xff319ffe),
     fontSize: 12.0,
@@ -166,5 +174,17 @@ class AppStyles {
     color: Colors.white,
     fontSize: 18.0,
     fontWeight: FontWeight.w400,
+  );
+
+  // titles
+  static const TextStyle subTitleTextStyle = TextStyle(
+    fontFamily: 'Lato',
+    color: AppColors.appAccentColor,
+    fontSize: 20.0,
+  );
+  static const TextStyle titleTextStyle = TextStyle(
+    fontFamily: 'Lato',
+    color: Colors.white,
+    fontSize: 25.0,
   );
 }

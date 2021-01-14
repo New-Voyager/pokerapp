@@ -5,10 +5,13 @@ class Clubs {
         name
         clubCode
         clubStatus
+        memberStatus
+        balance
         memberCount
         imageId
         isOwner
         private
+        host
       }
     }""";
 }
