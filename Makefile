@@ -16,7 +16,7 @@ login:
 	docker login --username c1a5bd86f63f2882b8a11671bce3bae92e8355abf6e23613d7758a824c8f5082 --password c1a5bd86f63f2882b8a11671bce3bae92e8355abf6e23613d7758a824c8f5082 registry.digitalocean.com
 
 .PHONY: pull
-pull: login
+pull: login	
 	docker pull $(API_SERVER_IMAGE)
 	docker pull $(GAME_SERVER_IMAGE)
 	docker pull $(NATS_SERVER_IMAGE)
