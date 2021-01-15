@@ -174,7 +174,7 @@ class GameHistoryDetailModel extends ChangeNotifier {
     handsData
         .add(new HandData('Showdown', (showdownHands / handsPlayed) * 100.0));
     if (hhTracked) {
-      List<dynamic> winners = gameData['hhWinners'];
+      List<dynamic> winners = jsonData['hhWinners'];
       if (winners != null) {
         for (dynamic winner in winners) {
           hhWinners.add(HighHandWinner.fromJson(winner));

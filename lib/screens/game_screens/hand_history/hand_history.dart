@@ -70,13 +70,6 @@ class _HandHistoryState extends State<HandHistoryListView>
                     ),
                     text: "Winning Hands",
                   ),
-                  // new Tab(
-                  //   icon: SvgPicture.asset(
-                  //     'assets/images/casino.svg',
-                  //     color: Colors.white,
-                  //   ),
-                  //   text: "Hands",
-                  // ),
                 ],
                 controller: _tabController,
               ),

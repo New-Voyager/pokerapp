@@ -1,6 +1,6 @@
 class AppStrings {
   // games screen
-  static const String playerGamesText = 'Player Games';
+  static const String playerGamesText = 'Recent Games';
   static const String liveGamesText = 'Live Games';
 
   // login screen
