@@ -22,6 +22,7 @@ class PlayerModel {
   bool winner;
   int coinAmount;
   bool animatingCoinMovement;
+  bool animatingCoinMovementReverse;
   bool animatingFold;
 
   int noOfCardsVisible;

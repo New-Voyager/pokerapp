@@ -10,6 +10,7 @@ import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/footer_action_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/footer_result_view.dart';
 import 'package:pokerapp/services/game_play/footer_services.dart';
+import 'package:pokerapp/widgets/custom_text_button.dart';
 import 'package:pokerapp/widgets/round_raised_button.dart';
 import 'package:provider/provider.dart';
 import 'package:timer_count_down/timer_count_down.dart';
@@ -83,7 +84,34 @@ class FooterView extends StatelessWidget {
           ),
         );
       case FooterStatus.None:
-        return null;
+        return Container(
+          padding: EdgeInsets.symmetric(
+            horizontal: 20.0,
+            vertical: 10.0,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Align(
+                alignment: Alignment.centerLeft,
+                child: CustomTextButton(
+                  text: '. . . ICON',
+                  onTap: () {},
+                ),
+              ),
+              const SizedBox(
+                height: 10.0,
+              ),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: CustomTextButton(
+                  text: 'CHAT ICON HERE',
+                  onTap: () {},
+                ),
+              ),
+            ],
+          ),
+        );
     }
 
     return null;

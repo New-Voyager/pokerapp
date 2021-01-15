@@ -21,6 +21,7 @@ class UserObject {
   bool winner;
   int coinAmount;
   bool animatingCoinMovement;
+  bool animatingCoinMovementReverse;
 
   int noOfCardsVisible;
   bool animatingFold = false;
