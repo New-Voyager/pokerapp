@@ -49,73 +49,53 @@ class NewHandService {
     );
 
     // remove all highlight winners
-    Provider.of<Players>(
-      context,
-      listen: false,
-    ).removeWinnerHighlight();
+    players.removeWinnerHighlight();
 
     // before marking the small, big blind or the dealer, remove any marking from the old hand
-    Provider.of<Players>(
-      context,
-      listen: false,
-    ).removeMarkersFromAllPlayer();
+    players.removeMarkersFromAllPlayer();
 
     // remove all the status (last action) of all the players
-    Provider.of<Players>(
-      context,
-      listen: false,
-    ).removeAllPlayersStatus();
+    players.removeAllPlayersStatus();
 
     // remove all the folder players
-    Provider.of<Players>(
-      context,
-      listen: false,
-    ).removeAllFoldedPlayers();
+    players.removeAllFoldedPlayers();
 
     /* reset the noCardsVisible of each player and remove my cards too */
-    Provider.of<Players>(
-      context,
-      listen: false,
-    ).removeCardsFromAll();
+    players.removeCardsFromAll();
+
+    /* reset the reverse pot chips animation */
+    players.resetMoveCoinsFromPot();
 
     /* clean up from result views */
     /* set footer status to none  */
-    Provider.of<ValueNotifier<FooterStatus>>(
-      context,
-      listen: false,
-    ).value = FooterStatus.None;
     /* clearing the footer result */
     Provider.of<FooterResult>(
       context,
       listen: false,
     ).reset();
+    Provider.of<ValueNotifier<FooterStatus>>(
+      context,
+      listen: false,
+    ).value = FooterStatus.None;
 
     /* marking the small blind */
     int smallBlindIdx = players.players.indexWhere((p) => p.seatNo == sbPos);
     assert(smallBlindIdx != -1);
 
-    Provider.of<Players>(
-      context,
-      listen: false,
-    ).updatePlayerType(smallBlindIdx, PlayerType.SmallBlind,
+    players.updatePlayerType(smallBlindIdx, PlayerType.SmallBlind,
         coinAmount: smallBlind, notify: false);
 
     /* marking the big blind */
     int bigBlindIdx = players.players.indexWhere((p) => p.seatNo == bbPos);
     assert(bigBlindIdx != -1);
-    Provider.of<Players>(
-      context,
-      listen: false,
-    ).updatePlayerType(bigBlindIdx, PlayerType.BigBlind, coinAmount: bigBlind);
+    players.updatePlayerType(bigBlindIdx, PlayerType.BigBlind,
+        coinAmount: bigBlind);
 
     /* marking the dealer */
     int dealerIdx = players.players.indexWhere((p) => p.seatNo == dealerPos);
     print('dealer index: $dealerIdx');
     assert(dealerIdx != -1);
-    Provider.of<Players>(
-      context,
-      listen: false,
-    ).updatePlayerType(
+    players.updatePlayerType(
       dealerIdx,
       PlayerType.Dealer,
     );
@@ -130,24 +110,17 @@ class NewHandService {
     // this is done to wait until the footerResult section is removed
     await Future.delayed(AppConstants.fastAnimationDuration);
 
-    // remove all the community cards
-    Provider.of<TableState>(
-      context,
-      listen: false,
-    ).updateCommunityCardsSilent([]);
+    TableState tableState = Provider.of<TableState>(context, listen: false);
 
-    Provider.of<TableState>(
-      context,
-      listen: false,
-    ).updatePotChips(
+    // remove all the community cards
+    tableState.updateCommunityCardsSilent([]);
+
+    tableState.updatePotChips(
       potChips: null,
       potUpdatesChips: null,
     );
 
     /* put new hand message */
-    Provider.of<TableState>(
-      context,
-      listen: false,
-    ).updateTableStatus(AppConstants.NEW_HAND);
+    tableState.updateTableStatus(AppConstants.NEW_HAND);
   }
 }

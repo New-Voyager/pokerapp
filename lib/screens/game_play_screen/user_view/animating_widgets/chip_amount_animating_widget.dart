@@ -16,24 +16,35 @@ const Map<int, Offset> offsetMapping = {
 class ChipAmountAnimatingWidget extends StatelessWidget {
   final int seatPos;
   final Widget child;
+  final bool reverse;
 
   ChipAmountAnimatingWidget({
     this.seatPos,
     this.child,
+    this.reverse,
   });
 
   @override
   Widget build(BuildContext context) => TweenAnimationBuilder<Offset>(
         curve: Curves.easeInOut,
-        tween: Tween<Offset>(
-          begin: Offset(0, 0),
-          end: offsetMapping[seatPos],
-        ),
+        tween: (reverse ?? false)
+            ? Tween<Offset>(
+                begin: offsetMapping[seatPos],
+                end: Offset(0, 0),
+              )
+            : Tween<Offset>(
+                begin: Offset(0, 0),
+                end: offsetMapping[seatPos],
+              ),
         child: child,
         duration: AppConstants.animationDuration,
         builder: (_, offset, child) {
-          double offsetPercentageLeft =
-              1 - (offset.dy / offsetMapping[seatPos].dy);
+          double offsetPercentageLeft;
+          if (reverse ?? false)
+            offsetPercentageLeft = 1;
+          else
+            offsetPercentageLeft = 1 - (offset.dy / offsetMapping[seatPos].dy);
+
           return Transform.translate(
             offset: offset,
             child: Opacity(
