@@ -550,6 +550,29 @@ class UserView extends StatelessWidget {
       child: Stack(
         alignment: Alignment.center,
         children: [
+          if (userObject.winner ?? false)
+            Transform.translate(
+              offset: Offset(
+                0.0,
+                -20.0,
+              ),
+              child: Image.asset(
+                AppAssets.fireworkGif,
+                height: 100,
+                width: 100,
+              ),
+            )
+          else
+            shrinkedSizedBox,
+          //
+          // (userObject.winner ?? false)
+          //     ? Image.asset(
+          //         AppAssets.fireworkGif,
+          //         height: 150,
+          //         width: 150,
+          //       )
+          //     : shrinkedSizedBox,
+
           // main user body
           Stack(
             alignment: Alignment.bottomCenter,

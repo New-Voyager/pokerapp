@@ -8,6 +8,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/table_state.dar
 import 'package:pokerapp/models/game_play_models/ui/board_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/user_object.dart';
+import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/resources/app_styles.dart';
@@ -75,7 +76,7 @@ class BoardView extends StatelessWidget {
           child: Transform.translate(
             offset: Offset(
               0.0,
-              shiftDownConstant - 30,
+              shiftDownConstant,
             ),
             child: userView,
           ),
