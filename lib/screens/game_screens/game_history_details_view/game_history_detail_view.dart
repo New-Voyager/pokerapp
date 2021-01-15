@@ -6,6 +6,7 @@ import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/screens/game_screens/game_history_details_view/stack_chart_view.dart';
 import 'package:pokerapp/screens/game_screens/hand_history/hand_history.dart';
+import 'package:pokerapp/screens/game_screens/highhand_log/highhand_log.dart';
 import 'package:pokerapp/screens/game_screens/table_result/table_result.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:provider/provider.dart';
@@ -495,6 +496,31 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
         ));
   }
 
+  void onHighHandLogPressed(BuildContext context) {
+    final model =
+    HandHistoryListModel(_gameDetail.gameCode, _gameDetail.isOwner);
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (_) =>
+                HighHandLogView(_gameDetail.gameCode)));
+  }
+
+  void onHigh(BuildContext context) {
+    final model =
+    HandHistoryListModel(_gameDetail.gameCode, _gameDetail.isOwner);
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => ChangeNotifierProvider<HandHistoryListModel>(
+              create: (_) => model,
+              builder: (BuildContext context, _) =>
+                  Consumer<HandHistoryListModel>(
+                      builder: (_, HandHistoryListModel data, __) =>
+                          HandHistoryListView(data))),
+        ));
+  }
+
   Widget getLowerCard() {
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -580,7 +606,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
                     Icons.arrow_forward_ios,
                     color: Colors.white,
                   ),
-                  onPressed: () {}),
+                  onPressed: () => this.onHighHandLogPressed(context)),
             ),
           ],
         ),
