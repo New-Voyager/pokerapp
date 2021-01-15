@@ -300,51 +300,56 @@ class BoardView extends StatelessWidget {
               ),
 
               // pot value
-              Container(
-                margin: EdgeInsets.only(bottom: 10.0),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(100.0),
-                  color: Colors.black26,
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    // chip image
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Image.asset(
-                        'assets/images/chips.png',
-                        height: 25.0,
-                      ),
-                    ),
-
-                    // pot amount text
-                    Padding(
-                      padding: const EdgeInsets.only(
-                        right: 15.0,
-                        top: 5.0,
-                        bottom: 5.0,
-                        left: 5.0,
-                      ),
-                      child: Text(
-                        'Pot: ${potChips[0]}', // todo: at later point might need to show multiple pots - need to design UI
-                        style: AppStyles.itemInfoTextStyleHeavy.copyWith(
-                          fontSize: 15,
+              Opacity(
+                opacity: showDown ? 0 : 1,
+                child: Container(
+                  margin: EdgeInsets.only(bottom: 10.0),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(100.0),
+                    color: Colors.black26,
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      // chip image
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Image.asset(
+                          'assets/images/chips.png',
+                          height: 25.0,
                         ),
                       ),
-                    ),
-                  ],
+
+                      // pot amount text
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          right: 15.0,
+                          top: 5.0,
+                          bottom: 5.0,
+                          left: 5.0,
+                        ),
+                        child: Text(
+                          'Pot: ${potChips[0]}', // todo: at later point might need to show multiple pots - need to design UI
+                          style: AppStyles.itemInfoTextStyleHeavy.copyWith(
+                            fontSize: 15,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
+
               // card stacks
               Container(
-                  margin: communityMargin,
-                  child: StackCardView(
-                    cards: cards,
-                    center: true,
-                    isCommunity: true,
-                  )),
+                margin: communityMargin,
+                child: StackCardView(
+                  cards: cards,
+                  center: true,
+                  isCommunity: true,
+                ),
+              ),
 
               const SizedBox(height: AppDimensions.cardHeight / 2),
 
@@ -352,7 +357,7 @@ class BoardView extends StatelessWidget {
 
               /* potUpdates view */
               Opacity(
-                opacity: potChipsUpdates == null ? 0 : 1,
+                opacity: showDown || (potChipsUpdates == null) ? 0 : 1,
                 child: Container(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 10.0,
@@ -406,6 +411,8 @@ class BoardView extends StatelessWidget {
     for (PlayerModel model in users) {
       int idx = model.seatNo - 1;
 
+      // TODO: CLEAN THIS UP
+
       userObjects[idx].name = model.name;
       userObjects[idx].serverSeatPos = model.seatNo;
       userObjects[idx].isMe = model.isMe;
@@ -423,6 +430,8 @@ class BoardView extends StatelessWidget {
       userObjects[idx].animatingCoinMovement = model.animatingCoinMovement;
       userObjects[idx].noOfCardsVisible = model.noOfCardsVisible ?? 0;
       userObjects[idx].animatingFold = model.animatingFold;
+      userObjects[idx].animatingCoinMovementReverse =
+          model.animatingCoinMovementReverse;
     }
 
     return userObjects;

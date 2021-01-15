@@ -530,6 +530,7 @@ class UserView extends StatelessWidget {
             ? ChipAmountAnimatingWidget(
                 seatPos: seatPos,
                 child: coinAmountWidget,
+                reverse: userObject.animatingCoinMovementReverse,
               )
             : coinAmountWidget;
   }
