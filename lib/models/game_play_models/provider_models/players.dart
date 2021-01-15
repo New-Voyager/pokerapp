@@ -120,6 +120,24 @@ class Players extends ChangeNotifier {
     _notify();
   }
 
+  Future<void> resetMoveCoinsFromPot() async {
+    for (int idx = 0; idx < players.length; idx++) {
+      _players[idx].animatingCoinMovement = false;
+      _players[idx].animatingCoinMovementReverse = false;
+      _players[idx].coinAmount = null;
+    }
+    _notify();
+  }
+
+  Future<void> moveCoinsFromPot(int idx, int amount) async {
+    /* move all the coins to the pot  */
+    _players[idx].animatingCoinMovement = true;
+    _players[idx].animatingCoinMovementReverse = true;
+    _players[idx].coinAmount = amount;
+
+    _notify();
+  }
+
   Future<void> moveCoinsToPot() async {
     /* move all the coins to the pot  */
     for (int i = 0; i < _players.length; i++) {
@@ -145,7 +163,7 @@ class Players extends ChangeNotifier {
     _notify();
   }
 
-  void updateStackSilent(var stackData) {
+  void updateStackBulk(var stackData) {
     Map<int, int> stacks = Map<int, int>();
 
     stackData.forEach((key, value) =>
@@ -156,10 +174,7 @@ class Players extends ChangeNotifier {
       int idx = _players.indexWhere((p) => p.seatNo == seatNo);
       _players[idx].stack = stack;
     });
-  }
 
-  void updateStack(var stackData) {
-    updateStackSilent(stackData);
     _notify();
   }
 

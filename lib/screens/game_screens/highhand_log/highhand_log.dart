@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:pokerapp/models/game_history_model.dart';
 import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/screens/game_screens/highhand_log/high_hand_widget.dart';
 import 'package:pokerapp/screens/game_screens/widgets/highhand_widget.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 
@@ -35,27 +36,6 @@ class _HighHandLogViewState extends State<HighHandLogView> {
     _fetchData();
   }
 
-  getListItem(int index) {
-    Widget widget = new HighhandWidget(this.hhWinners[index]);
-    return Padding(
-      padding: const EdgeInsets.only(
-        left: 8.0,
-        right: 8.0,
-      ),
-      child: Container(
-        child: Padding(
-          padding: const EdgeInsets.all(6.0),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              widget,
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -83,7 +63,7 @@ class _HighHandLogViewState extends State<HighHandLogView> {
                 Expanded(
                   child: ListView.separated(
                     itemBuilder: (context, index) {
-                      return getListItem(index);
+                      return new HighHandWidget(this.hhWinners[index]);
                     },
                     itemCount: hhWinners.length,
                     separatorBuilder: (context, index) {

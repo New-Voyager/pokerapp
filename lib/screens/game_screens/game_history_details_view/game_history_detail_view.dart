@@ -540,6 +540,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
               ),
             ),
             ListTile(
+              onTap: () => this.onHandHistoryPressed(context),
               leading: CircleAvatar(
                 child: SvgPicture.asset('assets/images/casino.svg',
                     color: Colors.white),
@@ -554,7 +555,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
                     Icons.arrow_forward_ios,
                     color: Colors.white,
                   ),
-                  onPressed: () => this.onHandHistoryPressed(context)),
+              ),
             ),
             Padding(
               padding: const EdgeInsets.only(left: 70.0),
@@ -592,7 +593,8 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
               ),
             ),
             ListTile(
-              leading: CircleAvatar(
+                onTap: () => this.onHighHandLogPressed(context),
+                leading: CircleAvatar(
                 child: SvgPicture.asset('assets/images/casino.svg',
                     color: Colors.white),
                 backgroundColor: Color(0xff0fc915),
@@ -606,7 +608,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
                     Icons.arrow_forward_ios,
                     color: Colors.white,
                   ),
-                  onPressed: () => this.onHighHandLogPressed(context)),
+              ),
             ),
           ],
         ),
