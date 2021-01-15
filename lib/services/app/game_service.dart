@@ -54,6 +54,7 @@ class GameService {
             playerCards
             boardCards
             handTime
+            winner
         }
       }  
   """;
@@ -98,6 +99,7 @@ class GameService {
             handTime
             handNum
             highHandCards
+            winner
         }
      }
   """;

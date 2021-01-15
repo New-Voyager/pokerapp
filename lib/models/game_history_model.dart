@@ -98,6 +98,7 @@ class HighHandWinner {
   List<int> hhCards = new List<int>();
   DateTime handTime;
   String highHandCards;
+  bool winner;
 
   HighHandWinner.fromJson(dynamic data) {
     gameCode = data['gameCode'];
@@ -118,6 +119,10 @@ class HighHandWinner {
       hhCards.add(int.parse(card.toString()));
     }
     handTime = DateTime.parse(data['handTime'].toString());
+    winner = false;
+    if (data['winner'].toString() == 'true') {
+      winner = true;
+    }
   }
 }
 

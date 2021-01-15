@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/screens/auth_screens/login_screen.dart';
-import 'package:pokerapp/screens/club_screen/games_page_view/high_hand/high_hand.dart';
 import 'package:pokerapp/screens/game_play_screen/card_views/animations/animating_shuffle_card_view.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
 
@@ -44,10 +43,7 @@ class _ProfilePageViewState extends State<ProfilePageView> {
           Spacer(),
           RaisedButton(
             child: Text('TOGGLE'),
-            // onPressed: toggle,
-            onPressed: () => Navigator.push(
-                context, MaterialPageRoute(builder: (context) => HighHand())),
-          ),
+            onPressed: toggle,),
           Spacer(),
           RaisedButton(
             child: Text('Logout'),

@@ -10,6 +10,7 @@ class CardObject {
 
   // ui params
   bool smaller;
+  bool highHandLog;
 
   bool isShownAtTable;
 
@@ -26,7 +27,8 @@ class CardObject {
     @required this.color,
     this.smaller = false,
     this.highlight = false,
-    this.isShownAtTable = false, // this is true for the community cards
+    this.isShownAtTable = false,
+    this.highHandLog = false,// this is true for the community cards
   }) {
     this.visibleCard = VisibleCardView(
       card: this,

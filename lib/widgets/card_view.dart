@@ -95,7 +95,7 @@ class CardView extends StatelessWidget {
       );
     }
     if (card.smaller) {
-      cardWidth = AppDimensions.cardWidth * 1.5;
+      cardWidth = AppDimensions.cardWidth * 1.2;
     } else {
       cardWidth = 22;
       cardHeight = 32;
