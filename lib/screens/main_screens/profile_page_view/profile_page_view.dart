@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/rewards_model.dart';
 import 'package:pokerapp/screens/auth_screens/login_screen.dart';
 import 'package:pokerapp/screens/game_play_screen/card_views/animations/animating_shuffle_card_view.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
+import 'package:provider/provider.dart';
 
 class ProfilePageView extends StatefulWidget {
   @override
@@ -42,7 +44,7 @@ class _ProfilePageViewState extends State<ProfilePageView> {
           ),
           Spacer(),
           RaisedButton(
-            child: Text('TOGGLE'),
+            child: Text('TOGGLE')
             onPressed: toggle,),
           Spacer(),
           RaisedButton(

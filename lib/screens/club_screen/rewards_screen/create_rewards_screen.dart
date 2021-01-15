@@ -53,67 +53,109 @@ class CreateRewardsScreen extends StatelessWidget {
             autovalidateMode: AutovalidateMode.always,
             child: Column(
               children: [
-                TextFormField(
-                  onChanged: (value) {},
-                  validator: (text) {
-                    if (text == null) {
-                      return "Enter something";
-                    } else if (text.isEmpty) {
-                      return "Name Can't be empty!";
-                    }
-                  },
-                  controller: _name,
-                  keyboardType: TextInputType.name,
-                  decoration: InputDecoration(
-                    hintText: "Enter Name",
-                    hintStyle: TextStyle(color: Colors.grey),
+                Padding(
+                  padding: const EdgeInsets.only(
+                      top: 8.0, bottom: 8.0, left: 15.0, right: 15.0),
+                  child: TextFormField(
+                    onChanged: (value) {},
+                    validator: (text) {
+                      if (text == null) {
+                        return "Enter something";
+                      } else if (text.isEmpty) {
+                        return "Name Can't be empty!";
+                      }
+                    },
+                    controller: _name,
+                    keyboardType: TextInputType.name,
+                    decoration: InputDecoration(
+                      hintText: "Enter Name",
+                      hintStyle: TextStyle(color: Colors.grey),
+                    ),
+                    style: TextStyle(color: Colors.white),
                   ),
-                  style: TextStyle(color: Colors.white),
                 ),
                 SizedBox(
                   height: 10.0,
                 ),
-                TextFormField(
-                  onChanged: (value) {},
-                  validator: (text) {
-                    if (text.isEmpty) {
-                      return "enter something";
-                    } else if (int.parse(text) < 0) {
-                      return "Amount should be greater than 0!";
-                    }
-                  },
-                  controller: _amount,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    hintText: "Reward Amount",
-                    hintStyle: TextStyle(color: Colors.grey),
+                Padding(
+                  padding: const EdgeInsets.only(
+                      top: 8.0, bottom: 8.0, left: 15.0, right: 15.0),
+                  child: TextFormField(
+                    onChanged: (value) {},
+                    validator: (text) {
+                      if (text.isEmpty) {
+                        return "Enter Amount";
+                      } else if (int.parse(text) < 0) {
+                        return "Amount should be greater than 0!";
+                      }
+                    },
+                    controller: _amount,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      hintText: "Reward Amount",
+                      hintStyle: TextStyle(color: Colors.grey),
+                    ),
+                    style: TextStyle(color: Colors.white),
                   ),
-                  style: TextStyle(color: Colors.white),
                 ),
                 SizedBox(
                   height: 30.0,
                 ),
-                TextFormField(
-                  onChanged: (value) {},
-                  keyboardType: TextInputType.name,
-                  decoration: InputDecoration(
-                    hintText: "Type",
-                    hintStyle: TextStyle(color: Colors.grey),
+                // TextFormField(
+                //   onChanged: (value) {},
+                //   keyboardType: TextInputType.name,
+                //   decoration: InputDecoration(
+                //     hintText: "Type",
+                //     hintStyle: TextStyle(color: Colors.grey),
+                //   ),
+                //   style: TextStyle(color: Colors.white),
+                // ),
+                Padding(
+                  padding: const EdgeInsets.only(
+                      top: 8.0, bottom: 8.0, left: 15.0, right: 15.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Type",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      Text(
+                        "High Hand",
+                        style: TextStyle(color: Color(0xff848484)),
+                      ),
+                    ],
                   ),
-                  style: TextStyle(color: Colors.white),
                 ),
                 SizedBox(
                   height: 10.0,
                 ),
-                TextFormField(
-                  onChanged: (value) {},
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    hintText: "Schedule",
-                    hintStyle: TextStyle(color: Colors.grey),
+                Padding(
+                  padding: const EdgeInsets.only(
+                      top: 8.0, bottom: 8.0, left: 15.0, right: 15.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Track",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      Text(
+                        "Entire Game",
+                        style: TextStyle(color: Color(0xff848484)),
+                      ),
+                    ],
                   ),
-                  style: TextStyle(color: Colors.white),
                 ),
+                // TextFormField(
+                //   onChanged: (value) {},
+                //   keyboardType: TextInputType.number,
+                //   decoration: InputDecoration(
+                //     hintText: "Schedule",
+                //     hintStyle: TextStyle(color: Colors.grey),
+                //   ),
+                //   style: TextStyle(color: Colors.white),
+                // ),
               ],
             ),
           ),
@@ -130,8 +172,9 @@ class CreateRewardsScreen extends StatelessWidget {
               Provider.of<RewardsModelProvider>(context, listen: false)
                   .createRewards(_name.text, "ENTIRE_GAME",
                       int.parse(_amount.text), "HIGH_HAND");
+              Navigator.pop(context);
             },
-            text: 'Add',
+            text: 'Save',
           ),
         ),
       ];
