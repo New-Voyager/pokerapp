@@ -53,7 +53,7 @@ class TableView extends StatelessWidget {
             spreadRadius: 1.0,
           )
         ],
-        color: const Color(0xff646464),
+        color: const Color(0x0000ff64),
         borderRadius:
             board.horizontal ? horizontalBorderRadius : verticalBorderRadius,
         border: Border.all(
