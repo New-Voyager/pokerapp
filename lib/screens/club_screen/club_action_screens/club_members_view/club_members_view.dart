@@ -130,13 +130,14 @@ class _ClubMembersViewState extends State<ClubMembersView>
               child: TabBarView(
                 controller: _controller,
                 children: <Widget>[
-                  ClubMembersListView(this._clubHomePageModel.clubCode, _all),
                   ClubMembersListView(
-                      this._clubHomePageModel.clubCode, _unsettled),
+                      this._clubHomePageModel.clubCode, _all, _fetchData),
                   ClubMembersListView(
-                      this._clubHomePageModel.clubCode, _managers),
+                      this._clubHomePageModel.clubCode, _unsettled, _fetchData),
                   ClubMembersListView(
-                      this._clubHomePageModel.clubCode, _inactive),
+                      this._clubHomePageModel.clubCode, _managers, _fetchData),
+                  ClubMembersListView(
+                      this._clubHomePageModel.clubCode, _inactive, _fetchData),
                 ],
               ),
             ),
