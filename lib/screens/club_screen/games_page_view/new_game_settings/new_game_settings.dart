@@ -13,6 +13,7 @@ import 'package:pokerapp/screens/club_screen/games_page_view/new_game_settings/i
 import 'package:pokerapp/screens/club_screen/games_page_view/new_game_settings/ingame_settings/max_player_select.dart';
 import 'package:pokerapp/screens/club_screen/games_page_view/new_game_settings/ingame_settings/rewards_list.dart';
 import 'package:pokerapp/screens/game_play_screen/game_play_screen.dart';
+import 'package:pokerapp/screens/game_play_screen/user_view/user_view.dart';
 import 'package:pokerapp/services/app/rewards_service.dart';
 import 'package:pokerapp/services/game_play/graphql/game_service.dart';
 import 'package:pokerapp/widgets/custom_text_button.dart';
@@ -165,11 +166,13 @@ class _NewGameSettingsState extends State<NewGameSettings> {
                         SizedBox(
                           height: 20.0,
                         ),
-                        Padding(
-                          padding:
-                              const EdgeInsets.only(left: 12.0, right: 12.0),
-                          child: rewardTile(),
-                        ),
+                        (this.rewards != null && this.rewards.length > 0)
+                            ? Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 12.0, right: 12.0),
+                                child: rewardTile(),
+                              )
+                            : shrinkedSizedBox,
                         SizedBox(
                           height: 20.0,
                         ),
@@ -216,7 +219,9 @@ class _NewGameSettingsState extends State<NewGameSettings> {
             style: TextStyle(color: Colors.white),
           ),
           subtitle: Text(
-            data.selectedReward == -1 ? 'None' : data.rewards[data.selectedReward].name,
+            data.selectedReward == -1
+                ? 'None'
+                : data.rewards[data.selectedReward].name,
             style: TextStyle(color: Color(0xff848484)),
           ),
           trailing: Row(
@@ -243,8 +248,7 @@ class _NewGameSettingsState extends State<NewGameSettings> {
                                     ),
                                   )
                                 : ChangeNotifierProvider.value(
-                                    value: data,
-                                    child: RewardsList())));
+                                    value: data, child: RewardsList())));
                   }),
             ],
           ),
