@@ -45,8 +45,8 @@ class _ProfilePageViewState extends State<ProfilePageView> {
           Spacer(),
           RaisedButton(
             child: Text('TOGGLE'),
-            onPressed: () => toggle(),
-            ),
+            onPressed: toggle,
+          ),
           Spacer(),
           RaisedButton(
             child: Text('Logout'),
