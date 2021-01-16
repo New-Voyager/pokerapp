@@ -6,6 +6,8 @@ import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:provider/provider.dart';
 
+import 'dart:developer';
+
 class HighHandService {
   HighHandService._();
 
@@ -23,11 +25,12 @@ class HighHandService {
     var winner = data['winners'][0];
 
     String playerName = winner['playerName'];
-    List<CardObject> hhCards =
-        winner['hhCards']?.map((c) => CardHelper.getCard(c as int))?.toList();
+    List<CardObject> hhCards = winner['hhCards']
+        ?.map<CardObject>((c) => CardHelper.getCard(c as int))
+        ?.toList();
 
     List<CardObject> playerCards = winner['playerCards']
-        ?.map((c) => CardHelper.getCard(c as int))
+        ?.map<CardObject>((c) => CardHelper.getCard(c as int))
         ?.toList();
 
     if (showNotification) {
@@ -53,14 +56,20 @@ class HighHandService {
       notificationValueNotifier.value = null;
     } else {
       /* the player is in the current game - firework this user */
-      int seatNo = data['seatNo'] ?? 1; // FIXME: SEAT-NO SHOULD NOT BE NULL
+      int seatNo = winner['seatNo'] as int;
 
-      /* setting as winner would firework the user too
-      * TODO: MAY BE THE WINNER NEEDS NOT TO BE FIREWORK-ED ALWAYS? */
-      Provider.of<Players>(
+      log('high_hand_service : seatNo: $seatNo');
+
+      Players players = Provider.of<Players>(
         context,
         listen: false,
-      ).highlightWinner(seatNo);
+      );
+
+      players.fireworkWinner(seatNo);
+
+      await Future.delayed(AppConstants.notificationDuration);
+
+      players.removeFirework(seatNo);
     }
   }
 }

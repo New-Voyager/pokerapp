@@ -70,7 +70,7 @@ class ResultService {
 
     HighHandService.handle(
       context: context,
-      data: data['highHand'],
+      data: data['handResult']['highHand'],
       showNotification: false,
     );
 
