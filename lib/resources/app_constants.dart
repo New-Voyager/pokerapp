@@ -48,6 +48,10 @@ class AppConstants {
     seconds: 2,
   );
 
+  static const Duration notificationDuration = const Duration(
+    seconds: 5,
+  );
+
   static const String giphyApiKey = 'IoanUNVNMRCaTnTpYzB2UDxUdatagMkQ';
 
   static const String blackSpade = '♠';
@@ -74,6 +78,7 @@ class AppConstants {
 
   /* message types */
   static const String PLAYER_UPDATE = 'PLAYER_UPDATE';
+  static const String HIGH_HAND = 'HIGH_HAND';
   static const String GAME_STATUS = 'GAME_STATUS';
   static const String NEW_HAND = 'NEW_HAND';
   static const String DEAL_STARTED = 'DEAL_STARTED';
