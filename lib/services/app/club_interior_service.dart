@@ -79,6 +79,18 @@ class ClubInteriorService {
     }
   """;
 
+  static String approveMember = """
+  mutation (\$clubCode: String!, \$playerId: String!) {
+    status: approveMember(clubCode: \$clubCode, playerUuid: \$playerId)
+  }
+  """;
+
+  static String denyMember = """
+  mutation (\$clubCode: String!, \$playerId: String!) {
+    status: rejectMember(clubCode: \$clubCode, playerUuid: \$playerId)
+  }
+  """;
+
   static Future<List<ClubMemberModel>> getMembers(String clubCode) async {
     return getClubMembers(clubCode, MemberListOptions.ALL);
   }
@@ -191,10 +203,39 @@ class ClubInteriorService {
   static Future<String> joinClub(String clubCode) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
     Map<String, dynamic> variables = {"clubCode": clubCode};
-    QueryResult result = await _client.mutate(
-        MutationOptions(documentNode: gql(joinClubQuery), variables: variables));
+    QueryResult result = await _client.mutate(MutationOptions(
+        documentNode: gql(joinClubQuery), variables: variables));
     if (result.hasException) return null;
 
+    final jsonResponse = result.data['status'].toString();
+    return jsonResponse;
+  }
+
+  static Future<String> approveClubMember(
+      String clubCode, String playerID) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+    Map<String, dynamic> variables = {
+      "clubCode": clubCode,
+      "playerId": playerID
+    };
+    QueryResult result = await _client.mutate(MutationOptions(
+        documentNode: gql(approveMember), variables: variables));
+    if (result.hasException) return null;
+    final jsonResponse = result.data['status'].toString();
+    return jsonResponse;
+  }
+
+  static Future<String> denyClubMember(String clubCode, String playerID) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+    Map<String, dynamic> variables = {
+      "clubCode": clubCode,
+      "playerId": playerID
+    };
+    QueryResult result = await _client.mutate(
+        MutationOptions(documentNode: gql(denyMember), variables: variables));
+    if (result.hasException) return null;
+    print("result.hasException ${result.hasException}");
+    print("result.data['status'] ${result.data['status']}");
     final jsonResponse = result.data['status'].toString();
     return jsonResponse;
   }
