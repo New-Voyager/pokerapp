@@ -498,17 +498,16 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
 
   void onHighHandLogPressed(BuildContext context) {
     final model =
-    HandHistoryListModel(_gameDetail.gameCode, _gameDetail.isOwner);
+        HandHistoryListModel(_gameDetail.gameCode, _gameDetail.isOwner);
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (_) =>
-                HighHandLogView(_gameDetail.gameCode)));
+            builder: (_) => HighHandLogView(_gameDetail.gameCode)));
   }
 
   void onHigh(BuildContext context) {
     final model =
-    HandHistoryListModel(_gameDetail.gameCode, _gameDetail.isOwner);
+        HandHistoryListModel(_gameDetail.gameCode, _gameDetail.isOwner);
     Navigator.push(
         context,
         MaterialPageRoute(
@@ -551,10 +550,10 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
                 style: TextStyle(color: Colors.white),
               ),
               trailing: IconButton(
-                  icon: Icon(
-                    Icons.arrow_forward_ios,
-                    color: Colors.white,
-                  ),
+                icon: Icon(
+                  Icons.arrow_forward_ios,
+                  color: Colors.white,
+                ),
               ),
             ),
             Padding(
@@ -593,8 +592,8 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
               ),
             ),
             ListTile(
-                onTap: () => this.onHighHandLogPressed(context),
-                leading: CircleAvatar(
+              onTap: () => this.onHighHandLogPressed(context),
+              leading: CircleAvatar(
                 child: SvgPicture.asset('assets/images/casino.svg',
                     color: Colors.white),
                 backgroundColor: Color(0xff0fc915),
@@ -604,10 +603,10 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
                 style: TextStyle(color: Colors.white),
               ),
               trailing: IconButton(
-                  icon: Icon(
-                    Icons.arrow_forward_ios,
-                    color: Colors.white,
-                  ),
+                icon: Icon(
+                  Icons.arrow_forward_ios,
+                  color: Colors.white,
+                ),
               ),
             ),
           ],

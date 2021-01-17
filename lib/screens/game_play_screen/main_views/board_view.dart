@@ -433,6 +433,7 @@ class BoardView extends StatelessWidget {
       userObjects[idx].animatingFold = model.animatingFold;
       userObjects[idx].animatingCoinMovementReverse =
           model.animatingCoinMovementReverse;
+      userObjects[idx].showFirework = model.showFirework ?? false;
     }
 
     return userObjects;

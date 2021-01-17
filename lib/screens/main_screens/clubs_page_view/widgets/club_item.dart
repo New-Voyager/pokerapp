@@ -30,19 +30,15 @@ class ClubItemView extends StatelessWidget {
           ),
         ),
         separator,
-
         Text(
           "Code: ${club.clubCode}",
           style: AppStyles.clubCodeStyle,
         ),
-
         Text(
           club.isOwner ? "Host: You" : "Host: ${club.hostName}",
           style: AppStyles.clubItemInfoTextStyle,
         ),
-
         Spacer(),
-
         Text(
           '${club.memberCount} Member${club.memberCount == 0 || club.memberCount == 1 ? '' : 's'}',
           style: AppStyles.itemInfoTextStyle,
@@ -52,13 +48,12 @@ class ClubItemView extends StatelessWidget {
         club.outgoingRequest || club.incomingRequest
             ? SizedBox.shrink()
             : separator,
-
         club.outgoingRequest || club.incomingRequest
             ? SizedBox.shrink()
             : Text(
-          "Joined at ${club.joinDate}",
-          style: AppStyles.itemInfoTextStyle,
-        ),
+                "Joined at ${club.joinDate}",
+                style: AppStyles.itemInfoTextStyle,
+              ),
       ],
     );
   }
@@ -80,17 +75,20 @@ class ClubItem extends StatelessWidget {
     List<Widget> children = [];
     if (club.memberStatus == 'ACTIVE') {
       children = [
-        club.balance == '0' ? SizedBox(height: 0,) :
-        Text(
-          club.balance,
-          style: AppStyles.itemInfoSecondaryTextStyle.copyWith(
-            color: double.parse(club.balance) > 0
-                ? AppColors.positiveColor
-                : AppColors.negativeColor,
-          ),
-        ),
+        club.balance == '0'
+            ? SizedBox(
+                height: 0,
+              )
+            : Text(
+                club.balance,
+                style: AppStyles.itemInfoSecondaryTextStyle.copyWith(
+                  color: double.parse(club.balance) > 0
+                      ? AppColors.positiveColor
+                      : AppColors.negativeColor,
+                ),
+              ),
       ];
-    } else if(club.memberStatus == 'INVITED') {
+    } else if (club.memberStatus == 'INVITED') {
       children = [
         CustomTextButton(
           text: 'Join',
@@ -101,7 +99,7 @@ class ClubItem extends StatelessWidget {
           onTap: () {},
         ),
       ];
-    } else if(club.memberStatus == 'PENDING') {
+    } else if (club.memberStatus == 'PENDING') {
       children = [
         Text(
           'Waiting For Approval',
@@ -123,7 +121,6 @@ class ClubItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return Container(
       height: 135.0,
       decoration: const BoxDecoration(

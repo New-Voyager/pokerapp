@@ -8,6 +8,7 @@ import 'package:pokerapp/models/game_play_models/business/card_distribution_mode
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/action_info.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/footer_result.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/hh_notification_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/player_action/player_action.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/remaining_time.dart';
@@ -174,6 +175,11 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
     @required GameInfoModel gameInfoModel,
   }) =>
       [
+        /* this is for the highHand Notification */
+        ListenableProvider<ValueNotifier<HhNotificationModel>>(
+          create: (_) => ValueNotifier<HhNotificationModel>(null),
+        ),
+
         /* this is for having random card back for every new hand */
         ListenableProvider<CardDistributionModel>(
           create: (_) => CardDistributionModel(),
