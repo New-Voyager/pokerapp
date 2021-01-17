@@ -37,8 +37,7 @@ class HandWinnersView extends StatelessWidget {
                 color: AppColors.cardBackgroundColor,
                 child: ExpansionTile(
                   title: Text(
-                    "Pot #" +
-                        _handLogModel.potWinners[index].potNumber.toString(),
+                    _handLogModel.potWinners[index].potNumberStr,
                     style: const TextStyle(
                       fontFamily: AppAssets.fontFamilyLato,
                       color: Colors.white,

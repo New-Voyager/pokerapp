@@ -28,7 +28,7 @@ class CardObject {
     this.smaller = false,
     this.highlight = false,
     this.isShownAtTable = false,
-    this.highHandLog = false,// this is true for the community cards
+    this.highHandLog = false, // this is true for the community cards
   }) {
     this.visibleCard = VisibleCardView(
       card: this,

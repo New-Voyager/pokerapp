@@ -168,8 +168,7 @@ class _SearchClubBottomSheetState extends State<SearchClubBottomSheet> {
                                     separator15,
                                     GestureDetector(
                                       onTap: () => onJoin(context),
-                                      child:
-                                      Center(
+                                      child: Center(
                                         child: Container(
                                           padding: EdgeInsets.symmetric(
                                               horizontal: 30, vertical: 10),

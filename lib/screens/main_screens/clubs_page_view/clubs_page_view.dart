@@ -188,15 +188,13 @@ class _ClubsPageViewState extends State<ClubsPageView> {
   }
 
   void openClub(BuildContext context, ClubModel club) async {
-
     if (club.memberStatus == 'ACTIVE') {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (_) =>
-              ClubMainScreen(
-                clubCode: club.clubCode,
-              ),
+          builder: (_) => ClubMainScreen(
+            clubCode: club.clubCode,
+          ),
         ),
       );
     }

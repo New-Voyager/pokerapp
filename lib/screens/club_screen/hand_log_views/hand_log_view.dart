@@ -7,10 +7,14 @@ import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_log_header_view.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_stage_view.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_winners_view.dart';
+import 'package:pokerapp/services/app/hand_service.dart';
 
 class HandLogView extends StatefulWidget {
+  HandLogModel _handLogModel;
+  HandLogView(this._handLogModel);
+
   @override
-  State<StatefulWidget> createState() => _HandLogViewState();
+  State<StatefulWidget> createState() => _HandLogViewState(_handLogModel);
 }
 
 class _HandLogViewState extends State<HandLogView> {
@@ -18,17 +22,28 @@ class _HandLogViewState extends State<HandLogView> {
   bool _isLoading = true;
   var handLogjson;
 
+  _HandLogViewState(this._handLogModel);
+
   initState() {
     super.initState();
-    loadJsonData();
+    _fetchData();
+  }
+
+  void _fetchData() async {
+    await HandService.getHandLog(_handLogModel);
+    _isLoading = false;
+    setState(() {
+      // update ui
+    });
   }
 
   loadJsonData() async {
-    String data = await DefaultAssetBundle.of(context)
-        .loadString("assets/sample-data/handlog.json");
-    final jsonResult = json.decode(data);
+    // String data = await DefaultAssetBundle.of(context)
+    //     .loadString("assets/sample-data/handlog.json");
+    // final jsonResult = json.decode(data);
+    //
     setState(() {
-      _handLogModel = HandLogModel.fromJson(jsonResult);
+      //_handLogModel = HandLogModel.fromJson(jsonResult);
       _isLoading = false;
     });
   }

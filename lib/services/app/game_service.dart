@@ -130,11 +130,10 @@ class GameService {
 
     List hhWinnersData = result.data['hhWinners'];
     log = hhWinnersData.map((e) {
-        HighHandWinner winner = new HighHandWinner.fromJson(e);
-        //winner.gameCode = gameCode;
-        return winner;
-      }
-    ).toList();
+      HighHandWinner winner = new HighHandWinner.fromJson(e);
+      //winner.gameCode = gameCode;
+      return winner;
+    }).toList();
     return log;
   }
 }
