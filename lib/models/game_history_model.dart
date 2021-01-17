@@ -39,15 +39,20 @@ class GameHistoryModel {
     if (jsonData["balance"] != null) {
       balance = double.parse(jsonData["balance"].toString());
     }
-    sessionTime = int.parse(jsonData["sessionTime"].toString());
+    if (handsPlayed >= 1) {
+      sessionTime = int.parse(jsonData["sessionTime"].toString());
+      if (jsonData["sessionTimeStr"] != null) {
+        sessionTimeStr = jsonData["sessionTimeStr"].toString();
+      }
+    } else {
+      sessionTimeStr = "You didn't play this game";
+    }
+
     smallBlind = double.parse(jsonData["smallBlind"].toString());
     bigBlind = double.parse(jsonData["bigBlind"].toString());
 
     if (jsonData["startedAt"] != null) {
       startedAt = DateTime.parse(jsonData["startedAt"].toString());
-    }
-    if (jsonData["sessionTimeStr"] != null) {
-      sessionTimeStr = jsonData["sessionTimeStr"].toString();
     }
     if (jsonData["gameNum"] != null) {
       gameNum = int.parse(jsonData["gameNum"].toString());
@@ -146,6 +151,7 @@ class GameHistoryDetailModel extends ChangeNotifier {
   double balance;
   double buyIn;
   double profit;
+  bool playedGame = false;
 
   List<HandData> handsData = new List<HandData>();
   List<HighHandWinner> hhWinners = new List<HighHandWinner>();
@@ -155,29 +161,41 @@ class GameHistoryDetailModel extends ChangeNotifier {
 
   void load() async {
     final gameData = jsonData['completedGame'];
-    final List playerStack = jsonData['completedGame']['stackStat'];
+    if (gameData['handsPlayed'] == null) {
+      this.playedGame = false;
+    } else {
+      handsPlayed = int.parse(gameData['handsPlayed'].toString());
+      if (handsPlayed > 0) {
+        this.playedGame = true;
+      }
+    }
 
-    stack = playerStack
-        .map((e) => new PlayerStack(int.parse(e["handNum"].toString()),
-            double.parse(e["after"].toString())))
-        .toList();
-    stack.sort((a, b) => a.handNum.compareTo(b.handNum));
+    if (this.playedGame) {
+      final List playerStack = jsonData['completedGame']['stackStat'];
+      stack = playerStack
+          .map((e) =>
+      new PlayerStack(int.parse(e["handNum"].toString()),
+          double.parse(e["after"].toString())))
+          .toList();
+      stack.sort((a, b) => a.handNum.compareTo(b.handNum));
 
-    preflopHands = int.parse(gameData['preflopHands'].toString());
-    flopHands = int.parse(gameData['flopHands'].toString());
-    turnHands = int.parse(gameData['turnHands'].toString());
-    riverHands = int.parse(gameData['riverHands'].toString());
-    showdownHands = int.parse(gameData['showdownHands'].toString());
-    handsPlayed = int.parse(gameData['handsPlayed'].toString());
+      preflopHands = int.parse(gameData['preflopHands'].toString());
+      flopHands = int.parse(gameData['flopHands'].toString());
+      turnHands = int.parse(gameData['turnHands'].toString());
+      riverHands = int.parse(gameData['riverHands'].toString());
+      showdownHands = int.parse(gameData['showdownHands'].toString());
+      handsPlayed = int.parse(gameData['handsPlayed'].toString());
 
-    // build hands stats
-    handsData
-        .add(new HandData('Pre-flop', (preflopHands / handsPlayed) * 100.0));
-    handsData.add(new HandData('Flop', (flopHands / handsPlayed) * 100.0));
-    handsData.add(new HandData('Turn', (turnHands / handsPlayed) * 100.0));
-    handsData.add(new HandData('River', (riverHands / handsPlayed) * 100.0));
-    handsData
-        .add(new HandData('Showdown', (showdownHands / handsPlayed) * 100.0));
+      // build hands stats
+      handsData
+          .add(new HandData('Pre-flop', (preflopHands / handsPlayed) * 100.0));
+      handsData.add(new HandData('Flop', (flopHands / handsPlayed) * 100.0));
+      handsData.add(new HandData('Turn', (turnHands / handsPlayed) * 100.0));
+      handsData.add(new HandData('River', (riverHands / handsPlayed) * 100.0));
+      handsData
+          .add(new HandData('Showdown', (showdownHands / handsPlayed) * 100.0));
+    }
+
     if (hhTracked) {
       List<dynamic> winners = jsonData['hhWinners'];
       if (winners != null) {
@@ -189,27 +207,31 @@ class GameHistoryDetailModel extends ChangeNotifier {
     gameType = gameData['gameType'];
     gameHands = int.parse(gameData['handsDealt'].toString());
     runTimeStr = gameData['runTimeStr'].toString();
-    sessionTime = int.parse(gameData['sessionTime'].toString());
     int runTimeSec = (int.parse(gameData['runTime'].toString()) / 1000).round();
     if (runTimeSec < 60) {
       runTimeSec = 60;
     }
     runTimeStr = DataFormatter.timeFormat(runTimeSec);
-    sessionTimeStr = DataFormatter.timeFormat(sessionTime);
-
     endedAt = DateTime.parse(gameData['endedAt'].toString());
-    balance = double.parse(gameData['balance'].toString());
-    profit = double.parse(gameData['profit'].toString());
-    buyIn = double.parse(gameData['buyIn'].toString());
+    if (this.playedGame) {
+      sessionTime = int.parse(gameData['sessionTime'].toString());
+      sessionTimeStr = DataFormatter.timeFormat(sessionTime);
+      balance = double.parse(gameData['balance'].toString());
+      profit = double.parse(gameData['profit'].toString());
+      buyIn = double.parse(gameData['buyIn'].toString());
+    }
   }
 
   String get gameHandsText {
     return '$gameHands hands dealt in $runTimeStr';
   }
 
-  String get playerHandsText =>
-      'You played $handsPlayed hands in $sessionTimeStr';
-
+  String get playerHandsText {
+    if (!this.playedGame) {
+        return "You didn't play this game";
+    }
+    return 'You played $handsPlayed hands in $sessionTimeStr';
+  }
   String get balanceText => DataFormatter.chipsFormat(balance);
 
   String get buyInText => DataFormatter.chipsFormat(buyIn);

@@ -20,18 +20,16 @@ class _GameHistoryViewState extends State<GameHistoryView> {
   _GameHistoryViewState(this.clubCode);
 
   bool _isOwner = false;
-  bool _showLoading = false;
+  bool _loadingData = true;
 
   List<GameHistoryModel> _prevGames;
 
-  _toggleLoading() => setState(() {
-        _showLoading = !_showLoading;
-      });
-
   _fetchData() async {
-    _toggleLoading();
     _prevGames = await ClubInteriorService.getGameHistory(clubCode);
-    _toggleLoading();
+    _loadingData = false;
+    setState(() {
+
+    });
   }
 
   @override
@@ -61,7 +59,7 @@ class _GameHistoryViewState extends State<GameHistoryView> {
   }
 
   Widget body() {
-    if (_prevGames == null || _prevGames.length == 0) {
+    if (_loadingData) {
       return Center(
         child: const Text(
           'No games played',

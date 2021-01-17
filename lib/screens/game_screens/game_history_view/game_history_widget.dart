@@ -5,6 +5,7 @@ import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/screens/game_play_screen/main_views/header_view.dart';
 
 class GameHistoryItem extends StatelessWidget {
   final GameHistoryModel item;
@@ -14,6 +15,10 @@ class GameHistoryItem extends StatelessWidget {
   }) : assert(item != null);
 
   Widget _buildSideAction() {
+    if (item.handsPlayed <= 0) {
+      return shrinkedSizedBox;
+    }
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -24,7 +29,7 @@ class GameHistoryItem extends StatelessWidget {
                   color: item.balance > 0
                       ? AppColors.positiveColor
                       : AppColors.negativeColor)),
-          visible: item.balance != null,
+          visible: item.handsPlayed > 0 && item.balance != null,
         ),
       ],
     );
@@ -153,9 +158,12 @@ class GameHistoryItem extends StatelessWidget {
                             separator,
                             Visibility(
                               child: Row(children: [
-                                Text(
-                                  'Played for',
-                                  style: AppStyles.hostInfoTextStyle,
+                                Visibility(
+                                  visible: item.handsPlayed > 0,
+                                  child: Text(
+                                    'Played for',
+                                    style: AppStyles.hostInfoTextStyle,
+                                  ),
                                 ),
                                 colRunTimeSeparator,
                                 Text(
