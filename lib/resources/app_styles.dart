@@ -187,4 +187,18 @@ class AppStyles {
     color: Colors.white,
     fontSize: 25.0,
   );
+
+  // game option fonts
+  static const optionTitle = TextStyle(
+    color: Color(0xff319ffe),
+    fontSize: 15.0,
+    fontFamily: AppAssets.fontFamilyLato,
+    fontWeight: FontWeight.bold,
+  );
+
+  static const optionname = TextStyle(
+    color: AppColors.screenBackgroundColor,
+    fontSize: 15.0,
+    fontWeight: FontWeight.bold,
+  );
 }

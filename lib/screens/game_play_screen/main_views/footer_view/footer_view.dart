@@ -7,6 +7,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/footer_result.d
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/screens/club_screen/games_page_view/new_game_settings/game_options/game_option_bottom_sheet.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/footer_action_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/footer_result_view.dart';
 import 'package:pokerapp/services/game_play/footer_services.dart';
@@ -94,9 +95,24 @@ class FooterView extends StatelessWidget {
             children: [
               Align(
                 alignment: Alignment.centerLeft,
-                child: CustomTextButton(
-                  text: '. . . ICON',
-                  onTap: () {},
+                child: GestureDetector(
+                  onTap: () async {
+                    await showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      builder: (ctx) => GameOptionsBottomSheet(),
+                    );
+                  },
+                  child: Container(
+                    padding: EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: AppColors.cardBackgroundColor),
+                    child: Icon(
+                      Icons.more_horiz,
+                      color: AppColors.appAccentColor,
+                    ),
+                  ),
                 ),
               ),
               const SizedBox(
@@ -104,9 +120,18 @@ class FooterView extends StatelessWidget {
               ),
               Align(
                 alignment: Alignment.centerLeft,
-                child: CustomTextButton(
-                  text: 'CHAT ICON HERE',
-                  onTap: () {},
+                child: GestureDetector(
+                  onTap: () async {},
+                  child: Container(
+                    padding: EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: AppColors.cardBackgroundColor),
+                    child: Icon(
+                      Icons.chat_bubble,
+                      color: AppColors.appAccentColor,
+                    ),
+                  ),
                 ),
               ),
             ],
