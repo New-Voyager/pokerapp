@@ -22,6 +22,7 @@ class UserObject {
   int coinAmount;
   bool animatingCoinMovement;
   bool animatingCoinMovementReverse;
+  bool showFirework;
 
   int noOfCardsVisible;
   bool animatingFold = false;

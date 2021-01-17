@@ -101,8 +101,8 @@ class CardView extends StatelessWidget {
       cardHeight = 32;
 
       // TODO: We need to revisit how to get width and height working with ratio
-      width = cardWidth+10;
-      height = cardHeight+10;
+      width = cardWidth + 10;
+      height = cardHeight + 10;
     }
 
     Widget cardWidget = Container(

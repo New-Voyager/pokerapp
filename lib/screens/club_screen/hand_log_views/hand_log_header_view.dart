@@ -35,7 +35,7 @@ class HandLogHeaderView extends StatelessWidget {
                 Container(
                   margin: EdgeInsets.only(top: 5),
                   child: Text(
-                    "Game: " + _handLogModel.gameId,
+                    "Game: " + _handLogModel.gameCode,
                     style: const TextStyle(
                       fontFamily: AppAssets.fontFamilyLato,
                       color: Colors.white,
@@ -56,18 +56,18 @@ class HandLogHeaderView extends StatelessWidget {
                     ),
                   ),
                 ),
-                Container(
-                  margin: EdgeInsets.only(top: 5, bottom: 5),
-                  child: Text(
-                    "Duration: " + _printDuration(_handLogModel.handDuration),
-                    style: const TextStyle(
-                      fontFamily: AppAssets.fontFamilyLato,
-                      color: Colors.white,
-                      fontSize: 14.0,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                ),
+                // Container(
+                //   margin: EdgeInsets.only(top: 5, bottom: 5),
+                //   child: Text(
+                //     "Duration: " + _printDuration(_handLogModel.handDuration),
+                //     style: const TextStyle(
+                //       fontFamily: AppAssets.fontFamilyLato,
+                //       color: Colors.white,
+                //       fontSize: 14.0,
+                //       fontWeight: FontWeight.w400,
+                //     ),
+                //   ),
+                // ),
               ],
             ),
           ),
@@ -103,26 +103,27 @@ class HandLogHeaderView extends StatelessWidget {
                 ),
                 Container(
                   margin: EdgeInsets.only(top: 5, bottom: 5),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        margin: EdgeInsets.only(bottom: 5),
-                        child: Text(
-                          "Your Cards",
-                          style: const TextStyle(
-                            fontFamily: AppAssets.fontFamilyLato,
-                            color: Colors.white,
-                            fontSize: 14.0,
-                            fontWeight: FontWeight.w400,
+                  child: Visibility(
+                    visible: _handLogModel.yourcards.length > 0,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          margin: EdgeInsets.only(bottom: 5),
+                          child: Text(
+                            "Your Cards",
+                            style: const TextStyle(
+                              fontFamily: AppAssets.fontFamilyLato,
+                              color: Colors.white,
+                              fontSize: 14.0,
+                              fontWeight: FontWeight.w400,
+                            ),
                           ),
                         ),
-                      ),
-                      CommunityCardWidget(
-                          _handLogModel.yourcards.cast<int>().toList(),
-                          _handLogModel.gameWonAt == GameStages.SHOWDOWN),
-                    ],
+                        CardsView(_handLogModel.yourcards, true),
+                      ],
+                    ),
                   ),
                 ),
               ],

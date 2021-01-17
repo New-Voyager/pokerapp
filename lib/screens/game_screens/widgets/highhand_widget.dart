@@ -1,4 +1,3 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -27,7 +26,6 @@ class HighhandWidget extends StatelessWidget {
     }
     return Row(children: cardViews);
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -83,8 +81,8 @@ class HighhandWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                    (winner.gameCode != null ? '${winner.gameCode}/' : '')
-                        + 'Hand #${winner.handNum.toString()}',
+                  (winner.gameCode != null ? '${winner.gameCode}/' : '') +
+                      'Hand #${winner.handNum.toString()}',
                   style: TextStyle(color: Colors.white, fontSize: 14),
                 ),
                 Text(date, style: TextStyle(color: Colors.white, fontSize: 10)),
@@ -95,5 +93,4 @@ class HighhandWidget extends StatelessWidget {
       ],
     );
   }
-
 }

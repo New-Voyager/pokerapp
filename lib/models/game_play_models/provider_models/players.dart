@@ -80,9 +80,21 @@ class Players extends ChangeNotifier {
     _players[idx].playerType = playerType;
   }
 
-  void highlightWinner(seatNo) {
+  void fireworkWinner(int seatNo) {
     int idx = _players.indexWhere((p) => p.seatNo == seatNo);
-    log('\n\n\n\n\n\n winner index :$idx seatNo: $seatNo \n\n\n\n\n\n');
+    if (idx != -1) _players[idx].showFirework = true;
+    _notify();
+    notifyListeners();
+  }
+
+  void removeFirework(int seatNo) {
+    int idx = _players.indexWhere((p) => p.seatNo == seatNo);
+    if (idx != -1) _players[idx].showFirework = null;
+    _notify();
+  }
+
+  void highlightWinner(int seatNo) {
+    int idx = _players.indexWhere((p) => p.seatNo == seatNo);
     if (idx != -1) _players[idx].winner = true;
     _notify();
   }

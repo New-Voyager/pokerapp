@@ -7,6 +7,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/footer_result.d
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/resources/app_constants.dart';
+import 'package:pokerapp/services/game_play/action_services/game_action_service/sub_services/high_hand_service.dart';
 import 'package:provider/provider.dart';
 
 class ResultService {
@@ -65,6 +66,12 @@ class ResultService {
     Players players = Provider.of<Players>(
       context,
       listen: false,
+    );
+
+    HighHandService.handle(
+      context: context,
+      data: data['handResult']['highHand'],
+      showNotification: false,
     );
 
     /* remove all highlight - silently */

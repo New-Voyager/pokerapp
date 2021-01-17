@@ -24,6 +24,7 @@ class PlayerModel {
   bool animatingCoinMovement;
   bool animatingCoinMovementReverse;
   bool animatingFold;
+  bool showFirework;
 
   int noOfCardsVisible;
 
