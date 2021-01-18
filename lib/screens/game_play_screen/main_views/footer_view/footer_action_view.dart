@@ -14,6 +14,7 @@ import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/widgets/card_form_text_field.dart';
 import 'package:pokerapp/widgets/round_raised_button.dart';
+import 'package:pokerapp/services/game_play/message_id.dart';
 import 'package:provider/provider.dart';
 
 const shrinkedBox = const SizedBox.shrink(
@@ -115,12 +116,23 @@ class _FooterActionViewState extends State<FooterActionView> {
       listen: false,
     ).currentHandNum;
 
+    String gameCode = Provider.of<HeaderObject>(
+      context,
+      listen: false,
+    ).gameCode;
+
+    // TODO: Increment and insert the message ID atomically in some common code
+    // right before the message is sent. Message ID should be sequential
+    // and unique. Server will only process message IDs greater than the
+    // previous messages IDs it has seen and acknowledged.
+    int messageId = MessageId.incrementAndGetMessageId(gameCode);
     String message = """{
       "clubId": ${actionInfo.clubID},
       "gameId": "${actionInfo.gameID}",
       "playerId": "$playerID",
       "handNum": $handNum,
       "messageType": "PLAYER_ACTED",
+      "messageId": $messageId,
       "playerActed": {
         "seatNo": ${actionInfo.seatNo},
         "action": "$action",

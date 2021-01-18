@@ -8,6 +8,7 @@ import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/header_object.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_service/sub_services/next_action_service.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_service/sub_services/your_action_service.dart';
+import 'package:pokerapp/services/game_play/message_id.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:provider/provider.dart';
 
@@ -25,6 +26,12 @@ class QueryCurrentHandService {
     ).currentHandNum = handNum;
 
     var currentHandState = data['currentHandState'];
+    print('data: $data');
+
+    print('lastMessageId: ${currentHandState['lastMessageId']}');
+    if (MessageId.getLastMessageId(data['gameCode']) < currentHandState['lastMessageId']) {
+      MessageId.setLastMessageId(data['gameCode'], data['lastMessageId']);
+    }
 
     // current players cards
     String playerCards = currentHandState['playerCards'];
