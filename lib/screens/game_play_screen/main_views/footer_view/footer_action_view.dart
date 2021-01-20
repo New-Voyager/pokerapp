@@ -121,11 +121,7 @@ class _FooterActionViewState extends State<FooterActionView> {
       listen: false,
     ).gameCode;
 
-    // TODO: Increment and insert the message ID atomically in some common code
-    // right before the message is sent. Message ID should be sequential
-    // and unique. Server will only process message IDs greater than the
-    // previous messages IDs it has seen and acknowledged.
-    int messageId = MessageId.incrementAndGetMessageId(gameCode);
+    int messageId = MessageId.incrementAndGet(gameCode);
     String message = """{
       "clubId": ${actionInfo.clubID},
       "gameId": "${actionInfo.gameID}",

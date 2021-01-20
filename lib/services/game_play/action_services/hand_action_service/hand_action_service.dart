@@ -22,7 +22,6 @@ class HandActionService {
     assert(context != null);
     assert(message != null && message.isNotEmpty);
 
-    print('message: $message');
     var data = jsonDecode(message);
 
     String messageType = data['messageType'];
