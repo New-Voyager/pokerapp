@@ -88,10 +88,15 @@ class HandWinnersView extends StatelessWidget {
                                       children: [
                                         Padding(
                                           padding: EdgeInsets.only(
-                                              bottom: 5, top: 5),
+                                              bottom: 10, top: 5),
                                           child: Text(
-                                            _handLogModel.potWinners[index]
-                                                .hiWinners[winnerIndex].name,
+                                            _handLogModel
+                                                    .playerIDName[_handLogModel
+                                                        .potWinners[index]
+                                                        .hiWinners[winnerIndex]
+                                                        .seatNum]
+                                                    .toString() ??
+                                                "Unknown",
                                             style: const TextStyle(
                                               fontFamily:
                                                   AppAssets.fontFamilyLato,

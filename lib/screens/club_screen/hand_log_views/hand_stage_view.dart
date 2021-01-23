@@ -156,6 +156,9 @@ class HandStageView extends StatelessWidget {
       case HandActions.STRADDLE:
         textStyle = straddleTextStyle;
         break;
+      case HandActions.UNKNOWN:
+        // TODO: Handle this case.
+        break;
     }
 
     return Container(
@@ -164,24 +167,47 @@ class HandStageView extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            _handStageModel.stageActions[index].name ?? "Player",
-            style: const TextStyle(
-              fontFamily: AppAssets.fontFamilyLato,
-              color: Colors.white,
-              fontSize: 12.0,
-              fontWeight: FontWeight.w600,
+          Expanded(
+            child: Text(
+              _handStageModel.stageActions[index].name ?? "Player",
+              style: const TextStyle(
+                fontFamily: AppAssets.fontFamilyLato,
+                color: Colors.white,
+                fontSize: 12.0,
+                fontWeight: FontWeight.w600,
+              ),
+              textAlign: TextAlign.left,
             ),
           ),
-          Text(handActionsToString(_handStageModel.stageActions[index].action),
-              style: textStyle),
-          Text(
-            _handStageModel.stageActions[index].amount.toString(),
-            style: const TextStyle(
-              fontFamily: AppAssets.fontFamilyLato,
-              color: Colors.white,
-              fontSize: 12.0,
-              fontWeight: FontWeight.w600,
+          Expanded(
+            child: Text(
+              handActionsToString(_handStageModel.stageActions[index].action),
+              style: textStyle,
+              textAlign: TextAlign.left,
+            ),
+          ),
+          Expanded(
+            child: Text(
+              _handStageModel.stageActions[index].amount.toString(),
+              style: const TextStyle(
+                fontFamily: AppAssets.fontFamilyLato,
+                color: Colors.white,
+                fontSize: 12.0,
+                fontWeight: FontWeight.w600,
+              ),
+              textAlign: TextAlign.left,
+            ),
+          ),
+          Expanded(
+            child: Text(
+              _handStageModel.stageActions[index].amount.toString(),
+              style: const TextStyle(
+                fontFamily: AppAssets.fontFamilyLato,
+                color: Colors.white,
+                fontSize: 12.0,
+                fontWeight: FontWeight.w600,
+              ),
+              textAlign: TextAlign.left,
             ),
           ),
         ],
