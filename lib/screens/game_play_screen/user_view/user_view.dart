@@ -530,6 +530,7 @@ class UserView extends StatelessWidget {
             ? ChipAmountAnimatingWidget(
                 seatPos: seatPos,
                 child: coinAmountWidget,
+                reverse: userObject.animatingCoinMovementReverse,
               )
             : coinAmountWidget;
   }
@@ -549,6 +550,20 @@ class UserView extends StatelessWidget {
       child: Stack(
         alignment: Alignment.center,
         children: [
+          (userObject.showFirework ?? false)
+              ? Transform.translate(
+                  offset: Offset(
+                    0.0,
+                    -20.0,
+                  ),
+                  child: Image.asset(
+                    AppAssets.fireworkGif,
+                    height: 100,
+                    width: 100,
+                  ),
+                )
+              : shrinkedSizedBox,
+
           // main user body
           Stack(
             alignment: Alignment.bottomCenter,

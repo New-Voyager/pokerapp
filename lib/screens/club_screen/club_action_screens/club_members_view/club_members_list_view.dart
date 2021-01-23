@@ -8,14 +8,20 @@ import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_icons.dart';
 import 'package:pokerapp/screens/club_screen/club_action_screens/club_member_detailed_view/club_member_detailed_view.dart';
+import 'package:pokerapp/services/app/club_interior_service.dart';
 import 'package:provider/provider.dart';
 
-class ClubMembersListView extends StatelessWidget {
+class ClubMembersListView extends StatefulWidget {
   final List<ClubMemberModel> _membersList;
   final String clubCode;
+  final Function fetchData;
+  ClubMembersListView(this.clubCode, this._membersList, this.fetchData);
 
-  ClubMembersListView(this.clubCode, this._membersList);
+  @override
+  _ClubMembersListViewState createState() => _ClubMembersListViewState();
+}
 
+class _ClubMembersListViewState extends State<ClubMembersListView> {
   Color getBalanceColor(double number) {
     if (number == null) {
       return Colors.white;
@@ -31,14 +37,14 @@ class ClubMembersListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<ClubMemberModel> _filteredList;
-    _filteredList = _membersList;
+    _filteredList = widget._membersList;
     return Container(
       margin: EdgeInsets.all(15),
       child: ListView.separated(
         itemCount: _filteredList.length,
         itemBuilder: (context, index) {
-          final member = _membersList[index];
-          member.clubCode = this.clubCode;
+          final member = widget._membersList[index];
+          member.clubCode = this.widget.clubCode;
           final data = ClubMemberModel.copyWith(member);
           return Container(
             child: InkWell(
@@ -294,6 +300,14 @@ class ClubMembersListView extends StatelessWidget {
                       child: Column(
                         children: <Widget>[
                           GestureDetector(
+                            onTap: () async {
+                              var data =
+                                  await ClubInteriorService.approveClubMember(
+                                      widget.clubCode, member.playerId);
+                              if (data == "ACTIVE") {
+                                widget.fetchData();
+                              }
+                            },
                             child: Padding(
                               padding: EdgeInsets.only(top: 8, bottom: 8),
                               child: Text(
@@ -308,6 +322,14 @@ class ClubMembersListView extends StatelessWidget {
                             ),
                           ),
                           GestureDetector(
+                            onTap: () async {
+                              var data =
+                                  await ClubInteriorService.denyClubMember(
+                                      widget.clubCode, member.playerId);
+                              if (data == "DENIED") {
+                                widget.fetchData();
+                              }
+                            },
                             child: Padding(
                               padding: EdgeInsets.only(top: 8, bottom: 8),
                               child: Text(

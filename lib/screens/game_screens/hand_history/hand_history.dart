@@ -70,13 +70,6 @@ class _HandHistoryState extends State<HandHistoryListView>
                     ),
                     text: "Winning Hands",
                   ),
-                  // new Tab(
-                  //   icon: SvgPicture.asset(
-                  //     'assets/images/casino.svg',
-                  //     color: Colors.white,
-                  //   ),
-                  //   text: "Hands",
-                  // ),
                 ],
                 controller: _tabController,
               ),
@@ -92,8 +85,8 @@ class _HandHistoryState extends State<HandHistoryListView>
           ? Center(child: CircularProgressIndicator())
           : TabBarView(
               children: [
-                new PlayedHandsScreen(_data.getAllHands()),
-                new PlayedHandsScreen(_data.getWinningHands()),
+                new PlayedHandsScreen(_data.gameCode, _data.getAllHands()),
+                new PlayedHandsScreen(_data.gameCode, _data.getWinningHands()),
               ],
               controller: _tabController,
             ),

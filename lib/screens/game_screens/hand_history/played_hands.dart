@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/hand_history_model.dart';
+import 'package:pokerapp/models/hand_log_model.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
+import 'package:pokerapp/screens/club_screen/hand_log_views/hand_log_view.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/widgets/card_view.dart';
 
@@ -10,11 +12,10 @@ final _separator = SizedBox(
 );
 
 class PlayedHandsScreen extends StatelessWidget {
-  List<HandHistoryItem> history;
+  final List<HandHistoryItem> history;
+  final String gameCode;
 
-  PlayedHandsScreen(List<HandHistoryItem> history) {
-    this.history = history;
-  }
+  PlayedHandsScreen(this.gameCode, this.history);
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +30,7 @@ class PlayedHandsScreen extends StatelessWidget {
             Expanded(
               child: ListView.separated(
                 itemBuilder: (context, index) {
-                  return getListItem(index);
+                  return getListItem(context, index);
                 },
                 itemCount: history.length,
                 separatorBuilder: (context, index) {
@@ -98,7 +99,18 @@ class PlayedHandsScreen extends StatelessWidget {
     );
   }
 
-  getListItem(int index) {
+  void onHistoryItemTapped(context, int index) {
+    HandLogModel model =
+        new HandLogModel(this.gameCode, history[index].handNum);
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => HandLogView(model),
+      ),
+    );
+  }
+
+  getListItem(BuildContext context, int index) {
     WinnerWidget widget = new WinnerWidget(history[index]);
     return Padding(
       padding: const EdgeInsets.only(
@@ -112,14 +124,17 @@ class PlayedHandsScreen extends StatelessWidget {
             Radius.circular(AppDimensions.cardRadius),
           ),
         ),
-        child: Padding(
-          padding: const EdgeInsets.all(6.0),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              handNumWidget(history[index].handNum),
-              widget,
-            ],
+        child: GestureDetector(
+          onTap: () => onHistoryItemTapped(context, index),
+          child: Padding(
+            padding: const EdgeInsets.all(6.0),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                handNumWidget(history[index].handNum),
+                widget,
+              ],
+            ),
           ),
         ),
       ),

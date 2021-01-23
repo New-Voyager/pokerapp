@@ -6,6 +6,7 @@ import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/screens/game_screens/game_history_details_view/stack_chart_view.dart';
 import 'package:pokerapp/screens/game_screens/hand_history/hand_history.dart';
+import 'package:pokerapp/screens/game_screens/highhand_log/highhand_log.dart';
 import 'package:pokerapp/screens/game_screens/table_result/table_result.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:provider/provider.dart';
@@ -272,14 +273,16 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
                   width: 10.0,
                 ),
                 Text(
-                  _gameDetail.handsPlayedStr ?? '',
+                  _gameDetail.playedGame? _gameDetail.handsPlayedStr ?? '' : '0',
                   style: TextStyle(color: Colors.white),
                 ),
               ],
             ),
             Expanded(
               child: Visibility(
-                child: HandsPieChart(this._gameDetail.handsData),
+                child: !_gameDetail.playedGame ?
+                      Text("No Data", style: TextStyle(color: Colors.white38)) :
+                      HandsPieChart(this._gameDetail.handsData),
                 visible: loadingDone,
               ),
             )
@@ -316,7 +319,9 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
             ],
           ),
           Visibility(
-            child: Expanded(flex: 1, child: StackChartView(_gameDetail.stack)),
+            child: Expanded(flex: 1,
+                  child: !_gameDetail.playedGame ? Text("No Data", style: TextStyle(color: Colors.white38))
+                              : StackChartView(_gameDetail.stack)),
             visible: loadingDone,
           ),
         ],
@@ -347,19 +352,30 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
                 SizedBox(
                   height: 16,
                 ),
+                _gameDetail.playedGame ?
                 Text(_gameDetail.profitText ?? _gameDetail.profitText,
                     style: _gameDetail.profit != null || _gameDetail.profit == 0
                         ? _gameDetail.profit < 0
                             ? TextStyle(color: Colors.red, fontSize: 20.0)
                             : TextStyle(
                                 color: Colors.lightGreenAccent, fontSize: 20.0)
-                        : TextStyle(color: Colors.white, fontSize: 20.0)),
+                        : TextStyle(color: Colors.white, fontSize: 20.0))
+                :
+                Text('No data',
+                         style: TextStyle(
+                        color: Colors.white38, fontSize: 14.0)
+                        )
+                ,
                 SizedBox(
                   height: 10,
                 ),
-                Text(
-                  "Buy-in",
-                  style: TextStyle(color: Colors.blueGrey),
+
+                Visibility(
+                  visible: _gameDetail.playedGame,
+                  child: Text(
+                    "Buy-in",
+                    style: TextStyle(color: Colors.blueGrey),
+                  ),
                 ),
                 seprator,
                 Text(
@@ -495,6 +511,30 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
         ));
   }
 
+  void onHighHandLogPressed(BuildContext context) {
+    final model =
+        HandHistoryListModel(_gameDetail.gameCode, _gameDetail.isOwner);
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (_) => HighHandLogView(_gameDetail.gameCode)));
+  }
+
+  void onHigh(BuildContext context) {
+    final model =
+        HandHistoryListModel(_gameDetail.gameCode, _gameDetail.isOwner);
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => ChangeNotifierProvider<HandHistoryListModel>(
+              create: (_) => model,
+              builder: (BuildContext context, _) =>
+                  Consumer<HandHistoryListModel>(
+                      builder: (_, HandHistoryListModel data, __) =>
+                          HandHistoryListView(data))),
+        ));
+  }
+
   Widget getLowerCard() {
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -514,6 +554,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
               ),
             ),
             ListTile(
+              onTap: () => this.onHandHistoryPressed(context),
               leading: CircleAvatar(
                 child: SvgPicture.asset('assets/images/casino.svg',
                     color: Colors.white),
@@ -524,11 +565,11 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
                 style: TextStyle(color: Colors.white),
               ),
               trailing: IconButton(
-                  icon: Icon(
-                    Icons.arrow_forward_ios,
-                    color: Colors.white,
-                  ),
-                  onPressed: () => this.onHandHistoryPressed(context)),
+                icon: Icon(
+                  Icons.arrow_forward_ios,
+                  color: Colors.white,
+                ),
+              ),
             ),
             Padding(
               padding: const EdgeInsets.only(left: 70.0),
@@ -566,6 +607,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
               ),
             ),
             ListTile(
+              onTap: () => this.onHighHandLogPressed(context),
               leading: CircleAvatar(
                 child: SvgPicture.asset('assets/images/casino.svg',
                     color: Colors.white),
@@ -576,11 +618,11 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
                 style: TextStyle(color: Colors.white),
               ),
               trailing: IconButton(
-                  icon: Icon(
-                    Icons.arrow_forward_ios,
-                    color: Colors.white,
-                  ),
-                  onPressed: () {}),
+                icon: Icon(
+                  Icons.arrow_forward_ios,
+                  color: Colors.white,
+                ),
+              ),
             ),
           ],
         ),

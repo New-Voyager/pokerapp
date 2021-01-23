@@ -3,6 +3,7 @@ enum HandActions {
   BB,
   CALL,
   CHECK,
+  BET,
   RAISE,
   FOLD,
   STRADDLE,

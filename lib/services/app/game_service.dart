@@ -43,14 +43,18 @@ class GameService {
             after
           }
         }
-        highHandsByGame(gameCode: \$gameCode) {
+        hhWinners: highHandWinners(gameCode: \$gameCode) {
             rank
             handNum
-            boardCards
-            playerCards
+            playerUuid
+            playerName
+            gameCode
             highHand
             highHandCards
+            playerCards
+            boardCards
             handTime
+            winner
         }
       }  
   """;
@@ -83,6 +87,22 @@ class GameService {
         }
       }
   """;
+
+  static String highhandLogQuery = """
+      query (\$gameCode: String!) {
+          hhWinners: highHandsByGame(gameCode: \$gameCode) {
+            playerUuid
+            playerName
+            playerCards
+            boardCards
+            highHand
+            handTime
+            handNum
+            highHandCards
+            winner
+        }
+     }
+  """;
   static Future<TableRecord> getGameTableRecord(String gameCode) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
     Map<String, dynamic> variables = {
@@ -94,5 +114,26 @@ class GameService {
     if (result.hasException) return null;
 
     return TableRecord.fromJson(result.data['gameResultTable']);
+  }
+
+  static Future<List<HighHandWinner>> getHighHandLog(String gameCode) async {
+    List<HighHandWinner> log = new List<HighHandWinner>();
+
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+    Map<String, dynamic> variables = {
+      "gameCode": gameCode,
+    };
+    QueryResult result = await _client.query(QueryOptions(
+        documentNode: gql(highhandLogQuery), variables: variables));
+
+    if (result.hasException) return null;
+
+    List hhWinnersData = result.data['hhWinners'];
+    log = hhWinnersData.map((e) {
+      HighHandWinner winner = new HighHandWinner.fromJson(e);
+      //winner.gameCode = gameCode;
+      return winner;
+    }).toList();
+    return log;
   }
 }

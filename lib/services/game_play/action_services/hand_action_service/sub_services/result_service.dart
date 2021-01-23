@@ -6,6 +6,8 @@ import 'package:pokerapp/models/game_play_models/business/hi_winners_model.dart'
 import 'package:pokerapp/models/game_play_models/provider_models/footer_result.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
+import 'package:pokerapp/resources/app_constants.dart';
+import 'package:pokerapp/services/game_play/action_services/game_action_service/sub_services/high_hand_service.dart';
 import 'package:provider/provider.dart';
 
 class ResultService {
@@ -61,17 +63,19 @@ class ResultService {
     BuildContext context,
     var data,
   }) {
-    /* update stack of every player - silently (i.e. without notifying the listeners) */
-    Provider.of<Players>(
+    Players players = Provider.of<Players>(
       context,
       listen: false,
-    ).updateStackSilent(_getUpdatedStack(data));
+    );
+
+    HighHandService.handle(
+      context: context,
+      data: data['handResult']['highHand'],
+      showNotification: false,
+    );
 
     /* remove all highlight - silently */
-    Provider.of<Players>(
-      context,
-      listen: false,
-    ).removeAllHighlights();
+    players.removeAllHighlights();
 
     /* footer status -> showing the result */
     /* set the footer result data */
@@ -85,10 +89,7 @@ class ResultService {
     // get the winner seat No and highlight the winner
     winners.forEach((winner) {
       // highlight the winner seat No
-      Provider.of<Players>(
-        context,
-        listen: false,
-      ).highlightWinner(winner.seatNo);
+      players.highlightWinner(winner.seatNo);
     });
 
     /* then, change the status of the footer to show the result */
@@ -98,21 +99,12 @@ class ResultService {
     ).value = FooterStatus.Result;
 
     /* players remove last status and markers */
-    Provider.of<Players>(
-      context,
-      listen: false,
-    ).removeAllPlayersStatus();
+    players.removeAllPlayersStatus();
 
-    Provider.of<Players>(
-      context,
-      listen: false,
-    ).removeMarkersFromAllPlayer();
+    players.removeMarkersFromAllPlayer();
 
     /* showdown time, show other players cards */
-    Provider.of<Players>(
-      context,
-      listen: false,
-    ).updateUserCards(_getCards(data));
+    players.updateUserCards(_getCards(data));
 
     /* highlight cards of players and community cards for winner */
     Provider.of<TableState>(
@@ -122,12 +114,26 @@ class ResultService {
 
     Map<String, dynamic> playerData = _getPlayerData(data);
 
-    Provider.of<Players>(
-      context,
-      listen: false,
-    ).highlightCards(
+    players.highlightCards(
       seatNo: playerData['seatNo'],
       cards: playerData['playerCards'],
+    );
+
+    /* update stack of every player after showing the reverse pot chip animation */
+    for (HiWinnersModel winner in winners) {
+      int idx = players.players.indexWhere(
+        (player) => player.seatNo == winner.seatNo,
+      );
+
+      if (idx != -1) {
+        players.updateCoinAmount(idx, winner.amount);
+        players.moveCoinsFromPot(idx, winner.amount);
+      }
+    }
+
+    // wait for the animation to finish, then update the stack
+    Future.delayed(AppConstants.animationDuration).then(
+      (_) => players.updateStackBulk(_getUpdatedStack(data)),
     );
   }
 }

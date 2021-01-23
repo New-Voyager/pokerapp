@@ -4,15 +4,19 @@ GCR_REGISTRY := gcr.io/voyager-01-285603
 DO_REGISTRY := registry.digitalocean.com/voyager
 REGISTRY := $(DO_REGISTRY)
 
-API_SERVER_IMAGE := $(REGISTRY)/api-server:0.1.80
-GAME_SERVER_IMAGE := $(REGISTRY)/game-server:0.1.62
-BOTRUNNER_IMAGE := $(REGISTRY)/botrunner:0.1.63
-NATS_SERVER_IMAGE := $(REGISTRY)/nats-server:0.1.62
+API_SERVER_IMAGE := $(REGISTRY)/api-server:0.1.90
+GAME_SERVER_IMAGE := $(REGISTRY)/game-server:0.1.74
+BOTRUNNER_IMAGE := $(REGISTRY)/botrunner:0.1.70
+NATS_SERVER_IMAGE := $(REGISTRY)/nats:2.1.7-alpine3.11
 REDIS_IMAGE := $(REGISTRY)/redis:6.0.9
 POSTGRES_IMAGE := $(REGISTRY)/postgres:12.5
 
+.PHONE: login
+login:
+	docker login --username c1a5bd86f63f2882b8a11671bce3bae92e8355abf6e23613d7758a824c8f5082 --password c1a5bd86f63f2882b8a11671bce3bae92e8355abf6e23613d7758a824c8f5082 registry.digitalocean.com
+
 .PHONY: pull
-pull:
+pull: login	
 	docker pull $(API_SERVER_IMAGE)
 	docker pull $(GAME_SERVER_IMAGE)
 	docker pull $(NATS_SERVER_IMAGE)
@@ -29,7 +33,7 @@ create-network:
 	@docker network create $(DEFAULT_DOCKER_NET) 2>/dev/null || true
 
 .PHONY: stack-up
-stack-up: create-network
+stack-up: create-network login
 	cd docker && \
 		> .env && \
 		echo "API_SERVER_IMAGE=$(API_SERVER_IMAGE)" >> .env && \
@@ -54,7 +58,7 @@ stack-clean:
 	docker volume rm -f docker_db-data
 
 .PHONY: stack-reset
-stack-reset:
+stack-reset: login
 	cd docker && docker-compose down
 	docker volume rm -f docker_db-data
 	cd docker && \

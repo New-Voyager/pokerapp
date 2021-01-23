@@ -32,7 +32,8 @@ class NewGameModelProvider extends ChangeNotifier {
     if (settings.rewards == null) {
       return 0;
     }
-    int index = rewards.indexWhere((element) => element.name == settings.rewards.name);
+    int index =
+        rewards.indexWhere((element) => element.name == settings.rewards.name);
     if (index == -1) {
       return 0;
     }
@@ -40,7 +41,6 @@ class NewGameModelProvider extends ChangeNotifier {
   }
 
   set selectedReward(int index) {
-
     if (index == -1) {
       settings.rewards = null;
       return;

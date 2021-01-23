@@ -12,11 +12,12 @@ class DealStartedService {
   static void handle({
     BuildContext context,
   }) async {
-    bool isMePresent = Provider.of<Players>(
-          context,
-          listen: false,
-        ).players.indexWhere((p) => p.isMe == true) !=
-        -1;
+    Players players = Provider.of<Players>(
+      context,
+      listen: false,
+    );
+
+    bool isMePresent = players.players.indexWhere((p) => p.isMe == true) != -1;
 
     /* if I am present in this game,
      Deal Start message is unnecessary */
@@ -28,10 +29,7 @@ class DealStartedService {
       assetFile: AppAssets.dealSound,
     );
 
-    List<int> seatNos = Provider.of<Players>(
-      context,
-      listen: false,
-    ).players.map((p) => p.seatNo).toList();
+    List<int> seatNos = players.players.map((p) => p.seatNo).toList();
     seatNos.sort();
 
     int noOfCards = Provider.of<ValueNotifier<int>>(
@@ -39,31 +37,28 @@ class DealStartedService {
       listen: false,
     ).value;
 
+    CardDistributionModel cardDistributionModel =
+        Provider.of<CardDistributionModel>(
+      context,
+      listen: false,
+    );
+
     /* distribute cards to the players */
     /* this for loop will distribute cards one by one to all the players */
     for (int i = 0; i < noOfCards; i++) {
       /* for distributing the ith card, go through all the players, and give them */
       for (int seatNo in seatNos) {
         // start the animation
-        Provider.of<CardDistributionModel>(
-          context,
-          listen: false,
-        ).seatNo = seatNo;
+        cardDistributionModel.seatNo = seatNo;
 
         // wait for the animation to finish
         await Future.delayed(AppConstants.cardDistributionAnimationDuration);
 
-        Provider.of<Players>(
-          context,
-          listen: false,
-        ).updateVisibleCardNumber(seatNo, i + 1);
+        players.updateVisibleCardNumber(seatNo, i + 1);
       }
     }
 
     /* card distribution ends, put the value to NULL */
-    Provider.of<CardDistributionModel>(
-      context,
-      listen: false,
-    ).seatNo = null;
+    cardDistributionModel.seatNo = null;
   }
 }

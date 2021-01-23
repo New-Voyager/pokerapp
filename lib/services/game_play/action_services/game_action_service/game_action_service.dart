@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/services/game_play/action_services/game_action_service/sub_services/game_status_update_service.dart';
+import 'package:pokerapp/services/game_play/action_services/game_action_service/sub_services/high_hand_service.dart';
 import 'package:pokerapp/services/game_play/action_services/game_action_service/sub_services/player_update_service.dart';
 
 class GameActionService {
@@ -28,6 +29,14 @@ class GameActionService {
           context: context,
           data: data,
         );
+
+      case AppConstants.HIGH_HAND:
+        return HighHandService.handle(
+          context: context,
+          data: data['highHand'],
+          showNotification: true,
+        );
+
       case AppConstants.GAME_STATUS:
         return GameStatusUpdateService.updateStatus(
           context: context,

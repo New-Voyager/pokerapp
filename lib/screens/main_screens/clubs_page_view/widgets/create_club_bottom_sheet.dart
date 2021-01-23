@@ -112,7 +112,6 @@ class _CreateClubBottomSheetState extends State<CreateClubBottomSheet> {
                             clubDetails['description'] = val.trim(),
                       ),
                       separator20,
-
                     ],
                   ),
                 ),

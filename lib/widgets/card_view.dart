@@ -95,14 +95,14 @@ class CardView extends StatelessWidget {
       );
     }
     if (card.smaller) {
-      cardWidth = AppDimensions.cardWidth * 1.5;
+      cardWidth = AppDimensions.cardWidth * 1.2;
     } else {
       cardWidth = 22;
       cardHeight = 32;
 
       // TODO: We need to revisit how to get width and height working with ratio
-      width = cardWidth+10;
-      height = cardHeight+10;
+      width = cardWidth + 10;
+      height = cardHeight + 10;
     }
 
     Widget cardWidget = Container(

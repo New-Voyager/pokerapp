@@ -11,8 +11,8 @@ import 'package:pokerapp/services/game_play/action_services/hand_action_service/
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:provider/provider.dart';
 
-class QueryHandUpdateService {
-  QueryHandUpdateService._();
+class QueryCurrentHandService {
+  QueryCurrentHandService._();
 
   static void handle({
     BuildContext context,
@@ -96,7 +96,7 @@ class QueryHandUpdateService {
     Provider.of<Players>(
       context,
       listen: false,
-    ).updateStack(
+    ).updateStackBulk(
       currentHandState['playersStack'],
     );
 

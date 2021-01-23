@@ -66,11 +66,6 @@ class ClubActionButton extends StatelessWidget {
               // TODO: Handle this case.
               break;
             case ClubActions.ANNOUNCEMETS:
-              // TODO: Will temporarily lead to HandLog screen
-              return Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => HandLogView()),
-              );
               break;
             case ClubActions.MESSAGE_HOST:
               // TODO: Handle this case.

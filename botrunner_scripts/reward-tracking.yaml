@@ -1,4 +1,5 @@
-setup-script: botrunner_scripts/setup/3-bots-reward-tracking.yaml
+#setup-script: botrunner_scripts/setup/3-bots-reward-tracking.yaml
+setup-script: botrunner_scripts/setup/2-bots-1-human-reward-tracking.yaml
 
 # deal the following hands in the table
 hands:
@@ -42,11 +43,8 @@ hands:
     flop-action:
       seat-actions:
         - 2, CHECK
-        - 3, BET, 2
-        - 1, CALL, 2
-        - 2, RAISE, 4
-        - 3, CALL, 4
-        - 1, CALL, 4
+        - 3, CHECK
+        - 1, CHECK
       verify:
         state: TURN
         board: ["Ac", "Ad", "2c", "7d"]
@@ -55,23 +53,18 @@ hands:
       seat-actions:
         - 2, CHECK
         - 3, CHECK
-        - 1, BET, 10
-        - 2, CALL, 10
-        - 3, CALL, 10
+        - 1, CHECK
       verify:
         state: RIVER
         board: ["Ac", "Ad", "2c", "7d", "7c"]
 
     river-action:
       seat-actions:
-        - 2, BET, 10
-        - 3, CALL, 10
-        - 1, CALL, 10
+        - 2, CHECK
+        - 3, CHECK
+        - 1, CHECK
       verify:
         state: RESULT
 
     result:
-      winners:
-        - seat: 3
-          receive: 56.0
       action-ended: SHOW_DOWN
