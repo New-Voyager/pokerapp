@@ -65,7 +65,7 @@ class _HandLogViewState extends State<HandLogView> {
         elevation: 0.0,
         backgroundColor: AppColors.screenBackgroundColor,
         title: Text(
-          "Club",
+          "Hand History",
           textAlign: TextAlign.left,
           style: TextStyle(
             color: AppColors.appAccentColor,

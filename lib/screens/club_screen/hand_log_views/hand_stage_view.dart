@@ -108,16 +108,86 @@ class HandStageView extends StatelessWidget {
         Card(
           margin: EdgeInsets.only(left: 10, right: 10, bottom: 5),
           color: AppColors.cardBackgroundColor,
-          child: Container(
-            margin: EdgeInsets.all(10),
-            child: ListView.builder(
-              physics: NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              itemCount: _handStageModel.stageActions.length,
-              itemBuilder: (context, index) {
-                return actionRow(index);
-              },
-            ),
+          child: Column(
+            children: [
+              Container(
+                margin: EdgeInsets.only(left: 10, right: 10, top: 5),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      flex: 4,
+                      child: Text(
+                        "Player",
+                        style: const TextStyle(
+                          fontFamily: AppAssets.fontFamilyLato,
+                          color: Colors.white,
+                          fontSize: 14.0,
+                          fontWeight: FontWeight.w600,
+                        ),
+                        textAlign: TextAlign.left,
+                      ),
+                    ),
+                    Expanded(
+                      flex: 2,
+                      child: Text(
+                        "Action",
+                        style: const TextStyle(
+                          fontFamily: AppAssets.fontFamilyLato,
+                          color: Colors.white,
+                          fontSize: 14.0,
+                          fontWeight: FontWeight.w600,
+                        ),
+                        textAlign: TextAlign.left,
+                      ),
+                    ),
+                    Expanded(
+                      flex: 2,
+                      child: Text(
+                        "Amount",
+                        style: const TextStyle(
+                          fontFamily: AppAssets.fontFamilyLato,
+                          color: Colors.white,
+                          fontSize: 14.0,
+                          fontWeight: FontWeight.w600,
+                        ),
+                        textAlign: TextAlign.left,
+                      ),
+                    ),
+                    Expanded(
+                      flex: 2,
+                      child: Text(
+                        "Stack",
+                        style: const TextStyle(
+                          fontFamily: AppAssets.fontFamilyLato,
+                          color: Colors.white,
+                          fontSize: 14.0,
+                          fontWeight: FontWeight.w600,
+                        ),
+                        textAlign: TextAlign.left,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Divider(
+                color: AppColors.listViewDividerColor,
+                indent: 5.0,
+                endIndent: 5.0,
+              ),
+              Container(
+                margin: EdgeInsets.only(left: 10, right: 10, bottom: 5),
+                child: ListView.builder(
+                  physics: NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: _handStageModel.stageActions.length,
+                  itemBuilder: (context, index) {
+                    return actionRow(index);
+                  },
+                ),
+              ),
+            ],
           ),
         ),
       ],
@@ -168,6 +238,7 @@ class HandStageView extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(
+            flex: 4,
             child: Text(
               _handStageModel.stageActions[index].name ?? "Player",
               style: const TextStyle(
@@ -180,6 +251,7 @@ class HandStageView extends StatelessWidget {
             ),
           ),
           Expanded(
+            flex: 2,
             child: Text(
               handActionsToString(_handStageModel.stageActions[index].action),
               style: textStyle,
@@ -187,8 +259,13 @@ class HandStageView extends StatelessWidget {
             ),
           ),
           Expanded(
+            flex: 2,
             child: Text(
-              _handStageModel.stageActions[index].amount.toString(),
+              _handStageModel.stageActions[index].action != HandActions.CHECK &&
+                      _handStageModel.stageActions[index].action !=
+                          HandActions.FOLD
+                  ? _handStageModel.stageActions[index].amount.toString()
+                  : "-",
               style: const TextStyle(
                 fontFamily: AppAssets.fontFamilyLato,
                 color: Colors.white,
@@ -199,8 +276,9 @@ class HandStageView extends StatelessWidget {
             ),
           ),
           Expanded(
+            flex: 2,
             child: Text(
-              _handStageModel.stageActions[index].amount.toString(),
+              _handStageModel.stageActions[index].stack.toString(),
               style: const TextStyle(
                 fontFamily: AppAssets.fontFamilyLato,
                 color: Colors.white,
