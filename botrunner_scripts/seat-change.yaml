@@ -1,5 +1,6 @@
 setup-script: botrunner_scripts/setup/bots-full-table.yaml
 game-title: "Seat Change"
+reset-db: true
 
 # deal the following hands in the table
 hands:
@@ -11,11 +12,11 @@ hands:
         - seatNo: 2
           confirm: true
       leave-game:
-        - seatNo: 3
+        - seatNo: 6
 
   - num: 2
     setup:
-      pause: 60
+      pause: 30
       auto: true
 
   - num: 3

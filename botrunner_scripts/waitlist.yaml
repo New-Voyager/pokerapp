@@ -1,5 +1,6 @@
 setup-script: botrunner_scripts/setup/bots-full-table.yaml
 game-title: "Waitlist"
+reset-db: true
 
 # deal the following hands in the table
 hands:
