@@ -80,3 +80,14 @@ stack-reset: login
 .PHONY: botrunner
 botrunner:
 	@DOCKER_NET=$(DEFAULT_DOCKER_NET) BOTRUNNER_IMAGE=$(BOTRUNNER_IMAGE) BOTRUNNER_SCRIPT=$(BOTRUNNER_SCRIPT) ./botrunner.sh
+
+.PHONY: seat-change
+seat-change:
+	BOTRUNNER_SCRIPT=seat-change.yaml make botrunner
+
+.PHONY: nlh-full
+nlh-full:
+	BOTRUNNER_SCRIPT=play-many-hands.yaml make botrunner
+
+wait-list:
+	BOTRUNNER_SCRIPT=waitlist.yaml make botrunner
