@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/hh_notification_model.dart';
@@ -122,65 +124,76 @@ class HeaderView extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) => Stack(
-        alignment: Alignment.center,
-        children: [
-          /* general header view */
-          Consumer<HeaderObject>(
-            builder: (_, HeaderObject obj, __) => Container(
-              margin: const EdgeInsets.symmetric(
-                horizontal: 10.0,
-                vertical: 10.0,
-              ),
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  /* main content view */
-                  Column(
+  Widget build(BuildContext context) => Container(
+        decoration: BoxDecoration(
+          color: Colors.black.withOpacity(0.5),
+        ),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(
+            sigmaY: 20.0,
+            sigmaX: 20.0,
+          ),
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              /* general header view */
+              Consumer<HeaderObject>(
+                builder: (_, HeaderObject obj, __) => Container(
+                  margin: const EdgeInsets.symmetric(
+                    horizontal: 10.0,
+                    vertical: 10.0,
+                  ),
+                  child: Stack(
+                    alignment: Alignment.center,
                     children: [
-                      /* game code */
-                      _buildText(
-                        'GAME CODE: ${obj.gameCode}',
+                      /* main content view */
+                      Column(
+                        children: [
+                          /* game code */
+                          _buildText(
+                            'GAME CODE: ${obj.gameCode}',
+                          ),
+
+                          /* hand num */
+                          _buildText(
+                            obj.currentHandNum == null
+                                ? ''
+                                : 'Hand: #${obj.currentHandNum}',
+                            whiteColor: false,
+                          ),
+                        ],
                       ),
 
-                      /* hand num */
-                      _buildText(
-                        obj.currentHandNum == null
-                            ? ''
-                            : 'Hand: #${obj.currentHandNum}',
-                        whiteColor: false,
+                      /* back button */
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: InkWell(
+                          onTap: () => Navigator.pop(context),
+                          child: Icon(
+                            FontAwesomeIcons.chevronLeft,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+
+                      /* temporary place for end game */
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: Visibility(
+                          visible: !obj.gameEnded,
+                          child: CustomTextButton(
+                            text: 'End Game',
+                            onTap: () => endGame(context, obj),
+                          ),
+                        ),
                       ),
                     ],
                   ),
-
-                  /* back button */
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: InkWell(
-                      onTap: () => Navigator.pop(context),
-                      child: Icon(
-                        FontAwesomeIcons.chevronLeft,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-
-                  /* temporary place for end game */
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: Visibility(
-                      visible: !obj.gameEnded,
-                      child: CustomTextButton(
-                        text: 'End Game',
-                        onTap: () => endGame(context, obj),
-                      ),
-                    ),
-                  ),
-                ],
+                ),
               ),
-            ),
+              _buildNotificationWidget(),
+            ],
           ),
-          _buildNotificationWidget(),
-        ],
+        ),
       );
 }

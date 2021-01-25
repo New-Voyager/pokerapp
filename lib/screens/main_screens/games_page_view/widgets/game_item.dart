@@ -85,7 +85,7 @@ class GameItem extends StatelessWidget {
                       * */
 
                       Text(
-                        game.clubName,
+                        game.title + "  " + game.gameType.toString(),
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 19.0,
@@ -100,7 +100,7 @@ class GameItem extends StatelessWidget {
                       * */
 
                       Text(
-                        "${'PLO 1/2'}${'\t' * 10}BUY IN : ${game.buyIn}",
+                        "${game.clubName}",
                         style: AppStyles.itemInfoTextStyle,
                       ),
                       Spacer(),
@@ -110,7 +110,7 @@ class GameItem extends StatelessWidget {
                       * */
 
                       Text(
-                        'Game ID - ${game.gameCode}',
+                        'Code - ${game.gameCode}',
                         style: AppStyles.itemInfoTextStyle,
                       ),
                       separator,

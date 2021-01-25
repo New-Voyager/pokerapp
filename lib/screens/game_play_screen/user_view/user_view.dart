@@ -321,8 +321,8 @@ class UserView extends StatelessWidget {
   }) =>
       Transform.translate(
         offset: Offset(
-          80.0,
-          0.0,
+          10.0,
+          100.0,
         ),
         child: StackCardView(
           cards: cards,

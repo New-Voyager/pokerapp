@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/models/game_play_models/business/card_distribution_model.dart';
@@ -15,11 +17,12 @@ import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/screens/game_play_screen/card_views/animations/animating_shuffle_card_view.dart';
 import 'package:pokerapp/screens/game_play_screen/card_views/stack_card_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/animating_widgets/card_distribution_animating_widget.dart';
-import 'package:pokerapp/screens/game_play_screen/main_views/table_view.dart';
+import 'package:pokerapp/screens/game_play_screen/main_views/board_view/decorative_views/background_view.dart';
+import 'package:pokerapp/screens/game_play_screen/main_views/board_view/decorative_views/table_view.dart';
 import 'package:pokerapp/screens/game_play_screen/user_view/user_view.dart';
 import 'package:provider/provider.dart';
 
-import '../board_positions.dart';
+import '../../board_positions.dart';
 
 // user are seated as per array index starting from the bottom center as 0 and moving in clockwise direction
 
@@ -53,6 +56,7 @@ class BoardView extends StatelessWidget {
 
     if (board.horizontal) {
       shiftDownConstant += 20;
+      if (seatPos == 1) shiftDownConstant -= 30;
     }
 
     // left for 6, 7, 8, 9
@@ -464,6 +468,7 @@ class BoardView extends StatelessWidget {
     final boardState = Provider.of<BoardObject>(context);
 
     dynamic layoutCoords = LAYOUT_COORDS[BoardLayout.VERTICAL];
+
     if (boardState.horizontal) {
       widthOfBoard = MediaQuery.of(context).size.width;
       heightOfBoard = MediaQuery.of(context).size.height / 4;
@@ -471,69 +476,93 @@ class BoardView extends StatelessWidget {
     }
 
     /* finally the view */
-    return Consumer<Players>(
-      builder: (_, Players players, __) {
-        // dealing with players
-        PlayerModel tmp = players.players.firstWhere(
-          (u) => u.isMe,
-          orElse: () => null,
-        );
-        bool isPresent = tmp != null;
+    return Stack(
+      alignment: boardState.horizontal ? Alignment.topCenter : Alignment.center,
+      children: [
+        // game board view
+        TableView(
+          heightOfBoard,
+          widthOfBoard,
+        ),
 
-        return Padding(
-          padding: EdgeInsets.symmetric(
-              horizontal: layoutCoords[SIDE_PADDING],
-              vertical: boardState.horizontal ? 120 : 30),
-          child: Stack(
-            alignment:
-                boardState.horizontal ? Alignment.topCenter : Alignment.center,
-            children: [
-              // game board
-              TableView(heightOfBoard, widthOfBoard),
+        Consumer<Players>(
+          builder: (_, Players players, __) {
+            // dealing with players
+            PlayerModel tmp = players.players.firstWhere(
+              (u) => u.isMe,
+              orElse: () => null,
+            );
+            bool isPresent = tmp != null;
 
-              // position the users
-              ...getUserObjects(players.players)
-                  .asMap()
-                  .entries
-                  .map(
-                    (var u) => _positionUser(
-                      board: boardState,
-                      user: u.value,
-                      heightOfBoard: heightOfBoard,
-                      widthOfBoard: widthOfBoard,
-                      seatPos: _getAdjustedSeatPosition(
-                        u.key,
-                        isPresent,
-                        tmp?.seatNo,
+            return Transform(
+              transform: Matrix4(
+                1.0, 0.0, 0.0, 0.0, //
+                0.0, 1.0, 0.0, 0.0, //
+                0.0, 0.0, 1.0, 0.001, //
+                0.0, 0.0, 0.0, 1.0, //
+              ).scaled(1.0, 1.0, 1.0)
+                ..rotateX(_angleOfSlant * pi / 180)
+                ..rotateY(0.0)
+                ..rotateZ(0.0),
+              alignment: Alignment.center,
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                    horizontal: layoutCoords[SIDE_PADDING],
+                    vertical: boardState.horizontal ? 120 : 30),
+                child: Stack(
+                  alignment: boardState.horizontal
+                      ? Alignment.topCenter
+                      : Alignment.center,
+                  children: [
+                    // position the users
+                    ...getUserObjects(players.players)
+                        .asMap()
+                        .entries
+                        .map(
+                          (var u) => _positionUser(
+                            board: boardState,
+                            user: u.value,
+                            heightOfBoard: heightOfBoard,
+                            widthOfBoard: widthOfBoard,
+                            seatPos: _getAdjustedSeatPosition(
+                              u.key,
+                              isPresent,
+                              tmp?.seatNo,
+                            ),
+                            isPresent: isPresent,
+                          ),
+                        )
+                        .toList(),
+
+                    // center view
+                    Consumer2<TableState, ValueNotifier<FooterStatus>>(
+                      builder: (_,
+                              TableState tableState,
+                              ValueNotifier<FooterStatus>
+                                  valueNotifierFooterStatus,
+                              __) =>
+                          _buildCenterView(
+                        board: boardState,
+                        cards: tableState.cards,
+                        potChips: tableState.potChips,
+                        potChipsUpdates: tableState.potChipsUpdates,
+                        tableStatus: tableState.tableStatus,
+                        showDown: valueNotifierFooterStatus.value ==
+                            FooterStatus.Result,
                       ),
-                      isPresent: isPresent,
                     ),
-                  )
-                  .toList(),
 
-              // center view
-              Consumer2<TableState, ValueNotifier<FooterStatus>>(
-                builder: (_,
-                        TableState tableState,
-                        ValueNotifier<FooterStatus> valueNotifierFooterStatus,
-                        __) =>
-                    _buildCenterView(
-                  board: boardState,
-                  cards: tableState.cards,
-                  potChips: tableState.potChips,
-                  potChipsUpdates: tableState.potChipsUpdates,
-                  tableStatus: tableState.tableStatus,
-                  showDown:
-                      valueNotifierFooterStatus.value == FooterStatus.Result,
+                    /* distributing card animation widgets */
+                    CardDistributionAnimatingWidget(),
+                  ],
                 ),
               ),
-
-              /* distributing card animation widgets */
-              CardDistributionAnimatingWidget(),
-            ],
-          ),
-        );
-      },
+            );
+          },
+        ),
+      ],
     );
   }
 }
+
+const _angleOfSlant = -30.0;
