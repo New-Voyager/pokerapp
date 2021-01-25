@@ -24,4 +24,6 @@ class AppColors {
   static const Color listViewDividerColor = Color(0xff707070);
 
   static const Color buttonBackGroundColor = Color(0xdddddc4);
+
+  static const Color lightGrayTextColor = Color(0xff848484);
 }

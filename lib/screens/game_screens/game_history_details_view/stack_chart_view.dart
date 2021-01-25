@@ -1,6 +1,7 @@
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_history_model.dart';
+import 'package:pokerapp/resources/app_assets.dart';
 
 class StackChartView extends StatelessWidget {
   final List<PlayerStack> stack;
@@ -36,7 +37,9 @@ class StackChartView extends StatelessWidget {
             labelOffsetFromAxisPx: -20,
             labelAnchor: charts.TickLabelAnchor.after,
             labelStyle: charts.TextStyleSpec(
+              fontFamily: AppAssets.fontFamilyLato,
               color: charts.MaterialPalette.gray.shade500,
+              fontSize: 12,
             ),
             lineStyle: charts.LineStyleSpec(
               color: charts.MaterialPalette.gray.shade500,
