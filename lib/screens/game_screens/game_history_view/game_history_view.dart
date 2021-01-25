@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_history_model.dart';
+import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/screens/game_screens/game_history_details_view/game_history_detail_view.dart';
 import 'package:pokerapp/services/app/club_interior_service.dart';
@@ -27,9 +28,7 @@ class _GameHistoryViewState extends State<GameHistoryView> {
   _fetchData() async {
     _prevGames = await ClubInteriorService.getGameHistory(clubCode);
     _loadingData = false;
-    setState(() {
-
-    });
+    setState(() {});
   }
 
   @override
@@ -92,12 +91,52 @@ class _GameHistoryViewState extends State<GameHistoryView> {
         : Scaffold(
             backgroundColor: AppColors.screenBackgroundColor,
             appBar: AppBar(
-              title: Text("Game History"),
-              backgroundColor: AppColors.screenBackgroundColor,
+              leading: IconButton(
+                icon: Icon(
+                  Icons.arrow_back_ios,
+                  size: 14,
+                  color: AppColors.appAccentColor,
+                ),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+              titleSpacing: 0,
               elevation: 0.0,
-              centerTitle: true,
+              backgroundColor: AppColors.screenBackgroundColor,
+              title: Text(
+                "Club",
+                textAlign: TextAlign.left,
+                style: TextStyle(
+                  color: AppColors.appAccentColor,
+                  fontSize: 14.0,
+                  fontFamily: AppAssets.fontFamilyLato,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
             ),
-            body: body(),
+            body: Container(
+              child: Column(
+                children: [
+                  Container(
+                    margin:
+                        EdgeInsets.only(left: 10, top: 5, bottom: 5, right: 10),
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "Game History",
+                      style: const TextStyle(
+                        fontFamily: AppAssets.fontFamilyLato,
+                        color: Colors.white,
+                        fontSize: 30.0,
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: body(),
+                  ),
+                ],
+              ),
+            ),
+            //body(),
           );
   }
 }

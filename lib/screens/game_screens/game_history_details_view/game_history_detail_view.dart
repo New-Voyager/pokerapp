@@ -64,7 +64,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
         elevation: 0.0,
         backgroundColor: AppColors.screenBackgroundColor,
         title: Text(
-          "Game History",
+          "Games",
           textAlign: TextAlign.left,
           style: TextStyle(
             color: AppColors.appAccentColor,
@@ -84,12 +84,25 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
                         EdgeInsets.only(left: 10, top: 5, bottom: 5, right: 10),
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      "Hand History",
+                      "Game Details",
                       style: const TextStyle(
                         fontFamily: AppAssets.fontFamilyLato,
                         color: Colors.white,
                         fontSize: 30.0,
                         fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(left: 10, bottom: 5, right: 10),
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "Game Code: " + widget.data.gameCode.toString(),
+                      style: const TextStyle(
+                        fontFamily: AppAssets.fontFamilyLato,
+                        color: AppColors.lightGrayTextColor,
+                        fontSize: 12.0,
+                        fontWeight: FontWeight.w400,
                       ),
                     ),
                   ),

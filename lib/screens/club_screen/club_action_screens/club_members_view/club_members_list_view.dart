@@ -402,7 +402,7 @@ class _ClubMembersListViewState extends State<ClubMembersListView> {
                         children: [
                           Icon(
                             Icons.arrow_forward_ios,
-                            color: Colors.white,
+                            color: AppColors.appAccentColor,
                             size: 10,
                           )
                           // Visibility(
