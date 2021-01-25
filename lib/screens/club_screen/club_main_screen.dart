@@ -49,7 +49,10 @@ class ClubMainScreen extends StatelessWidget {
             backgroundColor: AppColors.screenBackgroundColor,
             appBar: AppBar(
               leading: IconButton(
-                icon: Icon(Icons.arrow_back_ios, color: Colors.white),
+                icon: Icon(
+                  Icons.arrow_back_ios,
+                  color: AppColors.appAccentColor,
+                ),
                 onPressed: () => Navigator.of(context).pop(),
               ),
               actions: clubModel == null
