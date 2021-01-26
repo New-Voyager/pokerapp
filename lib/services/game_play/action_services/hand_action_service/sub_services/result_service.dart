@@ -63,7 +63,12 @@ class ResultService {
     BuildContext context,
     var data,
   }) {
-    Players players = Provider.of<Players>(
+    final Players players = Provider.of<Players>(
+      context,
+      listen: false,
+    );
+
+    final TableState tableState = Provider.of<TableState>(
       context,
       listen: false,
     );
@@ -75,7 +80,7 @@ class ResultService {
     );
 
     /* remove all highlight - silently */
-    players.removeAllHighlights();
+    players.removeAllHighlightsSilent();
 
     /* footer status -> showing the result */
     /* set the footer result data */
@@ -89,7 +94,7 @@ class ResultService {
     // get the winner seat No and highlight the winner
     winners.forEach((winner) {
       // highlight the winner seat No
-      players.highlightWinner(winner.seatNo);
+      players.highlightWinnerSilent(winner.seatNo);
     });
 
     /* then, change the status of the footer to show the result */
@@ -99,22 +104,20 @@ class ResultService {
     ).value = FooterStatus.Result;
 
     /* players remove last status and markers */
-    players.removeAllPlayersStatus();
+    players.removeAllPlayersStatusSilent();
 
-    players.removeMarkersFromAllPlayer();
+    players.removeMarkersFromAllPlayerSilent();
 
     /* showdown time, show other players cards */
-    players.updateUserCards(_getCards(data));
+    players.updateUserCardsSilent(_getCards(data));
 
     /* highlight cards of players and community cards for winner */
-    Provider.of<TableState>(
-      context,
-      listen: false,
-    ).highlightCards(_getBoardCards(data));
+    tableState.highlightCardsSilent(_getBoardCards(data));
+    tableState.notifyAll();
 
     Map<String, dynamic> playerData = _getPlayerData(data);
 
-    players.highlightCards(
+    players.highlightCardsSilent(
       seatNo: playerData['seatNo'],
       cards: playerData['playerCards'],
     );
@@ -126,14 +129,19 @@ class ResultService {
       );
 
       if (idx != -1) {
-        players.updateCoinAmount(idx, winner.amount);
-        players.moveCoinsFromPot(idx, winner.amount);
+        players.updateCoinAmountSilent(idx, winner.amount);
+        players.moveCoinsFromPotSilent(idx, winner.amount);
       }
     }
 
+    players.notifyAll();
+
     // wait for the animation to finish, then update the stack
     Future.delayed(AppConstants.animationDuration).then(
-      (_) => players.updateStackBulk(_getUpdatedStack(data)),
+      (_) {
+        players.updateStackBulkSilent(_getUpdatedStack(data));
+        players.notifyAll();
+      },
     );
   }
 }
