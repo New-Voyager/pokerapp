@@ -34,6 +34,11 @@ class QueryCurrentHandService {
       listen: false,
     );
 
+    final TableState tableState = Provider.of<TableState>(
+      context,
+      listen: false,
+    );
+
     /* store the cards of the current player */
     int idxOfMe = players.players.indexWhere((p) => p.isMe);
     if (idxOfMe != -1)
@@ -55,10 +60,7 @@ class QueryCurrentHandService {
           .map<int>((e) => int.parse(e.toString()))
           .toList();
       if (boardCardsNum != null)
-        Provider.of<TableState>(
-          context,
-          listen: false,
-        ).updateCommunityCards(
+        tableState.updateCommunityCardsSilent(
           boardCardsNum.map<CardObject>((c) => CardHelper.getCard(c)).toList(),
         );
     } catch (e) {}
@@ -69,17 +71,17 @@ class QueryCurrentHandService {
         ?.toList();
     var potUpdates = currentHandState['potUpdates'];
 
-    Provider.of<TableState>(
-      context,
-      listen: false,
-    ).updatePotChips(
+    tableState.updatePotChipsSilent(
       potChips: pots,
       potUpdatesChips: potUpdates,
     );
 
+    tableState.notifyAll();
+
     // remainingActionTime
-    int remainingActionTime =
-        int.parse(currentHandState['remainingActionTime'].toString());
+    int remainingActionTime = int.parse(
+      currentHandState['remainingActionTime'].toString(),
+    );
 
     // put the remaining time in the provider
     Provider.of<RemainingTime>(

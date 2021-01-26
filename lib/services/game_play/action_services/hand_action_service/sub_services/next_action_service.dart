@@ -22,8 +22,12 @@ class NextActionService {
     var actionChange = data['actionChange'];
     int seatNo = actionChange['seatNo'];
 
-    // highlight the current seat No
     final Players players = Provider.of<Players>(
+      context,
+      listen: false,
+    );
+
+    final TableState tableState = Provider.of<TableState>(
       context,
       listen: false,
     );
@@ -32,7 +36,6 @@ class NextActionService {
 
     // highlight --> true
     players.updateHighlightSilent(idx, true);
-
     players.notifyAll();
 
     /* check if pot is available, if true, update the pot value in the table state object */
@@ -42,18 +45,13 @@ class NextActionService {
           ?.toList();
       var potUpdates = actionChange['potUpdates'];
 
-      Provider.of<TableState>(
-        context,
-        listen: false,
-      ).updatePotChips(
+      tableState.updatePotChipsSilent(
         potChips: pots,
         potUpdatesChips: potUpdates,
       );
     } catch (e) {}
 
-    Provider.of<TableState>(
-      context,
-      listen: false,
-    ).updateTableStatus(null);
+    tableState.updateTableStatusSilent(null);
+    tableState.notifyAll();
   }
 }

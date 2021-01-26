@@ -9,8 +9,12 @@ class BoardService {
   BoardService._();
 
   static void reset(BuildContext context) async {
-    // get the players list
     final Players players = Provider.of<Players>(
+      context,
+      listen: false,
+    );
+
+    final TableState tableState = Provider.of<TableState>(
       context,
       listen: false,
     );
@@ -43,17 +47,11 @@ class BoardService {
     ).reset();
 
     // remove all the community cards
-    Provider.of<TableState>(
-      context,
-      listen: false,
-    ).updateCommunityCardsSilent([]);
-
-    Provider.of<TableState>(
-      context,
-      listen: false,
-    ).updatePotChips(
+    tableState.updateCommunityCardsSilent([]);
+    tableState.updatePotChipsSilent(
       potChips: null,
       potUpdatesChips: null,
     );
+    tableState.notifyAll();
   }
 }

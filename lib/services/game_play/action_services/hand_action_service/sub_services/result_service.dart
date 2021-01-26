@@ -68,6 +68,11 @@ class ResultService {
       listen: false,
     );
 
+    final TableState tableState = Provider.of<TableState>(
+      context,
+      listen: false,
+    );
+
     HighHandService.handle(
       context: context,
       data: data['handResult']['highHand'],
@@ -107,10 +112,8 @@ class ResultService {
     players.updateUserCardsSilent(_getCards(data));
 
     /* highlight cards of players and community cards for winner */
-    Provider.of<TableState>(
-      context,
-      listen: false,
-    ).highlightCards(_getBoardCards(data));
+    tableState.highlightCardsSilent(_getBoardCards(data));
+    tableState.notifyAll();
 
     Map<String, dynamic> playerData = _getPlayerData(data);
 

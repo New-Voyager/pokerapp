@@ -47,6 +47,11 @@ class NewHandService {
       listen: false,
     );
 
+    final TableState tableState = Provider.of<TableState>(
+      context,
+      listen: false,
+    );
+
     // remove all highlight winners
     players.removeWinnerHighlightSilent();
 
@@ -118,17 +123,15 @@ class NewHandService {
     // this is done to wait until the footerResult section is removed
     await Future.delayed(AppConstants.fastAnimationDuration);
 
-    TableState tableState = Provider.of<TableState>(context, listen: false);
-
     // remove all the community cards
     tableState.updateCommunityCardsSilent([]);
-
-    tableState.updatePotChips(
+    tableState.updatePotChipsSilent(
       potChips: null,
       potUpdatesChips: null,
     );
-
     /* put new hand message */
-    tableState.updateTableStatus(AppConstants.NEW_HAND);
+    tableState.updateTableStatusSilent(AppConstants.NEW_HAND);
+
+    tableState.notifyAll();
   }
 }
