@@ -145,7 +145,7 @@ class GameService {
     }
   """;
 
-  static Future<bool> requestForSeatChange(String gameCode) async {
+  static Future<String> requestForSeatChange(String gameCode) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
     print("gameCode ${gameCode}");
     Map<String, dynamic> variables = {
@@ -159,9 +159,9 @@ class GameService {
     );
 
     print("result ${result.data} ${result.exception}");
-    if (result.hasException) return false;
+    if (result.hasException) return "";
 
-    return result.data['confirmed'] ?? false;
+    return result.data['confirmed'] ?? "";
   }
 
   static Future<List<SeatChangeModel>> listOfSeatChange(String gameCode) async {

@@ -137,12 +137,12 @@ class _SeatChangeBottomSheetState extends State<SeatChangeBottomSheet> {
               });
               if (isSeatChange) {
                 // want to seat change
-                bool result =
+                String result =
                     await GameService.requestForSeatChange(widget.gameCode);
                 print("result ${result}");
               } else {
                 // do not want to seat change
-                bool result =
+                String result =
                     await GameService.requestForSeatChange(widget.gameCode);
                 print("result ${result}");
               }

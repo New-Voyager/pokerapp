@@ -53,6 +53,8 @@ class GamePlayScreen extends StatefulWidget {
 class _GamePlayScreenState extends State<GamePlayScreen> {
   GameComService _gameComService;
   BuildContext _providerContext;
+  String playerUuid;
+  int playerId;
 
   /*
   * Call back function, which lets the current player join the game
@@ -88,6 +90,8 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
         await GameService.getGameInfo(widget.gameCode);
 
     String myUUID = await AuthService.getUuid();
+    this.playerUuid = myUUID;
+    this.playerId = int.parse(await AuthService.getPlayerID());
 
     // mark the isMe field
     for (int i = 0; i < _gameInfoModel.playersInSeats.length; i++) {
@@ -176,128 +180,130 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
   /* provider method, returns list of all the providers used in the below hierarchy */
   List<SingleChildWidget> _getProviders({
     @required GameInfoModel gameInfoModel,
-  }) =>
-      [
-        /* this is for the highHand Notification */
-        ListenableProvider<ValueNotifier<HhNotificationModel>>(
-          create: (_) => ValueNotifier<HhNotificationModel>(null),
-        ),
+  }) {
+    return [
+      /* this is for the highHand Notification */
+      ListenableProvider<ValueNotifier<HhNotificationModel>>(
+        create: (_) => ValueNotifier<HhNotificationModel>(null),
+      ),
 
-        /* this is for having random card back for every new hand */
-        ListenableProvider<CardDistributionModel>(
-          create: (_) => CardDistributionModel(),
-        ),
+      /* this is for having random card back for every new hand */
+      ListenableProvider<CardDistributionModel>(
+        create: (_) => CardDistributionModel(),
+      ),
 
-        /* this is for having random card back for every new hand */
-        ListenableProvider<ValueNotifier<String>>(
-          create: (_) => ValueNotifier<String>(CardBackAssets.getRandom()),
-        ),
+      /* this is for having random card back for every new hand */
+      ListenableProvider<ValueNotifier<String>>(
+        create: (_) => ValueNotifier<String>(CardBackAssets.getRandom()),
+      ),
 
-        /* a simple value notifier, holding INT which
+      /* a simple value notifier, holding INT which
         * resembles number of cards to deal with */
-        ListenableProvider<ValueNotifier<int>>(
-          create: (_) => ValueNotifier(2), // todo: default be 2?
-        ),
+      ListenableProvider<ValueNotifier<int>>(
+        create: (_) => ValueNotifier(2), // todo: default be 2?
+      ),
 
-        /* a header object is used to update the header section of
+      /* a header object is used to update the header section of
         * the game screen - it contains data regarding the current hand no, club name,
         * club code and so on */
-        ListenableProvider<HeaderObject>(
-          create: (_) => HeaderObject(
+      ListenableProvider<HeaderObject>(
+        create: (_) => HeaderObject(
             gameCode: widget.gameCode,
-          ),
-        ),
+            playerId: this.playerId,
+            playerUuid: this.playerUuid),
+      ),
 
-        /* board object used for changing board attributes */
-        ListenableProvider<BoardObject>(
-          create: (_) => BoardObject(),
-        ),
+      /* board object used for changing board attributes */
+      ListenableProvider<BoardObject>(
+        create: (_) => BoardObject(),
+      ),
 
-        /* a copy of Game Info Model is kept in the provider
+      /* a copy of Game Info Model is kept in the provider
         * This is used to get the max or min BuyIn amounts
         * or the game code, or for further info about the game */
-        ListenableProvider<ValueNotifier<GameInfoModel>>(
-          create: (_) => ValueNotifier(gameInfoModel),
-        ),
+      ListenableProvider<ValueNotifier<GameInfoModel>>(
+        create: (_) => ValueNotifier(gameInfoModel),
+      ),
 
-        /*
+      /*
         * This Listenable Provider updates the activities of players
         *  Player joins, buy Ins, Stacks, everything is notified by the Players objects
         * */
-        ListenableProvider<Players>(
-          create: (_) => Players(
-            players: gameInfoModel.playersInSeats,
-          ),
+      ListenableProvider<Players>(
+        create: (_) => Players(
+          players: gameInfoModel.playersInSeats,
         ),
+      ),
 
-        /* TableStatus is updated as a string value */
-        ListenableProvider<TableState>(
-          create: (_) => TableState(
-            tableStatus: gameInfoModel.tableStatus,
-          ),
+      /* TableStatus is updated as a string value */
+      ListenableProvider<TableState>(
+        create: (_) => TableState(
+          tableStatus: gameInfoModel.tableStatus,
         ),
+      ),
 
-        /* footer view, is maintained by this Provider - either how action buttons,
+      /* footer view, is maintained by this Provider - either how action buttons,
         * OR prompt for buy in are shown
         * */
-        ListenableProvider<ValueNotifier<FooterStatus>>(
-          create: (_) => ValueNotifier(
-            FooterStatus.None,
-          ),
+      ListenableProvider<ValueNotifier<FooterStatus>>(
+        create: (_) => ValueNotifier(
+          FooterStatus.None,
         ),
+      ),
 
-        /* If footer status become RESULT, then we need to have the
+      /* If footer status become RESULT, then we need to have the
         * result data available, the footer result model holds the result data */
-        ListenableProvider<FooterResult>(
-          create: (_) => FooterResult(),
-        ),
+      ListenableProvider<FooterResult>(
+        create: (_) => FooterResult(),
+      ),
 
-        /* This provider gets a value when YOUR_ACTION message is received,
+      /* This provider gets a value when YOUR_ACTION message is received,
         * other time this value is kept null, signifying,
         * there is no action to take on THIS user's end
         * */
-        ListenableProvider<ValueNotifier<PlayerAction>>(
-          create: (_) => ValueNotifier<PlayerAction>(
-            null,
-          ),
+      ListenableProvider<ValueNotifier<PlayerAction>>(
+        create: (_) => ValueNotifier<PlayerAction>(
+          null,
         ),
+      ),
 
-        /* This provider contains and updates the game info
+      /* This provider contains and updates the game info
         * required for player to make an action
         * this provider holds --> clubID, gameID and seatNo */
-        ListenableProvider<ValueNotifier<ActionInfo>>(
-          create: (_) => ValueNotifier<ActionInfo>(
-            null,
-          ),
+      ListenableProvider<ValueNotifier<ActionInfo>>(
+        create: (_) => ValueNotifier<ActionInfo>(
+          null,
         ),
+      ),
 
-        /* This provider contains the sendPlayerToHandChannel function
+      /* This provider contains the sendPlayerToHandChannel function
         * so that the function can be called from anywhere down the widget tree */
-        Provider<Function(String)>(
-          create: (_) => _gameComService.sendPlayerToHandChannel,
-        ),
+      Provider<Function(String)>(
+        create: (_) => _gameComService.sendPlayerToHandChannel,
+      ),
 
-        /* This provider holds the audioPlayer object, which facilitates playing
+      /* This provider holds the audioPlayer object, which facilitates playing
         * audio in the game */
-        Provider<AudioPlayer>(
-          create: (_) => AudioPlayer(
-            mode: PlayerMode.LOW_LATENCY,
-          ),
+      Provider<AudioPlayer>(
+        create: (_) => AudioPlayer(
+          mode: PlayerMode.LOW_LATENCY,
         ),
+      ),
 
-        /* managing audio assets as temporary files */
-        ListenableProvider<ValueNotifier<Map<String, String>>>(
-          create: (_) => ValueNotifier(
-            Map<String, String>(),
-          ),
+      /* managing audio assets as temporary files */
+      ListenableProvider<ValueNotifier<Map<String, String>>>(
+        create: (_) => ValueNotifier(
+          Map<String, String>(),
         ),
+      ),
 
-        /* This provider contains the remainingActionTime - this provider
+      /* This provider contains the remainingActionTime - this provider
         * is used only when QUERY_CURRENT_HAND message is processed */
-        ListenableProvider<RemainingTime>(
-          create: (_) => RemainingTime(),
-        ),
-      ];
+      ListenableProvider<RemainingTime>(
+        create: (_) => RemainingTime(),
+      ),
+    ];
+  }
 
   /* After the entire table is drawn, if the current player (isMe == true)
     * is waiting for buyIn,then show the footer prompt */
