@@ -58,18 +58,18 @@ class HighHandService {
       /* the player is in the current game - firework this user */
       int seatNo = winner['seatNo'] as int;
 
-      log('high_hand_service : seatNo: $seatNo');
-
-      Players players = Provider.of<Players>(
+      final Players players = Provider.of<Players>(
         context,
         listen: false,
       );
 
-      players.fireworkWinner(seatNo);
+      players.fireworkWinnerSilent(seatNo);
+      players.notifyAll();
 
       await Future.delayed(AppConstants.notificationDuration);
 
-      players.removeFirework(seatNo);
+      players.removeFireworkSilent(seatNo);
+      players.notifyAll();
     }
   }
 }

@@ -42,29 +42,28 @@ class NewHandService {
       listen: false,
     ).value = noCards;
 
-    // get the players list
-    Players players = Provider.of<Players>(
+    final Players players = Provider.of<Players>(
       context,
       listen: false,
     );
 
     // remove all highlight winners
-    players.removeWinnerHighlight();
+    players.removeWinnerHighlightSilent();
 
     // before marking the small, big blind or the dealer, remove any marking from the old hand
-    players.removeMarkersFromAllPlayer();
+    players.removeMarkersFromAllPlayerSilent();
 
     // remove all the status (last action) of all the players
-    players.removeAllPlayersStatus();
+    players.removeAllPlayersStatusSilent();
 
     // remove all the folder players
-    players.removeAllFoldedPlayers();
+    players.removeAllFoldedPlayersSilent();
 
     /* reset the noCardsVisible of each player and remove my cards too */
-    players.removeCardsFromAll();
+    players.removeCardsFromAllSilent();
 
     /* reset the reverse pot chips animation */
-    players.resetMoveCoinsFromPot();
+    players.resetMoveCoinsFromPotSilent();
 
     /* clean up from result views */
     /* set footer status to none  */
@@ -73,6 +72,7 @@ class NewHandService {
       context,
       listen: false,
     ).reset();
+
     Provider.of<ValueNotifier<FooterStatus>>(
       context,
       listen: false,
@@ -82,23 +82,31 @@ class NewHandService {
     int smallBlindIdx = players.players.indexWhere((p) => p.seatNo == sbPos);
     assert(smallBlindIdx != -1);
 
-    players.updatePlayerType(smallBlindIdx, PlayerType.SmallBlind,
-        coinAmount: smallBlind, notify: false);
+    players.updatePlayerTypeSilent(
+      smallBlindIdx,
+      PlayerType.SmallBlind,
+      coinAmount: smallBlind,
+    );
 
     /* marking the big blind */
     int bigBlindIdx = players.players.indexWhere((p) => p.seatNo == bbPos);
     assert(bigBlindIdx != -1);
-    players.updatePlayerType(bigBlindIdx, PlayerType.BigBlind,
-        coinAmount: bigBlind);
+    players.updatePlayerTypeSilent(
+      bigBlindIdx,
+      PlayerType.BigBlind,
+      coinAmount: bigBlind,
+    );
 
     /* marking the dealer */
     int dealerIdx = players.players.indexWhere((p) => p.seatNo == dealerPos);
     print('dealer index: $dealerIdx');
     assert(dealerIdx != -1);
-    players.updatePlayerType(
+    players.updatePlayerTypeSilent(
       dealerIdx,
       PlayerType.Dealer,
     );
+
+    players.notifyAll();
 
     /* get a new card back asset to be shown */
     Provider.of<ValueNotifier<String>>(

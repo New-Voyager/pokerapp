@@ -29,7 +29,7 @@ class QueryCurrentHandService {
     // current players cards
     String playerCards = currentHandState['playerCards'];
 
-    Players players = Provider.of<Players>(
+    final Players players = Provider.of<Players>(
       context,
       listen: false,
     );
@@ -37,10 +37,7 @@ class QueryCurrentHandService {
     /* store the cards of the current player */
     int idxOfMe = players.players.indexWhere((p) => p.isMe);
     if (idxOfMe != -1)
-      Provider.of<Players>(
-        context,
-        listen: false,
-      ).updateCard(
+      players.updateCardSilent(
         players.players[idxOfMe].seatNo,
         CardHelper.getRawCardNumbers(playerCards),
       );
@@ -50,10 +47,7 @@ class QueryCurrentHandService {
       context,
       listen: false,
     ).value;
-    Provider.of<Players>(
-      context,
-      listen: false,
-    ).visibleCardNumbersForAll(noOfCards);
+    players.visibleCardNumbersForAllSilent(noOfCards);
 
     // boardCards update if available
     try {
@@ -93,12 +87,11 @@ class QueryCurrentHandService {
       listen: false,
     ).time = remainingActionTime;
 
-    Provider.of<Players>(
-      context,
-      listen: false,
-    ).updateStackBulk(
+    players.updateStackBulkSilent(
       currentHandState['playersStack'],
     );
+
+    players.notifyAll();
 
     // next seat to ACT - handle using Next_Action service
     int nextSeatToAct = int.parse(currentHandState['nextSeatToAct'].toString());

@@ -17,7 +17,7 @@ class PlayerActedService {
     int seatNo = playerActed['seatNo'];
 
     // show a prompt regarding last player action
-    Players players = Provider.of<Players>(
+    final Players players = Provider.of<Players>(
       context,
       listen: false,
     );
@@ -25,16 +25,10 @@ class PlayerActedService {
     int idx = players.players.indexWhere((p) => p.seatNo == seatNo);
 
     // before showing the prompt --> turn off the highlight
-    Provider.of<Players>(
-      context,
-      listen: false,
-    ).updateHighlight(idx, false);
+    players.updateHighlightSilent(idx, false);
 
     // show the status message
-    Provider.of<Players>(
-      context,
-      listen: false,
-    ).updateStatus(
+    players.updateStatusSilent(
       idx,
       "${playerActed['action']}",
     );
@@ -43,10 +37,7 @@ class PlayerActedService {
 
     // check if player folded
     if (action == AppConstants.FOLD) {
-      Provider.of<Players>(
-        context,
-        listen: false,
-      ).updatePlayerFoldedStatus(
+      players.updatePlayerFoldedStatusSilent(
         idx,
         true,
       );
@@ -74,24 +65,19 @@ class PlayerActedService {
       );
 
     int amount = playerActed['amount'];
-    // FIXME: THERE WOULD BE A SERVER SIDE CHANGE TO GET THE UPDATED COIN AMOUNT, FOR NOW, ADD LOCALLY
     if (amount != null)
-      Provider.of<Players>(
-        context,
-        listen: false,
-      ).updateCoinAmount(
+      players.updateCoinAmountSilent(
         idx,
         amount,
       );
 
     int stack = playerActed['stack'];
     if (stack != null)
-      Provider.of<Players>(
-        context,
-        listen: false,
-      ).updateStackWithValue(
+      players.updateStackWithValueSilent(
         idx,
         stack,
       );
+
+    players.notifyAll();
   }
 }

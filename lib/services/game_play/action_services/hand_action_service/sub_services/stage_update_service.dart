@@ -36,10 +36,12 @@ class StageUpdateService {
     assert(key != null);
 
     // show the move coin to pot animation, after that update the pot
-    Provider.of<Players>(
+    final Players players = Provider.of<Players>(
       context,
       listen: false,
-    ).moveCoinsToPot().then(
+    );
+
+    players.moveCoinsToPot().then(
       (_) async {
         // update the pot
         updatePot(data, key, context);
@@ -49,10 +51,8 @@ class StageUpdateService {
         //await Future.delayed(AppConstants.userPopUpMessageHoldDuration);
 
         // remove all the status (last action) of all the players
-        Provider.of<Players>(
-          context,
-          listen: false,
-        ).removeAllPlayersStatus();
+        players.removeAllPlayersStatusSilent();
+        players.notifyAll();
       },
     );
 

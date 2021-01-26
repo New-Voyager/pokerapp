@@ -12,7 +12,7 @@ class DealStartedService {
   static void handle({
     BuildContext context,
   }) async {
-    Players players = Provider.of<Players>(
+    final Players players = Provider.of<Players>(
       context,
       listen: false,
     );
@@ -54,7 +54,8 @@ class DealStartedService {
         // wait for the animation to finish
         await Future.delayed(AppConstants.cardDistributionAnimationDuration);
 
-        players.updateVisibleCardNumber(seatNo, i + 1);
+        players.updateVisibleCardNumberSilent(seatNo, i + 1);
+        players.notifyAll();
       }
     }
 
