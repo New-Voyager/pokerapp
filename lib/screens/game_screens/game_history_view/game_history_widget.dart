@@ -5,7 +5,6 @@ import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/resources/app_styles.dart';
-import 'package:pokerapp/screens/game_play_screen/main_views/header_view.dart';
 
 class GameHistoryItem extends StatelessWidget {
   final GameHistoryModel item;
@@ -16,7 +15,7 @@ class GameHistoryItem extends StatelessWidget {
 
   Widget _buildSideAction() {
     if (item.handsPlayed <= 0) {
-      return shrinkedSizedBox;
+      return const SizedBox.shrink();
     }
 
     return Column(

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pokerapp/models/game_play_models/provider_models/hh_notification_model.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/notification_models/hh_notification_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/resources/app_constants.dart';
@@ -37,12 +37,12 @@ class HighHandService {
       // show a notification
 
       var notificationValueNotifier =
-          Provider.of<ValueNotifier<HhNotificationModel>>(
+          Provider.of<ValueNotifier<HHNotificationModel>>(
         context,
         listen: false,
       );
 
-      notificationValueNotifier.value = HhNotificationModel(
+      notificationValueNotifier.value = HHNotificationModel(
         gameCode: gameCode,
         handNum: handNum,
         playerName: playerName,

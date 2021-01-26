@@ -55,39 +55,40 @@ class UserView extends StatelessWidget {
                 duration: AppConstants.animationDuration,
                 curve: Curves.bounceInOut,
                 opacity: emptySeat ? 0.0 : 0.90,
-                child: AnimatedContainer(
-                    duration: AppConstants.fastAnimationDuration,
-                    curve: Curves.bounceInOut,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        width: 2.0,
-                        color: userObject.highlight ?? false
-                            ? highlightColor
-                            : Colors.transparent,
+                child: Consumer<BoardAttributesObject>(
+                  builder: (_, boardAttrObj, __) => Visibility(
+                    visible:
+                        boardAttrObj.isOrientationHorizontal ? false : true,
+                    child: AnimatedContainer(
+                      duration: AppConstants.fastAnimationDuration,
+                      curve: Curves.bounceInOut,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          width: 2.0,
+                          color: userObject.highlight ?? false
+                              ? highlightColor
+                              : Colors.transparent,
+                        ),
+                        boxShadow: userObject.highlight ?? false
+                            ? [
+                                BoxShadow(
+                                  color: highlightColor.withAlpha(120),
+                                  blurRadius: 20.0,
+                                  spreadRadius: 20.0,
+                                ),
+                              ]
+                            : [],
                       ),
-                      boxShadow: userObject.highlight ?? false
-                          ? [
-                              BoxShadow(
-                                color: highlightColor.withAlpha(120),
-                                blurRadius: 20.0,
-                                spreadRadius: 20.0,
-                              ),
-                            ]
-                          : [],
-                    ),
-                    child: Consumer<BoardAttributesObject>(
-                      builder: (_, boardAttrObj, __) => Visibility(
-                        visible:
-                            boardAttrObj.isOrientationHorizontal ? false : true,
-                        child: CircleAvatar(
-                          radius: 19.50,
-                          /* todo: this needs to be replaced with NetworkImage */
-                          backgroundImage:
-                              AssetImage(avatarUrl ?? 'assets/images/2.png'),
+                      child: CircleAvatar(
+                        radius: 19.50,
+                        backgroundImage: AssetImage(
+                          avatarUrl ?? 'assets/images/2.png',
                         ),
                       ),
-                    )),
+                    ),
+                  ),
+                ),
               );
 
               return Container(
