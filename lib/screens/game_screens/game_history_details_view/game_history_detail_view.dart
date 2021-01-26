@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:pokerapp/models/game_history_model.dart';
 import 'package:pokerapp/models/hand_history_model.dart';
+import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/screens/game_screens/game_history_details_view/stack_chart_view.dart';
@@ -51,15 +52,60 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
     return Scaffold(
       backgroundColor: AppColors.screenBackgroundColor,
       appBar: AppBar(
-        backgroundColor: AppColors.screenBackgroundColor,
-        title: Text("Game History"),
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back_ios,
+            size: 14,
+            color: AppColors.appAccentColor,
+          ),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        titleSpacing: 0,
         elevation: 0.0,
+        backgroundColor: AppColors.screenBackgroundColor,
+        title: Text(
+          "Games",
+          textAlign: TextAlign.left,
+          style: TextStyle(
+            color: AppColors.appAccentColor,
+            fontSize: 14.0,
+            fontFamily: AppAssets.fontFamilyLato,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
       ),
       body: !loadingDone
           ? Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
               child: Column(
                 children: [
+                  Container(
+                    margin:
+                        EdgeInsets.only(left: 10, top: 5, bottom: 5, right: 10),
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "Game Details",
+                      style: const TextStyle(
+                        fontFamily: AppAssets.fontFamilyLato,
+                        color: Colors.white,
+                        fontSize: 30.0,
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(left: 10, bottom: 5, right: 10),
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "Game Code: " + widget.data.gameCode.toString(),
+                      style: const TextStyle(
+                        fontFamily: AppAssets.fontFamilyLato,
+                        color: AppColors.lightGrayTextColor,
+                        fontSize: 12.0,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Row(
@@ -267,20 +313,42 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
               children: [
                 Text(
                   "Hands",
-                  style: TextStyle(color: Color(0xff848484)),
+                  style: TextStyle(
+                    fontFamily: AppAssets.fontFamilyLato,
+                    color: AppColors.lightGrayTextColor,
+                    fontSize: 14.0,
+                    fontWeight: FontWeight.w400,
+                  ),
                 ),
                 SizedBox(
                   width: 10.0,
                 ),
                 Text(
-                  _gameDetail.handsPlayedStr ?? '',
-                  style: TextStyle(color: Colors.white),
+                  _gameDetail.playedGame
+                      ? _gameDetail.handsPlayedStr ?? ''
+                      : '0',
+                  style: TextStyle(
+                    fontFamily: AppAssets.fontFamilyLato,
+                    color: Colors.white,
+                    fontSize: 14.0,
+                    fontWeight: FontWeight.w400,
+                  ),
                 ),
               ],
             ),
             Expanded(
               child: Visibility(
-                child: HandsPieChart(this._gameDetail.handsData),
+                child: !_gameDetail.playedGame
+                    ? Text(
+                        "No Data",
+                        style: TextStyle(
+                          fontFamily: AppAssets.fontFamilyLato,
+                          color: Colors.white38,
+                          fontSize: 14.0,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      )
+                    : HandsPieChart(this._gameDetail.handsData),
                 visible: loadingDone,
               ),
             )
@@ -311,13 +379,30 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
                   "Stack",
-                  style: TextStyle(color: Colors.white, fontSize: 14.0),
+                  style: TextStyle(
+                    fontFamily: AppAssets.fontFamilyLato,
+                    color: Colors.white,
+                    fontSize: 14.0,
+                    fontWeight: FontWeight.w400,
+                  ),
                 ),
               ),
             ],
           ),
           Visibility(
-            child: Expanded(flex: 1, child: StackChartView(_gameDetail.stack)),
+            child: Expanded(
+                flex: 1,
+                child: !_gameDetail.playedGame
+                    ? Text(
+                        "No Data",
+                        style: TextStyle(
+                          fontFamily: AppAssets.fontFamilyLato,
+                          color: Colors.white38,
+                          fontSize: 14.0,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      )
+                    : StackChartView(_gameDetail.stack)),
             visible: loadingDone,
           ),
         ],
@@ -343,29 +428,74 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
               children: [
                 Text(
                   "Balance",
-                  style: TextStyle(color: Colors.white),
+                  style: const TextStyle(
+                    fontFamily: AppAssets.fontFamilyLato,
+                    color: Colors.white,
+                    fontSize: 14.0,
+                    fontWeight: FontWeight.w800,
+                  ),
                 ),
                 SizedBox(
                   height: 16,
                 ),
-                Text(_gameDetail.profitText ?? _gameDetail.profitText,
-                    style: _gameDetail.profit != null || _gameDetail.profit == 0
-                        ? _gameDetail.profit < 0
-                            ? TextStyle(color: Colors.red, fontSize: 20.0)
+                _gameDetail.playedGame
+                    ? Text(
+                        _gameDetail.profitText ?? _gameDetail.profitText,
+                        style: _gameDetail.profit != null ||
+                                _gameDetail.profit == 0
+                            ? _gameDetail.profit < 0
+                                ? TextStyle(
+                                    fontFamily: AppAssets.fontFamilyLato,
+                                    color: Colors.red,
+                                    fontSize: 20.0,
+                                    fontWeight: FontWeight.w400,
+                                  )
+                                : TextStyle(
+                                    fontFamily: AppAssets.fontFamilyLato,
+                                    color: Colors.lightGreenAccent,
+                                    fontSize: 20.0,
+                                    fontWeight: FontWeight.w400,
+                                  )
                             : TextStyle(
-                                color: Colors.lightGreenAccent, fontSize: 20.0)
-                        : TextStyle(color: Colors.white, fontSize: 20.0)),
+                                fontFamily: AppAssets.fontFamilyLato,
+                                color: Colors.white,
+                                fontSize: 20.0,
+                                fontWeight: FontWeight.w400,
+                              ),
+                      )
+                    : Text(
+                        'No data',
+                        style: TextStyle(
+                          fontFamily: AppAssets.fontFamilyLato,
+                          color: Colors.white38,
+                          fontSize: 12.0,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
                 SizedBox(
                   height: 10,
                 ),
-                Text(
-                  "Buy-in",
-                  style: TextStyle(color: Colors.blueGrey),
+                Visibility(
+                  visible: _gameDetail.playedGame,
+                  child: Text(
+                    "Buy-in",
+                    style: TextStyle(
+                      fontFamily: AppAssets.fontFamilyLato,
+                      color: Colors.blueGrey,
+                      fontSize: 14.0,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
                 ),
                 seprator,
                 Text(
                   _gameDetail.buyInText ?? _gameDetail.buyInText,
-                  style: TextStyle(color: Colors.white, fontSize: 12.0),
+                  style: TextStyle(
+                    fontFamily: AppAssets.fontFamilyLato,
+                    color: Colors.white,
+                    fontSize: 12.0,
+                    fontWeight: FontWeight.w400,
+                  ),
                 ),
               ],
             ),
@@ -414,8 +544,12 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
                               loadingDone && _gameDetail.gameTypeStr != null,
                           child: Text(
                             _gameDetail.gameTypeStr ?? '',
-                            style:
-                                TextStyle(color: Colors.white, fontSize: 24.0),
+                            style: const TextStyle(
+                              fontFamily: AppAssets.fontFamilyLato,
+                              color: Colors.white,
+                              fontSize: 24.0,
+                              fontWeight: FontWeight.w800,
+                            ),
                           )),
                       seprator,
                       Visibility(
@@ -423,8 +557,11 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
                               loadingDone && _gameDetail.gameHandsText != null,
                           child: Text(
                             _gameDetail.gameHandsText ?? '',
-                            style: TextStyle(
-                              color: Color(0xff848484),
+                            style: const TextStyle(
+                              fontFamily: AppAssets.fontFamilyLato,
+                              color: AppColors.lightGrayTextColor,
+                              fontSize: 14.0,
+                              fontWeight: FontWeight.w800,
                             ),
                           )),
                       seprator,
@@ -433,7 +570,12 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
                               _gameDetail.playerHandsText != null,
                           child: Text(
                             _gameDetail.playerHandsText ?? '',
-                            style: TextStyle(color: Color(0xff848484)),
+                            style: const TextStyle(
+                              fontFamily: AppAssets.fontFamilyLato,
+                              color: AppColors.lightGrayTextColor,
+                              fontSize: 14.0,
+                              fontWeight: FontWeight.w800,
+                            ),
                           )),
                       seprator
                     ],
@@ -448,8 +590,12 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
                         _gameDetail.endedAtStr != null
                             ? 'Ended at ${_gameDetail.endedAtStr}'
                             : '',
-                        style:
-                            TextStyle(color: Color(0xff848484), fontSize: 12),
+                        style: const TextStyle(
+                          fontFamily: AppAssets.fontFamilyLato,
+                          color: AppColors.lightGrayTextColor,
+                          fontSize: 10.0,
+                          fontWeight: FontWeight.w800,
+                        ),
                       ),
                     )
                   ]),
@@ -522,37 +668,44 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
 
   Widget getLowerCard() {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(0),
       child: Container(
         decoration: BoxDecoration(
           color: Color(0xff313235),
-          borderRadius: BorderRadius.all(
-            Radius.circular(AppDimensions.cardRadius),
-          ),
+          // borderRadius: BorderRadius.all(
+          //   Radius.circular(AppDimensions.cardRadius),
+          // ),
         ),
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 70.0),
-              child: Divider(
-                color: Color(0xff707070),
-              ),
-            ),
+            // Padding(
+            //   padding: const EdgeInsets.only(left: 70.0),
+            //   child: Divider(
+            //     color: Color(0xff707070),
+            //   ),
+            // ),
             ListTile(
               onTap: () => this.onHandHistoryPressed(context),
               leading: CircleAvatar(
+                radius: 18,
                 child: SvgPicture.asset('assets/images/casino.svg',
                     color: Colors.white),
                 backgroundColor: Color(0xff319ffe),
               ),
               title: Text(
                 "Hand History",
-                style: TextStyle(color: Colors.white),
+                style: const TextStyle(
+                  fontFamily: AppAssets.fontFamilyLato,
+                  color: Colors.white,
+                  fontSize: 14.0,
+                  fontWeight: FontWeight.w400,
+                ),
               ),
               trailing: IconButton(
                 icon: Icon(
                   Icons.arrow_forward_ios,
-                  color: Colors.white,
+                  color: AppColors.appAccentColor,
+                  size: 12,
                 ),
               ),
             ),
@@ -564,18 +717,25 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
             ),
             ListTile(
                 leading: CircleAvatar(
+                  radius: 18,
                   child: SvgPicture.asset('assets/images/casino.svg',
                       color: Colors.white),
                   backgroundColor: Color(0xffef9712),
                 ),
                 title: Text(
                   "Table Record",
-                  style: TextStyle(color: Colors.white),
+                  style: const TextStyle(
+                    fontFamily: AppAssets.fontFamilyLato,
+                    color: Colors.white,
+                    fontSize: 14.0,
+                    fontWeight: FontWeight.w400,
+                  ),
                 ),
                 trailing: IconButton(
                     icon: Icon(
                       Icons.arrow_forward_ios,
-                      color: Colors.white,
+                      color: AppColors.appAccentColor,
+                      size: 12,
                     ),
                     onPressed: () {}),
                 onTap: () {
@@ -594,18 +754,25 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
             ListTile(
               onTap: () => this.onHighHandLogPressed(context),
               leading: CircleAvatar(
+                radius: 18,
                 child: SvgPicture.asset('assets/images/casino.svg',
                     color: Colors.white),
                 backgroundColor: Color(0xff0fc915),
               ),
               title: Text(
                 "High Hand Log",
-                style: TextStyle(color: Colors.white),
+                style: const TextStyle(
+                  fontFamily: AppAssets.fontFamilyLato,
+                  color: Colors.white,
+                  fontSize: 14.0,
+                  fontWeight: FontWeight.w400,
+                ),
               ),
               trailing: IconButton(
                 icon: Icon(
                   Icons.arrow_forward_ios,
-                  color: Colors.white,
+                  color: AppColors.appAccentColor,
+                  size: 12,
                 ),
               ),
             ),

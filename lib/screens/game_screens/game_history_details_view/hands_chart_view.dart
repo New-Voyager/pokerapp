@@ -2,6 +2,7 @@
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_history_model.dart';
+import 'package:pokerapp/resources/app_assets.dart';
 
 class HandsPieChart extends StatelessWidget {
   bool animate;
@@ -35,7 +36,10 @@ class HandsPieChart extends StatelessWidget {
             cellPadding: new EdgeInsets.only(right: 4.0, bottom: 4.0),
             // Render the legend entry text with custom styles.
             entryTextStyle: charts.TextStyleSpec(
-                color: charts.MaterialPalette.white, fontSize: 10),
+              fontFamily: AppAssets.fontFamilyLato,
+              color: charts.Color.white,
+              fontSize: 10,
+            ),
           )
         ],
 

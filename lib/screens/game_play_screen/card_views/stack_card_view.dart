@@ -50,6 +50,7 @@ class StackCardView extends StatelessWidget {
     int n = center ? cards.length : 0;
     double ctr = center ? AppDimensions.cardWidth / 2 : 0;
 
+    /* MY CARDS */
     return Stack(
       alignment: Alignment.center,
       children: cards.isEmpty
@@ -61,7 +62,8 @@ class StackCardView extends StatelessWidget {
               .map(
                 (c) => Transform.translate(
                   offset: Offset(
-                    -AppDimensions.cardWidth * (c.key - n / 2) - ctr,
+                    /* TODO: MY CARD  */
+                    -AppDimensions.cardWidth * 1.2 * (c.key - n / 2) - ctr,
                     c.value.highlight ? pullUpOffset : 0.0,
                   ),
                   child: deactivated ? c.value.grayedWidget : c.value.widget,

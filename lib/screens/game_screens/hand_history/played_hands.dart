@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/hand_history_model.dart';
 import 'package:pokerapp/models/hand_log_model.dart';
+import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_log_view.dart';
@@ -24,9 +25,6 @@ class PlayedHandsScreen extends StatelessWidget {
         body: Column(
           children: [
             getHeader(),
-            SizedBox(
-              height: 5.0,
-            ),
             Expanded(
               child: ListView.separated(
                 itemBuilder: (context, index) {
@@ -47,24 +45,30 @@ class PlayedHandsScreen extends StatelessWidget {
       padding: const EdgeInsets.only(
         left: 2.0,
         right: 2.0,
+        top: 5.0,
+        bottom: 5.0,
       ),
       child: Container(
         height: 50.0,
-        decoration: BoxDecoration(
-          color: Color(0xff313235),
-          borderRadius: BorderRadius.all(
-            Radius.circular(AppDimensions.cardRadius),
-          ),
-        ),
+        // decoration: BoxDecoration(
+        //   color: Color(0xff313235),
+        //   borderRadius: BorderRadius.all(
+        //     Radius.circular(AppDimensions.cardRadius),
+        //   ),
+        // ),
         child: Padding(
           padding: const EdgeInsets.all(6.0),
           child: Row(
             children: [
-              Text("Hand",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 15.0,
-                  )),
+              Text(
+                "Hand",
+                style: const TextStyle(
+                  fontFamily: AppAssets.fontFamilyLato,
+                  color: Colors.white,
+                  fontSize: 15.0,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
               SizedBox(
                 width: 20.0,
               ),
@@ -146,8 +150,15 @@ class PlayedHandsScreen extends StatelessWidget {
         padding: const EdgeInsets.only(left: 4.0, top: 10.0, right: 6.0),
         child: Container(
           width: 30,
-          child:
-              Text(handNum.toString(), style: TextStyle(color: Colors.white)),
+          child: Text(
+            handNum.toString(),
+            style: const TextStyle(
+              fontFamily: AppAssets.fontFamilyLato,
+              color: Colors.white,
+              fontSize: 14.0,
+              fontWeight: FontWeight.w400,
+            ),
+          ),
         ));
   }
 }
@@ -183,7 +194,7 @@ class WinnerWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Flexible(
-                  flex: 5,
+                  flex: 4,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -197,27 +208,29 @@ class WinnerWidget extends StatelessWidget {
                 Flexible(
                   flex: 6,
                   child: Container(
-                      margin: EdgeInsets.only(left: 30.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Column(
-                            children: getCommunityCards(),
+                    margin: EdgeInsets.only(left: 30.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Column(
+                          children: getCommunityCards(),
+                        ),
+                        Container(
+                          child: Text(
+                            this.item.handTime,
+                            style: const TextStyle(
+                              fontFamily: AppAssets.fontFamilyLato,
+                              color: AppColors.lightGrayTextColor,
+                              fontSize: 14.0,
+                              fontWeight: FontWeight.w400,
+                            ),
                           ),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Text(
-                                this.item.handTime,
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ],
-                          ),
-                        ],
-                      )),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -227,7 +240,8 @@ class WinnerWidget extends StatelessWidget {
           ),
           Icon(
             Icons.arrow_forward_ios,
-            color: Colors.white,
+            color: AppColors.appAccentColor,
+            size: 10,
           ),
         ],
       ),
@@ -269,7 +283,12 @@ class WinnerWidget extends StatelessWidget {
             children: [
               Text(
                 name,
-                style: TextStyle(color: Colors.orangeAccent),
+                style: const TextStyle(
+                  fontFamily: AppAssets.fontFamilyLato,
+                  color: Colors.orangeAccent,
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.w400,
+                ),
               ),
               _separator,
               CardsView(cards, showCards),
@@ -277,15 +296,22 @@ class WinnerWidget extends StatelessWidget {
               Row(children: [
                 Text(
                   'Received: ',
-                  style: TextStyle(
-                      color: Color(0xff848484), fontWeight: FontWeight.w600),
+                  style: const TextStyle(
+                    fontFamily: AppAssets.fontFamilyLato,
+                    color: AppColors.lightGrayTextColor,
+                    fontSize: 14.0,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
                 _separator,
                 Text(
                   DataFormatter.chipsFormat(pot),
-                  style: TextStyle(
-                      color: Colors.lightGreenAccent,
-                      fontWeight: FontWeight.w600),
+                  style: const TextStyle(
+                    fontFamily: AppAssets.fontFamilyLato,
+                    color: Colors.lightGreenAccent,
+                    fontSize: 14.0,
+                    fontWeight: FontWeight.w400,
+                  ),
                 ),
               ]),
               _separator,

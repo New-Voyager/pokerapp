@@ -136,7 +136,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView> {
                             ),
                           ),
                           Container(
-                            padding: EdgeInsets.only(bottom: 5),
+                            padding: EdgeInsets.only(bottom: 5, top: 20),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -280,7 +280,11 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView> {
                               padding: EdgeInsets.only(left: 5),
                               child: CupertinoTextField(
                                 controller: _contactEditingController,
-                                style: TextStyle(color: Colors.white),
+                                style: TextStyle(
+                                  fontFamily: AppAssets.fontFamilyLato,
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                ),
                                 decoration:
                                     BoxDecoration(color: Colors.transparent),
                               ),
@@ -297,6 +301,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView> {
                       padding: EdgeInsets.all(5),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Expanded(
                             flex: 1,
@@ -310,11 +315,19 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView> {
                             child: Padding(
                               padding: EdgeInsets.only(left: 5),
                               child: CupertinoTextField(
+                                textAlignVertical: TextAlignVertical.center,
                                 controller: _notesEditingController,
                                 placeholder: 'insert notes here',
-                                placeholderStyle:
-                                    TextStyle(color: Colors.white38),
-                                style: TextStyle(color: Colors.white),
+                                placeholderStyle: TextStyle(
+                                  color: AppColors.listViewDividerColor,
+                                  fontFamily: AppAssets.fontFamilyLato,
+                                  fontSize: 18,
+                                ),
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontFamily: AppAssets.fontFamilyLato,
+                                  fontSize: 18,
+                                ),
                                 decoration:
                                     BoxDecoration(color: Colors.transparent),
                               ),
@@ -365,28 +378,56 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView> {
       autofocus: true,
       keyboardType: TextInputType.number,
       onSubmitted: (value) => _data.creditLimit = int.parse(value),
+      style: TextStyle(
+        color: Colors.black,
+        fontFamily: AppAssets.fontFamilyLato,
+        fontSize: 18,
+      ),
     );
 
     await showDialog<String>(
       context: context,
       child: new _SystemPadding(
         child: new AlertDialog(
+          backgroundColor: AppColors.cardBackgroundColor,
           contentPadding: const EdgeInsets.all(8.0),
           content: new Row(
             children: <Widget>[
-              Text('Credit Limit'),
+              Text(
+                'Credit Limit',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontFamily: AppAssets.fontFamilyLato,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
               SizedBox(height: 10, width: 20),
               new Expanded(child: textField)
             ],
           ),
           actions: <Widget>[
             new FlatButton(
-                child: const Text('Cancel'),
+                child: const Text(
+                  'Cancel',
+                  style: TextStyle(
+                    color: AppColors.appAccentColor,
+                    fontFamily: AppAssets.fontFamilyLato,
+                    fontSize: 18,
+                  ),
+                ),
                 onPressed: () {
                   Navigator.pop(context);
                 }),
             new FlatButton(
-                child: const Text('Set'),
+                child: const Text(
+                  'Set',
+                  style: TextStyle(
+                    color: AppColors.appAccentColor,
+                    fontFamily: AppAssets.fontFamilyLato,
+                    fontSize: 18,
+                  ),
+                ),
                 onPressed: () {
                   String value = textField.controller.value.text;
                   Navigator.pop(context);
@@ -472,6 +513,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView> {
               bottom: 10,
             ),
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Expanded(
                   flex: 1,
@@ -502,7 +544,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView> {
                     child: Padding(
                       padding: EdgeInsets.only(left: 5),
                       child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Text(
                               _data.creditLimit.toString(),

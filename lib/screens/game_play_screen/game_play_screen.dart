@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:ui';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:dart_nats/dart_nats.dart' as nats;
@@ -15,9 +16,11 @@ import 'package:pokerapp/models/game_play_models/provider_models/remaining_time.
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/header_object.dart';
+import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/card_back_assets.dart';
-import 'package:pokerapp/screens/game_play_screen/main_views/board_view.dart';
+import 'package:pokerapp/screens/game_play_screen/main_views/board_view/board_view.dart';
+import 'package:pokerapp/screens/game_play_screen/main_views/board_view/decorative_views/background_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/footer_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/header_view.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
@@ -368,25 +371,36 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                   () => _checkForCurrentUserPrompt(context),
                 );
 
-                return Container(
-                  decoration: _screenBackgroundDecoration,
-                  child: Column(
-                    children: [
-                      // header section
-                      HeaderView(),
+                return Stack(
+                  alignment: Alignment.topCenter,
+                  children: [
+                    BackgroundView(),
+                    Container(
+                      child: BackdropFilter(
+                        filter: ImageFilter.blur(
+                          sigmaX: 0.0,
+                          sigmaY: 0.0,
+                        ),
+                        child: Column(
+                          children: [
+                            // header section
+                            HeaderView(),
 
-                      // main board view
-                      Expanded(
-                        child: BoardView(
-                          onUserTap: _joinGame,
-                          onStartGame: _startGame,
+                            // main board view
+                            Expanded(
+                              child: BoardView(
+                                onUserTap: _joinGame,
+                                onStartGame: _startGame,
+                              ),
+                            ),
+
+                            // footer section
+                            FooterView(),
+                          ],
                         ),
                       ),
-
-                      // footer section
-                      FooterView(),
-                    ],
-                  ),
+                    ),
+                  ],
                 );
               },
             );
@@ -400,6 +414,10 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
 /* design constants */
 const _screenBackgroundDecoration = const BoxDecoration(
   color: Colors.black,
+  image: DecorationImage(
+    image: AssetImage(AppAssets.cityBackground1),
+    fit: BoxFit.cover,
+  ),
   // gradient: const LinearGradient(
   //   begin: Alignment.topCenter,
   //   end: Alignment.bottomCenter,

@@ -5,6 +5,7 @@ import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/screens/game_play_screen/main_views/header_view.dart';
 
 class GameHistoryItem extends StatelessWidget {
   final GameHistoryModel item;
@@ -14,6 +15,10 @@ class GameHistoryItem extends StatelessWidget {
   }) : assert(item != null);
 
   Widget _buildSideAction() {
+    if (item.handsPlayed <= 0) {
+      return shrinkedSizedBox;
+    }
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -24,7 +29,7 @@ class GameHistoryItem extends StatelessWidget {
                   color: item.balance > 0
                       ? AppColors.positiveColor
                       : AppColors.negativeColor)),
-          visible: item.balance != null,
+          visible: item.handsPlayed > 0 && item.balance != null,
         ),
       ],
     );
@@ -60,24 +65,35 @@ class GameHistoryItem extends StatelessWidget {
                 /*
           * member avatar
           * */
-                Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      CircleAvatar(
-                        backgroundColor: getGameColor().withOpacity(1.0),
-                        radius: 20,
-                        child: Text(
-                          item.ShortGameType,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 13.0,
-                            fontFamily: AppAssets.fontFamilyLato,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ),
-                    ]),
+                // Column(
+                //     mainAxisAlignment: MainAxisAlignment.center,
+                //     crossAxisAlignment: CrossAxisAlignment.center,
+                //     children: [
+                //       CircleAvatar(
+                //         backgroundColor: getGameColor().withOpacity(1.0),
+                //         radius: 20,
+                //         child: Text(
+                //           item.ShortGameType,
+                //           style: TextStyle(
+                //             color: Colors.white,
+                //             fontSize: 13.0,
+                //             fontFamily: AppAssets.fontFamilyLato,
+                //             fontWeight: FontWeight.w700,
+                //           ),
+                //         ),
+                //       ),
+                //     ]),
+
+                Container(
+                  width: MediaQuery.of(context).size.width / 15,
+                  height: double.infinity,
+                  decoration: BoxDecoration(
+                    color: getGameColor(),
+                    borderRadius: BorderRadius.horizontal(
+                      left: Radius.circular(AppDimensions.cardRadius),
+                    ),
+                  ),
+                ),
                 /*
           * main content
           * */
@@ -103,7 +119,7 @@ class GameHistoryItem extends StatelessWidget {
                                   ),
                                 ),
                                 colSeparator,
-                                /* user since */
+                                /* blinds */
                                 separator,
                                 Text(
                                   item.Blinds,
@@ -153,9 +169,12 @@ class GameHistoryItem extends StatelessWidget {
                             separator,
                             Visibility(
                               child: Row(children: [
-                                Text(
-                                  'Played for',
-                                  style: AppStyles.hostInfoTextStyle,
+                                Visibility(
+                                  visible: item.handsPlayed > 0,
+                                  child: Text(
+                                    'Played for',
+                                    style: AppStyles.hostInfoTextStyle,
+                                  ),
                                 ),
                                 colRunTimeSeparator,
                                 Text(
@@ -191,17 +210,20 @@ class GameHistoryItem extends StatelessWidget {
             ),
             Visibility(
               visible: item.gameNum != 0,
-              child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                Text(
-                  item.gameCode,
-                  style: AppStyles.gameCodeTextStyle,
-                ),
-                colSeparator,
-                Text(
-                  '#' + item.gameNum.toString(),
-                  style: AppStyles.hostNameTextStyle,
-                ),
-              ]),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Text(
+                    item.gameCode,
+                    style: AppStyles.gameCodeTextStyle,
+                  ),
+                  colSeparator,
+                  Text(
+                    '#' + item.gameNum.toString(),
+                    style: AppStyles.hostNameTextStyle,
+                  ),
+                ],
+              ),
             ),
           ],
         ));
