@@ -2,27 +2,22 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
-import 'package:pokerapp/models/game_play_models/business/card_distribution_model.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/footer_result.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
-import 'package:pokerapp/models/game_play_models/ui/board_object.dart';
+import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/user_object.dart';
-import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/screens/game_play_screen/card_views/animations/animating_shuffle_card_view.dart';
 import 'package:pokerapp/screens/game_play_screen/card_views/stack_card_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/animating_widgets/card_distribution_animating_widget.dart';
-import 'package:pokerapp/screens/game_play_screen/main_views/board_view/decorative_views/background_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/decorative_views/table_view.dart';
 import 'package:pokerapp/screens/game_play_screen/user_view/user_view.dart';
 import 'package:provider/provider.dart';
-
-import '../../board_positions.dart';
 
 // user are seated as per array index starting from the bottom center as 0 and moving in clockwise direction
 
@@ -41,7 +36,7 @@ class BoardView extends StatelessWidget {
   final Function() onStartGame;
 
   Widget _positionUser({
-    BoardObject board,
+    @required bool isBoardHorizontal,
     UserObject user,
     double heightOfBoard,
     double widthOfBoard,
@@ -54,7 +49,7 @@ class BoardView extends StatelessWidget {
     double shiftHorizontalConstant = widthOfBoard / 15;
     Alignment cardsAlignment = Alignment.centerRight;
 
-    if (board.horizontal) {
+    if (isBoardHorizontal) {
       shiftDownConstant += 20;
       if (seatPos == 1) shiftDownConstant -= 30;
     }
@@ -64,7 +59,6 @@ class BoardView extends StatelessWidget {
       cardsAlignment = Alignment.centerLeft;
 
     UserView userView = UserView(
-      board: board,
       isPresent: isPresent,
       seatPos: seatPos,
       key: ValueKey(seatPos),
@@ -103,10 +97,11 @@ class BoardView extends StatelessWidget {
           alignment: Alignment.centerLeft,
           child: Transform.translate(
             offset: Offset(
-                -10.0,
-                board.horizontal
-                    ? -50.0 + shiftDownConstant
-                    : -30.0 + shiftDownConstant),
+              -10.0,
+              isBoardHorizontal
+                  ? -50.0 + shiftDownConstant
+                  : -30.0 + shiftDownConstant,
+            ),
             child: userView,
           ),
         );
@@ -116,10 +111,11 @@ class BoardView extends StatelessWidget {
           alignment: Alignment.centerLeft,
           child: Transform.translate(
             offset: Offset(
-                0.0,
-                board.horizontal
-                    ? -heightOfBoard / 2
-                    : -heightOfBoard / 2.8 + shiftDownConstant),
+              0.0,
+              isBoardHorizontal
+                  ? -heightOfBoard / 2
+                  : -heightOfBoard / 2.8 + shiftDownConstant,
+            ),
             child: userView,
           ),
         );
@@ -129,10 +125,10 @@ class BoardView extends StatelessWidget {
           alignment: Alignment.topCenter,
           child: Transform.translate(
             offset: Offset(
-              board.horizontal
+              isBoardHorizontal
                   ? -widthOfBoard / 3.8 + shiftHorizontalConstant + 30
                   : -widthOfBoard / 3.8 + shiftHorizontalConstant,
-              board.horizontal ? -50 : -shiftDownConstant / 1.5,
+              isBoardHorizontal ? -50 : -shiftDownConstant / 1.5,
             ),
             child: userView,
           ),
@@ -144,7 +140,7 @@ class BoardView extends StatelessWidget {
           child: Transform.translate(
             offset: Offset(
               widthOfBoard / 3.8 - shiftHorizontalConstant,
-              board.horizontal ? -50 : -shiftDownConstant / 1.5,
+              isBoardHorizontal ? -50 : -shiftDownConstant / 1.5,
             ),
             child: userView,
           ),
@@ -155,10 +151,11 @@ class BoardView extends StatelessWidget {
           alignment: Alignment.centerRight,
           child: Transform.translate(
             offset: Offset(
-                0.0,
-                board.horizontal
-                    ? -heightOfBoard / 2
-                    : -heightOfBoard / 2.8 + shiftDownConstant),
+              0.0,
+              isBoardHorizontal
+                  ? -heightOfBoard / 2
+                  : -heightOfBoard / 2.8 + shiftDownConstant,
+            ),
             child: userView,
           ),
         );
@@ -168,10 +165,11 @@ class BoardView extends StatelessWidget {
           alignment: Alignment.centerRight,
           child: Transform.translate(
             offset: Offset(
-                0.0,
-                board.horizontal
-                    ? -50.0 + shiftDownConstant
-                    : -30.0 + shiftDownConstant),
+              0.0,
+              isBoardHorizontal
+                  ? -50.0 + shiftDownConstant
+                  : -30.0 + shiftDownConstant,
+            ),
             child: userView,
           ),
         );
@@ -209,7 +207,7 @@ class BoardView extends StatelessWidget {
   }
 
   Widget _buildCenterView({
-    BoardObject board,
+    @required bool isBoardHorizontal,
     List<CardObject> cards,
     List<int> potChips,
     int potChipsUpdates,
@@ -261,7 +259,8 @@ class BoardView extends StatelessWidget {
 
     EdgeInsets communityMargin = EdgeInsets.zero;
     EdgeInsets potMargin = EdgeInsets.only(top: 140);
-    if (board.horizontal) {
+
+    if (isBoardHorizontal) {
       communityMargin = EdgeInsets.only(bottom: 90.0);
       potMargin = EdgeInsets.only(top: 80);
     }
@@ -460,24 +459,51 @@ class BoardView extends StatelessWidget {
     return pos;
   }
 
+  Matrix4 _getTransformationMatrix({
+    @required isBoardHorizontal,
+  }) {
+    Matrix4 horizontalBoardMatrix = Matrix4(
+      1.0, 0.0, 0.0, 0.0, //
+      0.0, 1.0, 0.0, 0.0, //
+      0.0, 0.0, 1.0, 0.001, //
+      0.0, 0.0, 0.0, 1.0, //
+    ).scaled(1.0, 1.0, 1.0)
+      ..rotateX(_angleOfSlant * pi / 180)
+      ..rotateY(0.0)
+      ..rotateZ(0.0);
+
+    Matrix4 verticalBoardMatrix = Matrix4(
+      1.0, 0.0, 0.0, 0.0, //
+      0.0, 1.0, 0.0, 0.0, //
+      0.0, 0.0, 1.0, 0.001, //
+      0.0, 0.0, 0.0, 1.0, //
+    ).scaled(1.0, 1.0, 1.0)
+      ..rotateX(_angleOfSlant * pi / 180)
+      ..rotateY(0.0)
+      ..rotateZ(0.0);
+
+    return isBoardHorizontal ? horizontalBoardMatrix : verticalBoardMatrix;
+  }
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double heightOfBoard = width * widthMultiplier * heightMultiplier;
     double widthOfBoard = width * widthMultiplier;
-    final boardState = Provider.of<BoardObject>(context);
 
-    dynamic layoutCoords = LAYOUT_COORDS[BoardLayout.VERTICAL];
+    bool isBoardHorizontal = Provider.of<BoardAttributesObject>(
+      context,
+      listen: false,
+    ).isOrientationHorizontal;
 
-    if (boardState.horizontal) {
+    if (isBoardHorizontal) {
       widthOfBoard = MediaQuery.of(context).size.width;
       heightOfBoard = MediaQuery.of(context).size.height / 4;
-      layoutCoords = LAYOUT_COORDS[BoardLayout.HORIZONTAL];
     }
 
     /* finally the view */
     return Stack(
-      alignment: boardState.horizontal ? Alignment.topCenter : Alignment.center,
+      alignment: isBoardHorizontal ? Alignment.topCenter : Alignment.center,
       children: [
         // game board view
         TableView(
@@ -495,22 +521,17 @@ class BoardView extends StatelessWidget {
             bool isPresent = tmp != null;
 
             return Transform(
-              transform: Matrix4(
-                1.0, 0.0, 0.0, 0.0, //
-                0.0, 1.0, 0.0, 0.0, //
-                0.0, 0.0, 1.0, 0.001, //
-                0.0, 0.0, 0.0, 1.0, //
-              ).scaled(1.0, 1.0, 1.0)
-                ..rotateX(_angleOfSlant * pi / 180)
-                ..rotateY(0.0)
-                ..rotateZ(0.0),
+              transform: _getTransformationMatrix(
+                isBoardHorizontal: isBoardHorizontal,
+              ),
               alignment: Alignment.center,
               child: Padding(
                 padding: EdgeInsets.symmetric(
-                    horizontal: layoutCoords[SIDE_PADDING],
-                    vertical: boardState.horizontal ? 120 : 30),
+                  horizontal: 10.0,
+                  vertical: isBoardHorizontal ? 120 : 30,
+                ),
                 child: Stack(
-                  alignment: boardState.horizontal
+                  alignment: isBoardHorizontal
                       ? Alignment.topCenter
                       : Alignment.center,
                   children: [
@@ -520,7 +541,7 @@ class BoardView extends StatelessWidget {
                         .entries
                         .map(
                           (var u) => _positionUser(
-                            board: boardState,
+                            isBoardHorizontal: isBoardHorizontal,
                             user: u.value,
                             heightOfBoard: heightOfBoard,
                             widthOfBoard: widthOfBoard,
@@ -542,7 +563,7 @@ class BoardView extends StatelessWidget {
                                   valueNotifierFooterStatus,
                               __) =>
                           _buildCenterView(
-                        board: boardState,
+                        isBoardHorizontal: isBoardHorizontal,
                         cards: tableState.cards,
                         potChips: tableState.potChips,
                         potChipsUpdates: tableState.potChipsUpdates,

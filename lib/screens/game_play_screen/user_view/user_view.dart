@@ -5,13 +5,12 @@ import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/enums/game_play_enums/player_type.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/remaining_time.dart';
-import 'package:pokerapp/models/game_play_models/ui/board_object.dart';
+import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/user_object.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_styles.dart';
-import 'package:pokerapp/screens/game_play_screen/board_positions.dart';
 import 'package:pokerapp/screens/game_play_screen/card_views/hidden_card_view.dart';
 import 'package:pokerapp/screens/game_play_screen/card_views/stack_card_view.dart';
 import 'package:pokerapp/screens/game_play_screen/user_view/animating_widgets/chip_amount_animating_widget.dart';
@@ -21,8 +20,7 @@ import 'package:pokerapp/utils/card_helper.dart';
 import 'package:provider/provider.dart';
 
 const shrinkedSizedBox = const SizedBox.shrink();
-//const highlightColor = const Color(0xfff2a365);
-const highlightColor = const Color(0xfffffff);
+const highlightColor = const Color(0xfffffff); /* const Color(0xfff2a365); */
 
 class UserView extends StatelessWidget {
   final int seatPos;
@@ -30,7 +28,6 @@ class UserView extends StatelessWidget {
   final Alignment cardsAlignment;
   final Function(int) onUserTap;
   final bool isPresent;
-  final BoardObject board;
 
   UserView({
     Key key,
@@ -38,7 +35,6 @@ class UserView extends StatelessWidget {
     @required this.userObject,
     @required this.onUserTap,
     @required this.isPresent,
-    @required this.board,
     this.cardsAlignment = Alignment.centerRight,
   }) : super(key: key);
 
@@ -80,13 +76,16 @@ class UserView extends StatelessWidget {
                             ]
                           : [],
                     ),
-                    child: Visibility(
-                      visible: board.horizontal ? false : true,
-                      child: CircleAvatar(
-                        radius: 19.50,
-                        /* todo: this needs to be replaced with NetworkImage */
-                        backgroundImage:
-                            AssetImage(avatarUrl ?? 'assets/images/2.png'),
+                    child: Consumer<BoardAttributesObject>(
+                      builder: (_, boardAttrObj, __) => Visibility(
+                        visible:
+                            boardAttrObj.isOrientationHorizontal ? false : true,
+                        child: CircleAvatar(
+                          radius: 19.50,
+                          /* todo: this needs to be replaced with NetworkImage */
+                          backgroundImage:
+                              AssetImage(avatarUrl ?? 'assets/images/2.png'),
+                        ),
                       ),
                     )),
               );
@@ -493,34 +492,29 @@ class UserView extends StatelessWidget {
     // to debug coin position
     //userObject.coinAmount = 10;
 
-    Map<int, Offset> offsets;
-    if (board.horizontal) {
-      offsets = LAYOUT_COORDS[BoardLayout.HORIZONTAL][COIN_WIDGET_OFFSETS];
-    } else {
-      offsets = LAYOUT_COORDS[BoardLayout.VERTICAL][COIN_WIDGET_OFFSETS];
-    }
-
-    Widget coinAmountWidget = Transform.translate(
-      offset: offsets[seatPos],
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          /* show the coin svg */
-          Container(
-            height: 20,
-            width: 20.0,
-            child: SvgPicture.asset(
-              AppAssets.coinsImages,
+    Widget chipAmountWidget = Consumer<BoardAttributesObject>(
+      builder: (_, boardAttrObj, __) => Transform.translate(
+        offset: boardAttrObj.chipAmountWidgetOffsetMapping[seatPos],
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            /* show the coin svg */
+            Container(
+              height: 20,
+              width: 20.0,
+              child: SvgPicture.asset(
+                AppAssets.coinsImages,
+              ),
             ),
-          ),
-          const SizedBox(height: 5.0),
+            const SizedBox(height: 5.0),
 
-          /* show the coin amount */
-          Text(
-            userObject.coinAmount.toString(),
-            style: AppStyles.gamePlayScreenPlayerChips,
-          ),
-        ],
+            /* show the coin amount */
+            Text(
+              userObject.coinAmount.toString(),
+              style: AppStyles.gamePlayScreenPlayerChips,
+            ),
+          ],
+        ),
       ),
     );
 
@@ -529,10 +523,10 @@ class UserView extends StatelessWidget {
         : (userObject.animatingCoinMovement ?? false)
             ? ChipAmountAnimatingWidget(
                 seatPos: seatPos,
-                child: coinAmountWidget,
+                child: chipAmountWidget,
                 reverse: userObject.animatingCoinMovementReverse,
               )
-            : coinAmountWidget;
+            : chipAmountWidget;
   }
 
   @override
@@ -632,7 +626,7 @@ class UserView extends StatelessWidget {
             time: actionTime,
           ),
 
-//          /* building the chip amount widget */
+          /* building the chip amount widget */
           _buildChipAmountWidget(),
           //emptySeat ? shrinkedSizedBox : _buildChipAmountWidget(),
         ],
