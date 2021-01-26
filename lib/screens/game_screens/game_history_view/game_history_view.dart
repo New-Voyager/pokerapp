@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_history_model.dart';
 import 'package:pokerapp/resources/app_assets.dart';
@@ -86,57 +87,80 @@ class _GameHistoryViewState extends State<GameHistoryView> {
 
   @override
   Widget build(BuildContext context) {
-    return _prevGames == null
-        ? Center(child: CircularProgressIndicator())
-        : Scaffold(
-            backgroundColor: AppColors.screenBackgroundColor,
-            appBar: AppBar(
-              leading: IconButton(
-                icon: Icon(
-                  Icons.arrow_back_ios,
-                  size: 14,
-                  color: AppColors.appAccentColor,
-                ),
-                onPressed: () => Navigator.of(context).pop(),
+    return CupertinoPageScaffold(
+      resizeToAvoidBottomInset: true,
+      backgroundColor: AppColors.screenBackgroundColor,
+      navigationBar: CupertinoNavigationBar(
+        backgroundColor: AppColors.screenBackgroundColor,
+        leading: GestureDetector(
+          onTap: () => Navigator.of(context).pop(),
+          child: Row(
+            children: [
+              Icon(
+                Icons.arrow_back_ios,
+                size: 16,
+                color: AppColors.appAccentColor,
               ),
-              titleSpacing: 0,
-              elevation: 0.0,
-              backgroundColor: AppColors.screenBackgroundColor,
-              title: Text(
+              Text(
                 "Club",
-                textAlign: TextAlign.left,
-                style: TextStyle(
+                style: const TextStyle(
+                  fontFamily: AppAssets.fontFamilyLato,
                   color: AppColors.appAccentColor,
                   fontSize: 14.0,
-                  fontFamily: AppAssets.fontFamilyLato,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.w400,
                 ),
               ),
-            ),
-            body: Container(
-              child: Column(
-                children: [
-                  Container(
-                    margin:
-                        EdgeInsets.only(left: 10, top: 5, bottom: 5, right: 10),
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      "Game History",
-                      style: const TextStyle(
-                        fontFamily: AppAssets.fontFamilyLato,
-                        color: Colors.white,
-                        fontSize: 30.0,
-                        fontWeight: FontWeight.w900,
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: body(),
-                  ),
-                ],
+            ],
+          ),
+        ),
+        middle: Column(
+          children: [
+            Text(
+              "Game History",
+              style: const TextStyle(
+                fontFamily: AppAssets.fontFamilyLato,
+                color: Colors.white,
+                fontSize: 22.0,
+                fontWeight: FontWeight.w900,
               ),
             ),
-            //body(),
-          );
+            Text(
+              "Club code: " + widget.clubCode,
+              style: const TextStyle(
+                fontFamily: AppAssets.fontFamilyLato,
+                color: AppColors.lightGrayTextColor,
+                fontSize: 12.0,
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+          ],
+        ),
+      ),
+      child: Material(
+        type: MaterialType.transparency,
+        child: _prevGames == null
+            ? Center(
+                child: Text(
+                  "No Games Played",
+                  style: const TextStyle(
+                    fontFamily: AppAssets.fontFamilyLato,
+                    color: AppColors.lightGrayTextColor,
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              )
+            : Expanded(
+                child: body(),
+              ),
+      ),
+      // child: _prevGames == null
+      //     ? Center(
+      //         child: CircularProgressIndicator(),
+      //       )
+      //     : Expanded(
+      //         child: body(),
+      //       ),
+    );
   }
 }
