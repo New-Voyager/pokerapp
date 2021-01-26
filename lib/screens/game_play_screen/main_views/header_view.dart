@@ -128,72 +128,66 @@ class HeaderView extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.black.withOpacity(0.5),
         ),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(
-            sigmaY: 20.0,
-            sigmaX: 20.0,
-          ),
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              /* general header view */
-              Consumer<HeaderObject>(
-                builder: (_, HeaderObject obj, __) => Container(
-                  margin: const EdgeInsets.symmetric(
-                    horizontal: 10.0,
-                    vertical: 10.0,
-                  ),
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      /* main content view */
-                      Column(
-                        children: [
-                          /* game code */
-                          _buildText(
-                            'GAME CODE: ${obj.gameCode}',
-                          ),
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            /* general header view */
+            Consumer<HeaderObject>(
+              builder: (_, HeaderObject obj, __) => Container(
+                margin: const EdgeInsets.symmetric(
+                  horizontal: 10.0,
+                  vertical: 10.0,
+                ),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    /* main content view */
+                    Column(
+                      children: [
+                        /* game code */
+                        _buildText(
+                          'GAME CODE: ${obj.gameCode}',
+                        ),
 
-                          /* hand num */
-                          _buildText(
-                            obj.currentHandNum == null
-                                ? ''
-                                : 'Hand: #${obj.currentHandNum}',
-                            whiteColor: false,
-                          ),
-                        ],
-                      ),
+                        /* hand num */
+                        _buildText(
+                          obj.currentHandNum == null
+                              ? ''
+                              : 'Hand: #${obj.currentHandNum}',
+                          whiteColor: false,
+                        ),
+                      ],
+                    ),
 
-                      /* back button */
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: InkWell(
-                          onTap: () => Navigator.pop(context),
-                          child: Icon(
-                            FontAwesomeIcons.chevronLeft,
-                            color: Colors.white,
-                          ),
+                    /* back button */
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: InkWell(
+                        onTap: () => Navigator.pop(context),
+                        child: Icon(
+                          FontAwesomeIcons.chevronLeft,
+                          color: Colors.white,
                         ),
                       ),
+                    ),
 
-                      /* temporary place for end game */
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: Visibility(
-                          visible: !obj.gameEnded,
-                          child: CustomTextButton(
-                            text: 'End Game',
-                            onTap: () => endGame(context, obj),
-                          ),
+                    /* temporary place for end game */
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: Visibility(
+                        visible: !obj.gameEnded,
+                        child: CustomTextButton(
+                          text: 'End Game',
+                          onTap: () => endGame(context, obj),
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
-              _buildNotificationWidget(),
-            ],
-          ),
+            ),
+            _buildNotificationWidget(),
+          ],
         ),
       );
 }

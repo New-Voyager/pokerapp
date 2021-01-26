@@ -79,7 +79,7 @@ class BoardView extends StatelessWidget {
               alignment: Alignment.center,
               child: Padding(
                 padding: EdgeInsets.symmetric(
-                  horizontal: 10.0,
+                  horizontal: isBoardHorizontal ? 20.0 : 10.0,
                   vertical: isBoardHorizontal ? 120 : 30,
                 ),
                 child: Stack(
