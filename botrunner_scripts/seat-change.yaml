@@ -16,12 +16,12 @@ hands:
 
   - num: 2
     setup:
-      pause: 30
+      pause: 10
       auto: true
 
   - num: 3
     setup:
-      pause: 60
+      pause: 30
       auto: true
 
   # - num: 4
