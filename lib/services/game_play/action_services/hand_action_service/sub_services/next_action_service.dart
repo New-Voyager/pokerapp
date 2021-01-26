@@ -11,7 +11,7 @@ class NextActionService {
     BuildContext context,
     var data,
   }) {
-//    Audio.stop(context: context); fixme: this also does not play when we need to notify the user of his/her turn
+    // Audio.stop(context: context); fixme: this also does not play when we need to notify the user of his/her turn
 
     int handNum = data['handNum'];
     Provider.of<HeaderObject>(
@@ -22,8 +22,12 @@ class NextActionService {
     var actionChange = data['actionChange'];
     int seatNo = actionChange['seatNo'];
 
-    // highlight the current seat No
-    Players players = Provider.of<Players>(
+    final Players players = Provider.of<Players>(
+      context,
+      listen: false,
+    );
+
+    final TableState tableState = Provider.of<TableState>(
       context,
       listen: false,
     );
@@ -31,10 +35,8 @@ class NextActionService {
     int idx = players.players.indexWhere((p) => p.seatNo == seatNo);
 
     // highlight --> true
-    Provider.of<Players>(
-      context,
-      listen: false,
-    ).updateHighlight(idx, true);
+    players.updateHighlightSilent(idx, true);
+    players.notifyAll();
 
     /* check if pot is available, if true, update the pot value in the table state object */
     try {
@@ -43,18 +45,13 @@ class NextActionService {
           ?.toList();
       var potUpdates = actionChange['potUpdates'];
 
-      Provider.of<TableState>(
-        context,
-        listen: false,
-      ).updatePotChips(
+      tableState.updatePotChipsSilent(
         potChips: pots,
         potUpdatesChips: potUpdates,
       );
     } catch (e) {}
 
-    Provider.of<TableState>(
-      context,
-      listen: false,
-    ).updateTableStatus(null);
+    tableState.updateTableStatusSilent(null);
+    tableState.notifyAll();
   }
 }

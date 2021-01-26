@@ -19,12 +19,12 @@ class Players extends ChangeNotifier {
     @required players,
   }) {
     this._players = players;
-    _notify();
+    notifyAll();
   }
 
   List<PlayerModel> get players => _players;
 
-  void _notify() async {
+  void notifyAll() async {
     // search and mark the current player (isMe field)
     String myUUID = await AuthService.getUuid();
     int idx = this._players.indexWhere((p) => p.playerUuid == myUUID);
@@ -34,120 +34,90 @@ class Players extends ChangeNotifier {
     notifyListeners();
   }
 
-  void updatePlayerFoldedStatus(int idx, bool folded) {
+  void updatePlayerFoldedStatusSilent(int idx, bool folded) {
     _players[idx].animatingFold = true;
     _players[idx].playerFolded = true;
     _players[idx].playerFolded = folded;
-    _notify();
   }
 
-  void removeAllFoldedPlayers() {
+  void removeAllFoldedPlayersSilent() {
     for (int i = 0; i < _players.length; i++) _players[i].playerFolded = null;
-    _notify();
   }
 
-  void removeMarkersFromAllPlayer() {
+  void removeMarkersFromAllPlayerSilent() {
     for (int i = 0; i < _players.length; i++)
       _players[i].playerType = PlayerType.None;
-    _notify();
   }
 
-  void addNewPlayer(PlayerModel playerModel) {
+  void addNewPlayerSilent(PlayerModel playerModel) {
     _players.add(playerModel);
-    _notify();
   }
 
-  void updateExistingPlayer(int idx, PlayerModel newPlayerModel) {
+  void updateExistingPlayerSilent(int idx, PlayerModel newPlayerModel) {
     _players[idx] = newPlayerModel;
-    _notify();
   }
 
-  void updatePlayerType(int idx, PlayerType playerType,
-      {int coinAmount, bool notify}) {
+  void updatePlayerTypeSilent(int idx, PlayerType playerType,
+      {int coinAmount}) {
     _players[idx].playerType = playerType;
     if (coinAmount != null) {
       _players[idx].coinAmount = coinAmount;
     }
-    if (notify == null) {
-      notify = true;
-    }
-    if (notify) {
-      _notify();
-    }
   }
 
-  void updatePlayerTypeInSilent(int idx, PlayerType playerType) {
-    _players[idx].playerType = playerType;
-  }
-
-  void fireworkWinner(int seatNo) {
+  void fireworkWinnerSilent(int seatNo) {
     int idx = _players.indexWhere((p) => p.seatNo == seatNo);
     if (idx != -1) _players[idx].showFirework = true;
-    _notify();
-    notifyListeners();
   }
 
-  void removeFirework(int seatNo) {
+  void removeFireworkSilent(int seatNo) {
     int idx = _players.indexWhere((p) => p.seatNo == seatNo);
     if (idx != -1) _players[idx].showFirework = null;
-    _notify();
   }
 
-  void highlightWinner(int seatNo) {
+  void highlightWinnerSilent(int seatNo) {
     int idx = _players.indexWhere((p) => p.seatNo == seatNo);
     if (idx != -1) _players[idx].winner = true;
-    _notify();
   }
 
-  void removeWinnerHighlight() {
+  void removeWinnerHighlightSilent() {
     for (int i = 0; i < _players.length; i++) _players[i].winner = null;
-    _notify();
   }
 
-  void updateHighlight(int idx, bool highlight) {
+  void updateHighlightSilent(int idx, bool highlight) {
     _players[idx].highlight = highlight;
-    _notify();
   }
 
-  void removeAllHighlights() {
+  void removeAllHighlightsSilent() {
     for (int i = 0; i < _players.length; i++) _players[i].highlight = false;
   }
 
-  void highlightCards({int seatNo, List<int> cards}) {
+  void highlightCardsSilent({int seatNo, List<int> cards}) {
     int idx = _players.indexWhere((p) => p.seatNo == seatNo);
     _players[idx].highlightCards = cards;
-    _notify();
   }
 
-  void updateStatus(int idx, String status) {
+  void updateStatusSilent(int idx, String status) {
     _players[idx].status = status;
-    _notify();
   }
 
-  void updateCoinAmount(int idx, int amount) {
-    if (_players[idx].coinAmount == null)
-      _players[idx].coinAmount = amount;
-    else
-      _players[idx].coinAmount = amount;
-    _notify();
+  void updateCoinAmountSilent(int idx, int amount) {
+    _players[idx].coinAmount = amount;
   }
 
-  Future<void> resetMoveCoinsFromPot() async {
+  Future<void> resetMoveCoinsFromPotSilent() async {
     for (int idx = 0; idx < players.length; idx++) {
       _players[idx].animatingCoinMovement = false;
       _players[idx].animatingCoinMovementReverse = false;
       _players[idx].coinAmount = null;
     }
-    _notify();
   }
 
-  Future<void> moveCoinsFromPot(int idx, int amount) async {
+  Future<void> moveCoinsFromPotSilent(int idx, int amount) async {
     /* move all the coins to the pot  */
     _players[idx].animatingCoinMovement = true;
     _players[idx].animatingCoinMovementReverse = true;
     _players[idx].coinAmount = amount;
-
-    _notify();
   }
 
   Future<void> moveCoinsToPot() async {
@@ -155,7 +125,7 @@ class Players extends ChangeNotifier {
     for (int i = 0; i < _players.length; i++) {
       _players[i].animatingCoinMovement = true;
     }
-    _notify();
+    notifyListeners();
 
     // waiting for double the animation time
     await Future.delayed(AppConstants.animationDuration);
@@ -164,18 +134,17 @@ class Players extends ChangeNotifier {
       _players[i].animatingCoinMovement = false;
       _players[i].coinAmount = null;
     }
-    _notify();
+    notifyListeners();
   }
 
-  Future<void> removeAllPlayersStatus() async {
+  Future<void> removeAllPlayersStatusSilent() async {
     for (int i = 0; i < _players.length; i++) {
       _players[i].status = null;
       _players[i].coinAmount = null;
     }
-    _notify();
   }
 
-  void updateStackBulk(var stackData) {
+  void updateStackBulkSilent(var stackData) {
     Map<int, int> stacks = Map<int, int>();
 
     stackData.forEach((key, value) =>
@@ -186,51 +155,39 @@ class Players extends ChangeNotifier {
       int idx = _players.indexWhere((p) => p.seatNo == seatNo);
       _players[idx].stack = stack;
     });
-
-    _notify();
   }
 
-  void updateStackWithValue(int idx, int newStack) {
+  void updateStackWithValueSilent(int idx, int newStack) {
     _players[idx].stack = newStack;
-    _notify();
   }
 
-  void updateUserCards(Map<int, List<int>> data) {
+  void updateUserCardsSilent(Map<int, List<int>> data) {
     /* seat-no, list of cards */
     data.forEach((seatNo, cards) {
       int idx = _players.indexWhere((p) => p.seatNo == seatNo);
       if (idx != -1) _players[idx].cards = cards;
     });
-
-    _notify();
   }
 
-  void updateCard(int seatNo, List<int> cards) {
+  void updateCardSilent(int seatNo, List<int> cards) {
     int idx = _players.indexWhere((p) => p.seatNo == seatNo);
     _players[idx].cards = cards;
-
-    _notify();
   }
 
-  void updateVisibleCardNumber(int seatNo, int n) {
+  void updateVisibleCardNumberSilent(int seatNo, int n) {
     int idx = _players.indexWhere((p) => p.seatNo == seatNo);
     _players[idx].noOfCardsVisible = n;
-
-    _notify();
   }
 
-  void visibleCardNumbersForAll(int n) {
+  void visibleCardNumbersForAllSilent(int n) {
     for (int i = 0; i < _players.length; i++) _players[i].noOfCardsVisible = n;
-
-    _notify();
   }
 
-  void removeCardsFromAll() {
+  void removeCardsFromAllSilent() {
     for (int i = 0; i < _players.length; i++) _players[i].noOfCardsVisible = 0;
     for (int i = 0; i < _players.length; i++) _players[i].cards = null;
-    _notify();
   }
 
   // todo: how to identify a player that needs to be removed?
-  void removePlayer(int idx) {}
+  void removePlayerSilent(int idx) {}
 }

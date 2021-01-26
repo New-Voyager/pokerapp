@@ -20,7 +20,8 @@ class PlayerUpdateService {
     var playerUpdate = data['playerUpdate'];
 
     int seatNo = playerUpdate['seatNo'];
-    Players players = Provider.of<Players>(
+
+    final Players players = Provider.of<Players>(
       context,
       listen: false,
     );
@@ -49,17 +50,16 @@ class PlayerUpdateService {
 
       assert(newPlayerModel != null);
 
-      Provider.of<Players>(
-        context,
-        listen: false,
-      ).addNewPlayer(newPlayerModel);
+      players.addNewPlayerSilent(newPlayerModel);
 
-      // if the newPlayer has 0 stack then prompt for buyin
+      // if the newPlayer has 0 stack and is me then prompt for buy-in
       if (newPlayerModel.stack == 0)
         Provider.of<ValueNotifier<FooterStatus>>(
           context,
           listen: false,
         ).value = FooterStatus.Prompt;
+
+      players.notifyAll();
     } else {
       // the player at "idx" th index is updated
       /* new stack value / buyIn amount / change in status*/
@@ -72,15 +72,13 @@ class PlayerUpdateService {
         status: null,
       );
 
-      Provider.of<Players>(
-        context,
-        listen: false,
-      ).updateExistingPlayer(
+      players.updateExistingPlayerSilent(
         idx,
         updatedPlayer,
       );
+      players.notifyAll();
 
-      // wait for "AppConstants.userPopUpMessageHoldDuration" showing the BUYIN amount
+      // wait for "AppConstants.userPopUpMessageHoldDuration" showing the BUY-IN amount
       // after that remove the buyIn amount information
       await Future.delayed(AppConstants.userPopUpMessageHoldDuration);
 
@@ -90,13 +88,11 @@ class PlayerUpdateService {
         status: null,
       );
 
-      Provider.of<Players>(
-        context,
-        listen: false,
-      ).updateExistingPlayer(
+      players.updateExistingPlayerSilent(
         idx,
         updatedPlayer,
       );
+      players.notifyAll();
     }
   }
 }

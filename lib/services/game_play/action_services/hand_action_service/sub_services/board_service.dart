@@ -9,35 +9,29 @@ class BoardService {
   BoardService._();
 
   static void reset(BuildContext context) async {
-    // get the players list
-    Players players = Provider.of<Players>(
+    final Players players = Provider.of<Players>(
+      context,
+      listen: false,
+    );
+
+    final TableState tableState = Provider.of<TableState>(
       context,
       listen: false,
     );
 
     // remove all highlight winners
-    Provider.of<Players>(
-      context,
-      listen: false,
-    ).removeWinnerHighlight();
+    players.removeWinnerHighlightSilent();
 
     // before marking the small, big blind or the dealer, remove any marking from the old hand
-    Provider.of<Players>(
-      context,
-      listen: false,
-    ).removeMarkersFromAllPlayer();
+    players.removeMarkersFromAllPlayerSilent();
 
     // remove all the status (last action) of all the players
-    Provider.of<Players>(
-      context,
-      listen: false,
-    ).removeAllPlayersStatus();
+    players.removeAllPlayersStatusSilent();
 
     // remove all the folder players
-    Provider.of<Players>(
-      context,
-      listen: false,
-    ).removeAllFoldedPlayers();
+    players.removeAllFoldedPlayersSilent();
+
+    players.notifyAll();
 
     /* clean up from result views */
     /* set footer status to none  */
@@ -45,6 +39,7 @@ class BoardService {
       context,
       listen: false,
     ).value = FooterStatus.None;
+
     /* clearing the footer result */
     Provider.of<FooterResult>(
       context,
@@ -52,17 +47,11 @@ class BoardService {
     ).reset();
 
     // remove all the community cards
-    Provider.of<TableState>(
-      context,
-      listen: false,
-    ).updateCommunityCardsSilent([]);
-
-    Provider.of<TableState>(
-      context,
-      listen: false,
-    ).updatePotChips(
+    tableState.updateCommunityCardsSilent([]);
+    tableState.updatePotChipsSilent(
       potChips: null,
       potUpdatesChips: null,
     );
+    tableState.notifyAll();
   }
 }
