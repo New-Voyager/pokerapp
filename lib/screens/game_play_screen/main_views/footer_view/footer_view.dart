@@ -4,9 +4,11 @@ import 'package:flutter/widgets.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/footer_result.dart';
+import 'package:pokerapp/models/game_play_models/ui/header_object.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/screens/club_screen/games_page_view/new_game_settings/game_options/game_option_bottom_sheet.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/footer_action_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/footer_result_view.dart';
 import 'package:pokerapp/services/game_play/footer_services.dart';
@@ -92,21 +94,52 @@ class FooterView extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Align(
-                alignment: Alignment.centerLeft,
-                child: CustomTextButton(
-                  text: '. . . ICON',
-                  onTap: () {},
-                ),
+              Consumer<HeaderObject>(
+                builder: (_, HeaderObject obj, __) {
+                  return Align(
+                    alignment: Alignment.centerLeft,
+                    child: GestureDetector(
+                      onTap: () async {
+                        await showModalBottomSheet(
+                          context: context,
+                          isScrollControlled: true,
+                          builder: (ctx) => ChangeNotifierProvider.value(
+                            value: obj,
+                            child: GameOptionsBottomSheet(),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        padding: EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: AppColors.cardBackgroundColor),
+                        child: Icon(
+                          Icons.more_horiz,
+                          color: AppColors.appAccentColor,
+                        ),
+                      ),
+                    ),
+                  );
+                },
               ),
               const SizedBox(
                 height: 10.0,
               ),
               Align(
                 alignment: Alignment.centerLeft,
-                child: CustomTextButton(
-                  text: 'CHAT ICON HERE',
-                  onTap: () {},
+                child: GestureDetector(
+                  onTap: () async {},
+                  child: Container(
+                    padding: EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: AppColors.cardBackgroundColor),
+                    child: Icon(
+                      Icons.chat_bubble,
+                      color: AppColors.appAccentColor,
+                    ),
+                  ),
                 ),
               ),
             ],

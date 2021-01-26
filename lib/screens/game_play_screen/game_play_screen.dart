@@ -52,6 +52,8 @@ class GamePlayScreen extends StatefulWidget {
 class _GamePlayScreenState extends State<GamePlayScreen> {
   GameComService _gameComService;
   BuildContext _providerContext;
+  String playerUuid;
+  int playerId;
 
   /*
   * Call back function, which lets the current player join the game
@@ -87,6 +89,8 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
         await GameService.getGameInfo(widget.gameCode);
 
     String myUUID = await AuthService.getUuid();
+    this.playerUuid = myUUID;
+    this.playerId = int.parse(await AuthService.getPlayerID());
 
     // mark the isMe field
     for (int i = 0; i < _gameInfoModel.playersInSeats.length; i++) {
@@ -204,8 +208,9 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
         * club code and so on */
         ListenableProvider<HeaderObject>(
           create: (_) => HeaderObject(
-            gameCode: widget.gameCode,
-          ),
+              gameCode: widget.gameCode,
+              playerId: this.playerId,
+              playerUuid: this.playerUuid),
         ),
 
         /* board object used for changing board attributes */
