@@ -1,13 +1,15 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/ui/header_object.dart';
 import 'package:pokerapp/models/seat_change_model.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/services/app/game_service.dart';
+import 'package:provider/provider.dart';
 
 class SeatChangeBottomSheet extends StatefulWidget {
-  final String gameCode;
-  SeatChangeBottomSheet({this.gameCode});
+  SeatChangeBottomSheet();
   @override
   _SeatChangeBottomSheetState createState() => _SeatChangeBottomSheetState();
 }
@@ -15,11 +17,36 @@ class SeatChangeBottomSheet extends StatefulWidget {
 class _SeatChangeBottomSheetState extends State<SeatChangeBottomSheet> {
   double height, width;
   bool isSeatChange = false;
+  HeaderObject headerObject;
+  List<SeatChangeModel> allPlayersWantToChange = [];
+
+  @override
+  void initState() {
+    super.initState();
+    headerObject = Provider.of<HeaderObject>(context, listen: false);
+    getAllSeatChangePlayers();
+  }
+
+  getAllSeatChangePlayers() async {
+    final result = await GameService.listOfSeatChange(headerObject.gameCode);
+    if (result != null) {
+      setState(() {
+        allPlayersWantToChange = result;
+        allPlayersWantToChange.forEach((player) {
+          if (player.playerUuid == headerObject.playerUuid) {
+            isSeatChange = true;
+          }
+        });
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     height = MediaQuery.of(context).size.height;
     width = MediaQuery.of(context).size.width;
-
+    print("headerObject ${headerObject.playerUuid}");
+    print("headerObject ${headerObject.playerId}");
     return Container(
       color: Colors.black,
       height: height / 2,
@@ -46,29 +73,16 @@ class _SeatChangeBottomSheetState extends State<SeatChangeBottomSheet> {
           ),
           Expanded(
             child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(5),
-                color: AppColors.gameOptionBackGroundColor,
-              ),
-              child: FutureBuilder<List<SeatChangeModel>>(
-                  future: GameService.listOfSeatChange(widget.gameCode),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.done) {
-                      if (snapshot.data == null) {
-                        return Container();
-                      }
-                      return ListView.builder(
-                        itemCount: snapshot.data.length,
-                        shrinkWrap: true,
-                        itemBuilder: (_, index) =>
-                            playerItem(snapshot.data[index]),
-                      );
-                    }
-                    return Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }),
-            ),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(5),
+                  color: AppColors.gameOptionBackGroundColor,
+                ),
+                child: ListView.builder(
+                  itemCount: allPlayersWantToChange.length,
+                  shrinkWrap: true,
+                  itemBuilder: (_, index) =>
+                      playerItem(allPlayersWantToChange[index]),
+                )),
           ),
         ],
       ),
@@ -134,17 +148,18 @@ class _SeatChangeBottomSheetState extends State<SeatChangeBottomSheet> {
             onChanged: (bool value) async {
               setState(() {
                 isSeatChange = value;
+                getAllSeatChangePlayers();
               });
               if (isSeatChange) {
                 // want to seat change
-                String result =
-                    await GameService.requestForSeatChange(widget.gameCode);
-                print("result ${result}");
+                String result = await GameService.requestForSeatChange(
+                    headerObject.gameCode);
+                print("result $result");
               } else {
                 // do not want to seat change
-                String result =
-                    await GameService.requestForSeatChange(widget.gameCode);
-                print("result ${result}");
+                String result = await GameService.requestForSeatChange(
+                    headerObject.gameCode);
+                print("result $result");
               }
             },
           ),

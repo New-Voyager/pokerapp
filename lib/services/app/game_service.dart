@@ -136,6 +136,7 @@ class GameService {
       seatNo
       seatChangeRequestedAt
       sessionTime
+      playerUuid
     }
   }
   """;
@@ -147,7 +148,6 @@ class GameService {
 
   static Future<String> requestForSeatChange(String gameCode) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
-    print("gameCode ${gameCode}");
     Map<String, dynamic> variables = {
       "gameCode": gameCode,
     };
@@ -158,7 +158,6 @@ class GameService {
       ),
     );
 
-    print("result ${result.data} ${result.exception}");
     if (result.hasException) return "";
 
     return result.data['confirmed'] ?? "";
@@ -172,7 +171,6 @@ class GameService {
     };
     QueryResult result = await _client.query(QueryOptions(
         documentNode: gql(listOfSeatChangeQuery), variables: variables));
-    print("result.data ${result.data['seatChangeRequests']}");
 
     if (result.hasException) return null;
     List games = result.data['seatChangeRequests'];

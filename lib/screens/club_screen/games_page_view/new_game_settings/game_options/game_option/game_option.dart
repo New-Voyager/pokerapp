@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/game_play_models/ui/header_object.dart';
 import 'package:pokerapp/models/option_item_model.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
+import 'package:provider/provider.dart';
 
 import 'seat_change_bottom_sheet.dart';
 
@@ -22,7 +24,7 @@ class _GameOptionState extends State<GameOption> {
   ];
 
   List<OptionItemModel> gameSecondaryOptions;
-
+  HeaderObject headerObject;
   @override
   void initState() {
     super.initState();
@@ -41,8 +43,9 @@ class _GameOptionState extends State<GameOption> {
           await showModalBottomSheet(
             context: context,
             isScrollControlled: true,
-            builder: (ctx) => SeatChangeBottomSheet(
-              gameCode: widget.gameCode,
+            builder: (ctx) => ChangeNotifierProvider.value(
+              value: Provider.of<HeaderObject>(context, listen: false),
+              child: SeatChangeBottomSheet(),
             ),
           );
         },
@@ -70,6 +73,7 @@ class _GameOptionState extends State<GameOption> {
   @override
   Widget build(BuildContext context) {
     final separator5 = SizedBox(height: 5.0);
+    headerObject = Provider.of<HeaderObject>(context, listen: false);
 
     return SingleChildScrollView(
       child: Container(

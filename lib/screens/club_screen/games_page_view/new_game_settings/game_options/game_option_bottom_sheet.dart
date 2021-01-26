@@ -12,8 +12,7 @@ import 'game_option/game_option.dart';
 import 'pending_approvals_option.dart';
 
 class GameOptionsBottomSheet extends StatefulWidget {
-  final String gameCode;
-  GameOptionsBottomSheet({Key key, this.gameCode}) : super(key: key);
+  GameOptionsBottomSheet({Key key}) : super(key: key);
 
   @override
   _GameOptionsState createState() => _GameOptionsState();
@@ -35,7 +34,6 @@ class _GameOptionsState extends State<GameOptionsBottomSheet> {
   Widget build(BuildContext context) {
     height = MediaQuery.of(context).size.height;
     width = MediaQuery.of(context).size.width;
-
     return Container(
       color: Colors.black,
       height: height / 2,
@@ -52,28 +50,30 @@ class _GameOptionsState extends State<GameOptionsBottomSheet> {
               },
             ),
           ),
-          Expanded(
-            child: selectedOptionIndex == 0
-                ? GameOption(
-                    gameCode: widget.gameCode,
-                  )
-                : selectedOptionIndex == 1
-                    ? SingleChildScrollView(
-                        child: FutureBuilder<List<GameModel>>(
-                            future: GameService.getLiveGames(),
-                            builder: (context, snapshot) {
-                              if (snapshot.connectionState ==
-                                  ConnectionState.done) {
-                                List<GameModel> allLiveGames = [];
-                                if (snapshot.data != null) {}
-                                allLiveGames = snapshot.data;
-                                return ClubGamesPageView(allLiveGames);
-                              }
-                              return Center(
-                                child: CircularProgressIndicator(),
-                              );
-                            }))
-                    : PendingApprovalsOption(),
+          Consumer<HeaderObject>(
+            builder: (context, value, _) => Expanded(
+              child: selectedOptionIndex == 0
+                  ? GameOption(
+                      gameCode: value.gameCode,
+                    )
+                  : selectedOptionIndex == 1
+                      ? SingleChildScrollView(
+                          child: FutureBuilder<List<GameModel>>(
+                              future: GameService.getLiveGames(),
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.done) {
+                                  List<GameModel> allLiveGames = [];
+                                  if (snapshot.data != null) {}
+                                  allLiveGames = snapshot.data;
+                                  return ClubGamesPageView(allLiveGames);
+                                }
+                                return Center(
+                                  child: CircularProgressIndicator(),
+                                );
+                              }))
+                      : PendingApprovalsOption(),
+            ),
           ),
         ],
       ),

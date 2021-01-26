@@ -103,8 +103,9 @@ class FooterView extends StatelessWidget {
                         await showModalBottomSheet(
                           context: context,
                           isScrollControlled: true,
-                          builder: (ctx) => GameOptionsBottomSheet(
-                            gameCode: obj.gameCode,
+                          builder: (ctx) => ChangeNotifierProvider.value(
+                            value: obj,
+                            child: GameOptionsBottomSheet(),
                           ),
                         );
                       },
