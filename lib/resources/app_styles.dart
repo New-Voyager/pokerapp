@@ -201,4 +201,10 @@ class AppStyles {
     fontSize: 15.0,
     fontWeight: FontWeight.bold,
   );
+
+  static const TextStyle optionTitleText = TextStyle(
+    fontFamily: 'Lato',
+    color: Colors.white,
+    fontSize: 20.0,
+  );
 }

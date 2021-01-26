@@ -80,7 +80,7 @@ class ClubMainScreen extends StatelessWidget {
                                   clubModel.playerBalance ?? 0.0,
                                   clubModel.weeklyActivity),
                             ),
-                            ClubGamesPageView(),
+                            ClubGamesPageView(clubModel.liveGames),
                             ClubActionButtonsView(clubModel, this.clubCode)
                           ],
                         ),

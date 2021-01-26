@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/game_model.dart';
+import 'package:pokerapp/models/game_play_models/ui/header_object.dart';
 import 'package:pokerapp/models/option_item_model.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/services/app/game_service.dart';
+import 'package:provider/provider.dart';
 
-import 'game_option.dart';
-import 'live_game_option.dart';
+import '../../club_games_page_view.dart';
+import 'game_option/game_option.dart';
 import 'pending_approvals_option.dart';
 
 class GameOptionsBottomSheet extends StatefulWidget {
-  GameOptionsBottomSheet({Key key}) : super(key: key);
+  final String gameCode;
+  GameOptionsBottomSheet({Key key, this.gameCode}) : super(key: key);
 
   @override
   _GameOptionsState createState() => _GameOptionsState();
@@ -17,7 +22,6 @@ class GameOptionsBottomSheet extends StatefulWidget {
 class _GameOptionsState extends State<GameOptionsBottomSheet> {
   double height, width;
   int selectedOptionIndex = 0;
-
   List<OptionItemModel> items = [
     OptionItemModel(image: "assets/images/casino.png", title: "Game"),
     OptionItemModel(name: "Live", title: "Live Games"),
@@ -36,6 +40,7 @@ class _GameOptionsState extends State<GameOptionsBottomSheet> {
       color: Colors.black,
       height: height / 2,
       child: Column(
+        mainAxisSize: MainAxisSize.max,
         children: [
           Container(
             height: 105,
@@ -49,11 +54,27 @@ class _GameOptionsState extends State<GameOptionsBottomSheet> {
           ),
           Expanded(
             child: selectedOptionIndex == 0
-                ? GameOption()
+                ? GameOption(
+                    gameCode: widget.gameCode,
+                  )
                 : selectedOptionIndex == 1
-                    ? LiveGameOption()
+                    ? SingleChildScrollView(
+                        child: FutureBuilder<List<GameModel>>(
+                            future: GameService.getLiveGames(),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.done) {
+                                List<GameModel> allLiveGames = [];
+                                if (snapshot.data != null) {}
+                                allLiveGames = snapshot.data;
+                                return ClubGamesPageView(allLiveGames);
+                              }
+                              return Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            }))
                     : PendingApprovalsOption(),
-          )
+          ),
         ],
       ),
     );
@@ -61,7 +82,7 @@ class _GameOptionsState extends State<GameOptionsBottomSheet> {
 
   optionItem(OptionItemModel optionItem, int index) {
     return GestureDetector(
-      onTap: () {
+      onTap: () async {
         setState(() {
           selectedOptionIndex = index;
         });

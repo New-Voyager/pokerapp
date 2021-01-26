@@ -5,13 +5,13 @@ class OptionItemModel {
   String image;
   IconData iconData;
   String title;
-  Function ontap;
+  Function onTap;
   Color backGroundColor;
   OptionItemModel(
       {this.image,
       this.name,
       this.iconData,
       this.title,
-      this.ontap,
+      this.onTap,
       this.backGroundColor});
 }

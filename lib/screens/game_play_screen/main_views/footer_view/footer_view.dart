@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/footer_result.dart';
+import 'package:pokerapp/models/game_play_models/ui/header_object.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_styles.dart';
@@ -93,27 +94,33 @@ class FooterView extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Align(
-                alignment: Alignment.centerLeft,
-                child: GestureDetector(
-                  onTap: () async {
-                    await showModalBottomSheet(
-                      context: context,
-                      isScrollControlled: true,
-                      builder: (ctx) => GameOptionsBottomSheet(),
-                    );
-                  },
-                  child: Container(
-                    padding: EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: AppColors.cardBackgroundColor),
-                    child: Icon(
-                      Icons.more_horiz,
-                      color: AppColors.appAccentColor,
+              Consumer<HeaderObject>(
+                builder: (_, HeaderObject obj, __) {
+                  return Align(
+                    alignment: Alignment.centerLeft,
+                    child: GestureDetector(
+                      onTap: () async {
+                        await showModalBottomSheet(
+                          context: context,
+                          isScrollControlled: true,
+                          builder: (ctx) => GameOptionsBottomSheet(
+                            gameCode: obj.gameCode,
+                          ),
+                        );
+                      },
+                      child: Container(
+                        padding: EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: AppColors.cardBackgroundColor),
+                        child: Icon(
+                          Icons.more_horiz,
+                          color: AppColors.appAccentColor,
+                        ),
+                      ),
                     ),
-                  ),
-                ),
+                  );
+                },
               ),
               const SizedBox(
                 height: 10.0,
