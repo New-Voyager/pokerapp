@@ -1,5 +1,31 @@
 import 'package:flutter/material.dart';
 
+/* card distribution animation offset mapping */
+const kCardDistributionAnimationOffsetVerticalMapping = {
+  1: Offset(0, 200.0),
+  2: Offset(-130, 180),
+  3: Offset(-150, 70),
+  4: Offset(-150, -50),
+  5: Offset(-50, -170),
+  6: Offset(50, -170),
+  7: Offset(150, -50),
+  8: Offset(150, 70),
+  9: Offset(130, 180),
+};
+
+// fixme: fix these
+const kCardDistributionAnimationOffsetHorizontalMapping = {
+  1: Offset(0, 200.0),
+  2: Offset(-130, 180),
+  3: Offset(-150, 70),
+  4: Offset(-150, -50),
+  5: Offset(-50, -170),
+  6: Offset(50, -170),
+  7: Offset(150, -50),
+  8: Offset(150, 70),
+  9: Offset(130, 180),
+};
+
 /* player stack widget position mapping */
 const Map<int, Offset> kChipAmountWidgetOffsetVerticalMapping = {
   1: Offset(0, -70),

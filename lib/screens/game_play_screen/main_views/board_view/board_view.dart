@@ -35,6 +35,9 @@ class BoardView extends StatelessWidget {
   final Function(int index) onUserTap;
   final Function() onStartGame;
 
+  Offset _getCardDistributionOffset(bool isBoardHorizontal) =>
+      isBoardHorizontal ? const Offset(0.0, 30.0) : const Offset(0.0, 0.0);
+
   Widget _positionUser({
     @required bool isBoardHorizontal,
     UserObject user,
@@ -220,13 +223,20 @@ class BoardView extends StatelessWidget {
     if (_text == AppConstants.NEW_HAND)
       return Transform.scale(
         scale: 1.5,
-        child: AnimatingShuffleCardView(),
+        child: Transform.translate(
+          offset: _getCardDistributionOffset(isBoardHorizontal),
+          child: AnimatingShuffleCardView(),
+        ),
       );
 
     Widget tableStatusWidget = Align(
       key: ValueKey('tableStatusWidget'),
-      alignment: Alignment.center,
-      child: GestureDetector(
+      alignment: Alignment.topCenter,
+      child: Transform.translate(
+        offset: isBoardHorizontal
+            ? const Offset(0.0, 45.0)
+            : const Offset(0.0, 0.0),
+        child: GestureDetector(
           onTap: () {
             if (tableStatus == AppConstants.WAITING_TO_BE_STARTED) {
               onStartGame();
@@ -247,7 +257,9 @@ class BoardView extends StatelessWidget {
                 fontSize: 13,
               ),
             ),
-          )),
+          ),
+        ),
+      ),
     );
 
     /* if reached here, means, the game is RUNNING */
@@ -257,134 +269,124 @@ class BoardView extends StatelessWidget {
     if (potChips == null) potChips = [0];
     if (cards == null) cards = const [];
 
-    EdgeInsets communityMargin = EdgeInsets.zero;
-    EdgeInsets potMargin = EdgeInsets.only(top: 140);
-
-    if (isBoardHorizontal) {
-      communityMargin = EdgeInsets.only(bottom: 90.0);
-      potMargin = EdgeInsets.only(top: 80);
-    }
-
     Widget tablePotAndCardWidget = Align(
-        key: ValueKey('tablePotAndCardWidget'),
-        alignment: Alignment.topCenter,
-        child: Container(
-          margin: potMargin,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              /* rankStr --> needs to be shown only when footer result is not null */
-              Consumer<FooterResult>(
-                builder: (_, FooterResult footerResult, __) => AnimatedSwitcher(
-                  duration: AppConstants.animationDuration,
-                  reverseDuration: AppConstants.animationDuration,
-                  child: footerResult.isEmpty
-                      ? const SizedBox.shrink()
-                      : Transform.translate(
-                          offset: Offset(
-                            0.0,
-                            -AppDimensions.cardHeight / 2,
+      key: ValueKey('tablePotAndCardWidget'),
+      alignment: Alignment.topCenter,
+      child: FittedBox(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            /* rankStr --> needs to be shown only when footer result is not null */
+            Consumer<FooterResult>(
+              builder: (_, FooterResult footerResult, __) => AnimatedSwitcher(
+                duration: AppConstants.animationDuration,
+                reverseDuration: AppConstants.animationDuration,
+                child: footerResult.isEmpty
+                    ? const SizedBox.shrink()
+                    : Transform.translate(
+                        offset: Offset(
+                          0.0,
+                          -AppDimensions.cardHeight / 2,
+                        ),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10.0,
+                            vertical: 5.0,
                           ),
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 10.0,
-                              vertical: 5.0,
-                            ),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(100.0),
-                              color: Colors.black26,
-                            ),
-                            child: Text(
-                              footerResult.potWinners.first.rankStr,
-                              style: AppStyles.footerResultTextStyle4,
-                            ),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(100.0),
+                            color: Colors.black26,
+                          ),
+                          child: Text(
+                            footerResult.potWinners.first.rankStr,
+                            style: AppStyles.footerResultTextStyle4,
                           ),
                         ),
+                      ),
+              ),
+            ),
+
+            // pot value
+            Opacity(
+              opacity: showDown ? 0 : 1,
+              child: Container(
+                margin: EdgeInsets.only(bottom: 10.0),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(100.0),
+                  color: Colors.black26,
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    // chip image
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Image.asset(
+                        'assets/images/chips.png',
+                        height: 25.0,
+                      ),
+                    ),
+
+                    // pot amount text
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        right: 15.0,
+                        top: 5.0,
+                        bottom: 5.0,
+                        left: 5.0,
+                      ),
+                      child: Text(
+                        'Pot: ${potChips[0]}', // todo: at later point might need to show multiple pots - need to design UI
+                        style: AppStyles.itemInfoTextStyleHeavy.copyWith(
+                          fontSize: 15,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
+            ),
 
-              // pot value
-              Opacity(
-                opacity: showDown ? 0 : 1,
+            // card stacks
+            StackCardView(
+              cards: cards,
+              center: true,
+              isCommunity: true,
+            ),
+
+            const SizedBox(height: AppDimensions.cardHeight / 2),
+
+            const SizedBox(height: AppDimensions.cardHeight / 3),
+
+            /* potUpdates view */
+            Opacity(
+              opacity: showDown || (potChipsUpdates == null) ? 0 : 1,
+              child: Visibility(
+                visible: potChipsUpdates != null && potChipsUpdates != 0,
                 child: Container(
-                  margin: EdgeInsets.only(bottom: 10.0),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10.0,
+                    vertical: 5.0,
+                  ),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(100.0),
                     color: Colors.black26,
                   ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      // chip image
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Image.asset(
-                          'assets/images/chips.png',
-                          height: 25.0,
-                        ),
-                      ),
-
-                      // pot amount text
-                      Padding(
-                        padding: const EdgeInsets.only(
-                          right: 15.0,
-                          top: 5.0,
-                          bottom: 5.0,
-                          left: 5.0,
-                        ),
-                        child: Text(
-                          'Pot: ${potChips[0]}', // todo: at later point might need to show multiple pots - need to design UI
-                          style: AppStyles.itemInfoTextStyleHeavy.copyWith(
-                            fontSize: 15,
-                          ),
-                        ),
-                      ),
-                    ],
+                  child: Text(
+                    'Current: $potChipsUpdates',
+                    style: AppStyles.itemInfoTextStyleHeavy.copyWith(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w400,
+                    ),
                   ),
                 ),
               ),
-
-              // card stacks
-              Container(
-                margin: communityMargin,
-                child: StackCardView(
-                  cards: cards,
-                  center: true,
-                  isCommunity: true,
-                ),
-              ),
-
-              const SizedBox(height: AppDimensions.cardHeight / 2),
-
-              const SizedBox(height: AppDimensions.cardHeight / 3),
-
-              /* potUpdates view */
-              Opacity(
-                opacity: showDown || (potChipsUpdates == null) ? 0 : 1,
-                child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10.0,
-                      vertical: 5.0,
-                    ),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(100.0),
-                      color: Colors.black26,
-                    ),
-                    child: Visibility(
-                      visible: potChipsUpdates != null && potChipsUpdates != 0,
-                      child: Text(
-                        'Current: $potChipsUpdates',
-                        style: AppStyles.itemInfoTextStyleHeavy.copyWith(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                    )),
-              ),
-            ],
-          ),
-        ));
+            ),
+          ],
+        ),
+      ),
+    );
 
     return AnimatedSwitcher(
       switchInCurve: Curves.easeInOut,
@@ -562,19 +564,27 @@ class BoardView extends StatelessWidget {
                               ValueNotifier<FooterStatus>
                                   valueNotifierFooterStatus,
                               __) =>
-                          _buildCenterView(
-                        isBoardHorizontal: isBoardHorizontal,
-                        cards: tableState.cards,
-                        potChips: tableState.potChips,
-                        potChipsUpdates: tableState.potChipsUpdates,
-                        tableStatus: tableState.tableStatus,
-                        showDown: valueNotifierFooterStatus.value ==
-                            FooterStatus.Result,
+                          Transform.translate(
+                        offset: isBoardHorizontal
+                            ? const Offset(0.0, 50.0)
+                            : const Offset(0.0, 0.0),
+                        child: _buildCenterView(
+                          isBoardHorizontal: isBoardHorizontal,
+                          cards: tableState.cards,
+                          potChips: tableState.potChips,
+                          potChipsUpdates: tableState.potChipsUpdates,
+                          tableStatus: tableState.tableStatus,
+                          showDown: valueNotifierFooterStatus.value ==
+                              FooterStatus.Result,
+                        ),
                       ),
                     ),
 
                     /* distributing card animation widgets */
-                    CardDistributionAnimatingWidget(),
+                    Transform.translate(
+                      offset: _getCardDistributionOffset(isBoardHorizontal),
+                      child: CardDistributionAnimatingWidget(),
+                    ),
                   ],
                 ),
               ),

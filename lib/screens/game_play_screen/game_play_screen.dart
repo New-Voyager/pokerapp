@@ -305,13 +305,15 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
   void _checkForCurrentUserPrompt(BuildContext context) => Provider.of<Players>(
         context,
         listen: false,
-      ).players.forEach((p) {
-        if (p.isMe && p.stack == 0)
-          Provider.of<ValueNotifier<FooterStatus>>(
-            context,
-            listen: false,
-          ).value = FooterStatus.Prompt;
-      });
+      ).players.forEach(
+        (p) {
+          if (p.isMe && p.stack == 0)
+            Provider.of<ValueNotifier<FooterStatus>>(
+              context,
+              listen: false,
+            ).value = FooterStatus.Prompt;
+        },
+      );
 
   /* dispose method for closing connections and un subscribing to channels */
   @override

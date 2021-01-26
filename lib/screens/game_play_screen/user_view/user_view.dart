@@ -406,25 +406,27 @@ class UserView extends StatelessWidget {
 
     if (remainingTime == null) remainingTime = time;
 
-    return Positioned(
-      top: 0,
-      right: 0,
-      child: AnimatedSwitcher(
-        duration: AppConstants.fastAnimationDuration,
-        reverseDuration: AppConstants.fastAnimationDuration,
-        switchOutCurve: Curves.bounceInOut,
-        switchInCurve: Curves.bounceInOut,
-        child: userObject.highlight ?? false
-            ? Transform.translate(
-                offset: const Offset(0.0, -15.0),
-                child: Transform.scale(
-                  scale: 0.80,
-                  child: CountDownTimer(
-                    remainingTime: remainingTime,
+    return Consumer<BoardAttributesObject>(
+      builder: (_, boardAttObj, __) => Positioned(
+        top: boardAttObj.isOrientationHorizontal ? 15.0 : 0.0,
+        right: 0.0,
+        child: AnimatedSwitcher(
+          duration: AppConstants.fastAnimationDuration,
+          reverseDuration: AppConstants.fastAnimationDuration,
+          switchOutCurve: Curves.bounceInOut,
+          switchInCurve: Curves.bounceInOut,
+          child: userObject.highlight ?? false
+              ? Transform.translate(
+                  offset: const Offset(15.0, -0.0),
+                  child: Transform.scale(
+                    scale: 0.80,
+                    child: CountDownTimer(
+                      remainingTime: remainingTime,
+                    ),
                   ),
-                ),
-              )
-            : shrinkedSizedBox,
+                )
+              : shrinkedSizedBox,
+        ),
       ),
     );
   }
