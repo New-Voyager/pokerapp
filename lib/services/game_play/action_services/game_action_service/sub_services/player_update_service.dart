@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
@@ -13,86 +11,154 @@ import 'package:provider/provider.dart';
 class PlayerUpdateService {
   PlayerUpdateService._();
 
-  static void handle({
-    BuildContext context,
-    var data,
+  static void updatePlayer({
+    @required BuildContext context,
+    @required var playerUpdate,
   }) async {
-    var playerUpdate = data['playerUpdate'];
-
-    int seatNo = playerUpdate['seatNo'];
-
     final Players players = Provider.of<Players>(
       context,
       listen: false,
     );
 
-    // if seatNo if not to be found in the existing players array, then get the new PLayer using the GameInfo Api
+    int seatNo = playerUpdate['seatNo'];
+
     int idx = players.players.indexWhere((p) => p.seatNo == seatNo);
-    if (idx == -1) {
-      // fetch new player using GameInfo API and add to the game
-      GameInfoModel _gameInfoModel = await GameService.getGameInfo(
-        Provider.of<HeaderObject>(
-          context,
-          listen: false,
-        ).gameCode,
+
+    // fixme: this is until all the player update messages have a newUpdate field
+    if (idx == -1)
+      return handleNewPlayer(
+        context: context,
+        playerUpdate: playerUpdate,
       );
 
-      assert(_gameInfoModel != null);
+    PlayerModel updatedPlayer = players.players[idx];
 
-      List<PlayerModel> playerModels = _gameInfoModel.playersInSeats;
-      PlayerModel newPlayerModel = playerModels.firstWhere(
-        (pm) => pm.seatNo == seatNo,
-        orElse: () => null,
-      ); // this must return a PLayerModel object
+    updatedPlayer.update(
+      stack: playerUpdate['stack'],
+      buyIn: playerUpdate['buyIn'],
+      showBuyIn: true,
+      status: null,
+    );
 
-      // put the status of the fetched player
-      newPlayerModel?.status = playerUpdate['status'];
+    players.updateExistingPlayerSilent(
+      idx,
+      updatedPlayer,
+    );
+    players.notifyAll();
 
-      assert(newPlayerModel != null);
+    // wait for "AppConstants.userPopUpMessageHoldDuration" showing the BUY-IN amount
+    // after that remove the buyIn amount information
+    await Future.delayed(AppConstants.userPopUpMessageHoldDuration);
 
-      players.addNewPlayerSilent(newPlayerModel);
+    updatedPlayer.update(
+      stack: playerUpdate['stack'],
+      showBuyIn: false,
+      status: null,
+    );
 
-      // if the newPlayer has 0 stack and is me then prompt for buy-in
-      if (newPlayerModel.stack == 0)
-        Provider.of<ValueNotifier<FooterStatus>>(
-          context,
-          listen: false,
-        ).value = FooterStatus.Prompt;
+    players.updateExistingPlayerSilent(
+      idx,
+      updatedPlayer,
+    );
+    players.notifyAll();
+  }
 
-      players.notifyAll();
-    } else {
-      // the player at "idx" th index is updated
-      /* new stack value / buyIn amount / change in status*/
+  static void handleNewPlayer({
+    @required BuildContext context,
+    @required var playerUpdate,
+  }) async {
+    final Players players = Provider.of<Players>(
+      context,
+      listen: false,
+    );
 
-      PlayerModel updatedPlayer = players.players[idx];
-      updatedPlayer.update(
-        stack: playerUpdate['stack'],
-        buyIn: playerUpdate['buyIn'],
-        showBuyIn: true,
-        status: null,
-      );
+    int seatNo = playerUpdate['seatNo'];
 
-      players.updateExistingPlayerSilent(
-        idx,
-        updatedPlayer,
-      );
-      players.notifyAll();
+    // fetch new player using GameInfo API and add to the game
+    GameInfoModel _gameInfoModel = await GameService.getGameInfo(
+      Provider.of<HeaderObject>(
+        context,
+        listen: false,
+      ).gameCode,
+    );
 
-      // wait for "AppConstants.userPopUpMessageHoldDuration" showing the BUY-IN amount
-      // after that remove the buyIn amount information
-      await Future.delayed(AppConstants.userPopUpMessageHoldDuration);
+    assert(_gameInfoModel != null);
 
-      updatedPlayer.update(
-        stack: playerUpdate['stack'],
-        showBuyIn: false,
-        status: null,
-      );
+    List<PlayerModel> playerModels = _gameInfoModel.playersInSeats;
+    PlayerModel newPlayerModel = playerModels.firstWhere(
+      (pm) => pm.seatNo == seatNo,
+      orElse: () => null,
+    ); // this must return a PLayerModel object
 
-      players.updateExistingPlayerSilent(
-        idx,
-        updatedPlayer,
-      );
-      players.notifyAll();
+    assert(newPlayerModel != null);
+
+    // put the status of the fetched player
+    newPlayerModel?.status = playerUpdate['status'];
+
+    players.addNewPlayerSilent(newPlayerModel);
+
+    // if the newPlayer has 0 stack and is me then prompt for buy-in
+    if (newPlayerModel.stack == 0)
+      Provider.of<ValueNotifier<FooterStatus>>(
+        context,
+        listen: false,
+      ).value = FooterStatus.Prompt;
+
+    players.notifyAll();
+  }
+
+  static void handlePlayerLeftGame({
+    @required BuildContext context,
+    @required var playerUpdate,
+  }) {
+    final Players players = Provider.of<Players>(
+      context,
+      listen: false,
+    );
+
+    // fixme: remove 6
+    int seatNo = playerUpdate['seatNo'] ?? 6;
+
+    players.removePlayerSilent(seatNo);
+    players.notifyAll();
+  }
+
+  static void handlePlayerSwitchSeat({
+    @required BuildContext context,
+    @required var playerUpdate,
+  }) {}
+
+  static void handle({
+    BuildContext context,
+    var data,
+  }) {
+    var playerUpdate = data['playerUpdate'];
+    String newUpdate = playerUpdate['newUpdate'];
+
+    switch (newUpdate) {
+      case AppConstants.NEW_PLAYER:
+        return handleNewPlayer(
+          context: context,
+          playerUpdate: playerUpdate,
+        );
+
+      case AppConstants.LEFT_THE_GAME:
+        return handlePlayerLeftGame(
+          context: context,
+          playerUpdate: playerUpdate,
+        );
+
+      case AppConstants.SWITCH_SEAT:
+        return handlePlayerSwitchSeat(
+          context: context,
+          playerUpdate: playerUpdate,
+        );
+
+      default:
+        return updatePlayer(
+          context: context,
+          playerUpdate: playerUpdate,
+        );
     }
   }
 }

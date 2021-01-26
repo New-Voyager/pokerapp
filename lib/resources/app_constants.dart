@@ -59,6 +59,15 @@ class AppConstants {
   static const String blackClub = '♣';
   static const String redDiamond = '♦';
 
+  /* NEW UPDATE player statuses */
+  static const String NEW_PLAYER = 'NEW_PLAYER';
+  static const String RELOAD_CHIPS = 'RELOAD_CHIPS';
+  static const String SWITCH_SEAT = 'SWITCH_SEAT';
+  static const String TAKE_BREAK = 'TAKE_BREAK';
+  static const String SIT_BACK = 'SIT_BACK';
+  static const String LEFT_THE_GAME = 'LEFT_THE_GAME';
+  static const String EMPTY_STACK = 'EMPTY_STACK';
+
   /* table statuses */
   static const String WAITING_TO_BE_STARTED = 'WAITING_TO_BE_STARTED';
   static const String TABLE_STATUS_NOT_ENOUGH_PLAYERS = 'NOT_ENOUGH_PLAYERS';
