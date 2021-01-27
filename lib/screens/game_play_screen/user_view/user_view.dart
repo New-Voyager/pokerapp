@@ -15,6 +15,7 @@ import 'package:pokerapp/screens/game_play_screen/card_views/hidden_card_view.da
 import 'package:pokerapp/screens/game_play_screen/card_views/stack_card_view.dart';
 import 'package:pokerapp/screens/game_play_screen/user_view/animating_widgets/chip_amount_animating_widget.dart';
 import 'package:pokerapp/screens/game_play_screen/user_view/animating_widgets/fold_card_animating_widget.dart';
+import 'package:pokerapp/screens/game_play_screen/user_view/animating_widgets/stack_switch_seat_animating_widget.dart';
 import 'package:pokerapp/screens/game_play_screen/user_view/count_down_timer.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:provider/provider.dart';
@@ -631,7 +632,9 @@ class UserView extends StatelessWidget {
 
           /* building the chip amount widget */
           _buildChipAmountWidget(),
-          //emptySeat ? shrinkedSizedBox : _buildChipAmountWidget(),
+
+          /* this widget is used to show animating of stacks in case user changes seats */
+          StackSwitchSeatAnimatingWidget(),
         ],
       ),
     );

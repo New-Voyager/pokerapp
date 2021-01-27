@@ -14,6 +14,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/notification_mo
 import 'package:pokerapp/models/game_play_models/provider_models/player_action/player_action.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/remaining_time.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/seat_change_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/header_object.dart';
@@ -184,6 +185,11 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
     @required GameInfoModel gameInfoModel,
   }) =>
       [
+        /* this is for the seat change animation values */
+        ListenableProvider<ValueNotifier<SeatChangeModel>>(
+          create: (_) => ValueNotifier<SeatChangeModel>(null),
+        ),
+
         /* this is for general notifications */
         ListenableProvider<ValueNotifier<GeneralNotificationModel>>(
           create: (_) => ValueNotifier<GeneralNotificationModel>(null),
