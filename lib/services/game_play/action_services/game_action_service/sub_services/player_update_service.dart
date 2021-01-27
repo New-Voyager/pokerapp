@@ -6,6 +6,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat_change_model.dart';
 import 'package:pokerapp/models/game_play_models/ui/header_object.dart';
 import 'package:pokerapp/resources/app_constants.dart';
+import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/services/game_play/graphql/game_service.dart';
 import 'package:provider/provider.dart';
 
@@ -98,8 +99,10 @@ class PlayerUpdateService {
 
     players.addNewPlayerSilent(newPlayerModel);
 
+    String myUUID = await AuthService.getUuid();
+
     // if the newPlayer has 0 stack and is me then prompt for buy-in
-    if (newPlayerModel.stack == 0)
+    if (newPlayerModel.stack == 0 && newPlayerModel.playerUuid == myUUID)
       Provider.of<ValueNotifier<FooterStatus>>(
         context,
         listen: false,
