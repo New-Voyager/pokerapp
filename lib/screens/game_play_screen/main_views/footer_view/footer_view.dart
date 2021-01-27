@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/footer_result.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/seat_change_model.dart';
 import 'package:pokerapp/models/game_play_models/ui/header_object.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_constants.dart';
@@ -129,7 +130,22 @@ class FooterView extends StatelessWidget {
               Align(
                 alignment: Alignment.centerLeft,
                 child: GestureDetector(
-                  onTap: () async {},
+                  onTap: () async {
+                    final vn = Provider.of<ValueNotifier<SeatChangeModel>>(
+                      context,
+                      listen: false,
+                    );
+
+                    vn.value = SeatChangeModel(
+                      oldSeatNo: 2,
+                      newSeatNo: 6,
+                      stack: 100,
+                    );
+
+                    await Future.delayed(AppConstants.animationDuration);
+
+                    vn.value = null;
+                  },
                   child: Container(
                     padding: EdgeInsets.all(10),
                     decoration: BoxDecoration(

@@ -188,6 +188,8 @@ class Players extends ChangeNotifier {
     for (int i = 0; i < _players.length; i++) _players[i].cards = null;
   }
 
-  // todo: how to identify a player that needs to be removed?
-  void removePlayerSilent(int idx) {}
+  void removePlayerSilent(int seatNo) {
+    int idx = _players.indexWhere((p) => p.seatNo == seatNo);
+    _players.removeAt(idx);
+  }
 }

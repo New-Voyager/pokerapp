@@ -30,6 +30,12 @@ class BoardAttributesObject extends ChangeNotifier {
   bool get isOrientationHorizontal =>
       orientation == BoardOrientation.horizontal;
 
+  Map<int, Offset> get seatChangeStackOffsetMapping {
+    if (_boardOrientation == BoardOrientation.horizontal)
+      return kSeatChangeStackHorizontalOffsetMapping;
+    return kSeatChangeStackVerticalOffsetMapping;
+  }
+
   Map<int, Offset> get cardDistributionAnimationOffsetMapping {
     if (_boardOrientation == BoardOrientation.horizontal)
       return kCardDistributionAnimationOffsetHorizontalMapping;

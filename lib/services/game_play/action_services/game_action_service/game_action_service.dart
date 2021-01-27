@@ -5,6 +5,7 @@ import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/services/game_play/action_services/game_action_service/sub_services/game_status_update_service.dart';
 import 'package:pokerapp/services/game_play/action_services/game_action_service/sub_services/high_hand_service.dart';
 import 'package:pokerapp/services/game_play/action_services/game_action_service/sub_services/player_update_service.dart';
+import 'package:pokerapp/services/game_play/action_services/game_action_service/sub_services/table_update_service.dart';
 
 class GameActionService {
   GameActionService._();
@@ -26,6 +27,12 @@ class GameActionService {
     switch (messageType) {
       case AppConstants.PLAYER_UPDATE:
         return PlayerUpdateService.handle(
+          context: context,
+          data: data,
+        );
+
+      case AppConstants.TABLE_UPDATE:
+        return TableUpdateService.handle(
           context: context,
           data: data,
         );
