@@ -13,6 +13,8 @@ class BoardViewUtilMethods {
 
   static String getText(String tableStatus) {
     switch (tableStatus) {
+      case AppConstants.SeatChangeInProgress:
+        return 'Seat Change In Progress';
       case AppConstants.TABLE_STATUS_NOT_ENOUGH_PLAYERS:
         return 'Waiting for more players';
       case AppConstants.WAITING_TO_BE_STARTED:

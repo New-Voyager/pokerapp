@@ -116,8 +116,7 @@ class PlayerUpdateService {
       listen: false,
     );
 
-    // fixme: remove 6
-    int seatNo = playerUpdate['seatNo'] ?? 6;
+    int seatNo = playerUpdate['seatNo'];
 
     players.removePlayerSilent(seatNo);
     players.notifyAll();

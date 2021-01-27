@@ -59,6 +59,9 @@ class AppConstants {
   static const String blackClub = '♣';
   static const String redDiamond = '♦';
 
+  /* TABLE UPDATE types */
+  static const String SeatChangeInProgress = 'SeatChangeInProgress';
+
   /* NEW UPDATE player statuses */
   static const String NEW_PLAYER = 'NEW_PLAYER';
   static const String RELOAD_CHIPS = 'RELOAD_CHIPS';
@@ -87,6 +90,7 @@ class AppConstants {
 
   /* message types */
   static const String PLAYER_UPDATE = 'PLAYER_UPDATE';
+  static const String TABLE_UPDATE = 'TABLE_UPDATE';
   static const String HIGH_HAND = 'HIGH_HAND';
   static const String GAME_STATUS = 'GAME_STATUS';
   static const String NEW_HAND = 'NEW_HAND';
