@@ -36,6 +36,10 @@ class AppConstants {
     milliseconds: 500,
   );
 
+  static const Duration seatChangeAnimationDuration = const Duration(
+    milliseconds: 1000,
+  );
+
   static const Duration popUpAnimationDuration = const Duration(
     milliseconds: 300,
   );

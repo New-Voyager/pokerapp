@@ -3,6 +3,7 @@ import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/seat_change_model.dart';
 import 'package:pokerapp/models/game_play_models/ui/header_object.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/services/game_play/graphql/game_service.dart';
@@ -125,7 +126,42 @@ class PlayerUpdateService {
   static void handlePlayerSwitchSeat({
     @required BuildContext context,
     @required var playerUpdate,
-  }) {}
+  }) async {
+    int newSeatNo = playerUpdate['seatNo'] as int;
+    int oldSeatNo = playerUpdate['oldSeat'] as int;
+    int stack = playerUpdate['stack'] as int;
+
+    final ValueNotifier<SeatChangeModel> vnSeatChangeModel =
+        Provider.of<ValueNotifier<SeatChangeModel>>(
+      context,
+      listen: false,
+    );
+
+    final Players players = Provider.of<Players>(
+      context,
+      listen: false,
+    );
+
+    /* animate the stack */
+    vnSeatChangeModel.value = SeatChangeModel(
+      newSeatNo: newSeatNo,
+      oldSeatNo: oldSeatNo,
+      stack: stack,
+    );
+
+    /* wait for the seat change animation to finish */
+    await Future.delayed(AppConstants.seatChangeAnimationDuration);
+
+    /* remove the animating widget */
+    vnSeatChangeModel.value = null;
+
+    /* update the players object */
+    int idx = players.players.indexWhere((p) => p.seatNo == oldSeatNo);
+    assert(idx != -1);
+
+    players.players[idx].seatNo = newSeatNo;
+    players.notifyAll();
+  }
 
   static void handle({
     BuildContext context,

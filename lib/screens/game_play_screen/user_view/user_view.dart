@@ -632,9 +632,6 @@ class UserView extends StatelessWidget {
 
           /* building the chip amount widget */
           _buildChipAmountWidget(),
-
-          /* this widget is used to show animating of stacks in case user changes seats */
-          StackSwitchSeatAnimatingWidget(),
         ],
       ),
     );

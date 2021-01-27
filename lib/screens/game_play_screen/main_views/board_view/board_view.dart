@@ -18,6 +18,7 @@ import 'package:pokerapp/screens/game_play_screen/main_views/animating_widgets/c
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/board_view_util_methods.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/board_view_util_widgets.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/decorative_views/table_view.dart';
+import 'package:pokerapp/screens/game_play_screen/user_view/animating_widgets/stack_switch_seat_animating_widget.dart';
 import 'package:pokerapp/screens/game_play_screen/user_view/user_view.dart';
 import 'package:provider/provider.dart';
 
@@ -139,6 +140,11 @@ class BoardView extends StatelessWidget {
                           ? _cardDistributionInitOffset
                           : _noOffset,
                       child: CardDistributionAnimatingWidget(),
+                    ),
+
+                    /* this widget is used to show animating of stacks in case user changes seats */
+                    Align(
+                      child: StackSwitchSeatAnimatingWidget(),
                     ),
                   ],
                 ),

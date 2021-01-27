@@ -39,12 +39,12 @@ class StackSwitchSeatAnimatingWidget extends StatelessWidget {
                 curve: Curves.easeInOut,
                 tween: Tween<Offset>(
                   begin: boardAttrObj
-                      .chipAmountWidgetOffsetMapping[vnModel.value.oldSeatNo],
+                      .seatChangeStackOffsetMapping[vnModel.value.oldSeatNo],
                   end: boardAttrObj
-                      .chipAmountWidgetOffsetMapping[vnModel.value.newSeatNo],
+                      .seatChangeStackOffsetMapping[vnModel.value.newSeatNo],
                 ),
                 child: _buildChild(vnModel.value.stack),
-                duration: AppConstants.animationDuration,
+                duration: AppConstants.seatChangeAnimationDuration,
                 builder: (_, offset, child) {
                   return Transform.translate(
                     offset: offset,

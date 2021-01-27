@@ -1,5 +1,31 @@
 import 'package:flutter/material.dart';
 
+/* seat changing stack offset mappings */
+const Map<int, Offset> kSeatChangeStackHorizontalOffsetMapping = {
+  1: Offset(0, 50),
+  2: Offset(-130, 50),
+  3: Offset(-120, -0),
+  4: Offset(-110, -80),
+  5: Offset(-40, -90),
+  6: Offset(60, -90),
+  7: Offset(110, -80),
+  8: Offset(110, -0),
+  9: Offset(130, 50),
+};
+
+// fixme: these are not correct values
+const Map<int, Offset> kSeatChangeStackVerticalOffsetMapping = {
+  1: Offset(20, -140),
+  2: Offset(80, -80),
+  3: Offset(80, -50),
+  4: Offset(80, -30),
+  5: Offset(50, 50),
+  6: Offset(-50, 50),
+  7: Offset(-80, -30),
+  8: Offset(-80, -50),
+  9: Offset(-80, -80),
+};
+
 /* card distribution animation offset mapping */
 const kCardDistributionAnimationOffsetVerticalMapping = {
   1: Offset(0, 200.0),
