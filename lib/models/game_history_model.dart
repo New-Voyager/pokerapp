@@ -173,9 +173,8 @@ class GameHistoryDetailModel extends ChangeNotifier {
     if (this.playedGame) {
       final List playerStack = jsonData['completedGame']['stackStat'];
       stack = playerStack
-          .map((e) =>
-      new PlayerStack(int.parse(e["handNum"].toString()),
-          double.parse(e["after"].toString())))
+          .map((e) => new PlayerStack(int.parse(e["handNum"].toString()),
+              double.parse(e["after"].toString())))
           .toList();
       stack.sort((a, b) => a.handNum.compareTo(b.handNum));
 
@@ -228,10 +227,11 @@ class GameHistoryDetailModel extends ChangeNotifier {
 
   String get playerHandsText {
     if (!this.playedGame) {
-        return "You didn't play this game";
+      return "You didn't play this game";
     }
     return 'You played $handsPlayed hands in $sessionTimeStr';
   }
+
   String get balanceText => DataFormatter.chipsFormat(balance);
 
   String get buyInText => DataFormatter.chipsFormat(buyIn);

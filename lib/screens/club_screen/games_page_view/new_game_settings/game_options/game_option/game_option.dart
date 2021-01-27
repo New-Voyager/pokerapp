@@ -4,7 +4,7 @@ import 'package:pokerapp/models/option_item_model.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:provider/provider.dart';
-
+import 'package:pokerapp/services/game_play/graphql/game_service.dart';
 import 'seat_change_bottom_sheet.dart';
 
 class GameOption extends StatefulWidget {
@@ -13,21 +13,34 @@ class GameOption extends StatefulWidget {
   GameOption({Key key, this.gameCode}) : super(key: key);
 
   @override
-  _GameOptionState createState() => _GameOptionState();
+  _GameOptionState createState() => _GameOptionState(gameCode);
 }
 
 class _GameOptionState extends State<GameOption> {
-  final List<OptionItemModel> gameActions = [
-    OptionItemModel(title: "LEAVE"),
-    OptionItemModel(title: "BREAK"),
-    OptionItemModel(title: "RELOAD CHIPS")
-  ];
+  final String gameCode;
+  List<OptionItemModel> gameActions = null;
+  _GameOptionState(this.gameCode);
+  void onLeave() {
+    GameService.leaveGame(this.gameCode);
+
+    final snackBar = SnackBar(
+      content: Text('You will leave after this hand'),
+      duration: Duration(seconds: 15),
+      backgroundColor: Colors.black38,
+    );
+    Scaffold.of(context).showSnackBar(snackBar);
+  }
 
   List<OptionItemModel> gameSecondaryOptions;
   HeaderObject headerObject;
   @override
   void initState() {
     super.initState();
+    gameActions = [
+      OptionItemModel(title: "Leave", onTap: (context) {this.onLeave();}),
+      OptionItemModel(title: "Break"),
+      OptionItemModel(title: "Reload")
+    ];
     gameSecondaryOptions = [
       OptionItemModel(
           title: "Game Stats",
@@ -227,26 +240,34 @@ class _GameOptionState extends State<GameOption> {
     );
   }
 
-  gameActionItem(OptionItemModel optionItemModel) => Container(
-        height: 70,
-        width: 70,
-        padding: EdgeInsets.all(5),
-        margin: EdgeInsets.all(5),
-        decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            border: Border.all(color: AppColors.appAccentColor, width: 2)),
-        child: Center(
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 3, vertical: 1),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(3),
-            ),
-            child: Text(
-              optionItemModel.title,
-              style: AppStyles.clubItemInfoTextStyle,
-              textAlign: TextAlign.center,
+  gameActionItem(OptionItemModel optionItemModel) =>
+      GestureDetector(
+        onTap: (){
+          if (optionItemModel.onTap != null) {
+            optionItemModel.onTap(context);
+          }
+        },
+        child: Container(
+          height: 70,
+          width: 70,
+          padding: EdgeInsets.all(5),
+          margin: EdgeInsets.all(5),
+          decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(color: AppColors.appAccentColor, width: 2)),
+          child: Center(
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 3, vertical: 1),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(3),
+              ),
+              child: Text(
+                optionItemModel.title,
+                style: AppStyles.clubItemInfoTextStyle,
+                textAlign: TextAlign.center,
+              ),
             ),
           ),
-        ),
+        )
       );
 }
