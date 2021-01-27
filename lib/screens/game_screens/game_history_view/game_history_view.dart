@@ -140,15 +140,7 @@ class _GameHistoryViewState extends State<GameHistoryView> {
         type: MaterialType.transparency,
         child: _prevGames == null
             ? Center(
-                child: Text(
-                  "No Games Played",
-                  style: const TextStyle(
-                    fontFamily: AppAssets.fontFamilyLato,
-                    color: AppColors.lightGrayTextColor,
-                    fontSize: 18.0,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
+                child: CircularProgressIndicator(),
               )
             : Expanded(
                 child: body(),

@@ -70,6 +70,7 @@ class _TableResultScreenState extends State<TableResultScreen> {
         child: this.data == null
             ? Center(child: CircularProgressIndicator())
             : ListView.separated(
+                physics: NeverScrollableScrollPhysics(),
                 itemCount: this.data.rows.length + 1,
                 itemBuilder: (context, index) {
                   if (index == 0) {
@@ -229,135 +230,159 @@ class _TableResultScreenState extends State<TableResultScreen> {
   @override
   Widget build(BuildContext context) {
     initializeTableWidgets();
-    return Scaffold(
+    return CupertinoPageScaffold(
+      resizeToAvoidBottomInset: true,
       backgroundColor: AppColors.screenBackgroundColor,
-      appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back_ios,
-            size: 14,
-            color: AppColors.appAccentColor,
-          ),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        titleSpacing: 0,
-        elevation: 0.0,
+      navigationBar: CupertinoNavigationBar(
         backgroundColor: AppColors.screenBackgroundColor,
-        title: Text(
-          "Game Details",
-          textAlign: TextAlign.left,
-          style: TextStyle(
-            color: AppColors.appAccentColor,
-            fontSize: 14.0,
-            fontFamily: AppAssets.fontFamilyLato,
-            fontWeight: FontWeight.w600,
+        leading: GestureDetector(
+          onTap: () => Navigator.of(context).pop(),
+          child: Row(
+            children: [
+              Icon(
+                Icons.arrow_back_ios,
+                size: 16,
+                color: AppColors.appAccentColor,
+              ),
+              Text(
+                "Game",
+                style: const TextStyle(
+                  fontFamily: AppAssets.fontFamilyLato,
+                  color: AppColors.appAccentColor,
+                  fontSize: 14.0,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+            ],
           ),
+        ),
+        middle: Column(
+          children: [
+            Text(
+              "Table Result",
+              style: const TextStyle(
+                fontFamily: AppAssets.fontFamilyLato,
+                color: Colors.white,
+                fontSize: 22.0,
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+            Text(
+              "Game code: " + widget.gameCode,
+              style: const TextStyle(
+                fontFamily: AppAssets.fontFamilyLato,
+                color: AppColors.lightGrayTextColor,
+                fontSize: 12.0,
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+          ],
         ),
       ),
-      body: SingleChildScrollView(
-        child: ConstrainedBox(
-          constraints:
-              BoxConstraints(maxHeight: MediaQuery.of(context).size.height),
-          child: Column(
-            children: [
-              Container(
-                margin: EdgeInsets.only(left: 10, top: 5, bottom: 5, right: 10),
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  "Table Record",
-                  style: const TextStyle(
-                    fontFamily: AppAssets.fontFamilyLato,
-                    color: Colors.white,
-                    fontSize: 30.0,
-                    fontWeight: FontWeight.w900,
+      child: Material(
+        type: MaterialType.transparency,
+        child: SingleChildScrollView(
+          child: ConstrainedBox(
+            constraints:
+                BoxConstraints(maxHeight: MediaQuery.of(context).size.height),
+            child: Column(
+              children: [
+                Container(
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        left: 10.0, right: 15.0, top: 5, bottom: 5),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              "Rake",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontFamily: AppAssets.fontFamilyLato,
+                                fontSize: 18.0,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                            SizedBox(
+                              width: 10.0,
+                            ),
+                            Text(
+                              getTotalRake().toString(),
+                              style: TextStyle(
+                                color: Color(0xff1aff22),
+                                fontFamily: AppAssets.fontFamilyLato,
+                                fontSize: 18.0,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            SvgPicture.asset(
+                              'assets/images/gamesettings/gambling.svg',
+                              color: Color(0xffef9712),
+                            ),
+                            SizedBox(
+                              width: 5.0,
+                            ),
+                            Text(
+                              "5",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontFamily: AppAssets.fontFamilyLato,
+                                fontSize: 18.0,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                            SizedBox(
+                              width: 20.0,
+                            ),
+                            Text(
+                              "Download",
+                              style: TextStyle(
+                                color: Color(0xff319ffe),
+                                fontFamily: AppAssets.fontFamilyLato,
+                                fontSize: 18.0,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              Container(
-                margin: EdgeInsets.only(left: 10, bottom: 5, right: 10),
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  "Game Code: " + widget.gameCode,
-                  style: const TextStyle(
-                    fontFamily: AppAssets.fontFamilyLato,
-                    color: AppColors.lightGrayTextColor,
-                    fontSize: 12.0,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-              ),
-              Container(
-                child: Padding(
-                  padding: const EdgeInsets.only(
-                      left: 10.0, right: 15.0, top: 5, bottom: 5),
+                Container(
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Row(
-                        children: [
-                          Text(
-                            "Rake",
-                            style: TextStyle(color: Colors.white),
-                          ),
-                          SizedBox(
-                            width: 10.0,
-                          ),
-                          Text(
-                            getTotalRake().toString(),
-                            style: TextStyle(color: Color(0xff1aff22)),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          SvgPicture.asset(
-                            'assets/images/gamesettings/gambling.svg',
-                            color: Color(0xffef9712),
-                          ),
-                          SizedBox(
-                            width: 5.0,
-                          ),
-                          Text(
-                            "5",
-                            style: TextStyle(color: Colors.white),
-                          ),
-                          SizedBox(
-                            width: 20.0,
-                          ),
-                          Text(
-                            "Download",
-                            style: TextStyle(color: Color(0xff319ffe)),
-                          ),
-                        ],
-                      ),
+                      Expanded(
+                        child: CupertinoSegmentedControl<int>(
+                          unselectedColor: AppColors.screenBackgroundColor,
+                          selectedColor: AppColors.appAccentColor,
+                          children: tableWidgets,
+                          borderColor: AppColors.appAccentColor,
+                          onValueChanged: (int val) {
+                            setState(() {
+                              _selectedTableWidget = val;
+                            });
+                          },
+                          groupValue: _selectedTableWidget,
+                        ),
+                      )
                     ],
                   ),
                 ),
-              ),
-              Container(
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: CupertinoSegmentedControl<int>(
-                        unselectedColor: AppColors.screenBackgroundColor,
-                        selectedColor: AppColors.appAccentColor,
-                        children: tableWidgets,
-                        borderColor: AppColors.appAccentColor,
-                        onValueChanged: (int val) {
-                          setState(() {
-                            _selectedTableWidget = val;
-                          });
-                        },
-                        groupValue: _selectedTableWidget,
-                      ),
-                    )
-                  ],
+                Container(
+                  child: getTableOrGraphView(context, _selectedTableWidget),
                 ),
-              ),
-              Container(
-                child: getTableOrGraphView(context, _selectedTableWidget),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:pokerapp/models/game_history_model.dart';
@@ -39,75 +40,75 @@ class _HighHandLogViewState extends State<HighHandLogView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return CupertinoPageScaffold(
+      resizeToAvoidBottomInset: true,
       backgroundColor: AppColors.screenBackgroundColor,
-      appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back_ios,
-            size: 14,
-            color: AppColors.appAccentColor,
-          ),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        titleSpacing: 0,
-        elevation: 0.0,
+      navigationBar: CupertinoNavigationBar(
         backgroundColor: AppColors.screenBackgroundColor,
-        title: Text(
-          "Game Details",
-          textAlign: TextAlign.left,
-          style: TextStyle(
-            color: AppColors.appAccentColor,
-            fontSize: 14.0,
-            fontFamily: AppAssets.fontFamilyLato,
-            fontWeight: FontWeight.w600,
+        leading: GestureDetector(
+          onTap: () => Navigator.of(context).pop(),
+          child: Row(
+            children: [
+              Icon(
+                Icons.arrow_back_ios,
+                size: 16,
+                color: AppColors.appAccentColor,
+              ),
+              Text(
+                "Game",
+                style: const TextStyle(
+                  fontFamily: AppAssets.fontFamilyLato,
+                  color: AppColors.appAccentColor,
+                  fontSize: 14.0,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+            ],
           ),
+        ),
+        middle: Column(
+          children: [
+            Text(
+              "High Hand Log",
+              style: const TextStyle(
+                fontFamily: AppAssets.fontFamilyLato,
+                color: Colors.white,
+                fontSize: 22.0,
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+            Text(
+              "Game code: " + widget.gameCode,
+              style: const TextStyle(
+                fontFamily: AppAssets.fontFamilyLato,
+                color: AppColors.lightGrayTextColor,
+                fontSize: 12.0,
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+          ],
         ),
       ),
-      body: !loadingDone
-          ? Center(child: CircularProgressIndicator())
-          : Column(
-              children: [
-                Container(
-                  margin:
-                      EdgeInsets.only(left: 10, top: 5, bottom: 5, right: 10),
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    "High Hand Log",
-                    style: const TextStyle(
-                      fontFamily: AppAssets.fontFamilyLato,
-                      color: Colors.white,
-                      fontSize: 30.0,
-                      fontWeight: FontWeight.w900,
+      child: Material(
+        type: MaterialType.transparency,
+        child: !loadingDone
+            ? Center(child: CircularProgressIndicator())
+            : Column(
+                children: [
+                  Expanded(
+                    child: ListView.separated(
+                      itemBuilder: (context, index) {
+                        return new HighHandWidget(this.hhWinners[index]);
+                      },
+                      itemCount: hhWinners.length,
+                      separatorBuilder: (context, index) {
+                        return Divider();
+                      },
                     ),
                   ),
-                ),
-                Container(
-                  margin: EdgeInsets.only(left: 10, bottom: 5, right: 10),
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    "Game Code: " + widget.gameCode,
-                    style: const TextStyle(
-                      fontFamily: AppAssets.fontFamilyLato,
-                      color: AppColors.lightGrayTextColor,
-                      fontSize: 12.0,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: ListView.separated(
-                    itemBuilder: (context, index) {
-                      return new HighHandWidget(this.hhWinners[index]);
-                    },
-                    itemCount: hhWinners.length,
-                    separatorBuilder: (context, index) {
-                      return Divider();
-                    },
-                  ),
-                ),
-              ],
-            ),
+                ],
+              ),
+      ),
     );
   }
 }
