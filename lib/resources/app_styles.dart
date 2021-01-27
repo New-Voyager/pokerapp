@@ -188,6 +188,17 @@ class AppStyles {
     fontSize: 25.0,
   );
 
+  static const TextStyle notificationSubTitleTextStyle = TextStyle(
+    fontFamily: 'Lato',
+    color: AppColors.appAccentColor,
+    fontSize: 15.0,
+  );
+  static const TextStyle notificationTitleTextStyle = TextStyle(
+    fontFamily: 'Lato',
+    color: Colors.white,
+    fontSize: 18.0,
+  );
+
   // game option fonts
   static const optionTitle = TextStyle(
     color: Color(0xff319ffe),

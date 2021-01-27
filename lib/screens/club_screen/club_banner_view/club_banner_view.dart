@@ -84,17 +84,19 @@ class ClubBannerView extends StatelessWidget {
                 onTap: () {
                   Clipboard.setData(
                       new ClipboardData(text: clubModel.clubCode));
-                  Scaffold.of(context).showSnackBar(SnackBar(
-                    content: Text(
-                      "Club code copied to clipboard",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16.0,
-                        fontFamily: AppAssets.fontFamilyLato,
-                        fontWeight: FontWeight.w400,
+                  Scaffold.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        "Club code copied to clipboard",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16.0,
+                          fontFamily: AppAssets.fontFamilyLato,
+                          fontWeight: FontWeight.w400,
+                        ),
                       ),
                     ),
-                  ));
+                  );
                 },
               ),
             ],

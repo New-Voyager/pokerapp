@@ -36,6 +36,10 @@ class AppConstants {
     milliseconds: 500,
   );
 
+  static const Duration seatChangeAnimationDuration = const Duration(
+    milliseconds: 1000,
+  );
+
   static const Duration popUpAnimationDuration = const Duration(
     milliseconds: 300,
   );
@@ -59,6 +63,18 @@ class AppConstants {
   static const String blackClub = '♣';
   static const String redDiamond = '♦';
 
+  /* TABLE UPDATE types */
+  static const String SeatChangeInProgress = 'SeatChangeInProgress';
+
+  /* NEW UPDATE player statuses */
+  static const String NEW_PLAYER = 'NEW_PLAYER';
+  static const String RELOAD_CHIPS = 'RELOAD_CHIPS';
+  static const String SWITCH_SEAT = 'SWITCH_SEAT';
+  static const String TAKE_BREAK = 'TAKE_BREAK';
+  static const String SIT_BACK = 'SIT_BACK';
+  static const String LEFT_THE_GAME = 'LEFT_THE_GAME';
+  static const String EMPTY_STACK = 'EMPTY_STACK';
+
   /* table statuses */
   static const String WAITING_TO_BE_STARTED = 'WAITING_TO_BE_STARTED';
   static const String TABLE_STATUS_NOT_ENOUGH_PLAYERS = 'NOT_ENOUGH_PLAYERS';
@@ -78,6 +94,7 @@ class AppConstants {
 
   /* message types */
   static const String PLAYER_UPDATE = 'PLAYER_UPDATE';
+  static const String TABLE_UPDATE = 'TABLE_UPDATE';
   static const String HIGH_HAND = 'HIGH_HAND';
   static const String GAME_STATUS = 'GAME_STATUS';
   static const String NEW_HAND = 'NEW_HAND';

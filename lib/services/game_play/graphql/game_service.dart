@@ -7,6 +7,12 @@ import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
 
 class GameService {
+  static String leaveGameQuery = """
+    mutation (\$gameCode: String!) {
+      confirmed: leaveGame(gameCode: \$gameCode)
+    }
+    """;
+
   GameService._();
 
   /* The following method returns back the Game Info Model */
@@ -126,7 +132,7 @@ class GameService {
     return status;
   }
 
-  /* this method joins the game at a particular seat number */
+  /* this method ends the game */
   static Future<String> endGame(String gameCode) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
 
@@ -138,6 +144,23 @@ class GameService {
     };
     QueryResult result = await _client.mutate(
       MutationOptions(documentNode: gql(_mutation), variables: variables),
+    );
+
+    if (result.hasException) return null;
+
+    // FIXME: We need to get the proper return value
+    return "ended";
+  }
+
+  /* this method ends the game */
+  static Future<String> leaveGame(String gameCode) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+
+    Map<String, dynamic> variables = {
+      "gameCode": gameCode,
+    };
+    QueryResult result = await _client.mutate(
+      MutationOptions(documentNode: gql(leaveGameQuery), variables: variables),
     );
 
     if (result.hasException) return null;

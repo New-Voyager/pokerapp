@@ -15,6 +15,7 @@ import 'package:pokerapp/screens/game_play_screen/card_views/hidden_card_view.da
 import 'package:pokerapp/screens/game_play_screen/card_views/stack_card_view.dart';
 import 'package:pokerapp/screens/game_play_screen/user_view/animating_widgets/chip_amount_animating_widget.dart';
 import 'package:pokerapp/screens/game_play_screen/user_view/animating_widgets/fold_card_animating_widget.dart';
+import 'package:pokerapp/screens/game_play_screen/user_view/animating_widgets/stack_switch_seat_animating_widget.dart';
 import 'package:pokerapp/screens/game_play_screen/user_view/count_down_timer.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:provider/provider.dart';
@@ -55,39 +56,40 @@ class UserView extends StatelessWidget {
                 duration: AppConstants.animationDuration,
                 curve: Curves.bounceInOut,
                 opacity: emptySeat ? 0.0 : 0.90,
-                child: AnimatedContainer(
-                    duration: AppConstants.fastAnimationDuration,
-                    curve: Curves.bounceInOut,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        width: 2.0,
-                        color: userObject.highlight ?? false
-                            ? highlightColor
-                            : Colors.transparent,
+                child: Consumer<BoardAttributesObject>(
+                  builder: (_, boardAttrObj, __) => Visibility(
+                    visible:
+                        boardAttrObj.isOrientationHorizontal ? false : true,
+                    child: AnimatedContainer(
+                      duration: AppConstants.fastAnimationDuration,
+                      curve: Curves.bounceInOut,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          width: 2.0,
+                          color: userObject.highlight ?? false
+                              ? highlightColor
+                              : Colors.transparent,
+                        ),
+                        boxShadow: userObject.highlight ?? false
+                            ? [
+                                BoxShadow(
+                                  color: highlightColor.withAlpha(120),
+                                  blurRadius: 20.0,
+                                  spreadRadius: 20.0,
+                                ),
+                              ]
+                            : [],
                       ),
-                      boxShadow: userObject.highlight ?? false
-                          ? [
-                              BoxShadow(
-                                color: highlightColor.withAlpha(120),
-                                blurRadius: 20.0,
-                                spreadRadius: 20.0,
-                              ),
-                            ]
-                          : [],
-                    ),
-                    child: Consumer<BoardAttributesObject>(
-                      builder: (_, boardAttrObj, __) => Visibility(
-                        visible:
-                            boardAttrObj.isOrientationHorizontal ? false : true,
-                        child: CircleAvatar(
-                          radius: 19.50,
-                          /* todo: this needs to be replaced with NetworkImage */
-                          backgroundImage:
-                              AssetImage(avatarUrl ?? 'assets/images/2.png'),
+                      child: CircleAvatar(
+                        radius: 19.50,
+                        backgroundImage: AssetImage(
+                          avatarUrl ?? 'assets/images/2.png',
                         ),
                       ),
-                    )),
+                    ),
+                  ),
+                ),
               );
 
               return Container(
@@ -630,7 +632,6 @@ class UserView extends StatelessWidget {
 
           /* building the chip amount widget */
           _buildChipAmountWidget(),
-          //emptySeat ? shrinkedSizedBox : _buildChipAmountWidget(),
         ],
       ),
     );

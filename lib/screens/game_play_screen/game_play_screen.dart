@@ -9,10 +9,12 @@ import 'package:pokerapp/models/game_play_models/business/card_distribution_mode
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/action_info.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/footer_result.dart';
-import 'package:pokerapp/models/game_play_models/provider_models/hh_notification_model.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/notification_models/general_notification_model.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/notification_models/hh_notification_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/player_action/player_action.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/remaining_time.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/seat_change_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/header_object.dart';
@@ -22,7 +24,9 @@ import 'package:pokerapp/resources/card_back_assets.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/board_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/decorative_views/background_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/footer_view.dart';
-import 'package:pokerapp/screens/game_play_screen/main_views/header_view.dart';
+import 'package:pokerapp/screens/game_play_screen/main_views/header_view/header_view.dart';
+import 'package:pokerapp/screens/game_play_screen/main_views/header_view/header_view_util_widgets.dart';
+import 'package:pokerapp/screens/game_play_screen/notifications/notifications.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/services/game_play/action_services/game_action_service/game_action_service.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_service/hand_action_service.dart';
@@ -181,10 +185,19 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
     @required GameInfoModel gameInfoModel,
   }) =>
       [
-        // todo: there could be general notifications as well as a high hand notification
+        /* this is for the seat change animation values */
+        ListenableProvider<ValueNotifier<SeatChangeModel>>(
+          create: (_) => ValueNotifier<SeatChangeModel>(null),
+        ),
+
+        /* this is for general notifications */
+        ListenableProvider<ValueNotifier<GeneralNotificationModel>>(
+          create: (_) => ValueNotifier<GeneralNotificationModel>(null),
+        ),
+
         /* this is for the highHand Notification */
-        ListenableProvider<ValueNotifier<HhNotificationModel>>(
-          create: (_) => ValueNotifier<HhNotificationModel>(null),
+        ListenableProvider<ValueNotifier<HHNotificationModel>>(
+          create: (_) => ValueNotifier<HHNotificationModel>(null),
         ),
 
         /* this is for having random card back for every new hand */
@@ -376,25 +389,28 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                   alignment: Alignment.topCenter,
                   children: [
                     BackgroundView(),
-                    Container(
-                      child: Column(
-                        children: [
-                          // header section
-                          HeaderView(),
 
-                          // main board view
-                          Expanded(
-                            child: BoardView(
-                              onUserTap: _joinGame,
-                              onStartGame: _startGame,
-                            ),
+                    /* main view */
+                    Column(
+                      children: [
+                        // header section
+                        HeaderView(),
+
+                        // main board view
+                        Expanded(
+                          child: BoardView(
+                            onUserTap: _joinGame,
+                            onStartGame: _startGame,
                           ),
+                        ),
 
-                          // footer section
-                          FooterView(),
-                        ],
-                      ),
+                        // footer section
+                        FooterView(),
+                      ],
                     ),
+
+                    /* notification view */
+                    Notifications.buildNotificationWidget(),
                   ],
                 );
               },
