@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/hand_history_model.dart';
 import 'package:pokerapp/models/hand_log_model.dart';
@@ -5,6 +6,7 @@ import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_log_view.dart';
+import 'package:pokerapp/services/app/hand_service.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/widgets/card_view.dart';
 
@@ -15,8 +17,10 @@ final _separator = SizedBox(
 class PlayedHandsScreen extends StatelessWidget {
   final List<HandHistoryItem> history;
   final String gameCode;
+  var _tapPosition;
+  final String clubCode;
 
-  PlayedHandsScreen(this.gameCode, this.history);
+  PlayedHandsScreen(this.gameCode, this.history, this.clubCode);
 
   @override
   Widget build(BuildContext context) {
@@ -87,11 +91,13 @@ class PlayedHandsScreen extends StatelessWidget {
                     Flexible(
                       flex: 6,
                       fit: FlexFit.tight,
-                      child: Text("Community",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 15.0,
-                          )),
+                      child: Text(
+                        "Community",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 15.0,
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -114,33 +120,188 @@ class PlayedHandsScreen extends StatelessWidget {
     );
   }
 
+  _storeTapPosition(TapDownDetails tapDownDetails) {
+    _tapPosition = tapDownDetails.globalPosition;
+  }
+
+  _saveStarredHand(BuildContext context, int index) async {
+    var result = await HandService.saveStarredHand(
+        gameCode, history[index].handNum.toString());
+    Scaffold.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          result
+              ? "Hand " +
+                  history[index].handNum.toString() +
+                  " has been bookmarked"
+              : "Couldn't bookmark the hand. Please try again later",
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 16.0,
+            fontFamily: AppAssets.fontFamilyLato,
+            fontWeight: FontWeight.w400,
+          ),
+        ),
+      ),
+    );
+  }
+
+  _shareHandWithClub(BuildContext context, int index) async {
+    var result =
+        await HandService.shareHand(gameCode, history[index].handNum, clubCode);
+    Scaffold.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          result
+              ? "Hand " +
+                  history[index].handNum.toString() +
+                  " has been shared with the club"
+              : "Couldn't share the hand. Please try again later",
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 16.0,
+            fontFamily: AppAssets.fontFamilyLato,
+            fontWeight: FontWeight.w400,
+          ),
+        ),
+      ),
+    );
+  }
+
+  showCustomMenu(context, int index) {
+    final RenderBox overlay = Overlay.of(context).context.findRenderObject();
+    showMenu(
+      context: context,
+      position: RelativeRect.fromRect(
+          _tapPosition & const Size(40, 40), // smaller rect, the touch area
+          Offset.zero & overlay.size // Bigger rect, the entire screen
+          ),
+      items: <PopupMenuEntry>[
+        PopupMenuItem(
+          value: 0,
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text(
+                    "Bookmark Hand",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 15.0,
+                    ),
+                  ),
+                  Icon(
+                    Icons.star_border_outlined,
+                    color: Colors.white,
+                  ),
+                ],
+              ),
+              Divider(
+                color: AppColors.listViewDividerColor,
+              ),
+            ],
+          ),
+        ),
+        PopupMenuItem(
+          value: 1,
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text(
+                    "Share Hand with club",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 15.0,
+                    ),
+                  ),
+                  Icon(
+                    Icons.ios_share,
+                    color: Colors.white,
+                  ),
+                ],
+              ),
+              Divider(
+                color: AppColors.listViewDividerColor,
+              ),
+            ],
+          ),
+        ),
+      ],
+    ).then<void>((delta) {
+      // delta would be null if user taps on outside the popup menu
+      // (causing it to close without making selection)
+      if (delta == null) {
+        return;
+      } else {
+        switch (delta) {
+          case 0:
+            _saveStarredHand(context, index);
+            break;
+          case 1:
+            _shareHandWithClub(context, index);
+            break;
+        }
+      }
+    });
+  }
+
   getListItem(BuildContext context, int index) {
     WinnerWidget widget = new WinnerWidget(history[index]);
-    return Padding(
-      padding: const EdgeInsets.only(
-        left: 8.0,
-        right: 8.0,
+    return Theme(
+      data: Theme.of(context).copyWith(
+        cardColor: AppColors.popUpMenuColor,
+        textTheme: Theme.of(context).textTheme.apply(bodyColor: Colors.white),
       ),
-      child: Container(
-        decoration: BoxDecoration(
-          color: Color(0xff313235),
-          borderRadius: BorderRadius.all(
-            Radius.circular(AppDimensions.cardRadius),
-          ),
-        ),
-        child: GestureDetector(
-          onTap: () => onHistoryItemTapped(context, index),
-          child: Padding(
-            padding: const EdgeInsets.all(6.0),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                handNumWidget(history[index].handNum),
-                widget,
-              ],
+      child: Builder(
+        builder: (context) {
+          return GestureDetector(
+            onTapDown: _storeTapPosition,
+            onLongPress: () => {showCustomMenu(context, index)},
+            onTap: () => onHistoryItemTapped(context, index),
+            child: Padding(
+              padding: const EdgeInsets.only(
+                left: 8.0,
+                right: 8.0,
+              ),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Color(0xff313235),
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(AppDimensions.cardRadius),
+                  ),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(6.0),
+                  child: Column(
+                    children: [
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          handNumWidget(history[index].handNum),
+                          widget,
+                        ],
+                      ),
+                      Visibility(
+                        visible: true,
+                        child: Container(
+                          alignment: Alignment.bottomRight,
+                          child: Icon(
+                            Icons.star,
+                            color: Colors.amber,
+                            size: 12,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }
@@ -238,10 +399,14 @@ class WinnerWidget extends StatelessWidget {
           SizedBox(
             width: 5.0,
           ),
-          Icon(
-            Icons.arrow_forward_ios,
-            color: AppColors.appAccentColor,
-            size: 10,
+          Column(
+            children: [
+              Icon(
+                Icons.arrow_forward_ios,
+                color: AppColors.appAccentColor,
+                size: 10,
+              ),
+            ],
           ),
         ],
       ),
