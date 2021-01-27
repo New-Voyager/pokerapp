@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/ui/header_object.dart';
 import 'package:pokerapp/models/seat_change_model.dart';
@@ -148,7 +146,6 @@ class _SeatChangeBottomSheetState extends State<SeatChangeBottomSheet> {
             onChanged: (bool value) async {
               setState(() {
                 isSeatChange = value;
-                getAllSeatChangePlayers();
               });
               if (isSeatChange) {
                 // want to seat change
@@ -161,6 +158,7 @@ class _SeatChangeBottomSheetState extends State<SeatChangeBottomSheet> {
                     headerObject.gameCode);
                 print("result $result");
               }
+              getAllSeatChangePlayers();
             },
           ),
         ],
