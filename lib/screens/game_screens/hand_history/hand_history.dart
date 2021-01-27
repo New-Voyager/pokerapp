@@ -9,7 +9,8 @@ import 'package:pokerapp/services/app/hand_service.dart';
 
 class HandHistoryListView extends StatefulWidget {
   final HandHistoryListModel data;
-  HandHistoryListView(this.data);
+  HandHistoryListView(this.data, this._clubCode);
+  final String _clubCode;
 
   @override
   _HandHistoryState createState() => _HandHistoryState(this.data);
@@ -100,6 +101,9 @@ class _HandHistoryState extends State<HandHistoryListView>
                       child: TabBar(
                         unselectedLabelColor: Color(0xff319ffe),
                         labelColor: Colors.white,
+                        labelStyle: TextStyle(
+                          fontFamily: AppAssets.fontFamilyLato,
+                        ),
                         tabs: [
                           new Tab(
                             icon: SvgPicture.asset(
@@ -123,9 +127,15 @@ class _HandHistoryState extends State<HandHistoryListView>
                       child: TabBarView(
                         children: [
                           new PlayedHandsScreen(
-                              _data.gameCode, _data.getAllHands()),
+                            _data.gameCode,
+                            _data.getAllHands(),
+                            widget._clubCode,
+                          ),
                           new PlayedHandsScreen(
-                              _data.gameCode, _data.getWinningHands()),
+                            _data.gameCode,
+                            _data.getWinningHands(),
+                            widget._clubCode,
+                          ),
                         ],
                         controller: _tabController,
                       ),

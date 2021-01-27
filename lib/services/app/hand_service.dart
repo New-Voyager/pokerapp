@@ -51,6 +51,18 @@ class HandService {
         }
     """;
 
+  static String saveStarredHandMutation = """
+    mutation(\$gameCode: String!, \$handNum: String!) {
+      update: saveStarredHand(gameCode: \$gameCode, handNum: \$handNum)
+    }
+  """;
+
+  static String shareHandMutation = """
+    mutation(\$gameCode: String!, \$handNum: Int!, \$clubCode: String!) {
+      update: shareHand(gameCode: \$gameCode, handNum: \$handNum, clubCode: \$clubCode)
+    }
+  """;
+
   static void getAllHands(HandHistoryListModel model) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
     Map<String, dynamic> variables = {
@@ -81,5 +93,41 @@ class HandService {
     // instantiate game history detail object
     model.jsonData = result.data;
     model.load();
+  }
+
+  static Future<bool> saveStarredHand(String gameCode, String handNum) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+
+    Map<String, dynamic> variables = {
+      "gameCode": gameCode,
+      "handNum": handNum,
+    };
+
+    QueryResult result = await _client.mutate(MutationOptions(
+        documentNode: gql(saveStarredHandMutation), variables: variables));
+    if (result.hasException) {
+      print(result.exception);
+      return false;
+    }
+    return true;
+  }
+
+  static Future<bool> shareHand(
+      String gameCode, int handNum, String clubCode) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+
+    Map<String, dynamic> variables = {
+      "gameCode": gameCode,
+      "handNum": handNum,
+      "clubCode": clubCode,
+    };
+
+    QueryResult result = await _client.mutate(MutationOptions(
+        documentNode: gql(shareHandMutation), variables: variables));
+    if (result.hasException) {
+      print(result.exception);
+      return false;
+    }
+    return true;
   }
 }

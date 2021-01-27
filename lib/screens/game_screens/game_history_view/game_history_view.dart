@@ -52,7 +52,7 @@ class _GameHistoryViewState extends State<GameHistoryView> {
                     builder: (BuildContext context, _) =>
                         Consumer<GameHistoryDetailModel>(
                             builder: (_, GameHistoryDetailModel data, __) =>
-                                GameHistoryDetailView(data))),
+                                GameHistoryDetailView(data, clubCode))),
               ));
         },
         child: GameHistoryItem(item: _prevGames[index]));

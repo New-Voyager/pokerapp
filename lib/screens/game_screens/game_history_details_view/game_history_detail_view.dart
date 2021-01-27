@@ -17,7 +17,9 @@ import 'highhand_winners_view.dart';
 
 class GameHistoryDetailView extends StatefulWidget {
   final GameHistoryDetailModel data;
-  GameHistoryDetailView(this.data);
+  final String clubCode;
+
+  GameHistoryDetailView(this.data, this.clubCode);
 
   @override
   _GameHistoryDetailView createState() => _GameHistoryDetailView(data);
@@ -631,15 +633,19 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
     final model =
         HandHistoryListModel(_gameDetail.gameCode, _gameDetail.isOwner);
     Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (_) => ChangeNotifierProvider<HandHistoryListModel>(
-              create: (_) => model,
-              builder: (BuildContext context, _) =>
-                  Consumer<HandHistoryListModel>(
-                      builder: (_, HandHistoryListModel data, __) =>
-                          HandHistoryListView(data))),
-        ));
+      context,
+      MaterialPageRoute(
+        builder: (_) => ChangeNotifierProvider<HandHistoryListModel>(
+          create: (_) => model,
+          builder: (BuildContext context, _) => Consumer<HandHistoryListModel>(
+            builder: (_, HandHistoryListModel data, __) => HandHistoryListView(
+              data,
+              widget.clubCode,
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   void onHighHandLogPressed(BuildContext context) {
@@ -655,15 +661,19 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
     final model =
         HandHistoryListModel(_gameDetail.gameCode, _gameDetail.isOwner);
     Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (_) => ChangeNotifierProvider<HandHistoryListModel>(
-              create: (_) => model,
-              builder: (BuildContext context, _) =>
-                  Consumer<HandHistoryListModel>(
-                      builder: (_, HandHistoryListModel data, __) =>
-                          HandHistoryListView(data))),
-        ));
+      context,
+      MaterialPageRoute(
+        builder: (_) => ChangeNotifierProvider<HandHistoryListModel>(
+          create: (_) => model,
+          builder: (BuildContext context, _) => Consumer<HandHistoryListModel>(
+              builder: (_, HandHistoryListModel data, __) =>
+                  HandHistoryListView(
+                    data,
+                    widget.clubCode,
+                  )),
+        ),
+      ),
+    );
   }
 
   Widget getLowerCard() {
