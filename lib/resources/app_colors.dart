@@ -25,5 +25,13 @@ class AppColors {
 
   static const Color buttonBackGroundColor = Color(0xdddddc4);
 
+  static const Color gameOptionBackGroundColor = Color(0xff303335);
+
+  // gameoption screen colors
+  static const Color gameOption1 = Color(0xffef9712);
+  static const Color gameOption2 = appAccentColor;
+  static const Color gameOption3 = Color(0xffe11717);
+  static const Color gameOption4 = Color(0xff0fc915);
+  static const Color gameOption5 = Color(0xff319ffe);
   static const Color lightGrayTextColor = Color(0xff848484);
 }

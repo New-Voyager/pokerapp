@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
@@ -16,13 +17,16 @@ class StageUpdateService {
       List<int> pots =
           data[key]['pots']?.map<int>((e) => int.parse(e.toString()))?.toList();
 
-      Provider.of<TableState>(
+      final TableState tableState = Provider.of<TableState>(
         context,
         listen: false,
-      ).updatePotChips(
+      );
+
+      tableState.updatePotChipsSilent(
         potChips: pots,
         potUpdatesChips: null,
       );
+      tableState.notifyAll();
     } catch (e) {
       log('exception from StageUpdateService: $e');
     }
@@ -36,10 +40,17 @@ class StageUpdateService {
     assert(key != null);
 
     // show the move coin to pot animation, after that update the pot
-    Provider.of<Players>(
+    final Players players = Provider.of<Players>(
       context,
       listen: false,
-    ).moveCoinsToPot().then(
+    );
+
+    final TableState tableState = Provider.of<TableState>(
+      context,
+      listen: false,
+    );
+
+    players.moveCoinsToPot().then(
       (_) async {
         // update the pot
         updatePot(data, key, context);
@@ -49,10 +60,8 @@ class StageUpdateService {
         //await Future.delayed(AppConstants.userPopUpMessageHoldDuration);
 
         // remove all the status (last action) of all the players
-        Provider.of<Players>(
-          context,
-          listen: false,
-        ).removeAllPlayersStatus();
+        players.removeAllPlayersStatusSilent();
+        players.notifyAll();
       },
     );
 
@@ -71,31 +80,26 @@ class StageUpdateService {
           .toList();
 
       for (int i = 0; i < cards.length; i++) {
-        Provider.of<TableState>(
-          context,
-          listen: false,
-        ).addCommunityCard(cards[i]);
+        tableState.addCommunityCardSilent(cards[i]);
+        tableState.notifyAll();
         await Future.delayed(AppConstants.communityCardPushDuration);
       }
 
       // wait for a brief moment, then flip the cards
       await Future.delayed(AppConstants.communityCardPushDuration);
-      Provider.of<TableState>(
-        context,
-        listen: false,
-      ).flipCards();
+      tableState.flipCards();
+      tableState.notifyAll();
     } else {
-      Provider.of<TableState>(
-        context,
-        listen: false,
-      ).addCommunityCard(CardHelper.getCard(data[key]['${key}Card']));
+      tableState.addCommunityCardSilent(
+        CardHelper.getCard(data[key]['${key}Card']),
+      );
+      tableState.notifyAll();
 
       // wait for a brief moment, then flip the last card
       await Future.delayed(AppConstants.communityCardPushDuration);
-      Provider.of<TableState>(
-        context,
-        listen: false,
-      ).flipLastCard();
+
+      tableState.flipLastCard();
+      tableState.notifyAll();
     }
   }
 }

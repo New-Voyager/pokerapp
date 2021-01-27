@@ -24,32 +24,22 @@ class TableState extends ChangeNotifier {
     this._communityCards = communityCards;
     this._potUpdatesChips = potUpdatesChips;
     this._communityCards = new List<CardObject>();
-/*
-    //debugging code
-    this._communityCards.add(CardHelper.getCard(168));
-    this._communityCards.add(CardHelper.getCard(168));
-    this._communityCards.add(CardHelper.getCard(168));
-    this._communityCards.add(CardHelper.getCard(168));
-    this._communityCards.add(CardHelper.getCard(168));
-*/
   }
+
+  void notifyAll() => notifyListeners();
 
   /* public methods for updating values into our TableState */
-  void updateTableStatus(String tableStatus) {
+  void updateTableStatusSilent(String tableStatus) {
     if (this._tableStatus == tableStatus) return;
-
     this._tableStatus = tableStatus;
-    notifyListeners();
   }
 
-  // todo: add the another potUpdate
-  void updatePotChips({List<int> potChips, int potUpdatesChips}) {
+  void updatePotChipsSilent({List<int> potChips, int potUpdatesChips}) {
     if (this._potChips == potChips) return;
     if (this._potUpdatesChips == potUpdatesChips) return;
 
     this._potChips = potChips;
     this._potUpdatesChips = potUpdatesChips;
-    notifyListeners();
   }
 
   // this method flips all the cards after a short delay
@@ -65,24 +55,18 @@ class TableState extends ChangeNotifier {
     cards.last.flipCard();
   }
 
-  void addCommunityCard(CardObject card) {
+  void addCommunityCardSilent(CardObject card) {
     card.isShownAtTable = true;
     if (this._communityCards == null) this._communityCards = List<CardObject>();
     this._communityCards.add(card);
-    notifyListeners();
   }
 
   void updateCommunityCardsSilent(List<CardObject> cards) {
     this._communityCards = cards;
   }
 
-  void updateCommunityCards(List<CardObject> cards) {
-    this._communityCards = cards;
-    notifyListeners();
-  }
-
   /* this method highlights all community cards */
-  void highlightCards(List<int> rawCards) {
+  void highlightCardsSilent(List<int> rawCards) {
     if (_communityCards == null) return;
     for (int i = 0; i < _communityCards.length; i++) {
       String label = _communityCards[i].label;
@@ -92,11 +76,6 @@ class TableState extends ChangeNotifier {
       if (rawCards.any((rc) => rc == rawCardNumber))
         _communityCards[i].highlight = true;
     }
-
-    log('\n\n\n\nrawCards: $rawCards\n\n\n\n');
-    log('\n\n\n\ncommunityCards: $_communityCards\n\n\n');
-
-    notifyListeners();
   }
 
   /* getters */

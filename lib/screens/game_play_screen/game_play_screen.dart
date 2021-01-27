@@ -14,7 +14,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/player_action/p
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/remaining_time.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
-import 'package:pokerapp/models/game_play_models/ui/board_object.dart';
+import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/header_object.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
@@ -30,7 +30,6 @@ import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/services/game_play/graphql/game_service.dart';
 import 'package:pokerapp/services/game_play/utils/audio.dart';
 import 'package:pokerapp/services/game_play/utils/audio_buffer.dart';
-import 'package:pokerapp/widgets/custom_text_button.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
@@ -53,6 +52,8 @@ class GamePlayScreen extends StatefulWidget {
 class _GamePlayScreenState extends State<GamePlayScreen> {
   GameComService _gameComService;
   BuildContext _providerContext;
+  String playerUuid;
+  int playerId;
 
   /*
   * Call back function, which lets the current player join the game
@@ -88,6 +89,8 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
         await GameService.getGameInfo(widget.gameCode);
 
     String myUUID = await AuthService.getUuid();
+    this.playerUuid = myUUID;
+    this.playerId = int.parse(await AuthService.getPlayerID());
 
     // mark the isMe field
     for (int i = 0; i < _gameInfoModel.playersInSeats.length; i++) {
@@ -178,6 +181,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
     @required GameInfoModel gameInfoModel,
   }) =>
       [
+        // todo: there could be general notifications as well as a high hand notification
         /* this is for the highHand Notification */
         ListenableProvider<ValueNotifier<HhNotificationModel>>(
           create: (_) => ValueNotifier<HhNotificationModel>(null),
@@ -196,7 +200,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
         /* a simple value notifier, holding INT which
         * resembles number of cards to deal with */
         ListenableProvider<ValueNotifier<int>>(
-          create: (_) => ValueNotifier(2), // todo: default be 2?
+          create: (_) => ValueNotifier(2),
         ),
 
         /* a header object is used to update the header section of
@@ -204,13 +208,15 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
         * club code and so on */
         ListenableProvider<HeaderObject>(
           create: (_) => HeaderObject(
-            gameCode: widget.gameCode,
-          ),
+              gameCode: widget.gameCode,
+              playerId: this.playerId,
+              playerUuid: this.playerUuid),
         ),
 
         /* board object used for changing board attributes */
-        ListenableProvider<BoardObject>(
-          create: (_) => BoardObject(),
+        /* default is horizontal view */
+        ListenableProvider<BoardAttributesObject>(
+          create: (_) => BoardAttributesObject(),
         ),
 
         /* a copy of Game Info Model is kept in the provider
@@ -222,7 +228,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
 
         /*
         * This Listenable Provider updates the activities of players
-        *  Player joins, buy Ins, Stacks, everything is notified by the Players objects
+        * Player joins, buy Ins, Stacks, everything is notified by the Players objects
         * */
         ListenableProvider<Players>(
           create: (_) => Players(
@@ -304,20 +310,15 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
   void _checkForCurrentUserPrompt(BuildContext context) => Provider.of<Players>(
         context,
         listen: false,
-      ).players.forEach((p) {
-        if (p.isMe && p.stack == 0)
-          Provider.of<ValueNotifier<FooterStatus>>(
-            context,
-            listen: false,
-          ).value = FooterStatus.Prompt;
-      });
-
-  @override
-  void initState() {
-    super.initState();
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {});
-  }
+      ).players.forEach(
+        (p) {
+          if (p.isMe && p.stack == 0)
+            Provider.of<ValueNotifier<FooterStatus>>(
+              context,
+              listen: false,
+            ).value = FooterStatus.Prompt;
+        },
+      );
 
   /* dispose method for closing connections and un subscribing to channels */
   @override
@@ -376,28 +377,22 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                   children: [
                     BackgroundView(),
                     Container(
-                      child: BackdropFilter(
-                        filter: ImageFilter.blur(
-                          sigmaX: 0.0,
-                          sigmaY: 0.0,
-                        ),
-                        child: Column(
-                          children: [
-                            // header section
-                            HeaderView(),
+                      child: Column(
+                        children: [
+                          // header section
+                          HeaderView(),
 
-                            // main board view
-                            Expanded(
-                              child: BoardView(
-                                onUserTap: _joinGame,
-                                onStartGame: _startGame,
-                              ),
+                          // main board view
+                          Expanded(
+                            child: BoardView(
+                              onUserTap: _joinGame,
+                              onStartGame: _startGame,
                             ),
+                          ),
 
-                            // footer section
-                            FooterView(),
-                          ],
-                        ),
+                          // footer section
+                          FooterView(),
+                        ],
                       ),
                     ),
                   ],
@@ -410,21 +405,3 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
     );
   }
 }
-
-/* design constants */
-const _screenBackgroundDecoration = const BoxDecoration(
-  color: Colors.black,
-  image: DecorationImage(
-    image: AssetImage(AppAssets.cityBackground1),
-    fit: BoxFit.cover,
-  ),
-  // gradient: const LinearGradient(
-  //   begin: Alignment.topCenter,
-  //   end: Alignment.bottomCenter,
-  //   colors: [
-  //     const Color(0xff353535),
-  //     const Color(0xff464646),
-  //     Colors.black,
-  //   ],
-  // ),
-);

@@ -52,21 +52,21 @@ class DealService {
         // wait for the animation to finish
         await Future.delayed(AppConstants.cardDistributionAnimationDuration);
 
+        final players = Provider.of<Players>(
+          context,
+          listen: false,
+        );
+
         if (seatNo == mySeatNo) {
-          // TODO: MAY BE THIS WILL HAVE A DIFFERENT ANIMATION?
           // this is me - give me my cards one by one
-          Provider.of<Players>(
-            context,
-            listen: false,
-          ).updateCard(
+          players.updateCardSilent(
             mySeatNo,
             myCards.sublist(0, i + 1),
           );
         }
-        Provider.of<Players>(
-          context,
-          listen: false,
-        ).updateVisibleCardNumber(seatNo, i + 1);
+
+        players.updateVisibleCardNumberSilent(seatNo, i + 1);
+        players.notifyAll();
       }
     }
 

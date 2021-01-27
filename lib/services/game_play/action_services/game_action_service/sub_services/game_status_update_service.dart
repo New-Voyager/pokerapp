@@ -17,10 +17,13 @@ class GameStatusUpdateService {
   }) {
     String tableStatus = status['tableStatus'];
     String gameStatus = status['status'];
-    Provider.of<TableState>(
+
+    final TableState tableState = Provider.of<TableState>(
       context,
       listen: false,
-    ).updateTableStatus(tableStatus);
+    );
+
+    tableState.updateTableStatusSilent(tableStatus);
 
     if (tableStatus == AppConstants.TABLE_STATUS_GAME_RUNNING) {
       /* QUERY_CURRENT_HAND is done here, only after making sure,
@@ -41,11 +44,10 @@ class GameStatusUpdateService {
       );
     } else if (gameStatus == AppConstants.GAME_ENDED) {
       // end the game
-      Provider.of<TableState>(
-        context,
-        listen: false,
-      ).updateTableStatus(AppConstants.GAME_ENDED);
+      tableState.updateTableStatusSilent(AppConstants.GAME_ENDED);
       BoardService.reset(context);
     }
+
+    tableState.notifyAll();
   }
 }
