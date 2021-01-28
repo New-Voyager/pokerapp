@@ -58,14 +58,17 @@ class UserViewUtilWidgets {
     List<CardObject> cards,
     @required playerFolded,
   }) =>
-      Transform.translate(
-        offset: Offset(
-          10.0,
-          100.0,
-        ),
-        child: StackCardView(
-          cards: cards,
-          deactivated: playerFolded ?? false,
+      Transform.scale(
+        scale: 1.2,
+        child: Transform.translate(
+          offset: Offset(
+            0.0,
+            80.0,
+          ),
+          child: StackCardView(
+            cards: cards,
+            deactivated: playerFolded ?? false,
+          ),
         ),
       );
 
@@ -270,7 +273,6 @@ class UserViewUtilWidgets {
                           : Transform.scale(
                               scale: 0.70,
                               child: StackCardView(
-                                center: true,
                                 cards: userObject.cards?.map(
                                       (int c) {
                                         List<int> highlightedCards =
