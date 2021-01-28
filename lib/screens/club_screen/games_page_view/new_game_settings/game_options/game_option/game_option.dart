@@ -6,6 +6,7 @@ import 'package:pokerapp/resources/app_styles.dart';
 import 'package:provider/provider.dart';
 import 'package:pokerapp/services/game_play/graphql/game_service.dart';
 import 'seat_change_bottom_sheet.dart';
+import 'waiting_list.dart';
 
 class GameOption extends StatefulWidget {
   final String gameCode;
@@ -67,7 +68,16 @@ class _GameOptionState extends State<GameOption> {
           title: "Waiting List",
           image: "assets/images/casino.png",
           backGroundColor: AppColors.gameOption3,
-          onTap: (context) {}),
+          onTap: (context) async {
+            await showModalBottomSheet(
+              context: context,
+              isScrollControlled: true,
+              builder: (ctx) => ChangeNotifierProvider.value(
+                value: Provider.of<HeaderObject>(context, listen: false),
+                child: WaitingListBottomSheet(),
+              ),
+            );
+          }),
       OptionItemModel(
         title: "Analyze Last hand",
         image: "assets/images/casino.png",
