@@ -1,31 +1,13 @@
 import 'dart:developer';
-import 'dart:ui';
-
-import 'package:audioplayers/audioplayers.dart';
 import 'package:dart_nats/dart_nats.dart' as nats;
 import 'package:flutter/material.dart';
-import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
-import 'package:pokerapp/models/game_play_models/business/card_distribution_model.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
-import 'package:pokerapp/models/game_play_models/provider_models/action_info.dart';
-import 'package:pokerapp/models/game_play_models/provider_models/footer_result.dart';
-import 'package:pokerapp/models/game_play_models/provider_models/notification_models/general_notification_model.dart';
-import 'package:pokerapp/models/game_play_models/provider_models/notification_models/hh_notification_model.dart';
-import 'package:pokerapp/models/game_play_models/provider_models/player_action/player_action.dart';
-import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
-import 'package:pokerapp/models/game_play_models/provider_models/remaining_time.dart';
-import 'package:pokerapp/models/game_play_models/provider_models/seat_change_model.dart';
-import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
-import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
-import 'package:pokerapp/models/game_play_models/ui/header_object.dart';
-import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
-import 'package:pokerapp/resources/card_back_assets.dart';
+import 'package:pokerapp/screens/game_play_screen/game_play_screen_util_methods.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/board_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/decorative_views/background_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/footer_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/header_view/header_view.dart';
-import 'package:pokerapp/screens/game_play_screen/main_views/header_view/header_view_util_widgets.dart';
 import 'package:pokerapp/screens/game_play_screen/notifications/notifications.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/services/game_play/action_services/game_action_service/game_action_service.dart';
@@ -35,7 +17,6 @@ import 'package:pokerapp/services/game_play/graphql/game_service.dart';
 import 'package:pokerapp/services/game_play/utils/audio.dart';
 import 'package:pokerapp/services/game_play/utils/audio_buffer.dart';
 import 'package:provider/provider.dart';
-import 'package:provider/single_child_widget.dart';
 
 /*
 * This is the screen which will have contact with the NATS server
@@ -56,35 +37,10 @@ class GamePlayScreen extends StatefulWidget {
 class _GamePlayScreenState extends State<GamePlayScreen> {
   GameComService _gameComService;
   BuildContext _providerContext;
-  String playerUuid;
-  int playerId;
+  String _playerUUID;
+  int _playerID;
 
-  /*
-  * Call back function, which lets the current player join the game
-  * the passed setPosition info is used to join the game
-  * This function can be disabled, when the current user get's in the game */
-
-  void _joinGame(int seatPos) async {
-    assert(seatPos != null);
-
-    log('joining game with seat no $seatPos');
-
-    // if setPos is -1 that means block this function call
-    if (seatPos == -1) return;
-
-    int seatNumber = seatPos;
-    await GameService.joinGame(
-      widget.gameCode,
-      seatNumber,
-    );
-  }
-
-  void _startGame() async {
-    log('Starting the game...');
-    await GameService.startGame(widget.gameCode);
-  }
-  /*
-  * _init function is run only for the very first time,
+  /* _init function is run only for the very first time,
   * and only once, the initial game screen is populated from here
   * also the NATS channel subscriptions are done here */
 
@@ -93,8 +49,8 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
         await GameService.getGameInfo(widget.gameCode);
 
     String myUUID = await AuthService.getUuid();
-    this.playerUuid = myUUID;
-    this.playerId = int.parse(await AuthService.getPlayerID());
+    this._playerUUID = myUUID;
+    this._playerID = int.parse(await AuthService.getPlayerID());
 
     // mark the isMe field
     for (int i = 0; i < _gameInfoModel.playersInSeats.length; i++) {
@@ -105,8 +61,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
     return _gameInfoModel;
   }
 
-  /*
-  * The init method returns a Future of all the initial game constants
+  /* The init method returns a Future of all the initial game constants
   * This method is also responsible for subscribing to the NATS channels */
 
   Future<GameInfoModel> _init() async {
@@ -180,159 +135,6 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
     return _gameInfoModel;
   }
 
-  /* provider method, returns list of all the providers used in the below hierarchy */
-  List<SingleChildWidget> _getProviders({
-    @required GameInfoModel gameInfoModel,
-  }) =>
-      [
-        /* this is for the seat change animation values */
-        ListenableProvider<ValueNotifier<SeatChangeModel>>(
-          create: (_) => ValueNotifier<SeatChangeModel>(null),
-        ),
-
-        /* this is for general notifications */
-        ListenableProvider<ValueNotifier<GeneralNotificationModel>>(
-          create: (_) => ValueNotifier<GeneralNotificationModel>(null),
-        ),
-
-        /* this is for the highHand Notification */
-        ListenableProvider<ValueNotifier<HHNotificationModel>>(
-          create: (_) => ValueNotifier<HHNotificationModel>(null),
-        ),
-
-        /* this is for having random card back for every new hand */
-        ListenableProvider<CardDistributionModel>(
-          create: (_) => CardDistributionModel(),
-        ),
-
-        /* this is for having random card back for every new hand */
-        ListenableProvider<ValueNotifier<String>>(
-          create: (_) => ValueNotifier<String>(CardBackAssets.getRandom()),
-        ),
-
-        /* a simple value notifier, holding INT which
-        * resembles number of cards to deal with */
-        ListenableProvider<ValueNotifier<int>>(
-          create: (_) => ValueNotifier(2),
-        ),
-
-        /* a header object is used to update the header section of
-        * the game screen - it contains data regarding the current hand no, club name,
-        * club code and so on */
-        ListenableProvider<HeaderObject>(
-          create: (_) => HeaderObject(
-              gameCode: widget.gameCode,
-              playerId: this.playerId,
-              playerUuid: this.playerUuid),
-        ),
-
-        /* board object used for changing board attributes */
-        /* default is horizontal view */
-        ListenableProvider<BoardAttributesObject>(
-          create: (_) => BoardAttributesObject(),
-        ),
-
-        /* a copy of Game Info Model is kept in the provider
-        * This is used to get the max or min BuyIn amounts
-        * or the game code, or for further info about the game */
-        ListenableProvider<ValueNotifier<GameInfoModel>>(
-          create: (_) => ValueNotifier(gameInfoModel),
-        ),
-
-        /*
-        * This Listenable Provider updates the activities of players
-        * Player joins, buy Ins, Stacks, everything is notified by the Players objects
-        * */
-        ListenableProvider<Players>(
-          create: (_) => Players(
-            players: gameInfoModel.playersInSeats,
-          ),
-        ),
-
-        /* TableStatus is updated as a string value */
-        ListenableProvider<TableState>(
-          create: (_) => TableState(
-            tableStatus: gameInfoModel.tableStatus,
-          ),
-        ),
-
-        /* footer view, is maintained by this Provider - either how action buttons,
-        * OR prompt for buy in are shown
-        * */
-        ListenableProvider<ValueNotifier<FooterStatus>>(
-          create: (_) => ValueNotifier(
-            FooterStatus.None,
-          ),
-        ),
-
-        /* If footer status become RESULT, then we need to have the
-        * result data available, the footer result model holds the result data */
-        ListenableProvider<FooterResult>(
-          create: (_) => FooterResult(),
-        ),
-
-        /* This provider gets a value when YOUR_ACTION message is received,
-        * other time this value is kept null, signifying,
-        * there is no action to take on THIS user's end
-        * */
-        ListenableProvider<ValueNotifier<PlayerAction>>(
-          create: (_) => ValueNotifier<PlayerAction>(
-            null,
-          ),
-        ),
-
-        /* This provider contains and updates the game info
-        * required for player to make an action
-        * this provider holds --> clubID, gameID and seatNo */
-        ListenableProvider<ValueNotifier<ActionInfo>>(
-          create: (_) => ValueNotifier<ActionInfo>(
-            null,
-          ),
-        ),
-
-        /* This provider contains the sendPlayerToHandChannel function
-        * so that the function can be called from anywhere down the widget tree */
-        Provider<Function(String)>(
-          create: (_) => _gameComService.sendPlayerToHandChannel,
-        ),
-
-        /* This provider holds the audioPlayer object, which facilitates playing
-        * audio in the game */
-        Provider<AudioPlayer>(
-          create: (_) => AudioPlayer(
-            mode: PlayerMode.LOW_LATENCY,
-          ),
-        ),
-
-        /* managing audio assets as temporary files */
-        ListenableProvider<ValueNotifier<Map<String, String>>>(
-          create: (_) => ValueNotifier(
-            Map<String, String>(),
-          ),
-        ),
-
-        /* This provider contains the remainingActionTime - this provider
-        * is used only when QUERY_CURRENT_HAND message is processed */
-        ListenableProvider<RemainingTime>(
-          create: (_) => RemainingTime(),
-        ),
-      ];
-
-  /* After the entire table is drawn, if the current player (isMe == true)
-    * is waiting for buyIn,then show the footer prompt */
-  void _checkForCurrentUserPrompt(BuildContext context) => Provider.of<Players>(
-        context,
-        listen: false,
-      ).players.forEach(
-        (p) {
-          if (p.isMe && p.stack == 0)
-            Provider.of<ValueNotifier<FooterStatus>>(
-              context,
-              listen: false,
-            ).value = FooterStatus.Prompt;
-        },
-      );
-
   /* dispose method for closing connections and un subscribing to channels */
   @override
   void dispose() {
@@ -365,8 +167,13 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
             }
 
             return MultiProvider(
-              providers: _getProviders(
+              providers: GamePlayScreenUtilMethods.getProviders(
                 gameInfoModel: _gameInfoModel,
+                gameCode: widget.gameCode,
+                playerID: _playerID,
+                playerUuid: _playerUUID,
+                sendPlayerToHandChannel:
+                    _gameComService.sendPlayerToHandChannel,
               ),
               builder: (BuildContext context, _) {
                 this._providerContext = context;
@@ -382,7 +189,9 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                 // waiting for a brief moment should suffice
                 Future.delayed(
                   AppConstants.buildWaitDuration,
-                  () => _checkForCurrentUserPrompt(context),
+                  () => GamePlayScreenUtilMethods.checkForCurrentUserPrompt(
+                    context,
+                  ),
                 );
 
                 return Stack(
@@ -399,8 +208,15 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                         // main board view
                         Expanded(
                           child: BoardView(
-                            onUserTap: _joinGame,
-                            onStartGame: _startGame,
+                            onUserTap: (int seatPos) =>
+                                GamePlayScreenUtilMethods.joinGame(
+                              seatPos: seatPos,
+                              gameCode: widget.gameCode,
+                            ),
+                            onStartGame: () =>
+                                GamePlayScreenUtilMethods.startGame(
+                              widget.gameCode,
+                            ),
                           ),
                         ),
 

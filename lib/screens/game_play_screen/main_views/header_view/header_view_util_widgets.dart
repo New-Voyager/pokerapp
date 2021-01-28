@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/resources/app_styles.dart';
-import 'package:provider/provider.dart';
 
 class HeaderViewUtilWidgets {
   HeaderViewUtilWidgets._();

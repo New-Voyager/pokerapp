@@ -8,10 +8,11 @@ class HeaderObject extends ChangeNotifier {
 
   bool _gameEnded = false;
 
-  HeaderObject(
-      {@required String gameCode,
-      @required int playerId,
-      @required String playerUuid}) {
+  HeaderObject({
+    @required String gameCode,
+    @required int playerId,
+    @required String playerUuid,
+  }) {
     this._gameCode = gameCode;
     this._playerId = playerId;
     this._playerUuid = playerUuid;

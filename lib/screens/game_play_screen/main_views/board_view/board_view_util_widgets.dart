@@ -159,7 +159,6 @@ class BoardViewUtilWidgets {
             // card stacks
             StackCardView(
               cards: cards,
-              center: true,
               isCommunity: true,
             ),
 
