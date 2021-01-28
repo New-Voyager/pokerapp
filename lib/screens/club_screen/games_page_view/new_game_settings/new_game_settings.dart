@@ -172,7 +172,7 @@ class _NewGameSettingsState extends State<NewGameSettings> {
                                     left: 12.0, right: 12.0),
                                 child: rewardTile(),
                               )
-                            : shrinkedSizedBox,
+                            : const SizedBox.shrink(),
                         SizedBox(
                           height: 20.0,
                         ),
