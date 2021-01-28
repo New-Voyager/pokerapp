@@ -3,7 +3,7 @@ import 'package:pokerapp/enums/hand_actions.dart';
 
 class HandLogModel {
   String gameCode;
-  int handNumber;
+  int handNumber = -1;
   Duration handDuration;
   List<int> communityCards = new List<int>();
   List<int> yourcards = new List<int>();

@@ -38,7 +38,11 @@ class _GameOptionState extends State<GameOption> {
   void initState() {
     super.initState();
     gameActions = [
-      OptionItemModel(title: "Leave", onTap: (context) {this.onLeave();}),
+      OptionItemModel(
+          title: "Leave",
+          onTap: (context) {
+            this.onLeave();
+          }),
       OptionItemModel(title: "Break"),
       OptionItemModel(title: "Reload")
     ];
@@ -250,34 +254,32 @@ class _GameOptionState extends State<GameOption> {
     );
   }
 
-  gameActionItem(OptionItemModel optionItemModel) =>
-      GestureDetector(
-        onTap: (){
-          if (optionItemModel.onTap != null) {
-            optionItemModel.onTap(context);
-          }
-        },
-        child: Container(
-          height: 70,
-          width: 70,
-          padding: EdgeInsets.all(5),
-          margin: EdgeInsets.all(5),
-          decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(color: AppColors.appAccentColor, width: 2)),
-          child: Center(
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 3, vertical: 1),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(3),
-              ),
-              child: Text(
-                optionItemModel.title,
-                style: AppStyles.clubItemInfoTextStyle,
-                textAlign: TextAlign.center,
-              ),
+  gameActionItem(OptionItemModel optionItemModel) => GestureDetector(
+      onTap: () {
+        if (optionItemModel.onTap != null) {
+          optionItemModel.onTap(context);
+        }
+      },
+      child: Container(
+        height: 70,
+        width: 70,
+        padding: EdgeInsets.all(5),
+        margin: EdgeInsets.all(5),
+        decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(color: AppColors.appAccentColor, width: 2)),
+        child: Center(
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 3, vertical: 1),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(3),
+            ),
+            child: Text(
+              optionItemModel.title,
+              style: AppStyles.clubItemInfoTextStyle,
+              textAlign: TextAlign.center,
             ),
           ),
-        )
-      );
+        ),
+      ));
 }

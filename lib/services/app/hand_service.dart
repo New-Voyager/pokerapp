@@ -51,6 +51,24 @@ class HandService {
         }
     """;
 
+  static String lastHandLogData = """
+      query lasthand(\$gameCode: String!) {
+        hand: lastHandHistory(gameCode: \$gameCode) {
+          data
+          totalPot
+        }
+        players: gamePlayers(gameCode: \$gameCode) {
+          id
+          name
+        }
+        myInfo {
+          id
+          uuid
+          name
+        }
+      }
+  """;
+
   static String saveStarredHandMutation = """
     mutation(\$gameCode: String!, \$handNum: String!) {
       update: saveStarredHand(gameCode: \$gameCode, handNum: \$handNum)
@@ -83,10 +101,15 @@ class HandService {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
     Map<String, dynamic> variables = {
       "gameCode": model.gameCode,
-      "handNum": model.handNumber.toString()
     };
-    QueryResult result = await _client.query(
-        QueryOptions(documentNode: gql(handLogData), variables: variables));
+    String query = handLogData;
+    if (model.handNumber != -1) {
+      variables["handNum"] = model.handNumber.toString();
+    } else {
+      query = lastHandLogData;
+    }
+    QueryResult result = await _client
+        .query(QueryOptions(documentNode: gql(query), variables: variables));
 
     if (result.hasException) return null;
 
