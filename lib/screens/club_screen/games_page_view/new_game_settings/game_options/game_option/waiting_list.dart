@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/ui/header_object.dart';
 import 'package:pokerapp/models/waiting_list_model.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:provider/provider.dart';
+import 'package:pokerapp/services/game_play/graphql/game_service.dart'
+    as gameService;
 
 class WaitingListBottomSheet extends StatefulWidget {
   WaitingListBottomSheet();
@@ -18,15 +21,33 @@ class _WaitingListBottomSheetState extends State<WaitingListBottomSheet> {
   HeaderObject headerObject;
   List<WaitingListModel> allWaitingListPlayers = [];
   bool ischanged = false;
+  bool isSwitchShow = true;
   @override
   void initState() {
     super.initState();
     headerObject = Provider.of<HeaderObject>(context, listen: false);
+
+    getAllCurretlyPlayingPlayer();
     getAllWaitingPlayers();
+  }
+
+  getAllCurretlyPlayingPlayer() async {
+    GameInfoModel _gameInfoModel =
+        await gameService.GameService.getGameInfo(headerObject.gameCode);
+    _gameInfoModel.playersInSeats.forEach((element) {
+      if (element.playerUuid == headerObject.playerUuid) {
+        setState(() {
+          isSwitchShow = false;
+        });
+      }
+    });
   }
 
   getAllWaitingPlayers() async {
     final result = await GameService.listOfWaitingPlayer(headerObject.gameCode);
+    print("headerObject.gameCode ${headerObject.gameCode}");
+    print("headerObject.gameCode ${headerObject.playerUuid}");
+
     if (result != null) {
       setState(() {
         allWaitingListPlayers = result;
@@ -100,45 +121,49 @@ class _WaitingListBottomSheetState extends State<WaitingListBottomSheet> {
                 ),
               ),
               Spacer(),
-              GestureDetector(
-                onTap: () {
-                  if (index != 0) {
-                    ischanged = true;
-                    setState(() {
-                      WaitingListModel temp;
-                      temp = allWaitingListPlayers[index];
-                      allWaitingListPlayers[index] =
-                          allWaitingListPlayers[index - 1];
-                      allWaitingListPlayers[index - 1] = temp;
-                    });
-                  }
-                },
-                child: Icon(
-                  Icons.arrow_upward,
-                  color: Colors.white,
-                ),
-              ),
-              SizedBox(
-                width: 5,
-              ),
-              GestureDetector(
-                onTap: () {
-                  if (index != allWaitingListPlayers.length - 1) {
-                    ischanged = true;
-                    setState(() {
-                      WaitingListModel temp;
-                      temp = allWaitingListPlayers[index];
-                      allWaitingListPlayers[index] =
-                          allWaitingListPlayers[index + 1];
-                      allWaitingListPlayers[index + 1] = temp;
-                    });
-                  }
-                },
-                child: Icon(
-                  Icons.arrow_downward,
-                  color: Colors.white,
-                ),
-              )
+              index != 0
+                  ? GestureDetector(
+                      onTap: () {
+                        ischanged = true;
+                        setState(() {
+                          WaitingListModel temp;
+                          temp = allWaitingListPlayers[index];
+                          allWaitingListPlayers[index] =
+                              allWaitingListPlayers[index - 1];
+                          allWaitingListPlayers[index - 1] = temp;
+                        });
+                      },
+                      child: Icon(
+                        Icons.arrow_upward,
+                        color: Colors.white,
+                      ),
+                    )
+                  : Container(),
+              index != 0
+                  ? SizedBox(
+                      width: 5,
+                    )
+                  : Container(),
+              index != allWaitingListPlayers.length - 1
+                  ? GestureDetector(
+                      onTap: () {
+                        ischanged = true;
+                        setState(() {
+                          WaitingListModel temp;
+                          temp = allWaitingListPlayers[index];
+                          allWaitingListPlayers[index] =
+                              allWaitingListPlayers[index + 1];
+                          allWaitingListPlayers[index + 1] = temp;
+                        });
+                      },
+                      child: Icon(
+                        Icons.arrow_downward,
+                        color: Colors.white,
+                      ),
+                    )
+                  : SizedBox(
+                      width: 25,
+                    )
             ],
           ),
           Divider(
@@ -180,26 +205,28 @@ class _WaitingListBottomSheetState extends State<WaitingListBottomSheet> {
             style: AppStyles.clubCodeStyle,
           ),
           Spacer(),
-          Switch(
-            value: isInWaitingList,
-            activeTrackColor: AppColors.positiveColor,
-            activeColor: Colors.white,
-            onChanged: (bool value) async {
-              setState(() {
-                isInWaitingList = value;
-              });
-              if (isInWaitingList) {
-                bool result =
-                    await GameService.addToWaitList(headerObject.gameCode);
-                print("result $result");
-              } else {
-                bool result =
-                    await GameService.removeFromWaitlist(headerObject.gameCode);
-                print("result $result");
-              }
-              getAllWaitingPlayers();
-            },
-          ),
+          isSwitchShow
+              ? Switch(
+                  value: isInWaitingList,
+                  activeTrackColor: AppColors.positiveColor,
+                  activeColor: Colors.white,
+                  onChanged: (bool value) async {
+                    setState(() {
+                      isInWaitingList = value;
+                    });
+                    if (isInWaitingList) {
+                      bool result = await GameService.addToWaitList(
+                          headerObject.gameCode);
+                      print("result dasda $result");
+                    } else {
+                      bool result = await GameService.removeFromWaitlist(
+                          headerObject.gameCode);
+                      print("result check $result");
+                    }
+                    getAllWaitingPlayers();
+                  },
+                )
+              : Container(),
         ],
       ),
     );
@@ -234,42 +261,50 @@ class _WaitingListBottomSheetState extends State<WaitingListBottomSheet> {
                 style: AppStyles.optionTitleText,
               ),
             ),
-            Align(
-              alignment: Alignment.centerRight,
-              child: Container(
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        List<String> uuids = [];
-                        allWaitingListPlayers.forEach((element) {
-                          uuids.add(element.playerUuid);
-                        });
-                        GameService.changeWaitListOrderList(
-                            headerObject.gameCode, uuids);
-                      },
-                      child: Text(
-                        "Apply",
-                        style: AppStyles.subTitleTextStyle,
+            ischanged
+                ? Align(
+                    alignment: Alignment.centerRight,
+                    child: Container(
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              List<String> uuids = [];
+                              allWaitingListPlayers.forEach((element) {
+                                uuids.add(element.playerUuid);
+                              });
+                              setState(() {
+                                ischanged = false;
+                              });
+                              GameService.changeWaitListOrderList(
+                                  headerObject.gameCode, uuids);
+                            },
+                            child: Text(
+                              "Apply",
+                              style: AppStyles.subTitleTextStyle,
+                            ),
+                          ),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                ischanged = false;
+                              });
+                              getAllWaitingPlayers();
+                            },
+                            child: Text(
+                              "Cancel",
+                              style: AppStyles.subTitleTextStyle,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    SizedBox(
-                      width: 5,
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        getAllWaitingPlayers();
-                      },
-                      child: Text(
-                        "Cancel",
-                        style: AppStyles.subTitleTextStyle,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            )
+                  )
+                : Container()
           ],
         ),
       );

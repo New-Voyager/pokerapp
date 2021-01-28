@@ -177,7 +177,6 @@ class GameService {
   static Future<bool> changeWaitListOrderList(
       String gameCode, List<String> uuids) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
-    print("uuids ${uuids}");
     Map<String, dynamic> variables = {
       "gameCode": gameCode,
       "players": uuids,
@@ -188,10 +187,9 @@ class GameService {
         variables: variables,
       ),
     );
-    print("result ${result.data}");
     if (result.hasException) return false;
 
-    return result.data['confirmed'] ?? false;
+    return result.data['applyWaitlistOrder'] ?? false;
   }
 
   static Future<bool> addToWaitList(String gameCode) async {
