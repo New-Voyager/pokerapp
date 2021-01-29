@@ -104,8 +104,8 @@ class UserView extends StatelessWidget {
                       userObject: userObject,
                     ),
 
-          // hidden cards for me to show animation
-          isMe
+          // hidden cards show only for the folding animation
+          isMe && (userObject.playerFolded ?? false)
               ? UserViewUtilWidgets.buildHiddenCard(
                   seatPos: seatPos,
                   userObject: userObject,
