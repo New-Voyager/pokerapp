@@ -59,7 +59,7 @@ class UserViewUtilWidgets {
     @required playerFolded,
   }) =>
       Transform.scale(
-        scale: 1.2,
+        scale: 1.3,
         child: Transform.translate(
           offset: Offset(
             0.0,

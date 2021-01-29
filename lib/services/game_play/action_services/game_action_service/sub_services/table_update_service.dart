@@ -6,6 +6,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/notification_mo
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/resources/app_constants.dart';
+import 'package:pokerapp/screens/game_play_screen/pop_ups/seat_change_confirmation_pop_up.dart';
 import 'package:pokerapp/screens/game_play_screen/user_view/count_down_timer.dart';
 import 'package:provider/provider.dart';
 
@@ -104,6 +105,12 @@ class TableUpdateService {
       assert(idx != -1);
 
       final PlayerModel player = players.players[idx];
+
+      /* If I am in this list, show me a confirmation popup */
+      if (player.isMe)
+        SeatChangeConfirmationPopUp.dialog(
+          context: context,
+        );
 
       final ValueNotifier<GeneralNotificationModel> valueNotifierNotModel =
           Provider.of<ValueNotifier<GeneralNotificationModel>>(

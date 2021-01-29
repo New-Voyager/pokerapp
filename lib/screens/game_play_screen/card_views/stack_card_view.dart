@@ -51,6 +51,7 @@ class StackCardView extends StatelessWidget {
     // double ctr = center ? AppDimensions.cardWidth / 2 : 0;
 
     return Row(
+      mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
       children: cards.isEmpty
           ? [SizedBox.shrink()]
