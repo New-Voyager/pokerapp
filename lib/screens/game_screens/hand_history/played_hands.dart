@@ -19,8 +19,10 @@ class PlayedHandsScreen extends StatelessWidget {
   final String gameCode;
   var _tapPosition;
   final String clubCode;
+  final bool isInBottomSheet;
 
-  PlayedHandsScreen(this.gameCode, this.history, this.clubCode);
+  PlayedHandsScreen(this.gameCode, this.history, this.clubCode,
+      {this.isInBottomSheet = false});
 
   @override
   Widget build(BuildContext context) {
@@ -109,15 +111,26 @@ class PlayedHandsScreen extends StatelessWidget {
     );
   }
 
-  void onHistoryItemTapped(context, int index) {
+  void onHistoryItemTapped(context, int index) async {
     HandLogModel model =
         new HandLogModel(this.gameCode, history[index].handNum);
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => HandLogView(model),
-      ),
-    );
+    if (isInBottomSheet) {
+      await showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        builder: (ctx) => Container(
+          height: MediaQuery.of(context).size.height / 2,
+          child: HandLogView(model),
+        ),
+      );
+    } else {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => HandLogView(model),
+        ),
+      );
+    }
   }
 
   _storeTapPosition(TapDownDetails tapDownDetails) {
@@ -203,32 +216,33 @@ class PlayedHandsScreen extends StatelessWidget {
             ],
           ),
         ),
-        PopupMenuItem(
-          value: 1,
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Text(
-                    "Share Hand with club",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 15.0,
+        if (clubCode != null)
+          PopupMenuItem(
+            value: 1,
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text(
+                      "Share Hand with club",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 15.0,
+                      ),
                     ),
-                  ),
-                  Icon(
-                    Icons.ios_share,
-                    color: Colors.white,
-                  ),
-                ],
-              ),
-              Divider(
-                color: AppColors.listViewDividerColor,
-              ),
-            ],
-          ),
-        ),
+                    Icon(
+                      Icons.ios_share,
+                      color: Colors.white,
+                    ),
+                  ],
+                ),
+                Divider(
+                  color: AppColors.listViewDividerColor,
+                ),
+              ],
+            ),
+          )
       ],
     ).then<void>((delta) {
       // delta would be null if user taps on outside the popup menu

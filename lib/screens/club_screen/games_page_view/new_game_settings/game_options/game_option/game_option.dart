@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/ui/header_object.dart';
+import 'package:pokerapp/models/hand_history_model.dart';
+import 'package:pokerapp/models/hand_log_model.dart';
 import 'package:pokerapp/models/option_item_model.dart';
+import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/resources/app_icons.dart';
 import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/screens/club_screen/hand_log_views/hand_log_view.dart';
+import 'package:pokerapp/screens/game_screens/hand_history/hand_history.dart';
+import 'package:pokerapp/services/app/hand_service.dart';
 import 'package:provider/provider.dart';
 import 'package:pokerapp/services/game_play/graphql/game_service.dart';
 import 'seat_change_bottom_sheet.dart';
@@ -20,6 +27,7 @@ class GameOption extends StatefulWidget {
 class _GameOptionState extends State<GameOption> {
   final String gameCode;
   List<OptionItemModel> gameActions = null;
+  double height;
   _GameOptionState(this.gameCode);
   void onLeave() {
     GameService.leaveGame(this.gameCode);
@@ -83,22 +91,58 @@ class _GameOptionState extends State<GameOption> {
             );
           }),
       OptionItemModel(
-        title: "Analyze Last hand",
+        title: "Last Hand",
         image: "assets/images/casino.png",
         backGroundColor: AppColors.gameOption4,
-        onTap: (context) {},
+        onTap: (context) async {
+          HandLogModel handLogModel = HandLogModel(headerObject.gameCode, -1);
+          await showModalBottomSheet(
+            context: context,
+            isScrollControlled: true,
+            builder: (ctx) => Container(
+              height: height / 2,
+              child: HandLogView(handLogModel),
+            ),
+          );
+        },
       ),
       OptionItemModel(
-        title: "Played Hands",
+        title: "Hand History",
         image: "assets/images/casino.png",
         backGroundColor: AppColors.gameOption5,
-        onTap: (context) {},
+        onTap: (context) async {
+          // todo: true need to change with isOwner actual value
+          final model = HandHistoryListModel(headerObject.gameCode, true);
+          await showModalBottomSheet(
+            context: context,
+            isScrollControlled: true,
+            builder: (ctx) => ChangeNotifierProvider.value(
+              value: Provider.of<HeaderObject>(context, listen: false),
+              child: ChangeNotifierProvider<HandHistoryListModel>(
+                create: (_) => model,
+                builder: (BuildContext context, _) =>
+                    Consumer<HandHistoryListModel>(
+                  builder: (_, HandHistoryListModel data, __) => Container(
+                    height: height / 2,
+                    child: HandHistoryListView(
+                      data,
+                      // todo: club code need to get
+                      null,
+                      isInBottomSheet: true,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
       ),
     ];
   }
 
   @override
   Widget build(BuildContext context) {
+    height = MediaQuery.of(context).size.height;
     final separator5 = SizedBox(height: 5.0);
     headerObject = Provider.of<HeaderObject>(context, listen: false);
 
@@ -108,37 +152,42 @@ class _GameOptionState extends State<GameOption> {
         child: Column(
           children: [
             Container(
-              padding: EdgeInsets.all(20),
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
                 color: AppColors.gameOptionBackGroundColor,
               ),
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("Elapsed: 3:20",
-                            style: AppStyles.itemInfoSecondaryTextStyle),
-                        separator5,
-                        Text("Session: 00:35",
-                            style: AppStyles.itemInfoSecondaryTextStyle),
-                        separator5,
-                        Text("Won: 10",
-                            style: AppStyles.itemInfoSecondaryTextStyle),
-                        separator5,
-                        Text("Hands: 50",
-                            style: AppStyles.itemInfoSecondaryTextStyle)
-                      ],
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    ...gameActions.map((e) => gameActionItem(e)).toList(),
-                  ],
-                ),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text("Elapsed: 3:20",
+                          style: AppStyles.itemInfoSecondaryTextStyle),
+                      Text("Hands: 50",
+                          style: AppStyles.itemInfoSecondaryTextStyle)
+                    ],
+                  ),
+                  separator5,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text("Session: 00:35",
+                          style: AppStyles.itemInfoSecondaryTextStyle),
+                      Text("Won: 10",
+                          style: AppStyles.itemInfoSecondaryTextStyle),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      ...gameActions.map((e) => gameActionItem(e)).toList(),
+                    ],
+                  )
+                ],
               ),
             ),
             SizedBox(
@@ -255,31 +304,41 @@ class _GameOptionState extends State<GameOption> {
   }
 
   gameActionItem(OptionItemModel optionItemModel) => GestureDetector(
-      onTap: () {
-        if (optionItemModel.onTap != null) {
-          optionItemModel.onTap(context);
-        }
-      },
-      child: Container(
-        height: 70,
-        width: 70,
-        padding: EdgeInsets.all(5),
-        margin: EdgeInsets.all(5),
-        decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            border: Border.all(color: AppColors.appAccentColor, width: 2)),
-        child: Center(
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 3, vertical: 1),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(3),
+        onTap: () {
+          if (optionItemModel.onTap != null) {
+            optionItemModel.onTap(context);
+          }
+        },
+        child: Column(
+          children: [
+            MaterialButton(
+              onPressed: () {},
+              color: Colors.blue,
+              textColor: Colors.white,
+              child: Icon(
+                AppIcons.message,
+                size: 20,
+              ),
+              padding: EdgeInsets.all(16),
+              shape: CircleBorder(),
             ),
-            child: Text(
-              optionItemModel.title,
-              style: AppStyles.clubItemInfoTextStyle,
-              textAlign: TextAlign.center,
+            Container(
+              padding: EdgeInsets.all(5),
+              child: Column(
+                children: [
+                  Text(
+                    optionItemModel.title,
+                    style: TextStyle(
+                      fontFamily: AppAssets.fontFamilyLato,
+                      color: AppColors.appAccentColor,
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
+          ],
         ),
-      ));
+      );
 }

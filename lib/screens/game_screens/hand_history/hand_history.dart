@@ -9,7 +9,9 @@ import 'package:pokerapp/services/app/hand_service.dart';
 
 class HandHistoryListView extends StatefulWidget {
   final HandHistoryListModel data;
-  HandHistoryListView(this.data, this._clubCode);
+  final bool isInBottomSheet;
+  HandHistoryListView(this.data, this._clubCode,
+      {this.isInBottomSheet = false});
   final String _clubCode;
 
   @override
@@ -126,15 +128,17 @@ class _HandHistoryState extends State<HandHistoryListView>
                     Expanded(
                       child: TabBarView(
                         children: [
-                          new PlayedHandsScreen(
+                          PlayedHandsScreen(
                             _data.gameCode,
                             _data.getAllHands(),
                             widget._clubCode,
+                            isInBottomSheet: widget.isInBottomSheet,
                           ),
-                          new PlayedHandsScreen(
+                          PlayedHandsScreen(
                             _data.gameCode,
                             _data.getWinningHands(),
                             widget._clubCode,
+                            isInBottomSheet: widget.isInBottomSheet,
                           ),
                         ],
                         controller: _tabController,
