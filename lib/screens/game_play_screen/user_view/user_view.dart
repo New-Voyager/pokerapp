@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:pokerapp/enums/game_play_enums/player_type.dart';
+import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/user_object.dart';
@@ -9,6 +10,8 @@ import 'package:pokerapp/screens/game_play_screen/user_view/animating_widgets/st
 import 'package:pokerapp/screens/game_play_screen/user_view/user_view_util_widgets.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:provider/provider.dart';
+
+import 'dealer_button.dart';
 
 class UserView extends StatelessWidget {
   final int seatPos;
@@ -30,6 +33,9 @@ class UserView extends StatelessWidget {
   Widget build(BuildContext context) {
     bool emptySeat = userObject.name == null;
     bool isMe = userObject.isMe ?? false;
+
+    // enable this line for debugging dealer position
+    // userObject.playerType = PlayerType.Dealer;
 
     int actionTime = Provider.of<ValueNotifier<GameInfoModel>>(
       context,
@@ -118,10 +124,7 @@ class UserView extends StatelessWidget {
           // show dealer button, if user is a dealer
           userObject.playerType != null &&
                   userObject.playerType == PlayerType.Dealer
-              ? UserViewUtilWidgets.buildDealerButton(
-                  alignment: this.cardsAlignment,
-                  isMe: isMe,
-                )
+              ? DealerButtonWidget(seatPos, isMe, GameType.HOLDEM)
               : shrinkedSizedBox,
 
           /* timer

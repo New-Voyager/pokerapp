@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'package:dart_nats/dart_nats.dart' as nats;
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
+import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/screens/game_play_screen/game_play_screen_util_methods.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/board_view.dart';
@@ -10,6 +11,7 @@ import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/footer_
 import 'package:pokerapp/screens/game_play_screen/main_views/header_view/header_view.dart';
 import 'package:pokerapp/screens/game_play_screen/notifications/notifications.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
+import 'package:pokerapp/services/app/player_service.dart';
 import 'package:pokerapp/services/game_play/action_services/game_action_service/game_action_service.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_service/hand_action_service.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
@@ -37,8 +39,7 @@ class GamePlayScreen extends StatefulWidget {
 class _GamePlayScreenState extends State<GamePlayScreen> {
   GameComService _gameComService;
   BuildContext _providerContext;
-  String _playerUUID;
-  int _playerID;
+  PlayerInfo _currentPlayer;
 
   /* _init function is run only for the very first time,
   * and only once, the initial game screen is populated from here
@@ -47,14 +48,11 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
   Future<GameInfoModel> _fetchGameInfo() async {
     GameInfoModel _gameInfoModel =
         await GameService.getGameInfo(widget.gameCode);
-
-    String myUUID = await AuthService.getUuid();
-    this._playerUUID = myUUID;
-    this._playerID = int.parse(await AuthService.getPlayerID());
+    this._currentPlayer = await PlayerService.getMyInfo();
 
     // mark the isMe field
     for (int i = 0; i < _gameInfoModel.playersInSeats.length; i++) {
-      if (_gameInfoModel.playersInSeats[i].playerUuid == myUUID)
+      if (_gameInfoModel.playersInSeats[i].playerUuid == _currentPlayer.uuid)
         _gameInfoModel.playersInSeats[i].isMe = true;
     }
 
@@ -68,10 +66,12 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
     GameInfoModel _gameInfoModel = await _fetchGameInfo();
 
     _gameComService = GameComService(
+      currentPlayer: this._currentPlayer,
       gameToPlayerChannel: _gameInfoModel.gameToPlayerChannel,
       handToAllChannel: _gameInfoModel.handToAllChannel,
       handToPlayerChannel: _gameInfoModel.handToPlayerChannel,
       playerToHandChannel: _gameInfoModel.playerToHandChannel,
+      gameChatChannel: _gameInfoModel.gameChatChannel,
     );
 
     // subscribe the NATs channels
@@ -170,8 +170,8 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
               providers: GamePlayScreenUtilMethods.getProviders(
                 gameInfoModel: _gameInfoModel,
                 gameCode: widget.gameCode,
-                playerID: _playerID,
-                playerUuid: _playerUUID,
+                playerID: _currentPlayer.id,
+                playerUuid: _currentPlayer.uuid,
                 sendPlayerToHandChannel:
                     _gameComService.sendPlayerToHandChannel,
               ),

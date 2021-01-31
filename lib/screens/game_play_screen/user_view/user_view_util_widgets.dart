@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
+import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/remaining_time.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
@@ -13,6 +14,7 @@ import 'package:pokerapp/screens/game_play_screen/card_views/stack_card_view.dar
 import 'package:pokerapp/screens/game_play_screen/user_view/animating_widgets/chip_amount_animating_widget.dart';
 import 'package:pokerapp/screens/game_play_screen/user_view/animating_widgets/fold_card_animating_widget.dart';
 import 'package:pokerapp/screens/game_play_screen/user_view/count_down_timer.dart';
+import 'package:pokerapp/screens/game_play_screen/user_view/dealer_button.dart';
 import 'package:pokerapp/screens/game_play_screen/user_view/user_view_util_methods.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:provider/provider.dart';
@@ -74,20 +76,30 @@ class UserViewUtilWidgets {
 
   // this widget is only shown to the dealer
   static Widget buildDealerButton({
+    int seatPos,
+    Alignment alignment,
+    bool isMe,
+    GameType gameType,
+  }) {
+    return new DealerButtonWidget(seatPos, isMe, gameType);
+  }
+
+  static Widget buildDealerButton1({
     Alignment alignment,
     bool isMe,
   }) {
-    dynamic pos = alignment == Alignment.centerRight ? -50.0 : 50.0;
+    dynamic pos = alignment == Alignment.centerRight ? 0.0 : 50.0;
+
     if (isMe) {
       pos = -50.0;
     }
     return Transform.translate(
       offset: Offset(
         pos,
-        18.0,
+        -15.0,
       ),
       child: Container(
-        padding: const EdgeInsets.all(5.0),
+        padding: const EdgeInsets.all(3.0),
         decoration: BoxDecoration(
           color: Colors.white,
           shape: BoxShape.circle,
