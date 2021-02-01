@@ -1,6 +1,8 @@
 import 'dart:developer';
 import 'package:dart_nats/dart_nats.dart' as nats;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_sound/flutter_sound.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/resources/app_constants.dart';
@@ -14,7 +16,7 @@ import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/services/app/player_service.dart';
 import 'package:pokerapp/services/game_play/action_services/game_action_service/game_action_service.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_service/hand_action_service.dart';
-import 'package:pokerapp/services/game_play/game_chat.dart';
+import 'package:pokerapp/services/game_play/game_chat_service.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/services/game_play/graphql/game_service.dart';
 import 'package:pokerapp/services/game_play/utils/audio.dart';
@@ -41,6 +43,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
   GameComService _gameComService;
   BuildContext _providerContext;
   PlayerInfo _currentPlayer;
+  FlutterSoundPlayer _audioPlayer = FlutterSoundPlayer();
 
   /* _init function is run only for the very first time,
   * and only once, the initial game screen is populated from here
@@ -77,6 +80,9 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
 
     // subscribe the NATs channels
     await _gameComService.init();
+
+    // open audio session
+    _audioPlayer.openAudioSession(category: SessionCategory.playback);
 
     /* setup the listeners to the channels
     * Any messages received from these channel updates,
@@ -134,6 +140,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
     });
 
     _gameComService.chat.listen(onText: this.onText);
+    _gameComService.chat.listen(onAudio: this.onAudio);
 
     return _gameInfoModel;
   }
@@ -143,11 +150,29 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
   void dispose() {
     _gameComService?.dispose();
     Audio.dispose(context: _providerContext);
+
+    if (_audioPlayer != null) {
+      _audioPlayer.closeAudioSession();
+      _audioPlayer = null;
+    }
     super.dispose();
   }
 
   void onText(ChatMessage message) {
     log(message.text);
+  }
+
+  void onAudio(ChatMessage message) async {
+    log('Audio message is sent ${message.messageId} from player ${message.fromPlayer}');
+    if (message.audio != null) {
+      // try {
+      await _audioPlayer.startPlayerFromStream(
+          sampleRate: 8000, codec: Codec.pcm16);
+      await _audioPlayer.feedFromStream(message.audio);
+      // } on PlatformException catch (err) {
+      //   log('Excpetion thrown when playing audio ${message.audio.length}. Exception: ${err.toString()}');
+      // }
+    }
   }
 
   @override
@@ -228,7 +253,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                         ),
 
                         // footer section
-                        FooterView(),
+                        FooterView(this._gameComService),
                       ],
                     ),
 
