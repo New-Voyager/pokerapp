@@ -102,8 +102,8 @@ class AppStyles {
 
   static const gamePlayScreenPlayerName = TextStyle(
     color: Colors.white,
-    fontSize: 9.0,
-    fontWeight: FontWeight.w800,
+    fontSize: 12.0,
+    fontWeight: FontWeight.bold,
     fontFamily: AppAssets.fontFamilyLato,
   );
 
