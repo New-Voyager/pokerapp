@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:typed_data';
+import 'package:uuid/uuid.dart';
 
 import 'package:dart_nats/dart_nats.dart';
 import 'dart:developer';
@@ -21,7 +22,7 @@ class GameChat {
   Function onText;
   Function onAudio;
   Function onGiphy;
-
+  Uuid uuid;
   void listen({
     Function onText,
     Function onAudio,
@@ -36,7 +37,8 @@ class GameChat {
     if (!this.active) {
       return;
     }
-    this.messages = new List<ChatMessage>();
+    this.uuid = Uuid();
+    this.messages = List<ChatMessage>();
     this.stream.listen((Message natsMsg) {
       if (!active) return;
       log('chat message received');
@@ -47,6 +49,15 @@ class GameChat {
       }
       final message = ChatMessage.fromMessage(natsMsg.string);
       if (message != null) {
+        if (this.messages.length > 0) {
+          // check to see whether a message was already there
+          for (final element in this.messages) {
+            if (element.messageId == message.messageId) {
+              return;
+            }
+          }
+        }
+
         this.messages.insert(0, message);
 
         if (message.type == 'TEXT') {
@@ -76,6 +87,7 @@ class GameChat {
 
   void sendText(String text) {
     dynamic body = jsonEncode({
+      'id': uuid.v1(),
       'playerID': this.currentPlayer.id,
       'text': text,
       'type': 'TEXT',
@@ -87,6 +99,7 @@ class GameChat {
 
   void sendAudio(Uint8List audio) {
     dynamic body = jsonEncode({
+      'id': uuid.v1(),
       'playerID': this.currentPlayer.id,
       'audio': base64Encode(audio),
       'type': 'AUDIO',
@@ -97,6 +110,7 @@ class GameChat {
 
   void sendGiphy(String giphyLink) {
     dynamic body = jsonEncode({
+      'id': uuid.v1(),
       'playerID': this.currentPlayer.id,
       'link': giphyLink,
       'type': 'GIPHY',
@@ -137,6 +151,8 @@ class ChatMessage {
 
       msg.fromPlayer = int.parse(
           message['playerID'] == null ? '0' : message['playerID'].toString());
+      msg.received = DateTime.parse(message['sent'].toString());
+      msg.messageId = message['id'].toString();
       return msg;
     } catch (Exception) {
       return null;

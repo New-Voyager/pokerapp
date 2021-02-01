@@ -86,6 +86,7 @@ class CenterWidget extends StatelessWidget {
       key: ValueKey('tablePotAndCardWidget'),
       alignment: Alignment.topCenter,
       child: FittedBox(
+        fit: BoxFit.fill,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
