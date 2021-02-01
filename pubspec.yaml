@@ -80,6 +80,7 @@ flutter:
    - assets/images/card_back/set2/
    - assets/sound_effects/
    - assets/images/gamesettings/
+   - assets/images/name_plates/
    - assets/sample-data/completed-game.json
    - assets/sample-data/handlog.json
    - assets/sample-data/weekly-data.json
