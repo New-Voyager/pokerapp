@@ -68,6 +68,7 @@ class GameComService {
     _gameChatChannelSubs = _client.sub(this.gameChatChannel);
     this._chat = GameChat(this.currentPlayer, this.gameChatChannel,
         this._clientPub, _gameChatChannelSubs.stream, true);
+    this._chat.start();
     this.active = true;
   }
 

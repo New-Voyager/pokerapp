@@ -2,11 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pokerapp/models/game_play_models/ui/header_object.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/header_view/header_view_util_widgets.dart';
+import 'package:pokerapp/services/game_play/game_chat.dart';
+import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/services/game_play/graphql/game_service.dart';
 import 'package:pokerapp/widgets/custom_text_button.dart';
 import 'package:provider/provider.dart';
 
 class HeaderView extends StatelessWidget {
+  final GameComService _gameComService;
+  HeaderView(this._gameComService);
+
   void endGame(BuildContext context, HeaderObject obj) {
     GameService.endGame(obj.gameCode);
     obj.gameEnded = true;
@@ -16,6 +21,11 @@ class HeaderView extends StatelessWidget {
       backgroundColor: Colors.black38,
     );
     Scaffold.of(context).showSnackBar(snackBar);
+  }
+
+  void chatText(BuildContext context, HeaderObject obj) {
+    GameChat chat = _gameComService.chat;
+    chat.sendText("Got lucky");
   }
 
   @override
@@ -67,12 +77,21 @@ class HeaderView extends StatelessWidget {
                     /* fixme: temporary place for end game */
                     Align(
                       alignment: Alignment.centerRight,
-                      child: Visibility(
-                        visible: !obj.gameEnded,
-                        child: CustomTextButton(
-                          text: 'End Game',
-                          onTap: () => endGame(context, obj),
-                        ),
+                      child: Column(
+                        children: [
+                          Visibility(
+                            visible: !obj.gameEnded,
+                            child: CustomTextButton(
+                              text: 'End Game',
+                              onTap: () => endGame(context, obj),
+                            ),
+                          ),
+                          SizedBox(height: 10),
+                          CustomTextButton(
+                            text: 'Chat',
+                            onTap: () => chatText(context, obj),
+                          ),
+                        ],
                       ),
                     ),
                   ],

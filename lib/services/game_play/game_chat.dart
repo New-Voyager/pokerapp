@@ -6,6 +6,8 @@ import 'dart:developer';
 
 import 'package:pokerapp/models/player_info.dart';
 
+const MAX_CHAT_BUFSIZE = 20;
+
 // GameChat class wraps communication between NATS and games chat widget.
 class GameChat {
   Stream<Message> stream;
@@ -16,17 +18,55 @@ class GameChat {
   List<ChatMessage> messages;
   GameChat(this.currentPlayer, this.chatChannel, this.client, this.stream,
       this.active);
+  Function onText;
+  Function onAudio;
+  Function onGiphy;
+
+  void listen({
+    Function onText,
+    Function onAudio,
+    Function onGiphy,
+  }) {
+    this.onText = onText;
+    this.onAudio = onAudio;
+    this.onGiphy = onGiphy;
+  }
 
   void start() {
     if (!this.active) {
       return;
     }
     this.messages = new List<ChatMessage>();
-    this.stream.listen((Message message) {
+    this.stream.listen((Message natsMsg) {
       if (!active) return;
       log('chat message received');
 
       // handle messages
+      if (this.messages.length > MAX_CHAT_BUFSIZE) {
+        this.messages.removeLast();
+      }
+      final message = ChatMessage.fromMessage(natsMsg.string);
+      if (message != null) {
+        this.messages.insert(0, message);
+
+        if (message.type == 'TEXT') {
+          if (this.onText != null) {
+            this.onText(message);
+          }
+        }
+
+        if (message.type == 'AUDIO') {
+          if (this.onAudio != null) {
+            this.onAudio(message);
+          }
+        }
+
+        if (message.type == 'GIPHY') {
+          if (this.onGiphy != null) {
+            this.onGiphy(message);
+          }
+        }
+      }
     });
   }
 
@@ -39,8 +79,30 @@ class GameChat {
       'playerID': this.currentPlayer.id,
       'text': text,
       'type': 'TEXT',
+      'sent': DateTime.now().toUtc().toIso8601String(),
     });
-    this.client.pub(this.chatChannel, body);
+    this.client.pubString(this.chatChannel, body);
+    log('message sent: $text');
+  }
+
+  void sendAudio(Uint8List audio) {
+    dynamic body = jsonEncode({
+      'playerID': this.currentPlayer.id,
+      'audio': base64Encode(audio),
+      'type': 'AUDIO',
+      'sent': DateTime.now().toUtc().toIso8601String(),
+    });
+    this.client.pubString(this.chatChannel, body);
+  }
+
+  void sendGiphy(String giphyLink) {
+    dynamic body = jsonEncode({
+      'playerID': this.currentPlayer.id,
+      'link': giphyLink,
+      'type': 'GIPHY',
+      'sent': DateTime.now().toUtc().toIso8601String(),
+    });
+    this.client.pubString(this.chatChannel, body);
   }
 }
 
@@ -55,4 +117,29 @@ class ChatMessage {
   int smileyCount;
   int likeCount;
   int downCount;
+
+  static ChatMessage fromMessage(String data) {
+    try {
+      var message = jsonDecode(data);
+      ChatMessage msg = new ChatMessage();
+      msg.type = message['type'].toString();
+      if (msg.type == 'TEXT') {
+        msg.text = message['text'].toString();
+      } else if (msg.type == 'AUDIO') {
+        if (message.audio != null) {
+          msg.audio = base64Decode(message['audio'].toString());
+        } else {
+          return null;
+        }
+      } else if (msg.type == 'GIPHY') {
+        msg.giphyLink = message['link'];
+      }
+
+      msg.fromPlayer = int.parse(
+          message['playerID'] == null ? '0' : message['playerID'].toString());
+      return msg;
+    } catch (Exception) {
+      return null;
+    }
+  }
 }
