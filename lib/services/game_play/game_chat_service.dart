@@ -10,14 +10,14 @@ import 'package:pokerapp/models/player_info.dart';
 const MAX_CHAT_BUFSIZE = 20;
 
 // GameChat class wraps communication between NATS and games chat widget.
-class GameChat {
+class GameChatService {
   Stream<Message> stream;
   Client client;
   String chatChannel;
   bool active;
   PlayerInfo currentPlayer;
   List<ChatMessage> messages;
-  GameChat(this.currentPlayer, this.chatChannel, this.client, this.stream,
+  GameChatService(this.currentPlayer, this.chatChannel, this.client, this.stream,
       this.active);
   Function onText;
   Function onAudio;

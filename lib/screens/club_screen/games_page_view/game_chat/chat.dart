@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/services/game_play/game_chat_service.dart';
+import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/widgets/chat_text_field.dart';
 import 'package:pokerapp/widgets/emoji_picker_widget.dart';
 
 class GameChat extends StatefulWidget {
+  final GameChatService chatService;
+  GameChat(this.chatService);
+
   @override
   _GameChatState createState() => _GameChatState();
 }

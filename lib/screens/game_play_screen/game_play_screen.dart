@@ -14,7 +14,7 @@ import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/services/app/player_service.dart';
 import 'package:pokerapp/services/game_play/action_services/game_action_service/game_action_service.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_service/hand_action_service.dart';
-import 'package:pokerapp/services/game_play/game_chat.dart';
+import 'package:pokerapp/services/game_play/game_chat_service.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/services/game_play/graphql/game_service.dart';
 import 'package:pokerapp/services/game_play/utils/audio.dart';
@@ -228,7 +228,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                         ),
 
                         // footer section
-                        FooterView(),
+                        FooterView(this._gameComService),
                       ],
                     ),
 
