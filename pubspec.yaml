@@ -105,6 +105,10 @@ flutter:
      fonts:
        - asset: assets/fonts/SourceSerifPro-SemiBold.ttf
          weight: 400
+   - family: Trocchi
+     fonts:
+      - asset: assets/fonts/Trocchi-Regular.ttf
+        weight: 400
 
     # icon packs
    - family: AppIcons

@@ -8,7 +8,7 @@ class AppStyles {
   static const cardTextStyle = TextStyle(
     fontSize: 15.0,
     fontWeight: FontWeight.w700,
-    fontFamily: AppAssets.fontFamilyNoticia,
+    fontFamily: AppAssets.fontFamilyTrocchi,
   );
   static const suitTextStyle = TextStyle(
     fontSize: 15.0,

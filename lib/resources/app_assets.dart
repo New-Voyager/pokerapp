@@ -13,6 +13,7 @@ class AppAssets {
   static const String fontFamilyLato = 'Lato';
   static const String fontFamilyNoticia = 'NoticiaText';
   static const String fontFamilySourceSerif = 'SourceSerif';
+  static const String fontFamilyTrocchi = 'Trocchi';
 
   static const String fireworkGif = 'assets/images/fireworks.gif';
 
