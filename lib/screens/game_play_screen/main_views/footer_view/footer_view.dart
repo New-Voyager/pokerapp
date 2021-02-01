@@ -9,6 +9,7 @@ import 'package:pokerapp/models/game_play_models/ui/header_object.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/screens/club_screen/games_page_view/game_chat/chat.dart';
 import 'package:pokerapp/screens/club_screen/games_page_view/new_game_settings/game_options/game_option_bottom_sheet.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/footer_action_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/footer_result_view.dart';
@@ -131,7 +132,7 @@ class FooterView extends StatelessWidget {
                 alignment: Alignment.centerLeft,
                 child: GestureDetector(
                   onTap: () async {
-                    final vn = Provider.of<ValueNotifier<SeatChangeModel>>(
+                    /*  final vn = Provider.of<ValueNotifier<SeatChangeModel>>(
                       context,
                       listen: false,
                     );
@@ -144,7 +145,10 @@ class FooterView extends StatelessWidget {
 
                     await Future.delayed(AppConstants.animationDuration);
 
-                    vn.value = null;
+                    vn.value = null;*/
+
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => GameChat()));
                   },
                   child: Container(
                     padding: EdgeInsets.all(10),

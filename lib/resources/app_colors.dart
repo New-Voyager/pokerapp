@@ -34,6 +34,8 @@ class AppColors {
   static const Color gameOption4 = Color(0xff0fc915);
   static const Color gameOption5 = Color(0xff319ffe);
   static const Color lightGrayTextColor = Color(0xff848484);
-
   static const Color popUpMenuColor = Color(0xdd313235);
+
+  static const Color chatInputBgColor = Color(0xff766a6b);
+  static const Color chatInputColor = Color(0xffc4c4c4);
 }
