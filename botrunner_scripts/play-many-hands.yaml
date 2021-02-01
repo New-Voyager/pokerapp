@@ -1,3 +1,5 @@
 setup-script: botrunner_scripts/setup/bots-full-table.yaml
 game:
   auto-play: true
+reset-db: true
+

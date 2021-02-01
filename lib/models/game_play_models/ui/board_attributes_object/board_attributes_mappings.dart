@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:pokerapp/enums/game_type.dart';
+import 'package:tuple/tuple.dart';
 
 /* seat changing stack offset mappings */
 const Map<int, Offset> kSeatChangeStackHorizontalOffsetMapping = {
@@ -67,14 +69,14 @@ const Map<int, Offset> kChipAmountWidgetOffsetVerticalMapping = {
 
 const Map<int, Offset> kChipAmountWidgetOffsetHorizontalMapping = {
   1: Offset(0, -40),
-  2: Offset(45, 10),
-  3: Offset(35, 50),
+  2: Offset(-10, -20),
+  3: Offset(45, 30),
   4: Offset(45, 45),
   5: Offset(-10, 70),
   6: Offset(-10, 70),
   7: Offset(-40, 30),
-  8: Offset(-40, 45),
-  9: Offset(-40, 10),
+  8: Offset(-40, 30),
+  9: Offset(-40, -20),
 };
 
 /* chip amount animation mapping */
@@ -127,4 +129,38 @@ const Map<int, Offset> kFoldCardAnimationOffsetHorizontalMapping = {
   7: Offset(-80, -30),
   8: Offset(-80, -50),
   9: Offset(-80, -80),
+};
+
+/* dealer button position */
+const Map<int, Offset> kDealerButtonHorizontalOffsetMapping = {
+  1: Offset(-30, -15),
+  2: Offset(-20, -15),
+  3: Offset(30, -10),
+  4: Offset(40, 5),
+  5: Offset(30, 50),
+  6: Offset(30, 50),
+  7: Offset(-30, 50),
+  8: Offset(-30, -10),
+  9: Offset(-30, -15),
+};
+
+const Map<int, Offset> kDealerButtonVerticalOffsetMapping = {
+  1: Offset(0, -15),
+  2: Offset(0, -15),
+  3: Offset(0, -15),
+  4: Offset(0, -15),
+  5: Offset(0, -15),
+  6: Offset(0, -15),
+  7: Offset(0, -15),
+  8: Offset(0, -15),
+  9: Offset(0, -15),
+};
+
+Map<GameType, Tuple2<Color, Color>> kDealerButtonColor = {
+  GameType.HOLDEM: Tuple2(Colors.white, Colors.black),
+  GameType.PLO: Tuple2(Colors.white, Colors.black),
+  GameType.PLO_HILO: Tuple2(Colors.white, Colors.black),
+  GameType.FIVE_CARD_PLO: Tuple2(Colors.white, Colors.black),
+  GameType.FIVE_CARD_PLO_HILO: Tuple2(Colors.white, Colors.black),
+  GameType.UNKNOWN: Tuple2(Colors.white, Colors.black),
 };

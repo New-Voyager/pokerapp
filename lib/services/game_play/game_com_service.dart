@@ -2,11 +2,9 @@ import 'dart:developer';
 
 import 'package:dart_nats/dart_nats.dart';
 import 'package:flutter/foundation.dart';
-import 'package:pokerapp/resources/app_apis.dart';
-import 'package:pokerapp/resources/app_constants.dart';
-import 'package:pokerapp/services/app/auth_service.dart';
+import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/services/app/util_service.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:pokerapp/services/game_play/game_chat.dart';
 
 class GameComService {
   Client _client;
@@ -17,16 +15,26 @@ class GameComService {
   String handToAllChannel;
   String handToPlayerChannel;
   String playerToHandChannel;
+  String gameChatChannel;
 
   Subscription _gameToPlayerChannelSubs;
   Subscription _handToAllChannelSubs;
   Subscription _handToPlayerChannelSubs;
+  Subscription _gameChatChannelSubs;
+
+  // current player info
+  PlayerInfo currentPlayer;
+
+  // game chat object
+  GameChat _chat;
 
   GameComService({
+    @required this.currentPlayer,
     @required this.gameToPlayerChannel,
     @required this.handToAllChannel,
     @required this.handToPlayerChannel,
     @required this.playerToHandChannel,
+    @required this.gameChatChannel,
   }) {
     _client = Client();
     _clientPub = Client();
@@ -56,6 +64,10 @@ class GameComService {
     log('subscribing to ${this.handToPlayerChannel}');
     _handToPlayerChannelSubs = _client.sub(this.handToPlayerChannel);
 
+    log('subscribing to ${this.gameChatChannel}');
+    _gameChatChannelSubs = _client.sub(this.gameChatChannel);
+    this._chat = GameChat(this.currentPlayer, this.gameChatChannel,
+        this._clientPub, _gameChatChannelSubs.stream, true);
     this.active = true;
   }
 
@@ -75,6 +87,10 @@ class GameComService {
     _handToPlayerChannelSubs?.unSub();
     _handToPlayerChannelSubs?.close();
 
+    _gameChatChannelSubs?.unSub();
+    _gameChatChannelSubs?.close();
+    chat.close();
+
     active = false;
     _client?.close();
     _clientPub?.close();
@@ -93,5 +109,15 @@ class GameComService {
   Stream<Message> get handToPlayerChannelStream {
     assert(active);
     return _handToPlayerChannelSubs.stream;
+  }
+
+  Stream<Message> get gameChatChannelStream {
+    assert(active);
+    return _gameChatChannelSubs.stream;
+  }
+
+  GameChat get chat {
+    assert(active);
+    return this._chat;
   }
 }

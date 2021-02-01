@@ -25,6 +25,7 @@ class GameInfoModel {
   String playerToHandChannel;
   String handToAllChannel;
   String handToPlayerChannel;
+  String gameChatChannel;
 
   GameInfoModel.fromJson(var data) {
     this.gameCode = data['gameCode'];
@@ -52,6 +53,7 @@ class GameInfoModel {
     this.playerToHandChannel = data['playerToHandChannel'];
     this.handToAllChannel = data['handToAllChannel'];
     this.handToPlayerChannel = data['handToPlayerChannel'];
+    this.gameChatChannel = data['gameChatChannel'];
   }
 
   void gameEnded() {
@@ -89,6 +91,7 @@ class GameInfoModel {
       playerToHandChannel
       handToAllChannel
       handToPlayerChannel
+      gameChatChannel
     }
   } """;
 }

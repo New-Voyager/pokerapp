@@ -2,7 +2,9 @@
 * mappings and everything that is variable */
 
 import 'package:flutter/material.dart';
+import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_mappings.dart';
+import 'package:tuple/tuple.dart';
 
 enum BoardOrientation {
   horizontal,
@@ -58,5 +60,18 @@ class BoardAttributesObject extends ChangeNotifier {
     if (_boardOrientation == BoardOrientation.horizontal)
       return kChipAmountWidgetOffsetHorizontalMapping;
     return kChipAmountWidgetOffsetVerticalMapping;
+  }
+
+  Map<int, Offset> get buttonPos {
+    if (_boardOrientation == BoardOrientation.horizontal)
+      return kDealerButtonHorizontalOffsetMapping;
+    return kDealerButtonVerticalOffsetMapping;
+  }
+
+  Tuple2<Color, Color> buttonColor(GameType gameType) {
+    if (kDealerButtonColor.containsKey(gameType)) {
+      return kDealerButtonColor[gameType];
+    }
+    return kDealerButtonColor[GameType.UNKNOWN];
   }
 }

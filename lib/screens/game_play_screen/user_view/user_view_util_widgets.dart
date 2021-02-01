@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
+import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/remaining_time.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
@@ -13,6 +14,7 @@ import 'package:pokerapp/screens/game_play_screen/card_views/stack_card_view.dar
 import 'package:pokerapp/screens/game_play_screen/user_view/animating_widgets/chip_amount_animating_widget.dart';
 import 'package:pokerapp/screens/game_play_screen/user_view/animating_widgets/fold_card_animating_widget.dart';
 import 'package:pokerapp/screens/game_play_screen/user_view/count_down_timer.dart';
+import 'package:pokerapp/screens/game_play_screen/user_view/dealer_button.dart';
 import 'package:pokerapp/screens/game_play_screen/user_view/user_view_util_methods.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:provider/provider.dart';
@@ -74,42 +76,12 @@ class UserViewUtilWidgets {
 
   // this widget is only shown to the dealer
   static Widget buildDealerButton({
+    int seatPos,
     Alignment alignment,
     bool isMe,
+    GameType gameType,
   }) {
-    dynamic pos = alignment == Alignment.centerRight ? -50.0 : 50.0;
-    if (isMe) {
-      pos = -50.0;
-    }
-    return Transform.translate(
-      offset: Offset(
-        pos,
-        18.0,
-      ),
-      child: Container(
-        padding: const EdgeInsets.all(5.0),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          shape: BoxShape.circle,
-          border: Border.all(
-            color: Colors.black,
-            width: 2.0,
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.white24,
-              blurRadius: 2.0,
-              spreadRadius: 2.0,
-            )
-          ],
-        ),
-        child: const Text(
-          'D',
-          textAlign: TextAlign.center,
-          style: AppStyles.dealerTextStyle,
-        ),
-      ),
-    );
+    return new DealerButtonWidget(seatPos, isMe, gameType);
   }
 
   /* if the footer status becomes footer result
@@ -312,129 +284,6 @@ class UserViewUtilWidgets {
           ),
         ],
       );
-
-  static Widget buildPlayerInfo({
-    String name,
-    int chips,
-    bool emptySeat,
-    @required UserObject userObject,
-    bool isPresent,
-  }) {
-    /* changing background color as per last action
-    * check/call -> green
-    * raise/bet -> shade of yellow / blue might b? */
-
-    Color statusColor = const Color(0xff474747); // default color
-    Color boxColor = const Color(0xff474747); // default color
-
-    String status = userObject.status;
-    if (status != null) {
-      if (status.toUpperCase().contains('CHECK') ||
-          status.toUpperCase().contains('CALL'))
-        statusColor = Colors.green;
-      else if (status.toUpperCase().contains('RAISE') ||
-          status.toUpperCase().contains('BET')) statusColor = Colors.red;
-    }
-    dynamic borderColor = Colors.black12;
-    if (userObject != null &&
-        userObject.highlight != null &&
-        userObject.highlight) {
-      borderColor = highlightColor;
-    } else if (status != null) {
-      borderColor = statusColor;
-    }
-    return Transform.translate(
-      offset: Offset(0.0, -10.0),
-      child: Container(
-        // FIXME: the animation is causing to crash
-//          duration: AppConstants.fastAnimationDuration,
-//          curve: Curves.bounceInOut,
-        width: 70.0,
-        padding: (emptySeat && !isPresent)
-            ? const EdgeInsets.all(10.0)
-            : const EdgeInsets.symmetric(
-                horizontal: 15.0,
-                vertical: 5.0,
-              ),
-        decoration: BoxDecoration(
-          borderRadius: emptySeat ? null : BorderRadius.circular(5.0),
-          shape: emptySeat ? BoxShape.circle : BoxShape.rectangle,
-          color: boxColor,
-          border: Border.all(
-            // color: userObject.highlight ?? false
-            //     ? highlightColor
-            //     : Colors.transparent,
-            color: borderColor,
-            width: 2.0,
-          ),
-          boxShadow: (userObject.winner ?? false)
-              ? [
-                  BoxShadow(
-                    color: Colors.lightGreen,
-                    blurRadius: 50.0,
-                    spreadRadius: 20.0,
-                  ),
-                ]
-              : userObject.highlight ?? false
-                  ? [
-                      BoxShadow(
-                        color: highlightColor.withAlpha(120),
-                        blurRadius: 20.0,
-                        spreadRadius: 20.0,
-                      ),
-                    ]
-                  : [],
-        ),
-        child: AnimatedSwitcher(
-          duration: AppConstants.animationDuration,
-          reverseDuration: AppConstants.animationDuration,
-          child: (emptySeat && !isPresent)
-              ? Container(
-                  child: InkWell(
-                  child: Text(
-                    'Open',
-                    style: AppStyles.openSeatTextStyle,
-                  ),
-                ))
-              : AnimatedOpacity(
-                  duration: AppConstants.animationDuration,
-                  opacity: emptySeat ? 0.0 : 1.0,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      FittedBox(
-                        child: Text(
-                          name?.toUpperCase() ?? 'name',
-                          style: AppStyles.gamePlayScreenPlayerName,
-                        ),
-                      ),
-                      const SizedBox(height: 3.0),
-                      FittedBox(
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            // chip asset image
-                            Image.asset(
-                              'assets/images/chips.png',
-                              height: 13.0,
-                            ),
-
-                            const SizedBox(width: 5.0),
-
-                            Text(
-                              chips?.toString() ?? 'XX',
-                              style: AppStyles.gamePlayScreenPlayerChips,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-        ),
-      ),
-    );
-  }
 
   static Widget buildUserStatus({
     @required bool emptySeat,

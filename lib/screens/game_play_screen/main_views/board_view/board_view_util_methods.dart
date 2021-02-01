@@ -116,7 +116,7 @@ class BoardViewUtilMethods {
           child: Transform.translate(
             offset: Offset(
               0.0,
-              shiftDownConstant,
+              shiftDownConstant + 5,
             ),
             child: userView,
           ),
@@ -127,7 +127,7 @@ class BoardViewUtilMethods {
           alignment: Alignment.centerLeft,
           child: Transform.translate(
             offset: Offset(
-              shiftHorizontalConstant - 20,
+              shiftHorizontalConstant - 10,
               heightOfBoard / 4 + shiftDownConstant,
             ),
             child: userView,
@@ -139,7 +139,7 @@ class BoardViewUtilMethods {
           alignment: Alignment.centerLeft,
           child: Transform.translate(
             offset: Offset(
-              -10.0,
+              -20.0,
               isBoardHorizontal
                   ? -50.0 + shiftDownConstant
                   : -30.0 + shiftDownConstant,
@@ -153,9 +153,9 @@ class BoardViewUtilMethods {
           alignment: Alignment.centerLeft,
           child: Transform.translate(
             offset: Offset(
-              0.0,
+              -25.0,
               isBoardHorizontal
-                  ? -heightOfBoard / 2
+                  ? -heightOfBoard / 1.7
                   : -heightOfBoard / 2.8 + shiftDownConstant,
             ),
             child: userView,
@@ -168,9 +168,9 @@ class BoardViewUtilMethods {
           child: Transform.translate(
             offset: Offset(
               isBoardHorizontal
-                  ? -widthOfBoard / 3.8 + shiftHorizontalConstant + 30
+                  ? -widthOfBoard / 3.8 + shiftHorizontalConstant + 20
                   : -widthOfBoard / 3.8 + shiftHorizontalConstant,
-              isBoardHorizontal ? -50 : -shiftDownConstant / 1.5,
+              isBoardHorizontal ? -90 : -shiftDownConstant / 1.5,
             ),
             child: userView,
           ),
@@ -181,8 +181,8 @@ class BoardViewUtilMethods {
           alignment: Alignment.topCenter,
           child: Transform.translate(
             offset: Offset(
-              widthOfBoard / 3.8 - shiftHorizontalConstant,
-              isBoardHorizontal ? -50 : -shiftDownConstant / 1.5,
+              widthOfBoard / 5 - shiftHorizontalConstant,
+              isBoardHorizontal ? -90 : -shiftDownConstant / 1.5,
             ),
             child: userView,
           ),
@@ -193,7 +193,7 @@ class BoardViewUtilMethods {
           alignment: Alignment.centerRight,
           child: Transform.translate(
             offset: Offset(
-              0.0,
+              15.0,
               isBoardHorizontal
                   ? -heightOfBoard / 2
                   : -heightOfBoard / 2.8 + shiftDownConstant,
@@ -207,9 +207,9 @@ class BoardViewUtilMethods {
           alignment: Alignment.centerRight,
           child: Transform.translate(
             offset: Offset(
-              0.0,
+              15.0,
               isBoardHorizontal
-                  ? -50.0 + shiftDownConstant
+                  ? -40.0 + shiftDownConstant
                   : -30.0 + shiftDownConstant,
             ),
             child: userView,
