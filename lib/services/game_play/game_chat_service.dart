@@ -17,8 +17,8 @@ class GameChatService {
   bool active;
   PlayerInfo currentPlayer;
   List<ChatMessage> messages;
-  GameChatService(this.currentPlayer, this.chatChannel, this.client, this.stream,
-      this.active);
+  GameChatService(this.currentPlayer, this.chatChannel, this.client,
+      this.stream, this.active);
   Function onText;
   Function onAudio;
   Function onGiphy;
@@ -140,7 +140,7 @@ class ChatMessage {
       if (msg.type == 'TEXT') {
         msg.text = message['text'].toString();
       } else if (msg.type == 'AUDIO') {
-        if (message.audio != null) {
+        if (message['audio'] != null) {
           msg.audio = base64Decode(message['audio'].toString());
         } else {
           return null;
