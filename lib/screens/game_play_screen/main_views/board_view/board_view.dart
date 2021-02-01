@@ -3,23 +3,14 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
-import 'package:pokerapp/models/game_play_models/provider_models/footer_result.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
-import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
-import 'package:pokerapp/models/game_play_models/ui/user_object.dart';
-import 'package:pokerapp/resources/app_constants.dart';
-import 'package:pokerapp/resources/app_dimensions.dart';
-import 'package:pokerapp/resources/app_styles.dart';
-import 'package:pokerapp/screens/game_play_screen/card_views/animations/animating_shuffle_card_view.dart';
-import 'package:pokerapp/screens/game_play_screen/card_views/stack_card_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/animating_widgets/card_distribution_animating_widget.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/board_view_util_methods.dart';
-import 'package:pokerapp/screens/game_play_screen/main_views/board_view/board_view_util_widgets.dart';
+import 'package:pokerapp/screens/game_play_screen/main_views/board_view/center_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/decorative_views/table_view.dart';
 import 'package:pokerapp/screens/game_play_screen/user_view/animating_widgets/stack_switch_seat_animating_widget.dart';
-import 'package:pokerapp/screens/game_play_screen/user_view/user_view.dart';
 import 'package:provider/provider.dart';
 
 const _widthMultiplier = 0.78;
@@ -121,15 +112,17 @@ class BoardView extends StatelessWidget {
                           Transform.translate(
                         offset:
                             isBoardHorizontal ? _centerViewOffset : _noOffset,
-                        child: BoardViewUtilWidgets.buildCenterView(
-                          isBoardHorizontal: isBoardHorizontal,
-                          cards: tableState.cards,
-                          potChips: tableState.potChips,
-                          potChipsUpdates: tableState.potChipsUpdates,
-                          tableStatus: tableState.tableStatus,
-                          showDown: valueNotifierFooterStatus.value ==
+                        child: CenterWidget(
+                          isBoardHorizontal,
+                          tableState.cards,
+                          tableState.potChips,
+                          double.parse(tableState.potChipsUpdates != null
+                              ? tableState.potChipsUpdates.toString()
+                              : '0.0'),
+                          tableState.tableStatus,
+                          valueNotifierFooterStatus.value ==
                               FooterStatus.Result,
-                          onStartGame: onStartGame,
+                          onStartGame,
                         ),
                       ),
                     ),

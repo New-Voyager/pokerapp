@@ -32,7 +32,7 @@ class VisibleCardView extends StatelessWidget {
         child: cardView.card.isShownAtTable
             ? ClipRRect(
                 borderRadius: BorderRadius.circular(
-                  5.0,
+                  3.0,
                 ),
                 child: FlipCard(
                   key: cardKey,

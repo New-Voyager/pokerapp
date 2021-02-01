@@ -69,6 +69,8 @@ dependencies:
   flutter_keyboard_visibility: ^3.2.2
 
 
+  # tuple
+  tuple: ^1.0.3
 
 dev_dependencies:
   flutter_test:
@@ -84,6 +86,7 @@ flutter:
    - assets/images/card_back/set2/
    - assets/sound_effects/
    - assets/images/gamesettings/
+   - assets/images/name_plates/
    - assets/sample-data/completed-game.json
    - assets/sample-data/handlog.json
    - assets/sample-data/weekly-data.json
