@@ -75,6 +75,9 @@ dependencies:
   # tuple
   tuple: ^1.0.3
 
+  # voice chat
+  agora_rtc_engine: ^3.2.1
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter
