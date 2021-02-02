@@ -4,7 +4,7 @@ import 'package:agora_rtc_engine/rtc_channel.dart';
 import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:flutter/foundation.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:pokerapp/resources/api_keys.dart';
+import 'package:pokerapp/resources/app_keys.dart';
 
 class Agora {
   final String gameCode;
@@ -21,8 +21,7 @@ class Agora {
       areaCode = AreaCode.NA;
     }
 
-    _engine =
-        await RtcEngine.createWithAreaCode(ApiKeys.AGORA_API_KEY, areaCode);
+    _engine = await RtcEngine.createWithAreaCode(ApiKeys.AGORA_KEY, areaCode);
     _channel = await RtcChannel.create(gameCode);
     this._addListener(_channel);
   }
