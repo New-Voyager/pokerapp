@@ -44,7 +44,6 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
   BuildContext _providerContext;
   PlayerInfo _currentPlayer;
   FlutterSoundPlayer _audioPlayer = FlutterSoundPlayer();
-
   /* _init function is run only for the very first time,
   * and only once, the initial game screen is populated from here
   * also the NATS channel subscriptions are done here */
@@ -77,7 +76,6 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
       playerToHandChannel: _gameInfoModel.playerToHandChannel,
       gameChatChannel: _gameInfoModel.gameChatChannel,
     );
-
     // subscribe the NATs channels
     await _gameComService.init();
 
@@ -139,7 +137,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
       );
     });
 
-    _gameComService.chat.listen(onText: this.onText);
+    // _gameComService.chat.listen(onText: this.onText);
     _gameComService.chat.listen(onAudio: this.onAudio);
 
     return _gameInfoModel;

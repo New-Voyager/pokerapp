@@ -174,6 +174,68 @@ class GameService {
   }
   """;
 
+  static String favouriteGiphiesWithClubCodeQuery = """
+  query (\$clubCode: String) {
+    chatTexts(clubCode: \$clubCode)
+  }
+  """;
+
+  static String favouriteGiphiesQuery = """
+  query {
+    chatTexts
+  }
+  """;
+
+  static String addfavouriteGiphieQuery = """
+  mutation (\$text: String!) {
+   addChatText(text: \$text)
+  }
+  """;
+
+  static Future<List<String>> favouriteGiphies({String gameCode}) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+    List<String> favouriteGiphies = List<String>();
+
+    Map<String, dynamic> variables = {
+      "gameCode": gameCode,
+    };
+    QueryResult result;
+    if (gameCode != null) {
+      result = await _client.query(QueryOptions(
+          documentNode: gql(favouriteGiphiesWithClubCodeQuery),
+          variables: variables));
+    } else {
+      result = await _client.query(QueryOptions(
+        documentNode: gql(favouriteGiphiesQuery),
+      ));
+    }
+
+    print("result.data ${result.data} ${result.hasException}");
+    if (result.hasException) return [];
+    for (int i = 0; i < result.data['chatTexts'].length; i++) {
+      favouriteGiphies.add((result.data['chatTexts'][i] as String));
+    }
+    return favouriteGiphies;
+  }
+
+  static Future<bool> addFavoutireGiphy(
+    String name,
+  ) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+    Map<String, dynamic> variables = {
+      "text": name,
+    };
+    QueryResult result = await _client.mutate(
+      MutationOptions(
+        documentNode: gql(addfavouriteGiphieQuery),
+        variables: variables,
+      ),
+    );
+    if (result.hasException) return false;
+
+    return result.data['addClubChatText'] ?? false;
+  }
+
   static Future<bool> changeWaitListOrderList(
       String gameCode, List<String> uuids) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();

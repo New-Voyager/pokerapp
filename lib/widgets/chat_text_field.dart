@@ -8,14 +8,14 @@ class ChatTextField extends StatelessWidget {
   final bool isEmojiVisible;
   final bool isKeyboardVisible;
   final Function onBlurred;
-  ChatTextField({
-    @required this.controller,
-    @required this.isEmojiVisible,
-    @required this.isKeyboardVisible,
-    @required this.onBlurred,
-  });
+  final focusNode;
 
-  final focusNode = FocusNode();
+  ChatTextField(
+      {@required this.controller,
+      @required this.isEmojiVisible,
+      @required this.isKeyboardVisible,
+      @required this.onBlurred,
+      @required this.focusNode});
 
   void onClickedEmoji() async {
     if (isEmojiVisible) {
@@ -31,7 +31,7 @@ class ChatTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.lightGrayTextColor,
+        color: AppColors.chatInputBgColor,
         borderRadius: BorderRadius.all(
           Radius.circular(
             5.0,
