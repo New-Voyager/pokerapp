@@ -52,10 +52,10 @@ class StackCardView extends StatelessWidget {
       );
       widgets.add(c);
       widgets.add(new SizedBox(
-        width: 3.0,
+        width: 10.0,
       ));
     }
-    return widgets;
+    return widgets.toList().reversed.toList();
   }
 
   @override
