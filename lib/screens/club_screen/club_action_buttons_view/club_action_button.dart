@@ -5,6 +5,7 @@ import 'package:pokerapp/models/club_members_model.dart';
 import 'package:pokerapp/models/table_record.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/screens/club_screen/club_action_buttons_view/club_message/club_chat.dart';
 import 'package:pokerapp/screens/club_screen/club_action_screens/club_members_view/club_members_view.dart';
 import 'package:pokerapp/screens/club_screen/rewards_screen/rewards_list_screen.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_log_view.dart';
@@ -12,6 +13,8 @@ import 'package:pokerapp/screens/game_screens/game_history_view/game_history_vie
 import 'package:pokerapp/screens/club_screen/messages_page_view/messages_page_view.dart';
 import 'package:pokerapp/screens/game_screens/table_result/table_result.dart';
 import 'package:provider/provider.dart';
+
+import 'club_message/club_members.dart';
 
 class ClubActionButton extends StatelessWidget {
   final ClubActions _action;
@@ -68,7 +71,23 @@ class ClubActionButton extends StatelessWidget {
             case ClubActions.ANNOUNCEMETS:
               break;
             case ClubActions.MESSAGE_HOST:
-              // TODO: Handle this case.
+              if (_clubModel.isOwner) {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ClubMembers(
+                        clubCode: clubModel.clubCode,
+                      ),
+                    ));
+              } else {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ClubChat(
+                        clubCode: clubModel.clubCode,
+                      ),
+                    ));
+              }
               break;
             case ClubActions.MANAGE_CHIPS:
               // TODO: Handle this case.
