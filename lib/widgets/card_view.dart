@@ -40,7 +40,7 @@ class CardView extends StatelessWidget {
           ),
         ),
         Expanded(
-          flex: 5,
+          flex: 4,
           child: FittedBox(
             child: RichText(
               text: TextSpan(
@@ -98,7 +98,7 @@ class CardView extends StatelessWidget {
       cardWidth = AppDimensions.cardWidth * 1.2;
     } else {
       cardWidth = 22;
-      cardHeight = 32;
+      cardHeight = 35;
 
       // TODO: We need to revisit how to get width and height working with ratio
       width = cardWidth + 10;

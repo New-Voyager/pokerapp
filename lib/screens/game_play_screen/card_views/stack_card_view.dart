@@ -17,16 +17,9 @@ class StackCardView extends StatelessWidget {
     this.horizontal = true,
   });
 
-  @override
-  Widget build(BuildContext context) {
-    if (cards == null) return const SizedBox.shrink();
-
-    if (isCommunity)
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: cards.isEmpty
-            ? [SizedBox.shrink()]
-            : cards.reversed
+  List<Widget> getCommunityCards() {
+    /** Old code
+          cards.reversed
                 .toList()
                 .map(
                   (c) => Transform.translate(
@@ -42,8 +35,37 @@ class StackCardView extends StatelessWidget {
                 )
                 .toList()
                 .reversed
-                .toList(),
+                .toList(),     
+     */
+    final reversedList = this.cards.reversed.toList();
+    var widgets = List<Widget>();
+    for (var card in reversedList) {
+      var c = Transform.translate(
+        offset: Offset(
+          0.0,
+          card.highlight ? pullUpOffset : 0.0,
+        ),
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 3.0),
+          child: deactivated ? card.grayedWidget : card.widget,
+        ),
       );
+      widgets.add(c);
+      widgets.add(new SizedBox(
+        width: 10.0,
+      ));
+    }
+    return widgets.toList().reversed.toList();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (cards == null) return const SizedBox.shrink();
+
+    if (isCommunity)
+      return Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: cards.isEmpty ? [SizedBox.shrink()] : getCommunityCards());
 
     /* My Cards */
     //
