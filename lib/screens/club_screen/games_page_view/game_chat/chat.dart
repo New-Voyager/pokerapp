@@ -5,7 +5,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_sound/flutter_sound.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
@@ -51,12 +50,7 @@ class _GameChatState extends State<GameChat> {
     _audioPlayer.openAudioSession(category: SessionCategory.playback);
 
     chatMessages.addAll(widget.chatService.messages.reversed);
-    Future.delayed(Duration(milliseconds: 100), () {
-      setState(() {
-        _scrollController.animateTo(_scrollController.position.maxScrollExtent,
-            duration: Duration(milliseconds: 200), curve: Curves.easeInOut);
-      });
-    });
+    scrollToBottomOfChat(scrollTime: 100, waitTime: 200);
 
     widget.chatService.listen(onText: (ChatMessage message) {
       print("text dsa ${message.text}");
@@ -67,11 +61,13 @@ class _GameChatState extends State<GameChat> {
       setState(() {
         chatMessages.add(giphy);
       });
+      scrollToBottomOfChat(scrollTime: 1, waitTime: 1);
     });
     _recorder.openAudioSession().then((value) {
       setState(() {
         _recorderIsInit = true;
       });
+      scrollToBottomOfChat(scrollTime: 1, waitTime: 1);
     });
     controller.addListener(() {
       if (controller.text.trim() != '') {
@@ -95,6 +91,14 @@ class _GameChatState extends State<GameChat> {
           });
         }
       }
+    });
+  }
+
+  scrollToBottomOfChat({int waitTime = 1, int scrollTime = 1}) {
+    Future.delayed(Duration(milliseconds: waitTime), () {
+      _scrollController.animateTo(_scrollController.position.maxScrollExtent,
+          duration: Duration(milliseconds: scrollTime),
+          curve: Curves.easeInOut);
     });
   }
 
@@ -138,10 +142,11 @@ class _GameChatState extends State<GameChat> {
                                 imageUrl: chatMessages[index].giphyLink,
                                 height: 150,
                                 width: 150,
-                                placeholder: (_, __) => Icon(
-                                  FontAwesomeIcons.image,
-                                  size: 50.0,
-                                  color: AppColors.lightGrayColor,
+                                placeholder: (_, __) => Center(
+                                  child: SizedBox(
+                                      height: 50,
+                                      width: 50,
+                                      child: CircularProgressIndicator()),
                                 ),
                                 fit: BoxFit.cover,
                               ),
