@@ -4,21 +4,24 @@ import 'package:flutter/widgets.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/footer_result.dart';
-import 'package:pokerapp/models/game_play_models/provider_models/seat_change_model.dart';
 import 'package:pokerapp/models/game_play_models/ui/header_object.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/screens/club_screen/games_page_view/game_chat/chat.dart';
 import 'package:pokerapp/screens/club_screen/games_page_view/new_game_settings/game_options/game_option_bottom_sheet.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/footer_action_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/footer_result_view.dart';
 import 'package:pokerapp/services/game_play/footer_services.dart';
-import 'package:pokerapp/widgets/custom_text_button.dart';
+import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/widgets/round_raised_button.dart';
 import 'package:provider/provider.dart';
 import 'package:timer_count_down/timer_count_down.dart';
 
 class FooterView extends StatelessWidget {
+  final GameComService gameComService;
+  FooterView(this.gameComService);
+
   Widget _buildTimer({int time = 10}) => Container(
         padding: const EdgeInsets.all(8.0),
         decoration: BoxDecoration(
@@ -131,7 +134,7 @@ class FooterView extends StatelessWidget {
                 alignment: Alignment.centerLeft,
                 child: GestureDetector(
                   onTap: () async {
-                    final vn = Provider.of<ValueNotifier<SeatChangeModel>>(
+                    /*  final vn = Provider.of<ValueNotifier<SeatChangeModel>>(
                       context,
                       listen: false,
                     );
@@ -144,7 +147,12 @@ class FooterView extends StatelessWidget {
 
                     await Future.delayed(AppConstants.animationDuration);
 
-                    vn.value = null;
+                    vn.value = null;*/
+                    await showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      builder: (ctx) => GameChat(this.gameComService.chat),
+                    );
                   },
                   child: Container(
                     padding: EdgeInsets.all(10),

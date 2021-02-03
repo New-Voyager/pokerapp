@@ -10,15 +10,15 @@ import 'package:pokerapp/models/player_info.dart';
 const MAX_CHAT_BUFSIZE = 20;
 
 // GameChat class wraps communication between NATS and games chat widget.
-class GameChat {
+class GameChatService {
   Stream<Message> stream;
   Client client;
   String chatChannel;
   bool active;
   PlayerInfo currentPlayer;
-  List<ChatMessage> messages;
-  GameChat(this.currentPlayer, this.chatChannel, this.client, this.stream,
-      this.active);
+  List<ChatMessage> messages = List<ChatMessage>();
+  GameChatService(this.currentPlayer, this.chatChannel, this.client,
+      this.stream, this.active);
   Function onText;
   Function onAudio;
   Function onGiphy;
@@ -28,9 +28,17 @@ class GameChat {
     Function onAudio,
     Function onGiphy,
   }) {
-    this.onText = onText;
-    this.onAudio = onAudio;
-    this.onGiphy = onGiphy;
+    if (onAudio != null) {
+      this.onAudio = onAudio;
+    }
+
+    if (onText != null) {
+      this.onText = onText;
+    }
+
+    if (onGiphy != null) {
+      this.onGiphy = onGiphy;
+    }
   }
 
   void start() {
@@ -38,47 +46,50 @@ class GameChat {
       return;
     }
     this.uuid = Uuid();
-    this.messages = List<ChatMessage>();
     this.stream.listen((Message natsMsg) {
       if (!active) return;
-      log('chat message received');
-
-      // handle messages
-      if (this.messages.length > MAX_CHAT_BUFSIZE) {
-        this.messages.removeLast();
-      }
-      final message = ChatMessage.fromMessage(natsMsg.string);
-      if (message != null) {
-        if (this.messages.length > 0) {
-          // check to see whether a message was already there
-          for (final element in this.messages) {
-            if (element.messageId == message.messageId) {
-              return;
-            }
-          }
-        }
-
-        this.messages.insert(0, message);
-
-        if (message.type == 'TEXT') {
-          if (this.onText != null) {
-            this.onText(message);
-          }
-        }
-
-        if (message.type == 'AUDIO') {
-          if (this.onAudio != null) {
-            this.onAudio(message);
-          }
-        }
-
-        if (message.type == 'GIPHY') {
-          if (this.onGiphy != null) {
-            this.onGiphy(message);
-          }
-        }
-      }
+      handleMessage(natsMsg);
     });
+  }
+
+  void handleMessage(Message natsMsg) {
+    log('chat message received');
+
+    // handle messages
+    if (this.messages.length > MAX_CHAT_BUFSIZE) {
+      this.messages.removeLast();
+    }
+    final message = ChatMessage.fromMessage(natsMsg.string);
+    if (message != null) {
+      if (this.messages.length > 0) {
+        // check to see whether a message was already there
+        for (final element in this.messages) {
+          if (element.messageId == message.messageId) {
+            return;
+          }
+        }
+      }
+
+      this.messages.insert(0, message);
+
+      if (message.type == 'TEXT') {
+        if (this.onText != null) {
+          this.onText(message);
+        }
+      }
+
+      if (message.type == 'AUDIO') {
+        if (this.onAudio != null) {
+          this.onAudio(message);
+        }
+      }
+
+      if (message.type == 'GIPHY') {
+        if (this.onGiphy != null) {
+          this.onGiphy(message);
+        }
+      }
+    }
   }
 
   void close() {
@@ -140,7 +151,7 @@ class ChatMessage {
       if (msg.type == 'TEXT') {
         msg.text = message['text'].toString();
       } else if (msg.type == 'AUDIO') {
-        if (message.audio != null) {
+        if (message['audio'] != null) {
           msg.audio = base64Decode(message['audio'].toString());
         } else {
           return null;

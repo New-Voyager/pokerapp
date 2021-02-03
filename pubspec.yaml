@@ -63,8 +63,20 @@ dependencies:
   # for 3d table
   zflutter: ^0.0.1+2
 
+  # for recording audio
+  flutter_audio_recorder: ^0.5.5
+  emoji_picker: ^0.1.0
+  flutter_keyboard_visibility: ^3.2.2
+  flutter_sound: ^7.5.3+1
+  
+  # permissions
+  permission_handler: ^5.0.1
+
   # tuple
   tuple: ^1.0.3
+
+  # live audio chat
+  agora_rtc_engine: ^3.2.1
 
 dev_dependencies:
   flutter_test:

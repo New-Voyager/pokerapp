@@ -30,6 +30,10 @@ services:
       - 4222:4222
       - 8222:8222
       - 9222:9222
+    command:
+      - "/bin/sh"
+      - "-c"
+      - "nats-server --config /etc/nats/nats-server.conf ${NATS_OPTS}"
 
   redis:
     image: ${REDIS_IMAGE}
