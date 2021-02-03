@@ -1,17 +1,20 @@
 import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
-import 'dart:typed_data';
-
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_sound/flutter_sound.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/services/game_play/game_chat_service.dart';
 import 'package:pokerapp/widgets/chat_text_field.dart';
 import 'package:pokerapp/widgets/emoji_picker_widget.dart';
 import 'package:permission_handler/permission_handler.dart';
+
+import 'game_giphys.dart';
 
 const int SAMPLE_RATE = 8000;
 
@@ -28,16 +31,39 @@ class _GameChatState extends State<GameChat> {
   bool isEmojiVisible = false;
   bool isKeyboardVisible = false;
   bool isMicVisible = true;
+  bool isGiphyVisible = false;
   String tempPath;
   FlutterSoundRecorder _recorder = FlutterSoundRecorder();
   bool _recorderIsInit = false;
   StreamSubscription _recordingDataSubscription;
   String _audioFile;
   bool _recordingCancelled = false;
+  double height;
+  final ScrollController _scrollController = ScrollController();
+
+  final focusNode = FocusNode();
+  List<ChatMessage> chatMessages = [];
   @override
   void initState() {
     super.initState();
+    chatMessages.addAll(widget.chatService.messages.reversed);
+    Future.delayed(Duration(milliseconds: 100), () {
+      setState(() {
+        _scrollController.animateTo(_scrollController.position.maxScrollExtent,
+            duration: Duration(milliseconds: 200), curve: Curves.easeInOut);
+      });
+    });
 
+    widget.chatService.listen(onText: (ChatMessage message) {
+      print("text dsa ${message.text}");
+      setState(() {
+        chatMessages.add(message);
+      });
+    }, onGiphy: (ChatMessage giphy) {
+      setState(() {
+        chatMessages.add(giphy);
+      });
+    });
     _recorder.openAudioSession().then((value) {
       setState(() {
         _recorderIsInit = true;
@@ -70,11 +96,57 @@ class _GameChatState extends State<GameChat> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
+    height = MediaQuery.of(context).size.height;
+    return SingleChildScrollView(
+      child: Container(
+        color: AppColors.screenBackgroundColor,
+        padding:
+            EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+        height: isEmojiVisible || isKeyboardVisible || isGiphyVisible
+            ? 2 * height / 3
+            : height / 3,
         child: Column(
           children: [
-            Spacer(),
+            SizedBox(
+              height: 10,
+            ),
+            Expanded(
+              child: ListView.builder(
+                controller: _scrollController,
+                itemCount: chatMessages.length,
+                shrinkWrap: true,
+                itemBuilder: (contex, index) {
+                  return Container(
+                    padding: EdgeInsets.all(5),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          chatMessages[index].type.toString() + ' : ',
+                          style: AppStyles.clubCodeStyle,
+                        ),
+                        chatMessages[index].text != null
+                            ? Text(
+                                chatMessages[index].text,
+                                style: AppStyles.itemInfoSecondaryTextStyle,
+                              )
+                            : CachedNetworkImage(
+                                imageUrl: chatMessages[index].giphyLink,
+                                height: 150,
+                                width: 150,
+                                placeholder: (_, __) => Icon(
+                                  FontAwesomeIcons.image,
+                                  size: 50.0,
+                                  color: AppColors.lightGrayColor,
+                                ),
+                                fit: BoxFit.cover,
+                              ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ),
             inputBox(),
             Offstage(
               child: EmojiPickerWidget(
@@ -90,15 +162,19 @@ class _GameChatState extends State<GameChat> {
 
   inputBox() {
     return Container(
-      color: AppColors.chatInputBgColor,
+      color: AppColors.screenBackgroundColor,
       child: Row(
         children: [
           SizedBox(
             width: 10,
           ),
-          Icon(
-            Icons.add_circle_outline,
-            size: 25,
+          GestureDetector(
+            onTap: _openGifDrawer,
+            child: Icon(
+              Icons.add_circle_outline,
+              size: 25,
+              color: Colors.white,
+            ),
           ),
           Expanded(
             child: Container(
@@ -109,6 +185,7 @@ class _GameChatState extends State<GameChat> {
                 onBlurred: toggleEmojiKeyboard,
                 isEmojiVisible: isEmojiVisible,
                 isKeyboardVisible: isKeyboardVisible,
+                focusNode: focusNode,
               ),
             ),
           ),
@@ -121,10 +198,22 @@ class _GameChatState extends State<GameChat> {
                 ? Icon(
                     Icons.mic,
                     size: 25,
+                    color: Colors.white,
                   )
-                : Icon(
-                    Icons.send_outlined,
-                    size: 25,
+                : GestureDetector(
+                    onTap: () {
+                      if (controller.text.trim() != '') {
+                        widget.chatService.sendText(controller.text.trim());
+                        setState(() {
+                          controller.clear();
+                        });
+                      }
+                    },
+                    child: Icon(
+                      Icons.send_outlined,
+                      color: Colors.white,
+                      size: 25,
+                    ),
                   ),
           ),
           SizedBox(
@@ -132,6 +221,15 @@ class _GameChatState extends State<GameChat> {
           ),
         ],
       ),
+    );
+  }
+
+  void _openGifDrawer() async {
+    focusNode.unfocus();
+    await showModalBottomSheet<String>(
+      context: context,
+      isScrollControlled: true,
+      builder: (_) => GameGiphies(widget.chatService),
     );
   }
 
