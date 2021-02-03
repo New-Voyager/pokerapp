@@ -65,6 +65,7 @@ class ClubsService {
       lastMessageText
       lastMessageTime
       newMessageCount
+      playerId
     }
   }
   """;

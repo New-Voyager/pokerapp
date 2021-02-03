@@ -6,6 +6,7 @@ import 'package:pokerapp/models/club_members_model.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_icons.dart';
+import 'package:pokerapp/screens/club_screen/club_action_buttons_view/club_message/club_host_messaging.dart';
 import 'package:pokerapp/services/app/club_interior_service.dart';
 
 class ClubMembersDetailsView extends StatefulWidget {
@@ -145,7 +146,17 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView> {
                                 Column(
                                   children: [
                                     MaterialButton(
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  ClubHostMessaging(
+                                                clubCode: widget.clubCode,
+                                                player: widget.playerId,
+                                              ),
+                                            ));
+                                      },
                                       color: Colors.blue,
                                       textColor: Colors.white,
                                       child: Icon(
@@ -155,21 +166,34 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView> {
                                       padding: EdgeInsets.all(16),
                                       shape: CircleBorder(),
                                     ),
-                                    Container(
-                                      padding: EdgeInsets.all(5),
-                                      child: Column(
-                                        children: [
-                                          Text(
-                                            "Message",
-                                            style: TextStyle(
-                                              fontFamily:
-                                                  AppAssets.fontFamilyLato,
-                                              color: AppColors.appAccentColor,
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.bold,
+                                    GestureDetector(
+                                      onTap: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  ClubHostMessaging(
+                                                clubCode: widget.clubCode,
+                                                player: widget.playerId,
+                                              ),
+                                            ));
+                                      },
+                                      child: Container(
+                                        padding: EdgeInsets.all(5),
+                                        child: Column(
+                                          children: [
+                                            Text(
+                                              "Message",
+                                              style: TextStyle(
+                                                fontFamily:
+                                                    AppAssets.fontFamilyLato,
+                                                color: AppColors.appAccentColor,
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.bold,
+                                              ),
                                             ),
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ],

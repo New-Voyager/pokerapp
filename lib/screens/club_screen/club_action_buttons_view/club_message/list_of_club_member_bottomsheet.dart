@@ -4,7 +4,7 @@ import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/services/app/club_interior_service.dart';
 
-import 'club_chat.dart';
+import 'club_host_messaging.dart';
 
 class ListOfClubMemberBottomSheet extends StatelessWidget {
   final String clubCode;
@@ -46,9 +46,10 @@ class ListOfClubMemberBottomSheet extends StatelessWidget {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => ClubChat(
+                                builder: (context) => ClubHostMessaging(
                                   clubCode: clubCode,
                                   player: snapshot.data[index].playerId,
+                                  name: snapshot.data[index].name,
                                 ),
                               ));
                         },

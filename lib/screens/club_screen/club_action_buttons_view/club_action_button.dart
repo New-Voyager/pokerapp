@@ -5,7 +5,7 @@ import 'package:pokerapp/models/club_members_model.dart';
 import 'package:pokerapp/models/table_record.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
-import 'package:pokerapp/screens/club_screen/club_action_buttons_view/club_message/club_chat.dart';
+import 'package:pokerapp/screens/club_screen/club_action_buttons_view/club_message/club_host_messaging.dart';
 import 'package:pokerapp/screens/club_screen/club_action_screens/club_members_view/club_members_view.dart';
 import 'package:pokerapp/screens/club_screen/rewards_screen/rewards_list_screen.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_log_view.dart';
@@ -83,7 +83,7 @@ class ClubActionButton extends StatelessWidget {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => ClubChat(
+                      builder: (context) => ClubHostMessaging(
                         clubCode: clubModel.clubCode,
                       ),
                     ));

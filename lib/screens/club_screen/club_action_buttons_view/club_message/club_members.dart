@@ -5,7 +5,7 @@ import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/services/app/clubs_service.dart';
 
-import 'club_chat.dart';
+import 'club_host_messaging.dart';
 import 'list_of_club_member_bottomsheet.dart';
 
 class ClubMembers extends StatefulWidget {
@@ -38,7 +38,8 @@ class _ClubMembersState extends State<ClubMembers> {
         centerTitle: true,
         backgroundColor: AppColors.screenBackgroundColor,
       ),
-      floatingActionButton: FloatingActionButton.extended(
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.white24,
         onPressed: () async {
           await showModalBottomSheet(
             context: context,
@@ -48,7 +49,10 @@ class _ClubMembersState extends State<ClubMembers> {
             ),
           );
         },
-        label: Text("Message"),
+        child: Icon(
+          Icons.message,
+          color: AppColors.appAccentColor,
+        ),
       ),
       body: FutureBuilder<List<HostMessageSummaryModel>>(
           future: ClubsService.hostMessageSummary(clubCode: widget.clubCode),
@@ -66,12 +70,17 @@ class _ClubMembersState extends State<ClubMembers> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => ClubChat(
+                        builder: (context) => ClubHostMessaging(
                           clubCode: widget.clubCode,
-                          // todo: get player id
+                          player: snapshot.data[index].playerId,
+                          name: snapshot.data[index].memberName,
                         ),
                       ),
-                    );
+                    ).then((value) {
+                      setState(() {
+                        snapshot.data[index].newMessageCount = 0;
+                      });
+                    });
                   },
                   child: Container(
                     padding:
