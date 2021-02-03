@@ -6,6 +6,7 @@ import 'package:flutter_sound/flutter_sound.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/resources/app_constants.dart';
+import 'package:pokerapp/screens/club_screen/games_page_view/game_chat/chat.dart';
 import 'package:pokerapp/screens/game_play_screen/game_play_screen_util_methods.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/board_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/decorative_views/background_view.dart';
@@ -165,7 +166,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
     if (message.audio != null) {
       // try {
       await _audioPlayer.startPlayerFromStream(
-          sampleRate: 8000, codec: Codec.pcm16);
+          sampleRate: SAMPLE_RATE, codec: Codec.pcm16);
       await _audioPlayer.feedFromStream(message.audio);
       // } on PlatformException catch (err) {
       //   log('Excpetion thrown when playing audio ${message.audio.length}. Exception: ${err.toString()}');

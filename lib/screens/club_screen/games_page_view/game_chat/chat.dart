@@ -40,12 +40,16 @@ class _GameChatState extends State<GameChat> {
   bool _recordingCancelled = false;
   double height;
   final ScrollController _scrollController = ScrollController();
+  FlutterSoundPlayer _audioPlayer = FlutterSoundPlayer();
 
   final focusNode = FocusNode();
   List<ChatMessage> chatMessages = [];
   @override
   void initState() {
     super.initState();
+    // open audio session
+    _audioPlayer.openAudioSession(category: SessionCategory.playback);
+
     chatMessages.addAll(widget.chatService.messages.reversed);
     Future.delayed(Duration(milliseconds: 100), () {
       setState(() {
@@ -281,6 +285,11 @@ class _GameChatState extends State<GameChat> {
       if (!_recordingCancelled) {
         // send the audio data in the chat channel
         var data = await outputFile.readAsBytes();
+        // play the audio for testing
+        // await _audioPlayer.startPlayerFromStream(
+        //     sampleRate: SAMPLE_RATE, codec: Codec.pcm16);
+        // await _audioPlayer.feedFromStream(data);
+
         widget.chatService.sendAudio(data);
       }
       outputFile.deleteSync();
@@ -293,19 +302,16 @@ class _GameChatState extends State<GameChat> {
     }
   }
 
-  Future<IOSink> createFile() async {
-    Directory tempDir = await getTemporaryDirectory();
-    tempPath = '${tempDir.path}/chat.pcm';
-    File outputFile = File(tempPath);
-    if (outputFile.existsSync()) await outputFile.delete();
-    return outputFile.openWrite();
-  }
-
   @override
   void dispose() {
     _recorder.stopRecorder();
     _recorder.closeAudioSession();
     _recorder = null;
+    if (_audioPlayer != null) {
+      _audioPlayer.closeAudioSession();
+      _audioPlayer = null;
+    }
+
     super.dispose();
   }
 
@@ -318,7 +324,7 @@ class _GameChatState extends State<GameChat> {
       throw RecordingPermissionException("Microphone permission not granted");
     _recordingCancelled = false;
     Directory tempDir = await getTemporaryDirectory();
-    _audioFile = '${tempDir.path}/chat.aac';
+    _audioFile = '${tempDir.path}/chat1.aac';
     var outputFile = File(_audioFile);
 
     if (outputFile.existsSync()) {
@@ -329,7 +335,7 @@ class _GameChatState extends State<GameChat> {
     log('Recording started now');
     try {
       await _recorder.startRecorder(
-        toFile: outputFile.path,
+        toFile: _audioFile,
         codec: Codec.pcm16,
         sampleRate: SAMPLE_RATE,
       );
