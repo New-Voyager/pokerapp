@@ -201,20 +201,18 @@ class FooterView extends StatelessWidget {
                 /* if current player is playing, show the cards here */
                 playerModel == null
                     ? const SizedBox.shrink()
-                    : FittedBox(
-                        child: UserViewUtilWidgets.buildVisibleCard(
-                          playerFolded: playerModel?.playerFolded ?? false,
-                          cards: playerModel?.cards?.map(
-                                (int c) {
-                                  CardObject card = CardHelper.getCard(c);
-                                  card.smaller = true;
-                                  // card.flipCard();
+                    : UserViewUtilWidgets.buildVisibleCard(
+                        playerFolded: playerModel?.playerFolded ?? false,
+                        cards: playerModel?.cards?.map(
+                              (int c) {
+                                CardObject card = CardHelper.getCard(c);
+                                card.smaller = true;
+                                card.cardFace = CardFace.FRONT;
 
-                                  return card;
-                                },
-                              )?.toList() ??
-                              List<CardObject>(),
-                        ),
+                                return card;
+                              },
+                            )?.toList() ??
+                            List<CardObject>(),
                       ),
                 Container(
                   height: 190,

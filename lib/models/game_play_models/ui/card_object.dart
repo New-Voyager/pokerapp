@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/screens/game_play_screen/card_views/visible_card_view.dart';
 
+enum CardFace {
+  FRONT,
+  BACK,
+}
+
 class CardObject {
   // card information
   String suit;
@@ -21,6 +26,8 @@ class CardObject {
 
   VisibleCardView visibleCard;
 
+  CardFace cardFace;
+
   CardObject({
     @required this.suit,
     @required this.label,
@@ -29,6 +36,7 @@ class CardObject {
     this.highlight = false,
     this.isShownAtTable = false,
     this.highHandLog = false, // this is true for the community cards
+    this.cardFace = CardFace.FRONT,
   }) {
     this.visibleCard = VisibleCardView(
       card: this,
@@ -39,7 +47,24 @@ class CardObject {
 
   bool isEmpty() => this.empty;
 
-  void flipCard() => this.visibleCard.flipCard();
+  void cardShowFront() {
+    if (cardFace == CardFace.FRONT) return;
+    flipCard();
+  }
+
+  void cardShowBack() {
+    if (cardFace == CardFace.BACK) return;
+    flipCard();
+  }
+
+  void flipCard() {
+    if (cardFace == CardFace.BACK)
+      cardFace = CardFace.FRONT;
+    else
+      cardFace = CardFace.BACK;
+
+    this.visibleCard.flipCard();
+  }
 
   Widget get widget => this.visibleCard;
 
