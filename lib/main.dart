@@ -4,6 +4,7 @@ import 'package:pokerapp/screens/splash_screen.dart';
 import 'package:pokerapp/services/graphQL/configurations/graph_ql_configuration.dart';
 
 GraphQLConfiguration graphQLConfiguration = GraphQLConfiguration();
+final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,6 +24,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Poker App',
       debugShowCheckedModeBanner: false,
+      navigatorKey: navigatorKey,
       theme: ThemeData(
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,

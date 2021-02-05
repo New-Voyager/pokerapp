@@ -61,22 +61,42 @@ class _ClubChatState extends State<ClubHostMessaging> {
                       itemBuilder: (context, index) {
                         bool isHost =
                             snapshot.data[index].messageType == "FROM_HOST";
+                        bool isHostView = widget.player != null;
                         return Align(
-                          alignment:
-                              snapshot.data[index].messageType == "FROM_HOST"
+                          alignment: isHostView
+                              ? isHost
                                   ? Alignment.centerRight
-                                  : Alignment.centerLeft,
+                                  : Alignment.centerLeft
+                              : isHost
+                                  ? Alignment.centerLeft
+                                  : Alignment.centerRight,
                           child: Container(
                             padding: const EdgeInsets.all(10.0),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(5.0),
-                              color: isHost
-                                  ? AppColors.chatMeColor
-                                  : AppColors.chatOthersColor,
+                              color: isHostView
+                                  ? isHost
+                                      ? AppColors.chatMeColor
+                                      : AppColors.chatOthersColor
+                                  : isHost
+                                      ? AppColors.chatOthersColor
+                                      : AppColors.chatMeColor,
                             ),
                             margin: EdgeInsets.only(
-                                left: isHost ? 80 : 20,
-                                right: isHost ? 20 : 80,
+                                left: isHostView
+                                    ? isHost
+                                        ? 80
+                                        : 20
+                                    : isHost
+                                        ? 20
+                                        : 80,
+                                right: isHostView
+                                    ? isHost
+                                        ? 20
+                                        : 80
+                                    : isHost
+                                        ? 80
+                                        : 20,
                                 top: 5,
                                 bottom: 5),
                             child: Text(snapshot.data[index].text),
@@ -183,12 +203,12 @@ class _ClubChatState extends State<ClubHostMessaging> {
                           child: Text(
                             widget.name != null
                                 ? widget.name[0].toLowerCase()
-                                : 'A',
+                                : 'H',
                             style: AppStyles.optionTitleText,
                           ),
                         ),
                         Text(
-                          widget.name ?? '',
+                          widget.name ?? 'Host',
                           style: AppStyles.credentialsTextStyle,
                         ),
                       ],

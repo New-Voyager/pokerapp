@@ -4,6 +4,7 @@ import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/services/app/club_interior_service.dart';
 
+import '../../../../main.dart';
 import 'club_host_messaging.dart';
 
 class ListOfClubMemberBottomSheet extends StatelessWidget {
@@ -41,17 +42,16 @@ class ListOfClubMemberBottomSheet extends StatelessWidget {
                     itemCount: snapshot.data.length,
                     itemBuilder: (context, index) {
                       return GestureDetector(
-                        onTap: () {
+                        onTap: () async {
+                          await navigatorKey.currentState
+                              .push(MaterialPageRoute(
+                            builder: (context) => ClubHostMessaging(
+                              clubCode: clubCode,
+                              player: snapshot.data[index].playerId,
+                              name: snapshot.data[index].name,
+                            ),
+                          ));
                           Navigator.pop(context);
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => ClubHostMessaging(
-                                  clubCode: clubCode,
-                                  player: snapshot.data[index].playerId,
-                                  name: snapshot.data[index].name,
-                                ),
-                              ));
                         },
                         child: Container(
                           padding:
