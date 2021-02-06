@@ -19,6 +19,8 @@ import 'package:pokerapp/services/game_play/graphql/game_service.dart';
 import 'package:pokerapp/widgets/custom_text_button.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../main.dart';
+
 class NewGameSettings extends StatefulWidget {
   final String clubCode;
   NewGameSettings(this.clubCode);
@@ -81,8 +83,7 @@ class _NewGameSettingsState extends State<NewGameSettings> {
   }
 
   void _joinGame(BuildContext context, String gameCode) =>
-      Navigator.pushReplacement(
-        context,
+      navigatorKey.currentState.push(
         MaterialPageRoute(
           builder: (_) => GamePlayScreen(
             gameCode: gameCode,

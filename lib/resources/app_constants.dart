@@ -65,6 +65,15 @@ class AppConstants {
 
   /* TABLE UPDATE types */
   static const String SeatChangeInProgress = 'SeatChangeInProgress';
+  static const String TableUpdateOpenSeat = "OpenSeat";
+  static const String TableWaitlistSeating = "WaitlistSeating";
+  static const String TableSeatChangeProcess = "SeatChangeInProgress";
+  static const String TableHostSeatChangeProcessStart =
+      "HostSeatChangeInProcessStart";
+  static const String TableHostSeatChangeProcessEnd =
+      "HostSeatChangeInProcessEnd";
+  static const String TableHostSeatChangeMove = "HostSeatChangeMove";
+  static const String TableUpdatePlayerSeats = "UpdatePlayerSeats";
 
   /* NEW UPDATE player statuses */
   static const String NEW_PLAYER = 'NEW_PLAYER';

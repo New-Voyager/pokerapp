@@ -5,6 +5,7 @@ import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/services/app/clubs_service.dart';
 
+import '../../../../main.dart';
 import 'club_host_messaging.dart';
 import 'list_of_club_member_bottomsheet.dart';
 
@@ -47,7 +48,11 @@ class _ClubMembersState extends State<ClubMembers> {
             builder: (_) => ListOfClubMemberBottomSheet(
               clubCode: widget.clubCode,
             ),
-          );
+          ).then((value) {
+            setState(() {
+              // doing set state to get new updated list of chat with member
+            });
+          });
         },
         child: Icon(
           Icons.message,
@@ -67,8 +72,8 @@ class _ClubMembersState extends State<ClubMembers> {
               itemBuilder: (context, index) {
                 return GestureDetector(
                   onTap: () {
-                    Navigator.push(
-                      context,
+                    navigatorKey.currentState
+                        .push(
                       MaterialPageRoute(
                         builder: (context) => ClubHostMessaging(
                           clubCode: widget.clubCode,
@@ -76,7 +81,8 @@ class _ClubMembersState extends State<ClubMembers> {
                           name: snapshot.data[index].memberName,
                         ),
                       ),
-                    ).then((value) {
+                    )
+                        .then((value) {
                       setState(() {
                         snapshot.data[index].newMessageCount = 0;
                       });
