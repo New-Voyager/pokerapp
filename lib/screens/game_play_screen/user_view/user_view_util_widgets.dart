@@ -71,16 +71,19 @@ class UserViewUtilWidgets {
           ),
           child: GestureDetector(
             onLongPressEnd: (_) {
+              log('cards: onLongPressEND');
               for (var card in cards) {
-                card.flipCard();
+                card.cardShowBack();
               }
             },
             onLongPress: () {
+              log('cards: onLongPress');
               for (var card in cards) {
-                card.flipCard();
+                card.cardShowFront();
               }
             },
             onDoubleTap: () {
+              log('cards: onDoubleTap');
               for (int i = 0; i < cards.length; i++) {
                 cards[i].flipCard();
               }

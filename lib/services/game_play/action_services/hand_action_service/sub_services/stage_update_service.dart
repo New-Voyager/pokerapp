@@ -87,7 +87,7 @@ class StageUpdateService {
 
       // wait for a brief moment, then flip the cards
       await Future.delayed(AppConstants.communityCardPushDuration);
-      tableState.flipCards();
+      // tableState.flipCards(); FIXME: WE NEED A DIFFERENT ANIMATION
       tableState.notifyAll();
     } else {
       tableState.addCommunityCardSilent(
@@ -98,7 +98,7 @@ class StageUpdateService {
       // wait for a brief moment, then flip the last card
       await Future.delayed(AppConstants.communityCardPushDuration);
 
-      tableState.flipLastCard();
+      // tableState.flipLastCard(); FIXME: WE NEED A DIFFERENT ANIMATION
       tableState.notifyAll();
     }
   }

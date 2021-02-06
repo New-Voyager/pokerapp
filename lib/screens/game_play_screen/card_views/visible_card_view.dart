@@ -6,10 +6,14 @@ import 'package:pokerapp/resources/card_back_assets.dart';
 import 'package:pokerapp/widgets/card_view.dart';
 import 'package:provider/provider.dart';
 
-// TODO: REFACTOR THIS VIEW
+// TODO: WHY IS THIS BUILD FUNCTION BEING REBUILD EVERYTIME SOMETHING IN THE UI CHANGES?
+
+import 'dart:developer';
 
 class VisibleCardView extends StatelessWidget {
   final GlobalKey<FlipCardState> cardKey = GlobalKey<FlipCardState>();
+
+  // TODO: REFACTOR THIS VIEW
   CardView cardView;
   VisibleCardView({
     @required card,
@@ -36,30 +40,26 @@ class VisibleCardView extends StatelessWidget {
           Provider.of<ValueNotifier<String>>(context, listen: false).value;
     } catch (_) {}
 
+    log('This is being build');
+
     return Transform.scale(
       scale: isNotCommunityCard ? 0.85 : 1.4,
       child: Container(
         height: cardView.height,
         width: cardView.width,
-        child: true
-            ? ClipRRect(
-                borderRadius: BorderRadius.circular(
-                  3.0,
-                ),
-                child: FlipCard(
-                  key: cardKey,
-                  front: SizedBox(
-                    height: AppDimensions.cardHeight * 1.3,
-                    width: AppDimensions.cardWidth * 1.3,
-                    child: Image.asset(
-                      cardBackAsset,
-                      fit: BoxFit.fitHeight,
-                    ),
-                  ),
-                  back: cardWidget,
-                ),
-              )
-            : cardWidget,
+        child: FlipCard(
+          flipOnTouch: false,
+          key: cardKey,
+          back: SizedBox(
+            height: AppDimensions.cardHeight * 1.3,
+            width: AppDimensions.cardWidth * 1.3,
+            child: Image.asset(
+              cardBackAsset,
+              fit: BoxFit.fitHeight,
+            ),
+          ),
+          front: cardWidget,
+        ),
       ),
     );
   }

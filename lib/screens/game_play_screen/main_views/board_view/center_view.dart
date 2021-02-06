@@ -85,25 +85,22 @@ class CenterWidget extends StatelessWidget {
     Widget tablePotAndCardWidget = Align(
       key: ValueKey('tablePotAndCardWidget'),
       alignment: Alignment.topCenter,
-      child: FittedBox(
-        fit: BoxFit.fill,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            rankWidget(), // TODO: We need to show either pot widget or rank widget
-            potWidget(),
-            // card stacks
-            StackCardView(
-              cards: cards,
-              isCommunity: true,
-            ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          rankWidget(), // TODO: We need to show either pot widget or rank widget
+          potWidget(),
+          // card stacks
+          StackCardView(
+            cards: cards,
+            isCommunity: true,
+          ),
 
-            const SizedBox(height: AppDimensions.cardHeight / 4),
+          const SizedBox(height: AppDimensions.cardHeight / 4),
 
-            /* potUpdates view */
-            potUpdatesView(),
-          ],
-        ),
+          /* potUpdates view */
+          potUpdatesView(),
+        ],
       ),
     );
 
