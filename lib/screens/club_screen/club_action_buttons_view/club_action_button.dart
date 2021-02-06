@@ -2,18 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/club_actions.dart';
 import 'package:pokerapp/models/club_homepage_model.dart';
 import 'package:pokerapp/models/club_members_model.dart';
-import 'package:pokerapp/models/table_record.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/screens/club_screen/club_action_buttons_view/club_message/club_host_messaging.dart';
 import 'package:pokerapp/screens/club_screen/club_action_screens/club_members_view/club_members_view.dart';
-import 'package:pokerapp/screens/club_screen/rewards_screen/rewards_list_screen.dart';
-import 'package:pokerapp/screens/club_screen/hand_log_views/hand_log_view.dart';
 import 'package:pokerapp/screens/game_screens/game_history_view/game_history_view.dart';
 import 'package:pokerapp/screens/club_screen/messages_page_view/messages_page_view.dart';
-import 'package:pokerapp/screens/game_screens/table_result/table_result.dart';
 import 'package:provider/provider.dart';
 
+import '../../../main.dart';
 import 'club_message/club_members.dart';
 
 class ClubActionButton extends StatelessWidget {
@@ -54,8 +51,7 @@ class ClubActionButton extends StatelessWidget {
               );
 
             case ClubActions.CHAT:
-              return Navigator.push(
-                context,
+              return navigatorKey.currentState.push(
                 MaterialPageRoute(
                   builder: (_) =>
                       MessagesPageView(clubCode: clubModel.clubCode),
@@ -80,13 +76,11 @@ class ClubActionButton extends StatelessWidget {
                       ),
                     ));
               } else {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ClubHostMessaging(
-                        clubCode: clubModel.clubCode,
-                      ),
-                    ));
+                navigatorKey.currentState.push(MaterialPageRoute(
+                  builder: (context) => ClubHostMessaging(
+                    clubCode: clubModel.clubCode,
+                  ),
+                ));
               }
               break;
             case ClubActions.MANAGE_CHIPS:
