@@ -30,7 +30,7 @@ class CardView extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Expanded(
-          flex: 6,
+          flex: 7,
           child: FittedBox(
             child: Text(
               card.label == 'T' ? '10' : card.label,
@@ -146,9 +146,11 @@ class CardsView extends StatelessWidget {
       for (int c in cards) {
         CardObject card = CardHelper.getCard(c);
         cardViews.add(CardView(card: card));
-        cardViews.add(SizedBox(
-          width: 2.0,
-        ));
+        cardViews.add(
+          SizedBox(
+            width: 2.0,
+          ),
+        );
       }
     }
     return Row(children: cardViews);
