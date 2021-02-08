@@ -4,10 +4,10 @@ import 'package:pokerapp/models/game_play_models/ui/header_object.dart';
 import 'package:pokerapp/models/option_item_model.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/screens/club_screen/club_games_page_view.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:provider/provider.dart';
 
-import '../../club_games_page_view.dart';
 import 'game_option/game_option.dart';
 import 'pending_approvals_option.dart';
 
