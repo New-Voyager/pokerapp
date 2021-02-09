@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
@@ -12,6 +13,12 @@ class PlayerActedService {
     BuildContext context,
     var data,
   }) async {
+    // change my footer status --> NONE
+    Provider.of<ValueNotifier<FooterStatus>>(
+      context,
+      listen: false,
+    ).value = FooterStatus.None;
+
     var playerActed = data['playerActed'];
 
     int seatNo = playerActed['seatNo'];

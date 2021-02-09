@@ -9,16 +9,14 @@ import 'package:pokerapp/resources/app_icons.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_log_view.dart';
 import 'package:pokerapp/screens/game_screens/hand_history/hand_history.dart';
-import 'package:pokerapp/services/app/hand_service.dart';
-import 'package:provider/provider.dart';
 import 'package:pokerapp/services/game_play/graphql/game_service.dart';
 import 'seat_change_bottom_sheet.dart';
 import 'waiting_list.dart';
 
 class GameOption extends StatefulWidget {
   final String gameCode;
-
-  GameOption({Key key, this.gameCode}) : super(key: key);
+  final String playerUuid;
+  GameOption(this.gameCode, this.playerUuid);
 
   @override
   _GameOptionState createState() => _GameOptionState(gameCode);
@@ -43,7 +41,6 @@ class _GameOptionState extends State<GameOption> {
   void onPause() {}
 
   List<OptionItemModel> gameSecondaryOptions;
-  HeaderObject headerObject;
   @override
   void initState() {
     super.initState();
@@ -78,10 +75,9 @@ class _GameOptionState extends State<GameOption> {
           await showModalBottomSheet(
             context: context,
             isScrollControlled: true,
-            builder: (ctx) => ChangeNotifierProvider.value(
-              value: Provider.of<HeaderObject>(context, listen: false),
-              child: SeatChangeBottomSheet(),
-            ),
+            builder: (ctx) {
+              return SeatChangeBottomSheet(widget.gameCode, widget.playerUuid);
+            },
           );
         },
       ),
@@ -91,20 +87,19 @@ class _GameOptionState extends State<GameOption> {
           backGroundColor: AppColors.gameOption3,
           onTap: (context) async {
             await showModalBottomSheet(
-              context: context,
-              isScrollControlled: true,
-              builder: (ctx) => ChangeNotifierProvider.value(
-                value: Provider.of<HeaderObject>(context, listen: false),
-                child: WaitingListBottomSheet(),
-              ),
-            );
+                context: context,
+                isScrollControlled: true,
+                builder: (ctx) {
+                  return WaitingListBottomSheet(
+                      widget.gameCode, widget.playerUuid);
+                });
           }),
       OptionItemModel(
         title: "Last Hand",
         image: "assets/images/casino.png",
         backGroundColor: AppColors.gameOption4,
         onTap: (context) async {
-          HandLogModel handLogModel = HandLogModel(headerObject.gameCode, -1);
+          HandLogModel handLogModel = HandLogModel(widget.gameCode, -1);
           await showModalBottomSheet(
             context: context,
             isScrollControlled: true,
@@ -121,29 +116,20 @@ class _GameOptionState extends State<GameOption> {
         backGroundColor: AppColors.gameOption5,
         onTap: (context) async {
           // todo: true need to change with isOwner actual value
-          final model = HandHistoryListModel(headerObject.gameCode, true);
+          final model = HandHistoryListModel(widget.gameCode, true);
           await showModalBottomSheet(
-            context: context,
-            isScrollControlled: true,
-            builder: (ctx) => ChangeNotifierProvider.value(
-              value: Provider.of<HeaderObject>(context, listen: false),
-              child: ChangeNotifierProvider<HandHistoryListModel>(
-                create: (_) => model,
-                builder: (BuildContext context, _) =>
-                    Consumer<HandHistoryListModel>(
-                  builder: (_, HandHistoryListModel data, __) => Container(
+              context: context,
+              isScrollControlled: true,
+              builder: (ctx) {
+                return Container(
                     height: height / 2,
                     child: HandHistoryListView(
-                      data,
+                      model,
                       // todo: club code need to get
                       null,
                       isInBottomSheet: true,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          );
+                    ));
+              });
         },
       ),
     ];
@@ -153,7 +139,6 @@ class _GameOptionState extends State<GameOption> {
   Widget build(BuildContext context) {
     height = MediaQuery.of(context).size.height;
     final separator5 = SizedBox(height: 5.0);
-    headerObject = Provider.of<HeaderObject>(context, listen: false);
 
     return SingleChildScrollView(
       child: Container(
@@ -191,7 +176,7 @@ class _GameOptionState extends State<GameOption> {
                     height: 10,
                   ),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       ...gameActions.map((e) => gameActionItem(e)).toList(),
                     ],

@@ -5,7 +5,8 @@ import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/screens/game_play_screen/card_views/animations/animating_shuffle_card_view.dart';
-import 'package:pokerapp/screens/game_play_screen/card_views/stack_card_view.dart';
+import 'package:pokerapp/screens/game_play_screen/card_views/community_card_view.dart';
+import 'package:pokerapp/screens/game_play_screen/main_views/board_view/pots_view.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:provider/provider.dart';
 
@@ -32,7 +33,7 @@ class CenterWidget extends StatelessWidget {
     /* in case of new hand, show the deck shuffling animation */
     if (_text == AppConstants.NEW_HAND)
       return Transform.scale(
-        scale: 1.5,
+        scale: 1,
         child: Transform.translate(
           offset: isBoardHorizontal
               ? _cardDistributionAnimationWidgetOffset
@@ -85,25 +86,19 @@ class CenterWidget extends StatelessWidget {
     Widget tablePotAndCardWidget = Align(
       key: ValueKey('tablePotAndCardWidget'),
       alignment: Alignment.topCenter,
-      child: FittedBox(
-        fit: BoxFit.fill,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            rankWidget(), // TODO: We need to show either pot widget or rank widget
-            potWidget(),
-            // card stacks
-            StackCardView(
-              cards: cards,
-              isCommunity: true,
-            ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          PotsView(this.isBoardHorizontal, this.potChips, this.showDown),
+          CommunityCardsView(
+            cards: cards,
+            horizontal: true,
+          ),
+          const SizedBox(height: AppDimensions.cardHeight / 4),
 
-            const SizedBox(height: AppDimensions.cardHeight / 4),
-
-            /* potUpdates view */
-            potUpdatesView(),
-          ],
-        ),
+          /* potUpdates view */
+          this.showDown ? rankWidget() : potUpdatesView(),
+        ],
       ),
     );
 
@@ -113,54 +108,6 @@ class CenterWidget extends StatelessWidget {
       duration: AppConstants.animationDuration,
       reverseDuration: AppConstants.animationDuration,
       child: _text != null ? tableStatusWidget : tablePotAndCardWidget,
-    );
-  }
-
-  Widget potWidget() {
-    if (potChips == null || potChips.length == 0 || potChips[0] == 0) {
-      return SizedBox.shrink();
-    }
-
-    return // pot value
-        Opacity(
-      opacity: showDown ? 0 : 1,
-      child: Container(
-        margin: EdgeInsets.only(bottom: 10.0),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(100.0),
-          color: Colors.black26,
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            // chip image
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Image.asset(
-                'assets/images/chips.png',
-                height: 15.0,
-              ),
-            ),
-
-            // pot amount text
-            Padding(
-              padding: const EdgeInsets.only(
-                right: 15.0,
-                top: 5.0,
-                bottom: 5.0,
-                left: 5.0,
-              ),
-              child: Text(
-                'Pot: ${potChips[0]}', // todo: at later point might need to show multiple pots - need to design UI
-                style: AppStyles.itemInfoTextStyleHeavy.copyWith(
-                  fontSize: 15,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 
@@ -182,7 +129,7 @@ class CenterWidget extends StatelessWidget {
             color: Colors.black26,
           ),
           child: Text(
-            'Current: ${DataFormatter.chipsFormat(potChipsUpdates)}',
+            'Pot: ${DataFormatter.chipsFormat(potChipsUpdates)}',
             style: AppStyles.itemInfoTextStyleHeavy.copyWith(
               fontSize: 13,
               fontWeight: FontWeight.w400,

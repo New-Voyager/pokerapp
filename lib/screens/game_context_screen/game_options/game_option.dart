@@ -211,34 +211,3 @@ class GameOption extends StatelessWidget {
         ),
       );
 }
-
-/*
- Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text("Runtime: 3:20",
-                          style: AppStyles.itemInfoSecondaryTextStyle),
-                      separator5,
-                      Text("Session Time: 00:35",
-                          style: AppStyles.itemInfoSecondaryTextStyle),
-                      separator5,
-                      Text("Number of winning hands: 10",
-                          style: AppStyles.itemInfoSecondaryTextStyle),
-                      separator5,
-                      Text("Total hands played: 50",
-                          style: AppStyles.itemInfoSecondaryTextStyle)
-                    ],
-                  ),
-                  Expanded(
-                    child: Container(
-                      height: 100,
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: gameActions.length,
-                        itemBuilder: (context, index) => gameActionItem(
-                          gameActions[index],
-                        ),
-                      ),
-                    ),
-                  )
-*/

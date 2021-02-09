@@ -21,7 +21,7 @@ class HighHandWidget extends StatelessWidget {
       CardObject card = CardHelper.getCard(cardValue);
       card.smaller = true;
       card.highHandLog = true;
-      cardViews.add(VisibleCardView(card: card));
+      cardViews.add(card.widget);
     }
     return Row(children: cardViews);
   }

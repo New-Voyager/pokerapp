@@ -10,9 +10,15 @@ class AppAssets {
   static const String cityBackground2 =
       'assets/images/backgrounds/city_background_2.png';
 
+  static const String goldNamePlate =
+      'assets/images/name_plates/gold_name_plate.png';
+  static const String silverNamePlate =
+      'assets/images/name_plates/silver_name_plate.png';
+
   static const String fontFamilyLato = 'Lato';
   static const String fontFamilyNoticia = 'NoticiaText';
   static const String fontFamilySourceSerif = 'SourceSerif';
+  static const String fontFamilyTrocchi = 'Trocchi';
 
   static const String fireworkGif = 'assets/images/fireworks.gif';
 

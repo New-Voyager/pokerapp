@@ -81,8 +81,8 @@ class UserView extends StatelessWidget {
             ],
           ),
 
-          // cards
-          isMe
+          /*
+          *   isMe
               ? UserViewUtilWidgets.buildVisibleCard(
                   playerFolded: userObject.playerFolded,
                   cards: userObject.cards?.map(
@@ -95,15 +95,18 @@ class UserView extends StatelessWidget {
                       )?.toList() ??
                       List<CardObject>(),
                 )
-              : emptySeat
-                  ? shrinkedSizedBox
-                  : UserViewUtilWidgets.buildHiddenCard(
-                      alignment: this.cardsAlignment,
-                      emptySeat: emptySeat,
-                      cardNo: userObject.noOfCardsVisible,
-                      seatPos: seatPos,
-                      userObject: userObject,
-                    ),
+              :
+          *
+          * */
+          emptySeat
+              ? shrinkedSizedBox
+              : UserViewUtilWidgets.buildHiddenCard(
+                  alignment: this.cardsAlignment,
+                  emptySeat: emptySeat,
+                  cardNo: userObject.noOfCardsVisible,
+                  seatPos: seatPos,
+                  userObject: userObject,
+                ),
 
           // hidden cards show only for the folding animation
           isMe && (userObject.playerFolded ?? false)

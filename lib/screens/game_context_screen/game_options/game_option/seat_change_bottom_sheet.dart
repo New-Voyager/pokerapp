@@ -10,7 +10,9 @@ import 'package:pokerapp/services/game_play/graphql/game_service.dart'
     as gameService;
 
 class SeatChangeBottomSheet extends StatefulWidget {
-  SeatChangeBottomSheet();
+  final String gameCode;
+  final String playerUuid;
+  SeatChangeBottomSheet(this.gameCode, this.playerUuid);
   @override
   _SeatChangeBottomSheetState createState() => _SeatChangeBottomSheetState();
 }
@@ -18,23 +20,23 @@ class SeatChangeBottomSheet extends StatefulWidget {
 class _SeatChangeBottomSheetState extends State<SeatChangeBottomSheet> {
   double height, width;
   bool isSeatChange = false;
-  HeaderObject headerObject;
   List<SeatChangeModel> allPlayersWantToChange = [];
   bool isSwitchShow = false;
-
   @override
   void initState() {
     super.initState();
-    headerObject = Provider.of<HeaderObject>(context, listen: false);
     getAllSeatChangePlayers();
     getAllCurretlyPlayingPlayer();
   }
 
   getAllCurretlyPlayingPlayer() async {
     GameInfoModel _gameInfoModel =
-        await gameService.GameService.getGameInfo(headerObject.gameCode);
+        await gameService.GameService.getGameInfo(widget.gameCode);
+    if (_gameInfoModel == null) {
+      return false;
+    }
     _gameInfoModel.playersInSeats.forEach((element) {
-      if (element.playerUuid == headerObject.playerUuid) {
+      if (element.playerUuid == widget.playerUuid) {
         setState(() {
           isSwitchShow = true;
         });
@@ -43,12 +45,12 @@ class _SeatChangeBottomSheetState extends State<SeatChangeBottomSheet> {
   }
 
   getAllSeatChangePlayers() async {
-    final result = await GameService.listOfSeatChange(headerObject.gameCode);
+    final result = await GameService.listOfSeatChange(widget.gameCode);
     if (result != null) {
       setState(() {
         allPlayersWantToChange = result;
         allPlayersWantToChange.forEach((player) {
-          if (player.playerUuid == headerObject.playerUuid) {
+          if (player.playerUuid == widget.playerUuid) {
             isSeatChange = true;
           }
         });
@@ -60,8 +62,8 @@ class _SeatChangeBottomSheetState extends State<SeatChangeBottomSheet> {
   Widget build(BuildContext context) {
     height = MediaQuery.of(context).size.height;
     width = MediaQuery.of(context).size.width;
-    print("headerObject ${headerObject.playerUuid}");
-    print("headerObject ${headerObject.playerId}");
+    print("playerUuid ${widget.playerUuid}");
+    print("gameCode ${widget.gameCode}");
     return Container(
       color: Colors.black,
       height: height / 2,
@@ -168,12 +170,12 @@ class _SeatChangeBottomSheetState extends State<SeatChangeBottomSheet> {
                     if (isSeatChange) {
                       // want to seat change
                       String result = await GameService.requestForSeatChange(
-                          headerObject.gameCode);
+                          widget.gameCode);
                       print("result $result");
                     } else {
                       // do not want to seat change
                       String result = await GameService.requestForSeatChange(
-                          headerObject.gameCode);
+                          widget.gameCode);
                       print("result $result");
                     }
                     getAllSeatChangePlayers();
