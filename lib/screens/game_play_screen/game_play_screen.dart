@@ -6,7 +6,7 @@ import 'package:flutter_sound/flutter_sound.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/resources/app_constants.dart';
-import 'package:pokerapp/screens/club_screen/games_page_view/game_chat/chat.dart';
+import 'package:pokerapp/screens/game_context_screen/game_chat/chat.dart';
 import 'package:pokerapp/screens/game_play_screen/game_play_screen_util_methods.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/board_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/decorative_views/background_view.dart';
@@ -252,7 +252,8 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                         ),
 
                         // footer section
-                        FooterView(this._gameComService),
+                        FooterView(this._gameComService, widget.gameCode,
+                            _currentPlayer.uuid),
                       ],
                     ),
 

@@ -1,21 +1,63 @@
-import 'package:flip_card/flip_card.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
-import 'package:pokerapp/resources/app_dimensions.dart';
-import 'package:pokerapp/resources/card_back_assets.dart';
-import 'package:pokerapp/widgets/card_view.dart';
-import 'package:provider/provider.dart';
-
-// TODO: WHY IS THIS BUILD FUNCTION BEING REBUILD EVERYTIME SOMETHING IN THE UI CHANGES?
-
 import 'dart:developer';
 
-class VisibleCardViewDelete extends StatelessWidget {
+import 'package:flip_card/flip_card.dart';
+import 'package:flutter/material.dart';
+import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
+import 'package:pokerapp/resources/app_dimensions.dart';
+import 'package:pokerapp/screens/game_play_screen/card_views/visible_card_view.dart';
+import 'package:pokerapp/widgets/card_view.dart';
+import 'package:provider/provider.dart';
+import 'package:pokerapp/resources/card_back_assets.dart';
+
+const double pullUpOffset = -15.0;
+
+class CommunityCardsView extends StatelessWidget {
+  final List<CardObject> cards;
+  final bool horizontal;
+
+  CommunityCardsView({
+    @required this.cards,
+    this.horizontal = true,
+  });
+
+  List<Widget> getCommunityCards() {
+    final reversedList = this.cards.reversed.toList();
+    var widgets = List<Widget>();
+    for (var card in reversedList) {
+      var c = Transform.translate(
+        offset: Offset(
+          0.0,
+          card.highlight ? pullUpOffset : 0.0,
+        ),
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 3.0),
+          child: CommunityCardView(card: card),
+        ),
+      );
+      widgets.add(c);
+      widgets.add(new SizedBox(
+        width: 10.0,
+      ));
+    }
+    return widgets.toList().reversed.toList();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (cards == null) return const SizedBox.shrink();
+
+    return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: cards.isEmpty ? [SizedBox.shrink()] : getCommunityCards());
+  }
+}
+
+class CommunityCardView extends StatelessWidget {
   final GlobalKey<FlipCardState> cardKey = GlobalKey<FlipCardState>();
 
   // TODO: REFACTOR THIS VIEW
   CardView cardView;
-  VisibleCardViewDelete({
+  CommunityCardView({
     @required card,
     grayOut = false,
     widthRatio = 1.5,
@@ -27,8 +69,6 @@ class VisibleCardViewDelete extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool isNotCommunityCard =
-        cardView.card != null ? cardView.card.smaller : false;
     Widget cardWidget = cardView.buildCardWidget(context);
     /* for visible cards, the smaller card size is shown to the left of user,
     * and the bigger size is shown as the community card */
@@ -43,7 +83,7 @@ class VisibleCardViewDelete extends StatelessWidget {
     log('This is being build');
 
     return Transform.scale(
-      scale: isNotCommunityCard ? 0.85 : 1.4,
+      scale: 1.4,
       child: Container(
         height: cardView.height,
         width: cardView.width,

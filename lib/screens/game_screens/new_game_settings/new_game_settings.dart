@@ -1,17 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/game/new_game_provider.dart';
 import 'package:pokerapp/models/rewards_model.dart';
 import 'package:pokerapp/resources/app_colors.dart';
-import 'package:pokerapp/screens/club_screen/games_page_view/new_game_settings/game_timing_settings/action_time_select.dart';
-import 'package:pokerapp/screens/club_screen/games_page_view/new_game_settings/game_timing_settings/game_length_select.dart';
-import 'package:pokerapp/screens/club_screen/games_page_view/new_game_settings/ingame_settings/blinds_select.dart';
-import 'package:pokerapp/screens/club_screen/games_page_view/new_game_settings/ingame_settings/buyin_ranges_select.dart';
-import 'package:pokerapp/screens/club_screen/games_page_view/new_game_settings/ingame_settings/club_tips_select.dart';
-import 'package:pokerapp/screens/club_screen/games_page_view/new_game_settings/ingame_settings/game_type_select.dart';
-import 'package:pokerapp/screens/club_screen/games_page_view/new_game_settings/ingame_settings/max_player_select.dart';
-import 'package:pokerapp/screens/club_screen/games_page_view/new_game_settings/ingame_settings/rewards_list.dart';
 import 'package:pokerapp/screens/game_play_screen/game_play_screen.dart';
 import 'package:pokerapp/screens/game_play_screen/user_view/user_view.dart';
 import 'package:pokerapp/services/app/rewards_service.dart';
@@ -19,7 +12,14 @@ import 'package:pokerapp/services/game_play/graphql/game_service.dart';
 import 'package:pokerapp/widgets/custom_text_button.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../main.dart';
+import 'game_timing_settings/action_time_select.dart';
+import 'game_timing_settings/game_length_select.dart';
+import 'ingame_settings/blinds_select.dart';
+import 'ingame_settings/buyin_ranges_select.dart';
+import 'ingame_settings/club_tips_select.dart';
+import 'ingame_settings/game_type_select.dart';
+import 'ingame_settings/max_player_select.dart';
+import 'ingame_settings/rewards_list.dart';
 
 class NewGameSettings extends StatefulWidget {
   final String clubCode;

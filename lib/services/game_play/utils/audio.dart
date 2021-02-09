@@ -11,11 +11,15 @@ class Audio {
     String assetFile,
   }) async {
     return -1;
+
     String tempAssetFile = Provider.of<ValueNotifier<Map<String, String>>>(
       context,
       listen: false,
     ).value[assetFile];
     try {
+      if (tempAssetFile == null) {
+        return -1;
+      }
       return Provider.of<AudioPlayer>(
         context,
         listen: false,
