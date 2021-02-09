@@ -1,6 +1,6 @@
 import 'dart:core';
 
-import 'package:pokerapp/resources/localization/localization.dart';
+//import 'package:pokerapp/resources/localization/localization.dart';
 
 class EnglishLocalization {
   Map<int, String> _localizedValues;
@@ -18,8 +18,9 @@ class EnglishLocalization {
   }
 
   tabNames() {
-    _localizedValues[ResourceId.MAIN_MYPROFILE] = 'My Profile';
+    /*   _localizedValues[ResourceId.MAIN_MYPROFILE] = 'My Profile';
     _localizedValues[ResourceId.MAIN_TAB_CLUBS] = 'Clubs';
     _localizedValues[ResourceId.MAIN_TAB_GAMES] = 'Games';
+  */
   }
 }
