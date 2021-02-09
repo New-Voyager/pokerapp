@@ -63,35 +63,29 @@ class UserViewUtilWidgets {
     @required playerFolded,
   }) =>
       Transform.scale(
-        scale: 1.7,
-        child: Transform.translate(
-          offset: Offset(
-            0.0,
-            -20.0,
-          ),
-          child: GestureDetector(
-            onLongPressEnd: (_) {
-              log('cards: onLongPressEND');
-              for (var card in cards) {
-                card.cardShowBack();
-              }
-            },
-            onLongPress: () {
-              log('cards: onLongPress');
-              for (var card in cards) {
-                card.cardShowFront();
-              }
-            },
-            onDoubleTap: () {
-              log('cards: onDoubleTap');
-              for (int i = 0; i < cards.length; i++) {
-                cards[i].flipCard();
-              }
-            },
-            child: StackCardView(
-              cards: cards,
-              deactivated: playerFolded ?? false,
-            ),
+        scale: 1.0,
+        child: GestureDetector(
+          onLongPressEnd: (_) {
+            log('cards: onLongPressEND');
+            for (var card in cards) {
+              card.cardShowBack();
+            }
+          },
+          onLongPress: () {
+            log('cards: onLongPress');
+            for (var card in cards) {
+              card.cardShowFront();
+            }
+          },
+          onDoubleTap: () {
+            log('cards: onDoubleTap');
+            for (int i = 0; i < cards.length; i++) {
+              cards[i].flipCard();
+            }
+          },
+          child: StackCardView(
+            cards: cards,
+            deactivated: playerFolded ?? false,
           ),
         ),
       );

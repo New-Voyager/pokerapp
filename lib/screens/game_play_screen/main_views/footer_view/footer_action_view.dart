@@ -51,9 +51,10 @@ class _FooterActionViewState extends State<FooterActionView> {
         child: AnimatedContainer(
           duration: AppConstants.fastAnimationDuration,
           curve: Curves.bounceInOut,
-          height: 60.0,
-          width: 60.0,
-          padding: const EdgeInsets.all(10.0),
+          height: 40.0,
+          width: 40.0,
+          margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+          padding: const EdgeInsets.all(5.0),
           decoration: BoxDecoration(
             color: isSelected ? const Color(0xff319ffe) : Colors.transparent,
             shape: BoxShape.circle,
@@ -219,7 +220,8 @@ class _FooterActionViewState extends State<FooterActionView> {
   }
 
   Widget _buildTopActionRow(PlayerAction playerAction) => Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.max,
         children: playerAction?.actions?.map<Widget>(
               (playerAction) {
                 switch (playerAction.actionName) {
