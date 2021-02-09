@@ -13,13 +13,14 @@ import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/screens/game_play_screen/card_views/hidden_card_view.dart';
 import 'package:pokerapp/screens/game_play_screen/card_views/stack_card_view.dart';
-import 'package:pokerapp/screens/game_play_screen/user_view/animating_widgets/chip_amount_animating_widget.dart';
-import 'package:pokerapp/screens/game_play_screen/user_view/animating_widgets/fold_card_animating_widget.dart';
-import 'package:pokerapp/screens/game_play_screen/user_view/count_down_timer.dart';
-import 'package:pokerapp/screens/game_play_screen/user_view/dealer_button.dart';
-import 'package:pokerapp/screens/game_play_screen/user_view/user_view_util_methods.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:provider/provider.dart';
+
+import 'animating_widgets/chip_amount_animating_widget.dart';
+import 'animating_widgets/fold_card_animating_widget.dart';
+import 'count_down_timer.dart';
+import 'dealer_button.dart';
+import 'user_view_util_methods.dart';
 
 class UserViewUtilWidgets {
   UserViewUtilWidgets._();

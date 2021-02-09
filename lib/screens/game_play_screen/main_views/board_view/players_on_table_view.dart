@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/ui/user_object.dart';
-import 'package:pokerapp/screens/game_play_screen/user_view/user_view.dart';
+import 'package:pokerapp/screens/game_play_screen/player_view/player_view.dart';
 
 import 'board_view_util_methods.dart';
 
@@ -159,7 +159,7 @@ class PlayersOnTableView extends StatelessWidget {
     if (seatPos == 6 || seatPos == 7 || seatPos == 8 || seatPos == 9)
       cardsAlignment = Alignment.centerLeft;
 
-    UserView userView = UserView(
+    PlayerView userView = PlayerView(
       isPresent: isPresent,
       seatPos: seatPos,
       key: ValueKey(seatPos),

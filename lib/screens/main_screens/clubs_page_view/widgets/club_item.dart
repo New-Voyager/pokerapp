@@ -5,8 +5,6 @@ import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/resources/app_styles.dart';
-import 'package:pokerapp/screens/game_play_screen/main_views/header_view/header_view.dart';
-import 'package:pokerapp/screens/game_play_screen/user_view/user_view.dart';
 import 'package:pokerapp/widgets/custom_text_button.dart';
 
 class ClubItemView extends StatelessWidget {

@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pokerapp/models/game_play_models/business/player_model.dart';
-import 'package:pokerapp/models/game_play_models/ui/user_object.dart';
 import 'package:pokerapp/resources/app_constants.dart';
-import 'package:pokerapp/screens/game_play_screen/user_view/user_view.dart';
 import 'dart:math' as math;
 
 /* collection of all methods used by the board_view widget */

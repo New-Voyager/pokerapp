@@ -7,7 +7,7 @@ import 'package:pokerapp/screens/game_play_screen/main_views/animating_widgets/c
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/center_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/decorative_views/table_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/players_on_table_view.dart';
-import 'package:pokerapp/screens/game_play_screen/user_view/animating_widgets/stack_switch_seat_animating_widget.dart';
+import 'package:pokerapp/screens/game_play_screen/player_view/animating_widgets/stack_switch_seat_animating_widget.dart';
 import 'package:provider/provider.dart';
 
 const _centerViewOffset = const Offset(0.0, 60.0);
@@ -43,12 +43,15 @@ class BoardView extends StatelessWidget {
 
     /* finally the view */
     return Stack(
-      alignment: isBoardHorizontal ? Alignment.topCenter : Alignment.center,
+      alignment: Alignment.center,
       children: [
         // game board view
-        TableView(
-          heightOfBoard,
-          widthOfBoard,
+        Align(
+          alignment: Alignment.center,
+          child: TableView(
+            heightOfBoard,
+            widthOfBoard,
+          ),
         ),
 
         Consumer<Players>(
@@ -60,35 +63,41 @@ class BoardView extends StatelessWidget {
               heightOfBoard: heightOfBoard,
               onUserTap: onUserTap);
         }),
+
         // center view
-        Consumer2<TableState, ValueNotifier<FooterStatus>>(
-          builder: (
-            _,
-            TableState tableState,
-            ValueNotifier<FooterStatus> valueNotifierFooterStatus,
-            __,
-          ) =>
-              Transform.translate(
-            offset: isBoardHorizontal ? _centerViewOffset : _noOffset,
-            child: CenterView(
-              isBoardHorizontal,
-              tableState.cards,
-              tableState.potChips,
-              double.parse(tableState.potChipsUpdates != null
-                  ? tableState.potChipsUpdates.toString()
-                  : '0.0'),
-              tableState.tableStatus,
-              valueNotifierFooterStatus.value == FooterStatus.Result,
-              onStartGame,
-            ),
-          ),
-        ),
+        Align(
+            alignment: Alignment.center,
+            child: Consumer2<TableState, ValueNotifier<FooterStatus>>(
+              builder: (
+                _,
+                TableState tableState,
+                ValueNotifier<FooterStatus> valueNotifierFooterStatus,
+                __,
+              ) =>
+                  Transform.translate(
+                offset: isBoardHorizontal ? _centerViewOffset : _noOffset,
+                child: CenterView(
+                  isBoardHorizontal,
+                  tableState.cards,
+                  tableState.potChips,
+                  double.parse(tableState.potChipsUpdates != null
+                      ? tableState.potChipsUpdates.toString()
+                      : '0.0'),
+                  tableState.tableStatus,
+                  valueNotifierFooterStatus.value == FooterStatus.Result,
+                  onStartGame,
+                ),
+              ),
+            )),
 
         /* distributing card animation widgets */
-        Transform.translate(
-          offset: isBoardHorizontal ? _cardDistributionInitOffset : _noOffset,
-          child: CardDistributionAnimatingWidget(),
-        ),
+        Align(
+            alignment: Alignment.center,
+            child: Transform.translate(
+              offset:
+                  isBoardHorizontal ? _cardDistributionInitOffset : _noOffset,
+              child: CardDistributionAnimatingWidget(),
+            )),
 
         /* this widget is used to show animating of stacks in case user changes seats */
         Align(

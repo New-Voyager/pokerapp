@@ -6,7 +6,6 @@ import 'package:pokerapp/models/game/new_game_provider.dart';
 import 'package:pokerapp/models/rewards_model.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/screens/game_play_screen/game_play_screen.dart';
-import 'package:pokerapp/screens/game_play_screen/user_view/user_view.dart';
 import 'package:pokerapp/services/app/rewards_service.dart';
 import 'package:pokerapp/services/game_play/graphql/game_service.dart';
 import 'package:pokerapp/widgets/custom_text_button.dart';

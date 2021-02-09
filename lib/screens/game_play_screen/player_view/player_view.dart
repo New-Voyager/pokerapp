@@ -3,25 +3,23 @@ import 'package:flutter/widgets.dart';
 import 'package:pokerapp/enums/game_play_enums/player_type.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
-import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/user_object.dart';
 import 'package:pokerapp/resources/app_assets.dart';
-import 'package:pokerapp/screens/game_play_screen/user_view/animating_widgets/stack_switch_seat_animating_widget.dart';
-import 'package:pokerapp/screens/game_play_screen/user_view/name_plate_view.dart';
-import 'package:pokerapp/screens/game_play_screen/user_view/user_view_util_widgets.dart';
-import 'package:pokerapp/utils/card_helper.dart';
 import 'package:provider/provider.dart';
 
+import 'animating_widgets/stack_switch_seat_animating_widget.dart';
 import 'dealer_button.dart';
+import 'name_plate_view.dart';
+import 'user_view_util_widgets.dart';
 
-class UserView extends StatelessWidget {
+class PlayerView extends StatelessWidget {
   final int seatPos;
   final UserObject userObject;
   final Alignment cardsAlignment;
   final Function(int) onUserTap;
   final bool isPresent;
 
-  UserView({
+  PlayerView({
     Key key,
     @required this.seatPos,
     @required this.userObject,
