@@ -105,66 +105,64 @@ class _GameChatState extends State<GameChat> {
   @override
   Widget build(BuildContext context) {
     height = MediaQuery.of(context).size.height;
-    return SingleChildScrollView(
-      child: Container(
-        color: AppColors.screenBackgroundColor,
-        padding:
-            EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-        height: isEmojiVisible || isKeyboardVisible || isGiphyVisible
-            ? 2 * height / 3
-            : height / 3,
-        child: Column(
-          children: [
-            SizedBox(
-              height: 10,
-            ),
-            Expanded(
-              child: ListView.builder(
-                controller: _scrollController,
-                itemCount: chatMessages.length,
-                shrinkWrap: true,
-                itemBuilder: (contex, index) {
-                  return Container(
-                    padding: EdgeInsets.all(5),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          chatMessages[index].type.toString() + ' : ',
-                          style: AppStyles.clubCodeStyle,
-                        ),
-                        chatMessages[index].text != null
-                            ? Text(
-                                chatMessages[index].text,
-                                style: AppStyles.itemInfoSecondaryTextStyle,
-                              )
-                            : CachedNetworkImage(
-                                imageUrl: chatMessages[index].giphyLink,
-                                height: 150,
-                                width: 150,
-                                placeholder: (_, __) => Center(
-                                  child: SizedBox(
-                                      height: 50,
-                                      width: 50,
-                                      child: CircularProgressIndicator()),
-                                ),
-                                fit: BoxFit.cover,
+    return Container(
+      color: AppColors.screenBackgroundColor,
+      padding:
+          EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+      height: isEmojiVisible || isKeyboardVisible || isGiphyVisible
+          ? 2 * height / 3
+          : height / 3,
+      child: Column(
+        children: [
+          SizedBox(
+            height: 10,
+          ),
+          Expanded(
+            child: ListView.builder(
+              controller: _scrollController,
+              itemCount: chatMessages.length,
+              shrinkWrap: true,
+              itemBuilder: (contex, index) {
+                return Container(
+                  padding: EdgeInsets.all(5),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        chatMessages[index].type.toString() + ' : ',
+                        style: AppStyles.clubCodeStyle,
+                      ),
+                      chatMessages[index].text != null
+                          ? Text(
+                              chatMessages[index].text,
+                              style: AppStyles.itemInfoSecondaryTextStyle,
+                            )
+                          : CachedNetworkImage(
+                              imageUrl: chatMessages[index].giphyLink,
+                              height: 150,
+                              width: 150,
+                              placeholder: (_, __) => Center(
+                                child: SizedBox(
+                                    height: 50,
+                                    width: 50,
+                                    child: CircularProgressIndicator()),
                               ),
-                      ],
-                    ),
-                  );
-                },
-              ),
+                              fit: BoxFit.cover,
+                            ),
+                    ],
+                  ),
+                );
+              },
             ),
-            inputBox(),
-            Offstage(
-              child: EmojiPickerWidget(
-                onEmojiSelected: onEmojiSelected,
-              ),
-              offstage: !isEmojiVisible,
+          ),
+          inputBox(),
+          Offstage(
+            child: EmojiPickerWidget(
+              onEmojiSelected: onEmojiSelected,
             ),
-          ],
-        ),
+            offstage: !isEmojiVisible,
+          ),
+        ],
       ),
     );
   }

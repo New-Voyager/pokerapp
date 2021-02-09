@@ -9,6 +9,7 @@ import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/screens/game_context_screen/game_chat/chat.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/footer_action_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/other_views/context_view.dart';
 import 'package:pokerapp/screens/game_play_screen/user_view/user_view_util_widgets.dart';
@@ -18,6 +19,9 @@ import 'package:pokerapp/utils/card_helper.dart';
 import 'package:pokerapp/widgets/round_raised_button.dart';
 import 'package:provider/provider.dart';
 import 'package:timer_count_down/timer_count_down.dart';
+
+import 'communication_view.dart';
+import 'hand_analyse_view.dart';
 
 class FooterView extends StatelessWidget {
   final GameComService gameComService;
@@ -92,9 +96,12 @@ class FooterView extends StatelessWidget {
       //       footerResult: footerResult,
       //     ),
       //   );
+      case FooterStatus.Result:
+        return Container();
       case FooterStatus.None:
-        return GameContextView(
-            this.gameCode, this.playerUuid, this.gameComService.chat);
+        return Container();
+      /*return GameContextView(
+            this.gameCode, this.playerUuid, this.gameComService.chat);*/
     }
 
     return null;
@@ -116,42 +123,54 @@ class FooterView extends StatelessWidget {
           }
 
           return Container(
-            height: 250,
-            child: Column(
+            height: 300,
+            color: Colors.amber,
+            child: Stack(
               children: [
-                /* if current player is playing, show the cards here */
                 playerModel == null
                     ? const SizedBox.shrink()
-                    : UserViewUtilWidgets.buildVisibleCard(
-                        playerFolded: playerModel?.playerFolded ?? false,
-                        cards: playerModel?.cards?.map(
-                              (int c) {
-                                CardObject card = CardHelper.getCard(c);
-                                card.smaller = true;
-                                card.cardFace = CardFace.FRONT;
+                    : Column(
+                        children: [
+                          UserViewUtilWidgets.buildVisibleCard(
+                            playerFolded: playerModel?.playerFolded ?? false,
+                            cards: playerModel?.cards?.map(
+                                  (int c) {
+                                    CardObject card = CardHelper.getCard(c);
+                                    card.smaller = true;
+                                    card.cardFace = CardFace.FRONT;
 
-                                return card;
-                              },
-                            )?.toList() ??
-                            List<CardObject>(),
+                                    return card;
+                                  },
+                                )?.toList() ??
+                                List<CardObject>(),
+                          ),
+                          _build(
+                            footerStatusValueNotifier.value,
+                            context: context,
+                          ),
+                          Expanded(child: GameChat(this.gameComService.chat))
+                        ],
                       ),
-                Container(
-                  height: 190,
-                  child: AnimatedSwitcher(
-                    switchInCurve: Curves.bounceInOut,
-                    switchOutCurve: Curves.bounceInOut,
-                    duration: AppConstants.fastAnimationDuration,
-                    reverseDuration: AppConstants.fastAnimationDuration,
-                    transitionBuilder: (widget, animation) => ScaleTransition(
-                      scale: animation,
-                      child: widget,
-                    ),
-                    child: _build(
-                      footerStatusValueNotifier.value,
-                      context: context,
-                    ),
-                  ),
-                ),
+                /*Container(
+                      height: 190,
+                      child: AnimatedSwitcher(
+                        switchInCurve: Curves.bounceInOut,
+                        switchOutCurve: Curves.bounceInOut,
+                        duration: AppConstants.fastAnimationDuration,
+                        reverseDuration: AppConstants.fastAnimationDuration,
+                        transitionBuilder: (widget, animation) =>
+                            ScaleTransition(
+                          scale: animation,
+                          child: widget,
+                        ),
+                        child: _build(
+                          footerStatusValueNotifier.value,
+                          context: context,
+                        ),
+                      ),
+                    ),*/
+                HandAnalyseView(),
+                CommunicationView()
               ],
             ),
           );
