@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
@@ -65,11 +67,31 @@ class UserViewUtilWidgets {
         child: Transform.translate(
           offset: Offset(
             0.0,
-            80.0,
+            -20.0,
           ),
-          child: StackCardView(
-            cards: cards,
-            deactivated: playerFolded ?? false,
+          child: GestureDetector(
+            onLongPressEnd: (_) {
+              log('cards: onLongPressEND');
+              for (var card in cards) {
+                card.cardShowBack();
+              }
+            },
+            onLongPress: () {
+              log('cards: onLongPress');
+              for (var card in cards) {
+                card.cardShowFront();
+              }
+            },
+            onDoubleTap: () {
+              log('cards: onDoubleTap');
+              for (int i = 0; i < cards.length; i++) {
+                cards[i].flipCard();
+              }
+            },
+            child: StackCardView(
+              cards: cards,
+              deactivated: playerFolded ?? false,
+            ),
           ),
         ),
       );

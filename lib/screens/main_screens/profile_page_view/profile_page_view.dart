@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/rewards_model.dart';
 import 'package:pokerapp/screens/auth_screens/login_screen.dart';
 import 'package:pokerapp/screens/game_context_screen/game_options/game_option_bottom_sheet.dart';
 import 'package:pokerapp/screens/game_play_screen/card_views/animations/animating_shuffle_card_view.dart';
+import 'package:pokerapp/screens/game_play_screen/card_views/stack_card_view.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
+import 'package:pokerapp/utils/card_helper.dart';
 import 'package:provider/provider.dart';
 
 class ProfilePageView extends StatefulWidget {
@@ -12,14 +15,8 @@ class ProfilePageView extends StatefulWidget {
 }
 
 class _ProfilePageViewState extends State<ProfilePageView> {
-  bool showAnimation = false;
-  void toggle() async {
-    await showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      builder: (ctx) => GameOptionsBottomSheet(),
-    );
-  }
+  List<CardObject> cards =
+      [200, 196].map((e) => CardHelper.getCard(e)).toList();
 
   @override
   Widget build(BuildContext context) {
@@ -32,27 +29,16 @@ class _ProfilePageViewState extends State<ProfilePageView> {
             color: Colors.white10,
             height: 200.0,
             width: double.infinity,
-            child: showAnimation
-                ? Transform.scale(
-                    scale: 3.0,
-                    child: AnimatingShuffleCardView(),
-                  )
-                : Container(
-                    child: Center(
-                      child: Text(
-                        'EMPTY',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20.0,
-                        ),
-                      ),
-                    ),
-                  ),
+            child: StackCardView(
+              cards: cards,
+            ),
           ),
           Spacer(),
           RaisedButton(
-            child: Text('TOGGLE'),
-            onPressed: toggle,
+            child: Text('FLIP'),
+            onPressed: () {
+              for (var card in cards) card.flipCard();
+            },
           ),
           Spacer(),
           RaisedButton(

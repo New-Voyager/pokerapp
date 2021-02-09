@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:pokerapp/models/game_history_model.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
-import 'package:pokerapp/screens/game_play_screen/card_views/visible_card_view.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 
 class HighhandWidget extends StatelessWidget {
@@ -22,7 +21,7 @@ class HighhandWidget extends StatelessWidget {
     for (int cardValue in cards) {
       CardObject card = CardHelper.getCard(cardValue);
       card.smaller = true;
-      cardViews.add(VisibleCardView(card: card));
+      cardViews.add(card.widget);
     }
     return Row(children: cardViews);
   }

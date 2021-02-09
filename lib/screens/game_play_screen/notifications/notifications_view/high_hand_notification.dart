@@ -82,7 +82,6 @@ class HighHandNotification extends StatelessWidget {
                             [4, 1, 200, 196, 8]
                                 .map((c) => CardHelper.getCard(c))
                                 .toList(),
-                        isCommunity: true,
                       ),
                     ),
                   ),

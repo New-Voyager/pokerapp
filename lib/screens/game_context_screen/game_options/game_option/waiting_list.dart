@@ -10,7 +10,9 @@ import 'package:pokerapp/services/game_play/graphql/game_service.dart'
     as gameService;
 
 class WaitingListBottomSheet extends StatefulWidget {
-  WaitingListBottomSheet();
+  final String gameCode;
+  final String playerUuid;
+  WaitingListBottomSheet(this.gameCode, this.playerUuid);
   @override
   _WaitingListBottomSheetState createState() => _WaitingListBottomSheetState();
 }
@@ -18,14 +20,12 @@ class WaitingListBottomSheet extends StatefulWidget {
 class _WaitingListBottomSheetState extends State<WaitingListBottomSheet> {
   double height, width;
   bool isInWaitingList = false;
-  HeaderObject headerObject;
   List<WaitingListModel> allWaitingListPlayers = [];
   bool ischanged = false;
   bool isSwitchShow = true;
   @override
   void initState() {
     super.initState();
-    headerObject = Provider.of<HeaderObject>(context, listen: false);
 
     getAllCurretlyPlayingPlayer();
     getAllWaitingPlayers();
@@ -33,9 +33,12 @@ class _WaitingListBottomSheetState extends State<WaitingListBottomSheet> {
 
   getAllCurretlyPlayingPlayer() async {
     GameInfoModel _gameInfoModel =
-        await gameService.GameService.getGameInfo(headerObject.gameCode);
+        await gameService.GameService.getGameInfo(widget.gameCode);
+    if (_gameInfoModel == null) {
+      return false;
+    }
     _gameInfoModel.playersInSeats.forEach((element) {
-      if (element.playerUuid == headerObject.playerUuid) {
+      if (element.playerUuid == widget.playerUuid) {
         setState(() {
           isSwitchShow = false;
         });
@@ -44,15 +47,15 @@ class _WaitingListBottomSheetState extends State<WaitingListBottomSheet> {
   }
 
   getAllWaitingPlayers() async {
-    final result = await GameService.listOfWaitingPlayer(headerObject.gameCode);
-    print("headerObject.gameCode ${headerObject.gameCode}");
-    print("headerObject.gameCode ${headerObject.playerUuid}");
+    final result = await GameService.listOfWaitingPlayer(widget.gameCode);
+    print("headerObject.gameCode ${widget.gameCode}");
+    print("headerObject.gameCode ${widget.playerUuid}");
 
     if (result != null) {
       setState(() {
         allWaitingListPlayers = result;
         allWaitingListPlayers.forEach((player) {
-          if (player.playerUuid == headerObject.playerUuid) {
+          if (player.playerUuid == widget.playerUuid) {
             isInWaitingList = true;
           }
         });
@@ -215,12 +218,12 @@ class _WaitingListBottomSheetState extends State<WaitingListBottomSheet> {
                       isInWaitingList = value;
                     });
                     if (isInWaitingList) {
-                      bool result = await GameService.addToWaitList(
-                          headerObject.gameCode);
+                      bool result =
+                          await GameService.addToWaitList(widget.gameCode);
                       print("result dasda $result");
                     } else {
-                      bool result = await GameService.removeFromWaitlist(
-                          headerObject.gameCode);
+                      bool result =
+                          await GameService.removeFromWaitlist(widget.gameCode);
                       print("result check $result");
                     }
                     getAllWaitingPlayers();
@@ -278,7 +281,7 @@ class _WaitingListBottomSheetState extends State<WaitingListBottomSheet> {
                                 ischanged = false;
                               });
                               GameService.changeWaitListOrderList(
-                                  headerObject.gameCode, uuids);
+                                  widget.gameCode, uuids);
                             },
                             child: Text(
                               "Apply",

@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:pokerapp/screens/game_play_screen/card_views/visible_card_view.dart';
+import 'package:pokerapp/screens/game_play_screen/card_views/community_card_view.dart';
+import 'package:pokerapp/widgets/card_view.dart';
+
+enum CardFace {
+  FRONT,
+  BACK,
+}
 
 class CardObject {
   // card information
@@ -13,40 +19,71 @@ class CardObject {
   bool highHandLog;
 
   bool isShownAtTable;
+  bool isCommunity;
 
   /* this is needed in showdown and
   while highlighting a winner */
   bool highlight;
   bool otherHighlightColor;
 
-  VisibleCardView visibleCard;
+  CardView cardView;
+  CommunityCardView communityCardView;
+
+  CardFace cardFace;
 
   CardObject({
     @required this.suit,
     @required this.label,
     @required this.color,
+    this.isCommunity = false,
     this.smaller = false,
     this.highlight = false,
     this.isShownAtTable = false,
     this.highHandLog = false, // this is true for the community cards
+    this.cardFace = CardFace.FRONT,
   }) {
-    this.visibleCard = VisibleCardView(
-      card: this,
-    );
+    if (this.isCommunity) {
+      this.communityCardView = CommunityCardView(
+        card: this,
+      );
+    } else {
+      this.cardView = CardView(
+        card: this,
+      );
+    }
 
     this.empty = false;
   }
 
   bool isEmpty() => this.empty;
 
-  void flipCard() => this.visibleCard.flipCard();
+  void cardShowFront() {
+    if (cardFace == CardFace.FRONT) return;
+    flipCard();
+  }
 
-  Widget get widget => this.visibleCard;
+  void cardShowBack() {
+    if (cardFace == CardFace.BACK) return;
+    flipCard();
+  }
 
-  Widget get grayedWidget => VisibleCardView(
-        card: this,
-        grayOut: true,
-      );
+  void flipCard() {
+    if (cardFace == CardFace.BACK)
+      cardFace = CardFace.FRONT;
+    else
+      cardFace = CardFace.BACK;
+    if (this.isCommunity) {
+      this.communityCardView.flipCard();
+    }
+  }
+
+  Widget get widget {
+    if (this.isCommunity) {
+      return this.communityCardView;
+    } else {
+      return this.cardView;
+    }
+  }
 
   @override
   String toString() =>

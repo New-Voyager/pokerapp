@@ -92,7 +92,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
     _gameComService.gameToPlayerChannelStream.listen((nats.Message message) {
       if (!_gameComService.active) return;
 
-      log('gameToPlayerChannel(${message.subject}): ${message.string}');
+      // log('gameToPlayerChannel(${message.subject}): ${message.string}');
 
       /* This stream will receive game related messages
       * e.g.
@@ -109,7 +109,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
     _gameComService.handToAllChannelStream.listen((nats.Message message) {
       if (!_gameComService.active) return;
 
-      log('handToAllChannel(${message.subject}): ${message.string}');
+      // log('handToAllChannel(${message.subject}): ${message.string}');
 
       /* This stream receives hand related messages that is common to all players
       * e.g
@@ -126,7 +126,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
     _gameComService.handToPlayerChannelStream.listen((nats.Message message) {
       if (!_gameComService.active) return;
 
-      log('handToPlayerChannel(${message.subject}): ${message.string}');
+      // log('handToPlayerChannel(${message.subject}): ${message.string}');
 
       /* This stream receives hand related messages that is specific to THIS player only
       * e.g
@@ -252,7 +252,8 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                         ),
 
                         // footer section
-                        FooterView(this._gameComService),
+                        FooterView(this._gameComService, widget.gameCode,
+                            _currentPlayer.uuid),
                       ],
                     ),
 
