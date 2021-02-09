@@ -192,4 +192,12 @@ class Players extends ChangeNotifier {
     int idx = _players.indexWhere((p) => p.seatNo == seatNo);
     _players.removeAt(idx);
   }
+
+  PlayerModel get me {
+    PlayerModel tmp = this._players.firstWhere(
+          (u) => u.isMe,
+          orElse: () => null,
+        );
+    return tmp;
+  }
 }
