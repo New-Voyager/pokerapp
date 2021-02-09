@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_model.dart';
-import 'package:pokerapp/models/game_play_models/ui/header_object.dart';
 import 'package:pokerapp/models/option_item_model.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/screens/club_screen/club_games_page_view.dart';
 import 'package:pokerapp/services/app/game_service.dart';
-import 'package:provider/provider.dart';
 
 import 'game_option/game_option.dart';
 import 'pending_approvals_option.dart';
 
 class GameOptionsBottomSheet extends StatefulWidget {
-  GameOptionsBottomSheet({Key key}) : super(key: key);
+  String gameCode;
+  String playerUuid;
+  GameOptionsBottomSheet(this.gameCode, this.playerUuid);
 
   @override
   _GameOptionsState createState() => _GameOptionsState();
@@ -50,30 +50,29 @@ class _GameOptionsState extends State<GameOptionsBottomSheet> {
               },
             ),
           ),
-          Consumer<HeaderObject>(
-            builder: (context, value, _) => Expanded(
-              child: selectedOptionIndex == 0
-                  ? GameOption(
-                      gameCode: value.gameCode,
-                    )
-                  : selectedOptionIndex == 1
-                      ? SingleChildScrollView(
-                          child: FutureBuilder<List<GameModel>>(
-                              future: GameService.getLiveGames(),
-                              builder: (context, snapshot) {
-                                if (snapshot.connectionState ==
-                                    ConnectionState.done) {
-                                  List<GameModel> allLiveGames = [];
-                                  if (snapshot.data != null) {}
-                                  allLiveGames = snapshot.data;
-                                  return ClubGamesPageView(allLiveGames);
-                                }
-                                return Center(
-                                  child: CircularProgressIndicator(),
-                                );
-                              }))
-                      : PendingApprovalsOption(),
-            ),
+          Expanded(
+            child: selectedOptionIndex == 0
+                ? GameOption(
+                    widget.gameCode,
+                    widget.playerUuid,
+                  )
+                : selectedOptionIndex == 1
+                    ? SingleChildScrollView(
+                        child: FutureBuilder<List<GameModel>>(
+                            future: GameService.getLiveGames(),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.done) {
+                                List<GameModel> allLiveGames = [];
+                                if (snapshot.data != null) {}
+                                allLiveGames = snapshot.data;
+                                return ClubGamesPageView(allLiveGames);
+                              }
+                              return Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            }))
+                    : PendingApprovalsOption(),
           ),
         ],
       ),

@@ -13,9 +13,6 @@ import 'package:pokerapp/screens/game_play_screen/main_views/board_view/decorati
 import 'package:pokerapp/screens/game_play_screen/user_view/animating_widgets/stack_switch_seat_animating_widget.dart';
 import 'package:provider/provider.dart';
 
-const _widthMultiplier = 0.78;
-const _heightMultiplier = 1.40;
-
 const _centerViewOffset = const Offset(0.0, 60.0);
 const _cardDistributionInitOffset = const Offset(0.0, 90.0);
 const _noOffset = const Offset(0.0, 0.0);
@@ -31,6 +28,8 @@ class BoardView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var _widthMultiplier = 0.78;
+    var _heightMultiplier = 2.0;
     double width = MediaQuery.of(context).size.width;
     double heightOfBoard = width * _widthMultiplier * _heightMultiplier;
     double widthOfBoard = width * _widthMultiplier;

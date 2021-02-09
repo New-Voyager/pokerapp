@@ -252,7 +252,8 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                         ),
 
                         // footer section
-                        FooterView(this._gameComService),
+                        FooterView(this._gameComService, widget.gameCode,
+                            _currentPlayer.uuid),
                       ],
                     ),
 

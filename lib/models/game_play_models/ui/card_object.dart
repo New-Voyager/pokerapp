@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:pokerapp/screens/game_play_screen/card_views/visible_card_view.dart';
+import 'package:pokerapp/screens/game_play_screen/card_views/community_card_view.dart';
+import 'package:pokerapp/widgets/card_view.dart';
 
 enum CardFace {
   FRONT,
@@ -18,13 +19,15 @@ class CardObject {
   bool highHandLog;
 
   bool isShownAtTable;
+  bool isCommunity;
 
   /* this is needed in showdown and
   while highlighting a winner */
   bool highlight;
   bool otherHighlightColor;
 
-  VisibleCardView visibleCard;
+  CardView cardView;
+  CommunityCardView communityCardView;
 
   CardFace cardFace;
 
@@ -32,15 +35,22 @@ class CardObject {
     @required this.suit,
     @required this.label,
     @required this.color,
+    this.isCommunity = false,
     this.smaller = false,
     this.highlight = false,
     this.isShownAtTable = false,
     this.highHandLog = false, // this is true for the community cards
     this.cardFace = CardFace.FRONT,
   }) {
-    this.visibleCard = VisibleCardView(
-      card: this,
-    );
+    if (this.isCommunity) {
+      this.communityCardView = CommunityCardView(
+        card: this,
+      );
+    } else {
+      this.cardView = CardView(
+        card: this,
+      );
+    }
 
     this.empty = false;
   }
@@ -62,16 +72,18 @@ class CardObject {
       cardFace = CardFace.FRONT;
     else
       cardFace = CardFace.BACK;
-
-    this.visibleCard.flipCard();
+    if (this.isCommunity) {
+      this.communityCardView.flipCard();
+    }
   }
 
-  Widget get widget => this.visibleCard;
-
-  Widget get grayedWidget => VisibleCardView(
-        card: this,
-        grayOut: true,
-      );
+  Widget get widget {
+    if (this.isCommunity) {
+      return this.communityCardView;
+    } else {
+      return this.cardView;
+    }
+  }
 
   @override
   String toString() =>
