@@ -1,15 +1,12 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
-import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/animating_widgets/card_distribution_animating_widget.dart';
-import 'package:pokerapp/screens/game_play_screen/main_views/board_view/board_view_util_methods.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/center_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/decorative_views/table_view.dart';
+import 'package:pokerapp/screens/game_play_screen/main_views/board_view/players_on_table_view.dart';
 import 'package:pokerapp/screens/game_play_screen/user_view/animating_widgets/stack_switch_seat_animating_widget.dart';
 import 'package:provider/provider.dart';
 
@@ -55,94 +52,47 @@ class BoardView extends StatelessWidget {
         ),
 
         Consumer<Players>(
-          builder: (_, Players players, __) {
-            // dealing with players
-            PlayerModel tmp = players.players.firstWhere(
-              (u) => u.isMe,
-              orElse: () => null,
-            );
-            bool isPresent = tmp != null;
+            builder: (BuildContext context, Players players, Widget child) {
+          return PlayersOnTableView(
+              players: players,
+              isBoardHorizontal: isBoardHorizontal,
+              widthOfBoard: widthOfBoard,
+              heightOfBoard: heightOfBoard,
+              onUserTap: onUserTap);
+        }),
+        // center view
+        Consumer2<TableState, ValueNotifier<FooterStatus>>(
+          builder: (
+            _,
+            TableState tableState,
+            ValueNotifier<FooterStatus> valueNotifierFooterStatus,
+            __,
+          ) =>
+              Transform.translate(
+            offset: isBoardHorizontal ? _centerViewOffset : _noOffset,
+            child: CenterView(
+              isBoardHorizontal,
+              tableState.cards,
+              tableState.potChips,
+              double.parse(tableState.potChipsUpdates != null
+                  ? tableState.potChipsUpdates.toString()
+                  : '0.0'),
+              tableState.tableStatus,
+              valueNotifierFooterStatus.value == FooterStatus.Result,
+              onStartGame,
+            ),
+          ),
+        ),
 
-            return Transform(
-              transform: BoardViewUtilMethods.getTransformationMatrix(
-                isBoardHorizontal: isBoardHorizontal,
-              ),
-              alignment: Alignment.center,
-              child: Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: isBoardHorizontal ? 20.0 : 10.0,
-                  vertical: isBoardHorizontal ? 120 : 30,
-                ),
-                child: Stack(
-                  alignment: isBoardHorizontal
-                      ? Alignment.topCenter
-                      : Alignment.center,
-                  children: [
-                    // position the users
-                    ...BoardViewUtilMethods.getUserObjects(players.players)
-                        .asMap()
-                        .entries
-                        .map(
-                          (var u) => BoardViewUtilMethods.positionUser(
-                            isBoardHorizontal: isBoardHorizontal,
-                            user: u.value,
-                            heightOfBoard: heightOfBoard,
-                            widthOfBoard: widthOfBoard,
-                            seatPos:
-                                BoardViewUtilMethods.getAdjustedSeatPosition(
-                              u.key,
-                              isPresent,
-                              tmp?.seatNo,
-                            ),
-                            isPresent: isPresent,
-                            onUserTap: onUserTap,
-                          ),
-                        )
-                        .toList(),
+        /* distributing card animation widgets */
+        Transform.translate(
+          offset: isBoardHorizontal ? _cardDistributionInitOffset : _noOffset,
+          child: CardDistributionAnimatingWidget(),
+        ),
 
-                    // center view
-                    Consumer2<TableState, ValueNotifier<FooterStatus>>(
-                      builder: (
-                        _,
-                        TableState tableState,
-                        ValueNotifier<FooterStatus> valueNotifierFooterStatus,
-                        __,
-                      ) =>
-                          Transform.translate(
-                        offset:
-                            isBoardHorizontal ? _centerViewOffset : _noOffset,
-                        child: CenterWidget(
-                          isBoardHorizontal,
-                          tableState.cards,
-                          tableState.potChips,
-                          double.parse(tableState.potChipsUpdates != null
-                              ? tableState.potChipsUpdates.toString()
-                              : '0.0'),
-                          tableState.tableStatus,
-                          valueNotifierFooterStatus.value ==
-                              FooterStatus.Result,
-                          onStartGame,
-                        ),
-                      ),
-                    ),
-
-                    /* distributing card animation widgets */
-                    Transform.translate(
-                      offset: isBoardHorizontal
-                          ? _cardDistributionInitOffset
-                          : _noOffset,
-                      child: CardDistributionAnimatingWidget(),
-                    ),
-
-                    /* this widget is used to show animating of stacks in case user changes seats */
-                    Align(
-                      child: StackSwitchSeatAnimatingWidget(),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          },
+        /* this widget is used to show animating of stacks in case user changes seats */
+        Align(
+          child: StackSwitchSeatAnimatingWidget(),
         ),
       ],
     );

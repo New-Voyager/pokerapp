@@ -12,7 +12,7 @@ import 'package:provider/provider.dart';
 
 import 'board_view_util_methods.dart';
 
-class CenterWidget extends StatelessWidget {
+class CenterView extends StatelessWidget {
   static const _cardDistributionAnimationWidgetOffset = const Offset(0.0, 30.0);
   static const _noOffset = const Offset(0.0, 0.0);
   final String tableStatus;
@@ -23,7 +23,7 @@ class CenterWidget extends StatelessWidget {
   final bool isBoardHorizontal;
   final double potChipsUpdates;
 
-  CenterWidget(this.isBoardHorizontal, this.cards, this.potChips,
+  CenterView(this.isBoardHorizontal, this.cards, this.potChips,
       this.potChipsUpdates, this.tableStatus, this.showDown, this.onStartGame);
 
   @override
