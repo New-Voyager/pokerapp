@@ -79,9 +79,11 @@ class QueryCurrentHandService {
     tableState.notifyAll();
 
     // remainingActionTime
-    int remainingActionTime = int.parse(
-      currentHandState['remainingActionTime'].toString(),
-    );
+    int remainingActionTime = currentHandState['remainingActionTime'] != null
+        ? int.parse(
+            currentHandState['remainingActionTime'].toString(),
+          )
+        : 0;
 
     // put the remaining time in the provider
     Provider.of<RemainingTime>(

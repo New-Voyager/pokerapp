@@ -33,42 +33,31 @@ class PlayersOnTableView extends StatelessWidget {
         isBoardHorizontal: isBoardHorizontal,
       ),
       alignment: Alignment.center,
-      child: Padding(
-        // padding: EdgeInsets.symmetric(
-        //   horizontal: isBoardHorizontal ? 20.0 : 10.0,
-        //   vertical: isBoardHorizontal ? 140 : 30,
-        // ),
-        padding: EdgeInsets.only(
-            left: isBoardHorizontal ? 20.0 : 10.0,
-            right: isBoardHorizontal ? 20.0 : 10.0,
-            top: isBoardHorizontal ? 350 : 30,
-            bottom: 0),
-        child: Stack(
-          alignment: isBoardHorizontal ? Alignment.topCenter : Alignment.center,
-          children: [
-            // position the users
-            ...this
-                .getUserObjects(players.players)
-                .asMap()
-                .entries
-                .map(
-                  (var u) => this.positionUser(
-                    isBoardHorizontal: isBoardHorizontal,
-                    user: u.value,
-                    heightOfBoard: heightOfBoard,
-                    widthOfBoard: widthOfBoard,
-                    seatPos: getAdjustedSeatPosition(
-                      u.key,
-                      me != null,
-                      me?.seatNo,
-                    ),
-                    isPresent: me != null,
-                    onUserTap: onUserTap,
+      child: Stack(
+        alignment: isBoardHorizontal ? Alignment.topCenter : Alignment.center,
+        children: [
+          // position the users
+          ...this
+              .getUserObjects(players.players)
+              .asMap()
+              .entries
+              .map(
+                (var u) => this.positionUser(
+                  isBoardHorizontal: isBoardHorizontal,
+                  user: u.value,
+                  heightOfBoard: heightOfBoard,
+                  widthOfBoard: widthOfBoard,
+                  seatPos: getAdjustedSeatPosition(
+                    u.key,
+                    me != null,
+                    me?.seatNo,
                   ),
-                )
-                .toList(),
-          ],
-        ),
+                  isPresent: me != null,
+                  onUserTap: onUserTap,
+                ),
+              )
+              .toList(),
+        ],
       ),
     );
   }
@@ -192,7 +181,7 @@ class PlayersOnTableView extends StatelessWidget {
           child: Transform.translate(
             offset: Offset(
               shiftHorizontalConstant - 10,
-              -heightOfBoard / 2.5,
+              heightOfBoard / 3,
             ),
             child: userView,
           ),
@@ -205,7 +194,7 @@ class PlayersOnTableView extends StatelessWidget {
             offset: Offset(
               -20.0,
               isBoardHorizontal
-                  ? -heightOfBoard / 2 - 70
+                  ? heightOfBoard / 2.5 - 100
                   : -30.0 + shiftDownConstant,
             ),
             child: userView,
@@ -219,7 +208,7 @@ class PlayersOnTableView extends StatelessWidget {
             offset: Offset(
               -25.0,
               isBoardHorizontal
-                  ? -heightOfBoard / 2 - 190
+                  ? -heightOfBoard / 2 - 20
                   : -heightOfBoard / 2.8 + shiftDownConstant,
             ),
             child: userView,
@@ -235,7 +224,7 @@ class PlayersOnTableView extends StatelessWidget {
                   ? -widthOfBoard / 3.8 + shiftHorizontalConstant + 20
                   : -widthOfBoard / 3.8 + shiftHorizontalConstant,
               isBoardHorizontal
-                  ? -heightOfBoard * 1.6
+                  ? -heightOfBoard / 10
                   : -shiftDownConstant / 1.5,
             ),
             child: userView,
@@ -249,7 +238,7 @@ class PlayersOnTableView extends StatelessWidget {
             offset: Offset(
               widthOfBoard / 5 - shiftHorizontalConstant,
               isBoardHorizontal
-                  ? -heightOfBoard * 1.6
+                  ? -heightOfBoard / 10
                   : -shiftDownConstant / 1.5,
             ),
             child: userView,
@@ -263,7 +252,7 @@ class PlayersOnTableView extends StatelessWidget {
             offset: Offset(
               15.0,
               isBoardHorizontal
-                  ? -heightOfBoard * 1.4
+                  ? -heightOfBoard + 80
                   : -heightOfBoard / 2.8 + shiftDownConstant,
             ),
             child: userView,
@@ -277,7 +266,7 @@ class PlayersOnTableView extends StatelessWidget {
             offset: Offset(
               15.0,
               isBoardHorizontal
-                  ? -heightOfBoard / 1.2
+                  ? -heightOfBoard / 2 + 80
                   : -30.0 + shiftDownConstant,
             ),
             child: userView,
@@ -290,7 +279,7 @@ class PlayersOnTableView extends StatelessWidget {
           child: Transform.translate(
             offset: Offset(
               -shiftHorizontalConstant,
-              -heightOfBoard / 2.5,
+              heightOfBoard / 3,
             ),
             child: userView,
           ),

@@ -43,10 +43,7 @@ class FoldCardAnimatingWidget extends StatelessWidget {
         builder: (_, offset, child) {
           double offsetPercentageLeft =
               1 - (offset.dx / offsetMapping[seatPos].dx);
-          print('offset: $offset');
-
           // todo: the opacity change can be smoothed out
-
           return Transform.translate(
             offset: offset,
             child: Opacity(
