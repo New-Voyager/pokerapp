@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pokerapp/models/game_play_models/ui/header_object.dart';
+import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/screens/game_context_screen/game_options/game_option_bottom_sheet.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/header_view/header_view_util_widgets.dart';
-import 'package:pokerapp/services/game_play/game_chat_service.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/services/game_play/graphql/game_service.dart';
 import 'package:pokerapp/widgets/custom_text_button.dart';
@@ -77,22 +78,46 @@ class HeaderView extends StatelessWidget {
                     ),
 
                     /* fixme: temporary place for end game */
+
                     Align(
                       alignment: Alignment.centerRight,
-                      child: Column(
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
-                          Visibility(
+                          /*Visibility(
                             visible: !obj.gameEnded,
                             child: CustomTextButton(
                               text: 'End Game',
                               onTap: () => endGame(context, obj),
                             ),
                           ),
-                          SizedBox(height: 10),
+                          SizedBox(height: 10),*/
                           CustomTextButton(
                             text: 'start',
                             onTap: () => GamePlayScreenUtilMethods.startGame(
                               obj.gameCode,
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () async {
+                              await showModalBottomSheet(
+                                context: context,
+                                isScrollControlled: true,
+                                builder: (ctx) => GameOptionsBottomSheet(
+                                    obj.gameCode,
+                                    _gameComService.currentPlayer.uuid),
+                              );
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.black,
+                              ),
+                              padding: EdgeInsets.all(5),
+                              child: Icon(
+                                Icons.more_horiz,
+                                color: AppColors.appAccentColor,
+                              ),
                             ),
                           ),
                         ],

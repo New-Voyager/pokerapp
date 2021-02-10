@@ -274,7 +274,11 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                       ),
                       isChatVisible
                           ? Align(
-                              child: GameChat(this._gameComService.chat),
+                              child: GameChat(this._gameComService.chat, () {
+                                setState(() {
+                                  isChatVisible = !isChatVisible;
+                                });
+                              }),
                               alignment: Alignment.bottomCenter,
                             )
                           : Container(),
