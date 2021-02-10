@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 
 class CommunicationView extends StatelessWidget {
+  final Function chatVisibilityChange;
+  CommunicationView(this.chatVisibilityChange);
   @override
   Widget build(BuildContext context) {
     return Align(
@@ -18,7 +20,7 @@ class CommunicationView extends StatelessWidget {
           ),
           Container(
             padding: EdgeInsets.symmetric(vertical: 5),
-            color: AppColors.lightGrayTextColor,
+            color: Colors.black,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -27,6 +29,7 @@ class CommunicationView extends StatelessWidget {
                   child: Icon(
                     Icons.mic,
                     size: 35,
+                    color: AppColors.appAccentColor,
                   ),
                 ),
                 Container(
@@ -34,13 +37,18 @@ class CommunicationView extends StatelessWidget {
                   child: Icon(
                     Icons.volume_up,
                     size: 35,
+                    color: AppColors.appAccentColor,
                   ),
                 ),
-                Container(
-                  padding: EdgeInsets.all(5),
-                  child: Icon(
-                    Icons.chat,
-                    size: 35,
+                GestureDetector(
+                  onTap: chatVisibilityChange,
+                  child: Container(
+                    padding: EdgeInsets.all(5),
+                    child: Icon(
+                      Icons.chat,
+                      size: 35,
+                      color: AppColors.appAccentColor,
+                    ),
                   ),
                 ),
               ],

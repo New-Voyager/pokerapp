@@ -56,7 +56,7 @@ class GameContextView extends StatelessWidget {
                 await showModalBottomSheet(
                   context: context,
                   isScrollControlled: true,
-                  builder: (ctx) => GameChat(this.chatService),
+                  builder: (ctx) => GameChat(this.chatService, () {}),
                 );
               },
               child: Container(

@@ -19,7 +19,11 @@ const int SAMPLE_RATE = 8000;
 
 class GameChat extends StatefulWidget {
   final GameChatService chatService;
-  GameChat(this.chatService);
+  final Function chatVisibilityChange;
+
+  static final GlobalKey<_GameChatState> globalKey = GlobalKey();
+
+  GameChat(this.chatService, this.chatVisibilityChange) : super(key: globalKey);
 
   @override
   _GameChatState createState() => _GameChatState();
@@ -110,12 +114,25 @@ class _GameChatState extends State<GameChat> {
       padding:
           EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
       height: isEmojiVisible || isKeyboardVisible || isGiphyVisible
-          ? 2 * height / 3
-          : height / 3,
+          ? height / 2
+          : height / 3.5,
       child: Column(
         children: [
           SizedBox(
-            height: 10,
+            height: 5,
+          ),
+          Align(
+            alignment: Alignment.centerRight,
+            child: GestureDetector(
+              onTap: widget.chatVisibilityChange,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: Icon(
+                  Icons.arrow_downward_rounded,
+                  color: AppColors.appAccentColor,
+                ),
+              ),
+            ),
           ),
           Expanded(
             child: ListView.builder(
@@ -202,11 +219,7 @@ class _GameChatState extends State<GameChat> {
                 onMicPressEnd(context, details),
             onTap: () => onSendPress(context),
             child: isMicVisible
-                ? Icon(
-                    Icons.mic,
-                    size: 25,
-                    color: Colors.white,
-                  )
+                ? Container()
                 : GestureDetector(
                     onTap: () {
                       if (controller.text.trim() != '') {
@@ -257,7 +270,9 @@ class _GameChatState extends State<GameChat> {
     if (isEmojiVisible) {
       toggleEmojiKeyboard();
     } else {
-      Navigator.pop(context);
+      toggleEmojiKeyboard();
+
+      // Navigator.pop(context);
     }
     return Future.value(false);
   }

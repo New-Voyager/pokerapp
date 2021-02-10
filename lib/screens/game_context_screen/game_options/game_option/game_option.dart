@@ -58,7 +58,8 @@ class _GameOptionState extends State<GameOption> {
             this.onLeave();
           }),
       OptionItemModel(title: "Break"),
-      OptionItemModel(title: "Reload")
+      OptionItemModel(title: "Reload"),
+      OptionItemModel(title: "End")
     ];
     gameSecondaryOptions = [
       OptionItemModel(
@@ -298,43 +299,42 @@ class _GameOptionState extends State<GameOption> {
   }
 
   gameActionItem(OptionItemModel optionItemModel) {
-    Icon icon = Icon(AppIcons.message, size: 20);
-    if (optionItemModel.iconData != null) {
-      icon = Icon(optionItemModel.iconData, size: 20);
-    }
-    return GestureDetector(
-      onTap: () {
-        if (optionItemModel.onTap != null) {
-          optionItemModel.onTap(context);
-        }
-      },
-      child: Column(
-        children: [
-          MaterialButton(
-            onPressed: () {},
-            color: Colors.blue,
-            textColor: Colors.white,
-            child: icon,
-            padding: EdgeInsets.all(5),
-            shape: CircleBorder(),
-          ),
-          Container(
-            padding: EdgeInsets.all(5),
-            child: Column(
-              children: [
-                Text(
-                  optionItemModel.title,
-                  style: TextStyle(
-                    fontFamily: AppAssets.fontFamilyLato,
-                    color: AppColors.appAccentColor,
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 5),
+      child: GestureDetector(
+        onTap: () {
+          if (optionItemModel.onTap != null) {
+            optionItemModel.onTap(context);
+          }
+        },
+        child: Column(
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.black,
+              ),
+              padding: EdgeInsets.all(10),
+              child: Icon(
+                optionItemModel.iconData ?? Icons.message,
+                size: 20,
+                color: AppColors.appAccentColor,
+              ),
             ),
-          ),
-        ],
+            Container(
+              padding: EdgeInsets.all(5),
+              child: Text(
+                optionItemModel.title,
+                style: TextStyle(
+                  fontFamily: AppAssets.fontFamilyLato,
+                  color: AppColors.appAccentColor,
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -13,7 +13,7 @@ class HandAnalyseView extends StatelessWidget {
           ),
           Container(
             padding: EdgeInsets.symmetric(vertical: 5),
-            color: AppColors.lightGrayTextColor,
+            color: Colors.black,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -22,6 +22,7 @@ class HandAnalyseView extends StatelessWidget {
                   child: Icon(
                     Icons.mic,
                     size: 35,
+                    color: AppColors.appAccentColor,
                   ),
                 ),
                 Container(
@@ -29,6 +30,7 @@ class HandAnalyseView extends StatelessWidget {
                   child: Icon(
                     Icons.volume_up,
                     size: 35,
+                    color: AppColors.appAccentColor,
                   ),
                 )
               ],
