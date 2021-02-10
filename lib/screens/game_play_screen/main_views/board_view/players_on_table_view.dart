@@ -36,7 +36,7 @@ class PlayersOnTableView extends StatelessWidget {
       child: Padding(
         padding: EdgeInsets.symmetric(
           horizontal: isBoardHorizontal ? 20.0 : 10.0,
-          vertical: isBoardHorizontal ? 120 : 30,
+          vertical: isBoardHorizontal ? 90 : 30,
         ),
         child: Stack(
           alignment: isBoardHorizontal ? Alignment.topCenter : Alignment.center,

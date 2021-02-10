@@ -8,6 +8,8 @@ import 'package:pokerapp/services/game_play/graphql/game_service.dart';
 import 'package:pokerapp/widgets/custom_text_button.dart';
 import 'package:provider/provider.dart';
 
+import '../../game_play_screen_util_methods.dart';
+
 class HeaderView extends StatelessWidget {
   final GameComService _gameComService;
   HeaderView(this._gameComService);
@@ -88,8 +90,10 @@ class HeaderView extends StatelessWidget {
                           ),
                           SizedBox(height: 10),
                           CustomTextButton(
-                            text: 'Chat',
-                            onTap: () => chatText(context, obj),
+                            text: 'start',
+                            onTap: () => GamePlayScreenUtilMethods.startGame(
+                              obj.gameCode,
+                            ),
                           ),
                         ],
                       ),

@@ -42,6 +42,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
   BuildContext _providerContext;
   PlayerInfo _currentPlayer;
   FlutterSoundPlayer _audioPlayer = FlutterSoundPlayer();
+  bool isChatVisible = false;
   /* _init function is run only for the very first time,
   * and only once, the initial game screen is populated from here
   * also the NATS channel subscriptions are done here */
@@ -173,69 +174,79 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: Colors.black,
-        body: FutureBuilder<GameInfoModel>(
-          future: _init(),
-          initialData: null,
-          builder: (_, AsyncSnapshot<GameInfoModel> snapshot) {
-            GameInfoModel _gameInfoModel = snapshot.data;
+    return WillPopScope(
+      onWillPop: () async {
+        if (GameChat.globalKey.currentState.isEmojiVisible) {
+          GameChat.globalKey.currentState.toggleEmojiKeyboard();
+          return false;
+        } else {
+          Navigator.pop(context);
+          return true;
+        }
+      },
+      child: SafeArea(
+        child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          backgroundColor: Colors.black,
+          body: FutureBuilder<GameInfoModel>(
+            future: _init(),
+            initialData: null,
+            builder: (_, AsyncSnapshot<GameInfoModel> snapshot) {
+              GameInfoModel _gameInfoModel = snapshot.data;
 
-            // show a progress indicator if the game info object is null
-            if (_gameInfoModel == null)
-              return Center(child: CircularProgressIndicator());
+              // show a progress indicator if the game info object is null
+              if (_gameInfoModel == null)
+                return Center(child: CircularProgressIndicator());
 
-            if (_gameInfoModel.tableStatus == AppConstants.GAME_RUNNING) {
-              // query current hand to get game update
-              GameService.queryCurrentHand(
-                _gameInfoModel.gameCode,
-                _gameComService.sendPlayerToHandChannel,
-              );
-            }
-
-            return MultiProvider(
-              providers: GamePlayScreenUtilMethods.getProviders(
-                gameInfoModel: _gameInfoModel,
-                gameCode: widget.gameCode,
-                playerID: _currentPlayer.id,
-                playerUuid: _currentPlayer.uuid,
-                sendPlayerToHandChannel:
-                    _gameComService.sendPlayerToHandChannel,
-              ),
-              builder: (BuildContext context, _) {
-                this._providerContext = context;
-
-                AudioBufferService.create().then(
-                    (Map<String, String> tmpAudioFiles) =>
-                        Provider.of<ValueNotifier<Map<String, String>>>(
-                          context,
-                          listen: false,
-                        ).value = tmpAudioFiles);
-
-                // check for the current user prompt, after the following tree is built
-                // waiting for a brief moment should suffice
-                Future.delayed(
-                  AppConstants.buildWaitDuration,
-                  () => GamePlayScreenUtilMethods.checkForCurrentUserPrompt(
-                    context,
-                  ),
+              if (_gameInfoModel.tableStatus == AppConstants.GAME_RUNNING) {
+                // query current hand to get game update
+                GameService.queryCurrentHand(
+                  _gameInfoModel.gameCode,
+                  _gameComService.sendPlayerToHandChannel,
                 );
+              }
 
-                return Stack(
-                  alignment: Alignment.topCenter,
-                  children: [
-                    BackgroundView(),
+              return MultiProvider(
+                providers: GamePlayScreenUtilMethods.getProviders(
+                  gameInfoModel: _gameInfoModel,
+                  gameCode: widget.gameCode,
+                  playerID: _currentPlayer.id,
+                  playerUuid: _currentPlayer.uuid,
+                  sendPlayerToHandChannel:
+                      _gameComService.sendPlayerToHandChannel,
+                ),
+                builder: (BuildContext context, _) {
+                  this._providerContext = context;
 
-                    /* main view */
-                    Column(
-                      children: [
-                        // header section
-                        HeaderView(_gameComService),
+                  AudioBufferService.create().then(
+                      (Map<String, String> tmpAudioFiles) =>
+                          Provider.of<ValueNotifier<Map<String, String>>>(
+                            context,
+                            listen: false,
+                          ).value = tmpAudioFiles);
 
-                        // main board view
-                        Expanded(
-                          child: BoardView(
+                  // check for the current user prompt, after the following tree is built
+                  // waiting for a brief moment should suffice
+                  Future.delayed(
+                    AppConstants.buildWaitDuration,
+                    () => GamePlayScreenUtilMethods.checkForCurrentUserPrompt(
+                      context,
+                    ),
+                  );
+
+                  return Stack(
+                    alignment: Alignment.topCenter,
+                    children: [
+                      BackgroundView(),
+
+                      /* main view */
+                      Column(
+                        children: [
+                          // header section
+                          HeaderView(_gameComService),
+
+                          // main board view
+                          BoardView(
                             onUserTap: (int seatPos) =>
                                 GamePlayScreenUtilMethods.joinGame(
                               seatPos: seatPos,
@@ -246,21 +257,35 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                               widget.gameCode,
                             ),
                           ),
-                        ),
 
-                        // footer section
-                        FooterView(this._gameComService, widget.gameCode,
-                            _currentPlayer.uuid),
-                      ],
-                    ),
-
-                    /* notification view */
-                    Notifications.buildNotificationWidget(),
-                  ],
-                );
-              },
-            );
-          },
+                          // footer section
+                          Expanded(
+                            child: FooterView(this._gameComService,
+                                widget.gameCode, _currentPlayer.uuid, () {
+                              setState(() {
+                                isChatVisible = !isChatVisible;
+                              });
+                            }),
+                          ),
+                          SizedBox(
+                            height: 50,
+                          ),
+                        ],
+                      ),
+                      isChatVisible
+                          ? Align(
+                              child: GameChat(this._gameComService.chat),
+                              alignment: Alignment.bottomCenter,
+                            )
+                          : Container(),
+                      /* notification view */
+                      Notifications.buildNotificationWidget(),
+                    ],
+                  );
+                },
+              );
+            },
+          ),
         ),
       ),
     );

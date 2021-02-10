@@ -19,7 +19,9 @@ const int SAMPLE_RATE = 8000;
 
 class GameChat extends StatefulWidget {
   final GameChatService chatService;
-  GameChat(this.chatService);
+  static final GlobalKey<_GameChatState> globalKey = GlobalKey();
+
+  GameChat(this.chatService) : super(key: globalKey);
 
   @override
   _GameChatState createState() => _GameChatState();
@@ -110,8 +112,8 @@ class _GameChatState extends State<GameChat> {
       padding:
           EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
       height: isEmojiVisible || isKeyboardVisible || isGiphyVisible
-          ? 2 * height / 3
-          : height / 3,
+          ? height / 2
+          : height / 3.5,
       child: Column(
         children: [
           SizedBox(
@@ -257,7 +259,9 @@ class _GameChatState extends State<GameChat> {
     if (isEmojiVisible) {
       toggleEmojiKeyboard();
     } else {
-      Navigator.pop(context);
+      toggleEmojiKeyboard();
+
+      // Navigator.pop(context);
     }
     return Future.value(false);
   }
