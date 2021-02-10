@@ -34,10 +34,15 @@ class PlayersOnTableView extends StatelessWidget {
       ),
       alignment: Alignment.center,
       child: Padding(
-        padding: EdgeInsets.symmetric(
-          horizontal: isBoardHorizontal ? 20.0 : 10.0,
-          vertical: isBoardHorizontal ? 90 : 30,
-        ),
+        // padding: EdgeInsets.symmetric(
+        //   horizontal: isBoardHorizontal ? 20.0 : 10.0,
+        //   vertical: isBoardHorizontal ? 140 : 30,
+        // ),
+        padding: EdgeInsets.only(
+            left: isBoardHorizontal ? 20.0 : 10.0,
+            right: isBoardHorizontal ? 20.0 : 10.0,
+            top: isBoardHorizontal ? 350 : 30,
+            bottom: 0),
         child: Stack(
           alignment: isBoardHorizontal ? Alignment.topCenter : Alignment.center,
           children: [
@@ -175,7 +180,7 @@ class PlayersOnTableView extends StatelessWidget {
           child: Transform.translate(
             offset: Offset(
               0.0,
-              shiftDownConstant + 5,
+              -heightOfBoard / 2.5,
             ),
             child: userView,
           ),
@@ -187,7 +192,7 @@ class PlayersOnTableView extends StatelessWidget {
           child: Transform.translate(
             offset: Offset(
               shiftHorizontalConstant - 10,
-              heightOfBoard / 4 + shiftDownConstant,
+              -heightOfBoard / 2.5,
             ),
             child: userView,
           ),
@@ -200,7 +205,7 @@ class PlayersOnTableView extends StatelessWidget {
             offset: Offset(
               -20.0,
               isBoardHorizontal
-                  ? -50.0 + shiftDownConstant
+                  ? -heightOfBoard / 2 - 70
                   : -30.0 + shiftDownConstant,
             ),
             child: userView,
@@ -214,7 +219,7 @@ class PlayersOnTableView extends StatelessWidget {
             offset: Offset(
               -25.0,
               isBoardHorizontal
-                  ? -heightOfBoard / 1.7
+                  ? -heightOfBoard / 2 - 190
                   : -heightOfBoard / 2.8 + shiftDownConstant,
             ),
             child: userView,
@@ -229,7 +234,9 @@ class PlayersOnTableView extends StatelessWidget {
               isBoardHorizontal
                   ? -widthOfBoard / 3.8 + shiftHorizontalConstant + 20
                   : -widthOfBoard / 3.8 + shiftHorizontalConstant,
-              isBoardHorizontal ? -90 : -shiftDownConstant / 1.5,
+              isBoardHorizontal
+                  ? -heightOfBoard * 1.6
+                  : -shiftDownConstant / 1.5,
             ),
             child: userView,
           ),
@@ -241,7 +248,9 @@ class PlayersOnTableView extends StatelessWidget {
           child: Transform.translate(
             offset: Offset(
               widthOfBoard / 5 - shiftHorizontalConstant,
-              isBoardHorizontal ? -90 : -shiftDownConstant / 1.5,
+              isBoardHorizontal
+                  ? -heightOfBoard * 1.6
+                  : -shiftDownConstant / 1.5,
             ),
             child: userView,
           ),
@@ -254,7 +263,7 @@ class PlayersOnTableView extends StatelessWidget {
             offset: Offset(
               15.0,
               isBoardHorizontal
-                  ? -heightOfBoard / 2
+                  ? -heightOfBoard * 1.4
                   : -heightOfBoard / 2.8 + shiftDownConstant,
             ),
             child: userView,
@@ -268,7 +277,7 @@ class PlayersOnTableView extends StatelessWidget {
             offset: Offset(
               15.0,
               isBoardHorizontal
-                  ? -40.0 + shiftDownConstant
+                  ? -heightOfBoard / 1.2
                   : -30.0 + shiftDownConstant,
             ),
             child: userView,
@@ -281,7 +290,7 @@ class PlayersOnTableView extends StatelessWidget {
           child: Transform.translate(
             offset: Offset(
               -shiftHorizontalConstant,
-              heightOfBoard / 4 + shiftDownConstant,
+              -heightOfBoard / 2.5,
             ),
             child: userView,
           ),
