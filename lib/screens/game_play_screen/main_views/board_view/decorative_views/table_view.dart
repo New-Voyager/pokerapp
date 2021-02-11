@@ -3,7 +3,7 @@ import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/boar
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:provider/provider.dart';
 
-const innerWidth = 5.0;
+const innerWidth = 0.0;
 const outerWidth = 20.0;
 
 class TableView extends StatelessWidget {
@@ -22,9 +22,8 @@ class TableView extends StatelessWidget {
         child: FittedBox(
           fit: BoxFit.fill,
           child: Container(
-            width: width,
-            height: boardAttrObj.isOrientationHorizontal ? height + 40 : height,
-            padding: EdgeInsets.all(innerWidth),
+            width: boardAttrObj.isOrientationHorizontal ? width + 50 : width,
+            height: boardAttrObj.isOrientationHorizontal ? height : height,
             child: Image.asset(
               boardAttrObj.isOrientationHorizontal
                   ? AppAssets.horizontalTable

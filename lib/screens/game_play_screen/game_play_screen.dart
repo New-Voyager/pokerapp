@@ -177,6 +177,9 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
     var width = MediaQuery.of(context).size.width;
     var heightOfTopView = MediaQuery.of(context).size.height / 2;
 
+    bool isBoardHorizontal = true;
+    var boardDimensions = BoardView.dimensions(context, isBoardHorizontal);
+
     return WillPopScope(
       onWillPop: () async {
         if (GameChat.globalKey.currentState.isEmojiVisible) {
@@ -208,6 +211,10 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                   _gameComService.sendPlayerToHandChannel,
                 );
               }
+
+              var dividerTotalHeight = MediaQuery.of(context).size.height / 6;
+              double divider1 = 2.5 * (dividerTotalHeight / 3);
+              double divider2 = 0.5 * (dividerTotalHeight / 3);
 
               return MultiProvider(
                 providers: GamePlayScreenUtilMethods.getProviders(
@@ -250,12 +257,12 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                           // empty space to highlight the background view
                           Container(
                             width: width,
-                            height: MediaQuery.of(context).size.height / 12,
+                            height: divider1,
                           ),
                           // main board view
                           Container(
-                            width: width,
-                            height: heightOfTopView,
+                            width: boardDimensions.width,
+                            height: boardDimensions.height,
                             child: BoardView(
                               onUserTap: (int seatPos) =>
                                   GamePlayScreenUtilMethods.joinGame(
@@ -267,6 +274,10 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                                 widget.gameCode,
                               ),
                             ),
+                          ),
+                          Container(
+                            width: width,
+                            height: divider2,
                           ),
                           Divider(
                             color: Colors.amberAccent,

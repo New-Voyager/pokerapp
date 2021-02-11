@@ -73,29 +73,12 @@ class PlayerView extends StatelessWidget {
                     userObject: userObject,
                     cardsAlignment: cardsAlignment,
                   ),
-                  NamePlateWidget(userObject, emptySeat),
+                  NamePlateWidget(userObject, seatPos, emptySeat),
                 ],
               ),
             ],
           ),
 
-          /*
-          *   isMe
-              ? UserViewUtilWidgets.buildVisibleCard(
-                  playerFolded: userObject.playerFolded,
-                  cards: userObject.cards?.map(
-                        (int c) {
-                          CardObject card = CardHelper.getCard(c);
-                          card.smaller = true;
-
-                          return card;
-                        },
-                      )?.toList() ??
-                      List<CardObject>(),
-                )
-              :
-          *
-          * */
           emptySeat
               ? shrinkedSizedBox
               : UserViewUtilWidgets.buildHiddenCard(

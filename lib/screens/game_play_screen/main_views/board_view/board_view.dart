@@ -23,34 +23,47 @@ class BoardView extends StatelessWidget {
   final Function(int index) onUserTap;
   final Function() onStartGame;
 
-  @override
-  Widget build(BuildContext context) {
+  static Size dimensions(BuildContext context, bool isHorizontal) {
     var _widthMultiplier = 0.78;
     var _heightMultiplier = 2.0;
     double width = MediaQuery.of(context).size.width;
     double heightOfBoard = width * _widthMultiplier * _heightMultiplier;
     double widthOfBoard = width * _widthMultiplier;
 
+    bool isBoardHorizontal = isHorizontal;
+
+    if (isBoardHorizontal) {
+      widthOfBoard = MediaQuery.of(context).size.width;
+      heightOfBoard = MediaQuery.of(context).size.height / 2.5;
+    }
+    return Size(widthOfBoard, heightOfBoard);
+  }
+
+  @override
+  Widget build(BuildContext context) {
     bool isBoardHorizontal = Provider.of<BoardAttributesObject>(
       context,
       listen: false,
     ).isOrientationHorizontal;
-
-    if (isBoardHorizontal) {
-      widthOfBoard = MediaQuery.of(context).size.width;
-      heightOfBoard = MediaQuery.of(context).size.height / 4;
-    }
+    var dimensions = BoardView.dimensions(context, isBoardHorizontal);
+    var widthOfBoard = dimensions.width;
+    var heightOfBoard = dimensions.height;
 
     /* finally the view */
     return Stack(
       alignment: Alignment.center,
       children: [
+        // Container(
+        //   color: Colors.red,
+        //   width: MediaQuery.of(context).size.width,
+        //   height: dimensions.height,
+        // ),
         // game board view
         Align(
           alignment: Alignment.center,
           child: TableView(
-            heightOfBoard,
-            widthOfBoard,
+            dimensions.height,
+            dimensions.width,
           ),
         ),
 

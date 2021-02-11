@@ -7,10 +7,11 @@ import 'package:pokerapp/resources/app_styles.dart';
 class NamePlateWidget extends StatelessWidget {
   final UserObject userObject;
   final bool emptySeat;
+  final int seatPos;
   static const highlightColor = const Color(0xfffffff);
   static const shrinkedSizedBox = const SizedBox.shrink();
 
-  NamePlateWidget(this.userObject, this.emptySeat);
+  NamePlateWidget(this.userObject, this.seatPos, this.emptySeat);
 
   @override
   Widget build(BuildContext context) {
@@ -125,12 +126,14 @@ class NamePlateWidget extends StatelessWidget {
     );
   }
 
-  Widget _openSeat() => Container(
-        child: InkWell(
-          child: Text(
-            'Open',
-            style: AppStyles.openSeatTextStyle,
-          ),
+  Widget _openSeat() {
+    return Container(
+      child: InkWell(
+        child: Text(
+          'Open $seatPos',
+          style: AppStyles.openSeatTextStyle,
         ),
-      );
+      ),
+    );
+  }
 }
