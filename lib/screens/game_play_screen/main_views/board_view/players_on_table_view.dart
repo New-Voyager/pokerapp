@@ -33,37 +33,31 @@ class PlayersOnTableView extends StatelessWidget {
         isBoardHorizontal: isBoardHorizontal,
       ),
       alignment: Alignment.center,
-      child: Padding(
-        padding: EdgeInsets.symmetric(
-          horizontal: isBoardHorizontal ? 20.0 : 10.0,
-          vertical: isBoardHorizontal ? 90 : 30,
-        ),
-        child: Stack(
-          alignment: isBoardHorizontal ? Alignment.topCenter : Alignment.center,
-          children: [
-            // position the users
-            ...this
-                .getUserObjects(players.players)
-                .asMap()
-                .entries
-                .map(
-                  (var u) => this.positionUser(
-                    isBoardHorizontal: isBoardHorizontal,
-                    user: u.value,
-                    heightOfBoard: heightOfBoard,
-                    widthOfBoard: widthOfBoard,
-                    seatPos: getAdjustedSeatPosition(
-                      u.key,
-                      me != null,
-                      me?.seatNo,
-                    ),
-                    isPresent: me != null,
-                    onUserTap: onUserTap,
+      child: Stack(
+        alignment: isBoardHorizontal ? Alignment.topLeft : Alignment.center,
+        children: [
+          // position the users
+          ...this
+              .getUserObjects(players.players)
+              .asMap()
+              .entries
+              .map(
+                (var u) => this.positionUser(
+                  isBoardHorizontal: isBoardHorizontal,
+                  user: u.value,
+                  heightOfBoard: heightOfBoard,
+                  widthOfBoard: widthOfBoard,
+                  seatPos: getAdjustedSeatPosition(
+                    u.key,
+                    me != null,
+                    me?.seatNo,
                   ),
-                )
-                .toList(),
-          ],
-        ),
+                  isPresent: me != null,
+                  onUserTap: onUserTap,
+                ),
+              )
+              .toList(),
+        ],
       ),
     );
   }
@@ -146,14 +140,7 @@ class PlayersOnTableView extends StatelessWidget {
   }) {
     seatPos++;
 
-    double shiftDownConstant = heightOfBoard / 20;
-    double shiftHorizontalConstant = widthOfBoard / 15;
     Alignment cardsAlignment = Alignment.centerRight;
-
-    if (isBoardHorizontal) {
-      shiftDownConstant += 20;
-      if (seatPos == 1) shiftDownConstant -= 30;
-    }
 
     // left for 6, 7, 8, 9
     if (seatPos == 6 || seatPos == 7 || seatPos == 8 || seatPos == 9)
@@ -170,125 +157,224 @@ class PlayersOnTableView extends StatelessWidget {
 
     switch (seatPos) {
       case 1:
-        return Align(
-          alignment: Alignment.bottomCenter,
-          child: Transform.translate(
-            offset: Offset(
-              0.0,
-              shiftDownConstant + 5,
-            ),
-            child: userView,
-          ),
+        return Positioned(
+          bottom: 20,
+          right: widthOfBoard / 2.2,
+          child: userView,
         );
-
       case 2:
-        return Align(
-          alignment: Alignment.centerLeft,
-          child: Transform.translate(
-            offset: Offset(
-              shiftHorizontalConstant - 10,
-              heightOfBoard / 4 + shiftDownConstant,
-            ),
-            child: userView,
-          ),
+        return Positioned(
+          bottom: 30,
+          left: 10,
+          child: userView,
         );
-
       case 3:
-        return Align(
-          alignment: Alignment.centerLeft,
-          child: Transform.translate(
-            offset: Offset(
-              -20.0,
-              isBoardHorizontal
-                  ? -50.0 + shiftDownConstant
-                  : -30.0 + shiftDownConstant,
-            ),
-            child: userView,
-          ),
+        return Positioned(
+          bottom: 150,
+          left: 0,
+          child: userView,
         );
-
       case 4:
-        return Align(
-          alignment: Alignment.centerLeft,
-          child: Transform.translate(
-            offset: Offset(
-              -25.0,
-              isBoardHorizontal
-                  ? -heightOfBoard / 1.7
-                  : -heightOfBoard / 2.8 + shiftDownConstant,
-            ),
-            child: userView,
-          ),
+        return Positioned(
+          top: -40,
+          left: 0,
+          child: userView,
         );
 
       case 5:
-        return Align(
-          alignment: Alignment.topCenter,
-          child: Transform.translate(
-            offset: Offset(
-              isBoardHorizontal
-                  ? -widthOfBoard / 3.8 + shiftHorizontalConstant + 20
-                  : -widthOfBoard / 3.8 + shiftHorizontalConstant,
-              isBoardHorizontal ? -90 : -shiftDownConstant / 1.5,
-            ),
-            child: userView,
-          ),
+        return Positioned(
+          top: -60,
+          left: widthOfBoard / 3,
+          child: userView,
         );
 
       case 6:
-        return Align(
-          alignment: Alignment.topCenter,
-          child: Transform.translate(
-            offset: Offset(
-              widthOfBoard / 5 - shiftHorizontalConstant,
-              isBoardHorizontal ? -90 : -shiftDownConstant / 1.5,
-            ),
-            child: userView,
-          ),
+        return Positioned(
+          top: -60,
+          left: 1.8 * (widthOfBoard / 3),
+          child: userView,
         );
 
       case 7:
-        return Align(
-          alignment: Alignment.centerRight,
-          child: Transform.translate(
-            offset: Offset(
-              15.0,
-              isBoardHorizontal
-                  ? -heightOfBoard / 2
-                  : -heightOfBoard / 2.8 + shiftDownConstant,
-            ),
-            child: userView,
-          ),
+        return Positioned(
+          top: -30,
+          right: 0,
+          child: userView,
         );
 
       case 8:
-        return Align(
-          alignment: Alignment.centerRight,
-          child: Transform.translate(
-            offset: Offset(
-              15.0,
-              isBoardHorizontal
-                  ? -40.0 + shiftDownConstant
-                  : -30.0 + shiftDownConstant,
-            ),
-            child: userView,
-          ),
+        return Positioned(
+          right: 0,
+          bottom: 150,
+          child: userView,
         );
 
       case 9:
-        return Align(
-          alignment: Alignment.centerRight,
-          child: Transform.translate(
-            offset: Offset(
-              -shiftHorizontalConstant,
-              heightOfBoard / 4 + shiftDownConstant,
-            ),
-            child: userView,
-          ),
+        return Positioned(
+          right: 30,
+          bottom: 30,
+          child: userView,
         );
 
       default:
         return Container();
     }
+  }
+}
+
+/* this method helps to position the user in the table */
+Widget positionUserOld({
+  @required bool isBoardHorizontal,
+  UserObject user,
+  double heightOfBoard,
+  double widthOfBoard,
+  int seatPos,
+  bool isPresent,
+  Function onUserTap,
+}) {
+  seatPos++;
+
+  double shiftDownConstant = heightOfBoard / 20;
+  double shiftHorizontalConstant = widthOfBoard / 15;
+  Alignment cardsAlignment = Alignment.centerRight;
+
+  if (isBoardHorizontal) {
+    shiftDownConstant += 20;
+    if (seatPos == 1) shiftDownConstant -= 30;
+  }
+
+  // left for 6, 7, 8, 9
+  if (seatPos == 6 || seatPos == 7 || seatPos == 8 || seatPos == 9)
+    cardsAlignment = Alignment.centerLeft;
+
+  PlayerView userView = PlayerView(
+    isPresent: isPresent,
+    seatPos: seatPos,
+    key: ValueKey(seatPos),
+    userObject: user,
+    cardsAlignment: cardsAlignment,
+    onUserTap: onUserTap,
+  );
+
+  switch (seatPos) {
+    case 1:
+      return Align(
+        alignment: Alignment.bottomCenter,
+        child: Transform.translate(
+          offset: Offset(
+            0.0,
+            -heightOfBoard / 2.5,
+          ),
+          child: userView,
+        ),
+      );
+    case 2:
+      return Align(
+        alignment: Alignment.centerLeft,
+        child: Transform.translate(
+          offset: Offset(
+            shiftHorizontalConstant - 10,
+            heightOfBoard / 3,
+          ),
+          child: userView,
+        ),
+      );
+
+    case 3:
+      return Align(
+        alignment: Alignment.centerLeft,
+        child: Transform.translate(
+          offset: Offset(
+            -20.0,
+            isBoardHorizontal
+                ? heightOfBoard / 2.5 - 100
+                : -30.0 + shiftDownConstant,
+          ),
+          child: userView,
+        ),
+      );
+
+    case 4:
+      return Align(
+        alignment: Alignment.centerLeft,
+        child: Transform.translate(
+          offset: Offset(
+            -25.0,
+            isBoardHorizontal
+                ? -heightOfBoard / 2 - 20
+                : -heightOfBoard / 2.8 + shiftDownConstant,
+          ),
+          child: userView,
+        ),
+      );
+
+    case 5:
+      return Align(
+        alignment: Alignment.topCenter,
+        child: Transform.translate(
+          offset: Offset(
+            isBoardHorizontal
+                ? -widthOfBoard / 3.8 + shiftHorizontalConstant + 20
+                : -widthOfBoard / 3.8 + shiftHorizontalConstant,
+            isBoardHorizontal ? -heightOfBoard / 10 : -shiftDownConstant / 1.5,
+          ),
+          child: userView,
+        ),
+      );
+
+    case 6:
+      return Align(
+        alignment: Alignment.topCenter,
+        child: Transform.translate(
+          offset: Offset(
+            widthOfBoard / 5 - shiftHorizontalConstant,
+            isBoardHorizontal ? -heightOfBoard / 10 : -shiftDownConstant / 1.5,
+          ),
+          child: userView,
+        ),
+      );
+
+    case 7:
+      return Align(
+        alignment: Alignment.centerRight,
+        child: Transform.translate(
+          offset: Offset(
+            15.0,
+            isBoardHorizontal
+                ? -heightOfBoard + 80
+                : -heightOfBoard / 2.8 + shiftDownConstant,
+          ),
+          child: userView,
+        ),
+      );
+
+    case 8:
+      return Align(
+        alignment: Alignment.centerRight,
+        child: Transform.translate(
+          offset: Offset(
+            15.0,
+            isBoardHorizontal
+                ? -heightOfBoard / 2 + 80
+                : -30.0 + shiftDownConstant,
+          ),
+          child: userView,
+        ),
+      );
+
+    case 9:
+      return Align(
+        alignment: Alignment.centerRight,
+        child: Transform.translate(
+          offset: Offset(
+            -shiftHorizontalConstant,
+            heightOfBoard / 3,
+          ),
+          child: userView,
+        ),
+      );
+
+    default:
+      return Container();
   }
 }

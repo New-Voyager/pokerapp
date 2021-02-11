@@ -58,39 +58,6 @@ class UserViewUtilWidgets {
         ),
       );
 
-  // the following two widgets are only built for the current active player
-  static Widget buildVisibleCard({
-    List<CardObject> cards,
-    @required playerFolded,
-  }) =>
-      Transform.scale(
-        scale: 1.0,
-        child: GestureDetector(
-          onLongPressEnd: (_) {
-            log('cards: onLongPressEND');
-            for (var card in cards) {
-              card.cardShowBack();
-            }
-          },
-          onLongPress: () {
-            log('cards: onLongPress');
-            for (var card in cards) {
-              card.cardShowFront();
-            }
-          },
-          onDoubleTap: () {
-            log('cards: onDoubleTap');
-            for (int i = 0; i < cards.length; i++) {
-              cards[i].flipCard();
-            }
-          },
-          child: StackCardView(
-            cards: cards,
-            deactivated: playerFolded ?? false,
-          ),
-        ),
-      );
-
   // this widget is only shown to the dealer
   static Widget buildDealerButton({
     int seatPos,

@@ -21,24 +21,13 @@ class FooterView extends StatelessWidget {
   Widget build(BuildContext context) =>
       Consumer2<ValueNotifier<FooterStatus>, Players>(
         builder: (_, footerStatusValueNotifier, players, __) {
-          PlayerModel playerModel;
-
-          try {
-            playerModel = players.players.firstWhere(
-              (p) => p.isMe,
-              orElse: null,
-            );
-          } catch (_) {
-            playerModel = null;
-          }
-
           return Stack(
             children: [
-              playerModel == null
+              players.me == null
                   ? const SizedBox.shrink()
                   : GameAction(
                       footerStatus: footerStatusValueNotifier.value,
-                      playerModel: playerModel,
+                      playerModel: players.me,
                     ),
               HandAnalyseView(),
               CommunicationView(chatVisibilityChange)

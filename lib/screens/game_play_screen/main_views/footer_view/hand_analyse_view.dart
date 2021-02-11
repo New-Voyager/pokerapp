@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 
 class HandAnalyseView extends StatelessWidget {
@@ -19,19 +21,13 @@ class HandAnalyseView extends StatelessWidget {
               children: [
                 Container(
                   padding: EdgeInsets.all(5),
-                  child: Icon(
-                    Icons.mic,
-                    size: 35,
-                    color: AppColors.appAccentColor,
-                  ),
+                  child: Image.asset(AppAssets.cardsImage,
+                      height: 35, color: AppColors.appAccentColor),
                 ),
                 Container(
                   padding: EdgeInsets.all(5),
-                  child: Icon(
-                    Icons.volume_up,
-                    size: 35,
-                    color: AppColors.appAccentColor,
-                  ),
+                  child: Image.asset(AppAssets.cardsImage,
+                      height: 35, color: AppColors.appAccentColor),
                 )
               ],
             ),
