@@ -118,7 +118,7 @@ class GameComService {
   }
 
   GameChatService get chat {
-    // FIXME: TMP FIX TO REMOVE THE ASSERTION CHECK, MAY BE SOMETHING ELSE NEEDS TO BE DONE?
+    assert(active);
     return this._chat;
   }
 }

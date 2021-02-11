@@ -42,11 +42,10 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
   BuildContext _providerContext;
   PlayerInfo _currentPlayer;
   FlutterSoundPlayer _audioPlayer = FlutterSoundPlayer();
-  bool isChatVisible = false;
+
   /* _init function is run only for the very first time,
   * and only once, the initial game screen is populated from here
   * also the NATS channel subscriptions are done here */
-
   Future<GameInfoModel> _fetchGameInfo() async {
     GameInfoModel _gameInfoModel =
         await GameService.getGameInfo(widget.gameCode);
@@ -167,15 +166,24 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
           sampleRate: SAMPLE_RATE, codec: Codec.pcm16);
       await _audioPlayer.feedFromStream(message.audio);
       // } on PlatformException catch (err) {
-      //   log('Excpetion thrown when playing audio ${message.audio.length}. Exception: ${err.toString()}');
+      //   log('Exception thrown when playing audio ${message.audio.length}. Exception: ${err.toString()}');
       // }
     }
+  }
+
+  void toggleChatVisibility(BuildContext context) {
+    ValueNotifier<bool> chatVisibilityNotifier =
+        Provider.of<ValueNotifier<bool>>(
+      context,
+      listen: false,
+    );
+    chatVisibilityNotifier.value = !chatVisibilityNotifier.value;
   }
 
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
-    var heightOfTopView = MediaQuery.of(context).size.height / 2;
+    // var heightOfTopView = MediaQuery.of(context).size.height / 2;
 
     bool isBoardHorizontal = true;
     var boardDimensions = BoardView.dimensions(context, isBoardHorizontal);
@@ -244,72 +252,78 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                     ),
                   );
 
-                  return Stack(
-                    alignment: Alignment.topCenter,
-                    children: [
-                      BackgroundView(),
+                  /* This listenable provider takes care of showing or hiding the chat widget */
+                  return ListenableProvider<ValueNotifier<bool>>(
+                    create: (_) => ValueNotifier<bool>(false),
+                    builder: (context, _) => Stack(
+                      alignment: Alignment.topCenter,
+                      children: [
+                        BackgroundView(),
 
-                      /* main view */
-                      Column(
-                        children: [
-                          // header section
-                          HeaderView(_gameComService),
-                          // empty space to highlight the background view
-                          Container(
-                            width: width,
-                            height: divider1,
-                          ),
-                          // main board view
-                          Container(
-                            width: boardDimensions.width,
-                            height: boardDimensions.height,
-                            child: BoardView(
-                              onUserTap: (int seatPos) =>
-                                  GamePlayScreenUtilMethods.joinGame(
-                                seatPos: seatPos,
-                                gameCode: widget.gameCode,
-                              ),
-                              onStartGame: () =>
-                                  GamePlayScreenUtilMethods.startGame(
-                                widget.gameCode,
+                        /* main view */
+                        Column(
+                          children: [
+                            // header section
+                            HeaderView(_gameComService),
+                            // empty space to highlight the background view
+                            Container(
+                              width: width,
+                              height: divider1,
+                            ),
+                            // main board view
+                            Container(
+                              width: boardDimensions.width,
+                              height: boardDimensions.height,
+                              child: BoardView(
+                                onUserTap: (int seatPos) =>
+                                    GamePlayScreenUtilMethods.joinGame(
+                                  seatPos: seatPos,
+                                  gameCode: widget.gameCode,
+                                ),
+                                onStartGame: () =>
+                                    GamePlayScreenUtilMethods.startGame(
+                                  widget.gameCode,
+                                ),
                               ),
                             ),
-                          ),
-                          Container(
-                            width: width,
-                            height: divider2,
-                          ),
-                          Divider(
-                            color: Colors.amberAccent,
-                            thickness: 3,
-                          ),
-                          // footer section
-                          Expanded(
-                            child: FooterView(this._gameComService,
-                                widget.gameCode, _currentPlayer.uuid, () {
-                              setState(() {
-                                isChatVisible = !isChatVisible;
-                              });
-                            }),
-                          ),
-                          SizedBox(
-                            height: 50,
-                          ),
-                        ],
-                      ),
-                      isChatVisible
-                          ? Align(
-                              child: GameChat(this._gameComService.chat, () {
-                                setState(() {
-                                  isChatVisible = !isChatVisible;
-                                });
-                              }),
-                              alignment: Alignment.bottomCenter,
-                            )
-                          : Container(),
-                      /* notification view */
-                      Notifications.buildNotificationWidget(),
-                    ],
+                            Container(
+                              width: width,
+                              height: divider2,
+                            ),
+                            Divider(
+                              color: Colors.amberAccent,
+                              thickness: 3,
+                            ),
+                            // footer section
+                            Expanded(
+                              child: FooterView(
+                                this._gameComService,
+                                widget.gameCode,
+                                _currentPlayer.uuid,
+                                () => toggleChatVisibility(context),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 50,
+                            ),
+                          ],
+                        ),
+                        Consumer<ValueNotifier<bool>>(
+                          builder: (_, vnChatVisibility, __) =>
+                              vnChatVisibility.value
+                                  ? Align(
+                                      child: GameChat(
+                                        this._gameComService.chat,
+                                        () => toggleChatVisibility(context),
+                                      ),
+                                      alignment: Alignment.bottomCenter,
+                                    )
+                                  : const SizedBox.shrink(),
+                        ),
+                        /* notification view */
+                        Notifications.buildNotificationWidget(),
+                      ],
+                    ),
                   );
                 },
               );

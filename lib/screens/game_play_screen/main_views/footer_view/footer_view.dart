@@ -14,8 +14,12 @@ class FooterView extends StatelessWidget {
   final String gameCode;
   final String playerUuid;
   final Function chatVisibilityChange;
-  FooterView(this.gameComService, this.gameCode, this.playerUuid,
-      this.chatVisibilityChange);
+  FooterView(
+    this.gameComService,
+    this.gameCode,
+    this.playerUuid,
+    this.chatVisibilityChange,
+  );
 
   @override
   Widget build(BuildContext context) =>
