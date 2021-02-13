@@ -221,7 +221,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
               }
 
               var dividerTotalHeight = MediaQuery.of(context).size.height / 6;
-              double divider1 = 2.5 * (dividerTotalHeight / 3);
+              double divider1 = 1.5 * (dividerTotalHeight / 3);
               double divider2 = 0.5 * (dividerTotalHeight / 3);
 
               return MultiProvider(
@@ -285,10 +285,6 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                                   widget.gameCode,
                                 ),
                               ),
-                            ),
-                            Container(
-                              width: width,
-                              height: divider2,
                             ),
                             Divider(
                               color: Colors.amberAccent,
