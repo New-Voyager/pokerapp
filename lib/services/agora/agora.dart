@@ -15,6 +15,7 @@ class Agora extends ChangeNotifier {
 
   String gameCode;
   String uuid;
+  String agoraToken;
   Agora({this.gameCode, this.uuid});
   Future initEngine() async {
     engine = await RtcEngine.create(id);
@@ -46,7 +47,11 @@ class Agora extends ChangeNotifier {
     ));
   }
 
-  joinChannel() async {
+  joinChannel(String agoraToken) async {
+    this.agoraToken = agoraToken;
+    if (this.agoraToken.isEmpty) {
+      return;
+    }
     if (defaultTargetPlatform == TargetPlatform.android) {
       await Permission.microphone.request();
     }
@@ -56,6 +61,9 @@ class Agora extends ChangeNotifier {
   }
 
   leaveChannel() async {
+    if (this.agoraToken.isEmpty) {
+      return;
+    }
     await engine?.leaveChannel();
   }
 

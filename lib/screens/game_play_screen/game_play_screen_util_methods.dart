@@ -52,7 +52,7 @@ class GamePlayScreenUtilMethods {
   * the passed setPosition info is used to join the game
   * This function can be disabled, when the current user get's in the game */
 
-  static void joinGame({
+  static Future joinGame({
     @required int seatPos,
     @required String gameCode,
   }) async {

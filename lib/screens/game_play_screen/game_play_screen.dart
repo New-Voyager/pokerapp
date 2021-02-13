@@ -42,6 +42,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
   GameComService _gameComService;
   BuildContext _providerContext;
   PlayerInfo _currentPlayer;
+  String _audioToken = '';
   FlutterSoundPlayer _audioPlayer = FlutterSoundPlayer();
   Agora agora;
   /* _init function is run only for the very first time,
@@ -61,15 +62,23 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
     return _gameInfoModel;
   }
 
+  Future joinAudio() async {
+    this._audioToken = await GameService.getLiveAudioToken(widget.gameCode);
+    print('Audio token: ${this._audioToken}');
+    print('audio token: ${this._audioToken}');
+    if (this._audioToken != null && this._audioToken != '') {
+      agora.initEngine().then((_) {
+        agora.joinChannel(this._audioToken);
+      });
+    }
+  }
+
   /* The init method returns a Future of all the initial game constants
   * This method is also responsible for subscribing to the NATS channels */
 
   Future<GameInfoModel> _init() async {
     GameInfoModel _gameInfoModel = await _fetchGameInfo();
-    agora = Agora(gameCode: widget.gameCode, uuid: this._currentPlayer.uuid);
-    agora.initEngine().then((_) {
-      agora.joinChannel();
-    });
+
     _gameComService = GameComService(
       currentPlayer: this._currentPlayer,
       gameToPlayerChannel: _gameInfoModel.gameToPlayerChannel,
@@ -80,6 +89,9 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
     );
     // subscribe the NATs channels
     await _gameComService.init();
+
+    // initialize agora
+    agora = Agora(gameCode: widget.gameCode, uuid: this._currentPlayer.uuid);
 
     // open audio session
     _audioPlayer.openAudioSession(category: SessionCategory.playback);
@@ -185,6 +197,16 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
     chatVisibilityNotifier.value = !chatVisibilityNotifier.value;
   }
 
+  Future onJoinGame(int seatPos) async {
+    await GamePlayScreenUtilMethods.joinGame(
+      seatPos: seatPos,
+      gameCode: widget.gameCode,
+    );
+
+    // join audio
+    await joinAudio();
+  }
+
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
@@ -281,11 +303,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                               width: boardDimensions.width,
                               height: boardDimensions.height,
                               child: BoardView(
-                                onUserTap: (int seatPos) =>
-                                    GamePlayScreenUtilMethods.joinGame(
-                                  seatPos: seatPos,
-                                  gameCode: widget.gameCode,
-                                ),
+                                onUserTap: onJoinGame,
                                 onStartGame: () =>
                                     GamePlayScreenUtilMethods.startGame(
                                   widget.gameCode,
