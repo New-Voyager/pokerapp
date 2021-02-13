@@ -67,8 +67,11 @@ class BoardView extends StatelessWidget {
           ),
         ),
 
-        Consumer<Players>(
-            builder: (BuildContext context, Players players, Widget child) {
+        Consumer<Players>(builder: (
+          BuildContext context,
+          Players players,
+          Widget child,
+        ) {
           return PlayersOnTableView(
               players: players,
               isBoardHorizontal: isBoardHorizontal,
@@ -105,12 +108,12 @@ class BoardView extends StatelessWidget {
 
         /* distributing card animation widgets */
         Align(
-            alignment: Alignment.center,
-            child: Transform.translate(
-              offset:
-                  isBoardHorizontal ? _cardDistributionInitOffset : _noOffset,
-              child: CardDistributionAnimatingWidget(),
-            )),
+          alignment: Alignment.center,
+          child: Transform.translate(
+            offset: isBoardHorizontal ? _cardDistributionInitOffset : _noOffset,
+            child: CardDistributionAnimatingWidget(),
+          ),
+        ),
 
         /* this widget is used to show animating of stacks in case user changes seats */
         Align(

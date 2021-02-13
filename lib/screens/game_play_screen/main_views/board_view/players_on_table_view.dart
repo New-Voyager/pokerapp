@@ -33,31 +33,40 @@ class PlayersOnTableView extends StatelessWidget {
         isBoardHorizontal: isBoardHorizontal,
       ),
       alignment: Alignment.center,
-      child: Stack(
-        alignment: isBoardHorizontal ? Alignment.topLeft : Alignment.center,
-        children: [
-          // position the users
-          ...this
-              .getUserObjects(players.players)
-              .asMap()
-              .entries
-              .map(
-                (var u) => this.positionUser(
-                  isBoardHorizontal: isBoardHorizontal,
-                  user: u.value,
-                  heightOfBoard: heightOfBoard,
-                  widthOfBoard: widthOfBoard,
-                  seatPos: getAdjustedSeatPosition(
-                    u.key,
-                    me != null,
-                    me?.seatNo,
+
+      // TODO: get this offset dynamically
+      /* This offset is needed to match up the players with the background board */
+      child: Transform.translate(
+        offset: Offset(
+          0.0,
+          -40.0,
+        ),
+        child: Stack(
+          alignment: isBoardHorizontal ? Alignment.topLeft : Alignment.center,
+          children: [
+            // position the users
+            ...this
+                .getUserObjects(players.players)
+                .asMap()
+                .entries
+                .map(
+                  (var u) => this.positionUser(
+                    isBoardHorizontal: isBoardHorizontal,
+                    user: u.value,
+                    heightOfBoard: heightOfBoard,
+                    widthOfBoard: widthOfBoard,
+                    seatPos: getAdjustedSeatPosition(
+                      u.key,
+                      me != null,
+                      me?.seatNo,
+                    ),
+                    isPresent: me != null,
+                    onUserTap: onUserTap,
                   ),
-                  isPresent: me != null,
-                  onUserTap: onUserTap,
-                ),
-              )
-              .toList(),
-        ],
+                )
+                .toList(),
+          ],
+        ),
       ),
     );
   }
@@ -157,67 +166,70 @@ class PlayersOnTableView extends StatelessWidget {
 
     switch (seatPos) {
       case 1:
-        return Positioned(
-          bottom: 20,
-          right: widthOfBoard / 2.2,
+
+        // TODO: IF WE NEED TO SHIFT UP THIS PLAYER, USE TRANSLATE,
+        // TODO: IT'S RECOMMENDED NOT TO USE POSITIONED, BECAUSE USING POSITIONED, CENTERING IS NOT POSSIBLE, AND WITHOUT THIS PLAYER IN CENTER, IT MAY LOOK BAD
+        return Align(
+          alignment: Alignment.bottomCenter,
           child: userView,
         );
+
       case 2:
         return Positioned(
-          bottom: 30,
+          bottom: 20,
           left: 10,
           child: userView,
         );
+
       case 3:
-        return Positioned(
-          bottom: 150,
-          left: 0,
+        return Align(
+          alignment: Alignment.centerLeft,
           child: userView,
         );
+
       case 4:
         return Positioned(
-          top: -40,
-          left: 0,
+          top: 20,
+          left: 10,
           child: userView,
         );
 
       case 5:
         return Positioned(
-          top: -60,
-          left: widthOfBoard / 3,
+          top: 0,
+          left: widthOfBoard / 4,
           child: userView,
         );
 
       case 6:
         return Positioned(
-          top: -60,
-          left: 1.8 * (widthOfBoard / 3),
+          top: 0,
+          right: widthOfBoard / 4,
           child: userView,
         );
 
       case 7:
         return Positioned(
-          top: -30,
-          right: 0,
+          top: 20,
+          right: 10,
           child: userView,
         );
 
       case 8:
-        return Positioned(
-          right: 0,
-          bottom: 150,
+        return Align(
+          alignment: Alignment.centerRight,
           child: userView,
         );
 
       case 9:
         return Positioned(
-          right: 30,
-          bottom: 30,
+          bottom: 20,
+          right: 10,
           child: userView,
         );
 
       default:
-        return Container();
+        return const SizedBox.shrink();
     }
   }
 }
