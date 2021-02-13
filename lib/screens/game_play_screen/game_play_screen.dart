@@ -12,6 +12,7 @@ import 'package:pokerapp/screens/game_play_screen/main_views/board_view/decorati
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/footer_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/header_view/header_view.dart';
 import 'package:pokerapp/screens/game_play_screen/notifications/notifications.dart';
+import 'package:pokerapp/services/agora/agora.dart';
 import 'package:pokerapp/services/app/player_service.dart';
 import 'package:pokerapp/services/game_play/action_services/game_action_service/game_action_service.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_service/hand_action_service.dart';
@@ -42,7 +43,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
   BuildContext _providerContext;
   PlayerInfo _currentPlayer;
   FlutterSoundPlayer _audioPlayer = FlutterSoundPlayer();
-
+  Agora agora;
   /* _init function is run only for the very first time,
   * and only once, the initial game screen is populated from here
   * also the NATS channel subscriptions are done here */
@@ -65,7 +66,10 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
 
   Future<GameInfoModel> _init() async {
     GameInfoModel _gameInfoModel = await _fetchGameInfo();
-
+    agora = Agora(gameCode: widget.gameCode, uuid: this._currentPlayer.uuid);
+    agora.initEngine().then((_) {
+      agora.joinChannel();
+    });
     _gameComService = GameComService(
       currentPlayer: this._currentPlayer,
       gameToPlayerChannel: _gameInfoModel.gameToPlayerChannel,
@@ -144,6 +148,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
   /* dispose method for closing connections and un subscribing to channels */
   @override
   void dispose() {
+    agora?.disposeAgora();
     _gameComService?.dispose();
     Audio.dispose(context: _providerContext);
 
@@ -230,6 +235,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                   gameCode: widget.gameCode,
                   playerID: _currentPlayer.id,
                   playerUuid: _currentPlayer.uuid,
+                  agora: agora,
                   sendPlayerToHandChannel:
                       _gameComService.sendPlayerToHandChannel,
                 ),
