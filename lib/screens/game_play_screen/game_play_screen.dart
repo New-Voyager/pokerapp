@@ -266,7 +266,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                             // header section
                             HeaderView(_gameComService),
                             // empty space to highlight the background view
-                            Container(
+                            SizedBox(
                               width: width,
                               height: divider1,
                             ),
