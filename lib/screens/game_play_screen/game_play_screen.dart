@@ -67,8 +67,10 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
     print('Audio token: ${this._audioToken}');
     print('audio token: ${this._audioToken}');
     if (this._audioToken != null && this._audioToken != '') {
-      agora.initEngine().then((_) {
-        agora.joinChannel(this._audioToken);
+      agora.initEngine().then((_) async {
+        print('Joining audio channel ${widget.gameCode}');
+        await agora.joinChannel(this._audioToken);
+        print('Joined audio channel ${widget.gameCode}');
       });
     }
   }
@@ -91,7 +93,19 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
     await _gameComService.init();
 
     // initialize agora
-    agora = Agora(gameCode: widget.gameCode, uuid: this._currentPlayer.uuid);
+    agora = Agora(
+        gameCode: widget.gameCode,
+        uuid: this._currentPlayer.uuid,
+        playerId: this._currentPlayer.id);
+
+    // if the current player is in the table, then join audio
+    for (int i = 0; i < _gameInfoModel.playersInSeats.length; i++) {
+      if (_gameInfoModel.playersInSeats[i].playerUuid == _currentPlayer.uuid) {
+        // player is in the table
+        await this.joinAudio();
+        break;
+      }
+    }
 
     // open audio session
     _audioPlayer.openAudioSession(category: SessionCategory.playback);
@@ -160,7 +174,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
   /* dispose method for closing connections and un subscribing to channels */
   @override
   void dispose() {
-    agora?.disposeAgora();
+    agora?.disposeObject();
     _gameComService?.dispose();
     Audio.dispose(context: _providerContext);
 

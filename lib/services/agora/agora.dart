@@ -2,30 +2,30 @@ import 'dart:developer';
 import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:flutter/foundation.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:pokerapp/resources/api_keys.dart';
 
 class Agora extends ChangeNotifier {
-  // following data are jusr for testing
-  String id = "32bf46ef6f7d4af698d633b7b09a2aa3";
-  String token =
-      "00632bf46ef6f7d4af698d633b7b09a2aa3IAB3yZiKTpaiMliECTmVM48rMhftRqc9VgMPOQTFpUS6geLcsooAAAAAEABFd1n8nNUoYAEAAQCb1Shg";
-
   RtcEngine engine;
 
   bool isJoined = false, openMicrophone = true, enableSpeakerphone = true;
 
   String gameCode;
   String uuid;
+  int playerId;
   String agoraToken;
-  Agora({this.gameCode, this.uuid});
+  Agora({this.gameCode, this.uuid, this.playerId});
   Future initEngine() async {
-    engine = await RtcEngine.create(id);
+    engine = await RtcEngine.create(ApiKeys.AGORA_API_KEY);
     this._addListeners();
     await engine.enableAudio();
     await engine.setChannelProfile(ChannelProfile.LiveBroadcasting);
     await engine.setClientRole(ClientRole.Broadcaster);
   }
 
-  void disposeAgora() {
+  void disposeObject() {
+    if (isJoined) {
+      leaveChannel();
+    }
     engine?.destroy();
   }
 
@@ -34,15 +34,11 @@ class Agora extends ChangeNotifier {
     engine?.setEventHandler(RtcEngineEventHandler(
       joinChannelSuccess: (channel, uid, elapsed) {
         log('joinChannelSuccess ${channel} ${uid} ${elapsed}');
-        /* setState(() {
-          isJoined = true;
-        });*/
+        isJoined = true;
       },
       leaveChannel: (stats) {
         log('leaveChannel ${stats.toJson()}');
-        /*  setState(() {
-          isJoined = false;
-        });*/
+        isJoined = false;
       },
     ));
   }
@@ -56,8 +52,8 @@ class Agora extends ChangeNotifier {
       await Permission.microphone.request();
     }
     print("gameCode $gameCode uuid $uuid");
-    await engine?.joinChannel(
-        token, 'test1', null, 0); //test1 = gameCode , 0 =uuid
+    await engine?.joinChannel(this.agoraToken, this.gameCode, null,
+        this.playerId); //test1 = gameCode , 0 =uuid
   }
 
   leaveChannel() async {
