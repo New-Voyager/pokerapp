@@ -18,6 +18,7 @@ import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/boar
 import 'package:pokerapp/models/game_play_models/ui/header_object.dart';
 import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/resources/card_back_assets.dart';
+import 'package:pokerapp/services/agora/agora.dart';
 import 'package:pokerapp/services/game_play/graphql/game_service.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
@@ -51,7 +52,7 @@ class GamePlayScreenUtilMethods {
   * the passed setPosition info is used to join the game
   * This function can be disabled, when the current user get's in the game */
 
-  static void joinGame({
+  static Future joinGame({
     @required int seatPos,
     @required String gameCode,
   }) async {
@@ -75,6 +76,7 @@ class GamePlayScreenUtilMethods {
     @required String gameCode,
     @required int playerID,
     @required String playerUuid,
+    @required Agora agora,
     @required Function(String) sendPlayerToHandChannel,
   }) =>
       [
@@ -209,6 +211,11 @@ class GamePlayScreenUtilMethods {
         * is used only when QUERY_CURRENT_HAND message is processed */
         ListenableProvider<RemainingTime>(
           create: (_) => RemainingTime(),
+        ),
+
+        /* communication provider */
+        ListenableProvider<ValueNotifier<Agora>>(
+          create: (_) => ValueNotifier(agora),
         ),
       ];
 }
