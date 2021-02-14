@@ -120,10 +120,7 @@ class BoardView extends StatelessWidget {
         /* distributing card animation widgets */
         Align(
           alignment: Alignment.center,
-          child: Transform.translate(
-            offset: isBoardHorizontal ? _cardDistributionInitOffset : _noOffset,
-            child: CardDistributionAnimatingWidget(),
-          ),
+          child: CardDistributionAnimatingWidget(),
         ),
 
         /* this widget is used to show animating of stacks in case user changes seats */
