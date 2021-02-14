@@ -28,45 +28,36 @@ class PlayersOnTableView extends StatelessWidget {
     // am I on this table?
     PlayerModel me = this.players.me;
 
-    return Transform(
-      transform: BoardViewUtilMethods.getTransformationMatrix(
-        isBoardHorizontal: isBoardHorizontal,
+    return Transform.translate(
+      offset: Offset(
+        0.0,
+        -30.0,
       ),
-      alignment: Alignment.center,
-
-      // TODO: get this offset dynamically
-      /* This offset is needed to match up the players with the background board */
-      child: Transform.translate(
-        offset: Offset(
-          0.0,
-          -40.0,
-        ),
-        child: Stack(
-          alignment: isBoardHorizontal ? Alignment.topLeft : Alignment.center,
-          children: [
-            // position the users
-            ...this
-                .getUserObjects(players.players)
-                .asMap()
-                .entries
-                .map(
-                  (var u) => this.positionUser(
-                    isBoardHorizontal: isBoardHorizontal,
-                    user: u.value,
-                    heightOfBoard: heightOfBoard,
-                    widthOfBoard: widthOfBoard,
-                    seatPos: getAdjustedSeatPosition(
-                      u.key,
-                      me != null,
-                      me?.seatNo,
-                    ),
-                    isPresent: me != null,
-                    onUserTap: onUserTap,
+      child: Stack(
+        alignment: isBoardHorizontal ? Alignment.topLeft : Alignment.center,
+        children: [
+          // position the users
+          ...this
+              .getUserObjects(players.players)
+              .asMap()
+              .entries
+              .map(
+                (var u) => this.positionUser(
+                  isBoardHorizontal: isBoardHorizontal,
+                  user: u.value,
+                  heightOfBoard: heightOfBoard,
+                  widthOfBoard: widthOfBoard,
+                  seatPos: getAdjustedSeatPosition(
+                    u.key,
+                    me != null,
+                    me?.seatNo,
                   ),
-                )
-                .toList(),
-          ],
-        ),
+                  isPresent: me != null,
+                  onUserTap: onUserTap,
+                ),
+              )
+              .toList(),
+        ],
       ),
     );
   }
