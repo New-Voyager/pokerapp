@@ -90,6 +90,7 @@ class AppConstants {
   static const String TABLE_STATUS_GAME_RUNNING = 'TABLE_STATUS_GAME_RUNNING';
   static const String GAME_RUNNING = 'GAME_RUNNING';
   static const String GAME_ENDED = 'ENDED';
+  static const String GAME_PAUSED = 'PAUSED';
 
   /* extra identifiers */
   static const String WAIT_FOR_BUYIN = 'WAIT_FOR_BUYIN';

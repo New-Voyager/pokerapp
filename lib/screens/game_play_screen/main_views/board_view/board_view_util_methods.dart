@@ -10,6 +10,8 @@ class BoardViewUtilMethods {
 
   static String getText(String tableStatus) {
     switch (tableStatus) {
+      case AppConstants.GAME_PAUSED:
+        return tableStatus;
       case AppConstants.SeatChangeInProgress:
         return 'Seat Change In Progress';
       case AppConstants.TABLE_STATUS_NOT_ENOUGH_PLAYERS:
@@ -25,14 +27,15 @@ class BoardViewUtilMethods {
     return null;
   }
 
+  // FIXME: THE PERSPECTIVE IS NOT WORKING WELL - RECHECK THIS
   /* this methods returns a matrix which is used for perception of slant */
   static Matrix4 getTransformationMatrix({
     @required isBoardHorizontal,
   }) {
     final Matrix4 horizontalBoardMatrix = Matrix4(
-      1.0, 0.0, 0.0, 0.0, //
+      1.0, 0.0, 0.0, 0.00, //
       0.0, 1.0, 0.0, 0.0, //
-      0.0, 0.0, 1.0, 0.001, //
+      0.0, 0.0, 1.0, 0.0, //
       0.0, 0.0, 0.0, 1.0, //
     ).scaled(1.0, 1.0, 1.0)
       ..rotateX(_angleOfSlant * math.pi / 180)
@@ -42,7 +45,7 @@ class BoardViewUtilMethods {
     final Matrix4 verticalBoardMatrix = Matrix4(
       1.0, 0.0, 0.0, 0.0, //
       0.0, 1.0, 0.0, 0.0, //
-      0.0, 0.0, 1.0, 0.001, //
+      0.0, 0.0, 1.0, 0.0, //
       0.0, 0.0, 0.0, 1.0, //
     ).scaled(1.0, 1.0, 1.0)
       ..rotateX(_angleOfSlant * math.pi / 180)

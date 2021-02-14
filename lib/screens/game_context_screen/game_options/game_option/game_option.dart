@@ -24,9 +24,11 @@ class GameOption extends StatefulWidget {
 
 class _GameOptionState extends State<GameOption> {
   final String gameCode;
-  List<OptionItemModel> gameActions = null;
+  List<OptionItemModel> gameActions;
   double height;
+
   _GameOptionState(this.gameCode);
+
   void onLeave() {
     GameService.leaveGame(this.gameCode);
 
@@ -38,7 +40,17 @@ class _GameOptionState extends State<GameOption> {
     Scaffold.of(context).showSnackBar(snackBar);
   }
 
-  void onPause() {}
+  void onPause() {
+    GameService.pauseGame(this.gameCode);
+
+    // TOOD: A WAY TO NOTIFY USER?
+    // final snackBar = SnackBar(
+    //   content: Text('You will leave after this hand'),
+    //   duration: Duration(seconds: 15),
+    //   backgroundColor: Colors.black38,
+    // );
+    // Scaffold.of(context).showSnackBar(snackBar);
+  }
 
   List<OptionItemModel> gameSecondaryOptions;
   @override
