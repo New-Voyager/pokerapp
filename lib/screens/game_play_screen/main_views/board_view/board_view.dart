@@ -4,13 +4,14 @@ import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/animating_widgets/card_distribution_animating_widget.dart';
+import 'package:pokerapp/screens/game_play_screen/main_views/board_view/board_view_util_methods.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/center_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/decorative_views/table_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/players_on_table_view.dart';
 import 'package:pokerapp/screens/game_play_screen/player_view/animating_widgets/stack_switch_seat_animating_widget.dart';
 import 'package:provider/provider.dart';
 
-const _centerViewOffset = const Offset(0.0, 90.0);
+const _centerViewOffset = const Offset(0.0, -20.0);
 const _cardDistributionInitOffset = const Offset(0.0, 90.0);
 const _noOffset = const Offset(0.0, 0.0);
 
@@ -67,52 +68,59 @@ class BoardView extends StatelessWidget {
           ),
         ),
 
-        Consumer<Players>(builder: (
-          BuildContext context,
-          Players players,
-          Widget child,
-        ) {
-          return PlayersOnTableView(
-              players: players,
-              isBoardHorizontal: isBoardHorizontal,
-              widthOfBoard: widthOfBoard,
-              heightOfBoard: heightOfBoard,
-              onUserTap: onUserTap);
-        }),
+        Consumer<Players>(
+          builder: (
+            BuildContext context,
+            Players players,
+            Widget child,
+          ) =>
+              PlayersOnTableView(
+            players: players,
+            isBoardHorizontal: isBoardHorizontal,
+            widthOfBoard: widthOfBoard,
+            heightOfBoard: heightOfBoard,
+            onUserTap: onUserTap,
+          ),
+        ),
 
         // center view
         Align(
-            alignment: Alignment.center,
-            child: Consumer2<TableState, ValueNotifier<FooterStatus>>(
-              builder: (
-                _,
-                TableState tableState,
-                ValueNotifier<FooterStatus> valueNotifierFooterStatus,
-                __,
-              ) =>
-                  Transform.translate(
-                offset: isBoardHorizontal ? _centerViewOffset : _noOffset,
+          alignment: Alignment.center,
+          child: Consumer2<TableState, ValueNotifier<FooterStatus>>(
+            builder: (
+              _,
+              TableState tableState,
+              ValueNotifier<FooterStatus> valueNotifierFooterStatus,
+              __,
+            ) =>
+                Transform.translate(
+              offset: isBoardHorizontal ? _centerViewOffset : _noOffset,
+              child: Transform(
+                transform: BoardViewUtilMethods.getTransformationMatrix(
+                  isBoardHorizontal: isBoardHorizontal,
+                ),
                 child: CenterView(
                   isBoardHorizontal,
                   tableState.cards,
                   tableState.potChips,
-                  double.parse(tableState.potChipsUpdates != null
-                      ? tableState.potChipsUpdates.toString()
-                      : '0.0'),
+                  double.parse(
+                    tableState.potChipsUpdates != null
+                        ? tableState.potChipsUpdates.toString()
+                        : '0.0',
+                  ),
                   tableState.tableStatus,
                   valueNotifierFooterStatus.value == FooterStatus.Result,
                   onStartGame,
                 ),
               ),
-            )),
+            ),
+          ),
+        ),
 
         /* distributing card animation widgets */
         Align(
           alignment: Alignment.center,
-          child: Transform.translate(
-            offset: isBoardHorizontal ? _cardDistributionInitOffset : _noOffset,
-            child: CardDistributionAnimatingWidget(),
-          ),
+          child: CardDistributionAnimatingWidget(),
         ),
 
         /* this widget is used to show animating of stacks in case user changes seats */

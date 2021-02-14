@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/footer_result.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
@@ -6,6 +8,7 @@ import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/screens/game_play_screen/card_views/animations/animating_shuffle_card_view.dart';
 import 'package:pokerapp/screens/game_play_screen/card_views/community_card_view.dart';
+import 'package:pokerapp/screens/game_play_screen/main_views/board_view/center_button_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/pots_view.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:provider/provider.dart';
@@ -29,6 +32,10 @@ class CenterView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String _text = showDown ? null : BoardViewUtilMethods.getText(tableStatus);
+    log('board_view : center_view : _text : $_text');
+
+    /* if the game is paused, show the options available during game pause */
+    if (_text == AppConstants.GAME_PAUSED) return CenterButtonView();
 
     /* in case of new hand, show the deck shuffling animation */
     if (_text == AppConstants.NEW_HAND)
