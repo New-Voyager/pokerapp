@@ -33,7 +33,7 @@ class FooterView extends StatelessWidget {
                       footerStatus: footerStatusValueNotifier.value,
                       playerModel: players.me,
                     ),
-              HandAnalyseView(),
+              HandAnalyseView(gameCode),
               CommunicationView(chatVisibilityChange)
             ],
           );

@@ -11,7 +11,8 @@ import 'package:pokerapp/services/app/hand_service.dart';
 
 class HandLogView extends StatefulWidget {
   HandLogModel _handLogModel;
-  HandLogView(this._handLogModel);
+  bool isAppbarWithHandNumber;
+  HandLogView(this._handLogModel, {this.isAppbarWithHandNumber = false});
 
   @override
   State<StatefulWidget> createState() => _HandLogViewState(_handLogModel);
@@ -52,29 +53,34 @@ class _HandLogViewState extends State<HandLogView> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.screenBackgroundColor,
-      appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back_ios,
-            size: 14,
-            color: AppColors.appAccentColor,
-          ),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        titleSpacing: 0,
-        elevation: 0.0,
-        backgroundColor: AppColors.screenBackgroundColor,
-        title: Text(
-          "Hand History",
-          textAlign: TextAlign.left,
-          style: TextStyle(
-            color: AppColors.appAccentColor,
-            fontSize: 14.0,
-            fontFamily: AppAssets.fontFamilyLato,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-      ),
+      appBar: widget.isAppbarWithHandNumber
+          ? PreferredSize(
+              preferredSize: Size(0, 0),
+              child: Container(),
+            )
+          : AppBar(
+              leading: IconButton(
+                icon: Icon(
+                  Icons.arrow_back_ios,
+                  size: 14,
+                  color: AppColors.appAccentColor,
+                ),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+              titleSpacing: 0,
+              elevation: 0.0,
+              backgroundColor: AppColors.screenBackgroundColor,
+              title: Text(
+                "Hand History",
+                textAlign: TextAlign.left,
+                style: TextStyle(
+                  color: AppColors.appAccentColor,
+                  fontSize: 14.0,
+                  fontFamily: AppAssets.fontFamilyLato,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
       body: this._isLoading == true
           ? Center(
               child: CircularProgressIndicator(),
@@ -85,13 +91,17 @@ class _HandLogViewState extends State<HandLogView> {
                   Container(
                     margin:
                         EdgeInsets.only(left: 10, top: 5, bottom: 5, right: 10),
-                    alignment: Alignment.centerLeft,
+                    alignment: widget.isAppbarWithHandNumber
+                        ? Alignment.topCenter
+                        : Alignment.topLeft,
                     child: Text(
-                      "Hand Log",
+                      widget.isAppbarWithHandNumber
+                          ? "Last Hand Log"
+                          : "Hand Log",
                       style: const TextStyle(
                         fontFamily: AppAssets.fontFamilyLato,
                         color: Colors.white,
-                        fontSize: 30.0,
+                        fontSize: 20,
                         fontWeight: FontWeight.w900,
                       ),
                     ),

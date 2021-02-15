@@ -10,8 +10,9 @@ import 'package:pokerapp/services/app/hand_service.dart';
 class HandHistoryListView extends StatefulWidget {
   final HandHistoryListModel data;
   final bool isInBottomSheet;
+  final bool isLeadingBackIconShow;
   HandHistoryListView(this.data, this._clubCode,
-      {this.isInBottomSheet = false});
+      {this.isInBottomSheet = false, this.isLeadingBackIconShow = true});
   final String _clubCode;
 
   @override
@@ -50,24 +51,26 @@ class _HandHistoryState extends State<HandHistoryListView>
         backgroundColor: AppColors.screenBackgroundColor,
         leading: GestureDetector(
           onTap: () => Navigator.of(context).pop(),
-          child: Row(
-            children: [
-              Icon(
-                Icons.arrow_back_ios,
-                size: 16,
-                color: AppColors.appAccentColor,
-              ),
-              Text(
-                "Game",
-                style: const TextStyle(
-                  fontFamily: AppAssets.fontFamilyLato,
-                  color: AppColors.appAccentColor,
-                  fontSize: 14.0,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-            ],
-          ),
+          child: widget.isLeadingBackIconShow
+              ? Row(
+                  children: [
+                    Icon(
+                      Icons.arrow_back_ios,
+                      size: 16,
+                      color: AppColors.appAccentColor,
+                    ),
+                    Text(
+                      "Game",
+                      style: const TextStyle(
+                        fontFamily: AppAssets.fontFamilyLato,
+                        color: AppColors.appAccentColor,
+                        fontSize: 14.0,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ],
+                )
+              : Container(),
         ),
         middle: Column(
           children: [
@@ -108,17 +111,9 @@ class _HandHistoryState extends State<HandHistoryListView>
                         ),
                         tabs: [
                           new Tab(
-                            icon: SvgPicture.asset(
-                              'assets/images/casino.svg',
-                              color: Colors.white,
-                            ),
                             text: "All Hands",
                           ),
                           new Tab(
-                            icon: SvgPicture.asset(
-                              'assets/images/casino.svg',
-                              color: Colors.white,
-                            ),
                             text: "Winning Hands",
                           ),
                         ],
