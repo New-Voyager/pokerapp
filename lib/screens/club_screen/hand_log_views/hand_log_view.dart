@@ -12,7 +12,9 @@ import 'package:pokerapp/services/app/hand_service.dart';
 class HandLogView extends StatefulWidget {
   HandLogModel _handLogModel;
   bool isAppbarWithHandNumber;
-  HandLogView(this._handLogModel, {this.isAppbarWithHandNumber = false});
+  final String clubCode;
+  HandLogView(this._handLogModel,
+      {this.isAppbarWithHandNumber = false, this.clubCode});
 
   @override
   State<StatefulWidget> createState() => _HandLogViewState(_handLogModel);
@@ -111,30 +113,37 @@ class _HandLogViewState extends State<HandLogView> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        GestureDetector(
-                          onTap: () {
-                            // todo : just change to shareHand and pass club code as well
-                            HandService.bookMarkHand(
-                              _handLogModel.gameCode,
-                              _handLogModel.handNumber,
-                            );
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.black,
-                            ),
-                            padding: EdgeInsets.all(10),
-                            child: Icon(
-                              Icons.share,
-                              size: 20,
-                              color: AppColors.appAccentColor,
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
+                        widget.clubCode != null
+                            ? Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  GestureDetector(
+                                    onTap: () {
+                                      // todo : just change to shareHand and pass club code as well
+                                      HandService.bookMarkHand(
+                                        _handLogModel.gameCode,
+                                        _handLogModel.handNumber,
+                                      );
+                                    },
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: Colors.black,
+                                      ),
+                                      padding: EdgeInsets.all(10),
+                                      child: Icon(
+                                        Icons.share,
+                                        size: 20,
+                                        color: AppColors.appAccentColor,
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                ],
+                              )
+                            : Container(),
                         GestureDetector(
                           onTap: () {
                             HandService.bookMarkHand(
