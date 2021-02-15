@@ -60,6 +60,7 @@ class Agora extends ChangeNotifier {
     if (this.agoraToken.isEmpty) {
       return;
     }
+    log('player $uuid left audio channel');
     await engine?.leaveChannel();
   }
 
