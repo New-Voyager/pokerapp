@@ -335,6 +335,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                                 widget.gameCode,
                                 _currentPlayer.uuid,
                                 () => toggleChatVisibility(context),
+                                _gameInfoModel.clubCode,
                               ),
                             ),
                             SizedBox(

@@ -5,7 +5,8 @@ import 'package:pokerapp/screens/club_screen/hand_log_views/hand_log_view.dart';
 
 class LastHandAnalyseBottomSheet extends StatefulWidget {
   final HandLogModel handLogModel;
-  LastHandAnalyseBottomSheet({this.handLogModel});
+  final String clubCode;
+  LastHandAnalyseBottomSheet({this.handLogModel, this.clubCode});
   @override
   _LastHandAnalyseBottomSheetState createState() =>
       _LastHandAnalyseBottomSheetState();
@@ -32,6 +33,7 @@ class _LastHandAnalyseBottomSheetState
                 child: HandLogView(
                   widget.handLogModel,
                   isAppbarWithHandNumber: true,
+                  clubCode: widget.clubCode,
                 ),
               ),
             ],

@@ -9,7 +9,8 @@ import 'last_hand_analyse_bottomsheet.dart';
 
 class HandAnalyseView extends StatefulWidget {
   final String gameCode;
-  HandAnalyseView(this.gameCode);
+  final String clubCode;
+  HandAnalyseView(this.gameCode, this.clubCode);
 
   @override
   _HandAnalyseViewState createState() => _HandAnalyseViewState();
@@ -45,6 +46,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                       backgroundColor: Colors.transparent,
                       builder: (ctx) => LastHandAnalyseBottomSheet(
                         handLogModel: handLogModel,
+                        clubCode: widget.clubCode,
                       ),
                     );
                   },
