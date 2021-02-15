@@ -81,6 +81,12 @@ class HandService {
     }
   """;
 
+  static String bookmarkHand = """
+   mutation(\$gameCode: String!, \$handNum: Int!) {
+      update: bookmarkHand(gameCode: \$gameCode, handNum: \$handNum)
+    }
+  """;
+
   static void getAllHands(HandHistoryListModel model) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
     Map<String, dynamic> variables = {
@@ -147,6 +153,23 @@ class HandService {
 
     QueryResult result = await _client.mutate(MutationOptions(
         documentNode: gql(shareHandMutation), variables: variables));
+    if (result.hasException) {
+      print(result.exception);
+      return false;
+    }
+    return true;
+  }
+
+  static Future<bool> bookMarkHand(String gameCode, int handNum) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+
+    Map<String, dynamic> variables = {
+      "gameCode": gameCode,
+      "handNum": handNum,
+    };
+
+    QueryResult result = await _client.mutate(
+        MutationOptions(documentNode: gql(bookmarkHand), variables: variables));
     if (result.hasException) {
       print(result.exception);
       return false;

@@ -106,6 +106,58 @@ class _HandLogViewState extends State<HandLogView> {
                       ),
                     ),
                   ),
+                  Container(
+                    padding: EdgeInsets.symmetric(vertical: 5),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            // todo : just change to shareHand and pass club code as well
+                            HandService.bookMarkHand(
+                              _handLogModel.gameCode,
+                              _handLogModel.handNumber,
+                            );
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.black,
+                            ),
+                            padding: EdgeInsets.all(10),
+                            child: Icon(
+                              Icons.share,
+                              size: 20,
+                              color: AppColors.appAccentColor,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            HandService.bookMarkHand(
+                              _handLogModel.gameCode,
+                              _handLogModel.handNumber,
+                            );
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.black,
+                            ),
+                            padding: EdgeInsets.all(10),
+                            child: Icon(
+                              Icons.bookmark,
+                              size: 20,
+                              color: AppColors.appAccentColor,
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
                   HandLogHeaderView(_handLogModel),
                   Container(
                     margin:
