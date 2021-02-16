@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
+import 'package:audio_recorder/audio_recorder.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
-import 'package:flutter_sound/flutter_sound.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
@@ -36,22 +36,19 @@ class _GameChatState extends State<GameChat> {
   bool isMicVisible = true;
   bool isGiphyVisible = false;
   String tempPath;
-  FlutterSoundRecorder _recorder = FlutterSoundRecorder();
   bool _recorderIsInit = false;
   StreamSubscription _recordingDataSubscription;
   String _audioFile;
   bool _recordingCancelled = false;
   double height;
   final ScrollController _scrollController = ScrollController();
-  FlutterSoundPlayer _audioPlayer = FlutterSoundPlayer();
+  // FlutterSoundRecorder _recorder = FlutterSoundRecorder();
 
   final focusNode = FocusNode();
   List<ChatMessage> chatMessages = [];
   @override
   void initState() {
     super.initState();
-    // open audio session
-    _audioPlayer.openAudioSession(category: SessionCategory.playback);
 
     chatMessages.addAll(widget.chatService.messages.reversed);
     scrollToBottomOfChat(scrollTime: 100, waitTime: 200);
@@ -67,12 +64,7 @@ class _GameChatState extends State<GameChat> {
       });
       scrollToBottomOfChat(scrollTime: 1, waitTime: 1);
     });
-    _recorder.openAudioSession().then((value) {
-      setState(() {
-        _recorderIsInit = true;
-      });
-      scrollToBottomOfChat(scrollTime: 1, waitTime: 1);
-    });
+
     controller.addListener(() {
       if (controller.text.trim() != '') {
         setState(() {
@@ -290,10 +282,9 @@ class _GameChatState extends State<GameChat> {
       return;
     }
     log('Mic is released');
-    if (_recorder.isRecording) {
+    if (await AudioRecorder.isRecording) {
       log('Stop recording');
-      _recorder.stopRecorder();
-
+      await AudioRecorder.stop();
       var outputFile = File(_audioFile);
       if (outputFile.existsSync()) {
         var length = await outputFile.length();
@@ -303,11 +294,6 @@ class _GameChatState extends State<GameChat> {
       if (!_recordingCancelled) {
         // send the audio data in the chat channel
         var data = await outputFile.readAsBytes();
-        // play the audio for testing
-        // await _audioPlayer.startPlayerFromStream(
-        //     sampleRate: SAMPLE_RATE, codec: Codec.pcm16);
-        // await _audioPlayer.feedFromStream(data);
-
         widget.chatService.sendAudio(data);
       }
       outputFile.deleteSync();
@@ -322,14 +308,6 @@ class _GameChatState extends State<GameChat> {
 
   @override
   void dispose() {
-    _recorder.stopRecorder();
-    _recorder.closeAudioSession();
-    _recorder = null;
-    if (_audioPlayer != null) {
-      _audioPlayer.closeAudioSession();
-      _audioPlayer = null;
-    }
-
     super.dispose();
   }
 
@@ -339,7 +317,7 @@ class _GameChatState extends State<GameChat> {
     // Request Microphone permission if needed
     PermissionStatus status = await Permission.microphone.request();
     if (status != PermissionStatus.granted)
-      throw RecordingPermissionException("Microphone permission not granted");
+      throw Exception("Microphone permission not granted");
     _recordingCancelled = false;
     Directory tempDir = await getTemporaryDirectory();
     _audioFile = '${tempDir.path}/chat1.aac';
@@ -349,19 +327,11 @@ class _GameChatState extends State<GameChat> {
       log('audio file $outputFile is deleted');
       outputFile.deleteSync();
     }
-
-    log('Recording started now');
-    try {
-      await _recorder.startRecorder(
-        toFile: _audioFile,
-        codec: Codec.pcm16,
-        sampleRate: SAMPLE_RATE,
-      );
-      log('recording successful ${_recorder.isRecording}');
-    } catch (e) {
-      log(e.toString());
-    }
-
+    print("Start recording: $outputFile");
+    await AudioRecorder.start(
+        path: outputFile.path, audioOutputFormat: AudioOutputFormat.AAC);
     setState(() {});
+
+    // run a timer and stop after 10 seconds
   }
 }

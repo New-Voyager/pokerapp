@@ -116,6 +116,9 @@ class CenterView extends StatelessWidget {
         child: _text != null ? tableStatusWidget : tablePotAndCardWidget,
       );
     }
+
+    // empty container
+    return Container();
   }
 
   Widget potUpdatesView() {
