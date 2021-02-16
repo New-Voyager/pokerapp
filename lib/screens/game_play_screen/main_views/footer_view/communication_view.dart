@@ -123,7 +123,7 @@ class _CommunicationViewState extends State<CommunicationView> {
             onMicPressEnd(context, details),
         child: Icon(
           Icons.mic,
-          color: Colors.white,
+          color: AppColors.appAccentColor,
           size: 40,
         ),
       ),

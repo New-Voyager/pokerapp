@@ -65,13 +65,6 @@ class _GameChatState extends State<GameChat> {
       scrollToBottomOfChat(scrollTime: 1, waitTime: 1);
     });
 
-    // _recorder.openAudioSession().then((value) {
-    //   setState(() {
-    //     _recorderIsInit = true;
-    //   });
-    //   scrollToBottomOfChat(scrollTime: 1, waitTime: 1);
-    // });
-
     controller.addListener(() {
       if (controller.text.trim() != '') {
         setState(() {
@@ -289,29 +282,6 @@ class _GameChatState extends State<GameChat> {
       return;
     }
     log('Mic is released');
-    // if (_recorder.isRecording) {
-    //   log('Stop recording');
-    //   _recorder.stopRecorder();
-
-    //   var outputFile = File(_audioFile);
-    //   if (outputFile.existsSync()) {
-    //     var length = await outputFile.length();
-    //     log('File length: $length');
-    //   }
-
-    //   if (!_recordingCancelled) {
-    //     // send the audio data in the chat channel
-    //     var data = await outputFile.readAsBytes();
-    //     // play the audio for testing
-    //     // await _audioPlayer.startPlayerFromStream(
-    //     //     sampleRate: SAMPLE_RATE, codec: Codec.pcm16);
-    //     // await _audioPlayer.feedFromStream(data);
-
-    //     widget.chatService.sendAudio(data);
-    //   }
-    //   outputFile.deleteSync();
-    // }
-
     if (await AudioRecorder.isRecording) {
       log('Stop recording');
       await AudioRecorder.stop();
@@ -338,10 +308,6 @@ class _GameChatState extends State<GameChat> {
 
   @override
   void dispose() {
-    // _recorder.stopRecorder();
-    // _recorder.closeAudioSession();
-    // _recorder = null;
-
     super.dispose();
   }
 
@@ -361,18 +327,6 @@ class _GameChatState extends State<GameChat> {
       log('audio file $outputFile is deleted');
       outputFile.deleteSync();
     }
-
-    // log('Recording started now');
-    // try {
-    //   await _recorder.startRecorder(
-    //     toFile: _audioFile,
-    //     codec: Codec.pcm16,
-    //     sampleRate: SAMPLE_RATE,
-    //   );
-    //   log('recording successful ${_recorder.isRecording}');
-    // } catch (e) {
-    //   log(e.toString());
-    // }
     print("Start recording: $outputFile");
     await AudioRecorder.start(
         path: outputFile.path, audioOutputFormat: AudioOutputFormat.AAC);

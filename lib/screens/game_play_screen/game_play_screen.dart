@@ -199,8 +199,14 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
 
   void onAudio(ChatMessage message) async {
     log('Audio message is sent ${message.messageId} from player ${message.fromPlayer}');
-    if (message.audio != null) {
-      await _audioPlayer.playBytes(message.audio);
+    if (_audioPlayer != null &&
+        message.audio != null &&
+        message.audio.length > 0) {
+      try {
+        await _audioPlayer.playBytes(message.audio);
+      } catch (e) {
+        // ignore the exception
+      }
     }
   }
 
