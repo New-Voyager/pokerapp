@@ -28,7 +28,7 @@ dependencies:
   http: ^0.12.2
   dart_nats:
     git:
-      url: https://github.com/jyotirmoy-paul/dart-nats.git
+      url: https://github.com/New-Voyager/dart-nats.git
       ref: master
 
   # device id
@@ -48,7 +48,6 @@ dependencies:
 
   # audio playing
   audioplayers: 0.17.0
-  just_audio: ^0.6.12
 
   # utils
   path_provider: ^1.6.24
@@ -68,7 +67,10 @@ dependencies:
   flutter_keyboard_visibility: ^3.2.2
 
   # for recording audio
-  audio_recorder: 1.0.2
+  audio_recorder:
+    git:
+      url: https://github.com/New-Voyager/audio_recorder.git
+      ref: master
 
   # permissions
   permission_handler: ^5.0.1
