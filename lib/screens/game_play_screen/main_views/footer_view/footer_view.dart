@@ -12,6 +12,7 @@ import 'hand_analyse_view.dart';
 class FooterView extends StatelessWidget {
   final GameComService gameComService;
   final String gameCode;
+  final String clubCode;
   final String playerUuid;
   final Function chatVisibilityChange;
   FooterView(
@@ -19,6 +20,7 @@ class FooterView extends StatelessWidget {
     this.gameCode,
     this.playerUuid,
     this.chatVisibilityChange,
+    this.clubCode,
   );
 
   @override
@@ -33,7 +35,7 @@ class FooterView extends StatelessWidget {
                       footerStatus: footerStatusValueNotifier.value,
                       playerModel: players.me,
                     ),
-              HandAnalyseView(),
+              HandAnalyseView(gameCode, clubCode),
               CommunicationView(chatVisibilityChange)
             ],
           );
