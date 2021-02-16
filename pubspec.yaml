@@ -48,6 +48,7 @@ dependencies:
 
   # audio playing
   audioplayers: 0.17.0
+  just_audio: ^0.6.12
 
   # utils
   path_provider: ^1.6.24
