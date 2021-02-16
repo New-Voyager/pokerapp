@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:pokerapp/enums/game_status.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/footer_result.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/resources/app_constants.dart';
@@ -49,6 +50,8 @@ class CenterView extends StatelessWidget {
         ),
       );
 
+    // TODO: We don't need this
+    // We need to show the status of the in the game banner at the top
     Widget tableStatusWidget = Align(
       key: ValueKey('tableStatusWidget'),
       alignment: Alignment.topCenter,
@@ -82,40 +85,37 @@ class CenterView extends StatelessWidget {
       ),
     );
 
-    /* if reached here, means, the game is RUNNING */
-    /* The following view, shows the community cards
-    * and the pot chips, if they are nulls, put the default values */
-    dynamic potChips = this.potChips;
-    dynamic cards = this.cards;
-    if (potChips == null) potChips = [0];
-    if (cards == null) cards = const [];
+    if (tableStatus == AppConstants.GAME_RUNNING) {
+      /* if reached here, means, the game is RUNNING */
+      /* The following view, shows the community cards
+      * and the pot chips, if they are nulls, put the default values */
+      Widget tablePotAndCardWidget = Align(
+        key: ValueKey('tablePotAndCardWidget'),
+        alignment: Alignment.center,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            PotsView(this.isBoardHorizontal, this.potChips, this.showDown),
+            CommunityCardsView(
+              cards: this.cards,
+              horizontal: true,
+            ),
+            const SizedBox(height: AppDimensions.cardHeight / 4),
 
-    Widget tablePotAndCardWidget = Align(
-      key: ValueKey('tablePotAndCardWidget'),
-      alignment: Alignment.topCenter,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          PotsView(this.isBoardHorizontal, this.potChips, this.showDown),
-          CommunityCardsView(
-            cards: cards,
-            horizontal: true,
-          ),
-          const SizedBox(height: AppDimensions.cardHeight / 4),
+            /* potUpdates view */
+            this.showDown ? rankWidget() : potUpdatesView(),
+          ],
+        ),
+      );
 
-          /* potUpdates view */
-          this.showDown ? rankWidget() : potUpdatesView(),
-        ],
-      ),
-    );
-
-    return AnimatedSwitcher(
-      switchInCurve: Curves.easeInOut,
-      switchOutCurve: Curves.easeInOut,
-      duration: AppConstants.animationDuration,
-      reverseDuration: AppConstants.animationDuration,
-      child: _text != null ? tableStatusWidget : tablePotAndCardWidget,
-    );
+      return AnimatedSwitcher(
+        switchInCurve: Curves.easeInOut,
+        switchOutCurve: Curves.easeInOut,
+        duration: AppConstants.animationDuration,
+        reverseDuration: AppConstants.animationDuration,
+        child: _text != null ? tableStatusWidget : tablePotAndCardWidget,
+      );
+    }
   }
 
   Widget potUpdatesView() {
