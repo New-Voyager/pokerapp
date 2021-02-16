@@ -1,7 +1,7 @@
 import 'dart:developer';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:dart_nats/dart_nats.dart' as nats;
 import 'package:flutter/material.dart';
-import 'package:flutter_sound/flutter_sound.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/resources/app_constants.dart';
@@ -31,7 +31,6 @@ class GamePlayScreen extends StatefulWidget {
   final String gameCode;
 
   // NOTE: Enable this for agora audio testing
-  final audioEnabled = false;
   GamePlayScreen({
     @required this.gameCode,
   }) : assert(gameCode != null);
@@ -45,7 +44,8 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
   BuildContext _providerContext;
   PlayerInfo _currentPlayer;
   String _audioToken = '';
-  FlutterSoundPlayer _audioPlayer = FlutterSoundPlayer();
+  bool liveAudio = false;
+  AudioPlayer _audioPlayer = AudioPlayer();
   Agora agora;
   /* _init function is run only for the very first time,
   * and only once, the initial game screen is populated from here
@@ -65,7 +65,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
   }
 
   Future joinAudio() async {
-    if (!widget.audioEnabled) {
+    if (!liveAudio) {
       return;
     }
 
@@ -98,23 +98,22 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
     // subscribe the NATs channels
     await _gameComService.init();
 
-    // initialize agora
-    agora = Agora(
-        gameCode: widget.gameCode,
-        uuid: this._currentPlayer.uuid,
-        playerId: this._currentPlayer.id);
+    if (liveAudio) {
+      // initialize agora
+      agora = Agora(
+          gameCode: widget.gameCode,
+          uuid: this._currentPlayer.uuid,
+          playerId: this._currentPlayer.id);
 
-    // if the current player is in the table, then join audio
-    for (int i = 0; i < _gameInfoModel.playersInSeats.length; i++) {
-      if (_gameInfoModel.playersInSeats[i].playerUuid == _currentPlayer.uuid) {
-        // player is in the table
-        await this.joinAudio();
-        break;
+      // if the current player is in the table, then join audio
+      for (int i = 0; i < _gameInfoModel.playersInSeats.length; i++) {
+        if (_gameInfoModel.playersInSeats[i].playerUuid == _currentPlayer.uuid) {
+          // player is in the table
+          await this.joinAudio();
+          break;
+        }
       }
     }
-
-    // open audio session
-    _audioPlayer.openAudioSession(category: SessionCategory.playback);
 
     /* setup the listeners to the channels
     * Any messages received from these channel updates,
@@ -185,7 +184,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
     Audio.dispose(context: _providerContext);
 
     if (_audioPlayer != null) {
-      _audioPlayer.closeAudioSession();
+      _audioPlayer.dispose();
       _audioPlayer = null;
     }
     super.dispose();
@@ -199,9 +198,11 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
     log('Audio message is sent ${message.messageId} from player ${message.fromPlayer}');
     if (message.audio != null) {
       // try {
-      await _audioPlayer.startPlayerFromStream(
-          sampleRate: SAMPLE_RATE, codec: Codec.pcm16);
-      await _audioPlayer.feedFromStream(message.audio);
+      await _audioPlayer.playBytes(message.audio);
+      
+      // .startPlayerFromStream(
+      //     sampleRate: SAMPLE_RATE, codec: Codec.pcm16);
+      // await _audioPlayer.feedFromStream(message.audio);
       // } on PlatformException catch (err) {
       //   log('Exception thrown when playing audio ${message.audio.length}. Exception: ${err.toString()}');
       // }
