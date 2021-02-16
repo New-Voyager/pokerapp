@@ -30,6 +30,8 @@ import 'package:provider/provider.dart';
 class GamePlayScreen extends StatefulWidget {
   final String gameCode;
 
+  // NOTE: Enable this for agora audio testing
+  final audioEnabled = false;
   GamePlayScreen({
     @required this.gameCode,
   }) : assert(gameCode != null);
@@ -63,6 +65,10 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
   }
 
   Future joinAudio() async {
+    if (!widget.audioEnabled) {
+      return;
+    }
+
     this._audioToken = await GameService.getLiveAudioToken(widget.gameCode);
     print('Audio token: ${this._audioToken}');
     print('audio token: ${this._audioToken}');
