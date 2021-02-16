@@ -18,9 +18,11 @@ packages:
   audio_recorder:
     dependency: "direct main"
     description:
-      name: audio_recorder
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "."
+      ref: master
+      resolved-ref: "7513b233663423c5cf6f90123b7b3756706b8d66"
+      url: "https://github.com/New-Voyager/audio_recorder.git"
+    source: git
     version: "1.0.2"
   audio_session:
     dependency: transitive
@@ -147,7 +149,7 @@ packages:
       path: "."
       ref: master
       resolved-ref: b9a49103de1992d83f651d5286a13757b529e108
-      url: "https://github.com/jyotirmoy-paul/dart-nats.git"
+      url: "https://github.com/New-Voyager/dart-nats.git"
     source: git
     version: "0.1.8"
   emoji_picker:

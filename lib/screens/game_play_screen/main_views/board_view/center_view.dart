@@ -85,40 +85,38 @@ class CenterView extends StatelessWidget {
       ),
     );
 
-    if (tableStatus == AppConstants.GAME_RUNNING) {
-      /* if reached here, means, the game is RUNNING */
-      /* The following view, shows the community cards
-      * and the pot chips, if they are nulls, put the default values */
-      Widget tablePotAndCardWidget = Align(
-        key: ValueKey('tablePotAndCardWidget'),
-        alignment: Alignment.center,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            PotsView(this.isBoardHorizontal, this.potChips, this.showDown),
-            CommunityCardsView(
-              cards: this.cards,
-              horizontal: true,
-            ),
-            const SizedBox(height: AppDimensions.cardHeight / 4),
+    /* if reached here, means, the game is RUNNING */
+    /* The following view, shows the community cards
+    * and the pot chips, if they are nulls, put the default values */
+    Widget tablePotAndCardWidget = Align(
+      key: ValueKey('tablePotAndCardWidget'),
+      alignment: Alignment.center,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          PotsView(this.isBoardHorizontal, this.potChips, this.showDown),
+          CommunityCardsView(
+            cards: this.cards,
+            horizontal: true,
+          ),
+          const SizedBox(height: AppDimensions.cardHeight / 4),
 
-            /* potUpdates view */
-            this.showDown ? rankWidget() : potUpdatesView(),
-          ],
-        ),
-      );
+          /* potUpdates view */
+          this.showDown ? rankWidget() : potUpdatesView(),
+        ],
+      ),
+    );
 
-      return AnimatedSwitcher(
-        switchInCurve: Curves.easeInOut,
-        switchOutCurve: Curves.easeInOut,
-        duration: AppConstants.animationDuration,
-        reverseDuration: AppConstants.animationDuration,
-        child: _text != null ? tableStatusWidget : tablePotAndCardWidget,
-      );
-    }
+    return AnimatedSwitcher(
+      switchInCurve: Curves.easeInOut,
+      switchOutCurve: Curves.easeInOut,
+      duration: AppConstants.animationDuration,
+      reverseDuration: AppConstants.animationDuration,
+      child: _text != null ? tableStatusWidget : tablePotAndCardWidget,
+    );
 
     // empty container
-    return Container();
+    //return Container();
   }
 
   Widget potUpdatesView() {
