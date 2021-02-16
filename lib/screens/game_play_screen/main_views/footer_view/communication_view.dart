@@ -124,9 +124,10 @@ class _CommunicationViewState extends State<CommunicationView> {
         child: Icon(
           Icons.mic,
           color: Colors.white,
-          size: 25,
+          size: 40,
         ),
       ),
+      SizedBox(height: 15),
     ];
   }
 
@@ -169,5 +170,6 @@ class _CommunicationViewState extends State<CommunicationView> {
       log('audio file $outputFile is deleted');
       outputFile.deleteSync();
     }
+    AudioRecorder.start(path: outputFile.path);
   }
 }
