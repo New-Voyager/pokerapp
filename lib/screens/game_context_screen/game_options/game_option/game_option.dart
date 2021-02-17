@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:pokerapp/models/game_play_models/ui/header_object.dart';
 import 'package:pokerapp/models/hand_history_model.dart';
 import 'package:pokerapp/models/hand_log_model.dart';
 import 'package:pokerapp/models/option_item_model.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
-import 'package:pokerapp/resources/app_icons.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_log_view.dart';
 import 'package:pokerapp/screens/game_screens/hand_history/hand_history.dart';
@@ -40,16 +38,37 @@ class _GameOptionState extends State<GameOption> {
     Scaffold.of(context).showSnackBar(snackBar);
   }
 
-  void onPause() {
-    GameService.pauseGame(this.gameCode);
+  void onEndGame() {
+    // We need to broadcast to all the players
+    GameService.endGame(this.gameCode);
 
-    // TOOD: A WAY TO NOTIFY USER?
-    // final snackBar = SnackBar(
-    //   content: Text('You will leave after this hand'),
-    //   duration: Duration(seconds: 15),
-    //   backgroundColor: Colors.black38,
-    // );
-    // Scaffold.of(context).showSnackBar(snackBar);
+    final snackBar = SnackBar(
+      content: Text('The game will end after this hand'),
+      duration: Duration(seconds: 30),
+      backgroundColor: Colors.black38,
+    );
+    Scaffold.of(context).showSnackBar(snackBar);
+  }
+
+  void onPause() {
+    final snackBar = SnackBar(
+      content: Text('Game will be paused after this hand'),
+      duration: Duration(seconds: 30),
+      backgroundColor: Colors.black38,
+    );
+    Scaffold.of(context).showSnackBar(snackBar);
+    GameService.pauseGame(this.gameCode);
+  }
+
+  void onResume() {
+    final snackBar = SnackBar(
+      content: Text('Resume game is not implemented'),
+      duration: Duration(seconds: 30),
+      backgroundColor: Colors.black38,
+    );
+    Scaffold.of(context).showSnackBar(snackBar);
+
+    //GameService.resumeGame(this.gameCode);
   }
 
   List<OptionItemModel> gameSecondaryOptions;
@@ -71,7 +90,18 @@ class _GameOptionState extends State<GameOption> {
           }),
       OptionItemModel(title: "Break"),
       OptionItemModel(title: "Reload"),
-      OptionItemModel(title: "End")
+      OptionItemModel(
+          title: "Resume",
+          iconData: Icons.play_circle_outline,
+          onTap: (context) {
+            this.onResume();
+          }),
+      OptionItemModel(
+          title: "Terminate",
+          iconData: Icons.cancel_outlined,
+          onTap: (context) {
+            this.onEndGame();
+          }),
     ];
     gameSecondaryOptions = [
       OptionItemModel(
@@ -188,8 +218,9 @@ class _GameOptionState extends State<GameOption> {
                   SizedBox(
                     height: 10,
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                  Wrap(
+                    alignment: WrapAlignment.center,
+                    //mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       ...gameActions.map((e) => gameActionItem(e)).toList(),
                     ],

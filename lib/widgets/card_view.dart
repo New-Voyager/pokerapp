@@ -67,10 +67,10 @@ class CardView extends StatelessWidget {
     double cardWidth = AppDimensions.cardWidth * 1.1;
     double cardHeight = AppDimensions.cardHeight * 1.5;
     TextStyle cardTextStyle = AppStyles.cardTextStyle.copyWith(
-      fontSize: 12,
+      fontSize: 16,
     );
     TextStyle suitTextStyle = AppStyles.cardTextStyle.copyWith(
-      fontSize: 12,
+      fontSize: 16,
     );
     bool highlight = false;
     Color highlightColor = Colors.blue.shade100;
