@@ -90,6 +90,9 @@ class CenterView extends StatelessWidget {
       ),
     );
 
+    /* this gap height is the separation height between the three widgets in the center pot */
+    const _gapHeight = 5.0;
+
     /* if reached here, means, the game is RUNNING */
     /* The following view, shows the community cards
     * and the pot chips, if they are nulls, put the default values */
@@ -99,14 +102,24 @@ class CenterView extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          PotsView(this.isBoardHorizontal, this.potChips, this.showDown),
+          /* main pot view */
+          PotsView(
+            this.isBoardHorizontal,
+            this.potChips,
+            this.showDown,
+          ),
+          const SizedBox(
+            height: _gapHeight,
+          ),
+
+          /* community cards view */
           CommunityCardsView(
             cards: this.cards,
             horizontal: true,
           ),
-          const SizedBox(height: AppDimensions.cardHeight / 4),
+          const SizedBox(height: _gapHeight + AppDimensions.cardHeight / 4),
 
-          /* potUpdates view */
+          /* potUpdates view OR the rank widget (rank widget is shown only when we have a result) */
           this.showDown ? rankWidget() : potUpdatesView(),
         ],
       ),
@@ -124,14 +137,10 @@ class CenterView extends StatelessWidget {
     //return Container();
   }
 
-  Widget potUpdatesView() {
-    if (potChipsUpdates == null) {
-      return SizedBox.shrink();
-    }
-    return Opacity(
-      opacity: showDown || (potChipsUpdates == null) ? 0 : 1,
-      child: Visibility(
-        visible: potChipsUpdates != null && potChipsUpdates != 0,
+  Widget potUpdatesView() => Opacity(
+        opacity: showDown || (potChipsUpdates == null || potChipsUpdates == 0)
+            ? 0
+            : 1,
         child: Container(
           padding: const EdgeInsets.symmetric(
             horizontal: 10.0,
@@ -149,39 +158,36 @@ class CenterView extends StatelessWidget {
             ),
           ),
         ),
-      ),
-    );
-  }
+      );
 
-  Widget rankWidget() {
-    return /* rankStr --> needs to be shown only when footer result is not null */
-        Consumer<FooterResult>(
-      builder: (_, FooterResult footerResult, __) => AnimatedSwitcher(
-        duration: AppConstants.animationDuration,
-        reverseDuration: AppConstants.animationDuration,
-        child: footerResult.isEmpty
-            ? const SizedBox.shrink()
-            : Transform.translate(
-                offset: Offset(
-                  0.0,
-                  -AppDimensions.cardHeight / 2,
+  /* rankStr --> needs to be shown only when footer result is not null */
+  Widget rankWidget() => Consumer<FooterResult>(
+        builder: (_, FooterResult footerResult, __) => AnimatedSwitcher(
+          duration: AppConstants.animationDuration,
+          reverseDuration: AppConstants.animationDuration,
+          child: footerResult.isEmpty
+              ? const SizedBox.shrink()
+              : Transform.translate(
+                  offset: Offset(
+                    0.0,
+                    -AppDimensions.cardHeight / 2,
+                  ),
+                  child: Container(
+                    margin: EdgeInsets.only(top: 5.0),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10.0,
+                      vertical: 5.0,
+                    ),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(100.0),
+                      color: Colors.black26,
+                    ),
+                    child: Text(
+                      footerResult.potWinners.first.rankStr,
+                      style: AppStyles.footerResultTextStyle4,
+                    ),
+                  ),
                 ),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10.0,
-                    vertical: 5.0,
-                  ),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(100.0),
-                    color: Colors.black26,
-                  ),
-                  child: Text(
-                    footerResult.potWinners.first.rankStr,
-                    style: AppStyles.footerResultTextStyle4,
-                  ),
-                ),
-              ),
-      ),
-    );
-  }
+        ),
+      );
 }
