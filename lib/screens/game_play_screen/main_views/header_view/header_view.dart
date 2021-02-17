@@ -69,20 +69,25 @@ class HeaderView extends StatelessWidget {
                     /* back button */
                     Align(
                       alignment: Alignment.centerLeft,
-                      child: IconButton(
-                        icon: Icon(
-                          FontAwesomeIcons.chevronLeft,
-                          color: Colors.white,
-                        ),
-                        onPressed: () => Navigator.pop(context),
-                      ),
-                      // child: InkWell(
-                      //   onTap: () => Navigator.pop(context),
-                      //   child: Icon(
+                      // child: IconButton(
+                      //   icon: Icon(
                       //     FontAwesomeIcons.chevronLeft,
                       //     color: Colors.white,
                       //   ),
+                      //   onPressed: () => Navigator.pop(context),
                       // ),
+                      child: InkWell(
+                        onTap: () => Navigator.pop(context),
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 5.0,
+                          ),
+                          child: Icon(
+                            FontAwesomeIcons.chevronLeft,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
                     ),
 
                     /* fixme: temporary place for end game */

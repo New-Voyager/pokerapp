@@ -270,8 +270,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
               }
 
               var dividerTotalHeight = MediaQuery.of(context).size.height / 6;
-              double divider1 = 1.5 * (dividerTotalHeight / 3);
-              double divider2 = 0.5 * (dividerTotalHeight / 3);
+              double divider1 = 0.40 * dividerTotalHeight;
 
               return MultiProvider(
                 providers: GamePlayScreenUtilMethods.getProviders(
@@ -333,10 +332,13 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                                 ),
                               ),
                             ),
+
+                            /* divider that divides the board view and the footer */
                             Divider(
                               color: Colors.amberAccent,
                               thickness: 3,
                             ),
+
                             // footer section
                             Expanded(
                               child: FooterView(
@@ -347,6 +349,8 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                                 _gameInfoModel.clubCode,
                               ),
                             ),
+
+                            // TODO: CAN THIS SIZED BOX BE CLEARED?
                             SizedBox(
                               height: 50,
                             ),

@@ -6,7 +6,7 @@ class BackgroundView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Image.asset(
-      AppAssets.cityBackground1,
+      AppAssets.barBookshelfBackground,
       fit: BoxFit.contain,
     );
   }

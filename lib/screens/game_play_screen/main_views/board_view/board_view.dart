@@ -12,8 +12,8 @@ import 'package:pokerapp/screens/game_play_screen/main_views/board_view/players_
 import 'package:pokerapp/screens/game_play_screen/player_view/animating_widgets/stack_switch_seat_animating_widget.dart';
 import 'package:provider/provider.dart';
 
-const _centerViewOffset = const Offset(0.0, -10.0);
-const _cardDistributionInitOffset = const Offset(0.0, 90.0);
+const _centerViewOffset = const Offset(0.0, -30.0);
+const _playersOnTableOffset = const Offset(0.0, -25.0);
 const _noOffset = const Offset(0.0, 0.0);
 
 class BoardView extends StatelessWidget {
@@ -56,11 +56,6 @@ class BoardView extends StatelessWidget {
     return Stack(
       alignment: Alignment.center,
       children: [
-        // Container(
-        //   color: Colors.red,
-        //   width: MediaQuery.of(context).size.width,
-        //   height: dimensions.height,
-        // ),
         // game board view
         Align(
           alignment: Alignment.center,
@@ -76,12 +71,15 @@ class BoardView extends StatelessWidget {
             Players players,
             Widget child,
           ) =>
-              PlayersOnTableView(
-            players: players,
-            isBoardHorizontal: isBoardHorizontal,
-            widthOfBoard: widthOfBoard,
-            heightOfBoard: heightOfBoard,
-            onUserTap: onUserTap,
+              Transform.translate(
+            offset: _playersOnTableOffset,
+            child: PlayersOnTableView(
+              players: players,
+              isBoardHorizontal: isBoardHorizontal,
+              widthOfBoard: widthOfBoard,
+              heightOfBoard: heightOfBoard,
+              onUserTap: onUserTap,
+            ),
           ),
         ),
 
