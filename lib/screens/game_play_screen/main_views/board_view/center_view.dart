@@ -17,8 +17,6 @@ import 'package:provider/provider.dart';
 import 'board_view_util_methods.dart';
 
 class CenterView extends StatelessWidget {
-  static const _cardDistributionAnimationWidgetOffset = const Offset(0.0, 30.0);
-  static const _noOffset = const Offset(0.0, 0.0);
   final String tableStatus;
   final List<CardObject> cards;
   final List<int> potChips;
@@ -58,44 +56,34 @@ class CenterView extends StatelessWidget {
     /* in case of new hand, show the deck shuffling animation */
     if (_text == AppConstants.NEW_HAND)
       return Transform.scale(
-        scale: 1,
-        child: Transform.translate(
-          offset: isBoardHorizontal
-              ? _cardDistributionAnimationWidgetOffset
-              : _noOffset,
-          child: AnimatingShuffleCardView(),
-        ),
+        scale: 1.2,
+        child: AnimatingShuffleCardView(),
       );
 
     // TODO: We don't need this
     // We need to show the status of the in the game banner at the top
     Widget tableStatusWidget = Align(
       key: ValueKey('tableStatusWidget'),
-      alignment: Alignment.topCenter,
-      child: Transform.translate(
-        offset: isBoardHorizontal
-            ? const Offset(0.0, 50.0)
-            : const Offset(0.0, 0.0),
-        child: GestureDetector(
-          onTap: () {
-            if (tableStatus == AppConstants.WAITING_TO_BE_STARTED) {
-              onStartGame();
-            }
-          },
-          child: Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 10.0,
-              vertical: 5.0,
-            ),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(100.0),
-              color: Colors.black26,
-            ),
-            child: Text(
-              _text ?? '',
-              style: AppStyles.itemInfoTextStyleHeavy.copyWith(
-                fontSize: 13,
-              ),
+      alignment: Alignment.center,
+      child: GestureDetector(
+        onTap: () {
+          if (tableStatus == AppConstants.WAITING_TO_BE_STARTED) {
+            onStartGame();
+          }
+        },
+        child: Container(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 10.0,
+            vertical: 5.0,
+          ),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(100.0),
+            color: Colors.black26,
+          ),
+          child: Text(
+            _text ?? '',
+            style: AppStyles.itemInfoTextStyleHeavy.copyWith(
+              fontSize: 13,
             ),
           ),
         ),

@@ -12,7 +12,7 @@ import 'package:pokerapp/screens/game_play_screen/main_views/board_view/players_
 import 'package:pokerapp/screens/game_play_screen/player_view/animating_widgets/stack_switch_seat_animating_widget.dart';
 import 'package:provider/provider.dart';
 
-const _centerViewOffset = const Offset(0.0, -20.0);
+const _centerViewOffset = const Offset(0.0, -10.0);
 const _cardDistributionInitOffset = const Offset(0.0, 90.0);
 const _noOffset = const Offset(0.0, 0.0);
 
