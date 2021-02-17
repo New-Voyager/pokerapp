@@ -15,7 +15,7 @@ class LastHandAnalyseBottomSheet extends StatefulWidget {
 class _LastHandAnalyseBottomSheetState
     extends State<LastHandAnalyseBottomSheet> {
   double height;
-  int ratio = 3;
+  double ratio = 3;
   @override
   Widget build(BuildContext context) {
     height = MediaQuery.of(context).size.height;
@@ -47,7 +47,7 @@ class _LastHandAnalyseBottomSheetState
                     if (ratio == 2) {
                       ratio = 3;
                     } else {
-                      ratio = 2;
+                      ratio = 1.5;
                     }
                   });
                 },

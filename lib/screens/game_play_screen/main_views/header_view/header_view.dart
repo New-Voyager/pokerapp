@@ -91,13 +91,13 @@ class HeaderView extends StatelessWidget {
                               onTap: () => endGame(context, obj),
                             ),
                           ),
-                          SizedBox(height: 10),*/
+                          SizedBox(height: 10),
                           CustomTextButton(
                             text: 'start',
                             onTap: () => GamePlayScreenUtilMethods.startGame(
                               obj.gameCode,
                             ),
-                          ),
+                          ),*/
                           GestureDetector(
                             onTap: () async {
                               await showModalBottomSheet(
@@ -111,12 +111,13 @@ class HeaderView extends StatelessWidget {
                             child: Container(
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                color: Colors.black,
+                                color: Colors.blueGrey,
                               ),
                               padding: EdgeInsets.all(5),
                               child: Icon(
                                 Icons.more_horiz,
                                 color: AppColors.appAccentColor,
+                                size: 35,
                               ),
                             ),
                           ),

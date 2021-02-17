@@ -325,6 +325,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                               width: boardDimensions.width,
                               height: boardDimensions.height,
                               child: BoardView(
+                                gameInfo: _gameInfoModel,
                                 onUserTap: onJoinGame,
                                 onStartGame: () =>
                                     GamePlayScreenUtilMethods.startGame(

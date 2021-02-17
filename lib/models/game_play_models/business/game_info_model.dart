@@ -20,6 +20,7 @@ class GameInfoModel {
   List<PlayerModel> playersInSeats;
   String gameToken;
   String playerGameStatus;
+  bool isHost;
 
   // nats channels
   String gameToPlayerChannel;
@@ -49,6 +50,10 @@ class GameInfoModel {
         .toList();
     this.gameToken = data['gameToken'];
     this.playerGameStatus = data['playerGameStatus'];
+    this.isHost = true;
+    if (data['isHost'] != null) {
+      this.isHost = data['isHost'];
+    }
 
     // Nats Server channels
     this.gameToPlayerChannel = data['gameToPlayerChannel'];

@@ -14,7 +14,7 @@ class HandHistoryAnalyseBottomSheet extends StatefulWidget {
 class _HandHistoryAnalyseBottomSheetState
     extends State<HandHistoryAnalyseBottomSheet> {
   double height;
-  int ratio = 3;
+  double ratio = 3;
   @override
   Widget build(BuildContext context) {
     height = MediaQuery.of(context).size.height;
@@ -48,7 +48,7 @@ class _HandHistoryAnalyseBottomSheetState
                     if (ratio == 2) {
                       ratio = 3;
                     } else {
-                      ratio = 2;
+                      ratio = 1.5;
                     }
                   });
                 },

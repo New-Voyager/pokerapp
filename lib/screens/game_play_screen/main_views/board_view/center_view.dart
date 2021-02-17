@@ -26,9 +26,19 @@ class CenterView extends StatelessWidget {
   final bool showDown;
   final bool isBoardHorizontal;
   final double potChipsUpdates;
+  final bool isHost;
+  final String gameCode;
 
-  CenterView(this.isBoardHorizontal, this.cards, this.potChips,
-      this.potChipsUpdates, this.tableStatus, this.showDown, this.onStartGame);
+  CenterView(
+      this.gameCode,
+      this.isHost,
+      this.isBoardHorizontal,
+      this.cards,
+      this.potChips,
+      this.potChipsUpdates,
+      this.tableStatus,
+      this.showDown,
+      this.onStartGame);
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +46,14 @@ class CenterView extends StatelessWidget {
     log('board_view : center_view : _text : $_text');
 
     /* if the game is paused, show the options available during game pause */
-    if (_text == AppConstants.GAME_PAUSED) return CenterButtonView();
+    if (_text == AppConstants.GAME_PAUSED ||
+        tableStatus == AppConstants.WAITING_TO_BE_STARTED) {
+      return CenterButtonView(
+          gameCode: this.gameCode,
+          isHost: this.isHost,
+          tableStatus: this.tableStatus,
+          onStartGame: this.onStartGame);
+    }
 
     /* in case of new hand, show the deck shuffling animation */
     if (_text == AppConstants.NEW_HAND)

@@ -1,6 +1,8 @@
 class AppConstants {
   AppConstants._();
 
+  static const PROD_MODE = false;
+
   static const String API_SERVER_URL = 'API_SERVER_URL';
 
   // DO URLs

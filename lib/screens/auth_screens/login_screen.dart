@@ -186,9 +186,17 @@ class _LoginScreenState extends State<LoginScreen> {
 
                   separator30,
 
-                  _buildHostUrlWidget(ctx),
+                  !AppConstants.PROD_MODE
+                      ? _buildHostUrlWidget(ctx)
+                      : SizedBox(
+                          height: 0,
+                        ),
 
-                  _buildTempLogin(),
+                  !AppConstants.PROD_MODE
+                      ? _buildTempLogin()
+                      : SizedBox(
+                          height: 0,
+                        ),
 
                   RoundRaisedButton(
                     buttonText: 'LOGIN',

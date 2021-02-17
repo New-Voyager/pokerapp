@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
+import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
@@ -17,10 +18,11 @@ const _noOffset = const Offset(0.0, 0.0);
 
 class BoardView extends StatelessWidget {
   BoardView({
+    @required this.gameInfo,
     @required this.onUserTap,
     @required this.onStartGame,
   });
-
+  final GameInfoModel gameInfo;
   final Function(int index) onUserTap;
   final Function() onStartGame;
 
@@ -100,6 +102,8 @@ class BoardView extends StatelessWidget {
                   isBoardHorizontal: isBoardHorizontal,
                 ),
                 child: CenterView(
+                  gameInfo.gameCode,
+                  gameInfo.isHost,
                   isBoardHorizontal,
                   tableState.cards,
                   tableState.potChips,
