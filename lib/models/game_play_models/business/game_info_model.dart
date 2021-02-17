@@ -5,6 +5,7 @@ import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 
 class GameInfoModel {
   String gameCode;
+  String clubCode; // optional
   int actionTime;
   int buyInMax;
   int buyInMin;
@@ -19,6 +20,7 @@ class GameInfoModel {
   List<PlayerModel> playersInSeats;
   String gameToken;
   String playerGameStatus;
+  bool isHost;
 
   // nats channels
   String gameToPlayerChannel;
@@ -29,6 +31,7 @@ class GameInfoModel {
 
   GameInfoModel.fromJson(var data) {
     this.gameCode = data['gameCode'];
+    this.clubCode = data['clubCode'];
     this.buyInMax = data['buyInMax'];
     this.actionTime = data['actionTime'];
     this.maxPlayers = data['maxPlayers'];
@@ -47,6 +50,10 @@ class GameInfoModel {
         .toList();
     this.gameToken = data['gameToken'];
     this.playerGameStatus = data['playerGameStatus'];
+    this.isHost = true;
+    if (data['isHost'] != null) {
+      this.isHost = data['isHost'];
+    }
 
     // Nats Server channels
     this.gameToPlayerChannel = data['gameToPlayerChannel'];
@@ -64,6 +71,7 @@ class GameInfoModel {
   static String query(String gameCode) => """query gameInfo {
     gameInfo(gameCode:"$gameCode") {
       gameCode
+      clubCode
       buyInMax
       maxPlayers
       title

@@ -15,6 +15,22 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.5.0-nullsafety.1"
+  audio_recorder:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: master
+      resolved-ref: "7513b233663423c5cf6f90123b7b3756706b8d66"
+      url: "https://github.com/New-Voyager/audio_recorder.git"
+    source: git
+    version: "1.0.2"
+  audio_session:
+    dependency: transitive
+    description:
+      name: audio_session
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.11"
   audioplayers:
     dependency: "direct main"
     description:
@@ -133,7 +149,7 @@ packages:
       path: "."
       ref: master
       resolved-ref: b9a49103de1992d83f651d5286a13757b529e108
-      url: "https://github.com/jyotirmoy-paul/dart-nats.git"
+      url: "https://github.com/New-Voyager/dart-nats.git"
     source: git
     version: "0.1.8"
   emoji_picker:
@@ -176,13 +192,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_audio_recorder:
-    dependency: "direct main"
-    description:
-      name: flutter_audio_recorder
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.5.5"
   flutter_blurhash:
     dependency: transitive
     description:
@@ -204,34 +213,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.3.0"
-  flutter_sound:
-    dependency: "direct main"
-    description:
-      name: flutter_sound
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "7.5.3+1"
-  flutter_sound_platform_interface:
-    dependency: transitive
-    description:
-      name: flutter_sound_platform_interface
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "7.5.3+1"
-  flutter_sound_web:
-    dependency: transitive
-    description:
-      name: flutter_sound_web
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "7.5.3+1"
-  flutter_spinkit:
-    dependency: transitive
-    description:
-      name: flutter_spinkit
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "4.1.2+1"
   flutter_svg:
     dependency: "direct main"
     description:
@@ -305,13 +286,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.16.1"
-  js:
-    dependency: transitive
-    description:
-      name: js
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.6.2"
   json_annotation:
     dependency: transitive
     description:
@@ -319,13 +293,27 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.1.1"
-  logger:
-    dependency: transitive
+  just_audio:
+    dependency: "direct main"
     description:
-      name: logger
+      name: just_audio
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.9.4"
+    version: "0.6.12"
+  just_audio_platform_interface:
+    dependency: transitive
+    description:
+      name: just_audio_platform_interface
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.0"
+  just_audio_web:
+    dependency: transitive
+    description:
+      name: just_audio_web
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.2.3"
   logging:
     dependency: transitive
     description:
@@ -494,13 +482,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.5"
-  recase:
-    dependency: transitive
-    description:
-      name: recase
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "3.0.1"
   rxdart:
     dependency: transitive
     description:

@@ -209,4 +209,25 @@ class GameService {
     // FIXME: We need to get the proper return value
     return "ended";
   }
+
+  /* returns token used for live audio */
+  static Future<String> getLiveAudioToken(String gameCode) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+
+    String _query = """
+          query (\$gameCode: String!){
+            token: liveAudioToken(gameCode: \$gameCode)
+          }""";
+    Map<String, dynamic> variables = {
+      "gameCode": gameCode,
+    };
+
+    QueryResult result = await _client.query(
+      QueryOptions(documentNode: gql(_query), variables: variables),
+    );
+
+    if (result.hasException) return '';
+
+    return result.data['token'].toString();
+  }
 }

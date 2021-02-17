@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
+import 'package:pokerapp/services/game_play/game_chat_service.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:provider/provider.dart';
 import 'communication_view.dart';
@@ -12,13 +13,16 @@ import 'hand_analyse_view.dart';
 class FooterView extends StatelessWidget {
   final GameComService gameComService;
   final String gameCode;
+  final String clubCode;
   final String playerUuid;
   final Function chatVisibilityChange;
+  
   FooterView(
     this.gameComService,
     this.gameCode,
     this.playerUuid,
     this.chatVisibilityChange,
+    this.clubCode,
   );
 
   @override
@@ -33,8 +37,8 @@ class FooterView extends StatelessWidget {
                       footerStatus: footerStatusValueNotifier.value,
                       playerModel: players.me,
                     ),
-              HandAnalyseView(),
-              CommunicationView(chatVisibilityChange)
+              HandAnalyseView(gameCode, clubCode),
+              CommunicationView(chatVisibilityChange, gameComService.chat)
             ],
           );
         },

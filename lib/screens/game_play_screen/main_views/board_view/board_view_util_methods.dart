@@ -22,6 +22,8 @@ class BoardViewUtilMethods {
         return 'Game Ended';
       case AppConstants.NEW_HAND:
         return tableStatus;
+      case AppConstants.GAME_RUNNING:
+        return tableStatus;
     }
 
     return null;

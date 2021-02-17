@@ -3,7 +3,7 @@ description: A new Flutter application.
 
 publish_to: 'none'
 
-version: 1.0.0+1
+version: 0.1.0
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -28,7 +28,7 @@ dependencies:
   http: ^0.12.2
   dart_nats:
     git:
-      url: https://github.com/jyotirmoy-paul/dart-nats.git
+      url: https://github.com/New-Voyager/dart-nats.git
       ref: master
 
   # device id
@@ -48,6 +48,7 @@ dependencies:
 
   # audio playing
   audioplayers: 0.17.0
+  just_audio: ^0.6.12
 
   # utils
   path_provider: ^1.6.24
@@ -63,12 +64,15 @@ dependencies:
   # for 3d table
   zflutter: ^0.0.1+2
 
-  # for recording audio
-  flutter_audio_recorder: ^0.5.5
   emoji_picker: ^0.1.0
   flutter_keyboard_visibility: ^3.2.2
-  flutter_sound: ^7.5.3+1
-  
+
+  # for recording audio
+  audio_recorder:
+    git:
+      url: https://github.com/New-Voyager/audio_recorder.git
+      ref: master
+
   # permissions
   permission_handler: ^5.0.1
 

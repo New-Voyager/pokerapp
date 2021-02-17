@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:pokerapp/enums/game_status.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/footer_result.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/resources/app_constants.dart';
@@ -25,9 +26,19 @@ class CenterView extends StatelessWidget {
   final bool showDown;
   final bool isBoardHorizontal;
   final double potChipsUpdates;
+  final bool isHost;
+  final String gameCode;
 
-  CenterView(this.isBoardHorizontal, this.cards, this.potChips,
-      this.potChipsUpdates, this.tableStatus, this.showDown, this.onStartGame);
+  CenterView(
+      this.gameCode,
+      this.isHost,
+      this.isBoardHorizontal,
+      this.cards,
+      this.potChips,
+      this.potChipsUpdates,
+      this.tableStatus,
+      this.showDown,
+      this.onStartGame);
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +46,14 @@ class CenterView extends StatelessWidget {
     log('board_view : center_view : _text : $_text');
 
     /* if the game is paused, show the options available during game pause */
-    if (_text == AppConstants.GAME_PAUSED) return CenterButtonView();
+    if (_text == AppConstants.GAME_PAUSED ||
+        tableStatus == AppConstants.WAITING_TO_BE_STARTED) {
+      return CenterButtonView(
+          gameCode: this.gameCode,
+          isHost: this.isHost,
+          tableStatus: this.tableStatus,
+          onStartGame: this.onStartGame);
+    }
 
     /* in case of new hand, show the deck shuffling animation */
     if (_text == AppConstants.NEW_HAND)
@@ -49,6 +67,8 @@ class CenterView extends StatelessWidget {
         ),
       );
 
+    // TODO: We don't need this
+    // We need to show the status of the in the game banner at the top
     Widget tableStatusWidget = Align(
       key: ValueKey('tableStatusWidget'),
       alignment: Alignment.topCenter,
@@ -85,20 +105,15 @@ class CenterView extends StatelessWidget {
     /* if reached here, means, the game is RUNNING */
     /* The following view, shows the community cards
     * and the pot chips, if they are nulls, put the default values */
-    dynamic potChips = this.potChips;
-    dynamic cards = this.cards;
-    if (potChips == null) potChips = [0];
-    if (cards == null) cards = const [];
-
     Widget tablePotAndCardWidget = Align(
       key: ValueKey('tablePotAndCardWidget'),
-      alignment: Alignment.topCenter,
+      alignment: Alignment.center,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           PotsView(this.isBoardHorizontal, this.potChips, this.showDown),
           CommunityCardsView(
-            cards: cards,
+            cards: this.cards,
             horizontal: true,
           ),
           const SizedBox(height: AppDimensions.cardHeight / 4),
@@ -116,6 +131,9 @@ class CenterView extends StatelessWidget {
       reverseDuration: AppConstants.animationDuration,
       child: _text != null ? tableStatusWidget : tablePotAndCardWidget,
     );
+
+    // empty container
+    //return Container();
   }
 
   Widget potUpdatesView() {
