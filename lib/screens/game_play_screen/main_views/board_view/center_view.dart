@@ -17,8 +17,6 @@ import 'package:provider/provider.dart';
 import 'board_view_util_methods.dart';
 
 class CenterView extends StatelessWidget {
-  static const _cardDistributionAnimationWidgetOffset = const Offset(0.0, 30.0);
-  static const _noOffset = const Offset(0.0, 0.0);
   final String tableStatus;
   final List<CardObject> cards;
   final List<int> potChips;
@@ -58,49 +56,42 @@ class CenterView extends StatelessWidget {
     /* in case of new hand, show the deck shuffling animation */
     if (_text == AppConstants.NEW_HAND)
       return Transform.scale(
-        scale: 1,
-        child: Transform.translate(
-          offset: isBoardHorizontal
-              ? _cardDistributionAnimationWidgetOffset
-              : _noOffset,
-          child: AnimatingShuffleCardView(),
-        ),
+        scale: 1.2,
+        child: AnimatingShuffleCardView(),
       );
 
     // TODO: We don't need this
     // We need to show the status of the in the game banner at the top
     Widget tableStatusWidget = Align(
       key: ValueKey('tableStatusWidget'),
-      alignment: Alignment.topCenter,
-      child: Transform.translate(
-        offset: isBoardHorizontal
-            ? const Offset(0.0, 50.0)
-            : const Offset(0.0, 0.0),
-        child: GestureDetector(
-          onTap: () {
-            if (tableStatus == AppConstants.WAITING_TO_BE_STARTED) {
-              onStartGame();
-            }
-          },
-          child: Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 10.0,
-              vertical: 5.0,
-            ),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(100.0),
-              color: Colors.black26,
-            ),
-            child: Text(
-              _text ?? '',
-              style: AppStyles.itemInfoTextStyleHeavy.copyWith(
-                fontSize: 13,
-              ),
+      alignment: Alignment.center,
+      child: GestureDetector(
+        onTap: () {
+          if (tableStatus == AppConstants.WAITING_TO_BE_STARTED) {
+            onStartGame();
+          }
+        },
+        child: Container(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 10.0,
+            vertical: 5.0,
+          ),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(100.0),
+            color: Colors.black26,
+          ),
+          child: Text(
+            _text ?? '',
+            style: AppStyles.itemInfoTextStyleHeavy.copyWith(
+              fontSize: 13,
             ),
           ),
         ),
       ),
     );
+
+    /* this gap height is the separation height between the three widgets in the center pot */
+    const _gapHeight = 5.0;
 
     /* if reached here, means, the game is RUNNING */
     /* The following view, shows the community cards
@@ -111,14 +102,24 @@ class CenterView extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          PotsView(this.isBoardHorizontal, this.potChips, this.showDown),
+          /* main pot view */
+          PotsView(
+            this.isBoardHorizontal,
+            this.potChips,
+            this.showDown,
+          ),
+          const SizedBox(
+            height: _gapHeight,
+          ),
+
+          /* community cards view */
           CommunityCardsView(
             cards: this.cards,
             horizontal: true,
           ),
-          const SizedBox(height: AppDimensions.cardHeight / 4),
+          const SizedBox(height: _gapHeight + AppDimensions.cardHeight / 4),
 
-          /* potUpdates view */
+          /* potUpdates view OR the rank widget (rank widget is shown only when we have a result) */
           this.showDown ? rankWidget() : potUpdatesView(),
         ],
       ),
@@ -136,14 +137,10 @@ class CenterView extends StatelessWidget {
     //return Container();
   }
 
-  Widget potUpdatesView() {
-    if (potChipsUpdates == null) {
-      return SizedBox.shrink();
-    }
-    return Opacity(
-      opacity: showDown || (potChipsUpdates == null) ? 0 : 1,
-      child: Visibility(
-        visible: potChipsUpdates != null && potChipsUpdates != 0,
+  Widget potUpdatesView() => Opacity(
+        opacity: showDown || (potChipsUpdates == null || potChipsUpdates == 0)
+            ? 0
+            : 1,
         child: Container(
           padding: const EdgeInsets.symmetric(
             horizontal: 10.0,
@@ -161,39 +158,36 @@ class CenterView extends StatelessWidget {
             ),
           ),
         ),
-      ),
-    );
-  }
+      );
 
-  Widget rankWidget() {
-    return /* rankStr --> needs to be shown only when footer result is not null */
-        Consumer<FooterResult>(
-      builder: (_, FooterResult footerResult, __) => AnimatedSwitcher(
-        duration: AppConstants.animationDuration,
-        reverseDuration: AppConstants.animationDuration,
-        child: footerResult.isEmpty
-            ? const SizedBox.shrink()
-            : Transform.translate(
-                offset: Offset(
-                  0.0,
-                  -AppDimensions.cardHeight / 2,
+  /* rankStr --> needs to be shown only when footer result is not null */
+  Widget rankWidget() => Consumer<FooterResult>(
+        builder: (_, FooterResult footerResult, __) => AnimatedSwitcher(
+          duration: AppConstants.animationDuration,
+          reverseDuration: AppConstants.animationDuration,
+          child: footerResult.isEmpty
+              ? const SizedBox.shrink()
+              : Transform.translate(
+                  offset: Offset(
+                    0.0,
+                    -AppDimensions.cardHeight / 2,
+                  ),
+                  child: Container(
+                    margin: EdgeInsets.only(top: 5.0),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10.0,
+                      vertical: 5.0,
+                    ),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(100.0),
+                      color: Colors.black26,
+                    ),
+                    child: Text(
+                      footerResult.potWinners.first.rankStr,
+                      style: AppStyles.footerResultTextStyle4,
+                    ),
+                  ),
                 ),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10.0,
-                    vertical: 5.0,
-                  ),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(100.0),
-                    color: Colors.black26,
-                  ),
-                  child: Text(
-                    footerResult.potWinners.first.rankStr,
-                    style: AppStyles.footerResultTextStyle4,
-                  ),
-                ),
-              ),
-      ),
-    );
-  }
+        ),
+      );
 }

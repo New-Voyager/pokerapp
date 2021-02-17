@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pokerapp/models/game_play_models/ui/header_object.dart';
@@ -68,11 +69,23 @@ class HeaderView extends StatelessWidget {
                     /* back button */
                     Align(
                       alignment: Alignment.centerLeft,
+                      // child: IconButton(
+                      //   icon: Icon(
+                      //     FontAwesomeIcons.chevronLeft,
+                      //     color: Colors.white,
+                      //   ),
+                      //   onPressed: () => Navigator.pop(context),
+                      // ),
                       child: InkWell(
                         onTap: () => Navigator.pop(context),
-                        child: Icon(
-                          FontAwesomeIcons.chevronLeft,
-                          color: Colors.white,
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 5.0,
+                          ),
+                          child: Icon(
+                            FontAwesomeIcons.chevronLeft,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                     ),
