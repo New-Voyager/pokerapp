@@ -17,7 +17,10 @@ class TableView extends StatelessWidget {
         builder: (_, boardAttrObj, __) => Center(
           child: Container(
             width: boardAttrObj.isOrientationHorizontal ? width + 50 : width,
-            height: boardAttrObj.isOrientationHorizontal ? height : height,
+
+            /* NOTE: THE IMAGE IS SET TO STRETCH TO THE ENTIRE HEIGHT OF THIS AVAILABLE CONTAINER,
+            THIS HEIGHT - 40 VARIABLE CAN BE CHANGED TO STRETCH IT FURTHER OR SQUEEZE IT*/
+            height: boardAttrObj.isOrientationHorizontal ? height - 70 : height,
             child: Image.asset(
               boardAttrObj.isOrientationHorizontal
                   ? AppAssets.horizontalTable
