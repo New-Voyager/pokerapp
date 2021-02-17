@@ -3,9 +3,6 @@ import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/boar
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:provider/provider.dart';
 
-const innerWidth = 0.0;
-const outerWidth = 20.0;
-
 class TableView extends StatelessWidget {
   final double height;
   final double width;
@@ -15,23 +12,32 @@ class TableView extends StatelessWidget {
     this.width,
   );
 
-  Widget build(BuildContext context) {
-    // todo: do we need the center and fitted box?
-    return Consumer<BoardAttributesObject>(
-      builder: (_, boardAttrObj, __) => Center(
-        child: FittedBox(
-          fit: BoxFit.fill,
+  // todo: do we need the center and fitted box?
+  Widget build(BuildContext context) => Consumer<BoardAttributesObject>(
+        builder: (_, boardAttrObj, __) => Center(
           child: Container(
             width: boardAttrObj.isOrientationHorizontal ? width + 50 : width,
-            height: boardAttrObj.isOrientationHorizontal ? height : height,
+
+            /* NOTE: THE IMAGE IS SET TO STRETCH TO THE ENTIRE HEIGHT OF THIS AVAILABLE CONTAINER,
+            THIS HEIGHT - 40 VARIABLE CAN BE CHANGED TO STRETCH IT FURTHER OR SQUEEZE IT*/
+            height: boardAttrObj.isOrientationHorizontal ? height - 70 : height,
             child: Image.asset(
               boardAttrObj.isOrientationHorizontal
                   ? AppAssets.horizontalTable
                   : AppAssets.verticalTable,
+              fit: BoxFit.fill,
             ),
           ),
         ),
-      ),
-    );
-  }
+      );
 }
+/*
+LayoutBuilder(
+   builder: (_, constraints) => Image(
+      fit: BoxFit.fill,
+      width: constraints.maxWidth,
+      image: AssetImage(assets.example),
+   ),
+)
+
+ */

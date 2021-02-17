@@ -82,7 +82,8 @@ class _NewGameSettingsState extends State<NewGameSettings> {
   }
 
   void _joinGame(BuildContext context, String gameCode) =>
-      navigatorKey.currentState.push(
+      Navigator.pushReplacement(
+        context,
         MaterialPageRoute(
           builder: (_) => GamePlayScreen(
             gameCode: gameCode,

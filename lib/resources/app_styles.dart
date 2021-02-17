@@ -6,7 +6,7 @@ import 'app_colors.dart';
 
 class AppStyles {
   static const cardTextStyle = TextStyle(
-    fontSize: 15.0,
+    fontSize: 20.0,
     fontWeight: FontWeight.w700,
     fontFamily: AppAssets.fontFamilyTrocchi,
   );

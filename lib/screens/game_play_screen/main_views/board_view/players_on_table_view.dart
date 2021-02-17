@@ -188,14 +188,14 @@ class PlayersOnTableView extends StatelessWidget {
       case 5:
         return Positioned(
           top: 0,
-          left: widthOfBoard / 4,
+          left: widthOfBoard / 3.5,
           child: userView,
         );
 
       case 6:
         return Positioned(
           top: 0,
-          right: widthOfBoard / 4,
+          right: widthOfBoard / 3.5,
           child: userView,
         );
 
