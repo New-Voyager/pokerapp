@@ -6,6 +6,7 @@ import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/screens/game_screens/game_history_details_view/stack_chart_view.dart';
+import 'package:pokerapp/screens/game_screens/game_history_details_view/stack_details_view.dart';
 import 'package:pokerapp/screens/game_screens/hand_history/hand_history.dart';
 import 'package:pokerapp/screens/game_screens/highhand_log/highhand_log.dart';
 import 'package:pokerapp/screens/game_screens/table_result/table_result.dart';
@@ -340,7 +341,8 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
             ),
             Expanded(
               child: Visibility(
-                child: !_gameDetail.playedGame
+                child:
+                !_gameDetail.playedGame
                     ? Text(
                         "No Data",
                         style: TextStyle(
@@ -350,7 +352,8 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
                           fontWeight: FontWeight.w400,
                         ),
                       )
-                    : HandsPieChart(this._gameDetail.handsData),
+                    :
+                HandsPieChart(this._gameDetail.handsData),
                 visible: loadingDone,
               ),
             )
@@ -360,12 +363,20 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
     );
   }
 
+
   Widget stackTile() {
     if (loadingDone) {
       // loading done
       print(_gameDetail.stack);
     }
-    return Container(
+    return GestureDetector(
+      onTap: () =>  Navigator.push(context,
+        MaterialPageRoute(
+            builder: (_) =>
+                PointsLineChart( gameDetail : _gameDetail)
+        ),
+      ),
+      child: Container(
       height: 150.0,
       decoration: BoxDecoration(
         color: Color(0xff313235),
@@ -394,7 +405,8 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
           Visibility(
             child: Expanded(
                 flex: 1,
-                child: !_gameDetail.playedGame
+                child:
+                !_gameDetail.playedGame
                     ? Text(
                         "No Data",
                         style: TextStyle(
@@ -404,12 +416,14 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
                           fontWeight: FontWeight.w400,
                         ),
                       )
-                    : StackChartView(_gameDetail.stack)),
+                    :
+                StackChartView(_gameDetail.stack)),
+            // PointsLineChart()),
             visible: loadingDone,
           ),
         ],
       ),
-    );
+    ),);
   }
 
   Widget balanceTile() {
