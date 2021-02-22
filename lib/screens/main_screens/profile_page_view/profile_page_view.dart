@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
-import 'package:pokerapp/models/rewards_model.dart';
-import 'package:pokerapp/screens/auth_screens/login_screen.dart';
-import 'package:pokerapp/screens/game_context_screen/game_options/game_option_bottom_sheet.dart';
-import 'package:pokerapp/screens/game_play_screen/card_views/animations/animating_shuffle_card_view.dart';
+import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/game_play_screen/card_views/stack_card_view.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/utils/card_helper.dart';
-import 'package:provider/provider.dart';
 
 class ProfilePageView extends StatefulWidget {
   @override
@@ -45,11 +41,9 @@ class _ProfilePageViewState extends State<ProfilePageView> {
             child: Text('Logout'),
             onPressed: () {
               AuthService.logout();
-              Navigator.pushAndRemoveUntil(
+              Navigator.pushNamedAndRemoveUntil(
                 context,
-                MaterialPageRoute(
-                  builder: (_) => LoginScreen(),
-                ),
+                Routes.login,
                 (route) => false,
               );
             },

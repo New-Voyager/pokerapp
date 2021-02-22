@@ -4,7 +4,7 @@ import 'package:pokerapp/enums/auth_type.dart';
 import 'package:pokerapp/models/auth_model.dart';
 import 'package:pokerapp/resources/app_strings.dart';
 import 'package:pokerapp/resources/app_styles.dart';
-import 'package:pokerapp/screens/main_screens/main_screen.dart';
+import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/widgets/card_form_text_field.dart';
@@ -27,11 +27,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
   // move user to the main screen
   _move() {
-    Navigator.pushAndRemoveUntil(
+    Navigator.pushNamedAndRemoveUntil(
       context,
-      MaterialPageRoute(
-        builder: (_) => MainScreen(),
-      ),
+      Routes.main,
       (_) => false,
     );
   }

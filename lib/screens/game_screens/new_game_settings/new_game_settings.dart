@@ -5,20 +5,12 @@ import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/game/new_game_provider.dart';
 import 'package:pokerapp/models/rewards_model.dart';
 import 'package:pokerapp/resources/app_colors.dart';
-import 'package:pokerapp/screens/game_play_screen/game_play_screen.dart';
+import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/services/app/rewards_service.dart';
 import 'package:pokerapp/services/game_play/graphql/game_service.dart';
 import 'package:pokerapp/widgets/custom_text_button.dart';
 import 'package:provider/provider.dart';
 
-import 'game_timing_settings/action_time_select.dart';
-import 'game_timing_settings/game_length_select.dart';
-import 'ingame_settings/blinds_select.dart';
-import 'ingame_settings/buyin_ranges_select.dart';
-import 'ingame_settings/club_tips_select.dart';
-import 'ingame_settings/game_type_select.dart';
-import 'ingame_settings/max_player_select.dart';
-import 'ingame_settings/rewards_list.dart';
 
 class NewGameSettings extends StatefulWidget {
   final String clubCode;
@@ -82,13 +74,9 @@ class _NewGameSettingsState extends State<NewGameSettings> {
   }
 
   void _joinGame(BuildContext context, String gameCode) =>
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (_) => GamePlayScreen(
-            gameCode: gameCode,
-          ),
-        ),
+      navigatorKey.currentState.pushNamed(
+        Routes.game_play,
+        arguments: gameCode,
       );
 
   @override
@@ -239,17 +227,11 @@ class _NewGameSettingsState extends State<NewGameSettings> {
                     color: Colors.white,
                   ),
                   onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => data.rewards == null
-                                ? Container(
-                                    child: Center(
-                                      child: CircularProgressIndicator(),
-                                    ),
-                                  )
-                                : ChangeNotifierProvider.value(
-                                    value: data, child: RewardsList())));
+                    Navigator.pushNamed(
+                      context,
+                      Routes.rewards_list,
+                      arguments: data,
+                    );
                   }),
             ],
           ),
@@ -379,15 +361,11 @@ class _NewGameSettingsState extends State<NewGameSettings> {
                           color: Colors.white,
                         ),
                         onPressed: () {
-                          Navigator.push(
-                              context,
-                              new MaterialPageRoute(
-                                builder: (context) =>
-                                    ChangeNotifierProvider.value(
-                                  value: data,
-                                  child: GameLengthSelect(),
-                                ),
-                              ));
+                          Navigator.pushNamed(
+                            context,
+                            Routes.game_length_select,
+                            arguments: data,
+                          );
                         }),
                   ],
                 ),
@@ -422,15 +400,11 @@ class _NewGameSettingsState extends State<NewGameSettings> {
                           color: Colors.white,
                         ),
                         onPressed: () {
-                          Navigator.push(
-                              context,
-                              new MaterialPageRoute(
-                                builder: (context) =>
-                                    ChangeNotifierProvider.value(
-                                  value: data,
-                                  child: ActionTimeSelect(),
-                                ),
-                              ));
+                          Navigator.pushNamed(
+                            context,
+                            Routes.action_time_select,
+                            arguments: data,
+                          );
                         }),
                   ],
                 ),
@@ -472,14 +446,11 @@ class _NewGameSettingsState extends State<NewGameSettings> {
                       color: Colors.white,
                     ),
                     onPressed: () {
-                      Navigator.push(
-                          context,
-                          new MaterialPageRoute(
-                            builder: (context) => ChangeNotifierProvider.value(
-                              value: data,
-                              child: GameTypeSelect(),
-                            ),
-                          ));
+                      Navigator.pushNamed(
+                        context,
+                        Routes.game_type_select,
+                        arguments: data,
+                      );
                     }),
               ),
               Padding(
@@ -525,15 +496,11 @@ class _NewGameSettingsState extends State<NewGameSettings> {
                           color: Colors.white,
                         ),
                         onPressed: () {
-                          Navigator.push(
-                              context,
-                              new MaterialPageRoute(
-                                builder: (context) =>
-                                    ChangeNotifierProvider.value(
-                                  value: data,
-                                  child: BlindsSelect(),
-                                ),
-                              ));
+                          Navigator.pushNamed(
+                            context,
+                            Routes.blind_select,
+                            arguments: data,
+                          );
                         }),
                   ],
                 ),
@@ -569,15 +536,11 @@ class _NewGameSettingsState extends State<NewGameSettings> {
                           color: Colors.white,
                         ),
                         onPressed: () {
-                          Navigator.push(
-                              context,
-                              new MaterialPageRoute(
-                                builder: (context) =>
-                                    ChangeNotifierProvider.value(
-                                  value: data,
-                                  child: BuyInRangesSelect(),
-                                ),
-                              ));
+                          Navigator.pushNamed(
+                            context,
+                            Routes.buy_in_range_select,
+                            arguments: data,
+                          );
                         }),
                   ],
                 ),
@@ -613,15 +576,11 @@ class _NewGameSettingsState extends State<NewGameSettings> {
                           color: Colors.white,
                         ),
                         onPressed: () {
-                          Navigator.push(
-                              context,
-                              new MaterialPageRoute(
-                                builder: (context) =>
-                                    ChangeNotifierProvider.value(
-                                  value: data,
-                                  child: MaxPlayerSelect(),
-                                ),
-                              ));
+                          Navigator.pushNamed(
+                            context,
+                            Routes.max_player_select,
+                            arguments: data,
+                          );
                         }),
                   ],
                 ),
@@ -663,15 +622,11 @@ class _NewGameSettingsState extends State<NewGameSettings> {
                           color: Colors.white,
                         ),
                         onPressed: () {
-                          Navigator.push(
-                              context,
-                              new MaterialPageRoute(
-                                builder: (context) =>
-                                    ChangeNotifierProvider.value(
-                                  value: data,
-                                  child: ClubTipsSelect(),
-                                ),
-                              ));
+                          Navigator.pushNamed(
+                            context,
+                            Routes.club_tips_select,
+                            arguments: data,
+                          );
                         }),
                   ],
                 ),

@@ -5,6 +5,7 @@ import 'package:pokerapp/models/hand_log_model.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
+import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_log_view.dart';
 import 'package:pokerapp/services/app/hand_service.dart';
 import 'package:pokerapp/utils/formatter.dart';
@@ -124,11 +125,10 @@ class PlayedHandsScreen extends StatelessWidget {
         ),
       );
     } else {
-      Navigator.push(
+      Navigator.pushNamed(
         context,
-        MaterialPageRoute(
-          builder: (_) => HandLogView(model),
-        ),
+        Routes.hand_log_view,
+        arguments: model,
       );
     }
   }

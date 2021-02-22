@@ -3,9 +3,9 @@ import 'package:pokerapp/models/club_homepage_model.dart';
 import 'package:pokerapp/models/club_weekly_activity_model.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/club_screen/club_banner_view/club_banner_view.dart';
 import 'package:pokerapp/screens/club_screen/club_banner_view/club_graphics_view.dart';
-import 'package:pokerapp/screens/game_screens/new_game_settings/new_game_settings.dart';
 import 'package:pokerapp/services/app/clubs_service.dart';
 import 'package:pokerapp/widgets/custom_text_button.dart';
 import 'package:provider/provider.dart';
@@ -25,13 +25,10 @@ class ClubMainScreen extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.all(10.0),
           child: CustomTextButton(
-            onTap: () => Navigator.push(
+            onTap: () => Navigator.pushNamed(
               context,
-              MaterialPageRoute(
-                builder: (context) => NewGameSettings(
-                  clubCode,
-                ),
-              ),
+              Routes.new_game_settings,
+              arguments: clubCode,
             ),
             text: '+ Create Game',
           ),
