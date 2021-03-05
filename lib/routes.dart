@@ -145,7 +145,7 @@ class Routes {
         );
 
       case club_host_messagng:
-        var args = settings.arguments as Map<String, String>;
+        var args = settings.arguments as dynamic;
         return _getPageRoute(
           routeName: settings.name,
           viewToShow: ClubHostMessaging(
@@ -179,7 +179,7 @@ class Routes {
         );
 
       case hand_history_list:
-        var args = settings.arguments as Map<String, String>;
+        var args = settings.arguments as dynamic;
         var model = args['model'] as HandHistoryListModel;
         var clubCode = args['clubCode'];
         return _getPageRoute(
@@ -212,7 +212,7 @@ class Routes {
         );
 
       case game_history_detail_view:
-        var args = settings.arguments as Map<String, String>;
+        var args = settings.arguments as dynamic;
         var model = args['model'] as GameHistoryDetailModel;
         var clubCode = args['clubCode'];
         return _getPageRoute(
