@@ -367,11 +367,9 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
       print(_gameDetail.stack);
     }
     return GestureDetector(
-      onTap: () =>  Navigator.push(context,
-        MaterialPageRoute(
-            builder: (_) =>
-                PointsLineChart( gameDetail : _gameDetail)
-        ),
+      onTap: () =>  Navigator.pushNamed(context,
+        Routes.pointsLineChart,
+        arguments: _gameDetail
       ),
       child: Container(
       height: 150.0,

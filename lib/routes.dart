@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pokerapp/screens/game_screens/game_history_details_view/stack_details_view.dart';
 import 'package:provider/provider.dart';
 
 import 'package:pokerapp/screens/screens.dart';
@@ -68,6 +69,8 @@ class Routes {
   static const String club_pages = '/club_pages';
   // ClubMainScreen
   static const String club_main = '/club_main';
+  // ClubMainScreen
+  static const String pointsLineChart = '/points_line_chart';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -328,6 +331,13 @@ class Routes {
         return _getPageRoute(
           routeName: settings.name,
           viewToShow: ClubsPageView(),
+        );
+
+      case pointsLineChart:
+        var args = settings.arguments as GameHistoryDetailModel;
+        return _getPageRoute(
+          routeName: settings.name,
+          viewToShow: PointsLineChart(gameDetail: args,),
         );
 
       default:
