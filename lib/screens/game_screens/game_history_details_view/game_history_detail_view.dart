@@ -5,13 +5,10 @@ import 'package:pokerapp/models/hand_history_model.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
+import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/game_screens/game_history_details_view/stack_chart_view.dart';
 import 'package:pokerapp/screens/game_screens/game_history_details_view/stack_details_view.dart';
-import 'package:pokerapp/screens/game_screens/hand_history/hand_history.dart';
-import 'package:pokerapp/screens/game_screens/highhand_log/highhand_log.dart';
-import 'package:pokerapp/screens/game_screens/table_result/table_result.dart';
 import 'package:pokerapp/services/app/game_service.dart';
-import 'package:provider/provider.dart';
 
 import 'hands_chart_view.dart';
 import 'highhand_winners_view.dart';
@@ -370,11 +367,9 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
       print(_gameDetail.stack);
     }
     return GestureDetector(
-      onTap: () =>  Navigator.push(context,
-        MaterialPageRoute(
-            builder: (_) =>
-                PointsLineChart( gameDetail : _gameDetail)
-        ),
+      onTap: () =>  Navigator.pushNamed(context,
+        Routes.pointsLineChart,
+        arguments: _gameDetail
       ),
       child: Container(
       height: 150.0,
@@ -646,47 +641,36 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
   void onHandHistoryPressed(BuildContext context) {
     final model =
         HandHistoryListModel(_gameDetail.gameCode, _gameDetail.isOwner);
-    Navigator.push(
+    Navigator.pushNamed(
       context,
-      MaterialPageRoute(
-        builder: (_) => ChangeNotifierProvider<HandHistoryListModel>(
-          create: (_) => model,
-          builder: (BuildContext context, _) => Consumer<HandHistoryListModel>(
-            builder: (_, HandHistoryListModel data, __) => HandHistoryListView(
-              data,
-              widget.clubCode,
-            ),
-          ),
-        ),
-      ),
+      Routes.hand_history_list,
+      arguments: {
+        'model': model,
+        'clubCode': widget.clubCode,
+      },
     );
   }
 
   void onHighHandLogPressed(BuildContext context) {
     final model =
         HandHistoryListModel(_gameDetail.gameCode, _gameDetail.isOwner);
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (_) => HighHandLogView(_gameDetail.gameCode)));
+    Navigator.pushNamed(
+      context,
+      Routes.high_hand_log,
+      arguments: _gameDetail.gameCode,
+    );
   }
 
   void onHigh(BuildContext context) {
     final model =
         HandHistoryListModel(_gameDetail.gameCode, _gameDetail.isOwner);
-    Navigator.push(
+    Navigator.pushNamed(
       context,
-      MaterialPageRoute(
-        builder: (_) => ChangeNotifierProvider<HandHistoryListModel>(
-          create: (_) => model,
-          builder: (BuildContext context, _) => Consumer<HandHistoryListModel>(
-              builder: (_, HandHistoryListModel data, __) =>
-                  HandHistoryListView(
-                    data,
-                    widget.clubCode,
-                  )),
-        ),
-      ),
+      Routes.hand_history_list,
+      arguments: {
+        'model': model,
+        'clubCode': widget.clubCode,
+      },
     );
   }
 
@@ -763,11 +747,11 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
                     ),
                     onPressed: () {}),
                 onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (_) =>
-                              TableResultScreen(_gameDetail.gameCode)));
+                  Navigator.pushNamed(
+                    context,
+                    Routes.table_result,
+                    arguments: _gameDetail.gameCode,
+                  );
                 }),
             Padding(
               padding: const EdgeInsets.only(left: 70.0),

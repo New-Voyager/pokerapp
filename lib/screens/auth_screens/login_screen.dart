@@ -6,8 +6,7 @@ import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_host_urls.dart';
 import 'package:pokerapp/resources/app_strings.dart';
 import 'package:pokerapp/resources/app_styles.dart';
-import 'package:pokerapp/screens/auth_screens/registration_screen.dart';
-import 'package:pokerapp/screens/main_screens/main_screen.dart';
+import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/widgets/card_form_text_field.dart';
@@ -84,11 +83,9 @@ class _LoginScreenState extends State<LoginScreen> {
         message,
       );
 
-    Navigator.pushReplacement(
+    Navigator.pushReplacementNamed(
       context,
-      MaterialPageRoute(
-        builder: (_) => MainScreen(),
-      ),
+      Routes.main,
     );
   }
 
@@ -168,11 +165,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
                   separator30,
                   GestureDetector(
-                    onTap: () => Navigator.push(
+                    onTap: () => Navigator.pushNamed(
                       context,
-                      MaterialPageRoute(
-                        builder: (_) => RegistrationScreen(),
-                      ),
+                      Routes.registration,
                     ),
                     child: Text(
                       AppStrings.registerNowText,

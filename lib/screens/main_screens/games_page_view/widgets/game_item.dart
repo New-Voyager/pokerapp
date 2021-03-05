@@ -6,7 +6,7 @@ import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/resources/app_styles.dart';
-import 'package:pokerapp/screens/game_play_screen/game_play_screen.dart';
+import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/main_screens/games_page_view/enums.dart';
 import 'package:pokerapp/widgets/custom_text_button.dart';
 
@@ -19,13 +19,10 @@ class GameItem extends StatelessWidget {
   final GameModel game;
   final LiveOrPlayedGames gameStatus;
 
-  void _joinGame(BuildContext context) => Navigator.push(
+  void _joinGame(BuildContext context) => Navigator.pushNamed(
         context,
-        MaterialPageRoute(
-          builder: (_) => GamePlayScreen(
-            gameCode: game.gameCode,
-          ),
-        ),
+        Routes.game_play,
+        arguments: game.gameCode,
       );
 
   @override

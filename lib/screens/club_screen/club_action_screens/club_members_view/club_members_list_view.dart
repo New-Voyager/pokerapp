@@ -1,15 +1,13 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:pokerapp/enums/club_member_status.dart';
 import 'package:pokerapp/models/club_members_model.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_icons.dart';
-import 'package:pokerapp/screens/club_screen/club_action_screens/club_member_detailed_view/club_member_detailed_view.dart';
+import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/services/app/club_interior_service.dart';
-import 'package:provider/provider.dart';
 
 class ClubMembersListView extends StatefulWidget {
   final List<ClubMemberModel> _membersList;
@@ -49,17 +47,11 @@ class _ClubMembersListViewState extends State<ClubMembersListView> {
           return Container(
             child: InkWell(
               onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => ChangeNotifierProvider<ClubMemberModel>(
-                          create: (_) => data,
-                          builder: (BuildContext context, _) =>
-                              Consumer<ClubMemberModel>(
-                                  builder: (_, ClubMemberModel data, __) =>
-                                      // ignore: unnecessary_statements
-                                      ClubMembersDetailsView(data))),
-                    ));
+                Navigator.pushNamed(
+                  context,
+                  Routes.club_member_detail_view,
+                  arguments: data,
+                );
 
                 /*
                 Navigator.push(

@@ -71,12 +71,8 @@ class _SearchClubBottomSheetState extends State<SearchClubBottomSheet> {
                   ],
                 ),
               ),
-              Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: 15.0,
-                  vertical: 20.0,
-                ),
-                color: AppColors.chatMeColor,
+              Padding(
+                padding: const EdgeInsets.all(8.0),
                 child: Form(
                   key: _formKey,
                   child: Row(
@@ -87,14 +83,13 @@ class _SearchClubBottomSheetState extends State<SearchClubBottomSheet> {
                           child: CardFormTextField(
                             elevation: 0.0,
                             radius: 7,
-                            color: Color(0xff888383),
+                            color: AppColors.cardBackgroundColor,
                             hintText: 'Enter club code',
                             validator: (String val) => val.trim().isEmpty
                                 ? 'You must provide a club code'
                                 : null,
                             onSaved: (String val) =>
                                 searchClubCode = val.trim(),
-                            hintColor: Colors.white,
                           ),
                         ),
                       ),

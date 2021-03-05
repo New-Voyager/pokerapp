@@ -4,14 +4,10 @@ import 'package:pokerapp/models/club_homepage_model.dart';
 import 'package:pokerapp/models/club_members_model.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
-import 'package:pokerapp/screens/club_screen/club_action_buttons_view/club_message/club_host_messaging.dart';
-import 'package:pokerapp/screens/club_screen/club_action_screens/club_members_view/club_members_view.dart';
-import 'package:pokerapp/screens/game_screens/game_history_view/game_history_view.dart';
-import 'package:pokerapp/screens/club_screen/messages_page_view/messages_page_view.dart';
+import 'package:pokerapp/routes.dart';
 import 'package:provider/provider.dart';
 
 import '../../../main.dart';
-import 'club_message/club_members.dart';
 
 class ClubActionButton extends StatelessWidget {
   final ClubActions _action;
@@ -32,30 +28,24 @@ class ClubActionButton extends StatelessWidget {
         onTap: () {
           switch (_action) {
             case ClubActions.GAME_HISTORY:
-              return Navigator.push(
+              return Navigator.pushNamed(
                 context,
-                MaterialPageRoute(
-                  builder: (_) => GameHistoryView(clubModel.clubCode),
-                ),
+                Routes.game_history,
+                arguments: clubModel.clubCode,
               );
               break;
 
             case ClubActions.MEMBERS:
-              return Navigator.push(
+              return Navigator.pushNamed(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => ClubMembersView(
-                    this._clubModel,
-                  ),
-                ),
+                Routes.club_members_view,
+                arguments: this._clubModel,
               );
 
             case ClubActions.CHAT:
-              return navigatorKey.currentState.push(
-                MaterialPageRoute(
-                  builder: (_) =>
-                      MessagesPageView(clubCode: clubModel.clubCode),
-                ),
+              return navigatorKey.currentState.pushNamed(
+                Routes.message_page,
+                arguments: clubModel.clubCode,
               );
             case ClubActions.BOOKMARKED_HANDS:
               // TODO: Temporary place to show high hand.
@@ -68,19 +58,18 @@ class ClubActionButton extends StatelessWidget {
               break;
             case ClubActions.MESSAGE_HOST:
               if (_clubModel.isOwner) {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ClubMembers(
-                        clubCode: clubModel.clubCode,
-                      ),
-                    ));
+                Navigator.pushNamed(
+                  context,
+                  Routes.club_members,
+                  arguments: clubModel.clubCode,
+                );
               } else {
-                navigatorKey.currentState.push(MaterialPageRoute(
-                  builder: (context) => ClubHostMessaging(
-                    clubCode: clubModel.clubCode,
-                  ),
-                ));
+                navigatorKey.currentState.pushNamed(
+                  Routes.club_host_messagng,
+                  arguments: {
+                    'clubCode': clubModel.clubCode,
+                  },
+                );
               }
               break;
             case ClubActions.MANAGE_CHIPS:

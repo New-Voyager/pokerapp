@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/club_actions.dart';
 import 'package:pokerapp/models/club_homepage_model.dart';
-import 'package:pokerapp/models/rewards_model.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/club_screen_icons_icons.dart';
+import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/club_screen/club_action_buttons_view/club_action_button.dart';
-import 'package:pokerapp/screens/club_screen/rewards_screen/rewards_list_screen.dart';
-import 'package:provider/provider.dart';
 
 class ClubActionButtonsView extends StatelessWidget {
   final ClubHomePageModel _clubHomePageModel;
@@ -142,14 +140,11 @@ class ClubActionButtonsView extends StatelessWidget {
                       color: AppColors.appAccentColor,
                     ),
                     onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => ChangeNotifierProvider(
-                                    create: (_) =>
-                                        RewardsModelProvider(this.clubCode),
-                                    child: RewardsListScreen(),
-                                  )));
+                      Navigator.pushNamed(
+                        context,
+                        Routes.rewards_list_screen,
+                        arguments: this.clubCode,
+                      );
                     },
                   ),
                 ),

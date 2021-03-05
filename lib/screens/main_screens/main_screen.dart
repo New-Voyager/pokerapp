@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_icons.dart';
+import 'package:pokerapp/screens/main_screens/clubs_page_view/clubs_page_view.dart';
 import 'package:pokerapp/screens/main_screens/games_page_view/games_page_view.dart';
 import 'package:pokerapp/screens/main_screens/profile_page_view/profile_page_view.dart';
 import 'package:pokerapp/widgets/tab_bar_item.dart';
-import 'clubs_page_view/club_page_view_navigator.dart';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -40,7 +40,7 @@ class _MainScreenState extends State<MainScreen>
                   controller: _controller,
                   children: <Widget>[
                     GamesPageView(),
-                    ClubPageNavigator(),
+                    ClubsPageView(),
                     ProfilePageView(),
                   ],
                 ),

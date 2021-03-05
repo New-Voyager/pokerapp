@@ -7,7 +7,7 @@ import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/resources/app_styles.dart';
-import 'package:pokerapp/screens/club_screen/club_main_screen.dart';
+import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/main_screens/clubs_page_view/widgets/club_item.dart';
 import 'package:pokerapp/screens/main_screens/clubs_page_view/widgets/create_club_bottom_sheet.dart';
 import 'package:pokerapp/services/app/clubs_service.dart';
@@ -189,13 +189,10 @@ class _ClubsPageViewState extends State<ClubsPageView> {
 
   void openClub(BuildContext context, ClubModel club) async {
     if (club.memberStatus == 'ACTIVE') {
-      Navigator.push(
+      Navigator.pushNamed(
         context,
-        MaterialPageRoute(
-          builder: (_) => ClubMainScreen(
-            clubCode: club.clubCode,
-          ),
-        ),
+        Routes.club_main,
+        arguments: club.clubCode,
       );
     }
   }

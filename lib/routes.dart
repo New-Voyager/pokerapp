@@ -1,0 +1,362 @@
+import 'package:flutter/material.dart';
+import 'package:pokerapp/screens/game_screens/game_history_details_view/stack_details_view.dart';
+import 'package:provider/provider.dart';
+
+import 'package:pokerapp/screens/screens.dart';
+
+import 'package:pokerapp/models/club_homepage_model.dart';
+import 'package:pokerapp/models/club_members_model.dart';
+import 'package:pokerapp/models/game/new_game_provider.dart';
+import 'package:pokerapp/models/game_history_model.dart';
+import 'package:pokerapp/models/hand_history_model.dart';
+import 'package:pokerapp/models/hand_log_model.dart';
+import 'package:pokerapp/models/rewards_model.dart';
+
+class Routes {
+  //SplashScreen
+  static const String initial = '/';
+  // LoginScreen
+  static const String login = '/login';
+  // RegistrationScreen
+  static const String registration = '/registration';
+  // MainScreen
+  static const String main = '/main';
+  // GamePlayScreen
+  static const String game_play = '/game_play';
+  // NewGameSettings
+  static const String new_game_settings = '/new_game_settings';
+  //GameHistoryView
+  static const String game_history = '/game_history';
+  //ClubMembersView
+  static const String club_members_view = '/club_members_view';
+  // MessagesPageView
+  static const String message_page = '/message_page';
+  // ClubMembers
+  static const String club_members = '/club_members';
+  //ClubHostMessaging
+  static const String club_host_messagng = '/club_host_messagng';
+  // RewardsListScreen  -- provider, arguments
+  static const String rewards_list_screen = '/rewards_list_screen';
+  // ClubMembersDetailsView  -- provider, arguments
+  static const String club_member_detail_view = '/club_member_detail_view';
+  // HandHistoryListView  -- provider, arguments
+  static const String hand_history_list = '/hand_history_list';
+  // HighHandLogView
+  static const String high_hand_log = '/high_hand_log';
+  //  TableResultScreen
+  static const String table_result = '/table_result';
+  // GameHistoryDetailView
+  static const String game_history_detail_view = '/game_history_detail_view';
+  // HandLogView
+  static const String hand_log_view = '/hand_log_view';
+  // RewardsList
+  static const String rewards_list = '/rewards_list';
+  // GameLengthSelect
+  static const String game_length_select = '/game_length_select';
+  // ActionTimeSelect
+  static const String action_time_select = '/action_time_select';
+  // GameTypeSelect
+  static const String game_type_select = '/game_type_select';
+  // BlindsSelect
+  static const String blind_select = '/blind_select';
+  // BuyInRangesSelect
+  static const String buy_in_range_select = '/buy_in_range_select';
+  // MaxPlayerSelect
+  static const String max_player_select = '/max_player_select';
+  // ClubTipsSelect
+  static const String club_tips_select = '/club_tips_select';
+  // ClubsPageView
+  static const String club_pages = '/club_pages';
+  // ClubMainScreen
+  static const String club_main = '/club_main';
+  // ClubMainScreen
+  static const String pointsLineChart = '/points_line_chart';
+
+  static Route<dynamic> generateRoute(RouteSettings settings) {
+    switch (settings.name) {
+      case initial:
+        return _getPageRoute(
+          routeName: settings.name,
+          viewToShow: SplashScreen(),
+        );
+
+      case login:
+        return _getPageRoute(
+          routeName: settings.name,
+          viewToShow: LoginScreen(),
+        );
+
+      case registration:
+        return _getPageRoute(
+          routeName: settings.name,
+          viewToShow: RegistrationScreen(),
+        );
+
+      case main:
+        return _getPageRoute(
+          routeName: settings.name,
+          viewToShow: MainScreen(),
+        );
+
+      case game_play:
+        var gameCode = settings.arguments as String;
+        return _getPageRoute(
+          routeName: settings.name,
+          viewToShow: GamePlayScreen(gameCode: gameCode),
+        );
+
+      case new_game_settings:
+        var clubCode = settings.arguments as String;
+        return _getPageRoute(
+          routeName: settings.name,
+          viewToShow: NewGameSettings(clubCode),
+        );
+
+      case game_history:
+        var clubCode = settings.arguments as String;
+        return _getPageRoute(
+          routeName: settings.name,
+          viewToShow: GameHistoryView(clubCode),
+        );
+
+      case club_members_view:
+        var clubHomePageModel = settings.arguments as ClubHomePageModel;
+        return _getPageRoute(
+          routeName: settings.name,
+          viewToShow: ClubMembersView(clubHomePageModel),
+        );
+
+      case message_page:
+        var clubCode = settings.arguments as String;
+        return _getPageRoute(
+          routeName: settings.name,
+          viewToShow: MessagesPageView(
+            clubCode: clubCode,
+          ),
+        );
+
+      case club_members:
+        var clubCode = settings.arguments as String;
+        return _getPageRoute(
+          routeName: settings.name,
+          viewToShow: ClubMembers(
+            clubCode: clubCode,
+          ),
+        );
+
+      case club_host_messagng:
+        var args = settings.arguments as dynamic;
+        return _getPageRoute(
+          routeName: settings.name,
+          viewToShow: ClubHostMessaging(
+            clubCode: args['clubCode'],
+            player: args['player'],
+            name: args['name'],
+          ),
+        );
+
+      case rewards_list_screen:
+        var clubCode = settings.arguments as String;
+        return _getPageRoute(
+          routeName: settings.name,
+          viewToShow: ChangeNotifierProvider(
+            create: (_) => RewardsModelProvider(clubCode),
+            child: RewardsListScreen(),
+          ),
+        );
+
+      case club_member_detail_view:
+        var data = settings.arguments as ClubMemberModel;
+        return _getPageRoute(
+          routeName: settings.name,
+          viewToShow: ChangeNotifierProvider<ClubMemberModel>(
+            create: (_) => data,
+            builder: (BuildContext context, _) => Consumer<ClubMemberModel>(
+              builder: (_, ClubMemberModel data, __) =>
+                  ClubMembersDetailsView(data),
+            ),
+          ),
+        );
+
+      case hand_history_list:
+        var args = settings.arguments as dynamic;
+        var model = args['model'] as HandHistoryListModel;
+        var clubCode = args['clubCode'];
+        return _getPageRoute(
+          routeName: settings.name,
+          viewToShow: ChangeNotifierProvider<HandHistoryListModel>(
+            create: (_) => model,
+            builder: (BuildContext context, _) =>
+                Consumer<HandHistoryListModel>(
+              builder: (_, HandHistoryListModel data, __) =>
+                  HandHistoryListView(
+                data,
+                clubCode,
+              ),
+            ),
+          ),
+        );
+
+      case high_hand_log:
+        var gameCode = settings.arguments as String;
+        return _getPageRoute(
+          routeName: settings.name,
+          viewToShow: HighHandLogView(gameCode),
+        );
+
+      case table_result:
+        var gameCode = settings.arguments as String;
+        return _getPageRoute(
+          routeName: settings.name,
+          viewToShow: TableResultScreen(gameCode),
+        );
+
+      case game_history_detail_view:
+        var args = settings.arguments as dynamic;
+        var model = args['model'] as GameHistoryDetailModel;
+        var clubCode = args['clubCode'];
+        return _getPageRoute(
+          routeName: settings.name,
+          viewToShow: ChangeNotifierProvider<GameHistoryDetailModel>(
+            create: (_) => model,
+            builder: (BuildContext context, _) =>
+                Consumer<GameHistoryDetailModel>(
+              builder: (_, GameHistoryDetailModel data, __) =>
+                  GameHistoryDetailView(data, clubCode),
+            ),
+          ),
+        );
+
+      case hand_log_view:
+        var model = settings.arguments as HandLogModel;
+        return _getPageRoute(
+          routeName: settings.name,
+          viewToShow: HandLogView(model),
+        );
+
+      case rewards_list:
+        var data = settings.arguments as NewGameModelProvider;
+        return _getPageRoute(
+          routeName: settings.name,
+          viewToShow: data.rewards == null
+              ? Container(
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                )
+              : ChangeNotifierProvider.value(
+                  value: data,
+                  child: RewardsList(),
+                ),
+        );
+
+      case game_length_select:
+        var data = settings.arguments as NewGameModelProvider;
+        return _getPageRoute(
+          routeName: settings.name,
+          viewToShow: ChangeNotifierProvider.value(
+            value: data,
+            child: GameLengthSelect(),
+          ),
+        );
+
+      case action_time_select:
+        var data = settings.arguments as NewGameModelProvider;
+        return _getPageRoute(
+          routeName: settings.name,
+          viewToShow: ChangeNotifierProvider.value(
+            value: data,
+            child: ActionTimeSelect(),
+          ),
+        );
+
+      case game_type_select:
+        var data = settings.arguments as NewGameModelProvider;
+        return _getPageRoute(
+          routeName: settings.name,
+          viewToShow: ChangeNotifierProvider.value(
+            value: data,
+            child: GameTypeSelect(),
+          ),
+        );
+
+      case blind_select:
+        var data = settings.arguments as NewGameModelProvider;
+        return _getPageRoute(
+          routeName: settings.name,
+          viewToShow: ChangeNotifierProvider.value(
+            value: data,
+            child: BlindsSelect(),
+          ),
+        );
+
+      case buy_in_range_select:
+        var data = settings.arguments as NewGameModelProvider;
+        return _getPageRoute(
+          routeName: settings.name,
+          viewToShow: ChangeNotifierProvider.value(
+            value: data,
+            child: BuyInRangesSelect(),
+          ),
+        );
+
+      case max_player_select:
+        var data = settings.arguments as NewGameModelProvider;
+        return _getPageRoute(
+          routeName: settings.name,
+          viewToShow: ChangeNotifierProvider.value(
+            value: data,
+            child: MaxPlayerSelect(),
+          ),
+        );
+
+      case club_tips_select:
+        var data = settings.arguments as NewGameModelProvider;
+        return _getPageRoute(
+          routeName: settings.name,
+          viewToShow: ChangeNotifierProvider.value(
+            value: data,
+            child: ClubTipsSelect(),
+          ),
+        );
+
+      case club_main:
+        var clubCode = settings.arguments as String;
+        return _getPageRoute(
+          routeName: settings.name,
+          viewToShow: ClubMainScreen(clubCode: clubCode),
+        );
+
+      case club_pages:
+        return _getPageRoute(
+          routeName: settings.name,
+          viewToShow: ClubsPageView(),
+        );
+
+      case pointsLineChart:
+        var args = settings.arguments as GameHistoryDetailModel;
+        return _getPageRoute(
+          routeName: settings.name,
+          viewToShow: PointsLineChart(gameDetail: args,),
+        );
+
+      default:
+        return MaterialPageRoute(
+          builder: (_) => Scaffold(
+            body: Center(
+              child: Text('No route defined for ${settings.name}'),
+            ),
+          ),
+        );
+    }
+  }
+
+  static PageRoute _getPageRoute({String routeName, Widget viewToShow}) {
+    return MaterialPageRoute(
+      settings: RouteSettings(
+        name: routeName,
+      ),
+      builder: (_) => viewToShow,
+    );
+  }
+}

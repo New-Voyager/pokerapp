@@ -62,7 +62,7 @@ class CenterButtonView extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(
-              horizontal: 20.0,
+              horizontal: 10.0,
             ),
             child: CustomTextButton(
               text: 'Terminate',
@@ -80,7 +80,54 @@ class CenterButtonView extends StatelessWidget {
   }
 
   Widget newGameButtons(BuildContext context) {
-    return Container(
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 20.0,
+              vertical: 10.0,
+            ),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20.0),
+              color: Colors.black.withOpacity(0.50),
+            ),
+            child: Wrap(
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: [
+                CustomTextButton(
+                  text: 'Start',
+                  onTap: this.onStartGame,
+                ),
+              ],
+            ),
+          ),
+          SizedBox(
+            width: 10,
+          ),
+          Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 20.0,
+              vertical: 10.0,
+            ),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20.0),
+              color: Colors.black.withOpacity(0.50),
+            ),
+            child: Wrap(
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: [
+                CustomTextButton(
+                  text: 'Terminate',
+                  onTap: _onTerminatePress,
+                ),
+              ],
+            ),
+          ),
+        ],
+      );
+
+      Container(
       padding: const EdgeInsets.symmetric(
         horizontal: 20.0,
         vertical: 10.0,
@@ -97,16 +144,11 @@ class CenterButtonView extends StatelessWidget {
             onTap: this.onStartGame,
           ),
           SizedBox(
-            width: 20,
+            width: 10,
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 20.0,
-            ),
-            child: CustomTextButton(
-              text: 'Terminate',
-              onTap: _onTerminatePress,
-            ),
+          CustomTextButton(
+            text: 'Terminate',
+            onTap: _onTerminatePress,
           ),
         ],
       ),

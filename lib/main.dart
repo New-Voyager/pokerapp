@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:pokerapp/screens/splash_screen.dart';
+import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/services/graphQL/configurations/graph_ql_configuration.dart';
 
 GraphQLConfiguration graphQLConfiguration = GraphQLConfiguration();
@@ -29,7 +29,8 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: SplashScreen(),
+      onGenerateRoute: Routes.generateRoute,
+      initialRoute: Routes.initial,
     );
   }
 }

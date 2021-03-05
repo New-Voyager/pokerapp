@@ -3,10 +3,10 @@ import 'package:intl/intl.dart';
 import 'package:pokerapp/models/host_message_summary_model.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/services/app/clubs_service.dart';
 
 import '../../../../main.dart';
-import 'club_host_messaging.dart';
 import 'list_of_club_member_bottomsheet.dart';
 
 class ClubMembers extends StatefulWidget {
@@ -72,17 +72,14 @@ class _ClubMembersState extends State<ClubMembers> {
               itemBuilder: (context, index) {
                 return GestureDetector(
                   onTap: () {
-                    navigatorKey.currentState
-                        .push(
-                      MaterialPageRoute(
-                        builder: (context) => ClubHostMessaging(
-                          clubCode: widget.clubCode,
-                          player: snapshot.data[index].playerId,
-                          name: snapshot.data[index].memberName,
-                        ),
-                      ),
-                    )
-                        .then((value) {
+                    navigatorKey.currentState.pushNamed(
+                      Routes.club_host_messagng,
+                      arguments: {
+                        'clubCode': widget.clubCode,
+                        'player': snapshot.data[index].playerId,
+                        'name': snapshot.data[index].memberName,
+                      },
+                    ).then((value) {
                       setState(() {
                         snapshot.data[index].newMessageCount = 0;
                       });
