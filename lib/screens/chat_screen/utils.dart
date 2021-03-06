@@ -15,7 +15,7 @@ BoxDecoration decoration = BoxDecoration(
 );
 
 DateTime toDateTime(String date) {
-  return DateTime.parse(date);
+  return DateTime.parse(date).toLocal();
 }
 
  String formatDate(DateTime date) {
@@ -28,5 +28,5 @@ DateTime toDateTime(String date) {
   }
 
   String dateString(DateTime date) {
-    return DateFormat('kk:mm a').format(date);
+    return DateFormat('hh:mm aaa').format(date);
   }
