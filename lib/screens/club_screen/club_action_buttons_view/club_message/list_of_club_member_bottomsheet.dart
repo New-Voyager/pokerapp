@@ -45,7 +45,7 @@ class ListOfClubMemberBottomSheet extends StatelessWidget {
                       return GestureDetector(
                         onTap: () async {
                           await navigatorKey.currentState.pushNamed(
-                            Routes.club_host_messagng,
+                            Routes.chatScreen,
                             arguments: {
                               'clubCode': clubCode,
                               'player': snapshot.data[index].playerId,

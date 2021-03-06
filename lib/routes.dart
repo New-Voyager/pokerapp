@@ -71,6 +71,8 @@ class Routes {
   static const String club_main = '/club_main';
   // ClubMainScreen
   static const String pointsLineChart = '/points_line_chart';
+  //ChatScreen
+  static const String chatScreen = '/chatScreen';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -337,7 +339,20 @@ class Routes {
         var args = settings.arguments as GameHistoryDetailModel;
         return _getPageRoute(
           routeName: settings.name,
-          viewToShow: PointsLineChart(gameDetail: args,),
+          viewToShow: PointsLineChart(
+            gameDetail: args,
+          ),
+        );
+
+      case chatScreen:
+        var args = settings.arguments as dynamic;
+        return _getPageRoute(
+          routeName: settings.name,
+          viewToShow: ChatScreen(
+            clubCode: args['clubCode'],
+            player: args['player'],
+            name: args['name'],
+          ),
         );
 
       default:

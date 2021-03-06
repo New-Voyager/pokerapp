@@ -73,7 +73,7 @@ class _ClubMembersState extends State<ClubMembers> {
                 return GestureDetector(
                   onTap: () {
                     navigatorKey.currentState.pushNamed(
-                      Routes.club_host_messagng,
+                      Routes.chatScreen,
                       arguments: {
                         'clubCode': widget.clubCode,
                         'player': snapshot.data[index].playerId,

@@ -149,7 +149,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView> {
                                       onPressed: () {
                                         Navigator.pushNamed(
                                           context,
-                                          Routes.club_host_messagng,
+                                          Routes.chatScreen,
                                           arguments: {
                                             'clubCode': widget.clubCode,
                                             'player': widget.playerId,
@@ -169,7 +169,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView> {
                                       onTap: () {
                                         Navigator.pushNamed(
                                           context,
-                                          Routes.club_host_messagng,
+                                          Routes.chatScreen,
                                           arguments: {
                                             'clubCode': widget.clubCode,
                                             'player': widget.playerId,
