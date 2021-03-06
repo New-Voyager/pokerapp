@@ -78,6 +78,10 @@ class _ChatScreenState extends State<ChatScreen> {
                     child: CircularProgressIndicator(),
                   );
                 }
+
+                if(snapshot.data.length == 0){
+                  return Center(child: Text('No chat found'),);
+                }
                 return ChatListWidget(
                   isHostView: isHostView,
                   chats: _convert(),
@@ -99,17 +103,16 @@ class _ChatScreenState extends State<ChatScreen> {
         clubCode: widget.clubCode,
         player: widget.player,
       );
-
-      messages.sort(
-        (a, b) => toDateTime(b.messageTime)
-            .millisecondsSinceEpoch
-            .compareTo(toDateTime(a.messageTime).millisecondsSinceEpoch),
-      );
     }
     return messages;
   }
 
   List<ChatModel> _convert() {
+    messages.sort(
+      (a, b) => toDateTime(b.messageTime)
+          .millisecondsSinceEpoch
+          .compareTo(toDateTime(a.messageTime).millisecondsSinceEpoch),
+    );
     List<ChatModel> chats = [];
     for (int i = 0; i < messages.length; i++) {
       var m = messages[i];
@@ -138,11 +141,9 @@ class _ChatScreenState extends State<ChatScreen> {
       ClubsService.sendMessage(
           _textController.text.trim(), widget.player, widget.clubCode);
       setState(() {
-        print('se${messages.last.id}');
         messages.add(
           MessagesFromMember(
-            id: messages.last.id + 1,
-            messageType: FROM_HOST,
+            messageType: widget.player != null ? FROM_HOST : TO_HOST,
             text: _textController.text,
             messageTime: DateTime.now().toString(),
           ),

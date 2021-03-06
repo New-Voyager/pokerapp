@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 const String FROM_HOST = 'FROM_HOST';
+const String TO_HOST = 'TO_HOST';
 
 Color senderColor = Color.fromARGB(255, 55, 86, 124);
 Color receiverColor = Color.fromARGB(255, 32, 41, 51);
