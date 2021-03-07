@@ -4,9 +4,9 @@ import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/services/app/club_interior_service.dart';
+import 'package:pokerapp/utils/color_generator.dart';
 
 import '../../../../main.dart';
-import 'club_host_messaging.dart';
 
 class ListOfClubMemberBottomSheet extends StatelessWidget {
   final String clubCode;
@@ -45,7 +45,7 @@ class ListOfClubMemberBottomSheet extends StatelessWidget {
                       return GestureDetector(
                         onTap: () async {
                           await navigatorKey.currentState.pushNamed(
-                            Routes.club_host_messagng,
+                            Routes.chatScreen,
                             arguments: {
                               'clubCode': clubCode,
                               'player': snapshot.data[index].playerId,
@@ -65,6 +65,7 @@ class ListOfClubMemberBottomSheet extends StatelessWidget {
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 8),
                                     child: CircleAvatar(
+                                      backgroundColor: generateColorFor(snapshot.data[index].name),
                                       radius: 25,
                                       child: Text(
                                         snapshot.data[index].name[0]

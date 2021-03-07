@@ -51,3 +51,4 @@ export 'game_screens/new_game_settings/ingame_settings/club_tips_select.dart';
 export 'game_screens/new_game_settings/ingame_settings/game_type_select.dart';
 export 'game_screens/new_game_settings/ingame_settings/max_player_select.dart';
 
+export 'chat_screen/chat_screen.dart';

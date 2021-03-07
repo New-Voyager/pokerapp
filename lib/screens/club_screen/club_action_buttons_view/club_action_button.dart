@@ -65,7 +65,7 @@ class ClubActionButton extends StatelessWidget {
                 );
               } else {
                 navigatorKey.currentState.pushNamed(
-                  Routes.club_host_messagng,
+                  Routes.chatScreen,
                   arguments: {
                     'clubCode': clubModel.clubCode,
                   },

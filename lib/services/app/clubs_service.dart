@@ -37,10 +37,12 @@ class ClubsService {
   query memberMessages(\$clubCode:String!, \$player: String!) {
     messagesFromMember(clubCode:\$clubCode, playerId: \$player) {
       id
-      memberID
+      memberId
+      memberName
       messageType
       text
       messageTime
+      playerId
     }
   }
   """;
@@ -49,10 +51,12 @@ class ClubsService {
   query hostmessages(\$clubCode:String!) {
     messagesFromHost(clubCode:\$clubCode) {
       id
-      memberID
+      memberId
+      memberName
       messageType
       text
       messageTime
+      playerId
     }
   }
   """;
@@ -60,7 +64,7 @@ class ClubsService {
   static String hostMessageSummaryQuery = """
   query hostMessageSummary(\$clubCode: String!) {
     hostMessageSummary (clubCode: \$clubCode){
-      memberID
+      memberId
       memberName
       lastMessageText
       lastMessageTime

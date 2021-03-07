@@ -15,7 +15,7 @@ class HostMessageSummaryModel {
       this.playerId});
 
   HostMessageSummaryModel.fromJson(Map<String, dynamic> json) {
-    memberID = json['memberID'];
+    memberID = json['memberId'];
     memberName = json['memberName'];
     lastMessageText = json['lastMessageText'];
     lastMessageTime = json['lastMessageTime'];
