@@ -3,6 +3,7 @@ import 'package:pokerapp/models/messages_from_member.dart';
 import 'package:pokerapp/screens/chat_screen/chat_model.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/chat_list_widget.dart';
 import 'package:pokerapp/services/app/clubs_service.dart';
+import 'package:pokerapp/utils/color_generator.dart';
 
 import 'utils.dart';
 import 'widgets/chat_text_field.dart';
@@ -50,7 +51,8 @@ class _ChatScreenState extends State<ChatScreen> {
       title: Row(
         children: [
           CircleAvatar(
-            backgroundColor: userBg,
+            backgroundColor:
+                generateColorFor(widget.name != null ? widget.name : 'HOST'),
             child: Text(
               widget.name != null ? widget.name[0].toLowerCase() : 'H',
               style: TextStyle(fontWeight: FontWeight.bold),
@@ -79,12 +81,15 @@ class _ChatScreenState extends State<ChatScreen> {
                   );
                 }
 
-                if(snapshot.data.length == 0){
-                  return Center(child: Text('No chat found'),);
+                if (snapshot.data.length == 0) {
+                  return Center(
+                    child: Text('No chat found'),
+                  );
                 }
                 return ChatListWidget(
                   isHostView: isHostView,
                   chats: _convert(),
+                  name: widget.name,
                 );
               }),
         ),
@@ -122,6 +127,7 @@ class _ChatScreenState extends State<ChatScreen> {
         messageType: m.messageType,
         text: m.text,
         messageTime: toDateTime(m.messageTime),
+        memberName: m.memberName
       );
       if (i == 0) {
         chat.isGroupLatest = true;

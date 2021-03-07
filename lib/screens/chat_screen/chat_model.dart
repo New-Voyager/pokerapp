@@ -4,6 +4,7 @@ class ChatModel {
   final String messageType;
   final String text;
   final DateTime messageTime;
+  final String memberName;
   bool isGroupLatest;
 
   ChatModel({
@@ -12,6 +13,7 @@ class ChatModel {
     this.messageType,
     this.text,
     this.messageTime,
+    this.memberName,
     this.isGroupLatest,
   });
 }

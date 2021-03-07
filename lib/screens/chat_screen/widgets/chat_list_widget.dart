@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pokerapp/utils/color_generator.dart';
 
 import '../chat_model.dart';
 import '../utils.dart';
@@ -8,11 +9,13 @@ import 'triangle_painter.dart';
 class ChatListWidget extends StatefulWidget {
   final List<ChatModel> chats;
   final bool isHostView;
+  final String name;
 
   const ChatListWidget({
     Key key,
     this.chats,
     this.isHostView,
+    this.name,
   }) : super(key: key);
 
   @override
@@ -98,13 +101,20 @@ class _ChatListWidgetState extends State<ChatListWidget> {
   }
 
   Widget _buildAvatar(ChatModel message) {
+    String name = 'HOST';
+    if (message.messageType != FROM_HOST) {
+      name = message.memberName ?? 'A';
+    }
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       child: CircleAvatar(
-        backgroundColor: Color.fromARGB(255, 97, 97, 97),
+        backgroundColor: generateColorFor(name),
         child: Text(
-          'A',
-          style: TextStyle(fontWeight: FontWeight.bold),
+          name[0],
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
     );
@@ -153,7 +163,7 @@ class _ChatListWidgetState extends State<ChatListWidget> {
               padding: const EdgeInsets.all(7.0),
               child: Text(
                 message.text,
-                style: TextStyle(color: Colors.white),
+                style: TextStyle(color: Colors.white, fontSize: 17),
               ),
             ),
             Align(
@@ -165,7 +175,7 @@ class _ChatListWidgetState extends State<ChatListWidget> {
                   dateString(message.messageTime),
                   style: TextStyle(
                     color: Colors.white.withOpacity(0.5),
-                    fontSize: 7,
+                    fontSize: 12,
                   ),
                 ),
               ),
