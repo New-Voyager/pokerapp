@@ -161,6 +161,7 @@ class _MessagesPageViewState extends State<MessagesPageView> {
           Navigator.of(context).pop();
         },
       ),
+      centerTitle: true,
       title: Text(
         'Club Chat',
         style: TextStyle(color: Colors.white),
@@ -191,6 +192,16 @@ class _MessagesPageViewState extends State<MessagesPageView> {
         else
           chat.isGroupLatest = true;
       }
+
+      if (i == messages.length - 1) {
+        chat.isGroupFirst = true;
+      } else {
+        if (messages[i].playerTags == messages[i + 1].playerTags)
+          chat.isGroupFirst = false;
+        else
+          chat.isGroupFirst = true;
+      }
+
       chats.add(chat);
     }
     return chats;

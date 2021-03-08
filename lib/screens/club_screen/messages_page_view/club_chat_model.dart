@@ -12,6 +12,7 @@ class ClubChatModel {
   final int messageTimeInEpoc;
 
   bool isGroupLatest;
+  bool isGroupFirst;
 
   ClubChatModel({
     this.id,
@@ -24,5 +25,6 @@ class ClubChatModel {
     this.giphyLink,
     this.playerTags,
     this.isGroupLatest,
+    this.isGroupFirst,
   });
 }

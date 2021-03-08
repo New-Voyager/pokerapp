@@ -15,7 +15,7 @@ class ChatTimeWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Align(
-      alignment: isSender ? Alignment.centerRight : Alignment.centerLeft,
+      alignment: Alignment.centerRight,
       child: Padding(
         padding: const EdgeInsets.only(left: 5, right: 5, bottom: 5),
         child: Text(

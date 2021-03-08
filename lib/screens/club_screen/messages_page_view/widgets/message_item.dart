@@ -7,6 +7,7 @@ import 'package:pokerapp/models/club_message_model.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/chat_time.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/chat_user_avatar.dart';
 
+import '../../../../resources/app_colors.dart';
 import '../../../chat_screen/utils.dart';
 import '../../../chat_screen/widgets/triangle_painter.dart';
 import '../club_chat_model.dart';
@@ -73,6 +74,7 @@ class MessageItem extends StatelessWidget {
     return Expanded(
       child: Stack(
         children: [
+          if (isGroupLatest) triangle,
           Padding(
             padding: EdgeInsets.only(
               left: !isGroupLatest ? 20 : 0,
@@ -80,7 +82,6 @@ class MessageItem extends StatelessWidget {
             ),
             child: _buildMessage(isMe),
           ),
-          if (isGroupLatest) triangle,
         ],
       ),
     );
@@ -94,18 +95,34 @@ class MessageItem extends StatelessWidget {
           right: isMe ? 0.0 : extraPadding,
           left: isMe ? extraPadding : 0.0,
         ),
-        padding: const EdgeInsets.all(10.0),
+        padding: EdgeInsets.all(
+            messageModel.messageType == MessageType.GIPHY ? 0 : 5.0),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(5.0),
           color: isMe ? senderColor : receiverColor,
         ),
         child: Column(
-          crossAxisAlignment:
-              isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            if (messageModel.isGroupFirst)
+              Padding(
+                padding: const EdgeInsets.all(3.0),
+                child: Text(
+                  isMe
+                      ? 'You'
+                      : players[messageModel.playerTags ?? ''] ?? 'Somebody',
+                  style: TextStyle(
+                    color: AppColors.appAccentColor,
+                  ),
+                ),
+              ),
             messageModel.messageType == MessageType.GIPHY
                 ? GiphyImageWidget(
                     imgUrl: messageModel.giphyLink,
+                    date: DateTime.fromMillisecondsSinceEpoch(
+                      messageModel.messageTimeInEpoc,
+                    ),
+                    isMe: isMe,
                   )
                 : Text(
                     messageModel.text,
@@ -116,13 +133,15 @@ class MessageItem extends StatelessWidget {
                   ),
 
             /* show the message time */
-
-            ChatTimeWidget(
-              isSender: isMe,
-              date: DateTime.fromMillisecondsSinceEpoch(
-                messageModel.messageTimeInEpoc,
+            if (messageModel.messageType != MessageType.GIPHY)
+              SizedBox(height: 3),
+            if (messageModel.messageType != MessageType.GIPHY)
+              ChatTimeWidget(
+                isSender: isMe,
+                date: DateTime.fromMillisecondsSinceEpoch(
+                  messageModel.messageTimeInEpoc,
+                ),
               ),
-            ),
           ],
         ),
       ),
@@ -132,15 +151,35 @@ class MessageItem extends StatelessWidget {
 
 class GiphyImageWidget extends StatelessWidget {
   final String imgUrl;
+  final DateTime date;
+  final bool isMe;
 
-  const GiphyImageWidget({Key key, this.imgUrl}) : super(key: key);
+  const GiphyImageWidget({
+    Key key,
+    this.imgUrl,
+    this.date,
+    this.isMe,
+  }) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    return CachedNetworkImage(
-      imageUrl: imgUrl,
-      placeholder: (_, __) => Center(
-        child: CircularProgressIndicator(),
-      ),
+    return Stack(
+      children: [
+        CachedNetworkImage(
+          imageUrl: imgUrl,
+          placeholder: (_, __) => Center(
+            child: CircularProgressIndicator(),
+          ),
+        ),
+        Positioned(
+          right: 0,
+          bottom: 0,
+          child: ChatTimeWidget(
+            isSender: isMe,
+            date: date,
+          ),
+        ),
+      ],
     );
   }
 }
