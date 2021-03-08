@@ -7,6 +7,7 @@ import 'package:pokerapp/utils/color_generator.dart';
 
 import 'utils.dart';
 import 'widgets/chat_text_field.dart';
+import 'widgets/no_message.dart';
 
 class ChatScreen extends StatefulWidget {
   final String clubCode;
@@ -82,9 +83,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 }
 
                 if (snapshot.data.length == 0) {
-                  return Center(
-                    child: Text('No chat found'),
-                  );
+                  return NoMessageWidget();
                 }
                 return ChatListWidget(
                   isHostView: isHostView,
@@ -94,6 +93,8 @@ class _ChatScreenState extends State<ChatScreen> {
               }),
         ),
         ChatTextField(
+          icon: Icons.emoji_emotions_outlined,
+          onEmoji: _onEmoji,
           textEditingController: _textController,
           onSave: _onSaveClicked,
           onTap: _onTap,
@@ -160,4 +161,7 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   void _onTap() {}
+
+  void _onEmoji() {}
+
 }

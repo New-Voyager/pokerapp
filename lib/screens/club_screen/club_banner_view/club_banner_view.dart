@@ -6,6 +6,8 @@ import 'package:pokerapp/models/club_homepage_model.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 
+import '../../../utils/color_generator.dart';
+
 class ClubBannerView extends StatelessWidget {
   final ClubHomePageModel clubModel;
 
@@ -32,9 +34,7 @@ class ClubBannerView extends StatelessWidget {
     return Center(
       child: Column(children: [
         CircleAvatar(
-          backgroundColor:
-              Color((math.Random().nextDouble() * 0xFFFFFF).toInt())
-                  .withOpacity(1.0),
+          backgroundColor: generateColorFor(clubModel.clubCode),
           radius: 40,
           child: Text(
             _getClubShortName(),

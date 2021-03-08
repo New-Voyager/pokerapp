@@ -7,6 +7,8 @@ import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/widgets/custom_text_button.dart';
 
+import '../../../../utils/color_generator.dart';
+
 class ClubItemView extends StatelessWidget {
   final ClubModel club;
   ClubItemView(this.club);
@@ -138,12 +140,7 @@ class ClubItem extends StatelessWidget {
             width: 16.0,
             height: double.infinity,
             decoration: BoxDecoration(
-              color: ([
-                Color(0xffef9712),
-                Color(0xff12efc2),
-                Color(0xffef1229),
-              ]..shuffle())
-                  .first,
+              color: generateColorFor(club.clubCode),
               borderRadius: BorderRadius.horizontal(
                 left: Radius.circular(AppDimensions.cardRadius),
               ),

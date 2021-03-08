@@ -2,13 +2,18 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
-import 'package:intl/intl.dart';
 import 'package:pokerapp/models/auth_model.dart';
 import 'package:pokerapp/models/club_message_model.dart';
-import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/screens/chat_screen/widgets/chat_time.dart';
+import 'package:pokerapp/screens/chat_screen/widgets/chat_user_avatar.dart';
+
+import '../../../../resources/app_colors.dart';
+import '../../../chat_screen/utils.dart';
+import '../../../chat_screen/widgets/triangle_painter.dart';
+import '../club_chat_model.dart';
 
 class MessageItem extends StatelessWidget {
-  final ClubMessageModel messageModel;
+  final ClubChatModel messageModel;
   final AuthModel currentUser;
   final Map<String, String> players;
 
@@ -18,15 +23,71 @@ class MessageItem extends StatelessWidget {
     @required this.players,
   });
 
+  final double extraPadding = 80.0;
   @override
   Widget build(BuildContext context) {
     /* ui */
-    final double infoFontSize = 12.0;
-    final double extraPadding = 30.0;
 
     final bool isMe = currentUser.uuid == messageModel.playerTags;
-    final separator = SizedBox(height: 10.0);
 
+    if (isMe) {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          _buildTile(isMe, messageModel.isGroupLatest),
+          SizedBox(width: 5),
+          _buildAvatar(),
+        ],
+      );
+    }
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        _buildAvatar(),
+        SizedBox(width: 5),
+        _buildTile(isMe, messageModel.isGroupLatest),
+      ],
+    );
+  }
+
+  Widget _buildAvatar() {
+    if (messageModel.isGroupLatest)
+      return ChatUserAvatar(
+        name: players[messageModel.playerTags ?? ''] ?? 'Somebody',
+        userId: messageModel.playerTags ?? '',
+      );
+    return SizedBox();
+  }
+
+  Widget _buildTile(bool isMe, bool isGroupLatest) {
+    Widget triangle;
+    CustomPaint trianglePainer =
+        CustomPaint(painter: Triangle(isMe ? senderColor : receiverColor));
+    if (isMe) {
+      triangle = Positioned(right: 0, bottom: 0, child: trianglePainer);
+    } else {
+      triangle = Positioned(left: 0, bottom: 0, child: trianglePainer);
+    }
+
+    return Expanded(
+      child: Stack(
+        children: [
+          if (isGroupLatest) triangle,
+          Padding(
+            padding: EdgeInsets.only(
+              left: !isGroupLatest ? 20 : 0,
+              right: !isGroupLatest ? 20 : 0,
+            ),
+            child: _buildMessage(isMe),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMessage(bool isMe) {
     return Align(
       alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
       child: Container(
@@ -34,34 +95,34 @@ class MessageItem extends StatelessWidget {
           right: isMe ? 0.0 : extraPadding,
           left: isMe ? extraPadding : 0.0,
         ),
-        padding: const EdgeInsets.all(10.0),
+        padding: EdgeInsets.all(
+            messageModel.messageType == MessageType.GIPHY ? 0 : 5.0),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(5.0),
-          color: isMe ? AppColors.chatMeColor : AppColors.chatOthersColor,
+          color: isMe ? senderColor : receiverColor,
         ),
         child: Column(
-          crossAxisAlignment:
-              isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              isMe
-                  ? 'You'
-                  : players[messageModel.playerTags ?? ''] ?? 'Somebody',
-              style: TextStyle(
-                color: isMe ? Colors.white : AppColors.appAccentColor,
-                fontSize: infoFontSize,
+            if (messageModel.isGroupFirst)
+              Padding(
+                padding: const EdgeInsets.all(3.0),
+                child: Text(
+                  isMe
+                      ? 'You'
+                      : players[messageModel.playerTags ?? ''] ?? 'Somebody',
+                  style: TextStyle(
+                    color: AppColors.appAccentColor,
+                  ),
+                ),
               ),
-            ),
-            separator,
-
-            /* body */
-
             messageModel.messageType == MessageType.GIPHY
-                ? CachedNetworkImage(
-                    imageUrl: messageModel.giphyLink,
-                    placeholder: (_, __) => Center(
-                      child: CircularProgressIndicator(),
+                ? GiphyImageWidget(
+                    imgUrl: messageModel.giphyLink,
+                    date: DateTime.fromMillisecondsSinceEpoch(
+                      messageModel.messageTimeInEpoc,
                     ),
+                    isMe: isMe,
                   )
                 : Text(
                     messageModel.text,
@@ -72,20 +133,53 @@ class MessageItem extends StatelessWidget {
                   ),
 
             /* show the message time */
-            separator,
-            Text(
-              DateFormat('d MMM, h:mm a')
-                  .format(DateTime.fromMillisecondsSinceEpoch(
-                messageModel.messageTimeInEpoc * 1000,
-              )),
-              style: TextStyle(
-                fontSize: infoFontSize,
-                color: Colors.white.withOpacity(0.40),
+            if (messageModel.messageType != MessageType.GIPHY)
+              SizedBox(height: 3),
+            if (messageModel.messageType != MessageType.GIPHY)
+              ChatTimeWidget(
+                isSender: isMe,
+                date: DateTime.fromMillisecondsSinceEpoch(
+                  messageModel.messageTimeInEpoc,
+                ),
               ),
-            ),
           ],
         ),
       ),
+    );
+  }
+}
+
+class GiphyImageWidget extends StatelessWidget {
+  final String imgUrl;
+  final DateTime date;
+  final bool isMe;
+
+  const GiphyImageWidget({
+    Key key,
+    this.imgUrl,
+    this.date,
+    this.isMe,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        CachedNetworkImage(
+          imageUrl: imgUrl,
+          placeholder: (_, __) => Center(
+            child: CircularProgressIndicator(),
+          ),
+        ),
+        Positioned(
+          right: 0,
+          bottom: 0,
+          child: ChatTimeWidget(
+            isSender: isMe,
+            date: date,
+          ),
+        ),
+      ],
     );
   }
 }

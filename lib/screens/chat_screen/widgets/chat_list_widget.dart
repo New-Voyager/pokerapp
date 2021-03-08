@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:pokerapp/utils/color_generator.dart';
+import 'package:pokerapp/screens/chat_screen/widgets/chat_user_avatar.dart';
 
 import '../chat_model.dart';
 import '../utils.dart';
 import 'chat_date.dart';
+import 'chat_time.dart';
 import 'triangle_painter.dart';
 
 class ChatListWidget extends StatefulWidget {
@@ -45,26 +46,18 @@ class _ChatListWidgetState extends State<ChatListWidget> {
           if (i == widget.chats.length - 1) {
             return Column(children: [
               ChatDateTime(date: widget.chats[i].messageTime),
-              _buildChatBubble(widget.chats[i]),
+              _buildTile(widget.chats[i]),
             ]);
           }
           if (day == 0) {
-            return _buildChatBubble(widget.chats[i]);
+            return _buildTile(widget.chats[i]);
           } else {
             return Column(children: [
-              _buildChatBubble(widget.chats[i]),
+              _buildTile(widget.chats[i]),
               ChatDateTime(date: widget.chats[i - 1].messageTime),
             ]);
           }
         });
-  }
-
-  Widget _buildChatBubble(ChatModel message) {
-    bool isSender = _isSender(message.messageType);
-    return Align(
-      alignment: isSender ? Alignment.centerRight : Alignment.centerLeft,
-      child: _buildTile(message),
-    );
   }
 
   Widget _buildTile(ChatModel message) {
@@ -84,6 +77,7 @@ class _ChatListWidgetState extends State<ChatListWidget> {
 
     if (!isSender) {
       return Row(
+        mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           _buildAvatar(message),
@@ -92,6 +86,7 @@ class _ChatListWidgetState extends State<ChatListWidget> {
       );
     }
     return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         _buildChatMessage(message),
@@ -105,18 +100,10 @@ class _ChatListWidgetState extends State<ChatListWidget> {
     if (message.messageType != FROM_HOST) {
       name = message.memberName ?? 'A';
     }
-    return Container(
-      margin: const EdgeInsets.only(bottom: 10),
-      child: CircleAvatar(
-        backgroundColor: generateColorFor(name),
-        child: Text(
-          name[0],
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
+
+    return ChatUserAvatar(
+      userId: message.memberID.toString(),
+      name: name,
     );
   }
 
@@ -166,19 +153,9 @@ class _ChatListWidgetState extends State<ChatListWidget> {
                 style: TextStyle(color: Colors.white, fontSize: 17),
               ),
             ),
-            Align(
-              alignment:
-                  isSender ? Alignment.centerRight : Alignment.centerLeft,
-              child: Padding(
-                padding: const EdgeInsets.only(left: 5, right: 5, bottom: 5),
-                child: Text(
-                  dateString(message.messageTime),
-                  style: TextStyle(
-                    color: Colors.white.withOpacity(0.5),
-                    fontSize: 12,
-                  ),
-                ),
-              ),
+            ChatTimeWidget(
+              isSender: isSender,
+              date: message.messageTime,
             ),
           ],
         ),

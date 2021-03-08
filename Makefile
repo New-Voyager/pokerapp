@@ -4,9 +4,9 @@ GCR_REGISTRY := gcr.io/voyager-01-285603
 DO_REGISTRY := registry.digitalocean.com/voyager
 REGISTRY := $(DO_REGISTRY)
 
-API_SERVER_IMAGE := $(REGISTRY)/api-server:0.2.12
-GAME_SERVER_IMAGE := $(REGISTRY)/game-server:0.2.8
-BOTRUNNER_IMAGE := $(REGISTRY)/botrunner:0.2.8
+API_SERVER_IMAGE := $(REGISTRY)/api-server:0.2.13
+GAME_SERVER_IMAGE := $(REGISTRY)/game-server:0.2.10
+BOTRUNNER_IMAGE := $(REGISTRY)/botrunner:0.3.3
 NATS_SERVER_IMAGE := $(REGISTRY)/nats:2.1.7-alpine3.11
 REDIS_IMAGE := $(REGISTRY)/redis:6.0.9
 POSTGRES_IMAGE := $(REGISTRY)/postgres:12.5
@@ -58,7 +58,7 @@ stack-clean:
 	docker volume rm -f docker_db-data
 
 .PHONY: stack-reset
-stack-reset: login
+stack-reset: create-network login 
 	cd docker && docker-compose down
 	docker volume rm -f docker_db-data
 	cd docker && \

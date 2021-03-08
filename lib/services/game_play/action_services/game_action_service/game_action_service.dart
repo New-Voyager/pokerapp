@@ -22,7 +22,7 @@ class GameActionService {
     var data = jsonDecode(message);
 
     String messageType = data['messageType'];
-
+    debugPrint('Game: $message');
     // delegate further actions to sub services as per messageType
     switch (messageType) {
       case AppConstants.PLAYER_UPDATE:

@@ -4,14 +4,17 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pokerapp/models/auth_model.dart';
 import 'package:pokerapp/models/club_members_model.dart';
 import 'package:pokerapp/models/club_message_model.dart';
-import 'package:pokerapp/models/club_model.dart';
 import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/club_screen/messages_page_view/bottom_sheet/gif_drawer_sheet.dart';
 import 'package:pokerapp/screens/club_screen/messages_page_view/widgets/message_item.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/services/app/club_interior_service.dart';
 import 'package:pokerapp/services/app/club_message_service.dart';
-import 'package:provider/provider.dart';
+
+import '../../chat_screen/utils.dart';
+import '../../chat_screen/widgets/chat_text_field.dart';
+import 'club_chat_model.dart';
 
 class MessagesPageView extends StatefulWidget {
   MessagesPageView({
@@ -25,14 +28,16 @@ class MessagesPageView extends StatefulWidget {
 }
 
 class _MessagesPageViewState extends State<MessagesPageView> {
-  final TextEditingController _textInputController = TextEditingController();
+  TextEditingController _textController = TextEditingController();
+
+  List<ClubMessageModel> messages = [];
 
   AuthModel _authModel;
   Map<String, String> _players;
 
   void _sendMessage() {
-    String text = _textInputController.text.trim();
-    _textInputController.clear();
+    String text = _textController.text.trim();
+    _textController.clear();
 
     if (text.isEmpty) return;
 
@@ -98,10 +103,9 @@ class _MessagesPageViewState extends State<MessagesPageView> {
 
   @override
   Widget build(BuildContext context) {
-    final separator = const SizedBox(width: 20.0);
-
     return Scaffold(
-      backgroundColor: AppColors.screenBackgroundColor,
+      backgroundColor: chatBg,
+      appBar: _buildAppBar(),
       body: Column(
         children: [
           /* main view to show messages */
@@ -114,94 +118,94 @@ class _MessagesPageViewState extends State<MessagesPageView> {
                     child: CircularProgressIndicator(),
                   );
 
-                if (snapshot.data.isEmpty)
-                  return Center(
-                    child: Text(
-                      'No Messages',
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 20.0,
-                      ),
-                    ),
-                  );
+                if (snapshot.data.isEmpty) return NoMessageWidget();
+
+                messages = snapshot.data;
+                var mess = _convert();
 
                 return ListView.separated(
                   reverse: true,
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  padding: const EdgeInsets.all(5),
                   itemBuilder: (_, int index) => MessageItem(
-                    messageModel: snapshot.data[index],
+                    messageModel: mess[index],
                     currentUser: _authModel,
                     players: _players,
                   ),
-                  separatorBuilder: (_, __) => const SizedBox(height: 20.0),
+                  separatorBuilder: (_, __) => const SizedBox(height: 10.0),
                   itemCount: snapshot.data.length,
                 );
               },
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              vertical: 10.0,
-              horizontal: 20.0,
-            ),
-            child: Row(
-              children: [
-                /* app drawer open icon */
-                GestureDetector(
-                  onTap: _openGifDrawer,
-                  child: Icon(
-                    FontAwesomeIcons.icons,
-                    color: AppColors.appAccentColor,
-                    size: 20.0,
-                  ),
-                ),
-
-                /* text area - write message here */
-
-                separator,
-                Expanded(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(50.0),
-                      color: AppColors.cardBackgroundColor,
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                      child: TextField(
-                        controller: _textInputController,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 15.0,
-                        ),
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          hintText: 'Type a message',
-                          hintStyle: TextStyle(
-                            color: AppColors.contentColor,
-                            fontSize: 15.0,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-
-                /* send message button */
-                separator,
-                GestureDetector(
-                  onTap: _sendMessage,
-                  child: Icon(
-                    FontAwesomeIcons.play,
-                    color: AppColors.appAccentColor,
-                    size: 20.0,
-                  ),
-                ),
-              ],
-            ),
+          ChatTextField(
+            icon: FontAwesomeIcons.icons,
+            onEmoji: _openGifDrawer,
+            textEditingController: _textController,
+            onSave: _sendMessage,
+            onTap: _onTap,
           ),
         ],
       ),
     );
   }
+
+  Widget _buildAppBar() {
+    return AppBar(
+      backgroundColor: chatHeaderColor,
+      leading: IconButton(
+        icon: Icon(
+          Icons.arrow_back_ios,
+          color: AppColors.appAccentColor,
+        ),
+        onPressed: () {
+          Navigator.of(context).pop();
+        },
+      ),
+      centerTitle: true,
+      title: Text(
+        'Club Chat',
+        style: TextStyle(color: Colors.white),
+      ),
+    );
+  }
+
+  List<ClubChatModel> _convert() {
+    List<ClubChatModel> chats = [];
+    for (int i = 0; i < messages.length; i++) {
+      var m = messages[i];
+      var chat = ClubChatModel(
+        id: m.id,
+        clubCode: m.clubCode,
+        messageType: m.messageType,
+        text: m.text,
+        gameNum: m.gameNum,
+        handNum: m.handNum,
+        giphyLink: m.giphyLink,
+        playerTags: m.playerTags,
+        messageTimeInEpoc: m.messageTimeInEpoc,
+      );
+      if (i == 0) {
+        chat.isGroupLatest = true;
+      } else {
+        if (messages[i].playerTags == messages[i - 1].playerTags)
+          chat.isGroupLatest = false;
+        else
+          chat.isGroupLatest = true;
+      }
+
+      if (i == messages.length - 1) {
+        chat.isGroupFirst = true;
+      } else {
+        if (messages[i].playerTags == messages[i + 1].playerTags)
+          chat.isGroupFirst = false;
+        else
+          chat.isGroupFirst = true;
+      }
+
+      chats.add(chat);
+    }
+    return chats;
+  }
+
+  void _onTap() {}
 }

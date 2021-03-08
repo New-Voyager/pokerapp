@@ -4,6 +4,7 @@ import '../utils.dart';
 
 class ChatTextField extends StatelessWidget {
   final TextEditingController textEditingController;
+  final IconData icon;
   final Function onTap;
   final Function onSave;
   final Function onEmoji;
@@ -11,6 +12,7 @@ class ChatTextField extends StatelessWidget {
   const ChatTextField({
     Key key,
     this.textEditingController,
+    this.icon,
     this.onTap,
     this.onSave,
     this.onEmoji,
@@ -23,9 +25,9 @@ class ChatTextField extends StatelessWidget {
       child: Row(
         children: [
           _buildTextFieldIcon(
-            icon: Icons.emoji_emotions_outlined,
-            onPressed: () {},
-            color: Color.fromARGB(255, 103, 123, 143),
+            icon: icon,
+            onPressed: onEmoji,
+            color: iconColor,
           ),
           Expanded(
             child: TextFormField(
@@ -39,7 +41,7 @@ class ChatTextField extends StatelessWidget {
                 border: InputBorder.none,
                 hintText: 'Message',
                 hintStyle: TextStyle(
-                  color: Color.fromARGB(255, 103, 123, 143),
+                  color: iconColor,
                 ),
               ),
             ),
