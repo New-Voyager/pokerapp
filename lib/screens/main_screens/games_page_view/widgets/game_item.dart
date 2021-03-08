@@ -10,6 +10,8 @@ import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/main_screens/games_page_view/enums.dart';
 import 'package:pokerapp/widgets/custom_text_button.dart';
 
+import '../../../../utils/color_generator.dart';
+
 class GameItem extends StatelessWidget {
   GameItem({
     @required this.game,
@@ -51,12 +53,7 @@ class GameItem extends StatelessWidget {
             width: 72.0,
             height: double.infinity,
             decoration: BoxDecoration(
-              color: ([
-                Color(0xffef9712),
-                Color(0xff12efc2),
-                Color(0xffef1229),
-              ]..shuffle())
-                  .first,
+              color: generateColorFor(game.gameCode),
               borderRadius: const BorderRadius.horizontal(
                 left: Radius.circular(AppDimensions.cardRadius),
               ),

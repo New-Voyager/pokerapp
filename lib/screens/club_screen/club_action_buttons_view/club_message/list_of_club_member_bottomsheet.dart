@@ -65,7 +65,7 @@ class ListOfClubMemberBottomSheet extends StatelessWidget {
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 8),
                                     child: CircleAvatar(
-                                      backgroundColor: generateColorFor(snapshot.data[index].name),
+                                      backgroundColor: generateColorFor(snapshot.data[index].playerId),
                                       radius: 25,
                                       child: Text(
                                         snapshot.data[index].name[0]
