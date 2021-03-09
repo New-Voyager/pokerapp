@@ -409,7 +409,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView> {
 
     await showDialog<String>(
       context: context,
-      child: new _SystemPadding(
+      builder: (_) => _SystemPadding(
         child: new AlertDialog(
           backgroundColor: AppColors.cardBackgroundColor,
           contentPadding: const EdgeInsets.all(8.0),
@@ -429,7 +429,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView> {
             ],
           ),
           actions: <Widget>[
-            new FlatButton(
+            new TextButton(
                 child: const Text(
                   'Cancel',
                   style: TextStyle(
@@ -441,7 +441,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView> {
                 onPressed: () {
                   Navigator.pop(context);
                 }),
-            new FlatButton(
+            new TextButton(
                 child: const Text(
                   'Set',
                   style: TextStyle(
