@@ -22,11 +22,14 @@ class GameChatService {
   Function onText;
   Function onAudio;
   Function onGiphy;
+  Function onAnimation;
+
   Uuid uuid;
   void listen({
     Function onText,
     Function onAudio,
     Function onGiphy,
+    Function onAnimation,
   }) {
     if (onAudio != null) {
       this.onAudio = onAudio;
@@ -38,6 +41,10 @@ class GameChatService {
 
     if (onGiphy != null) {
       this.onGiphy = onGiphy;
+    }
+
+    if (onAnimation != null) {
+      this.onAnimation = onAnimation;
     }
   }
 
@@ -89,6 +96,12 @@ class GameChatService {
           this.onGiphy(message);
         }
       }
+
+      if (message.type == 'ANIMATION') {
+        if (this.onAnimation != null) {
+          this.onAnimation(message);
+        }
+      }
     }
   }
 
@@ -129,6 +142,18 @@ class GameChatService {
     });
     this.client.pubString(this.chatChannel, body);
   }
+
+  void sendAnimation(int fromSeat, int toSeat, String animationId) {
+    dynamic body = jsonEncode({
+      'id': uuid.v1(),
+      'from': fromSeat,
+      'to': toSeat,
+      'animation': animationId,
+      'type': 'ANIMATION',
+      'sent': DateTime.now().toUtc().toIso8601String(),
+    });
+    this.client.pubString(this.chatChannel, body);
+  }
 }
 
 class ChatMessage {
@@ -142,6 +167,9 @@ class ChatMessage {
   int smileyCount;
   int likeCount;
   int downCount;
+  String animationId;
+  int fromSeat;
+  int toSeat;
 
   static ChatMessage fromMessage(String data) {
     try {
@@ -158,10 +186,19 @@ class ChatMessage {
         }
       } else if (msg.type == 'GIPHY') {
         msg.giphyLink = message['link'];
+      } else if (msg.type == 'ANIMATION') {
+        msg.animationId = message['animation'];
       }
 
-      msg.fromPlayer = int.parse(
-          message['playerID'] == null ? '0' : message['playerID'].toString());
+      if (msg.type == 'ANIMATION') {
+        msg.fromSeat = int.parse(
+            message['from'] == null ? '0' : message['from'].toString());
+        msg.toSeat =
+            int.parse(message['to'] == null ? '0' : message['to'].toString());
+      } else {
+        msg.fromPlayer = int.parse(
+            message['playerID'] == null ? '0' : message['playerID'].toString());
+      }
       msg.received = DateTime.parse(message['sent'].toString());
       msg.messageId = message['id'].toString();
       return msg;
