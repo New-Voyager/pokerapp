@@ -16,6 +16,7 @@ import 'name_plate_view.dart';
 import 'user_view_util_widgets.dart';
 
 class PlayerView extends StatelessWidget {
+  final GlobalKey globalKey;
   final int seatPos;
   final UserObject userObject;
   final Alignment cardsAlignment;
@@ -25,6 +26,7 @@ class PlayerView extends StatelessWidget {
 
   PlayerView({
     Key key,
+    @required this.globalKey,
     @required this.seatPos,
     @required this.userObject,
     @required this.onUserTap,
@@ -47,6 +49,7 @@ class PlayerView extends StatelessWidget {
     ).value.actionTime;
 
     return InkWell(
+      key: globalKey,
       onTap: emptySeat
           ? () => onUserTap(isPresent ? -1 : seatPos)
           : () async {
