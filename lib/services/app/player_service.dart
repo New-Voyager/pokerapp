@@ -27,7 +27,7 @@ class PlayerService {
   }
 
 
-  static Future<Map<int, PlayerInfo>> getPlayerInfoFromIds(int[] ids)  async {
+  static Future<Map<int, PlayerInfo>> getPlayerInfoFromIds(List<int> ids)  async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
 
     Map<String, dynamic> variables = {"ids": ids};
