@@ -24,4 +24,29 @@ class PlayerService {
     if (result.hasException) return null;
     return PlayerInfo.fromJson(result.data['myInfo']);
   }
+
+  static Future<Map<int, PlayerInfo>> getPlayerInfoFromIds(ids int[])  async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+
+    String _query = """query ($ids: [Int!]{
+      players: idsToPlayerInfo(ids: $ids) {
+        id
+        uuid
+        name
+      }
+    }
+    """;
+
+    QueryResult result = await _client.query(
+      QueryOptions(documentNode: gql(_query)),
+    );
+
+    if (result.hasException) return null;
+
+    var playerInfo = new Map<int, PlayerInfo>();
+    for (var player in result.data['players']) {
+      int id = int.parse(player['id'].toString());
+      playerInfo[id] = PlayerInfo.fromJson(player);
+    }
+  }
 }
