@@ -44,41 +44,77 @@ class ReplayHandScreen extends StatelessWidget {
                 child: Text('Something went wrong'),
               );
 
-            GameReplayController _gameReplayController = snapshot.data;
-
-            return MultiProvider(
-              providers: GamePlayScreenUtilMethods.getProviders(
-                gameInfoModel: _gameReplayController.gameInfoModel,
-                gameCode: gameCode,
-                playerID: playerID,
-                playerUuid: null,
-                agora: null,
-                sendPlayerToHandChannel: null,
-              ),
-              builder: (BuildContext context, _) => SafeArea(
-                child: Column(
-                  children: [
-                    /* game view */
-                    Expanded(
-                      child: ReplayHandGameView(
-                        gameInfoModel: _gameReplayController.gameInfoModel,
-                      ),
-                    ),
-
-                    /* controls */
-                    Expanded(
-                      child: Align(
-                        alignment: Alignment.topCenter,
-                        child: ReplayHandControls(
-                          gameReplayController: _gameReplayController,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+            return ReplayHandUtilScreen(
+              gameReplayController: snapshot.data,
+              gameCode: gameCode,
+              playerID: playerID,
             );
           },
         ),
       );
+}
+
+class ReplayHandUtilScreen extends StatefulWidget {
+  ReplayHandUtilScreen({
+    @required this.gameReplayController,
+    @required this.gameCode,
+    @required this.playerID,
+  });
+
+  final GameReplayController gameReplayController;
+  final String gameCode;
+  final int playerID;
+
+  @override
+  _ReplayHandUtilScreenState createState() => _ReplayHandUtilScreenState();
+}
+
+class _ReplayHandUtilScreenState extends State<ReplayHandUtilScreen> {
+  @override
+  void dispose() {
+    widget.gameReplayController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MultiProvider(
+      providers: GamePlayScreenUtilMethods.getProviders(
+        gameInfoModel: widget.gameReplayController.gameInfoModel,
+        gameCode: widget.gameCode,
+        playerID: widget.playerID,
+        playerUuid: widget.gameReplayController.playerUuid,
+        agora: null,
+        sendPlayerToHandChannel: null,
+      ),
+      builder: (BuildContext context, _) {
+        /* initialize the game controller, after we have the context
+                  that can give access to the provider models*/
+        widget.gameReplayController.initController(context);
+
+        return SafeArea(
+          child: Column(
+            children: [
+              /* game view */
+              Expanded(
+                child: ReplayHandGameView(
+                  gameInfoModel: widget.gameReplayController.gameInfoModel,
+                ),
+              ),
+
+              /* controls */
+              Expanded(
+                child: Align(
+                  alignment: Alignment.topCenter,
+                  child: ReplayHandControls(
+                    gameReplayController: widget.gameReplayController,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
 }

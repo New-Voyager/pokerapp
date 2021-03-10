@@ -28,6 +28,32 @@ class PlayerModel {
 
   int noOfCardsVisible;
 
+  PlayerModel({
+    String name,
+    int seatNo,
+    String playerUuid,
+    int buyIn,
+    int stack,
+    String status,
+  }) {
+    this.name = name;
+    this.seatNo = seatNo;
+    this.playerUuid = playerUuid;
+    this.buyIn = buyIn;
+    this.stack = stack;
+    this.status = status;
+
+    // default values
+    this.isMe = false;
+    this.playerType = PlayerType.None;
+    this.highlight = false;
+
+    // todo: at later point data may contain the player avatar
+    // for now randomly choose from the asset files
+    int tmpN = Random().nextInt(6) + 1;
+    this.avatarUrl = 'assets/images/$tmpN.png';
+  }
+
   PlayerModel.fromJson(var data) {
     this.name = data['name'];
     this.seatNo = data['seatNo'];
