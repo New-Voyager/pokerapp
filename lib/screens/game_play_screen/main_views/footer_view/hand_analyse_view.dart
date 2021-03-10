@@ -17,6 +17,40 @@ class HandAnalyseView extends StatefulWidget {
 }
 
 class _HandAnalyseViewState extends State<HandAnalyseView> {
+
+
+  Future<void> onClickViewHand() async {
+    HandLogModel handLogModel = HandLogModel(widget.gameCode, -1);
+
+    await showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => LastHandAnalyseBottomSheet(
+        handLogModel: handLogModel,
+        clubCode: widget.clubCode,
+      ),
+    );
+
+  }
+
+
+  Future<void> onClickViewHandAnalysis() async {
+
+    final model = HandHistoryListModel(widget.gameCode, true);
+    await showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) {
+        return HandHistoryAnalyseBottomSheet(
+          model: model,
+        );
+      },
+    );
+  }
+
+
   double height;
   double bottomSheetHeight;
   @override
@@ -36,47 +70,8 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                GestureDetector(
-                  onTap: () async {
-                    HandLogModel handLogModel =
-                        HandLogModel(widget.gameCode, -1);
-                    await showModalBottomSheet(
-                      context: context,
-                      isScrollControlled: true,
-                      backgroundColor: Colors.transparent,
-                      builder: (ctx) => LastHandAnalyseBottomSheet(
-                        handLogModel: handLogModel,
-                        clubCode: widget.clubCode,
-                      ),
-                    );
-                  },
-                  child: Container(
-                    padding: EdgeInsets.all(5),
-                    child: Image.asset(AppAssets.cardsImage,
-                        height: 35, color: AppColors.appAccentColor),
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () async {
-                    // todo: true need to change with isOwner actual value
-                    final model = HandHistoryListModel(widget.gameCode, true);
-                    await showModalBottomSheet(
-                      context: context,
-                      isScrollControlled: true,
-                      backgroundColor: Colors.transparent,
-                      builder: (ctx) {
-                        return HandHistoryAnalyseBottomSheet(
-                          model: model,
-                        );
-                      },
-                    );
-                  },
-                  child: Container(
-                    padding: EdgeInsets.all(5),
-                    child: Image.asset(AppAssets.cardsImage,
-                        height: 35, color: AppColors.appAccentColor),
-                  ),
-                )
+                HandAnalysisCardView(onClickHandler: onClickViewHand,),
+                HandAnalysisCardView(onClickHandler: onClickViewHandAnalysis,)
               ],
             ),
           ),
@@ -85,3 +80,21 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
     );
   }
 }
+
+class HandAnalysisCardView extends StatelessWidget {
+
+  final VoidCallback onClickHandler;
+
+  const HandAnalysisCardView({Key key,
+    @required this.onClickHandler}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onClickHandler,
+      child: Container(padding: EdgeInsets.all(5),
+        child: Image.asset(AppAssets.cardsImage, height: 35, color: AppColors.appAccentColor),),
+    );
+  }
+}
+
