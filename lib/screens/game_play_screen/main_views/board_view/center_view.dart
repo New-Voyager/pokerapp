@@ -47,10 +47,11 @@ class CenterView extends StatelessWidget {
     if (_text == AppConstants.GAME_PAUSED ||
         tableStatus == AppConstants.WAITING_TO_BE_STARTED) {
       return CenterButtonView(
-          gameCode: this.gameCode,
-          isHost: this.isHost,
-          tableStatus: this.tableStatus,
-          onStartGame: this.onStartGame);
+        gameCode: this.gameCode,
+        isHost: this.isHost,
+        tableStatus: this.tableStatus,
+        onStartGame: this.onStartGame,
+      );
     }
 
     /* in case of new hand, show the deck shuffling animation */

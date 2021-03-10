@@ -55,10 +55,6 @@ class StageUpdateService {
         // update the pot
         updatePot(data, key, context);
 
-        // remove the last player status
-        // wait for a brief period of time, before removing the last actions of all players
-        //await Future.delayed(AppConstants.userPopUpMessageHoldDuration);
-
         // remove all the status (last action) of all the players
         players.removeAllPlayersStatusSilent();
         players.notifyAll();

@@ -46,13 +46,13 @@ class GameReplayController {
     return null;
   }
 
-  GameReplayAction _getPreviousAction() {
-    _actionCounter -= 1;
-    if (_actionCounter >= 0) return _actions[_actionCounter];
-
-    _actionCounter += 1;
-    return null;
-  }
+  // GameReplayAction _getPreviousAction() {
+  //   _actionCounter -= 1;
+  //   if (_actionCounter >= 0) return _actions[_actionCounter];
+  //
+  //   _actionCounter += 1;
+  //   return null;
+  // }
 
   /* this method takes in an replay action and executes it */
   void _takeAction(GameReplayAction gameReplayAction) =>
@@ -63,17 +63,21 @@ class GameReplayController {
 
   Timer _buildTimer() => Timer.periodic(
         AppConstants.replayPauseDuration,
-        (_) => _takeAction(
-          _getNextAction(),
-        ),
+        (_) {
+          GameReplayAction nextAction = _getNextAction();
+
+          /* if next Action is null, then there are no more actions to replay */
+          if (nextAction == null)
+            _timer.cancel();
+          else
+            _takeAction(nextAction);
+        },
       );
 
   /* this method initializes the controller, i.e puts data into the provider models
     & other initial setups are done here*/
   void initController(BuildContext context) {
     this._context = context;
-
-    _timer = _buildTimer();
 
     isPlaying.listen((bool _isPlaying) {
       if (_isPlaying) {
@@ -86,8 +90,8 @@ class GameReplayController {
 
   /* util methods */
   void dispose() {
-    _isPlayingStreamController.close();
-    _timer.cancel();
+    _isPlayingStreamController?.close();
+    _timer?.cancel();
   }
 
   /* methods for controlling the game */
@@ -101,15 +105,15 @@ class GameReplayController {
   *  FIXME: WITHOUT THE BOARD CLEANUP THE SKIP FORWARD AND BACKWARD WONT LOOK GOOD */
 
   void skipPrevious() {
-    _actionCounter -= 1;
+    // _actionCounter -= 1;
   }
 
   void skipNext() {
-    _actionCounter += 1;
+    // _actionCounter += 1;
   }
 
   void repeat() {
-    _actionCounter = 0;
+    // _actionCounter = 0;
   }
 
   /* getters */

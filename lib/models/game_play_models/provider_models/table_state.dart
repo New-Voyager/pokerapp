@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/resources/app_constants.dart';
@@ -23,7 +21,7 @@ class TableState extends ChangeNotifier {
     this._potChips = potChips;
     this._communityCards = communityCards;
     this._potUpdatesChips = potUpdatesChips;
-    this._communityCards = new List<CardObject>();
+    this._communityCards = const [];
   }
 
   void notifyAll() => notifyListeners();
@@ -35,9 +33,6 @@ class TableState extends ChangeNotifier {
   }
 
   void updatePotChipsSilent({List<int> potChips, int potUpdatesChips}) {
-    if (this._potChips == potChips) return;
-    if (this._potUpdatesChips == potUpdatesChips) return;
-
     this._potChips = potChips;
     this._potUpdatesChips = potUpdatesChips;
   }

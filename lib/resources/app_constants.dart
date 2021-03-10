@@ -47,7 +47,7 @@ class AppConstants {
   );
 
   static const Duration replayPauseDuration = const Duration(
-    milliseconds: 1000,
+    milliseconds: 1500,
   );
 
   static const Duration clubMessagePollDuration = const Duration(

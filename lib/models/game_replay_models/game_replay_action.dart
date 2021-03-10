@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 enum GameReplayActionType {
   card_distribution,
   pre_flop_started,
@@ -13,8 +15,10 @@ class GameReplayAction {
   GameReplayActionType _gameReplayActionType;
   dynamic _actionData;
 
-  GameReplayAction(
-      GameReplayActionType gameReplayActionType, dynamic actionData) {
+  GameReplayAction({
+    @required GameReplayActionType gameReplayActionType,
+    dynamic actionData,
+  }) {
     this._gameReplayActionType = gameReplayActionType;
     this._actionData = actionData;
   }
