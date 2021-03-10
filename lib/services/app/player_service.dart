@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/player_info.dart';
@@ -25,11 +26,14 @@ class PlayerService {
     return PlayerInfo.fromJson(result.data['myInfo']);
   }
 
-  static Future<Map<int, PlayerInfo>> getPlayerInfoFromIds(ids int[])  async {
+
+  static Future<Map<int, PlayerInfo>> getPlayerInfoFromIds(int[] ids)  async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
 
-    String _query = """query ($ids: [Int!]{
-      players: idsToPlayerInfo(ids: $ids) {
+    Map<String, dynamic> variables = {"ids": ids};
+
+    String _query = """query (\$ids: [Int!]{
+      players: idsToPlayerInfo(ids: \$ids) {
         id
         uuid
         name
@@ -48,5 +52,7 @@ class PlayerService {
       int id = int.parse(player['id'].toString());
       playerInfo[id] = PlayerInfo.fromJson(player);
     }
-  }
+
+    return playerInfo;
+  }  
 }
