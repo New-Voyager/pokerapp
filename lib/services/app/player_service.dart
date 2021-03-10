@@ -42,7 +42,7 @@ class PlayerService {
     """;
 
     QueryResult result = await _client.query(
-      QueryOptions(documentNode: gql(_query)),
+      QueryOptions(documentNode: gql(_query), variables: variables),
     );
 
     if (result.hasException) return null;
