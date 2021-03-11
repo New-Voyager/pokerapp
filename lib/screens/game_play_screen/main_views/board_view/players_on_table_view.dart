@@ -47,7 +47,6 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
 
   // sender to receiver
   bool isAnimatating = false;
-
   AnimationController _lottieController;
   bool isLottieAnimationAnimating = false;
   Offset lottieAnimationPostion;
@@ -61,6 +60,13 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
     super.initState();
   }
 
+  @override
+  void dispose() {
+    _lottieController.dispose();
+    animationController.dispose();
+    super.dispose();
+  }
+
   animationHandlers() {
     _lottieController = AnimationController(
       vsync: this,
@@ -69,7 +75,7 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
 
     animationController = AnimationController(
       vsync: this,
-      duration: Duration(seconds: 2),
+      duration: Duration(seconds: 3),
     );
 
     _lottieController.addListener(() {
@@ -82,10 +88,12 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
 
     animationController.addListener(() {
       if (animationController.isCompleted) {
-        isAnimatating = false;
-        animationController.reset();
-        isLottieAnimationAnimating = true;
-        _lottieController.forward();
+        Future.delayed(Duration(seconds: 1), () {
+          isAnimatating = false;
+          animationController.reset();
+          isLottieAnimationAnimating = true;
+          _lottieController.forward();
+        });
       }
       setState(() {});
     });
@@ -97,9 +105,10 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
     print(
         'Here ${message.messageId} from player ${message.fromSeat} to ${message.toSeat}. Animation id: ${message.animationId}');
 
-    if (message.fromSeat != null || message.toSeat != null) {
+    if (message.fromSeat == null || message.toSeat == null) {
       return;
     }
+
     /*
     * find postion of to and from user
     **/
@@ -111,12 +120,12 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
           keys[element.seatNo - 1].currentContext.findRenderObject();
       final positionRed = renderBoxRed.localToGlobal(Offset.zero);
       if (element.seatNo == message.fromSeat) {
-        from = Offset(positionRed.dx,
-            positionRed.dy - paretWidgetPositionRed.dy + offset);
+        from =
+            Offset(positionRed.dx, positionRed.dy - paretWidgetPositionRed.dy);
       } else if (element.seatNo == message.toSeat) {
-        to = Offset(positionRed.dx,
-            positionRed.dy - paretWidgetPositionRed.dy + offset);
-        lottieAnimationPostion = to;
+        to = Offset(positionRed.dx, positionRed.dy - paretWidgetPositionRed.dy);
+        lottieAnimationPostion =
+            Offset(positionRed.dx, positionRed.dy - paretWidgetPositionRed.dy);
       }
     });
     animation = Tween<Offset>(
@@ -130,9 +139,6 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
   @override
   Widget build(BuildContext context) {
     // am I on this table?
-    index = -1;
-    PlayerModel me = this.widget.players.me;
-
     return Transform.translate(
       key: key,
       offset: Offset(
@@ -144,25 +150,7 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
             widget.isBoardHorizontal ? Alignment.topLeft : Alignment.center,
         children: [
           // position the users
-          ...this.getUserObjects(widget.players.players).asMap().entries.map(
-            (var u) {
-              index++;
-              return this.positionUser(
-                key: keys[index],
-                isBoardHorizontal: widget.isBoardHorizontal,
-                user: u.value,
-                heightOfBoard: widget.heightOfBoard,
-                widthOfBoard: widget.widthOfBoard,
-                seatPos: getAdjustedSeatPosition(
-                  u.key,
-                  me != null,
-                  me?.seatNo,
-                ),
-                isPresent: me != null,
-                onUserTap: widget.onUserTap,
-              );
-            },
-          ).toList(),
+          ...getPlayers(),
 
           isAnimatating
               ? Positioned(
@@ -198,6 +186,30 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
         ],
       ),
     );
+  }
+
+  List<Widget> getPlayers() {
+    PlayerModel me = this.widget.players.me;
+    index = -1;
+    return this.getUserObjects(widget.players.players).asMap().entries.map(
+      (var u) {
+        index++;
+        return this.positionUser(
+          key: keys[index],
+          isBoardHorizontal: widget.isBoardHorizontal,
+          user: u.value,
+          heightOfBoard: widget.heightOfBoard,
+          widthOfBoard: widget.widthOfBoard,
+          seatPos: getAdjustedSeatPosition(
+            u.key,
+            me != null,
+            me?.seatNo,
+          ),
+          isPresent: me != null,
+          onUserTap: widget.onUserTap,
+        );
+      },
+    ).toList();
   }
 
   int getAdjustedSeatPosition(int pos, bool isPresent, int currentUserSeatNo) {

@@ -5,13 +5,16 @@ import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 
 class NamePlateWidget extends StatelessWidget {
+  final GlobalKey globalKey;
+
   final UserObject userObject;
   final bool emptySeat;
   final int seatPos;
   static const highlightColor = const Color(0xfffffff);
   static const shrinkedSizedBox = const SizedBox.shrink();
 
-  NamePlateWidget(this.userObject, this.seatPos, this.emptySeat);
+  NamePlateWidget(this.userObject, this.seatPos, this.emptySeat,
+      {this.globalKey});
 
   @override
   Widget build(BuildContext context) {
@@ -39,6 +42,7 @@ class NamePlateWidget extends StatelessWidget {
       borderColor = statusColor;
     }
     return Transform.translate(
+      key: globalKey,
       offset: Offset(0.0, -10.0),
       child: Container(
         width: 70.0,

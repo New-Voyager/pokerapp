@@ -49,7 +49,6 @@ class PlayerView extends StatelessWidget {
     ).value.actionTime;
 
     return InkWell(
-      key: globalKey,
       onTap: emptySeat
           ? () => onUserTap(isPresent ? -1 : seatPos)
           : () async {
@@ -105,7 +104,12 @@ class PlayerView extends StatelessWidget {
                     userObject: userObject,
                     cardsAlignment: cardsAlignment,
                   ),
-                  NamePlateWidget(userObject, seatPos, emptySeat),
+                  NamePlateWidget(
+                    userObject,
+                    seatPos,
+                    emptySeat,
+                    globalKey: globalKey,
+                  ),
                 ],
               ),
             ],
