@@ -54,7 +54,7 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
 
   @override
   void initState() {
-    keys = List.generate(widget.players.players.length, (index) => GlobalKey());
+    keys = List.generate(9, (index) => GlobalKey());
     widget.gameComService.chat.listen(onAnimation: this.onAnimation);
     animationHandlers();
     super.initState();
