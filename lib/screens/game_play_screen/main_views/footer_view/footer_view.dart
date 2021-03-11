@@ -29,16 +29,23 @@ class FooterView extends StatelessWidget {
   Widget build(BuildContext context) =>
       Consumer2<ValueNotifier<FooterStatus>, Players>(
         builder: (_, footerStatusValueNotifier, players, __) {
-          return Stack(
+          return Column(
             children: [
-              players.me == null
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  HandAnalyseView(gameCode, clubCode),
+                  CommunicationView(chatVisibilityChange, gameComService.chat),
+                ],
+              ),
+              Expanded(
+                flex: 1,
+                child:  players.me == null
                   ? const SizedBox.shrink()
                   : GameAction(
-                      footerStatus: footerStatusValueNotifier.value,
-                      playerModel: players.me,
-                    ),
-              HandAnalyseView(gameCode, clubCode),
-              CommunicationView(chatVisibilityChange, gameComService.chat)
+                footerStatus: footerStatusValueNotifier.value,
+                playerModel: players.me,
+              ),)
             ],
           );
         },

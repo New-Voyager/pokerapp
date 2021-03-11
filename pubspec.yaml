@@ -67,6 +67,9 @@ dependencies:
   emoji_picker: ^0.1.0
   flutter_keyboard_visibility: ^3.2.2
 
+  flutter_bloc: ^6.1.2
+  equatable: ^1.2.5
+
   # for recording audio
   audio_recorder:
     git:

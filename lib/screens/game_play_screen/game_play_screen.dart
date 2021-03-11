@@ -354,11 +354,6 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                                 _gameInfoModel.clubCode,
                               ),
                             ),
-
-                            // TODO: CAN THIS SIZED BOX BE CLEARED?
-                            SizedBox(
-                              height: 50,
-                            ),
                           ],
                         ),
                         Consumer<ValueNotifier<bool>>(

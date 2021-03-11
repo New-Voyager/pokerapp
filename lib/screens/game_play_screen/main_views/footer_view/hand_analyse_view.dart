@@ -61,13 +61,10 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
       alignment: Alignment.topLeft,
       child: Column(
         children: [
-          SizedBox(
-            height: 25,
-          ),
           Container(
             padding: EdgeInsets.symmetric(vertical: 5),
             color: Colors.black,
-            child: Column(
+            child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 HandAnalysisCardView(onClickHandler: onClickViewHand,),

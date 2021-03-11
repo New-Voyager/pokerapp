@@ -57,7 +57,7 @@ class _CommunicationViewState extends State<CommunicationView> {
                 padding: EdgeInsets.symmetric(vertical: 5),
                 color: Colors.black,
                 child:
-                    Column(mainAxisSize: MainAxisSize.min, children: children),
+                    Row(mainAxisSize: MainAxisSize.min, children: children),
               ),
             ],
           ),
