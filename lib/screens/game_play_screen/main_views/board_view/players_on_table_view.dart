@@ -97,6 +97,9 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
     print(
         'Here ${message.messageId} from player ${message.fromSeat} to ${message.toSeat}. Animation id: ${message.animationId}');
 
+    if (message.fromSeat != null || message.toSeat != null) {
+      return;
+    }
     /*
     * find postion of to and from user
     **/
