@@ -394,75 +394,75 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView> {
         ));
   }
 
-  _showDialog(BuildContext context) async {
-    final textField = new CupertinoTextField(
-      controller: TextEditingController(text: _data.creditLimit.toString()),
-      autofocus: true,
-      keyboardType: TextInputType.number,
-      onSubmitted: (value) => _data.creditLimit = int.parse(value),
-      style: TextStyle(
-        color: Colors.black,
-        fontFamily: AppAssets.fontFamilyLato,
-        fontSize: 18,
-      ),
-    );
+  // _showDialog(BuildContext context) async {
+  //   final textField = new CupertinoTextField(
+  //     controller: TextEditingController(text: _data.creditLimit.toString()),
+  //     autofocus: true,
+  //     keyboardType: TextInputType.number,
+  //     onSubmitted: (value) => _data.creditLimit = int.parse(value),
+  //     style: TextStyle(
+  //       color: Colors.black,
+  //       fontFamily: AppAssets.fontFamilyLato,
+  //       fontSize: 18,
+  //     ),
+  //   );
 
-    await showDialog<String>(
-      context: context,
-      child: new _SystemPadding(
-        child: new AlertDialog(
-          backgroundColor: AppColors.cardBackgroundColor,
-          contentPadding: const EdgeInsets.all(8.0),
-          content: new Row(
-            children: <Widget>[
-              Text(
-                'Credit Limit',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontFamily: AppAssets.fontFamilyLato,
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              SizedBox(height: 10, width: 20),
-              new Expanded(child: textField)
-            ],
-          ),
-          actions: <Widget>[
-            new FlatButton(
-                child: const Text(
-                  'Cancel',
-                  style: TextStyle(
-                    color: AppColors.appAccentColor,
-                    fontFamily: AppAssets.fontFamilyLato,
-                    fontSize: 18,
-                  ),
-                ),
-                onPressed: () {
-                  Navigator.pop(context);
-                }),
-            new FlatButton(
-                child: const Text(
-                  'Set',
-                  style: TextStyle(
-                    color: AppColors.appAccentColor,
-                    fontFamily: AppAssets.fontFamilyLato,
-                    fontSize: 18,
-                  ),
-                ),
-                onPressed: () {
-                  String value = textField.controller.value.text;
-                  Navigator.pop(context);
-                  _data.creditLimit = int.parse(value);
-                })
-          ],
-        ),
-      ),
-    );
-  }
+  //   await showDialog<String>(
+  //     context: context,
+  //     child: new _SystemPadding(
+  //       child: new AlertDialog(
+  //         backgroundColor: AppColors.cardBackgroundColor,
+  //         contentPadding: const EdgeInsets.all(8.0),
+  //         content: new Row(
+  //           children: <Widget>[
+  //             Text(
+  //               'Credit Limit',
+  //               style: TextStyle(
+  //                 color: Colors.white,
+  //                 fontFamily: AppAssets.fontFamilyLato,
+  //                 fontSize: 18,
+  //                 fontWeight: FontWeight.w600,
+  //               ),
+  //             ),
+  //             SizedBox(height: 10, width: 20),
+  //             new Expanded(child: textField)
+  //           ],
+  //         ),
+  //         actions: <Widget>[
+  //           new FlatButton(
+  //               child: const Text(
+  //                 'Cancel',
+  //                 style: TextStyle(
+  //                   color: AppColors.appAccentColor,
+  //                   fontFamily: AppAssets.fontFamilyLato,
+  //                   fontSize: 18,
+  //                 ),
+  //               ),
+  //               onPressed: () {
+  //                 Navigator.pop(context);
+  //               }),
+  //           new FlatButton(
+  //               child: const Text(
+  //                 'Set',
+  //                 style: TextStyle(
+  //                   color: AppColors.appAccentColor,
+  //                   fontFamily: AppAssets.fontFamilyLato,
+  //                   fontSize: 18,
+  //                 ),
+  //               ),
+  //               onPressed: () {
+  //                 String value = textField.controller.value.text;
+  //                 Navigator.pop(context);
+  //                 _data.creditLimit = int.parse(value);
+  //               })
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 
   void onCreditLimitEdit(BuildContext context) async {
-    await _showDialog(context);
+    //await _showDialog(context);
   }
 
   Color getBalanceColor(double number) {
