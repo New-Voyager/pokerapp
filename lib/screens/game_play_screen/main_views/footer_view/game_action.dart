@@ -20,7 +20,7 @@ class GameAction extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Stack(
       children: [
         playerModel != null
             ? HoleCardsView(
