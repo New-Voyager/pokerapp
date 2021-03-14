@@ -42,7 +42,7 @@ class PlayersOnTableView extends StatelessWidget {
               .asMap()
               .entries
               .map(
-                (var u) => this.positionUser(
+                (var u) => this._positionedForUsers(
                   isBoardHorizontal: isBoardHorizontal,
                   user: u.value,
                   heightOfBoard: heightOfBoard,
@@ -90,7 +90,7 @@ class PlayersOnTableView extends StatelessWidget {
     * */
 
     final List<UserObject> userObjects = List.generate(
-      9,
+      users.length,
       (index) => UserObject(
         serverSeatPos: null,
         name: null,
@@ -126,6 +126,68 @@ class PlayersOnTableView extends StatelessWidget {
     }
 
     return userObjects;
+  }
+
+  Widget _positionedForUsers({
+    @required bool isBoardHorizontal,
+    UserObject user,
+    double heightOfBoard,
+    double widthOfBoard,
+    int seatPos,
+    bool isPresent,
+    Function onUserTap,
+  }) {
+    if (players.players.length == 2) {
+      return positionUser_2(
+        isBoardHorizontal: isBoardHorizontal,
+        user: user,
+        heightOfBoard: heightOfBoard,
+        widthOfBoard: widthOfBoard,
+        seatPos: seatPos,
+        isPresent: isPresent,
+        onUserTap: onUserTap,
+      );
+    } else if (players.players.length == 4) {
+      return positionUser_4(
+        isBoardHorizontal: isBoardHorizontal,
+        user: user,
+        heightOfBoard: heightOfBoard,
+        widthOfBoard: widthOfBoard,
+        seatPos: seatPos,
+        isPresent: isPresent,
+        onUserTap: onUserTap,
+      );
+    } else if (players.players.length == 6) {
+      return positionUser_6(
+        isBoardHorizontal: isBoardHorizontal,
+        user: user,
+        heightOfBoard: heightOfBoard,
+        widthOfBoard: widthOfBoard,
+        seatPos: seatPos,
+        isPresent: isPresent,
+        onUserTap: onUserTap,
+      );
+    } else if (players.players.length == 8) {
+      return positionUser_8(
+        isBoardHorizontal: isBoardHorizontal,
+        user: user,
+        heightOfBoard: heightOfBoard,
+        widthOfBoard: widthOfBoard,
+        seatPos: seatPos,
+        isPresent: isPresent,
+        onUserTap: onUserTap,
+      );
+    }
+
+    return positionUser(
+      isBoardHorizontal: isBoardHorizontal,
+      user: user,
+      heightOfBoard: heightOfBoard,
+      widthOfBoard: widthOfBoard,
+      seatPos: seatPos,
+      isPresent: isPresent,
+      onUserTap: onUserTap,
+    );
   }
 
   /* this method helps to position the user in the table */
@@ -213,6 +275,256 @@ class PlayersOnTableView extends StatelessWidget {
         );
 
       case 9:
+        return Positioned(
+          bottom: 20,
+          right: 10,
+          child: userView,
+        );
+
+      default:
+        return const SizedBox.shrink();
+    }
+  }
+
+  Widget positionUser_2({
+    @required bool isBoardHorizontal,
+    UserObject user,
+    double heightOfBoard,
+    double widthOfBoard,
+    int seatPos,
+    bool isPresent,
+    Function onUserTap,
+  }) {
+    seatPos++;
+
+    Alignment cardsAlignment = Alignment.centerRight;
+
+    PlayerView userView = PlayerView(
+      isPresent: isPresent,
+      seatPos: seatPos,
+      key: ValueKey(seatPos),
+      userObject: user,
+      cardsAlignment: cardsAlignment,
+      onUserTap: onUserTap,
+    );
+
+    switch (seatPos) {
+      case 1:
+        return Align(
+          alignment: Alignment.bottomCenter,
+          child: userView,
+        );
+
+      case 2:
+        return Align(
+          alignment: Alignment.topCenter,
+          child: userView,
+        );
+
+      default:
+        return const SizedBox.shrink();
+    }
+  }
+
+  Widget positionUser_4({
+    @required bool isBoardHorizontal,
+    UserObject user,
+    double heightOfBoard,
+    double widthOfBoard,
+    int seatPos,
+    bool isPresent,
+    Function onUserTap,
+  }) {
+    seatPos++;
+
+    Alignment cardsAlignment = Alignment.centerRight;
+
+    if (seatPos == 2) cardsAlignment = Alignment.centerLeft;
+
+    PlayerView userView = PlayerView(
+      isPresent: isPresent,
+      seatPos: seatPos,
+      key: ValueKey(seatPos),
+      userObject: user,
+      cardsAlignment: cardsAlignment,
+      onUserTap: onUserTap,
+    );
+
+    switch (seatPos) {
+      case 1:
+        return Align(
+          alignment: Alignment.bottomCenter,
+          child: userView,
+        );
+
+      case 2:
+        return Align(
+          alignment: Alignment.centerLeft,
+          child: userView,
+        );
+
+      case 3:
+        return Align(
+          alignment: Alignment.topCenter,
+          child: userView,
+        );
+
+      case 4:
+        return Align(
+          alignment: Alignment.centerRight,
+          child: userView,
+        );
+
+      default:
+        return const SizedBox.shrink();
+    }
+  }
+
+  Widget positionUser_6({
+    @required bool isBoardHorizontal,
+    UserObject user,
+    double heightOfBoard,
+    double widthOfBoard,
+    int seatPos,
+    bool isPresent,
+    Function onUserTap,
+  }) {
+    seatPos++;
+
+    Alignment cardsAlignment = Alignment.centerRight;
+
+    // left for 6, 7, 8, 9
+    if (seatPos == 6 || seatPos == 7 || seatPos == 8 || seatPos == 9)
+      cardsAlignment = Alignment.centerLeft;
+
+    PlayerView userView = PlayerView(
+      isPresent: isPresent,
+      seatPos: seatPos,
+      key: ValueKey(seatPos),
+      userObject: user,
+      cardsAlignment: cardsAlignment,
+      onUserTap: onUserTap,
+    );
+
+    switch (seatPos) {
+      case 1:
+        return Align(
+          alignment: Alignment.bottomCenter,
+          child: userView,
+        );
+
+      case 2:
+        return Positioned(
+          bottom: 20,
+          left: 10,
+          child: userView,
+        );
+
+      case 3:
+        return Positioned(
+          top: 20,
+          left: 10,
+          child: userView,
+        );
+
+      case 4:
+        return Align(
+          alignment: Alignment.topCenter,
+          child: userView,
+        );
+
+      case 5:
+        return Positioned(
+          top: 20,
+          right: 10,
+          child: userView,
+        );
+
+      case 6:
+        return Positioned(
+          bottom: 20,
+          right: 10,
+          child: userView,
+        );
+
+      default:
+        return const SizedBox.shrink();
+    }
+  }
+
+  Widget positionUser_8({
+    @required bool isBoardHorizontal,
+    UserObject user,
+    double heightOfBoard,
+    double widthOfBoard,
+    int seatPos,
+    bool isPresent,
+    Function onUserTap,
+  }) {
+    seatPos++;
+
+    Alignment cardsAlignment = Alignment.centerRight;
+
+    // left for 6, 7, 8, 9
+    if (seatPos == 6 || seatPos == 7 || seatPos == 8 || seatPos == 9)
+      cardsAlignment = Alignment.centerLeft;
+
+    PlayerView userView = PlayerView(
+      isPresent: isPresent,
+      seatPos: seatPos,
+      key: ValueKey(seatPos),
+      userObject: user,
+      cardsAlignment: cardsAlignment,
+      onUserTap: onUserTap,
+    );
+
+    switch (seatPos) {
+      case 1:
+        return Align(
+          alignment: Alignment.bottomCenter,
+          child: userView,
+        );
+
+      case 2:
+        return Positioned(
+          bottom: 20,
+          left: 10,
+          child: userView,
+        );
+
+      case 3:
+        return Align(
+          alignment: Alignment.centerLeft,
+          child: userView,
+        );
+
+      case 4:
+        return Positioned(
+          top: 20,
+          left: 10,
+          child: userView,
+        );
+
+      case 5:
+        return Align(
+          alignment: Alignment.topCenter,
+          child: userView,
+        );
+
+      case 6:
+        return Positioned(
+          top: 20,
+          right: 10,
+          child: userView,
+        );
+
+      case 7:
+        return Align(
+          alignment: Alignment.centerRight,
+          child: userView,
+        );
+
+      case 8:
         return Positioned(
           bottom: 20,
           right: 10,

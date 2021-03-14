@@ -409,7 +409,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView> {
 
     await showDialog<String>(
       context: context,
-      child: new _SystemPadding(
+      builder: (_) => new _SystemPadding(
         child: new AlertDialog(
           backgroundColor: AppColors.cardBackgroundColor,
           contentPadding: const EdgeInsets.all(8.0),
