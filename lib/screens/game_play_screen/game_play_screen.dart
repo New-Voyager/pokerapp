@@ -174,7 +174,8 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
     });
 
     // _gameComService.chat.listen(onText: this.onText);
-    _gameComService.chat.listen(onAudio: this.onAudio);
+    _gameComService.chat
+        .listen(onAudio: this.onAudio, onAnimation: this.onAnimation);
 
     return _gameInfoModel;
   }
@@ -212,7 +213,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
 
   void onAnimation(ChatMessage message) async {
     log('Animation message is sent ${message.messageId} from player ${message.fromSeat} to ${message.toSeat}. Animation id: ${message.animationId}');
-    // initiate animation
+    // todo initiate animation
   }
 
   void toggleChatVisibility(BuildContext context) {
@@ -329,6 +330,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                               width: boardDimensions.width,
                               height: boardDimensions.height,
                               child: BoardView(
+                                gameComService: _gameComService,
                                 gameInfo: _gameInfoModel,
                                 onUserTap: onJoinGame,
                                 onStartGame: () =>
@@ -353,11 +355,6 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                                 () => toggleChatVisibility(context),
                                 _gameInfoModel.clubCode,
                               ),
-                            ),
-
-                            // TODO: CAN THIS SIZED BOX BE CLEARED?
-                            SizedBox(
-                              height: 50,
                             ),
                           ],
                         ),

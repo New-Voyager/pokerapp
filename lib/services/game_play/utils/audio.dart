@@ -10,6 +10,9 @@ class Audio {
     BuildContext context,
     String assetFile,
   }) async {
+
+    return -1;
+    
     String tempAssetFile = Provider.of<ValueNotifier<Map<String, String>>>(
       context,
       listen: false,

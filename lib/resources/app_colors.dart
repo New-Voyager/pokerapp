@@ -38,4 +38,9 @@ class AppColors {
 
   static const Color chatInputBgColor = Color(0xff766a6b);
   static const Color chatInputColor = Color(0xffc4c4c4);
+
+  static const Color stickerDialogActionColor = Color(0xffF7B500);
+  static const Color stickerDialogBorderColor = Color(0xffB0EBA9);
+  static const Color stickerDialogTextColor = Color(0xffD8D8D8);
+  static const Color stickerDialogColor = Color(0xff5A66AA);
 }
