@@ -248,6 +248,7 @@ class _FooterActionViewState extends State<FooterActionView> {
                       text: playerAction.actionName,
                       onTap: () => setState(() {
                         _showOptions = true;
+                        // _showDialog(context);
                       }),
                     );
                   case CALL:
@@ -271,6 +272,7 @@ class _FooterActionViewState extends State<FooterActionView> {
                           playerAction.minActionValue.toString(),
                       onTap: () => setState(() {
                         _showOptions = true;
+                        // _showDialog(context);
                       }),
                     );
                   case ALLIN:
@@ -290,6 +292,7 @@ class _FooterActionViewState extends State<FooterActionView> {
             )?.toList() ??
             [],
       );
+
 
   Widget _buildSmallerRoundButton(Option o) => InkWell(
         onTap: () {
@@ -458,39 +461,42 @@ class _FooterActionViewState extends State<FooterActionView> {
         child: playerAction?.options == null
             ? shrinkedBox
             : _showOptions
-                ? Column(
-                    key: ValueKey('options'),
-                    children: [
-                      /* options */
-                      _buildOptionsAndTextField(
-                        playerAction.options,
-                        min: playerAction.minRaiseAmount,
-                        max: playerAction.maxRaiseAmount,
-                      ),
+                ? Container(
+                  color: Colors.black.withOpacity(0.65),
+                  child: Column(
+                      key: ValueKey('options'),
+                      children: [
+                        /* options */
 
-                      /* slider and submit button */
-                      Row(
-                        children: [
-                          Expanded(
-                            child: _buildSliderAndSubmit(playerAction),
-                          ),
-                          Transform.translate(
-                            offset: const Offset(
-                              -20.0,
-                              0.0,
+                        _buildOptionsAndTextField(
+                          playerAction.options,
+                          min: playerAction.minRaiseAmount,
+                          max: playerAction.maxRaiseAmount,
+                        ),
+                        /* slider and submit button */
+                        Row(
+                          children: [
+                            Expanded(
+                              child: _buildSliderAndSubmit(playerAction),
                             ),
-                            child: RoundRaisedButton(
-                              radius: 5.0,
-                              fontSize: 11.0,
-                              color: AppColors.appAccentColor,
-                              onButtonTap: () => _submit(playerAction),
-                              buttonText: 'SUBMIT',
+                            Transform.translate(
+                              offset: const Offset(
+                                -20.0,
+                                0.0,
+                              ),
+                              child: RoundRaisedButton(
+                                radius: 5.0,
+                                fontSize: 11.0,
+                                color: AppColors.appAccentColor,
+                                onButtonTap: () => _submit(playerAction),
+                                buttonText: 'SUBMIT',
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  )
+                          ],
+                        ),
+                      ],
+                    ),
+                )
                 : shrinkedBox,
       );
 
@@ -498,8 +504,7 @@ class _FooterActionViewState extends State<FooterActionView> {
   Widget build(BuildContext context) {
     return Consumer<ValueNotifier<PlayerAction>>(
       key: ValueKey('buildActionButtons'),
-      builder: (_, playerActionValueNotifier, __) => Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+      builder: (_, playerActionValueNotifier, __) => Stack(
         children: [
           _buildTopActionRow(
             playerActionValueNotifier.value,
@@ -509,4 +514,5 @@ class _FooterActionViewState extends State<FooterActionView> {
       ),
     );
   }
+
 }
