@@ -15,7 +15,7 @@ class RewardsListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: true,
+//      resizeToAvoidBottomPadding: true,
       key: _key,
       backgroundColor: AppColors.screenBackgroundColor,
       appBar: AppBar(

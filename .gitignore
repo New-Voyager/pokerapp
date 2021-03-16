@@ -44,3 +44,4 @@ app.*.map.json
 
 # Docker-compose .env.
 .env
+pubspec.lock

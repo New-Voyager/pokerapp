@@ -18,7 +18,8 @@ class MaxPlayerSelect extends StatelessWidget {
       }
     }
 
-    int selectedIndex = data.maxPlayers - 2;
+    // int selectedIndex = data.maxPlayers - 2;
+    int selectedIndex = _getSelectedIndex(data.maxPlayers, maxPlayersList);
     return Scaffold(
       backgroundColor: AppColors.screenBackgroundColor,
       appBar: new AppBar(
@@ -36,5 +37,10 @@ class MaxPlayerSelect extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  int _getSelectedIndex(int val, List<String> values){
+    String value = val.toString();
+    return values.indexOf(value);
   }
 }
