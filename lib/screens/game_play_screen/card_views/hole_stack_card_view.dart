@@ -32,11 +32,17 @@ class _HoleStackCardViewState extends State<HoleStackCardView> {
     double mid = (widget.cards.length / 2);
 
     return GestureDetector(
+      onLongPress: (){
+        setState(()=> isCardVisible = true);
+      },
+      onLongPressEnd: (_){
+        setState(()=> isCardVisible = false);
+      },
       onTap: () => setState(()=> isCardVisible = !isCardVisible),
       child: AnimatedContainer(
         duration: Duration(milliseconds:800 ),
         child: Transform.translate(
-          offset: Offset(-15,0),
+          offset: Offset(-15,30),
           child: Stack(
             alignment: Alignment.bottomLeft,
             children: List.generate(

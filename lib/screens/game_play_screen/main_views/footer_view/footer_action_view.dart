@@ -468,28 +468,6 @@ class _FooterActionViewState extends State<FooterActionView> {
                       children: [
                         /* options */
 
-                        Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: Align(
-                            alignment: Alignment.topLeft,
-                            child: Container(
-                              child: InkWell(
-                                  onTap: (){
-                                    setState(() {
-                                      _showOptions = false;
-                                    });
-                                  },
-                                  child: Icon(Icons.close,size: 16,color: Theme.of(context).primaryColor,)),
-                              padding: EdgeInsets.all(5),
-                              decoration: BoxDecoration(
-                                color: Colors.black54,
-                                border: Border.all(color: Colors.white.withOpacity(0.5) ),
-                                borderRadius: BorderRadius.all(Radius.circular(24),)
-                              ),
-                            ),
-                          ),
-                        ),
-
                         _buildOptionsAndTextField(
                           playerAction.options,
                           min: playerAction.minRaiseAmount,

@@ -49,18 +49,8 @@ class _CommunicationViewState extends State<CommunicationView> {
           ),
         ));
 
-        return Align(
-          alignment: Alignment.topRight,
-          child: Column(
-            children: [
-              Container(
-                padding: EdgeInsets.symmetric(vertical: 5),
-                color: Colors.black,
-                child:
-                    Row(mainAxisSize: MainAxisSize.min, children: children),
-              ),
-            ],
-          ),
+        return Column(
+          children: children,
         );
       },
     );
