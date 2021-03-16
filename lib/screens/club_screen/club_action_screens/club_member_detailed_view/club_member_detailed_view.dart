@@ -406,7 +406,6 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView> {
   //       fontSize: 18,
   //     ),
   //   );
-
   //   await showDialog<String>(
   //     context: context,
   //     child: new _SystemPadding(
