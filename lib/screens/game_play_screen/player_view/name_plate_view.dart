@@ -49,22 +49,14 @@ class NamePlateWidget extends StatelessWidget {
         padding: (emptySeat)
             ? const EdgeInsets.all(10.0)
             : const EdgeInsets.symmetric(
-                horizontal: 15.0,
                 vertical: 5.0,
               ),
         decoration: BoxDecoration(
-          //borderRadius: emptySeat ? null : BorderRadius.circular(5.0),
           shape: emptySeat ? BoxShape.circle : BoxShape.rectangle,
-          image: DecorationImage(
-            image: AssetImage(AppAssets.goldNamePlate),
-            fit: BoxFit.fill,
-          ),
-          // color: boxColor,
+          borderRadius: BorderRadius.circular(5),
+          color: Color(0XFF494444),
           border: Border.all(
-            // color: userObject.highlight ?? false
-            //     ? highlightColor
-            //     : Colors.transparent,
-            color: borderColor,
+            color: Color.fromARGB(255, 206, 134, 57),
             width: 2.0,
           ),
           boxShadow: (userObject.winner ?? false)
@@ -101,25 +93,25 @@ class NamePlateWidget extends StatelessWidget {
                           userObject.name,
                           style: AppStyles.gamePlayScreenPlayerName.copyWith(
                             // FIXME: may be this is permanant?
-                            color: Colors.black,
+                            color: Colors.white,
                           ),
                         ),
                       ),
-                      const SizedBox(height: 3.0),
-                      FittedBox(
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const SizedBox(width: 5.0),
-                            Text(
+                      PlayerViewDivider(),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 5),
+                          child: FittedBox(
+                            child: Text(
                               userObject.stack?.toString() ?? 'XX',
                               style:
                                   AppStyles.gamePlayScreenPlayerChips.copyWith(
                                 // FIXME: may be this is permanant?
-                                color: Colors.black,
+                                color: Colors.white,
                               ),
                             ),
-                          ],
+                          ),
                         ),
                       ),
                     ],
@@ -137,6 +129,27 @@ class NamePlateWidget extends StatelessWidget {
           'Open $seatPos',
           style: AppStyles.openSeatTextStyle,
         ),
+      ),
+    );
+  }
+}
+
+class PlayerViewDivider extends StatelessWidget {
+  const PlayerViewDivider({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(5),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Color.fromARGB(255, 129, 129, 129),
+          borderRadius: BorderRadius.circular(5)
+        ),
+        height: 1,
+        width: double.infinity,
       ),
     );
   }
