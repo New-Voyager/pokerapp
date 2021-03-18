@@ -23,7 +23,7 @@ class TableState extends ChangeNotifier {
     this._potChips = potChips;
     this._communityCards = communityCards;
     this._potUpdatesChips = potUpdatesChips;
-    this._communityCards = new List<CardObject>();
+    this._communityCards = [];
   }
 
   void notifyAll() => notifyListeners();
@@ -57,7 +57,7 @@ class TableState extends ChangeNotifier {
 
   void addCommunityCardSilent(CardObject card) {
     card.isShownAtTable = true;
-    if (this._communityCards == null) this._communityCards = List<CardObject>();
+    if (this._communityCards == null) this._communityCards = [];
     this._communityCards.add(card);
   }
 

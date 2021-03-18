@@ -7,7 +7,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/action_info.dar
 import 'package:pokerapp/models/game_play_models/provider_models/player_action/option.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/player_action/player_action.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
-import 'package:pokerapp/models/game_play_models/ui/header_object.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_styles.dart';
@@ -112,12 +112,12 @@ class _FooterActionViewState extends State<FooterActionView> {
       listen: false,
     ).value;
     // get current hand number
-    int handNum = Provider.of<HeaderObject>(
+    int handNum = Provider.of<GameContextObject>(
       context,
       listen: false,
     ).currentHandNum;
 
-    String gameCode = Provider.of<HeaderObject>(
+    String gameCode = Provider.of<GameContextObject>(
       context,
       listen: false,
     ).gameCode;

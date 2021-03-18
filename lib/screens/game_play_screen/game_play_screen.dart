@@ -53,7 +53,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
   Future<GameInfoModel> _fetchGameInfo() async {
     GameInfoModel _gameInfoModel =
         await GameService.getGameInfo(widget.gameCode);
-    this._currentPlayer = await PlayerService.getMyInfo();
+    this._currentPlayer = await PlayerService.getMyInfo(widget.gameCode);
 
     // mark the isMe field
     for (int i = 0; i < _gameInfoModel.playersInSeats.length; i++) {
@@ -174,7 +174,8 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
     });
 
     // _gameComService.chat.listen(onText: this.onText);
-    _gameComService.chat.listen(onAudio: this.onAudio);
+    _gameComService.chat
+        .listen(onAudio: this.onAudio, onAnimation: this.onAnimation);
 
     return _gameInfoModel;
   }
@@ -212,7 +213,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
 
   void onAnimation(ChatMessage message) async {
     log('Animation message is sent ${message.messageId} from player ${message.fromSeat} to ${message.toSeat}. Animation id: ${message.animationId}');
-    // initiate animation
+    // todo initiate animation
   }
 
   void toggleChatVisibility(BuildContext context) {
@@ -281,8 +282,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                 providers: GamePlayScreenUtilMethods.getProviders(
                   gameInfoModel: _gameInfoModel,
                   gameCode: widget.gameCode,
-                  playerID: _currentPlayer.id,
-                  playerUuid: _currentPlayer.uuid,
+                  currentPlayerInfo: this._currentPlayer,
                   agora: agora,
                   sendPlayerToHandChannel:
                       _gameComService.sendPlayerToHandChannel,
@@ -329,6 +329,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                               width: boardDimensions.width,
                               height: boardDimensions.height,
                               child: BoardView(
+                                gameComService: _gameComService,
                                 gameInfo: _gameInfoModel,
                                 onUserTap: onJoinGame,
                                 onStartGame: () =>

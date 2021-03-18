@@ -13,10 +13,13 @@ class MaxPlayerSelect extends StatelessWidget {
     int maxPlayersAllowed =
         NewGameConstants.MAX_PLAYERS[data.settings.gameType];
     for (int i = 2; i <= maxPlayersAllowed; i++) {
-      maxPlayersList.add(i.toString());
+      if (i % 2 == 0 || i == maxPlayersAllowed) {
+        maxPlayersList.add(i.toString());
+      }
     }
 
-    int selectedIndex = data.maxPlayers - 2;
+    // int selectedIndex = data.maxPlayers - 2;
+    int selectedIndex = _getSelectedIndex(data.maxPlayers, maxPlayersList);
     return Scaffold(
       backgroundColor: AppColors.screenBackgroundColor,
       appBar: new AppBar(
@@ -29,10 +32,15 @@ class MaxPlayerSelect extends StatelessWidget {
           list: maxPlayersList,
           selectedIndex: selectedIndex,
           onTap: (index) {
-            data.maxPlayers = index + 2; //0 + 2 (first item)
+            data.maxPlayers =  int.parse(maxPlayersList[index]); ////index + 2; //0 + 2 (first item)
           },
         ),
       ),
     );
+  }
+
+  int _getSelectedIndex(int val, List<String> values){
+    String value = val.toString();
+    return values.indexOf(value);
   }
 }

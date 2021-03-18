@@ -3,8 +3,11 @@ import 'package:flutter/widgets.dart';
 import 'package:pokerapp/enums/game_play_enums/player_type.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/ui/user_object.dart';
 import 'package:pokerapp/resources/app_assets.dart';
+import 'package:pokerapp/screens/game_play_screen/player_view/profile_popup.dart';
+import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:provider/provider.dart';
 
 import 'animating_widgets/stack_switch_seat_animating_widget.dart';
@@ -13,25 +16,29 @@ import 'name_plate_view.dart';
 import 'user_view_util_widgets.dart';
 
 class PlayerView extends StatelessWidget {
+  final GlobalKey globalKey;
   final int seatPos;
   final UserObject userObject;
   final Alignment cardsAlignment;
   final Function(int) onUserTap;
   final bool isPresent;
+  final GameComService gameComService;
 
   PlayerView({
     Key key,
+    @required this.globalKey,
     @required this.seatPos,
     @required this.userObject,
     @required this.onUserTap,
     @required this.isPresent,
+    @required this.gameComService,
     this.cardsAlignment = Alignment.centerRight,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     bool emptySeat = userObject.name == null;
-    bool isMe = userObject.isMe ?? false;
+    bool isMe = userObject?.isMe ?? false;
 
     // enable this line for debugging dealer position
     // userObject.playerType = PlayerType.Dealer;
@@ -42,7 +49,31 @@ class PlayerView extends StatelessWidget {
     ).value.actionTime;
 
     return InkWell(
-      onTap: emptySeat ? () => onUserTap(isPresent ? -1 : seatPos) : null,
+      onTap: emptySeat
+          ? () => onUserTap(isPresent ? -1 : seatPos)
+          : () async {
+              Players players = Provider.of<Players>(
+                context,
+                listen: false,
+              );
+              // If user is not playing do not show dialog
+              if (players.me == null) {
+                return;
+              }
+              final userPrefrence = await showModalBottomSheet(
+                context: context,
+                shape: RoundedRectangleBorder(
+                    borderRadius:
+                        BorderRadius.vertical(top: Radius.circular(10))),
+                builder: (context) {
+                  return ProfilePopup(
+                    userObject: userObject,
+                  );
+                },
+              );
+              gameComService.chat.sendAnimation(
+                  players.me.seatNo, userObject.serverSeatPos, 'poop');
+            },
       child: Stack(
         alignment: Alignment.center,
         children: [
@@ -73,7 +104,12 @@ class PlayerView extends StatelessWidget {
                     userObject: userObject,
                     cardsAlignment: cardsAlignment,
                   ),
-                  NamePlateWidget(userObject, seatPos, emptySeat),
+                  NamePlateWidget(
+                    userObject,
+                    seatPos,
+                    emptySeat,
+                    globalKey: globalKey,
+                  ),
                 ],
               ),
             ],

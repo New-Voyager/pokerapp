@@ -45,3 +45,4 @@ app.*.map.json
 # Docker-compose .env.
 .env
 /ios/Flutter/.last_build_id
+pubspec.lock

@@ -15,7 +15,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/remaining_time.
 import 'package:pokerapp/models/game_play_models/provider_models/seat_change_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
-import 'package:pokerapp/models/game_play_models/ui/header_object.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/resources/card_back_assets.dart';
 import 'package:pokerapp/services/agora/agora.dart';
@@ -73,9 +73,8 @@ class GamePlayScreenUtilMethods {
   /* provider method, returns list of all the providers used in the below hierarchy */
   static List<SingleChildWidget> getProviders({
     @required GameInfoModel gameInfoModel,
+    @required PlayerInfo currentPlayerInfo,
     @required String gameCode,
-    @required int playerID,
-    @required String playerUuid,
     @required Agora agora,
     @required Function(String) sendPlayerToHandChannel,
   }) =>
@@ -114,11 +113,10 @@ class GamePlayScreenUtilMethods {
         /* a header object is used to update the header section of
         * the game screen - it contains data regarding the current hand no, club name,
         * club code and so on */
-        ListenableProvider<HeaderObject>(
-          create: (_) => HeaderObject(
+        ListenableProvider<GameContextObject>(
+          create: (_) => GameContextObject(
             gameCode: gameCode,
-            playerId: playerID,
-            playerUuid: playerUuid,
+            player: currentPlayerInfo,
           ),
         ),
 

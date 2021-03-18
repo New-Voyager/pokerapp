@@ -5,7 +5,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/remaining_time.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
-import 'package:pokerapp/models/game_play_models/ui/header_object.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_service/sub_services/next_action_service.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_service/sub_services/your_action_service.dart';
 import 'package:pokerapp/utils/card_helper.dart';
@@ -19,7 +19,7 @@ class QueryCurrentHandService {
     var data,
   }) {
     int handNum = data['handNum'];
-    Provider.of<HeaderObject>(
+    Provider.of<GameContextObject>(
       context,
       listen: false,
     ).currentHandNum = handNum;
