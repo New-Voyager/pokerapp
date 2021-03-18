@@ -83,6 +83,10 @@ class TableUpdateService {
       handlePlayerSeatChange(context: context, data: data);
     } else if (type == AppConstants.TableHostSeatChangeProcessStart) {
       handleHostSeatChangeStart(context: context, data: data);
+    } else if (type == AppConstants.TableHostSeatChangeMove) {
+      handleHostSeatChangeMove(context: context, data: data);
+    } else if (type == AppConstants.TableHostSeatChangeProcessEnd) {
+      handleHostSeatChangeDone(context: context, data: data);
     }
   }
 
@@ -117,10 +121,11 @@ class TableUpdateService {
     final PlayerModel player = players.players[idx];
 
     /* If I am in this list, show me a confirmation popup */
-    if (player.isMe)
+    if (player.isMe) {
       SeatChangeConfirmationPopUp.dialog(
         context: context,
       );
+    }
 
     final ValueNotifier<GeneralNotificationModel> valueNotifierNotModel =
         Provider.of<ValueNotifier<GeneralNotificationModel>>(
@@ -158,6 +163,17 @@ class TableUpdateService {
 
     // for other players, show the banner sticky (stay at the top)
     // Seat arrangement in progress
+    final ValueNotifier<GeneralNotificationModel> valueNotifierNotModel =
+        Provider.of<ValueNotifier<GeneralNotificationModel>>(
+      context,
+      listen: false,
+    );
+
+    valueNotifierNotModel.value = GeneralNotificationModel(
+      titleText: 'Seat change',
+      subTitleText:
+          'Host is making changes to the table',
+    );
   }
 
   static void handleHostSeatChangeDone({
@@ -170,6 +186,14 @@ class TableUpdateService {
     // now get current table state using gameInfo API and refresh
     // we should have a call on the table or board (or board object) that should refresh it
     // board.refresh()
+    
+    final ValueNotifier<GeneralNotificationModel> valueNotifierNotModel =
+        Provider.of<ValueNotifier<GeneralNotificationModel>>(
+      context,
+      listen: false,
+    );
+    /* remove notification */
+    valueNotifierNotModel.value = null;
   }
 
   static void handleHostSeatChangeMove({
