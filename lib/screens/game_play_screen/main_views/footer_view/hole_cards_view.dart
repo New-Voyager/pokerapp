@@ -13,31 +13,59 @@ import 'footer_action_view.dart';
 // MyCardView represent the player who has hole cards
 // The cards may be active or dead/folded
 //
-class HoleCardsView extends StatelessWidget {
+class HoleCardsView extends StatefulWidget {
   final PlayerModel playerModel;
   final FooterStatus footerStatus;
 
   const HoleCardsView({Key key, this.playerModel, this.footerStatus})
       : super(key: key);
+
+  @override
+  _HoleCardsViewState createState() => _HoleCardsViewState();
+}
+
+class _HoleCardsViewState extends State<HoleCardsView> {
+
+  bool isCardVisible = false;
+
   @override
   Widget build(BuildContext context) {
     return Container(
       width: MediaQuery.of(context).size.width,
       child: Stack(children: [
-        Align(
-          alignment: Alignment.topCenter,
-          child: cards(
-            playerFolded: playerModel.playerFolded,
-            cards: playerModel?.cards?.map(
-                  (int c) {
-                    CardObject card = CardHelper.getCard(c);
-                    card.smaller = true;
-                    card.cardFace = CardFace.FRONT;
+        GestureDetector(
+          onLongPress: (){
+            setState(()=> isCardVisible = true);
+          },
+          onLongPressEnd: (_){
+            setState(()=> isCardVisible = false);
+          },
+          child: InkWell(
+            highlightColor: Colors.black,
+            focusColor: Colors.black,
+            splashColor: Colors.black,
+            onTap: (){
+              setState(() {
+                isCardVisible = !isCardVisible;
+              });
+              debugPrint("HoleCardsView : Container");
+            },
+            child: Align(
+              alignment: Alignment.topCenter,
+              child: cards(
+                playerFolded: widget.playerModel.playerFolded,
+                cards: widget.playerModel?.cards?.map(
+                      (int c) {
+                        CardObject card = CardHelper.getCard(c);
+                        card.smaller = true;
+                        card.cardFace = CardFace.FRONT;
 
-                    return card;
-                  },
-                )?.toList() ??
-                List<CardObject>(),
+                        return card;
+                      },
+                    )?.toList() ??
+                    List<CardObject>(),
+              ),
+            ),
           ),
         ),
 
@@ -45,7 +73,7 @@ class HoleCardsView extends StatelessWidget {
         Positioned(
           width: MediaQuery.of(context).size.width,
           bottom: 0,
-          child: footerStatus == FooterStatus.Action
+          child: widget.footerStatus == FooterStatus.Action
               ? FooterActionView()
               : SizedBox(
                   height: 0,
@@ -55,7 +83,6 @@ class HoleCardsView extends StatelessWidget {
     );
   }
 
-  // the following two widgets are only built for the current active player
   Widget cards({
     List<CardObject> cards,
     @required playerFolded,
@@ -63,7 +90,7 @@ class HoleCardsView extends StatelessWidget {
     return HoleStackCardView(
       cards: cards,
       deactivated: playerFolded ?? false,
+      isCardVisible: isCardVisible,
     );
   }
-
 }
