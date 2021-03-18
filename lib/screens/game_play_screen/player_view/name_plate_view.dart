@@ -53,12 +53,20 @@ class NamePlateWidget extends StatelessWidget {
               ),
         decoration: BoxDecoration(
           shape: emptySeat ? BoxShape.circle : BoxShape.rectangle,
-          borderRadius: BorderRadius.circular(5),
+          image: emptySeat
+              ? DecorationImage(
+                  image: AssetImage(AppAssets.goldNamePlate),
+                  fit: BoxFit.fill,
+                )
+              : null,
+          borderRadius: emptySeat ? null : BorderRadius.circular(5),
           color: Color(0XFF494444),
-          border: Border.all(
-            color: Color.fromARGB(255, 206, 134, 57),
-            width: 2.0,
-          ),
+          border: emptySeat
+              ? null
+              : Border.all(
+                  color: Color.fromARGB(255, 206, 134, 57),
+                  width: 2.0,
+                ),
           boxShadow: (userObject.winner ?? false)
               ? [
                   BoxShadow(
@@ -123,7 +131,7 @@ class NamePlateWidget extends StatelessWidget {
   }
 
   Widget _openSeat() {
-    return Container(
+    return Padding(padding: const EdgeInsets.all(5),
       child: InkWell(
         child: Text(
           'Open $seatPos',
@@ -145,9 +153,8 @@ class PlayerViewDivider extends StatelessWidget {
       padding: const EdgeInsets.all(5),
       child: Container(
         decoration: BoxDecoration(
-          color: Color.fromARGB(255, 129, 129, 129),
-          borderRadius: BorderRadius.circular(5)
-        ),
+            color: Color.fromARGB(255, 129, 129, 129),
+            borderRadius: BorderRadius.circular(5)),
         height: 1,
         width: double.infinity,
       ),

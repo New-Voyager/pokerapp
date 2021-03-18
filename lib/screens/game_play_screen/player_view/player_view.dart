@@ -38,7 +38,7 @@ class PlayerView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool emptySeat = userObject.name == null;
-    bool isMe = userObject.isMe ?? false;
+    bool isMe = userObject?.isMe ?? false;
 
     // enable this line for debugging dealer position
     // userObject.playerType = PlayerType.Dealer;
