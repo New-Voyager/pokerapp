@@ -83,6 +83,7 @@ class BoardView extends StatelessWidget {
               widthOfBoard: widthOfBoard,
               heightOfBoard: heightOfBoard,
               onUserTap: onUserTap,
+              maxPlayers: gameInfo.maxPlayers,
             ),
           ),
         ),

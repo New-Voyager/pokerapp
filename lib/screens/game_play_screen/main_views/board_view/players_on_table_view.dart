@@ -16,6 +16,7 @@ class PlayersOnTableView extends StatefulWidget {
   final double heightOfBoard;
   final double widthOfBoard;
   final GameComService gameComService;
+  final int maxPlayers;
 
   PlayersOnTableView({
     @required this.gameComService,
@@ -24,6 +25,7 @@ class PlayersOnTableView extends StatefulWidget {
     @required this.widthOfBoard,
     @required this.heightOfBoard,
     @required this.onUserTap,
+    @required this.maxPlayers,
   });
 
   @override
@@ -238,7 +240,7 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
     * */
 
     final List<UserObject> userObjects = List.generate(
-      users.length,
+      widget.maxPlayers,
       (index) => UserObject(
         serverSeatPos: null,
         name: null,
@@ -285,7 +287,7 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
       bool isPresent,
       Function onUserTap,
       GlobalKey key}) {
-    if (widget.players.players.length == 2) {
+    if (widget.maxPlayers == 2) {
       return positionUser_2(
         isBoardHorizontal: isBoardHorizontal,
         user: user,
@@ -295,7 +297,7 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
         isPresent: isPresent,
         onUserTap: onUserTap,
       );
-    } else if (widget.players.players.length == 4) {
+    } else if (widget.maxPlayers == 4) {
       return positionUser_4(
         isBoardHorizontal: isBoardHorizontal,
         user: user,
@@ -305,7 +307,7 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
         isPresent: isPresent,
         onUserTap: onUserTap,
       );
-    } else if (widget.players.players.length == 6) {
+    } else if (widget.maxPlayers == 6) {
       return positionUser_6(
         isBoardHorizontal: isBoardHorizontal,
         user: user,
@@ -315,7 +317,7 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
         isPresent: isPresent,
         onUserTap: onUserTap,
       );
-    } else if (widget.players.players.length == 8) {
+    } else if (widget.maxPlayers == 8) {
       return positionUser_8(
         isBoardHorizontal: isBoardHorizontal,
         user: user,
