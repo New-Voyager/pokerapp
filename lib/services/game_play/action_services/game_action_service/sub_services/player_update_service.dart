@@ -4,7 +4,7 @@ import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat_change_model.dart';
-import 'package:pokerapp/models/game_play_models/ui/header_object.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/services/game_play/graphql/game_service.dart';
@@ -75,10 +75,9 @@ class PlayerUpdateService {
     );
 
     int seatNo = playerUpdate['seatNo'];
-
     // fetch new player using GameInfo API and add to the game
     GameInfoModel _gameInfoModel = await GameService.getGameInfo(
-      Provider.of<HeaderObject>(
+      Provider.of<GameContextObject>(
         context,
         listen: false,
       ).gameCode,

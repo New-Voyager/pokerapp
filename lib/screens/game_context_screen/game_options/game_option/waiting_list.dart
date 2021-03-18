@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
-import 'package:pokerapp/models/game_play_models/ui/header_object.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/waiting_list_model.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
@@ -48,8 +48,8 @@ class _WaitingListBottomSheetState extends State<WaitingListBottomSheet> {
 
   getAllWaitingPlayers() async {
     final result = await GameService.listOfWaitingPlayer(widget.gameCode);
-    print("headerObject.gameCode ${widget.gameCode}");
-    print("headerObject.gameCode ${widget.playerUuid}");
+    print("gameCode ${widget.gameCode}");
+    print("gameCode ${widget.playerUuid}");
 
     if (result != null) {
       setState(() {

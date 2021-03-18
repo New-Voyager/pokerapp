@@ -282,8 +282,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                 providers: GamePlayScreenUtilMethods.getProviders(
                   gameInfoModel: _gameInfoModel,
                   gameCode: widget.gameCode,
-                  playerID: _currentPlayer.id,
-                  playerUuid: _currentPlayer.uuid,
+                  currentPlayerInfo: this._currentPlayer,
                   agora: agora,
                   sendPlayerToHandChannel:
                       _gameComService.sendPlayerToHandChannel,
