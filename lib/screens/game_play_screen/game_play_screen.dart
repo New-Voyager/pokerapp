@@ -53,7 +53,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
   Future<GameInfoModel> _fetchGameInfo() async {
     GameInfoModel _gameInfoModel =
         await GameService.getGameInfo(widget.gameCode);
-    this._currentPlayer = await PlayerService.getMyInfo();
+    this._currentPlayer = await PlayerService.getMyInfo(widget.gameCode);
 
     // mark the isMe field
     for (int i = 0; i < _gameInfoModel.playersInSeats.length; i++) {
