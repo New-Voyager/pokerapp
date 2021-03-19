@@ -44,6 +44,15 @@ class HostSeatChange extends ChangeNotifier {
     this.toSeatNo = toSeat;
     this._playerName = playerName;
     this._stack = stack;
+    this.notifyAll();
+  }
+
+  set animate(bool v) {
+    this._animateSeatChange = v;
+  }
+  
+  bool get animate {
+    return this._animateSeatChange;
   }
 
   bool get seatChangeInProgress {

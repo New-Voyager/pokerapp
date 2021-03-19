@@ -61,4 +61,26 @@ class SeatChangeService {
     return result.data['seatChange'];
   }
 
+static Future<dynamic> hostSeatChangeSeatPositions(String gameCode) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+
+    String query = """query (\$gameCode: String!) {
+        seatPositions(gameCode: \$gameCode, seatChange: true) {
+          stack
+          seatNo
+          name
+          playerUuid
+        }
+      }
+    """;
+    Map<String, dynamic> variables = {
+      "gameCode": gameCode,
+    };
+    QueryResult result = await _client.query(
+      QueryOptions(documentNode: gql(query), variables: variables),
+    );
+
+    if (result.hasException) return null;
+    return result.data['seatPositions'];
+  }
 }

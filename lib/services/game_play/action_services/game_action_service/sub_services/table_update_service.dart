@@ -216,14 +216,15 @@ class TableUpdateService {
       int to = int.parse(move['newSeatNo'].toString());
       String name = move['name'].toString();
       double stack = double.parse(move['stack'].toString());
-      seatChange.updateSeatChangePlayer(from, to, name, stack);
+      debugPrint('Seatchange: Player $name from seat $from to $to');
 
+      //seatChange.updateSeatChangePlayer(from, to, name, stack);
+      //seatChange.animate = true;
+      seatChange.onSeatdrop(from, to);
       // run animation now
-      seatChange.updateAnimateSeatChange(true);
       await Future.delayed(AppConstants.notificationDuration);
-
-      // stop animation
-      seatChange.updateAnimateSeatChange(false);
+      //seatChange.updateSeatChangePlayer(null, null, null, null);
+      //seatChange.animate = false;
     }
   }
 }

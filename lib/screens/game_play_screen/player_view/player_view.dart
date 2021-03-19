@@ -9,6 +9,7 @@ import 'package:pokerapp/models/game_play_models/ui/user_object.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/screens/game_play_screen/player_view/profile_popup.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
+import 'package:pokerapp/services/game_play/graphql/seat_change_service.dart';
 import 'package:provider/provider.dart';
 
 import 'animating_widgets/stack_switch_seat_animating_widget.dart';
@@ -24,7 +25,7 @@ class PlayerView extends StatelessWidget {
   final Function(int) onUserTap;
   final bool isPresent;
   final GameComService gameComService;
-
+  int counter = 0;
   PlayerView({
     Key key,
     @required this.globalKey,
@@ -44,23 +45,19 @@ class PlayerView extends StatelessWidget {
     // enable this line for debugging dealer position
     // userObject.playerType = PlayerType.Dealer;
 
-    int actionTime = Provider.of<ValueNotifier<GameInfoModel>>(
-      context,
-      listen: false,
-    ).value.actionTime;
-
+    final GameInfoModel gameInfo = Provider.of<ValueNotifier<GameInfoModel>>(context, listen: false).value; 
+    int actionTime = gameInfo.actionTime;
+    String gameCode = gameInfo.gameCode;
     return DragTarget(
       onWillAccept: (data) {
         print("object data $data");
         return true;
       },
       onAccept: (data) {
-        Provider.of<HostSeatChange>(
-          context,
-          listen: false,
-        ).onSeatdrop(data, userObject.serverSeatPos);
-
-        print("special data ${userObject.serverSeatPos} $data");
+        // call the API to make the seat change
+        debugPrint("$counter Seat change player from: $data to seat ${userObject.serverSeatPos}");
+        counter++;
+        SeatChangeService.hostSeatChangeMove(gameCode, data, userObject.serverSeatPos);
       },
       builder: (context, List<int> candidateData, rejectedData) {
         return InkWell(
@@ -86,8 +83,7 @@ class PlayerView extends StatelessWidget {
                       );
                     },
                   );
-                  gameComService.chat.sendAnimation(
-                      players.me.seatNo, userObject.serverSeatPos, 'poop');
+                  gameComService.chat.sendAnimation(players.me.seatNo, userObject.serverSeatPos, 'poop');
                 },
           child: Stack(
             alignment: Alignment.center,
@@ -171,6 +167,8 @@ class PlayerView extends StatelessWidget {
                 seatPos: seatPos,
                 userObject: userObject,
               ),
+
+              UserViewUtilWidgets.buildSeatNoIndicator(userObject: userObject),
             ],
           ),
         );
