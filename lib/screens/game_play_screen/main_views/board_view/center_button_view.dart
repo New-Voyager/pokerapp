@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/resources/app_constants.dart';
+import 'package:pokerapp/services/game_play/graphql/seat_change_service.dart';
 import 'package:pokerapp/widgets/custom_text_button.dart';
+import 'package:provider/provider.dart';
 
 class CenterButtonView extends StatelessWidget {
   final String tableStatus;
@@ -15,11 +19,27 @@ class CenterButtonView extends StatelessWidget {
 
   void _onTerminatePress() {}
 
-  void _onRearrangeSeatsPress() {}
+  void _onRearrangeSeatsPress(context) {
+    GameContextObject gameContextObject = Provider.of<GameContextObject>(
+      context,
+      listen: false,
+    );
+    Provider.of<HostSeatChange>(
+      context,
+      listen: false,
+    )
+      ..updateSeatChangeHost(gameContextObject.playerId)
+      ..updateSeatChangeInProgress(true);
+
+    SeatChangeService.hostSeatChangeBegin(gameCode);
+  }
 
   @override
   Widget build(BuildContext context) {
-    if (this.tableStatus == AppConstants.GAME_PAUSED) {
+    // TODO: Viren, please fix this correctly
+    final seatChange = Provider.of<HostSeatChange>(context, listen: true);
+    if (this.tableStatus == AppConstants.GAME_PAUSED &&
+        !seatChange.seatChangeInProgress) {
       return pauseButtons(context);
     } else if (this.tableStatus == AppConstants.WAITING_TO_BE_STARTED) {
       if (this.isHost) {
@@ -44,114 +64,95 @@ class CenterButtonView extends StatelessWidget {
   }
 
   Widget pauseButtons(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 20.0,
-        vertical: 10.0,
-      ),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20.0),
-        color: Colors.black.withOpacity(0.50),
-      ),
-      child: Wrap(
-        crossAxisAlignment: WrapCrossAlignment.center,
-        children: [
-          CustomTextButton(
-            text: 'Resume',
-            onTap: _onResumePress,
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 10.0,
+    return Consumer<GameContextObject>(
+      builder: (context, gameContext, _) => gameContext.isAdmin()
+          ? Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 20.0,
+                vertical: 10.0,
+              ),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20.0),
+                color: Colors.black.withOpacity(0.50),
+              ),
+              child: Wrap(
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: [
+                  CustomTextButton(
+                    text: 'Resume',
+                    onTap: _onResumePress,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10.0,
+                    ),
+                    child: CustomTextButton(
+                      text: 'Terminate',
+                      onTap: _onTerminatePress,
+                    ),
+                  ),
+                  CustomTextButton(
+                    split: true,
+                    text: 'Rearrange Seats',
+                    onTap: () => _onRearrangeSeatsPress(context),
+                  ),
+                ],
+              ),
+            )
+          : Container(
+              height: 50,
+              width: 50,
+              color: Colors.red,
             ),
-            child: CustomTextButton(
-              text: 'Terminate',
-              onTap: _onTerminatePress,
-            ),
-          ),
-          CustomTextButton(
-            split: true,
-            text: 'Rearrange Seats',
-            onTap: _onRearrangeSeatsPress,
-          ),
-        ],
-      ),
     );
   }
 
   Widget newGameButtons(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 20.0,
-              vertical: 10.0,
-            ),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20.0),
-              color: Colors.black.withOpacity(0.50),
-            ),
-            child: Wrap(
-              crossAxisAlignment: WrapCrossAlignment.center,
-              children: [
-                CustomTextButton(
-                  text: 'Start',
-                  onTap: this.onStartGame,
-                ),
-              ],
-            ),
+      children: [
+        Container(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 20.0,
+            vertical: 10.0,
           ),
-          SizedBox(
-            width: 10,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20.0),
+            color: Colors.black.withOpacity(0.50),
           ),
-          Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 20.0,
-              vertical: 10.0,
-            ),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20.0),
-              color: Colors.black.withOpacity(0.50),
-            ),
-            child: Wrap(
-              crossAxisAlignment: WrapCrossAlignment.center,
-              children: [
-                CustomTextButton(
-                  text: 'Terminate',
-                  onTap: _onTerminatePress,
-                ),
-              ],
-            ),
+          child: Wrap(
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              CustomTextButton(
+                text: 'Start',
+                onTap: this.onStartGame,
+              ),
+            ],
           ),
-        ],
-      );
-
-      Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 20.0,
-        vertical: 10.0,
-      ),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20.0),
-        color: Colors.black.withOpacity(0.50),
-      ),
-      child: Wrap(
-        crossAxisAlignment: WrapCrossAlignment.center,
-        children: [
-          CustomTextButton(
-            text: 'Start',
-            onTap: this.onStartGame,
+        ),
+        SizedBox(
+          width: 10,
+        ),
+        Container(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 20.0,
+            vertical: 10.0,
           ),
-          SizedBox(
-            width: 10,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20.0),
+            color: Colors.black.withOpacity(0.50),
           ),
-          CustomTextButton(
-            text: 'Terminate',
-            onTap: _onTerminatePress,
+          child: Wrap(
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              CustomTextButton(
+                text: 'Terminate',
+                onTap: _onTerminatePress,
+              ),
+            ],
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

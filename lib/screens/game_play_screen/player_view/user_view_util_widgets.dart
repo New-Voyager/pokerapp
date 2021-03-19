@@ -326,7 +326,7 @@ class UserViewUtilWidgets {
     Widget chipAmountWidget = Consumer<BoardAttributesObject>(
       builder: (_, boardAttrObj, __) => Transform.translate(
         offset: boardAttrObj.chipAmountWidgetOffsetMapping[seatPos],
-        child: Column(
+        child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             /* show the coin svg */

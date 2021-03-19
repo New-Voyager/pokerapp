@@ -51,22 +51,22 @@ class _GameOptionState extends State<GameOption> {
   }
 
   void onPause() {
-    final snackBar = SnackBar(
-      content: Text('Game will be paused after this hand'),
-      duration: Duration(seconds: 30),
-      backgroundColor: Colors.black38,
-    );
-    Scaffold.of(context).showSnackBar(snackBar);
+    // final snackBar = SnackBar(
+    //   content: Text('Game will be paused after this hand'),
+    //   duration: Duration(seconds: 30),
+    //   backgroundColor: Colors.black38,
+    // );
+    // Scaffold.of(context).showSnackBar(snackBar);
     GameService.pauseGame(this.gameCode);
   }
 
   void onResume() {
-    final snackBar = SnackBar(
-      content: Text('Resume game is not implemented'),
-      duration: Duration(seconds: 30),
-      backgroundColor: Colors.black38,
-    );
-    Scaffold.of(context).showSnackBar(snackBar);
+    // final snackBar = SnackBar(
+    //   content: Text('Resume game is not implemented'),
+    //   duration: Duration(seconds: 30),
+    //   backgroundColor: Colors.black38,
+    // );
+    // Scaffold.of(context).showSnackBar(snackBar);
 
     //GameService.resumeGame(this.gameCode);
   }

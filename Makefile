@@ -4,9 +4,9 @@ GCR_REGISTRY := gcr.io/voyager-01-285603
 DO_REGISTRY := registry.digitalocean.com/voyager
 REGISTRY := $(DO_REGISTRY)
 
-API_SERVER_IMAGE := $(REGISTRY)/api-server:0.2.18
-GAME_SERVER_IMAGE := $(REGISTRY)/game-server:0.2.11
-BOTRUNNER_IMAGE := $(REGISTRY)/botrunner:0.3.4
+API_SERVER_IMAGE := $(REGISTRY)/api-server:0.2.20
+GAME_SERVER_IMAGE := $(REGISTRY)/game-server:0.2.12
+BOTRUNNER_IMAGE := $(REGISTRY)/botrunner:0.3.8
 NATS_SERVER_IMAGE := $(REGISTRY)/nats:2.1.7-alpine3.11
 REDIS_IMAGE := $(REGISTRY)/redis:6.0.9
 POSTGRES_IMAGE := $(REGISTRY)/postgres:12.5
@@ -81,13 +81,19 @@ stack-reset: create-network login
 botrunner:
 	@DOCKER_NET=$(DEFAULT_DOCKER_NET) BOTRUNNER_IMAGE=$(BOTRUNNER_IMAGE) BOTRUNNER_SCRIPT=$(BOTRUNNER_SCRIPT) ./botrunner.sh
 
+botrunner-sh:
+	@DOCKER_NET=$(DEFAULT_DOCKER_NET) BOTRUNNER_IMAGE=$(BOTRUNNER_IMAGE) BOTRUNNER_SCRIPT=$(BOTRUNNER_SCRIPT) /bin/sh
+
 .PHONY: seat-change
 seat-change:
 	BOTRUNNER_SCRIPT=seat-change.yaml make botrunner
 
 .PHONY: nlh-full
-nlh-full:
+nlh-full: reset-db
 	BOTRUNNER_SCRIPT=play-many-hands.yaml make botrunner
 
 wait-list:
 	BOTRUNNER_SCRIPT=waitlist.yaml make botrunner
+
+reset-db:
+	curl -X POST -v  -H 'Content-Type: application/json' -d '{"query":"mutation {resetDB}"}' http://localhost:9501/graphql
