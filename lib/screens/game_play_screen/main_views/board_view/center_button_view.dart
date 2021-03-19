@@ -27,9 +27,8 @@ class CenterButtonView extends StatelessWidget {
   Widget build(BuildContext context) {
     // TODO: Viren, please fix this correctly
     final seatChange = Provider.of<HostSeatChange>(context, listen: true);
-
     if (this.tableStatus == AppConstants.GAME_PAUSED &&
-        seatChange.seatChangeInProgress) {
+        !seatChange.seatChangeInProgress) {
       return pauseButtons(context);
     } else if (this.tableStatus == AppConstants.WAITING_TO_BE_STARTED) {
       if (this.isHost) {

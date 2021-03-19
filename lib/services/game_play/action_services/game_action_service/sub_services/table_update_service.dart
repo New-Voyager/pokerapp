@@ -176,8 +176,10 @@ class TableUpdateService {
           'Host is making changes to the table',
     );
 
+    final seatChangeHost = int.parse(data["tableUpdate"]["seatChangeHost"].toString());
     final seatChange = Provider.of<HostSeatChange>(context, listen: false);
     seatChange.updateSeatChangeInProgress(true);
+    seatChange.updateSeatChangeHost(seatChangeHost);
     seatChange.notifyAll();
   }
 

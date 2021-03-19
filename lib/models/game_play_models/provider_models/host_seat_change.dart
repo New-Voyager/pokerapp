@@ -8,10 +8,11 @@ class SeatChangeStatus {
 
 class HostSeatChange extends ChangeNotifier {
   /* This object holds states related to host seat change functionality */
-  bool _seatChangeInProgress;
-  bool _animateSeatChange;
-  int fromSeatNo;
-  int toSeatNo;
+  bool _seatChangeInProgress = false;
+  bool _animateSeatChange = false;
+  int seatChangeHost = 0;
+  int fromSeatNo = 0;
+  int toSeatNo = 0;
   String _playerName;
   double _stack;
   bool _fromOpenSeat;
@@ -23,6 +24,11 @@ class HostSeatChange extends ChangeNotifier {
   void updateSeatChangeInProgress(bool seatChangeInProgress) {
     if (this._seatChangeInProgress == seatChangeInProgress) return;
     this._seatChangeInProgress = seatChangeInProgress;
+  }
+
+  void updateSeatChangeHost(int seatChangeHost) {
+    if (this.seatChangeHost == seatChangeHost) return;
+    this.seatChangeHost = seatChangeHost;
   }
 
   void updateAnimateSeatChange(bool animateSeatChange) {
