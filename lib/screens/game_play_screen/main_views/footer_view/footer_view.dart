@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/services/game_play/game_chat_service.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
@@ -51,9 +53,16 @@ class FooterView extends StatelessWidget {
                         ),
                 ),
               ),
-              Align(
-                alignment: Alignment.center,
-                child: SeatChangeConfirmWidget(),
+              Consumer2<HostSeatChange, GameContextObject>(
+                builder: (context, hostSeatChange, gameContextObject, _) =>
+                    hostSeatChange.seatChangeInProgress &&
+                            gameContextObject.playerId ==
+                                hostSeatChange.seatChangeHost
+                        ? Align(
+                            alignment: Alignment.center,
+                            child: SeatChangeConfirmWidget(),
+                          )
+                        : SizedBox.shrink(),
               )
             ],
           );

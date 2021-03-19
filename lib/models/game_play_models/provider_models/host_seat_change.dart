@@ -24,11 +24,13 @@ class HostSeatChange extends ChangeNotifier {
   void updateSeatChangeInProgress(bool seatChangeInProgress) {
     if (this._seatChangeInProgress == seatChangeInProgress) return;
     this._seatChangeInProgress = seatChangeInProgress;
+    notifyAll();
   }
 
   void updateSeatChangeHost(int seatChangeHost) {
     if (this.seatChangeHost == seatChangeHost) return;
     this.seatChangeHost = seatChangeHost;
+    notifyAll();
   }
 
   void updateAnimateSeatChange(bool animateSeatChange) {

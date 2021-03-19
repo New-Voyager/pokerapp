@@ -19,7 +19,18 @@ class CenterButtonView extends StatelessWidget {
 
   void _onTerminatePress() {}
 
-  void _onRearrangeSeatsPress() {
+  void _onRearrangeSeatsPress(context) {
+    GameContextObject gameContextObject = Provider.of<GameContextObject>(
+      context,
+      listen: false,
+    );
+    Provider.of<HostSeatChange>(
+      context,
+      listen: false,
+    )
+      ..updateSeatChangeHost(gameContextObject.playerId)
+      ..updateSeatChangeInProgress(true);
+
     SeatChangeService.hostSeatChangeBegin(gameCode);
   }
 
@@ -83,7 +94,7 @@ class CenterButtonView extends StatelessWidget {
                   CustomTextButton(
                     split: true,
                     text: 'Rearrange Seats',
-                    onTap: _onRearrangeSeatsPress,
+                    onTap: () => _onRearrangeSeatsPress(context),
                   ),
                 ],
               ),

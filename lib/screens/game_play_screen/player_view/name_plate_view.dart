@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
 import 'package:pokerapp/models/game_play_models/ui/user_object.dart';
 import 'package:pokerapp/resources/app_assets.dart';
@@ -45,19 +46,21 @@ class NamePlateWidget extends StatelessWidget {
     return Transform.translate(
       key: globalKey,
       offset: Offset(0.0, -10.0),
-      // Todo add condition if user is host then add drag able else not
-      child: Consumer<HostSeatChange>(
-        builder: (context, hostSeatChange, _) => Draggable(
-          data: userObject.serverSeatPos,
-          onDragEnd: (_) {
-            hostSeatChange.onSeatDragEnd();
-          },
-          onDragStarted: () {
-            hostSeatChange.onSeatDragStart(userObject.serverSeatPos);
-          },
-          feedback: buildPlayer(hostSeatChange, isFeedBack: true),
-          child: buildPlayer(hostSeatChange),
-        ),
+      child: Consumer2<HostSeatChange, GameContextObject>(
+        builder: (context, hostSeatChange, gameContextObject, _) =>
+            gameContextObject.isAdmin() && hostSeatChange.seatChangeInProgress
+                ? Draggable(
+                    data: userObject.serverSeatPos,
+                    onDragEnd: (_) {
+                      hostSeatChange.onSeatDragEnd();
+                    },
+                    onDragStarted: () {
+                      hostSeatChange.onSeatDragStart(userObject.serverSeatPos);
+                    },
+                    feedback: buildPlayer(hostSeatChange, isFeedBack: true),
+                    child: buildPlayer(hostSeatChange),
+                  )
+                : buildPlayer(hostSeatChange),
       ),
     );
   }
@@ -103,27 +106,30 @@ class NamePlateWidget extends StatelessWidget {
                       spreadRadius: 20.0,
                     ),
                   ]
-                : hostSeatChange.allSeatChangeStatus[userObject.serverSeatPos]
-                            .isDragging ||
-                        isFeedBack
-                    ? [
-                        BoxShadow(
-                          color: Colors.green,
-                          blurRadius: 20.0,
-                          spreadRadius: 20.0,
-                        ),
-                      ]
-                    : hostSeatChange
-                            .allSeatChangeStatus[userObject.serverSeatPos]
-                            .isDropAble
+                : userObject.serverSeatPos != null
+                    ? hostSeatChange
+                                .allSeatChangeStatus[userObject.serverSeatPos]
+                                .isDragging ||
+                            isFeedBack
                         ? [
                             BoxShadow(
-                              color: Colors.blue,
+                              color: Colors.green,
                               blurRadius: 20.0,
                               spreadRadius: 20.0,
                             ),
                           ]
-                        : [],
+                        : hostSeatChange
+                                .allSeatChangeStatus[userObject.serverSeatPos]
+                                .isDropAble
+                            ? [
+                                BoxShadow(
+                                  color: Colors.blue,
+                                  blurRadius: 20.0,
+                                  spreadRadius: 20.0,
+                                ),
+                              ]
+                            : []
+                    : [],
       ),
       child: AnimatedSwitcher(
         duration: AppConstants.animationDuration,
