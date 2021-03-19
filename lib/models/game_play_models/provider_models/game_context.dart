@@ -34,7 +34,7 @@ class GameContextObject extends ChangeNotifier {
   String get playerUuid => _currentPlayer.uuid;
   int get playerId => _currentPlayer.id;
 
-  bool canManage() {
+  bool isAdmin() {
     if (_currentPlayer.role.isHost || _currentPlayer.role.isManager || _currentPlayer.role.isOwner) {
       return true;
     }

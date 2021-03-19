@@ -52,6 +52,10 @@ class GameStatusUpdateService {
       // end the game
       tableState.updateTableStatusSilent(AppConstants.GAME_ENDED);
       BoardService.reset(context);
+    } else if (gameStatus == AppConstants.GAME_PAUSED) {
+      // paused the game
+      tableState.updateTableStatusSilent(AppConstants.GAME_PAUSED);
+      BoardService.reset(context);
     }
 
     tableState.notifyAll();

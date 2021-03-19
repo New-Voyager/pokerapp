@@ -129,32 +129,5 @@ class CenterButtonView extends StatelessWidget {
         ),
       ],
     );
-
-    Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 20.0,
-        vertical: 10.0,
-      ),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20.0),
-        color: Colors.black.withOpacity(0.50),
-      ),
-      child: Wrap(
-        crossAxisAlignment: WrapCrossAlignment.center,
-        children: [
-          CustomTextButton(
-            text: 'Start',
-            onTap: this.onStartGame,
-          ),
-          SizedBox(
-            width: 10,
-          ),
-          CustomTextButton(
-            text: 'Terminate',
-            onTap: _onTerminatePress,
-          ),
-        ],
-      ),
-    );
   }
 }
