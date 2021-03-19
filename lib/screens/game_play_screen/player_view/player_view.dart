@@ -48,116 +48,127 @@ class PlayerView extends StatelessWidget {
       listen: false,
     ).value.actionTime;
 
-    return InkWell(
-      onTap: emptySeat
-          ? () => onUserTap(isPresent ? -1 : seatPos)
-          : () async {
-              Players players = Provider.of<Players>(
-                context,
-                listen: false,
-              );
-              // If user is not playing do not show dialog
-              if (players.me == null) {
-                return;
-              }
-              final userPrefrence = await showModalBottomSheet(
-                context: context,
-                shape: RoundedRectangleBorder(
-                    borderRadius:
-                        BorderRadius.vertical(top: Radius.circular(10))),
-                builder: (context) {
-                  return ProfilePopup(
-                    userObject: userObject,
+    return DragTarget(
+      onWillAccept: (data) {
+        print("object data $data");
+        return true;
+      },
+      onAccept: (data) {
+        print("special data ${userObject.serverSeatPos} $data");
+      },
+      builder: (context, List<int> candidateData, rejectedData) {
+        return InkWell(
+          onTap: emptySeat
+              ? () => onUserTap(isPresent ? -1 : seatPos)
+              : () async {
+                  Players players = Provider.of<Players>(
+                    context,
+                    listen: false,
                   );
+                  // If user is not playing do not show dialog
+                  if (players.me == null) {
+                    return;
+                  }
+                  final userPrefrence = await showModalBottomSheet(
+                    context: context,
+                    shape: RoundedRectangleBorder(
+                        borderRadius:
+                            BorderRadius.vertical(top: Radius.circular(10))),
+                    builder: (context) {
+                      return ProfilePopup(
+                        userObject: userObject,
+                      );
+                    },
+                  );
+                  gameComService.chat.sendAnimation(
+                      players.me.seatNo, userObject.serverSeatPos, 'poop');
                 },
-              );
-              gameComService.chat.sendAnimation(
-                  players.me.seatNo, userObject.serverSeatPos, 'poop');
-            },
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          (userObject.showFirework ?? false)
-              ? Transform.translate(
-                  offset: Offset(
-                    0.0,
-                    -20.0,
-                  ),
-                  child: Image.asset(
-                    AppAssets.fireworkGif,
-                    height: 100,
-                    width: 100,
-                  ),
-                )
-              : shrinkedSizedBox,
-
-          // main user body
-          Stack(
-            alignment: Alignment.bottomCenter,
+          child: Stack(
+            alignment: Alignment.center,
             children: [
-              Column(
-                mainAxisSize: MainAxisSize.min,
+              (userObject.showFirework ?? false)
+                  ? Transform.translate(
+                      offset: Offset(
+                        0.0,
+                        -20.0,
+                      ),
+                      child: Image.asset(
+                        AppAssets.fireworkGif,
+                        height: 100,
+                        width: 100,
+                      ),
+                    )
+                  : shrinkedSizedBox,
+
+              // main user body
+              Stack(
+                alignment: Alignment.bottomCenter,
                 children: [
-                  UserViewUtilWidgets.buildAvatarAndLastAction(
-                    avatarUrl: userObject.avatarUrl,
-                    emptySeat: emptySeat,
-                    userObject: userObject,
-                    cardsAlignment: cardsAlignment,
-                  ),
-                  NamePlateWidget(
-                    userObject,
-                    seatPos,
-                    emptySeat,
-                    globalKey: globalKey,
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      UserViewUtilWidgets.buildAvatarAndLastAction(
+                        avatarUrl: userObject.avatarUrl,
+                        emptySeat: emptySeat,
+                        userObject: userObject,
+                        cardsAlignment: cardsAlignment,
+                      ),
+                      NamePlateWidget(
+                        userObject,
+                        seatPos,
+                        emptySeat,
+                        globalKey: globalKey,
+                      ),
+                    ],
                   ),
                 ],
               ),
+
+              emptySeat
+                  ? shrinkedSizedBox
+                  : UserViewUtilWidgets.buildHiddenCard(
+                      alignment: this.cardsAlignment,
+                      emptySeat: emptySeat,
+                      cardNo: userObject.noOfCardsVisible,
+                      seatPos: seatPos,
+                      userObject: userObject,
+                    ),
+
+              // hidden cards show only for the folding animation
+              isMe && (userObject.playerFolded ?? false)
+                  ? UserViewUtilWidgets.buildHiddenCard(
+                      seatPos: seatPos,
+                      userObject: userObject,
+                      alignment: this.cardsAlignment,
+                      emptySeat: emptySeat,
+                      cardNo: userObject.noOfCardsVisible,
+                    )
+                  : shrinkedSizedBox,
+
+              // show dealer button, if user is a dealer
+              userObject.playerType != null &&
+                      userObject.playerType == PlayerType.Dealer
+                  ? DealerButtonWidget(seatPos, isMe, GameType.HOLDEM)
+                  : shrinkedSizedBox,
+
+              /* timer
+                      * the timer is show to the highlighted user
+                      * */
+              UserViewUtilWidgets.buildTimer(
+                context: context,
+                time: actionTime,
+                userObject: userObject,
+              ),
+
+              /* building the chip amount widget */
+              UserViewUtilWidgets.buildChipAmountWidget(
+                seatPos: seatPos,
+                userObject: userObject,
+              ),
             ],
           ),
-
-          emptySeat
-              ? shrinkedSizedBox
-              : UserViewUtilWidgets.buildHiddenCard(
-                  alignment: this.cardsAlignment,
-                  emptySeat: emptySeat,
-                  cardNo: userObject.noOfCardsVisible,
-                  seatPos: seatPos,
-                  userObject: userObject,
-                ),
-
-          // hidden cards show only for the folding animation
-          isMe && (userObject.playerFolded ?? false)
-              ? UserViewUtilWidgets.buildHiddenCard(
-                  seatPos: seatPos,
-                  userObject: userObject,
-                  alignment: this.cardsAlignment,
-                  emptySeat: emptySeat,
-                  cardNo: userObject.noOfCardsVisible,
-                )
-              : shrinkedSizedBox,
-
-          // show dealer button, if user is a dealer
-          userObject.playerType != null &&
-                  userObject.playerType == PlayerType.Dealer
-              ? DealerButtonWidget(seatPos, isMe, GameType.HOLDEM)
-              : shrinkedSizedBox,
-
-          /* timer
-          * the timer is show to the highlighted user
-          * */
-          UserViewUtilWidgets.buildTimer(
-            context: context,
-            time: actionTime,
-            userObject: userObject,
-          ),
-
-          /* building the chip amount widget */
-          UserViewUtilWidgets.buildChipAmountWidget(
-            seatPos: seatPos,
-            userObject: userObject,
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

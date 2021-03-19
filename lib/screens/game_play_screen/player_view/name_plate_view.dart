@@ -6,7 +6,6 @@ import 'package:pokerapp/resources/app_styles.dart';
 
 class NamePlateWidget extends StatelessWidget {
   final GlobalKey globalKey;
-
   final UserObject userObject;
   final bool emptySeat;
   final int seatPos;
@@ -44,94 +43,107 @@ class NamePlateWidget extends StatelessWidget {
     return Transform.translate(
       key: globalKey,
       offset: Offset(0.0, -10.0),
-      child: Container(
-        width: 70.0,
-        padding: (emptySeat)
-            ? const EdgeInsets.all(10.0)
-            : const EdgeInsets.symmetric(
-                vertical: 5.0,
-              ),
-        decoration: BoxDecoration(
-          shape: emptySeat ? BoxShape.circle : BoxShape.rectangle,
-          image: emptySeat
-              ? DecorationImage(
-                  image: AssetImage(AppAssets.goldNamePlate),
-                  fit: BoxFit.fill,
-                )
-              : null,
-          borderRadius: emptySeat ? null : BorderRadius.circular(5),
-          color: Color(0XFF494444),
-          border: emptySeat
-              ? null
-              : Border.all(
-                  color: Color.fromARGB(255, 206, 134, 57),
-                  width: 2.0,
-                ),
-          boxShadow: (userObject.winner ?? false)
-              ? [
-                  BoxShadow(
-                    color: Colors.lightGreen,
-                    blurRadius: 50.0,
-                    spreadRadius: 20.0,
-                  ),
-                ]
-              : userObject.highlight ?? false
-                  ? [
-                      BoxShadow(
-                        color: highlightColor.withAlpha(120),
-                        blurRadius: 20.0,
-                        spreadRadius: 20.0,
-                      ),
-                    ]
-                  : [],
+      // Todo add condition if user is host then add drag able else not
+      child: Draggable(
+        data: userObject.serverSeatPos,
+        feedback: NamePlateWidget(
+          userObject,
+          seatPos,
+          emptySeat,
         ),
-        child: AnimatedSwitcher(
-          duration: AppConstants.animationDuration,
-          reverseDuration: AppConstants.animationDuration,
-          child: (emptySeat)
-              ? _openSeat()
-              : AnimatedOpacity(
-                  duration: AppConstants.animationDuration,
-                  opacity: emptySeat ? 0.0 : 1.0,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      FittedBox(
-                        child: Text(
-                          userObject.name,
-                          style: AppStyles.gamePlayScreenPlayerName.copyWith(
-                            // FIXME: may be this is permanant?
-                            color: Colors.white,
-                          ),
+        child: buildPlayer(),
+      ),
+    );
+  }
+
+  Container buildPlayer() {
+    return Container(
+      width: 70.0,
+      padding: (emptySeat)
+          ? const EdgeInsets.all(10.0)
+          : const EdgeInsets.symmetric(
+              vertical: 5.0,
+            ),
+      decoration: BoxDecoration(
+        shape: emptySeat ? BoxShape.circle : BoxShape.rectangle,
+        image: emptySeat
+            ? DecorationImage(
+                image: AssetImage(AppAssets.goldNamePlate),
+                fit: BoxFit.fill,
+              )
+            : null,
+        borderRadius: emptySeat ? null : BorderRadius.circular(5),
+        color: Color(0XFF494444),
+        border: emptySeat
+            ? null
+            : Border.all(
+                color: Color.fromARGB(255, 206, 134, 57),
+                width: 2.0,
+              ),
+        boxShadow: (userObject.winner ?? false)
+            ? [
+                BoxShadow(
+                  color: Colors.lightGreen,
+                  blurRadius: 50.0,
+                  spreadRadius: 20.0,
+                ),
+              ]
+            : userObject.highlight ?? false
+                ? [
+                    BoxShadow(
+                      color: highlightColor.withAlpha(120),
+                      blurRadius: 20.0,
+                      spreadRadius: 20.0,
+                    ),
+                  ]
+                : [],
+      ),
+      child: AnimatedSwitcher(
+        duration: AppConstants.animationDuration,
+        reverseDuration: AppConstants.animationDuration,
+        child: (emptySeat)
+            ? _openSeat()
+            : AnimatedOpacity(
+                duration: AppConstants.animationDuration,
+                opacity: emptySeat ? 0.0 : 1.0,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    FittedBox(
+                      child: Text(
+                        userObject.name,
+                        style: AppStyles.gamePlayScreenPlayerName.copyWith(
+                          // FIXME: may be this is permanant?
+                          color: Colors.white,
                         ),
                       ),
-                      PlayerViewDivider(),
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 5),
-                          child: FittedBox(
-                            child: Text(
-                              userObject.stack?.toString() ?? 'XX',
-                              style:
-                                  AppStyles.gamePlayScreenPlayerChips.copyWith(
-                                // FIXME: may be this is permanant?
-                                color: Colors.white,
-                              ),
+                    ),
+                    PlayerViewDivider(),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 5),
+                        child: FittedBox(
+                          child: Text(
+                            userObject.stack?.toString() ?? 'XX',
+                            style: AppStyles.gamePlayScreenPlayerChips.copyWith(
+                              // FIXME: may be this is permanant?
+                              color: Colors.white,
                             ),
                           ),
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-        ),
+              ),
       ),
     );
   }
 
   Widget _openSeat() {
-    return Padding(padding: const EdgeInsets.all(5),
+    return Padding(
+      padding: const EdgeInsets.all(5),
       child: InkWell(
         child: Text(
           'Open $seatPos',
