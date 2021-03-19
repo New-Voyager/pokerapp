@@ -3,6 +3,7 @@ import 'package:lottie/lottie.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/ui/user_object.dart';
+import 'package:pokerapp/screens/game_play_screen/player_view/name_plate_view.dart';
 import 'package:pokerapp/screens/game_play_screen/player_view/player_view.dart';
 import 'package:pokerapp/services/game_play/game_chat_service.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
@@ -186,6 +187,9 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
                   ),
                 )
               : SizedBox.shrink(),
+
+          // this is name plate to just animate
+          //  NamePlateWidget(getUserObjects(widget.players.players)[0], 0, false)
         ],
       ),
     );
@@ -289,55 +293,55 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
       GlobalKey key}) {
     if (widget.maxPlayers == 2) {
       return positionUser_2(
-        isBoardHorizontal: isBoardHorizontal,
-        user: user,
-        heightOfBoard: heightOfBoard,
-        widthOfBoard: widthOfBoard,
-        seatPos: seatPos,
-        isPresent: isPresent,
-        onUserTap: onUserTap,
-      );
+          isBoardHorizontal: isBoardHorizontal,
+          user: user,
+          heightOfBoard: heightOfBoard,
+          widthOfBoard: widthOfBoard,
+          seatPos: seatPos,
+          isPresent: isPresent,
+          onUserTap: onUserTap,
+          key: key);
     } else if (widget.maxPlayers == 4) {
       return positionUser_4(
-        isBoardHorizontal: isBoardHorizontal,
-        user: user,
-        heightOfBoard: heightOfBoard,
-        widthOfBoard: widthOfBoard,
-        seatPos: seatPos,
-        isPresent: isPresent,
-        onUserTap: onUserTap,
-      );
+          isBoardHorizontal: isBoardHorizontal,
+          user: user,
+          heightOfBoard: heightOfBoard,
+          widthOfBoard: widthOfBoard,
+          seatPos: seatPos,
+          isPresent: isPresent,
+          onUserTap: onUserTap,
+          key: key);
     } else if (widget.maxPlayers == 6) {
       return positionUser_6(
-        isBoardHorizontal: isBoardHorizontal,
-        user: user,
-        heightOfBoard: heightOfBoard,
-        widthOfBoard: widthOfBoard,
-        seatPos: seatPos,
-        isPresent: isPresent,
-        onUserTap: onUserTap,
-      );
+          isBoardHorizontal: isBoardHorizontal,
+          user: user,
+          heightOfBoard: heightOfBoard,
+          widthOfBoard: widthOfBoard,
+          seatPos: seatPos,
+          isPresent: isPresent,
+          onUserTap: onUserTap,
+          key: key);
     } else if (widget.maxPlayers == 8) {
       return positionUser_8(
-        isBoardHorizontal: isBoardHorizontal,
-        user: user,
-        heightOfBoard: heightOfBoard,
-        widthOfBoard: widthOfBoard,
-        seatPos: seatPos,
-        isPresent: isPresent,
-        onUserTap: onUserTap,
-      );
+          isBoardHorizontal: isBoardHorizontal,
+          user: user,
+          heightOfBoard: heightOfBoard,
+          widthOfBoard: widthOfBoard,
+          seatPos: seatPos,
+          isPresent: isPresent,
+          onUserTap: onUserTap,
+          key: key);
     }
 
     return positionUser(
-      isBoardHorizontal: isBoardHorizontal,
-      user: user,
-      heightOfBoard: heightOfBoard,
-      widthOfBoard: widthOfBoard,
-      seatPos: seatPos,
-      isPresent: isPresent,
-      onUserTap: onUserTap,
-    );
+        isBoardHorizontal: isBoardHorizontal,
+        user: user,
+        heightOfBoard: heightOfBoard,
+        widthOfBoard: widthOfBoard,
+        seatPos: seatPos,
+        isPresent: isPresent,
+        onUserTap: onUserTap,
+        key: key);
   }
 
   Widget positionUser(

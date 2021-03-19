@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/resources/app_constants.dart';
+import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/widgets/custom_text_button.dart';
 
 class CenterButtonView extends StatelessWidget {
@@ -15,7 +16,9 @@ class CenterButtonView extends StatelessWidget {
 
   void _onTerminatePress() {}
 
-  void _onRearrangeSeatsPress() {}
+  void _onRearrangeSeatsPress() {
+    GameService.beginHostSeatChange(gameCode);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -82,52 +85,52 @@ class CenterButtonView extends StatelessWidget {
   Widget newGameButtons(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 20.0,
-              vertical: 10.0,
-            ),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20.0),
-              color: Colors.black.withOpacity(0.50),
-            ),
-            child: Wrap(
-              crossAxisAlignment: WrapCrossAlignment.center,
-              children: [
-                CustomTextButton(
-                  text: 'Start',
-                  onTap: this.onStartGame,
-                ),
-              ],
-            ),
+      children: [
+        Container(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 20.0,
+            vertical: 10.0,
           ),
-          SizedBox(
-            width: 10,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20.0),
+            color: Colors.black.withOpacity(0.50),
           ),
-          Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 20.0,
-              vertical: 10.0,
-            ),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20.0),
-              color: Colors.black.withOpacity(0.50),
-            ),
-            child: Wrap(
-              crossAxisAlignment: WrapCrossAlignment.center,
-              children: [
-                CustomTextButton(
-                  text: 'Terminate',
-                  onTap: _onTerminatePress,
-                ),
-              ],
-            ),
+          child: Wrap(
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              CustomTextButton(
+                text: 'Start',
+                onTap: this.onStartGame,
+              ),
+            ],
           ),
-        ],
-      );
+        ),
+        SizedBox(
+          width: 10,
+        ),
+        Container(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 20.0,
+            vertical: 10.0,
+          ),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20.0),
+            color: Colors.black.withOpacity(0.50),
+          ),
+          child: Wrap(
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              CustomTextButton(
+                text: 'Terminate',
+                onTap: _onTerminatePress,
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
 
-      Container(
+    Container(
       padding: const EdgeInsets.symmetric(
         horizontal: 20.0,
         vertical: 10.0,

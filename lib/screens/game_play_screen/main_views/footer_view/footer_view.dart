@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import 'communication_view.dart';
 import 'game_action.dart';
 import 'hand_analyse_view.dart';
+import 'seat_change_confirm_widget.dart';
 
 class FooterView extends StatelessWidget {
   final GameComService gameComService;
@@ -16,7 +17,7 @@ class FooterView extends StatelessWidget {
   final String clubCode;
   final String playerUuid;
   final Function chatVisibilityChange;
-  
+
   FooterView(
     this.gameComService,
     this.gameCode,
@@ -42,12 +43,17 @@ class FooterView extends StatelessWidget {
                 alignment: Alignment.bottomCenter,
                 child: Expanded(
                   flex: 1,
-                  child:  players.me == null
-                    ? const SizedBox.shrink()
-                    : GameAction(
-                  footerStatus: footerStatusValueNotifier.value,
-                  playerModel: players.me,
-                ),),
+                  child: players.me == null
+                      ? const SizedBox.shrink()
+                      : GameAction(
+                          footerStatus: footerStatusValueNotifier.value,
+                          playerModel: players.me,
+                        ),
+                ),
+              ),
+              Align(
+                alignment: Alignment.center,
+                child: SeatChangeConfirmWidget(),
               )
             ],
           );
