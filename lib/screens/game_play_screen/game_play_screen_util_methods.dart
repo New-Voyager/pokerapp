@@ -7,6 +7,7 @@ import 'package:pokerapp/models/game_play_models/business/card_distribution_mode
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/action_info.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/footer_result.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/notification_models/general_notification_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/notification_models/hh_notification_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/player_action/player_action.dart';
@@ -215,5 +216,11 @@ class GamePlayScreenUtilMethods {
         ListenableProvider<ValueNotifier<Agora>>(
           create: (_) => ValueNotifier(agora),
         ),
+
+        /* Provider to deal with host seat change functionality */
+        ListenableProvider<HostSeatChange>(
+          create: (_) => HostSeatChange(),
+        ),
+
       ];
 }

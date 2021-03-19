@@ -6,8 +6,8 @@ import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 
 class TableState extends ChangeNotifier {
-  /* This object holds the table status, pot chips, and community cards */
-
+  /* This object holds the game status, table status, pot chips, and community cards */
+  String _gameStatus;
   String _tableStatus;
   List<int> _potChips;
   int _potUpdatesChips;
@@ -32,6 +32,12 @@ class TableState extends ChangeNotifier {
   void updateTableStatusSilent(String tableStatus) {
     if (this._tableStatus == tableStatus) return;
     this._tableStatus = tableStatus;
+  }
+
+  /* public methods for updating values into Game status */
+  void updateGameStatusSilent(String gameStatus) {
+    if (this._gameStatus == gameStatus) return;
+    this._gameStatus = gameStatus;
   }
 
   void updatePotChipsSilent({List<int> potChips, int potUpdatesChips}) {
@@ -83,4 +89,26 @@ class TableState extends ChangeNotifier {
   List<int> get potChips => _potChips;
   int get potChipsUpdates => _potUpdatesChips;
   List<CardObject> get cards => _communityCards;
+
+  bool get gamePaused {
+    if (_gameStatus == AppConstants.GAME_PAUSED) {
+      return true;
+    }
+    return false;
+  }
+
+  bool get gameEnded {
+    if (_gameStatus == AppConstants.GAME_ENDED) {
+      return true;
+    }
+    return false;
+  }
+
+  bool get gameActive {
+    if (_gameStatus == AppConstants.GAME_ACTIVE) {
+      return true;
+    }
+    return false;
+  }
+
 }
