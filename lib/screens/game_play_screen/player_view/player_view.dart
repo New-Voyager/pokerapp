@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:pokerapp/enums/game_play_enums/player_type.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/ui/user_object.dart';
 import 'package:pokerapp/resources/app_assets.dart';
@@ -54,6 +55,11 @@ class PlayerView extends StatelessWidget {
         return true;
       },
       onAccept: (data) {
+        Provider.of<HostSeatChange>(
+          context,
+          listen: false,
+        ).onSeatdrop(data, userObject.serverSeatPos);
+
         print("special data ${userObject.serverSeatPos} $data");
       },
       builder: (context, List<int> candidateData, rejectedData) {
