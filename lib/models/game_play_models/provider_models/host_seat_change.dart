@@ -29,4 +29,8 @@ class HostSeatChange extends ChangeNotifier {
     this._playerName = playerName;
     this._stack = stack;
   }
+
+  bool get seatChangeInProgress {
+    return this._seatChangeInProgress;
+  }
 }

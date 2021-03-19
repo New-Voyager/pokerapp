@@ -1,0 +1,64 @@
+import 'dart:developer';
+
+import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:pokerapp/main.dart';
+
+class SeatChangeService {
+  SeatChangeService._();
+
+  /* host begins seat change process */
+  static Future<bool> hostSeatChangeBegin(String gameCode) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+
+    String _mutation = """mutation beginHostSeatChange(\$gameCode: String!) {
+	          seatChange: beginHostSeatChange(gameCode: \$gameCode)
+        }""";
+    Map<String, dynamic> variables = {
+      "gameCode": gameCode,
+    };
+    QueryResult result = await _client.mutate(
+      MutationOptions(documentNode: gql(_mutation), variables: variables),
+    );
+
+    if (result.hasException) return null;
+
+    return result.data['seatChange'];
+  }
+
+  static Future<bool> hostSeatChangeEnd(String gameCode) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+
+    String _mutation = """mutation seatChangeComplete(\$gameCode: String!) {
+            seatChange: seatChangeComplete(gameCode: \$gameCode)
+          }""";
+    Map<String, dynamic> variables = {
+      "gameCode": gameCode,
+    };
+    QueryResult result = await _client.mutate(
+      MutationOptions(documentNode: gql(_mutation), variables: variables),
+    );
+
+    if (result.hasException) return null;
+    return result.data['seatChange'];
+  }
+
+  static Future<bool> hostSeatChangeMove(String gameCode, int seat1, int seat2) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+
+    String _mutation = """mutation seatChangeSwapSeats(\$gameCode: String!, \$seatNo1: Int!, \$seatNo2: Int!) {
+	          seatChange: seatChangeSwapSeats(gameCode: \$gameCode seatNo1: \$seatNo1 seatNo2: \$seatNo2)
+        }""";
+    Map<String, dynamic> variables = {
+      "gameCode": gameCode,
+      "seatNo1": seat1,
+      "seatNo2": seat2
+    };
+    QueryResult result = await _client.mutate(
+      MutationOptions(documentNode: gql(_mutation), variables: variables),
+    );
+
+    if (result.hasException) return null;
+    return result.data['seatChange'];
+  }
+
+}
