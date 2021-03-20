@@ -11,6 +11,11 @@ import 'package:provider/provider.dart';
 class GameStatusUpdateService {
   GameStatusUpdateService._();
 
+  /*
+    {"gameId":"90","gameCode":"CG-Z44IXIK44KWKBQW","messageType":"GAME_STATUS","status":{"status":"ACTIVE","tableStatus":"WAITING_TO_BE_STARTED"}}
+    {"gameId":"90","gameCode":"CG-Z44IXIK44KWKBQW","messageType":"GAME_STATUS","status":{"status":"PAUSED","tableStatus":"GAME_RUNNING"}}
+  */
+
   static void updateStatus({
     BuildContext context,
     var status,
@@ -24,6 +29,7 @@ class GameStatusUpdateService {
     );
 
     tableState.updateTableStatusSilent(tableStatus);
+    tableState.updateGameStatusSilent(gameStatus);
 
     if (tableStatus == AppConstants.TABLE_STATUS_GAME_RUNNING) {
       /* QUERY_CURRENT_HAND is done here, only after making sure,
@@ -45,6 +51,10 @@ class GameStatusUpdateService {
     } else if (gameStatus == AppConstants.GAME_ENDED) {
       // end the game
       tableState.updateTableStatusSilent(AppConstants.GAME_ENDED);
+      BoardService.reset(context);
+    } else if (gameStatus == AppConstants.GAME_PAUSED) {
+      // paused the game
+      tableState.updateTableStatusSilent(AppConstants.GAME_PAUSED);
       BoardService.reset(context);
     }
 
