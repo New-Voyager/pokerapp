@@ -52,14 +52,6 @@ class FooterView extends StatelessWidget {
                   CommunicationView(chatVisibilityChange, gameComService.chat),
                 ],
               ),
-                  child: players.me == null
-                      ? const SizedBox.shrink()
-                      : GameAction(
-                          footerStatus: footerStatusValueNotifier.value,
-                          playerModel: players.me,
-                        ),
-                ),
-              ),
               Consumer2<HostSeatChange, GameContextObject>(
                 builder: (context, hostSeatChange, gameContextObject, _) =>
                     hostSeatChange.seatChangeInProgress &&
