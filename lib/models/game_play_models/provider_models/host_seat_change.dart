@@ -6,6 +6,24 @@ class SeatChangeStatus {
   SeatChangeStatus({this.isDragging = false, this.isDropAble = false});
 }
 
+class PlayerInSeat {
+  int seatNo;
+  String name;
+  double stack;
+  String playerId;
+  bool openSeat;
+
+  static PlayerInSeat fromJson(var data) {
+    var ret = PlayerInSeat();
+    ret.seatNo = int.parse(data["seatNo"].toString());
+    ret.name = data["name"];
+    ret.stack = double.parse(data["stack"].toString());
+    ret.openSeat = data["openSeat"];
+    ret.playerId = data["playerUuid"].toString();
+    return ret;
+  }
+}
+
 class HostSeatChange extends ChangeNotifier {
   /* This object holds states related to host seat change functionality */
   bool _seatChangeInProgress = false;
@@ -17,6 +35,8 @@ class HostSeatChange extends ChangeNotifier {
   double _stack;
   bool _fromOpenSeat;
   bool _toOpenSeat;
+  List<PlayerInSeat>  playersInSeats = [];
+
   List<SeatChangeStatus> allSeatChangeStatus =
       List.generate(10, (_) => SeatChangeStatus());
   void notifyAll() => notifyListeners();
@@ -44,7 +64,10 @@ class HostSeatChange extends ChangeNotifier {
     this.toSeatNo = toSeat;
     this._playerName = playerName;
     this._stack = stack;
-    this.notifyAll();
+  }
+
+  void updatePlayersInSeats(List<PlayerInSeat> playersInSeats) {
+    this.playersInSeats = playersInSeats;
   }
 
   set animate(bool v) {

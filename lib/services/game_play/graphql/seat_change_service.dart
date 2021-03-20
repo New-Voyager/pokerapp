@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:pokerapp/main.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
 
 class SeatChangeService {
   SeatChangeService._();
@@ -61,7 +62,7 @@ class SeatChangeService {
     return result.data['seatChange'];
   }
 
-static Future<dynamic> hostSeatChangeSeatPositions(String gameCode) async {
+static Future<List<PlayerInSeat>> hostSeatChangeSeatPositions(String gameCode) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
 
     String query = """query (\$gameCode: String!) {
@@ -70,6 +71,7 @@ static Future<dynamic> hostSeatChangeSeatPositions(String gameCode) async {
           seatNo
           name
           playerUuid
+          openSeat
         }
       }
     """;
@@ -81,6 +83,13 @@ static Future<dynamic> hostSeatChangeSeatPositions(String gameCode) async {
     );
 
     if (result.hasException) return null;
-    return result.data['seatPositions'];
+    var players = result.data['seatPositions'];
+    List<PlayerInSeat> playersInSeats = [];
+    for (var player in players) {
+      PlayerInSeat playerInSeat = PlayerInSeat.fromJson(player);
+      playersInSeats.add(playerInSeat);
+    }
+
+    return playersInSeats;
   }
 }
