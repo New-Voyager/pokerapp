@@ -34,24 +34,23 @@ class FooterView extends StatelessWidget {
         builder: (_, footerStatusValueNotifier, players, __) {
           return Stack(
             children: [
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Expanded(
+                  flex: 1,
+                  child:  players.me == null
+                    ? const SizedBox.shrink()
+                    : GameAction(
+                  footerStatus: footerStatusValueNotifier.value,
+                  playerModel: players.me,
+                ),),
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   HandAnalyseView(gameCode, clubCode),
                   CommunicationView(chatVisibilityChange, gameComService.chat),
                 ],
-              ),
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: Expanded(
-                  flex: 1,
-                  child: players.me == null
-                      ? const SizedBox.shrink()
-                      : GameAction(
-                          footerStatus: footerStatusValueNotifier.value,
-                          playerModel: players.me,
-                        ),
-                ),
               ),
               Consumer2<HostSeatChange, GameContextObject>(
                 builder: (context, hostSeatChange, gameContextObject, _) =>
