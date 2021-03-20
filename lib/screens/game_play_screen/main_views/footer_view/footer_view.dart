@@ -31,13 +31,6 @@ class FooterView extends StatelessWidget {
         builder: (_, footerStatusValueNotifier, players, __) {
           return Stack(
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  HandAnalyseView(gameCode, clubCode),
-                  CommunicationView(chatVisibilityChange, gameComService.chat),
-                ],
-              ),
               Align(
                 alignment: Alignment.bottomCenter,
                 child: Expanded(
@@ -48,7 +41,14 @@ class FooterView extends StatelessWidget {
                   footerStatus: footerStatusValueNotifier.value,
                   playerModel: players.me,
                 ),),
-              )
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  HandAnalyseView(gameCode, clubCode),
+                  CommunicationView(chatVisibilityChange, gameComService.chat),
+                ],
+              ),
             ],
           );
         },
