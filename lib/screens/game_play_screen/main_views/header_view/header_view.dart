@@ -7,30 +7,12 @@ import 'package:pokerapp/screens/game_context_screen/game_options/game_option_bo
 import 'package:pokerapp/screens/game_play_screen/main_views/header_view/header_view_util_widgets.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/services/game_play/graphql/game_service.dart';
-import 'package:pokerapp/widgets/custom_text_button.dart';
 import 'package:provider/provider.dart';
 
-import '../../game_play_screen_util_methods.dart';
 
 class HeaderView extends StatelessWidget {
   final GameComService _gameComService;
   HeaderView(this._gameComService);
-
-  void endGame(BuildContext context, GameContextObject obj) {
-    GameService.endGame(obj.gameCode);
-    obj.gameEnded = true;
-    final snackBar = SnackBar(
-      content: Text('Game will end after this hand'),
-      duration: Duration(seconds: 15),
-      backgroundColor: Colors.black38,
-    );
-    Scaffold.of(context).showSnackBar(snackBar);
-  }
-
-  void chatText(BuildContext context, GameContextObject obj) {
-    final chat = _gameComService.chat;
-    chat.sendText("Got lucky");
-  }
 
   @override
   Widget build(BuildContext context) => Container(
@@ -69,13 +51,6 @@ class HeaderView extends StatelessWidget {
                     /* back button */
                     Align(
                       alignment: Alignment.centerLeft,
-                      // child: IconButton(
-                      //   icon: Icon(
-                      //     FontAwesomeIcons.chevronLeft,
-                      //     color: Colors.white,
-                      //   ),
-                      //   onPressed: () => Navigator.pop(context),
-                      // ),
                       child: InkWell(
                         onTap: () => Navigator.pop(context),
                         child: Container(
@@ -97,20 +72,6 @@ class HeaderView extends StatelessWidget {
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          /*Visibility(
-                            visible: !obj.gameEnded,
-                            child: CustomTextButton(
-                              text: 'End Game',
-                              onTap: () => endGame(context, obj),
-                            ),
-                          ),
-                          SizedBox(height: 10),
-                          CustomTextButton(
-                            text: 'start',
-                            onTap: () => GamePlayScreenUtilMethods.startGame(
-                              obj.gameCode,
-                            ),
-                          ),*/
                           GestureDetector(
                             onTap: () async {
                               await showModalBottomSheet(
@@ -118,7 +79,8 @@ class HeaderView extends StatelessWidget {
                                 isScrollControlled: true,
                                 builder: (ctx) => GameOptionsBottomSheet(
                                     obj.gameCode,
-                                    _gameComService.currentPlayer.uuid),
+                                    _gameComService.currentPlayer.uuid,
+                                    obj.isAdmin()),
                               );
                             },
                             child: Container(

@@ -14,7 +14,8 @@ import 'waiting_list.dart';
 class GameOption extends StatefulWidget {
   final String gameCode;
   final String playerUuid;
-  GameOption(this.gameCode, this.playerUuid);
+  final bool isAdmin;
+  GameOption(this.gameCode, this.playerUuid, this.isAdmin);
 
   @override
   _GameOptionState createState() => _GameOptionState(gameCode);
@@ -57,6 +58,7 @@ class _GameOptionState extends State<GameOption> {
     //   backgroundColor: Colors.black38,
     // );
     // Scaffold.of(context).showSnackBar(snackBar);
+    print("Game will be paused before next hand");
     GameService.pauseGame(this.gameCode);
   }
 
@@ -77,12 +79,6 @@ class _GameOptionState extends State<GameOption> {
     super.initState();
     gameActions = [
       OptionItemModel(
-          title: "Pause",
-          iconData: Icons.pause,
-          onTap: (context) {
-            this.onPause();
-          }),
-      OptionItemModel(
           title: "Leave",
           iconData: Icons.exit_to_app_sharp,
           onTap: (context) {
@@ -90,19 +86,28 @@ class _GameOptionState extends State<GameOption> {
           }),
       OptionItemModel(title: "Break"),
       OptionItemModel(title: "Reload"),
-      OptionItemModel(
-          title: "Resume",
-          iconData: Icons.play_circle_outline,
+    ];
+
+    if (widget.isAdmin) {
+      gameActions.add(OptionItemModel(
+          title: "Pause",
+          iconData: Icons.pause,
           onTap: (context) {
-            this.onResume();
-          }),
-      OptionItemModel(
+            this.onPause();
+          }));
+      // OptionItemModel(
+      //     title: "Resume",
+      //     iconData: Icons.play_circle_outline,
+      //     onTap: (context) {
+      //       this.onResume();
+      //     }),
+      gameActions.add(OptionItemModel(
           title: "Terminate",
           iconData: Icons.cancel_outlined,
           onTap: (context) {
             this.onEndGame();
-          }),
-    ];
+          }));
+    }
     gameSecondaryOptions = [
       OptionItemModel(
           title: "Game Stats",
