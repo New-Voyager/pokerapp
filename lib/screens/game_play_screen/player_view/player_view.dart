@@ -3,7 +3,6 @@ import 'package:flutter/widgets.dart';
 import 'package:pokerapp/enums/game_play_enums/player_type.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
-import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/ui/user_object.dart';
 import 'package:pokerapp/resources/app_assets.dart';
@@ -20,7 +19,7 @@ import 'user_view_util_widgets.dart';
 class PlayerView extends StatelessWidget {
   final GlobalKey globalKey;
   final int seatPos;
-  final UserObject userObject;
+  final Seat userObject;
   final Alignment cardsAlignment;
   final Function(int) onUserTap;
   final bool isPresent;
@@ -39,11 +38,14 @@ class PlayerView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool emptySeat = userObject.name == null;
+    bool emptySeat = userObject.openSeat;
     bool isMe = userObject?.isMe ?? false;
 
     // enable this line for debugging dealer position
     // userObject.playerType = PlayerType.Dealer;
+    if (emptySeat) {
+      return OpenSeat(seatPos: userObject.serverSeatPos, onUserTap: this.onUserTap);
+    }
 
     final GameInfoModel gameInfo = Provider.of<ValueNotifier<GameInfoModel>>(context, listen: false).value; 
     int actionTime = gameInfo.actionTime;
@@ -61,9 +63,7 @@ class PlayerView extends StatelessWidget {
       },
       builder: (context, List<int> candidateData, rejectedData) {
         return InkWell(
-          onTap: emptySeat
-              ? () => onUserTap(isPresent ? -1 : seatPos)
-              : () async {
+          onTap: () async {
                   Players players = Provider.of<Players>(
                     context,
                     listen: false,
@@ -111,14 +111,12 @@ class PlayerView extends StatelessWidget {
                     children: [
                       UserViewUtilWidgets.buildAvatarAndLastAction(
                         avatarUrl: userObject.avatarUrl,
-                        emptySeat: emptySeat,
                         userObject: userObject,
                         cardsAlignment: cardsAlignment,
                       ),
                       NamePlateWidget(
                         userObject,
                         seatPos,
-                        emptySeat,
                         globalKey: globalKey,
                       ),
                     ],

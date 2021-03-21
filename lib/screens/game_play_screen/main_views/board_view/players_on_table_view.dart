@@ -277,8 +277,7 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
                   child: NamePlateWidget(
                       getUserObjects(
                           widget.players.players)[seatChangerPlayer - 1],
-                      0,
-                      false),
+                      0),
                 )
               : SizedBox.shrink(),
         ],
@@ -327,16 +326,16 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
     return pos;
   }
 
-  List<UserObject> getUserObjects(List<PlayerModel> users) {
+  List<Seat> getUserObjects(List<PlayerModel> users) {
     /* build an empty user object list
     *  This is done, because all the empty seats are
     *  also UserObject objects, and we need all
     * the 9 objects in an array to build the entire table + users
     * */
 
-    final List<UserObject> userObjects = List.generate(
+    final List<Seat> userObjects = List.generate(
       widget.maxPlayers,
-      (index) => UserObject(
+      (index) => Seat(
         serverSeatPos: null,
         name: null,
         stack: null,
@@ -375,7 +374,7 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
 
   Widget _positionedForUsers(
       {@required bool isBoardHorizontal,
-      UserObject user,
+      Seat user,
       double heightOfBoard,
       double widthOfBoard,
       int seatPos,
@@ -437,7 +436,7 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
 
   Widget positionUser(
       {@required bool isBoardHorizontal,
-      UserObject user,
+      Seat user,
       double heightOfBoard,
       double widthOfBoard,
       int seatPos,
@@ -534,7 +533,7 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
 
   Widget positionUser_2(
       {@required bool isBoardHorizontal,
-      UserObject user,
+      Seat user,
       double heightOfBoard,
       double widthOfBoard,
       int seatPos,
@@ -576,7 +575,7 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
 
   Widget positionUser_4(
       {@required bool isBoardHorizontal,
-      UserObject user,
+      Seat user,
       double heightOfBoard,
       double widthOfBoard,
       int seatPos,
@@ -632,7 +631,7 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
 
   Widget positionUser_6(
       {@required bool isBoardHorizontal,
-      UserObject user,
+      Seat user,
       double heightOfBoard,
       double widthOfBoard,
       int seatPos,
@@ -706,7 +705,7 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
 
   Widget positionUser_8(
       {@required bool isBoardHorizontal,
-      UserObject user,
+      Seat user,
       double heightOfBoard,
       double widthOfBoard,
       int seatPos,

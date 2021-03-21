@@ -31,7 +31,7 @@ class UserViewUtilWidgets {
 
   // TODO: this is only needed for the DEBUGGING Purpose
   static Widget buildSeatNoIndicator({
-    @required UserObject userObject,
+    @required Seat userObject,
   }) =>
       Positioned(
         bottom: 0,
@@ -77,7 +77,7 @@ class UserViewUtilWidgets {
     bool emptySeat = true,
     int cardNo = 0,
     @required int seatPos,
-    @required UserObject userObject,
+    @required Seat userObject,
   }) =>
       Consumer<ValueNotifier<FooterStatus>>(
         builder: (_, valueNotifierFooterStatus, __) {
@@ -128,7 +128,7 @@ class UserViewUtilWidgets {
   static Widget buildTimer({
     int time = 10,
     BuildContext context,
-    @required UserObject userObject,
+    @required Seat userObject,
   }) {
     int remainingTime = Provider.of<RemainingTime>(
       context,
@@ -164,8 +164,7 @@ class UserViewUtilWidgets {
 
   static Widget buildAvatarAndLastAction({
     String avatarUrl,
-    bool emptySeat,
-    @required UserObject userObject,
+    @required Seat userObject,
     Alignment cardsAlignment,
   }) =>
       Stack(
@@ -180,7 +179,7 @@ class UserViewUtilWidgets {
               Widget avatarWidget = AnimatedOpacity(
                 duration: AppConstants.animationDuration,
                 curve: Curves.bounceInOut,
-                opacity: emptySeat ? 0.0 : 0.90,
+                opacity: userObject.openSeat ? 0.0 : 0.90,
                 child: Consumer<BoardAttributesObject>(
                   builder: (_, boardAttrObj, __) => Visibility(
                     visible:
@@ -262,7 +261,6 @@ class UserViewUtilWidgets {
               10.0,
             ),
             child: UserViewUtilWidgets.buildUserStatus(
-              emptySeat: emptySeat,
               userObject: userObject,
             ),
           ),
@@ -270,13 +268,12 @@ class UserViewUtilWidgets {
       );
 
   static Widget buildUserStatus({
-    @required bool emptySeat,
-    @required UserObject userObject,
+    @required Seat userObject,
   }) {
     /* The status message is not shown, if
     * 1. The seat is empty - nothing to show
     * 2. The current user is to act - the current user is highlighted */
-    if (emptySeat || userObject.highlight) return shrinkedSizedBox;
+    if (userObject.openSeat || userObject.highlight) return shrinkedSizedBox;
 
     String status;
 
@@ -318,7 +315,7 @@ class UserViewUtilWidgets {
 
   static Widget buildChipAmountWidget({
     @required int seatPos,
-    @required UserObject userObject,
+    @required Seat userObject,
   }) {
     // to debug coin position
     //userObject.coinAmount = 10;

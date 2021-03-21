@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:pokerapp/enums/game_play_enums/player_type.dart';
 
-class UserObject {
+class Seat {
   bool isMe;
   String name;
   int stack;
@@ -27,7 +27,7 @@ class UserObject {
   int noOfCardsVisible;
   bool animatingFold = false;
 
-  UserObject({
+  Seat({
     @required this.serverSeatPos,
     @required this.name,
     @required this.stack,
@@ -37,4 +37,8 @@ class UserObject {
 
   @override
   String toString() => this.name;
+
+  get openSeat {
+    return name != null;
+  }
 }

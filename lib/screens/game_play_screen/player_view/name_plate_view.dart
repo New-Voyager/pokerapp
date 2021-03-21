@@ -2,20 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
 import 'package:pokerapp/models/game_play_models/ui/user_object.dart';
-import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:provider/provider.dart';
 
 class NamePlateWidget extends StatelessWidget {
   final GlobalKey globalKey;
-  final UserObject userObject;
-  final bool emptySeat;
+  final Seat userObject;
   final int seatPos;
   static const highlightColor = const Color(0xfffffff);
   static const shrinkedSizedBox = const SizedBox.shrink();
 
-  NamePlateWidget(this.userObject, this.seatPos, this.emptySeat,
+  NamePlateWidget(this.userObject, this.seatPos,
       {this.globalKey});
 
   @override
@@ -67,26 +65,18 @@ class NamePlateWidget extends StatelessWidget {
 
   Container buildPlayer(HostSeatChange hostSeatChange,
       {bool isFeedBack = false}) {
+
     return Container(
       width: 70.0,
-      padding: (emptySeat)
-          ? const EdgeInsets.all(10.0)
-          : const EdgeInsets.symmetric(
+      padding: const EdgeInsets.symmetric(
               vertical: 5.0,
             ),
       decoration: BoxDecoration(
-        shape: emptySeat ? BoxShape.circle : BoxShape.rectangle,
-        image: emptySeat
-            ? DecorationImage(
-                image: AssetImage(AppAssets.goldNamePlate),
-                fit: BoxFit.fill,
-              )
-            : null,
-        borderRadius: emptySeat ? null : BorderRadius.circular(5),
+        shape: BoxShape.rectangle,
+        image: null,
+        borderRadius: BorderRadius.circular(5),
         color: Color(0XFF494444),
-        border: emptySeat
-            ? null
-            : Border.all(
+        border: Border.all(
                 color: Color.fromARGB(255, 206, 134, 57),
                 width: 2.0,
               ),
@@ -134,11 +124,9 @@ class NamePlateWidget extends StatelessWidget {
       child: AnimatedSwitcher(
         duration: AppConstants.animationDuration,
         reverseDuration: AppConstants.animationDuration,
-        child: (emptySeat)
-            ? _openSeat()
-            : AnimatedOpacity(
+        child: AnimatedOpacity(
                 duration: AppConstants.animationDuration,
-                opacity: emptySeat ? 0.0 : 1.0,
+                opacity: 1.0,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -173,18 +161,6 @@ class NamePlateWidget extends StatelessWidget {
       ),
     );
   }
-
-  Widget _openSeat() {
-    return Padding(
-      padding: const EdgeInsets.all(5),
-      child: InkWell(
-        child: Text(
-          'Open $seatPos',
-          style: AppStyles.openSeatTextStyle,
-        ),
-      ),
-    );
-  }
 }
 
 class PlayerViewDivider extends StatelessWidget {
@@ -204,5 +180,42 @@ class PlayerViewDivider extends StatelessWidget {
         width: double.infinity,
       ),
     );
+  }
+}
+
+
+class OpenSeat extends StatelessWidget {
+  final int seatPos;
+  final Function(int) onUserTap;
+
+  const OpenSeat({
+    this.seatPos,
+    this.onUserTap,
+    Key key,
+  }) : super(key: key);
+
+  Widget _openSeat() {
+    return Padding(
+      padding: const EdgeInsets.all(5),
+      child: InkWell(
+        child: Text(
+          'Open $seatPos',
+          style: AppStyles.openSeatTextStyle,
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+      return Container(
+          width: 70.0,
+          padding: const EdgeInsets.all(10.0),
+          child: _openSeat(),
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: Color(0XFF494444),
+          ),
+      ); 
   }
 }

@@ -4,7 +4,7 @@ import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 
 class ProfilePopup extends StatefulWidget {
-  final UserObject userObject;
+  final Seat userObject;
   ProfilePopup({Key key, this.userObject}) : super(key: key);
 
   @override

@@ -19,7 +19,7 @@ const Map<int, Offset> offsetMapping = {
 
 class FoldCardAnimatingWidget extends StatelessWidget {
   final seatPos;
-  final UserObject userObject;
+  final Seat userObject;
   FoldCardAnimatingWidget({
     this.seatPos,
     this.userObject,
