@@ -9,13 +9,10 @@ import 'package:provider/provider.dart';
 class NamePlateWidget extends StatelessWidget {
   final GlobalKey globalKey;
   final Seat seat;
-  final bool emptySeat;
-  final int seatPos;
   static const highlightColor = const Color(0xfffffff);
   static const shrinkedSizedBox = const SizedBox.shrink();
 
-  NamePlateWidget(this.seat, this.seatPos, this.emptySeat,
-      {this.globalKey});
+  NamePlateWidget(this.seat, {this.globalKey});
 
   @override
   Widget build(BuildContext context) {
@@ -132,7 +129,7 @@ class NamePlateWidget extends StatelessWidget {
         reverseDuration: AppConstants.animationDuration,
         child: AnimatedOpacity(
                 duration: AppConstants.animationDuration,
-                opacity: emptySeat ? 0.0 : 1.0,
+                opacity: seat.isOpen ? 0.0 : 1.0,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -173,7 +170,7 @@ class NamePlateWidget extends StatelessWidget {
       padding: const EdgeInsets.all(5),
       child: InkWell(
         child: Text(
-          'Open $seatPos',
+          'Open ${seat.serverSeatPos}',
           style: AppStyles.openSeatTextStyle,
         ),
       ),

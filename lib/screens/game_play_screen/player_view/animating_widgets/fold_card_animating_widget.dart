@@ -18,10 +18,8 @@ const Map<int, Offset> offsetMapping = {
 };
 
 class FoldCardAnimatingWidget extends StatelessWidget {
-  final seatPos;
   final Seat seat;
   FoldCardAnimatingWidget({
-    this.seatPos,
     this.seat,
   });
 
@@ -33,13 +31,13 @@ class FoldCardAnimatingWidget extends StatelessWidget {
         curve: Curves.easeInOut,
         tween: Tween<Offset>(
           begin: Offset(0, 0),
-          end: offsetMapping[seatPos],
+          end: offsetMapping[this.seat.serverSeatPos],
         ),
         child: HiddenCardView(
           noOfCards: seat.player.noOfCardsVisible,
         ),
         onEnd: () {
-          print('fold animation done $seatPos');
+          print('fold animation done ${this.seat.serverSeatPos}');
           if (!openSeat) {
             seat.player.animatingFold = false;
           }
@@ -47,7 +45,7 @@ class FoldCardAnimatingWidget extends StatelessWidget {
         duration: AppConstants.animationDuration,
         builder: (_, offset, child) {
           double offsetPercentageLeft =
-              1 - (offset.dx / offsetMapping[seatPos].dx);
+              1 - (offset.dx / offsetMapping[this.seat.serverSeatPos].dx);
           // todo: the opacity change can be smoothed out
           return Transform.translate(
             offset: offset,

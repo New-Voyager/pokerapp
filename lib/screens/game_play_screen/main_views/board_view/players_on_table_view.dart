@@ -275,9 +275,8 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
                   left: seatChangeAnimation.value.dx,
                   top: seatChangeAnimation.value.dy + 32,
                   child: NamePlateWidget(
-                      getSeats(widget.players.players)[seatChangerPlayer - 1],
-                      0,
-                      false),
+                          getSeats(widget.players.players)[seatChangerPlayer - 1],
+                      ),
                 )
               : SizedBox.shrink(),
         ],
@@ -340,27 +339,7 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
     }
     for (PlayerModel model in users) {
       int idx = model.seatNo - 1;
-
       seats[idx] = Seat(idx, model.seatNo, model);
-      // userObjects[idx].serverSeatPos = model.seatNo;
-      // userObjects[idx].isMe = model.isMe;
-      // userObjects[idx].stack = model.stack;
-      // userObjects[idx].status = model.status;
-      // userObjects[idx].buyIn = (model.showBuyIn ?? false) ? model.buyIn : null;
-      // userObjects[idx].highlight = model.highlight;
-      // userObjects[idx].playerType = model.playerType;
-      // userObjects[idx].avatarUrl = model.avatarUrl;
-      // userObjects[idx].playerFolded = model.playerFolded;
-      // userObjects[idx].cards = model.cards;
-      // userObjects[idx].highlightCards = model.highlightCards;
-      // userObjects[idx].winner = model.winner;
-      // userObjects[idx].coinAmount = model.coinAmount;
-      // userObjects[idx].animatingCoinMovement = model.animatingCoinMovement;
-      // userObjects[idx].noOfCardsVisible = model.noOfCardsVisible ?? 0;
-      // userObjects[idx].animatingFold = model.animatingFold;
-      // userObjects[idx].animatingCoinMovementReverse =
-      //     model.animatingCoinMovementReverse;
-      // userObjects[idx].showFirework = model.showFirework ?? false;
     }
 
     return seats;
@@ -447,8 +426,6 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
 
     PlayerView userView = PlayerView(
       globalKey: key,
-      isPresent: isPresent,
-      seatPos: seatPos,
       gameComService: widget.gameComService,
       key: ValueKey(seatPos),
       seat: seat,
@@ -539,8 +516,6 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
     Alignment cardsAlignment = Alignment.centerRight;
 
     PlayerView userView = PlayerView(
-      isPresent: isPresent,
-      seatPos: seatPos,
       key: ValueKey(seatPos),
       seat: seat,
       cardsAlignment: cardsAlignment,
@@ -583,8 +558,6 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
     if (seatPos == 2) cardsAlignment = Alignment.centerLeft;
 
     PlayerView userView = PlayerView(
-      isPresent: isPresent,
-      seatPos: seatPos,
       key: ValueKey(seatPos),
       seat: seat,
       cardsAlignment: cardsAlignment,
@@ -641,8 +614,6 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
       cardsAlignment = Alignment.centerLeft;
 
     PlayerView userView = PlayerView(
-      isPresent: isPresent,
-      seatPos: seatPos,
       key: ValueKey(seatPos),
       seat: seat,
       cardsAlignment: cardsAlignment,
@@ -715,8 +686,6 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
       cardsAlignment = Alignment.centerLeft;
 
     PlayerView userView = PlayerView(
-      isPresent: isPresent,
-      seatPos: seatPos,
       key: ValueKey(seatPos),
       seat: seat,
       cardsAlignment: cardsAlignment,

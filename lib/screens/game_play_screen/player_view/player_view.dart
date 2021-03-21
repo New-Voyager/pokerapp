@@ -5,6 +5,7 @@ import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/ui/seat.dart';
 import 'package:pokerapp/resources/app_assets.dart';
+import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/screens/game_play_screen/player_view/profile_popup.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/services/game_play/graphql/seat_change_service.dart';
@@ -17,19 +18,15 @@ import 'user_view_util_widgets.dart';
 
 class PlayerView extends StatelessWidget {
   final GlobalKey globalKey;
-  final int seatPos;
   final Seat seat;
   final Alignment cardsAlignment;
   final Function(int) onUserTap;
-  final bool isPresent;
   final GameComService gameComService;
   PlayerView({
     Key key,
     @required this.globalKey,
-    @required this.seatPos,
     @required this.seat,
     @required this.onUserTap,
-    @required this.isPresent,
     @required this.gameComService,
     this.cardsAlignment = Alignment.centerRight,
   }) : super(key: key);
@@ -37,7 +34,7 @@ class PlayerView extends StatelessWidget {
   onTap(BuildContext context) async {
     if (seat.isOpen) {
       // the player tapped to sit-in
-      onUserTap(isPresent ? -1 : seatPos);
+      onUserTap(seat.serverSeatPos);
     } else {
       // the player tapped to see the player profile
       Players players = Provider.of<Players>(
@@ -68,6 +65,11 @@ class PlayerView extends StatelessWidget {
     bool openSeat = seat.isOpen;
     bool isMe = seat.isMe;
 
+    // if open seat, just show openseat widget
+    if (openSeat) {
+      return OpenSeat(seatPos: seat.serverSeatPos, onUserTap: this.onUserTap);
+    }
+
     // enable this line for debugging dealer position
     // userObject.playerType = PlayerType.Dealer;
 
@@ -92,11 +94,8 @@ class PlayerView extends StatelessWidget {
         SeatChangeService.hostSeatChangeMove(gameCode, data, seat.serverSeatPos);
       },
       builder: (context, List<int> candidateData, rejectedData) {        
-        
-        // return SizedBox.shrink();
-        
         return InkWell(
-          //onTap: this.onTap(context),
+          onTap: () =>  this.onTap(context),
           child: Stack(
             alignment: Alignment.center,
             children: [
@@ -129,8 +128,6 @@ class PlayerView extends StatelessWidget {
                       ),
                       NamePlateWidget(
                         seat,
-                        seatPos,
-                        openSeat,
                         globalKey: globalKey,
                       ),
                     ],
@@ -142,25 +139,21 @@ class PlayerView extends StatelessWidget {
                   ? shrinkedSizedBox
                   : UserViewUtilWidgets.buildHiddenCard(
                       alignment: this.cardsAlignment,
-                      emptySeat: seat.isOpen,
                       cardNo: seat.player?.noOfCardsVisible ?? 0,
-                      seatPos: seatPos,
                       seat: seat,
                     ),
 
               // hidden cards show only for the folding animation
               isMe && (seat.folded ?? false)
                   ? UserViewUtilWidgets.buildHiddenCard(
-                      seatPos: seatPos,
                       seat: seat,
                       alignment: this.cardsAlignment,
-                      emptySeat: seat.isOpen,
                       cardNo: seat.player?.noOfCardsVisible ?? 0,
                     )
                   : shrinkedSizedBox,
 
               // show dealer button, if user is a dealer
-              isDealer ? DealerButtonWidget(seatPos, isMe, GameType.HOLDEM)
+              isDealer ? DealerButtonWidget(seat.serverSeatPos, isMe, GameType.HOLDEM)
                   : shrinkedSizedBox,
 
               // clock
@@ -172,17 +165,51 @@ class PlayerView extends StatelessWidget {
 
               // /* building the chip amount widget */
               UserViewUtilWidgets.buildChipAmountWidget(
-                seatPos: seatPos,
                 seat: seat,
               ),
 
               UserViewUtilWidgets.buildSeatNoIndicator(seat: seat),
-
-              SizedBox.shrink(),
             ],
           ),
         );
       },
     );
+  }
+}
+
+
+class OpenSeat extends StatelessWidget {
+  final int seatPos;
+  final Function(int) onUserTap;
+
+  const OpenSeat({
+    this.seatPos,
+    this.onUserTap,
+    Key key,
+  }) : super(key: key);
+
+  Widget _openSeat() {
+    return Padding(
+      padding: const EdgeInsets.all(5),
+      child: InkWell(
+        child: Text(
+          'Open $seatPos',
+          style: AppStyles.openSeatTextStyle,
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+      return Container(
+          width: 70.0,
+          padding: const EdgeInsets.all(10.0),
+          child: _openSeat(),
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: Color(0XFF494444),
+          ),
+      ); 
   }
 }

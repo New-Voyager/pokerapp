@@ -74,9 +74,7 @@ class UserViewUtilWidgets {
 
   static Widget buildHiddenCard({
     Alignment alignment,
-    bool emptySeat = true,
     int cardNo = 0,
-    @required int seatPos,
     @required Seat seat,
   }) =>
       Consumer<ValueNotifier<FooterStatus>>(
@@ -111,7 +109,6 @@ class UserViewUtilWidgets {
                 scale: 1.0,
                 child: (seat.folded ?? false)
                     ? FoldCardAnimatingWidget(
-                        seatPos: seatPos,
                         seat: seat,
                       )
                     : showDown
@@ -327,7 +324,6 @@ class UserViewUtilWidgets {
   }
 
   static Widget buildChipAmountWidget({
-    @required int seatPos,
     @required Seat seat,
   }) {
     // to debug coin position
@@ -335,7 +331,7 @@ class UserViewUtilWidgets {
 
     Widget chipAmountWidget = Consumer<BoardAttributesObject>(
       builder: (_, boardAttrObj, __) => Transform.translate(
-        offset: boardAttrObj.chipAmountWidgetOffsetMapping[seatPos],
+        offset: boardAttrObj.chipAmountWidgetOffsetMapping[seat.serverSeatPos],
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -363,7 +359,7 @@ class UserViewUtilWidgets {
         ? shrinkedSizedBox
         : (seat.player.animatingCoinMovement ?? false)
             ? ChipAmountAnimatingWidget(
-                seatPos: seatPos,
+                seatPos: seat.serverSeatPos,
                 child: chipAmountWidget,
                 reverse: seat.player.animatingCoinMovementReverse,
               )
