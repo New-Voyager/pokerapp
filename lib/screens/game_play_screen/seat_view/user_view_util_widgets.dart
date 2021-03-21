@@ -161,14 +161,12 @@ class UserViewUtilWidgets {
 
   static Widget buildAvatarAndLastAction({
     String avatarUrl,
-    bool emptySeat,
     @required Seat seat,
     Alignment cardsAlignment,
   }) {
       if (seat.isOpen) {
         return SizedBox.shrink();
       }
-      //return SizedBox.shrink();
 
       return Stack(
         alignment: Alignment.center,
@@ -226,7 +224,6 @@ class UserViewUtilWidgets {
               10.0,
             ),
             child: UserViewUtilWidgets.buildUserStatus(
-              emptySeat: emptySeat,
               seat: seat,
             ),
           ),
@@ -277,13 +274,12 @@ class UserViewUtilWidgets {
   }
 
   static Widget buildUserStatus({
-    @required bool emptySeat,
     @required Seat seat,
   }) {
     /* The status message is not shown, if
     * 1. The seat is empty - nothing to show
     * 2. The current user is to act - the current user is highlighted */
-    if (emptySeat || seat.player.highlight) return shrinkedSizedBox;
+    if (seat.isOpen || seat.player.highlight) return shrinkedSizedBox;
 
     String status;
 
@@ -293,7 +289,7 @@ class UserViewUtilWidgets {
     if (seat.player?.status == AppConstants.WAIT_FOR_BUYIN)
       status = 'Waiting for Buy In';
 
-    if (seat.player.buyIn != null) status = 'Buy In ${seat.player.buyIn} amount';
+    //if (seat.player.buyIn != null) status = 'Buy In ${seat.player.buyIn} amount';
 
     if (seat.player?.status == AppConstants.PLAYING) status = null;
 

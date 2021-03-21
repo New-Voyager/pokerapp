@@ -9,7 +9,7 @@ import 'package:pokerapp/screens/game_play_screen/main_views/board_view/board_vi
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/center_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/decorative_views/table_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/players_on_table_view.dart';
-import 'package:pokerapp/screens/game_play_screen/player_view/animating_widgets/stack_switch_seat_animating_widget.dart';
+import 'package:pokerapp/screens/game_play_screen/seat_view/animating_widgets/stack_switch_seat_animating_widget.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:provider/provider.dart';
 

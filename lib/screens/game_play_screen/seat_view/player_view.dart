@@ -6,7 +6,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/ui/seat.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_styles.dart';
-import 'package:pokerapp/screens/game_play_screen/player_view/profile_popup.dart';
+import 'package:pokerapp/screens/game_play_screen/seat_view/profile_popup.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/services/game_play/graphql/seat_change_service.dart';
 import 'package:provider/provider.dart';
@@ -122,7 +122,6 @@ class PlayerView extends StatelessWidget {
                     children: [
                       UserViewUtilWidgets.buildAvatarAndLastAction(
                         avatarUrl: seat.player?.avatarUrl,
-                        emptySeat: openSeat,
                         seat: seat,
                         cardsAlignment: cardsAlignment,
                       ),
@@ -213,3 +212,4 @@ class OpenSeat extends StatelessWidget {
       ); 
   }
 }
+

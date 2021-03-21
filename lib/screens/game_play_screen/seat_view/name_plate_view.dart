@@ -23,18 +23,6 @@ class NamePlateWidget extends StatelessWidget {
     Color statusColor = const Color(0xff474747); // default color
     Color boxColor = const Color(0xff474747); // default color
     final openSeat = seat.isOpen;
-
-
-    if (openSeat) {
-      return Container(
-        width: 70.0,
-        padding: EdgeInsets.all(10.0),
-        child: _openSeat(),
-        decoration: BoxDecoration(shape: BoxShape.circle),
-      );
-    }
-
-
     String status = !openSeat ? seat.player.status : "";
     if (status != null) {
       if (status.toUpperCase().contains('CHECK') ||
@@ -47,29 +35,90 @@ class NamePlateWidget extends StatelessWidget {
       key: globalKey,
       offset: Offset(0.0, -10.0),
       child: Consumer2<HostSeatChange, GameContextObject>(
-        builder: (context, hostSeatChange, gameContextObject, _) =>
-            gameContextObject.isAdmin() && hostSeatChange.seatChangeInProgress
-                ? Draggable(
-                    data: seat.serverSeatPos,
-                    onDragEnd: (_) {
-                      hostSeatChange.onSeatDragEnd();
-                    },
-                    onDragStarted: () {
-                      hostSeatChange.onSeatDragStart(seat.serverSeatPos);
-                    },
-                    feedback: buildPlayer(hostSeatChange, isFeedBack: true),
-                    child: buildPlayer(hostSeatChange),
-                  )
-                : buildPlayer(hostSeatChange),
+        builder: (context, hostSeatChange, gameContextObject, _) {
+          Widget widget; 
+          if (gameContextObject.isAdmin() && hostSeatChange.seatChangeInProgress) {
+            widget = Draggable(
+              data: seat.serverSeatPos,
+              onDragEnd: (_) {
+                hostSeatChange.onSeatDragEnd();
+              },
+              onDragStarted: () {
+                hostSeatChange.onSeatDragStart(seat.serverSeatPos);
+              },
+              feedback: buildSeat(hostSeatChange, isFeedBack: true),
+              child: buildSeat(hostSeatChange),
+            );
+          } else {
+            widget = buildSeat(hostSeatChange);            
+          }
+          return widget;
+        }
       ),
     );
   }
 
-  Container buildPlayer(HostSeatChange hostSeatChange,
+
+  /*
+   * This function returns shadow around the nameplate based on the state.
+   * 
+   * winner: shows green shadow
+   * player to act: shows white shadow
+   * green: when holding a seat during seat change process
+   * blue: shows when a moving seat can be dropped 
+   */
+  List<BoxShadow> getShadow(HostSeatChange hostSeatChange, bool isFeedback) {
+    BoxShadow shadow;
+    bool winner = seat.player.winner ?? false;
+    bool highlight = seat.player.highlight ?? false;
+    if (winner) {
+      shadow =  BoxShadow(
+                  color: Colors.lightGreen,
+                  blurRadius: 50.0,
+                  spreadRadius: 20.0,
+                );
+    } else if (highlight) {
+      shadow = BoxShadow(
+                  color: highlightColor.withAlpha(120),
+                  blurRadius: 20.0,
+                  spreadRadius: 20.0,
+                );
+    } else {
+      SeatChangeStatus seatChangeStatus;
+      // are we dragging?
+      if (seat.serverSeatPos != null) {
+        seatChangeStatus = hostSeatChange.allSeatChangeStatus[seat.serverSeatPos]; 
+      }
+      if (seatChangeStatus != null) {
+        if (seatChangeStatus.isDragging || isFeedback) {
+          shadow = BoxShadow(
+              color: Colors.green,
+              blurRadius: 20.0,
+              spreadRadius: 20.0,
+            );
+        } else if(seatChangeStatus.isDropAble) {
+          shadow = BoxShadow(
+              color: Colors.blue,
+              blurRadius: 20.0,
+              spreadRadius: 20.0,
+            );          
+        }
+      }
+    }
+    if (shadow == null) {
+      return [];
+    } else {
+      return [shadow];
+    }
+  }
+
+  Container buildSeat(HostSeatChange hostSeatChange,
       {bool isFeedBack = false}) {
     bool winner = seat.player.winner ?? false;
     bool highlight = seat.player.highlight ?? false;
-    print('winner: ${winner} highlight: ${highlight}');
+    print('winner: $winner highlight: $highlight');
+
+    final shadow = getShadow(hostSeatChange, isFeedBack);
     return Container(
       width: 70.0,
       padding: const EdgeInsets.symmetric(
@@ -83,46 +132,7 @@ class NamePlateWidget extends StatelessWidget {
                 color: Color.fromARGB(255, 206, 134, 57),
                 width: 2.0,
               ),
-        boxShadow: winner 
-            ? [
-                BoxShadow(
-                  color: Colors.lightGreen,
-                  blurRadius: 50.0,
-                  spreadRadius: 20.0,
-                ),
-              ]
-            : highlight
-                ? [
-                    BoxShadow(
-                      color: highlightColor.withAlpha(120),
-                      blurRadius: 20.0,
-                      spreadRadius: 20.0,
-                    ),
-                  ]
-                : seat.serverSeatPos != null
-                    ? hostSeatChange
-                                .allSeatChangeStatus[seat.serverSeatPos]
-                                .isDragging ||
-                            isFeedBack
-                        ? [
-                            BoxShadow(
-                              color: Colors.green,
-                              blurRadius: 20.0,
-                              spreadRadius: 20.0,
-                            ),
-                          ]
-                        : hostSeatChange
-                                .allSeatChangeStatus[seat.serverSeatPos]
-                                .isDropAble
-                            ? [
-                                BoxShadow(
-                                  color: Colors.blue,
-                                  blurRadius: 20.0,
-                                  spreadRadius: 20.0,
-                                ),
-                              ]
-                            : []
-                    : [],
+        boxShadow: shadow,
       ),
       child: AnimatedSwitcher(
         duration: AppConstants.animationDuration,
@@ -161,18 +171,6 @@ class NamePlateWidget extends StatelessWidget {
                   ],
                 ),
               ),
-      ),
-    );
-  }
-
-  Widget _openSeat() {
-    return Padding(
-      padding: const EdgeInsets.all(5),
-      child: InkWell(
-        child: Text(
-          'Open ${seat.serverSeatPos}',
-          style: AppStyles.openSeatTextStyle,
-        ),
       ),
     );
   }
