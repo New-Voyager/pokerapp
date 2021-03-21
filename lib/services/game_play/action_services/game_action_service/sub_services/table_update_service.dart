@@ -233,5 +233,10 @@ class TableUpdateService {
       //seatChange.updateSeatChangePlayer(null, null, null, null);
       //seatChange.animate = false;
     }
+    final gameCode = data["gameCode"].toString();
+    // get current seat positions
+    List<PlayerInSeat> playersInSeats = await SeatChangeService.hostSeatChangeSeatPositions(gameCode);
+    seatChange.updatePlayersInSeats(playersInSeats);
+    seatChange.notifyAll();
   }
 }

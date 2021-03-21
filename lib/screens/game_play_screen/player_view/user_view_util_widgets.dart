@@ -196,7 +196,7 @@ class UserViewUtilWidgets {
                           : Transform.scale(
                               scale: 0.70,
                               child: StackCardView(
-                                cards: seat.player.cards?.map(
+                                cards: seat.player.cards?.map<CardObject>(
                                       (int c) {
                                         List<int> highlightedCards =
                                             seat.player.highlightCards;
