@@ -3,7 +3,6 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
-import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/remaining_time.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
@@ -11,15 +10,12 @@ import 'package:pokerapp/models/game_play_models/ui/seat.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_styles.dart';
-import 'package:pokerapp/screens/game_play_screen/card_views/hidden_card_view.dart';
 import 'package:pokerapp/screens/game_play_screen/card_views/stack_card_view.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:provider/provider.dart';
 
 import 'animating_widgets/chip_amount_animating_widget.dart';
-import 'animating_widgets/fold_card_animating_widget.dart';
 import 'count_down_timer.dart';
-import 'dealer_button.dart';
 import 'user_view_util_methods.dart';
 
 class UserViewUtilWidgets {
@@ -28,99 +24,6 @@ class UserViewUtilWidgets {
   /* highlight color --> const Color(0xfff2a365); */
   static const highlightColor = const Color(0xfffffff);
   static const shrinkedSizedBox = const SizedBox.shrink();
-
-  // TODO: this is only needed for the DEBUGGING Purpose
-  static Widget buildSeatNoIndicator({
-    @required Seat seat,
-  }) =>
-      Positioned(
-        bottom: 0,
-        left: 0,
-        child: Transform.translate(
-          offset: const Offset(0.0, -15.0),
-          child: Container(
-            padding: const EdgeInsets.all(8.0),
-            decoration: BoxDecoration(
-              color: const Color(0xff474747),
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: const Color(0xff14e81b),
-                width: 1.0,
-              ),
-            ),
-            child: Text(
-              seat.serverSeatPos.toString(),
-              style: AppStyles.itemInfoTextStyle.copyWith(
-                color: Colors.white,
-              ),
-            ),
-          ),
-        ),
-      );
-
-  // this widget is only shown to the dealer
-  static Widget buildDealerButton({
-    int seatPos,
-    Alignment alignment,
-    bool isMe,
-    GameType gameType,
-  }) {
-    return new DealerButtonWidget(seatPos, isMe, gameType);
-  }
-
-  /* if the footer status becomes footer result
-  * then we need to show the user cards
-  * as it's a show down time */
-
-  static Widget buildHiddenCard({
-    Alignment alignment,
-    int cardNo = 0,
-    @required Seat seat,
-  }) =>
-      Consumer<ValueNotifier<FooterStatus>>(
-        builder: (_, valueNotifierFooterStatus, __) {
-          bool showDown =
-              valueNotifierFooterStatus.value == FooterStatus.Result;
-
-          double shiftMultiplier = 1.0;
-
-          if (cardNo == 5) shiftMultiplier = 1.7;
-          if (cardNo == 4) shiftMultiplier = 1.45;
-          if (cardNo == 3) shiftMultiplier = 1.25;
-
-          double xOffset;
-          if (showDown)
-            xOffset = (alignment == Alignment.centerLeft ? 1 : -1) *
-                25.0 *
-                (seat.cards?.length ?? 0.0);
-          else
-            xOffset = (alignment == Alignment.centerLeft
-                ? 35.0
-                : -45.0 * shiftMultiplier);
-
-          return Transform.translate(
-            offset: Offset(
-              xOffset * 0.50,
-              45.0,
-            ),
-            child: AnimatedSwitcher(
-              duration: AppConstants.fastAnimationDuration,
-              child: Transform.scale(
-                scale: 1.0,
-                child: (seat.folded ?? false)
-                    ? FoldCardAnimatingWidget(
-                        seat: seat,
-                      )
-                    : showDown
-                        ? const SizedBox.shrink()
-                        : HiddenCardView(
-                            noOfCards: cardNo,
-                          ),
-              ),
-            ),
-          );
-        },
-      );
 
   static Widget buildTimer({
     int time = 10,

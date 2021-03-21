@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/ui/seat.dart';
 import 'package:pokerapp/resources/app_assets.dart';
+import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/screens/game_play_screen/card_views/hidden_card_view.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/profile_popup.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/services/game_play/graphql/seat_change_service.dart';
 import 'package:provider/provider.dart';
 
+import 'animating_widgets/fold_card_animating_widget.dart';
 import 'animating_widgets/stack_switch_seat_animating_widget.dart';
 import 'dealer_button.dart';
 import 'name_plate_view.dart';
@@ -64,6 +68,15 @@ class PlayerView extends StatelessWidget {
   Widget build(BuildContext context) {
     bool openSeat = seat.isOpen;
     bool isMe = seat.isMe;
+    FooterStatus footerStatus = Provider.of<ValueNotifier<FooterStatus>>(
+      context,
+      listen: false,
+    ).value;
+    
+    bool showdown = false;
+    if (footerStatus == FooterStatus.Result) {
+      showdown = true;
+    }
 
     // if open seat, just show openseat widget
     if (openSeat) {
@@ -134,22 +147,7 @@ class PlayerView extends StatelessWidget {
                 ],
               ),
 
-              openSeat
-                  ? shrinkedSizedBox
-                  : UserViewUtilWidgets.buildHiddenCard(
-                      alignment: this.cardsAlignment,
-                      cardNo: seat.player?.noOfCardsVisible ?? 0,
-                      seat: seat,
-                    ),
-
-              // hidden cards show only for the folding animation
-              isMe && (seat.folded ?? false)
-                  ? UserViewUtilWidgets.buildHiddenCard(
-                      seat: seat,
-                      alignment: this.cardsAlignment,
-                      cardNo: seat.player?.noOfCardsVisible ?? 0,
-                    )
-                  : shrinkedSizedBox,
+              PlayerCardsWidget(seat, this.cardsAlignment, seat.player?.noOfCardsVisible, showdown),
 
               // show dealer button, if user is a dealer
               isDealer ? DealerButtonWidget(seat.serverSeatPos, isMe, GameType.HOLDEM)
@@ -167,7 +165,7 @@ class PlayerView extends StatelessWidget {
                 seat: seat,
               ),
 
-              UserViewUtilWidgets.buildSeatNoIndicator(seat: seat),
+              SeatNoWidget(seat),
             ],
           ),
         );
@@ -213,3 +211,84 @@ class OpenSeat extends StatelessWidget {
   }
 }
 
+class SeatNoWidget extends StatelessWidget {
+  final Seat seat;
+
+  const SeatNoWidget(this.seat);
+  
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+        bottom: 0,
+        left: 0,
+        child: Transform.translate(
+          offset: const Offset(0.0, -15.0),
+          child: Container(
+            padding: const EdgeInsets.all(8.0),
+            decoration: BoxDecoration(
+              color: const Color(0xff474747),
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: const Color(0xff14e81b),
+                width: 1.0,
+              ),
+            ),
+            child: Text(
+              seat.serverSeatPos.toString(),
+              style: AppStyles.itemInfoTextStyle.copyWith(
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+}
+
+class PlayerCardsWidget extends StatelessWidget {
+  final Seat seat;
+  final Alignment alignment;
+  final bool showdown;
+  final int noCards;
+
+  const PlayerCardsWidget(this.seat, this.alignment, this.noCards, this.showdown);
+  
+  @override
+  Widget build(BuildContext context) {
+
+    if (seat.folded ?? false) {
+      return shrinkedSizedBox;  
+    }
+ 
+    double shiftMultiplier = 1.0;
+    if (this.noCards == 5) shiftMultiplier = 1.7;
+    if (this.noCards == 4) shiftMultiplier = 1.45;
+    if (this.noCards == 3) shiftMultiplier = 1.25;
+
+    double xOffset;
+    if (showdown)
+      xOffset = (alignment == Alignment.centerLeft ? 1 : -1) *
+          25.0 *
+          (seat.cards?.length ?? 0.0);
+    else
+      xOffset = (alignment == Alignment.centerLeft
+          ? 35.0
+          : -45.0 * shiftMultiplier);
+
+    return Transform.translate(
+      offset: Offset(
+        xOffset * 0.50,
+        45.0,
+      ),
+      child: AnimatedSwitcher(
+        duration: AppConstants.fastAnimationDuration,
+        child: Transform.scale(
+          scale: 1.0,
+          child: (seat.folded ?? false) ? FoldCardAnimatingWidget(seat: seat)
+                    : showdown ? const SizedBox.shrink()
+                      : HiddenCardView(noOfCards: this.noCards),
+        ),
+      ),
+    );    
+  }
+}
