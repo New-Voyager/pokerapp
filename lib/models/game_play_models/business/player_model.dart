@@ -28,6 +28,14 @@ class PlayerModel {
 
   int noOfCardsVisible = 0;
 
+  PlayerModel({
+    this.name,
+    this.seatNo,
+    this.playerUuid,
+    this.stack,
+    this.status,
+  });
+
   PlayerModel.fromJson(var data) {
     this.name = data['name'];
     this.seatNo = data['seatNo'];

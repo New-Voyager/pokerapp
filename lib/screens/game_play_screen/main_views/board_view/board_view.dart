@@ -70,9 +70,9 @@ class BoardView extends StatelessWidget {
 
         Consumer<Players>(
           builder: (
-            BuildContext context,
+            BuildContext _,
             Players players,
-            Widget child,
+            Widget __,
           ) =>
               Transform.translate(
             offset: _playersOnTableOffset,

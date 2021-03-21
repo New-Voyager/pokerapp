@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
 import 'package:pokerapp/models/game_play_models/ui/seat.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
@@ -32,6 +33,23 @@ class Players extends ChangeNotifier {
     // the current user is a player, thus update it and notify the listeners
     if (idx != -1) this._players[idx].isMe = true;
     notifyListeners();
+  }
+
+  void refreshWithPlayerInSeat(List<PlayerInSeat> playersInSeat) {
+    assert(playersInSeat != null);
+
+    _players.clear();
+
+    playersInSeat.forEach((playerInSeatModel) {
+      _players.add(PlayerModel(
+        name: playerInSeatModel.name,
+        seatNo: playerInSeatModel.seatNo,
+        playerUuid: playerInSeatModel.playerId,
+        stack: playerInSeatModel.stack.toInt(),
+      ));
+    });
+
+    notifyAll();
   }
 
   void updatePlayerFoldedStatusSilent(int idx, bool folded) {

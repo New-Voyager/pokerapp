@@ -43,10 +43,12 @@ class SeatChangeService {
     return result.data['seatChange'];
   }
 
-  static Future<bool> hostSeatChangeMove(String gameCode, int seat1, int seat2) async {
+  static Future<bool> hostSeatChangeMove(
+      String gameCode, int seat1, int seat2) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
 
-    String _mutation = """mutation seatChangeSwapSeats(\$gameCode: String!, \$seatNo1: Int!, \$seatNo2: Int!) {
+    String _mutation =
+        """mutation seatChangeSwapSeats(\$gameCode: String!, \$seatNo1: Int!, \$seatNo2: Int!) {
 	          seatChange: seatChangeSwapSeats(gameCode: \$gameCode seatNo1: \$seatNo1 seatNo2: \$seatNo2)
         }""";
     Map<String, dynamic> variables = {
@@ -62,7 +64,8 @@ class SeatChangeService {
     return result.data['seatChange'];
   }
 
-static Future<List<PlayerInSeat>> hostSeatChangeSeatPositions(String gameCode) async {
+  static Future<List<PlayerInSeat>> hostSeatChangeSeatPositions(
+      String gameCode) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
 
     String query = """query (\$gameCode: String!) {
@@ -71,13 +74,13 @@ static Future<List<PlayerInSeat>> hostSeatChangeSeatPositions(String gameCode) a
           seatNo
           name
           playerUuid
-          openSeat
         }
       }
     """;
     Map<String, dynamic> variables = {
       "gameCode": gameCode,
     };
+
     QueryResult result = await _client.query(
       QueryOptions(documentNode: gql(query), variables: variables),
     );

@@ -172,7 +172,7 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
           _lottieController.forward();
         });
       }
-      setState(() {});
+      // setState(() {});
     });
   }
 
@@ -275,8 +275,7 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
                   left: seatChangeAnimation.value.dx,
                   top: seatChangeAnimation.value.dy + 32,
                   child: NamePlateWidget(
-                      getSeats(
-                          widget.players.players)[seatChangerPlayer - 1],
+                      getSeats(widget.players.players)[seatChangerPlayer - 1],
                       0,
                       false),
                 )
@@ -336,8 +335,8 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
     * */
 
     final List<Seat> seats = [];
-    for(int i = 0; i < widget.maxPlayers; i++) {
-      seats.add(Seat(i, i+1, null));
+    for (int i = 0; i < widget.maxPlayers; i++) {
+      seats.add(Seat(i, i + 1, null));
     }
     for (PlayerModel model in users) {
       int idx = model.seatNo - 1;
