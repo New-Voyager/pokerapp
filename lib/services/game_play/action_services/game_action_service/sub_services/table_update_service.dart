@@ -7,7 +7,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/notification_mo
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/resources/app_constants.dart';
-import 'package:pokerapp/screens/game_play_screen/player_view/count_down_timer.dart';
+import 'package:pokerapp/screens/game_play_screen/seat_view/count_down_timer.dart';
 import 'package:pokerapp/screens/game_play_screen/pop_ups/seat_change_confirmation_pop_up.dart';
 import 'package:pokerapp/services/game_play/graphql/seat_change_service.dart';
 import 'package:provider/provider.dart';
@@ -173,18 +173,19 @@ class TableUpdateService {
 
     valueNotifierNotModel.value = GeneralNotificationModel(
       titleText: 'Seat change',
-      subTitleText:
-          'Host is making changes to the table',
+      subTitleText: 'Host is making changes to the table',
     );
 
     final gameCode = data["gameCode"].toString();
-    final seatChangeHost = int.parse(data["tableUpdate"]["seatChangeHost"].toString());
+    final seatChangeHost =
+        int.parse(data["tableUpdate"]["seatChangeHost"].toString());
     final seatChange = Provider.of<HostSeatChange>(context, listen: false);
     seatChange.updateSeatChangeInProgress(true);
     seatChange.updateSeatChangeHost(seatChangeHost);
 
     // get current seat positions
-    List<PlayerInSeat> playersInSeats = await SeatChangeService.hostSeatChangeSeatPositions(gameCode);
+    List<PlayerInSeat> playersInSeats =
+        await SeatChangeService.hostSeatChangeSeatPositions(gameCode);
     seatChange.updatePlayersInSeats(playersInSeats);
 
     seatChange.notifyAll();
@@ -195,7 +196,7 @@ class TableUpdateService {
     var data,
   }) async {
     // if the current player is making the seat changes, remove the additional buttons
-    // {"gameId":"18", "gameCode":"CG-LBH8IW24N7XGE5", "messageType":"TABLE_UPDATE", "tableUpdate":{"type":"HostSeatChangeInProcessEnd", "seatChangeHost":"122"}}    
+    // {"gameId":"18", "gameCode":"CG-LBH8IW24N7XGE5", "messageType":"TABLE_UPDATE", "tableUpdate":{"type":"HostSeatChangeInProcessEnd", "seatChangeHost":"122"}}
     final ValueNotifier<GeneralNotificationModel> valueNotifierNotModel =
         Provider.of<ValueNotifier<GeneralNotificationModel>>(
       context,
@@ -215,10 +216,10 @@ class TableUpdateService {
   }) async {
     // {"gameId":"18", "gameCode":"CG-LBH8IW24N7XGE5", "messageType":"TABLE_UPDATE", "tableUpdate":{"type":"HostSeatChangeMove", "seatMoves":[{"playerId":"131", "playerUuid":"290bf492-9dde-448e-922d-40270e163649", "name":"rich", "oldSeatNo":6, "newSeatNo":1}, {"playerId":"122", "playerUuid":"c2dc2c3d-13da-46cc-8c66-caa0c77459de", "name":"yong", "oldSeatNo":1, "newSeatNo":6}]}}
     // player is moved, show animation of the move
-  
+
     final seatChange = Provider.of<HostSeatChange>(context, listen: false);
     var seatMoves = data['tableUpdate']['seatMoves'];
-    for(var move in seatMoves) {
+    for (var move in seatMoves) {
       int from = int.parse(move['oldSeatNo'].toString());
       int to = int.parse(move['newSeatNo'].toString());
       String name = move['name'].toString();
@@ -233,5 +234,21 @@ class TableUpdateService {
       //seatChange.updateSeatChangePlayer(null, null, null, null);
       //seatChange.animate = false;
     }
+    final gameCode = data["gameCode"].toString();
+    // get current seat positions
+
+    final players = Provider.of<Players>(
+      context,
+      listen: false,
+    );
+
+    /* refresh the player model */
+    players.refreshWithPlayerInSeat(
+      await SeatChangeService.hostSeatChangeSeatPositions(gameCode),
+    );
+
+    // List<PlayerInSeat> playersInSeats = ;
+    // seatChange.updatePlayersInSeats(playersInSeats);
+    // seatChange.notifyAll();
   }
 }

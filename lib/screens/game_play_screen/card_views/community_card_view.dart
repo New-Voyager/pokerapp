@@ -80,8 +80,6 @@ class CommunityCardView extends StatelessWidget {
           Provider.of<ValueNotifier<String>>(context, listen: false).value;
     } catch (_) {}
 
-    log('This is being build');
-
     return Transform.scale(
       scale: 1.4,
       child: Container(

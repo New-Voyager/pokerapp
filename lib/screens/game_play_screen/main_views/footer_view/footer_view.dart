@@ -36,14 +36,12 @@ class FooterView extends StatelessWidget {
             children: [
               Align(
                 alignment: Alignment.bottomCenter,
-                child: Expanded(
-                  flex: 1,
-                  child:  players.me == null
+                child: players.me == null
                     ? const SizedBox.shrink()
                     : GameAction(
-                  footerStatus: footerStatusValueNotifier.value,
-                  playerModel: players.me,
-                ),),
+                        footerStatus: footerStatusValueNotifier.value,
+                        playerModel: players.me,
+                      ),
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/notification_models/general_notification_model.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
-import 'package:pokerapp/screens/game_play_screen/player_view/count_down_timer.dart';
+import 'package:pokerapp/screens/game_play_screen/seat_view/count_down_timer.dart';
 
 class GeneralNotification extends StatelessWidget {
   final GeneralNotificationModel model;

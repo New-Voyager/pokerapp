@@ -7,7 +7,6 @@ import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/game_screens/game_history_details_view/stack_chart_view.dart';
-import 'package:pokerapp/screens/game_screens/game_history_details_view/stack_details_view.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 
 import 'hands_chart_view.dart';
