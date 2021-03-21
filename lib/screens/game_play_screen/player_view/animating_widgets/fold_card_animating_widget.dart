@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:pokerapp/models/game_play_models/ui/user_object.dart';
+import 'package:pokerapp/models/game_play_models/ui/seat.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/screens/game_play_screen/card_views/hidden_card_view.dart';
 
@@ -19,25 +19,30 @@ const Map<int, Offset> offsetMapping = {
 
 class FoldCardAnimatingWidget extends StatelessWidget {
   final seatPos;
-  final UserObject userObject;
+  final Seat seat;
   FoldCardAnimatingWidget({
     this.seatPos,
-    this.userObject,
+    this.seat,
   });
 
   @override
-  Widget build(BuildContext context) => TweenAnimationBuilder<Offset>(
+  Widget build(BuildContext context) {
+      final openSeat = seat.isOpen;
+
+      final widget = TweenAnimationBuilder<Offset>(
         curve: Curves.easeInOut,
         tween: Tween<Offset>(
           begin: Offset(0, 0),
           end: offsetMapping[seatPos],
         ),
         child: HiddenCardView(
-          noOfCards: userObject.noOfCardsVisible,
+          noOfCards: seat.player.noOfCardsVisible,
         ),
         onEnd: () {
           print('fold animation done $seatPos');
-          userObject.animatingFold = false;
+          if (!openSeat) {
+            seat.player.animatingFold = false;
+          }
         },
         duration: AppConstants.animationDuration,
         builder: (_, offset, child) {
@@ -53,4 +58,6 @@ class FoldCardAnimatingWidget extends StatelessWidget {
           );
         },
       );
+      return widget;
+  }
 }

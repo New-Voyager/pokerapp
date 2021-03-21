@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:pokerapp/models/game_play_models/ui/user_object.dart';
+import 'package:pokerapp/models/game_play_models/ui/seat.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 
 class ProfilePopup extends StatefulWidget {
-  final UserObject userObject;
-  ProfilePopup({Key key, this.userObject}) : super(key: key);
+  final Seat seat;
+  ProfilePopup({Key key, this.seat}) : super(key: key);
 
   @override
   _ProfilePopupState createState() => _ProfilePopupState();
@@ -76,7 +76,7 @@ class _ProfilePopupState extends State<ProfilePopup> {
           width: 20,
         ),
         Text(
-          widget.userObject.name,
+          widget.seat.player.name,
           style: AppStyles.stickerDialogText,
         )
       ],

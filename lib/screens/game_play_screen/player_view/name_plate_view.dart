@@ -1,21 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
-import 'package:pokerapp/models/game_play_models/ui/user_object.dart';
-import 'package:pokerapp/resources/app_assets.dart';
+import 'package:pokerapp/models/game_play_models/ui/seat.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:provider/provider.dart';
 
 class NamePlateWidget extends StatelessWidget {
   final GlobalKey globalKey;
-  final UserObject userObject;
+  final Seat seat;
   final bool emptySeat;
   final int seatPos;
   static const highlightColor = const Color(0xfffffff);
   static const shrinkedSizedBox = const SizedBox.shrink();
 
-  NamePlateWidget(this.userObject, this.seatPos, this.emptySeat,
+  NamePlateWidget(this.seat, this.seatPos, this.emptySeat,
       {this.globalKey});
 
   @override
@@ -26,22 +25,26 @@ class NamePlateWidget extends StatelessWidget {
 
     Color statusColor = const Color(0xff474747); // default color
     Color boxColor = const Color(0xff474747); // default color
+    final openSeat = seat.isOpen;
 
-    String status = userObject.status;
+
+    if (openSeat) {
+      return Container(
+        width: 70.0,
+        padding: EdgeInsets.all(10.0),
+        child: _openSeat(),
+        decoration: BoxDecoration(shape: BoxShape.circle),
+      );
+    }
+
+
+    String status = !openSeat ? seat.player.status : "";
     if (status != null) {
       if (status.toUpperCase().contains('CHECK') ||
           status.toUpperCase().contains('CALL'))
         statusColor = Colors.green;
       else if (status.toUpperCase().contains('RAISE') ||
           status.toUpperCase().contains('BET')) statusColor = Colors.red;
-    }
-    dynamic borderColor = Colors.black12;
-    if (userObject != null &&
-        userObject.highlight != null &&
-        userObject.highlight) {
-      borderColor = highlightColor;
-    } else if (status != null) {
-      borderColor = statusColor;
     }
     return Transform.translate(
       key: globalKey,
@@ -50,12 +53,12 @@ class NamePlateWidget extends StatelessWidget {
         builder: (context, hostSeatChange, gameContextObject, _) =>
             gameContextObject.isAdmin() && hostSeatChange.seatChangeInProgress
                 ? Draggable(
-                    data: userObject.serverSeatPos,
+                    data: seat.serverSeatPos,
                     onDragEnd: (_) {
                       hostSeatChange.onSeatDragEnd();
                     },
                     onDragStarted: () {
-                      hostSeatChange.onSeatDragStart(userObject.serverSeatPos);
+                      hostSeatChange.onSeatDragStart(seat.serverSeatPos);
                     },
                     feedback: buildPlayer(hostSeatChange, isFeedBack: true),
                     child: buildPlayer(hostSeatChange),
@@ -67,30 +70,23 @@ class NamePlateWidget extends StatelessWidget {
 
   Container buildPlayer(HostSeatChange hostSeatChange,
       {bool isFeedBack = false}) {
+    bool winner = seat.player.winner ?? false;
+    bool highlight = seat.player.highlight ?? false;
+    print('winner: ${winner} highlight: ${highlight}');
     return Container(
       width: 70.0,
-      padding: (emptySeat)
-          ? const EdgeInsets.all(10.0)
-          : const EdgeInsets.symmetric(
+      padding: const EdgeInsets.symmetric(
               vertical: 5.0,
             ),
       decoration: BoxDecoration(
-        shape: emptySeat ? BoxShape.circle : BoxShape.rectangle,
-        image: emptySeat
-            ? DecorationImage(
-                image: AssetImage(AppAssets.goldNamePlate),
-                fit: BoxFit.fill,
-              )
-            : null,
-        borderRadius: emptySeat ? null : BorderRadius.circular(5),
+        shape: BoxShape.rectangle,
+        borderRadius: BorderRadius.circular(5),
         color: Color(0XFF494444),
-        border: emptySeat
-            ? null
-            : Border.all(
+        border: Border.all(
                 color: Color.fromARGB(255, 206, 134, 57),
                 width: 2.0,
               ),
-        boxShadow: (userObject.winner ?? false)
+        boxShadow: winner 
             ? [
                 BoxShadow(
                   color: Colors.lightGreen,
@@ -98,7 +94,7 @@ class NamePlateWidget extends StatelessWidget {
                   spreadRadius: 20.0,
                 ),
               ]
-            : userObject.highlight ?? false
+            : highlight
                 ? [
                     BoxShadow(
                       color: highlightColor.withAlpha(120),
@@ -106,9 +102,9 @@ class NamePlateWidget extends StatelessWidget {
                       spreadRadius: 20.0,
                     ),
                   ]
-                : userObject.serverSeatPos != null
+                : seat.serverSeatPos != null
                     ? hostSeatChange
-                                .allSeatChangeStatus[userObject.serverSeatPos]
+                                .allSeatChangeStatus[seat.serverSeatPos]
                                 .isDragging ||
                             isFeedBack
                         ? [
@@ -119,7 +115,7 @@ class NamePlateWidget extends StatelessWidget {
                             ),
                           ]
                         : hostSeatChange
-                                .allSeatChangeStatus[userObject.serverSeatPos]
+                                .allSeatChangeStatus[seat.serverSeatPos]
                                 .isDropAble
                             ? [
                                 BoxShadow(
@@ -134,9 +130,7 @@ class NamePlateWidget extends StatelessWidget {
       child: AnimatedSwitcher(
         duration: AppConstants.animationDuration,
         reverseDuration: AppConstants.animationDuration,
-        child: (emptySeat)
-            ? _openSeat()
-            : AnimatedOpacity(
+        child: AnimatedOpacity(
                 duration: AppConstants.animationDuration,
                 opacity: emptySeat ? 0.0 : 1.0,
                 child: Column(
@@ -144,7 +138,7 @@ class NamePlateWidget extends StatelessWidget {
                   children: [
                     FittedBox(
                       child: Text(
-                        userObject.name,
+                        seat.player.name,
                         style: AppStyles.gamePlayScreenPlayerName.copyWith(
                           // FIXME: may be this is permanant?
                           color: Colors.white,
@@ -158,7 +152,7 @@ class NamePlateWidget extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(horizontal: 5),
                         child: FittedBox(
                           child: Text(
-                            userObject.stack?.toString() ?? 'XX',
+                            seat.player.stack?.toString() ?? 'XX',
                             style: AppStyles.gamePlayScreenPlayerChips.copyWith(
                               // FIXME: may be this is permanant?
                               color: Colors.white,

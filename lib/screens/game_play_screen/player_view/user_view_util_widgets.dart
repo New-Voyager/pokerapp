@@ -7,7 +7,7 @@ import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/remaining_time.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
-import 'package:pokerapp/models/game_play_models/ui/user_object.dart';
+import 'package:pokerapp/models/game_play_models/ui/seat.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_styles.dart';
@@ -31,7 +31,7 @@ class UserViewUtilWidgets {
 
   // TODO: this is only needed for the DEBUGGING Purpose
   static Widget buildSeatNoIndicator({
-    @required UserObject userObject,
+    @required Seat seat,
   }) =>
       Positioned(
         bottom: 0,
@@ -49,7 +49,7 @@ class UserViewUtilWidgets {
               ),
             ),
             child: Text(
-              userObject.serverSeatPos.toString(),
+              seat.serverSeatPos.toString(),
               style: AppStyles.itemInfoTextStyle.copyWith(
                 color: Colors.white,
               ),
@@ -77,7 +77,7 @@ class UserViewUtilWidgets {
     bool emptySeat = true,
     int cardNo = 0,
     @required int seatPos,
-    @required UserObject userObject,
+    @required Seat seat,
   }) =>
       Consumer<ValueNotifier<FooterStatus>>(
         builder: (_, valueNotifierFooterStatus, __) {
@@ -94,7 +94,7 @@ class UserViewUtilWidgets {
           if (showDown)
             xOffset = (alignment == Alignment.centerLeft ? 1 : -1) *
                 25.0 *
-                (userObject.cards?.length ?? 0.0);
+                (seat.cards?.length ?? 0.0);
           else
             xOffset = (alignment == Alignment.centerLeft
                 ? 35.0
@@ -109,10 +109,10 @@ class UserViewUtilWidgets {
               duration: AppConstants.fastAnimationDuration,
               child: Transform.scale(
                 scale: 1.0,
-                child: (userObject.playerFolded ?? false)
+                child: (seat.folded ?? false)
                     ? FoldCardAnimatingWidget(
                         seatPos: seatPos,
-                        userObject: userObject,
+                        seat: seat,
                       )
                     : showDown
                         ? const SizedBox.shrink()
@@ -128,7 +128,7 @@ class UserViewUtilWidgets {
   static Widget buildTimer({
     int time = 10,
     BuildContext context,
-    @required UserObject userObject,
+    @required Seat seat,
   }) {
     int remainingTime = Provider.of<RemainingTime>(
       context,
@@ -146,7 +146,7 @@ class UserViewUtilWidgets {
           reverseDuration: AppConstants.fastAnimationDuration,
           switchOutCurve: Curves.bounceInOut,
           switchInCurve: Curves.bounceInOut,
-          child: userObject.highlight ?? false
+          child: seat.player?.highlight ?? false
               ? Transform.translate(
                   offset: const Offset(15.0, -0.0),
                   child: Transform.scale(
@@ -165,10 +165,15 @@ class UserViewUtilWidgets {
   static Widget buildAvatarAndLastAction({
     String avatarUrl,
     bool emptySeat,
-    @required UserObject userObject,
+    @required Seat seat,
     Alignment cardsAlignment,
-  }) =>
-      Stack(
+  }) {
+      if (seat.isOpen) {
+        return SizedBox.shrink();
+      }
+      //return SizedBox.shrink();
+
+      return Stack(
         alignment: Alignment.center,
         children: [
           /* displaying the avatar view */
@@ -177,62 +182,24 @@ class UserViewUtilWidgets {
               bool showDown =
                   valueNotifierFooterStatus.value == FooterStatus.Result;
 
-              Widget avatarWidget = AnimatedOpacity(
-                duration: AppConstants.animationDuration,
-                curve: Curves.bounceInOut,
-                opacity: emptySeat ? 0.0 : 0.90,
-                child: Consumer<BoardAttributesObject>(
-                  builder: (_, boardAttrObj, __) => Visibility(
-                    visible:
-                        boardAttrObj.isOrientationHorizontal ? false : true,
-                    child: AnimatedContainer(
-                      duration: AppConstants.fastAnimationDuration,
-                      curve: Curves.bounceInOut,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          width: 2.0,
-                          color: userObject.highlight ?? false
-                              ? highlightColor
-                              : Colors.transparent,
-                        ),
-                        boxShadow: userObject.highlight ?? false
-                            ? [
-                                BoxShadow(
-                                  color: highlightColor.withAlpha(120),
-                                  blurRadius: 20.0,
-                                  spreadRadius: 20.0,
-                                ),
-                              ]
-                            : [],
-                      ),
-                      child: CircleAvatar(
-                        radius: 19.50,
-                        backgroundImage: AssetImage(
-                          avatarUrl ?? 'assets/images/2.png',
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              );
+              Widget avatarWidget = avatar(seat);
 
               return Container(
                 height: 19.50 * 3,
                 child: AnimatedSwitcher(
                   duration: AppConstants.fastAnimationDuration,
                   child: showDown &&
-                          (userObject.cards != null &&
-                              userObject.cards.isNotEmpty)
-                      ? (userObject?.isMe ?? false)
+                          (seat.player.cards != null &&
+                              seat.player.cards.isNotEmpty)
+                      ? (seat.isMe ?? false)
                           ? avatarWidget
                           : Transform.scale(
                               scale: 0.70,
                               child: StackCardView(
-                                cards: userObject.cards?.map(
+                                cards: seat.player.cards?.map(
                                       (int c) {
                                         List<int> highlightedCards =
-                                            userObject.highlightCards;
+                                            seat.player.highlightCards;
                                         CardObject card = CardHelper.getCard(c);
 
                                         card.smaller = true;
@@ -263,32 +230,75 @@ class UserViewUtilWidgets {
             ),
             child: UserViewUtilWidgets.buildUserStatus(
               emptySeat: emptySeat,
-              userObject: userObject,
+              seat: seat,
             ),
           ),
         ],
       );
+  }
+
+  static Widget avatar(Seat seat) {
+      return AnimatedOpacity(
+                duration: AppConstants.animationDuration,
+                curve: Curves.bounceInOut,
+                opacity: seat.isOpen ? 0.0 : 0.90,
+                child: Consumer<BoardAttributesObject>(
+                  builder: (_, boardAttrObj, __) => Visibility(
+                    visible:
+                        boardAttrObj.isOrientationHorizontal ? false : true,
+                    child: AnimatedContainer(
+                      duration: AppConstants.fastAnimationDuration,
+                      curve: Curves.bounceInOut,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          width: 2.0,
+                          color: seat.player?.highlight ?? false
+                              ? highlightColor
+                              : Colors.transparent,
+                        ),
+                        boxShadow: seat.player?.highlight ?? false
+                            ? [
+                                BoxShadow(
+                                  color: highlightColor.withAlpha(120),
+                                  blurRadius: 20.0,
+                                  spreadRadius: 20.0,
+                                ),
+                              ]
+                            : [],
+                      ),
+                      child: CircleAvatar(
+                        radius: 19.50,
+                        backgroundImage: AssetImage(
+                          seat.player.avatarUrl ?? 'assets/images/2.png',
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              );    
+  }
 
   static Widget buildUserStatus({
     @required bool emptySeat,
-    @required UserObject userObject,
+    @required Seat seat,
   }) {
     /* The status message is not shown, if
     * 1. The seat is empty - nothing to show
     * 2. The current user is to act - the current user is highlighted */
-    if (emptySeat || userObject.highlight) return shrinkedSizedBox;
+    if (emptySeat || seat.player.highlight) return shrinkedSizedBox;
 
     String status;
 
-    if (userObject.status != null && userObject.status.isNotEmpty)
-      status = userObject.status;
+    if (seat.player?.status != null && seat.player.status.isNotEmpty)
+      status = seat.player.status;
 
-    if (userObject.status == AppConstants.WAIT_FOR_BUYIN)
+    if (seat.player?.status == AppConstants.WAIT_FOR_BUYIN)
       status = 'Waiting for Buy In';
 
-    if (userObject.buyIn != null) status = 'Buy In ${userObject.buyIn} amount';
+    if (seat.player.buyIn != null) status = 'Buy In ${seat.player.buyIn} amount';
 
-    if (userObject.status == AppConstants.PLAYING) status = null;
+    if (seat.player?.status == AppConstants.PLAYING) status = null;
 
     // decide color from the status message
     // raise, bet -> red
@@ -318,7 +328,7 @@ class UserViewUtilWidgets {
 
   static Widget buildChipAmountWidget({
     @required int seatPos,
-    @required UserObject userObject,
+    @required Seat seat,
   }) {
     // to debug coin position
     //userObject.coinAmount = 10;
@@ -341,7 +351,7 @@ class UserViewUtilWidgets {
 
             /* show the coin amount */
             Text(
-              userObject.coinAmount.toString(),
+              seat.player?.coinAmount.toString(),
               style: AppStyles.gamePlayScreenPlayerChips,
             ),
           ],
@@ -349,13 +359,13 @@ class UserViewUtilWidgets {
       ),
     );
 
-    return userObject.coinAmount == null || userObject.coinAmount == 0
+    return seat.player?.coinAmount == null || seat.player?.coinAmount == 0
         ? shrinkedSizedBox
-        : (userObject.animatingCoinMovement ?? false)
+        : (seat.player.animatingCoinMovement ?? false)
             ? ChipAmountAnimatingWidget(
                 seatPos: seatPos,
                 child: chipAmountWidget,
-                reverse: userObject.animatingCoinMovementReverse,
+                reverse: seat.player.animatingCoinMovementReverse,
               )
             : chipAmountWidget;
   }

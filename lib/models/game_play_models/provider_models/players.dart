@@ -1,8 +1,8 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:pokerapp/enums/game_play_enums/player_type.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
+import 'package:pokerapp/models/game_play_models/ui/seat.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
 
@@ -46,7 +46,7 @@ class Players extends ChangeNotifier {
 
   void removeMarkersFromAllPlayerSilent() {
     for (int i = 0; i < _players.length; i++)
-      _players[i].playerType = PlayerType.None;
+      _players[i].playerType = TablePosition.None;
   }
 
   void addNewPlayerSilent(PlayerModel playerModel) {
@@ -57,7 +57,7 @@ class Players extends ChangeNotifier {
     _players[idx] = newPlayerModel;
   }
 
-  void updatePlayerTypeSilent(int idx, PlayerType playerType,
+  void updatePlayerTypeSilent(int idx, TablePosition playerType,
       {int coinAmount}) {
     _players[idx].playerType = playerType;
     if (coinAmount != null) {
