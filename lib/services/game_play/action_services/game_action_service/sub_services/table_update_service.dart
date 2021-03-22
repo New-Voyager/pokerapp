@@ -226,13 +226,11 @@ class TableUpdateService {
       double stack = double.parse(move['stack'].toString());
       debugPrint('Seatchange: Player $name from seat $from to $to');
 
-      //seatChange.updateSeatChangePlayer(from, to, name, stack);
-      //seatChange.animate = true;
+      /* start animation */
       hostSeatChange.onSeatDrop(from, to);
-      // run animation now
-      await Future.delayed(AppConstants.notificationDuration);
-      //seatChange.updateSeatChangePlayer(null, null, null, null);
-      //seatChange.animate = false;
+
+      /* wait for the animation to finish */
+      await Future.delayed(AppConstants.seatChangeAnimationDuration);
     }
     final gameCode = data["gameCode"].toString();
     // get current seat positions

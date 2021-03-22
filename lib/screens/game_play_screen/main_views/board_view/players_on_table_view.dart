@@ -4,6 +4,7 @@ import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/ui/seat.dart';
+import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/name_plate_view.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/player_view.dart';
 import 'package:pokerapp/services/game_play/game_chat_service.dart';
@@ -64,120 +65,105 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
 
   Offset seatChangeFrom, seatChangeTo;
   HostSeatChange hostSeatChange;
-  bool isSeatReverseChanged = false;
   int seatChangerPlayer;
+  int seatChangeToo;
 
   @override
   void initState() {
     _playerKeys = List.generate(9, (index) => GlobalKey());
     widget.gameComService.chat.listen(onAnimation: this.onAnimation);
     // animationHandlers();
-    // seatChangeAnimationHandler();
+    _seatChangeAnimationHandler();
+    // seatChangeAnimationHandler_old();
     super.initState();
   }
-  //
-  // seatChangeAnimationHandler() {
-  //   Provider.of<HostSeatChange>(
-  //     context,
-  //     listen: false,
-  //   ).addListener(() {
-  //     hostSeatChange = Provider.of<HostSeatChange>(
-  //       context,
-  //       listen: false,
-  //     );
-  //     print(
-  //         "provider data is changed and get notified ${hostSeatChange.fromSeatNo} ${hostSeatChange.toSeatNo}");
-  //
-  //
-  //     if (hostSeatChange.fromSeatNo != null &&
-  //         hostSeatChange.toSeatNo != null &&
-  //         hostSeatChange.toSeatNo != hostSeatChange.fromSeatNo) {
-  //       final positions = findPostionOfFromAndTouser(
-  //         fromSeat: hostSeatChange.fromSeatNo,
-  //         toSeat: hostSeatChange.toSeatNo,
-  //       );
-  //       seatChangerPlayer = hostSeatChange.fromSeatNo;
-  //       seatChangeTo = hostSeatChange.toSeatNo;
-  //       seatChangeFrom = positions[0];
-  //       SeactChangeto = positions[1];
-  //       seatChangeAnimation = Tween<Offset>(
-  //         begin: seatChangeFrom,
-  //         end: SeactChangeto,
-  //       ).animate(seatChangeAnimationController);
-  //       isSeatChanging = true;
-  //       isSeatReverseChanged = false;
-  //       seatChangeAnimationController.forward();
-  //     }
-  //   });
-  // }
+
+  void _seatChangeAnimationHandler() {
+    final HostSeatChange hostSeatChange = Provider.of<HostSeatChange>(
+      context,
+      listen: false,
+    );
+
+    /* initialize the animation controller */
+    seatChangeAnimationController = AnimationController(
+      vsync: this,
+      duration: AppConstants.seatChangeAnimationDuration,
+    );
+
+    /* TODO: CAN BE MADE EFFICIENT USING ANIMATION BUILDER */
+    /* refresh, when the animation plays */
+    seatChangeAnimationController.addListener(() => setState(() {
+          if (seatChangeAnimationController.isCompleted) isSeatChanging = false;
+        }));
+
+    /* listen for changes in the host seat change model, to trigger seat change animation */
+    hostSeatChange.addListener(() {
+      final int fromSeatNo = hostSeatChange.fromSeatNo;
+      final int toSeatNo = hostSeatChange.toSeatNo;
+
+      if (fromSeatNo == null || toSeatNo == null) return;
+
+      final positions = findPositionOfFromAndToUser(
+        fromSeat: fromSeatNo,
+        toSeat: toSeatNo,
+      );
+      seatChangerPlayer = hostSeatChange.fromSeatNo;
+      seatChangeToo = hostSeatChange.toSeatNo;
+
+      seatChangeFrom = positions[0];
+      seatChangeTo = positions[1];
+
+      seatChangeAnimationController.reset();
+
+      seatChangeAnimation = Tween<Offset>(
+        begin: seatChangeFrom,
+        end: seatChangeTo,
+      ).animate(seatChangeAnimationController);
+
+      seatChangeAnimationController.forward();
+
+      isSeatChanging = true;
+    });
+  }
 
   @override
   void dispose() {
-    // _lottieController.dispose();
-    // animationController.dispose();
+    _lottieController.dispose();
+    animationController.dispose();
     super.dispose();
   }
-  //
-  // animationHandlers() {
-  //   _lottieController = AnimationController(
-  //     vsync: this,
-  //     duration: Duration(seconds: 2),
-  //   );
-  //
-  //   animationController = AnimationController(
-  //     vsync: this,
-  //     duration: Duration(seconds: 3),
-  //   );
-  //
-  //   seatChangeAnimationController = AnimationController(
-  //     vsync: this,
-  //     duration: Duration(seconds: 2),
-  //   );
-  //
-  //   _lottieController.addListener(() {
-  //     if (_lottieController.isCompleted) {
-  //       isLottieAnimationAnimating = false;
-  //       _lottieController.reset();
-  //     }
-  //     setState(() {});
-  //   });
-  //
-  //   seatChangeAnimationController.addListener(() {
-  //     if (seatChangeAnimationController.isCompleted) {
-  //       if (!isSeatReverseChanged) {
-  //         seatChangerPlayer = seatChangeTo;
-  //         isSeatReverseChanged = true;
-  //         Future.delayed(Duration(seconds: 1), () {
-  //           seatChangeAnimationController.reset();
-  //           seatChangeAnimation = Tween<Offset>(
-  //             begin: SeactChangeto,
-  //             end: seatChangeFrom,
-  //           ).animate(seatChangeAnimationController);
-  //           isSeatChanging = false;
-  //           seatChangeAnimationController.forward();
-  //         });
-  //       } else {
-  //         seatChangeAnimationController.reset();
-  //         setState(() {
-  //           isSeatReverseChanged = false;
-  //         });
-  //       }
-  //     }
-  //     setState(() {});
-  //   });
-  //
-  //   animationController.addListener(() {
-  //     if (animationController.isCompleted) {
-  //       Future.delayed(Duration(seconds: 1), () {
-  //         isAnimating = false;
-  //         animationController.reset();
-  //         isLottieAnimationAnimating = true;
-  //         _lottieController.forward();
-  //       });
-  //     }
-  //     // setState(() {});
-  //   });
-  // }
+
+  animationHandlers() {
+    _lottieController = AnimationController(
+      vsync: this,
+      duration: Duration(seconds: 2),
+    );
+
+    animationController = AnimationController(
+      vsync: this,
+      duration: Duration(seconds: 3),
+    );
+
+    _lottieController.addListener(() {
+      if (_lottieController.isCompleted) {
+        isLottieAnimationAnimating = false;
+        _lottieController.reset();
+      }
+      setState(() {});
+    });
+
+    animationController.addListener(() {
+      if (animationController.isCompleted) {
+        Future.delayed(Duration(seconds: 1), () {
+          isAnimating = false;
+          animationController.reset();
+          isLottieAnimationAnimating = true;
+          _lottieController.forward();
+        });
+      }
+      // setState(() {});
+    });
+  }
 
   void onAnimation(ChatMessage message) async {
     Offset from;
@@ -190,7 +176,7 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
     }
 
     /*
-    * find postion of to and from user
+    * find position of to and from user
     **/
     final positions = findPositionOfFromAndToUser(
         fromSeat: message.fromSeat, toSeat: message.toSeat);
@@ -217,21 +203,23 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
     final parentWidgetPosition = getPositionOffsetFromKey(_parentKey);
 
     /* get from player position */
-    final fromPlayerWidgetPosition =
-        getPositionOffsetFromKey(_playerKeys[fromSeat - 1]);
+    final fromPlayerWidgetPosition = getPositionOffsetFromKey(
+      _playerKeys[fromSeat - 1],
+    );
 
     /* get to player position */
-    final toPlayerWidgetPosition =
-        getPositionOffsetFromKey(_playerKeys[toSeat - 1]);
+    final toPlayerWidgetPosition = getPositionOffsetFromKey(
+      _playerKeys[toSeat - 1],
+    );
 
-    // /* find the player */
-    // widget.players.players.singleWhere((player) => player.seatNo == fromSeat);
-    // widget.players.players.singleWhere((player) => player.seatNo == toSeat);
-
-    final Offset from = Offset(fromPlayerWidgetPosition.dx,
-        fromPlayerWidgetPosition.dy - parentWidgetPosition.dy);
-    final Offset to = Offset(toPlayerWidgetPosition.dx,
-        toPlayerWidgetPosition.dy - parentWidgetPosition.dy);
+    final Offset from = Offset(
+      fromPlayerWidgetPosition.dx,
+      fromPlayerWidgetPosition.dy - parentWidgetPosition.dy,
+    );
+    final Offset to = Offset(
+      toPlayerWidgetPosition.dx,
+      toPlayerWidgetPosition.dy - parentWidgetPosition.dy,
+    );
 
     return [from, to];
   }
@@ -285,7 +273,7 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
                 )
               : SizedBox.shrink(),
 
-          isSeatReverseChanged || isSeatChanging
+          isSeatChanging
               ? Positioned(
                   left: seatChangeAnimation.value.dx,
                   top: seatChangeAnimation.value.dy + 32,
