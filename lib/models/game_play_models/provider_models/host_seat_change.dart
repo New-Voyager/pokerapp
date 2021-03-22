@@ -35,7 +35,7 @@ class HostSeatChange extends ChangeNotifier {
   double _stack;
   bool _fromOpenSeat;
   bool _toOpenSeat;
-  List<PlayerInSeat>  playersInSeats = [];
+  List<PlayerInSeat> playersInSeats = [];
 
   List<SeatChangeStatus> allSeatChangeStatus =
       List.generate(10, (_) => SeatChangeStatus());
@@ -59,7 +59,11 @@ class HostSeatChange extends ChangeNotifier {
   }
 
   void updateSeatChangePlayer(
-      int fromSeat, int toSeat, String playerName, double stack) {
+    int fromSeat,
+    int toSeat,
+    String playerName,
+    double stack,
+  ) {
     this.fromSeatNo = fromSeat;
     this.toSeatNo = toSeat;
     this._playerName = playerName;
@@ -73,7 +77,7 @@ class HostSeatChange extends ChangeNotifier {
   set animate(bool v) {
     this._animateSeatChange = v;
   }
-  
+
   bool get animate {
     return this._animateSeatChange;
   }
@@ -101,7 +105,7 @@ class HostSeatChange extends ChangeNotifier {
     notifyAll();
   }
 
-  onSeatdrop(int from, int to) {
+  onSeatDrop(int from, int to) {
     fromSeatNo = from;
     toSeatNo = to;
     notifyAll();

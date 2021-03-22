@@ -217,7 +217,7 @@ class TableUpdateService {
     // {"gameId":"18", "gameCode":"CG-LBH8IW24N7XGE5", "messageType":"TABLE_UPDATE", "tableUpdate":{"type":"HostSeatChangeMove", "seatMoves":[{"playerId":"131", "playerUuid":"290bf492-9dde-448e-922d-40270e163649", "name":"rich", "oldSeatNo":6, "newSeatNo":1}, {"playerId":"122", "playerUuid":"c2dc2c3d-13da-46cc-8c66-caa0c77459de", "name":"yong", "oldSeatNo":1, "newSeatNo":6}]}}
     // player is moved, show animation of the move
 
-    final seatChange = Provider.of<HostSeatChange>(context, listen: false);
+    final hostSeatChange = Provider.of<HostSeatChange>(context, listen: false);
     var seatMoves = data['tableUpdate']['seatMoves'];
     for (var move in seatMoves) {
       int from = int.parse(move['oldSeatNo'].toString());
@@ -228,7 +228,7 @@ class TableUpdateService {
 
       //seatChange.updateSeatChangePlayer(from, to, name, stack);
       //seatChange.animate = true;
-      seatChange.onSeatdrop(from, to);
+      hostSeatChange.onSeatDrop(from, to);
       // run animation now
       await Future.delayed(AppConstants.notificationDuration);
       //seatChange.updateSeatChangePlayer(null, null, null, null);
@@ -246,9 +246,5 @@ class TableUpdateService {
     players.refreshWithPlayerInSeat(
       await SeatChangeService.hostSeatChangeSeatPositions(gameCode),
     );
-
-    // List<PlayerInSeat> playersInSeats = ;
-    // seatChange.updatePlayersInSeats(playersInSeats);
-    // seatChange.notifyAll();
   }
 }
