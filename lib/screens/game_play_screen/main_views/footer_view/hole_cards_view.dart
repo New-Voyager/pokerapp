@@ -5,7 +5,6 @@ import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/screens/game_play_screen/card_views/hole_stack_card_view.dart';
-import 'package:pokerapp/screens/game_play_screen/card_views/stack_card_view.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 
 import 'footer_action_view.dart';
@@ -48,7 +47,7 @@ class _HoleCardsViewState extends State<HoleCardsView> {
               setState(() {
                 isCardVisible = !isCardVisible;
               });
-              debugPrint("HoleCardsView : Container");
+              //debugPrint("HoleCardsView : Container");
             },
             child: Align(
               alignment: Alignment.topCenter,
@@ -63,7 +62,7 @@ class _HoleCardsViewState extends State<HoleCardsView> {
                         return card;
                       },
                     )?.toList() ??
-                    List<CardObject>(),
+                    [],
               ),
             ),
           ),

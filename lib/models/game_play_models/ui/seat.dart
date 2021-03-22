@@ -26,25 +26,6 @@ class Seat {
   bool _openSeat;
   PlayerModel _player;
 
-  // List<int> cards;
-  // List<int> highlightCards;
-
-  // // this status is shown to all the players, by showing a little pop up below the user object
-  // String status;
-  
-  // // seat status for animations
-  // bool highlight;
-  // TablePosition playerType;
-  // bool playerFolded = false;
-  // bool winner;
-  // int coinAmount;
-  // bool animatingCoinMovement;
-  // bool animatingCoinMovementReverse;
-  // bool showFirework;
-
-  // int noOfCardsVisible;
-  // bool animatingFold = false;
-
   Seat(int localSeatPos, int serverSeatPos, PlayerModel player) {
     this.localSeatPos = localSeatPos;
     this._openSeat = false;

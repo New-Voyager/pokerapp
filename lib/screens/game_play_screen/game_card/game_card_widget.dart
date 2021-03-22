@@ -113,7 +113,6 @@ class GameCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint("GameCardWidget");
     return buildCardWidget(context);
   }
 
