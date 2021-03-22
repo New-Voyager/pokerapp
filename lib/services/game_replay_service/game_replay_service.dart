@@ -15,7 +15,7 @@ class GameReplayService {
           name: player['name'],
           seatNo: int.parse(seatNo),
           playerUuid: '',
-          buyIn: null,
+          // buyIn: null,
           stack: player['balance']['before'],
           status: null,
         ),

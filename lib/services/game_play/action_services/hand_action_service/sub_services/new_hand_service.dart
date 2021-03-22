@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
-import 'package:pokerapp/enums/game_play_enums/player_type.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/footer_result.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
+import 'package:pokerapp/models/game_play_models/ui/seat.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/card_back_assets.dart';
@@ -89,7 +89,7 @@ class NewHandService {
 
     players.updatePlayerTypeSilent(
       smallBlindIdx,
-      PlayerType.SmallBlind,
+      TablePosition.SmallBlind,
       coinAmount: smallBlind,
     );
 
@@ -98,7 +98,7 @@ class NewHandService {
     assert(bigBlindIdx != -1);
     players.updatePlayerTypeSilent(
       bigBlindIdx,
-      PlayerType.BigBlind,
+      TablePosition.BigBlind,
       coinAmount: bigBlind,
     );
 
@@ -108,7 +108,7 @@ class NewHandService {
     assert(dealerIdx != -1);
     players.updatePlayerTypeSilent(
       dealerIdx,
-      PlayerType.Dealer,
+      TablePosition.Dealer,
     );
 
     players.notifyAll();

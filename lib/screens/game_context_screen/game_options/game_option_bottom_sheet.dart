@@ -12,7 +12,8 @@ import 'pending_approvals_option.dart';
 class GameOptionsBottomSheet extends StatefulWidget {
   String gameCode;
   String playerUuid;
-  GameOptionsBottomSheet(this.gameCode, this.playerUuid);
+  bool isAdmin;
+  GameOptionsBottomSheet(this.gameCode, this.playerUuid, this.isAdmin);
 
   @override
   _GameOptionsState createState() => _GameOptionsState();
@@ -55,6 +56,7 @@ class _GameOptionsState extends State<GameOptionsBottomSheet> {
                 ? GameOption(
                     widget.gameCode,
                     widget.playerUuid,
+                    widget.isAdmin
                   )
                 : selectedOptionIndex == 1
                     ? SingleChildScrollView(

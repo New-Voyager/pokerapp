@@ -9,7 +9,8 @@ import 'package:pokerapp/screens/game_play_screen/main_views/board_view/board_vi
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/center_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/decorative_views/table_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/players_on_table_view.dart';
-import 'package:pokerapp/screens/game_play_screen/player_view/animating_widgets/stack_switch_seat_animating_widget.dart';
+import 'package:pokerapp/screens/game_play_screen/seat_view/animating_widgets/stack_switch_seat_animating_widget.dart';
+import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:provider/provider.dart';
 
 const _centerViewOffset = const Offset(0.0, -30.0);
@@ -21,7 +22,9 @@ class BoardView extends StatelessWidget {
     @required this.gameInfo,
     @required this.onUserTap,
     @required this.onStartGame,
+    @required this.gameComService,
   });
+  final GameComService gameComService;
   final GameInfoModel gameInfo;
   final Function(int index) onUserTap;
   final Function() onStartGame;
@@ -67,18 +70,20 @@ class BoardView extends StatelessWidget {
 
         Consumer<Players>(
           builder: (
-            BuildContext context,
+            BuildContext _,
             Players players,
-            Widget child,
+            Widget __,
           ) =>
               Transform.translate(
             offset: _playersOnTableOffset,
             child: PlayersOnTableView(
               players: players,
+              gameComService: gameComService,
               isBoardHorizontal: isBoardHorizontal,
               widthOfBoard: widthOfBoard,
               heightOfBoard: heightOfBoard,
               onUserTap: onUserTap,
+              maxPlayers: gameInfo.maxPlayers,
             ),
           ),
         ),

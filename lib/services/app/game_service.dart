@@ -191,6 +191,30 @@ class GameService {
    addChatText(text: \$text)
   }
   """;
+  static String beginHostSeatChangeQuery = """
+  mutation beginHostSeatChange(\$gameCode: String!) {
+	seatChange: beginHostSeatChange(
+		gameCode: \$gameCode)
+  }  
+  """;
+
+  static Future<bool> beginHostSeatChange(
+    String gameCode,
+  ) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+    Map<String, dynamic> variables = {
+      "gameCode": gameCode,
+    };
+    QueryResult result = await _client.mutate(
+      MutationOptions(
+        documentNode: gql(beginHostSeatChangeQuery),
+        variables: variables,
+      ),
+    );
+    if (result.hasException) return false;
+    print("result $result");
+    return result.data['addClubChatText'] ?? false;
+  }
 
   static Future<List<String>> favouriteGiphies({String gameCode}) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();

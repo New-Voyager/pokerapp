@@ -218,4 +218,13 @@ class AppStyles {
     color: Colors.white,
     fontSize: 20.0,
   );
+
+  static const TextStyle stickerDialogText = TextStyle(
+    fontFamily: 'Lato',
+    color: AppColors.stickerDialogTextColor,
+    fontSize: 20.0,
+  );
+
+  static const TextStyle stickerDialogActionText =
+      TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold);
 }

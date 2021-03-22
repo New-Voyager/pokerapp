@@ -82,8 +82,9 @@ class _ReplayHandUtilScreenState extends State<ReplayHandUtilScreen> {
       providers: GamePlayScreenUtilMethods.getProviders(
         gameInfoModel: widget.gameReplayController.gameInfoModel,
         gameCode: widget.gameCode,
-        playerID: widget.playerID,
-        playerUuid: widget.gameReplayController.playerUuid,
+        // TODO: DO WE NEED TO PASS THE PAYER ID AND PLAYER UUID?
+        // playerID: widget.playerID,
+        // playerUuid: widget.gameReplayController.playerUuid,
         agora: null,
         sendPlayerToHandChannel: null,
       ),

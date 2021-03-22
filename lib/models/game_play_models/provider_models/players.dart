@@ -1,8 +1,9 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:pokerapp/enums/game_play_enums/player_type.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
+import 'package:pokerapp/models/game_play_models/ui/seat.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
 
@@ -34,6 +35,23 @@ class Players extends ChangeNotifier {
     notifyListeners();
   }
 
+  void refreshWithPlayerInSeat(List<PlayerInSeat> playersInSeat) {
+    assert(playersInSeat != null);
+
+    _players.clear();
+
+    playersInSeat.forEach((playerInSeatModel) {
+      _players.add(PlayerModel(
+        name: playerInSeatModel.name,
+        seatNo: playerInSeatModel.seatNo,
+        playerUuid: playerInSeatModel.playerId,
+        stack: playerInSeatModel.stack.toInt(),
+      ));
+    });
+
+    notifyAll();
+  }
+
   void updatePlayerFoldedStatusSilent(int idx, bool folded) {
     _players[idx].animatingFold = true;
     _players[idx].playerFolded = true;
@@ -46,7 +64,7 @@ class Players extends ChangeNotifier {
 
   void removeMarkersFromAllPlayerSilent() {
     for (int i = 0; i < _players.length; i++)
-      _players[i].playerType = PlayerType.None;
+      _players[i].playerType = TablePosition.None;
   }
 
   void addNewPlayerSilent(PlayerModel playerModel) {
@@ -57,7 +75,7 @@ class Players extends ChangeNotifier {
     _players[idx] = newPlayerModel;
   }
 
-  void updatePlayerTypeSilent(int idx, PlayerType playerType,
+  void updatePlayerTypeSilent(int idx, TablePosition playerType,
       {int coinAmount}) {
     _players[idx].playerType = playerType;
     if (coinAmount != null) {

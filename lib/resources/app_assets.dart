@@ -41,6 +41,7 @@ class AppAssets {
   static const String playerTurnSound = 'assets/sound_effects/player_turn.mp3';
 
   static const String cardsImage = 'assets/images/cardicon.png';
+  static const String cardBackImage = 'assets/images/card_back/set2/Asset 6.png';
 
   static const List<String> soundEffects = [
     betRaiseSound,

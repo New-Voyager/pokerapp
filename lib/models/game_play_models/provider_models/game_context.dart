@@ -1,21 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/player_info.dart';
 
-class HeaderObject extends ChangeNotifier {
+class GameContextObject extends ChangeNotifier {
   String _gameCode;
   int _currentHandNum;
-  int _playerId;
-  String _playerUuid;
-
+  PlayerInfo _currentPlayer;
   bool _gameEnded = false;
 
-  HeaderObject({
+  GameContextObject({
     @required String gameCode,
-    @required int playerId,
-    @required String playerUuid,
+    @required PlayerInfo player,
   }) {
     this._gameCode = gameCode;
-    this._playerId = playerId;
-    this._playerUuid = playerUuid;
+    this._currentPlayer = player;
   }
 
   set currentHandNum(int newValue) {
@@ -34,6 +31,13 @@ class HeaderObject extends ChangeNotifier {
   String get gameCode => _gameCode;
   int get currentHandNum => _currentHandNum;
   bool get gameEnded => _gameEnded;
-  String get playerUuid => _playerUuid;
-  int get playerId => _playerId;
+  String get playerUuid => _currentPlayer.uuid;
+  int get playerId => _currentPlayer.id;
+
+  bool isAdmin() {
+    if (_currentPlayer.role.isHost || _currentPlayer.role.isManager || _currentPlayer.role.isOwner) {
+      return true;
+    }
+    return false;
+  }
 }

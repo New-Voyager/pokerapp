@@ -40,8 +40,6 @@ class VisibleCardViewDelete extends StatelessWidget {
           Provider.of<ValueNotifier<String>>(context, listen: false).value;
     } catch (_) {}
 
-    log('This is being build');
-
     return Transform.scale(
       scale: isNotCommunityCard ? 0.85 : 1.4,
       child: Container(

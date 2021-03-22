@@ -1,11 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pokerapp/models/rewards_model.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/club_screen_icons_icons.dart';
 import 'package:pokerapp/screens/club_screen/rewards_screen/create_rewards_screen.dart';
-import 'package:pokerapp/services/app/rewards_service.dart';
 import 'package:pokerapp/widgets/custom_text_button.dart';
 import 'package:provider/provider.dart';
 
@@ -15,7 +13,7 @@ class RewardsListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: true,
+//      resizeToAvoidBottomPadding: true,
       key: _key,
       backgroundColor: AppColors.screenBackgroundColor,
       appBar: AppBar(

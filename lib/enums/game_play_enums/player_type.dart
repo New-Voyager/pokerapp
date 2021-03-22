@@ -1,6 +1,3 @@
-enum PlayerType {
-  Dealer,
-  SmallBlind,
-  BigBlind,
-  None,
+enum PlayerType{
+  NONE,
 }

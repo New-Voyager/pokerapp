@@ -72,7 +72,7 @@ class CardHelper {
     int n = int.parse(number);
     List<int> tmp = _int64LittleEndianBytes(n);
 
-    List<int> cards = List<int>();
+    List<int> cards = [];
     for (int t in tmp) if (t != 0) cards.add(t);
 
     return cards;
