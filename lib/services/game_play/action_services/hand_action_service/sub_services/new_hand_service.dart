@@ -134,11 +134,7 @@ class NewHandService {
     await Future.delayed(AppConstants.fastAnimationDuration);
 
     // remove all the community cards
-    tableState.updateCommunityCardsSilent([]);
-    tableState.updatePotChipsSilent(
-      potChips: null,
-      potUpdatesChips: null,
-    );
+    tableState.clear();
     /* put new hand message */
     tableState.updateTableStatusSilent(AppConstants.NEW_HAND);
 

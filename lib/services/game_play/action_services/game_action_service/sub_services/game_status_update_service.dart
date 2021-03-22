@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_service/sub_services/board_service.dart';
@@ -23,10 +24,12 @@ class GameStatusUpdateService {
     String tableStatus = status['tableStatus'];
     String gameStatus = status['status'];
 
-    final TableState tableState = Provider.of<TableState>(
+    final GameState gameState = Provider.of<GameState>(
       context,
       listen: false,
     );
+
+    final tableState = gameState.getTableState(context);
 
     tableState.updateTableStatusSilent(tableStatus);
     tableState.updateGameStatusSilent(gameStatus);

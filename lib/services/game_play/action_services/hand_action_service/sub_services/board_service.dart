@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/footer_result.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:provider/provider.dart';
@@ -14,10 +15,11 @@ class BoardService {
       listen: false,
     );
 
-    final TableState tableState = Provider.of<TableState>(
+    final GameState gameState = Provider.of<GameState>(
       context,
       listen: false,
     );
+    gameState.clear(context);
 
     // remove all highlight winners
     players.removeWinnerHighlightSilent();
@@ -45,13 +47,5 @@ class BoardService {
       context,
       listen: false,
     ).reset();
-
-    // remove all the community cards
-    tableState.updateCommunityCardsSilent([]);
-    tableState.updatePotChipsSilent(
-      potChips: null,
-      potUpdatesChips: null,
-    );
-    tableState.notifyAll();
   }
 }

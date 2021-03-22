@@ -69,43 +69,43 @@ class FooterResultView extends StatelessWidget {
         .toList();
   }
 
-  Widget _buildFooterResultCommunitySection(
-      List<int> cardsToHighlight, BuildContext context) {
-    List<CardObject> _communityCards = Provider.of<TableState>(
-      context,
-      listen: false,
-    ).cards;
+  // Widget _buildFooterResultCommunitySection(
+  //     List<int> cardsToHighlight, BuildContext context) {
+  //   List<CardObject> _communityCards = Provider.of<TableState>(
+  //     context,
+  //     listen: false,
+  //   ).cards;
 
-    List<CardObject> cards = List<CardObject>();
-    _communityCards.forEach((c) {
-      CardObject card = CardHelper.getCard(
-        CardHelper.getRawCardNumber('${c.label}${c.suit}'),
-      );
+  //   List<CardObject> cards = List<CardObject>();
+  //   _communityCards.forEach((c) {
+  //     CardObject card = CardHelper.getCard(
+  //       CardHelper.getRawCardNumber('${c.label}${c.suit}'),
+  //     );
 
-      cards.add(card);
-    });
+  //     cards.add(card);
+  //   });
 
-    return Row(
-      children: [
-        /* community text */
-        Expanded(
-          child: Text(
-            'Community',
-            style: AppStyles.footerResultTextStyle1,
-          ),
-        ),
+  //   return Row(
+  //     children: [
+  //       /* community text */
+  //       Expanded(
+  //         child: Text(
+  //           'Community',
+  //           style: AppStyles.footerResultTextStyle1,
+  //         ),
+  //       ),
 
-        /* community cards */
-        Expanded(
-          flex: 3,
-          child: getCardRowView(
-            cards: cards,
-            cardsToHighlight: cardsToHighlight,
-          ),
-        ),
-      ],
-    );
-  }
+  //       /* community cards */
+  //       Expanded(
+  //         flex: 3,
+  //         child: getCardRowView(
+  //           cards: cards,
+  //           cardsToHighlight: cardsToHighlight,
+  //         ),
+  //       ),
+  //     ],
+  //   );
+  // }
 
   Widget _buildUserNameAndCards({
     String winnerName,
@@ -218,10 +218,10 @@ class FooterResultView extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           /* community cards */
-          _buildFooterResultCommunitySection(
-            winners.first.winningCards,
-            context,
-          ),
+          // _buildFooterResultCommunitySection(
+          //   winners.first.winningCards,
+          //   context,
+          // ),
 
           /* winner text */
           Padding(

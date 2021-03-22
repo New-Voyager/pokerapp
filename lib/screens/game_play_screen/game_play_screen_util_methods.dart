@@ -126,7 +126,7 @@ class GamePlayScreenUtilMethods {
           ),
         ),
 
-        ListenableProvider<GameState>(
+        Provider<GameState>(
           create: (_) => gameState,
         ),
 
@@ -150,13 +150,6 @@ class GamePlayScreenUtilMethods {
         ListenableProvider<Players>(
           create: (_) => Players(
             players: gameInfoModel.playersInSeats,
-          ),
-        ),
-
-        /* TableStatus is updated as a string value */
-        ListenableProvider<TableState>(
-          create: (_) => TableState(
-            tableStatus: gameInfoModel.tableStatus,
           ),
         ),
 

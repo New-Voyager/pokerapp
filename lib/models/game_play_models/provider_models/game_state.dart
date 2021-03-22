@@ -3,30 +3,43 @@ import 'package:pokerapp/enums/game_type.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
+import 'table_state.dart';
+
 
 /*
  * This class maintains game state. This state is updated by hand messages.
  */
-class GameState extends ChangeNotifier {
+class GameState {
 
   ListenableProvider<HandInfoState> _handInfo;
+  ListenableProvider<TableState> _tableState;
+  
 
   void initialize() {
     // create hand info provider
     this._handInfo = ListenableProvider<HandInfoState>(create: (_) => HandInfoState());
+    this._tableState = ListenableProvider<TableState>(create: (_) => TableState());
   }
 
-  void clear() {
-
+  void clear(BuildContext context) {
+    final tableState = this.getTableState(context);
+    // remove all the community cards
+    tableState.clear();
+    tableState.notifyAll();
   }
 
   HandInfoState getHandInfo(BuildContext context, {bool listen: false}) {
     return Provider.of<HandInfoState>(context, listen: listen);
   }
 
+  TableState getTableState(BuildContext context, {bool listen: false}) {
+    return Provider.of<TableState>(context, listen: listen);
+  }
+
   List<SingleChildWidget> get providers {
     return [
       this._handInfo,
+      this._tableState,
     ];
   }
 }
