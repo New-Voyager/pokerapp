@@ -94,7 +94,7 @@ class GameState {
     players.removePlayerSilent(seatNo);
   }
   
-  void resetPlayers(BuildContext context, {bool notify = false}) {
+  void resetPlayers(BuildContext context, {bool notify = true}) {
     final players = this.getPlayers(context);
     // remove all highlight winners
     players.removeWinnerHighlightSilent();
