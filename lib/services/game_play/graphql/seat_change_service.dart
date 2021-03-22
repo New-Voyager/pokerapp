@@ -65,7 +65,8 @@ class SeatChangeService {
   }
 
   static Future<List<PlayerInSeat>> hostSeatChangeSeatPositions(
-      String gameCode) async {
+    String gameCode,
+  ) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
 
     String query = """query (\$gameCode: String!) {
