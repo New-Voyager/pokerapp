@@ -41,18 +41,14 @@ class StageUpdateService {
   }) async {
     assert(key != null);
     log('StageUpdate: $data');
-    // show the move coin to pot animation, after that update the pot
-    final Players players = Provider.of<Players>(
-      context,
-      listen: false,
-    );
-
     final GameState gameState = Provider.of<GameState>(
       context,
       listen: false,
     );
     final TableState tableState = gameState.getTableState(context);
+    final players = gameState.getPlayers(context);
 
+    // show the move coin to pot animation, after that update the pot
     players.moveCoinsToPot().then(
       (_) async {
         // update the pot

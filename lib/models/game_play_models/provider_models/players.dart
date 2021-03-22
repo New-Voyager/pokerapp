@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
@@ -23,6 +21,11 @@ class Players extends ChangeNotifier {
     notifyAll();
   }
 
+  void update(List<PlayerModel> players) {
+    this._players = players;
+    notifyAll();
+  }
+
   List<PlayerModel> get players => _players;
 
   void notifyAll() async {
@@ -33,6 +36,10 @@ class Players extends ChangeNotifier {
     // the current user is a player, thus update it and notify the listeners
     if (idx != -1) this._players[idx].isMe = true;
     notifyListeners();
+  }
+
+  void clear() {
+    
   }
 
   void refreshWithPlayerInSeat(List<PlayerInSeat> playersInSeat) {
@@ -218,4 +225,17 @@ class Players extends ChangeNotifier {
         );
     return tmp;
   }
+
+  bool get showBuyinPrompt {
+    if (this.me != null && this.me.stack == 0) {
+      return true;
+    }
+    return false;
+  }
+
+  PlayerModel fromSeat(int seatNo) {
+    int idx = _players.indexWhere((p) => p.seatNo == seatNo);
+    return _players[idx];
+  }
+
 }

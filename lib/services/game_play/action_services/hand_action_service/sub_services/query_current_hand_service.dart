@@ -39,7 +39,8 @@ class QueryCurrentHandService {
       context,
       listen: false,
     );
-    final TableState tableState = gameState.getTableState(context);
+    final tableState = gameState.getTableState(context);
+    final handInfo = gameState.getHandInfo(context);
 
     /* store the cards of the current player */
     int idxOfMe = players.players.indexWhere((p) => p.isMe);
@@ -50,10 +51,7 @@ class QueryCurrentHandService {
       );
 
     /* set the noOfVisible cards for other players */
-    int noOfCards = Provider.of<ValueNotifier<int>>(
-      context,
-      listen: false,
-    ).value;
+    int noOfCards = handInfo.noCards;
     players.visibleCardNumbersForAllSilent(noOfCards);
 
     // boardCards update if available

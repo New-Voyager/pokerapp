@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/ui/seat.dart';
 import 'package:pokerapp/resources/app_assets.dart';
@@ -41,14 +42,17 @@ class PlayerView extends StatelessWidget {
       onUserTap(seat.serverSeatPos);
     } else {
       // the player tapped to see the player profile
-      Players players = Provider.of<Players>(
+      final gameState = Provider.of<GameState>(
         context,
         listen: false,
       );
+
+      final me = gameState.me(context);
       // If user is not playing do not show dialog
-      if (players.me == null) {
+      if (me == null) {
         return;
       }
+
       await showModalBottomSheet(
         context: context,
         shape: RoundedRectangleBorder(
@@ -60,7 +64,7 @@ class PlayerView extends StatelessWidget {
           );
         },
       );
-      gameComService.chat.sendAnimation(players.me.seatNo, seat.serverSeatPos, 'poop');
+      gameComService.chat.sendAnimation(me.seatNo, seat.serverSeatPos, 'poop');
     }
   }
 

@@ -20,30 +20,11 @@ class TableUpdateService {
   static void _clearTable({
     BuildContext context,
   }) {
-    final Players players = Provider.of<Players>(
+    final gameState = Provider.of<GameState>(
       context,
       listen: false,
     );
-
-    // remove all highlight winners
-    players.removeWinnerHighlightSilent();
-
-    // before marking the small, big blind or the dealer, remove any marking from the old hand
-    players.removeMarkersFromAllPlayerSilent();
-
-    // remove all the status (last action) of all the players
-    players.removeAllPlayersStatusSilent();
-
-    // remove all the folder players
-    players.removeAllFoldedPlayersSilent();
-
-    /* reset the noCardsVisible of each player and remove my cards too */
-    players.removeCardsFromAllSilent();
-
-    /* reset the reverse pot chips animation */
-    players.resetMoveCoinsFromPotSilent();
-
-    players.notifyAll();
+    gameState.resetPlayers(context);
 
     /* clean up from result views */
     /* set footer status to none  */
@@ -57,11 +38,6 @@ class TableUpdateService {
       context,
       listen: false,
     ).value = FooterStatus.None;
-
-    final GameState gameState = Provider.of<GameState>(
-      context,
-      listen: false,
-    );
     gameState.clear(context);
   }
 
@@ -90,6 +66,10 @@ class TableUpdateService {
   }) async {
     var tableUpdate = data['tableUpdate'];
     /* when this message is received, clear the table & show a notification */
+    final gameState = Provider.of<GameState>(
+      context,
+      listen: false,
+    );
 
     /* clear everything */
     _clearTable(context: context);
@@ -99,20 +79,8 @@ class TableUpdateService {
     List<int> seatChangeSeatNo =
         tableUpdate['seatChangeSeatNo'].map<int>((s) => int.parse(s)).toList();
 
-    final Players players = Provider.of<Players>(
-      context,
-      listen: false,
-    );
-
-    final int idx = players.players.indexWhere(
-      (p) =>
-          p.seatNo ==
-          seatChangeSeatNo[0], // FIXME: FOR NOW JUST SHOWING THE FIRST USER
-    );
-
-    assert(idx != -1);
-
-    final PlayerModel player = players.players[idx];
+    final player = gameState.fromSeat(context, seatChangeSeatNo[0]);
+    assert(player != null);
 
     /* If I am in this list, show me a confirmation popup */
     if (player.isMe) {
@@ -227,10 +195,12 @@ class TableUpdateService {
     final gameCode = data["gameCode"].toString();
     // get current seat positions
 
-    final players = Provider.of<Players>(
+    final gameState = Provider.of<GameState>(
       context,
       listen: false,
     );
+
+    final players = gameState.getPlayers(context);
 
     /* refresh the player model */
     players.refreshWithPlayerInSeat(

@@ -91,6 +91,14 @@ class ResultService {
       data['handResult']['handLog']['potWinners'],
     );
 
+    /* players remove last status and markers */
+    players.removeAllPlayersStatusSilent();
+
+    players.removeMarkersFromAllPlayerSilent();
+
+    /* showdown time, show other players cards */
+    players.updateUserCardsSilent(_getCards(data));
+
     // get the winner seat No and highlight the winner
     winners.forEach((winner) {
       // highlight the winner seat No
@@ -102,14 +110,6 @@ class ResultService {
       context,
       listen: false,
     ).value = FooterStatus.Result;
-
-    /* players remove last status and markers */
-    players.removeAllPlayersStatusSilent();
-
-    players.removeMarkersFromAllPlayerSilent();
-
-    /* showdown time, show other players cards */
-    players.updateUserCardsSilent(_getCards(data));
 
     /* highlight cards of players and community cards for winner */
     tableState.highlightCardsSilent(_getBoardCards(data));
