@@ -4,6 +4,7 @@ import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/ui/seat.dart';
+import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/name_plate_view.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/player_view.dart';
 import 'package:pokerapp/services/game_play/game_chat_service.dart';
@@ -45,66 +46,83 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
   Animation<Offset> seatChangeAnimation;
   AnimationController seatChangeAnimationController;
 
-  // find postion of parent widget
-  GlobalKey key = GlobalKey();
+  // find positions of parent widget
+  GlobalKey _parentKey = GlobalKey();
 
   // hold position of user tile
-  List<GlobalKey> keys = [];
+  List<GlobalKey> _playerKeys = [];
 
   // some offset
   double offset = 30;
 
   // sender to receiver
-  bool isAnimatating = false;
+  bool isAnimating = false;
   bool isSeatChanging = false;
   AnimationController _lottieController;
   bool isLottieAnimationAnimating = false;
-  Offset lottieAnimationPostion;
+  Offset lottieAnimationPosition;
   int index;
 
-  Offset SeatChangefrom, SeactChangeto;
+  Offset seatChangeFrom, seatChangeTo;
   HostSeatChange hostSeatChange;
-  bool isSeatReverseChanged = false;
   int seatChangerPlayer;
-  int seatChangeTo;
+  int seatChangeToo;
+
   @override
   void initState() {
-    keys = List.generate(9, (index) => GlobalKey());
+    _playerKeys = List.generate(9, (index) => GlobalKey());
     widget.gameComService.chat.listen(onAnimation: this.onAnimation);
-    animationHandlers();
-    seatChangeAnimationHandler();
+    // animationHandlers();
+    _seatChangeAnimationHandler();
+    // seatChangeAnimationHandler_old();
     super.initState();
   }
 
-  seatChangeAnimationHandler() {
-    Provider.of<HostSeatChange>(
+  void _seatChangeAnimationHandler() {
+    final HostSeatChange hostSeatChange = Provider.of<HostSeatChange>(
       context,
       listen: false,
-    ).addListener(() {
-      hostSeatChange = Provider.of<HostSeatChange>(
-        context,
-        listen: false,
+    );
+
+    /* initialize the animation controller */
+    seatChangeAnimationController = AnimationController(
+      vsync: this,
+      duration: AppConstants.seatChangeAnimationDuration,
+    );
+
+    /* TODO: CAN BE MADE EFFICIENT USING ANIMATION BUILDER */
+    /* refresh, when the animation plays */
+    seatChangeAnimationController.addListener(() => setState(() {
+          if (seatChangeAnimationController.isCompleted) isSeatChanging = false;
+        }));
+
+    /* listen for changes in the host seat change model, to trigger seat change animation */
+    hostSeatChange.addListener(() {
+      final int fromSeatNo = hostSeatChange.fromSeatNo;
+      final int toSeatNo = hostSeatChange.toSeatNo;
+
+      if (fromSeatNo == null || toSeatNo == null) return;
+
+      final positions = findPositionOfFromAndToUser(
+        fromSeat: fromSeatNo,
+        toSeat: toSeatNo,
       );
-      print(
-          "provider data is changed and get notified ${hostSeatChange.fromSeatNo} ${hostSeatChange.toSeatNo}");
-      if (hostSeatChange.fromSeatNo != null &&
-          hostSeatChange.toSeatNo != null &&
-          hostSeatChange.toSeatNo != hostSeatChange.fromSeatNo) {
-        final positions = findPostionOfFromAndTouser(
-            fromSeat: hostSeatChange.fromSeatNo,
-            toSeat: hostSeatChange.toSeatNo);
-        seatChangerPlayer = hostSeatChange.fromSeatNo;
-        seatChangeTo = hostSeatChange.toSeatNo;
-        SeatChangefrom = positions[0];
-        SeactChangeto = positions[1];
-        seatChangeAnimation = Tween<Offset>(
-          begin: SeatChangefrom,
-          end: SeactChangeto,
-        ).animate(seatChangeAnimationController);
-        isSeatChanging = true;
-        isSeatReverseChanged = false;
-        seatChangeAnimationController.forward();
-      }
+      seatChangerPlayer = hostSeatChange.fromSeatNo;
+      seatChangeToo = hostSeatChange.toSeatNo;
+
+      seatChangeFrom = positions[0];
+      seatChangeTo = positions[1];
+
+      seatChangeAnimationController.reset();
+
+      seatChangeAnimation = Tween<Offset>(
+        begin: seatChangeFrom,
+        end: seatChangeTo,
+      ).animate(seatChangeAnimationController);
+
+      seatChangeAnimationController.forward();
+
+      isSeatChanging = true;
     });
   }
 
@@ -126,11 +144,6 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
       duration: Duration(seconds: 3),
     );
 
-    seatChangeAnimationController = AnimationController(
-      vsync: this,
-      duration: Duration(seconds: 2),
-    );
-
     _lottieController.addListener(() {
       if (_lottieController.isCompleted) {
         isLottieAnimationAnimating = false;
@@ -139,34 +152,10 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
       setState(() {});
     });
 
-    seatChangeAnimationController.addListener(() {
-      if (seatChangeAnimationController.isCompleted) {
-        if (!isSeatReverseChanged) {
-          seatChangerPlayer = seatChangeTo;
-          isSeatReverseChanged = true;
-          Future.delayed(Duration(seconds: 1), () {
-            seatChangeAnimationController.reset();
-            seatChangeAnimation = Tween<Offset>(
-              begin: SeactChangeto,
-              end: SeatChangefrom,
-            ).animate(seatChangeAnimationController);
-            isSeatChanging = false;
-            seatChangeAnimationController.forward();
-          });
-        } else {
-          seatChangeAnimationController.reset();
-          setState(() {
-            isSeatReverseChanged = false;
-          });
-        }
-      }
-      setState(() {});
-    });
-
     animationController.addListener(() {
       if (animationController.isCompleted) {
         Future.delayed(Duration(seconds: 1), () {
-          isAnimatating = false;
+          isAnimating = false;
           animationController.reset();
           isLottieAnimationAnimating = true;
           _lottieController.forward();
@@ -187,9 +176,9 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
     }
 
     /*
-    * find postion of to and from user
+    * find position of to and from user
     **/
-    final positions = findPostionOfFromAndTouser(
+    final positions = findPositionOfFromAndToUser(
         fromSeat: message.fromSeat, toSeat: message.toSeat);
     from = positions[0];
     to = positions[1];
@@ -197,27 +186,41 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
       begin: from,
       end: to,
     ).animate(animationController);
-    isAnimatating = true;
+    isAnimating = true;
     animationController.forward();
   }
 
-  List<Offset> findPostionOfFromAndTouser({int fromSeat, int toSeat}) {
-    Offset from, to;
-    final RenderBox renderBoxRed = key.currentContext.findRenderObject();
-    final paretWidgetPositionRed = renderBoxRed.localToGlobal(Offset.zero);
-    widget.players.players.forEach((element) {
-      final RenderBox renderBoxRed =
-          keys[element.seatNo - 1].currentContext.findRenderObject();
-      final positionRed = renderBoxRed.localToGlobal(Offset.zero);
-      if (element.seatNo == fromSeat) {
-        from =
-            Offset(positionRed.dx, positionRed.dy - paretWidgetPositionRed.dy);
-      } else if (element.seatNo == toSeat) {
-        to = Offset(positionRed.dx, positionRed.dy - paretWidgetPositionRed.dy);
-        lottieAnimationPostion =
-            Offset(positionRed.dx, positionRed.dy - paretWidgetPositionRed.dy);
-      }
-    });
+  Offset getPositionOffsetFromKey(GlobalKey key) {
+    final RenderBox renderBox = key.currentContext.findRenderObject();
+    return renderBox.localToGlobal(Offset.zero);
+  }
+
+  List<Offset> findPositionOfFromAndToUser({
+    int fromSeat,
+    int toSeat,
+  }) {
+    /* get parent position */
+    final parentWidgetPosition = getPositionOffsetFromKey(_parentKey);
+
+    /* get from player position */
+    final fromPlayerWidgetPosition = getPositionOffsetFromKey(
+      _playerKeys[fromSeat - 1],
+    );
+
+    /* get to player position */
+    final toPlayerWidgetPosition = getPositionOffsetFromKey(
+      _playerKeys[toSeat - 1],
+    );
+
+    final Offset from = Offset(
+      fromPlayerWidgetPosition.dx,
+      fromPlayerWidgetPosition.dy - parentWidgetPosition.dy,
+    );
+    final Offset to = Offset(
+      toPlayerWidgetPosition.dx,
+      toPlayerWidgetPosition.dy - parentWidgetPosition.dy,
+    );
+
     return [from, to];
   }
 
@@ -225,7 +228,7 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
   Widget build(BuildContext context) {
     // am I on this table?
     return Transform.translate(
-      key: key,
+      key: _parentKey,
       offset: Offset(
         0.0,
         -offset,
@@ -238,7 +241,7 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
 
           ...getPlayers(),
 
-          isAnimatating
+          isAnimating
               ? Positioned(
                   left: animation.value.dx,
                   top: animation.value.dy,
@@ -257,8 +260,8 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
 
           isLottieAnimationAnimating
               ? Positioned(
-                  top: lottieAnimationPostion.dy,
-                  left: lottieAnimationPostion.dx,
+                  top: lottieAnimationPosition.dy,
+                  left: lottieAnimationPosition.dx,
                   child: SizedBox(
                     height: 75,
                     width: 75,
@@ -270,13 +273,13 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
                 )
               : SizedBox.shrink(),
 
-          isSeatReverseChanged || isSeatChanging
+          isSeatChanging
               ? Positioned(
                   left: seatChangeAnimation.value.dx,
                   top: seatChangeAnimation.value.dy + 32,
                   child: NamePlateWidget(
-                          getSeats(widget.players.players)[seatChangerPlayer - 1],
-                      ),
+                    getSeats(widget.players.players)[seatChangerPlayer - 1],
+                  ),
                 )
               : SizedBox.shrink(),
         ],
@@ -291,7 +294,7 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
       (var u) {
         index++;
         return this._positionedForUsers(
-          key: keys[index],
+          key: _playerKeys[index],
           isBoardHorizontal: widget.isBoardHorizontal,
           seat: u.value,
           heightOfBoard: widget.heightOfBoard,
