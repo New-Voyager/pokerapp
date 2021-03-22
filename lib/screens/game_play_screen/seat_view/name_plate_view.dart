@@ -116,7 +116,7 @@ class NamePlateWidget extends StatelessWidget {
       {bool isFeedBack = false}) {
     bool winner = seat.player.winner ?? false;
     bool highlight = seat.player.highlight ?? false;
-    print('winner: $winner highlight: $highlight');
+    //print('winner: $winner highlight: $highlight');
 
     final shadow = getShadow(hostSeatChange, isFeedBack);
     return Container(

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/remaining_time.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
@@ -34,10 +35,11 @@ class QueryCurrentHandService {
       listen: false,
     );
 
-    final TableState tableState = Provider.of<TableState>(
+    final GameState gameState = Provider.of<GameState>(
       context,
       listen: false,
     );
+    final TableState tableState = gameState.getTableState(context);
 
     /* store the cards of the current player */
     int idxOfMe = players.players.indexWhere((p) => p.isMe);
@@ -60,7 +62,7 @@ class QueryCurrentHandService {
           .map<int>((e) => int.parse(e.toString()))
           .toList();
       if (boardCardsNum != null)
-        tableState.updateCommunityCardsSilent(
+        tableState.setBoard(1, 
           boardCardsNum.map<CardObject>((c) => CardHelper.getCard(c)).toList(),
         );
     } catch (e) {}

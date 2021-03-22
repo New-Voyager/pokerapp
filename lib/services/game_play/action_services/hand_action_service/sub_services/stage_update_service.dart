@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
@@ -17,10 +18,11 @@ class StageUpdateService {
       List<int> pots =
           data[key]['pots']?.map<int>((e) => int.parse(e.toString()))?.toList();
 
-      final TableState tableState = Provider.of<TableState>(
+      final GameState gameState = Provider.of<GameState>(
         context,
         listen: false,
       );
+      final tableState = gameState.getTableState(context);
 
       tableState.updatePotChipsSilent(
         potChips: pots,
@@ -38,17 +40,18 @@ class StageUpdateService {
     String key,
   }) async {
     assert(key != null);
-
+    log('StageUpdate: $data');
     // show the move coin to pot animation, after that update the pot
     final Players players = Provider.of<Players>(
       context,
       listen: false,
     );
 
-    final TableState tableState = Provider.of<TableState>(
+    final GameState gameState = Provider.of<GameState>(
       context,
       listen: false,
     );
+    final TableState tableState = gameState.getTableState(context);
 
     players.moveCoinsToPot().then(
       (_) async {
@@ -79,20 +82,29 @@ class StageUpdateService {
           )
           .toList();
 
-      for (int i = 0; i < cards.length; i++) {
-        tableState.addCommunityCardSilent(cards[i]);
-        tableState.notifyAll();
-        await Future.delayed(AppConstants.communityCardPushDuration);
-      }
+      log('1 StageUpdate flop: ${cards.length}');
+      tableState.flop(1, cards);
+      tableState.notifyAll();
+      await Future.delayed(AppConstants.communityCardPushDuration);
 
       // wait for a brief moment, then flip the cards
       await Future.delayed(AppConstants.communityCardPushDuration);
-      // tableState.flipCards(); FIXME: WE NEED A DIFFERENT ANIMATION
       tableState.notifyAll();
-    } else {
-      tableState.addCommunityCardSilent(
-        CardHelper.getCard(data[key]['${key}Card']),
-      );
+    } else if (key == 'turn') {
+      log('2 StageUpdate turn');
+
+      tableState.turn(1, CardHelper.getCard(data[key]['${key}Card']));
+      tableState.notifyAll();
+
+      // wait for a brief moment, then flip the last card
+      await Future.delayed(AppConstants.communityCardPushDuration);
+
+      // tableState.flipLastCard(); FIXME: WE NEED A DIFFERENT ANIMATION
+      tableState.notifyAll();
+    } else if (key == 'river') {
+      log('2 StageUpdate river');
+
+      tableState.river(1, CardHelper.getCard(data[key]['${key}Card']));
       tableState.notifyAll();
 
       // wait for a brief moment, then flip the last card

@@ -7,6 +7,7 @@ import 'package:pokerapp/models/game_play_models/business/card_distribution_mode
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/action_info.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/footer_result.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/notification_models/general_notification_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/notification_models/hh_notification_model.dart';
@@ -78,8 +79,12 @@ class GamePlayScreenUtilMethods {
     @required String gameCode,
     @required Agora agora,
     @required Function(String) sendPlayerToHandChannel,
-  }) =>
-      [
+  }) {
+      // initialize game state object
+      final gameState = GameState();
+      gameState.initialize();
+
+      var providers = [
         /* this is for the seat change animation values */
         ListenableProvider<ValueNotifier<SeatChangeModel>>(
           create: (_) => ValueNotifier<SeatChangeModel>(null),
@@ -107,9 +112,9 @@ class GamePlayScreenUtilMethods {
 
         /* a simple value notifier, holding INT which
         * resembles number of cards to deal with */
-        ListenableProvider<ValueNotifier<int>>(
-          create: (_) => ValueNotifier(2),
-        ),
+        // ListenableProvider<ValueNotifier<int>>(
+        //   create: (_) => ValueNotifier(2),
+        // ),
 
         /* a header object is used to update the header section of
         * the game screen - it contains data regarding the current hand no, club name,
@@ -119,6 +124,10 @@ class GamePlayScreenUtilMethods {
             gameCode: gameCode,
             player: currentPlayerInfo,
           ),
+        ),
+
+        Provider<GameState>(
+          create: (_) => gameState,
         ),
 
         /* board object used for changing board attributes */
@@ -141,13 +150,6 @@ class GamePlayScreenUtilMethods {
         ListenableProvider<Players>(
           create: (_) => Players(
             players: gameInfoModel.playersInSeats,
-          ),
-        ),
-
-        /* TableStatus is updated as a string value */
-        ListenableProvider<TableState>(
-          create: (_) => TableState(
-            tableStatus: gameInfoModel.tableStatus,
           ),
         ),
 
@@ -223,4 +225,11 @@ class GamePlayScreenUtilMethods {
         ),
 
       ];
+
+    for (var gameProvider in gameState.providers) {
+      providers.add(gameProvider);
+    }
+    
+    return providers;
+  }
 }
