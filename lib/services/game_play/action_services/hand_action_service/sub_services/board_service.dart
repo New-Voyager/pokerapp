@@ -10,30 +10,12 @@ class BoardService {
   BoardService._();
 
   static void reset(BuildContext context) async {
-    final Players players = Provider.of<Players>(
-      context,
-      listen: false,
-    );
-
     final GameState gameState = Provider.of<GameState>(
       context,
       listen: false,
     );
     gameState.clear(context);
-
-    // remove all highlight winners
-    players.removeWinnerHighlightSilent();
-
-    // before marking the small, big blind or the dealer, remove any marking from the old hand
-    players.removeMarkersFromAllPlayerSilent();
-
-    // remove all the status (last action) of all the players
-    players.removeAllPlayersStatusSilent();
-
-    // remove all the folder players
-    players.removeAllFoldedPlayersSilent();
-
-    players.notifyAll();
+    gameState.resetPlayers(context);
 
     /* clean up from result views */
     /* set footer status to none  */

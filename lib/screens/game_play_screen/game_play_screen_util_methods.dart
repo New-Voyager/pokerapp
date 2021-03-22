@@ -12,10 +12,8 @@ import 'package:pokerapp/models/game_play_models/provider_models/host_seat_chang
 import 'package:pokerapp/models/game_play_models/provider_models/notification_models/general_notification_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/notification_models/hh_notification_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/player_action/player_action.dart';
-import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/remaining_time.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat_change_model.dart';
-import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/player_info.dart';
@@ -30,19 +28,15 @@ class GamePlayScreenUtilMethods {
 
   /* After the entire table is drawn, if the current player (isMe == true)
     * is waiting for buyIn,then show the footer prompt */
-  static void checkForCurrentUserPrompt(BuildContext context) =>
-      Provider.of<Players>(
+  static void checkForCurrentUserPrompt(BuildContext context) {
+    final players = Provider.of<GameState>(context, listen: false).getPlayers(context);
+    if (players.showBuyinPrompt) {
+      Provider.of<ValueNotifier<FooterStatus>>(
         context,
         listen: false,
-      ).players.forEach(
-        (p) {
-          if (p.isMe && p.stack == 0)
-            Provider.of<ValueNotifier<FooterStatus>>(
-              context,
-              listen: false,
-            ).value = FooterStatus.Prompt;
-        },
-      );
+      ).value = FooterStatus.Prompt;
+    }
+  }
 
   static void startGame(String gameCode) async {
     developer.log('Starting the game');
@@ -82,7 +76,7 @@ class GamePlayScreenUtilMethods {
   }) {
       // initialize game state object
       final gameState = GameState();
-      gameState.initialize();
+      gameState.initialize(players: gameInfoModel.playersInSeats);
 
       var providers = [
         /* this is for the seat change animation values */
@@ -147,11 +141,11 @@ class GamePlayScreenUtilMethods {
         * This Listenable Provider updates the activities of players
         * Player joins, buy Ins, Stacks, everything is notified by the Players objects
         * */
-        ListenableProvider<Players>(
-          create: (_) => Players(
-            players: gameInfoModel.playersInSeats,
-          ),
-        ),
+        // ListenableProvider<Players>(
+        //   create: (_) => Players(
+        //     players: gameInfoModel.playersInSeats,
+        //   ),
+        // ),
 
         /* footer view, is maintained by this Provider - either how action buttons,
         * OR prompt for buy in are shown

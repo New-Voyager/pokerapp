@@ -13,35 +13,25 @@ class DealStartedService {
   static void handle({
     BuildContext context,
   }) async {
-    final Players players = Provider.of<Players>(
+    GameState gameState = Provider.of<GameState>(
       context,
       listen: false,
-    );
-
-    bool isMePresent = players.players.indexWhere((p) => p.isMe == true) != -1;
+    );    
+    final me = gameState.me(context);
 
     /* if I am present in this game,
      Deal Start message is unnecessary */
-    if (isMePresent) return;
+    if (me == null) return;
 
     // play the deal sound effect
     Audio.play(
       context: context,
       assetFile: AppAssets.dealSound,
     );
-
+    final players = gameState.getPlayers(context);
     List<int> seatNos = players.players.map((p) => p.seatNo).toList();
     seatNos.sort();
 
-    // int noOfCards = Provider.of<ValueNotifier<int>>(
-    //   context,
-    //   listen: false,
-    // ).value;
-
-    GameState gameState = Provider.of<GameState>(
-      context,
-      listen: false,
-    );
     final handInfo = gameState.getHandInfo(context);
 
     CardDistributionModel cardDistributionModel =

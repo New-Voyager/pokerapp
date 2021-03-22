@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/notification_models/hh_notification_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
@@ -58,18 +59,21 @@ class HighHandService {
       /* the player is in the current game - firework this user */
       int seatNo = winner['seatNo'] as int;
 
-      final Players players = Provider.of<Players>(
+      final GameState gameState = Provider.of<GameState>(
         context,
         listen: false,
       );
 
-      players.fireworkWinnerSilent(seatNo);
-      players.notifyAll();
+      // show firework
+      final player = gameState.fromSeat(context, seatNo);
+      player.showFirework = true;
+      gameState.updatePlayers(context);
 
       await Future.delayed(AppConstants.notificationDuration);
 
-      players.removeFireworkSilent(seatNo);
-      players.notifyAll();
+      // turn off firework
+      player.showFirework = false;
+      gameState.updatePlayers(context);
     }
   }
 }

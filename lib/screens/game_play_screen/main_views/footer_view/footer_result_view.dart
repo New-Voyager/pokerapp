@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/business/hi_winners_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/footer_result.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
@@ -49,24 +50,15 @@ class FooterResultView extends StatelessWidget {
       );
 
   String getNameFromSeatNo(int seatNo, {BuildContext context}) {
-    Players players = Provider.of<Players>(
-      context,
-      listen: false,
-    );
-    int idx = players.players.indexWhere((p) => p.seatNo == seatNo);
-    return players.players[idx].name;
+    final players = Provider.of<GameState>(context).getPlayers(context);
+    final player = players.fromSeat(seatNo);
+    return player.name;
   }
 
   List<CardObject> getCardsFromSeatNo(int seatNo, {BuildContext context}) {
-    Players players = Provider.of<Players>(
-      context,
-      listen: false,
-    );
-
-    int idx = players.players.indexWhere((p) => p.seatNo == seatNo);
-    return players.players[idx].cards
-        .map<CardObject>((c) => CardHelper.getCard(c))
-        .toList();
+    final players = Provider.of<GameState>(context).getPlayers(context);
+    final player = players.fromSeat(seatNo);
+    return player.cardObjects;
   }
 
   // Widget _buildFooterResultCommunitySection(
