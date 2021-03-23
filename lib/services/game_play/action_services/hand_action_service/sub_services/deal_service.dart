@@ -29,11 +29,12 @@ class DealService {
     String cards = data['dealCards']['cards'];
 
     List<int> myCards = CardHelper.getRawCardNumbers(cards);
-
-    List<int> seatNos = Provider.of<Players>(
+    final players = Provider.of<Players>(
       context,
       listen: false,
-    ).players.map((p) => p.seatNo).toList();
+    );
+
+    List<int> seatNos = players.players.map((p) => p.seatNo).toList();
     seatNos.sort();
 
     /* distribute cards to the players */
@@ -52,10 +53,6 @@ class DealService {
         // wait for the animation to finish
         await Future.delayed(AppConstants.cardDistributionAnimationDuration);
 
-        final players = Provider.of<Players>(
-          context,
-          listen: false,
-        );
 
         if (seatNo == mySeatNo) {
           // this is me - give me my cards one by one

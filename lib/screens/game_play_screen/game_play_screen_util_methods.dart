@@ -7,14 +7,13 @@ import 'package:pokerapp/models/game_play_models/business/card_distribution_mode
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/action_info.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/footer_result.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/notification_models/general_notification_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/notification_models/hh_notification_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/player_action/player_action.dart';
-import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/remaining_time.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat_change_model.dart';
-import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/player_info.dart';
@@ -29,19 +28,15 @@ class GamePlayScreenUtilMethods {
 
   /* After the entire table is drawn, if the current player (isMe == true)
     * is waiting for buyIn,then show the footer prompt */
-  static void checkForCurrentUserPrompt(BuildContext context) =>
-      Provider.of<Players>(
+  static void checkForCurrentUserPrompt(BuildContext context) {
+    final players = Provider.of<GameState>(context, listen: false).getPlayers(context);
+    if (players.showBuyinPrompt) {
+      Provider.of<ValueNotifier<FooterStatus>>(
         context,
         listen: false,
-      ).players.forEach(
-        (p) {
-          if (p.isMe && p.stack == 0)
-            Provider.of<ValueNotifier<FooterStatus>>(
-              context,
-              listen: false,
-            ).value = FooterStatus.Prompt;
-        },
-      );
+      ).value = FooterStatus.Prompt;
+    }
+  }
 
   static void startGame(String gameCode) async {
     developer.log('Starting the game');
@@ -78,8 +73,12 @@ class GamePlayScreenUtilMethods {
     @required String gameCode,
     @required Agora agora,
     @required Function(String) sendPlayerToHandChannel,
-  }) =>
-      [
+  }) {
+      // initialize game state object
+      final gameState = GameState();
+      gameState.initialize(players: gameInfoModel.playersInSeats);
+
+      var providers = [
         /* this is for the seat change animation values */
         ListenableProvider<ValueNotifier<SeatChangeModel>>(
           create: (_) => ValueNotifier<SeatChangeModel>(null),
@@ -107,9 +106,9 @@ class GamePlayScreenUtilMethods {
 
         /* a simple value notifier, holding INT which
         * resembles number of cards to deal with */
-        ListenableProvider<ValueNotifier<int>>(
-          create: (_) => ValueNotifier(2),
-        ),
+        // ListenableProvider<ValueNotifier<int>>(
+        //   create: (_) => ValueNotifier(2),
+        // ),
 
         /* a header object is used to update the header section of
         * the game screen - it contains data regarding the current hand no, club name,
@@ -119,6 +118,10 @@ class GamePlayScreenUtilMethods {
             gameCode: gameCode,
             player: currentPlayerInfo,
           ),
+        ),
+
+        Provider<GameState>(
+          create: (_) => gameState,
         ),
 
         /* board object used for changing board attributes */
@@ -138,18 +141,11 @@ class GamePlayScreenUtilMethods {
         * This Listenable Provider updates the activities of players
         * Player joins, buy Ins, Stacks, everything is notified by the Players objects
         * */
-        ListenableProvider<Players>(
-          create: (_) => Players(
-            players: gameInfoModel.playersInSeats,
-          ),
-        ),
-
-        /* TableStatus is updated as a string value */
-        ListenableProvider<TableState>(
-          create: (_) => TableState(
-            tableStatus: gameInfoModel.tableStatus,
-          ),
-        ),
+        // ListenableProvider<Players>(
+        //   create: (_) => Players(
+        //     players: gameInfoModel.playersInSeats,
+        //   ),
+        // ),
 
         /* footer view, is maintained by this Provider - either how action buttons,
         * OR prompt for buy in are shown
@@ -223,4 +219,11 @@ class GamePlayScreenUtilMethods {
         ),
 
       ];
+
+    for (var gameProvider in gameState.providers) {
+      providers.add(gameProvider);
+    }
+    
+    return providers;
+  }
 }

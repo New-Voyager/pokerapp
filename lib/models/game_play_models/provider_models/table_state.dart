@@ -9,7 +9,8 @@ class TableState extends ChangeNotifier {
   String _tableStatus;
   List<int> _potChips;
   int _potUpdatesChips;
-  List<CardObject> _communityCards;
+  List<CardObject> _board1;
+  List<CardObject> _board2;
 
   TableState({
     String tableStatus,
@@ -19,9 +20,15 @@ class TableState extends ChangeNotifier {
   }) {
     this._tableStatus = tableStatus;
     this._potChips = potChips;
-    this._communityCards = communityCards;
+    this._board1 = communityCards;
     this._potUpdatesChips = potUpdatesChips;
-    this._communityCards = [];
+  }
+
+  void clear() {
+    _board1 = [];
+    _board2 = [];
+    _potChips = [];
+    _potUpdatesChips = null;
   }
 
   void notifyAll() => notifyListeners();
@@ -45,7 +52,7 @@ class TableState extends ChangeNotifier {
 
   // this method flips all the cards after a short delay
   void flipCards() async {
-    for (int i = 0; i < cards.length; i++) {
+    for (int i = 0; i < this.cards.length; i++) {
       cards[i].flipCard();
       notifyListeners();
       await Future.delayed(AppConstants.communityCardPushDuration);
@@ -53,29 +60,59 @@ class TableState extends ChangeNotifier {
   }
 
   void flipLastCard() {
-    cards.last.flipCard();
+    this.cards.last.flipCard();
   }
 
-  void addCommunityCardSilent(CardObject card) {
-    card.isShownAtTable = true;
-    if (this._communityCards == null) this._communityCards = [];
-    this._communityCards.add(card);
+  void setBoard(int boardIndex, List<CardObject> cards) {
+    if (boardIndex == 1) {
+      if (this._board1.length >= 3) {
+        return;
+      }
+      if (cards.length > 5) {
+        this._board1 = cards.sublist(0, 5);
+      } else {
+        this._board1 = cards;
+      }
+    }
   }
 
-  void updateCommunityCardsSilent(List<CardObject> cards) {
-    this._communityCards = cards;
+  void flop(int boardIndex, List<CardObject> cards) {
+    if (boardIndex == 1) {
+      if (this._board1.length >= 3) {
+        return;
+      }
+      this._board1 = cards;
+    }
+  }
+
+  void turn(int boardIndex, CardObject card) {
+    if (boardIndex == 1) {
+      if (this._board1.length >= 4) {
+        return;
+      }
+      this._board1.add(card);
+    }
+  }
+
+  void river(int boardIndex, CardObject card) {
+    if (boardIndex == 1) {
+      if (this._board1.length >= 5) {
+        return;
+      }
+      this._board1.add(card);
+    }
   }
 
   /* this method highlights all community cards */
   void highlightCardsSilent(List<int> rawCards) {
-    if (_communityCards == null) return;
-    for (int i = 0; i < _communityCards.length; i++) {
-      String label = _communityCards[i].label;
-      String suit = _communityCards[i].suit;
+    if (_board1 == null) return;
+    for (int i = 0; i < _board1.length; i++) {
+      String label = _board1[i].label;
+      String suit = _board1[i].suit;
 
       int rawCardNumber = CardHelper.getRawCardNumber('$label$suit');
       if (rawCards.any((rc) => rc == rawCardNumber))
-        _communityCards[i].highlight = true;
+        _board1[i].highlight = true;
     }
   }
 
@@ -83,7 +120,7 @@ class TableState extends ChangeNotifier {
   String get tableStatus => _tableStatus;
   List<int> get potChips => _potChips;
   int get potChipsUpdates => _potUpdatesChips;
-  List<CardObject> get cards => _communityCards;
+  List<CardObject> get cards => _board1;
 
   bool get gamePaused {
     if (_gameStatus == AppConstants.GAME_PAUSED) {
@@ -105,5 +142,4 @@ class TableState extends ChangeNotifier {
     }
     return false;
   }
-
 }

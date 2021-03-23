@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat_change_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
@@ -17,59 +18,48 @@ class PlayerUpdateService {
     @required BuildContext context,
     @required var playerUpdate,
   }) async {
-    final Players players = Provider.of<Players>(
+    final GameState gameState = Provider.of<GameState>(
       context,
       listen: false,
     );
 
     int seatNo = playerUpdate['seatNo'];
-
-    int idx = players.players.indexWhere((p) => p.seatNo == seatNo);
+    final player = gameState.fromSeat(context, seatNo);
 
     // fixme: this is until all the player update messages have a newUpdate field
-    if (idx == -1)
+    if (player == null) {
       return handleNewPlayer(
         context: context,
         playerUpdate: playerUpdate,
       );
+    }
 
-    PlayerModel updatedPlayer = players.players[idx];
-
-    updatedPlayer.update(
+    player.update(
       stack: playerUpdate['stack'],
       buyIn: playerUpdate['buyIn'],
       showBuyIn: true,
       status: null,
     );
 
-    players.updateExistingPlayerSilent(
-      idx,
-      updatedPlayer,
-    );
-    players.notifyAll();
+    gameState.updatePlayers(context);
 
     // wait for "AppConstants.userPopUpMessageHoldDuration" showing the BUY-IN amount
     // after that remove the buyIn amount information
     await Future.delayed(AppConstants.userPopUpMessageHoldDuration);
 
-    updatedPlayer.update(
+    player.update(
       stack: playerUpdate['stack'],
       showBuyIn: false,
       status: null,
     );
-
-    players.updateExistingPlayerSilent(
-      idx,
-      updatedPlayer,
-    );
-    players.notifyAll();
+    gameState.updatePlayers(context);
   }
 
   static void handleNewPlayer({
     @required BuildContext context,
     @required var playerUpdate,
   }) async {
-    final Players players = Provider.of<Players>(
+    final GameState gameState = Provider.of<GameState>(
       context,
       listen: false,
     );
@@ -84,7 +74,7 @@ class PlayerUpdateService {
     );
 
     assert(_gameInfoModel != null);
-
+    
     List<PlayerModel> playerModels = _gameInfoModel.playersInSeats;
     PlayerModel newPlayerModel = playerModels.firstWhere(
       (pm) => pm.seatNo == seatNo,
@@ -96,33 +86,35 @@ class PlayerUpdateService {
     // put the status of the fetched player
     newPlayerModel?.status = playerUpdate['status'];
 
-    players.addNewPlayerSilent(newPlayerModel);
-
     String myUUID = await AuthService.getUuid();
+    if (newPlayerModel.playerUuid == myUUID) {
+      newPlayerModel.isMe = true;
+    }
+    gameState.newPlayer(context, newPlayerModel);
 
+    // TODO: Buyin button should be moved
     // if the newPlayer has 0 stack and is me then prompt for buy-in
-    if (newPlayerModel.stack == 0 && newPlayerModel.playerUuid == myUUID)
+    if (newPlayerModel.stack == 0 && newPlayerModel.isMe)
       Provider.of<ValueNotifier<FooterStatus>>(
         context,
         listen: false,
       ).value = FooterStatus.Prompt;
 
-    players.notifyAll();
+    gameState.updatePlayers(context);
   }
 
   static void handlePlayerLeftGame({
     @required BuildContext context,
     @required var playerUpdate,
   }) {
-    final Players players = Provider.of<Players>(
+    final GameState gameState = Provider.of<GameState>(
       context,
       listen: false,
     );
 
     int seatNo = playerUpdate['seatNo'];
-
-    players.removePlayerSilent(seatNo);
-    players.notifyAll();
+    gameState.removePlayer(context, seatNo);
+    gameState.updatePlayers(context);
   }
 
   static void handlePlayerSwitchSeat({
@@ -139,10 +131,11 @@ class PlayerUpdateService {
       listen: false,
     );
 
-    final Players players = Provider.of<Players>(
+    final gameState = Provider.of<GameState>(
       context,
       listen: false,
     );
+    final player1 = gameState.fromSeat(context, oldSeatNo);
 
     /* animate the stack */
     vnSeatChangeModel.value = SeatChangeModel(
@@ -157,12 +150,8 @@ class PlayerUpdateService {
     /* remove the animating widget */
     vnSeatChangeModel.value = null;
 
-    /* update the players object */
-    int idx = players.players.indexWhere((p) => p.seatNo == oldSeatNo);
-    assert(idx != -1);
-
-    players.players[idx].seatNo = newSeatNo;
-    players.notifyAll();
+    player1.seatNo = newSeatNo;
+    gameState.updatePlayers(context);
   }
 
   static void handle({

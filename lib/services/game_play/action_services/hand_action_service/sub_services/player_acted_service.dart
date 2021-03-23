@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
-import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/services/game_play/utils/audio.dart';
@@ -24,30 +24,23 @@ class PlayerActedService {
     int seatNo = playerActed['seatNo'];
 
     // show a prompt regarding last player action
-    final Players players = Provider.of<Players>(
+    final gameState = Provider.of<GameState>(
       context,
       listen: false,
     );
+    final player = gameState.fromSeat(context, seatNo);
 
-    int idx = players.players.indexWhere((p) => p.seatNo == seatNo);
 
     // before showing the prompt --> turn off the highlight
-    players.updateHighlightSilent(idx, false);
-
+    player.highlight = false;
     // show the status message
-    players.updateStatusSilent(
-      idx,
-      "${playerActed['action']}",
-    );
+    player.status = "${playerActed['action']}"; 
 
     String action = playerActed['action'];
 
     // check if player folded
     if (action == AppConstants.FOLD) {
-      players.updatePlayerFoldedStatusSilent(
-        idx,
-        true,
-      );
+      player.playerFolded = true;
     }
 
     // play the bet-raise sound effect
@@ -73,18 +66,12 @@ class PlayerActedService {
 
     int amount = playerActed['amount'];
     if (amount != null)
-      players.updateCoinAmountSilent(
-        idx,
-        amount,
-      );
+      player.coinAmount = amount;
 
     int stack = playerActed['stack'];
     if (stack != null)
-      players.updateStackWithValueSilent(
-        idx,
-        stack,
-      );
+      player.stack = stack;
 
-    players.notifyAll();
+    gameState.updatePlayers(context);
   }
 }

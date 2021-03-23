@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/footer_result.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/notification_models/general_notification_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
-import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/count_down_timer.dart';
 import 'package:pokerapp/screens/game_play_screen/pop_ups/seat_change_confirmation_pop_up.dart';
@@ -20,30 +20,11 @@ class TableUpdateService {
   static void _clearTable({
     BuildContext context,
   }) {
-    final Players players = Provider.of<Players>(
+    final gameState = Provider.of<GameState>(
       context,
       listen: false,
     );
-
-    // remove all highlight winners
-    players.removeWinnerHighlightSilent();
-
-    // before marking the small, big blind or the dealer, remove any marking from the old hand
-    players.removeMarkersFromAllPlayerSilent();
-
-    // remove all the status (last action) of all the players
-    players.removeAllPlayersStatusSilent();
-
-    // remove all the folder players
-    players.removeAllFoldedPlayersSilent();
-
-    /* reset the noCardsVisible of each player and remove my cards too */
-    players.removeCardsFromAllSilent();
-
-    /* reset the reverse pot chips animation */
-    players.resetMoveCoinsFromPotSilent();
-
-    players.notifyAll();
+    gameState.resetPlayers(context);
 
     /* clean up from result views */
     /* set footer status to none  */
@@ -57,20 +38,7 @@ class TableUpdateService {
       context,
       listen: false,
     ).value = FooterStatus.None;
-
-    final TableState tableState = Provider.of<TableState>(
-      context,
-      listen: false,
-    );
-    // remove all the community cards
-    tableState.updateCommunityCardsSilent([]);
-    tableState.updatePotChipsSilent(
-      potChips: null,
-      potUpdatesChips: null,
-    );
-    /* put new hand message */
-    tableState.updateTableStatusSilent(AppConstants.SeatChangeInProgress);
-    tableState.notifyAll();
+    gameState.clear(context);
   }
 
   static void handle({
@@ -98,6 +66,10 @@ class TableUpdateService {
   }) async {
     var tableUpdate = data['tableUpdate'];
     /* when this message is received, clear the table & show a notification */
+    final gameState = Provider.of<GameState>(
+      context,
+      listen: false,
+    );
 
     /* clear everything */
     _clearTable(context: context);
@@ -107,20 +79,8 @@ class TableUpdateService {
     List<int> seatChangeSeatNo =
         tableUpdate['seatChangeSeatNo'].map<int>((s) => int.parse(s)).toList();
 
-    final Players players = Provider.of<Players>(
-      context,
-      listen: false,
-    );
-
-    final int idx = players.players.indexWhere(
-      (p) =>
-          p.seatNo ==
-          seatChangeSeatNo[0], // FIXME: FOR NOW JUST SHOWING THE FIRST USER
-    );
-
-    assert(idx != -1);
-
-    final PlayerModel player = players.players[idx];
+    final player = gameState.fromSeat(context, seatChangeSeatNo[0]);
+    assert(player != null);
 
     /* If I am in this list, show me a confirmation popup */
     if (player.isMe) {
@@ -217,7 +177,7 @@ class TableUpdateService {
     // {"gameId":"18", "gameCode":"CG-LBH8IW24N7XGE5", "messageType":"TABLE_UPDATE", "tableUpdate":{"type":"HostSeatChangeMove", "seatMoves":[{"playerId":"131", "playerUuid":"290bf492-9dde-448e-922d-40270e163649", "name":"rich", "oldSeatNo":6, "newSeatNo":1}, {"playerId":"122", "playerUuid":"c2dc2c3d-13da-46cc-8c66-caa0c77459de", "name":"yong", "oldSeatNo":1, "newSeatNo":6}]}}
     // player is moved, show animation of the move
 
-    final seatChange = Provider.of<HostSeatChange>(context, listen: false);
+    final hostSeatChange = Provider.of<HostSeatChange>(context, listen: false);
     var seatMoves = data['tableUpdate']['seatMoves'];
     for (var move in seatMoves) {
       int from = int.parse(move['oldSeatNo'].toString());
@@ -226,29 +186,25 @@ class TableUpdateService {
       double stack = double.parse(move['stack'].toString());
       debugPrint('Seatchange: Player $name from seat $from to $to');
 
-      //seatChange.updateSeatChangePlayer(from, to, name, stack);
-      //seatChange.animate = true;
-      seatChange.onSeatdrop(from, to);
-      // run animation now
-      await Future.delayed(AppConstants.notificationDuration);
-      //seatChange.updateSeatChangePlayer(null, null, null, null);
-      //seatChange.animate = false;
+      /* start animation */
+      hostSeatChange.onSeatDrop(from, to);
+
+      /* wait for the animation to finish */
+      await Future.delayed(AppConstants.seatChangeAnimationDuration);
     }
     final gameCode = data["gameCode"].toString();
     // get current seat positions
 
-    final players = Provider.of<Players>(
+    final gameState = Provider.of<GameState>(
       context,
       listen: false,
     );
+
+    final players = gameState.getPlayers(context);
 
     /* refresh the player model */
     players.refreshWithPlayerInSeat(
       await SeatChangeService.hostSeatChangeSeatPositions(gameCode),
     );
-
-    // List<PlayerInSeat> playersInSeats = ;
-    // seatChange.updatePlayersInSeats(playersInSeats);
-    // seatChange.notifyAll();
   }
 }

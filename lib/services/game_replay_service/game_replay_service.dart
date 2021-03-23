@@ -154,6 +154,7 @@ class GameReplayService {
 
     /* prepare a game info model */
     GameInfoModel gameInfoModel = GameInfoModel(
+      maxPlayers: 9, // TODO: WE NEED TO GET THE MAX PLAYERS HERE
       status: null,
       smallBlind: handLog['sbPos'],
       bigBlind: handLog['bbPos'],

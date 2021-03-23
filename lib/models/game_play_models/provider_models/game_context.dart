@@ -35,9 +35,10 @@ class GameContextObject extends ChangeNotifier {
   int get playerId => _currentPlayer.id;
 
   bool isAdmin() {
-    if (_currentPlayer.role.isHost || _currentPlayer.role.isManager || _currentPlayer.role.isOwner) {
-      return true;
-    }
+    if (_currentPlayer?.role?.isHost == true ||
+        _currentPlayer?.role?.isManager == true ||
+        _currentPlayer?.role?.isOwner == true) return true;
+
     return false;
   }
 }

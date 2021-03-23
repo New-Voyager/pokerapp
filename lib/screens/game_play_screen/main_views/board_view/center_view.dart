@@ -41,7 +41,7 @@ class CenterView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String _text = showDown ? null : BoardViewUtilMethods.getText(tableStatus);
-    log('board_view : center_view : _text : $_text');
+    //log('board_view : center_view : _text : $_text');
 
     /* if the game is paused, show the options available during game pause */
     if (_text == AppConstants.GAME_PAUSED ||

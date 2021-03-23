@@ -1,7 +1,8 @@
 import 'dart:math';
 
-import 'package:pokerapp/enums/game_play_enums/player_type.dart';
+import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/seat.dart';
+import 'package:pokerapp/utils/card_helper.dart';
 
 class PlayerModel {
   bool isMe = false;
@@ -111,6 +112,12 @@ class PlayerModel {
     this.status = status;
     this.showBuyIn = showBuyIn ?? this.showBuyIn;
     this.playerType = playerType ?? this.playerType;
+  }
+
+  List<CardObject> get cardObjects {
+    return this.cards
+        .map<CardObject>((c) => CardHelper.getCard(c))
+        .toList();
   }
 
   @override

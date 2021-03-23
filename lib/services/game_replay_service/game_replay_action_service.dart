@@ -126,20 +126,24 @@ class GameReplayActionService {
       listen: false,
     );
 
-    tableState.updateCommunityCardsSilent(
+    /* FIXME: HARD CODED FOR BOARD 1 */
+    tableState.flop(
+      0,
       action.actionData['cards']
           .map<CardObject>(
             (c) => CardHelper.getCard(c as int),
           )
           .toList(),
     );
+
     tableState.notifyAll();
   }
 
   static void _riverOrTurnStartedAction(
     GameReplayAction action,
-    BuildContext context,
-  ) {
+    BuildContext context, {
+    bool isRiver = false,
+  }) {
     /* show animation of chips moving to pots and update the pot */
     _stageUpdateUtilAction(
       action,
@@ -152,11 +156,24 @@ class GameReplayActionService {
       listen: false,
     );
 
-    tableState.addCommunityCardSilent(
-      CardHelper.getCard(
-        action.actionData['cards'][0],
-      ),
-    );
+    /* FIXME: HARD CODED FOR BOARD 0 */
+
+    if (isRiver) {
+      tableState.river(
+        0,
+        CardHelper.getCard(
+          action.actionData['cards'][0],
+        ),
+      );
+    } else {
+      tableState.turn(
+        0,
+        CardHelper.getCard(
+          action.actionData['cards'][0],
+        ),
+      );
+    }
+
     tableState.notifyAll();
   }
 
@@ -196,12 +213,14 @@ class GameReplayActionService {
         return _riverOrTurnStartedAction(
           action,
           context,
+          isRiver: true,
         );
 
       case GameReplayActionType.turn_started:
         return _riverOrTurnStartedAction(
           action,
           context,
+          isRiver: false,
         );
 
       case GameReplayActionType.showdown:

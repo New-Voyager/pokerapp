@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/business/hi_winners_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/footer_result.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
@@ -49,63 +50,54 @@ class FooterResultView extends StatelessWidget {
       );
 
   String getNameFromSeatNo(int seatNo, {BuildContext context}) {
-    Players players = Provider.of<Players>(
-      context,
-      listen: false,
-    );
-    int idx = players.players.indexWhere((p) => p.seatNo == seatNo);
-    return players.players[idx].name;
+    final players = Provider.of<GameState>(context).getPlayers(context);
+    final player = players.fromSeat(seatNo);
+    return player.name;
   }
 
   List<CardObject> getCardsFromSeatNo(int seatNo, {BuildContext context}) {
-    Players players = Provider.of<Players>(
-      context,
-      listen: false,
-    );
-
-    int idx = players.players.indexWhere((p) => p.seatNo == seatNo);
-    return players.players[idx].cards
-        .map<CardObject>((c) => CardHelper.getCard(c))
-        .toList();
+    final players = Provider.of<GameState>(context).getPlayers(context);
+    final player = players.fromSeat(seatNo);
+    return player.cardObjects;
   }
 
-  Widget _buildFooterResultCommunitySection(
-      List<int> cardsToHighlight, BuildContext context) {
-    List<CardObject> _communityCards = Provider.of<TableState>(
-      context,
-      listen: false,
-    ).cards;
+  // Widget _buildFooterResultCommunitySection(
+  //     List<int> cardsToHighlight, BuildContext context) {
+  //   List<CardObject> _communityCards = Provider.of<TableState>(
+  //     context,
+  //     listen: false,
+  //   ).cards;
 
-    List<CardObject> cards = List<CardObject>();
-    _communityCards.forEach((c) {
-      CardObject card = CardHelper.getCard(
-        CardHelper.getRawCardNumber('${c.label}${c.suit}'),
-      );
+  //   List<CardObject> cards = List<CardObject>();
+  //   _communityCards.forEach((c) {
+  //     CardObject card = CardHelper.getCard(
+  //       CardHelper.getRawCardNumber('${c.label}${c.suit}'),
+  //     );
 
-      cards.add(card);
-    });
+  //     cards.add(card);
+  //   });
 
-    return Row(
-      children: [
-        /* community text */
-        Expanded(
-          child: Text(
-            'Community',
-            style: AppStyles.footerResultTextStyle1,
-          ),
-        ),
+  //   return Row(
+  //     children: [
+  //       /* community text */
+  //       Expanded(
+  //         child: Text(
+  //           'Community',
+  //           style: AppStyles.footerResultTextStyle1,
+  //         ),
+  //       ),
 
-        /* community cards */
-        Expanded(
-          flex: 3,
-          child: getCardRowView(
-            cards: cards,
-            cardsToHighlight: cardsToHighlight,
-          ),
-        ),
-      ],
-    );
-  }
+  //       /* community cards */
+  //       Expanded(
+  //         flex: 3,
+  //         child: getCardRowView(
+  //           cards: cards,
+  //           cardsToHighlight: cardsToHighlight,
+  //         ),
+  //       ),
+  //     ],
+  //   );
+  // }
 
   Widget _buildUserNameAndCards({
     String winnerName,
@@ -218,10 +210,10 @@ class FooterResultView extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           /* community cards */
-          _buildFooterResultCommunitySection(
-            winners.first.winningCards,
-            context,
-          ),
+          // _buildFooterResultCommunitySection(
+          //   winners.first.winningCards,
+          //   context,
+          // ),
 
           /* winner text */
           Padding(

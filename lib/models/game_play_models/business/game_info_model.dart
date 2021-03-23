@@ -32,6 +32,7 @@ class GameInfoModel {
 
   /* this constructor is used in the replay hand section */
   GameInfoModel({
+    @required this.maxPlayers,
     @required this.gameType,
     @required this.tableStatus,
     @required this.status,
