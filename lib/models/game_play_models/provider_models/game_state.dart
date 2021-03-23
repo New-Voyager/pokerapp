@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
-import 'package:pokerapp/models/game_play_models/ui/seat.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
@@ -102,7 +102,7 @@ class GameState {
       if (seat.player != null && seat.player.highlight) {
         debugPrint('*** seatNo: ${seat.serverSeatPos} highlight: ${seat.player.highlight} nextActionSeatNo: $nextActionSeatNo');
         seat.player.highlight = false;
-        seat.notifyListeners();
+        seat.notify();
       }
     }
   }

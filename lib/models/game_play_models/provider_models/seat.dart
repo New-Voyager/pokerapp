@@ -82,4 +82,8 @@ class Seat extends ChangeNotifier {
       this._openSeat = true;
     }
   }
+
+  void notify() {
+    this.notifyListeners();
+  }
 }
