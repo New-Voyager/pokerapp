@@ -72,6 +72,8 @@ class PlayerView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    //debugPrint('Rebuilding seat: ${seat.serverSeatPos}');
+
     bool openSeat = seat.isOpen;
     bool isMe = seat.isMe;
     FooterStatus footerStatus = Provider.of<ValueNotifier<FooterStatus>>(

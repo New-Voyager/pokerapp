@@ -55,7 +55,7 @@ class Players extends ChangeNotifier {
         stack: playerInSeatModel.stack.toInt(),
       ));
     });
-
+    debugPrint('refreshWithPlayerInSeat');
     notifyAll();
   }
 
@@ -146,6 +146,8 @@ class Players extends ChangeNotifier {
   }
 
   Future<void> moveCoinsToPot() async {
+    debugPrint('moveCoinsToPot');
+
     /* move all the coins to the pot  */
     for (int i = 0; i < _players.length; i++) {
       _players[i].animatingCoinMovement = true;

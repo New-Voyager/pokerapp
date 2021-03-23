@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/ui/seat.dart';
@@ -240,7 +241,7 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
         children: [
           // position the users
 
-          ...getPlayers(),
+          ...getPlayers(context),
 
           isAnimating
               ? Positioned(
@@ -279,7 +280,7 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
                   left: seatChangeAnimation.value.dx,
                   top: seatChangeAnimation.value.dy + 32,
                   child: NamePlateWidget(
-                    getSeats(widget.players.players)[seatChangerPlayer - 1],
+                    getSeats(context, widget.players.players)[seatChangerPlayer - 1],
                   ),
                 )
               : SizedBox.shrink(),
@@ -288,10 +289,14 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
     );
   }
 
-  List<Widget> getPlayers() {
+  List<Widget> getPlayers(BuildContext context) {
     PlayerModel me = this.widget.players.me;
     index = -1;
-    final seats = this.getSeats(widget.players.players).asMap().entries.map(
+
+    // update seat states in game state
+    final seatsState = this.getSeats(context, widget.players.players);
+
+    final seats = seatsState.asMap().entries.map(
       (var u) {
         index++;
         return this._positionedForUsers(
@@ -330,23 +335,18 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
     return pos;
   }
 
-  List<Seat> getSeats(List<PlayerModel> users) {
+  List<Seat> getSeats(BuildContext context, List<PlayerModel> users) {
     /* build an empty user object list
     *  This is done, because all the empty seats are
     *  also UserObject objects, and we need all
     * the 9 objects in an array to build the entire table + users
     * */
-
-    final List<Seat> seats = [];
-    for (int i = 0; i < widget.maxPlayers; i++) {
-      seats.add(Seat(i, i + 1, null));
-    }
+    final gameState = Provider.of<GameState>(context, listen: false);
     for (PlayerModel model in users) {
-      int idx = model.seatNo - 1;
-      seats[idx] = Seat(idx, model.seatNo, model);
+      gameState.seatPlayer(model.seatNo, model);
     }
 
-    return seats;
+    return gameState.seats;
   }
 
   Widget _positionedForUsers(
@@ -427,14 +427,22 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
     // left for 6, 7, 8, 9
     if (seatPos == 6 || seatPos == 7 || seatPos == 8 || seatPos == 9)
       cardsAlignment = Alignment.centerLeft;
-
-    PlayerView userView = PlayerView(
-      globalKey: key,
-      gameComService: widget.gameComService,
-      key: ValueKey(seatPos),
-      seat: seat,
-      cardsAlignment: cardsAlignment,
-      onUserTap: onUserTap,
+    Widget userView;
+    //debugPrint('Creating user view for seat: ${seat.serverSeatPos}');
+    userView = ListenableProvider<Seat>(
+          create: (_) => seat,
+          builder: (context, _) => 
+          Consumer<Seat>(
+            builder: (_, seat, __) =>
+              PlayerView(
+                globalKey: key,
+                gameComService: widget.gameComService,
+                key: ValueKey(seatPos),
+                seat: seat,
+                cardsAlignment: cardsAlignment,
+                onUserTap: onUserTap,
+              )
+          )
     );
 
     switch (seatPos) {

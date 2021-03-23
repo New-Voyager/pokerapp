@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
-import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:provider/provider.dart';
@@ -34,9 +33,17 @@ class NextActionService {
     );
 
     final player = gameState.fromSeat(context, seatNo);
-    // highlight --> true
+
+    if (!player.isMe) {
+      // hide action widget
+      gameState.showAction(context, false);
+    }
+
+    // highlight next action player
     player.highlight = true;
-    gameState.updatePlayers(context);
+    final seat = gameState.getSeat(context, seatNo);
+    seat.notifyListeners();
+    //gameState.updatePlayers(context);
 
     /* check if pot is available, if true, update the pot value in the table state object */
     try {
