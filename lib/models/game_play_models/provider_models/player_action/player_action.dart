@@ -9,6 +9,7 @@ const String RAISE = 'RAISE';
 const String ALLIN = 'ALLIN';
 
 class PlayerAction {
+  int _seatNo;
   List<Action> _actions;
 
   int _minRaiseAmount;
@@ -16,7 +17,8 @@ class PlayerAction {
 
   List<Option> _options;
 
-  PlayerAction(var seatAction) {
+  PlayerAction(int seatNo, var seatAction) {
+    _seatNo = seatNo;
     // FIXME: MIN RAISE AMOUNT VALUE NOT RECEIVING?
     this._minRaiseAmount = seatAction['minRaiseAmount'] ?? 2;
     this._maxRaiseAmount = seatAction['maxRaiseAmount'];
@@ -25,7 +27,7 @@ class PlayerAction {
         ?.map<Option>((var data) => Option.fromJson(data))
         ?.toList();
 
-    _actions = List<Action>();
+    _actions = [];
     seatAction['availableActions']
         .map<String>((s) => s.toString())
         .forEach((String actionName) {
@@ -54,4 +56,5 @@ class PlayerAction {
 
   int get minRaiseAmount => _minRaiseAmount;
   int get maxRaiseAmount => _maxRaiseAmount;
+  int get seatNo => _seatNo;
 }

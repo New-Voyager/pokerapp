@@ -1,5 +1,6 @@
 enum GameStatus {
   UNKNOWN,
+  CONFIGURED,
   WAITING,
   NOTENOUGH_PLAYERS,
   RUNNING,

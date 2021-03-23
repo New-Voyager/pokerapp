@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_type.dart';
+import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
+import 'player_action/player_action.dart';
 import 'players.dart';
 import 'table_state.dart';
 
@@ -12,16 +14,23 @@ import 'table_state.dart';
  * This class maintains game state. This state is updated by hand messages.
  */
 class GameState {
-
   ListenableProvider<HandInfoState> _handInfo;
   ListenableProvider<TableState> _tableState;
-  
   ListenableProvider<Players> _players;
+  ListenableProvider<ActionState> _playerAction;
 
-  void initialize({List<PlayerModel> players}) {
+  void initialize({List<PlayerModel> players, GameInfoModel gameInfo}) {
+
+    final tableState = TableState();
+    if (gameInfo != null) {
+      tableState.updateGameStatusSilent(gameInfo.status);
+      tableState.updateTableStatusSilent(gameInfo.tableStatus);
+    }
+
     // create hand info provider
     this._handInfo = ListenableProvider<HandInfoState>(create: (_) => HandInfoState());
-    this._tableState = ListenableProvider<TableState>(create: (_) => TableState());
+    this._tableState = ListenableProvider<TableState>(create: (_) => tableState);
+    this._playerAction = ListenableProvider<ActionState>(create: (_) => ActionState());
 
     if (players == null) {
       players = [];
@@ -57,6 +66,10 @@ class GameState {
     return Provider.of<Players>(context, listen: listen);
   }
 
+  ActionState getActionState(BuildContext context, {bool listen: false}) {
+    return Provider.of<ActionState>(context, listen: listen);
+  }
+
   void setPlayers(BuildContext ctx, List<PlayerModel> players) {
     this.getPlayers(ctx).update(players);
   }
@@ -66,6 +79,7 @@ class GameState {
       this._handInfo,
       this._tableState,
       this._players,
+      this._playerAction,
     ];
   }
 
@@ -118,6 +132,16 @@ class GameState {
       players.notifyAll();
     }
   }
+
+  void showAction(BuildContext context, bool show) {
+    final actionState = getActionState(context);
+    actionState.show = show;
+  }
+
+  void setAction(BuildContext context, int seatNo, var seatAction) {
+    final actionState = getActionState(context);
+    actionState.setAction(seatNo, seatAction);
+  }
 }
 
 /*
@@ -152,5 +176,31 @@ class HandInfoState extends ChangeNotifier {
     this._handNum = handNum;
 
     this.notifyListeners();
+  }
+}
+
+/* This provider gets a value when YOUR_ACTION message is received,
+* other time this value is kept null, signifying,
+* there is no action to take on THIS user's end
+* */
+class ActionState extends ChangeNotifier {
+  PlayerAction  _currentAction;
+  bool _showAction = false;
+
+  set show(bool v) {
+    _showAction = v;
+    this.notifyListeners();
+  }
+
+  bool get show {
+    return this._showAction;
+  }
+
+  void setAction(int seatNo, var seatAction) {
+    this._currentAction = PlayerAction(seatNo, seatAction);
+  }
+
+  PlayerAction get action {
+    return this._currentAction;
   }
 }

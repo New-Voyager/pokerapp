@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/screens/game_play_screen/card_views/hole_stack_card_view.dart';
@@ -14,9 +13,10 @@ import 'footer_action_view.dart';
 //
 class HoleCardsView extends StatefulWidget {
   final PlayerModel playerModel;
-  final FooterStatus footerStatus;
+  //final FooterStatus footerStatus;
+  final bool showActionWidget;
 
-  const HoleCardsView({Key key, this.playerModel, this.footerStatus})
+  const HoleCardsView({Key key, this.playerModel, this.showActionWidget})
       : super(key: key);
 
   @override
@@ -72,7 +72,7 @@ class _HoleCardsViewState extends State<HoleCardsView> {
         Positioned(
           width: MediaQuery.of(context).size.width,
           bottom: 0,
-          child: widget.footerStatus == FooterStatus.Action
+          child: widget.showActionWidget ?? false
               ? FooterActionView()
               : SizedBox(
                   height: 0,

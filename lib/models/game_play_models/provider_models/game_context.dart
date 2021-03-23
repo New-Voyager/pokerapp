@@ -3,6 +3,7 @@ import 'package:pokerapp/models/player_info.dart';
 
 class GameContextObject extends ChangeNotifier {
   String _gameCode;
+  int _gameId;
   int _currentHandNum;
   PlayerInfo _currentPlayer;
   bool _gameEnded = false;
@@ -13,6 +14,7 @@ class GameContextObject extends ChangeNotifier {
   }) {
     this._gameCode = gameCode;
     this._currentPlayer = player;
+    this._gameId = 0;
   }
 
   set currentHandNum(int newValue) {
@@ -28,6 +30,7 @@ class GameContextObject extends ChangeNotifier {
     notifyListeners();
   }
 
+  int get gameId => _gameId;
   String get gameCode => _gameCode;
   int get currentHandNum => _currentHandNum;
   bool get gameEnded => _gameEnded;

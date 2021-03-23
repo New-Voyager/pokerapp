@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/services/game_play/game_chat_service.dart';
@@ -30,8 +31,8 @@ class FooterView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) =>
-      Consumer2<ValueNotifier<FooterStatus>, Players>(
-        builder: (_, footerStatusValueNotifier, players, __) {
+      Consumer3<ValueNotifier<FooterStatus>, Players, ActionState>(
+        builder: (_, footerStatusValueNotifier, players, actionState, __) {
           return Stack(
             children: [
               Align(
@@ -41,6 +42,7 @@ class FooterView extends StatelessWidget {
                     : GameAction(
                         footerStatus: footerStatusValueNotifier.value,
                         playerModel: players.me,
+                        showActionWidget: actionState.show,
                       ),
               ),
               Row(
