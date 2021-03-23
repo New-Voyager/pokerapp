@@ -9,7 +9,6 @@ import 'player_action/player_action.dart';
 import 'players.dart';
 import 'table_state.dart';
 
-
 /*
  * This class maintains game state. This state is updated by hand messages.
  */
@@ -20,7 +19,6 @@ class GameState {
   ListenableProvider<ActionState> _playerAction;
 
   void initialize({List<PlayerModel> players, GameInfoModel gameInfo}) {
-
     final tableState = TableState();
     if (gameInfo != null) {
       tableState.updateGameStatusSilent(gameInfo.status);
@@ -28,24 +26,27 @@ class GameState {
     }
 
     // create hand info provider
-    this._handInfo = ListenableProvider<HandInfoState>(create: (_) => HandInfoState());
-    this._tableState = ListenableProvider<TableState>(create: (_) => tableState);
-    this._playerAction = ListenableProvider<ActionState>(create: (_) => ActionState());
+    this._handInfo =
+        ListenableProvider<HandInfoState>(create: (_) => HandInfoState());
+    this._tableState =
+        ListenableProvider<TableState>(create: (_) => tableState);
+    this._playerAction =
+        ListenableProvider<ActionState>(create: (_) => ActionState());
 
     if (players == null) {
       players = [];
     }
     this._players = ListenableProvider<Players>(
-          create: (_) => Players(
-            players: players,
-          ),
-        );
+      create: (_) => Players(
+        players: players,
+      ),
+    );
   }
 
   void clear(BuildContext context) {
     final tableState = this.getTableState(context);
     final players = this.getPlayers(context);
-    
+
     // clear players
     players.clear();
 
@@ -74,7 +75,7 @@ class GameState {
     this.getPlayers(ctx).update(players);
   }
 
-  List<SingleChildWidget> get providers {
+  List<SingleChildStatelessWidget> get providers {
     return [
       this._handInfo,
       this._tableState,
@@ -107,7 +108,7 @@ class GameState {
     final players = getPlayers(context);
     players.removePlayerSilent(seatNo);
   }
-  
+
   void resetPlayers(BuildContext context, {bool notify = true}) {
     final players = this.getPlayers(context);
     // remove all highlight winners
@@ -152,15 +153,15 @@ class HandInfoState extends ChangeNotifier {
   GameType _gameType = GameType.UNKNOWN;
   int _handNum = 0;
 
-  get noCards {
-    return _noCards;  
+  int get noCards {
+    return _noCards;
   }
 
-  get gameType {
+  GameType get gameType {
     return _gameType;
   }
 
-  get handNum {
+  int get handNum {
     return _handNum;
   }
 
@@ -171,9 +172,9 @@ class HandInfoState extends ChangeNotifier {
   }
 
   update({int noCards, GameType gameType, int handNum}) {
-    this._noCards = noCards;
-    this._gameType = gameType;
-    this._handNum = handNum;
+    if (noCards != null) this._noCards = noCards;
+    if (gameType != null) this._gameType = gameType;
+    if (handNum != null) this._handNum = handNum;
 
     this.notifyListeners();
   }
@@ -184,7 +185,7 @@ class HandInfoState extends ChangeNotifier {
 * there is no action to take on THIS user's end
 * */
 class ActionState extends ChangeNotifier {
-  PlayerAction  _currentAction;
+  PlayerAction _currentAction;
   bool _showAction = false;
 
   set show(bool v) {

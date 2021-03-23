@@ -1,4 +1,3 @@
-
 class PlayerRole {
   bool isHost;
   bool isOwner;
@@ -17,6 +16,13 @@ class PlayerInfo {
   String uuid;
   String name;
   PlayerRole role;
+
+  PlayerInfo({
+    this.id,
+    this.uuid,
+    this.name,
+    this.role,
+  });
 
   static PlayerInfo fromJson(dynamic data) {
     PlayerInfo info = new PlayerInfo();

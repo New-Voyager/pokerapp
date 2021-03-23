@@ -77,11 +77,11 @@ class StageUpdateService {
       log('1 StageUpdate flop: ${cards.length}');
       tableState.flop(1, cards);
       tableState.notifyAll();
-      await Future.delayed(AppConstants.communityCardPushDuration);
+      // await Future.delayed(AppConstants.communityCardPushDuration);
 
-      // wait for a brief moment, then flip the cards
-      await Future.delayed(AppConstants.communityCardPushDuration);
-      tableState.notifyAll();
+      // // wait for a brief moment, then flip the cards
+      // await Future.delayed(AppConstants.communityCardPushDuration);
+      // tableState.notifyAll();
     } else if (key == 'turn') {
       log('2 StageUpdate turn');
 
@@ -89,21 +89,21 @@ class StageUpdateService {
       tableState.notifyAll();
 
       // wait for a brief moment, then flip the last card
-      await Future.delayed(AppConstants.communityCardPushDuration);
-
-      // tableState.flipLastCard(); FIXME: WE NEED A DIFFERENT ANIMATION
-      tableState.notifyAll();
+      // await Future.delayed(AppConstants.communityCardPushDuration);
+      //
+      // // tableState.flipLastCard(); FIXME: WE NEED A DIFFERENT ANIMATION
+      // tableState.notifyAll();
     } else if (key == 'river') {
       log('2 StageUpdate river');
 
       tableState.river(1, CardHelper.getCard(data[key]['${key}Card']));
       tableState.notifyAll();
 
-      // wait for a brief moment, then flip the last card
-      await Future.delayed(AppConstants.communityCardPushDuration);
-
-      // tableState.flipLastCard(); FIXME: WE NEED A DIFFERENT ANIMATION
-      tableState.notifyAll();
+      // // wait for a brief moment, then flip the last card
+      // await Future.delayed(AppConstants.communityCardPushDuration);
+      //
+      // // tableState.flipLastCard(); FIXME: WE NEED A DIFFERENT ANIMATION
+      // tableState.notifyAll();
     }
   }
 }

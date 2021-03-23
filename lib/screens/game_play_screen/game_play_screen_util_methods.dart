@@ -29,7 +29,8 @@ class GamePlayScreenUtilMethods {
   /* After the entire table is drawn, if the current player (isMe == true)
     * is waiting for buyIn,then show the footer prompt */
   static void checkForCurrentUserPrompt(BuildContext context) {
-    final players = Provider.of<GameState>(context, listen: false).getPlayers(context);
+    final players =
+        Provider.of<GameState>(context, listen: false).getPlayers(context);
     if (players.showBuyinPrompt) {
       Provider.of<ValueNotifier<FooterStatus>>(
         context,
@@ -69,145 +70,150 @@ class GamePlayScreenUtilMethods {
   /* provider method, returns list of all the providers used in the below hierarchy */
   static List<SingleChildWidget> getProviders({
     @required GameInfoModel gameInfoModel,
-    @required PlayerInfo currentPlayerInfo,
+    PlayerInfo currentPlayerInfo,
     @required String gameCode,
     @required Agora agora,
     @required Function(String) sendPlayerToHandChannel,
   }) {
-      // initialize game state object
-      final gameState = GameState();
-      gameState.initialize(players: gameInfoModel.playersInSeats, gameInfo: gameInfoModel);
+    // initialize game state object
+    final gameState = GameState();
+    gameState.initialize(
+      players: gameInfoModel.playersInSeats,
+      gameInfo: gameInfoModel,
+    );
 
-      var providers = [
-        /* this is for the seat change animation values */
-        ListenableProvider<ValueNotifier<SeatChangeModel>>(
-          create: (_) => ValueNotifier<SeatChangeModel>(null),
-        ),
+    var providers = [
+      /* this is for the seat change animation values */
+      ListenableProvider<ValueNotifier<SeatChangeModel>>(
+        create: (_) => ValueNotifier<SeatChangeModel>(null),
+      ),
 
-        /* this is for general notifications */
-        ListenableProvider<ValueNotifier<GeneralNotificationModel>>(
-          create: (_) => ValueNotifier<GeneralNotificationModel>(null),
-        ),
+      /* this is for general notifications */
+      ListenableProvider<ValueNotifier<GeneralNotificationModel>>(
+        create: (_) => ValueNotifier<GeneralNotificationModel>(null),
+      ),
 
-        /* this is for the highHand Notification */
-        ListenableProvider<ValueNotifier<HHNotificationModel>>(
-          create: (_) => ValueNotifier<HHNotificationModel>(null),
-        ),
+      /* this is for the highHand Notification */
+      ListenableProvider<ValueNotifier<HHNotificationModel>>(
+        create: (_) => ValueNotifier<HHNotificationModel>(null),
+      ),
 
-        /* this is for having random card back for every new hand */
-        ListenableProvider<CardDistributionModel>(
-          create: (_) => CardDistributionModel(),
-        ),
+      /* this is for having random card back for every new hand */
+      ListenableProvider<CardDistributionModel>(
+        create: (_) => CardDistributionModel(),
+      ),
 
-        /* this is for having random card back for every new hand */
-        ListenableProvider<ValueNotifier<String>>(
-          create: (_) => ValueNotifier<String>(CardBackAssets.getRandom()),
-        ),
+      /* this is for having random card back for every new hand */
+      ListenableProvider<ValueNotifier<String>>(
+        create: (_) => ValueNotifier<String>(CardBackAssets.getRandom()),
+      ),
 
-        /* a header object is used to update the header section of
+      /* a header object is used to update the header section of
         * the game screen - it contains data regarding the current hand no, club name,
         * club code and so on */
-        ListenableProvider<GameContextObject>(
-          create: (_) => GameContextObject(
-            gameCode: gameCode,
-            player: currentPlayerInfo,
-          ),
+      ListenableProvider<GameContextObject>(
+        create: (_) => GameContextObject(
+          gameCode: gameCode,
+          player: currentPlayerInfo,
         ),
+      ),
 
-        Provider<GameState>(
-          create: (_) => gameState,
-        ),
+      Provider<GameState>(
+        create: (_) => gameState,
+      ),
 
-        /* board object used for changing board attributes */
-        /* default is horizontal view */
-        ListenableProvider<BoardAttributesObject>(
-          create: (_) => BoardAttributesObject(),
-        ),
+      /* board object used for changing board attributes */
+      /* default is horizontal view */
+      ListenableProvider<BoardAttributesObject>(
+        create: (_) => BoardAttributesObject(),
+      ),
 
-        /* a copy of Game Info Model is kept in the provider
+      /* a copy of Game Info Model is kept in the provider
         * This is used to get the max or min BuyIn amounts
         * or the game code, or for further info about the game */
-        ListenableProvider<ValueNotifier<GameInfoModel>>(
-          create: (_) => ValueNotifier(gameInfoModel),
-        ),
+      ListenableProvider<ValueNotifier<GameInfoModel>>(
+        create: (_) => ValueNotifier(gameInfoModel),
+      ),
 
-        /* footer view, is maintained by this Provider - either how action buttons,
+      /* footer view, is maintained by this Provider - either how action buttons,
         * OR prompt for buy in are shown
         * */
-        ListenableProvider<ValueNotifier<FooterStatus>>(
-          create: (_) => ValueNotifier(
-            FooterStatus.None,
-          ),
+      ListenableProvider<ValueNotifier<FooterStatus>>(
+        create: (_) => ValueNotifier(
+          FooterStatus.None,
         ),
+      ),
 
-        /* If footer status become RESULT, then we need to have the
+      /* If footer status become RESULT, then we need to have the
         * result data available, the footer result model holds the result data */
-        ListenableProvider<FooterResult>(
-          create: (_) => FooterResult(),
-        ),
+      ListenableProvider<FooterResult>(
+        create: (_) => FooterResult(),
+      ),
 
-        /* This provider gets a value when YOUR_ACTION message is received,
+      /* This provider gets a value when YOUR_ACTION message is received,
         * other time this value is kept null, signifying,
         * there is no action to take on THIS user's end
         * */
-        // ListenableProvider<ValueNotifier<PlayerAction>>(
-        //   create: (_) => ValueNotifier<PlayerAction>(
-        //     null,
-        //   ),
-        // ),
+      // ListenableProvider<ValueNotifier<PlayerAction>>(
+      //   create: (_) => ValueNotifier<PlayerAction>(
+      //     null,
+      //   ),
+      // ),
 
-        /* This provider contains and updates the game info
+      /* This provider contains and updates the game info
         * required for player to make an action
         * this provider holds --> clubID, gameID and seatNo */
-        ListenableProvider<ValueNotifier<ActionInfo>>(
-          create: (_) => ValueNotifier<ActionInfo>(
-            null,
-          ),
+      ListenableProvider<ValueNotifier<ActionInfo>>(
+        create: (_) => ValueNotifier<ActionInfo>(
+          null,
         ),
+      ),
 
-        /* This provider contains the sendPlayerToHandChannel function
+      /* This provider contains the sendPlayerToHandChannel function
         * so that the function can be called from anywhere down the widget tree */
-        Provider<Function(String)>(
-          create: (_) => sendPlayerToHandChannel,
-        ),
+      Provider<Function(String)>(
+        create: (_) => sendPlayerToHandChannel,
+      ),
 
-        /* This provider holds the audioPlayer object, which facilitates playing
+      /* This provider holds the audioPlayer object, which facilitates playing
         * audio in the game */
-        Provider<AudioPlayer>(
-          create: (_) => AudioPlayer(
-            mode: PlayerMode.LOW_LATENCY,
-          ),
+      Provider<AudioPlayer>(
+        create: (_) => AudioPlayer(
+          mode: PlayerMode.LOW_LATENCY,
         ),
+      ),
 
-        /* managing audio assets as temporary files */
-        ListenableProvider<ValueNotifier<Map<String, String>>>(
-          create: (_) => ValueNotifier(
-            Map<String, String>(),
-          ),
+      /* managing audio assets as temporary files */
+      ListenableProvider<ValueNotifier<Map<String, String>>>(
+        create: (_) => ValueNotifier(
+          Map<String, String>(),
         ),
+      ),
 
-        /* This provider contains the remainingActionTime - this provider
+      /* This provider contains the remainingActionTime - this provider
         * is used only when QUERY_CURRENT_HAND message is processed */
-        ListenableProvider<RemainingTime>(
-          create: (_) => RemainingTime(),
-        ),
+      ListenableProvider<RemainingTime>(
+        create: (_) => RemainingTime(),
+      ),
 
-        /* communication provider */
-        ListenableProvider<ValueNotifier<Agora>>(
-          create: (_) => ValueNotifier(agora),
-        ),
+      /* communication provider */
+      ListenableProvider<ValueNotifier<Agora>>(
+        create: (_) => ValueNotifier(agora),
+      ),
 
-        /* Provider to deal with host seat change functionality */
-        ListenableProvider<HostSeatChange>(
-          create: (_) => HostSeatChange(),
-        ),
+      /* Provider to deal with host seat change functionality */
+      ListenableProvider<HostSeatChange>(
+        create: (_) => HostSeatChange(),
+      ),
+    ];
 
-      ];
+    /* add all the providers in the game state to our providers */
+    providers.addAll(gameState.providers);
 
-    for (var gameProvider in gameState.providers) {
-      providers.add(gameProvider);
-    }
-    
+    // for (var gameProvider in gameState.providers) {
+    //   providers.add(gameProvider);
+    // }
+
     return providers;
   }
 }

@@ -50,18 +50,18 @@ class TableState extends ChangeNotifier {
     this._potUpdatesChips = potUpdatesChips;
   }
 
-  // this method flips all the cards after a short delay
-  void flipCards() async {
-    for (int i = 0; i < this.cards.length; i++) {
-      cards[i].flipCard();
-      notifyListeners();
-      await Future.delayed(AppConstants.communityCardPushDuration);
-    }
-  }
-
-  void flipLastCard() {
-    this.cards.last.flipCard();
-  }
+  // // this method flips all the cards after a short delay
+  // void flipCards() async {
+  //   for (int i = 0; i < this.cards.length; i++) {
+  //     cards[i].flipCard();
+  //     notifyListeners();
+  //     await Future.delayed(AppConstants.communityCardPushDuration);
+  //   }
+  // }
+  //
+  // void flipLastCard() {
+  //   this.cards.last.flipCard();
+  // }
 
   void setBoard(int boardIndex, List<CardObject> cards) {
     if (boardIndex == 1) {

@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
@@ -113,22 +114,22 @@ class GameReplayActionService {
   static void _flopStartedAction(
     GameReplayAction action,
     BuildContext context,
-  ) {
+  ) async {
     /* show animation of chips moving to pots and update the pot */
-    _stageUpdateUtilAction(
+    await _stageUpdateUtilAction(
       action,
       context,
     );
 
     /* finally update the community cards */
-    TableState tableState = Provider.of<TableState>(
+    final TableState tableState = Provider.of<TableState>(
       context,
       listen: false,
     );
 
     /* FIXME: HARD CODED FOR BOARD 1 */
     tableState.flop(
-      0,
+      1,
       action.actionData['cards']
           .map<CardObject>(
             (c) => CardHelper.getCard(c as int),
@@ -143,15 +144,15 @@ class GameReplayActionService {
     GameReplayAction action,
     BuildContext context, {
     bool isRiver = false,
-  }) {
+  }) async {
     /* show animation of chips moving to pots and update the pot */
-    _stageUpdateUtilAction(
+    await _stageUpdateUtilAction(
       action,
       context,
     );
 
     /* finally update the community cards */
-    TableState tableState = Provider.of<TableState>(
+    final TableState tableState = Provider.of<TableState>(
       context,
       listen: false,
     );
@@ -160,14 +161,14 @@ class GameReplayActionService {
 
     if (isRiver) {
       tableState.river(
-        0,
+        1,
         CardHelper.getCard(
           action.actionData['cards'][0],
         ),
       );
     } else {
       tableState.turn(
-        0,
+        1,
         CardHelper.getCard(
           action.actionData['cards'][0],
         ),
@@ -180,15 +181,34 @@ class GameReplayActionService {
   static void takeAction(
     GameReplayAction action,
     BuildContext context,
-  ) {
+  ) async {
     log('takeAction : ${action.actionType}');
 
     assert(context != null);
 
     switch (action.actionType) {
       case GameReplayActionType.card_distribution:
+        GameState gameState = Provider.of<GameState>(
+          context,
+          listen: false,
+        );
+
+        // TODO: FIND A GOOD PLACE TO UPDATE THE NO. OF CARDS
+
+        final handInfo = gameState.getHandInfo(context);
+        handInfo.update(noCards: 2);
+
+        /* set the table status to NEW_HAND and thus shows the card shuffle animation */
+        final tableState = gameState.getTableState(context);
+        tableState.updateTableStatusSilent(AppConstants.NEW_HAND);
+        tableState.notifyAll();
+
+        // TODO: DO SOMETHING ABOUT THE DURATION
+        await Future.delayed(const Duration(seconds: 2));
+
         return DealStartedService.handle(
           context: context,
+          fromGameReplay: true,
         );
 
       case GameReplayActionType.pre_flop_started:
