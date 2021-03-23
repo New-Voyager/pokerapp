@@ -76,7 +76,7 @@ class GamePlayScreenUtilMethods {
   }) {
       // initialize game state object
       final gameState = GameState();
-      gameState.initialize(players: gameInfoModel.playersInSeats);
+      gameState.initialize(players: gameInfoModel.playersInSeats, gameInfo: gameInfoModel);
 
       var providers = [
         /* this is for the seat change animation values */

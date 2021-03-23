@@ -13,11 +13,11 @@ class PlayerActedService {
     BuildContext context,
     var data,
   }) async {
-    // change my footer status --> NONE
-    Provider.of<ValueNotifier<FooterStatus>>(
-      context,
-      listen: false,
-    ).value = FooterStatus.None;
+    // // change my footer status --> NONE
+    // Provider.of<ValueNotifier<FooterStatus>>(
+    //   context,
+    //   listen: false,
+    // ).value = FooterStatus.None;
 
     var playerActed = data['playerActed'];
 

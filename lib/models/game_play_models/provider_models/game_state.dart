@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_type.dart';
+import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
@@ -18,10 +19,17 @@ class GameState {
   ListenableProvider<Players> _players;
   ListenableProvider<ActionState> _playerAction;
 
-  void initialize({List<PlayerModel> players}) {
+  void initialize({List<PlayerModel> players, GameInfoModel gameInfo}) {
+
+    final tableState = TableState();
+    if (gameInfo != null) {
+      tableState.updateGameStatusSilent(gameInfo.status);
+      tableState.updateTableStatusSilent(gameInfo.tableStatus);
+    }
+
     // create hand info provider
     this._handInfo = ListenableProvider<HandInfoState>(create: (_) => HandInfoState());
-    this._tableState = ListenableProvider<TableState>(create: (_) => TableState());
+    this._tableState = ListenableProvider<TableState>(create: (_) => tableState);
     this._playerAction = ListenableProvider<ActionState>(create: (_) => ActionState());
 
     if (players == null) {
@@ -177,7 +185,7 @@ class HandInfoState extends ChangeNotifier {
 * */
 class ActionState extends ChangeNotifier {
   PlayerAction  _currentAction;
-  bool _showAction;
+  bool _showAction = false;
 
   set show(bool v) {
     _showAction = v;

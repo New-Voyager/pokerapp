@@ -110,32 +110,26 @@ class _FooterActionViewState extends State<FooterActionView> {
     assert(action != null);
 
     String playerID = await AuthService.getPlayerID();
-
-    ActionInfo actionInfo = Provider.of<ValueNotifier<ActionInfo>>(
+    final gameState = Provider.of<GameState>(context, listen: false);
+    final actionState = gameState.getActionState(context);
+    final gameContext = Provider.of<GameContextObject>(
       context,
       listen: false,
-    ).value;
+    );
     // get current hand number
-    int handNum = Provider.of<GameContextObject>(
-      context,
-      listen: false,
-    ).currentHandNum;
+    int handNum = gameContext.currentHandNum;
 
-    String gameCode = Provider.of<GameContextObject>(
-      context,
-      listen: false,
-    ).gameCode;
+    String gameCode = gameContext.gameCode;
 
     int messageId = MessageId.incrementAndGet(gameCode);
     String message = """{
-      "clubId": ${actionInfo.clubID},
-      "gameId": "${actionInfo.gameID}",
+      "gameId": "${gameContext.gameId}",
       "playerId": "$playerID",
       "handNum": $handNum,
       "messageType": "PLAYER_ACTED",
       "messageId": $messageId,
       "playerActed": {
-        "seatNo": ${actionInfo.seatNo},
+        "seatNo": ${actionState.action.seatNo},
         "action": "$action",
         "amount": $amount
       }

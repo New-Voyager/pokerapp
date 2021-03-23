@@ -72,7 +72,7 @@ class _HoleCardsViewState extends State<HoleCardsView> {
         Positioned(
           width: MediaQuery.of(context).size.width,
           bottom: 0,
-          child: widget.showActionWidget
+          child: widget.showActionWidget ?? false
               ? FooterActionView()
               : SizedBox(
                   height: 0,

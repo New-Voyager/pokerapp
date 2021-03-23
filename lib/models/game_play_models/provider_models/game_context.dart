@@ -14,6 +14,7 @@ class GameContextObject extends ChangeNotifier {
   }) {
     this._gameCode = gameCode;
     this._currentPlayer = player;
+    this._gameId = 0;
   }
 
   set currentHandNum(int newValue) {
