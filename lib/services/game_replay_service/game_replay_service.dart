@@ -26,7 +26,8 @@ class GameReplayService {
   }
 
   static List<GameReplayAction> _getActions(var data) {
-    List<GameReplayAction> actions = [];
+    final handLog = data['handLog'];
+    final List<GameReplayAction> actions = [];
 
     /* card distribution */
     actions.add(
@@ -34,8 +35,6 @@ class GameReplayService {
         gameReplayActionType: GameReplayActionType.card_distribution,
       ),
     );
-
-    var handLog = data['handLog'];
 
     /* pre flop */
 
@@ -142,7 +141,7 @@ class GameReplayService {
     actions.add(
       GameReplayAction(
         gameReplayActionType: GameReplayActionType.declare_winner,
-        actionData: data['potWinners'],
+        actionData: handLog['potWinners'],
       ),
     );
 
