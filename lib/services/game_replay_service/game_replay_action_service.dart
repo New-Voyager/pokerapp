@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
@@ -178,6 +179,99 @@ class GameReplayActionService {
     tableState.notifyAll();
   }
 
+  static void _showdownAction(
+    GameReplayAction action,
+    BuildContext context,
+  ) {
+    Map<int, List<int>> _getCards(var players) {
+      Map<int, List<int>> cards = {};
+
+      players.forEach((var seatNo, var player) {
+        cards[int.parse(seatNo.toString())] =
+            player['cards'].map<int>((c) => int.parse(c.toString())).toList();
+      });
+
+      print(cards.toString());
+
+      return cards;
+    }
+
+    var playersData = action.actionData;
+    final Players players = Provider.of<Players>(
+      context,
+      listen: false,
+    );
+
+    /* then, change the status of the footer to show the result */
+    Provider.of<ValueNotifier<FooterStatus>>(
+      context,
+      listen: false,
+    ).value = FooterStatus.Result;
+
+    /* remove all highlight - silently */
+    players.removeAllHighlightsSilent();
+
+    /* players remove last status and markers */
+    players.removeAllPlayersStatusSilent();
+
+    players.removeMarkersFromAllPlayerSilent();
+
+    /* seat no - list of cards */
+    players.updateUserCardsSilent(_getCards(playersData));
+
+    players.notifyAll();
+  }
+
+  static void _declareWinnerAction(
+    GameReplayAction action,
+    BuildContext context,
+  ) {
+    final Players players = Provider.of<Players>(
+      context,
+      listen: false,
+    );
+
+    final TableState tableState = Provider.of<TableState>(
+      context,
+      listen: false,
+    );
+
+    // TODO: HANDLE LOW AND HIGH WINNERS
+
+    /* highlight cards of players and community cards for winner */
+
+    final potWinners = action.actionData;
+
+    // TODO: FOR NOW ONLY USING THE FIRST POT
+    final highWinners = potWinners[0]['hiWinners'];
+    final lowWinners = potWinners[0]['lowWinners'];
+
+    /* highlight players (winners) */
+    highWinners.forEach((winner) {
+      // highlight the winner seat No
+      players.highlightWinnerSilent(int.parse(winner['seatNo'].toString()));
+    });
+
+    /* highlight players winning cards */
+    players.highlightCardsSilent(
+      seatNo: int.parse(highWinners[0]['seatNo'].toString()),
+      cards: highWinners[0]['playerCards']
+          .map<int>((c) => int.parse(c.toString()))
+          .toList(),
+    );
+
+    /* highlight community cards */
+    tableState.highlightCardsSilent(
+      highWinners[0]['boardCards']
+          .map<int>((c) => int.parse(c.toString()))
+          .toList(),
+    );
+
+    /* finally notify */
+    players.notifyAll();
+    tableState.notifyAll();
+  }
+
   static void takeAction(
     GameReplayAction action,
     BuildContext context,
@@ -244,12 +338,16 @@ class GameReplayActionService {
         );
 
       case GameReplayActionType.showdown:
-        // TODO: Handle this case.
-        break;
+        return _showdownAction(
+          action,
+          context,
+        );
 
       case GameReplayActionType.declare_winner:
-        // TODO: Handle this case.
-        break;
+        return _declareWinnerAction(
+          action,
+          context,
+        );
     }
   }
 }
