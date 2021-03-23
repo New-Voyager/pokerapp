@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/action_info.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/player_action/option.dart';
-import 'package:pokerapp/models/game_play_models/provider_models/player_action/player_action.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/player_action.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/resources/app_colors.dart';

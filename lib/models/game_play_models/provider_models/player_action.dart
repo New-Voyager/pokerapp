@@ -1,5 +1,4 @@
-import 'package:pokerapp/models/game_play_models/provider_models/player_action/action.dart';
-import 'package:pokerapp/models/game_play_models/provider_models/player_action/option.dart';
+import 'package:flutter/widgets.dart';
 
 const String FOLD = 'FOLD';
 const String CALL = 'CALL';
@@ -7,6 +6,28 @@ const String CHECK = 'CHECK';
 const String BET = 'BET';
 const String RAISE = 'RAISE';
 const String ALLIN = 'ALLIN';
+
+class Action {
+  String actionName;
+  int actionValue;
+  int minActionValue;
+
+  Action({
+    @required this.actionName,
+    this.actionValue,
+    this.minActionValue,
+  });
+}
+
+class Option {
+  String text;
+  int amount;
+
+  Option.fromJson(var data) {
+    this.text = data['text'];
+    this.amount = data['amount'];
+  }
+}
 
 class PlayerAction {
   int _seatNo;
