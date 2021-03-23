@@ -29,22 +29,6 @@ class GameReplayService {
     final handLog = data['handLog'];
     final List<GameReplayAction> actions = [];
 
-    actions.add(
-      GameReplayAction(
-        gameReplayActionType: GameReplayActionType.showdown,
-        actionData: data['players'],
-      ),
-    );
-
-    /* show winner */
-
-    actions.add(
-      GameReplayAction(
-        gameReplayActionType: GameReplayActionType.declare_winner,
-        actionData: handLog['potWinners'],
-      ),
-    );
-
     /* card distribution */
     actions.add(
       GameReplayAction(
