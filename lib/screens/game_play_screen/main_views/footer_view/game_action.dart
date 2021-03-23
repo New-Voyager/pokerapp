@@ -15,7 +15,9 @@ import 'hole_cards_view.dart';
 class GameAction extends StatelessWidget {
   final PlayerModel playerModel;
   final FooterStatus footerStatus;
-  const GameAction({Key key, this.playerModel, this.footerStatus})
+  final bool showActionWidget;
+
+  const GameAction({Key key, this.playerModel, this.footerStatus, this.showActionWidget})
       : super(key: key);
 
   @override
@@ -25,7 +27,7 @@ class GameAction extends StatelessWidget {
         playerModel != null
             ? HoleCardsView(
                 playerModel: playerModel,
-                footerStatus: footerStatus,
+                showActionWidget: showActionWidget,
               )
             : Container(),
         _build(

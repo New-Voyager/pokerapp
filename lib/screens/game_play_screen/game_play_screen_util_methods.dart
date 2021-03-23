@@ -76,7 +76,7 @@ class GamePlayScreenUtilMethods {
   }) {
       // initialize game state object
       final gameState = GameState();
-      gameState.initialize(players: gameInfoModel.playersInSeats);
+      gameState.initialize(players: gameInfoModel.playersInSeats, gameInfo: gameInfoModel);
 
       var providers = [
         /* this is for the seat change animation values */
@@ -103,12 +103,6 @@ class GamePlayScreenUtilMethods {
         ListenableProvider<ValueNotifier<String>>(
           create: (_) => ValueNotifier<String>(CardBackAssets.getRandom()),
         ),
-
-        /* a simple value notifier, holding INT which
-        * resembles number of cards to deal with */
-        // ListenableProvider<ValueNotifier<int>>(
-        //   create: (_) => ValueNotifier(2),
-        // ),
 
         /* a header object is used to update the header section of
         * the game screen - it contains data regarding the current hand no, club name,
@@ -137,16 +131,6 @@ class GamePlayScreenUtilMethods {
           create: (_) => ValueNotifier(gameInfoModel),
         ),
 
-        /*
-        * This Listenable Provider updates the activities of players
-        * Player joins, buy Ins, Stacks, everything is notified by the Players objects
-        * */
-        // ListenableProvider<Players>(
-        //   create: (_) => Players(
-        //     players: gameInfoModel.playersInSeats,
-        //   ),
-        // ),
-
         /* footer view, is maintained by this Provider - either how action buttons,
         * OR prompt for buy in are shown
         * */
@@ -166,11 +150,11 @@ class GamePlayScreenUtilMethods {
         * other time this value is kept null, signifying,
         * there is no action to take on THIS user's end
         * */
-        ListenableProvider<ValueNotifier<PlayerAction>>(
-          create: (_) => ValueNotifier<PlayerAction>(
-            null,
-          ),
-        ),
+        // ListenableProvider<ValueNotifier<PlayerAction>>(
+        //   create: (_) => ValueNotifier<PlayerAction>(
+        //     null,
+        //   ),
+        // ),
 
         /* This provider contains and updates the game info
         * required for player to make an action

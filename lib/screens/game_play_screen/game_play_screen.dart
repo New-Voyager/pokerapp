@@ -2,7 +2,9 @@ import 'dart:developer';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:dart_nats/dart_nats.dart' as nats;
 import 'package:flutter/material.dart';
+import 'package:pokerapp/enums/game_status.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/screens/game_context_screen/game_chat/chat.dart';
@@ -95,6 +97,11 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
       playerToHandChannel: _gameInfoModel.playerToHandChannel,
       gameChatChannel: _gameInfoModel.gameChatChannel,
     );
+
+    // if (_gameInfoModel.status == GameStatus.CONFIGURED.toString()) {
+    //   // status is configured, update table status
+    // }
+
     // subscribe the NATs channels
     await _gameComService.init();
 

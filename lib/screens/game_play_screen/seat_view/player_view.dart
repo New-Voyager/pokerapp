@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
@@ -193,6 +195,10 @@ class OpenSeat extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(5),
       child: InkWell(
+        onTap: () {
+          log('Pressed $seatPos');
+          this.onUserTap(seatPos);
+        },
         child: Text(
           'Open $seatPos',
           style: AppStyles.openSeatTextStyle,
