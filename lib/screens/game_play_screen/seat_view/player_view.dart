@@ -72,7 +72,7 @@ class PlayerView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //debugPrint('Rebuilding seat: ${seat.serverSeatPos}');
+    debugPrint('Rebuilding seat: ${seat.serverSeatPos}');
 
     bool openSeat = seat.isOpen;
     bool isMe = seat.isMe;
