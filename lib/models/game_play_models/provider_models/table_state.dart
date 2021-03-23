@@ -12,12 +12,24 @@ class TableState extends ChangeNotifier {
   List<CardObject> _board1;
   List<CardObject> _board2;
 
+  // animation variables
+  bool _animateBoard1Flop;
+  bool _animateBoard1Turn;
+  bool _animateBoard1River;
+  bool _animateBoard1;         // all the 5 cards (run it twice)
+
+  bool _animateBoard2Flop;
+  bool _animateBoard2Turn;
+  bool _animateBoard2River;
+  bool _animateBoard2;         // all the 5 cards (run it twice)
+
   TableState({
     String tableStatus,
     List<int> potChips,
     int potUpdatesChips,
     List<CardObject> communityCards,
   }) {
+    this.clear();
     this._tableStatus = tableStatus;
     this._potChips = potChips;
     this._board1 = communityCards;
@@ -29,6 +41,14 @@ class TableState extends ChangeNotifier {
     _board2 = [];
     _potChips = [];
     _potUpdatesChips = null;
+    _animateBoard1 = false;
+    _animateBoard1Flop = false;
+    _animateBoard1Turn = false;
+    _animateBoard1River = false;
+    _animateBoard2 = false;
+    _animateBoard2Flop = false;
+    _animateBoard2Turn = false;
+    _animateBoard2River = false;
   }
 
   void notifyAll() => notifyListeners();
@@ -101,6 +121,94 @@ class TableState extends ChangeNotifier {
       }
       this._board1.add(card);
     }
+  }
+
+  void setAnimateBoard1(bool animate) {
+    this._animateBoard1 = animate;
+  }
+
+  void setAnimateBoard1Flop(bool animate) {
+    this._animateBoard1Flop = animate;
+  }
+
+  void setAnimateBoard1Turn(bool animate) {
+    this._animateBoard1Turn = animate;
+  }
+
+  void setAnimateBoard1River(bool animate) {
+    this._animateBoard1River = animate;
+  }
+
+  void setAnimateBoard2(bool animate) {
+    this._animateBoard2 = animate;
+  }
+
+  void setAnimateBoard2Flop(bool animate) {
+    this._animateBoard2Flop = animate;
+  }
+
+  void setAnimateBoard2Turn(bool animate) {
+    this._animateBoard2Turn = animate;
+  }
+
+  void setAnimateBoard2River(bool animate) {
+    this._animateBoard2River = animate;
+  }
+
+  get animateBoard1 {
+    return this._animateBoard1;
+  }
+
+  get animateBoard1Flop {
+    return this._animateBoard1Flop;
+  }
+
+  get animateBoard1Turn {
+    return this._animateBoard1Turn;
+  }
+
+  get animateBoard1River {
+    return this._animateBoard1River;
+  }
+
+  get animateBoard2 {
+    return this._animateBoard2;
+  }
+
+  get animateBoard2Flop {
+    return this._animateBoard2Flop;
+  }
+
+  get animateBoard2Turn {
+    return this._animateBoard2Turn;
+  }
+
+  get animateBoard2River {
+    return this._animateBoard2River;
+  }
+
+  List<CardObject> getBoard1Flop() {
+    return this._board1.sublist(0, 3);
+  }
+
+  CardObject getBoard1Turn() {
+    return this._board1[3];
+  }
+
+  CardObject getBoard1River() {
+    return this._board1[4];
+  }
+
+  List<CardObject> getBoard2Flop() {
+    return this._board2.sublist(0, 3);
+  }
+
+  CardObject getBoard2Turn() {
+    return this._board2[3];
+  }
+
+  CardObject getBoard2River() {
+    return this._board2[4];
   }
 
   /* this method highlights all community cards */

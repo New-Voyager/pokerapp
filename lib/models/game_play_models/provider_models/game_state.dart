@@ -5,7 +5,7 @@ import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
-import 'player_action/player_action.dart';
+import 'player_action.dart';
 import 'players.dart';
 import 'table_state.dart';
 

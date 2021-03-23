@@ -11,7 +11,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/notification_models/general_notification_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/notification_models/hh_notification_model.dart';
-import 'package:pokerapp/models/game_play_models/provider_models/player_action/player_action.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/player_action.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/remaining_time.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat_change_model.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
@@ -163,11 +163,11 @@ class GamePlayScreenUtilMethods {
       /* This provider contains and updates the game info
         * required for player to make an action
         * this provider holds --> clubID, gameID and seatNo */
-      ListenableProvider<ValueNotifier<ActionInfo>>(
-        create: (_) => ValueNotifier<ActionInfo>(
-          null,
-        ),
-      ),
+      // ListenableProvider<ValueNotifier<ActionInfo>>(
+      //   create: (_) => ValueNotifier<ActionInfo>(
+      //     null,
+      //   ),
+      // ),
 
       /* This provider contains the sendPlayerToHandChannel function
         * so that the function can be called from anywhere down the widget tree */
