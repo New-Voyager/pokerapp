@@ -317,7 +317,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                   return ListenableProvider<ValueNotifier<bool>>(
                     create: (_) => ValueNotifier<bool>(false),
                     builder: (context, _) => Stack(
-                      alignment: Alignment.topCenter,
+                      alignment: Alignment.center,
                       children: [
                         BackgroundView(),
 

@@ -1,6 +1,9 @@
 class AppAssets {
   AppAssets._();
 
+  // FIXME: TEMPORARY ASSETS
+  static const String handlog = 'assets/sample-data/handlog.json';
+
   // static const String horizontalTable =
   //     'assets/images/table/horizontal_table.png';
   // static const String verticalTable = 'assets/images/table/vertical_table.png';

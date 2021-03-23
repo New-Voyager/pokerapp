@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/game_play_screen/card_views/stack_card_view.dart';
+import 'package:pokerapp/screens/util_screens/replay_hand_screen/replay_hand_screen.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 
@@ -21,23 +22,20 @@ class _ProfilePageViewState extends State<ProfilePageView> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Spacer(),
-          Container(
-            color: Colors.white10,
-            height: 200.0,
-            width: double.infinity,
-            child: StackCardView(
-              cards: cards,
-            ),
-          ),
-          Spacer(),
-          RaisedButton(
-            child: Text('FLIP'),
+          ElevatedButton(
+            child: Text('Replay Hand'),
             onPressed: () {
-              for (var card in cards) card.flipCard();
+              // TODO: USE ROUTES HERE INSTEAD OF NAVIGATOR.PUSH
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => ReplayHandScreen(),
+                ),
+              );
             },
           ),
           Spacer(),
-          RaisedButton(
+          ElevatedButton(
             child: Text('Logout'),
             onPressed: () {
               AuthService.logout();

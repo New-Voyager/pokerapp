@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/resources/app_constants.dart';
@@ -48,27 +46,22 @@ class TableState extends ChangeNotifier {
   }
 
   void updatePotChipsSilent({List<int> potChips, int potUpdatesChips}) {
-    if (this._potChips == potChips) return;
-    if (this._potUpdatesChips == potUpdatesChips) return;
-
     this._potChips = potChips;
     this._potUpdatesChips = potUpdatesChips;
   }
 
-  // this method flips all the cards after a short delay
-  void flipCards() async {
-    log('Community cards: ${this.cards.length}');
-    for (int i = 0; i < this.cards.length; i++) {
-      cards[i].flipCard();
-      notifyListeners();
-      await Future.delayed(AppConstants.communityCardPushDuration);
-    }
-  }
-
-  void flipLastCard() {
-    log('Community cards: ${this.cards.length}');
-    this.cards.last.flipCard();
-  }
+  // // this method flips all the cards after a short delay
+  // void flipCards() async {
+  //   for (int i = 0; i < this.cards.length; i++) {
+  //     cards[i].flipCard();
+  //     notifyListeners();
+  //     await Future.delayed(AppConstants.communityCardPushDuration);
+  //   }
+  // }
+  //
+  // void flipLastCard() {
+  //   this.cards.last.flipCard();
+  // }
 
   void setBoard(int boardIndex, List<CardObject> cards) {
     if (boardIndex == 1) {
@@ -96,7 +89,7 @@ class TableState extends ChangeNotifier {
     if (boardIndex == 1) {
       if (this._board1.length >= 4) {
         return;
-      }      
+      }
       this._board1.add(card);
     }
   }
@@ -105,7 +98,7 @@ class TableState extends ChangeNotifier {
     if (boardIndex == 1) {
       if (this._board1.length >= 5) {
         return;
-      }      
+      }
       this._board1.add(card);
     }
   }
@@ -149,5 +142,4 @@ class TableState extends ChangeNotifier {
     }
     return false;
   }
-
 }

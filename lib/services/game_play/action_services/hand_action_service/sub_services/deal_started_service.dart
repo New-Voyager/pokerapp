@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/business/card_distribution_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/services/game_play/utils/audio.dart';
@@ -12,16 +13,23 @@ class DealStartedService {
 
   static void handle({
     BuildContext context,
+    fromGameReplay = false,
   }) async {
     GameState gameState = Provider.of<GameState>(
       context,
       listen: false,
-    );    
+    );
     final me = gameState.me(context);
 
     /* if I am present in this game,
      Deal Start message is unnecessary */
-    if (me == null) return;
+    if (fromGameReplay == false && me == null) return;
+
+    /* show card shuffling */
+    final TableState tableState = gameState.getTableState(context);
+    /* stop showing card shuffling */
+    tableState.clear();
+    tableState.notifyAll();
 
     // play the deal sound effect
     Audio.play(
@@ -58,5 +66,8 @@ class DealStartedService {
 
     /* card distribution ends, put the value to NULL */
     cardDistributionModel.seatNo = null;
+
+    tableState.updateTableStatusSilent(null);
+    tableState.notifyAll();
   }
 }

@@ -71,7 +71,7 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
   @override
   void initState() {
     _playerKeys = List.generate(9, (index) => GlobalKey());
-    widget.gameComService.chat.listen(onAnimation: this.onAnimation);
+    widget.gameComService?.chat?.listen(onAnimation: this.onAnimation);
     // animationHandlers();
     _seatChangeAnimationHandler();
     // seatChangeAnimationHandler_old();
@@ -128,8 +128,9 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
 
   @override
   void dispose() {
-    _lottieController.dispose();
-    animationController.dispose();
+    _lottieController?.dispose();
+    animationController?.dispose();
+    seatChangeAnimationController?.dispose();
     super.dispose();
   }
 

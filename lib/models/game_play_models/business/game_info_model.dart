@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:flutter/cupertino.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 
@@ -28,6 +29,17 @@ class GameInfoModel {
   String handToAllChannel;
   String handToPlayerChannel;
   String gameChatChannel;
+
+  /* this constructor is used in the replay hand section */
+  GameInfoModel({
+    @required this.maxPlayers,
+    @required this.gameType,
+    @required this.tableStatus,
+    @required this.status,
+    @required this.smallBlind,
+    @required this.bigBlind,
+    @required this.playersInSeats,
+  });
 
   GameInfoModel.fromJson(var data) {
     this.gameCode = data['gameCode'];
