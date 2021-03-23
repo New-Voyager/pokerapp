@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/action_info.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/player_action/option.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/player_action/player_action.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
@@ -82,17 +83,20 @@ class _FooterActionViewState extends State<FooterActionView> {
   void _actionTaken(BuildContext context) {
     assert(context != null);
 
-    // put PlayerAction to null
-    Provider.of<ValueNotifier<PlayerAction>>(
-      context,
-      listen: false,
-    ).value = null;
+    // // put PlayerAction to null
+    // Provider.of<ValueNotifier<PlayerAction>>(
+    //   context,
+    //   listen: false,
+    // ).value = null;
 
-    // change FooterStatus to NONE
-    Provider.of<ValueNotifier<FooterStatus>>(
-      context,
-      listen: false,
-    ).value = FooterStatus.None;
+    // // change FooterStatus to NONE
+    // Provider.of<ValueNotifier<FooterStatus>>(
+    //   context,
+    //   listen: false,
+    // ).value = FooterStatus.None;
+
+    final gameState = Provider.of<GameState>(context, listen: false);
+    gameState.showAction(context, false);
   }
 
   /* this function actually makes the connection with the GameComService
@@ -502,14 +506,12 @@ class _FooterActionViewState extends State<FooterActionView> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ValueNotifier<PlayerAction>>(
+    return Consumer<ActionState>(
       key: ValueKey('buildActionButtons'),
-      builder: (_, playerActionValueNotifier, __) => Stack(
+      builder: (_, actionState, __) => Stack(
         children: [
-          _buildTopActionRow(
-            playerActionValueNotifier.value,
-          ),
-          _buildOptionsRow(playerActionValueNotifier.value),
+          _buildTopActionRow(actionState.action),
+          _buildOptionsRow(actionState.action),
         ],
       ),
     );
