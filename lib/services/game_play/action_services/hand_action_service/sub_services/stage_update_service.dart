@@ -39,7 +39,7 @@ class StageUpdateService {
     String key,
   }) async {
     assert(key != null);
-    log('StageUpdate: $data');
+    //log('StageUpdate: $data');
     final GameState gameState = Provider.of<GameState>(
       context,
       listen: false,
@@ -73,7 +73,7 @@ class StageUpdateService {
           )
           .toList();
 
-      log('1 StageUpdate flop: ${cards.length}');
+      //log('1 StageUpdate flop: ${cards.length}');
       tableState.flop(1, cards);
 
       // animate board1 flop
@@ -87,7 +87,7 @@ class StageUpdateService {
       // // wait for a brief moment, then flip the cards
       // await Future.delayed(AppConstants.communityCardPushDuration);
     } else if (key == 'turn') {
-      log('2 StageUpdate turn');
+      //log('2 StageUpdate turn');
 
       tableState.turn(1, CardHelper.getCard(data[key]['${key}Card']));
       tableState.setAnimateBoard1Turn(true);
@@ -100,7 +100,7 @@ class StageUpdateService {
       tableState.setAnimateBoard1Turn(false);
       tableState.notifyAll();
     } else if (key == 'river') {
-      log('2 StageUpdate river');
+      //log('2 StageUpdate river');
 
       tableState.river(1, CardHelper.getCard(data[key]['${key}Card']));
       tableState.setAnimateBoard1River(true);

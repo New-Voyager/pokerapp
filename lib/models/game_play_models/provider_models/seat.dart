@@ -1,3 +1,4 @@
+import 'package:flutter/widgets.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 
 enum TablePosition {
@@ -20,7 +21,7 @@ enum TablePosition {
  * 
  * e.g. folding, betting, showing cards, highlighting winner, show highhand animation (fireworks) 
  */
-class Seat {
+class Seat extends ChangeNotifier {
   int localSeatPos;
   int serverSeatPos;
   bool _openSeat;
@@ -71,5 +72,18 @@ class Seat {
       return false;
     }
     return this._player.isMe;
+  }
+
+  set player(PlayerModel v) {
+    this._player = v;
+    if (v != null) {
+      this._openSeat = false;
+    } else {
+      this._openSeat = true;
+    }
+  }
+
+  void notify() {
+    this.notifyListeners();
   }
 }

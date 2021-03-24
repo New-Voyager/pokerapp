@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
-import 'package:pokerapp/models/game_play_models/ui/seat.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:provider/provider.dart';

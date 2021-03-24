@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
@@ -17,14 +18,20 @@ class GameState {
   ListenableProvider<TableState> _tableState;
   ListenableProvider<Players> _players;
   ListenableProvider<ActionState> _playerAction;
-
+  Map<int, Seat> _seats = Map<int, Seat>();
+   
   void initialize({List<PlayerModel> players, GameInfoModel gameInfo}) {
+    this._seats = Map<int, Seat>();
+
+    for(int seatNo = 1; seatNo <= gameInfo.maxPlayers; seatNo++) {
+      this._seats[seatNo] = Seat(seatNo, seatNo, null);
+    }
+
     final tableState = TableState();
     if (gameInfo != null) {
       tableState.updateGameStatusSilent(gameInfo.status);
       tableState.updateTableStatusSilent(gameInfo.tableStatus);
     }
-
     // create hand info provider
     this._handInfo =
         ListenableProvider<HandInfoState>(create: (_) => HandInfoState());
@@ -41,6 +48,17 @@ class GameState {
         players: players,
       ),
     );
+  }
+
+  void seatPlayer(int seatNo, PlayerModel player) {
+    //debugPrint('SeatNo $seatNo player: ${player.name}');
+    if (this._seats.containsKey(seatNo)) {
+      this._seats[seatNo].player = player;
+    }
+  }
+
+  get seats {
+    return this._seats.values.toList();
   }
 
   void clear(BuildContext context) {
@@ -71,6 +89,24 @@ class GameState {
     return Provider.of<ActionState>(context, listen: listen);
   }
 
+  Seat getSeat(BuildContext context, int seatNo, {bool listen: false}) {
+    return this._seats[seatNo];
+  }
+
+  void resetActionHighlight(BuildContext context, int nextActionSeatNo, {bool listen: false}) {
+    for(final seat in this._seats.values) {
+      // if (seat.player != null) {
+      //  debugPrint('### seatNo: ${seat.serverSeatPos} highlight: ${seat.player.highlight}');
+      // }
+
+      if (seat.player != null && seat.player.highlight) {
+        debugPrint('*** seatNo: ${seat.serverSeatPos} highlight: ${seat.player.highlight} nextActionSeatNo: $nextActionSeatNo');
+        seat.player.highlight = false;
+        seat.notify();
+      }
+    }
+  }
+
   void setPlayers(BuildContext ctx, List<PlayerModel> players) {
     this.getPlayers(ctx).update(players);
   }
@@ -96,7 +132,7 @@ class GameState {
 
   void updatePlayers(BuildContext context) {
     final players = getPlayers(context);
-    players.notifyAll();
+    //players.notifyAll();
   }
 
   void newPlayer(BuildContext context, PlayerModel newPlayer) {
@@ -134,7 +170,7 @@ class GameState {
     }
   }
 
-  void showAction(BuildContext context, bool show) {
+  void showAction(BuildContext context, bool show, {bool notify = false}) {
     final actionState = getActionState(context);
     actionState.show = show;
   }

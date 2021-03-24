@@ -1,10 +1,10 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/remaining_time.dart';
-import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_service/sub_services/next_action_service.dart';
@@ -26,7 +26,8 @@ class QueryCurrentHandService {
     ).currentHandNum = handNum;
 
     var currentHandState = data['currentHandState'];
-
+    log('Current hand state: $currentHandState');
+    
     // current players cards
     String playerCards = currentHandState['playerCards'];
 
@@ -98,6 +99,7 @@ class QueryCurrentHandService {
     players.notifyAll();
 
     // next seat to ACT - handle using Next_Action service
+    debugPrint('$currentHandState');
     int nextSeatToAct = int.parse(currentHandState['nextSeatToAct'].toString());
     int idx = players.players.indexWhere((p) => p.seatNo == nextSeatToAct);
 

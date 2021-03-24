@@ -1,7 +1,7 @@
 import 'dart:math';
 
+import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
-import 'package:pokerapp/models/game_play_models/ui/seat.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 
 class PlayerModel {

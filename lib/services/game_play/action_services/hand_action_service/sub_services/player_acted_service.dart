@@ -13,14 +13,7 @@ class PlayerActedService {
     BuildContext context,
     var data,
   }) async {
-    // // change my footer status --> NONE
-    // Provider.of<ValueNotifier<FooterStatus>>(
-    //   context,
-    //   listen: false,
-    // ).value = FooterStatus.None;
-
     var playerActed = data['playerActed'];
-
     int seatNo = playerActed['seatNo'];
 
     // show a prompt regarding last player action
@@ -29,10 +22,7 @@ class PlayerActedService {
       listen: false,
     );
     final player = gameState.fromSeat(context, seatNo);
-
-
-    // before showing the prompt --> turn off the highlight
-    player.highlight = false;
+    //player.highlight = false;
     // show the status message
     player.status = "${playerActed['action']}"; 
 
@@ -71,7 +61,11 @@ class PlayerActedService {
     int stack = playerActed['stack'];
     if (stack != null)
       player.stack = stack;
+    debugPrint("**** PlayerActed *******");
+    // before showing the prompt --> turn off the highlight
+    gameState.resetActionHighlight(context, -1);
+    debugPrint("**** PlayerActed *******");
 
-    gameState.updatePlayers(context);
+    //gameState.updatePlayers(context);
   }
 }
