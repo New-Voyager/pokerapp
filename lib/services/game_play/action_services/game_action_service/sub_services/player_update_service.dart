@@ -40,8 +40,8 @@ class PlayerUpdateService {
       showBuyIn: true,
       status: null,
     );
-
-    gameState.updatePlayers(context);
+    final seat = gameState.getSeat(context, seatNo);
+    seat.notify();
 
     // wait for "AppConstants.userPopUpMessageHoldDuration" showing the BUY-IN amount
     // after that remove the buyIn amount information
@@ -52,7 +52,7 @@ class PlayerUpdateService {
       showBuyIn: false,
       status: null,
     );
-    gameState.updatePlayers(context);
+    seat.notify();
   }
 
   static void handleNewPlayer({

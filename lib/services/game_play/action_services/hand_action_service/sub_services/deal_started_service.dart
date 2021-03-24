@@ -61,6 +61,8 @@ class DealStartedService {
 
         players.updateVisibleCardNumberSilent(seatNo, i + 1);
         players.notifyAll();
+        //final seat = gameState.getSeat(context, seatNo);
+        //seat.notify();
       }
     }
 

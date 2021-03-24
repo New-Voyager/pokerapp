@@ -39,8 +39,39 @@ class Players extends ChangeNotifier {
     notifyListeners();
   }
 
-  void clear() {
-    
+  void clear({bool notify = false}) {
+    // remove all highlight winners
+    this.removeWinnerHighlightSilent();
+
+    // before marking the small, big blind or the dealer, remove any marking from the old hand
+    this.removeMarkersFromAllPlayerSilent();
+
+    // remove all the status (last action) of all the players
+    this.removeAllPlayersStatusSilent();
+
+    // remove all the folder players
+    this.removeAllFoldedPlayersSilent();
+
+    /* reset the noCardsVisible of each player and remove my cards too */
+    this.removeCardsFromAllSilent();
+
+    /* reset the reverse pot chips animation */
+    this.resetMoveCoinsFromPotSilent();
+
+    if (notify) {
+      this.notifyAll();
+    }    
+  }
+
+  void clearForShowdown({bool notify = false}) {
+    // remove all highlight winners
+    this.removeWinnerHighlightSilent();
+
+    // before marking the small, big blind or the dealer, remove any marking from the old hand
+    this.removeMarkersFromAllPlayerSilent();
+
+    // remove all the status (last action) of all the players
+    this.removeAllPlayersStatusSilent();
   }
 
   void refreshWithPlayerInSeat(List<PlayerInSeat> playersInSeat) {

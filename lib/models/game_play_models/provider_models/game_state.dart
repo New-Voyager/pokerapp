@@ -11,7 +11,8 @@ import 'players.dart';
 import 'table_state.dart';
 
 /*
- * This class maintains game state. This state is updated by hand messages.
+ * This class maintains game state. This game state is used by game play screen.
+ * All the other states in the game play screen are managed by this game state object.
  */
 class GameState {
   ListenableProvider<HandInfoState> _handInfo;
@@ -95,10 +96,6 @@ class GameState {
 
   void resetActionHighlight(BuildContext context, int nextActionSeatNo, {bool listen: false}) {
     for(final seat in this._seats.values) {
-      // if (seat.player != null) {
-      //  debugPrint('### seatNo: ${seat.serverSeatPos} highlight: ${seat.player.highlight}');
-      // }
-
       if (seat.player != null && seat.player.highlight) {
         debugPrint('*** seatNo: ${seat.serverSeatPos} highlight: ${seat.player.highlight} nextActionSeatNo: $nextActionSeatNo');
         seat.player.highlight = false;
@@ -132,7 +129,7 @@ class GameState {
 
   void updatePlayers(BuildContext context) {
     final players = getPlayers(context);
-    //players.notifyAll();
+    players.notifyAll();
   }
 
   void newPlayer(BuildContext context, PlayerModel newPlayer) {
@@ -147,27 +144,7 @@ class GameState {
 
   void resetPlayers(BuildContext context, {bool notify = true}) {
     final players = this.getPlayers(context);
-    // remove all highlight winners
-    players.removeWinnerHighlightSilent();
-
-    // before marking the small, big blind or the dealer, remove any marking from the old hand
-    players.removeMarkersFromAllPlayerSilent();
-
-    // remove all the status (last action) of all the players
-    players.removeAllPlayersStatusSilent();
-
-    // remove all the folder players
-    players.removeAllFoldedPlayersSilent();
-
-    /* reset the noCardsVisible of each player and remove my cards too */
-    players.removeCardsFromAllSilent();
-
-    /* reset the reverse pot chips animation */
-    players.resetMoveCoinsFromPotSilent();
-
-    if (notify) {
-      players.notifyAll();
-    }
+    players.clear(notify: notify);
   }
 
   void showAction(BuildContext context, bool show, {bool notify = false}) {

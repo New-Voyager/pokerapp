@@ -62,10 +62,8 @@ class PlayerActedService {
     if (stack != null)
       player.stack = stack;
     debugPrint("**** PlayerActed *******");
-    // before showing the prompt --> turn off the highlight
+    // before showing the prompt --> turn off the highlight on other players
     gameState.resetActionHighlight(context, -1);
     debugPrint("**** PlayerActed *******");
-
-    //gameState.updatePlayers(context);
   }
 }

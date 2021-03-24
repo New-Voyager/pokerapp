@@ -67,13 +67,14 @@ class HighHandService {
       // show firework
       final player = gameState.fromSeat(context, seatNo);
       player.showFirework = true;
-      gameState.updatePlayers(context);
+      final seat = gameState.getSeat(context, seatNo);
+      seat.notify();
 
       await Future.delayed(AppConstants.notificationDuration);
 
       // turn off firework
       player.showFirework = false;
-      gameState.updatePlayers(context);
+      seat.notify();
     }
   }
 }

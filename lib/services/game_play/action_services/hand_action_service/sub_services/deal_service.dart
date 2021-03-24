@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/business/card_distribution_model.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
@@ -29,10 +30,8 @@ class DealService {
     String cards = data['dealCards']['cards'];
 
     List<int> myCards = CardHelper.getRawCardNumbers(cards);
-    final players = Provider.of<Players>(
-      context,
-      listen: false,
-    );
+    final gameState = Provider.of<GameState>(context, listen: false);
+    final players = gameState.getPlayers(context);
 
     List<int> seatNos = players.players.map((p) => p.seatNo).toList();
     seatNos.sort();
@@ -61,7 +60,7 @@ class DealService {
             myCards.sublist(0, i + 1),
           );
         }
-
+        debugPrint('Setting cards for $seatNo');
         players.updateVisibleCardNumberSilent(seatNo, i + 1);
         players.notifyAll();
       }
