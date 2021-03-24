@@ -24,6 +24,7 @@ docker run -t --rm \
     --name botrunner \
     --network=${DOCKER_NET} \
     -e API_SERVER_URL=${API_SERVER_URL} \
+    -e GAME_SERVER_URL=${GAME_SERVER_URL} \
     -e PRINT_GAME_MSG=${PRINT_GAME_MSG:-true} \
     -e PRINT_HAND_MSG=${PRINT_HAND_MSG:-true} \
     -v ${PWD}/botrunner_scripts:/app/botrunner_scripts \
