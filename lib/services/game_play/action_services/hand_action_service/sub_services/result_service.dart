@@ -76,7 +76,7 @@ class ResultService {
       );
     }
     players.clearForShowdown();
-    debugPrint(jsonEncode(data));
+    // debugPrint(jsonEncode(data));
     // get hand winners data and update results
     final winnersData = data['handResult']['handLog']['potWinners'];
     final winners = resultState.updateWinners(winnersData);

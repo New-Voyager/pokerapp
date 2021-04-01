@@ -4,7 +4,7 @@ import 'package:tuple/tuple.dart';
 
 /* seat changing stack offset mappings */
 const Map<int, Offset> kSeatChangeStackHorizontalOffsetMapping = {
-  1: Offset(0, 50),
+  1: Offset(0, 80),
   2: Offset(-130, 50),
   3: Offset(-120, -0),
   4: Offset(-110, -80),

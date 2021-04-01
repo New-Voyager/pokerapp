@@ -117,7 +117,7 @@ class GameState {
   void resetActionHighlight(BuildContext context, int nextActionSeatNo, {bool listen: false}) {
     for(final seat in this._seats.values) {
       if (seat.player != null && seat.player.highlight) {
-        debugPrint('*** seatNo: ${seat.serverSeatPos} highlight: ${seat.player.highlight} nextActionSeatNo: $nextActionSeatNo');
+        // debugPrint('*** seatNo: ${seat.serverSeatPos} highlight: ${seat.player.highlight} nextActionSeatNo: $nextActionSeatNo');
         seat.player.highlight = false;
         seat.notify();
       }

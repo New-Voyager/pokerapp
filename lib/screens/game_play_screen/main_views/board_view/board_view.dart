@@ -15,6 +15,7 @@ import 'package:provider/provider.dart';
 
 const _centerViewOffset = const Offset(0.0, -30.0);
 const _playersOnTableOffset = const Offset(0.0, -25.0);
+//const _playersOnTableOffset = const Offset(0.0, 0.0);
 const _noOffset = const Offset(0.0, 0.0);
 
 class BoardView extends StatelessWidget {

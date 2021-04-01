@@ -33,8 +33,19 @@ class BoardAttributesObject extends ChangeNotifier {
       orientation == BoardOrientation.horizontal;
 
   Map<int, Offset> get seatChangeStackOffsetMapping {
-    if (_boardOrientation == BoardOrientation.horizontal)
-      return kSeatChangeStackHorizontalOffsetMapping;
+    if (_boardOrientation == BoardOrientation.horizontal) {
+      return  {
+            1: Offset(0, 80),
+            2: Offset(-130, 50),
+            3: Offset(-120, -0),
+            4: Offset(-110, -80),
+            5: Offset(-40, -90),
+            6: Offset(60, -90),
+            7: Offset(110, -80),
+            8: Offset(110, -0),
+            9: Offset(130, 50),
+          };
+    }
     return kSeatChangeStackVerticalOffsetMapping;
   }
 

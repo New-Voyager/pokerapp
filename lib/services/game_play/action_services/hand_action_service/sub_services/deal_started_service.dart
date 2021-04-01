@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/business/card_distribution_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
-import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
@@ -19,7 +18,7 @@ class DealStartedService {
       context,
       listen: false,
     );
-    final me = gameState.me(context);
+    // final me = gameState.me(context);
 
     /* if I am present in this game,
      Deal Start message is unnecessary */
