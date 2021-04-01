@@ -2,9 +2,7 @@ import 'dart:developer';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:dart_nats/dart_nats.dart' as nats;
 import 'package:flutter/material.dart';
-import 'package:pokerapp/enums/game_status.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
-import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/screens/game_context_screen/game_chat/chat.dart';
@@ -18,11 +16,13 @@ import 'package:pokerapp/services/agora/agora.dart';
 import 'package:pokerapp/services/app/player_service.dart';
 import 'package:pokerapp/services/game_play/action_services/game_action_service/game_action_service.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_service/hand_action_service.dart';
+import 'package:pokerapp/services/game_play/action_services/hand_action_service/sub_services/result_service.dart';
 import 'package:pokerapp/services/game_play/game_chat_service.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/services/game_play/graphql/game_service.dart';
 import 'package:pokerapp/services/game_play/utils/audio.dart';
 import 'package:pokerapp/services/game_play/utils/audio_buffer.dart';
+import 'package:pokerapp/services/test/test_service.dart';
 import 'package:provider/provider.dart';
 
 /*
@@ -53,17 +53,25 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
   * and only once, the initial game screen is populated from here
   * also the NATS channel subscriptions are done here */
   Future<GameInfoModel> _fetchGameInfo() async {
-    GameInfoModel _gameInfoModel =
-        await GameService.getGameInfo(widget.gameCode);
-    this._currentPlayer = await PlayerService.getMyInfo(widget.gameCode);
+    GameInfoModel gameInfo;
 
-    // mark the isMe field
-    for (int i = 0; i < _gameInfoModel.playersInSeats.length; i++) {
-      if (_gameInfoModel.playersInSeats[i].playerUuid == _currentPlayer.uuid)
-        _gameInfoModel.playersInSeats[i].isMe = true;
+    if (TestService.isTesting) {
+      debugPrint('Loading game from test data');
+      // load test data
+      await TestService.load();      
+      gameInfo = TestService.gameInfo;
+      this._currentPlayer = TestService.currentPlayer;
+    } else {
+      gameInfo = await GameService.getGameInfo(widget.gameCode);
+      this._currentPlayer = await PlayerService.getMyInfo(widget.gameCode);
     }
 
-    return _gameInfoModel;
+    // mark the isMe field
+    for (int i = 0; i < gameInfo.playersInSeats.length; i++) {
+      if (gameInfo.playersInSeats[i].playerUuid == _currentPlayer.uuid)
+        gameInfo.playersInSeats[i].isMe = true;
+    }
+    return gameInfo;
   }
 
   Future joinAudio() async {
@@ -97,10 +105,6 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
       playerToHandChannel: _gameInfoModel.playerToHandChannel,
       gameChatChannel: _gameInfoModel.gameChatChannel,
     );
-
-    // if (_gameInfoModel.status == GameStatus.CONFIGURED.toString()) {
-    //   // status is configured, update table status
-    // }
 
     // subscribe the NATs channels
     await _gameComService.init();
@@ -284,18 +288,27 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
 
               var dividerTotalHeight = MediaQuery.of(context).size.height / 6;
               double divider1 = 0.40 * dividerTotalHeight;
-
-              return MultiProvider(
-                providers: GamePlayScreenUtilMethods.getProviders(
+              final providers = GamePlayScreenUtilMethods.getProviders(
                   gameInfoModel: _gameInfoModel,
                   gameCode: widget.gameCode,
                   currentPlayerInfo: this._currentPlayer,
                   agora: agora,
-                  sendPlayerToHandChannel:
-                      _gameComService.sendPlayerToHandChannel,
-                ),
+                  sendPlayerToHandChannel: _gameComService.sendPlayerToHandChannel,
+                );
+              return MultiProvider(
+                providers: providers,
                 builder: (BuildContext context, _) {
                   this._providerContext = context;
+
+
+                  // handle test code
+                  if (TestService.isTesting) {
+                    if (TestService.showResult) {
+                      log('Show handresult');
+                      ResultService.handle(context: context, data: TestService.handResult);
+                      log('Show handresult');
+                    }
+                  }
 
                   AudioBufferService.create().then(
                       (Map<String, String> tmpAudioFiles) =>

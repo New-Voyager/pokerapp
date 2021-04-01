@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
@@ -6,6 +9,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
+import 'hand_result.dart';
 import 'player_action.dart';
 import 'players.dart';
 import 'table_state.dart';
@@ -19,6 +23,8 @@ class GameState {
   ListenableProvider<TableState> _tableState;
   ListenableProvider<Players> _players;
   ListenableProvider<ActionState> _playerAction;
+  ListenableProvider<HandResultState> _handResult;
+  
   Map<int, Seat> _seats = Map<int, Seat>();
    
   void initialize({List<PlayerModel> players, GameInfoModel gameInfo}) {
@@ -40,6 +46,8 @@ class GameState {
         ListenableProvider<TableState>(create: (_) => tableState);
     this._playerAction =
         ListenableProvider<ActionState>(create: (_) => ActionState());
+    this._handResult =
+        ListenableProvider<HandResultState>(create: (_) => HandResultState());
 
     if (players == null) {
       players = [];
@@ -62,9 +70,14 @@ class GameState {
     return this._seats.values.toList();
   }
 
+  static GameState getState(BuildContext context) {
+    return Provider.of<GameState>(context, listen: false);
+  }
+
   void clear(BuildContext context) {
     final tableState = this.getTableState(context);
     final players = this.getPlayers(context);
+    final handResult = this.getResultState(context);
 
     // clear players
     players.clear();
@@ -72,6 +85,9 @@ class GameState {
     // clear table state
     tableState.clear();
     tableState.notifyAll();
+
+    handResult.reset();
+    handResult.notifyAll();
   }
 
   HandInfoState getHandInfo(BuildContext context, {bool listen: false}) {
@@ -88,6 +104,10 @@ class GameState {
 
   ActionState getActionState(BuildContext context, {bool listen: false}) {
     return Provider.of<ActionState>(context, listen: listen);
+  }
+
+  HandResultState getResultState(BuildContext context, {bool listen: false}) {
+    return Provider.of<HandResultState>(context, listen: listen);
   }
 
   Seat getSeat(BuildContext context, int seatNo, {bool listen: false}) {
@@ -114,6 +134,7 @@ class GameState {
       this._tableState,
       this._players,
       this._playerAction,
+      this._handResult,
     ];
   }
 
@@ -217,4 +238,12 @@ class ActionState extends ChangeNotifier {
   PlayerAction get action {
     return this._currentAction;
   }
+}
+
+
+void loadGameStateFromFile(BuildContext context) async {
+  final data = await rootBundle.loadString('assets/sample-data/players.json');
+  final jsonData = json.decode(data);
+  final List players = jsonData['players'];
+  final gameState = GameState.getState(context);
 }

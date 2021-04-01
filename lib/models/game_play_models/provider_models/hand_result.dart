@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/business/hi_winners_model.dart';
 
-class FooterResult extends ChangeNotifier {
-  bool _isEmpty;
+class HandResultState extends ChangeNotifier {
+  int _handNum;
+  bool _isAvailable;
   List<HiWinnersModel> _potWinners;
 
-  FooterResult() {
-    _isEmpty = true;
+  HandResultState() {
+    _isAvailable = false;
   }
 
   List<HiWinnersModel> updateWinners(var potWinners) {
@@ -17,17 +18,20 @@ class FooterResult extends ChangeNotifier {
             (var hiWinner) => HiWinnersModel.fromJson(hiWinner))
         .toList();
 
-    _isEmpty = false;
+    _isAvailable = true;
     notifyListeners();
 
     return _potWinners;
   }
 
   void reset() {
-    _isEmpty = true;
+    _isAvailable = false;
     notifyListeners();
   }
 
+  void notifyAll() => notifyListeners();
+
   List<HiWinnersModel> get potWinners => _potWinners;
-  bool get isEmpty => _isEmpty;
+  bool get isAvailable => _isAvailable;
+  int get handNum => _handNum;
 }

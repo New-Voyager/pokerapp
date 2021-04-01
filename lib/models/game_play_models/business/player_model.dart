@@ -10,7 +10,6 @@ class PlayerModel {
   int seatNo = -1;
   String playerUuid = '';
   int buyIn = 0;
-  bool showBuyIn = false;
   int stack = 0;
   String avatarUrl = '';
   String status = '';
@@ -30,15 +29,10 @@ class PlayerModel {
 
   int noOfCardsVisible = 0;
 
-  /* TODO: CAN WE SAFELY DELETE THIS CONSTRUCTOR? */
-  // PlayerModel({
-  //   this.name,
-  //   this.seatNo,
-  //   this.playerUuid,
-  //   this.stack,
-  //   this.status,
-  // });
-
+  // buyin status/timer
+  bool showBuyIn = false;
+  DateTime buyInTimeExpAt;   // unix time in UTC 
+  
   PlayerModel({
     String name,
     int seatNo,
