@@ -33,7 +33,7 @@ class NamePlateWidget extends StatelessWidget {
     }
     return Transform.translate(
       key: globalKey,
-      offset: Offset(0.0, -10.0),
+      offset: Offset(0.0, 0.0),
       child: Consumer2<HostSeatChange, GameContextObject>(
         builder: (context, hostSeatChange, gameContextObject, _) {
           Widget widget; 
@@ -114,10 +114,6 @@ class NamePlateWidget extends StatelessWidget {
 
   Container buildSeat(HostSeatChange hostSeatChange,
       {bool isFeedBack = false}) {
-    bool winner = seat.player.winner ?? false;
-    bool highlight = seat.player.highlight ?? false;
-    //print('winner: $winner highlight: $highlight');
-
     final shadow = getShadow(hostSeatChange, isFeedBack);
     return Container(
       width: 70.0,

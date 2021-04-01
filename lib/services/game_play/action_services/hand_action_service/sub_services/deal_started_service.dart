@@ -23,7 +23,7 @@ class DealStartedService {
 
     /* if I am present in this game,
      Deal Start message is unnecessary */
-    if (fromGameReplay == false && me == null) return;
+    // if (fromGameReplay == false && me == null) return;
 
     /* show card shuffling */
     final TableState tableState = gameState.getTableState(context);
@@ -61,8 +61,6 @@ class DealStartedService {
 
         players.updateVisibleCardNumberSilent(seatNo, i + 1);
         players.notifyAll();
-        //final seat = gameState.getSeat(context, seatNo);
-        //seat.notify();
       }
     }
 
@@ -71,5 +69,8 @@ class DealStartedService {
 
     tableState.updateTableStatusSilent(null);
     tableState.notifyAll();
+    // no of cards in this game
+    players.visibleCardNumbersForAllSilent(handInfo.noCards);
+    players.notifyAll();
   }
 }

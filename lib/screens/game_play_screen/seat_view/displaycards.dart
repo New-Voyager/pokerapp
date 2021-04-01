@@ -1,74 +1,50 @@
 import 'package:flutter/material.dart';
+import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
+import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/resources/app_constants.dart';
-import 'package:pokerapp/resources/app_styles.dart';
-import 'animating_widgets/stack_switch_seat_animating_widget.dart';
+import 'package:pokerapp/screens/game_play_screen/card_views/stack_card_view.dart';
+import 'package:pokerapp/utils/card_helper.dart';
 
 class DisplayCardsWidget extends StatelessWidget {
   final Seat seat;
+  final FooterStatus status;
 
-  DisplayCardsWidget(this.seat);
+  DisplayCardsWidget(this.seat, this.status);
 
   @override
   Widget build(BuildContext context) {
-    /* The status message is not shown, if
-    * 1. The seat is empty - nothing to show
-    * 2. The current user is to act - the current user is highlighted */
-    if (seat.isOpen || seat.player.highlight) return shrinkedSizedBox;
+    bool showDown = this.status == FooterStatus.Result;
 
-    String status;
 
-    if (seat.player?.status != null && seat.player.status.isNotEmpty)
-      status = seat.player.status;
+    return Container(
+      height: 19.50 * 3,
+      child: AnimatedSwitcher(
+        duration: AppConstants.fastAnimationDuration,
+        child: showDown &&
+                (seat.player.cards != null &&
+                    seat.player.cards.isNotEmpty)
+            ? Transform.scale(
+                    scale: 0.70,
+                    child: StackCardView(
+                      cards: seat.player.cards?.map<CardObject>(
+                            (int c) {
+                              List<int> highlightedCards =
+                                  seat.player.highlightCards;
+                              CardObject card = CardHelper.getCard(c);
 
-    if (seat.player?.status == AppConstants.WAIT_FOR_BUYIN)
-      // SOMA: disabled showing status
-      //status = 'Waiting for Buy In';
-      status = null;
+                              card.smaller = true;
+                              if (highlightedCards?.contains(c) ??
+                                  false) card.highlight = true;
 
-    //if (seat.player.buyIn != null) status = 'Buy In ${seat.player.buyIn} amount';
-
-    if (seat.player?.status == AppConstants.PLAYING) status = null;
-
-    // decide color from the status message
-    // raise, bet -> red
-    // check, call -> green
-
-    return AnimatedSwitcher(
-      duration: AppConstants.popUpAnimationDuration,
-      reverseDuration: AppConstants.popUpAnimationDuration,
-      switchInCurve: Curves.bounceInOut,
-      switchOutCurve: Curves.bounceInOut,
-      transitionBuilder: (widget, animation) => ScaleTransition(
-        alignment: Alignment.topCenter,
-        scale: animation,
-        child: widget,
+                              return card;
+                            },
+                          )?.toList() ??
+                          [],
+                    ),
+                  )
+            : SizedBox.shrink(),
       ),
-      child: status == null
-          ? shrinkedSizedBox
-          : ClipRRect(
-              borderRadius: BorderRadius.circular(5.0),
-              child: Text(
-                status,
-                style: getStatusTextStyle(status),
-              ),
-            ),
-    );     
+    );
   }
-
-
-  static TextStyle getStatusTextStyle(String status) {
-    Color statusColor = Colors.black; // default color be black
-    if (status != null) {
-      if (status.toUpperCase().contains('CHECK') ||
-          status.toUpperCase().contains('CALL'))
-        statusColor = Colors.green;
-      else if (status.toUpperCase().contains('RAISE') ||
-          status.toUpperCase().contains('BET')) statusColor = Colors.red;
-    }
-
-    Color fgColor = Colors.white;
-    return AppStyles.userPopUpMessageTextStyle
-        .copyWith(fontSize: 10, color: fgColor, backgroundColor: statusColor);
-  }  
 }

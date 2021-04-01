@@ -141,31 +141,6 @@ class GamePlayScreenUtilMethods {
         ),
       ),
 
-      /* If footer status become RESULT, then we need to have the
-        * result data available, the footer result model holds the result data */
-      // ListenableProvider<FooterResult>(
-      //   create: (_) => FooterResult(),
-      // ),
-
-      /* This provider gets a value when YOUR_ACTION message is received,
-        * other time this value is kept null, signifying,
-        * there is no action to take on THIS user's end
-        * */
-      // ListenableProvider<ValueNotifier<PlayerAction>>(
-      //   create: (_) => ValueNotifier<PlayerAction>(
-      //     null,
-      //   ),
-      // ),
-
-      /* This provider contains and updates the game info
-        * required for player to make an action
-        * this provider holds --> clubID, gameID and seatNo */
-      // ListenableProvider<ValueNotifier<ActionInfo>>(
-      //   create: (_) => ValueNotifier<ActionInfo>(
-      //     null,
-      //   ),
-      // ),
-
       /* This provider contains the sendPlayerToHandChannel function
         * so that the function can be called from anywhere down the widget tree */
       Provider<Function(String)>(
@@ -206,11 +181,6 @@ class GamePlayScreenUtilMethods {
 
     /* add all the providers in the game state to our providers */
     providers.addAll(gameState.providers);
-
-    // for (var gameProvider in gameState.providers) {
-    //   providers.add(gameProvider);
-    // }
-
     return providers;
   }
 }

@@ -1,4 +1,4 @@
-import 'dart:developer';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
@@ -68,13 +68,15 @@ class ResultService {
     final tableState = gameState.getTableState(context);
     final resultState = gameState.getResultState(context);
 
-    HighHandService.handle(
-      context: context,
-      data: data['handResult']['highHand'],
-      showNotification: false,
-    );
+    if (data['handResult']['highHand'] != null) {
+      HighHandService.handle(
+        context: context,
+        data: data['handResult']['highHand'],
+        showNotification: false,
+      );
+    }
     players.clearForShowdown();
-
+    debugPrint(jsonEncode(data));
     // get hand winners data and update results
     final winnersData = data['handResult']['handLog']['potWinners'];
     final winners = resultState.updateWinners(winnersData);

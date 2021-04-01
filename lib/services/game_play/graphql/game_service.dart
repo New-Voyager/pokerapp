@@ -1,5 +1,7 @@
+import 'dart:convert';
 import 'dart:developer';
 
+import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/game/new_game_model.dart';
@@ -45,7 +47,9 @@ class GameService {
     if (result.hasException) return null;
 
     final jsonResponse = result.data['gameInfo'];
-
+    // JsonEncoder encoder = new JsonEncoder.withIndent('  ');
+    // String prettyprint = encoder.convert(jsonResponse);    
+    // debugPrint(prettyprint, wrapWidth: 4096);
     return GameInfoModel.fromJson(jsonResponse);
   }
 

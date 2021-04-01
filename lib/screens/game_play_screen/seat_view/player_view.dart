@@ -11,11 +11,13 @@ import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/screens/game_play_screen/card_views/hidden_card_view.dart';
+import 'package:pokerapp/screens/game_play_screen/seat_view/displaycards.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/profile_popup.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/services/game_play/graphql/seat_change_service.dart';
 import 'package:provider/provider.dart';
 
+import 'action_status.dart';
 import 'animating_widgets/fold_card_animating_widget.dart';
 import 'animating_widgets/stack_switch_seat_animating_widget.dart';
 import 'dealer_button.dart';
@@ -134,26 +136,22 @@ class PlayerView extends StatelessWidget {
                   : shrinkedSizedBox,
 
               // // main user body
-              Stack(
-                alignment: Alignment.bottomCenter,
-                children: [
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      UserViewUtilWidgets.buildAvatarAndLastAction(
-                        avatarUrl: seat.player?.avatarUrl,
-                        seat: seat,
-                        cardsAlignment: cardsAlignment,
-                      ),
-                      NamePlateWidget(
-                        seat,
-                        globalKey: globalKey,
-                      ),
-                    ],
-                  ),
-                ],
+              NamePlateWidget(
+                seat,
+                globalKey: globalKey,
               ),
 
+              // result cards and show selected cards by a user
+              Consumer<ValueNotifier<FooterStatus>>(
+                  builder: (_, valueNotifierFooterStatus, __) {
+                    return DisplayCardsWidget(seat, valueNotifierFooterStatus.value);
+                  },
+                ),                      
+              
+              // player action text
+              Positioned(top:0, left: 0, child: ActionStatusWidget(seat, cardsAlignment)),
+
+              // player hole cards
               PlayerCardsWidget(seat, this.cardsAlignment, seat.player?.noOfCardsVisible, showdown),
 
               // show dealer button, if user is a dealer
@@ -172,7 +170,7 @@ class PlayerView extends StatelessWidget {
                 seat: seat,
               ),
 
-              SeatNoWidget(seat),
+              //SeatNoWidget(seat),
             ],
           ),
         );
@@ -267,9 +265,9 @@ class PlayerCardsWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    if (seat.folded ?? false) {
-      return shrinkedSizedBox;  
-    }
+    // if (seat.folded ?? false) {
+    //   return shrinkedSizedBox;  
+    // }
  
     double shiftMultiplier = 1.0;
     if (this.noCards == 5) shiftMultiplier = 1.7;
@@ -286,20 +284,51 @@ class PlayerCardsWidget extends StatelessWidget {
           ? 35.0
           : -45.0 * shiftMultiplier);
 
-    return Transform.translate(
-      offset: Offset(
-        xOffset * 0.50,
-        45.0,
-      ),
-      child: AnimatedSwitcher(
-        duration: AppConstants.fastAnimationDuration,
-        child: Transform.scale(
-          scale: 1.0,
-          child: (seat.folded ?? false) ? FoldCardAnimatingWidget(seat: seat)
-                    : showdown ? const SizedBox.shrink()
-                      : HiddenCardView(noOfCards: this.noCards),
+    if (showdown) {
+      log('showdown, hide cards');
+      return Transform.translate(
+        offset: Offset(
+          xOffset * 0.50,
+          45.0,
         ),
-      ),
-    );    
+        child: AnimatedSwitcher(
+          duration: AppConstants.fastAnimationDuration,
+          child: Transform.scale(
+            scale: 1.0,
+            child: const SizedBox.shrink()
+          ),
+        )
+      );
+    } else if(seat.folded ?? false) {
+      log('player folded cards');
+      return Transform.translate(
+        offset: Offset(
+          xOffset * 0.50,
+          45.0,
+        ),
+        child: AnimatedSwitcher(
+          duration: AppConstants.fastAnimationDuration,
+          child: Transform.scale(
+            scale: 1.0,
+            child: FoldCardAnimatingWidget(seat: seat)
+          ),
+        ),
+      );
+    } else {
+      log('player is not playing. ${this.noCards}');
+      return Transform.translate(
+        offset: Offset(
+          xOffset * 0.50,
+          45.0,
+        ),
+        child: AnimatedSwitcher(
+          duration: AppConstants.fastAnimationDuration,
+          child: Transform.scale(
+            scale: 1.0,
+            child: HiddenCardView(noOfCards: this.noCards),
+          ),
+        )
+      );
+    }
   }
 }

@@ -6,8 +6,9 @@ import 'animating_widgets/stack_switch_seat_animating_widget.dart';
 
 class ActionStatusWidget extends StatelessWidget {
   final Seat seat;
+  final Alignment alignment;
 
-  ActionStatusWidget(this.seat);
+  ActionStatusWidget(this.seat, this.alignment);
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +18,7 @@ class ActionStatusWidget extends StatelessWidget {
     if (seat.isOpen || seat.player.highlight) return shrinkedSizedBox;
 
     String status;
-
+    //seat.player.status = "CHECK";
     if (seat.player?.status != null && seat.player.status.isNotEmpty)
       status = seat.player.status;
 
@@ -33,27 +34,36 @@ class ActionStatusWidget extends StatelessWidget {
     // decide color from the status message
     // raise, bet -> red
     // check, call -> green
-
-    return AnimatedSwitcher(
-      duration: AppConstants.popUpAnimationDuration,
-      reverseDuration: AppConstants.popUpAnimationDuration,
-      switchInCurve: Curves.bounceInOut,
-      switchOutCurve: Curves.bounceInOut,
-      transitionBuilder: (widget, animation) => ScaleTransition(
-        alignment: Alignment.topCenter,
-        scale: animation,
-        child: widget,
-      ),
-      child: status == null
+    return status == null
           ? shrinkedSizedBox
           : ClipRRect(
               borderRadius: BorderRadius.circular(5.0),
               child: Text(
-                status,
+                '  '+ status+'  ',
                 style: getStatusTextStyle(status),
               ),
-            ),
-    );     
+            );
+
+    // return AnimatedSwitcher(
+    //   duration: AppConstants.popUpAnimationDuration,
+    //   reverseDuration: AppConstants.popUpAnimationDuration,
+    //   switchInCurve: Curves.bounceInOut,
+    //   switchOutCurve: Curves.bounceInOut,
+    //   transitionBuilder: (widget, animation) => ScaleTransition(
+    //     alignment: Alignment.topCenter,
+    //     scale: animation,
+    //     child: widget,
+    //   ),
+    //   child: status == null
+    //       ? shrinkedSizedBox
+    //       : ClipRRect(
+    //           borderRadius: BorderRadius.circular(5.0),
+    //           child: Text(
+    //             status,
+    //             style: getStatusTextStyle(status),
+    //           ),
+    //         ),
+    // );     
   }
 
 

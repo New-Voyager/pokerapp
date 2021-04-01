@@ -126,7 +126,7 @@ class UserViewUtilWidgets {
                   : 15,
               10.0,
             ),
-            child: ActionStatusWidget(seat),
+            child: ActionStatusWidget(seat, cardsAlignment),
           ),
         ],
       );

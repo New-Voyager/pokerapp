@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
@@ -65,6 +68,10 @@ class GameState {
 
   get seats {
     return this._seats.values.toList();
+  }
+
+  static GameState getState(BuildContext context) {
+    return Provider.of<GameState>(context, listen: false);
   }
 
   void clear(BuildContext context) {
@@ -205,7 +212,6 @@ class HandInfoState extends ChangeNotifier {
 
     this.notifyListeners();
   }
-
 }
 
 /* This provider gets a value when YOUR_ACTION message is received,
@@ -232,4 +238,12 @@ class ActionState extends ChangeNotifier {
   PlayerAction get action {
     return this._currentAction;
   }
+}
+
+
+void loadGameStateFromFile(BuildContext context) async {
+  final data = await rootBundle.loadString('assets/sample-data/players.json');
+  final jsonData = json.decode(data);
+  final List players = jsonData['players'];
+  final gameState = GameState.getState(context);
 }

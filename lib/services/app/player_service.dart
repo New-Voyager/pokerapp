@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'dart:developer';
+import 'package:flutter/widgets.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/player_info.dart';
@@ -32,6 +34,7 @@ class PlayerService {
     );
 
     if (result.hasException) return null;
+    debugPrint(jsonEncode(result.data));
     return PlayerInfo.fromJson(result.data);
   }
 

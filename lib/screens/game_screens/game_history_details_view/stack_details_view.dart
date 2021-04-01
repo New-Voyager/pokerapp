@@ -3,8 +3,6 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_history_model.dart';
 import 'package:pokerapp/resources/app_colors.dart';
-import 'package:pokerapp/screens/game_screens/highhand_log/highhand_log.dart';
-import 'package:pokerapp/services/app/game_service.dart';
 
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:charts_flutter/flutter.dart';
@@ -24,7 +22,7 @@ class PointsLineChart extends StatefulWidget {
 class _PointsLineChart extends State<PointsLineChart> {
   static dynamic jsonData;
   bool loadingDone = false;
-  List<PlayerStack> stackList = new List<PlayerStack>();
+  List<PlayerStack> stackList = [];
 
   @override
   void initState() {

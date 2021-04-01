@@ -52,7 +52,8 @@ class QueryCurrentHandService {
       );
 
     /* set the noOfVisible cards for other players */
-    int noOfCards = handInfo.noCards;
+    int noOfCards = int.parse(currentHandState["noCards"].toString());
+    handInfo.update(noCards: noOfCards);
     players.visibleCardNumbersForAllSilent(noOfCards);
 
     // boardCards update if available
