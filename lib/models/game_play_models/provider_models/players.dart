@@ -178,7 +178,7 @@ class Players extends ChangeNotifier {
   }
 
   Future<void> moveCoinsToPot() async {
-    debugPrint('moveCoinsToPot');
+    // debugPrint('moveCoinsToPot');
 
     /* move all the coins to the pot  */
     for (int i = 0; i < _players.length; i++) {

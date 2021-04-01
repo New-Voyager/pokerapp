@@ -73,7 +73,7 @@ class PlayerView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('Rebuilding seat: ${seat.serverSeatPos}');
+    // debugPrint('Rebuilding seat: ${seat.serverSeatPos}');
 
     bool openSeat = seat.isOpen;
     bool isMe = seat.isMe;
@@ -279,13 +279,14 @@ class PlayerCardsWidget extends StatelessWidget {
       xOffset = (alignment == Alignment.centerLeft ? 1 : -1) *
           25.0 *
           (seat.cards?.length ?? 0.0);
-    else
+    else {
       xOffset = (alignment == Alignment.centerLeft
           ? 35.0
           : -45.0 * shiftMultiplier);
+      xOffset = -45.0 * shiftMultiplier;
 
+    }
     if (showdown) {
-      log('showdown, hide cards');
       return Transform.translate(
         offset: Offset(
           xOffset * 0.50,
@@ -300,7 +301,6 @@ class PlayerCardsWidget extends StatelessWidget {
         )
       );
     } else if(seat.folded ?? false) {
-      log('player folded cards');
       return Transform.translate(
         offset: Offset(
           xOffset * 0.50,
@@ -315,16 +315,16 @@ class PlayerCardsWidget extends StatelessWidget {
         ),
       );
     } else {
-      log('player is not playing. ${this.noCards}');
+      //log('Hole cards');
       return Transform.translate(
         offset: Offset(
           xOffset * 0.50,
-          45.0,
+          25.0,
         ),
         child: AnimatedSwitcher(
           duration: AppConstants.fastAnimationDuration,
           child: Transform.scale(
-            scale: 1.0,
+            scale: 0.75,
             child: HiddenCardView(noOfCards: this.noCards),
           ),
         )

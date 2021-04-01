@@ -54,7 +54,7 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
   List<GlobalKey> _playerKeys = [];
 
   // some offset
-  double offset = 30;
+  double offset = 0;
 
   // sender to receiver
   bool isAnimating = false;

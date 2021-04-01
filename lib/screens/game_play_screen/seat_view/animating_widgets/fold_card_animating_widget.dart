@@ -37,7 +37,7 @@ class FoldCardAnimatingWidget extends StatelessWidget {
           noOfCards: seat.player.noOfCardsVisible,
         ),
         onEnd: () {
-          print('fold animation done ${this.seat.serverSeatPos}');
+          // print('fold animation done ${this.seat.serverSeatPos}');
           if (!openSeat) {
             seat.player.animatingFold = false;
           }

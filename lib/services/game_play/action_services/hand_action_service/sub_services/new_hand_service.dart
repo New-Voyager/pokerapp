@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
@@ -26,6 +29,9 @@ class NewHandService {
     /* data contains the dealer, small blind and big blind seat Positions
     * Update the Players object with these information */
 
+    final handData = jsonEncode(data);
+    log('New Hand: $handData');
+
     var newHand = data['newHand'];
 
     // there are seat nos
@@ -35,14 +41,6 @@ class NewHandService {
     int noCards = newHand['noCards'];
     int bigBlind = double.parse(newHand['bigBlind'].toString()).toInt();
     int smallBlind = double.parse(newHand['smallBlind'].toString()).toInt();
-
-    // put the no Cards information
-    /*
-    Provider.of<ValueNotifier<int>>(
-      context,
-      listen: false,
-    ).value = noCards;
-    */
 
     GameState gameState = Provider.of<GameState>(
       context,
