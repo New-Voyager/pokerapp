@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/models/game_play_models/business/card_distribution_model.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
-import 'package:pokerapp/models/game_play_models/provider_models/footer_result.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/notification_models/general_notification_model.dart';
@@ -144,9 +143,9 @@ class GamePlayScreenUtilMethods {
 
       /* If footer status become RESULT, then we need to have the
         * result data available, the footer result model holds the result data */
-      ListenableProvider<FooterResult>(
-        create: (_) => FooterResult(),
-      ),
+      // ListenableProvider<FooterResult>(
+      //   create: (_) => FooterResult(),
+      // ),
 
       /* This provider gets a value when YOUR_ACTION message is received,
         * other time this value is kept null, signifying,

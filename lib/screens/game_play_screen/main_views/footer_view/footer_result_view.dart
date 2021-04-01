@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/business/hi_winners_model.dart';
-import 'package:pokerapp/models/game_play_models/provider_models/footer_result.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
-import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
-import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/hand_result.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
@@ -14,10 +12,10 @@ import 'package:provider/provider.dart';
  * along with their highlighted cards with the community cards */
 
 class FooterResultView extends StatelessWidget {
-  final FooterResult footerResult;
+  final HandResultState result;
 
   FooterResultView({
-    @required this.footerResult,
+    @required this.result,
   });
 
   Widget getCardRowView({
@@ -189,7 +187,7 @@ class FooterResultView extends StatelessWidget {
   }
 
   Widget _buildFooterResult(BuildContext context) {
-    List<HiWinnersModel> winners = footerResult.potWinners;
+    List<HiWinnersModel> winners = result.potWinners;
 
     return Container(
       padding: const EdgeInsets.symmetric(

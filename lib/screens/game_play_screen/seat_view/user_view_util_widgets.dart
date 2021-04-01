@@ -14,9 +14,9 @@ import 'package:pokerapp/screens/game_play_screen/card_views/stack_card_view.dar
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:provider/provider.dart';
 
+import 'action_status.dart';
 import 'animating_widgets/chip_amount_animating_widget.dart';
 import 'count_down_timer.dart';
-import 'user_view_util_methods.dart';
 
 class UserViewUtilWidgets {
   UserViewUtilWidgets._();
@@ -126,9 +126,7 @@ class UserViewUtilWidgets {
                   : 15,
               10.0,
             ),
-            child: UserViewUtilWidgets.buildUserStatus(
-              seat: seat,
-            ),
+            child: ActionStatusWidget(seat),
           ),
         ],
       );
@@ -176,57 +174,11 @@ class UserViewUtilWidgets {
               );    
   }
 
-  static Widget buildUserStatus({
-    @required Seat seat,
-  }) {
-    /* The status message is not shown, if
-    * 1. The seat is empty - nothing to show
-    * 2. The current user is to act - the current user is highlighted */
-    if (seat.isOpen || seat.player.highlight) return shrinkedSizedBox;
-
-    String status;
-
-    if (seat.player?.status != null && seat.player.status.isNotEmpty)
-      status = seat.player.status;
-
-    if (seat.player?.status == AppConstants.WAIT_FOR_BUYIN)
-      status = 'Waiting for Buy In';
-
-    //if (seat.player.buyIn != null) status = 'Buy In ${seat.player.buyIn} amount';
-
-    if (seat.player?.status == AppConstants.PLAYING) status = null;
-
-    // decide color from the status message
-    // raise, bet -> red
-    // check, call -> green
-
-    return AnimatedSwitcher(
-      duration: AppConstants.popUpAnimationDuration,
-      reverseDuration: AppConstants.popUpAnimationDuration,
-      switchInCurve: Curves.bounceInOut,
-      switchOutCurve: Curves.bounceInOut,
-      transitionBuilder: (widget, animation) => ScaleTransition(
-        alignment: Alignment.topCenter,
-        scale: animation,
-        child: widget,
-      ),
-      child: status == null
-          ? shrinkedSizedBox
-          : ClipRRect(
-              borderRadius: BorderRadius.circular(5.0),
-              child: Text(
-                status,
-                style: UserViewUtilMethods.getStatusTextStyle(status),
-              ),
-            ),
-    );
-  }
-
   static Widget buildChipAmountWidget({
     @required Seat seat,
   }) {
     // to debug coin position
-    //userObject.coinAmount = 10;
+    //seat.player.coinAmount = 10;
 
     Widget chipAmountWidget = Consumer<BoardAttributesObject>(
       builder: (_, boardAttrObj, __) => Transform.translate(

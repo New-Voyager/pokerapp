@@ -3,10 +3,8 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/models/game_play_models/business/hi_winners_model.dart';
-import 'package:pokerapp/models/game_play_models/provider_models/footer_result.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
-import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/services/game_play/action_services/game_action_service/sub_services/high_hand_service.dart';
 import 'package:provider/provider.dart';
@@ -68,6 +66,7 @@ class ResultService {
     final gameState = Provider.of<GameState>(context, listen: false);
     final Players players = gameState.getPlayers(context);
     final tableState = gameState.getTableState(context);
+    final resultState = gameState.getResultState(context);
 
     HighHandService.handle(
       context: context,
@@ -76,14 +75,9 @@ class ResultService {
     );
     players.clearForShowdown();
 
-    /* footer status -> showing the result */
-    /* set the footer result data */
-    List<HiWinnersModel> winners = Provider.of<FooterResult>(
-      context,
-      listen: false,
-    ).updateWinners(
-      data['handResult']['handLog']['potWinners'],
-    );
+    // get hand winners data and update results
+    final winnersData = data['handResult']['handLog']['potWinners'];
+    final winners = resultState.updateWinners(winnersData);
 
     /* showdown time, show other players cards */
     players.updateUserCardsSilent(_getCards(data));
