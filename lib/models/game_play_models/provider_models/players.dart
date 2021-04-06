@@ -60,7 +60,7 @@ class Players extends ChangeNotifier {
 
     if (notify) {
       this.notifyAll();
-    }    
+    }
   }
 
   void clearForShowdown({bool notify = false}) {
@@ -120,6 +120,11 @@ class Players extends ChangeNotifier {
     if (coinAmount != null) {
       _players[idx].coinAmount = coinAmount;
     }
+  }
+
+  void updateTestBet(int coinAmount) {
+    for (int i = 0; i < _players.length; i++)
+      _players[i].coinAmount = coinAmount;
   }
 
   void fireworkWinnerSilent(int seatNo) {
@@ -278,5 +283,4 @@ class Players extends ChangeNotifier {
     int idx = _players.indexWhere((p) => p.seatNo == seatNo);
     return _players[idx];
   }
-
 }

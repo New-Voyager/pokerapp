@@ -16,12 +16,12 @@ class TableState extends ChangeNotifier {
   bool _animateBoard1Flop;
   bool _animateBoard1Turn;
   bool _animateBoard1River;
-  bool _animateBoard1;         // all the 5 cards (run it twice)
+  bool _animateBoard1; // all the 5 cards (run it twice)
 
   bool _animateBoard2Flop;
   bool _animateBoard2Turn;
   bool _animateBoard2River;
-  bool _animateBoard2;         // all the 5 cards (run it twice)
+  bool _animateBoard2; // all the 5 cards (run it twice)
 
   TableState({
     String tableStatus,

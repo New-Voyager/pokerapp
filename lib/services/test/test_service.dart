@@ -35,7 +35,7 @@ class TestService {
   static dynamic get handResult {
     return _result;
   }
-  
+
   static bool get showResult {
     return _showResult;
   }
@@ -43,14 +43,15 @@ class TestService {
   static List<CardObject> get boardCards {
     return _boardCards;
   }
-  
+
   static List<int> get pots {
     return _pots;
   }
 
   static Future<void> load() async {
     if (_isTesting) {
-      final gameData = await rootBundle.loadString('assets/sample-data/gameinfo.json');
+      final gameData =
+          await rootBundle.loadString('assets/sample-data/gameinfo.json');
       final jsonData = jsonDecode(gameData);
       if (jsonData["currentPlayer"] != null) {
         _currentPlayer = PlayerInfo.fromJson(jsonData["currentPlayer"]);
@@ -58,10 +59,13 @@ class TestService {
       if (jsonData["gameInfo"] != null) {
         _gameInfo = GameInfoModel.fromJson(jsonData["gameInfo"]);
       }
-      final resultData = await rootBundle.loadString('assets/sample-data/result.json');
+      final resultData =
+          await rootBundle.loadString('assets/sample-data/result.json');
       _result = jsonDecode(resultData);
 
-      _boardCards = [130, 82, 193, 148, 20].map<CardObject>((e) => CardHelper.getCard(e)).toList();
+      _boardCards = [130, 82, 193, 148, 20]
+          .map<CardObject>((e) => CardHelper.getCard(e))
+          .toList();
       _pots = [100];
     }
   }
@@ -70,5 +74,17 @@ class TestService {
     final gameState = Provider.of<GameState>(context, listen: false);
     final players = gameState.getPlayers(context);
     await players.moveCoinsToPot();
+  }
+
+  static void showBets(BuildContext context) {
+    final gameState = Provider.of<GameState>(context, listen: false);
+    final players = gameState.getPlayers(context);
+    players.updateTestBet(20);
+    players.notifyAll();
+  }
+
+  static Future<void> runTesting(BuildContext context) async {
+    await simulateBetMovement(context);
+    showBets(context);
   }
 }

@@ -74,7 +74,7 @@ class PlayerUpdateService {
     );
 
     assert(_gameInfoModel != null);
-    
+
     List<PlayerModel> playerModels = _gameInfoModel.playersInSeats;
     PlayerModel newPlayerModel = playerModels.firstWhere(
       (pm) => pm.seatNo == seatNo,

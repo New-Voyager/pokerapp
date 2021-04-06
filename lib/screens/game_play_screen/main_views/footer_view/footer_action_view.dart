@@ -288,7 +288,6 @@ class _FooterActionViewState extends State<FooterActionView> {
             [],
       );
 
-
   Widget _buildSmallerRoundButton(Option o) => InkWell(
         onTap: () {
           _controller.text = o.amount.toStringAsFixed(0);
@@ -457,8 +456,8 @@ class _FooterActionViewState extends State<FooterActionView> {
             ? shrinkedBox
             : _showOptions
                 ? Container(
-                  color: Colors.black.withOpacity(0.65),
-                  child: Column(
+                    color: Colors.black.withOpacity(0.65),
+                    child: Column(
                       key: ValueKey('options'),
                       children: [
                         /* options */
@@ -491,7 +490,7 @@ class _FooterActionViewState extends State<FooterActionView> {
                         ),
                       ],
                     ),
-                )
+                  )
                 : shrinkedBox,
       );
 
@@ -507,5 +506,4 @@ class _FooterActionViewState extends State<FooterActionView> {
       ),
     );
   }
-
 }

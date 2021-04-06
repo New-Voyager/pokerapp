@@ -31,8 +31,8 @@ class PlayerModel {
 
   // buyin status/timer
   bool showBuyIn = false;
-  DateTime buyInTimeExpAt;   // unix time in UTC 
-  
+  DateTime buyInTimeExpAt; // unix time in UTC
+
   PlayerModel({
     String name,
     int seatNo,
@@ -109,9 +109,7 @@ class PlayerModel {
   }
 
   List<CardObject> get cardObjects {
-    return this.cards
-        .map<CardObject>((c) => CardHelper.getCard(c))
-        .toList();
+    return this.cards.map<CardObject>((c) => CardHelper.getCard(c)).toList();
   }
 
   @override

@@ -27,7 +27,7 @@ class QueryCurrentHandService {
 
     var currentHandState = data['currentHandState'];
     // log('Current hand state: $currentHandState');
-    
+
     // current players cards
     String playerCards = currentHandState['playerCards'];
 
@@ -62,7 +62,8 @@ class QueryCurrentHandService {
           .map<int>((e) => int.parse(e.toString()))
           .toList();
       if (boardCardsNum != null)
-        tableState.setBoard(1, 
+        tableState.setBoard(
+          1,
           boardCardsNum.map<CardObject>((c) => CardHelper.getCard(c)).toList(),
         );
     } catch (e) {}

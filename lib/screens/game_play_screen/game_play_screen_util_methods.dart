@@ -114,7 +114,6 @@ class GamePlayScreenUtilMethods {
           player: currentPlayerInfo,
         ),
       ),
-
       Provider<GameState>(
         create: (_) => gameState,
       ),

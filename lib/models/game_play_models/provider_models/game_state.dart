@@ -25,13 +25,13 @@ class GameState {
   ListenableProvider<Players> _players;
   ListenableProvider<ActionState> _playerAction;
   ListenableProvider<HandResultState> _handResult;
-  
+
   Map<int, Seat> _seats = Map<int, Seat>();
-   
+
   void initialize({List<PlayerModel> players, GameInfoModel gameInfo}) {
     this._seats = Map<int, Seat>();
 
-    for(int seatNo = 1; seatNo <= gameInfo.maxPlayers; seatNo++) {
+    for (int seatNo = 1; seatNo <= gameInfo.maxPlayers; seatNo++) {
       this._seats[seatNo] = Seat(seatNo, seatNo, null);
     }
 
@@ -111,7 +111,8 @@ class GameState {
     return Provider.of<HandResultState>(context, listen: listen);
   }
 
-  BoardAttributesObject getBoardAttributes(BuildContext context, {bool listen: false}) {
+  BoardAttributesObject getBoardAttributes(BuildContext context,
+      {bool listen: false}) {
     return Provider.of<BoardAttributesObject>(context, listen: listen);
   }
 
@@ -119,8 +120,9 @@ class GameState {
     return this._seats[seatNo];
   }
 
-  void resetActionHighlight(BuildContext context, int nextActionSeatNo, {bool listen: false}) {
-    for(final seat in this._seats.values) {
+  void resetActionHighlight(BuildContext context, int nextActionSeatNo,
+      {bool listen: false}) {
+    for (final seat in this._seats.values) {
       if (seat.player != null && seat.player.highlight) {
         // debugPrint('*** seatNo: ${seat.serverSeatPos} highlight: ${seat.player.highlight} nextActionSeatNo: $nextActionSeatNo');
         seat.player.highlight = false;
@@ -244,7 +246,6 @@ class ActionState extends ChangeNotifier {
     return this._currentAction;
   }
 }
-
 
 void loadGameStateFromFile(BuildContext context) async {
   final data = await rootBundle.loadString('assets/sample-data/players.json');

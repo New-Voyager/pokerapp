@@ -104,19 +104,19 @@ class HandStageView extends StatelessWidget {
             ),
             initiallyExpanded: false,
             trailing:
-             // (_handStageModel.stageCards.length > 1
-             //      ? CardsView(
-             //    _handStageModel.stageCards,
-             //    true,
-             //  )
-             //      : _handStageModel.stageCards.length != 0
-             //      ? CardView(
-             //    card: CardHelper.getCard(
-             //        _handStageModel.stageCards[0]),
-             //  )
-             //      : Container()),
+                // (_handStageModel.stageCards.length > 1
+                //      ? CardsView(
+                //    _handStageModel.stageCards,
+                //    true,
+                //  )
+                //      : _handStageModel.stageCards.length != 0
+                //      ? CardView(
+                //    card: CardHelper.getCard(
+                //        _handStageModel.stageCards[0]),
+                //  )
+                //      : Container()),
 
-            Icon(
+                Icon(
               Icons.arrow_drop_down,
               color: AppColors.appAccentColor,
             ),

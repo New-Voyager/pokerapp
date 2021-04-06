@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
@@ -17,7 +15,6 @@ class GameCardWidget extends StatelessWidget {
   double height;
   final bool isCardVisible;
 
-
   GameCardWidget({
     @required this.card,
     this.grayOut = false,
@@ -27,13 +24,12 @@ class GameCardWidget extends StatelessWidget {
   });
 
   Widget getCard(TextStyle cardTextStyle, TextStyle suitTextStyle) {
-
     return Stack(
       children: [
         Align(
           child: Container(
             height: 220 / 3,
-            width:  170 / 3,
+            width: 170 / 3,
             child: Center(
               child: RichText(
                 text: TextSpan(
@@ -59,22 +55,42 @@ class GameCardWidget extends StatelessWidget {
             ]
           ),
         ),top: 5,left: 5,),*/
-        Positioned(child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(card.label == 'T' ? '10' : card.label,style: cardTextStyle,),
-            Text(card.suit ?? AppConstants.redHeart,style: suitTextStyle.copyWith(fontSize: 11),),
-          ],
-        ),top: 5,left: 5,),
-        Positioned(child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(card.label == 'T' ? '10' : card.label,style: cardTextStyle,),
-            Text(card.suit ?? AppConstants.redHeart,style: suitTextStyle.copyWith(fontSize: 11),),
-          ],
-        ),bottom: 5,right: 5,),
+        Positioned(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                card.label == 'T' ? '10' : card.label,
+                style: cardTextStyle,
+              ),
+              Text(
+                card.suit ?? AppConstants.redHeart,
+                style: suitTextStyle.copyWith(fontSize: 11),
+              ),
+            ],
+          ),
+          top: 5,
+          left: 5,
+        ),
+        Positioned(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                card.label == 'T' ? '10' : card.label,
+                style: cardTextStyle,
+              ),
+              Text(
+                card.suit ?? AppConstants.redHeart,
+                style: suitTextStyle.copyWith(fontSize: 11),
+              ),
+            ],
+          ),
+          bottom: 5,
+          right: 5,
+        ),
       ],
     );
     return Column(
@@ -163,9 +179,9 @@ class GameCardWidget extends StatelessWidget {
       width: 85,
       foregroundDecoration: grayOut
           ? BoxDecoration(
-        color: Colors.black54,
-        backgroundBlendMode: BlendMode.darken,
-      )
+              color: Colors.black54,
+              backgroundBlendMode: BlendMode.darken,
+            )
           : null,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(5)),
@@ -177,15 +193,13 @@ class GameCardWidget extends StatelessWidget {
     return cardWidget;
   }
 
-  Widget getCardUi(TextStyle cardTextStyle, TextStyle suitTextStyle){
-    if(this.card.empty){
+  Widget getCardUi(TextStyle cardTextStyle, TextStyle suitTextStyle) {
+    if (this.card.empty) {
       return emptyCard();
-    }else if(this.isCardVisible){
+    } else if (this.isCardVisible) {
       return getCard(cardTextStyle, suitTextStyle);
-    }else{
+    } else {
       return Image.asset(AppAssets.cardBackImage);
     }
   }
-
-
 }

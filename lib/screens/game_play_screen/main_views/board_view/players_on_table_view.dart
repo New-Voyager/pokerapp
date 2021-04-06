@@ -281,7 +281,8 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
                   left: seatChangeAnimation.value.dx,
                   top: seatChangeAnimation.value.dy + 32,
                   child: NamePlateWidget(
-                    getSeats(context, widget.players.players)[seatChangerPlayer - 1],
+                    getSeats(
+                        context, widget.players.players)[seatChangerPlayer - 1],
                   ),
                 )
               : SizedBox.shrink(),
@@ -412,32 +413,28 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
         key: key);
   }
 
-  Widget createUserView(      
-      {@required bool isBoardHorizontal,
-      Seat seat,
-      int seatPos,
-      Function onUserTap,
-      Alignment cardsAlignment,
-      GlobalKey key,
-      }) {
-    Widget userView;    
+  Widget createUserView({
+    @required bool isBoardHorizontal,
+    Seat seat,
+    int seatPos,
+    Function onUserTap,
+    Alignment cardsAlignment,
+    GlobalKey key,
+  }) {
+    Widget userView;
     //debugPrint('Creating user view for seat: ${seat.serverSeatPos}');
     userView = ListenableProvider<Seat>(
-          create: (_) => seat,
-          builder: (context, _) => 
-          Consumer2<Seat, BoardAttributesObject>(
-            builder: (_, seat, boardAttributes, __) =>
-              PlayerView(
-                globalKey: key,
-                gameComService: widget.gameComService,
-                key: ValueKey(seatPos),
-                seat: seat,
-                cardsAlignment: cardsAlignment,
-                onUserTap: onUserTap,
-                boardAttributes: boardAttributes,
-              )
-          )
-    );
+        create: (_) => seat,
+        builder: (context, _) => Consumer2<Seat, BoardAttributesObject>(
+            builder: (_, seat, boardAttributes, __) => PlayerView(
+                  globalKey: key,
+                  gameComService: widget.gameComService,
+                  key: ValueKey(seatPos),
+                  seat: seat,
+                  cardsAlignment: cardsAlignment,
+                  onUserTap: onUserTap,
+                  boardAttributes: boardAttributes,
+                )));
     return userView;
   }
 
@@ -457,12 +454,14 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
     // left for 6, 7, 8, 9
     if (seatPos == 6 || seatPos == 7 || seatPos == 8 || seatPos == 9)
       cardsAlignment = Alignment.centerLeft;
-    Widget userView = createUserView(isBoardHorizontal: isBoardHorizontal,
-                key: key,
-                seatPos: seatPos,
-                seat: seat,
-                cardsAlignment: cardsAlignment,
-                onUserTap: onUserTap,);
+    Widget userView = createUserView(
+      isBoardHorizontal: isBoardHorizontal,
+      key: key,
+      seatPos: seatPos,
+      seat: seat,
+      cardsAlignment: cardsAlignment,
+      onUserTap: onUserTap,
+    );
     switch (seatPos) {
       case 1:
 
@@ -545,12 +544,14 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
 
     Alignment cardsAlignment = Alignment.centerRight;
 
-    Widget userView = createUserView(isBoardHorizontal: isBoardHorizontal,
-                key: key,
-                seatPos: seatPos,
-                seat: seat,
-                cardsAlignment: cardsAlignment,
-                onUserTap: onUserTap,);
+    Widget userView = createUserView(
+      isBoardHorizontal: isBoardHorizontal,
+      key: key,
+      seatPos: seatPos,
+      seat: seat,
+      cardsAlignment: cardsAlignment,
+      onUserTap: onUserTap,
+    );
 
     switch (seatPos) {
       case 1:
@@ -585,12 +586,14 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
 
     if (seatPos == 2) cardsAlignment = Alignment.centerLeft;
 
-    Widget userView = createUserView(isBoardHorizontal: isBoardHorizontal,
-                key: key,
-                seatPos: seatPos,
-                seat: seat,
-                cardsAlignment: cardsAlignment,
-                onUserTap: onUserTap,);
+    Widget userView = createUserView(
+      isBoardHorizontal: isBoardHorizontal,
+      key: key,
+      seatPos: seatPos,
+      seat: seat,
+      cardsAlignment: cardsAlignment,
+      onUserTap: onUserTap,
+    );
 
     switch (seatPos) {
       case 1:
@@ -639,12 +642,14 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
     if (seatPos == 6 || seatPos == 7 || seatPos == 8 || seatPos == 9)
       cardsAlignment = Alignment.centerLeft;
 
-    Widget userView = createUserView(isBoardHorizontal: isBoardHorizontal,
-                key: key,
-                seatPos: seatPos,
-                seat: seat,
-                cardsAlignment: cardsAlignment,
-                onUserTap: onUserTap,);
+    Widget userView = createUserView(
+      isBoardHorizontal: isBoardHorizontal,
+      key: key,
+      seatPos: seatPos,
+      seat: seat,
+      cardsAlignment: cardsAlignment,
+      onUserTap: onUserTap,
+    );
 
     switch (seatPos) {
       case 1:
@@ -709,12 +714,14 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
     if (seatPos == 6 || seatPos == 7 || seatPos == 8 || seatPos == 9)
       cardsAlignment = Alignment.centerLeft;
 
-    Widget userView = createUserView(isBoardHorizontal: isBoardHorizontal,
-                key: key,
-                seatPos: seatPos,
-                seat: seat,
-                cardsAlignment: cardsAlignment,
-                onUserTap: onUserTap,);
+    Widget userView = createUserView(
+      isBoardHorizontal: isBoardHorizontal,
+      key: key,
+      seatPos: seatPos,
+      seat: seat,
+      cardsAlignment: cardsAlignment,
+      onUserTap: onUserTap,
+    );
 
     switch (seatPos) {
       case 1:

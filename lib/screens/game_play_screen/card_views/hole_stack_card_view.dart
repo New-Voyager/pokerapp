@@ -7,7 +7,6 @@ const double pullUpOffset = -15.0;
 const kDisplacementConstant = 15.0;
 
 class HoleStackCardView extends StatelessWidget {
-
   final List<CardObject> cards;
   final bool deactivated;
   final bool horizontal;
@@ -16,9 +15,9 @@ class HoleStackCardView extends StatelessWidget {
   HoleStackCardView({
     @required this.cards,
     this.deactivated = false,
-    this.horizontal = true, this.isCardVisible = false,
+    this.horizontal = true,
+    this.isCardVisible = false,
   });
-
 
   @override
   Widget build(BuildContext context) {
@@ -27,12 +26,12 @@ class HoleStackCardView extends StatelessWidget {
 
     return Container(
       child: Transform.translate(
-        offset: Offset(-15,30),
+        offset: Offset(-15, 30),
         child: Stack(
           alignment: Alignment.bottomLeft,
           children: List.generate(
             cards.length,
-                (i) => Transform.translate(
+            (i) => Transform.translate(
               offset: Offset(
                 kDisplacementConstant * i,
                 -i * 1.50,
@@ -40,14 +39,20 @@ class HoleStackCardView extends StatelessWidget {
               child: Transform.rotate(
                 alignment: Alignment.bottomLeft,
                 angle: (i - mid) * 0.20,
-                child:Transform.translate(
+                child: Transform.translate(
                   offset: Offset(
                     0.0,
                     cards[i].highlight ? pullUpOffset : 0.0,
                   ),
                   child: deactivated
-                      ? GameCardWidget(card: cards[i], grayOut: true,isCardVisible: isCardVisible)
-                      : GameCardWidget(card: cards[i],isCardVisible: isCardVisible,),
+                      ? GameCardWidget(
+                          card: cards[i],
+                          grayOut: true,
+                          isCardVisible: isCardVisible)
+                      : GameCardWidget(
+                          card: cards[i],
+                          isCardVisible: isCardVisible,
+                        ),
                 ),
               ),
             ),

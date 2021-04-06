@@ -25,37 +25,37 @@ class FoldCardAnimatingWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-      final openSeat = seat.isOpen;
+    final openSeat = seat.isOpen;
 
-      final widget = TweenAnimationBuilder<Offset>(
-        curve: Curves.easeInOut,
-        tween: Tween<Offset>(
-          begin: Offset(0, 0),
-          end: offsetMapping[this.seat.serverSeatPos],
-        ),
-        child: HiddenCardView(
-          noOfCards: seat.player.noOfCardsVisible,
-        ),
-        onEnd: () {
-          // print('fold animation done ${this.seat.serverSeatPos}');
-          if (!openSeat) {
-            seat.player.animatingFold = false;
-          }
-        },
-        duration: AppConstants.animationDuration,
-        builder: (_, offset, child) {
-          double offsetPercentageLeft =
-              1 - (offset.dx / offsetMapping[this.seat.serverSeatPos].dx);
-          // todo: the opacity change can be smoothed out
-          return Transform.translate(
-            offset: offset,
-            child: Opacity(
-              opacity: offsetPercentageLeft == 0.0 ? 0.0 : 1.0,
-              child: child,
-            ),
-          );
-        },
-      );
-      return widget;
+    final widget = TweenAnimationBuilder<Offset>(
+      curve: Curves.easeInOut,
+      tween: Tween<Offset>(
+        begin: Offset(0, 0),
+        end: offsetMapping[this.seat.serverSeatPos],
+      ),
+      child: HiddenCardView(
+        noOfCards: seat.player.noOfCardsVisible,
+      ),
+      onEnd: () {
+        // print('fold animation done ${this.seat.serverSeatPos}');
+        if (!openSeat) {
+          seat.player.animatingFold = false;
+        }
+      },
+      duration: AppConstants.animationDuration,
+      builder: (_, offset, child) {
+        double offsetPercentageLeft =
+            1 - (offset.dx / offsetMapping[this.seat.serverSeatPos].dx);
+        // todo: the opacity change can be smoothed out
+        return Transform.translate(
+          offset: offset,
+          child: Opacity(
+            opacity: offsetPercentageLeft == 0.0 ? 0.0 : 1.0,
+            child: child,
+          ),
+        );
+      },
+    );
+    return widget;
   }
 }

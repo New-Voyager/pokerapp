@@ -9,7 +9,6 @@ import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/services/test/test_service.dart';
 import 'package:provider/provider.dart';
 
-
 class HeaderView extends StatelessWidget {
   final GameComService _gameComService;
   HeaderView(this._gameComService);
@@ -74,8 +73,10 @@ class HeaderView extends StatelessWidget {
                         children: [
                           GestureDetector(
                             onTap: () async {
-                              // TestService.simulateBetMovement(context);
-                              // return;
+                              if (TestService.isTesting) {
+                                await TestService.runTesting(context);
+                                return;
+                              }
                               await showModalBottomSheet(
                                 context: context,
                                 isScrollControlled: true,
