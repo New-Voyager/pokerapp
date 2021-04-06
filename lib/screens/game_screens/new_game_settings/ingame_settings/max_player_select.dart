@@ -32,14 +32,15 @@ class MaxPlayerSelect extends StatelessWidget {
           list: maxPlayersList,
           selectedIndex: selectedIndex,
           onTap: (index) {
-            data.maxPlayers =  int.parse(maxPlayersList[index]); ////index + 2; //0 + 2 (first item)
+            data.maxPlayers = int.parse(
+                maxPlayersList[index]); ////index + 2; //0 + 2 (first item)
           },
         ),
       ),
     );
   }
 
-  int _getSelectedIndex(int val, List<String> values){
+  int _getSelectedIndex(int val, List<String> values) {
     String value = val.toString();
     return values.indexOf(value);
   }

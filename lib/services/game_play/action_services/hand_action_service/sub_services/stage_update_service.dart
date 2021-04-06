@@ -80,7 +80,7 @@ class StageUpdateService {
       tableState.setAnimateBoard1Flop(true);
       tableState.notifyAll();
       await Future.delayed(AppConstants.communityCardPushDuration);
-      tableState.setAnimateBoard1Flop(false);      
+      tableState.setAnimateBoard1Flop(false);
       // stop animation board1 flop
       tableState.notifyAll();
 

@@ -24,7 +24,7 @@ class PlayerActedService {
     final player = gameState.fromSeat(context, seatNo);
     //player.highlight = false;
     // show the status message
-    player.status = "${playerActed['action']}"; 
+    player.status = "${playerActed['action']}";
 
     String action = playerActed['action'];
 
@@ -55,12 +55,10 @@ class PlayerActedService {
       );
 
     int amount = playerActed['amount'];
-    if (amount != null)
-      player.coinAmount = amount;
+    if (amount != null) player.coinAmount = amount;
 
     int stack = playerActed['stack'];
-    if (stack != null)
-      player.stack = stack;
+    if (stack != null) player.stack = stack;
     // before showing the prompt --> turn off the highlight on other players
     gameState.resetActionHighlight(context, -1);
   }

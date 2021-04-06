@@ -62,7 +62,6 @@ class ResultService {
     BuildContext context,
     var data,
   }) {
-
     final gameState = Provider.of<GameState>(context, listen: false);
     final Players players = gameState.getPlayers(context);
     final tableState = gameState.getTableState(context);
