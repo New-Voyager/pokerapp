@@ -95,9 +95,19 @@ class _ChipAmountAnimatingWidgetState extends State<ChipAmountAnimatingWidget>
     Offset end = seat.seatBet.potViewPos;
     end = Offset(seat.seatBet.potViewPos.dx - pos.dx,
         seat.seatBet.potViewPos.dy - pos.dy);
-    log('Animating chips movement ${widget.seatPos}, end: $end potPos: ${seat.seatBet.potViewPos} chip offset: $pos done');
+    Offset begin = Offset(0, 0);
+
+    if (widget.reverse) {
+      Offset swap = end;
+      end = begin;
+      begin = swap;
+      log('Reverse Animating chips movement ${widget.seatPos}, end: $end potPos: ${seat.seatBet.potViewPos} chip offset: $pos done');
+    } else {
+      log('Animating chips movement ${widget.seatPos}, end: $end potPos: ${seat.seatBet.potViewPos} chip offset: $pos done');
+    }
+
     animation = Tween<Offset>(
-      begin: Offset.zero,
+      begin: begin,
       end: end,
     ).animate(animationController);
 

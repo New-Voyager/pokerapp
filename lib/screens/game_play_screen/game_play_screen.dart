@@ -303,7 +303,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
 
                   // handle test code
                   if (TestService.isTesting) {
-                    TestService.showBets(_providerContext);
+                    // TestService.showBets(_providerContext);
 
                     if (TestService.showResult) {
                       log('Show handresult');
