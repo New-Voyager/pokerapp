@@ -58,7 +58,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
     if (TestService.isTesting) {
       debugPrint('Loading game from test data');
       // load test data
-      await TestService.load();      
+      await TestService.load();
       gameInfo = TestService.gameInfo;
       this._currentPlayer = TestService.currentPlayer;
     } else {
@@ -289,23 +289,26 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
               var dividerTotalHeight = MediaQuery.of(context).size.height / 6;
               double divider1 = 0.40 * dividerTotalHeight;
               final providers = GamePlayScreenUtilMethods.getProviders(
-                  gameInfoModel: _gameInfoModel,
-                  gameCode: widget.gameCode,
-                  currentPlayerInfo: this._currentPlayer,
-                  agora: agora,
-                  sendPlayerToHandChannel: _gameComService.sendPlayerToHandChannel,
-                );
+                gameInfoModel: _gameInfoModel,
+                gameCode: widget.gameCode,
+                currentPlayerInfo: this._currentPlayer,
+                agora: agora,
+                sendPlayerToHandChannel:
+                    _gameComService.sendPlayerToHandChannel,
+              );
               return MultiProvider(
                 providers: providers,
                 builder: (BuildContext context, _) {
                   this._providerContext = context;
 
-
                   // handle test code
                   if (TestService.isTesting) {
+                    TestService.showBets(_providerContext);
+
                     if (TestService.showResult) {
                       log('Show handresult');
-                      ResultService.handle(context: context, data: TestService.handResult);
+                      ResultService.handle(
+                          context: context, data: TestService.handResult);
                       log('Show handresult');
                     }
                   }

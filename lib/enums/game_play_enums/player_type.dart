@@ -1,3 +1,3 @@
-enum PlayerType{
+enum PlayerType {
   NONE,
 }

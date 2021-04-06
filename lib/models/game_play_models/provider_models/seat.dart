@@ -95,10 +95,10 @@ class Seat extends ChangeNotifier {
 
   get screenPos => this._screenPos;
   set screenPos(Offset pos) => this._screenPos = pos;
-  
+
   get size => this._size;
   set size(Size size) => this._size = size;
-  
+
   SeatBet get seatBet => this._seatBet;
 
   void notify() {
@@ -117,7 +117,7 @@ class SeatBet extends ChangeNotifier {
     this.notifyListeners();
   }
 
-  get betAmount => this._betAmount ;
+  get betAmount => this._betAmount;
   set betAmount(double value) => this._betAmount = value;
 
   get animate => this._animate;
@@ -131,5 +131,4 @@ class SeatBet extends ChangeNotifier {
 
   Offset get potViewPos => this._potViewPos;
   set potViewPos(Offset pos) => this._potViewPos = pos;
-
 }

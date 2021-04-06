@@ -38,29 +38,28 @@ class NamePlateWidget extends StatelessWidget {
       key: globalKey,
       offset: Offset(0.0, 0.0),
       child: Consumer2<HostSeatChange, GameContextObject>(
-        builder: (context, hostSeatChange, gameContextObject, _) {
-          Widget widget; 
-          if (gameContextObject.isAdmin() && hostSeatChange.seatChangeInProgress) {
-            widget = Draggable(
-              data: seat.serverSeatPos,
-              onDragEnd: (_) {
-                hostSeatChange.onSeatDragEnd();
-              },
-              onDragStarted: () {
-                hostSeatChange.onSeatDragStart(seat.serverSeatPos);
-              },
-              feedback: buildSeat(hostSeatChange, isFeedBack: true),
-              child: buildSeat(hostSeatChange),
-            );
-          } else {
-            widget = buildSeat(hostSeatChange);            
-          }
-          return widget;
+          builder: (context, hostSeatChange, gameContextObject, _) {
+        Widget widget;
+        if (gameContextObject.isAdmin() &&
+            hostSeatChange.seatChangeInProgress) {
+          widget = Draggable(
+            data: seat.serverSeatPos,
+            onDragEnd: (_) {
+              hostSeatChange.onSeatDragEnd();
+            },
+            onDragStarted: () {
+              hostSeatChange.onSeatDragStart(seat.serverSeatPos);
+            },
+            feedback: buildSeat(hostSeatChange, isFeedBack: true),
+            child: buildSeat(hostSeatChange),
+          );
+        } else {
+          widget = buildSeat(hostSeatChange);
         }
-      ),
+        return widget;
+      }),
     );
   }
-
 
   /*
    * This function returns shadow around the nameplate based on the state.
@@ -75,36 +74,37 @@ class NamePlateWidget extends StatelessWidget {
     bool winner = seat.player.winner ?? false;
     bool highlight = seat.player.highlight ?? false;
     if (winner) {
-      shadow =  BoxShadow(
-                  color: Colors.lightGreen,
-                  blurRadius: 50.0,
-                  spreadRadius: 20.0,
-                );
+      shadow = BoxShadow(
+        color: Colors.lightGreen,
+        blurRadius: 50.0,
+        spreadRadius: 20.0,
+      );
     } else if (highlight) {
       shadow = BoxShadow(
-                  color: highlightColor.withAlpha(120),
-                  blurRadius: 20.0,
-                  spreadRadius: 20.0,
-                );
+        color: highlightColor.withAlpha(120),
+        blurRadius: 20.0,
+        spreadRadius: 20.0,
+      );
     } else {
       SeatChangeStatus seatChangeStatus;
       // are we dragging?
       if (seat.serverSeatPos != null) {
-        seatChangeStatus = hostSeatChange.allSeatChangeStatus[seat.serverSeatPos]; 
+        seatChangeStatus =
+            hostSeatChange.allSeatChangeStatus[seat.serverSeatPos];
       }
       if (seatChangeStatus != null) {
         if (seatChangeStatus.isDragging || isFeedback) {
           shadow = BoxShadow(
-              color: Colors.green,
-              blurRadius: 20.0,
-              spreadRadius: 20.0,
-            );
-        } else if(seatChangeStatus.isDropAble) {
+            color: Colors.green,
+            blurRadius: 20.0,
+            spreadRadius: 20.0,
+          );
+        } else if (seatChangeStatus.isDropAble) {
           shadow = BoxShadow(
-              color: Colors.blue,
-              blurRadius: 20.0,
-              spreadRadius: 20.0,
-            );          
+            color: Colors.blue,
+            blurRadius: 20.0,
+            spreadRadius: 20.0,
+          );
         }
       }
     }
@@ -122,55 +122,55 @@ class NamePlateWidget extends StatelessWidget {
       width: boardAttributes.namePlateSize.width,
       height: boardAttributes.namePlateSize.height,
       padding: const EdgeInsets.symmetric(
-              vertical: 5.0,
-            ),
+        vertical: 5.0,
+      ),
       decoration: BoxDecoration(
         shape: BoxShape.rectangle,
         borderRadius: BorderRadius.circular(5),
         color: Color(0XFF494444),
         border: Border.all(
-                color: Color.fromARGB(255, 206, 134, 57),
-                width: 2.0,
-              ),
+          color: Color.fromARGB(255, 206, 134, 57),
+          width: 2.0,
+        ),
         boxShadow: shadow,
       ),
       child: AnimatedSwitcher(
         duration: AppConstants.animationDuration,
         reverseDuration: AppConstants.animationDuration,
         child: AnimatedOpacity(
-                duration: AppConstants.animationDuration,
-                opacity: seat.isOpen ? 0.0 : 1.0,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    FittedBox(
-                      child: Text(
-                        seat.player.name,
-                        style: AppStyles.gamePlayScreenPlayerName.copyWith(
-                          // FIXME: may be this is permanant?
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                    PlayerViewDivider(),
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 5),
-                        child: FittedBox(
-                          child: Text(
-                            seat.player.stack?.toString() ?? 'XX',
-                            style: AppStyles.gamePlayScreenPlayerChips.copyWith(
-                              // FIXME: may be this is permanant?
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
+          duration: AppConstants.animationDuration,
+          opacity: seat.isOpen ? 0.0 : 1.0,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              FittedBox(
+                child: Text(
+                  seat.player.name,
+                  style: AppStyles.gamePlayScreenPlayerName.copyWith(
+                    // FIXME: may be this is permanant?
+                    color: Colors.white,
+                  ),
                 ),
               ),
+              PlayerViewDivider(),
+              Align(
+                alignment: Alignment.centerRight,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 5),
+                  child: FittedBox(
+                    child: Text(
+                      seat.player.stack?.toString() ?? 'XX',
+                      style: AppStyles.gamePlayScreenPlayerChips.copyWith(
+                        // FIXME: may be this is permanant?
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

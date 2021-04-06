@@ -72,19 +72,20 @@ class _HandLogViewState extends State<HandLogView> {
               titleSpacing: 0,
               elevation: 0.0,
               backgroundColor: AppColors.screenBackgroundColor,
-        title: FlatButton(
-          onPressed: () => Navigator.of(context).pop(),
-          child: Text(
-          "Hand History",
-          textAlign: TextAlign.left,
-          style: TextStyle(
-            color: AppColors.appAccentColor,
-            fontSize: 14.0,
-            fontFamily: AppAssets.fontFamilyLato,
-            fontWeight: FontWeight.w600,
-          ),
-        ),),
-      ),
+              title: FlatButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text(
+                  "Hand History",
+                  textAlign: TextAlign.left,
+                  style: TextStyle(
+                    color: AppColors.appAccentColor,
+                    fontSize: 14.0,
+                    fontFamily: AppAssets.fontFamilyLato,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ),
       body: this._isLoading == true
           ? Center(
               child: CircularProgressIndicator(),

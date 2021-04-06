@@ -10,7 +10,15 @@ class PotsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Opacity(
+    return Stack(children: [
+      // This transparent child is used for chips pulling animation
+      Container(
+        key: chipKey,
+        width: 10,
+        height: 10,
+        color: Colors.transparent,
+      ),
+      Opacity(
         opacity: showDown ||
                 (potChips == null || potChips.length == 0 || potChips[0] == 0)
             ? 0
@@ -28,7 +36,6 @@ class PotsView extends StatelessWidget {
             children: [
               // chip image
               Align(
-                key: chipKey,
                 alignment: Alignment.centerLeft,
                 child: Image.asset(
                   'assets/images/chips.png',
@@ -59,6 +66,7 @@ class PotsView extends StatelessWidget {
             ],
           ),
         ),
-      );
+      )
+    ]);
   }
 }

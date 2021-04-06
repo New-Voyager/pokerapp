@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/hand_result.dart';
@@ -38,7 +37,8 @@ class CenterView extends StatelessWidget {
       this.potChipsUpdates,
       this.tableStatus,
       this.showDown,
-      this.onStartGame) : super(key: key);
+      this.onStartGame)
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -61,67 +61,41 @@ class CenterView extends StatelessWidget {
         scale: 1.2,
         child: AnimatingShuffleCardView(),
       );
-
-    // // TODO: We don't need this
-    // // We need to show the status of the in the game banner at the top
-    // Widget tableStatusWidget = Align(
-    //   key: ValueKey('tableStatusWidget'),
-    //   alignment: Alignment.center,
-    //   child: GestureDetector(
-    //     onTap: () {
-    //       if (tableStatus == AppConstants.WAITING_TO_BE_STARTED) {
-    //         onStartGame();
-    //       }
-    //     },
-    //     child: Container(
-    //       padding: const EdgeInsets.symmetric(
-    //         horizontal: 10.0,
-    //         vertical: 5.0,
-    //       ),
-    //       decoration: BoxDecoration(
-    //         borderRadius: BorderRadius.circular(100.0),
-    //         color: Colors.black26,
-    //       ),
-    //       child: Text(
-    //         _text ?? '',
-    //         style: AppStyles.itemInfoTextStyleHeavy.copyWith(
-    //           fontSize: 13,
-    //         ),
-    //       ),
-    //     ),
-    //   ),
-    // );
-
     /* if reached here, means, the game is RUNNING */
     /* The following view, shows the community cards
     * and the pot chips, if they are nulls, put the default values */
-    //Widget tablePotAndCardWidget = potCardWidgetColumn();
     Widget view = centerView(context);
     return view;
   }
 
+  Widget multiplePots(BuildContext context) {
+    final gameState = Provider.of<GameState>(context, listen: false);
+    final boardAttributes = gameState.getBoardAttributes(context);
+    List<Widget> pots = [];
+
+    for (int i = 0; i < 1; i++) {
+      final GlobalKey potsKey = GlobalKey();
+      boardAttributes.setPotsKey(i, potsKey);
+      final potsView = PotsView(
+        this.isBoardHorizontal,
+        this.potChips,
+        this.showDown,
+        potsKey,
+      );
+      pots.add(potsView);
+      pots.add(SizedBox(
+        width: 5,
+      ));
+    }
+
+    return Row(mainAxisAlignment: MainAxisAlignment.center, children: pots);
+  }
+
   Widget centerView(BuildContext context) {
     final gameState = Provider.of<GameState>(context, listen: false);
-    final boardAttributes = Provider.of<BoardAttributesObject>(
-      context,
-      listen: false);
-    boardAttributes.potsKey = GlobalKey();
-    final RenderBox dummyCenter = boardAttributes.dummyKey.currentContext.findRenderObject();
-    final pos = dummyCenter.localToGlobal(Offset(0,0));
-    log('Dummy View size: pos: ${pos}');
-
-    final seats = gameState.seats;
-    var pos1 = Offset(0, 0);
-    log('Total seats: ${seats.length}');
-    for(final seat in seats) {
-      final RenderBox object = seat.key.currentContext.findRenderObject();
-      final pos = object.localToGlobal(Offset(0,0));
-      log('CenterView [${seat.serverSeatPos}]: pos: ${pos}');
-      if (seat.serverSeatPos == 1) {
-        pos1 = dummyCenter.globalToLocal(pos);
-        log('Seat1 pos: $pos1');
-      }
-    }
+    final boardAttributes = gameState.getBoardAttributes(context);
+    final GlobalKey potsKey = GlobalKey();
+    boardAttributes.setPotsKey(0, potsKey);
 
     /* this gap height is the separation height between the three widgets in the center pot */
     const _gapHeight = 5.0;
@@ -134,33 +108,27 @@ class CenterView extends StatelessWidget {
         children: [
           /* main pot view */
           Align(
-            alignment: Alignment.topCenter,
-            child: Transform.translate(
-              offset: Offset(0, 15),
-              child: PotsView(
-                  this.isBoardHorizontal,
-                  this.potChips,
-                  this.showDown,
-                  boardAttributes.potsKey,
-                ),
-            )
-          ),
+              alignment: Alignment.topCenter,
+              child: Transform.translate(
+                offset: Offset(0, 15),
+                child: multiplePots(context),
+              )),
           const SizedBox(
             height: _gapHeight,
           ),
-    
+
           /* community cards view */
           Align(
             alignment: Alignment.topCenter,
             child: Transform.translate(
               offset: Offset(0, 50),
-                child: CommunityCardsView(
+              child: CommunityCardsView(
                 cards: this.cards,
                 horizontal: true,
               ),
             ),
           ),
-          const SizedBox(height: _gapHeight + AppDimensions.cardHeight / 4),    
+          const SizedBox(height: _gapHeight + AppDimensions.cardHeight / 4),
           /* potUpdates view OR the rank widget (rank widget is shown only when we have a result) */
           this.showDown ? rankWidget() : potUpdatesView(),
         ],
@@ -170,7 +138,6 @@ class CenterView extends StatelessWidget {
   }
 
   Widget potCardWidgetColumn() {
-    
     /* this gap height is the separation height between the three widgets in the center pot */
     const _gapHeight = 5.0;
     Widget tablePotAndCardWidget = Align(
@@ -189,14 +156,14 @@ class CenterView extends StatelessWidget {
           const SizedBox(
             height: _gapHeight,
           ),
-    
+
           /* community cards view */
           CommunityCardsView(
             cards: this.cards,
             horizontal: true,
           ),
           const SizedBox(height: _gapHeight + AppDimensions.cardHeight / 4),
-    
+
           /* potUpdates view OR the rank widget (rank widget is shown only when we have a result) */
           this.showDown ? rankWidget() : potUpdatesView(),
         ],
@@ -207,76 +174,74 @@ class CenterView extends StatelessWidget {
 
   Widget potUpdatesView() {
     final child = Opacity(
-        opacity: showDown || (potChipsUpdates == null || potChipsUpdates == 0)
-            ? 0
-            : 1,
-        child: Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 10.0,
-            vertical: 5.0,
-          ),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(100.0),
-            color: Colors.black26,
-          ),
-          child: Text(
-            'Pot: ${DataFormatter.chipsFormat(potChipsUpdates)}',
-            style: AppStyles.itemInfoTextStyleHeavy.copyWith(
-              fontSize: 13,
-              fontWeight: FontWeight.w400,
-            ),
+      opacity:
+          showDown || (potChipsUpdates == null || potChipsUpdates == 0) ? 0 : 1,
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 10.0,
+          vertical: 5.0,
+        ),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(100.0),
+          color: Colors.black26,
+        ),
+        child: Text(
+          'Pot: ${DataFormatter.chipsFormat(potChipsUpdates)}',
+          style: AppStyles.itemInfoTextStyleHeavy.copyWith(
+            fontSize: 13,
+            fontWeight: FontWeight.w400,
           ),
         ),
-      );
+      ),
+    );
 
-      return Align(
-          alignment: Alignment.topCenter,
-          child: Transform.translate(
-              offset: Offset(0, 100),
-              child: child,
-          ),
-      );
-
+    return Align(
+      alignment: Alignment.topCenter,
+      child: Transform.translate(
+        offset: Offset(0, 100),
+        child: child,
+      ),
+    );
   }
 
   /* rankStr --> needs to be shown only when footer result is not null */
   Widget rankWidget() {
     final child = Consumer<HandResultState>(
-        builder: (_, HandResultState result, __) => AnimatedSwitcher(
-          duration: AppConstants.animationDuration,
-          reverseDuration: AppConstants.animationDuration,
-          child: !result.isAvailable
-              ? const SizedBox.shrink()
-              : Transform.translate(
-                  offset: Offset(
-                    0.0,
-                    -AppDimensions.cardHeight / 2,
+      builder: (_, HandResultState result, __) => AnimatedSwitcher(
+        duration: AppConstants.animationDuration,
+        reverseDuration: AppConstants.animationDuration,
+        child: !result.isAvailable
+            ? const SizedBox.shrink()
+            : Transform.translate(
+                offset: Offset(
+                  0.0,
+                  -AppDimensions.cardHeight / 2,
+                ),
+                child: Container(
+                  margin: EdgeInsets.only(top: 5.0),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10.0,
+                    vertical: 5.0,
                   ),
-                  child: Container(
-                    margin: EdgeInsets.only(top: 5.0),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10.0,
-                      vertical: 5.0,
-                    ),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(100.0),
-                      color: Colors.black26,
-                    ),
-                    child: Text(
-                      result.potWinners.first.rankStr,
-                      style: AppStyles.footerResultTextStyle4,
-                    ),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(100.0),
+                    color: Colors.black26,
+                  ),
+                  child: Text(
+                    result.potWinners.first.rankStr,
+                    style: AppStyles.footerResultTextStyle4,
                   ),
                 ),
-        ),
-      );
+              ),
+      ),
+    );
 
-      return Align(
-          alignment: Alignment.topCenter,
-          child: Transform.translate(
-              offset: Offset(0, 120),
-              child: child,
-          ),
-      );      
+    return Align(
+      alignment: Alignment.topCenter,
+      child: Transform.translate(
+        offset: Offset(0, 120),
+        child: child,
+      ),
+    );
   }
 }

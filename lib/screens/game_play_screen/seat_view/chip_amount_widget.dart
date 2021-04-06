@@ -17,7 +17,8 @@ class ChipAmountWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Consumer<BoardAttributesObject>(
         builder: (_, boardAttrObj, __) => Transform.translate(
-          offset: boardAttrObj.chipAmountWidgetOffsetMapping[seat.serverSeatPos],
+          offset:
+              boardAttrObj.chipAmountWidgetOffsetMapping[seat.serverSeatPos],
           //offset: Offset(0, 0),
           child: Row(
             mainAxisSize: MainAxisSize.min,

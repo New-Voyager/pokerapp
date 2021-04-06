@@ -69,111 +69,110 @@ class UserViewUtilWidgets {
     @required Seat seat,
     Alignment cardsAlignment,
   }) {
-      if (seat.isOpen) {
-        return SizedBox.shrink();
-      }
+    if (seat.isOpen) {
+      return SizedBox.shrink();
+    }
 
-      return Stack(
-        alignment: Alignment.center,
-        children: [
-          /* displaying the avatar view */
-          Consumer<ValueNotifier<FooterStatus>>(
-            builder: (_, valueNotifierFooterStatus, __) {
-              bool showDown =
-                  valueNotifierFooterStatus.value == FooterStatus.Result;
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        /* displaying the avatar view */
+        Consumer<ValueNotifier<FooterStatus>>(
+          builder: (_, valueNotifierFooterStatus, __) {
+            bool showDown =
+                valueNotifierFooterStatus.value == FooterStatus.Result;
 
-              Widget avatarWidget = avatar(seat);
+            Widget avatarWidget = avatar(seat);
 
-              return Container(
-                height: 19.50 * 3,
-                child: AnimatedSwitcher(
-                  duration: AppConstants.fastAnimationDuration,
-                  child: showDown &&
-                          (seat.player.cards != null &&
-                              seat.player.cards.isNotEmpty)
-                      ? (seat.isMe ?? false)
-                          ? avatarWidget
-                          : Transform.scale(
-                              scale: 0.70,
-                              child: StackCardView(
-                                cards: seat.player.cards?.map<CardObject>(
-                                      (int c) {
-                                        List<int> highlightedCards =
-                                            seat.player.highlightCards;
-                                        CardObject card = CardHelper.getCard(c);
+            return Container(
+              height: 19.50 * 3,
+              child: AnimatedSwitcher(
+                duration: AppConstants.fastAnimationDuration,
+                child: showDown &&
+                        (seat.player.cards != null &&
+                            seat.player.cards.isNotEmpty)
+                    ? (seat.isMe ?? false)
+                        ? avatarWidget
+                        : Transform.scale(
+                            scale: 0.70,
+                            child: StackCardView(
+                              cards: seat.player.cards?.map<CardObject>(
+                                    (int c) {
+                                      List<int> highlightedCards =
+                                          seat.player.highlightCards;
+                                      CardObject card = CardHelper.getCard(c);
 
-                                        card.smaller = true;
-                                        if (highlightedCards?.contains(c) ??
-                                            false) card.highlight = true;
+                                      card.smaller = true;
+                                      if (highlightedCards?.contains(c) ??
+                                          false) card.highlight = true;
 
-                                        return card;
-                                      },
-                                    )?.toList() ??
-                                    [],
-                              ),
-                            )
-                      : avatarWidget,
-                ),
-              );
-            },
+                                      return card;
+                                    },
+                                  )?.toList() ??
+                                  [],
+                            ),
+                          )
+                    : avatarWidget,
+              ),
+            );
+          },
+        ),
+
+        /* showing the user last action */
+        // showing user status
+        Transform.translate(
+          offset: Offset(
+            (cardsAlignment == Alignment.centerRight ||
+                    cardsAlignment == Alignment.bottomCenter)
+                ? -15
+                : 15,
+            10.0,
           ),
-
-          /* showing the user last action */
-          // showing user status
-          Transform.translate(
-            offset: Offset(
-              (cardsAlignment == Alignment.centerRight ||
-                      cardsAlignment == Alignment.bottomCenter)
-                  ? -15
-                  : 15,
-              10.0,
-            ),
-            child: ActionStatusWidget(seat, cardsAlignment),
-          ),
-        ],
-      );
+          child: ActionStatusWidget(seat, cardsAlignment),
+        ),
+      ],
+    );
   }
 
   static Widget avatar(Seat seat) {
-      return AnimatedOpacity(
-                duration: AppConstants.animationDuration,
-                curve: Curves.bounceInOut,
-                opacity: seat.isOpen ? 0.0 : 0.90,
-                child: Consumer<BoardAttributesObject>(
-                  builder: (_, boardAttrObj, __) => Visibility(
-                    visible:
-                        boardAttrObj.isOrientationHorizontal ? false : true,
-                    child: AnimatedContainer(
-                      duration: AppConstants.fastAnimationDuration,
-                      curve: Curves.bounceInOut,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          width: 2.0,
-                          color: seat.player?.highlight ?? false
-                              ? highlightColor
-                              : Colors.transparent,
-                        ),
-                        boxShadow: seat.player?.highlight ?? false
-                            ? [
-                                BoxShadow(
-                                  color: highlightColor.withAlpha(120),
-                                  blurRadius: 20.0,
-                                  spreadRadius: 20.0,
-                                ),
-                              ]
-                            : [],
+    return AnimatedOpacity(
+      duration: AppConstants.animationDuration,
+      curve: Curves.bounceInOut,
+      opacity: seat.isOpen ? 0.0 : 0.90,
+      child: Consumer<BoardAttributesObject>(
+        builder: (_, boardAttrObj, __) => Visibility(
+          visible: boardAttrObj.isOrientationHorizontal ? false : true,
+          child: AnimatedContainer(
+            duration: AppConstants.fastAnimationDuration,
+            curve: Curves.bounceInOut,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(
+                width: 2.0,
+                color: seat.player?.highlight ?? false
+                    ? highlightColor
+                    : Colors.transparent,
+              ),
+              boxShadow: seat.player?.highlight ?? false
+                  ? [
+                      BoxShadow(
+                        color: highlightColor.withAlpha(120),
+                        blurRadius: 20.0,
+                        spreadRadius: 20.0,
                       ),
-                      child: CircleAvatar(
-                        radius: 19.50,
-                        backgroundImage: AssetImage(
-                          seat.player.avatarUrl ?? 'assets/images/2.png',
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              );    
+                    ]
+                  : [],
+            ),
+            child: CircleAvatar(
+              radius: 19.50,
+              backgroundImage: AssetImage(
+                seat.player.avatarUrl ?? 'assets/images/2.png',
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   static Widget buildChipAmountWidget1({
@@ -236,9 +235,11 @@ class UserViewUtilWidgets {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final gameState = GameState.getState(context);
       final boardAttributes = gameState.getBoardAttributes(context);
-      final RenderBox potView = boardAttributes.potsKey.currentContext.findRenderObject();
+      final RenderBox potView =
+          boardAttributes.getPotsKey(0).currentContext.findRenderObject();
       final globalPos = potView.localToGlobal(Offset(0, 0));
-      final RenderBox renderBox = seat.seatBet.uiKey.currentContext.findRenderObject();
+      final RenderBox renderBox =
+          seat.seatBet.uiKey.currentContext.findRenderObject();
       final potViewPos = renderBox.globalToLocal(globalPos);
       final pos = renderBox.localToGlobal(Offset(0, 0));
       seat.seatBet.potViewPos = potViewPos;

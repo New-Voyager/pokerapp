@@ -123,13 +123,12 @@ class _ChatScreenState extends State<ChatScreen> {
     for (int i = 0; i < messages.length; i++) {
       var m = messages[i];
       var chat = ChatModel(
-        id: m.id,
-        memberID: m.memberID,
-        messageType: m.messageType,
-        text: m.text,
-        messageTime: toDateTime(m.messageTime),
-        memberName: m.memberName
-      );
+          id: m.id,
+          memberID: m.memberID,
+          messageType: m.messageType,
+          text: m.text,
+          messageTime: toDateTime(m.messageTime),
+          memberName: m.memberName);
       if (i == 0) {
         chat.isGroupLatest = true;
       } else {
@@ -163,5 +162,4 @@ class _ChatScreenState extends State<ChatScreen> {
   void _onTap() {}
 
   void _onEmoji() {}
-
 }

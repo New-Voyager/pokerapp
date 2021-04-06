@@ -48,10 +48,7 @@ class CommunityCardsView extends StatelessWidget {
 
     return Row(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: 
-            cards.isEmpty ? 
-                [SizedBox.shrink()] : 
-                getCommunityCards());
+        children: cards.isEmpty ? [SizedBox.shrink()] : getCommunityCards());
   }
 }
 

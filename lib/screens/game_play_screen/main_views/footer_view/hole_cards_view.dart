@@ -24,7 +24,6 @@ class HoleCardsView extends StatefulWidget {
 }
 
 class _HoleCardsViewState extends State<HoleCardsView> {
-
   bool isCardVisible = false;
 
   @override
@@ -33,17 +32,17 @@ class _HoleCardsViewState extends State<HoleCardsView> {
       width: MediaQuery.of(context).size.width,
       child: Stack(children: [
         GestureDetector(
-          onLongPress: (){
-            setState(()=> isCardVisible = true);
+          onLongPress: () {
+            setState(() => isCardVisible = true);
           },
-          onLongPressEnd: (_){
-            setState(()=> isCardVisible = false);
+          onLongPressEnd: (_) {
+            setState(() => isCardVisible = false);
           },
           child: InkWell(
             highlightColor: Colors.black,
             focusColor: Colors.black,
             splashColor: Colors.black,
-            onTap: (){
+            onTap: () {
               setState(() {
                 isCardVisible = !isCardVisible;
               });

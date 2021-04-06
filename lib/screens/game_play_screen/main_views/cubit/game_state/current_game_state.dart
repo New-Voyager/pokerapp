@@ -15,7 +15,6 @@ class CurrentGameLoading extends CurrentGameState {
 }
 
 class CurrentGameLoaded extends CurrentGameState {
-
   @override
   List<Object> get props => [];
 }

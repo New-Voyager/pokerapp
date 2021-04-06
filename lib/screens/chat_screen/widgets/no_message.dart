@@ -6,7 +6,8 @@ class NoMessageWidget extends StatelessWidget {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Icon(Icons.message_rounded,
+        Icon(
+          Icons.message_rounded,
           size: 70,
           color: Colors.white.withOpacity(0.5),
         ),
