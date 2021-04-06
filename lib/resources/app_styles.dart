@@ -40,7 +40,7 @@ class AppStyles {
   );
 
   static const footerResultTextStyle4 = TextStyle(
-    fontSize: 14.0,
+    fontSize: 18.0,
     color: const Color(0xffCEE5F1),
     fontFamily: AppAssets.fontFamilyLato,
   );

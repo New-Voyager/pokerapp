@@ -11,13 +11,26 @@ enum BoardOrientation {
   vertical,
 }
 
+
 class BoardAttributesObject extends ChangeNotifier {
   BoardOrientation _boardOrientation;
+  Size _boardSize;
+  Size _tableSize;
+
+  Offset _centerOffset;
+  Size _centerSize;
+
+  Size _namePlateSize;
+
+  GlobalKey _centerKey;
+  GlobalKey _dummyViewKey;
+  GlobalKey _potsViewKey;
 
   BoardAttributesObject({
     BoardOrientation orientation = BoardOrientation.horizontal,
   }) {
     this._boardOrientation = orientation;
+    this._namePlateSize = Size(70, 55);
   }
 
   set orientation(BoardOrientation o) {
@@ -60,7 +73,7 @@ class BoardAttributesObject extends ChangeNotifier {
       return kFoldCardAnimationOffsetHorizontalMapping;
     return kFoldCardAnimationOffsetVerticalMapping;
   }
-
+  
   Map<int, Offset> get chipAmountAnimationOffsetMapping {
     if (_boardOrientation == BoardOrientation.horizontal)
       return kChipAmountAnimationOffsetHorizontalMapping;
@@ -85,4 +98,39 @@ class BoardAttributesObject extends ChangeNotifier {
     }
     return kDealerButtonColor[GameType.UNKNOWN];
   }
+
+  Size dimensions(BuildContext context) {
+    var _widthMultiplier = 0.78;
+    var _heightMultiplier = 2.0;
+    double width = MediaQuery.of(context).size.width;
+    double heightOfBoard = width * _widthMultiplier * _heightMultiplier;
+    double widthOfBoard = width * _widthMultiplier;
+
+    if (this.orientation == BoardOrientation.horizontal) {
+      widthOfBoard = MediaQuery.of(context).size.width;
+      heightOfBoard = MediaQuery.of(context).size.height / 2.5;
+    }
+    this._boardSize = Size(widthOfBoard, heightOfBoard);
+    // NOTE: Hard coded
+    /* NOTE: THE IMAGE IS SET TO STRETCH TO THE ENTIRE HEIGHT OF THIS AVAILABLE CONTAINER,
+    THIS HEIGHT - 40 VARIABLE CAN BE CHANGED TO STRETCH IT FURTHER OR SQUEEZE IT*/
+    this._tableSize = Size(widthOfBoard+50, heightOfBoard-70);
+    this._centerOffset = Offset(10, 50);
+    this._centerSize = Size(widthOfBoard - 30, this._tableSize.height-70);
+
+    return this._boardSize;
+  }
+
+  get tableSize => this._tableSize;
+  get centerOffset => this._centerOffset;
+  get centerSize => this._centerSize;
+  get centerKey => this._centerKey;
+  set centerKey(Key key) => this._centerKey = key;
+
+  get dummyKey => this._dummyViewKey;
+  set dummyKey(Key key) => this._dummyViewKey = key;
+  GlobalKey get potsKey => this._potsViewKey;
+  set potsKey(Key key) => this._potsViewKey = key;
+
+  Size get namePlateSize => this._namePlateSize;
 }

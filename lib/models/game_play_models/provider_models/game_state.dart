@@ -6,6 +6,7 @@ import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
+import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
@@ -66,7 +67,7 @@ class GameState {
     }
   }
 
-  get seats {
+  List<Seat> get seats {
     return this._seats.values.toList();
   }
 
@@ -108,6 +109,10 @@ class GameState {
 
   HandResultState getResultState(BuildContext context, {bool listen: false}) {
     return Provider.of<HandResultState>(context, listen: listen);
+  }
+
+  BoardAttributesObject getBoardAttributes(BuildContext context, {bool listen: false}) {
+    return Provider.of<BoardAttributesObject>(context, listen: listen);
   }
 
   Seat getSeat(BuildContext context, int seatNo, {bool listen: false}) {

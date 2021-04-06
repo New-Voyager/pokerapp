@@ -6,7 +6,7 @@ import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/screens/game_context_screen/game_options/game_option_bottom_sheet.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/header_view/header_view_util_widgets.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
-import 'package:pokerapp/services/game_play/graphql/game_service.dart';
+import 'package:pokerapp/services/test/test_service.dart';
 import 'package:provider/provider.dart';
 
 
@@ -74,6 +74,8 @@ class HeaderView extends StatelessWidget {
                         children: [
                           GestureDetector(
                             onTap: () async {
+                              // TestService.simulateBetMovement(context);
+                              // return;
                               await showModalBottomSheet(
                                 context: context,
                                 isScrollControlled: true,
