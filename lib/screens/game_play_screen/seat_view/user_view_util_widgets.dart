@@ -174,50 +174,6 @@ class UserViewUtilWidgets {
       ),
     );
   }
-
-  static Widget buildChipAmountWidget1({
-    @required Seat seat,
-  }) {
-    seat.seatBet.uiKey = GlobalKey();
-
-    Widget chipAmountWidget = Consumer<BoardAttributesObject>(
-      builder: (_, boardAttrObj, __) => Transform.translate(
-        offset: boardAttrObj.chipAmountWidgetOffsetMapping[seat.serverSeatPos],
-        child: Row(
-          key: seat.seatBet.uiKey,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            /* show the coin svg */
-            Container(
-              height: 20,
-              width: 20.0,
-              child: SvgPicture.asset(
-                AppAssets.coinsImages,
-              ),
-            ),
-            const SizedBox(height: 5.0),
-
-            /* show the coin amount */
-            Text(
-              seat.player?.coinAmount.toString(),
-              style: AppStyles.gamePlayScreenPlayerChips,
-            ),
-          ],
-        ),
-      ),
-    );
-
-    return seat.player?.coinAmount == null || seat.player?.coinAmount == 0
-        ? shrinkedSizedBox
-        : (seat.player.animatingCoinMovement ?? false)
-            ? ChipAmountAnimatingWidget(
-                seatPos: seat.serverSeatPos,
-                child: chipAmountWidget,
-                reverse: seat.player.animatingCoinMovementReverse,
-              )
-            : chipAmountWidget;
-  }
-
   static Widget buildChipAmountWidget({
     @required BuildContext context,
     @required Seat seat,
@@ -237,16 +193,20 @@ class UserViewUtilWidgets {
       final boardAttributes = gameState.getBoardAttributes(context);
       final RenderBox potView =
           boardAttributes.getPotsKey(0).currentContext.findRenderObject();
-      final globalPos = potView.localToGlobal(Offset(0, 0));
+      final RenderBox potBetView = 
+          boardAttributes.centerPotBetKey.currentContext.findRenderObject();
+
+      final globalPos = potView.localToGlobal(Offset(0, 20));
+      final potBetPos = potBetView.localToGlobal(Offset(0, 30));
+
       final RenderBox renderBox =
           seat.seatBet.uiKey.currentContext.findRenderObject();
       final potViewPos = renderBox.globalToLocal(globalPos);
       final pos = renderBox.localToGlobal(Offset(0, 0));
-      seat.seatBet.potViewPos = potViewPos;
-      log('Seat: ${seat.serverSeatPos}, pos: $pos potView: $potViewPos');
+      final potBetPosLocal = renderBox.globalToLocal(potBetPos);
+      seat.seatBet.potViewPos = potBetPosLocal;
+      log('Seat: ${seat.serverSeatPos}, pos: $pos potView: $potViewPos potBetPos: $potBetPosLocal');
     });
-
-    //if (seat.serverSeatPos != 9) return chipAmountWidget;
 
     return (seat.player.animatingCoinMovement ?? false)
         ? ChipAmountAnimatingWidget(

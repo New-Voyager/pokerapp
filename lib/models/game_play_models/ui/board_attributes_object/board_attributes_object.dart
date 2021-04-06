@@ -41,14 +41,19 @@ class BoardAttributesObject extends ChangeNotifier {
   Size _boardSize;
   Size _tableSize;
 
+  // center attributes
   Offset _centerOffset;
   Size _centerSize;
 
   Size _namePlateSize;
 
   GlobalKey _centerKey;
+  GlobalKey _centerPotBetKey;
   GlobalKey _dummyViewKey;
   List<PotAttribute> _pots;
+
+  // player view attributes
+  Offset _playersOnTableOffset;
 
   BoardAttributesObject({
     BoardOrientation orientation = BoardOrientation.horizontal,
@@ -56,6 +61,8 @@ class BoardAttributesObject extends ChangeNotifier {
     this._boardOrientation = orientation;
     this._namePlateSize = Size(70, 55);
     this._pots = [];
+
+    _playersOnTableOffset = Offset(0.0, -25.0);
   }
 
   set orientation(BoardOrientation o) {
@@ -177,4 +184,10 @@ class BoardAttributesObject extends ChangeNotifier {
   }
 
   Size get namePlateSize => this._namePlateSize;
+
+  GlobalKey get centerPotBetKey => this._centerPotBetKey;
+  set centerPotBetKey(GlobalKey key) => this._centerPotBetKey = key;
+
+  Offset get playerOnTableOffset => this._playersOnTableOffset;
+  set playerOnTableOffset(Offset offset) => this._playersOnTableOffset = offset;
 }

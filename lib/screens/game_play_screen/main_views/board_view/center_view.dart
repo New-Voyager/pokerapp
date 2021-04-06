@@ -74,14 +74,14 @@ class CenterView extends StatelessWidget {
     List<Widget> pots = [];
 
     for (int i = 0; i < 1; i++) {
-      final GlobalKey potsKey = GlobalKey();
-      boardAttributes.setPotsKey(i, potsKey);
+      GlobalKey key = GlobalKey();
       final potsView = PotsView(
         this.isBoardHorizontal,
-        this.potChips,
+        this.potChips[i].toDouble(),
         this.showDown,
-        potsKey,
+        key,
       );
+      boardAttributes.setPotsKey(i, key);
       pots.add(potsView);
       pots.add(SizedBox(
         width: 5,
@@ -96,6 +96,8 @@ class CenterView extends StatelessWidget {
     final boardAttributes = gameState.getBoardAttributes(context);
     final GlobalKey potsKey = GlobalKey();
     boardAttributes.setPotsKey(0, potsKey);
+    
+    boardAttributes.centerPotBetKey = GlobalKey();
 
     /* this gap height is the separation height between the three widgets in the center pot */
     const _gapHeight = 5.0;
@@ -106,6 +108,17 @@ class CenterView extends StatelessWidget {
         clipBehavior: Clip.none,
         //mainAxisSize: MainAxisSize.min,
         children: [
+
+          /* dummy view for pots to pull bets **/
+          Align(
+              alignment: Alignment.topCenter,
+              child: Transform.translate(
+                key: boardAttributes.centerPotBetKey,
+                offset: Offset(0, 15),
+                child: Container(width: 50, height: 50, color: Colors.transparent),
+              ),
+          ),
+
           /* main pot view */
           Align(
               alignment: Alignment.topCenter,
@@ -129,41 +142,6 @@ class CenterView extends StatelessWidget {
             ),
           ),
           const SizedBox(height: _gapHeight + AppDimensions.cardHeight / 4),
-          /* potUpdates view OR the rank widget (rank widget is shown only when we have a result) */
-          this.showDown ? rankWidget() : potUpdatesView(),
-        ],
-      ),
-    );
-    return tablePotAndCardWidget;
-  }
-
-  Widget potCardWidgetColumn() {
-    /* this gap height is the separation height between the three widgets in the center pot */
-    const _gapHeight = 5.0;
-    Widget tablePotAndCardWidget = Align(
-      key: ValueKey('tablePotAndCardWidget'),
-      alignment: Alignment.center,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          /* main pot view */
-          PotsView(
-            this.isBoardHorizontal,
-            this.potChips,
-            this.showDown,
-            GlobalKey(),
-          ),
-          const SizedBox(
-            height: _gapHeight,
-          ),
-
-          /* community cards view */
-          CommunityCardsView(
-            cards: this.cards,
-            horizontal: true,
-          ),
-          const SizedBox(height: _gapHeight + AppDimensions.cardHeight / 4),
-
           /* potUpdates view OR the rank widget (rank widget is shown only when we have a result) */
           this.showDown ? rankWidget() : potUpdatesView(),
         ],
