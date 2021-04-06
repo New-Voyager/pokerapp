@@ -13,6 +13,8 @@ import 'package:pokerapp/models/hand_log_model.dart';
 import 'package:pokerapp/models/rewards_model.dart';
 
 class Routes {
+  Routes._();
+
   //SplashScreen
   static const String initial = '/';
   // LoginScreen

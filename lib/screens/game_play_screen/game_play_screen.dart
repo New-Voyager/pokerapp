@@ -25,6 +25,10 @@ import 'package:pokerapp/services/game_play/utils/audio_buffer.dart';
 import 'package:pokerapp/services/test/test_service.dart';
 import 'package:provider/provider.dart';
 
+import '../../routes.dart';
+import '../../services/test/test_service.dart';
+import 'game_play_screen_util_methods.dart';
+
 /*
 * This is the screen which will have contact with the NATS server
 * Every sub view of this screen will update according to the data fetched from the NATS
@@ -194,6 +198,8 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
   /* dispose method for closing connections and un subscribing to channels */
   @override
   void dispose() {
+    TestService.isTesting = false;
+
     agora?.disposeObject();
     _gameComService?.dispose();
     Audio.dispose(context: _providerContext);
@@ -266,9 +272,20 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
       },
       child: SafeArea(
         child: Scaffold(
+          /* FIXME: THIS FLOATING ACTION BUTTON IS FOR SHOWING THE TESTS */
+          floatingActionButton: GamePlayScreenUtilMethods.floatingActionButton(
+            onReload: () {
+              if (!TestService.isTesting) {
+                TestService.isTesting = true;
+                print('refreshing entire UI');
+                setState(() {});
+              }
+            },
+          ),
           resizeToAvoidBottomInset: false,
           backgroundColor: Colors.black,
           body: FutureBuilder<GameInfoModel>(
+            key: UniqueKey(),
             future: _init(),
             initialData: null,
             builder: (_, AsyncSnapshot<GameInfoModel> snapshot) {
@@ -300,6 +317,9 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                 providers: providers,
                 builder: (BuildContext context, _) {
                   this._providerContext = context;
+
+                  /* set proper context for test service */
+                  TestService.context = context;
 
                   // handle test code
                   if (TestService.isTesting) {
