@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -6,6 +7,7 @@ import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/player_info.dart';
+import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:provider/provider.dart';
 
@@ -84,7 +86,39 @@ class TestService {
   }
 
   static Future<void> runTesting(BuildContext context) async {
-    await simulateBetMovement(context);
-    showBets(context);
+    //await simulateBetMovement(context);
+    //showBets(context);
+    await movePotToPlayer(context);
+  }
+
+  static Future<void> movePotToPlayer(BuildContext context) async {
+    final gameState = Provider.of<GameState>(context, listen: false);
+    final players = gameState.getPlayers(context);
+    final seat1 = gameState.getSeat(context, 1);
+    final seat2 = gameState.getSeat(context, 5);
+    final seat3 = gameState.getSeat(context, 9);
+    final player1 = seat1.player;
+    player1.coinAmount = 100;
+    player1.animatingCoinMovement = false;
+    player1.animatingCoinMovementReverse = true;
+
+    seat2.player.coinAmount = 100;
+    seat2.player.animatingCoinMovement = false;
+    seat2.player.animatingCoinMovementReverse = true;
+
+    seat3.player.coinAmount = 100;
+    seat3.player.animatingCoinMovement = false;
+    seat3.player.animatingCoinMovementReverse = true;
+    log('Updating pot to players');
+    players.notifyAll();
+
+    // wait for the animation to finish, then update the stack
+    Future.delayed(Duration(seconds: 1)).then(
+      (_) {
+        players.removeWinnerHighlightSilent();
+        players.resetMoveCoinsFromPotSilent();
+        players.notifyAll();
+      },
+    );
   }
 }

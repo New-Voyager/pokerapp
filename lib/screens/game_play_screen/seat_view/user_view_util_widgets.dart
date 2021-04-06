@@ -178,15 +178,18 @@ class UserViewUtilWidgets {
     @required BuildContext context,
     @required Seat seat,
   }) {
-    if (seat.player?.coinAmount == null || seat.player?.coinAmount == 0)
-      return shrinkedSizedBox;
-
     seat.seatBet.uiKey = GlobalKey();
     Widget chipAmountWidget = ChipAmountWidget(
       key: seat.seatBet.uiKey,
       seat: seat,
     );
 
+    bool animate = false;
+    if (seat.player.animatingCoinMovement ?? false) {
+      animate = true;
+    } else if (seat.player.animatingCoinMovementReverse ?? false) {
+      animate = true;
+    }
     // /* after the widgets are drawn get their positions */
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final gameState = GameState.getState(context);
@@ -208,7 +211,7 @@ class UserViewUtilWidgets {
       log('Seat: ${seat.serverSeatPos}, pos: $pos potView: $potViewPos potBetPos: $potBetPosLocal');
     });
 
-    return (seat.player.animatingCoinMovement ?? false)
+    return animate
         ? ChipAmountAnimatingWidget(
             seatPos: seat.serverSeatPos,
             child: chipAmountWidget,

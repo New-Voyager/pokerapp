@@ -56,7 +56,7 @@ class Seat extends ChangeNotifier {
     return _openSeat;
   }
 
-  get player {
+  PlayerModel get player {
     return this._player;
   }
 

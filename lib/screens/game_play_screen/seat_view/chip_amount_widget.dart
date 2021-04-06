@@ -8,19 +8,25 @@ import 'package:provider/provider.dart';
 
 class ChipAmountWidget extends StatelessWidget {
   final Seat seat;
-
   ChipAmountWidget({
     Key key,
     @required this.seat,
-  }) : super(key: key);
+  }) : super(key: key) {
+  }
 
   @override
-  Widget build(BuildContext context) => Consumer<BoardAttributesObject>(
-        builder: (_, boardAttrObj, __) => Transform.translate(
-          offset:
-              boardAttrObj.chipAmountWidgetOffsetMapping[seat.serverSeatPos],
-          //offset: Offset(0, 0),
-          child: Row(
+  Widget build(BuildContext context) {
+    bool showBet = true;
+    if (seat.player?.coinAmount == null || seat.player?.coinAmount == 0) {
+      showBet = false;
+    }
+
+    Widget child;
+    if (!showBet) {
+      // show bet position
+      child = Container(width: 10, height: 10, color: Colors.transparent,);
+    } else {
+      child = Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               /* show the coin svg */
@@ -39,7 +45,15 @@ class ChipAmountWidget extends StatelessWidget {
                 style: AppStyles.gamePlayScreenPlayerChips,
               ),
             ],
-          ),
+          );
+    }
+
+    return Consumer<BoardAttributesObject>(
+        builder: (_, boardAttrObj, __) => Transform.translate(
+          offset:
+              boardAttrObj.chipAmountWidgetOffsetMapping[seat.serverSeatPos],
+          child: child,
         ),
       );
+  }
 }
