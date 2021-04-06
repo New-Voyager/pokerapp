@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/remaining_time.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
@@ -16,6 +17,7 @@ import 'package:provider/provider.dart';
 
 import 'action_status.dart';
 import 'animating_widgets/chip_amount_animating_widget.dart';
+import 'chip_amount_widget.dart';
 import 'count_down_timer.dart';
 
 class UserViewUtilWidgets {
@@ -174,16 +176,16 @@ class UserViewUtilWidgets {
               );    
   }
 
-  static Widget buildChipAmountWidget({
+  static Widget buildChipAmountWidget1({
     @required Seat seat,
   }) {
-    // to debug coin position
-    //seat.player.coinAmount = 10;
+    seat.seatBet.uiKey = GlobalKey();
 
     Widget chipAmountWidget = Consumer<BoardAttributesObject>(
       builder: (_, boardAttrObj, __) => Transform.translate(
         offset: boardAttrObj.chipAmountWidgetOffsetMapping[seat.serverSeatPos],
         child: Row(
+          key: seat.seatBet.uiKey,
           mainAxisSize: MainAxisSize.min,
           children: [
             /* show the coin svg */
@@ -215,5 +217,42 @@ class UserViewUtilWidgets {
                 reverse: seat.player.animatingCoinMovementReverse,
               )
             : chipAmountWidget;
+  }
+
+  static Widget buildChipAmountWidget({
+    @required BuildContext context,
+    @required Seat seat,
+  }) {
+    if (seat.player?.coinAmount == null || seat.player?.coinAmount == 0)
+      return shrinkedSizedBox;
+
+    seat.seatBet.uiKey = GlobalKey();
+    Widget chipAmountWidget = ChipAmountWidget(
+      key: seat.seatBet.uiKey,
+      seat: seat,
+    );
+
+    // /* after the widgets are drawn get their positions */
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final gameState = GameState.getState(context);
+      final boardAttributes = gameState.getBoardAttributes(context);
+      final RenderBox potView = boardAttributes.potsKey.currentContext.findRenderObject();
+      final globalPos = potView.localToGlobal(Offset(0, 0));
+      final RenderBox renderBox = seat.seatBet.uiKey.currentContext.findRenderObject();
+      final potViewPos = renderBox.globalToLocal(globalPos);
+      final pos = renderBox.localToGlobal(Offset(0, 0));
+      seat.seatBet.potViewPos = potViewPos;
+      log('Seat: ${seat.serverSeatPos}, pos: $pos potView: $potViewPos');
+    });
+
+    //if (seat.serverSeatPos != 9) return chipAmountWidget;
+
+    return (seat.player.animatingCoinMovement ?? false)
+        ? ChipAmountAnimatingWidget(
+            seatPos: seat.serverSeatPos,
+            child: chipAmountWidget,
+            reverse: seat.player.animatingCoinMovementReverse,
+          )
+        : chipAmountWidget;
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/resources/app_assets.dart';
@@ -13,31 +15,23 @@ class TableView extends StatelessWidget {
   );
 
   // todo: do we need the center and fitted box?
-  Widget build(BuildContext context) => Consumer<BoardAttributesObject>(
-        builder: (_, boardAttrObj, __) => Center(
-          child: Container(
-            width: boardAttrObj.isOrientationHorizontal ? width + 50 : width,
-
-            /* NOTE: THE IMAGE IS SET TO STRETCH TO THE ENTIRE HEIGHT OF THIS AVAILABLE CONTAINER,
-            THIS HEIGHT - 40 VARIABLE CAN BE CHANGED TO STRETCH IT FURTHER OR SQUEEZE IT*/
-            height: boardAttrObj.isOrientationHorizontal ? height - 70 : height,
-            child: Image.asset(
-              boardAttrObj.isOrientationHorizontal
-                  ? AppAssets.horizontalTable
-                  : AppAssets.verticalTable,
-              fit: BoxFit.fill,
+  Widget build(BuildContext context) {
+    return Consumer<BoardAttributesObject>(
+        builder: (_, boardAttrObj, __) {
+          log('Table width: ${boardAttrObj.tableSize.width} height: ${boardAttrObj.tableSize.height}');
+          return  Center(
+            child: Container(
+              width: boardAttrObj.tableSize.width,
+              height: boardAttrObj.tableSize.height,
+              child: Image.asset(
+                boardAttrObj.isOrientationHorizontal
+                    ? AppAssets.horizontalTable
+                    : AppAssets.verticalTable,
+                fit: BoxFit.fill,
+              ),
             ),
-          ),
-        ),
+          );
+        }
       );
+  }
 }
-/*
-LayoutBuilder(
-   builder: (_, constraints) => Image(
-      fit: BoxFit.fill,
-      width: constraints.maxWidth,
-      image: AssetImage(assets.example),
-   ),
-)
-
- */

@@ -11,10 +11,11 @@ import 'package:pokerapp/screens/game_play_screen/main_views/board_view/decorati
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/players_on_table_view.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/animating_widgets/stack_switch_seat_animating_widget.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
+import 'package:pokerapp/services/test/test_service.dart';
 import 'package:provider/provider.dart';
 
-const _centerViewOffset = const Offset(0.0, -30.0);
-const _playersOnTableOffset = const Offset(0.0, -25.0);
+const _centerViewOffset = const Offset(0.0,0.0);
+ const _playersOnTableOffset = const Offset(0.0, -25.0);
 //const _playersOnTableOffset = const Offset(0.0, 0.0);
 const _noOffset = const Offset(0.0, 0.0);
 
@@ -48,16 +49,20 @@ class BoardView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool isBoardHorizontal = Provider.of<BoardAttributesObject>(
+    
+    final boardAttributes = Provider.of<BoardAttributesObject>(
       context,
-      listen: false,
-    ).isOrientationHorizontal;
-    var dimensions = BoardView.dimensions(context, isBoardHorizontal);
-    var widthOfBoard = dimensions.width;
-    var heightOfBoard = dimensions.height;
+      listen: false);
+    final isBoardHorizontal = boardAttributes.orientation == BoardOrientation.horizontal;
+    var dimensions = boardAttributes.dimensions(context);
+
+
+    final centerKey = GlobalKey();
+    boardAttributes.centerKey = centerKey;
+    boardAttributes.dummyKey = GlobalKey();
 
     /* finally the view */
-    return Stack(
+    final widget = Stack(
       alignment: Alignment.center,
       children: [
         // game board view
@@ -80,37 +85,60 @@ class BoardView extends StatelessWidget {
             child: PlayersOnTableView(
               players: players,
               gameComService: gameComService,
-              isBoardHorizontal: isBoardHorizontal,
-              widthOfBoard: widthOfBoard,
-              heightOfBoard: heightOfBoard,
+              isBoardHorizontal: boardAttributes.orientation == BoardOrientation.horizontal,
+              widthOfBoard: dimensions.width,
+              heightOfBoard: dimensions.height,
               onUserTap: onUserTap,
               maxPlayers: gameInfo.maxPlayers,
             ),
           ),
         ),
 
+        Positioned(
+          top: boardAttributes.centerOffset.dy,
+          left: boardAttributes.centerOffset.dx,
+          width: boardAttributes.centerSize.width,
+          height: boardAttributes.centerSize.height,
+          child: Opacity(
+            opacity: 1.0,
+            child: Container(
+              key: boardAttributes.dummyKey,
+              width: boardAttributes.centerSize.width,
+              height: boardAttributes.centerSize.height,
+              color: Colors.transparent,
+            ),
+          ),
+        ),
+
         // center view
-        Align(
-          alignment: Alignment.center,
+        // Align(
+        //   alignment: Alignment.center,
+        Positioned(
+          top: boardAttributes.centerOffset.dy,
+          left: boardAttributes.centerOffset.dx,
+          width: boardAttributes.centerSize.width,
+          height: boardAttributes.centerSize.height,
           child: Consumer2<TableState, ValueNotifier<FooterStatus>>(
             builder: (
               _,
               TableState tableState,
               ValueNotifier<FooterStatus> valueNotifierFooterStatus,
               __,
-            ) =>
-                Transform.translate(
-              offset: isBoardHorizontal ? _centerViewOffset : _noOffset,
-              child: Transform(
-                transform: BoardViewUtilMethods.getTransformationMatrix(
-                  isBoardHorizontal: isBoardHorizontal,
-                ),
-                child: CenterView(
+            ) {
+                var cards = tableState.cards;
+                var pots = tableState.potChips;
+                if (TestService.isTesting) {
+                  cards = TestService.boardCards;
+                  pots = TestService.pots;
+                }
+
+                return CenterView(
+                  centerKey,
                   gameInfo.gameCode,
                   gameInfo.isHost,
                   isBoardHorizontal,
-                  tableState.cards,
-                  tableState.potChips,
+                  cards,
+                  pots,
                   double.parse(
                     tableState.potChipsUpdates != null
                         ? tableState.potChipsUpdates.toString()
@@ -119,10 +147,9 @@ class BoardView extends StatelessWidget {
                   tableState.tableStatus,
                   valueNotifierFooterStatus.value == FooterStatus.Result,
                   onStartGame,
-                ),
-              ),
-            ),
-          ),
+                );
+            }
+          )
         ),
 
         /* distributing card animation widgets */
@@ -137,5 +164,7 @@ class BoardView extends StatelessWidget {
         ),
       ],
     );
+
+    return widget;
   }
 }

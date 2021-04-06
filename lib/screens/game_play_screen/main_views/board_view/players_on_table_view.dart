@@ -5,6 +5,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
+import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/name_plate_view.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/player_view.dart';
@@ -419,13 +420,13 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
       Alignment cardsAlignment,
       GlobalKey key,
       }) {
-    Widget userView;
+    Widget userView;    
     //debugPrint('Creating user view for seat: ${seat.serverSeatPos}');
     userView = ListenableProvider<Seat>(
           create: (_) => seat,
           builder: (context, _) => 
-          Consumer<Seat>(
-            builder: (_, seat, __) =>
+          Consumer2<Seat, BoardAttributesObject>(
+            builder: (_, seat, boardAttributes, __) =>
               PlayerView(
                 globalKey: key,
                 gameComService: widget.gameComService,
@@ -433,6 +434,7 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
                 seat: seat,
                 cardsAlignment: cardsAlignment,
                 onUserTap: onUserTap,
+                boardAttributes: boardAttributes,
               )
           )
     );

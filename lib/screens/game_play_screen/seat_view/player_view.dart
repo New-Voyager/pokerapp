@@ -7,6 +7,7 @@ import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
+import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_styles.dart';
@@ -30,12 +31,15 @@ class PlayerView extends StatelessWidget {
   final Alignment cardsAlignment;
   final Function(int) onUserTap;
   final GameComService gameComService;
+  final BoardAttributesObject boardAttributes;
+
   PlayerView({
     Key key,
     @required this.globalKey,
     @required this.seat,
     @required this.onUserTap,
     @required this.gameComService,
+    @required this.boardAttributes,
     this.cardsAlignment = Alignment.centerRight,
   }) : super(key: key);
 
@@ -71,9 +75,22 @@ class PlayerView extends StatelessWidget {
     }
   }
 
+  Future<void> afterBuild() async {
+    final RenderBox object = globalKey.currentContext.findRenderObject();
+    final pos = object.localToGlobal(Offset(0,0));
+    final size = object.size;
+    seat.screenPos = pos;
+    seat.size = size;
+    debugPrint('Seat: ${seat.serverSeatPos} is built. Key: ${globalKey} Position: $pos Size: $size');
+  }
+
   @override
   Widget build(BuildContext context) {
-    // debugPrint('Rebuilding seat: ${seat.serverSeatPos}');
+    debugPrint('Rebuilding seat: ${seat.serverSeatPos}');
+    seat.key = this.globalKey;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) => afterBuild);
+    //afterBuild();
 
     bool openSeat = seat.isOpen;
     bool isMe = seat.isMe;
@@ -105,6 +122,8 @@ class PlayerView extends StatelessWidget {
         isDealer = true;
       }
     }
+
+    seat.seatBet.uiKey = GlobalKey();
 
     return DragTarget(
       onWillAccept: (data) {
@@ -139,6 +158,7 @@ class PlayerView extends StatelessWidget {
               NamePlateWidget(
                 seat,
                 globalKey: globalKey,
+                boardAttributes: boardAttributes,
               ),
 
               // result cards and show selected cards by a user
@@ -166,9 +186,7 @@ class PlayerView extends StatelessWidget {
               ),
 
               // /* building the chip amount widget */
-              UserViewUtilWidgets.buildChipAmountWidget(
-                seat: seat,
-              ),
+              UserViewUtilWidgets.buildChipAmountWidget(context: context, seat: seat),
 
               //SeatNoWidget(seat),
             ],

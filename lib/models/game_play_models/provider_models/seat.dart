@@ -26,6 +26,12 @@ class Seat extends ChangeNotifier {
   int serverSeatPos;
   bool _openSeat;
   PlayerModel _player;
+  SeatBet _seatBet;
+
+  // UI attributes
+  GlobalKey _key;
+  Offset _screenPos;
+  Size _size;
 
   Seat(int localSeatPos, int serverSeatPos, PlayerModel player) {
     this.localSeatPos = localSeatPos;
@@ -35,6 +41,7 @@ class Seat extends ChangeNotifier {
     }
     this._player = player;
     this.serverSeatPos = serverSeatPos;
+    this._seatBet = SeatBet();
   }
 
   @override
@@ -83,7 +90,46 @@ class Seat extends ChangeNotifier {
     }
   }
 
+  get key => this._key;
+  set key(Key key) => this._key = key;
+
+  get screenPos => this._screenPos;
+  set screenPos(Offset pos) => this._screenPos = pos;
+  
+  get size => this._size;
+  set size(Size size) => this._size = size;
+  
+  SeatBet get seatBet => this._seatBet;
+
   void notify() {
     this.notifyListeners();
   }
+}
+
+class SeatBet extends ChangeNotifier {
+  double _betAmount = 0.0;
+  bool _show = false;
+  bool _animate = false;
+  Offset _potViewPos;
+  GlobalKey _uiKey;
+
+  void notify() {
+    this.notifyListeners();
+  }
+
+  get betAmount => this._betAmount ;
+  set betAmount(double value) => this._betAmount = value;
+
+  get animate => this._animate;
+  set animate(bool v) => this._animate = v;
+
+  get show => this._show;
+  set show(bool v) => this._show = v;
+
+  GlobalKey get uiKey => this._uiKey;
+  set uiKey(GlobalKey key) => this._uiKey = key;
+
+  Offset get potViewPos => this._potViewPos;
+  set potViewPos(Offset pos) => this._potViewPos = pos;
+
 }

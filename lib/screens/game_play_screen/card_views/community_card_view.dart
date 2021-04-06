@@ -22,7 +22,7 @@ class CommunityCardsView extends StatelessWidget {
 
   List<Widget> getCommunityCards() {
     final reversedList = this.cards.reversed.toList();
-    var widgets = List<Widget>();
+    List<Widget> widgets = [];
     for (var card in reversedList) {
       var c = Transform.translate(
         offset: Offset(
@@ -36,7 +36,7 @@ class CommunityCardsView extends StatelessWidget {
       );
       widgets.add(c);
       widgets.add(new SizedBox(
-        width: 10.0,
+        width: 2.0,
       ));
     }
     return widgets.toList().reversed.toList();
@@ -48,7 +48,10 @@ class CommunityCardsView extends StatelessWidget {
 
     return Row(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: cards.isEmpty ? [SizedBox.shrink()] : getCommunityCards());
+        children: 
+            cards.isEmpty ? 
+                [SizedBox.shrink()] : 
+                getCommunityCards());
   }
 }
 
@@ -81,10 +84,11 @@ class CommunityCardView extends StatelessWidget {
     } catch (_) {}
 
     return Transform.scale(
-      scale: 1.4,
+      scale: 1.2,
       child: Container(
         height: cardView.height,
         width: cardView.width,
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(3.0)),
         child: FlipCard(
           flipOnTouch: false,
           key: cardKey,

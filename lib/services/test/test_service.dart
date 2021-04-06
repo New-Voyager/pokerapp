@@ -1,8 +1,13 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
+import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/player_info.dart';
+import 'package:pokerapp/utils/card_helper.dart';
+import 'package:provider/provider.dart';
 
 class TestService {
   static var _isTesting = false;
@@ -10,6 +15,8 @@ class TestService {
   static PlayerInfo _currentPlayer;
   static GameInfoModel _gameInfo;
   static dynamic _result;
+  static List<CardObject> _boardCards;
+  static List<int> _pots;
 
   TestService._();
 
@@ -32,7 +39,15 @@ class TestService {
   static bool get showResult {
     return _showResult;
   }
+
+  static List<CardObject> get boardCards {
+    return _boardCards;
+  }
   
+  static List<int> get pots {
+    return _pots;
+  }
+
   static Future<void> load() async {
     if (_isTesting) {
       final gameData = await rootBundle.loadString('assets/sample-data/gameinfo.json');
@@ -45,6 +60,15 @@ class TestService {
       }
       final resultData = await rootBundle.loadString('assets/sample-data/result.json');
       _result = jsonDecode(resultData);
+
+      _boardCards = [130, 82, 193, 148, 20].map<CardObject>((e) => CardHelper.getCard(e)).toList();
+      _pots = [100];
     }
+  }
+
+  static Future<void> simulateBetMovement(BuildContext context) async {
+    final gameState = Provider.of<GameState>(context, listen: false);
+    final players = gameState.getPlayers(context);
+    await players.moveCoinsToPot();
   }
 }

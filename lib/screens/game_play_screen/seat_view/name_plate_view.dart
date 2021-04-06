@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
+import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:provider/provider.dart';
@@ -9,10 +10,12 @@ import 'package:provider/provider.dart';
 class NamePlateWidget extends StatelessWidget {
   final GlobalKey globalKey;
   final Seat seat;
+  final BoardAttributesObject boardAttributes;
+
   static const highlightColor = const Color(0xfffffff);
   static const shrinkedSizedBox = const SizedBox.shrink();
 
-  NamePlateWidget(this.seat, {this.globalKey});
+  NamePlateWidget(this.seat, {this.globalKey, this.boardAttributes});
 
   @override
   Widget build(BuildContext context) {
@@ -116,7 +119,8 @@ class NamePlateWidget extends StatelessWidget {
       {bool isFeedBack = false}) {
     final shadow = getShadow(hostSeatChange, isFeedBack);
     return Container(
-      width: 70.0,
+      width: boardAttributes.namePlateSize.width,
+      height: boardAttributes.namePlateSize.height,
       padding: const EdgeInsets.symmetric(
               vertical: 5.0,
             ),

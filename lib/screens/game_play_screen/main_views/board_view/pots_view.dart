@@ -5,18 +5,21 @@ class PotsView extends StatelessWidget {
   final List<int> potChips;
   final bool isBoardHorizontal;
   final bool showDown;
-  PotsView(this.isBoardHorizontal, this.potChips, this.showDown);
+  final Key chipKey;
+  PotsView(this.isBoardHorizontal, this.potChips, this.showDown, this.chipKey);
 
   @override
-  Widget build(BuildContext context) => Opacity(
+  Widget build(BuildContext context) {
+    return Opacity(
         opacity: showDown ||
                 (potChips == null || potChips.length == 0 || potChips[0] == 0)
             ? 0
             : 1,
         child: Container(
           margin: EdgeInsets.only(bottom: 10.0),
+          height: 30,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(100.0),
+            borderRadius: BorderRadius.circular(10.0),
             color: Colors.black26,
           ),
           child: Row(
@@ -25,6 +28,7 @@ class PotsView extends StatelessWidget {
             children: [
               // chip image
               Align(
+                key: chipKey,
                 alignment: Alignment.centerLeft,
                 child: Image.asset(
                   'assets/images/chips.png',
@@ -48,7 +52,7 @@ class PotsView extends StatelessWidget {
                       ? '0'
                       : potChips[0].toString(),
                   style: AppStyles.itemInfoTextStyleHeavy.copyWith(
-                    fontSize: 15,
+                    fontSize: 12,
                   ),
                 ),
               ),
@@ -56,4 +60,5 @@ class PotsView extends StatelessWidget {
           ),
         ),
       );
+  }
 }

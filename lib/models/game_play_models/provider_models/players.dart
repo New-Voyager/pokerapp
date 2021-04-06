@@ -177,11 +177,18 @@ class Players extends ChangeNotifier {
     _players[idx].coinAmount = amount;
   }
 
-  Future<void> moveCoinsToPot() async {
+  Future<void> moveCoinsToPot({int seatNo}) async {
     // debugPrint('moveCoinsToPot');
 
     /* move all the coins to the pot  */
     for (int i = 0; i < _players.length; i++) {
+      if (seatNo != null) {
+        if (_players[i].seatNo == seatNo) {
+          _players[i].animatingCoinMovement = true;
+          break;
+        }
+        continue;
+      }
       _players[i].animatingCoinMovement = true;
     }
     notifyListeners();
