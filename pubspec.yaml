@@ -70,6 +70,8 @@ dependencies:
   flutter_bloc: ^6.1.2
   equatable: ^1.2.5
 
+  flutter_speed_dial: ^3.0.5
+
   # for recording audio
   audio_recorder:
     git:

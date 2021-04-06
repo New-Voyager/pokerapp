@@ -20,35 +20,27 @@ class TestService {
   static List<CardObject> _boardCards;
   static List<int> _pots;
 
+  static BuildContext _context;
+
   TestService._();
 
-  static bool get isTesting {
-    return _isTesting;
-  }
+  static set context(BuildContext context) => _context = context;
 
-  static PlayerInfo get currentPlayer {
-    return _currentPlayer;
-  }
+  static set isTesting(bool isTesting) => _isTesting = isTesting;
 
-  static GameInfoModel get gameInfo {
-    return _gameInfo;
-  }
+  static bool get isTesting => _isTesting;
 
-  static dynamic get handResult {
-    return _result;
-  }
+  static PlayerInfo get currentPlayer => _currentPlayer;
 
-  static bool get showResult {
-    return _showResult;
-  }
+  static GameInfoModel get gameInfo => _gameInfo;
 
-  static List<CardObject> get boardCards {
-    return _boardCards;
-  }
+  static dynamic get handResult => _result;
 
-  static List<int> get pots {
-    return _pots;
-  }
+  static bool get showResult => _showResult;
+
+  static List<CardObject> get boardCards => _boardCards;
+
+  static List<int> get pots => _pots;
 
   static Future<void> load() async {
     if (_isTesting) {
@@ -72,26 +64,36 @@ class TestService {
     }
   }
 
-  static Future<void> simulateBetMovement(BuildContext context) async {
+  static Future<void> addRiverOrTurnCard() async {}
+
+  static Future<void> addFlopCards() async {}
+
+  static Future<void> simulateBetMovement() async {
+    BuildContext context = _context;
+
     final gameState = Provider.of<GameState>(context, listen: false);
     final players = gameState.getPlayers(context);
     await players.moveCoinsToPot();
   }
 
-  static void showBets(BuildContext context) {
+  static void showBets() {
+    BuildContext context = _context;
+
     final gameState = Provider.of<GameState>(context, listen: false);
     final players = gameState.getPlayers(context);
     players.updateTestBet(20);
     players.notifyAll();
   }
 
-  static Future<void> runTesting(BuildContext context) async {
-    //await simulateBetMovement(context);
-    //showBets(context);
-    await movePotToPlayer(context);
-  }
+  // static Future<void> runTesting(BuildContext context) async {
+  //   //await simulateBetMovement(context);
+  //   //showBets(context);
+  //   await movePotToPlayer(context);
+  // }
 
-  static Future<void> movePotToPlayer(BuildContext context) async {
+  static Future<void> movePotToPlayer() async {
+    BuildContext context = _context;
+
     final gameState = Provider.of<GameState>(context, listen: false);
     final players = gameState.getPlayers(context);
     final seat1 = gameState.getSeat(context, 1);

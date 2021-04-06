@@ -73,10 +73,6 @@ class HeaderView extends StatelessWidget {
                         children: [
                           GestureDetector(
                             onTap: () async {
-                              if (TestService.isTesting) {
-                                await TestService.runTesting(context);
-                                return;
-                              }
                               await showModalBottomSheet(
                                 context: context,
                                 isScrollControlled: true,
