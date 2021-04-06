@@ -2,27 +2,30 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 
 class PotsView extends StatelessWidget {
-  final List<int> potChips;
+  final double potChips;
   final bool isBoardHorizontal;
   final bool showDown;
-  final Key chipKey;
-  PotsView(this.isBoardHorizontal, this.potChips, this.showDown, this.chipKey);
+  final GlobalKey uiKey;
+  PotsView(this.isBoardHorizontal, this.potChips, this.showDown, this.uiKey);
 
   @override
   Widget build(BuildContext context) {
+    bool showPot = !(showDown || (potChips == null || potChips == 0));
+    String potText = '';
+    if (potChips == null || potChips == 0) {
+      potText = '0';
+    } else {
+      potText = potChips.toString();
+    }
     return Stack(children: [
       // This transparent child is used for chips pulling animation
       Container(
-        key: chipKey,
         width: 10,
         height: 10,
         color: Colors.transparent,
       ),
       Opacity(
-        opacity: showDown ||
-                (potChips == null || potChips.length == 0 || potChips[0] == 0)
-            ? 0
-            : 1,
+        opacity: showPot ? 1 : 0,
         child: Container(
           margin: EdgeInsets.only(bottom: 10.0),
           height: 30,
@@ -36,6 +39,7 @@ class PotsView extends StatelessWidget {
             children: [
               // chip image
               Align(
+                key: uiKey,
                 alignment: Alignment.centerLeft,
                 child: Image.asset(
                   'assets/images/chips.png',
@@ -52,12 +56,8 @@ class PotsView extends StatelessWidget {
                   left: 5.0,
                 ),
 
-                // todo: at later point might need to support multiple pots - need to design UI
-
                 child: Text(
-                  (potChips == null || potChips.length == 0)
-                      ? '0'
-                      : potChips[0].toString(),
+                  potText,
                   style: AppStyles.itemInfoTextStyleHeavy.copyWith(
                     fontSize: 12,
                   ),

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/animating_widgets/card_distribution_animating_widget.dart';
-import 'package:pokerapp/screens/game_play_screen/main_views/board_view/board_view_util_methods.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/center_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/decorative_views/table_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/players_on_table_view.dart';
@@ -13,11 +13,6 @@ import 'package:pokerapp/screens/game_play_screen/seat_view/animating_widgets/st
 import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/services/test/test_service.dart';
 import 'package:provider/provider.dart';
-
-const _centerViewOffset = const Offset(0.0, 0.0);
-const _playersOnTableOffset = const Offset(0.0, -25.0);
-//const _playersOnTableOffset = const Offset(0.0, 0.0);
-const _noOffset = const Offset(0.0, 0.0);
 
 class BoardView extends StatelessWidget {
   BoardView({
@@ -49,8 +44,8 @@ class BoardView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final boardAttributes =
-        Provider.of<BoardAttributesObject>(context, listen: false);
+    final gameState = GameState.getState(context);
+    final boardAttributes = gameState.getBoardAttributes(context);
     final isBoardHorizontal =
         boardAttributes.orientation == BoardOrientation.horizontal;
     var dimensions = boardAttributes.dimensions(context);
@@ -72,26 +67,6 @@ class BoardView extends StatelessWidget {
           ),
         ),
 
-        Consumer<Players>(
-          builder: (
-            BuildContext _,
-            Players players,
-            Widget __,
-          ) =>
-              Transform.translate(
-            offset: _playersOnTableOffset,
-            child: PlayersOnTableView(
-              players: players,
-              gameComService: gameComService,
-              isBoardHorizontal:
-                  boardAttributes.orientation == BoardOrientation.horizontal,
-              widthOfBoard: dimensions.width,
-              heightOfBoard: dimensions.height,
-              onUserTap: onUserTap,
-              maxPlayers: gameInfo.maxPlayers,
-            ),
-          ),
-        ),
 
         Positioned(
           top: boardAttributes.centerOffset.dy,
@@ -109,9 +84,6 @@ class BoardView extends StatelessWidget {
           ),
         ),
 
-        // center view
-        // Align(
-        //   alignment: Alignment.center,
         Positioned(
             top: boardAttributes.centerOffset.dy,
             left: boardAttributes.centerOffset.dx,
@@ -147,6 +119,28 @@ class BoardView extends StatelessWidget {
                 onStartGame,
               );
             })),
+
+
+        Consumer<Players>(
+          builder: (
+            BuildContext _,
+            Players players,
+            Widget __,
+          ) =>
+              Transform.translate(
+            offset: boardAttributes.playerOnTableOffset,
+            child: PlayersOnTableView(
+              players: players,
+              gameComService: gameComService,
+              isBoardHorizontal:
+                  boardAttributes.orientation == BoardOrientation.horizontal,
+              widthOfBoard: dimensions.width,
+              heightOfBoard: dimensions.height,
+              onUserTap: onUserTap,
+              maxPlayers: gameInfo.maxPlayers,
+            ),
+          ),
+        ),
 
         /* distributing card animation widgets */
         Align(
