@@ -285,6 +285,8 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
           resizeToAvoidBottomInset: false,
           backgroundColor: Colors.black,
           body: FutureBuilder<GameInfoModel>(
+            // TODO: THIS UNIQUE KEY IS PLACED SO THAT A setState INVOCATION IN THIS CLASS WOULD CAUSE THIS WIDGET TO REBUILD
+            // TODO: THIS IS DONE, SO REFLECT THE GAME PLAY SCREEN CHANGES AFTER THE TEST MODE IS ACTIVATED
             key: UniqueKey(),
             future: _init(),
             initialData: null,
