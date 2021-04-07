@@ -64,8 +64,7 @@ class CenterView extends StatelessWidget {
     /* if reached here, means, the game is RUNNING */
     /* The following view, shows the community cards
     * and the pot chips, if they are nulls, put the default values */
-    Widget view = centerView(context);
-    return view;
+    return centerView(context);
   }
 
   Widget multiplePots(BuildContext context) {
@@ -96,7 +95,7 @@ class CenterView extends StatelessWidget {
     final boardAttributes = gameState.getBoardAttributes(context);
     final GlobalKey potsKey = GlobalKey();
     boardAttributes.setPotsKey(0, potsKey);
-    
+
     boardAttributes.centerPotBetKey = GlobalKey();
 
     /* this gap height is the separation height between the three widgets in the center pot */
@@ -108,15 +107,15 @@ class CenterView extends StatelessWidget {
         clipBehavior: Clip.none,
         //mainAxisSize: MainAxisSize.min,
         children: [
-
           /* dummy view for pots to pull bets **/
           Align(
-              alignment: Alignment.topCenter,
-              child: Transform.translate(
-                key: boardAttributes.centerPotBetKey,
-                offset: Offset(0, 15),
-                child: Container(width: 50, height: 50, color: Colors.transparent),
-              ),
+            alignment: Alignment.topCenter,
+            child: Transform.translate(
+              key: boardAttributes.centerPotBetKey,
+              offset: Offset(0, 15),
+              child:
+                  Container(width: 50, height: 50, color: Colors.transparent),
+            ),
           ),
 
           /* main pot view */

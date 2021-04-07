@@ -11,6 +11,24 @@ enum BoardOrientation {
   vertical,
 }
 
+/* TODO; PUT THIS IN A DIFFERENT FILE */
+class CommunityCardAttribute {
+  static Map<int, GlobalKey> cardKeys = Map();
+
+  static bool hasEntry(int idx) => cardKeys.containsKey(idx);
+
+  static addEntry(
+    int idx,
+    GlobalKey key,
+  ) =>
+      cardKeys[idx] = key;
+
+  static getOffsetPosition(int idx) {
+    final RenderBox renderBox = cardKeys[idx].currentContext.findRenderObject();
+    return renderBox.localToGlobal(Offset.zero);
+  }
+}
+
 class PotAttribute {
   GlobalKey _key;
   Offset _globalPos;

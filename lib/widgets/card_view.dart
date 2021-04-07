@@ -12,10 +12,11 @@ final cardBackImage =
 class CardView extends StatelessWidget {
   final CardObject card;
   final bool grayOut;
-  double widthRatio;
-  double width;
+  final double widthRatio;
   final bool back;
+  double width;
   double height;
+
   CardView({
     @required this.card,
     this.grayOut = false,
@@ -141,7 +142,7 @@ class CardsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> cardViews = new List<Widget>();
+    List<Widget> cardViews = [];
     if (show) {
       for (int c in cards) {
         CardObject card = CardHelper.getCard(c);
@@ -157,6 +158,8 @@ class CardsView extends StatelessWidget {
   }
 }
 
+/* FIXME: THIS COMMUNITY CARD WIDGET IS SHOWN IN RESULT VIEW OR HAND LOG VIEW, THIS IS NOT THE
+* FIXME: MAIN WIDGET SHOWN IN THE TABLE CENTER */
 class CommunityCardWidget extends StatelessWidget {
   final List<int> cards;
   List<CardObject> cardObjects;
@@ -174,9 +177,7 @@ class CommunityCardWidget extends StatelessWidget {
       for (int c in this.cards) {
         CardObject card = CardHelper.getCard(c);
         cardViews.add(CardView(card: card));
-        cardViews.add(SizedBox(
-          width: 2.0,
-        ));
+        cardViews.add(SizedBox(width: 2.0));
       }
     }
     // hide cards
