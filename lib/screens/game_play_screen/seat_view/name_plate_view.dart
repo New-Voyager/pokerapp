@@ -38,42 +38,40 @@ class NamePlateWidget extends StatelessWidget {
       else if (status.toUpperCase().contains('RAISE') ||
           status.toUpperCase().contains('BET')) statusColor = Colors.red;
     }
-    return Transform.translate(
-      key: globalKey,
-      offset: Offset(0.0, 0.0),
-      child: Consumer2<HostSeatChange, GameContextObject>(builder: (
-        context,
-        hostSeatChange,
-        gameContextObject,
-        _,
-      ) {
-        Widget widget;
-        if (gameContextObject.isAdmin() &&
-            hostSeatChange.seatChangeInProgress) {
-          widget = Draggable(
-            data: seat.serverSeatPos,
-            onDragEnd: (_) {
-              hostSeatChange.onSeatDragEnd();
-            },
-            onDragStarted: () {
-              hostSeatChange.onSeatDragStart(seat.serverSeatPos);
-            },
-            feedback: buildSeat(
-              hostSeatChange,
-              isFeedBack: true,
-            ),
-            child: buildSeat(hostSeatChange),
-            childWhenDragging: buildSeat(
-              hostSeatChange,
-              childWhenDragging: true,
-            ),
-          );
-        } else {
-          widget = buildSeat(hostSeatChange);
-        }
-        return widget;
-      }),
-    );
+    return Consumer2<HostSeatChange, GameContextObject>(
+        key: globalKey,
+        builder: (
+          context,
+          hostSeatChange,
+          gameContextObject,
+          _,
+        ) {
+          Widget widget;
+          if (gameContextObject.isAdmin() &&
+              hostSeatChange.seatChangeInProgress) {
+            widget = Draggable(
+              data: seat.serverSeatPos,
+              onDragEnd: (_) {
+                hostSeatChange.onSeatDragEnd();
+              },
+              onDragStarted: () {
+                hostSeatChange.onSeatDragStart(seat.serverSeatPos);
+              },
+              feedback: buildSeat(
+                hostSeatChange,
+                isFeedBack: true,
+              ),
+              child: buildSeat(hostSeatChange),
+              childWhenDragging: buildSeat(
+                hostSeatChange,
+                childWhenDragging: true,
+              ),
+            );
+          } else {
+            widget = buildSeat(hostSeatChange);
+          }
+          return widget;
+        });
   }
 
   /*

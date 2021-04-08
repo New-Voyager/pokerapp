@@ -25,6 +25,9 @@ import 'dealer_button.dart';
 import 'name_plate_view.dart';
 import 'user_view_util_widgets.dart';
 
+/* this contains the player positions <seat-no, position> mapping */
+Map<int, Offset> playerPositions = Map();
+
 class PlayerView extends StatelessWidget {
   final GlobalKey globalKey;
   final Seat seat;
@@ -83,13 +86,19 @@ class PlayerView extends StatelessWidget {
     final size = object.size;
     seat.screenPos = pos;
     seat.size = size;
-    debugPrint(
-        'Seat: ${seat.serverSeatPos} is built. Key: ${globalKey} Position: $pos Size: $size');
+
+    playerPositions[seat.serverSeatPos] = pos;
+
+    print('\n\n\n\nafter build: $playerPositions\n\n\n\n');
+
+    //
+    // debugPrint(
+    //   'Seat: ${seat.serverSeatPos} is built. Key: ${globalKey} Position: $pos Size: $size',
+    // );
   }
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('Rebuilding seat: ${seat.serverSeatPos}');
     seat.key = this.globalKey;
 
     WidgetsBinding.instance.addPostFrameCallback((_) => afterBuild);
@@ -171,21 +180,32 @@ class PlayerView extends StatelessWidget {
 
               // result cards and show selected cards by a user
               Consumer<ValueNotifier<FooterStatus>>(
-                builder: (_, valueNotifierFooterStatus, __) {
+                builder: (
+                  _,
+                  valueNotifierFooterStatus,
+                  __,
+                ) {
                   return DisplayCardsWidget(
-                      seat, valueNotifierFooterStatus.value);
+                    seat,
+                    valueNotifierFooterStatus.value,
+                  );
                 },
               ),
 
               // player action text
               Positioned(
-                  top: 0,
-                  left: 0,
-                  child: ActionStatusWidget(seat, cardsAlignment)),
+                top: 0,
+                left: 0,
+                child: ActionStatusWidget(seat, cardsAlignment),
+              ),
 
               // player hole cards
-              PlayerCardsWidget(seat, this.cardsAlignment,
-                  seat.player?.noOfCardsVisible, showdown),
+              PlayerCardsWidget(
+                seat,
+                this.cardsAlignment,
+                seat.player?.noOfCardsVisible,
+                showdown,
+              ),
 
               // show dealer button, if user is a dealer
               isDealer
@@ -202,7 +222,9 @@ class PlayerView extends StatelessWidget {
 
               // /* building the chip amount widget */
               UserViewUtilWidgets.buildChipAmountWidget(
-                  context: context, seat: seat),
+                context: context,
+                seat: seat,
+              ),
 
               //SeatNoWidget(seat),
             ],
