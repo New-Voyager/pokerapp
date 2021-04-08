@@ -26,8 +26,8 @@ class AppConstants {
     milliseconds: 100,
   );
 
-  static const Duration communityCardPushDuration = const Duration(
-    milliseconds: 300,
+  static const Duration communityCardAnimationDuration = const Duration(
+    milliseconds: 400,
   );
 
   static const Duration fastAnimationDuration = const Duration(

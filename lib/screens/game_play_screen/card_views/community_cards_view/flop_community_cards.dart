@@ -8,6 +8,7 @@ import 'package:flip_card/flip_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
+import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/resources/card_back_assets.dart';
 import 'package:provider/provider.dart';
@@ -30,7 +31,7 @@ class _FlopCommunityCardsState extends State<FlopCommunityCards> {
   bool _isAnimationCompleted;
 
   Future<void> _delay() => Future.delayed(
-        const Duration(milliseconds: 500),
+        AppConstants.communityCardAnimationDuration,
       );
 
   @override
@@ -92,8 +93,10 @@ class _FlopCommunityCardsState extends State<FlopCommunityCards> {
   }
 
   void onEnd(int idx) {
+    print('onEnd last index value will be: $idx');
+
     /* when the last card animation is done */
-    if (idx == 0)
+    if (idx == 2)
       setState(() {
         print('animation ended');
         _isAnimationCompleted = true;
@@ -102,6 +105,7 @@ class _FlopCommunityCardsState extends State<FlopCommunityCards> {
 
   Widget _buildAnimation(int idx) {
     return TweenAnimationBuilder<Offset>(
+      duration: AppConstants.communityCardAnimationDuration,
       onEnd: () => onEnd(idx),
       tween: Tween<Offset>(
         begin: Offset(
@@ -115,7 +119,6 @@ class _FlopCommunityCardsState extends State<FlopCommunityCards> {
           0.0,
         ),
       ),
-      duration: const Duration(milliseconds: 500),
       child: widget.flopCards[idx],
       builder: (_, offset, child) => Transform.translate(
         offset: offset,

@@ -52,7 +52,10 @@ class CommunityCardsView extends StatelessWidget {
       GlobalKey globalKey;
 
       if (!CommunityCardAttribute.hasEntry(idx)) {
+        /* only add an entry, if there is no previous entry available */
         globalKey = GlobalKey();
+
+        /* collect for offset calculation : offset is calculated post the widget tree is build */
         _globalKeys[idx] = globalKey;
       }
 
