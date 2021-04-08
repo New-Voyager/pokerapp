@@ -54,6 +54,9 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
   // hold position of user tile
   List<GlobalKey> _playerKeys = [];
 
+  /* hold player positions */
+  Map<int, Offset> _playerPositions = Map();
+
   // some offset
   double offset = 0;
 
@@ -172,7 +175,8 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
     Offset from;
     Offset to;
     print(
-        'Here ${message.messageId} from player ${message.fromSeat} to ${message.toSeat}. Animation id: ${message.animationId}');
+      'Here ${message.messageId} from player ${message.fromSeat} to ${message.toSeat}. Animation id: ${message.animationId}',
+    );
 
     if (message.fromSeat == null || message.toSeat == null) {
       return;
@@ -182,18 +186,30 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
     * find position of to and from user
     **/
     final positions = findPositionOfFromAndToUser(
-        fromSeat: message.fromSeat, toSeat: message.toSeat);
+      fromSeat: message.fromSeat,
+      toSeat: message.toSeat,
+    );
+
     from = positions[0];
     to = positions[1];
+
     animation = Tween<Offset>(
       begin: from,
       end: to,
     ).animate(animationController);
-    isAnimating = true;
+
+    print('\n\n\n\n\n\n\n\nanimation value: $animation\n\n\n\n\n\n\n');
+
+    setState(() {
+      isAnimating = true;
+    });
+
     animationController.forward();
   }
 
   Offset getPositionOffsetFromKey(GlobalKey key) {
+    print(
+        '\n\n\n\n\n\n\n\n player context: ${key.currentContext} \n\n\n\n\n\n\n\n\n\n');
     final RenderBox renderBox = key.currentContext.findRenderObject();
     return renderBox.localToGlobal(Offset.zero);
   }
@@ -244,10 +260,8 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
 
           ...getPlayers(context),
 
-          isAnimating
-              ? Positioned(
-                  left: animation.value.dx,
-                  top: animation.value.dy,
+          isAnimating && animation != null
+              ? AnimatedBuilder(
                   child: Container(
                     height: 50,
                     width: 50,
@@ -257,6 +271,11 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
                         fit: BoxFit.cover,
                       ),
                     ),
+                  ),
+                  animation: animation,
+                  builder: (_, child) => Transform.translate(
+                    offset: animation.value,
+                    child: child,
                   ),
                 )
               : SizedBox.shrink(),
@@ -279,10 +298,14 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
           isSeatChanging
               ? Positioned(
                   left: seatChangeAnimation.value.dx,
-                  top: seatChangeAnimation.value.dy + 32,
-                  child: NamePlateWidget(
-                    getSeats(
-                        context, widget.players.players)[seatChangerPlayer - 1],
+                  top: seatChangeAnimation.value.dy,
+                  child: Consumer<BoardAttributesObject>(
+                    builder: (_, boardAttributes, __) => NamePlateWidget(
+                      getSeats(context, widget.players.players)[
+                          seatChangerPlayer - 1],
+                      globalKey: null,
+                      boardAttributes: boardAttributes,
+                    ),
                   ),
                 )
               : SizedBox.shrink(),
@@ -424,17 +447,19 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
     Widget userView;
     //debugPrint('Creating user view for seat: ${seat.serverSeatPos}');
     userView = ListenableProvider<Seat>(
-        create: (_) => seat,
-        builder: (context, _) => Consumer2<Seat, BoardAttributesObject>(
-            builder: (_, seat, boardAttributes, __) => PlayerView(
-                  globalKey: key,
-                  gameComService: widget.gameComService,
-                  key: ValueKey(seatPos),
-                  seat: seat,
-                  cardsAlignment: cardsAlignment,
-                  onUserTap: onUserTap,
-                  boardAttributes: boardAttributes,
-                )));
+      create: (_) => seat,
+      builder: (context, _) => Consumer2<Seat, BoardAttributesObject>(
+        builder: (_, seat, boardAttributes, __) => PlayerView(
+          globalKey: key,
+          gameComService: widget.gameComService,
+          key: ValueKey(seatPos),
+          seat: seat,
+          cardsAlignment: cardsAlignment,
+          onUserTap: onUserTap,
+          boardAttributes: boardAttributes,
+        ),
+      ),
+    );
     return userView;
   }
 

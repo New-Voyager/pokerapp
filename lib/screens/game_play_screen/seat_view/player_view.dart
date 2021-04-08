@@ -60,7 +60,7 @@ class PlayerView extends StatelessWidget {
         return;
       }
 
-      await showModalBottomSheet(
+      final jsonData = await showModalBottomSheet(
         context: context,
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(top: Radius.circular(10))),
@@ -70,6 +70,9 @@ class PlayerView extends StatelessWidget {
           );
         },
       );
+
+      if (jsonData == null) return;
+
       gameComService.chat.sendAnimation(me.seatNo, seat.serverSeatPos, 'poop');
     }
   }
@@ -134,7 +137,10 @@ class PlayerView extends StatelessWidget {
       onAccept: (data) {
         // call the API to make the seat change
         SeatChangeService.hostSeatChangeMove(
-            gameCode, data, seat.serverSeatPos);
+          gameCode,
+          data,
+          seat.serverSeatPos,
+        );
       },
       builder: (context, List<int> candidateData, rejectedData) {
         return InkWell(

@@ -15,7 +15,11 @@ class NamePlateWidget extends StatelessWidget {
   static const highlightColor = const Color(0xfffffff);
   static const shrinkedSizedBox = const SizedBox.shrink();
 
-  NamePlateWidget(this.seat, {this.globalKey, this.boardAttributes});
+  NamePlateWidget(
+    this.seat, {
+    @required this.globalKey,
+    @required this.boardAttributes,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -37,8 +41,12 @@ class NamePlateWidget extends StatelessWidget {
     return Transform.translate(
       key: globalKey,
       offset: Offset(0.0, 0.0),
-      child: Consumer2<HostSeatChange, GameContextObject>(
-          builder: (context, hostSeatChange, gameContextObject, _) {
+      child: Consumer2<HostSeatChange, GameContextObject>(builder: (
+        context,
+        hostSeatChange,
+        gameContextObject,
+        _,
+      ) {
         Widget widget;
         if (gameContextObject.isAdmin() &&
             hostSeatChange.seatChangeInProgress) {
@@ -50,8 +58,15 @@ class NamePlateWidget extends StatelessWidget {
             onDragStarted: () {
               hostSeatChange.onSeatDragStart(seat.serverSeatPos);
             },
-            feedback: buildSeat(hostSeatChange, isFeedBack: true),
+            feedback: buildSeat(
+              hostSeatChange,
+              isFeedBack: true,
+            ),
             child: buildSeat(hostSeatChange),
+            childWhenDragging: buildSeat(
+              hostSeatChange,
+              childWhenDragging: true,
+            ),
           );
         } else {
           widget = buildSeat(hostSeatChange);
@@ -63,11 +78,11 @@ class NamePlateWidget extends StatelessWidget {
 
   /*
    * This function returns shadow around the nameplate based on the state.
-   * 
+   *
    * winner: shows green shadow
    * player to act: shows white shadow
    * green: when holding a seat during seat change process
-   * blue: shows when a moving seat can be dropped 
+   * blue: shows when a moving seat can be dropped
    */
   List<BoxShadow> getShadow(HostSeatChange hostSeatChange, bool isFeedback) {
     BoxShadow shadow;
@@ -115,60 +130,66 @@ class NamePlateWidget extends StatelessWidget {
     }
   }
 
-  Container buildSeat(HostSeatChange hostSeatChange,
-      {bool isFeedBack = false}) {
+  Widget buildSeat(
+    HostSeatChange hostSeatChange, {
+    bool isFeedBack = false,
+    bool childWhenDragging = false,
+  }) {
     final shadow = getShadow(hostSeatChange, isFeedBack);
-    return Container(
-      width: boardAttributes.namePlateSize.width,
-      height: boardAttributes.namePlateSize.height,
-      padding: const EdgeInsets.symmetric(
-        vertical: 5.0,
-      ),
-      decoration: BoxDecoration(
-        shape: BoxShape.rectangle,
-        borderRadius: BorderRadius.circular(5),
-        color: Color(0XFF494444),
-        border: Border.all(
-          color: Color.fromARGB(255, 206, 134, 57),
-          width: 2.0,
+    return Opacity(
+      opacity: childWhenDragging ? 0.50 : 1.0,
+      child: Container(
+        width: boardAttributes.namePlateSize.width,
+        height: boardAttributes.namePlateSize.height,
+        padding: const EdgeInsets.symmetric(
+          vertical: 5.0,
         ),
-        boxShadow: shadow,
-      ),
-      child: AnimatedSwitcher(
-        duration: AppConstants.animationDuration,
-        reverseDuration: AppConstants.animationDuration,
-        child: AnimatedOpacity(
+        decoration: BoxDecoration(
+          shape: BoxShape.rectangle,
+          borderRadius: BorderRadius.circular(5),
+          color: Color(0XFF494444),
+          border: Border.all(
+            color: Color.fromARGB(255, 206, 134, 57),
+            width: 2.0,
+          ),
+          boxShadow: shadow,
+        ),
+        child: AnimatedSwitcher(
           duration: AppConstants.animationDuration,
-          opacity: seat.isOpen ? 0.0 : 1.0,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              FittedBox(
-                child: Text(
-                  seat.player.name,
-                  style: AppStyles.gamePlayScreenPlayerName.copyWith(
-                    // FIXME: may be this is permanant?
-                    color: Colors.white,
+          reverseDuration: AppConstants.animationDuration,
+          child: AnimatedOpacity(
+            duration: AppConstants.animationDuration,
+            opacity: seat.isOpen ? 0.0 : 1.0,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                FittedBox(
+                  child: Text(
+                    seat.player.name,
+                    style: AppStyles.gamePlayScreenPlayerName.copyWith(
+                      // FIXME: may be this is permanant?
+                      color: Colors.white,
+                    ),
                   ),
                 ),
-              ),
-              PlayerViewDivider(),
-              Align(
-                alignment: Alignment.centerRight,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 5),
-                  child: FittedBox(
-                    child: Text(
-                      seat.player.stack?.toString() ?? 'XX',
-                      style: AppStyles.gamePlayScreenPlayerChips.copyWith(
-                        // FIXME: may be this is permanant?
-                        color: Colors.white,
+                PlayerViewDivider(),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 5),
+                    child: FittedBox(
+                      child: Text(
+                        seat.player.stack?.toString() ?? 'XX',
+                        style: AppStyles.gamePlayScreenPlayerChips.copyWith(
+                          // FIXME: may be this is permanant?
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

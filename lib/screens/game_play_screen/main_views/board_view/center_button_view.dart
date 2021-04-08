@@ -66,37 +66,39 @@ class CenterButtonView extends StatelessWidget {
   Widget pauseButtons(BuildContext context) {
     return Consumer<GameContextObject>(
       builder: (context, gameContext, _) => gameContext.isAdmin()
-          ? Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 20.0,
-                vertical: 10.0,
-              ),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20.0),
-                color: Colors.black.withOpacity(0.50),
-              ),
-              child: Wrap(
-                crossAxisAlignment: WrapCrossAlignment.center,
-                children: [
-                  CustomTextButton(
-                    text: 'Resume',
-                    onTap: _onResumePress,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10.0,
+          ? Center(
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20.0,
+                  vertical: 10.0,
+                ),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20.0),
+                  color: Colors.black.withOpacity(0.50),
+                ),
+                child: Wrap(
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: [
+                    CustomTextButton(
+                      text: 'Resume',
+                      onTap: _onResumePress,
                     ),
-                    child: CustomTextButton(
-                      text: 'Terminate',
-                      onTap: _onTerminatePress,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10.0,
+                      ),
+                      child: CustomTextButton(
+                        text: 'Terminate',
+                        onTap: _onTerminatePress,
+                      ),
                     ),
-                  ),
-                  CustomTextButton(
-                    split: true,
-                    text: 'Rearrange Seats',
-                    onTap: () => _onRearrangeSeatsPress(context),
-                  ),
-                ],
+                    CustomTextButton(
+                      split: true,
+                      text: 'Rearrange Seats',
+                      onTap: () => _onRearrangeSeatsPress(context),
+                    ),
+                  ],
+                ),
               ),
             )
           : Container(
