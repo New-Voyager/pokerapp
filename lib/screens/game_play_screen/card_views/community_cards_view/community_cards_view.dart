@@ -30,7 +30,8 @@ class CommunityCardsView extends StatelessWidget {
   List<Widget> getCommunityCards() {
     List<CardObject> reversedList = this.cards ?? [];
 
-    if (cards?.isEmpty ?? true) {
+    /* if we do not have an already existing entry, then only go for the dummy card */
+    if (!CommunityCardAttribute.hasEntry(0)) if (cards?.isEmpty ?? true) {
       /* if empty, make dummy cards to calculate positions */
       /* why I choose 17? No reason!!! */
       for (int i = 0; i < 5; i++) {
@@ -47,7 +48,7 @@ class CommunityCardsView extends StatelessWidget {
       });
     });
 
-    int idx = 0;
+    int idx = 4;
     for (var card in reversedList) {
       GlobalKey globalKey;
 
@@ -78,7 +79,7 @@ class CommunityCardsView extends StatelessWidget {
       );
       communityCards.add(communityCardView);
 
-      idx += 1;
+      idx -= 1;
     }
     return communityCards.toList();
   }
