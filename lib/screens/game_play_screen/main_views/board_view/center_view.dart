@@ -8,7 +8,7 @@ import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/screens/game_play_screen/card_views/animations/animating_shuffle_card_view.dart';
-import 'package:pokerapp/screens/game_play_screen/card_views/community_card_view.dart';
+import 'package:pokerapp/screens/game_play_screen/card_views/community_cards_view/community_cards_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/center_button_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/pots_view.dart';
 import 'package:pokerapp/utils/formatter.dart';

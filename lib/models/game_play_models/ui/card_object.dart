@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:pokerapp/screens/game_play_screen/card_views/community_card_view.dart';
+import 'package:pokerapp/screens/game_play_screen/card_views/community_cards_view/community_card_view.dart';
+import 'package:pokerapp/screens/game_play_screen/card_views/community_cards_view/community_cards_view.dart';
 import 'package:pokerapp/widgets/card_view.dart';
 
 enum CardFace {
