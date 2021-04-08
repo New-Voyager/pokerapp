@@ -83,11 +83,12 @@ class TableState extends ChangeNotifier {
   //   this.cards.last.flipCard();
   // }
 
-  void setBoard(int boardIndex, List<CardObject> cards) {
+  void setBoardCards(int boardIndex, List<CardObject> cards) {
     if (boardIndex == 1) {
-      if (this._board1.length >= 3) {
-        return;
-      }
+      // WHY THIS? DOES'NT MAKE SENSE WITH THE NEXT IF cards.length > 5 it will never be reached
+      // if (this._board1.length >= 3) {
+      //   return;
+      // }
       if (cards.length > 5) {
         this._board1 = cards.sublist(0, 5);
       } else {
@@ -96,32 +97,33 @@ class TableState extends ChangeNotifier {
     }
   }
 
-  void flop(int boardIndex, List<CardObject> cards) {
+  void addFlopCards(int boardIndex, List<CardObject> cards) {
     if (boardIndex == 1) {
       if (this._board1.length >= 3) {
         return;
       }
-      this._board1 = cards;
+      this._board1.addAll(cards);
     }
   }
 
-  void turn(int boardIndex, CardObject card) {
+  void addTurnOrRiverCard(int boardIndex, CardObject card) {
     if (boardIndex == 1) {
-      if (this._board1.length >= 4) {
+      /* prevent calling this method, if there are less than 4 cards */
+      if (this._board1.length < 3 || this._board1.length == 5) {
         return;
       }
       this._board1.add(card);
     }
   }
 
-  void river(int boardIndex, CardObject card) {
-    if (boardIndex == 1) {
-      if (this._board1.length >= 5) {
-        return;
-      }
-      this._board1.add(card);
-    }
-  }
+  // void river(int boardIndex, CardObject card) {
+  //   if (boardIndex == 1) {
+  //     if (this._board1.length >= 5) {
+  //       return;
+  //     }
+  //     this._board1.add(card);
+  //   }
+  // }
 
   void setAnimateBoard1(bool animate) {
     this._animateBoard1 = animate;

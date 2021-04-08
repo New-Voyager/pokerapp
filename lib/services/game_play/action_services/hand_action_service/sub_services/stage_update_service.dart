@@ -74,7 +74,7 @@ class StageUpdateService {
           .toList();
 
       //log('1 StageUpdate flop: ${cards.length}');
-      tableState.flop(1, cards);
+      tableState.addFlopCards(1, cards);
 
       // animate board1 flop
       tableState.setAnimateBoard1Flop(true);
@@ -89,7 +89,8 @@ class StageUpdateService {
     } else if (key == 'turn') {
       //log('2 StageUpdate turn');
 
-      tableState.turn(1, CardHelper.getCard(data[key]['${key}Card']));
+      tableState.addTurnOrRiverCard(
+          1, CardHelper.getCard(data[key]['${key}Card']));
       tableState.setAnimateBoard1Turn(true);
       tableState.notifyAll();
 
@@ -102,7 +103,8 @@ class StageUpdateService {
     } else if (key == 'river') {
       //log('2 StageUpdate river');
 
-      tableState.river(1, CardHelper.getCard(data[key]['${key}Card']));
+      tableState.addTurnOrRiverCard(
+          1, CardHelper.getCard(data[key]['${key}Card']));
       tableState.setAnimateBoard1River(true);
       tableState.notifyAll();
 

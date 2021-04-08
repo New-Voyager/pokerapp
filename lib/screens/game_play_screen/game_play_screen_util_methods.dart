@@ -45,7 +45,7 @@ class GamePlayScreenUtilMethods {
             ),
             backgroundColor: Colors.red,
             label: 'Add River / Turn Card',
-            onTap: () => TestService.addRiverOrTurnCard(),
+            onTap: () => TestService.addTurnOrRiverCard(),
           ),
           SpeedDialChild(
             child: Icon(
@@ -55,6 +55,15 @@ class GamePlayScreenUtilMethods {
             backgroundColor: Colors.red,
             label: 'Add Flop Cards',
             onTap: () => TestService.addFlopCards(),
+          ),
+          SpeedDialChild(
+            child: Icon(
+              Icons.adb_rounded,
+              color: Colors.white,
+            ),
+            backgroundColor: Colors.red,
+            label: 'Clear Cards',
+            onTap: () => TestService.clearBoardCards(),
           ),
           SpeedDialChild(
             child: Icon(

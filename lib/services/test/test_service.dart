@@ -5,19 +5,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/player_info.dart';
-import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:provider/provider.dart';
 
 class TestService {
-  static var _isTesting = false;
+  static var isTesting = false;
   static var _showResult = false;
   static PlayerInfo _currentPlayer;
   static GameInfoModel _gameInfo;
   static dynamic _result;
-  static List<CardObject> _boardCards;
+  // static List<CardObject> _boardCards;
   static List<int> _pots;
 
   static BuildContext _context;
@@ -26,9 +26,9 @@ class TestService {
 
   static set context(BuildContext context) => _context = context;
 
-  static set isTesting(bool isTesting) => _isTesting = isTesting;
-
-  static bool get isTesting => _isTesting;
+  // static set isTesting(bool isTesting) => _isTesting = isTesting;
+  //
+  // static bool get isTesting => _isTesting;
 
   static PlayerInfo get currentPlayer => _currentPlayer;
 
@@ -38,12 +38,12 @@ class TestService {
 
   static bool get showResult => _showResult;
 
-  static List<CardObject> get boardCards => _boardCards;
+  // static List<CardObject> get boardCards => _boardCards;
 
   static List<int> get pots => _pots;
 
   static Future<void> load() async {
-    if (_isTesting) {
+    if (isTesting) {
       final gameData =
           await rootBundle.loadString('assets/sample-data/gameinfo.json');
       final jsonData = jsonDecode(gameData);
@@ -56,17 +56,56 @@ class TestService {
       final resultData =
           await rootBundle.loadString('assets/sample-data/result.json');
       _result = jsonDecode(resultData);
-
-      _boardCards = [130, 82, 193, 148, 20]
-          .map<CardObject>((e) => CardHelper.getCard(e))
-          .toList();
-      _pots = [100];
     }
   }
 
-  static Future<void> addRiverOrTurnCard() async {}
+  static void addBoardCards() {
+    List<CardObject> _boardCards = [130, 82, 193, 148, 20]
+        .map<CardObject>((e) => CardHelper.getCard(e))
+        .toList();
 
-  static Future<void> addFlopCards() async {}
+    final TableState tableState = _getTableState();
+    tableState.setBoardCards(
+      1,
+      _boardCards,
+    );
+    tableState.notifyAll();
+  }
+
+  static TableState _getTableState() {
+    BuildContext context = _context;
+
+    final gameState = Provider.of<GameState>(context, listen: false);
+    return gameState.getTableState(context);
+  }
+
+  static Future<void> clearBoardCards() async {
+    final tableState = _getTableState();
+
+    tableState.clear();
+    tableState.notifyAll();
+  }
+
+  static Future<void> addTurnOrRiverCard() async {
+    final tableState = _getTableState();
+
+    tableState.addTurnOrRiverCard(
+      1,
+      CardHelper.getCard(148),
+    );
+
+    tableState.notifyAll();
+  }
+
+  static Future<void> addFlopCards() async {
+    final tableState = _getTableState();
+
+    tableState.addFlopCards(
+      1,
+      [130, 82, 193].map<CardObject>((e) => CardHelper.getCard(e)).toList(),
+    );
+    tableState.notifyAll();
+  }
 
   static Future<void> simulateBetMovement() async {
     BuildContext context = _context;

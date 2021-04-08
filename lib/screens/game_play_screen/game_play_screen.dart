@@ -60,11 +60,15 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
     GameInfoModel gameInfo;
 
     if (TestService.isTesting) {
-      debugPrint('Loading game from test data');
-      // load test data
-      await TestService.load();
-      gameInfo = TestService.gameInfo;
-      this._currentPlayer = TestService.currentPlayer;
+      try {
+        debugPrint('Loading game from test data');
+        // load test data
+        await TestService.load();
+        gameInfo = TestService.gameInfo;
+        this._currentPlayer = TestService.currentPlayer;
+      } catch (e) {
+        print('test data loading error: $e');
+      }
     } else {
       gameInfo = await GameService.getGameInfo(widget.gameCode);
       this._currentPlayer = await PlayerService.getMyInfo(widget.gameCode);
@@ -325,6 +329,10 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
 
                   // handle test code
                   if (TestService.isTesting) {
+                    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                      TestService.addBoardCards();
+                    });
+
                     // TestService.showBets(_providerContext);
 
                     if (TestService.showResult) {

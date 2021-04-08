@@ -13,20 +13,22 @@ enum BoardOrientation {
 
 /* TODO; PUT THIS IN A DIFFERENT FILE */
 class CommunityCardAttribute {
-  static Map<int, GlobalKey> cardKeys = Map();
+  static Map<int, Offset> cardOffsets = Map();
 
-  static bool hasEntry(int idx) => cardKeys.containsKey(idx);
+  static bool hasEntry(int idx) => cardOffsets.containsKey(idx);
 
   static addEntry(
     int idx,
     GlobalKey key,
-  ) =>
-      cardKeys[idx] = key;
+  ) {
+    if (key.currentContext == null) return;
 
-  static getOffsetPosition(int idx) {
-    final RenderBox renderBox = cardKeys[idx].currentContext.findRenderObject();
-    return renderBox.localToGlobal(Offset.zero);
+    final RenderBox renderBox = key.currentContext.findRenderObject();
+    final Offset offset = renderBox.localToGlobal(Offset.zero);
+    cardOffsets[idx] = offset;
   }
+
+  static getOffsetPosition(int idx) => cardOffsets[idx];
 }
 
 class PotAttribute {

@@ -30,7 +30,6 @@ class CommunityCardsView extends StatelessWidget {
     if (cards?.isEmpty ?? true) {
       /* if empty, make dummy cards to calculate positions */
       /* why I choose 17? No reason!!! */
-      reversedList.clear();
       for (int i = 0; i < 5; i++) {
         reversedList.add(CardHelper.getCard(17));
       }
@@ -39,16 +38,15 @@ class CommunityCardsView extends StatelessWidget {
     int idx = 0;
     List<Widget> communityCards = [];
     for (var card in reversedList) {
-      GlobalKey globalKey;
+      final GlobalKey globalKey = GlobalKey();
 
-      if (!CommunityCardAttribute.hasEntry(idx)) {
-        globalKey = GlobalKey();
-        CommunityCardAttribute.addEntry(idx, globalKey);
-      }
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (cards?.isEmpty ?? true)
+          CommunityCardAttribute.addEntry(idx, globalKey);
+      });
 
       /* THIS widget is a wrapper around the community card view, and helps in case of we need to highlight a card */
       Widget communityCardView = Container(
-        key: globalKey,
         margin: EdgeInsets.only(right: 2.0),
         child: Transform.translate(
           offset: Offset(
@@ -57,12 +55,13 @@ class CommunityCardsView extends StatelessWidget {
           ),
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 3.0),
-            child: CommunityCardView(card: card),
+            child: CommunityCardView(key: globalKey, card: card),
           ),
         ),
       );
 
       communityCards.add(communityCardView);
+      idx += 1;
     }
     return communityCards.toList().reversed.toList();
   }
@@ -114,6 +113,10 @@ class FlopCommunityCards extends StatefulWidget {
 class _FlopCommunityCardsState extends State<FlopCommunityCards> {
   @override
   void initState() {
+    print('\n\n\n\noffset positions:\n'
+        '${CommunityCardAttribute.cardOffsets}\n'
+        '\n\n\n\n');
+
     super.initState();
   }
 
@@ -168,6 +171,7 @@ class CommunityCardView extends StatelessWidget {
   final CardObject card;
 
   CommunityCardView({
+    Key key,
     @required this.card,
   });
 
@@ -192,6 +196,7 @@ class CommunityCardView extends StatelessWidget {
     return Transform.scale(
       scale: 1.2,
       child: Container(
+        key: key,
         height: cardView.height,
         width: cardView.width,
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(3.0)),

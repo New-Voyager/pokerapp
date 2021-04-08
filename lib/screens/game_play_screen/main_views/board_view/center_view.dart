@@ -74,9 +74,12 @@ class CenterView extends StatelessWidget {
 
     for (int i = 0; i < 1; i++) {
       GlobalKey key = GlobalKey();
+      double potChipValue = 0;
+      if (potChips != null) potChipValue = this.potChips[i].toDouble();
+
       final potsView = PotsView(
         this.isBoardHorizontal,
-        this.potChips[i].toDouble(),
+        potChipValue,
         this.showDown,
         key,
       );
