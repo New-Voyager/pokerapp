@@ -60,6 +60,9 @@ class TestService {
   }
 
   static void addBoardCards() {
+    // fixme: do nothing for testing
+    return;
+
     List<CardObject> _boardCards = [130, 82, 193, 148, 20]
         .map<CardObject>((e) => CardHelper.getCard(e))
         .toList();

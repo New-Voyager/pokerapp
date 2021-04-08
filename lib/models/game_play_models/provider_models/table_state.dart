@@ -37,9 +37,9 @@ class TableState extends ChangeNotifier {
   }
 
   void clear() {
-    _board1 = [];
-    _board2 = [];
-    _potChips = [];
+    _board1?.clear();
+    _board2?.clear();
+    _potChips?.clear();
     _potUpdatesChips = null;
     _animateBoard1 = false;
     _animateBoard1Flop = false;
@@ -98,6 +98,8 @@ class TableState extends ChangeNotifier {
   }
 
   void addFlopCards(int boardIndex, List<CardObject> cards) {
+    if (_board1 == null) _board1 = [];
+
     if (boardIndex == 1) {
       if (this._board1.length >= 3) {
         return;

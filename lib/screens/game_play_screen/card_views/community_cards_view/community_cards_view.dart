@@ -28,7 +28,7 @@ class CommunityCardsView extends StatelessWidget {
   });
 
   List<Widget> getCommunityCards() {
-    List<CardObject> reversedList = this.cards?.reversed?.toList() ?? [];
+    List<CardObject> reversedList = this.cards ?? [];
 
     if (cards?.isEmpty ?? true) {
       /* if empty, make dummy cards to calculate positions */
@@ -77,7 +77,7 @@ class CommunityCardsView extends StatelessWidget {
 
       idx += 1;
     }
-    return communityCards.toList().reversed.toList();
+    return communityCards.toList();
   }
 
   @override
