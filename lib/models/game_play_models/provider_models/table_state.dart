@@ -110,6 +110,8 @@ class TableState extends ChangeNotifier {
   }
 
   void addTurnOrRiverCard(int boardIndex, CardObject card) {
+    if (_board1 == null) return;
+
     if (boardIndex == 1) {
       /* prevent calling this method, if there are less than 4 cards */
       if (this._board1.length < 3 || this._board1.length == 5) {

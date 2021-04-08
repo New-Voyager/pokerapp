@@ -24,36 +24,33 @@ class CardView extends StatelessWidget {
     this.back = false,
   });
 
-  Widget getCard(TextStyle cardTextStyle, TextStyle suitTextStyle) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Expanded(
-          flex: 7,
-          child: FittedBox(
-            child: Text(
-              card.label == 'T' ? '10' : card.label,
-              style: cardTextStyle,
-              textAlign: TextAlign.center,
-            ),
-          ),
-        ),
-        Expanded(
-          flex: 4,
-          child: FittedBox(
-            child: RichText(
-              text: TextSpan(
-                text: card.suit ?? AppConstants.redHeart,
-                style: suitTextStyle,
+  Widget getCard(TextStyle cardTextStyle, TextStyle suitTextStyle) => Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Expanded(
+            flex: 7,
+            child: FittedBox(
+              child: Text(
+                card.label == 'T' ? '10' : card.label,
+                style: cardTextStyle,
+                textAlign: TextAlign.center,
               ),
             ),
           ),
-        ),
-      ],
-    );
-  }
+          Expanded(
+            flex: 4,
+            child: FittedBox(
+              child: RichText(
+                text: TextSpan(
+                  text: card.suit ?? AppConstants.redHeart,
+                  style: suitTextStyle,
+                ),
+              ),
+            ),
+          ),
+        ],
+      );
 
   Widget emptyCard() {
     return ClipRRect(child: cardBackImage);
@@ -106,7 +103,10 @@ class CardView extends StatelessWidget {
       height = cardHeight + 10;
     }
 
-    Widget cardWidget = Container(
+    return Container(
+      padding: const EdgeInsets.only(
+        bottom: 2.0,
+      ),
       height: cardHeight,
       width: cardWidth,
       foregroundDecoration: grayOut
@@ -122,15 +122,16 @@ class CardView extends StatelessWidget {
           ? emptyCard()
           : getCard(cardTextStyle, suitTextStyle),
     );
-
-    return cardWidget;
   }
 }
+
+/* TODO: FIX THIS VIEW */
 
 class CardsView extends StatelessWidget {
   List<int> cards;
   List<CardObject> cardObjects;
   bool show;
+
   CardsView(List<int> cards, bool show) {
     this.cards = cards;
     this.show = show;

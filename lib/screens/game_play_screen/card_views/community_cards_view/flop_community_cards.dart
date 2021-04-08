@@ -11,6 +11,7 @@ import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/boar
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/resources/card_back_assets.dart';
+import 'package:pokerapp/screens/game_play_screen/card_views/community_cards_view/custom_flip_card.dart';
 import 'package:provider/provider.dart';
 
 class FlopCommunityCards extends StatefulWidget {
@@ -75,19 +76,11 @@ class _FlopCommunityCardsState extends State<FlopCommunityCards> {
             CommunityCardAttribute.getOffsetPosition(0).dx,
         0.0,
       ),
-      child: FlipCard(
+      child: CustomFlipCard(
+        cardBackAsset: cardBackAsset,
         onFlipDone: onFlipDone,
-        key: _globalFlipKey,
-        flipOnTouch: false,
-        back: widget.flopCards.last,
-        front: SizedBox(
-          height: AppDimensions.cardHeight * 1.3,
-          width: AppDimensions.cardWidth * 1.3,
-          child: Image.asset(
-            cardBackAsset,
-            fit: BoxFit.fitHeight,
-          ),
-        ),
+        globalKey: _globalFlipKey,
+        cardWidget: widget.flopCards.last,
       ),
     );
   }
@@ -141,7 +134,7 @@ class _FlopCommunityCardsState extends State<FlopCommunityCards> {
       ? _isAnimationCompleted
           ? Transform.translate(
               offset: Offset(
-                getDifferenceBetween(3, 2),
+                getDifferenceBetween(1, 0),
                 0.0,
               ),
               child: Row(

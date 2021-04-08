@@ -35,24 +35,28 @@ class CommunityCardView extends StatelessWidget {
 
     return Transform.scale(
       scale: 1.2,
-      child: Container(
-        height: cardView.height,
-        width: cardView.width,
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(3.0)),
-        child: cardWidget,
-        // child: FlipCard(
-        //   flipOnTouch: false,
-        //   // key: cardKey,
-        //   back: SizedBox(
-        //     height: AppDimensions.cardHeight * 1.3,
-        //     width: AppDimensions.cardWidth * 1.3,
-        //     child: Image.asset(
-        //       cardBackAsset,
-        //       fit: BoxFit.fitHeight,
-        //     ),
-        //   ),
-        //   front: cardWidget,
-        // ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(
+          3.0,
+        ),
+        child: Container(
+          height: cardView.height,
+          width: cardView.width,
+          child: cardWidget,
+          // child: FlipCard(
+          //   flipOnTouch: false,
+          //   // key: cardKey,
+          //   back: SizedBox(
+          //     height: AppDimensions.cardHeight * 1.3,
+          //     width: AppDimensions.cardWidth * 1.3,
+          //     child: Image.asset(
+          //       cardBackAsset,
+          //       fit: BoxFit.fitHeight,
+          //     ),
+          //   ),
+          //   front: cardWidget,
+          // ),
+        ),
       ),
     );
   }
