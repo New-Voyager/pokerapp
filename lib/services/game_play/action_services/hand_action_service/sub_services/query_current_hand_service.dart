@@ -62,7 +62,7 @@ class QueryCurrentHandService {
           .map<int>((e) => int.parse(e.toString()))
           .toList();
       if (boardCardsNum != null)
-        tableState.setBoard(
+        tableState.setBoardCards(
           1,
           boardCardsNum.map<CardObject>((c) => CardHelper.getCard(c)).toList(),
         );

@@ -74,44 +74,18 @@ class StageUpdateService {
           .toList();
 
       //log('1 StageUpdate flop: ${cards.length}');
-      tableState.flop(1, cards);
-
-      // animate board1 flop
-      tableState.setAnimateBoard1Flop(true);
-      tableState.notifyAll();
-      await Future.delayed(AppConstants.communityCardPushDuration);
-      tableState.setAnimateBoard1Flop(false);
-      // stop animation board1 flop
-      tableState.notifyAll();
+      tableState.addFlopCards(1, cards);
 
       // // wait for a brief moment, then flip the cards
       // await Future.delayed(AppConstants.communityCardPushDuration);
     } else if (key == 'turn') {
-      //log('2 StageUpdate turn');
-
-      tableState.turn(1, CardHelper.getCard(data[key]['${key}Card']));
-      tableState.setAnimateBoard1Turn(true);
-      tableState.notifyAll();
-
-      // wait for a brief moment, then flip the last card
-      await Future.delayed(AppConstants.communityCardPushDuration);
-      //
-      // // tableState.flipLastCard(); FIXME: WE NEED A DIFFERENT ANIMATION
-      tableState.setAnimateBoard1Turn(false);
-      tableState.notifyAll();
+      tableState.addTurnOrRiverCard(
+          1, CardHelper.getCard(data[key]['${key}Card']));
     } else if (key == 'river') {
-      //log('2 StageUpdate river');
-
-      tableState.river(1, CardHelper.getCard(data[key]['${key}Card']));
-      tableState.setAnimateBoard1River(true);
-      tableState.notifyAll();
-
-      // wait for a brief moment, then flip the last card
-      await Future.delayed(AppConstants.communityCardPushDuration);
-      //
-      // // tableState.flipLastCard(); FIXME: WE NEED A DIFFERENT ANIMATION
-      tableState.setAnimateBoard1River(false);
-      tableState.notifyAll();
+      tableState.addTurnOrRiverCard(
+          1, CardHelper.getCard(data[key]['${key}Card']));
     }
+
+    tableState.notifyAll();
   }
 }

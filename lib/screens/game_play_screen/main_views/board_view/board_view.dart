@@ -67,7 +67,6 @@ class BoardView extends StatelessWidget {
           ),
         ),
 
-
         Positioned(
           top: boardAttributes.centerOffset.dy,
           left: boardAttributes.centerOffset.dx,
@@ -98,7 +97,9 @@ class BoardView extends StatelessWidget {
               var cards = tableState.cards;
               var pots = tableState.potChips;
               if (TestService.isTesting) {
-                cards = TestService.boardCards;
+                // FIXME: BOARD CARDS NEED TO TO BE FETCHED FROM TEST SERVICE, BECAUSE TO CAUSE THEM TO CHANGE,
+                //  FIXME: IT'S BETTER TO PUT THEM IN THE PROVIDER IN THE TEST SERVICE
+                // cards = TestService.boardCards;
                 pots = TestService.pots;
               }
 
@@ -119,7 +120,6 @@ class BoardView extends StatelessWidget {
                 onStartGame,
               );
             })),
-
 
         Consumer<Players>(
           builder: (

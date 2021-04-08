@@ -174,6 +174,7 @@ class UserViewUtilWidgets {
       ),
     );
   }
+
   static Widget buildChipAmountWidget({
     @required BuildContext context,
     @required Seat seat,
@@ -195,9 +196,11 @@ class UserViewUtilWidgets {
       final gameState = GameState.getState(context);
       final boardAttributes = gameState.getBoardAttributes(context);
       final RenderBox potView =
-          boardAttributes.getPotsKey(0).currentContext.findRenderObject();
-      final RenderBox potBetView = 
-          boardAttributes.centerPotBetKey.currentContext.findRenderObject();
+          boardAttributes.getPotsKey(0)?.currentContext?.findRenderObject();
+      final RenderBox potBetView =
+          boardAttributes.centerPotBetKey?.currentContext?.findRenderObject();
+
+      if (potView == null || potBetView == null) return;
 
       final globalPos = potView.localToGlobal(Offset(0, 20));
       final potBetPos = potBetView.localToGlobal(Offset(0, 30));

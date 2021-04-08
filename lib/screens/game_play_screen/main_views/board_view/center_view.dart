@@ -8,7 +8,7 @@ import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/screens/game_play_screen/card_views/animations/animating_shuffle_card_view.dart';
-import 'package:pokerapp/screens/game_play_screen/card_views/community_card_view.dart';
+import 'package:pokerapp/screens/game_play_screen/card_views/community_cards_view/community_cards_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/center_button_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/pots_view.dart';
 import 'package:pokerapp/utils/formatter.dart';
@@ -64,8 +64,7 @@ class CenterView extends StatelessWidget {
     /* if reached here, means, the game is RUNNING */
     /* The following view, shows the community cards
     * and the pot chips, if they are nulls, put the default values */
-    Widget view = centerView(context);
-    return view;
+    return centerView(context);
   }
 
   Widget multiplePots(BuildContext context) {
@@ -75,9 +74,12 @@ class CenterView extends StatelessWidget {
 
     for (int i = 0; i < 1; i++) {
       GlobalKey key = GlobalKey();
+      double potChipValue = 0;
+      if (potChips != null) potChipValue = this.potChips[i].toDouble();
+
       final potsView = PotsView(
         this.isBoardHorizontal,
-        this.potChips[i].toDouble(),
+        potChipValue,
         this.showDown,
         key,
       );
@@ -96,7 +98,7 @@ class CenterView extends StatelessWidget {
     final boardAttributes = gameState.getBoardAttributes(context);
     final GlobalKey potsKey = GlobalKey();
     boardAttributes.setPotsKey(0, potsKey);
-    
+
     boardAttributes.centerPotBetKey = GlobalKey();
 
     /* this gap height is the separation height between the three widgets in the center pot */
@@ -108,15 +110,15 @@ class CenterView extends StatelessWidget {
         clipBehavior: Clip.none,
         //mainAxisSize: MainAxisSize.min,
         children: [
-
           /* dummy view for pots to pull bets **/
           Align(
-              alignment: Alignment.topCenter,
-              child: Transform.translate(
-                key: boardAttributes.centerPotBetKey,
-                offset: Offset(0, 15),
-                child: Container(width: 50, height: 50, color: Colors.transparent),
-              ),
+            alignment: Alignment.topCenter,
+            child: Transform.translate(
+              key: boardAttributes.centerPotBetKey,
+              offset: Offset(0, 15),
+              child:
+                  Container(width: 50, height: 50, color: Colors.transparent),
+            ),
           ),
 
           /* main pot view */
