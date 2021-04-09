@@ -211,7 +211,7 @@ class UserViewUtilWidgets {
       final pos = renderBox.localToGlobal(Offset(0, 0));
       final potBetPosLocal = renderBox.globalToLocal(potBetPos);
       seat.seatBet.potViewPos = potBetPosLocal;
-      log('Seat: ${seat.serverSeatPos}, pos: $pos potView: $potViewPos potBetPos: $potBetPosLocal');
+      //log('Seat: ${seat.serverSeatPos}, pos: $pos potView: $potViewPos potBetPos: $potBetPosLocal');
     });
 
     return animate

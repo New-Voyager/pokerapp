@@ -90,7 +90,7 @@ class Seat extends ChangeNotifier {
     }
   }
 
-  get key => this._key;
+  GlobalKey get key => this._key;
   set key(Key key) => this._key = key;
 
   get screenPos => this._screenPos;
