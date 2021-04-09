@@ -29,7 +29,6 @@ import 'user_view_util_widgets.dart';
 Map<int, Offset> playerPositions = Map();
 
 class PlayerView extends StatelessWidget {
-  final GlobalKey globalKey;
   final Seat seat;
   final Alignment cardsAlignment;
   final Function(int) onUserTap;
@@ -38,7 +37,6 @@ class PlayerView extends StatelessWidget {
 
   PlayerView({
     Key key,
-    @required this.globalKey,
     @required this.seat,
     @required this.onUserTap,
     @required this.gameComService,
@@ -81,7 +79,7 @@ class PlayerView extends StatelessWidget {
   }
 
   Future<void> afterBuild() async {
-    final RenderBox object = globalKey.currentContext.findRenderObject();
+    final RenderBox object = seat.key.currentContext.findRenderObject();
     final pos = object.localToGlobal(Offset(0, 0));
     final size = object.size;
     seat.screenPos = pos;
@@ -99,7 +97,7 @@ class PlayerView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    seat.key = this.globalKey;
+    seat.key = GlobalKey(debugLabel: 'Seat:${seat.serverSeatPos}');//this.globalKey;
 
     WidgetsBinding.instance.addPostFrameCallback((_) => afterBuild);
     //afterBuild();
@@ -174,7 +172,7 @@ class PlayerView extends StatelessWidget {
               // // main user body
               NamePlateWidget(
                 seat,
-                globalKey: globalKey,
+                globalKey: seat.key,
                 boardAttributes: boardAttributes,
               ),
 
