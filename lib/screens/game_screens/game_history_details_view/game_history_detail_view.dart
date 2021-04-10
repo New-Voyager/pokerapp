@@ -5,6 +5,7 @@ import 'package:pokerapp/models/hand_history_model.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
+import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/game_screens/game_history_details_view/stack_chart_view.dart';
 import 'package:pokerapp/services/app/game_service.dart';
@@ -65,12 +66,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
         title: Text(
           "Games",
           textAlign: TextAlign.left,
-          style: TextStyle(
-            color: AppColors.appAccentColor,
-            fontSize: 14.0,
-            fontFamily: AppAssets.fontFamilyLato,
-            fontWeight: FontWeight.w600,
-          ),
+          style: AppStyles.titleBarTextStyle,
         ),
       ),
       body: !loadingDone
