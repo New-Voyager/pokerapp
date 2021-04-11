@@ -1,17 +1,22 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/animating_widgets/card_distribution_animating_widget.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/center_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/decorative_views/table_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/players_on_table_view.dart';
+import 'package:pokerapp/screens/game_play_screen/pop_ups/chip_buy_pop_up.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/animating_widgets/stack_switch_seat_animating_widget.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/services/test/test_service.dart';
+import 'package:pokerapp/widgets/round_raised_button.dart';
 import 'package:provider/provider.dart';
 
 class BoardView extends StatelessWidget {
@@ -152,9 +157,67 @@ class BoardView extends StatelessWidget {
         Align(
           child: StackSwitchSeatAnimatingWidget(),
         ),
+
+        Consumer<Players>(
+          builder: (
+            BuildContext _,
+            Players players,
+            Widget __,
+          ) =>
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: buyInButton(context),
+          ),
+        ),
       ],
     );
 
     return widget;
+  }
+
+  Widget buyInButton(BuildContext context) {
+    // show buyin button only for if the current player is in a seat
+    final gameState = GameState.getState(context);
+    final mySeat = gameState.mySeat(context);
+
+    if (mySeat == null || mySeat.isOpen) {
+      return SizedBox.shrink();
+    }
+    log('mySeat is not null');
+
+    if (!mySeat.player.showBuyIn) {
+      return SizedBox.shrink();
+    }
+
+    final widget = ListenableProvider<Seat>(
+      create: (_) => mySeat,
+      builder: (context, _) => Consumer<Seat>(
+        builder: (_, seat, __) => Transform.translate(offset: Offset(0, 10),
+          child: RoundRaisedButton(buttonText: 'Buyin',
+          color: Colors.blueGrey,
+          verticalPadding: 1,
+          fontSize: 15,
+            onButtonTap: () async => {
+              await onBuyin(context)
+            },)
+        ),
+      ),
+    );
+
+    return widget;
+  }
+
+  Future<void> onBuyin(BuildContext context) async {
+    final gameState = GameState.getState(context);
+    final gameInfo = gameState.gameInfo;
+
+    bool status = await showDialog(
+      context: context,
+      builder: (context) => ChipBuyPopUp(
+        gameCode: gameInfo.gameCode,
+        minBuyIn: gameInfo.buyInMin,
+        maxBuyIn: gameInfo.buyInMax,
+      ),
+    );
   }
 }

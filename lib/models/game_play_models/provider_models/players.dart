@@ -261,7 +261,9 @@ class Players extends ChangeNotifier {
 
   void removePlayerSilent(int seatNo) {
     int idx = _players.indexWhere((p) => p.seatNo == seatNo);
-    _players.removeAt(idx);
+    if (idx != -1) {
+      _players.removeAt(idx);
+    }
   }
 
   PlayerModel get me {
@@ -272,12 +274,12 @@ class Players extends ChangeNotifier {
     return tmp;
   }
 
-  bool get showBuyinPrompt {
-    if (this.me != null && this.me.stack == 0) {
-      return true;
-    }
-    return false;
-  }
+  // bool get showBuyinPrompt {
+  //   if (this.me != null && this.me.stack == 0) {
+  //     return true;
+  //   }
+  //   return false;
+  // }
 
   PlayerModel fromSeat(int seatNo) {
     int idx = _players.indexWhere((p) => p.seatNo == seatNo);

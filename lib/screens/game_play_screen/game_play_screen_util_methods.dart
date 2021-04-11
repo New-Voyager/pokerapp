@@ -92,22 +92,32 @@ class GamePlayScreenUtilMethods {
             label: 'Move Pot to Player',
             onTap: () => TestService.movePotToPlayer(),
           ),
+          SpeedDialChild(
+            child: Icon(
+              Icons.adb_rounded,
+              color: Colors.white,
+            ),
+            backgroundColor: Colors.red,
+            label: 'Buyin Test',
+            onTap: () => TestService.buyInTest(),
+          ),          
         ],
         backgroundColor: AppColors.appAccentColor,
       );
 
   /* After the entire table is drawn, if the current player (isMe == true)
     * is waiting for buyIn,then show the footer prompt */
-  static void checkForCurrentUserPrompt(BuildContext context) {
-    final players =
-        Provider.of<GameState>(context, listen: false).getPlayers(context);
-    if (players.showBuyinPrompt) {
-      Provider.of<ValueNotifier<FooterStatus>>(
-        context,
-        listen: false,
-      ).value = FooterStatus.Prompt;
-    }
-  }
+  // static void checkForCurrentUserPrompt(BuildContext context) {
+  //   final players =
+  //       Provider.of<GameState>(context, listen: false).getPlayers(context);
+        
+  //   if (players.showBuyinPrompt) {
+  //     Provider.of<ValueNotifier<FooterStatus>>(
+  //       context,
+  //       listen: false,
+  //     ).value = FooterStatus.Prompt;
+  //   }
+  // }
 
   static void startGame(String gameCode) async {
     developer.log('Starting the game');

@@ -90,6 +90,11 @@ class Seat extends ChangeNotifier {
     }
   }
 
+  set buyInExpired(bool v) {
+    this._player.buyInExpired = v;
+    this.notify();
+  }
+
   GlobalKey get key => this._key;
   set key(Key key) => this._key = key;
 

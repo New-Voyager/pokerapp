@@ -101,6 +101,8 @@ class GameInfoModel {
           stack
           buyIn
           status
+          buyInExpTime
+          breakExpTime
         }
       }
       actionTime

@@ -352,12 +352,12 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
 
                   // check for the current user prompt, after the following tree is built
                   // waiting for a brief moment should suffice
-                  Future.delayed(
-                    AppConstants.buildWaitDuration,
-                    () => GamePlayScreenUtilMethods.checkForCurrentUserPrompt(
-                      context,
-                    ),
-                  );
+                  // Future.delayed(
+                  //   AppConstants.buildWaitDuration,
+                  //   () => GamePlayScreenUtilMethods.checkForCurrentUserPrompt(
+                  //     context,
+                  //   ),
+                  // );
 
                   /* This listenable provider takes care of showing or hiding the chat widget */
                   return ListenableProvider<ValueNotifier<bool>>(

@@ -89,6 +89,10 @@ class AppConstants {
   static const String SIT_BACK = 'SIT_BACK';
   static const String LEFT_THE_GAME = 'LEFT_THE_GAME';
   static const String EMPTY_STACK = 'EMPTY_STACK';
+  static const String NOT_PLAYING = 'NOT_PLAYING';
+  static const String WAIT_FOR_BUYIN = 'WAIT_FOR_BUYIN';
+  static const String PLAYING = 'PLAYING';
+  static const String BUYIN_TIMEDOUT = 'BUYIN_TIMEDOUT';
 
   /* table statuses */
   static const String WAITING_TO_BE_STARTED = 'WAITING_TO_BE_STARTED';
@@ -98,10 +102,6 @@ class AppConstants {
   static const String GAME_RUNNING = 'GAME_RUNNING';
   static const String GAME_ENDED = 'ENDED';
   static const String GAME_PAUSED = 'PAUSED';
-
-  /* extra identifiers */
-  static const String WAIT_FOR_BUYIN = 'WAIT_FOR_BUYIN';
-  static const String PLAYING = 'PLAYING';
 
   static const String FOLD = 'FOLD';
   static const String CHECK = 'CHECK';

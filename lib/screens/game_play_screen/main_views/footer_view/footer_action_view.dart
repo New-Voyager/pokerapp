@@ -79,19 +79,6 @@ class _FooterActionViewState extends State<FooterActionView> {
   * */
   void _actionTaken(BuildContext context) {
     assert(context != null);
-
-    // // put PlayerAction to null
-    // Provider.of<ValueNotifier<PlayerAction>>(
-    //   context,
-    //   listen: false,
-    // ).value = null;
-
-    // // change FooterStatus to NONE
-    // Provider.of<ValueNotifier<FooterStatus>>(
-    //   context,
-    //   listen: false,
-    // ).value = FooterStatus.None;
-
     final gameState = Provider.of<GameState>(context, listen: false);
     gameState.showAction(context, false);
   }

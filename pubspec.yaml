@@ -90,6 +90,14 @@ dependencies:
   # lottie animation
   lottie: ^0.7.0
 
+  # animated text for colorized texts
+  animated_text_kit: ^4.1.1
+
+  # blinking text
+  blinking_text: ^1.0.1+2
+
+  sliding_up_panel: ^1.0.2
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -25,11 +25,12 @@ class GameState {
   ListenableProvider<Players> _players;
   ListenableProvider<ActionState> _playerAction;
   ListenableProvider<HandResultState> _handResult;
-
+  GameInfoModel _gameInfo;
   Map<int, Seat> _seats = Map<int, Seat>();
 
   void initialize({List<PlayerModel> players, GameInfoModel gameInfo}) {
     this._seats = Map<int, Seat>();
+    this._gameInfo = gameInfo;
 
     for (int seatNo = 1; seatNo <= gameInfo.maxPlayers; seatNo++) {
       this._seats[seatNo] = Seat(seatNo, seatNo, null);
@@ -59,6 +60,11 @@ class GameState {
       ),
     );
   }
+
+  GameInfoModel get gameInfo {
+    return this._gameInfo;
+  }
+
 
   void seatPlayer(int seatNo, PlayerModel player) {
     //debugPrint('SeatNo $seatNo player: ${player.name}');
@@ -111,6 +117,16 @@ class GameState {
     return Provider.of<HandResultState>(context, listen: listen);
   }
 
+  Seat mySeat(BuildContext context) {
+    final players = getPlayers(context);
+    final me = players.me;
+    if (me == null) {
+      return null;
+    }
+    final seat = getSeat(context, me.seatNo);
+    return seat;
+  }
+
   BoardAttributesObject getBoardAttributes(BuildContext context,
       {bool listen: false}) {
     return Provider.of<BoardAttributesObject>(context, listen: listen);
@@ -118,6 +134,12 @@ class GameState {
 
   Seat getSeat(BuildContext context, int seatNo, {bool listen: false}) {
     return this._seats[seatNo];
+  }
+
+  void markOpenSeat(BuildContext context, int seatNo) {
+    final seat = getSeat(context, seatNo);
+    seat.player = null;
+    seat.notify();
   }
 
   void resetActionHighlight(BuildContext context, int nextActionSeatNo,

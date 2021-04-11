@@ -44,8 +44,8 @@ class GameAction extends StatelessWidget {
     BuildContext context,
   }) {
     switch (footerStatus) {
-      case FooterStatus.Prompt:
-        return _buildBuyInPromptButton(context);
+      // case FooterStatus.Prompt:
+      //   return _buildBuyInPromptButton(context);
       default:
         return Container();
     }
