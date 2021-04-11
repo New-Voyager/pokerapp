@@ -57,7 +57,7 @@ class GameState {
 
     // show buyin button/timer if the player is in middle of buyin
     for(var player in players) {
-      if(player.buyInTimeExpAt != null) {
+      if(player.buyInTimeExpAt != null && player.stack == 0) {
         player.showBuyIn = true;
       }
     }
