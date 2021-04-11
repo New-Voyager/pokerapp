@@ -54,6 +54,14 @@ class GameState {
     if (players == null) {
       players = [];
     }
+
+    // show buyin button/timer if the player is in middle of buyin
+    for(var player in players) {
+      if(player.buyInTimeExpAt != null) {
+        player.showBuyIn = true;
+      }
+    }
+
     this._players = ListenableProvider<Players>(
       create: (_) => Players(
         players: players,
