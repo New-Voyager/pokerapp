@@ -23,6 +23,7 @@ import 'animating_widgets/fold_card_animating_widget.dart';
 import 'animating_widgets/stack_switch_seat_animating_widget.dart';
 import 'dealer_button.dart';
 import 'name_plate_view.dart';
+import 'open_seat.dart';
 import 'user_view_util_widgets.dart';
 
 /* this contains the player positions <seat-no, position> mapping */
@@ -229,46 +230,6 @@ class PlayerView extends StatelessWidget {
           ),
         );
       },
-    );
-  }
-}
-
-class OpenSeat extends StatelessWidget {
-  final int seatPos;
-  final Function(int) onUserTap;
-
-  const OpenSeat({
-    this.seatPos,
-    this.onUserTap,
-    Key key,
-  }) : super(key: key);
-
-  Widget _openSeat() {
-    return Padding(
-      padding: const EdgeInsets.all(5),
-      child: InkWell(
-        onTap: () {
-          log('Pressed $seatPos');
-          this.onUserTap(seatPos);
-        },
-        child: Text(
-          'Open $seatPos',
-          style: AppStyles.openSeatTextStyle,
-        ),
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 70.0,
-      padding: const EdgeInsets.all(10.0),
-      child: _openSeat(),
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: Color(0XFF494444),
-      ),
     );
   }
 }

@@ -15,6 +15,7 @@ class AuthService {
   AuthService._();
 
   static final String _prefKey = 'auth_service_pref_key';
+  static String playerUuid;
 
   /* private methods */
 
@@ -46,7 +47,7 @@ class AuthService {
   }
 
   /* method that returns back the uuid */
-  static Future<String> getUuid() async => (await get())?.uuid;
+  static String getUuid() => playerUuid;
 
   static Future<String> getJwt() async => (await get())?.jwt;
 
@@ -76,6 +77,7 @@ class AuthService {
     if (result.hasException) return false;
 
     authModel.uuid = (result.data as LazyCacheMap).data['createPlayer'];
+    playerUuid = authModel.uuid;
 
     /* after account is created, login with the login API */
 
@@ -151,6 +153,7 @@ class AuthService {
       await _save(authModel); // this is done to save the JWT first
       authModel.uuid = await fetchUUID();
     }
+    playerUuid = authModel.uuid;
 
     return {
       'status': await _save(authModel),

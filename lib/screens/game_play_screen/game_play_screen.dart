@@ -3,6 +3,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:dart_nats/dart_nats.dart' as nats;
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/screens/game_context_screen/game_chat/chat.dart';
@@ -246,13 +247,22 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
   }
 
   Future onJoinGame(int seatPos) async {
-    await GamePlayScreenUtilMethods.joinGame(
-      seatPos: seatPos,
-      gameCode: widget.gameCode,
-    );
+    final gameState = GameState.getState(_providerContext);
+    final me = gameState.me(_providerContext);
 
-    // join audio
-    await joinAudio();
+    if (me != null && me.seatNo != null && me.seatNo != 0) {
+      log('Player ${me.name} switches seat to $seatPos');
+      await GameService.switchSeat(widget.gameCode, seatPos);
+    }
+    else {
+      await GamePlayScreenUtilMethods.joinGame(
+        seatPos: seatPos,
+        gameCode: widget.gameCode,
+      );
+
+      // join audio
+      await joinAudio();
+    }
   }
 
   @override
