@@ -283,6 +283,15 @@ class Players extends ChangeNotifier {
 
   PlayerModel fromSeat(int seatNo) {
     int idx = _players.indexWhere((p) => p.seatNo == seatNo);
+    if (idx == -1) {
+      return null;
+    }
     return _players[idx];
   }
+
+  void updatePlayersSilent(List<PlayerModel> players) {
+    this._players = players;
+    notifyAll();
+  }
+
 }

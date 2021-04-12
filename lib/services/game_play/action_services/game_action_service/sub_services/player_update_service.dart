@@ -85,8 +85,7 @@ class PlayerUpdateService {
     // put the status of the fetched player
     newPlayerModel?.status = playerUpdate['status'];
 
-    String myUUID = await AuthService.getUuid();
-    if (newPlayerModel.playerUuid == myUUID) {
+    if (newPlayerModel.playerUuid == gameState.currentPlayerUuid) {
       newPlayerModel.isMe = true;
     }
     gameState.newPlayer(context, newPlayerModel);
@@ -159,32 +158,45 @@ class PlayerUpdateService {
     int oldSeatNo = playerUpdate['oldSeat'] as int;
     int stack = playerUpdate['stack'] as int;
 
-    final ValueNotifier<SeatChangeModel> vnSeatChangeModel =
-        Provider.of<ValueNotifier<SeatChangeModel>>(
-      context,
-      listen: false,
-    );
-
-    final gameState = Provider.of<GameState>(
-      context,
-      listen: false,
-    );
+    final gameState = GameState.getState(context);
+    final gameInfo = gameState.gameInfo;
     final player1 = gameState.fromSeat(context, oldSeatNo);
-
-    /* animate the stack */
-    vnSeatChangeModel.value = SeatChangeModel(
-      newSeatNo: newSeatNo,
-      oldSeatNo: oldSeatNo,
-      stack: stack,
-    );
-
-    /* wait for the seat change animation to finish */
-    await Future.delayed(AppConstants.seatChangeAnimationDuration);
-
-    /* remove the animating widget */
-    vnSeatChangeModel.value = null;
-
+    if (player1 == null) {
+      return;
+    }
+    
     player1.seatNo = newSeatNo;
+
+    if (gameInfo.status == 'CONFIGURED' &&
+        gameInfo.tableStatus == 'WAITING_TO_BE_STARTED') {
+        // switch seat for the player
+        final oldSeat = gameState.getSeat(context, oldSeatNo);
+        oldSeat.player = null;
+        gameState.refresh(context);
+        // final newSeat = gameState.getSeat(context, oldSeatNo);
+        // oldSeat.player = null;
+
+    } else {
+      final ValueNotifier<SeatChangeModel> vnSeatChangeModel =
+          Provider.of<ValueNotifier<SeatChangeModel>>(
+        context,
+        listen: false,
+      );
+
+      /* animate the stack */
+      vnSeatChangeModel.value = SeatChangeModel(
+        newSeatNo: newSeatNo,
+        oldSeatNo: oldSeatNo,
+        stack: stack,
+      );
+
+      /* wait for the seat change animation to finish */
+      await Future.delayed(AppConstants.seatChangeAnimationDuration);
+
+      /* remove the animating widget */
+      vnSeatChangeModel.value = null;
+
+    }
     gameState.updatePlayers(context);
   }
 

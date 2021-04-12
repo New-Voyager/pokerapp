@@ -7,6 +7,7 @@ import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
+import 'package:pokerapp/services/game_play/graphql/game_service.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
@@ -25,12 +26,16 @@ class GameState {
   ListenableProvider<Players> _players;
   ListenableProvider<ActionState> _playerAction;
   ListenableProvider<HandResultState> _handResult;
+  String _gameCode;
   GameInfoModel _gameInfo;
   Map<int, Seat> _seats = Map<int, Seat>();
+  String _currentPlayerUuid;
 
-  void initialize({List<PlayerModel> players, GameInfoModel gameInfo}) {
+  void initialize({String gameCode, GameInfoModel gameInfo, String uuid}) {
     this._seats = Map<int, Seat>();
     this._gameInfo = gameInfo;
+    this._gameCode = gameCode;
+    this._currentPlayerUuid = uuid;
 
     for (int seatNo = 1; seatNo <= gameInfo.maxPlayers; seatNo++) {
       this._seats[seatNo] = Seat(seatNo, seatNo, null);
@@ -51,13 +56,17 @@ class GameState {
     this._handResult =
         ListenableProvider<HandResultState>(create: (_) => HandResultState());
 
-    if (players == null) {
-      players = [];
+    List<PlayerModel> players = [];
+    if (gameInfo.playersInSeats != null) {
+      players = gameInfo.playersInSeats;
     }
 
-    // show buyin button/timer if the player is in middle of buyin
     for(var player in players) {
+      if (player.playerUuid == this._currentPlayerUuid) {
+        player.isMe = true;
+      }
       if(player.buyInTimeExpAt != null && player.stack == 0) {
+        // show buyin button/timer if the player is in middle of buyin
         player.showBuyIn = true;
       }
     }
@@ -71,6 +80,58 @@ class GameState {
 
   GameInfoModel get gameInfo {
     return this._gameInfo;
+  }
+
+  String get gameCode {
+    return this._gameCode;
+  }
+
+  String get currentPlayerUuid {
+    return this._currentPlayerUuid;
+  }
+
+  void refresh(BuildContext context) async {
+    // fetch new player using GameInfo API and add to the game
+    GameInfoModel gameInfo = await GameService.getGameInfo(this._gameCode);
+
+    this._gameInfo = gameInfo;
+
+    // reset seats
+    for(var seat in this._seats.values) {
+      seat.player = null;
+    }
+
+    final players = this.getPlayers(context);
+    List<PlayerModel> playersInSeats = [];
+    if (gameInfo.playersInSeats != null) {
+      playersInSeats = gameInfo.playersInSeats;
+    }
+
+    // show buyin button/timer if the player is in middle of buyin
+    for(var player in playersInSeats) {
+      if(player.buyInTimeExpAt != null && player.stack == 0) {
+        player.showBuyIn = true;
+      }
+
+      if (player.seatNo != 0) {
+        final seat = this._seats[player.seatNo];
+        seat.player = player;
+      }
+
+      if (player.playerUuid == this._currentPlayerUuid) {
+        player.isMe = true;
+      }
+    }
+    players.updatePlayersSilent(playersInSeats);
+
+    final tableState = this.getTableState(context);
+    tableState.updateGameStatusSilent(gameInfo.status);
+    tableState.updateTableStatusSilent(gameInfo.tableStatus);
+    players.notifyAll();
+    tableState.notifyAll();
+    for (Seat seat in this._seats.values) {
+      seat.notify();
+    }
   }
 
 

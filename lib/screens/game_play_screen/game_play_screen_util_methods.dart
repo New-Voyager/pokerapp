@@ -17,6 +17,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/game_context.da
 import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/resources/card_back_assets.dart';
 import 'package:pokerapp/services/agora/agora.dart';
+import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/services/game_play/graphql/game_service.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
@@ -158,8 +159,9 @@ class GamePlayScreenUtilMethods {
     // initialize game state object
     final gameState = GameState();
     gameState.initialize(
-      players: gameInfoModel.playersInSeats,
+      gameCode: gameCode,
       gameInfo: gameInfoModel,
+      uuid: currentPlayerInfo.uuid,
     );
 
     var providers = [

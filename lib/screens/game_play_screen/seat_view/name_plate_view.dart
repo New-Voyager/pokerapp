@@ -264,7 +264,7 @@ class NamePlateWidget extends StatelessWidget {
 
   String _printDuration(Duration duration) {
     String twoDigits(int n) => n.toString().padLeft(2, "0");
-    if (duration.inSeconds == 0) {
+    if (duration.inSeconds <= 0) {
       return '0:00';
     }
     String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
