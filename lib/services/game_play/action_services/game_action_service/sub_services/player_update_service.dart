@@ -161,6 +161,10 @@ class PlayerUpdateService {
     final gameState = GameState.getState(context);
     final gameInfo = gameState.gameInfo;
     final player1 = gameState.fromSeat(context, oldSeatNo);
+    if (player1 == null) {
+      return;
+    }
+    
     player1.seatNo = newSeatNo;
 
     if (gameInfo.status == 'CONFIGURED' &&
