@@ -47,9 +47,9 @@ class GameService {
     if (result.hasException) return null;
 
     final jsonResponse = result.data['gameInfo'];
-    JsonEncoder encoder = new JsonEncoder.withIndent('  ');
-    String prettyprint = encoder.convert(jsonResponse);
-    debugPrint(prettyprint, wrapWidth: 4096);
+    // JsonEncoder encoder = new JsonEncoder.withIndent('  ');
+    // String prettyprint = encoder.convert(jsonResponse);
+    // debugPrint(prettyprint, wrapWidth: 4096);
     return GameInfoModel.fromJson(jsonResponse);
   }
 

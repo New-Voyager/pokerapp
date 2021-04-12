@@ -9,7 +9,7 @@ import 'package:pokerapp/services/game_play/action_services/game_action_service/
 
 class GameActionService {
   GameActionService._();
-
+  static String lastMessage;
   // only one method is exposed - handle
   static void handle({
     @required String message,
@@ -19,6 +19,11 @@ class GameActionService {
     assert(message != null && message.isNotEmpty);
     assert(context != null);
 
+    if (message == lastMessage) {
+      // do nothing
+      return;
+    }
+    lastMessage = message;
     var data = jsonDecode(message);
 
     String messageType = data['messageType'];

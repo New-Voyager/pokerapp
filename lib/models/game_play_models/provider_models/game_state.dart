@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -91,6 +92,7 @@ class GameState {
   }
 
   void refresh(BuildContext context) async {
+    log('************ Refreshing game state');
     // fetch new player using GameInfo API and add to the game
     GameInfoModel gameInfo = await GameService.getGameInfo(this._gameCode);
 

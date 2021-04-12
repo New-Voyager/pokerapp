@@ -52,12 +52,14 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
   String _audioToken = '';
   bool liveAudio = false;
   AudioPlayer _audioPlayer;
+  GameInfoModel _gameInfoModel;
   Agora agora;
   /* _init function is run only for the very first time,
   * and only once, the initial game screen is populated from here
   * also the NATS channel subscriptions are done here */
   Future<GameInfoModel> _fetchGameInfo() async {
     GameInfoModel gameInfo;
+    log('Fetching game info');
 
     if (TestService.isTesting) {
       try {
@@ -103,7 +105,11 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
   * This method is also responsible for subscribing to the NATS channels */
 
   Future<GameInfoModel> _init() async {
-    GameInfoModel _gameInfoModel = await _fetchGameInfo();
+    if (_gameInfoModel != null) {
+      return _gameInfoModel;
+    }
+    
+    _gameInfoModel = await _fetchGameInfo();
 
     _gameComService = GameComService(
       currentPlayer: this._currentPlayer,

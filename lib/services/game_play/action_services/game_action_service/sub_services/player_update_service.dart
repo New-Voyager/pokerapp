@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
@@ -24,19 +26,31 @@ class PlayerUpdateService {
 
     int seatNo = playerUpdate['seatNo'];
     final player = gameState.fromSeat(context, seatNo);
+    final status = playerUpdate['status'];
 
     // fixme: this is until all the player update messages have a newUpdate field
     if (player == null) {
-      return handleNewPlayer(
-        context: context,
-        playerUpdate: playerUpdate,
-      );
+      return ;
+    }
+    //   return handleNewPlayer(
+    //     context: context,
+    //     playerUpdate: playerUpdate,
+    //   );
+    // }
+    
+    bool showBuyIn = false;
+    if (status == AppConstants.PLAYING) {
+      showBuyIn = false;
+    }
+
+    if (status == AppConstants.WAIT_FOR_BUYIN) {
+      showBuyIn = true;
     }
 
     player.update(
       stack: playerUpdate['stack'],
       buyIn: playerUpdate['buyIn'],
-      showBuyIn: true,
+      showBuyIn: showBuyIn,
       status: null,
     );
     final seat = gameState.getSeat(context, seatNo);
@@ -200,6 +214,21 @@ class PlayerUpdateService {
     gameState.updatePlayers(context);
   }
 
+
+  static void handlePlayerWaitForBuyinApproval({
+    @required BuildContext context,
+    @required var playerUpdate,
+  }) {
+    final GameState gameState = GameState.getState(context);
+    int seatNo = playerUpdate['seatNo'];
+    final seat = gameState.getSeat(context, seatNo);
+    seat.player.waitForBuyInApproval = true;
+    seat.notify();
+    log('Player ${seat.player.name} is waiting for approval');
+    final tableState = gameState.getTableState(context);
+    tableState.notifyAll();
+  }
+
   static void handle({
     BuildContext context,
     var data,
@@ -234,6 +263,12 @@ class PlayerUpdateService {
 
       case AppConstants.BUYIN_TIMEDOUT:
         return handlePlayerBuyinTimedout(
+          context: context,
+          playerUpdate: playerUpdate,
+        );
+
+      case AppConstants.WAIT_FOR_BUYIN_APPROVAL:
+        return handlePlayerWaitForBuyinApproval(
           context: context,
           playerUpdate: playerUpdate,
         );
