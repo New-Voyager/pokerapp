@@ -4,7 +4,7 @@ import 'package:dart_nats/dart_nats.dart';
 import 'package:flutter/foundation.dart';
 import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/services/app/util_service.dart';
-import 'package:pokerapp/services/game_play/game_chat_service.dart';
+import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 
 class GameComService {
   Client _client;
@@ -26,7 +26,7 @@ class GameComService {
   PlayerInfo currentPlayer;
 
   // game chat object
-  GameChatService _chat;
+  GameMessagingService _chat;
 
   GameComService({
     @required this.currentPlayer,
@@ -69,8 +69,14 @@ class GameComService {
 
     log('subscribing to ${this.gameChatChannel}');
     _gameChatChannelSubs = _client.sub(this.gameChatChannel);
-    this._chat = GameChatService(this.currentPlayer, this.gameChatChannel,
-        this._clientPub, _gameChatChannelSubs.stream, true);
+
+    this._chat = GameMessagingService(
+      this.currentPlayer,
+      this.gameChatChannel,
+      this._clientPub,
+      _gameChatChannelSubs.stream,
+      true,
+    );
     this._chat.start();
     this.active = true;
   }
@@ -93,7 +99,7 @@ class GameComService {
 
     _gameChatChannelSubs?.unSub();
     _gameChatChannelSubs?.close();
-    chat.close();
+    gameMessaging.close();
 
     active = false;
     _client?.close();
@@ -120,7 +126,7 @@ class GameComService {
     return _gameChatChannelSubs.stream;
   }
 
-  GameChatService get chat {
+  GameMessagingService get gameMessaging {
     assert(active);
     return this._chat;
   }

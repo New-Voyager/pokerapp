@@ -10,26 +10,35 @@ import 'package:pokerapp/models/player_info.dart';
 const MAX_CHAT_BUFSIZE = 20;
 
 // GameChat class wraps communication between NATS and games chat widget.
-class GameChatService {
+class GameMessagingService {
   Stream<Message> stream;
   Client client;
   String chatChannel;
   bool active;
   PlayerInfo currentPlayer;
-  List<ChatMessage> messages = List<ChatMessage>();
-  GameChatService(this.currentPlayer, this.chatChannel, this.client,
-      this.stream, this.active);
+  List<ChatMessage> messages = [];
+
+  GameMessagingService(
+    this.currentPlayer,
+    this.chatChannel,
+    this.client,
+    this.stream,
+    this.active,
+  );
+
   Function onText;
   Function onAudio;
   Function onGiphy;
   Function onAnimation;
+  Function onCards;
 
   Uuid uuid;
   void listen({
-    Function onText,
-    Function onAudio,
-    Function onGiphy,
-    Function onAnimation,
+    void onText(ChatMessage _),
+    void onAudio(ChatMessage _),
+    void onGiphy(ChatMessage _),
+    void onAnimation(ChatMessage _),
+    void onCards(ChatMessage _),
   }) {
     if (onAudio != null) {
       this.onAudio = onAudio;
@@ -45,6 +54,10 @@ class GameChatService {
 
     if (onAnimation != null) {
       this.onAnimation = onAnimation;
+    }
+
+    if (onCards != null) {
+      this.onCards = onCards;
     }
   }
 
@@ -66,7 +79,9 @@ class GameChatService {
     if (this.messages.length > MAX_CHAT_BUFSIZE) {
       this.messages.removeLast();
     }
-    final message = ChatMessage.fromMessage(natsMsg.string);
+
+    final ChatMessage message = ChatMessage.fromMessage(natsMsg.string);
+
     if (message != null) {
       if (this.messages.length > 0) {
         // check to see whether a message was already there
@@ -100,6 +115,12 @@ class GameChatService {
       if (message.type == 'ANIMATION') {
         if (this.onAnimation != null) {
           this.onAnimation(message);
+        }
+      }
+
+      if (message.type == 'CARDS') {
+        if (this.onCards != null) {
+          this.onCards(message);
         }
       }
     }
@@ -154,6 +175,22 @@ class GameChatService {
     });
     this.client.pubString(this.chatChannel, body);
   }
+
+  void sendCards(
+    List<int> cards,
+    int seatNo,
+  ) {
+    final body = jsonEncode({
+      'id': uuid.v1(),
+      'seatNo': seatNo,
+      'playerID': this.currentPlayer.id,
+      'cards': cards,
+      'type': 'CARDS',
+      'sent': DateTime.now().toUtc().toIso8601String(),
+    });
+
+    this.client.pubString(this.chatChannel, body);
+  }
 }
 
 class ChatMessage {
@@ -170,6 +207,8 @@ class ChatMessage {
   String animationId;
   int fromSeat;
   int toSeat;
+  int seatNo;
+  List<int> cards;
 
   static ChatMessage fromMessage(String data) {
     try {
@@ -188,6 +227,12 @@ class ChatMessage {
         msg.giphyLink = message['link'];
       } else if (msg.type == 'ANIMATION') {
         msg.animationId = message['animation'];
+      } else if (msg.type == 'CARDS') {
+        msg.seatNo = message['seatNo'] == null
+            ? -1
+            : int.parse(message['seatNo'].toString());
+        msg.cards =
+            message['cards'].map<int>((e) => int.parse(e.toString())).toList();
       }
 
       if (msg.type == 'ANIMATION') {
@@ -201,6 +246,7 @@ class ChatMessage {
       }
       msg.received = DateTime.parse(message['sent'].toString());
       msg.messageId = message['id'].toString();
+
       return msg;
     } catch (Exception) {
       return null;
