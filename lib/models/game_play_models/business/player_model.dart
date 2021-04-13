@@ -13,7 +13,6 @@ class PlayerModel {
   int stack = 0;
   String avatarUrl = '';
   String status = '';
-
   List<int> cards = [];
   List<int> highlightCards = [];
 
@@ -32,6 +31,12 @@ class PlayerModel {
   // buyin status/timer
   bool showBuyIn = false;
   DateTime buyInTimeExpAt; // unix time in UTC
+  bool  buyInExpired = false; // buy in time expired
+  bool waitForBuyInApproval = false;  // waiting for buyin approval
+  
+  // break time
+  bool inBreak = false;
+  DateTime breakTimeExpAt;
 
   PlayerModel({
     String name,
@@ -68,6 +73,17 @@ class PlayerModel {
     this.buyIn = data['buyIn'];
     this.stack = data['stack'];
     this.status = data['status'];
+
+    if (data['buyInExpTime'] != null) {
+      // buyin time is kept in UTC
+      this.buyInTimeExpAt = DateTime.tryParse(data['buyInExpTime']);
+      // if (this.buyInTimeExpAt != null) {
+      //   this.buyInTimeExpAt = this.buyInTimeExpAt.toLocal();
+      // }
+      DateTime now = DateTime.now();
+      
+      print('buyin expires at ${this.buyInTimeExpAt} now: ${now.toIso8601String()} utcNow: ${now.toUtc().toIso8601String()}');
+    }
 
     // default values
     this.isMe = false;
@@ -112,6 +128,7 @@ class PlayerModel {
     return this.cards.map<CardObject>((c) => CardHelper.getCard(c)).toList();
   }
 
+  
   @override
   String toString() => this.name;
 }

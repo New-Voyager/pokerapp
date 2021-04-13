@@ -4,9 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/models/game_play_models/business/hi_winners_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/marked_cards.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
+import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/services/game_play/action_services/game_action_service/sub_services/high_hand_service.dart';
+import 'package:pokerapp/utils/card_helper.dart';
 import 'package:provider/provider.dart';
 
 class ResultService {
@@ -126,6 +129,26 @@ class ResultService {
         players.updateStackBulkSilent(_getUpdatedStack(data));
         players.notifyAll();
       },
+    );
+
+    final MarkedCards markedCards = gameState.getMarkedCards(context);
+
+    /* collect the cards needs to be revealed */
+    List<CardObject> _cardsToBeRevealed = markedCards.getCards();
+    List<int> cardNumbers = _cardsToBeRevealed
+        .map<int>((card) => CardHelper.getCardNumber(card))
+        .toList();
+
+    /* clear all the marked cards */
+    markedCards.clear();
+
+    // todo: put the delay in the const class after finalizing the delay constant
+    /* finally send the cardNumbers to the gameChatChannel after 1500 ms */
+    Future.delayed(const Duration(milliseconds: 1500)).then(
+      (_) => gameState.getGameMessagingService(context).sendCards(
+            cardNumbers,
+            players.me?.seatNo,
+          ),
     );
   }
 }

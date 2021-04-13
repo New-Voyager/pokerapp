@@ -17,6 +17,8 @@ import 'package:pokerapp/models/game_play_models/provider_models/game_context.da
 import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/resources/card_back_assets.dart';
 import 'package:pokerapp/services/agora/agora.dart';
+import 'package:pokerapp/services/app/auth_service.dart';
+import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:pokerapp/services/game_play/graphql/game_service.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
@@ -92,22 +94,32 @@ class GamePlayScreenUtilMethods {
             label: 'Move Pot to Player',
             onTap: () => TestService.movePotToPlayer(),
           ),
+          SpeedDialChild(
+            child: Icon(
+              Icons.adb_rounded,
+              color: Colors.white,
+            ),
+            backgroundColor: Colors.red,
+            label: 'Buyin Test',
+            onTap: () => TestService.buyInTest(),
+          ),
         ],
         backgroundColor: AppColors.appAccentColor,
       );
 
   /* After the entire table is drawn, if the current player (isMe == true)
     * is waiting for buyIn,then show the footer prompt */
-  static void checkForCurrentUserPrompt(BuildContext context) {
-    final players =
-        Provider.of<GameState>(context, listen: false).getPlayers(context);
-    if (players.showBuyinPrompt) {
-      Provider.of<ValueNotifier<FooterStatus>>(
-        context,
-        listen: false,
-      ).value = FooterStatus.Prompt;
-    }
-  }
+  // static void checkForCurrentUserPrompt(BuildContext context) {
+  //   final players =
+  //       Provider.of<GameState>(context, listen: false).getPlayers(context);
+
+  //   if (players.showBuyinPrompt) {
+  //     Provider.of<ValueNotifier<FooterStatus>>(
+  //       context,
+  //       listen: false,
+  //     ).value = FooterStatus.Prompt;
+  //   }
+  // }
 
   static void startGame(String gameCode) async {
     developer.log('Starting the game');
@@ -140,6 +152,7 @@ class GamePlayScreenUtilMethods {
   /* provider method, returns list of all the providers used in the below hierarchy */
   static List<SingleChildWidget> getProviders({
     @required GameInfoModel gameInfoModel,
+    @required GameMessagingService gameMessagingService,
     PlayerInfo currentPlayerInfo,
     @required String gameCode,
     @required Agora agora,
@@ -147,9 +160,12 @@ class GamePlayScreenUtilMethods {
   }) {
     // initialize game state object
     final gameState = GameState();
+
     gameState.initialize(
-      players: gameInfoModel.playersInSeats,
+      gameCode: gameCode,
       gameInfo: gameInfoModel,
+      uuid: currentPlayerInfo.uuid,
+      gameMessagingService: gameMessagingService,
     );
 
     var providers = [

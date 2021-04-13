@@ -59,44 +59,6 @@ class FooterResultView extends StatelessWidget {
     return player.cardObjects;
   }
 
-  // Widget _buildFooterResultCommunitySection(
-  //     List<int> cardsToHighlight, BuildContext context) {
-  //   List<CardObject> _communityCards = Provider.of<TableState>(
-  //     context,
-  //     listen: false,
-  //   ).cards;
-
-  //   List<CardObject> cards = List<CardObject>();
-  //   _communityCards.forEach((c) {
-  //     CardObject card = CardHelper.getCard(
-  //       CardHelper.getRawCardNumber('${c.label}${c.suit}'),
-  //     );
-
-  //     cards.add(card);
-  //   });
-
-  //   return Row(
-  //     children: [
-  //       /* community text */
-  //       Expanded(
-  //         child: Text(
-  //           'Community',
-  //           style: AppStyles.footerResultTextStyle1,
-  //         ),
-  //       ),
-
-  //       /* community cards */
-  //       Expanded(
-  //         flex: 3,
-  //         child: getCardRowView(
-  //           cards: cards,
-  //           cardsToHighlight: cardsToHighlight,
-  //         ),
-  //       ),
-  //     ],
-  //   );
-  // }
-
   Widget _buildUserNameAndCards({
     String winnerName,
     List<CardObject> winnerCards,

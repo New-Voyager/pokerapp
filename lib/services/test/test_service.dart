@@ -127,11 +127,28 @@ class TestService {
     players.notifyAll();
   }
 
-  // static Future<void> runTesting(BuildContext context) async {
-  //   //await simulateBetMovement(context);
-  //   //showBets(context);
-  //   await movePotToPlayer(context);
-  // }
+  static Future<void> buyInTest() async {
+    final gameState = Provider.of<GameState>(_context, listen: false);
+    final players = gameState.getPlayers(_context);
+    final now = DateTime.now();
+    var exp = DateTime.now();
+    exp = exp.add(Duration(seconds: 20));
+    players.me.buyInTimeExpAt = exp.toUtc();
+    log('now: ${now.toIso8601String()} exp: ${exp.toIso8601String()} utc: ${players.me.buyInTimeExpAt.toIso8601String()}');
+    players.me.showBuyIn = true;
+    players.me.stack = 0;
+
+    final seat4 = gameState.getSeat(_context, 4);
+    exp = now.add(Duration(seconds: 30));
+    seat4.player.showBuyIn = true;
+    seat4.player.stack = 0;
+    seat4.player.buyInTimeExpAt = exp.toUtc();
+    
+    // redraw seat
+    final seat = gameState.getSeat(_context, players.me.seatNo);
+    players.notifyAll();
+    seat.notify();
+  }
 
   static Future<void> movePotToPlayer() async {
     BuildContext context = _context;

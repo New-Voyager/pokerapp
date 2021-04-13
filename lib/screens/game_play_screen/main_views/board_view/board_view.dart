@@ -1,20 +1,26 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/animating_widgets/card_distribution_animating_widget.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/center_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/decorative_views/table_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/players_on_table_view.dart';
+import 'package:pokerapp/screens/game_play_screen/pop_ups/chip_buy_pop_up.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/animating_widgets/stack_switch_seat_animating_widget.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
+import 'package:pokerapp/services/game_play/graphql/game_service.dart';
 import 'package:pokerapp/services/test/test_service.dart';
+import 'package:pokerapp/widgets/round_raised_button.dart';
 import 'package:provider/provider.dart';
 
-class BoardView extends StatelessWidget {
+class BoardView extends StatefulWidget {
   BoardView({
     @required this.gameInfo,
     @required this.onUserTap,
@@ -43,7 +49,16 @@ class BoardView extends StatelessWidget {
   }
 
   @override
+  _BoardViewState createState() => _BoardViewState();
+}
+
+class _BoardViewState extends State<BoardView> {
+  final _buyInKey = GlobalKey<FormState>();
+  BuildContext providerContext;
+
+  @override
   Widget build(BuildContext context) {
+    providerContext = context;
     final gameState = GameState.getState(context);
     final boardAttributes = gameState.getBoardAttributes(context);
     final isBoardHorizontal =
@@ -55,7 +70,7 @@ class BoardView extends StatelessWidget {
     boardAttributes.dummyKey = GlobalKey();
 
     /* finally the view */
-    final widget = Stack(
+    final ret = Stack(
       alignment: Alignment.center,
       children: [
         // game board view
@@ -105,8 +120,8 @@ class BoardView extends StatelessWidget {
 
               return CenterView(
                 centerKey,
-                gameInfo.gameCode,
-                gameInfo.isHost,
+                widget.gameInfo.gameCode,
+                widget.gameInfo.isHost,
                 isBoardHorizontal,
                 cards,
                 pots,
@@ -117,7 +132,7 @@ class BoardView extends StatelessWidget {
                 ),
                 tableState.tableStatus,
                 valueNotifierFooterStatus.value == FooterStatus.Result,
-                onStartGame,
+                widget.onStartGame,
               );
             })),
 
@@ -131,13 +146,13 @@ class BoardView extends StatelessWidget {
             offset: boardAttributes.playerOnTableOffset,
             child: PlayersOnTableView(
               players: players,
-              gameComService: gameComService,
+              gameComService: widget.gameComService,
               isBoardHorizontal:
                   boardAttributes.orientation == BoardOrientation.horizontal,
               widthOfBoard: dimensions.width,
               heightOfBoard: dimensions.height,
-              onUserTap: onUserTap,
-              maxPlayers: gameInfo.maxPlayers,
+              onUserTap: widget.onUserTap,
+              maxPlayers: widget.gameInfo.maxPlayers,
             ),
           ),
         ),
@@ -152,9 +167,78 @@ class BoardView extends StatelessWidget {
         Align(
           child: StackSwitchSeatAnimatingWidget(),
         ),
+
+        Consumer<MyState>(
+          builder: (
+            BuildContext _,
+            MyState myState,
+            Widget __,
+          ) =>
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: buyInButton(context),
+          ),
+        ),
       ],
     );
 
+    return ret;
+  }
+
+  Widget buyInButton(BuildContext context) {
+    // show buyin button only for if the current player is in a seat
+    final gameState = GameState.getState(providerContext);
+    final mySeat = gameState.mySeat(providerContext);
+    final myState = gameState.getMyState(context);
+
+    bool showBuyInButton = true;
+    if (mySeat == null || mySeat.isOpen || mySeat.player == null) {
+      return SizedBox.shrink();
+    }
+    log('Rebuild buyin button: Status: ${myState.status.toString()}');
+
+    if (!mySeat.player.showBuyIn || mySeat.player.waitForBuyInApproval) {
+      return SizedBox.shrink();
+    }
+
+    if (!showBuyInButton) {
+      return SizedBox.shrink();
+    }
+
+
+    final widget = ListenableProvider<Seat>(
+      create: (_) => mySeat,
+      builder: (context, _) => Consumer<Seat>(
+        builder: (_, seat, __) => Transform.translate(offset: Offset(0, 10),
+          child: RoundRaisedButton(buttonText: 'Buyin',
+          color: Colors.blueGrey,
+          verticalPadding: 1,
+          fontSize: 15,
+            onButtonTap: () async => {
+              await onBuyin(context)
+            },)
+        ),
+      ),
+    );
+
     return widget;
+  }
+
+  Future<void> onBuyinAlert(BuildContext context) async {
+    dynamic ret = await showBuyinDialog(context, _buyInKey, 30, 100);
+  }
+
+    Future<void> onBuyin(BuildContext context) async {
+    final gameState = GameState.getState(context);
+    final gameInfo = gameState.gameInfo;
+
+    bool status = await showDialog(
+      context: context,
+      builder: (context) => ChipBuyPopUp(
+        gameCode: gameInfo.gameCode,
+        minBuyIn: gameInfo.buyInMin,
+        maxBuyIn: gameInfo.buyInMax,
+      ),
+    );
   }
 }

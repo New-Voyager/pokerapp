@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pokerapp/enums/player_status.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
 import 'package:pokerapp/resources/app_constants.dart';
@@ -261,7 +262,9 @@ class Players extends ChangeNotifier {
 
   void removePlayerSilent(int seatNo) {
     int idx = _players.indexWhere((p) => p.seatNo == seatNo);
-    _players.removeAt(idx);
+    if (idx != -1) {
+      _players.removeAt(idx);
+    }
   }
 
   PlayerModel get me {
@@ -272,15 +275,44 @@ class Players extends ChangeNotifier {
     return tmp;
   }
 
-  bool get showBuyinPrompt {
-    if (this.me != null && this.me.stack == 0) {
-      return true;
-    }
-    return false;
-  }
+  // bool get showBuyinPrompt {
+  //   if (this.me != null && this.me.stack == 0) {
+  //     return true;
+  //   }
+  //   return false;
+  // }
 
   PlayerModel fromSeat(int seatNo) {
     int idx = _players.indexWhere((p) => p.seatNo == seatNo);
+    if (idx == -1) {
+      return null;
+    }
     return _players[idx];
+  }
+
+  void updatePlayersSilent(List<PlayerModel> players) {
+    this._players = players;
+    notifyAll();
+  }
+
+}
+
+/**
+ * The states that affect the current player.
+ */
+class MyState extends ChangeNotifier {
+  int _seatNo = 0;
+  PlayerStatus _status = PlayerStatus.NOT_PLAYING;
+
+  set seatNo(int v) {
+    this._seatNo = v;
+  }
+  int get seatNo => this._seatNo;
+
+  set status(PlayerStatus status) => this._status = status;
+  get status => this._status;
+
+  void notify() {
+    notifyListeners();
   }
 }

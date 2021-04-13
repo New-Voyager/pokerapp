@@ -3,7 +3,6 @@ import 'package:pokerapp/models/hand_history_model.dart';
 import 'package:pokerapp/models/hand_log_model.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
-import 'package:pokerapp/screens/club_screen/hand_log_views/hand_log_view.dart';
 import 'hand_history_bottomsheet.dart';
 import 'last_hand_analyse_bottomsheet.dart';
 

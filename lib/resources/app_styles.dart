@@ -5,14 +5,12 @@ import 'package:pokerapp/resources/app_assets.dart';
 import 'app_colors.dart';
 
 class AppStyles {
-
- static const stackPopUpTextStyle = TextStyle(
+  static const stackPopUpTextStyle = TextStyle(
     color: AppColors.lightGrayColor,
     fontSize: 12.0,
     fontFamily: AppAssets.fontFamilyLato,
     fontWeight: FontWeight.w400,
   );
-
 
   static const titleBarTextStyle = TextStyle(
     color: AppColors.appAccentColor,

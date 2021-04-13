@@ -1,11 +1,16 @@
+import 'dart:developer';
+
+import 'package:blinking_text/blinking_text.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:provider/provider.dart';
+import 'package:timer_count_down/timer_count_down.dart';
 
 class NamePlateWidget extends StatelessWidget {
   final GlobalKey globalKey;
@@ -58,17 +63,19 @@ class NamePlateWidget extends StatelessWidget {
                 hostSeatChange.onSeatDragStart(seat.serverSeatPos);
               },
               feedback: buildSeat(
+                context,
                 hostSeatChange,
                 isFeedBack: true,
               ),
-              child: buildSeat(hostSeatChange),
+              child: buildSeat(context, hostSeatChange),
               childWhenDragging: buildSeat(
+                context,
                 hostSeatChange,
                 childWhenDragging: true,
               ),
             );
           } else {
-            widget = buildSeat(hostSeatChange);
+            widget = buildSeat(context, hostSeatChange);
           }
           return widget;
         });
@@ -129,6 +136,7 @@ class NamePlateWidget extends StatelessWidget {
   }
 
   Widget buildSeat(
+    BuildContext context,
     HostSeatChange hostSeatChange, {
     bool isFeedBack = false,
     bool childWhenDragging = false,
@@ -176,13 +184,7 @@ class NamePlateWidget extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 5),
                     child: FittedBox(
-                      child: Text(
-                        seat.player.stack?.toString() ?? 'XX',
-                        style: AppStyles.gamePlayScreenPlayerChips.copyWith(
-                          // FIXME: may be this is permanant?
-                          color: Colors.white,
-                        ),
-                      ),
+                      child: bottomWidget(context),
                     ),
                   ),
                 ),
@@ -193,7 +195,85 @@ class NamePlateWidget extends StatelessWidget {
       ),
     );
   }
+
+  Widget bottomWidget(BuildContext context) {
+    if (seat.player.stack == 0 && seat.player.buyInTimeExpAt != null) {
+      final now = DateTime.now().toUtc();
+      final diff = seat.player.buyInTimeExpAt.difference(now);
+
+      final nowTime = now.toIso8601String();
+      final buyInTime = seat.player.buyInTimeExpAt.toIso8601String();
+      log('nowTime: $nowTime buyInTime: $buyInTime');
+
+      return buyInTimer(context, diff.inSeconds);
+    } else if (seat.player.inBreak && seat.player.breakTimeExpAt != null) {
+      final now = DateTime.now().toUtc();
+      final diff = seat.player.buyInTimeExpAt.difference(now);
+      return buyInTimer(context, diff.inSeconds);
+    } else {
+      return stack(context);
+    }
+  }
+
+  Widget stack(BuildContext context) {
+    return Text(
+      seat.player.stack?.toString() ?? 'XX',
+      style: AppStyles.gamePlayScreenPlayerChips.copyWith(
+        // FIXME: may be this is permanant?
+        color: Colors.white,
+      ),
+    );
+  }
+
+  Widget buyInTimer(BuildContext context, int time) {
+    return Countdown(
+          seconds: time,
+          onFinished: () {
+            if (seat.isMe) {
+              // hide buyin button
+              final gameState = GameState.getState(context);
+              final players = gameState.getPlayers(context);
+              seat.player.showBuyIn = false;
+              players.notifyAll();
+              seat.notify();
+            }
+          },
+          build: (_, time) {
+            if (time <= 10) {
+              return BlinkText(
+                _printDuration(Duration(seconds: time.toInt())),
+                style: AppStyles.itemInfoTextStyle.copyWith(
+                  color: Colors.white,
+                ),
+                beginColor: Colors.white,
+                endColor: Colors.orange,
+                times: time.toInt(),
+                duration: Duration(seconds: 1)
+              );
+            } else {
+              return Text(
+                _printDuration(Duration(seconds: time.toInt())),
+                style: AppStyles.itemInfoTextStyle.copyWith(
+                  color: Colors.white,
+                ),
+              );
+            }
+          }
+        );
+  }
+
+  String _printDuration(Duration duration) {
+    String twoDigits(int n) => n.toString().padLeft(2, "0");
+    if (duration.inSeconds <= 0) {
+      return '0:00';
+    }
+    String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
+    String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
+    return "$twoDigitMinutes:$twoDigitSeconds";
+  }  
 }
+
+
 
 class PlayerViewDivider extends StatelessWidget {
   const PlayerViewDivider({
