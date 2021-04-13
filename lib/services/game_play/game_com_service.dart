@@ -42,6 +42,9 @@ class GameComService {
   }
 
   Future<void> init() async {
+    // if already active, do not resubscribe again
+    if (active) return;
+
     String natsUrl = await UtilService.getNatsURL();
 
     // chop the scheme and port number
