@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
+import 'package:pokerapp/enums/player_status.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
@@ -113,6 +114,9 @@ class PlayerUpdateService {
       final mySeat = gameState.mySeat(context);
       mySeat.player = newPlayerModel;
       mySeat.notify();
+
+      gameState.myState.status = PlayerStatus.WAIT_FOR_BUYIN_APPROVAL;
+      gameState.myState.notify();
     }
     final tableState = gameState.getTableState(context);
     tableState.notifyAll();
@@ -222,6 +226,12 @@ class PlayerUpdateService {
     final GameState gameState = GameState.getState(context);
     int seatNo = playerUpdate['seatNo'];
     final seat = gameState.getSeat(context, seatNo);
+
+    if(seat.player.isMe) {
+      gameState.myState.status = PlayerStatus.WAIT_FOR_BUYIN_APPROVAL;
+      gameState.myState.notify();
+    }
+
     seat.player.waitForBuyInApproval = true;
     seat.notify();
     log('Player ${seat.player.name} is waiting for approval');

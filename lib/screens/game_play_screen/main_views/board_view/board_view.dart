@@ -168,10 +168,10 @@ class _BoardViewState extends State<BoardView> {
           child: StackSwitchSeatAnimatingWidget(),
         ),
 
-        Consumer<Players>(
+        Consumer<MyState>(
           builder: (
             BuildContext _,
-            Players players,
+            MyState myState,
             Widget __,
           ) =>
           Align(
@@ -189,12 +189,13 @@ class _BoardViewState extends State<BoardView> {
     // show buyin button only for if the current player is in a seat
     final gameState = GameState.getState(providerContext);
     final mySeat = gameState.mySeat(providerContext);
+    final myState = gameState.getMyState(context);
 
     bool showBuyInButton = true;
     if (mySeat == null || mySeat.isOpen || mySeat.player == null) {
       return SizedBox.shrink();
     }
-    log('mySeat is not null');
+    log('Rebuild buyin button: Status: ${myState.status.toString()}');
 
     if (!mySeat.player.showBuyIn || mySeat.player.waitForBuyInApproval) {
       return SizedBox.shrink();

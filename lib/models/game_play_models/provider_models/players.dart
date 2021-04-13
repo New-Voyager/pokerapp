@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pokerapp/enums/player_status.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
 import 'package:pokerapp/resources/app_constants.dart';
@@ -294,4 +295,24 @@ class Players extends ChangeNotifier {
     notifyAll();
   }
 
+}
+
+/**
+ * The states that affect the current player.
+ */
+class MyState extends ChangeNotifier {
+  int _seatNo = 0;
+  PlayerStatus _status = PlayerStatus.NOT_PLAYING;
+
+  set seatNo(int v) {
+    this._seatNo = v;
+  }
+  int get seatNo => this._seatNo;
+
+  set status(PlayerStatus status) => this._status = status;
+  get status => this._status;
+
+  void notify() {
+    notifyListeners();
+  }
 }

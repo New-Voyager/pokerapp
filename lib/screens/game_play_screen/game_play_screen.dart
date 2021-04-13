@@ -105,25 +105,81 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
   * This method is also responsible for subscribing to the NATS channels */
 
   Future<GameInfoModel> _init() async {
-    if (_gameInfoModel != null) {
-      return _gameInfoModel;
-    }
-    
     _gameInfoModel = await _fetchGameInfo();
 
-    _gameComService = GameComService(
-      currentPlayer: this._currentPlayer,
-      gameToPlayerChannel: _gameInfoModel.gameToPlayerChannel,
-      handToAllChannel: _gameInfoModel.handToAllChannel,
-      handToPlayerChannel: _gameInfoModel.handToPlayerChannel,
-      playerToHandChannel: _gameInfoModel.playerToHandChannel,
-      gameChatChannel: _gameInfoModel.gameChatChannel,
-    );
+    if (_gameComService == null) {
+      _gameComService = GameComService(
+        currentPlayer: this._currentPlayer,
+        gameToPlayerChannel: _gameInfoModel.gameToPlayerChannel,
+        handToAllChannel: _gameInfoModel.handToAllChannel,
+        handToPlayerChannel: _gameInfoModel.handToPlayerChannel,
+        playerToHandChannel: _gameInfoModel.playerToHandChannel,
+        gameChatChannel: _gameInfoModel.gameChatChannel,
+      );
+      // subscribe the NATs channels
+      await _gameComService.init();
 
-    // subscribe the NATs channels
-    await _gameComService.init();
+      /* setup the listeners to the channels
+      * Any messages received from these channel updates,
+      * will be taken care of by the respective class
+      * and actions will be taken in the UI
+      * as there will be Listeners implemented down this hierarchy level */
 
-    if (liveAudio) {
+      _gameComService.gameToPlayerChannelStream.listen((nats.Message message) {
+        if (!_gameComService.active) return;
+
+        // log('gameToPlayerChannel(${message.subject}): ${message.string}');
+
+        /* This stream will receive game related messages
+        * e.g.
+        * 1. Player Actions - Sitting on table, getting more chips, leaving game, taking break,
+        * 2. Game Actions - New hand, informing about Next actions, PLayer Acted
+        *  */
+
+        GameActionService.handle(
+          context: _providerContext,
+          message: message.string,
+        );
+      });
+
+      _gameComService.handToAllChannelStream.listen((nats.Message message) {
+        if (!_gameComService.active) return;
+
+        // log('handToAllChannel(${message.subject}): ${message.string}');
+
+        /* This stream receives hand related messages that is common to all players
+        * e.g
+        * New Hand - contains hand status, dealerPos, sbPos, bbPos, nextActionSeat
+        * Next Action - contains the seat No which is to act next
+        *
+        * This stream also contains the output for the query of current hand*/
+        HandActionService.handle(
+          context: _providerContext,
+          message: message.string,
+        );
+      });
+
+      _gameComService.handToPlayerChannelStream.listen((nats.Message message) {
+        if (!_gameComService.active) return;
+
+        // log('handToPlayerChannel(${message.subject}): ${message.string}');
+
+        /* This stream receives hand related messages that is specific to THIS player only
+        * e.g
+        * Deal - contains seat No and cards
+        * Your Action - seat No, available actions & amounts */
+        HandActionService.handle(
+          context: _providerContext,
+          message: message.string,
+        );
+      });
+
+      // _gameComService.chat.listen(onText: this.onText);
+      _gameComService.chat
+          .listen(onAudio: this.onAudio, onAnimation: this.onAnimation);      
+    }
+
+    if (liveAudio && agora == null) {
       // initialize agora
       agora = Agora(
           gameCode: widget.gameCode,
@@ -142,66 +198,6 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
     } else {
       _audioPlayer = AudioPlayer();
     }
-
-    /* setup the listeners to the channels
-    * Any messages received from these channel updates,
-    * will be taken care of by the respective class
-    * and actions will be taken in the UI
-    * as there will be Listeners implemented down this hierarchy level */
-
-    _gameComService.gameToPlayerChannelStream.listen((nats.Message message) {
-      if (!_gameComService.active) return;
-
-      // log('gameToPlayerChannel(${message.subject}): ${message.string}');
-
-      /* This stream will receive game related messages
-      * e.g.
-      * 1. Player Actions - Sitting on table, getting more chips, leaving game, taking break,
-      * 2. Game Actions - New hand, informing about Next actions, PLayer Acted
-      *  */
-
-      GameActionService.handle(
-        context: _providerContext,
-        message: message.string,
-      );
-    });
-
-    _gameComService.handToAllChannelStream.listen((nats.Message message) {
-      if (!_gameComService.active) return;
-
-      // log('handToAllChannel(${message.subject}): ${message.string}');
-
-      /* This stream receives hand related messages that is common to all players
-      * e.g
-      * New Hand - contains hand status, dealerPos, sbPos, bbPos, nextActionSeat
-      * Next Action - contains the seat No which is to act next
-      *
-      * This stream also contains the output for the query of current hand*/
-      HandActionService.handle(
-        context: _providerContext,
-        message: message.string,
-      );
-    });
-
-    _gameComService.handToPlayerChannelStream.listen((nats.Message message) {
-      if (!_gameComService.active) return;
-
-      // log('handToPlayerChannel(${message.subject}): ${message.string}');
-
-      /* This stream receives hand related messages that is specific to THIS player only
-      * e.g
-      * Deal - contains seat No and cards
-      * Your Action - seat No, available actions & amounts */
-      HandActionService.handle(
-        context: _providerContext,
-        message: message.string,
-      );
-    });
-
-    // _gameComService.chat.listen(onText: this.onText);
-    _gameComService.chat
-        .listen(onAudio: this.onAudio, onAnimation: this.onAnimation);
-
     return _gameInfoModel;
   }
 
