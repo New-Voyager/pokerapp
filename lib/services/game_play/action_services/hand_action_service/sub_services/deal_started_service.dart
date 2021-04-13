@@ -10,9 +10,11 @@ import 'package:provider/provider.dart';
 class DealStartedService {
   DealStartedService._();
 
-  static void handle({
+  static Future<void> handle({
     BuildContext context,
-    fromGameReplay = false,
+    bool fromGameReplay = false,
+    // works only if in testing mode
+    int testNo = 2,
   }) async {
     GameState gameState = Provider.of<GameState>(
       context,
@@ -46,6 +48,8 @@ class DealStartedService {
       context,
       listen: false,
     );
+
+    if (handInfo.noCards == 0) handInfo.update(noCards: testNo);
 
     /* distribute cards to the players */
     /* this for loop will distribute cards one by one to all the players */
