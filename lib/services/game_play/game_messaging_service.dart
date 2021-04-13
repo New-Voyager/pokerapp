@@ -176,9 +176,13 @@ class GameMessagingService {
     this.client.pubString(this.chatChannel, body);
   }
 
-  void sendCards(List<int> cards) {
+  void sendCards(
+    List<int> cards,
+    int seatNo,
+  ) {
     final body = jsonEncode({
       'id': uuid.v1(),
+      'seatNo': seatNo,
       'playerID': this.currentPlayer.id,
       'cards': cards,
       'type': 'CARDS',
@@ -203,6 +207,7 @@ class ChatMessage {
   String animationId;
   int fromSeat;
   int toSeat;
+  int seatNo;
   List<int> cards;
 
   static ChatMessage fromMessage(String data) {
@@ -223,6 +228,9 @@ class ChatMessage {
       } else if (msg.type == 'ANIMATION') {
         msg.animationId = message['animation'];
       } else if (msg.type == 'CARDS') {
+        msg.seatNo = message['seatNo'] == null
+            ? -1
+            : int.parse(message['seatNo'].toString());
         msg.cards =
             message['cards'].map<int>((e) => int.parse(e.toString())).toList();
       }

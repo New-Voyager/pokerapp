@@ -16,6 +16,7 @@ import 'package:pokerapp/screens/game_play_screen/notifications/notifications.da
 import 'package:pokerapp/services/agora/agora.dart';
 import 'package:pokerapp/services/app/player_service.dart';
 import 'package:pokerapp/services/game_play/action_services/game_action_service/game_action_service.dart';
+import 'package:pokerapp/services/game_play/action_services/game_action_service/util_action_services.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_service/hand_action_service.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_service/sub_services/result_service.dart';
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
@@ -46,6 +47,7 @@ class GamePlayScreen extends StatefulWidget {
 }
 
 class _GamePlayScreenState extends State<GamePlayScreen> {
+  bool _initiated;
   GameComService _gameComService;
   BuildContext _providerContext;
   PlayerInfo _currentPlayer;
@@ -104,6 +106,8 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
 
   Future<GameInfoModel> _init() async {
     GameInfoModel _gameInfoModel = await _fetchGameInfo();
+
+    if (_initiated == true) return _gameInfoModel;
 
     _gameComService = GameComService(
       currentPlayer: this._currentPlayer,
@@ -200,6 +204,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
       onAnimation: this.onAnimation,
     );
 
+    _initiated = true;
     return _gameInfoModel;
   }
 
@@ -219,9 +224,11 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
     super.dispose();
   }
 
-  void onCards(ChatMessage message) {
-    log('received cards: ${message.cards}');
-  }
+  void onCards(ChatMessage message) =>
+      UtilActionServices.showCardsOfFoldedPlayers(
+        _providerContext,
+        message,
+      );
 
   void onText(ChatMessage message) {
     log(message.text);
@@ -305,9 +312,6 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
           resizeToAvoidBottomInset: false,
           backgroundColor: Colors.black,
           body: FutureBuilder<GameInfoModel>(
-            // // TODO: THIS UNIQUE KEY IS PLACED SO THAT A setState INVOCATION IN THIS CLASS WOULD CAUSE THIS WIDGET TO REBUILD
-            // // TODO: THIS IS DONE, SO REFLECT THE GAME PLAY SCREEN CHANGES AFTER THE TEST MODE IS ACTIVATED
-            // key: UniqueKey(),
             future: _init(),
             initialData: null,
             builder: (_, AsyncSnapshot<GameInfoModel> snapshot) {
@@ -361,11 +365,12 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                   }
 
                   AudioBufferService.create().then(
-                      (Map<String, String> tmpAudioFiles) =>
-                          Provider.of<ValueNotifier<Map<String, String>>>(
-                            context,
-                            listen: false,
-                          ).value = tmpAudioFiles);
+                    (Map<String, String> tmpAudioFiles) =>
+                        Provider.of<ValueNotifier<Map<String, String>>>(
+                      context,
+                      listen: false,
+                    ).value = tmpAudioFiles,
+                  );
 
                   // check for the current user prompt, after the following tree is built
                   // waiting for a brief moment should suffice

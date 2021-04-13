@@ -145,7 +145,10 @@ class ResultService {
     // todo: put the delay in the const class after finalizing the delay constant
     /* finally send the cardNumbers to the gameChatChannel after 1500 ms */
     Future.delayed(const Duration(milliseconds: 1500)).then(
-      (_) => gameState.getGameMessagingService(context).sendCards(cardNumbers),
+      (_) => gameState.getGameMessagingService(context).sendCards(
+            cardNumbers,
+            players.me?.seatNo,
+          ),
     );
   }
 }
