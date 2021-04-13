@@ -29,35 +29,37 @@ class _ProfilePopupState extends State<ProfilePopup> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
       ),
       padding: EdgeInsets.all(5),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          getCloseButton(),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              /*
-              * member avatar
-              * */
-              SizedBox(width: 10),
-              getUserDetails(),
-              Spacer(),
-              communication(),
-              SizedBox(width: 15),
-            ],
-          ),
-          /*
-          * stickers
-          **/
-          SizedBox(
-            height: 10,
-          ),
-          getStickers(),
-          /*
-          * confirm button
-          * * */
-          getConfirmButton()
-        ],
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            getCloseButton(),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                /*
+                * member avatar
+                * */
+                SizedBox(width: 10),
+                getUserDetails(),
+                Spacer(),
+                communication(),
+                SizedBox(width: 15),
+              ],
+            ),
+            /*
+            * stickers
+            **/
+            SizedBox(
+              height: 10,
+            ),
+            getStickers(),
+            /*
+            * confirm button
+            * * */
+            getConfirmButton()
+          ],
+        ),
       ),
     );
   }

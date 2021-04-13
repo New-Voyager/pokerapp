@@ -284,7 +284,7 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
                     child: child,
                   ),
                 )
-              : SizedBox.shrink(),
+              : SizedBox. shrink(),
 
           isLottieAnimationAnimating
               ? Positioned(

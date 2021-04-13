@@ -3,17 +3,20 @@ import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/player_action.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/screens/game_play_screen/widgets/bet_widget.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/widgets/card_form_text_field.dart';
 import 'package:pokerapp/widgets/round_raised_button.dart';
 import 'package:pokerapp/services/game_play/message_id.dart';
 import 'package:provider/provider.dart';
+import 'package:tuple/tuple.dart';
 
 const shrinkedBox = const SizedBox.shrink(
   key: ValueKey('none'),
@@ -27,10 +30,24 @@ class FooterActionView extends StatefulWidget {
 class _FooterActionViewState extends State<FooterActionView> {
   bool _showOptions = false;
   double betAmount;
-
+  List<Tuple2<String, String>> otherBets;
   String selectedOptionText;
 
   final TextEditingController _controller = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    otherBets = const [
+      Tuple2("AllIn", "435"),
+      Tuple2("10BB", "50"),
+      Tuple2("5BB", "20"),
+      Tuple2("3BB", "12"),
+      /*  Tuple2("10BB", "50"),
+      Tuple2("5BB", "20"),
+      Tuple2("3BB", "12"), */
+    ];
+  }
 
   /* this function decides, whom to call - bet or raise? */
   void _submit(PlayerAction playerAction) {
@@ -239,7 +256,7 @@ class _FooterActionViewState extends State<FooterActionView> {
                   /* on tapping on BET this button should highlight and show further options */
                   case BET:
                     return _buildRoundButton(
-                      isSelected: _showOptions,
+                      //  isSelected: _showOptions,
                       text: playerAction.actionName,
                       onTap: () => setState(() {
                         _showOptions = true;
@@ -456,11 +473,13 @@ class _FooterActionViewState extends State<FooterActionView> {
             ? shrinkedBox
             : _showOptions
                 ? Container(
-                    color: Colors.black.withOpacity(0.65),
-                    child: Column(
+                    color: Colors.black.withOpacity(0.85),
+                    child: _buildBetWidget(context,
+                        playerAction) /* Column(
                       key: ValueKey('options'),
                       children: [
                         /* options */
+                        // BetWidget(),
 
                         _buildOptionsAndTextField(
                           playerAction.options,
@@ -489,8 +508,8 @@ class _FooterActionViewState extends State<FooterActionView> {
                           ],
                         ),
                       ],
-                    ),
-                  )
+                    ), */
+                    )
                 : shrinkedBox,
       );
 
@@ -498,12 +517,215 @@ class _FooterActionViewState extends State<FooterActionView> {
   Widget build(BuildContext context) {
     return Consumer<ActionState>(
       key: ValueKey('buildActionButtons'),
-      builder: (_, actionState, __) => Stack(
-        children: [
-          _buildTopActionRow(actionState.action),
-          _buildOptionsRow(actionState.action),
-        ],
+      builder: (_, actionState, __) => Container(
+        height: MediaQuery.of(context).size.height / 2.5,
+        child: Stack(
+          children: [
+            Container(
+              constraints: BoxConstraints.expand(),
+              alignment: Alignment.bottomCenter,
+              child: _buildTopActionRow(actionState.action),
+            ),
+            Container(
+              constraints: BoxConstraints.expand(),
+              alignment: Alignment.center,
+              child: _buildOptionsRow(actionState.action),
+            ),
+          ],
+        ),
       ),
     );
+  }
+
+  Widget _buildBetWidget(BuildContext context, PlayerAction playerAction) {
+    // Default value is half of min and max
+    double val =
+        (playerAction.maxRaiseAmount - playerAction.minRaiseAmount) / 2;
+    TextEditingController _betTextController =
+        TextEditingController(text: "${val.toStringAsFixed(0)}");
+// StatefulBuilder to update localState of the widget
+    return StatefulBuilder(builder: (context, localState) {
+      return Container(
+        height: 150,
+        width: MediaQuery.of(context).size.width * 0.9,
+        alignment: Alignment.center,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  height: 48,
+                  width: 48,
+                  child: SvgPicture.asset(
+                    "assets/images/game/green bet.svg",
+                    fit: BoxFit.contain,
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    InkWell(
+                      onTap: () async {
+                        await showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              backgroundColor: Colors.grey.withOpacity(0.5),
+                              contentTextStyle: TextStyle(color: Colors.white),
+                              actions: [
+                                ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: Text("OK"))
+                              ],
+                              content: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Expanded(
+                                    child: TextFormField(
+                                      autofocus: true,
+                                      controller: _betTextController,
+                                      inputFormatters: [
+                                        FilteringTextInputFormatter.digitsOnly,
+                                      ],
+                                      keyboardType: TextInputType.number,
+                                      onChanged: (String s) => localState(
+                                        () {
+                                          double newValue = double.parse(s);
+
+                                          if (newValue <
+                                              playerAction.minRaiseAmount)
+                                            newValue = playerAction
+                                                .minRaiseAmount
+                                                .toDouble();
+                                          if (newValue >
+                                              playerAction.maxRaiseAmount)
+                                            newValue = playerAction
+                                                .maxRaiseAmount
+                                                .toDouble();
+
+                                          val = newValue;
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        );
+                      },
+                      child: Container(
+                        padding: EdgeInsets.all(5),
+                        decoration: BoxDecoration(
+                            color: Colors.lime, shape: BoxShape.circle),
+                        alignment: Alignment.center,
+                        child: Text(
+                          "${val.toStringAsFixed(0)}",
+                          style: TextStyle(color: Colors.grey.shade800),
+                        ),
+                      ),
+                    ),
+                    InkWell(
+                      onTap: () {
+                        setState(() {
+                          betAmount = val;
+                          // _showOptions = false;
+                        });
+                        _submit(playerAction);
+                      },
+                      child: Container(
+                        margin: EdgeInsets.all(4),
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade300,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text(
+                          "BET",
+                          style: TextStyle(fontSize: 10),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                RotatedBox(
+                  quarterTurns: 3,
+                  child: Slider.adaptive(
+                    max: playerAction.maxRaiseAmount.toDouble(),
+                    min: playerAction.minRaiseAmount.toDouble(),
+                    inactiveColor: Colors.red.shade100,
+                    activeColor: Colors.red.shade300,
+                    onChanged: (value) {
+                      //print("NEW VAL:$value");
+                      localState(() {
+                        val = value;
+                      });
+                      _betTextController.text = "${val.toStringAsFixed(0)}";
+                    },
+                    label: "${val.toStringAsFixed(0)}",
+                    semanticFormatterCallback: (value) {
+                      return "${val.toStringAsFixed(0)}";
+                    },
+                    value: val,
+                    divisions: 10,
+                  ),
+                ),
+                Container(
+                  padding: EdgeInsets.symmetric(vertical: 16),
+                  height: 300,
+                  width: 100,
+                  alignment: Alignment.center,
+                  //color: Colors.red,
+                  child: ListView.builder(
+                    itemBuilder: (context, index) {
+                      final Tuple2<String, String> currentTuple =
+                          otherBets[index];
+                      return Container(
+                        padding: EdgeInsets.all(4),
+                        margin: EdgeInsets.symmetric(vertical: 4),
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade300,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Column(
+                          children: [
+                            Text(
+                              "${currentTuple.item1}",
+                              style: TextStyle(
+                                fontSize: 10,
+                              ),
+                            ),
+                            Text(
+                              "${currentTuple.item2}",
+                              style: TextStyle(
+                                fontSize: 10,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                    itemCount: otherBets.length,
+                    scrollDirection: Axis.vertical,
+                  ),
+                )
+              ],
+            ),
+          ],
+        ),
+      );
+    });
   }
 }
