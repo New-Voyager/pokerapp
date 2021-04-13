@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat_change_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/resources/app_constants.dart';
-import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/services/game_play/graphql/game_service.dart';
 import 'package:provider/provider.dart';
 
@@ -164,17 +162,17 @@ class PlayerUpdateService {
     if (player1 == null) {
       return;
     }
-    
+
     player1.seatNo = newSeatNo;
 
     if (gameInfo.status == 'CONFIGURED' &&
         gameInfo.tableStatus == 'WAITING_TO_BE_STARTED') {
-        // switch seat for the player
-        final oldSeat = gameState.getSeat(context, oldSeatNo);
-        oldSeat.player = null;
-        gameState.refresh(context);
-        // final newSeat = gameState.getSeat(context, oldSeatNo);
-        // oldSeat.player = null;
+      // switch seat for the player
+      final oldSeat = gameState.getSeat(context, oldSeatNo);
+      oldSeat.player = null;
+      gameState.refresh(context);
+      // final newSeat = gameState.getSeat(context, oldSeatNo);
+      // oldSeat.player = null;
 
     } else {
       final ValueNotifier<SeatChangeModel> vnSeatChangeModel =
@@ -195,7 +193,6 @@ class PlayerUpdateService {
 
       /* remove the animating widget */
       vnSeatChangeModel.value = null;
-
     }
     gameState.updatePlayers(context);
   }

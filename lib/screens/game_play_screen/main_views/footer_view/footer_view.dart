@@ -47,7 +47,8 @@ class FooterView extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   HandAnalyseView(gameCode, clubCode),
-                  CommunicationView(chatVisibilityChange, gameComService.chat),
+                  CommunicationView(
+                      chatVisibilityChange, gameComService.gameMessaging),
                 ],
               ),
               Consumer2<HostSeatChange, GameContextObject>(

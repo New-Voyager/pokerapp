@@ -8,7 +8,7 @@ import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
-import 'package:pokerapp/services/game_play/game_chat_service.dart';
+import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:pokerapp/widgets/chat_text_field.dart';
 import 'package:pokerapp/widgets/emoji_picker_widget.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -18,7 +18,7 @@ import 'game_giphys.dart';
 const int SAMPLE_RATE = 8000;
 
 class GameChat extends StatefulWidget {
-  final GameChatService chatService;
+  final GameMessagingService chatService;
   final Function chatVisibilityChange;
 
   static final GlobalKey<_GameChatState> globalKey = GlobalKey();

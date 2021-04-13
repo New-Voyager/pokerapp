@@ -18,7 +18,7 @@ import 'package:pokerapp/services/app/player_service.dart';
 import 'package:pokerapp/services/game_play/action_services/game_action_service/game_action_service.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_service/hand_action_service.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_service/sub_services/result_service.dart';
-import 'package:pokerapp/services/game_play/game_chat_service.dart';
+import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/services/game_play/graphql/game_service.dart';
 import 'package:pokerapp/services/game_play/utils/audio.dart';
@@ -193,8 +193,12 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
     });
 
     // _gameComService.chat.listen(onText: this.onText);
-    _gameComService.chat
-        .listen(onAudio: this.onAudio, onAnimation: this.onAnimation);
+    _gameComService.gameMessaging.listen(
+      onCards: this.onCards,
+      onText: this.onText,
+      onAudio: this.onAudio,
+      onAnimation: this.onAnimation,
+    );
 
     return _gameInfoModel;
   }
@@ -213,6 +217,10 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
       _audioPlayer = null;
     }
     super.dispose();
+  }
+
+  void onCards(ChatMessage message) {
+    log('received cards: ${message.cards}');
   }
 
   void onText(ChatMessage message) {
@@ -320,6 +328,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
               var dividerTotalHeight = MediaQuery.of(context).size.height / 6;
               double divider1 = 0.40 * dividerTotalHeight;
               final providers = GamePlayScreenUtilMethods.getProviders(
+                gameMessagingService: _gameComService.gameMessaging,
                 gameInfoModel: _gameInfoModel,
                 gameCode: widget.gameCode,
                 currentPlayerInfo: this._currentPlayer,
@@ -423,7 +432,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                               vnChatVisibility.value
                                   ? Align(
                                       child: GameChat(
-                                        this._gameComService.chat,
+                                        this._gameComService.gameMessaging,
                                         () => toggleChatVisibility(context),
                                       ),
                                       alignment: Alignment.bottomCenter,

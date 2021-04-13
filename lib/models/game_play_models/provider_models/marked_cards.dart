@@ -2,22 +2,27 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 
 class MarkedCards extends ChangeNotifier {
-  Map<String, bool> _cardHash;
+  Map<String, CardObject> _cardHash;
 
   MarkedCards() {
     _cardHash = Map();
   }
 
-  clear() {
+  void clear() {
     _cardHash.clear();
-    notifyListeners();
   }
 
-  mark(CardObject cardObject) {
+  List<CardObject> getCards() {
+    List<CardObject> _cards = [];
+    _cardHash.forEach((_, card) => _cards.add(card));
+    return _cards;
+  }
+
+  void mark(CardObject cardObject) {
     if (isMarked(cardObject))
       _cardHash.remove(cardObject.cardHash);
     else
-      _cardHash[cardObject.cardHash] = true;
+      _cardHash[cardObject.cardHash] = cardObject;
 
     notifyListeners();
   }

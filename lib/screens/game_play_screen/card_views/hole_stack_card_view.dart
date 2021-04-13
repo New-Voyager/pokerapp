@@ -5,7 +5,7 @@ import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/screens/game_play_screen/game_card/game_card_widget.dart';
 
 const double pullUpOffset = -15.0;
-const kDisplacementConstant = 30.0;
+const kDisplacementConstant = 40.0;
 const kAngleConstant = 0.05;
 
 class HoleStackCardView extends StatelessWidget {
@@ -54,18 +54,14 @@ class HoleStackCardView extends StatelessWidget {
                   child: deactivated
                       ? GameCardWidget(
                           marked: markedCards.isMarked(cards[i]),
-                          onMarkTapCallback: () {
-                            markedCards.mark(cards[i]);
-                          },
+                          onMarkTapCallback: () => markedCards.mark(cards[i]),
                           card: cards[i],
                           grayOut: true,
                           isCardVisible: isCardVisible,
                         )
                       : GameCardWidget(
                           marked: markedCards.isMarked(cards[i]),
-                          onMarkTapCallback: () {
-                            markedCards.mark(cards[i]);
-                          },
+                          onMarkTapCallback: () => markedCards.mark(cards[i]),
                           card: cards[i],
                           isCardVisible: isCardVisible,
                         ),

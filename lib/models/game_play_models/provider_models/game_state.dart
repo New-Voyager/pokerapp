@@ -8,6 +8,7 @@ import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/marked_cards.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
+import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:pokerapp/services/game_play/graphql/game_service.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
@@ -23,6 +24,7 @@ import 'table_state.dart';
  */
 class GameState {
   ListenableProvider<MarkedCards> _markedCards;
+  Provider<GameMessagingService> _gameMessagingService;
   ListenableProvider<HandInfoState> _handInfo;
   ListenableProvider<TableState> _tableState;
   ListenableProvider<Players> _players;
@@ -33,7 +35,12 @@ class GameState {
   Map<int, Seat> _seats = Map<int, Seat>();
   String _currentPlayerUuid;
 
-  void initialize({String gameCode, GameInfoModel gameInfo, String uuid}) {
+  void initialize({
+    String gameCode,
+    GameInfoModel gameInfo,
+    String uuid,
+    GameMessagingService gameMessagingService,
+  }) {
     this._seats = Map<int, Seat>();
     this._gameInfo = gameInfo;
     this._gameCode = gameCode;
@@ -48,7 +55,11 @@ class GameState {
       tableState.updateGameStatusSilent(gameInfo.status);
       tableState.updateTableStatusSilent(gameInfo.tableStatus);
     }
-    // create hand info provider
+
+    this._gameMessagingService = Provider<GameMessagingService>(
+      create: (_) => gameMessagingService,
+    );
+
     this._handInfo =
         ListenableProvider<HandInfoState>(create: (_) => HandInfoState());
     this._tableState =
@@ -170,6 +181,12 @@ class GameState {
     handResult.notifyAll();
   }
 
+  GameMessagingService getGameMessagingService(BuildContext context) =>
+      Provider.of<GameMessagingService>(
+        context,
+        listen: false,
+      );
+
   HandInfoState getHandInfo(BuildContext context, {bool listen = false}) =>
       Provider.of<HandInfoState>(context, listen: listen);
 
@@ -242,6 +259,7 @@ class GameState {
       this._playerAction,
       this._handResult,
       this._markedCards,
+      this._gameMessagingService,
     ];
   }
 
