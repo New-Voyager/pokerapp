@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/marked_cards.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/screens/game_play_screen/game_card/game_card_widget.dart';
+import 'package:provider/provider.dart';
 
 const double pullUpOffset = -15.0;
 const kDisplacementConstant = 40.0;
@@ -23,6 +25,13 @@ class HoleStackCardView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final footerStatus = Provider.of<ValueNotifier<FooterStatus>>(
+      context,
+      listen: false,
+    ).value;
+
+    if (footerStatus == FooterStatus.Result) return SizedBox.shrink();
+
     final MarkedCards markedCards = GameState.getState(context).getMarkedCards(
       context,
       listen: true,
