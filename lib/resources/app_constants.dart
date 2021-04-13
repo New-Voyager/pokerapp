@@ -93,6 +93,7 @@ class AppConstants {
   static const String WAIT_FOR_BUYIN = 'WAIT_FOR_BUYIN';
   static const String PLAYING = 'PLAYING';
   static const String BUYIN_TIMEDOUT = 'BUYIN_TIMEDOUT';
+  static const String WAIT_FOR_BUYIN_APPROVAL = 'WAIT_FOR_BUYIN_APPROVAL';
 
   /* table statuses */
   static const String WAITING_TO_BE_STARTED = 'WAITING_TO_BE_STARTED';

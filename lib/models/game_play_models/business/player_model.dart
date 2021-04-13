@@ -32,7 +32,8 @@ class PlayerModel {
   bool showBuyIn = false;
   DateTime buyInTimeExpAt; // unix time in UTC
   bool  buyInExpired = false; // buy in time expired
-
+  bool waitForBuyInApproval = false;  // waiting for buyin approval
+  
   // break time
   bool inBreak = false;
   DateTime breakTimeExpAt;

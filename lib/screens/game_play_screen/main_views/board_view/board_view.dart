@@ -15,11 +15,12 @@ import 'package:pokerapp/screens/game_play_screen/main_views/board_view/players_
 import 'package:pokerapp/screens/game_play_screen/pop_ups/chip_buy_pop_up.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/animating_widgets/stack_switch_seat_animating_widget.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
+import 'package:pokerapp/services/game_play/graphql/game_service.dart';
 import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/widgets/round_raised_button.dart';
 import 'package:provider/provider.dart';
 
-class BoardView extends StatelessWidget {
+class BoardView extends StatefulWidget {
   BoardView({
     @required this.gameInfo,
     @required this.onUserTap,
@@ -48,7 +49,16 @@ class BoardView extends StatelessWidget {
   }
 
   @override
+  _BoardViewState createState() => _BoardViewState();
+}
+
+class _BoardViewState extends State<BoardView> {
+  final _buyInKey = GlobalKey<FormState>();
+  BuildContext providerContext;
+
+  @override
   Widget build(BuildContext context) {
+    providerContext = context;
     final gameState = GameState.getState(context);
     final boardAttributes = gameState.getBoardAttributes(context);
     final isBoardHorizontal =
@@ -60,7 +70,7 @@ class BoardView extends StatelessWidget {
     boardAttributes.dummyKey = GlobalKey();
 
     /* finally the view */
-    final widget = Stack(
+    final ret = Stack(
       alignment: Alignment.center,
       children: [
         // game board view
@@ -110,8 +120,8 @@ class BoardView extends StatelessWidget {
 
               return CenterView(
                 centerKey,
-                gameInfo.gameCode,
-                gameInfo.isHost,
+                widget.gameInfo.gameCode,
+                widget.gameInfo.isHost,
                 isBoardHorizontal,
                 cards,
                 pots,
@@ -122,7 +132,7 @@ class BoardView extends StatelessWidget {
                 ),
                 tableState.tableStatus,
                 valueNotifierFooterStatus.value == FooterStatus.Result,
-                onStartGame,
+                widget.onStartGame,
               );
             })),
 
@@ -136,13 +146,13 @@ class BoardView extends StatelessWidget {
             offset: boardAttributes.playerOnTableOffset,
             child: PlayersOnTableView(
               players: players,
-              gameComService: gameComService,
+              gameComService: widget.gameComService,
               isBoardHorizontal:
                   boardAttributes.orientation == BoardOrientation.horizontal,
               widthOfBoard: dimensions.width,
               heightOfBoard: dimensions.height,
-              onUserTap: onUserTap,
-              maxPlayers: gameInfo.maxPlayers,
+              onUserTap: widget.onUserTap,
+              maxPlayers: widget.gameInfo.maxPlayers,
             ),
           ),
         ),
@@ -158,10 +168,10 @@ class BoardView extends StatelessWidget {
           child: StackSwitchSeatAnimatingWidget(),
         ),
 
-        Consumer<Players>(
+        Consumer<MyState>(
           builder: (
             BuildContext _,
-            Players players,
+            MyState myState,
             Widget __,
           ) =>
           Align(
@@ -172,22 +182,29 @@ class BoardView extends StatelessWidget {
       ],
     );
 
-    return widget;
+    return ret;
   }
 
   Widget buyInButton(BuildContext context) {
     // show buyin button only for if the current player is in a seat
-    final gameState = GameState.getState(context);
-    final mySeat = gameState.mySeat(context);
+    final gameState = GameState.getState(providerContext);
+    final mySeat = gameState.mySeat(providerContext);
+    final myState = gameState.getMyState(context);
 
-    if (mySeat == null || mySeat.isOpen) {
+    bool showBuyInButton = true;
+    if (mySeat == null || mySeat.isOpen || mySeat.player == null) {
       return SizedBox.shrink();
     }
-    log('mySeat is not null');
+    log('Rebuild buyin button: Status: ${myState.status.toString()}');
 
-    if (!mySeat.player.showBuyIn) {
+    if (!mySeat.player.showBuyIn || mySeat.player.waitForBuyInApproval) {
       return SizedBox.shrink();
     }
+
+    if (!showBuyInButton) {
+      return SizedBox.shrink();
+    }
+
 
     final widget = ListenableProvider<Seat>(
       create: (_) => mySeat,
@@ -207,7 +224,11 @@ class BoardView extends StatelessWidget {
     return widget;
   }
 
-  Future<void> onBuyin(BuildContext context) async {
+  Future<void> onBuyinAlert(BuildContext context) async {
+    dynamic ret = await showBuyinDialog(context, _buyInKey, 30, 100);
+  }
+
+    Future<void> onBuyin(BuildContext context) async {
     final gameState = GameState.getState(context);
     final gameInfo = gameState.gameInfo;
 

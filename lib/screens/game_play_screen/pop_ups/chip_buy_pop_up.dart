@@ -1,5 +1,8 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/screens/util_screens/numeric_keyboard.dart';
 import 'package:pokerapp/services/game_play/graphql/game_service.dart';
 import 'package:pokerapp/widgets/round_raised_button.dart';
@@ -84,4 +87,70 @@ class _ChipBuyPopUpState extends State<ChipBuyPopUp> {
       ),
     );
   }
+}
+
+
+Future<bool> showBuyinDialog(BuildContext context, GlobalKey<FormState> buyInKey, double minBuyIn, double maxBuyIn) async {
+    bool ret = false;
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+         return AlertDialog(
+          content: Stack(
+            overflow: Overflow.visible,
+            children: <Widget>[
+              Form(
+                key: buyInKey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Text('Enter the amount $minBuyIn - $maxBuyIn'),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: TextFormField(
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly,
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ElevatedButton(
+                        child: Text("Buy In"),
+                        onPressed: () {
+                          if (buyInKey.currentState.validate()) {
+                            buyInKey.currentState.save();
+                          }
+                          Navigator.of(context).pop(true);
+                        },
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      }).then((exit) {
+        if (exit == null) {
+          ret = false;
+          return;
+        }
+        ret = exit;
+        if (ret) {
+          // on submit
+          // if buyin has timedout, then don't buyin 
+          final gameState = GameState.getState(context);
+          final me = gameState.me(context);
+          log('Buyin dialog is submitted. ret: $ret');
+          if (me.seatNo != null && me.seatNo != 0) {
+            // buyin
+          }          
+        }
+      });
+    return ret;
 }

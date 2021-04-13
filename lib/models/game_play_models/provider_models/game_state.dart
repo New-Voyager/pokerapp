@@ -1,13 +1,16 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pokerapp/enums/game_type.dart';
+import 'package:pokerapp/enums/player_status.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/marked_cards.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
+import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:pokerapp/services/game_play/graphql/game_service.dart';
 import 'package:provider/provider.dart';
@@ -30,6 +33,9 @@ class GameState {
   ListenableProvider<Players> _players;
   ListenableProvider<ActionState> _playerAction;
   ListenableProvider<HandResultState> _handResult;
+  ListenableProvider<MyState> _myStateProvider;
+  MyState _myState;
+
   String _gameCode;
   GameInfoModel _gameInfo;
   Map<int, Seat> _seats = Map<int, Seat>();
@@ -69,6 +75,9 @@ class GameState {
     this._handResult =
         ListenableProvider<HandResultState>(create: (_) => HandResultState());
 
+    this._myState = MyState();
+    this._myStateProvider =
+        ListenableProvider<MyState>(create: (_) => this._myState);
     /* provider for holding the marked cards */
     this._markedCards =
         ListenableProvider<MarkedCards>(create: (_) => MarkedCards());
@@ -78,9 +87,15 @@ class GameState {
       players = gameInfo.playersInSeats;
     }
 
+    final values = PlayerStatus.values;
     for (var player in players) {
       if (player.playerUuid == this._currentPlayerUuid) {
         player.isMe = true;
+        if (player.status == null) {
+          player.status = AppConstants.NOT_PLAYING;
+        }
+        log('player status: ${player.status}');
+        this._myState.status = values.firstWhere((e) => e.toString() == 'PlayerStatus.'+player.status);
       }
       if (player.buyInTimeExpAt != null && player.stack == 0) {
         // show buyin button/timer if the player is in middle of buyin
@@ -108,6 +123,7 @@ class GameState {
   }
 
   void refresh(BuildContext context) async {
+    log('************ Refreshing game state');
     // fetch new player using GameInfo API and add to the game
     GameInfoModel gameInfo = await GameService.getGameInfo(this._gameCode);
 
@@ -211,6 +227,12 @@ class GameState {
         listen: listen,
       );
 
+  MyState getMyState(BuildContext context, {bool listen: false}) {
+    return Provider.of<MyState>(context, listen: listen);
+  }
+
+  MyState get myState => this._myState;
+
   Seat mySeat(BuildContext context) {
     final players = getPlayers(context);
     final me = players.me;
@@ -258,6 +280,7 @@ class GameState {
       this._players,
       this._playerAction,
       this._handResult,
+      this._myStateProvider,
       this._markedCards,
       this._gameMessagingService,
     ];
