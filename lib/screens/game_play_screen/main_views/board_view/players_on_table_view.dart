@@ -13,6 +13,9 @@ import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:provider/provider.dart';
 
+const double _lottieAnimationContainerSize = 75.0;
+const double _animatingAssetContainerSize = 25.0;
+
 // PlayersOnTableView encapsulates the players sitting on the table.
 // This view uses Stack layout to place the UserView on top of the table.
 class PlayersOnTableView extends StatefulWidget {
@@ -155,7 +158,6 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
         isLottieAnimationAnimating = false;
         _lottieController.reset();
       }
-      setState(() {});
     });
 
     animationController.addListener(() {
@@ -167,7 +169,6 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
           _lottieController.forward();
         });
       }
-      // setState(() {});
     });
   }
 
@@ -190,21 +191,25 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
       toSeat: message.toSeat,
     );
 
+    final Size playerWidgetSize = getPlayerWidgetSize(message.toSeat);
+
     from = positions[0];
     to = positions[1];
-    to = Offset(to.dx - 25, to.dy + 15);
 
-    // width of the name plate widget
-    // final RenderBox toBox = from.key.currentContext.findRenderObject();
-    // final size = toBox.size;
-    // toOffset = Offset(toOffset.dx, toOffset.dy); // + size.height / 2);
+    print('playerwidth ${playerWidgetSize.width}');
+
+    /* get the middle point for the animated to player */
+    final Offset toMod = Offset(
+      to.dx + (playerWidgetSize.width / 2) - _animatingAssetContainerSize / 2,
+      to.dy + (playerWidgetSize.height / 2) - _animatingAssetContainerSize / 2,
+    );
 
     animation = Tween<Offset>(
       begin: from,
-      end: to,
+      end: toMod,
     ).animate(animationController);
 
-    print('\n\n\n\n\n\n\n\nanimation value: $animation\n\n\n\n\n\n\n');
+    // set the lottie animation position
     lottieAnimationPosition = to;
 
     setState(() {
@@ -217,6 +222,15 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
   Offset getPositionOffsetFromKey(GlobalKey key) {
     final RenderBox renderBox = key.currentContext.findRenderObject();
     return renderBox.localToGlobal(Offset.zero);
+  }
+
+  Size getPlayerWidgetSize(int seatNo) {
+    final gameState = GameState.getState(context);
+
+    final seat = gameState.getSeat(context, seatNo);
+    final RenderBox renderBox = seat.key.currentContext.findRenderObject();
+
+    return renderBox.size;
   }
 
   List<Offset> findPositionOfFromAndToUser({
@@ -266,8 +280,8 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
           isAnimating && animation != null
               ? AnimatedBuilder(
                   child: Container(
-                    height: 25,
-                    width: 25,
+                    height: _animatingAssetContainerSize,
+                    width: _animatingAssetContainerSize,
                     decoration: BoxDecoration(
                       image: DecorationImage(
                         image: AssetImage("assets/animations/poop.png"),
@@ -284,12 +298,13 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
               : SizedBox.shrink(),
 
           isLottieAnimationAnimating
-              ? Positioned(
-                  top: lottieAnimationPosition.dy,
-                  left: lottieAnimationPosition.dx,
-                  child: SizedBox(
-                    height: 75,
-                    width: 75,
+              ? Transform.translate(
+                  offset: lottieAnimationPosition,
+                  // top: lottieAnimationPosition.dy,
+                  // left: lottieAnimationPosition.dx,
+                  child: Container(
+                    height: _lottieAnimationContainerSize,
+                    width: _lottieAnimationContainerSize,
                     child: Lottie.asset(
                       'assets/animations/poop.json',
                       controller: _lottieController,
