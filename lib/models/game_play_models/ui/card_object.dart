@@ -86,6 +86,8 @@ class CardObject {
     }
   }
 
+  String get cardHash => '$suit:$label';
+
   @override
   String toString() =>
       'suit: $suit, label: $label, highlight: $highlight empty: $empty';
