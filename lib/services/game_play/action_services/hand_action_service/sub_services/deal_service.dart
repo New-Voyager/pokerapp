@@ -59,7 +59,7 @@ class DealService {
             myCards.sublist(0, i + 1),
           );
         }
-        debugPrint('Setting cards for $seatNo');
+        //debugPrint('Setting cards for $seatNo');
         players.updateVisibleCardNumberSilent(seatNo, i + 1);
         players.notifyAll();
       }
