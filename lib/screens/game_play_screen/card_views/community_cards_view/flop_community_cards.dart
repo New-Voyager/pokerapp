@@ -86,12 +86,12 @@ class _FlopCommunityCardsState extends State<FlopCommunityCards> {
   }
 
   void onEnd(int idx) {
-    print('onEnd last index value will be: $idx');
+    // print('onEnd last index value will be: $idx');
 
     /* when the last card animation is done */
     if (idx == 2)
       setState(() {
-        print('animation ended');
+        // print('animation ended');
         _isAnimationCompleted = true;
       });
   }

@@ -243,11 +243,17 @@ class Players extends ChangeNotifier {
 
   void updateCardSilent(int seatNo, List<int> cards) {
     int idx = _players.indexWhere((p) => p.seatNo == seatNo);
+    if (idx == -1) {
+      return;
+    }
     _players[idx].cards = cards;
   }
 
   void updateVisibleCardNumberSilent(int seatNo, int n) {
     int idx = _players.indexWhere((p) => p.seatNo == seatNo);
+    if (idx == -1) {
+      return;
+    }
     _players[idx].noOfCardsVisible = n;
   }
 
