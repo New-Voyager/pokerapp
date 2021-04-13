@@ -55,6 +55,8 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
   bool liveAudio = false;
   AudioPlayer _audioPlayer;
   Agora agora;
+  GameInfoModel _gameInfoModel;
+
   /* _init function is run only for the very first time,
   * and only once, the initial game screen is populated from here
   * also the NATS channel subscriptions are done here */
@@ -280,6 +282,16 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+
+    /* the init method is invoked only once */
+    _init().then(
+      (gameInfoModel) => setState(() => _gameInfoModel = gameInfoModel),
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
     // var heightOfTopView = MediaQuery.of(context).size.height / 2;
@@ -302,21 +314,17 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
           /* FIXME: THIS FLOATING ACTION BUTTON IS FOR SHOWING THE TESTS */
           floatingActionButton: GamePlayScreenUtilMethods.floatingActionButton(
             onReload: () {
-              if (!TestService.isTesting) {
-                TestService.isTesting = true;
-                print('refreshing entire UI');
-                setState(() {});
-              }
+              // if (!TestService.isTesting) {
+              //   TestService.isTesting = true;
+              //   print('refreshing entire UI');
+              //   setState(() {});
+              // }
             },
           ),
           resizeToAvoidBottomInset: false,
           backgroundColor: Colors.black,
-          body: FutureBuilder<GameInfoModel>(
-            future: _init(),
-            initialData: null,
-            builder: (_, AsyncSnapshot<GameInfoModel> snapshot) {
-              GameInfoModel _gameInfoModel = snapshot.data;
-
+          body: Builder(
+            builder: (_) {
               // show a progress indicator if the game info object is null
               if (_gameInfoModel == null)
                 return Center(child: CircularProgressIndicator());
