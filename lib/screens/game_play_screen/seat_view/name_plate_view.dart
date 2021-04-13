@@ -203,7 +203,7 @@ class NamePlateWidget extends StatelessWidget {
 
       final nowTime = now.toIso8601String();
       final buyInTime = seat.player.buyInTimeExpAt.toIso8601String();
-      log('nowTime: $nowTime buyInTime: $buyInTime');
+      // log('nowTime: $nowTime buyInTime: $buyInTime');
 
       return buyInTimer(context, diff.inSeconds);
     } else if (seat.player.inBreak && seat.player.breakTimeExpAt != null) {
