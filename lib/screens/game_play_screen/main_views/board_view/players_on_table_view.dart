@@ -16,7 +16,7 @@ import 'package:provider/provider.dart';
 const double _lottieAnimationContainerSize = 120.0;
 const double _animatingAssetContainerSize = 40.0;
 
-const Duration _durationWaitBeforeExplosion = const Duration(milliseconds: 50);
+// const Duration _durationWaitBeforeExplosion = const Duration(milliseconds: 10);
 const Duration _lottieAnimationDuration = const Duration(milliseconds: 1500);
 const Duration _animatingWidgetDuration = const Duration(milliseconds: 1200);
 
@@ -168,20 +168,20 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
       }
     });
 
-    animationController.addListener(() {
+    animationController.addListener(() async {
       if (animationController.isCompleted) {
         /* wait before the explosion */
-        Future.delayed(_durationWaitBeforeExplosion, () {
-          isAnimating = false;
-          animationController.reset();
+        // await Future.delayed(_durationWaitBeforeExplosion);
 
-          /* finally drive the lottie animation */
+        isAnimating = false;
+        animationController.reset();
 
-          setState(() {
-            isLottieAnimationAnimating = true;
-          });
-          _lottieController.forward();
+        /* finally drive the lottie animation */
+
+        setState(() {
+          isLottieAnimationAnimating = true;
         });
+        _lottieController.forward();
       }
     });
   }
@@ -222,7 +222,7 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
     ).animate(
       CurvedAnimation(
         parent: animationController,
-        curve: Curves.easeInOut,
+        curve: Curves.easeOut,
       ),
     );
 
