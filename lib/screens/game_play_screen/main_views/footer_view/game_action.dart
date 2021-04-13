@@ -17,7 +17,8 @@ class GameAction extends StatelessWidget {
   final FooterStatus footerStatus;
   final bool showActionWidget;
 
-  const GameAction({Key key, this.playerModel, this.footerStatus, this.showActionWidget})
+  const GameAction(
+      {Key key, this.playerModel, this.footerStatus, this.showActionWidget})
       : super(key: key);
 
   @override
@@ -43,8 +44,8 @@ class GameAction extends StatelessWidget {
     BuildContext context,
   }) {
     switch (footerStatus) {
-      case FooterStatus.Prompt:
-        return _buildBuyInPromptButton(context);
+      // case FooterStatus.Prompt:
+      //   return _buildBuyInPromptButton(context);
       default:
         return Container();
     }

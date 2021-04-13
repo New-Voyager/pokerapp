@@ -8,6 +8,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.2.1"
+  animated_text_kit:
+    dependency: "direct main"
+    description:
+      name: animated_text_kit
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.1.1"
   archive:
     dependency: transitive
     description:
@@ -52,6 +59,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.17.0"
+  blinking_text:
+    dependency: "direct main"
+    description:
+      name: blinking_text
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.1+2"
   bloc:
     dependency: transitive
     description:
@@ -248,6 +262,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.3.0"
+  flutter_speed_dial:
+    dependency: "direct main"
+    description:
+      name: flutter_speed_dial
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.0.5"
   flutter_svg:
     dependency: "direct main"
     description:
@@ -585,6 +606,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.99"
+  sliding_up_panel:
+    dependency: "direct main"
+    description:
+      name: sliding_up_panel
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.2"
   source_span:
     dependency: transitive
     description:
@@ -726,5 +754,5 @@ packages:
     source: hosted
     version: "0.0.1+2"
 sdks:
-  dart: ">=2.12.0-259.9.beta <3.0.0"
+  dart: ">=2.12.0 <3.0.0"
   flutter: ">=1.24.0-10.1.pre"

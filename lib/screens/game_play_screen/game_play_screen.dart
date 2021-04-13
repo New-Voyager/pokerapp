@@ -3,6 +3,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:dart_nats/dart_nats.dart' as nats;
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/screens/game_context_screen/game_chat/chat.dart';
@@ -15,15 +16,19 @@ import 'package:pokerapp/screens/game_play_screen/notifications/notifications.da
 import 'package:pokerapp/services/agora/agora.dart';
 import 'package:pokerapp/services/app/player_service.dart';
 import 'package:pokerapp/services/game_play/action_services/game_action_service/game_action_service.dart';
+import 'package:pokerapp/services/game_play/action_services/game_action_service/util_action_services.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_service/hand_action_service.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_service/sub_services/result_service.dart';
-import 'package:pokerapp/services/game_play/game_chat_service.dart';
+import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/services/game_play/graphql/game_service.dart';
 import 'package:pokerapp/services/game_play/utils/audio.dart';
 import 'package:pokerapp/services/game_play/utils/audio_buffer.dart';
 import 'package:pokerapp/services/test/test_service.dart';
 import 'package:provider/provider.dart';
+
+import '../../services/test/test_service.dart';
+import 'game_play_screen_util_methods.dart';
 
 /*
 * This is the screen which will have contact with the NATS server
@@ -42,6 +47,7 @@ class GamePlayScreen extends StatefulWidget {
 }
 
 class _GamePlayScreenState extends State<GamePlayScreen> {
+  bool _initiated;
   GameComService _gameComService;
   BuildContext _providerContext;
   PlayerInfo _currentPlayer;
@@ -49,6 +55,8 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
   bool liveAudio = false;
   AudioPlayer _audioPlayer;
   Agora agora;
+  GameInfoModel _gameInfoModel;
+
   /* _init function is run only for the very first time,
   * and only once, the initial game screen is populated from here
   * also the NATS channel subscriptions are done here */
@@ -56,11 +64,15 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
     GameInfoModel gameInfo;
 
     if (TestService.isTesting) {
-      debugPrint('Loading game from test data');
-      // load test data
-      await TestService.load();      
-      gameInfo = TestService.gameInfo;
-      this._currentPlayer = TestService.currentPlayer;
+      try {
+        debugPrint('Loading game from test data');
+        // load test data
+        await TestService.load();
+        gameInfo = TestService.gameInfo;
+        this._currentPlayer = TestService.currentPlayer;
+      } catch (e) {
+        print('test data loading error: $e');
+      }
     } else {
       gameInfo = await GameService.getGameInfo(widget.gameCode);
       this._currentPlayer = await PlayerService.getMyInfo(widget.gameCode);
@@ -96,6 +108,8 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
 
   Future<GameInfoModel> _init() async {
     GameInfoModel _gameInfoModel = await _fetchGameInfo();
+
+    if (_initiated == true) return _gameInfoModel;
 
     _gameComService = GameComService(
       currentPlayer: this._currentPlayer,
@@ -185,15 +199,22 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
     });
 
     // _gameComService.chat.listen(onText: this.onText);
-    _gameComService.chat
-        .listen(onAudio: this.onAudio, onAnimation: this.onAnimation);
+    _gameComService.gameMessaging.listen(
+      onCards: this.onCards,
+      onText: this.onText,
+      onAudio: this.onAudio,
+      onAnimation: this.onAnimation,
+    );
 
+    _initiated = true;
     return _gameInfoModel;
   }
 
   /* dispose method for closing connections and un subscribing to channels */
   @override
   void dispose() {
+    TestService.isTesting = false;
+
     agora?.disposeObject();
     _gameComService?.dispose();
     Audio.dispose(context: _providerContext);
@@ -204,6 +225,12 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
     }
     super.dispose();
   }
+
+  void onCards(ChatMessage message) =>
+      UtilActionServices.showCardsOfFoldedPlayers(
+        _providerContext,
+        message,
+      );
 
   void onText(ChatMessage message) {
     log(message.text);
@@ -237,13 +264,31 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
   }
 
   Future onJoinGame(int seatPos) async {
-    await GamePlayScreenUtilMethods.joinGame(
-      seatPos: seatPos,
-      gameCode: widget.gameCode,
-    );
+    final gameState = GameState.getState(_providerContext);
+    final me = gameState.me(_providerContext);
 
-    // join audio
-    await joinAudio();
+    if (me != null && me.seatNo != null && me.seatNo != 0) {
+      log('Player ${me.name} switches seat to $seatPos');
+      await GameService.switchSeat(widget.gameCode, seatPos);
+    } else {
+      await GamePlayScreenUtilMethods.joinGame(
+        seatPos: seatPos,
+        gameCode: widget.gameCode,
+      );
+
+      // join audio
+      await joinAudio();
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    /* the init method is invoked only once */
+    _init().then(
+      (gameInfoModel) => setState(() => _gameInfoModel = gameInfoModel),
+    );
   }
 
   @override
@@ -266,14 +311,20 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
       },
       child: SafeArea(
         child: Scaffold(
+          /* FIXME: THIS FLOATING ACTION BUTTON IS FOR SHOWING THE TESTS */
+          floatingActionButton: GamePlayScreenUtilMethods.floatingActionButton(
+            onReload: () {
+              // if (!TestService.isTesting) {
+              //   TestService.isTesting = true;
+              //   print('refreshing entire UI');
+              //   setState(() {});
+              // }
+            },
+          ),
           resizeToAvoidBottomInset: false,
           backgroundColor: Colors.black,
-          body: FutureBuilder<GameInfoModel>(
-            future: _init(),
-            initialData: null,
-            builder: (_, AsyncSnapshot<GameInfoModel> snapshot) {
-              GameInfoModel _gameInfoModel = snapshot.data;
-
+          body: Builder(
+            builder: (_) {
               // show a progress indicator if the game info object is null
               if (_gameInfoModel == null)
                 return Center(child: CircularProgressIndicator());
@@ -289,42 +340,54 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
               var dividerTotalHeight = MediaQuery.of(context).size.height / 6;
               double divider1 = 0.40 * dividerTotalHeight;
               final providers = GamePlayScreenUtilMethods.getProviders(
-                  gameInfoModel: _gameInfoModel,
-                  gameCode: widget.gameCode,
-                  currentPlayerInfo: this._currentPlayer,
-                  agora: agora,
-                  sendPlayerToHandChannel: _gameComService.sendPlayerToHandChannel,
-                );
+                gameMessagingService: _gameComService.gameMessaging,
+                gameInfoModel: _gameInfoModel,
+                gameCode: widget.gameCode,
+                currentPlayerInfo: this._currentPlayer,
+                agora: agora,
+                sendPlayerToHandChannel:
+                    _gameComService.sendPlayerToHandChannel,
+              );
               return MultiProvider(
                 providers: providers,
                 builder: (BuildContext context, _) {
                   this._providerContext = context;
 
+                  /* set proper context for test service */
+                  TestService.context = context;
 
                   // handle test code
                   if (TestService.isTesting) {
+                    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                      TestService.addBoardCards();
+                    });
+
+                    // TestService.showBets(_providerContext);
+
                     if (TestService.showResult) {
                       log('Show handresult');
-                      ResultService.handle(context: context, data: TestService.handResult);
+                      ResultService.handle(
+                          context: context, data: TestService.handResult);
                       log('Show handresult');
                     }
                   }
 
                   AudioBufferService.create().then(
-                      (Map<String, String> tmpAudioFiles) =>
-                          Provider.of<ValueNotifier<Map<String, String>>>(
-                            context,
-                            listen: false,
-                          ).value = tmpAudioFiles);
+                    (Map<String, String> tmpAudioFiles) =>
+                        Provider.of<ValueNotifier<Map<String, String>>>(
+                      context,
+                      listen: false,
+                    ).value = tmpAudioFiles,
+                  );
 
                   // check for the current user prompt, after the following tree is built
                   // waiting for a brief moment should suffice
-                  Future.delayed(
-                    AppConstants.buildWaitDuration,
-                    () => GamePlayScreenUtilMethods.checkForCurrentUserPrompt(
-                      context,
-                    ),
-                  );
+                  // Future.delayed(
+                  //   AppConstants.buildWaitDuration,
+                  //   () => GamePlayScreenUtilMethods.checkForCurrentUserPrompt(
+                  //     context,
+                  //   ),
+                  // );
 
                   /* This listenable provider takes care of showing or hiding the chat widget */
                   return ListenableProvider<ValueNotifier<bool>>(
@@ -382,7 +445,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                               vnChatVisibility.value
                                   ? Align(
                                       child: GameChat(
-                                        this._gameComService.chat,
+                                        this._gameComService.gameMessaging,
                                         () => toggleChatVisibility(context),
                                       ),
                                       alignment: Alignment.bottomCenter,

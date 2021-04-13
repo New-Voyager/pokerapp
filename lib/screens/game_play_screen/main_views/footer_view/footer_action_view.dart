@@ -79,19 +79,6 @@ class _FooterActionViewState extends State<FooterActionView> {
   * */
   void _actionTaken(BuildContext context) {
     assert(context != null);
-
-    // // put PlayerAction to null
-    // Provider.of<ValueNotifier<PlayerAction>>(
-    //   context,
-    //   listen: false,
-    // ).value = null;
-
-    // // change FooterStatus to NONE
-    // Provider.of<ValueNotifier<FooterStatus>>(
-    //   context,
-    //   listen: false,
-    // ).value = FooterStatus.None;
-
     final gameState = Provider.of<GameState>(context, listen: false);
     gameState.showAction(context, false);
   }
@@ -288,7 +275,6 @@ class _FooterActionViewState extends State<FooterActionView> {
             [],
       );
 
-
   Widget _buildSmallerRoundButton(Option o) => InkWell(
         onTap: () {
           _controller.text = o.amount.toStringAsFixed(0);
@@ -457,8 +443,8 @@ class _FooterActionViewState extends State<FooterActionView> {
             ? shrinkedBox
             : _showOptions
                 ? Container(
-                  color: Colors.black.withOpacity(0.65),
-                  child: Column(
+                    color: Colors.black.withOpacity(0.65),
+                    child: Column(
                       key: ValueKey('options'),
                       children: [
                         /* options */
@@ -491,7 +477,7 @@ class _FooterActionViewState extends State<FooterActionView> {
                         ),
                       ],
                     ),
-                )
+                  )
                 : shrinkedBox,
       );
 
@@ -507,5 +493,4 @@ class _FooterActionViewState extends State<FooterActionView> {
       ),
     );
   }
-
 }

@@ -35,14 +35,14 @@ class ActionStatusWidget extends StatelessWidget {
     // raise, bet -> red
     // check, call -> green
     return status == null
-          ? shrinkedSizedBox
-          : ClipRRect(
-              borderRadius: BorderRadius.circular(5.0),
-              child: Text(
-                '  '+ status+'  ',
-                style: getStatusTextStyle(status),
-              ),
-            );
+        ? shrinkedSizedBox
+        : ClipRRect(
+            borderRadius: BorderRadius.circular(5.0),
+            child: Text(
+              '  ' + status + '  ',
+              style: getStatusTextStyle(status),
+            ),
+          );
 
     // return AnimatedSwitcher(
     //   duration: AppConstants.popUpAnimationDuration,
@@ -63,9 +63,8 @@ class ActionStatusWidget extends StatelessWidget {
     //             style: getStatusTextStyle(status),
     //           ),
     //         ),
-    // );     
+    // );
   }
-
 
   static TextStyle getStatusTextStyle(String status) {
     Color statusColor = Colors.black; // default color be black
@@ -80,5 +79,5 @@ class ActionStatusWidget extends StatelessWidget {
     Color fgColor = Colors.white;
     return AppStyles.userPopUpMessageTextStyle
         .copyWith(fontSize: 10, color: fgColor, backgroundColor: statusColor);
-  }  
+  }
 }

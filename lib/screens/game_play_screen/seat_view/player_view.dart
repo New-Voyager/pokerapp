@@ -7,6 +7,7 @@ import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
+import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_styles.dart';
@@ -22,20 +23,25 @@ import 'animating_widgets/fold_card_animating_widget.dart';
 import 'animating_widgets/stack_switch_seat_animating_widget.dart';
 import 'dealer_button.dart';
 import 'name_plate_view.dart';
+import 'open_seat.dart';
 import 'user_view_util_widgets.dart';
 
+/* this contains the player positions <seat-no, position> mapping */
+Map<int, Offset> playerPositions = Map();
+
 class PlayerView extends StatelessWidget {
-  final GlobalKey globalKey;
   final Seat seat;
   final Alignment cardsAlignment;
   final Function(int) onUserTap;
   final GameComService gameComService;
+  final BoardAttributesObject boardAttributes;
+
   PlayerView({
     Key key,
-    @required this.globalKey,
     @required this.seat,
     @required this.onUserTap,
     @required this.gameComService,
+    @required this.boardAttributes,
     this.cardsAlignment = Alignment.centerRight,
   }) : super(key: key);
 
@@ -56,24 +62,48 @@ class PlayerView extends StatelessWidget {
         return;
       }
 
-      await showModalBottomSheet(
+      final jsonData = await showModalBottomSheet(
         context: context,
         shape: RoundedRectangleBorder(
-            borderRadius:
-                BorderRadius.vertical(top: Radius.circular(10))),
+            borderRadius: BorderRadius.vertical(top: Radius.circular(10))),
         builder: (context) {
           return ProfilePopup(
             seat: seat,
           );
         },
       );
-      gameComService.chat.sendAnimation(me.seatNo, seat.serverSeatPos, 'poop');
+
+      if (jsonData == null) return;
+
+      gameComService.gameMessaging
+          .sendAnimation(me.seatNo, seat.serverSeatPos, 'poop');
     }
+  }
+
+  Future<void> afterBuild() async {
+    final RenderBox object = seat.key.currentContext.findRenderObject();
+    final pos = object.localToGlobal(Offset(0, 0));
+    final size = object.size;
+    seat.screenPos = pos;
+    seat.size = size;
+
+    playerPositions[seat.serverSeatPos] = pos;
+
+    print('\n\n\n\nafter build: $playerPositions\n\n\n\n');
+
+    //
+    // debugPrint(
+    //   'Seat: ${seat.serverSeatPos} is built. Key: ${globalKey} Position: $pos Size: $size',
+    // );
   }
 
   @override
   Widget build(BuildContext context) {
-    // debugPrint('Rebuilding seat: ${seat.serverSeatPos}');
+    seat.key =
+        GlobalKey(debugLabel: 'Seat:${seat.serverSeatPos}'); //this.globalKey;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) => afterBuild);
+    //afterBuild();
 
     bool openSeat = seat.isOpen;
     bool isMe = seat.isMe;
@@ -81,7 +111,7 @@ class PlayerView extends StatelessWidget {
       context,
       listen: false,
     ).value;
-    
+
     bool showdown = false;
     if (footerStatus == FooterStatus.Result) {
       showdown = true;
@@ -95,16 +125,19 @@ class PlayerView extends StatelessWidget {
     // enable this line for debugging dealer position
     // userObject.playerType = PlayerType.Dealer;
 
-    final GameInfoModel gameInfo = Provider.of<ValueNotifier<GameInfoModel>>(context, listen: false).value; 
+    final GameInfoModel gameInfo =
+        Provider.of<ValueNotifier<GameInfoModel>>(context, listen: false).value;
     int actionTime = gameInfo.actionTime;
     String gameCode = gameInfo.gameCode;
     bool isDealer = false;
 
     if (!openSeat) {
-      if(seat.player.playerType == TablePosition.Dealer) {
+      if (seat.player.playerType == TablePosition.Dealer) {
         isDealer = true;
       }
     }
+
+    seat.seatBet.uiKey = GlobalKey();
 
     return DragTarget(
       onWillAccept: (data) {
@@ -113,11 +146,15 @@ class PlayerView extends StatelessWidget {
       },
       onAccept: (data) {
         // call the API to make the seat change
-        SeatChangeService.hostSeatChangeMove(gameCode, data, seat.serverSeatPos);
+        SeatChangeService.hostSeatChangeMove(
+          gameCode,
+          data,
+          seat.serverSeatPos,
+        );
       },
-      builder: (context, List<int> candidateData, rejectedData) {        
+      builder: (context, List<int> candidateData, rejectedData) {
         return InkWell(
-          onTap: () =>  this.onTap(context),
+          onTap: () => this.onTap(context),
           child: Stack(
             alignment: Alignment.center,
             children: [
@@ -138,24 +175,43 @@ class PlayerView extends StatelessWidget {
               // // main user body
               NamePlateWidget(
                 seat,
-                globalKey: globalKey,
+                globalKey: seat.key,
+                boardAttributes: boardAttributes,
               ),
 
               // result cards and show selected cards by a user
               Consumer<ValueNotifier<FooterStatus>>(
-                  builder: (_, valueNotifierFooterStatus, __) {
-                    return DisplayCardsWidget(seat, valueNotifierFooterStatus.value);
-                  },
-                ),                      
-              
+                builder: (
+                  _,
+                  valueNotifierFooterStatus,
+                  __,
+                ) {
+                  return DisplayCardsWidget(
+                    seat,
+                    valueNotifierFooterStatus.value,
+                  );
+                },
+              ),
+
               // player action text
-              Positioned(top:0, left: 0, child: ActionStatusWidget(seat, cardsAlignment)),
+              Positioned(
+                top: 0,
+                left: 0,
+                child: ActionStatusWidget(seat, cardsAlignment),
+              ),
 
               // player hole cards
-              PlayerCardsWidget(seat, this.cardsAlignment, seat.player?.noOfCardsVisible, showdown),
+              PlayerCardsWidget(
+                seat,
+                this.cardsAlignment,
+                seat.player?.noOfCardsVisible,
+                showdown,
+              ),
 
               // show dealer button, if user is a dealer
-              isDealer ? DealerButtonWidget(seat.serverSeatPos, isMe, GameType.HOLDEM)
+              isDealer
+                  ? DealerButtonWidget(
+                      seat.serverSeatPos, isMe, GameType.HOLDEM)
                   : shrinkedSizedBox,
 
               // clock
@@ -167,6 +223,7 @@ class PlayerView extends StatelessWidget {
 
               // /* building the chip amount widget */
               UserViewUtilWidgets.buildChipAmountWidget(
+                context: context,
                 seat: seat,
               ),
 
@@ -179,79 +236,38 @@ class PlayerView extends StatelessWidget {
   }
 }
 
-
-class OpenSeat extends StatelessWidget {
-  final int seatPos;
-  final Function(int) onUserTap;
-
-  const OpenSeat({
-    this.seatPos,
-    this.onUserTap,
-    Key key,
-  }) : super(key: key);
-
-  Widget _openSeat() {
-    return Padding(
-      padding: const EdgeInsets.all(5),
-      child: InkWell(
-        onTap: () {
-          log('Pressed $seatPos');
-          this.onUserTap(seatPos);
-        },
-        child: Text(
-          'Open $seatPos',
-          style: AppStyles.openSeatTextStyle,
-        ),
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-      return Container(
-          width: 70.0,
-          padding: const EdgeInsets.all(10.0),
-          child: _openSeat(),
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: Color(0XFF494444),
-          ),
-      ); 
-  }
-}
-
 class SeatNoWidget extends StatelessWidget {
   final Seat seat;
 
   const SeatNoWidget(this.seat);
-  
+
   @override
   Widget build(BuildContext context) {
     return Positioned(
-        bottom: 0,
-        left: 0,
-        child: Transform.translate(
-          offset: const Offset(0.0, -15.0),
-          child: Container(
-            padding: const EdgeInsets.all(8.0),
-            decoration: BoxDecoration(
-              color: const Color(0xff474747),
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: const Color(0xff14e81b),
-                width: 1.0,
-              ),
+      bottom: 0,
+      left: 0,
+      child: Transform.translate(
+        offset: const Offset(0.0, -15.0),
+        child: Container(
+          padding: const EdgeInsets.all(8.0),
+          decoration: BoxDecoration(
+            color: const Color(0xff474747),
+            shape: BoxShape.circle,
+            border: Border.all(
+              color: const Color(0xff14e81b),
+              width: 1.0,
             ),
-            child: Text(
-              seat.serverSeatPos.toString(),
-              style: AppStyles.itemInfoTextStyle.copyWith(
-                color: Colors.white,
-              ),
+          ),
+          child: Text(
+            seat.serverSeatPos.toString(),
+            style: AppStyles.itemInfoTextStyle.copyWith(
+              color: Colors.white,
             ),
           ),
         ),
-      );
-    }
+      ),
+    );
+  }
 }
 
 class PlayerCardsWidget extends StatelessWidget {
@@ -260,15 +276,15 @@ class PlayerCardsWidget extends StatelessWidget {
   final bool showdown;
   final int noCards;
 
-  const PlayerCardsWidget(this.seat, this.alignment, this.noCards, this.showdown);
-  
+  const PlayerCardsWidget(
+      this.seat, this.alignment, this.noCards, this.showdown);
+
   @override
   Widget build(BuildContext context) {
-
     // if (seat.folded ?? false) {
-    //   return shrinkedSizedBox;  
+    //   return shrinkedSizedBox;
     // }
- 
+
     double shiftMultiplier = 1.0;
     if (this.noCards == 5) shiftMultiplier = 1.7;
     if (this.noCards == 4) shiftMultiplier = 1.45;
@@ -280,27 +296,21 @@ class PlayerCardsWidget extends StatelessWidget {
           25.0 *
           (seat.cards?.length ?? 0.0);
     else {
-      xOffset = (alignment == Alignment.centerLeft
-          ? 35.0
-          : -45.0 * shiftMultiplier);
+      xOffset =
+          (alignment == Alignment.centerLeft ? 35.0 : -45.0 * shiftMultiplier);
       xOffset = -45.0 * shiftMultiplier;
-
     }
     if (showdown) {
       return Transform.translate(
-        offset: Offset(
-          xOffset * 0.50,
-          45.0,
-        ),
-        child: AnimatedSwitcher(
-          duration: AppConstants.fastAnimationDuration,
-          child: Transform.scale(
-            scale: 1.0,
-            child: const SizedBox.shrink()
+          offset: Offset(
+            xOffset * 0.50,
+            45.0,
           ),
-        )
-      );
-    } else if(seat.folded ?? false) {
+          child: AnimatedSwitcher(
+            duration: AppConstants.fastAnimationDuration,
+            child: Transform.scale(scale: 1.0, child: const SizedBox.shrink()),
+          ));
+    } else if (seat.folded ?? false) {
       return Transform.translate(
         offset: Offset(
           xOffset * 0.50,
@@ -309,26 +319,23 @@ class PlayerCardsWidget extends StatelessWidget {
         child: AnimatedSwitcher(
           duration: AppConstants.fastAnimationDuration,
           child: Transform.scale(
-            scale: 1.0,
-            child: FoldCardAnimatingWidget(seat: seat)
-          ),
+              scale: 1.0, child: FoldCardAnimatingWidget(seat: seat)),
         ),
       );
     } else {
       //log('Hole cards');
       return Transform.translate(
-        offset: Offset(
-          xOffset * 0.50,
-          25.0,
-        ),
-        child: AnimatedSwitcher(
-          duration: AppConstants.fastAnimationDuration,
-          child: Transform.scale(
-            scale: 0.75,
-            child: HiddenCardView(noOfCards: this.noCards),
+          offset: Offset(
+            xOffset * 0.50,
+            25.0,
           ),
-        )
-      );
+          child: AnimatedSwitcher(
+            duration: AppConstants.fastAnimationDuration,
+            child: Transform.scale(
+              scale: 0.75,
+              child: HiddenCardView(noOfCards: this.noCards),
+            ),
+          ));
     }
   }
 }

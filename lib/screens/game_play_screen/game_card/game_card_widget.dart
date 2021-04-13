@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
@@ -11,15 +9,18 @@ import 'package:pokerapp/resources/app_styles.dart';
 class GameCardWidget extends StatelessWidget {
   final CardObject card;
   final bool grayOut;
-  double widthRatio;
-  double width;
+  final double widthRatio;
+  // double width;
+  // double height;
   final bool back;
-  double height;
   final bool isCardVisible;
-
+  final bool marked;
+  final Function onMarkTapCallback;
 
   GameCardWidget({
     @required this.card,
+    this.onMarkTapCallback,
+    this.marked = false,
     this.grayOut = false,
     this.widthRatio = 1.5,
     this.back = false,
@@ -27,13 +28,13 @@ class GameCardWidget extends StatelessWidget {
   });
 
   Widget getCard(TextStyle cardTextStyle, TextStyle suitTextStyle) {
-
     return Stack(
       children: [
+        /* center suit */
         Align(
           child: Container(
             height: 220 / 3,
-            width:  170 / 3,
+            width: 170 / 3,
             child: Center(
               child: RichText(
                 text: TextSpan(
@@ -59,52 +60,92 @@ class GameCardWidget extends StatelessWidget {
             ]
           ),
         ),top: 5,left: 5,),*/
-        Positioned(child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(card.label == 'T' ? '10' : card.label,style: cardTextStyle,),
-            Text(card.suit ?? AppConstants.redHeart,style: suitTextStyle.copyWith(fontSize: 11),),
-          ],
-        ),top: 5,left: 5,),
-        Positioned(child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(card.label == 'T' ? '10' : card.label,style: cardTextStyle,),
-            Text(card.suit ?? AppConstants.redHeart,style: suitTextStyle.copyWith(fontSize: 11),),
-          ],
-        ),bottom: 5,right: 5,),
-      ],
-    );
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Expanded(
-          flex: 7,
-          child: FittedBox(
-            child: Text(
-              card.label == 'T' ? '10' : card.label,
-              style: cardTextStyle,
-              textAlign: TextAlign.center,
+
+        /* top left suit */
+        Positioned(
+          child: InkWell(
+            onTap: onMarkTapCallback,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  card.label == 'T' ? '10' : card.label,
+                  style: cardTextStyle,
+                ),
+                Text(
+                  card.suit ?? AppConstants.redHeart,
+                  style: suitTextStyle.copyWith(fontSize: 11),
+                ),
+              ],
             ),
           ),
+          top: 5,
+          left: 5,
         ),
-        Expanded(
-          flex: 4,
-          child: FittedBox(
-            child: RichText(
-              text: TextSpan(
-                text: card.suit ?? AppConstants.redHeart,
-                style: suitTextStyle,
+
+        /* bottom right suit */
+        Positioned(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                card.label == 'T' ? '10' : card.label,
+                style: cardTextStyle,
               ),
-            ),
+              Text(
+                card.suit ?? AppConstants.redHeart,
+                style: suitTextStyle.copyWith(fontSize: 11),
+              ),
+            ],
           ),
+          bottom: 5,
+          right: 5,
+        ),
+
+        /* visible marker */
+        Positioned(
+          bottom: 5,
+          left: 5,
+          child: marked
+              ? Icon(
+                  Icons.visibility,
+                  color: Colors.green,
+                )
+              : const SizedBox.shrink(),
         ),
       ],
     );
+
+    // return Column(
+    //   mainAxisSize: MainAxisSize.min,
+    //   crossAxisAlignment: CrossAxisAlignment.center,
+    //   mainAxisAlignment: MainAxisAlignment.center,
+    //   children: [
+    //     Expanded(
+    //       flex: 7,
+    //       child: FittedBox(
+    //         child: Text(
+    //           card.label == 'T' ? '10' : card.label,
+    //           style: cardTextStyle,
+    //           textAlign: TextAlign.center,
+    //         ),
+    //       ),
+    //     ),
+    //     Expanded(
+    //       flex: 4,
+    //       child: FittedBox(
+    //         child: RichText(
+    //           text: TextSpan(
+    //             text: card.suit ?? AppConstants.redHeart,
+    //             style: suitTextStyle,
+    //           ),
+    //         ),
+    //       ),
+    //     ),
+    //   ],
+    // );
   }
 
   Widget emptyCard() {
@@ -117,8 +158,8 @@ class GameCardWidget extends StatelessWidget {
   }
 
   Widget buildCardWidget(BuildContext context) {
-    double cardWidth = 85;
-    double cardHeight = 110;
+    // double cardWidth = 85;
+    // double cardHeight = 110;
     TextStyle cardTextStyle = AppStyles.cardTextStyle.copyWith(
       fontSize: 12,
     );
@@ -147,27 +188,34 @@ class GameCardWidget extends StatelessWidget {
         color: card.color,
       );
     }
-    if (card.smaller) {
-      cardWidth = AppDimensions.cardWidth * 1.2;
-    } else {
-      cardWidth = 22;
-      cardHeight = 35;
-
-      // TODO: We need to revisit how to get width and height working with ratio
-      width = cardWidth + 10;
-      height = cardHeight + 10;
-    }
+    // if (card.smaller) {
+    //   cardWidth = AppDimensions.cardWidth * 1.2;
+    // } else {
+    //   cardWidth = 22;
+    //   cardHeight = 35;
+    //
+    //   // // TODO: We need to revisit how to get width and height working with ratio
+    //   // width = cardWidth + 10;
+    //   // height = cardHeight + 10;
+    // }
 
     Widget cardWidget = Container(
       height: 110,
       width: 85,
       foregroundDecoration: grayOut
           ? BoxDecoration(
-        color: Colors.black54,
-        backgroundBlendMode: BlendMode.darken,
-      )
+              color: Colors.black54,
+              backgroundBlendMode: BlendMode.darken,
+            )
           : null,
       decoration: BoxDecoration(
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.20),
+            blurRadius: 20.0,
+            spreadRadius: 10.0,
+          ),
+        ],
         borderRadius: BorderRadius.all(Radius.circular(5)),
         color: highlight ? highlightColor : Colors.white,
       ),
@@ -177,15 +225,13 @@ class GameCardWidget extends StatelessWidget {
     return cardWidget;
   }
 
-  Widget getCardUi(TextStyle cardTextStyle, TextStyle suitTextStyle){
-    if(this.card.empty){
+  Widget getCardUi(TextStyle cardTextStyle, TextStyle suitTextStyle) {
+    if (this.card.empty) {
       return emptyCard();
-    }else if(this.isCardVisible){
+    } else if (this.isCardVisible) {
       return getCard(cardTextStyle, suitTextStyle);
-    }else{
+    } else {
       return Image.asset(AppAssets.cardBackImage);
     }
   }
-
-
 }

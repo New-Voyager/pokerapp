@@ -53,11 +53,7 @@ class _GameOptionsState extends State<GameOptionsBottomSheet> {
           ),
           Expanded(
             child: selectedOptionIndex == 0
-                ? GameOption(
-                    widget.gameCode,
-                    widget.playerUuid,
-                    widget.isAdmin
-                  )
+                ? GameOption(widget.gameCode, widget.playerUuid, widget.isAdmin)
                 : selectedOptionIndex == 1
                     ? SingleChildScrollView(
                         child: FutureBuilder<List<GameModel>>(

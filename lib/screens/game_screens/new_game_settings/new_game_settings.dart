@@ -11,7 +11,6 @@ import 'package:pokerapp/services/game_play/graphql/game_service.dart';
 import 'package:pokerapp/widgets/custom_text_button.dart';
 import 'package:provider/provider.dart';
 
-
 class NewGameSettings extends StatefulWidget {
   final String clubCode;
   NewGameSettings(this.clubCode);

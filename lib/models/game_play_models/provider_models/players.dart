@@ -60,7 +60,7 @@ class Players extends ChangeNotifier {
 
     if (notify) {
       this.notifyAll();
-    }    
+    }
   }
 
   void clearForShowdown({bool notify = false}) {
@@ -122,6 +122,11 @@ class Players extends ChangeNotifier {
     }
   }
 
+  void updateTestBet(int coinAmount) {
+    for (int i = 0; i < _players.length; i++)
+      _players[i].coinAmount = coinAmount;
+  }
+
   void fireworkWinnerSilent(int seatNo) {
     int idx = _players.indexWhere((p) => p.seatNo == seatNo);
     if (idx != -1) _players[idx].showFirework = true;
@@ -177,11 +182,18 @@ class Players extends ChangeNotifier {
     _players[idx].coinAmount = amount;
   }
 
-  Future<void> moveCoinsToPot() async {
+  Future<void> moveCoinsToPot({int seatNo}) async {
     // debugPrint('moveCoinsToPot');
 
     /* move all the coins to the pot  */
     for (int i = 0; i < _players.length; i++) {
+      if (seatNo != null) {
+        if (_players[i].seatNo == seatNo) {
+          _players[i].animatingCoinMovement = true;
+          break;
+        }
+        continue;
+      }
       _players[i].animatingCoinMovement = true;
     }
     notifyListeners();
@@ -249,7 +261,9 @@ class Players extends ChangeNotifier {
 
   void removePlayerSilent(int seatNo) {
     int idx = _players.indexWhere((p) => p.seatNo == seatNo);
-    _players.removeAt(idx);
+    if (idx != -1) {
+      _players.removeAt(idx);
+    }
   }
 
   PlayerModel get me {
@@ -260,16 +274,24 @@ class Players extends ChangeNotifier {
     return tmp;
   }
 
-  bool get showBuyinPrompt {
-    if (this.me != null && this.me.stack == 0) {
-      return true;
-    }
-    return false;
-  }
+  // bool get showBuyinPrompt {
+  //   if (this.me != null && this.me.stack == 0) {
+  //     return true;
+  //   }
+  //   return false;
+  // }
 
   PlayerModel fromSeat(int seatNo) {
     int idx = _players.indexWhere((p) => p.seatNo == seatNo);
+    if (idx == -1) {
+      return null;
+    }
     return _players[idx];
+  }
+
+  void updatePlayersSilent(List<PlayerModel> players) {
+    this._players = players;
+    notifyAll();
   }
 
 }

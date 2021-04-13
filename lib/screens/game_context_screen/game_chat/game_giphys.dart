@@ -8,12 +8,12 @@ import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/app/gifhy_service.dart';
-import 'package:pokerapp/services/game_play/game_chat_service.dart';
+import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 
 import 'add_favourite_giphy.dart';
 
 class GameGiphies extends StatefulWidget {
-  final GameChatService chatService;
+  final GameMessagingService chatService;
   GameGiphies(this.chatService);
   @override
   _GameGiphiesState createState() => _GameGiphiesState();

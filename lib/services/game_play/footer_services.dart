@@ -30,11 +30,11 @@ class FooterServices {
       ),
     );
 
-    // change the footer view, if buy in is successful
-    if (status == true)
-      Provider.of<ValueNotifier<FooterStatus>>(
-        context,
-        listen: false,
-      ).value = FooterStatus.None;
+    // // change the footer view, if buy in is successful
+    // if (status == true)
+    //   Provider.of<ValueNotifier<FooterStatus>>(
+    //     context,
+    //     listen: false,
+    //   ).value = FooterStatus.None;
   }
 }

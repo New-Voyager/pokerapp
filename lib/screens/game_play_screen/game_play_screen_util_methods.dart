@@ -2,6 +2,7 @@ import 'dart:developer' as developer;
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/models/game_play_models/business/card_distribution_model.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
@@ -16,25 +17,109 @@ import 'package:pokerapp/models/game_play_models/provider_models/game_context.da
 import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/resources/card_back_assets.dart';
 import 'package:pokerapp/services/agora/agora.dart';
+import 'package:pokerapp/services/app/auth_service.dart';
+import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:pokerapp/services/game_play/graphql/game_service.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
+import '../../resources/app_colors.dart';
+import '../../services/test/test_service.dart';
+import '../../services/test/test_service.dart';
+
 class GamePlayScreenUtilMethods {
   GamePlayScreenUtilMethods._();
 
+  /* THIS SPEED DIAL IS JUST FOR SHOWING THE TEST BUTTONS */
+  static SpeedDial floatingActionButton({
+    Function onReload,
+  }) =>
+      SpeedDial(
+        onOpen: onReload,
+        overlayColor: Colors.black,
+        overlayOpacity: 0.1,
+        icon: Icons.all_inclusive_rounded,
+        children: [
+          SpeedDialChild(
+            child: Icon(
+              Icons.adb_rounded,
+              color: Colors.white,
+            ),
+            backgroundColor: Colors.red,
+            label: 'Add River / Turn Card',
+            onTap: () => TestService.addTurnOrRiverCard(),
+          ),
+          SpeedDialChild(
+            child: Icon(
+              Icons.adb_rounded,
+              color: Colors.white,
+            ),
+            backgroundColor: Colors.red,
+            label: 'Add Flop Cards',
+            onTap: () => TestService.addFlopCards(),
+          ),
+          SpeedDialChild(
+            child: Icon(
+              Icons.adb_rounded,
+              color: Colors.white,
+            ),
+            backgroundColor: Colors.red,
+            label: 'Clear Cards',
+            onTap: () => TestService.clearBoardCards(),
+          ),
+          SpeedDialChild(
+            child: Icon(
+              Icons.adb_rounded,
+              color: Colors.white,
+            ),
+            backgroundColor: Colors.red,
+            label: 'Simulate Bet Movement',
+            onTap: () => TestService.simulateBetMovement(),
+          ),
+          SpeedDialChild(
+            child: Icon(
+              Icons.adb_rounded,
+              color: Colors.white,
+            ),
+            backgroundColor: Colors.red,
+            label: 'Show Bets',
+            onTap: () => TestService.showBets(),
+          ),
+          SpeedDialChild(
+            child: Icon(
+              Icons.adb_rounded,
+              color: Colors.white,
+            ),
+            backgroundColor: Colors.red,
+            label: 'Move Pot to Player',
+            onTap: () => TestService.movePotToPlayer(),
+          ),
+          SpeedDialChild(
+            child: Icon(
+              Icons.adb_rounded,
+              color: Colors.white,
+            ),
+            backgroundColor: Colors.red,
+            label: 'Buyin Test',
+            onTap: () => TestService.buyInTest(),
+          ),
+        ],
+        backgroundColor: AppColors.appAccentColor,
+      );
+
   /* After the entire table is drawn, if the current player (isMe == true)
     * is waiting for buyIn,then show the footer prompt */
-  static void checkForCurrentUserPrompt(BuildContext context) {
-    final players =
-        Provider.of<GameState>(context, listen: false).getPlayers(context);
-    if (players.showBuyinPrompt) {
-      Provider.of<ValueNotifier<FooterStatus>>(
-        context,
-        listen: false,
-      ).value = FooterStatus.Prompt;
-    }
-  }
+  // static void checkForCurrentUserPrompt(BuildContext context) {
+  //   final players =
+  //       Provider.of<GameState>(context, listen: false).getPlayers(context);
+
+  //   if (players.showBuyinPrompt) {
+  //     Provider.of<ValueNotifier<FooterStatus>>(
+  //       context,
+  //       listen: false,
+  //     ).value = FooterStatus.Prompt;
+  //   }
+  // }
 
   static void startGame(String gameCode) async {
     developer.log('Starting the game');
@@ -67,6 +152,7 @@ class GamePlayScreenUtilMethods {
   /* provider method, returns list of all the providers used in the below hierarchy */
   static List<SingleChildWidget> getProviders({
     @required GameInfoModel gameInfoModel,
+    @required GameMessagingService gameMessagingService,
     PlayerInfo currentPlayerInfo,
     @required String gameCode,
     @required Agora agora,
@@ -74,9 +160,12 @@ class GamePlayScreenUtilMethods {
   }) {
     // initialize game state object
     final gameState = GameState();
+
     gameState.initialize(
-      players: gameInfoModel.playersInSeats,
+      gameCode: gameCode,
       gameInfo: gameInfoModel,
+      uuid: currentPlayerInfo.uuid,
+      gameMessagingService: gameMessagingService,
     );
 
     var providers = [
@@ -114,7 +203,6 @@ class GamePlayScreenUtilMethods {
           player: currentPlayerInfo,
         ),
       ),
-
       Provider<GameState>(
         create: (_) => gameState,
       ),

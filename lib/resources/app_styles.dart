@@ -5,6 +5,21 @@ import 'package:pokerapp/resources/app_assets.dart';
 import 'app_colors.dart';
 
 class AppStyles {
+
+ static const stackPopUpTextStyle = TextStyle(
+    color: AppColors.lightGrayColor,
+    fontSize: 12.0,
+    fontFamily: AppAssets.fontFamilyLato,
+    fontWeight: FontWeight.w400,
+  );
+
+
+  static const titleBarTextStyle = TextStyle(
+    color: AppColors.appAccentColor,
+    fontSize: 14.0,
+    fontFamily: AppAssets.fontFamilyLato,
+    fontWeight: FontWeight.w600,
+  );
   static const cardTextStyle = TextStyle(
     fontSize: 20.0,
     fontWeight: FontWeight.w700,
@@ -40,7 +55,7 @@ class AppStyles {
   );
 
   static const footerResultTextStyle4 = TextStyle(
-    fontSize: 14.0,
+    fontSize: 18.0,
     color: const Color(0xffCEE5F1),
     fontFamily: AppAssets.fontFamilyLato,
   );

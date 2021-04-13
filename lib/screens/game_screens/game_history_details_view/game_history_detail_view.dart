@@ -5,6 +5,7 @@ import 'package:pokerapp/models/hand_history_model.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
+import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/game_screens/game_history_details_view/stack_chart_view.dart';
 import 'package:pokerapp/services/app/game_service.dart';
@@ -65,12 +66,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
         title: Text(
           "Games",
           textAlign: TextAlign.left,
-          style: TextStyle(
-            color: AppColors.appAccentColor,
-            fontSize: 14.0,
-            fontFamily: AppAssets.fontFamilyLato,
-            fontWeight: FontWeight.w600,
-          ),
+          style: AppStyles.titleBarTextStyle,
         ),
       ),
       body: !loadingDone
@@ -337,8 +333,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
             ),
             Expanded(
               child: Visibility(
-                child:
-                !_gameDetail.playedGame
+                child: !_gameDetail.playedGame
                     ? Text(
                         "No Data",
                         style: TextStyle(
@@ -348,8 +343,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
                           fontWeight: FontWeight.w400,
                         ),
                       )
-                    :
-                HandsPieChart(this._gameDetail.handsData),
+                    : HandsPieChart(this._gameDetail.handsData),
                 visible: loadingDone,
               ),
             )
@@ -359,65 +353,61 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
     );
   }
 
-
   Widget stackTile() {
     if (loadingDone) {
       // loading done
       print(_gameDetail.stack);
     }
     return GestureDetector(
-      onTap: () =>  Navigator.pushNamed(context,
-        Routes.pointsLineChart,
-        arguments: _gameDetail
-      ),
+      onTap: () => Navigator.pushNamed(context, Routes.pointsLineChart,
+          arguments: _gameDetail),
       child: Container(
-      height: 150.0,
-      decoration: BoxDecoration(
-        color: Color(0xff313235),
-        borderRadius: BorderRadius.all(
-          Radius.circular(AppDimensions.cardRadius),
+        height: 150.0,
+        decoration: BoxDecoration(
+          color: Color(0xff313235),
+          borderRadius: BorderRadius.all(
+            Radius.circular(AppDimensions.cardRadius),
+          ),
         ),
-      ),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  "Stack",
-                  style: TextStyle(
-                    fontFamily: AppAssets.fontFamilyLato,
-                    color: Colors.white,
-                    fontSize: 14.0,
-                    fontWeight: FontWeight.w400,
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    "Stack",
+                    style: TextStyle(
+                      fontFamily: AppAssets.fontFamilyLato,
+                      color: Colors.white,
+                      fontSize: 14.0,
+                      fontWeight: FontWeight.w400,
+                    ),
                   ),
                 ),
-              ),
-            ],
-          ),
-          Visibility(
-            child: Expanded(
-                flex: 1,
-                child:
-                !_gameDetail.playedGame
-                    ? Text(
-                        "No Data",
-                        style: TextStyle(
-                          fontFamily: AppAssets.fontFamilyLato,
-                          color: Colors.white38,
-                          fontSize: 14.0,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      )
-                    :
-                StackChartView(_gameDetail.stack)),
-            // PointsLineChart()),
-            visible: loadingDone,
-          ),
-        ],
+              ],
+            ),
+            Visibility(
+              child: Expanded(
+                  flex: 1,
+                  child: !_gameDetail.playedGame
+                      ? Text(
+                          "No Data",
+                          style: TextStyle(
+                            fontFamily: AppAssets.fontFamilyLato,
+                            color: Colors.white38,
+                            fontSize: 14.0,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        )
+                      : StackChartView(_gameDetail.stack)),
+              // PointsLineChart()),
+              visible: loadingDone,
+            ),
+          ],
+        ),
       ),
-    ),);
+    );
   }
 
   Widget balanceTile() {

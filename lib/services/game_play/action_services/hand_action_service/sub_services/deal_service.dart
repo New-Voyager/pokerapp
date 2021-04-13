@@ -52,7 +52,6 @@ class DealService {
         // wait for the animation to finish
         await Future.delayed(AppConstants.cardDistributionAnimationDuration);
 
-
         if (seatNo == mySeatNo) {
           // this is me - give me my cards one by one
           players.updateCardSilent(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:pokerapp/screens/game_play_screen/card_views/community_card_view.dart';
+import 'package:pokerapp/screens/game_play_screen/card_views/community_cards_view/community_card_view.dart';
+import 'package:pokerapp/screens/game_play_screen/card_views/community_cards_view/community_cards_view.dart';
 import 'package:pokerapp/widgets/card_view.dart';
 
 enum CardFace {
@@ -57,25 +58,25 @@ class CardObject {
 
   bool isEmpty() => this.empty;
 
-  void cardShowFront() {
-    if (cardFace == CardFace.FRONT) return;
-    flipCard();
-  }
+  // void cardShowFront() {
+  //   if (cardFace == CardFace.FRONT) return;
+  //   flipCard();
+  // }
 
-  void cardShowBack() {
-    if (cardFace == CardFace.BACK) return;
-    flipCard();
-  }
+  // void cardShowBack() {
+  //   if (cardFace == CardFace.BACK) return;
+  //   flipCard();
+  // }
 
-  void flipCard() {
-    if (cardFace == CardFace.BACK)
-      cardFace = CardFace.FRONT;
-    else
-      cardFace = CardFace.BACK;
-    if (this.isCommunity) {
-      this.communityCardView.flipCard();
-    }
-  }
+  // void flipCard() {
+  //   if (cardFace == CardFace.BACK)
+  //     cardFace = CardFace.FRONT;
+  //   else
+  //     cardFace = CardFace.BACK;
+  //   if (this.isCommunity) {
+  //     this.communityCardView.flipCard();
+  //   }
+  // }
 
   Widget get widget {
     if (this.isCommunity) {
@@ -84,6 +85,8 @@ class CardObject {
       return this.cardView;
     }
   }
+
+  String get cardHash => '$suit:$label';
 
   @override
   String toString() =>

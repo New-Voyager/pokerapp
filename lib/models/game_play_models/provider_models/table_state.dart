@@ -12,16 +12,16 @@ class TableState extends ChangeNotifier {
   List<CardObject> _board1;
   List<CardObject> _board2;
 
-  // animation variables
-  bool _animateBoard1Flop;
-  bool _animateBoard1Turn;
-  bool _animateBoard1River;
-  bool _animateBoard1;         // all the 5 cards (run it twice)
-
-  bool _animateBoard2Flop;
-  bool _animateBoard2Turn;
-  bool _animateBoard2River;
-  bool _animateBoard2;         // all the 5 cards (run it twice)
+  // // animation variables
+  // bool _animateBoard1Flop;
+  // bool _animateBoard1Turn;
+  // bool _animateBoard1River;
+  // bool _animateBoard1; // all the 5 cards (run it twice)
+  //
+  // bool _animateBoard2Flop;
+  // bool _animateBoard2Turn;
+  // bool _animateBoard2River;
+  // bool _animateBoard2; // all the 5 cards (run it twice)
 
   TableState({
     String tableStatus,
@@ -37,18 +37,18 @@ class TableState extends ChangeNotifier {
   }
 
   void clear() {
-    _board1 = [];
-    _board2 = [];
-    _potChips = [];
+    _board1?.clear();
+    _board2?.clear();
+    _potChips?.clear();
     _potUpdatesChips = null;
-    _animateBoard1 = false;
-    _animateBoard1Flop = false;
-    _animateBoard1Turn = false;
-    _animateBoard1River = false;
-    _animateBoard2 = false;
-    _animateBoard2Flop = false;
-    _animateBoard2Turn = false;
-    _animateBoard2River = false;
+    // _animateBoard1 = false;
+    // _animateBoard1Flop = false;
+    // _animateBoard1Turn = false;
+    // _animateBoard1River = false;
+    // _animateBoard2 = false;
+    // _animateBoard2Flop = false;
+    // _animateBoard2Turn = false;
+    // _animateBoard2River = false;
   }
 
   void notifyAll() => notifyListeners();
@@ -83,11 +83,12 @@ class TableState extends ChangeNotifier {
   //   this.cards.last.flipCard();
   // }
 
-  void setBoard(int boardIndex, List<CardObject> cards) {
+  void setBoardCards(int boardIndex, List<CardObject> cards) {
     if (boardIndex == 1) {
-      if (this._board1.length >= 3) {
-        return;
-      }
+      // WHY THIS? DOES'NT MAKE SENSE WITH THE NEXT IF cards.length > 5 it will never be reached
+      // if (this._board1.length >= 3) {
+      //   return;
+      // }
       if (cards.length > 5) {
         this._board1 = cards.sublist(0, 5);
       } else {
@@ -96,96 +97,102 @@ class TableState extends ChangeNotifier {
     }
   }
 
-  void flop(int boardIndex, List<CardObject> cards) {
+  void addFlopCards(int boardIndex, List<CardObject> cards) {
+    if (_board1 == null) _board1 = [];
+    _board1.clear();
+
     if (boardIndex == 1) {
       if (this._board1.length >= 3) {
         return;
       }
-      this._board1 = cards;
+      this._board1.addAll(cards);
     }
   }
 
-  void turn(int boardIndex, CardObject card) {
+  void addTurnOrRiverCard(int boardIndex, CardObject card) {
+    if (_board1 == null) return;
+
     if (boardIndex == 1) {
-      if (this._board1.length >= 4) {
+      /* prevent calling this method, if there are less than 4 cards */
+      if (this._board1.length < 3 || this._board1.length == 5) {
         return;
       }
       this._board1.add(card);
     }
   }
 
-  void river(int boardIndex, CardObject card) {
-    if (boardIndex == 1) {
-      if (this._board1.length >= 5) {
-        return;
-      }
-      this._board1.add(card);
-    }
-  }
-
-  void setAnimateBoard1(bool animate) {
-    this._animateBoard1 = animate;
-  }
-
-  void setAnimateBoard1Flop(bool animate) {
-    this._animateBoard1Flop = animate;
-  }
-
-  void setAnimateBoard1Turn(bool animate) {
-    this._animateBoard1Turn = animate;
-  }
-
-  void setAnimateBoard1River(bool animate) {
-    this._animateBoard1River = animate;
-  }
-
-  void setAnimateBoard2(bool animate) {
-    this._animateBoard2 = animate;
-  }
-
-  void setAnimateBoard2Flop(bool animate) {
-    this._animateBoard2Flop = animate;
-  }
-
-  void setAnimateBoard2Turn(bool animate) {
-    this._animateBoard2Turn = animate;
-  }
-
-  void setAnimateBoard2River(bool animate) {
-    this._animateBoard2River = animate;
-  }
-
-  get animateBoard1 {
-    return this._animateBoard1;
-  }
-
-  get animateBoard1Flop {
-    return this._animateBoard1Flop;
-  }
-
-  get animateBoard1Turn {
-    return this._animateBoard1Turn;
-  }
-
-  get animateBoard1River {
-    return this._animateBoard1River;
-  }
-
-  get animateBoard2 {
-    return this._animateBoard2;
-  }
-
-  get animateBoard2Flop {
-    return this._animateBoard2Flop;
-  }
-
-  get animateBoard2Turn {
-    return this._animateBoard2Turn;
-  }
-
-  get animateBoard2River {
-    return this._animateBoard2River;
-  }
+  // void river(int boardIndex, CardObject card) {
+  //   if (boardIndex == 1) {
+  //     if (this._board1.length >= 5) {
+  //       return;
+  //     }
+  //     this._board1.add(card);
+  //   }
+  // }
+  //
+  // void setAnimateBoard1(bool animate) {
+  //   this._animateBoard1 = animate;
+  // }
+  //
+  // void setAnimateBoard1Flop(bool animate) {
+  //   this._animateBoard1Flop = animate;
+  // }
+  //
+  // void setAnimateBoard1Turn(bool animate) {
+  //   this._animateBoard1Turn = animate;
+  // }
+  //
+  // void setAnimateBoard1River(bool animate) {
+  //   this._animateBoard1River = animate;
+  // }
+  //
+  // void setAnimateBoard2(bool animate) {
+  //   this._animateBoard2 = animate;
+  // }
+  //
+  // void setAnimateBoard2Flop(bool animate) {
+  //   this._animateBoard2Flop = animate;
+  // }
+  //
+  // void setAnimateBoard2Turn(bool animate) {
+  //   this._animateBoard2Turn = animate;
+  // }
+  //
+  // void setAnimateBoard2River(bool animate) {
+  //   this._animateBoard2River = animate;
+  // }
+  //
+  // get animateBoard1 {
+  //   return this._animateBoard1;
+  // }
+  //
+  // get animateBoard1Flop {
+  //   return this._animateBoard1Flop;
+  // }
+  //
+  // get animateBoard1Turn {
+  //   return this._animateBoard1Turn;
+  // }
+  //
+  // get animateBoard1River {
+  //   return this._animateBoard1River;
+  // }
+  //
+  // get animateBoard2 {
+  //   return this._animateBoard2;
+  // }
+  //
+  // get animateBoard2Flop {
+  //   return this._animateBoard2Flop;
+  // }
+  //
+  // get animateBoard2Turn {
+  //   return this._animateBoard2Turn;
+  // }
+  //
+  // get animateBoard2River {
+  //   return this._animateBoard2River;
+  // }
 
   List<CardObject> getBoard1Flop() {
     return this._board1.sublist(0, 3);

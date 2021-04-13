@@ -129,7 +129,7 @@ class GameReplayActionService {
     );
 
     /* FIXME: HARD CODED FOR BOARD 1 */
-    tableState.flop(
+    tableState.addFlopCards(
       1,
       action.actionData['cards']
           .map<CardObject>(
@@ -160,21 +160,28 @@ class GameReplayActionService {
 
     /* FIXME: HARD CODED FOR BOARD 0 */
 
-    if (isRiver) {
-      tableState.river(
-        1,
-        CardHelper.getCard(
-          action.actionData['cards'][0],
-        ),
-      );
-    } else {
-      tableState.turn(
-        1,
-        CardHelper.getCard(
-          action.actionData['cards'][0],
-        ),
-      );
-    }
+    tableState.addTurnOrRiverCard(
+      1,
+      CardHelper.getCard(
+        action.actionData['cards'][0],
+      ),
+    );
+
+    // if (isRiver) {
+    //   tableState.turnOrRiver(
+    //     1,
+    //     CardHelper.getCard(
+    //       action.actionData['cards'][0],
+    //     ),
+    //   );
+    // } else {
+    //   tableState.turnOrRiver(
+    //     1,
+    //     CardHelper.getCard(
+    //       action.actionData['cards'][0],
+    //     ),
+    //   );
+    // }
 
     tableState.notifyAll();
   }

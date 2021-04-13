@@ -27,7 +27,7 @@ class QueryCurrentHandService {
 
     var currentHandState = data['currentHandState'];
     // log('Current hand state: $currentHandState');
-    
+
     // current players cards
     String playerCards = currentHandState['playerCards'];
 
@@ -62,7 +62,8 @@ class QueryCurrentHandService {
           .map<int>((e) => int.parse(e.toString()))
           .toList();
       if (boardCardsNum != null)
-        tableState.setBoard(1, 
+        tableState.setBoardCards(
+          1,
           boardCardsNum.map<CardObject>((c) => CardHelper.getCard(c)).toList(),
         );
     } catch (e) {}
@@ -101,7 +102,12 @@ class QueryCurrentHandService {
 
     // next seat to ACT - handle using Next_Action service
     debugPrint('$currentHandState');
-    int nextSeatToAct = int.parse(currentHandState['nextSeatToAct'].toString());
+    int nextSeatToAct = int.parse(
+      currentHandState['nextSeatToAct']?.toString() ?? '-1',
+    );
+
+    if (nextSeatToAct == -1) return;
+
     int idx = players.players.indexWhere((p) => p.seatNo == nextSeatToAct);
 
     if (players.players[idx].isMe) {

@@ -16,33 +16,31 @@ class DisplayCardsWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     bool showDown = this.status == FooterStatus.Result;
 
-
     return Container(
       height: 19.50 * 3,
       child: AnimatedSwitcher(
         duration: AppConstants.fastAnimationDuration,
         child: showDown &&
-                (seat.player.cards != null &&
-                    seat.player.cards.isNotEmpty)
+                (seat.player.cards != null && seat.player.cards.isNotEmpty)
             ? Transform.scale(
-                    scale: 0.70,
-                    child: StackCardView(
-                      cards: seat.player.cards?.map<CardObject>(
-                            (int c) {
-                              List<int> highlightedCards =
-                                  seat.player.highlightCards;
-                              CardObject card = CardHelper.getCard(c);
+                scale: 0.70,
+                child: StackCardView(
+                  cards: seat.player.cards?.map<CardObject>(
+                        (int c) {
+                          List<int> highlightedCards =
+                              seat.player.highlightCards;
+                          CardObject card = CardHelper.getCard(c);
 
-                              card.smaller = true;
-                              if (highlightedCards?.contains(c) ??
-                                  false) card.highlight = true;
+                          card.smaller = true;
+                          if (highlightedCards?.contains(c) ?? false)
+                            card.highlight = true;
 
-                              return card;
-                            },
-                          )?.toList() ??
-                          [],
-                    ),
-                  )
+                          return card;
+                        },
+                      )?.toList() ??
+                      [],
+                ),
+              )
             : SizedBox.shrink(),
       ),
     );
