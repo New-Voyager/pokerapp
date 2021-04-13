@@ -1,4 +1,3 @@
-
 import 'dart:developer';
 
 import 'package:animated_text_kit/animated_text_kit.dart';
@@ -16,40 +15,42 @@ class OpenSeat extends StatelessWidget {
     Key key,
   }) : super(key: key);
 
-  Widget _openSeat() {
+  Widget _openSeat() => InkWell(
+        onTap: () {
+          log('Pressed $seatPos');
+          this.onUserTap(seatPos);
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(5),
 
-    return InkWell(
-          onTap: () {
-            log('Pressed $seatPos');
-            this.onUserTap(seatPos);
-          },
-          child: Padding(
-        padding: const EdgeInsets.all(5),
+          // child: AnimatedTextKit(
+          //     animatedTexts: [
+          //       ColorizeAnimatedText(
+          //         'Open $seatPos',
+          //         textStyle: AppColors.openSeatTextStyle,
+          //         colors: AppColors.openSeatColors,
+          //       ),
+          //     ],
+          //     isRepeatingAnimation: true,
+          //   ),
 
-        // child: AnimatedTextKit(
-        //     animatedTexts: [
-        //       ColorizeAnimatedText(
-        //         'Open $seatPos',
-        //         textStyle: AppColors.openSeatTextStyle,
-        //         colors: AppColors.openSeatColors,
-        //       ),
-        //     ],
-        //     isRepeatingAnimation: true,
-        //   ),
-          child: Text(
-            'Open $seatPos',
-            style: AppStyles.openSeatTextStyle,
+          child: FittedBox(
+            child: Text(
+              'Open $seatPos',
+              style: AppStyles.openSeatTextStyle,
+            ),
           ),
         ),
-    );
-  }
+      );
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 70.0,
-      padding: const EdgeInsets.all(10.0),
-      child: _openSeat(),
+      width: 45.0,
+      height: 45.0,
+      child: Center(
+        child: _openSeat(),
+      ),
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: Color(0XFF494444),

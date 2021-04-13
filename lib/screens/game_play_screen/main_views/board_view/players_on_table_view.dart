@@ -13,8 +13,12 @@ import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:provider/provider.dart';
 
-const double _lottieAnimationContainerSize = 75.0;
-const double _animatingAssetContainerSize = 25.0;
+const double _lottieAnimationContainerSize = 120.0;
+const double _animatingAssetContainerSize = 40.0;
+
+const Duration _durationWaitBeforeExplosion = const Duration(milliseconds: 50);
+const Duration _lottieAnimationDuration = const Duration(milliseconds: 1500);
+const Duration _animatingWidgetDuration = const Duration(milliseconds: 1200);
 
 // PlayersOnTableView encapsulates the players sitting on the table.
 // This view uses Stack layout to place the UserView on top of the table.
@@ -145,27 +149,37 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
   animationHandlers() {
     _lottieController = AnimationController(
       vsync: this,
-      duration: Duration(seconds: 2),
+      duration: _lottieAnimationDuration,
     );
 
     animationController = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 1000),
+      duration: _animatingWidgetDuration,
     );
 
     _lottieController.addListener(() {
+      /* after the lottie animation is completed reset everything */
       if (_lottieController.isCompleted) {
-        isLottieAnimationAnimating = false;
+        setState(() {
+          isLottieAnimationAnimating = false;
+        });
+
         _lottieController.reset();
       }
     });
 
     animationController.addListener(() {
       if (animationController.isCompleted) {
-        Future.delayed(Duration(milliseconds: 100), () {
+        /* wait before the explosion */
+        Future.delayed(_durationWaitBeforeExplosion, () {
           isAnimating = false;
           animationController.reset();
-          isLottieAnimationAnimating = true;
+
+          /* finally drive the lottie animation */
+
+          setState(() {
+            isLottieAnimationAnimating = true;
+          });
           _lottieController.forward();
         });
       }
@@ -196,8 +210,6 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
     from = positions[0];
     to = positions[1];
 
-    print('playerwidth ${playerWidgetSize.width}');
-
     /* get the middle point for the animated to player */
     final Offset toMod = Offset(
       to.dx + (playerWidgetSize.width / 2) - _animatingAssetContainerSize / 2,
@@ -207,10 +219,18 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
     animation = Tween<Offset>(
       begin: from,
       end: toMod,
-    ).animate(animationController);
+    ).animate(
+      CurvedAnimation(
+        parent: animationController,
+        curve: Curves.easeInOut,
+      ),
+    );
 
     // set the lottie animation position
-    lottieAnimationPosition = to;
+    lottieAnimationPosition = Offset(
+      to.dx + (playerWidgetSize.width / 2) - _lottieAnimationContainerSize / 2,
+      to.dy + (playerWidgetSize.height / 2) - _lottieAnimationContainerSize / 2,
+    );
 
     setState(() {
       isAnimating = true;
@@ -300,8 +320,6 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
           isLottieAnimationAnimating
               ? Transform.translate(
                   offset: lottieAnimationPosition,
-                  // top: lottieAnimationPosition.dy,
-                  // left: lottieAnimationPosition.dx,
                   child: Container(
                     height: _lottieAnimationContainerSize,
                     width: _lottieAnimationContainerSize,
