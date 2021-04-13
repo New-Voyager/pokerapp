@@ -18,6 +18,7 @@ import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/resources/card_back_assets.dart';
 import 'package:pokerapp/services/agora/agora.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
+import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:pokerapp/services/game_play/graphql/game_service.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
@@ -101,7 +102,7 @@ class GamePlayScreenUtilMethods {
             backgroundColor: Colors.red,
             label: 'Buyin Test',
             onTap: () => TestService.buyInTest(),
-          ),          
+          ),
         ],
         backgroundColor: AppColors.appAccentColor,
       );
@@ -111,7 +112,7 @@ class GamePlayScreenUtilMethods {
   // static void checkForCurrentUserPrompt(BuildContext context) {
   //   final players =
   //       Provider.of<GameState>(context, listen: false).getPlayers(context);
-        
+
   //   if (players.showBuyinPrompt) {
   //     Provider.of<ValueNotifier<FooterStatus>>(
   //       context,
@@ -151,6 +152,7 @@ class GamePlayScreenUtilMethods {
   /* provider method, returns list of all the providers used in the below hierarchy */
   static List<SingleChildWidget> getProviders({
     @required GameInfoModel gameInfoModel,
+    @required GameMessagingService gameMessagingService,
     PlayerInfo currentPlayerInfo,
     @required String gameCode,
     @required Agora agora,
@@ -158,10 +160,12 @@ class GamePlayScreenUtilMethods {
   }) {
     // initialize game state object
     final gameState = GameState();
+
     gameState.initialize(
       gameCode: gameCode,
       gameInfo: gameInfoModel,
       uuid: currentPlayerInfo.uuid,
+      gameMessagingService: gameMessagingService,
     );
 
     var providers = [

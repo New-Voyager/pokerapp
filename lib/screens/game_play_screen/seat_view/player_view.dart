@@ -75,7 +75,8 @@ class PlayerView extends StatelessWidget {
 
       if (jsonData == null) return;
 
-      gameComService.chat.sendAnimation(me.seatNo, seat.serverSeatPos, 'poop');
+      gameComService.gameMessaging
+          .sendAnimation(me.seatNo, seat.serverSeatPos, 'poop');
     }
   }
 
@@ -98,7 +99,8 @@ class PlayerView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    seat.key = GlobalKey(debugLabel: 'Seat:${seat.serverSeatPos}');//this.globalKey;
+    seat.key =
+        GlobalKey(debugLabel: 'Seat:${seat.serverSeatPos}'); //this.globalKey;
 
     WidgetsBinding.instance.addPostFrameCallback((_) => afterBuild);
     //afterBuild();

@@ -81,6 +81,7 @@ class _ReplayHandUtilScreenState extends State<ReplayHandUtilScreen> {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: GamePlayScreenUtilMethods.getProviders(
+        gameMessagingService: null,
         currentPlayerInfo: PlayerInfo(
           id: widget.playerID,
           uuid: widget.gameReplayController.playerUuid,

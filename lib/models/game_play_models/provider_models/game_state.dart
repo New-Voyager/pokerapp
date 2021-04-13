@@ -7,9 +7,11 @@ import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/enums/player_status.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/marked_cards.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/resources/app_constants.dart';
+import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:pokerapp/services/game_play/graphql/game_service.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
@@ -24,6 +26,8 @@ import 'table_state.dart';
  * All the other states in the game play screen are managed by this game state object.
  */
 class GameState {
+  ListenableProvider<MarkedCards> _markedCards;
+  Provider<GameMessagingService> _gameMessagingService;
   ListenableProvider<HandInfoState> _handInfo;
   ListenableProvider<TableState> _tableState;
   ListenableProvider<Players> _players;
@@ -37,7 +41,12 @@ class GameState {
   Map<int, Seat> _seats = Map<int, Seat>();
   String _currentPlayerUuid;
 
-  void initialize({String gameCode, GameInfoModel gameInfo, String uuid}) {
+  void initialize({
+    String gameCode,
+    GameInfoModel gameInfo,
+    String uuid,
+    GameMessagingService gameMessagingService,
+  }) {
     this._seats = Map<int, Seat>();
     this._gameInfo = gameInfo;
     this._gameCode = gameCode;
@@ -52,7 +61,11 @@ class GameState {
       tableState.updateGameStatusSilent(gameInfo.status);
       tableState.updateTableStatusSilent(gameInfo.tableStatus);
     }
-    // create hand info provider
+
+    this._gameMessagingService = Provider<GameMessagingService>(
+      create: (_) => gameMessagingService,
+    );
+
     this._handInfo =
         ListenableProvider<HandInfoState>(create: (_) => HandInfoState());
     this._tableState =
@@ -65,6 +78,9 @@ class GameState {
     this._myState = MyState();
     this._myStateProvider =
         ListenableProvider<MyState>(create: (_) => this._myState);
+    /* provider for holding the marked cards */
+    this._markedCards =
+        ListenableProvider<MarkedCards>(create: (_) => MarkedCards());
 
     List<PlayerModel> players = [];
     if (gameInfo.playersInSeats != null) {
@@ -72,7 +88,7 @@ class GameState {
     }
 
     final values = PlayerStatus.values;
-    for(var player in players) {
+    for (var player in players) {
       if (player.playerUuid == this._currentPlayerUuid) {
         player.isMe = true;
         if (player.status == null) {
@@ -81,7 +97,7 @@ class GameState {
         log('player status: ${player.status}');
         this._myState.status = values.firstWhere((e) => e.toString() == 'PlayerStatus.'+player.status);
       }
-      if(player.buyInTimeExpAt != null && player.stack == 0) {
+      if (player.buyInTimeExpAt != null && player.stack == 0) {
         // show buyin button/timer if the player is in middle of buyin
         player.showBuyIn = true;
       }
@@ -114,7 +130,7 @@ class GameState {
     this._gameInfo = gameInfo;
 
     // reset seats
-    for(var seat in this._seats.values) {
+    for (var seat in this._seats.values) {
       seat.player = null;
     }
 
@@ -125,8 +141,8 @@ class GameState {
     }
 
     // show buyin button/timer if the player is in middle of buyin
-    for(var player in playersInSeats) {
-      if(player.buyInTimeExpAt != null && player.stack == 0) {
+    for (var player in playersInSeats) {
+      if (player.buyInTimeExpAt != null && player.stack == 0) {
         player.showBuyIn = true;
       }
 
@@ -151,7 +167,6 @@ class GameState {
     }
   }
 
-
   void seatPlayer(int seatNo, PlayerModel player) {
     //debugPrint('SeatNo $seatNo player: ${player.name}');
     if (this._seats.containsKey(seatNo)) {
@@ -163,9 +178,8 @@ class GameState {
     return this._seats.values.toList();
   }
 
-  static GameState getState(BuildContext context) {
-    return Provider.of<GameState>(context, listen: false);
-  }
+  static GameState getState(BuildContext context) =>
+      Provider.of<GameState>(context, listen: false);
 
   void clear(BuildContext context) {
     final tableState = this.getTableState(context);
@@ -183,25 +197,35 @@ class GameState {
     handResult.notifyAll();
   }
 
-  HandInfoState getHandInfo(BuildContext context, {bool listen: false}) {
-    return Provider.of<HandInfoState>(context, listen: listen);
-  }
+  GameMessagingService getGameMessagingService(BuildContext context) =>
+      Provider.of<GameMessagingService>(
+        context,
+        listen: false,
+      );
 
-  TableState getTableState(BuildContext context, {bool listen: false}) {
-    return Provider.of<TableState>(context, listen: listen);
-  }
+  HandInfoState getHandInfo(BuildContext context, {bool listen = false}) =>
+      Provider.of<HandInfoState>(context, listen: listen);
 
-  Players getPlayers(BuildContext context, {bool listen: false}) {
-    return Provider.of<Players>(context, listen: listen);
-  }
+  TableState getTableState(BuildContext context, {bool listen = false}) =>
+      Provider.of<TableState>(context, listen: listen);
 
-  ActionState getActionState(BuildContext context, {bool listen: false}) {
-    return Provider.of<ActionState>(context, listen: listen);
-  }
+  Players getPlayers(BuildContext context, {bool listen = false}) =>
+      Provider.of<Players>(context, listen: listen);
 
-  HandResultState getResultState(BuildContext context, {bool listen: false}) {
-    return Provider.of<HandResultState>(context, listen: listen);
-  }
+  ActionState getActionState(BuildContext context, {bool listen = false}) =>
+      Provider.of<ActionState>(context, listen: listen);
+
+  HandResultState getResultState(BuildContext context, {bool listen = false}) =>
+      Provider.of<HandResultState>(context, listen: listen);
+
+  MarkedCards getMarkedCards(
+    BuildContext context, {
+    bool listen = false,
+  }) =>
+      Provider.of<MarkedCards>(
+        context,
+        listen: listen,
+      );
 
   MyState getMyState(BuildContext context, {bool listen: false}) {
     return Provider.of<MyState>(context, listen: listen);
@@ -257,6 +281,8 @@ class GameState {
       this._playerAction,
       this._handResult,
       this._myStateProvider,
+      this._markedCards,
+      this._gameMessagingService,
     ];
   }
 

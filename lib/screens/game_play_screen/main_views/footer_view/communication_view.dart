@@ -7,14 +7,14 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/services/agora/agora.dart';
-import 'package:pokerapp/services/game_play/game_chat_service.dart';
+import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:provider/provider.dart';
 
 //TODO: We need to get GameChatService here and record audio and send audio
 // via game chat channel for the games that don't use live audio.
 class CommunicationView extends StatefulWidget {
   final Function chatVisibilityChange;
-  final GameChatService chatService;
+  final GameMessagingService chatService;
 
   CommunicationView(this.chatVisibilityChange, this.chatService);
 

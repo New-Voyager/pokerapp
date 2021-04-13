@@ -9,9 +9,16 @@ import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/boar
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/name_plate_view.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/player_view.dart';
-import 'package:pokerapp/services/game_play/game_chat_service.dart';
+import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:provider/provider.dart';
+
+const double _lottieAnimationContainerSize = 120.0;
+const double _animatingAssetContainerSize = 40.0;
+
+// const Duration _durationWaitBeforeExplosion = const Duration(milliseconds: 10);
+const Duration _lottieAnimationDuration = const Duration(milliseconds: 1500);
+const Duration _animatingWidgetDuration = const Duration(milliseconds: 1200);
 
 // PlayersOnTableView encapsulates the players sitting on the table.
 // This view uses Stack layout to place the UserView on top of the table.
@@ -73,7 +80,7 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
   @override
   void initState() {
     // todo: commented onAnimation
-    widget.gameComService?.chat?.listen(onAnimation: this.onAnimation);
+    widget.gameComService?.gameMessaging?.listen(onAnimation: this.onAnimation);
     animationHandlers();
     _seatChangeAnimationHandler();
     // seatChangeAnimationHandler_old();
@@ -142,32 +149,40 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
   animationHandlers() {
     _lottieController = AnimationController(
       vsync: this,
-      duration: Duration(seconds: 2),
+      duration: _lottieAnimationDuration,
     );
 
     animationController = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 1000),
+      duration: _animatingWidgetDuration,
     );
 
     _lottieController.addListener(() {
+      /* after the lottie animation is completed reset everything */
       if (_lottieController.isCompleted) {
-        isLottieAnimationAnimating = false;
+        setState(() {
+          isLottieAnimationAnimating = false;
+        });
+
         _lottieController.reset();
       }
-      setState(() {});
     });
 
-    animationController.addListener(() {
+    animationController.addListener(() async {
       if (animationController.isCompleted) {
-        Future.delayed(Duration(milliseconds: 100), () {
-          isAnimating = false;
-          animationController.reset();
+        /* wait before the explosion */
+        // await Future.delayed(_durationWaitBeforeExplosion);
+
+        isAnimating = false;
+        animationController.reset();
+
+        /* finally drive the lottie animation */
+
+        setState(() {
           isLottieAnimationAnimating = true;
-          _lottieController.forward();
         });
+        _lottieController.forward();
       }
-      // setState(() {});
     });
   }
 
@@ -177,11 +192,11 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
     print(
       'Here ${message.messageId} from player ${message.fromSeat} to ${message.toSeat}. Animation id: ${message.animationId}',
     );
-  
+
     if (message.fromSeat == null || message.toSeat == null) {
       return;
     }
-  
+
     /*
     * find position of to and from user
     **/
@@ -189,34 +204,53 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
       fromSeat: message.fromSeat,
       toSeat: message.toSeat,
     );
-  
+
+    final Size playerWidgetSize = getPlayerWidgetSize(message.toSeat);
+
     from = positions[0];
     to = positions[1];
-    to = Offset(to.dx-25, to.dy+15);
-  
-    // width of the name plate widget
-    // final RenderBox toBox = from.key.currentContext.findRenderObject();
-    // final size = toBox.size;
-    // toOffset = Offset(toOffset.dx, toOffset.dy); // + size.height / 2);
+
+    /* get the middle point for the animated to player */
+    final Offset toMod = Offset(
+      to.dx + (playerWidgetSize.width / 2) - _animatingAssetContainerSize / 2,
+      to.dy + (playerWidgetSize.height / 2) - _animatingAssetContainerSize / 2,
+    );
 
     animation = Tween<Offset>(
       begin: from,
-      end: to,
-    ).animate(animationController);
-  
-    print('\n\n\n\n\n\n\n\nanimation value: $animation\n\n\n\n\n\n\n');
-    lottieAnimationPosition = to;
+      end: toMod,
+    ).animate(
+      CurvedAnimation(
+        parent: animationController,
+        curve: Curves.easeOut,
+      ),
+    );
+
+    // set the lottie animation position
+    lottieAnimationPosition = Offset(
+      to.dx + (playerWidgetSize.width / 2) - _lottieAnimationContainerSize / 2,
+      to.dy + (playerWidgetSize.height / 2) - _lottieAnimationContainerSize / 2,
+    );
 
     setState(() {
       isAnimating = true;
     });
-  
+
     animationController.forward();
   }
 
   Offset getPositionOffsetFromKey(GlobalKey key) {
     final RenderBox renderBox = key.currentContext.findRenderObject();
     return renderBox.localToGlobal(Offset.zero);
+  }
+
+  Size getPlayerWidgetSize(int seatNo) {
+    final gameState = GameState.getState(context);
+
+    final seat = gameState.getSeat(context, seatNo);
+    final RenderBox renderBox = seat.key.currentContext.findRenderObject();
+
+    return renderBox.size;
   }
 
   List<Offset> findPositionOfFromAndToUser({
@@ -233,16 +267,13 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
     final to = gameState.getSeat(context, toSeat);
 
     /* get from player position */
-    final fromPlayerWidgetPosition = getPositionOffsetFromKey(
-      from.key
-    );
+    final fromPlayerWidgetPosition = getPositionOffsetFromKey(from.key);
 
     /* get to player position */
-    final toPlayerWidgetPosition = getPositionOffsetFromKey(
-      to.key
-    );
+    final toPlayerWidgetPosition = getPositionOffsetFromKey(to.key);
 
-    final RenderBox parentBox = this._parentKey.currentContext.findRenderObject();
+    final RenderBox parentBox =
+        this._parentKey.currentContext.findRenderObject();
     Offset fromOffset = parentBox.globalToLocal(fromPlayerWidgetPosition);
     Offset toOffset = parentBox.globalToLocal(toPlayerWidgetPosition);
 
@@ -269,8 +300,8 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
           isAnimating && animation != null
               ? AnimatedBuilder(
                   child: Container(
-                    height: 25,
-                    width: 25,
+                    height: _animatingAssetContainerSize,
+                    width: _animatingAssetContainerSize,
                     decoration: BoxDecoration(
                       image: DecorationImage(
                         image: AssetImage("assets/animations/poop.png"),
@@ -287,12 +318,11 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
               : SizedBox.shrink(),
 
           isLottieAnimationAnimating
-              ? Positioned(
-                  top: lottieAnimationPosition.dy,
-                  left: lottieAnimationPosition.dx,
-                  child: SizedBox(
-                    height: 75,
-                    width: 75,
+              ? Transform.translate(
+                  offset: lottieAnimationPosition,
+                  child: Container(
+                    height: _lottieAnimationContainerSize,
+                    width: _lottieAnimationContainerSize,
                     child: Lottie.asset(
                       'assets/animations/poop.json',
                       controller: _lottieController,
@@ -419,13 +449,13 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
       );
     } else if (widget.maxPlayers == 8) {
       return positionUser_8(
-          isBoardHorizontal: isBoardHorizontal,
-          seat: seat,
-          heightOfBoard: heightOfBoard,
-          widthOfBoard: widthOfBoard,
-          seatPos: seatPos,
-          isPresent: isPresent,
-          onUserTap: onUserTap,
+        isBoardHorizontal: isBoardHorizontal,
+        seat: seat,
+        heightOfBoard: heightOfBoard,
+        widthOfBoard: widthOfBoard,
+        seatPos: seatPos,
+        isPresent: isPresent,
+        onUserTap: onUserTap,
       );
     }
 
