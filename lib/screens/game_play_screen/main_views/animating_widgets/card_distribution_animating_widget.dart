@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/business/card_distribution_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
@@ -32,7 +34,7 @@ class CardDistributionAnimatingWidget extends StatelessWidget {
     int seatNo,
   ) {
     if (_finalPositionCache.containsKey(seatNo)) {
-      print('final position from cache');
+      log('final position from cache');
       return _finalPositionCache[seatNo];
     }
 
