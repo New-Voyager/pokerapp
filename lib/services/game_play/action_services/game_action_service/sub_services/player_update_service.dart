@@ -6,6 +6,7 @@ import 'package:pokerapp/enums/player_status.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat_change_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/resources/app_constants.dart';
@@ -27,6 +28,7 @@ class PlayerUpdateService {
     int seatNo = playerUpdate['seatNo'];
     final player = gameState.fromSeat(context, seatNo);
     final status = playerUpdate['status'];
+    final newUpdate = playerUpdate['newUpdate'];
 
     // fixme: this is until all the player update messages have a newUpdate field
     if (player == null) {
@@ -40,6 +42,11 @@ class PlayerUpdateService {
     
     bool showBuyIn = false;
     if (status == AppConstants.PLAYING) {
+      showBuyIn = false;
+    }
+
+    if (newUpdate == AppConstants.NEW_BUYIN) {
+      log('Player ${player.name} new buy in');
       showBuyIn = false;
     }
 
@@ -66,6 +73,12 @@ class PlayerUpdateService {
       status: null,
     );
     seat.notify();
+
+    // update my state to remove buyin button 
+    if (player.isMe) {
+      final myState = gameState.getMyState(context);
+      myState.notify();
+    }
   }
 
   static void handleNewPlayer({
@@ -146,8 +159,20 @@ class PlayerUpdateService {
     );
 
     int seatNo = playerUpdate['seatNo'];
+    final seat = gameState.getSeat(context, seatNo);
+    if (seat != null && seat.player != null) {
+      // update my state to update widgets around my seat
+      if (seat.player.isMe) {
+        final myState = gameState.getMyState(context);
+        myState.notify();
+      }
+    }
+
     gameState.removePlayer(context, seatNo);
     gameState.updatePlayers(context);
+    
+    
+
   }
 
   static void handlePlayerBuyinTimedout({
@@ -160,6 +185,12 @@ class PlayerUpdateService {
     );
 
     int seatNo = playerUpdate['seatNo'];
+    final seat = gameState.getSeat(context, seatNo);
+    if(seat != null && seat.player != null && seat.player.isMe) {
+      gameState.myState.status = PlayerStatus.NOT_PLAYING;
+      gameState.myState.notify();
+    }
+
     gameState.removePlayer(context, seatNo);
     gameState.updatePlayers(context);
     gameState.markOpenSeat(context, seatNo);

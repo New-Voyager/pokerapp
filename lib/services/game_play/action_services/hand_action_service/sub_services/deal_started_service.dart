@@ -56,6 +56,11 @@ class DealStartedService {
     for (int i = 0; i < handInfo.noCards; i++) {
       /* for distributing the ith card, go through all the players, and give them */
       for (int seatNo in seatNos) {
+        final seat = gameState.getSeat(context, seatNo);
+        if (seat.player == null || seat.player.stack == 0 || seat.player.status != AppConstants.PLAYING) {
+          continue;
+        }
+
         // start the animation
         cardDistributionModel.seatNo = seatNo;
 

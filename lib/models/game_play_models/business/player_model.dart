@@ -17,13 +17,7 @@ class PlayerModel {
   List<int> highlightCards = [];
 
   TablePosition playerType;
-  bool highlight = false;
-  bool playerFolded = false;
   bool winner = false;
-  int coinAmount = 0;
-  bool animatingCoinMovement = false;
-  bool animatingCoinMovementReverse = false;
-  bool animatingFold = false;
   bool showFirework = false;
 
   int noOfCardsVisible = 0;
@@ -33,7 +27,17 @@ class PlayerModel {
   DateTime buyInTimeExpAt; // unix time in UTC
   bool  buyInExpired = false; // buy in time expired
   bool waitForBuyInApproval = false;  // waiting for buyin approval
-  
+
+  // player action
+  bool allIn = false;
+  int coinAmount = 0;
+  bool animatingCoinMovement = false;
+  bool animatingCoinMovementReverse = false;
+  bool animatingFold = false;
+  bool highlight = false;
+  bool playerFolded = false;
+  String action = '';
+
   // break time
   bool inBreak = false;
   DateTime breakTimeExpAt;
@@ -98,6 +102,7 @@ class PlayerModel {
     this.animatingCoinMovementReverse = false;
     this.animatingFold = false;
     this.showFirework = false;
+    this.allIn = false;
 
     this.noOfCardsVisible = 0;
 
@@ -122,6 +127,10 @@ class PlayerModel {
     this.status = status;
     this.showBuyIn = showBuyIn ?? this.showBuyIn;
     this.playerType = playerType ?? this.playerType;
+
+    if (!this.showBuyIn) {
+      this.buyInTimeExpAt = null;
+    }
   }
 
   List<CardObject> get cardObjects {

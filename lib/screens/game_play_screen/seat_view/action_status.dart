@@ -17,30 +17,30 @@ class ActionStatusWidget extends StatelessWidget {
     * 2. The current user is to act - the current user is highlighted */
     if (seat.isOpen || seat.player.highlight) return shrinkedSizedBox;
 
-    String status;
+    String action;
     //seat.player.status = "CHECK";
-    if (seat.player?.status != null && seat.player.status.isNotEmpty)
-      status = seat.player.status;
+    if (seat.player?.action != null && seat.player.action.isNotEmpty)
+      action = seat.player.action;
 
-    if (seat.player?.status == AppConstants.WAIT_FOR_BUYIN)
-      // SOMA: disabled showing status
-      //status = 'Waiting for Buy In';
-      status = null;
+    // if (seat.player?.status == AppConstants.WAIT_FOR_BUYIN)
+    //   // SOMA: disabled showing status
+    //   //status = 'Waiting for Buy In';
+    //   status = null;
 
     //if (seat.player.buyIn != null) status = 'Buy In ${seat.player.buyIn} amount';
 
-    if (seat.player?.status == AppConstants.PLAYING) status = null;
+    // if (seat.player?.status == AppConstants.PLAYING) status = null;
 
     // decide color from the status message
     // raise, bet -> red
     // check, call -> green
-    return status == null
+    return action == null
         ? shrinkedSizedBox
         : ClipRRect(
             borderRadius: BorderRadius.circular(5.0),
             child: Text(
-              '  ' + status + '  ',
-              style: getStatusTextStyle(status),
+              '  ' + action + '  ',
+              style: getStatusTextStyle(action),
             ),
           );
 

@@ -59,6 +59,9 @@ class Players extends ChangeNotifier {
     /* reset the reverse pot chips animation */
     this.resetMoveCoinsFromPotSilent();
 
+    /* reset allin flag */
+    this.removeAllAllinPlayersSilent();
+    
     if (notify) {
       this.notifyAll();
     }
@@ -100,6 +103,10 @@ class Players extends ChangeNotifier {
 
   void removeAllFoldedPlayersSilent() {
     for (int i = 0; i < _players.length; i++) _players[i].playerFolded = null;
+  }
+
+  void removeAllAllinPlayersSilent() {
+    for (int i = 0; i < _players.length; i++) _players[i].allIn = false;
   }
 
   void removeMarkersFromAllPlayerSilent() {
@@ -164,6 +171,10 @@ class Players extends ChangeNotifier {
     _players[idx].status = status;
   }
 
+  void updateActionSilent(int idx, String action) {
+    _players[idx].action = action;
+  }
+
   void updateCoinAmountSilent(int idx, int amount) {
     _players[idx].coinAmount = amount;
   }
@@ -213,6 +224,7 @@ class Players extends ChangeNotifier {
     for (int i = 0; i < _players.length; i++) {
       _players[i].status = null;
       _players[i].coinAmount = null;
+      _players[i].action = null;
     }
   }
 
@@ -258,7 +270,13 @@ class Players extends ChangeNotifier {
   }
 
   void visibleCardNumbersForAllSilent(int n) {
-    for (int i = 0; i < _players.length; i++) _players[i].noOfCardsVisible = n;
+    for (int i = 0; i < _players.length; i++) {
+      if (_players[i].status == AppConstants.PLAYING) {
+        _players[i].noOfCardsVisible = n;
+      } else {
+        _players[i].noOfCardsVisible = 0;
+      }
+    }
   }
 
   void removeCardsFromAllSilent() {
