@@ -172,6 +172,9 @@ class PlayerUpdateService {
 
     gameState.removePlayer(context, seatNo);
     gameState.updatePlayers(context);
+    
+    
+
   }
 
   static void handlePlayerBuyinTimedout({
