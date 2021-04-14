@@ -94,6 +94,7 @@ class AppConstants {
   static const String PLAYING = 'PLAYING';
   static const String BUYIN_TIMEDOUT = 'BUYIN_TIMEDOUT';
   static const String WAIT_FOR_BUYIN_APPROVAL = 'WAIT_FOR_BUYIN_APPROVAL';
+  static const String NEW_BUYIN = 'NEW_BUYIN';
 
   /* table statuses */
   static const String WAITING_TO_BE_STARTED = 'WAITING_TO_BE_STARTED';
@@ -109,6 +110,7 @@ class AppConstants {
   static const String RAISE = 'RAISE';
   static const String BET = 'BET';
   static const String CALL = 'CALL';
+  static const String ALLIN = 'ALLIN';
 
   /* message types */
   static const String PLAYER_UPDATE = 'PLAYER_UPDATE';
