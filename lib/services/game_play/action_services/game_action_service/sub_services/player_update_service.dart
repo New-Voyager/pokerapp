@@ -10,6 +10,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat_change_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/resources/app_constants.dart';
+import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/game_play/graphql/game_service.dart';
 import 'package:provider/provider.dart';
 
@@ -50,7 +51,8 @@ class PlayerUpdateService {
       showBuyIn = false;
     }
 
-    if (status == AppConstants.WAIT_FOR_BUYIN) {
+    if (status == AppConstants.WAIT_FOR_BUYIN ||
+        status == AppConstants.NEWUPDATE_WAIT_FOR_BUYIN_APPROVAL) {
       showBuyIn = true;
     }
 
@@ -170,9 +172,6 @@ class PlayerUpdateService {
 
     gameState.removePlayer(context, seatNo);
     gameState.updatePlayers(context);
-    
-    
-
   }
 
   static void handlePlayerBuyinTimedout({
@@ -268,6 +267,31 @@ class PlayerUpdateService {
     tableState.notifyAll();
   }
 
+  static void handlePlayerBuyinDenied({
+    @required BuildContext context,
+    @required var playerUpdate,
+  }) {
+    final GameState gameState = GameState.getState(context);
+    int seatNo = playerUpdate['seatNo'];
+    final seat = gameState.getSeat(context, seatNo);
+    log('Buyin is denied');
+    final players = gameState.getPlayers(context);
+    players.removePlayerSilent(seatNo);
+    bool isMe = false;
+    if(seat.player.isMe) {
+      isMe = true;
+    }
+    seat.player = null;
+    seat.notify();
+
+    if (isMe) {
+      final myState = gameState.getMyState(context);
+      myState.notify();
+
+      showAlertDialog(context, "BuyIn Request", "The host denied the buyin request");      
+    }
+  }  
+
   static void handle({
     BuildContext context,
     var data,
@@ -306,8 +330,14 @@ class PlayerUpdateService {
           playerUpdate: playerUpdate,
         );
 
+      case AppConstants.NEWUPDATE_WAIT_FOR_BUYIN_APPROVAL:
       case AppConstants.WAIT_FOR_BUYIN_APPROVAL:
         return handlePlayerWaitForBuyinApproval(
+          context: context,
+          playerUpdate: playerUpdate,
+        );
+      case AppConstants.BUYIN_DENIED:
+        return handlePlayerBuyinDenied(
           context: context,
           playerUpdate: playerUpdate,
         );
