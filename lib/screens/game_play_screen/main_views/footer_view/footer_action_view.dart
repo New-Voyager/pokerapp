@@ -624,7 +624,7 @@ class _FooterActionViewState extends State<FooterActionView> {
                             },
                           );
 
-                          if (amount != null) {
+                          if (amount != null && amount.toString().isNotEmpty) {
                             print("AMOUNT IS NOT NULL_______ $amount");
                             double newValue = double.parse(amount);
 
