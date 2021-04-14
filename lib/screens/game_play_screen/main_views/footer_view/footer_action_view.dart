@@ -295,7 +295,6 @@ class _FooterActionViewState extends State<FooterActionView> {
   Widget _buildSmallerRoundButton(Option o) => InkWell(
         onTap: () {
           _controller.text = o.amount.toStringAsFixed(0);
-
           setState(() {
             // change the slider and controller value
             betAmount = o.amount.toDouble();
@@ -502,25 +501,30 @@ class _FooterActionViewState extends State<FooterActionView> {
 
   @override
   Widget build(BuildContext context) {
+    print("---------------------- rebuilding ");
+
     return Consumer<ActionState>(
       key: ValueKey('buildActionButtons'),
-      builder: (_, actionState, __) => Container(
-        height: MediaQuery.of(context).size.height / 2.5,
-        child: Stack(
-          children: [
-            Container(
-              constraints: BoxConstraints.expand(),
-              alignment: Alignment.bottomCenter,
-              child: _buildTopActionRow(actionState.action),
-            ),
-            Container(
-              constraints: BoxConstraints.expand(),
-              alignment: Alignment.center,
-              child: _buildOptionsRow(actionState.action),
-            ),
-          ],
-        ),
-      ),
+      builder: (_, actionState, __) {
+        print("STATE CHANGDDD ----- ${actionState.action}");
+        return Container(
+          height: MediaQuery.of(context).size.height / 2.5,
+          child: Stack(
+            children: [
+              Container(
+                constraints: BoxConstraints.expand(),
+                alignment: Alignment.bottomCenter,
+                child: _buildTopActionRow(actionState.action),
+              ),
+              Container(
+                constraints: BoxConstraints.expand(),
+                alignment: Alignment.center,
+                child: _buildOptionsRow(actionState.action),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 
@@ -528,120 +532,181 @@ class _FooterActionViewState extends State<FooterActionView> {
     // Default value is half of min and max
     double val =
         (playerAction.maxRaiseAmount - playerAction.minRaiseAmount) / 2;
-    TextEditingController _betTextController =
-        TextEditingController(text: "${val.toStringAsFixed(0)}");
-// StatefulBuilder to update localState of the widget
-    return StatefulBuilder(builder: (context, localState) {
+
+    print("---------------------- Before sTATEFUL ");
+    // StatefulBuilder to update localState of the widget
+    return StatefulBuilder(builder: (ctx, localState) {
       return Container(
-        height: 150,
+        height: MediaQuery.of(context).size.height * 0.3,
         width: MediaQuery.of(context).size.width * 0.9,
         alignment: Alignment.center,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  height: 48,
-                  width: 48,
-                  child: SvgPicture.asset(
-                    "assets/images/game/green bet.svg",
-                    fit: BoxFit.contain,
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: 56,
+                    height: 56,
+                    margin: EdgeInsets.all(8),
+                    child: SvgPicture.asset(
+                      "assets/images/game/green bet.svg",
+                      fit: BoxFit.contain,
+                    ),
                   ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    InkWell(
-                      onTap: () async {
-                        await showDialog(
-                          context: context,
-                          builder: (context) {
-                            return AlertDialog(
-                              backgroundColor: Colors.grey.withOpacity(0.5),
-                              contentTextStyle: TextStyle(color: Colors.white),
-                              actions: [
-                                ElevatedButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: Text("OK"))
-                              ],
-                              content: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Expanded(
-                                    child: TextFormField(
-                                      autofocus: true,
-                                      controller: _betTextController,
-                                      inputFormatters: [
-                                        FilteringTextInputFormatter.digitsOnly,
-                                      ],
-                                      keyboardType: TextInputType.number,
-                                      onChanged: (String s) => localState(
-                                        () {
-                                          double newValue = double.parse(s);
-
-                                          if (newValue <
-                                              playerAction.minRaiseAmount)
-                                            newValue = playerAction
-                                                .minRaiseAmount
-                                                .toDouble();
-                                          if (newValue >
-                                              playerAction.maxRaiseAmount)
-                                            newValue = playerAction
-                                                .maxRaiseAmount
-                                                .toDouble();
-
-                                          val = newValue;
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      InkWell(
+                        onTap: () async {
+                          final amount = await showDialog(
+                            context: context,
+                            builder: (context) {
+                              TextEditingController _controller1 =
+                                  TextEditingController(
+                                      text: "${val.toStringAsFixed(0)}");
+                              return AlertDialog(
+                                contentTextStyle:
+                                    TextStyle(color: Colors.white),
+                                actions: [
+                                  ElevatedButton(
+                                      onPressed: () {
+                                        Navigator.of(context)
+                                            .pop(_controller1.text.trim());
+                                      },
+                                      child: Text("OK"))
+                                ],
+                                content: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Expanded(
+                                      child: TextFormField(
+                                        autofocus: true,
+                                        controller: _controller1,
+                                        inputFormatters: [
+                                          FilteringTextInputFormatter
+                                              .digitsOnly,
+                                        ],
+                                        keyboardType: TextInputType.number,
+                                        onChanged: (value) {
+                                          localState(() {
+                                            val = double.parse(value);
+                                          });
                                         },
+                                        /*   onChanged: (String s) => localState(
+                                          () {
+                                            double newValue = double.parse(s);
+
+                                            if (newValue <
+                                                playerAction.minRaiseAmount)
+                                              newValue = playerAction
+                                                  .minRaiseAmount
+                                                  .toDouble();
+                                            if (newValue >
+                                                playerAction.maxRaiseAmount)
+                                              newValue = playerAction
+                                                  .maxRaiseAmount
+                                                  .toDouble();
+
+                                            val = newValue;
+                                          },
+                                        ),
+                                     */
                                       ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                            );
-                          },
-                        );
-                      },
-                      child: Container(
-                        padding: EdgeInsets.all(5),
-                        decoration: BoxDecoration(
-                            color: Colors.lime, shape: BoxShape.circle),
-                        alignment: Alignment.center,
-                        child: Text(
-                          "${val.toStringAsFixed(0)}",
-                          style: TextStyle(color: Colors.grey.shade800),
+                                  ],
+                                ),
+                              );
+                            },
+                          );
+
+                          if (amount != null) {
+                            print("AMOUNT IS NOT NULL_______ $amount");
+                            double newValue = double.parse(amount);
+
+                            if (newValue < playerAction.minRaiseAmount)
+                              newValue = playerAction.minRaiseAmount.toDouble();
+                            if (newValue > playerAction.maxRaiseAmount)
+                              newValue = playerAction.maxRaiseAmount.toDouble();
+                            val = newValue;
+
+                            localState(() {});
+                          }
+                        },
+                        child: Container(
+                          width: 48,
+                          height: 48,
+                          padding: EdgeInsets.all(5),
+                          decoration: BoxDecoration(
+                            color: Colors.lime,
+                          ),
+                          alignment: Alignment.center,
+                          child: Expanded(
+                            child:
+                                /* TextFormField(
+                              // autofocus: true,
+                              controller: _betTextController,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly,
+                              ],
+                              keyboardType: TextInputType.number,
+                              onChanged: (String s) {
+                                localState(
+                                  () {
+                                    double newValue = double.parse(s);
+
+                                    if (newValue < playerAction.minRaiseAmount)
+                                      newValue = playerAction.minRaiseAmount
+                                          .toDouble();
+                                    if (newValue > playerAction.maxRaiseAmount)
+                                      newValue = playerAction.maxRaiseAmount
+                                          .toDouble();
+
+                                    val = newValue;
+                                    _betTextController.text =
+                                        "${val.toStringAsFixed(0)}";
+                                  },
+                                );
+                              },
+                            ),
+                          ), */
+                                Text(
+                              "${val.toStringAsFixed(0)}",
+                              style: TextStyle(color: Colors.grey.shade800),
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-                    InkWell(
-                      onTap: () {
-                        setState(() {
-                          betAmount = val;
-                          // _showOptions = false;
-                        });
-                        _submit(playerAction);
-                      },
-                      child: Container(
-                        margin: EdgeInsets.all(4),
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: Colors.grey.shade300,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Text(
-                          "BET",
-                          style: TextStyle(fontSize: 10),
+                      InkWell(
+                        onTap: () {
+                          setState(() {
+                            betAmount = val;
+                            // _showOptions = false;
+                          });
+                          _submit(playerAction);
+                        },
+                        child: Container(
+                          margin: EdgeInsets.all(4),
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade300,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            "BET",
+                            style: TextStyle(fontSize: 12),
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-              ],
+                    ],
+                  ),
+                ],
+              ),
             ),
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -655,11 +720,10 @@ class _FooterActionViewState extends State<FooterActionView> {
                     inactiveColor: Colors.red.shade100,
                     activeColor: Colors.red.shade300,
                     onChanged: (value) {
-                      //print("NEW VAL:$value");
+                      print("NEW VAL : $val");
                       localState(() {
                         val = value;
                       });
-                      _betTextController.text = "${val.toStringAsFixed(0)}";
                     },
                     label: "${val.toStringAsFixed(0)}",
                     semanticFormatterCallback: (value) {
