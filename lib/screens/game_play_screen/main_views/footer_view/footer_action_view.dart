@@ -192,6 +192,8 @@ class _FooterActionViewState extends State<FooterActionView> {
       amount: betAmount.toInt(),
     );
 
+    // bet twice
+    // _actionTaken(context);
     _actionTaken(context);
   }
 
@@ -448,7 +450,9 @@ class _FooterActionViewState extends State<FooterActionView> {
         ),
       );
 
-  Widget _buildOptionsRow(PlayerAction playerAction) => AnimatedSwitcher(
+  Widget _buildOptionsRow(PlayerAction playerAction) {
+    log('Building bet widget');
+    return AnimatedSwitcher(
         duration: AppConstants.fastAnimationDuration,
         reverseDuration: AppConstants.fastAnimationDuration,
         transitionBuilder: (child, animation) => ScaleTransition(
@@ -460,8 +464,10 @@ class _FooterActionViewState extends State<FooterActionView> {
             : _showOptions
                 ? Container(
                     color: Colors.black.withOpacity(0.85),
-                    child: _buildBetWidget(context,
-                        playerAction) /* Column(
+                    
+                    child: BetWidget(),
+                    //child: _buildBetWidget(context, playerAction) 
+                    /* Column(
                       key: ValueKey('options'),
                       children: [
                         /* options */
@@ -498,11 +504,11 @@ class _FooterActionViewState extends State<FooterActionView> {
                     )
                 : shrinkedBox,
       );
+  }
 
   @override
   Widget build(BuildContext context) {
-    print("---------------------- rebuilding ");
-
+    print("---------------------- rebuilding. ");
     return Consumer<ActionState>(
       key: ValueKey('buildActionButtons'),
       builder: (_, actionState, __) {
@@ -518,7 +524,7 @@ class _FooterActionViewState extends State<FooterActionView> {
               ),
               Container(
                 constraints: BoxConstraints.expand(),
-                alignment: Alignment.center,
+                alignment: Alignment.topCenter,
                 child: _buildOptionsRow(actionState.action),
               ),
             ],
@@ -529,11 +535,10 @@ class _FooterActionViewState extends State<FooterActionView> {
   }
 
   Widget _buildBetWidget(BuildContext context, PlayerAction playerAction) {
-    // Default value is half of min and max
-    double val =
-        (playerAction.maxRaiseAmount - playerAction.minRaiseAmount) / 2;
+    // Default value is minimum
+    double val = playerAction.minRaiseAmount.toDouble();
 
-    print("---------------------- Before sTATEFUL ");
+    print("---------------------- Before sTATEFUL: min ${playerAction.minRaiseAmount.toString()} max: ${playerAction.maxRaiseAmount.toString()} ");
     // StatefulBuilder to update localState of the widget
     return StatefulBuilder(builder: (ctx, localState) {
       return Container(
@@ -720,7 +725,7 @@ class _FooterActionViewState extends State<FooterActionView> {
                     inactiveColor: Colors.red.shade100,
                     activeColor: Colors.red.shade300,
                     onChanged: (value) {
-                      print("NEW VAL : $val");
+                      // print("NEW VAL : $val");
                       localState(() {
                         val = value;
                       });
@@ -734,7 +739,7 @@ class _FooterActionViewState extends State<FooterActionView> {
                   ),
                 ),
                 Container(
-                  padding: EdgeInsets.symmetric(vertical: 16),
+                  padding: EdgeInsets.symmetric(vertical: 4),
                   height: 300,
                   width: 100,
                   alignment: Alignment.center,

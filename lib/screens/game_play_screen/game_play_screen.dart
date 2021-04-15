@@ -213,7 +213,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
   /* dispose method for closing connections and un subscribing to channels */
   @override
   void dispose() {
-    TestService.isTesting = false;
+    // TestService.isTesting = false;
 
     agora?.disposeObject();
     _gameComService?.dispose();
