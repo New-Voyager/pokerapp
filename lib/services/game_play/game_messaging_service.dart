@@ -164,12 +164,12 @@ class GameMessagingService {
     this.client.pubString(this.chatChannel, body);
   }
 
-  void sendAnimation(int fromSeat, int toSeat, String animationId) {
+  void sendAnimation(int fromSeat, int toSeat, String animation) {
     dynamic body = jsonEncode({
       'id': uuid.v1(),
       'from': fromSeat,
       'to': toSeat,
-      'animation': animationId,
+      'animation': animation,
       'type': 'ANIMATION',
       'sent': DateTime.now().toUtc().toIso8601String(),
     });
@@ -204,7 +204,7 @@ class ChatMessage {
   int smileyCount;
   int likeCount;
   int downCount;
-  String animationId;
+  String animationID;
   int fromSeat;
   int toSeat;
   int seatNo;
@@ -226,7 +226,7 @@ class ChatMessage {
       } else if (msg.type == 'GIPHY') {
         msg.giphyLink = message['link'];
       } else if (msg.type == 'ANIMATION') {
-        msg.animationId = message['animation'];
+        msg.animationID = message['animation'];
       } else if (msg.type == 'CARDS') {
         msg.seatNo = message['seatNo'] == null
             ? -1

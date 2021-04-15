@@ -250,7 +250,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
   }
 
   void onAnimation(ChatMessage message) async {
-    log('Animation message is sent ${message.messageId} from player ${message.fromSeat} to ${message.toSeat}. Animation id: ${message.animationId}');
+    log('Animation message is sent ${message.messageId} from player ${message.fromSeat} to ${message.toSeat}. Animation id: ${message.animationID}');
     // todo initiate animation
   }
 

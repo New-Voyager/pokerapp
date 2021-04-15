@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
+import 'package:pokerapp/resources/animation_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 
@@ -12,9 +14,9 @@ class ProfilePopup extends StatefulWidget {
 }
 
 class _ProfilePopupState extends State<ProfilePopup> {
-  bool isMicOn = true;
-  bool isChatOn = true;
-  int selectedItem;
+  bool _isMicOn = true;
+  bool _isChatOn = true;
+  String _animationID;
 
   @override
   void initState() {
@@ -29,197 +31,181 @@ class _ProfilePopupState extends State<ProfilePopup> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
       ),
       padding: EdgeInsets.all(5),
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            getCloseButton(),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                /*
-                * member avatar
-                * */
-                SizedBox(width: 10),
-                getUserDetails(),
-                Spacer(),
-                communication(),
-                SizedBox(width: 15),
-              ],
-            ),
-            /*
-            * stickers
-            **/
-            SizedBox(
-              height: 10,
-            ),
-            getStickers(),
-            /*
-            * confirm button
-            * * */
-            getConfirmButton()
-          ],
-        ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          getCloseButton(),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              /*
+              * member avatar
+              * */
+              SizedBox(width: 10),
+              getUserDetails(),
+              Spacer(),
+              communication(),
+              SizedBox(width: 15),
+            ],
+          ),
+          /*
+          * stickers
+          **/
+          SizedBox(height: 10),
+          getStickers(),
+          /*
+          * confirm button
+          * * */
+          getConfirmButton()
+        ],
       ),
     );
   }
 
-  Widget getUserDetails() {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Image.asset(
-          (List.generate(3, (index) => 'assets/images/${index + 1}.png')
-                ..shuffle())
-              .first,
-          height: 50.0,
-        ),
-        SizedBox(
-          width: 20,
-        ),
-        Text(
-          widget.seat.player.name,
-          style: AppStyles.stickerDialogText,
-        )
-      ],
-    );
-  }
+  Widget getUserDetails() => Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Image.asset(
+            (List.generate(3, (index) => 'assets/images/${index + 1}.png')
+                  ..shuffle())
+                .first,
+            height: 50.0,
+          ),
+          SizedBox(
+            width: 20,
+          ),
+          Text(
+            widget.seat.player.name,
+            style: AppStyles.stickerDialogText,
+          )
+        ],
+      );
 
-  Widget getConfirmButton() {
-    return Center(
-      child: GestureDetector(
-        onTap: () {
-          Navigator.pop(
+  Widget getConfirmButton() => Center(
+        child: InkWell(
+          onTap: () => Navigator.pop(
             context,
             {
-              "isMicOn": isMicOn,
-              "isChatOn": isChatOn,
-              "selectedItem": selectedItem
+              "isMicOn": _isMicOn,
+              "isChatOn": _isChatOn,
+              "animationID": _animationID,
             },
-          );
-        },
-        child: Container(
-          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 30),
-          margin: EdgeInsets.symmetric(vertical: 15),
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(25),
-              color: AppColors.stickerDialogActionColor),
-          child: Text(
-            "Confirm",
-            style: AppStyles.stickerDialogActionText,
+          ),
+          child: Container(
+            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 30),
+            margin: EdgeInsets.symmetric(vertical: 15),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(25),
+                color: AppColors.stickerDialogActionColor),
+            child: Text(
+              "Confirm",
+              style: AppStyles.stickerDialogActionText,
+            ),
           ),
         ),
-      ),
-    );
-  }
+      );
 
-  Widget getStickers() {
-    return Column(
-      children: [
-        Wrap(
-          alignment: WrapAlignment.start,
-          crossAxisAlignment: WrapCrossAlignment.start,
-          children: [
-            ...[1, 2, 3, 4, 5, 6, 7, 8].map(
-              (e) => GestureDetector(
-                onTap: () {
-                  setState(() {
-                    selectedItem = e;
-                  });
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.black,
-                    border: Border.all(
-                      color: selectedItem == e
-                          ? AppColors.stickerDialogActionColor
-                          : Colors.grey,
-                      width: 2,
+  Widget getStickers() => Column(
+        children: [
+          Wrap(
+            alignment: WrapAlignment.start,
+            crossAxisAlignment: WrapCrossAlignment.start,
+            children: AnimationAssets.animationObjects
+                .map(
+                  (animationObject) => GestureDetector(
+                    onTap: () {
+                      setState(
+                        () => _animationID = animationObject.id,
+                      );
+                    },
+                    child: Container(
+                      height: 50,
+                      width: 50,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border.all(
+                          color: _animationID == animationObject.id
+                              ? AppColors.stickerDialogActionColor
+                              : Colors.grey,
+                          width: 2,
+                        ),
+                      ),
+                      padding: const EdgeInsets.all(5),
+                      margin: const EdgeInsets.all(5),
+                      child: SvgPicture.asset(
+                        animationObject.assetSvg,
+                      ),
                     ),
                   ),
-                  padding: EdgeInsets.all(10),
-                  margin: EdgeInsets.all(5),
-                  child: Icon(
-                    Icons.ac_unit,
-                    color: Colors.white,
-                    size: 30,
-                  ),
+                )
+                .toList(),
+          ),
+        ],
+      );
+
+  Widget communication() => Column(
+        children: [
+          GestureDetector(
+            onTap: () {
+              setState(() {
+                _isChatOn = !_isChatOn;
+              });
+            },
+            child: Container(
+              padding: EdgeInsets.all(6),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: AppColors.stickerDialogBorderColor,
+                  width: 2,
                 ),
               ),
-            )
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget communication() {
-    return Column(
-      children: [
-        GestureDetector(
-          onTap: () {
-            setState(() {
-              isChatOn = !isChatOn;
-            });
-          },
-          child: Container(
-            padding: EdgeInsets.all(6),
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: AppColors.stickerDialogBorderColor,
-                width: 2,
+              child: Icon(
+                _isChatOn ? Icons.comment : Icons.change_history_outlined,
+                color: Colors.white,
               ),
             ),
-            child: Icon(
-              isChatOn ? Icons.comment : Icons.change_history_outlined,
-              color: Colors.white,
-            ),
           ),
-        ),
-        SizedBox(height: 10),
-        GestureDetector(
-          onTap: () {
-            setState(() {
-              isMicOn = !isMicOn;
-            });
-          },
-          child: Container(
-            padding: EdgeInsets.all(6),
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: AppColors.stickerDialogBorderColor,
-                width: 2,
+          SizedBox(height: 10),
+          GestureDetector(
+            onTap: () {
+              setState(() {
+                _isMicOn = !_isMicOn;
+              });
+            },
+            child: Container(
+              padding: EdgeInsets.all(6),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: AppColors.stickerDialogBorderColor,
+                  width: 2,
+                ),
+              ),
+              child: Icon(
+                _isMicOn ? Icons.mic : Icons.mic_off,
+                color: Colors.white,
               ),
             ),
+          )
+        ],
+      );
+
+  Widget getCloseButton() => Align(
+        alignment: Alignment.centerRight,
+        child: GestureDetector(
+          onTap: () {
+            Navigator.pop(context);
+          },
+          child: CircleAvatar(
+            backgroundColor: AppColors.stickerDialogActionColor,
+            radius: 11,
             child: Icon(
-              isMicOn ? Icons.mic : Icons.mic_off,
-              color: Colors.white,
+              Icons.close_outlined,
+              color: Colors.black,
+              size: 20,
             ),
           ),
-        )
-      ],
-    );
-  }
-
-  Widget getCloseButton() {
-    return Align(
-      alignment: Alignment.centerRight,
-      child: GestureDetector(
-        onTap: () {
-          Navigator.pop(context);
-        },
-        child: CircleAvatar(
-          backgroundColor: AppColors.stickerDialogActionColor,
-          radius: 11,
-          child: Icon(
-            Icons.close_outlined,
-            color: Colors.black,
-            size: 20,
-          ),
         ),
-      ),
-    );
-  }
+      );
 }

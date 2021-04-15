@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lottie/lottie.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
@@ -76,6 +77,8 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
   HostSeatChange hostSeatChange;
   int seatChangerPlayer;
   int seatChangeToo;
+
+  String animationAssetID;
 
   @override
   void initState() {
@@ -190,7 +193,7 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
     Offset from;
     Offset to;
     print(
-      'Here ${message.messageId} from player ${message.fromSeat} to ${message.toSeat}. Animation id: ${message.animationId}',
+      'Here ${message.messageId} from player ${message.fromSeat} to ${message.toSeat}. Animation: ${message.animationID}',
     );
 
     if (message.fromSeat == null || message.toSeat == null) {
@@ -233,6 +236,7 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
     );
 
     setState(() {
+      animationAssetID = message.animationID;
       isAnimating = true;
     });
 
@@ -302,11 +306,8 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
                   child: Container(
                     height: _animatingAssetContainerSize,
                     width: _animatingAssetContainerSize,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage("assets/animations/poop.png"),
-                        fit: BoxFit.cover,
-                      ),
+                    child: SvgPicture.asset(
+                      'assets/animations/$animationAssetID.svg',
                     ),
                   ),
                   animation: animation,
@@ -324,7 +325,7 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
                     height: _lottieAnimationContainerSize,
                     width: _lottieAnimationContainerSize,
                     child: Lottie.asset(
-                      'assets/animations/poop.json',
+                      'assets/animations/$animationAssetID.json',
                       controller: _lottieController,
                     ),
                   ),

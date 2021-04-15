@@ -8,6 +8,7 @@ import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
+import 'package:pokerapp/resources/animation_assets.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_styles.dart';
@@ -62,7 +63,7 @@ class PlayerView extends StatelessWidget {
         return;
       }
 
-      final jsonData = await showModalBottomSheet(
+      final data = await showModalBottomSheet(
         context: context,
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(top: Radius.circular(10))),
@@ -73,10 +74,13 @@ class PlayerView extends StatelessWidget {
         },
       );
 
-      if (jsonData == null) return;
+      if (data == null) return;
 
-      gameComService.gameMessaging
-          .sendAnimation(me.seatNo, seat.serverSeatPos, 'poop');
+      gameComService.gameMessaging.sendAnimation(
+        me.seatNo,
+        seat.serverSeatPos,
+        data['animationID'],
+      );
     }
   }
 
@@ -117,7 +121,7 @@ class PlayerView extends StatelessWidget {
       showdown = true;
     }
 
-    // if open seat, just show openseat widget
+    // if open seat, just show open seat widget
     if (openSeat) {
       return OpenSeat(seatPos: seat.serverSeatPos, onUserTap: this.onUserTap);
     }
@@ -125,8 +129,10 @@ class PlayerView extends StatelessWidget {
     // enable this line for debugging dealer position
     // userObject.playerType = PlayerType.Dealer;
 
-    final GameInfoModel gameInfo =
-        Provider.of<ValueNotifier<GameInfoModel>>(context, listen: false).value;
+    final GameInfoModel gameInfo = Provider.of<ValueNotifier<GameInfoModel>>(
+      context,
+      listen: false,
+    ).value;
     int actionTime = gameInfo.actionTime;
     String gameCode = gameInfo.gameCode;
     bool isDealer = false;
