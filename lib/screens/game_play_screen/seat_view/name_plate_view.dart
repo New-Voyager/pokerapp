@@ -35,13 +35,13 @@ class NamePlateWidget extends StatelessWidget {
     Color statusColor = const Color(0xff474747); // default color
     Color boxColor = const Color(0xff474747); // default color
     final openSeat = seat.isOpen;
-    String status = !openSeat ? seat.player.status : "";
-    if (status != null) {
-      if (status.toUpperCase().contains('CHECK') ||
-          status.toUpperCase().contains('CALL'))
+    String action = !openSeat ? seat.player.action : '';
+    if (action != null) {
+      if (action.toUpperCase().contains('CHECK') ||
+          action.toUpperCase().contains('CALL'))
         statusColor = Colors.green;
-      else if (status.toUpperCase().contains('RAISE') ||
-          status.toUpperCase().contains('BET')) statusColor = Colors.red;
+      else if (action.toUpperCase().contains('RAISE') ||
+          action.toUpperCase().contains('BET')) statusColor = Colors.red;
     }
     return Consumer2<HostSeatChange, GameContextObject>(
         key: globalKey,
@@ -197,13 +197,13 @@ class NamePlateWidget extends StatelessWidget {
   }
 
   Widget bottomWidget(BuildContext context) {
-    if (seat.player.stack == 0 && seat.player.buyInTimeExpAt != null) {
+    if (!seat.player.allIn && seat.player.stack == 0 && seat.player.buyInTimeExpAt != null) {
       final now = DateTime.now().toUtc();
       final diff = seat.player.buyInTimeExpAt.difference(now);
 
       final nowTime = now.toIso8601String();
       final buyInTime = seat.player.buyInTimeExpAt.toIso8601String();
-      log('nowTime: $nowTime buyInTime: $buyInTime');
+      // log('nowTime: $nowTime buyInTime: $buyInTime');
 
       return buyInTimer(context, diff.inSeconds);
     } else if (seat.player.inBreak && seat.player.breakTimeExpAt != null) {

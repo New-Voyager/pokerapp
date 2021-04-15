@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
+import 'package:pokerapp/enums/player_status.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
@@ -59,6 +60,36 @@ class NewHandService {
       context,
       listen: false,
     ).value = FooterStatus.None;
+
+    // update player's state and stack
+    final dynamic playersInSeats = newHand['playersInSeats'];
+    for(final seatNoStr in playersInSeats.keys) {
+      final seatNo = int.parse(seatNoStr);
+      final seat = gameState.getSeat(context, seatNo);
+      if (seat != null && seat.player != null) {
+        final dynamic playerUpdate = playersInSeats[seatNoStr];
+        final double stack = double.parse(playerUpdate['stack'].toString());
+        seat.player.stack = stack.toInt();
+
+        final String statusStr = playerUpdate['status'].toString();
+        final status = PlayerStatus.values.firstWhere((element) => (element.toString() == 'PlayerStatus.'+statusStr));
+        seat.player.status = playerUpdate['status'].toString();
+        if (status == PlayerStatus.WAIT_FOR_BUYIN || 
+            status == PlayerStatus.WAIT_FOR_BUYIN_APPROVAL) {
+          // show buyin timer
+          seat.player.showBuyIn = true;
+          seat.player.buyInTimeExpAt = DateTime.parse(playerUpdate['buyInExpTime'].toString());
+
+          // show buyin button
+          if (seat.player.isMe) {
+            gameState.getMyState(context).notify();
+          }
+        } else {
+          seat.player.showBuyIn = false;
+          seat.player.buyInTimeExpAt = null;
+        }
+      }
+    }
 
     /* marking the small blind */
     int smallBlindIdx = players.players.indexWhere((p) => p.seatNo == sbPos);

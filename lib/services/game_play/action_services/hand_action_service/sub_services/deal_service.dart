@@ -43,6 +43,10 @@ class DealService {
       for (int seatNo in seatNos) {
         int localSeatNo =
             mySeatNo == null ? seatNo : ((seatNo - mySeatNo) % 9) + 1;
+        final seat = gameState.getSeat(context, seatNo);
+        if (seat.player == null || seat.player.stack == 0 || seat.player.status != AppConstants.PLAYING) {
+          continue;
+        }
 
         // start the animation
         Provider.of<CardDistributionModel>(

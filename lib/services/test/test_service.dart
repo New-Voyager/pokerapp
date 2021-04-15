@@ -8,6 +8,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/player_info.dart';
+import 'package:pokerapp/services/game_play/action_services/hand_action_service/sub_services/deal_started_service.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:provider/provider.dart';
 
@@ -82,6 +83,22 @@ class TestService {
     return gameState.getTableState(context);
   }
 
+  static Future<void> distributeCards() async {
+    // table state
+    final TableState tableState = _getTableState();
+    tableState.updateTableStatusSilent('NEW_HAND');
+    tableState.notifyAll();
+
+    await Future.delayed(const Duration(seconds: 2));
+
+    await DealStartedService.handle(
+      context: _context,
+    );
+
+    tableState.updateTableStatusSilent(null);
+    tableState.notifyAll();
+  }
+
   static Future<void> clearBoardCards() async {
     final tableState = _getTableState();
 
@@ -143,7 +160,6 @@ class TestService {
     seat4.player.showBuyIn = true;
     seat4.player.stack = 0;
     seat4.player.buyInTimeExpAt = exp.toUtc();
-    
     // redraw seat
     final seat = gameState.getSeat(_context, players.me.seatNo);
     players.notifyAll();

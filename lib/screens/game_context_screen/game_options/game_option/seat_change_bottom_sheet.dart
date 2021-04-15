@@ -169,12 +169,12 @@ class _SeatChangeBottomSheetState extends State<SeatChangeBottomSheet> {
                       // want to seat change
                       String result = await GameService.requestForSeatChange(
                           widget.gameCode);
-                      print("result $result");
+                      // print("result $result");
                     } else {
                       // do not want to seat change
                       String result = await GameService.requestForSeatChange(
                           widget.gameCode);
-                      print("result $result");
+                      // print("result $result");
                     }
                     getAllSeatChangePlayers();
                   },

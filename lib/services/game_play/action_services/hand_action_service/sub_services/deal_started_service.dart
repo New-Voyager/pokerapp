@@ -10,9 +10,11 @@ import 'package:provider/provider.dart';
 class DealStartedService {
   DealStartedService._();
 
-  static void handle({
+  static Future<void> handle({
     BuildContext context,
-    fromGameReplay = false,
+    bool fromGameReplay = false,
+    // works only if in testing mode
+    int testNo = 2,
   }) async {
     GameState gameState = Provider.of<GameState>(
       context,
@@ -47,11 +49,18 @@ class DealStartedService {
       listen: false,
     );
 
+    if (handInfo.noCards == 0) handInfo.update(noCards: testNo);
+
     /* distribute cards to the players */
     /* this for loop will distribute cards one by one to all the players */
     for (int i = 0; i < handInfo.noCards; i++) {
       /* for distributing the ith card, go through all the players, and give them */
       for (int seatNo in seatNos) {
+        final seat = gameState.getSeat(context, seatNo);
+        if (seat.player == null || seat.player.stack == 0 || seat.player.status != AppConstants.PLAYING) {
+          continue;
+        }
+
         // start the animation
         cardDistributionModel.seatNo = seatNo;
 

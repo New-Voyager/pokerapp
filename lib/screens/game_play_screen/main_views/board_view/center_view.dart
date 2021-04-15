@@ -108,6 +108,7 @@ class CenterView extends StatelessWidget {
       key: ValueKey('tablePotAndCardWidget'),
       alignment: Alignment.center,
       child: Stack(
+        alignment: Alignment.center,
         clipBehavior: Clip.none,
         //mainAxisSize: MainAxisSize.min,
         children: [
@@ -117,20 +118,21 @@ class CenterView extends StatelessWidget {
             child: Transform.translate(
               key: boardAttributes.centerPotBetKey,
               offset: Offset(0, 15),
-              child:
-                  Container(width: 50, height: 50, color: Colors.transparent),
+              child: Container(
+                width: 50,
+                height: 50,
+                color: Colors.transparent,
+              ),
             ),
           ),
 
           /* main pot view */
           Align(
-              alignment: Alignment.topCenter,
-              child: Transform.translate(
-                offset: Offset(0, 15),
-                child: multiplePots(context),
-              )),
-          const SizedBox(
-            height: _gapHeight,
+            alignment: Alignment.topCenter,
+            child: Transform.translate(
+              offset: Offset(0, 15),
+              child: multiplePots(context),
+            ),
           ),
 
           /* community cards view */
@@ -144,7 +146,7 @@ class CenterView extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(height: _gapHeight + AppDimensions.cardHeight / 4),
+
           /* potUpdates view OR the rank widget (rank widget is shown only when we have a result) */
           this.showDown ? rankWidget() : potUpdatesView(),
         ],

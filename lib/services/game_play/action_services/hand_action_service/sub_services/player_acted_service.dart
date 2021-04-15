@@ -22,15 +22,20 @@ class PlayerActedService {
       listen: false,
     );
     final player = gameState.fromSeat(context, seatNo);
-    //player.highlight = false;
+
     // show the status message
-    player.status = "${playerActed['action']}";
+    player.action = "${playerActed['action']}";
 
     String action = playerActed['action'];
 
     // check if player folded
     if (action == AppConstants.FOLD) {
       player.playerFolded = true;
+    }
+
+
+    if (action == AppConstants.ALLIN) {
+      player.allIn = true;
     }
 
     // play the bet-raise sound effect

@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/enums/player_status.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
@@ -9,6 +8,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart
 import 'package:pokerapp/models/game_play_models/provider_models/seat_change_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/resources/app_constants.dart';
+import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/game_play/graphql/game_service.dart';
 import 'package:provider/provider.dart';
 
@@ -27,6 +27,7 @@ class PlayerUpdateService {
     int seatNo = playerUpdate['seatNo'];
     final player = gameState.fromSeat(context, seatNo);
     final status = playerUpdate['status'];
+    final newUpdate = playerUpdate['newUpdate'];
 
     // fixme: this is until all the player update messages have a newUpdate field
     if (player == null) {
@@ -43,7 +44,13 @@ class PlayerUpdateService {
       showBuyIn = false;
     }
 
-    if (status == AppConstants.WAIT_FOR_BUYIN) {
+    if (newUpdate == AppConstants.NEW_BUYIN) {
+      log('Player ${player.name} new buy in');
+      showBuyIn = false;
+    }
+
+    if (status == AppConstants.WAIT_FOR_BUYIN ||
+        status == AppConstants.NEWUPDATE_WAIT_FOR_BUYIN_APPROVAL) {
       showBuyIn = true;
     }
 
@@ -66,6 +73,12 @@ class PlayerUpdateService {
       status: null,
     );
     seat.notify();
+
+    // update my state to remove buyin button 
+    if (player.isMe) {
+      final myState = gameState.getMyState(context);
+      myState.notify();
+    }
   }
 
   static void handleNewPlayer({
@@ -146,8 +159,20 @@ class PlayerUpdateService {
     );
 
     int seatNo = playerUpdate['seatNo'];
+    final seat = gameState.getSeat(context, seatNo);
+    if (seat != null && seat.player != null) {
+      // update my state to update widgets around my seat
+      if (seat.player.isMe) {
+        final myState = gameState.getMyState(context);
+        myState.notify();
+      }
+    }
+
     gameState.removePlayer(context, seatNo);
     gameState.updatePlayers(context);
+    
+    
+
   }
 
   static void handlePlayerBuyinTimedout({
@@ -160,6 +185,12 @@ class PlayerUpdateService {
     );
 
     int seatNo = playerUpdate['seatNo'];
+    final seat = gameState.getSeat(context, seatNo);
+    if(seat != null && seat.player != null && seat.player.isMe) {
+      gameState.myState.status = PlayerStatus.NOT_PLAYING;
+      gameState.myState.notify();
+    }
+
     gameState.removePlayer(context, seatNo);
     gameState.updatePlayers(context);
     gameState.markOpenSeat(context, seatNo);
@@ -237,6 +268,31 @@ class PlayerUpdateService {
     tableState.notifyAll();
   }
 
+  static void handlePlayerBuyinDenied({
+    @required BuildContext context,
+    @required var playerUpdate,
+  }) {
+    final GameState gameState = GameState.getState(context);
+    int seatNo = playerUpdate['seatNo'];
+    final seat = gameState.getSeat(context, seatNo);
+    log('Buyin is denied');
+    final players = gameState.getPlayers(context);
+    players.removePlayerSilent(seatNo);
+    bool isMe = false;
+    if(seat.player.isMe) {
+      isMe = true;
+    }
+    seat.player = null;
+    seat.notify();
+
+    if (isMe) {
+      final myState = gameState.getMyState(context);
+      myState.notify();
+
+      showAlertDialog(context, "BuyIn Request", "The host denied the buyin request");      
+    }
+  }  
+
   static void handle({
     BuildContext context,
     var data,
@@ -275,8 +331,14 @@ class PlayerUpdateService {
           playerUpdate: playerUpdate,
         );
 
+      case AppConstants.NEWUPDATE_WAIT_FOR_BUYIN_APPROVAL:
       case AppConstants.WAIT_FOR_BUYIN_APPROVAL:
         return handlePlayerWaitForBuyinApproval(
+          context: context,
+          playerUpdate: playerUpdate,
+        );
+      case AppConstants.BUYIN_DENIED:
+        return handlePlayerBuyinDenied(
           context: context,
           playerUpdate: playerUpdate,
         );

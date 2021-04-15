@@ -87,7 +87,7 @@ class HostSeatChange extends ChangeNotifier {
   }
 
   onSeatDragStart(int seatNo) {
-    print("seatNo $seatNo");
+    // print("seatNo $seatNo");
     allSeatChangeStatus[seatNo].isDragging = true;
     for (int i = 0; i < allSeatChangeStatus.length; i++) {
       if (i != seatNo) {

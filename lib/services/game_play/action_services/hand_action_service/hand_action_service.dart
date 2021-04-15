@@ -41,9 +41,10 @@ class HandActionService {
         );
 
       case AppConstants.DEAL_STARTED:
-        return DealStartedService.handle(
+        DealStartedService.handle(
           context: context,
         );
+        return null;
 
       case AppConstants.DEAL:
         return DealService.handle(
