@@ -21,7 +21,7 @@ class CommunityCardAttribute {
     int idx,
     GlobalKey key,
   ) {
-    print('trying to add entry for $idx index');
+    // print('trying to add entry for $idx index');
 
     if (key.currentContext == null) return;
 
@@ -29,7 +29,7 @@ class CommunityCardAttribute {
     final Offset offset = renderBox.localToGlobal(Offset.zero);
     cardOffsets[idx] = offset;
 
-    print('card at index $idx is at offset $offset');
+    // print('card at index $idx is at offset $offset');
   }
 
   static getOffsetPosition(int idx) => cardOffsets[idx];

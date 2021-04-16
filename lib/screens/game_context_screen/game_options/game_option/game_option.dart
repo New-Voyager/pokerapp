@@ -241,7 +241,7 @@ class _GameOptionState extends State<GameOption> {
               decoration: BoxDecoration(
                   color: AppColors.gameOptionBackGroundColor,
                   borderRadius: BorderRadius.circular(10)),
-              child: ListView.builder(
+              child: ListView.separated(
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
                 itemCount: gameSecondaryOptions.length,
@@ -249,6 +249,24 @@ class _GameOptionState extends State<GameOption> {
                   return gameSecondaryOptionItem(
                     gameSecondaryOptions[index],
                     context,
+                  );
+                },
+                separatorBuilder: (context, index) {
+                  return Row(
+                    children: [
+                      SizedBox(
+                        width: 24,
+                      ),
+                      Expanded(
+                        child: Divider(
+                          height: 2,
+                          color: Colors.grey,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 24,
+                      ),
+                    ],
                   );
                 },
               ),
@@ -259,7 +277,7 @@ class _GameOptionState extends State<GameOption> {
     );
   }
 
-  gameSecondaryOptionItem(
+  /*  gameSecondaryOptionItem(
       OptionItemModel optionItemModel, BuildContext context) {
     return GestureDetector(
       onTap: () => optionItemModel.onTap(context),
@@ -343,6 +361,40 @@ class _GameOptionState extends State<GameOption> {
           ],
         ),
       ),
+    );
+  }
+ */
+  gameSecondaryOptionItem(
+      OptionItemModel optionItemModel, BuildContext context) {
+    return ListTile(
+      onTap: () => optionItemModel.onTap(context),
+      title: Text(
+        optionItemModel.title,
+        style: AppStyles.credentialsTextStyle,
+      ),
+      leading: Container(
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: optionItemModel.backGroundColor,
+        ),
+        padding: EdgeInsets.all(5),
+        child: Image.asset(
+          optionItemModel.image,
+          height: 40,
+          width: 40,
+          color: Colors.white,
+        ),
+      ),
+      trailing: Icon(
+        Icons.arrow_forward_ios,
+        color: Colors.white,
+      ),
+      subtitle: optionItemModel.name != null
+          ? Text(
+              optionItemModel.name,
+              style: AppStyles.itemInfoSecondaryTextStyle,
+            )
+          : Container(),
     );
   }
 

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/player_action.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/player_info.dart';
@@ -13,7 +14,6 @@ import 'package:pokerapp/utils/card_helper.dart';
 import 'package:provider/provider.dart';
 
 class TestService {
-  static var isTesting = false;
   static var _showResult = false;
   static PlayerInfo _currentPlayer;
   static GameInfoModel _gameInfo;
@@ -42,6 +42,10 @@ class TestService {
   // static List<CardObject> get boardCards => _boardCards;
 
   static List<int> get pots => _pots;
+
+  static get isTesting {
+    return true;
+  }
 
   static Future<void> load() async {
     if (isTesting) {
@@ -160,7 +164,6 @@ class TestService {
     seat4.player.showBuyIn = true;
     seat4.player.stack = 0;
     seat4.player.buyInTimeExpAt = exp.toUtc();
-
     // redraw seat
     final seat = gameState.getSeat(_context, players.me.seatNo);
     players.notifyAll();
@@ -199,4 +202,41 @@ class TestService {
       },
     );
   }
+
+  static Future<void> testBetWidget() async {
+    BuildContext context = _context;
+
+    final gameState = Provider.of<GameState>(context, listen: false);
+    final actionState = gameState.getActionState(context);
+
+    final seatActionJsonStr = '''
+        {
+          "seatNo": 1,
+          "availableActions": ["FOLD", "CALL", "BET", "ALLIN"],
+          "callAmount": 2,
+          "minRaiseAmount": 4,
+          "maxRaiseAmount": 30,
+          "allInAmount": 30,
+          "betOptions": [{
+            "text": "3BB",
+            "amount": 6
+          }, {
+            "text": "5BB",
+            "amount": 10
+          }, {
+            "text": "10BB",
+            "amount": 20
+          }, {
+            "text": "All-In",
+            "amount": 30
+          }]
+        }''';
+      final seatAction = jsonDecode(seatActionJsonStr);
+      // actionState.setAction(1, seatAction);
+      gameState.setAction(context, 1, seatAction);
+      gameState.showAction(context, true);
+
+      actionState.notifyListeners();
+  }
+
 }

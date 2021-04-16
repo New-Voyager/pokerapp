@@ -40,6 +40,35 @@ class PlayerAction {
 
   PlayerAction(int seatNo, var seatAction) {
     _seatNo = seatNo;
+
+    /*
+      {
+        ...
+        ...
+        "seatAction": {
+          "seatNo": 1,
+          "availableActions": ["FOLD", "CALL", "BET", "ALLIN"],
+          "callAmount": 2,
+          "minRaiseAmount": 4,
+          "maxRaiseAmount": 30,
+          "allInAmount": 30,
+          "betOptions": [{
+            "text": "3BB",
+            "amount": 6
+          }, {
+            "text": "5BB",
+            "amount": 10
+          }, {
+            "text": "10BB",
+            "amount": 20
+          }, {
+            "text": "All-In",
+            "amount": 30
+          }]
+        }
+      }
+    */
+
     // FIXME: MIN RAISE AMOUNT VALUE NOT RECEIVING?
     this._minRaiseAmount = seatAction['minRaiseAmount'] ?? 2;
     this._maxRaiseAmount = seatAction['maxRaiseAmount'];

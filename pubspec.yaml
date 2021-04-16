@@ -97,6 +97,9 @@ dependencies:
   blinking_text: ^1.0.1+2
 
   sliding_up_panel: ^1.0.2
+  
+  sleek_circular_slider: ^2.0.0
+  flutter_circular_slider: ^2.5.0
 
 dev_dependencies:
   flutter_test:
@@ -109,6 +112,8 @@ flutter:
    - assets/animations/
    - assets/images/backgrounds/
    - assets/images/table/
+   - assets/images/game/
+   - assets/images/chips/
    - assets/images/card_back/set1/
    - assets/images/card_back/set2/
    - assets/sound_effects/

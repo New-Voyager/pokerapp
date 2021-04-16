@@ -188,14 +188,17 @@ class _PointsLineChart extends State<PointsLineChart> {
       y = _tapPostion.dy - 50.0;
     }
     PlayerStack currentStack = _selectionModel.selectedDatum[0].datum;
+    if (currentStack.neutral == true) {
+      return Container();
+    }
     return Positioned(
       top: y,
       left: x,
       child: InkWell(
         onTap: () {
-          HandLogModel handLogModel =
-              HandLogModel("CG-7OF3IOXKBWJLDD", 1);
-          Navigator.pushNamed(context, Routes.hand_log_view, arguments: handLogModel);
+          HandLogModel handLogModel = HandLogModel("CG-7OF3IOXKBWJLDD", 1);
+          Navigator.pushNamed(context, Routes.hand_log_view,
+              arguments: handLogModel);
         },
         child: Container(
           padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -231,7 +234,7 @@ class _PointsLineChart extends State<PointsLineChart> {
                   children: [
                     Icon(
                       currentStack.green
-                          ? Icons.arrow_upward
+                          ? Icons.expand_less
                           : Icons.expand_more,
                       color: currentStack.color,
                     ),

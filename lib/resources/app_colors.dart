@@ -29,6 +29,8 @@ class AppColors {
 
   static const Color gameOptionBackGroundColor = Color(0xff303335);
 
+  static const Color buttonBorderColor = Color(0xff319ffe);
+
   // gameoption screen colors
   static const Color gameOption1 = Color(0xffef9712);
   static const Color gameOption2 = appAccentColor;
