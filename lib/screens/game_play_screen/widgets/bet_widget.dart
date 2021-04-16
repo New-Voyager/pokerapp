@@ -12,6 +12,7 @@ class BetWidget extends StatefulWidget {
   final double rangeMax;
   final double divisions;
   final List<Tuple2<String, String>> otherBets;
+  //final Function onSubmitCallBack;
 
   BetWidget({
     this.rangeMin = 2.0,
@@ -26,6 +27,7 @@ class BetWidget extends StatefulWidget {
       Tuple2("5BB", "20"),
       Tuple2("3BB", "12"), */
     ],
+    //this.onSubmitCallBack,
     /* this.otherBets = [
       Tuple2<String,String>('asdf', '10'),
       Tuple2<String,String>('adsf', '30'),
@@ -89,7 +91,12 @@ class _BetWidgetState extends State<BetWidget> {
                       alignment: Alignment.center,
                       child: Container(
                         width: 64,
-                        height: 64,
+                        // height: 64,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: AppColors.appAccentColor,),
+                          
+                        ),
                         child: TextField(
                           textAlign: TextAlign.center,
                           readOnly: true,
@@ -115,9 +122,9 @@ class _BetWidgetState extends State<BetWidget> {
                                   content: TextField(
                                     controller: _localCtrl,
                                     autofocus: true,
-                                    onChanged: (value) {
+                                    /*  onChanged: (value) {
                                       _controller.text = value;
-                                    },
+                                    }, */
                                     keyboardType: TextInputType.number,
                                   ),
                                   actions: [
@@ -147,24 +154,27 @@ class _BetWidgetState extends State<BetWidget> {
                     right: 0,
                     child: Align(
                       alignment: Alignment.bottomCenter,
-                      child: Container(
-                        padding: EdgeInsets.all(10),
-                        margin: EdgeInsets.symmetric(vertical: 4),
-                        decoration: BoxDecoration(
-                          //color: Colors.red,
-                          border: Border.all(color: Colors.white, width: 1.0),
-                          shape: BoxShape.circle,
-                          gradient: LinearGradient(
-                            colors: [
-                              Colors.red,
-                              Colors.redAccent,
-                            ],
+                      child: InkWell(
+                        //onTap: widget.onSubmitCallBack(val),
+                        child: Container(
+                          padding: EdgeInsets.all(10),
+                          margin: EdgeInsets.symmetric(vertical: 4),
+                          decoration: BoxDecoration(
+                            //color: Colors.red,
+                            border: Border.all(color: Colors.white, width: 1.0),
+                            shape: BoxShape.circle,
+                            gradient: LinearGradient(
+                              colors: [
+                                Colors.red,
+                                Colors.redAccent,
+                              ],
+                            ),
+                            color: Colors.amber,
                           ),
-                          color: Colors.amber,
-                        ),
-                        child: Text(
-                          "BET",
-                          style: TextStyle(fontSize: 12, color: Colors.white),
+                          child: Text(
+                            "BET",
+                            style: TextStyle(fontSize: 12, color: Colors.white),
+                          ),
                         ),
                       ),
                     ),
@@ -211,11 +221,15 @@ class _BetWidgetState extends State<BetWidget> {
           },
         ),
         customColors: CustomSliderColors(
-          hideShadow: true,
-          trackColor: AppColors.lightGrayColor,
-          dotColor: AppColors.appAccentColor,
-          progressBarColor: Colors.indigo,
-        ),
+            hideShadow: true,
+            trackColor: AppColors.lightGrayColor,
+            dotColor: AppColors.appAccentColor,
+            // progressBarColor: Colors.indigo,
+            progressBarColors: [
+              Colors.indigo.shade900,
+              Colors.indigo.shade600,
+              Colors.indigo.shade400,
+            ]),
         customWidths: CustomSliderWidths(
           trackWidth: 8,
           progressBarWidth: 16,

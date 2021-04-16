@@ -66,17 +66,18 @@ class _FooterActionViewState extends State<FooterActionView> {
         child: AnimatedContainer(
           duration: AppConstants.fastAnimationDuration,
           curve: Curves.bounceInOut,
-          height: 40.0,
-          width: 40.0,
+          height: 48.0,
+          width: 56.0,
           margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
           padding: const EdgeInsets.all(5.0),
           decoration: BoxDecoration(
             color: isSelected ? const Color(0xff319ffe) : Colors.transparent,
-            shape: BoxShape.circle,
+            shape: BoxShape.rectangle,
             border: Border.all(
               color: const Color(0xff319ffe),
               width: 2.0,
             ),
+            borderRadius: BorderRadius.circular(8),
           ),
           child: Center(
             child: Text(
@@ -276,7 +277,7 @@ class _FooterActionViewState extends State<FooterActionView> {
                         // _showDialog(context);
                       }),
                     );
-                  case ALLIN:
+                  /* case ALLIN:
                     return _buildRoundButton(
                       text: playerAction.actionName +
                           '\n' +
@@ -285,7 +286,7 @@ class _FooterActionViewState extends State<FooterActionView> {
                         amount: playerAction.actionValue,
                         context: context,
                       ),
-                    );
+                    ); */
                 }
 
                 return SizedBox.shrink();
@@ -453,21 +454,28 @@ class _FooterActionViewState extends State<FooterActionView> {
   Widget _buildOptionsRow(PlayerAction playerAction) {
     log('Building bet widget');
     return AnimatedSwitcher(
-        duration: AppConstants.fastAnimationDuration,
-        reverseDuration: AppConstants.fastAnimationDuration,
-        transitionBuilder: (child, animation) => ScaleTransition(
-          scale: animation,
-          child: child,
-        ),
-        child: playerAction?.options == null
-            ? shrinkedBox
-            : _showOptions
-                ? Container(
-                    color: Colors.black.withOpacity(0.85),
-                    
-                    child: BetWidget(),
-                    //child: _buildBetWidget(context, playerAction) 
-                    /* Column(
+      duration: AppConstants.fastAnimationDuration,
+      reverseDuration: AppConstants.fastAnimationDuration,
+      transitionBuilder: (child, animation) => ScaleTransition(
+        scale: animation,
+        child: child,
+      ),
+      child: playerAction?.options == null
+          ? shrinkedBox
+          : _showOptions
+              ? Container(
+                  color: Colors.black.withOpacity(0.85),
+
+                  child: BetWidget(
+                      // rangeMin: playerAction.minRaiseAmount.toDouble(),
+                      // rangeMax: playerAction.maxRaiseAmount.toDouble(),
+                      /* onSubmitCallBack: (double val) {
+                      betAmount = val;
+                      _submit(playerAction);
+                    }, */
+                      ),
+                  //child: _buildBetWidget(context, playerAction)
+                  /* Column(
                       key: ValueKey('options'),
                       children: [
                         /* options */
@@ -501,9 +509,9 @@ class _FooterActionViewState extends State<FooterActionView> {
                         ),
                       ],
                     ), */
-                    )
-                : shrinkedBox,
-      );
+                )
+              : shrinkedBox,
+    );
   }
 
   @override
@@ -520,6 +528,7 @@ class _FooterActionViewState extends State<FooterActionView> {
               Container(
                 constraints: BoxConstraints.expand(),
                 alignment: Alignment.bottomCenter,
+                margin: EdgeInsets.only(bottom: 8),
                 child: _buildTopActionRow(actionState.action),
               ),
               Container(
@@ -534,7 +543,7 @@ class _FooterActionViewState extends State<FooterActionView> {
     );
   }
 
-  Widget _buildBetWidget(BuildContext context, PlayerAction playerAction) {
+  /*  Widget _buildBetWidget(BuildContext context, PlayerAction playerAction) {
     // Default value is minimum
     double val = playerAction.minRaiseAmount.toDouble();
 
@@ -783,5 +792,5 @@ class _FooterActionViewState extends State<FooterActionView> {
         ),
       );
     });
-  }
+  } */
 }
