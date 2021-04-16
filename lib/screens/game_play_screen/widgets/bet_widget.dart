@@ -1,37 +1,18 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_circular_slider/flutter_circular_slider.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/player_action.dart';
 import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/resources/app_styles.dart';
 import 'package:sleek_circular_slider/sleek_circular_slider.dart';
-import 'package:tuple/tuple.dart';
 
 class BetWidget extends StatefulWidget {
-  final double rangeMin;
-  final double rangeMax;
-  final double divisions;
-  final List<Tuple2<String, String>> otherBets;
-  //final Function onSubmitCallBack;
-
+  final Function onSubmitCallBack;
+  final PlayerAction action;
   BetWidget({
-    this.rangeMin = 2.0,
-    this.rangeMax = 400.0,
-    this.divisions = 10,
-    this.otherBets = const [
-      Tuple2("All In", "400"),
-      Tuple2("10BB", "50"),
-      Tuple2("5BB", "20"),
-      Tuple2("3BB", "12"),
-      /*  Tuple2("10BB", "50"),
-      Tuple2("5BB", "20"),
-      Tuple2("3BB", "12"), */
-    ],
-    //this.onSubmitCallBack,
-    /* this.otherBets = [
-      Tuple2<String,String>('asdf', '10'),
-      Tuple2<String,String>('adsf', '30'),
-    ], */
+    @required this.action,
+    this.onSubmitCallBack,
   });
 
   @override
@@ -45,14 +26,16 @@ class _BetWidgetState extends State<BetWidget> {
   @override
   void initState() {
     super.initState();
-    //val = widget.rangeMax / widget.rangeMin;
-    val = (widget.rangeMax - widget.rangeMin) / 2;
+    // always start with min
+    val = widget.action.minRaiseAmount.toDouble();
     _controller = TextEditingController(text: "${val.toStringAsFixed(0)}");
+    setState(() {
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    log('val: $val min: ${widget.rangeMin} max: ${widget.rangeMax}');
+    //log('val: $val min: ${widget.rangeMin} max: ${widget.rangeMax}');
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
     return Container(
@@ -65,12 +48,6 @@ class _BetWidgetState extends State<BetWidget> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Transform.translate(offset: Offset(0, -100),
-            //   child:  SvgPicture.asset(
-            //     "assets/images/game/green bet.svg",
-            //     fit: BoxFit.contain,
-            //   ),
-            // ),
             Container(
               child: Stack(
                 children: [
@@ -93,9 +70,8 @@ class _BetWidgetState extends State<BetWidget> {
                         width: 64,
                         // height: 64,
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: AppColors.appAccentColor,),
-                          
+                          border: Border.all(color: AppColors.buttonBorderColor, width: 2.0),
+                          shape: BoxShape.circle,                          
                         ),
                         child: TextField(
                           textAlign: TextAlign.center,
@@ -106,25 +82,17 @@ class _BetWidgetState extends State<BetWidget> {
                             fillColor: Colors.transparent,
                             border: InputBorder.none,
                           ),
-                          style: TextStyle(
-                            fontSize: 24,
-                            color: Colors.yellow,
-                            fontWeight: FontWeight.w600,
-                          ),
+                          style: AppStyles.betChipsText,
                           onTap: () async {
                             final res = await showDialog(
                               context: context,
                               builder: (context) {
                                 TextEditingController _localCtrl =
-                                    TextEditingController(
-                                        text: _controller.text);
+                                    TextEditingController(text: _controller.text);
                                 return AlertDialog(
                                   content: TextField(
                                     controller: _localCtrl,
                                     autofocus: true,
-                                    /*  onChanged: (value) {
-                                      _controller.text = value;
-                                    }, */
                                     keyboardType: TextInputType.number,
                                   ),
                                   actions: [
@@ -155,13 +123,18 @@ class _BetWidgetState extends State<BetWidget> {
                     child: Align(
                       alignment: Alignment.bottomCenter,
                       child: InkWell(
-                        //onTap: widget.onSubmitCallBack(val),
+                        onTap: () {
+                          log('BET hit $val');
+                          if (widget.onSubmitCallBack != null) {
+                            widget.onSubmitCallBack(val);
+                          }
+                        },
                         child: Container(
                           padding: EdgeInsets.all(10),
                           margin: EdgeInsets.symmetric(vertical: 4),
                           decoration: BoxDecoration(
                             //color: Colors.red,
-                            border: Border.all(color: Colors.white, width: 1.0),
+                            border: Border.all(color: AppColors.buttonBorderColor, width: 2.0),
                             shape: BoxShape.circle,
                             gradient: LinearGradient(
                               colors: [
@@ -169,7 +142,7 @@ class _BetWidgetState extends State<BetWidget> {
                                 Colors.redAccent,
                               ],
                             ),
-                            color: Colors.amber,
+                            //color: Colors.amber,
                           ),
                           child: Text(
                             "BET",
@@ -196,44 +169,46 @@ class _BetWidgetState extends State<BetWidget> {
   }
 
   Widget sleekSlider() {
+    log('min: ${widget.action.minRaiseAmount} max: ${widget.action.maxRaiseAmount} val: $val');
+
     final slider = SleekCircularSlider(
-      onChange: (value) => _controller.text = value.toStringAsFixed(0),
-      min: widget.rangeMin,
-      max: widget.rangeMax,
+      onChange: (value) {
+        _controller.text = value.toStringAsFixed(0);
+        val = double.parse(_controller.text);
+      },
+      min: widget.action.minRaiseAmount.toDouble(),
+      max: widget.action.maxRaiseAmount.toDouble(),
       initialValue: val,
       appearance: CircularSliderAppearance(
         size: 350,
-        startAngle: 120,
-        angleRange: 300,
+        startAngle: 145,
+        angleRange: 245,
         animationEnabled: false,
         infoProperties: InfoProperties(
-          /*   bottomLabelText: 'kg',
-            bottomLabelStyle: TextStyle(fontSize: 25, color: Colors.yellow), */
           mainLabelStyle: TextStyle(
             fontSize: 0,
             color: Colors.white70,
           ),
           modifier: (double value) {
             final roundedValue = value.ceil().toInt().toString();
-            // log('val: $roundedValue');
-            // val = double.parse(roundedValue);
             return '$roundedValue ';
           },
         ),
+
         customColors: CustomSliderColors(
-            hideShadow: true,
+            hideShadow: false,
             trackColor: AppColors.lightGrayColor,
-            dotColor: AppColors.appAccentColor,
-            // progressBarColor: Colors.indigo,
+            dotColor: AppColors.buttonBorderColor,
             progressBarColors: [
-              Colors.indigo.shade900,
-              Colors.indigo.shade600,
-              Colors.indigo.shade400,
-            ]),
+              Colors.red,
+              Colors.yellow,
+              Colors.green,
+            ],            
+          ),
         customWidths: CustomSliderWidths(
-          trackWidth: 8,
+          trackWidth: 16,
           progressBarWidth: 16,
-          handlerSize: 10,
+          handlerSize: 16,
         ),
       ),
     );
@@ -245,31 +220,40 @@ class _BetWidgetState extends State<BetWidget> {
       scrollDirection: Axis.horizontal,
       shrinkWrap: true,
       itemBuilder: (context, index) {
-        final Tuple2<String, String> currentTuple = widget.otherBets[index];
+        final option = widget.action.options[index];
         return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           Column(children: [
-            Container(
-              padding: EdgeInsets.all(8),
-              margin: EdgeInsets.symmetric(vertical: 4),
-              decoration: BoxDecoration(
-                  //color: Colors.red,
-                  border: Border.all(color: Colors.white, width: 1.0),
-                  shape: BoxShape.circle,
-                  gradient: LinearGradient(
-                    // begin: Alignment.topRight,
-                    // end: Alignment.bottomLeft,
-                    colors: [
-                      Colors.indigo,
-                      Colors.cyan,
-                    ],
-                  )),
-              child: Text(
-                "${currentTuple.item1}",
-                style: TextStyle(fontSize: 10, color: Colors.white),
+            InkWell(
+              onTap: () {
+                log('option: ${option.amount} pressed');
+                val = option.amount.toDouble();
+                setState(() {
+                  
+                });
+              },
+              child: Container(
+                padding: EdgeInsets.all(8),
+                margin: EdgeInsets.symmetric(vertical: 4),
+                decoration: BoxDecoration(
+                    //color: Colors.red,
+                    border: Border.all(color: Colors.white, width: 1.0),
+                    shape: BoxShape.circle,
+                    gradient: LinearGradient(
+                      // begin: Alignment.topRight,
+                      // end: Alignment.bottomLeft,
+                      colors: [
+                        Colors.indigo,
+                        Colors.cyan,
+                      ],
+                    )),
+                child: Text(
+                  "${option.text}",
+                  style: TextStyle(fontSize: 10, color: Colors.white),
+                ),
               ),
             ),
             Text(
-              "${currentTuple.item2}",
+              "${option.amount.toInt().toString()}",
               style: TextStyle(
                 fontSize: 12,
                 color: Colors.white,
@@ -279,7 +263,7 @@ class _BetWidgetState extends State<BetWidget> {
           SizedBox(width: 10),
         ]);
       },
-      itemCount: widget.otherBets.length,
+      itemCount: widget.action.options.length,
     );
   }
 }
