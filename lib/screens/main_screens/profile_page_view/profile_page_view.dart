@@ -40,7 +40,10 @@ class _ProfilePageViewState extends State<ProfilePageView> {
           ElevatedButton(
             child: Text('Numeric Keyboard'),
             onPressed: () async {
-              final double value = await NumericKeyboard.show(context);
+              final double value = await NumericKeyboard.show(
+                context,
+                title: 'Please enter your BET amount',
+              );
               print('numeric value: $value');
             },
           ),

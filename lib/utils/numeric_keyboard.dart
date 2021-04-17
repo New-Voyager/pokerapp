@@ -12,40 +12,42 @@ const sizedBox5 = const SizedBox(
 );
 
 class NumericKeyboard {
-  static Widget _buildAmountWidget({
-    String value,
+  static Widget _buildTopRow({
+    String title = 'Title goes here',
   }) =>
-      Container(
-        padding: const EdgeInsets.only(bottom: 10.0),
-        decoration: const BoxDecoration(
-          border: const Border(
-            bottom: const BorderSide(
-              color: Colors.white,
-              width: 0.50,
-            ),
-          ),
-        ),
-        child: Text(
-          value.isEmpty ? '0' : value,
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 15.0,
-          ),
+      Text(
+        title,
+        style: TextStyle(
+          fontSize: 15.0,
+          color: Colors.white,
         ),
       );
 
-  static Widget _buildTopRow({
-    String title = 'Title goes here',
+  static Widget _buildAmountWidget({
+    String value,
     Function onCloseTap,
+    Function onDoneTap,
   }) =>
       Row(
         children: [
-          /* title */
+          /* bet amount */
           Expanded(
-            child: Text(
-              title,
-              style: AppStyles.optionTitle.copyWith(
-                fontSize: 18.0,
+            child: Container(
+              padding: const EdgeInsets.only(bottom: 10.0),
+              decoration: const BoxDecoration(
+                border: const Border(
+                  bottom: const BorderSide(
+                    color: AppColors.appAccentColor,
+                    width: 0.50,
+                  ),
+                ),
+              ),
+              child: Text(
+                value.isEmpty ? '0' : value,
+                style: TextStyle(
+                  color: AppColors.appAccentColor,
+                  fontSize: 18.0,
+                ),
               ),
             ),
           ),
@@ -55,10 +57,21 @@ class NumericKeyboard {
             iconSize: 30.0,
             padding: const EdgeInsets.all(0),
             icon: Icon(
-              Icons.close_rounded,
+              Icons.cancel_rounded,
               color: Colors.red,
             ),
             onPressed: onCloseTap,
+          ),
+
+          /* done button */
+          IconButton(
+            iconSize: 30.0,
+            padding: const EdgeInsets.all(0),
+            icon: Icon(
+              Icons.check_circle_rounded,
+              color: Colors.green,
+            ),
+            onPressed: onDoneTap,
           ),
         ],
       );
@@ -72,6 +85,7 @@ class NumericKeyboard {
     ValueNotifier<String> vnValue,
     IconData iconData,
     String buttonValue,
+    BuildContext context,
   ) {
     String value = vnValue.value;
 
@@ -79,16 +93,11 @@ class NumericKeyboard {
     * backspace action
     * */
     if (iconData == Icons.backspace_rounded) {
-      if (value.isEmpty) return;
-      vnValue.value = value.substring(0, value.length - 1);
-      return;
-    }
+      if (value == '0') return;
+      String newValue = value.substring(0, value.length - 1);
+      if (newValue.isEmpty) newValue = '0';
+      vnValue.value = newValue;
 
-    /*
-    * done action
-    * */
-    if (iconData != null) {
-      // todo: do the DONE part
       return;
     }
 
@@ -96,7 +105,13 @@ class NumericKeyboard {
     if (value.contains('.') && buttonValue == '.') return;
 
     /* numbers and decimal part */
-    vnValue.value = value + buttonValue;
+    String newValue = '';
+    if (value.length == 1 && value == '0')
+      newValue = buttonValue;
+    else
+      newValue = value + buttonValue;
+
+    vnValue.value = newValue;
   }
 
   static Widget _buildButton({
@@ -110,20 +125,25 @@ class NumericKeyboard {
           builder: (context) => Container(
             margin: const EdgeInsets.all(5.0),
             decoration: BoxDecoration(
-              color: AppColors.buttonBackGroundColor,
-              border: Border.all(
-                color: AppColors.appAccentColor,
-                width: 2.0,
-              ),
+              shape: BoxShape.circle,
+              color: icon != null ? Colors.grey : Colors.blue,
+              // border: Border.all(
+              //   color: AppColors.appAccentColor,
+              //   width: 2.0,
+              // ),
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withOpacity(0.10),
                   blurRadius: 10.0,
-                  spreadRadius: 10.0,
+                  spreadRadius: 2.0,
                 ),
               ],
             ),
             child: InkWell(
+              focusColor: Colors.transparent,
+              highlightColor: Colors.transparent,
+              splashColor: Colors.transparent,
+              hoverColor: Colors.transparent,
               onTap: () {
                 /* depending upon value, decide */
 
@@ -137,18 +157,19 @@ class NumericKeyboard {
                   vnValue,
                   icon,
                   value,
+                  context,
                 );
               },
               child: Center(
                 child: icon != null
                     ? Icon(
                         icon,
-                        color: AppColors.appAccentColor,
+                        color: Colors.white,
                       )
                     : Text(
                         value,
                         style: TextStyle(
-                          color: AppColors.appAccentColor,
+                          color: Colors.white,
                           fontSize: 18.0,
                         ),
                       ),
@@ -159,92 +180,71 @@ class NumericKeyboard {
       );
 
   static Widget _buildKeyboard() => Expanded(
-        child: Row(
+        child: Column(
           children: [
-            /* numbers and decimal */
+            /* 7 8 9 */
             Expanded(
-              flex: 4,
-              child: Column(
+              child: Row(
                 children: [
-                  /* 7 8 9 */
-                  Expanded(
-                    child: Row(
-                      children: [
-                        _buildButton(
-                          value: '7',
-                        ),
-                        _buildButton(
-                          value: '8',
-                        ),
-                        _buildButton(
-                          value: '9',
-                        ),
-                      ],
-                    ),
+                  _buildButton(
+                    value: '7',
                   ),
-
-                  /* 4 5 6 */
-                  Expanded(
-                    child: Row(
-                      children: [
-                        _buildButton(
-                          value: '4',
-                        ),
-                        _buildButton(
-                          value: '5',
-                        ),
-                        _buildButton(
-                          value: '6',
-                        ),
-                      ],
-                    ),
+                  _buildButton(
+                    value: '8',
                   ),
-
-                  /* 1 2 3 */
-                  Expanded(
-                    child: Row(
-                      children: [
-                        _buildButton(
-                          value: '1',
-                        ),
-                        _buildButton(
-                          value: '2',
-                        ),
-                        _buildButton(
-                          value: '3',
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  /*  0  . */
-                  Expanded(
-                    child: Row(
-                      children: [
-                        _buildButton(
-                          value: '0',
-                          flex: 2,
-                        ),
-                        _buildButton(
-                          value: '.',
-                        ),
-                      ],
-                    ),
+                  _buildButton(
+                    value: '9',
                   ),
                 ],
               ),
             ),
 
-            /* backspace, and done button */
+            /* 4 5 6 */
             Expanded(
-              flex: 1,
-              child: Column(
+              child: Row(
                 children: [
                   _buildButton(
-                    icon: Icons.backspace_rounded,
+                    value: '4',
                   ),
                   _buildButton(
-                    icon: Icons.check_rounded,
+                    value: '5',
+                  ),
+                  _buildButton(
+                    value: '6',
+                  ),
+                ],
+              ),
+            ),
+
+            /* 1 2 3 */
+            Expanded(
+              child: Row(
+                children: [
+                  _buildButton(
+                    value: '1',
+                  ),
+                  _buildButton(
+                    value: '2',
+                  ),
+                  _buildButton(
+                    value: '3',
+                  ),
+                ],
+              ),
+            ),
+
+            /* . 0 <- */
+            Expanded(
+              child: Row(
+                children: [
+                  _buildButton(
+                    value: '.',
+                  ),
+                  _buildButton(
+                    value: '0',
+                  ),
+                  _buildButton(
+                    icon: Icons.backspace_rounded,
                   ),
                 ],
               ),
@@ -261,7 +261,7 @@ class NumericKeyboard {
       showGeneralDialog(
         barrierLabel: "Numeric Keyboard",
         barrierDismissible: true,
-        barrierColor: Colors.black.withOpacity(0.20),
+        barrierColor: Colors.black.withOpacity(0.10),
         transitionDuration: Duration(milliseconds: 150),
         context: context,
         pageBuilder: (context, _, __) => Align(
@@ -280,11 +280,11 @@ class NumericKeyboard {
               providers: [
                 /* this provider holds the double value */
                 ListenableProvider<ValueNotifier<String>>(
-                  create: (_) => ValueNotifier<String>(''),
+                  create: (_) => ValueNotifier<String>('0'),
                 ),
               ],
               builder: (context, __) => Scaffold(
-                backgroundColor: AppColors.screenBackgroundColor,
+                backgroundColor: AppColors.widgetBackgroundColor,
                 body: SafeArea(
                   top: false,
                   child: Padding(
@@ -296,7 +296,6 @@ class NumericKeyboard {
                         /* title & close button */
                         _buildTopRow(
                           title: title,
-                          onCloseTap: () => Navigator.pop(context),
                         ),
 
                         /* separator */
@@ -306,6 +305,11 @@ class NumericKeyboard {
                         Consumer<ValueNotifier<String>>(
                           builder: (_, vnValue, __) => _buildAmountWidget(
                             value: vnValue.value,
+                            onCloseTap: () => Navigator.pop(context),
+                            onDoneTap: () => Navigator.pop(
+                              context,
+                              double.parse(vnValue.value),
+                            ),
                           ),
                         ),
 
