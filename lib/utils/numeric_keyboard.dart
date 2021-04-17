@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
-import 'package:pokerapp/resources/app_styles.dart';
 import 'package:provider/provider.dart';
 
 const sizedBox10 = const SizedBox(
@@ -12,6 +11,26 @@ const sizedBox5 = const SizedBox(
 );
 
 class NumericKeyboard {
+  static void _onDone(
+    BuildContext context,
+    String value,
+    double min,
+    double max,
+  ) {
+    double v = double.parse(value);
+
+    if (min == null) min = 0;
+    if (max == null) max = double.infinity;
+
+    if (min <= v && v <= max) return Navigator.pop(context, v);
+
+    /* else show error */
+    Provider.of<ValueNotifier<bool>>(
+      context,
+      listen: false,
+    ).value = true;
+  }
+
   static Widget _buildTopRow({
     String title = 'Title goes here',
   }) =>
@@ -25,6 +44,7 @@ class NumericKeyboard {
 
   static Widget _buildAmountWidget({
     String value,
+    bool error,
     Function onCloseTap,
     Function onDoneTap,
   }) =>
@@ -34,11 +54,11 @@ class NumericKeyboard {
           Expanded(
             child: Container(
               padding: const EdgeInsets.only(bottom: 10.0),
-              decoration: const BoxDecoration(
-                border: const Border(
-                  bottom: const BorderSide(
-                    color: AppColors.appAccentColor,
-                    width: 0.50,
+              decoration: BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(
+                    color: error ? Colors.red : AppColors.appAccentColor,
+                    width: 1.0,
                   ),
                 ),
               ),
@@ -52,26 +72,52 @@ class NumericKeyboard {
             ),
           ),
 
-          /* close button */
-          IconButton(
-            iconSize: 30.0,
-            padding: const EdgeInsets.all(0),
-            icon: Icon(
-              Icons.cancel_rounded,
-              color: Colors.red,
-            ),
-            onPressed: onCloseTap,
-          ),
+          /* separator */
+          const SizedBox(width: 15.0),
 
           /* done button */
-          IconButton(
-            iconSize: 30.0,
-            padding: const EdgeInsets.all(0),
-            icon: Icon(
-              Icons.check_circle_rounded,
-              color: Colors.green,
+          InkWell(
+            focusColor: Colors.transparent,
+            highlightColor: Colors.transparent,
+            splashColor: Colors.transparent,
+            hoverColor: Colors.transparent,
+            onTap: onDoneTap,
+            child: Container(
+              padding: const EdgeInsets.all(5.0),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.green,
+              ),
+              child: Icon(
+                Icons.check_rounded,
+                size: 25.0,
+                color: Colors.white,
+              ),
             ),
-            onPressed: onDoneTap,
+          ),
+
+          /* separator */
+          const SizedBox(width: 15.0),
+
+          /* close button */
+          InkWell(
+            focusColor: Colors.transparent,
+            highlightColor: Colors.transparent,
+            splashColor: Colors.transparent,
+            hoverColor: Colors.transparent,
+            onTap: onCloseTap,
+            child: Container(
+              padding: const EdgeInsets.all(5.0),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.red,
+              ),
+              child: Icon(
+                Icons.close_rounded,
+                size: 25.0,
+                color: Colors.white,
+              ),
+            ),
           ),
         ],
       );
@@ -257,6 +303,8 @@ class NumericKeyboard {
   static Future<double> show(
     BuildContext context, {
     String title = 'Title goes here',
+    double min = 0,
+    double max,
   }) =>
       showGeneralDialog(
         barrierLabel: "Numeric Keyboard",
@@ -280,7 +328,12 @@ class NumericKeyboard {
               providers: [
                 /* this provider holds the double value */
                 ListenableProvider<ValueNotifier<String>>(
-                  create: (_) => ValueNotifier<String>('0'),
+                  create: (_) => ValueNotifier<String>(min.toString()),
+                ),
+
+                /* this provider holds the error state */
+                ListenableProvider<ValueNotifier<bool>>(
+                  create: (_) => ValueNotifier<bool>(false),
                 ),
               ],
               builder: (context, __) => Scaffold(
@@ -302,13 +355,17 @@ class NumericKeyboard {
                         sizedBox10,
 
                         /* amount */
-                        Consumer<ValueNotifier<String>>(
-                          builder: (_, vnValue, __) => _buildAmountWidget(
+                        Consumer2<ValueNotifier<String>, ValueNotifier<bool>>(
+                          builder: (_, vnValue, vnError, __) =>
+                              _buildAmountWidget(
                             value: vnValue.value,
+                            error: vnError.value,
                             onCloseTap: () => Navigator.pop(context),
-                            onDoneTap: () => Navigator.pop(
+                            onDoneTap: () => _onDone(
                               context,
-                              double.parse(vnValue.value),
+                              vnValue.value,
+                              min,
+                              max,
                             ),
                           ),
                         ),

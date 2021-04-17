@@ -43,6 +43,7 @@ class _ProfilePageViewState extends State<ProfilePageView> {
               final double value = await NumericKeyboard.show(
                 context,
                 title: 'Please enter your BET amount',
+                min: 45,
               );
               print('numeric value: $value');
             },
