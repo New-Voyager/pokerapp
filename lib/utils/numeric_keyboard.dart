@@ -3,11 +3,8 @@ import 'package:flutter/widgets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:provider/provider.dart';
 
-const sizedBox10 = const SizedBox(
-  height: 10,
-);
-const sizedBox5 = const SizedBox(
-  height: 5,
+const sizedBox20 = const SizedBox(
+  height: 20,
 );
 
 class NumericKeyboard {
@@ -352,7 +349,7 @@ class NumericKeyboard {
                         ),
 
                         /* separator */
-                        sizedBox10,
+                        sizedBox20,
 
                         /* amount */
                         Consumer2<ValueNotifier<String>, ValueNotifier<bool>>(
@@ -371,7 +368,7 @@ class NumericKeyboard {
                         ),
 
                         /* separator */
-                        sizedBox10,
+                        sizedBox20,
 
                         /* keyboard */
                         _buildKeyboard(),
