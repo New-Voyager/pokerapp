@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/game_play_screen/card_views/stack_card_view.dart';
+import 'package:pokerapp/screens/util_screens/numeric_keyboard.dart';
 import 'package:pokerapp/screens/util_screens/replay_hand_screen/replay_hand_screen.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/utils/card_helper.dart';
+import 'package:pokerapp/utils/numeric_keyboard.dart';
 
 class ProfilePageView extends StatefulWidget {
   @override
@@ -32,6 +34,18 @@ class _ProfilePageViewState extends State<ProfilePageView> {
                   builder: (_) => ReplayHandScreen(),
                 ),
               );
+            },
+          ),
+          Spacer(),
+          ElevatedButton(
+            child: Text('Numeric Keyboard'),
+            onPressed: () async {
+              final double value = await NumericKeyboard.show(
+                context,
+                title: 'Please enter your BET amount',
+                min: 45,
+              );
+              print('numeric value: $value');
             },
           ),
           Spacer(),

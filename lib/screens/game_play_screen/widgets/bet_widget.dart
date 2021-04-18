@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/player_action.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/utils/numeric_keyboard.dart';
 import 'package:sleek_circular_slider/sleek_circular_slider.dart';
 
 class BetWidget extends StatefulWidget {
@@ -29,8 +30,7 @@ class _BetWidgetState extends State<BetWidget> {
     // always start with min
     val = widget.action.minRaiseAmount.toDouble();
     _controller = TextEditingController(text: "${val.toStringAsFixed(0)}");
-    setState(() {
-    });
+    setState(() {});
   }
 
   @override
@@ -70,8 +70,9 @@ class _BetWidgetState extends State<BetWidget> {
                         width: 64,
                         // height: 64,
                         decoration: BoxDecoration(
-                          border: Border.all(color: AppColors.buttonBorderColor, width: 2.0),
-                          shape: BoxShape.circle,                          
+                          border: Border.all(
+                              color: AppColors.buttonBorderColor, width: 2.0),
+                          shape: BoxShape.circle,
                         ),
                         child: TextField(
                           textAlign: TextAlign.center,
@@ -84,33 +85,16 @@ class _BetWidgetState extends State<BetWidget> {
                           ),
                           style: AppStyles.betChipsText,
                           onTap: () async {
-                            final res = await showDialog(
-                              context: context,
-                              builder: (context) {
-                                TextEditingController _localCtrl =
-                                    TextEditingController(text: _controller.text);
-                                return AlertDialog(
-                                  content: TextField(
-                                    controller: _localCtrl,
-                                    autofocus: true,
-                                    keyboardType: TextInputType.number,
-                                  ),
-                                  actions: [
-                                    ElevatedButton(
-                                      onPressed: () => Navigator.of(context)
-                                          .pop(_localCtrl.text),
-                                      child: Text("OK"),
-                                    ),
-                                  ],
-                                );
-                              },
+                            // todo: neeed to find the title
+
+                            final double res = await NumericKeyboard.show(
+                              context,
+                              title: '',
+                              min: widget.action.minRaiseAmount.toDouble(),
+                              max: widget.action.maxRaiseAmount.toDouble(),
                             );
 
-                            if (res != null && res.toString().isNotEmpty) {
-                              setState(() {
-                                val = double.parse(res.toString());
-                              });
-                            }
+                            if (res != null) setState(() => val = res);
                           },
                         ),
                       ),
@@ -134,7 +118,8 @@ class _BetWidgetState extends State<BetWidget> {
                           margin: EdgeInsets.symmetric(vertical: 4),
                           decoration: BoxDecoration(
                             //color: Colors.red,
-                            border: Border.all(color: AppColors.buttonBorderColor, width: 2.0),
+                            border: Border.all(
+                                color: AppColors.buttonBorderColor, width: 2.0),
                             shape: BoxShape.circle,
                             gradient: LinearGradient(
                               colors: [
@@ -194,17 +179,16 @@ class _BetWidgetState extends State<BetWidget> {
             return '$roundedValue ';
           },
         ),
-
         customColors: CustomSliderColors(
-            hideShadow: false,
-            trackColor: AppColors.lightGrayColor,
-            dotColor: AppColors.buttonBorderColor,
-            progressBarColors: [
-              Colors.red,
-              Colors.yellow,
-              Colors.green,
-            ],            
-          ),
+          hideShadow: false,
+          trackColor: AppColors.lightGrayColor,
+          dotColor: AppColors.buttonBorderColor,
+          progressBarColors: [
+            Colors.red,
+            Colors.yellow,
+            Colors.green,
+          ],
+        ),
         customWidths: CustomSliderWidths(
           trackWidth: 16,
           progressBarWidth: 16,
@@ -227,9 +211,7 @@ class _BetWidgetState extends State<BetWidget> {
               onTap: () {
                 log('option: ${option.amount} pressed');
                 val = option.amount.toDouble();
-                setState(() {
-                  
-                });
+                setState(() {});
               },
               child: Container(
                 padding: EdgeInsets.all(8),
