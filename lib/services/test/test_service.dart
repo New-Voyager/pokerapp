@@ -44,7 +44,7 @@ class TestService {
   static List<int> get pots => _pots;
 
   static get isTesting {
-    return true;
+    return false;
   }
 
   static Future<void> load() async {
@@ -231,12 +231,11 @@ class TestService {
             "amount": 30
           }]
         }''';
-      final seatAction = jsonDecode(seatActionJsonStr);
-      // actionState.setAction(1, seatAction);
-      gameState.setAction(context, 1, seatAction);
-      gameState.showAction(context, true);
+    final seatAction = jsonDecode(seatActionJsonStr);
+    // actionState.setAction(1, seatAction);
+    gameState.setAction(context, 1, seatAction);
+    gameState.showAction(context, true);
 
-      actionState.notifyListeners();
+    actionState.notifyListeners();
   }
-
 }

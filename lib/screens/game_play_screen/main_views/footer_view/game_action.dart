@@ -1,14 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
-import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
-import 'package:pokerapp/resources/app_colors.dart';
-import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_styles.dart';
-import 'package:pokerapp/services/game_play/footer_services.dart';
-import 'package:pokerapp/widgets/round_raised_button.dart';
-import 'package:provider/provider.dart';
 import 'package:timer_count_down/timer_count_down.dart';
 import 'hole_cards_view.dart';
 
@@ -51,32 +45,32 @@ class GameAction extends StatelessWidget {
     }
   }
 
-  Widget _buildBuyInPromptButton(BuildContext context) {
-    int _endTime = Provider.of<ValueNotifier<GameInfoModel>>(
-          context,
-          listen: false,
-        ).value.actionTime ??
-        AppConstants.buyInTimeOutSeconds;
-
-    return Center(
-      key: ValueKey('buildBuyInPrompt'),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          _buildTimer(
-            time: _endTime,
-          ),
-          RoundRaisedButton(
-            color: AppColors.appAccentColor,
-            buttonText: 'Buy Chips',
-            onButtonTap: () => FooterServices.promptBuyIn(
-              context: context,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  // Widget _buildBuyInPromptButton(BuildContext context) {
+  //   int _endTime = Provider.of<ValueNotifier<GameInfoModel>>(
+  //         context,
+  //         listen: false,
+  //       ).value.actionTime ??
+  //       AppConstants.buyInTimeOutSeconds;
+  //
+  //   return Center(
+  //     key: ValueKey('buildBuyInPrompt'),
+  //     child: Column(
+  //       mainAxisSize: MainAxisSize.min,
+  //       children: [
+  //         _buildTimer(
+  //           time: _endTime,
+  //         ),
+  //         RoundRaisedButton(
+  //           color: AppColors.appAccentColor,
+  //           buttonText: 'Buy Chips',
+  //           onButtonTap: () => FooterServices.promptBuyIn(
+  //             context: context,
+  //           ),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   Widget _buildTimer({int time = 10}) => Container(
         padding: const EdgeInsets.all(8.0),
