@@ -4,6 +4,7 @@ import 'package:pokerapp/resources/app_icons.dart';
 import 'package:pokerapp/screens/main_screens/clubs_page_view/clubs_page_view.dart';
 import 'package:pokerapp/screens/main_screens/games_page_view/games_page_view.dart';
 import 'package:pokerapp/screens/main_screens/profile_page_view/profile_page_view.dart';
+import 'package:pokerapp/screens/main_screens/purchase_page_view/purchase_page_view.dart';
 import 'package:pokerapp/widgets/tab_bar_item.dart';
 
 class MainScreen extends StatefulWidget {
@@ -21,7 +22,7 @@ class _MainScreenState extends State<MainScreen>
 
     _controller = TabController(
       vsync: this,
-      length: 3,
+      length: 4,
     );
   }
 
@@ -42,6 +43,7 @@ class _MainScreenState extends State<MainScreen>
                     GamesPageView(),
                     ClubsPageView(),
                     ProfilePageView(),
+                    PurchasePageView()
                   ],
                 ),
               ),
@@ -69,6 +71,10 @@ class _MainScreenState extends State<MainScreen>
                     TabBarItem(
                       iconData: AppIcons.user,
                       title: 'My Profile',
+                    ),
+                    TabBarItem(
+                      iconData: Icons.money,
+                      title: 'Purchase',
                     ),
                   ],
                 ),
