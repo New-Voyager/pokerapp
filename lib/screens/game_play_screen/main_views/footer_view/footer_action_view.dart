@@ -48,12 +48,9 @@ class _FooterActionViewState extends State<FooterActionView> {
     _bet();
   }
 
-
   void _betOrRaise(double val) {
     _showOptions = false;
-    setState(() {
-      
-    });
+    setState(() {});
     betAmount = val;
     if (bet) {
       log('bet');
@@ -70,54 +67,53 @@ class _FooterActionViewState extends State<FooterActionView> {
     bool isSelected = false,
     bool disable = false,
   }) {
-      TextStyle btnTextStyle = AppStyles.clubItemInfoTextStyle.copyWith(
-                fontSize: 10.5,
-                color: isSelected ? Colors.white : null,
-              );
-      Color btnColor = AppColors.buttonBorderColor;
-      if (disable) {
-        btnColor = Colors.grey;
-        btnTextStyle = AppStyles.disabledButtonTextStyle.copyWith(
-                fontSize: 10.5,
-              );
-      }
-
-      final button = AnimatedContainer(
-          duration: AppConstants.fastAnimationDuration,
-          curve: Curves.bounceInOut,
-          height: 32.0,
-          width: 80.0,
-          margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-          padding: const EdgeInsets.all(2.0),
-          decoration: BoxDecoration(
-            color: isSelected ? 
-                  const Color(0xff319ffe) : 
-                  Colors.transparent,
-            shape: BoxShape.rectangle,
-            border: Border.all(
-              color: btnColor,
-              width: 2.0,
-            ),
-            borderRadius: BorderRadius.circular(16),
-          ),
-          child: Center(
-            child: Text(
-              text.toUpperCase(),
-              textAlign: TextAlign.center,
-              style: btnTextStyle,
-            ),
-          ),
-        );
-
-      if (disable) {
-        return button;
-      }
-
-      return InkWell(
-        onTap: onTap,
-        child: button, 
+    TextStyle btnTextStyle = AppStyles.clubItemInfoTextStyle.copyWith(
+      fontSize: 10.5,
+      color: isSelected ? Colors.white : null,
+    );
+    Color btnColor = AppColors.buttonBorderColor;
+    if (disable) {
+      btnColor = Colors.grey;
+      btnTextStyle = AppStyles.disabledButtonTextStyle.copyWith(
+        fontSize: 10.5,
       );
+    }
+
+    final button = AnimatedContainer(
+      duration: AppConstants.fastAnimationDuration,
+      curve: Curves.bounceInOut,
+      height: 32.0,
+      width: 80.0,
+      margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+      padding: const EdgeInsets.all(2.0),
+      decoration: BoxDecoration(
+        color: isSelected ? const Color(0xff319ffe) : Colors.transparent,
+        shape: BoxShape.rectangle,
+        border: Border.all(
+          color: btnColor,
+          width: 2.0,
+        ),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Center(
+        child: Text(
+          text.toUpperCase(),
+          textAlign: TextAlign.center,
+          style: btnTextStyle,
+        ),
+      ),
+    );
+
+    if (disable) {
+      return button;
+    }
+
+    return InkWell(
+      onTap: onTap,
+      child: button,
+    );
   }
+
   /* This util function updates the UI and notifies
   * the provider that action has been taken
   * */
@@ -285,7 +281,8 @@ class _FooterActionViewState extends State<FooterActionView> {
                   case CALL:
                     return _buildRoundButton(
                       text: playerAction.actionName +
-                          '\n' + playerAction.actionValue.toString(),
+                          '\n' +
+                          playerAction.actionValue.toString(),
                       onTap: () => _call(
                         playerAction.actionValue,
                         context: context,
@@ -320,7 +317,6 @@ class _FooterActionViewState extends State<FooterActionView> {
             [],
       );
 
-
   Widget _buildOptionsRow(PlayerAction playerAction) {
     return AnimatedSwitcher(
       duration: AppConstants.fastAnimationDuration,
@@ -334,7 +330,10 @@ class _FooterActionViewState extends State<FooterActionView> {
           : _showOptions
               ? Container(
                   color: Colors.black.withOpacity(0.85),
-                  child: BetWidget(action: playerAction, onSubmitCallBack: _betOrRaise,),
+                  child: BetWidget(
+                    action: playerAction,
+                    onSubmitCallBack: _betOrRaise,
+                  ),
                 )
               : shrinkedBox,
     );

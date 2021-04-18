@@ -12,11 +12,11 @@ import 'package:pokerapp/screens/game_play_screen/main_views/animating_widgets/c
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/center_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/decorative_views/table_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/players_on_table_view.dart';
-import 'package:pokerapp/screens/game_play_screen/pop_ups/chip_buy_pop_up.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/animating_widgets/stack_switch_seat_animating_widget.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/services/game_play/graphql/game_service.dart';
 import 'package:pokerapp/services/test/test_service.dart';
+import 'package:pokerapp/utils/numeric_keyboard.dart';
 import 'package:pokerapp/widgets/round_raised_button.dart';
 import 'package:provider/provider.dart';
 
@@ -174,7 +174,7 @@ class _BoardViewState extends State<BoardView> {
             MyState myState,
             Widget __,
           ) =>
-          Align(
+              Align(
             alignment: Alignment.bottomCenter,
             child: buyInButton(context),
           ),
@@ -205,40 +205,46 @@ class _BoardViewState extends State<BoardView> {
       return SizedBox.shrink();
     }
 
-
     final widget = ListenableProvider<Seat>(
       create: (_) => mySeat,
       builder: (context, _) => Consumer<Seat>(
-        builder: (_, seat, __) => Transform.translate(offset: Offset(0, 10),
-          child: RoundRaisedButton(buttonText: 'Buyin',
-          color: Colors.blueGrey,
-          verticalPadding: 1,
-          fontSize: 15,
-            onButtonTap: () async => {
-              await onBuyin(context)
-            },)
-        ),
+        builder: (_, seat, __) => Transform.translate(
+            offset: Offset(0, 10),
+            child: RoundRaisedButton(
+              buttonText: 'Buyin',
+              color: Colors.blueGrey,
+              verticalPadding: 1,
+              fontSize: 15,
+              onButtonTap: () async => {await onBuyin(context)},
+            )),
       ),
     );
 
     return widget;
   }
 
-  Future<void> onBuyinAlert(BuildContext context) async {
-    dynamic ret = await showBuyinDialog(context, _buyInKey, 30, 100);
-  }
+  // Future<void> onBuyinAlert(BuildContext context) async {
+  //   dynamic ret = await showBuyinDialog(context, _buyInKey, 30, 100);
+  // }
 
-    Future<void> onBuyin(BuildContext context) async {
+  Future<void> onBuyin(BuildContext context) async {
     final gameState = GameState.getState(context);
     final gameInfo = gameState.gameInfo;
 
-    bool status = await showDialog(
-      context: context,
-      builder: (context) => ChipBuyPopUp(
-        gameCode: gameInfo.gameCode,
-        minBuyIn: gameInfo.buyInMin,
-        maxBuyIn: gameInfo.buyInMax,
-      ),
+    /* use numeric keyboard to get buyin */
+    double value = await NumericKeyboard.show(
+      context,
+      title: 'Buy In (${gameInfo.buyInMin} - ${gameInfo.buyInMax})',
+      min: gameInfo.buyInMin.toDouble(),
+      max: gameInfo.buyInMax.toDouble(),
+    );
+
+    if (value == null) return;
+
+    // buy chips
+    await GameService.buyIn(
+      gameInfo.gameCode,
+      value.toInt(),
     );
   }
 }
