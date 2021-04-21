@@ -1,14 +1,19 @@
+import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:pokerapp/routes.dart';
+import 'package:pokerapp/services/firebase/analytics_service.dart';
 import 'package:pokerapp/services/graphQL/configurations/graph_ql_configuration.dart';
+import 'package:pokerapp/utils/locator.dart';
 
 GraphQLConfiguration graphQLConfiguration = GraphQLConfiguration();
 final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  // Register all the models and services before the app starts
+  setupLocator();
   runApp(
     GraphQLProvider(
       client: graphQLConfiguration.client,
@@ -41,6 +46,7 @@ class MyApp extends StatelessWidget {
             title: 'Poker App',
             debugShowCheckedModeBanner: false,
             navigatorKey: navigatorKey,
+            navigatorObservers: [locator<AnalyticsService>().getAnalyticsObserver()],
             theme: ThemeData(
               primarySwatch: Colors.blue,
               visualDensity: VisualDensity.adaptivePlatformDensity,

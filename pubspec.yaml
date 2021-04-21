@@ -106,6 +106,9 @@ dependencies:
   firebase_messaging: ^9.1.2
   firebase_analytics: ^8.0.1
 
+  # Service Locator
+  get_it: ^6.1.1
+
 dependency_overrides:
   http: ^0.12.2
   http_parser: ^3.1.1
