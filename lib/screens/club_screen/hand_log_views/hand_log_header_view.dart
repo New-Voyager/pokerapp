@@ -26,28 +26,27 @@ class HandLogHeaderView extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-           Container(
-                  margin: EdgeInsets.symmetric(horizontal: 8,vertical: 8),
-                  child: Text(
-                    "Game: " + _handLogModel.gameCode,
-                    style: const TextStyle(
-                      fontFamily: AppAssets.fontFamilyLato,
-                      color: Colors.white,
-                      fontSize: 14.0,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                ),
+          Container(
+            margin: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+            child: Text(
+              "Game: " + _handLogModel.gameCode,
+              style: const TextStyle(
+                fontFamily: AppAssets.fontFamilyLato,
+                color: Colors.white,
+                fontSize: 14.0,
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Container(
-                margin: EdgeInsets.symmetric(horizontal: 10,vertical: 5),
+                margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                   
                     Container(
                       margin: EdgeInsets.only(top: 5),
                       child: Text(
@@ -76,7 +75,7 @@ class HandLogHeaderView extends StatelessWidget {
                 ),
               ),
               Container(
-                margin: EdgeInsets.only(right: 10,bottom: 10),
+                margin: EdgeInsets.only(right: 10, bottom: 10),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,

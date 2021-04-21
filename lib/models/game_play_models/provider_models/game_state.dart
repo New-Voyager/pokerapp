@@ -95,7 +95,8 @@ class GameState {
           player.status = AppConstants.NOT_PLAYING;
         }
         log('name: ${player.name} player status: ${player.status}');
-        this._myState.status = values.firstWhere((e) => e.toString() == 'PlayerStatus.'+player.status);
+        this._myState.status = values
+            .firstWhere((e) => e.toString() == 'PlayerStatus.' + player.status);
       }
       if (player.buyInTimeExpAt != null && player.stack == 0) {
         // show buyin button/timer if the player is in middle of buyin

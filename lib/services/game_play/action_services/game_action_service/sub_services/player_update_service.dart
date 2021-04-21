@@ -31,14 +31,14 @@ class PlayerUpdateService {
 
     // fixme: this is until all the player update messages have a newUpdate field
     if (player == null) {
-      return ;
+      return;
     }
     //   return handleNewPlayer(
     //     context: context,
     //     playerUpdate: playerUpdate,
     //   );
     // }
-    
+
     bool showBuyIn = false;
     if (status == AppConstants.PLAYING) {
       showBuyIn = false;
@@ -74,7 +74,7 @@ class PlayerUpdateService {
     );
     seat.notify();
 
-    // update my state to remove buyin button 
+    // update my state to remove buyin button
     if (player.isMe) {
       final myState = gameState.getMyState(context);
       myState.notify();
@@ -170,9 +170,6 @@ class PlayerUpdateService {
 
     gameState.removePlayer(context, seatNo);
     gameState.updatePlayers(context);
-    
-    
-
   }
 
   static void handlePlayerBuyinTimedout({
@@ -186,7 +183,7 @@ class PlayerUpdateService {
 
     int seatNo = playerUpdate['seatNo'];
     final seat = gameState.getSeat(context, seatNo);
-    if(seat != null && seat.player != null && seat.player.isMe) {
+    if (seat != null && seat.player != null && seat.player.isMe) {
       gameState.myState.status = PlayerStatus.NOT_PLAYING;
       gameState.myState.notify();
     }
@@ -247,7 +244,6 @@ class PlayerUpdateService {
     gameState.updatePlayers(context);
   }
 
-
   static void handlePlayerWaitForBuyinApproval({
     @required BuildContext context,
     @required var playerUpdate,
@@ -256,7 +252,7 @@ class PlayerUpdateService {
     int seatNo = playerUpdate['seatNo'];
     final seat = gameState.getSeat(context, seatNo);
 
-    if(seat.player.isMe) {
+    if (seat.player.isMe) {
       gameState.myState.status = PlayerStatus.WAIT_FOR_BUYIN_APPROVAL;
       gameState.myState.notify();
     }
@@ -279,7 +275,7 @@ class PlayerUpdateService {
     final players = gameState.getPlayers(context);
     players.removePlayerSilent(seatNo);
     bool isMe = false;
-    if(seat.player.isMe) {
+    if (seat.player.isMe) {
       isMe = true;
     }
     seat.player = null;
@@ -289,9 +285,10 @@ class PlayerUpdateService {
       final myState = gameState.getMyState(context);
       myState.notify();
 
-      showAlertDialog(context, "BuyIn Request", "The host denied the buyin request");      
+      showAlertDialog(
+          context, "BuyIn Request", "The host denied the buyin request");
     }
-  }  
+  }
 
   static void handle({
     BuildContext context,

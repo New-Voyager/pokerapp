@@ -143,7 +143,6 @@ class HandWinnersView extends StatelessWidget {
                                             ),
                                           ],
                                         ),
-                                      
                                       ],
                                     ),
                                   );

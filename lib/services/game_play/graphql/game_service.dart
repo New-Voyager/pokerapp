@@ -71,7 +71,6 @@ class GameService {
     return result.data['joinGame'];
   }
 
-
   /* player switches to a open seat */
   static Future<String> switchSeat(String gameCode, int seatNo) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
@@ -89,7 +88,6 @@ class GameService {
 
     return result.data['switchSeat'];
   }
-
 
   /* the following method facilitates buying chips */
   static Future<String> buyIn(String gameCode, int amount) async {

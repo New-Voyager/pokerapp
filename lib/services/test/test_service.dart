@@ -238,4 +238,24 @@ class TestService {
 
     actionState.notifyListeners();
   }
+
+  static Future<void> testCountdownTimer() async {
+    BuildContext context = _context;
+
+    final gameState = Provider.of<GameState>(context, listen: false);
+    final seat = gameState.getSeat(context, 1);
+
+    if (seat.actionCount == 0) {
+      seat.player.highlight = true;
+      seat.setActionTimer(30, remainingTime: 20);
+      seat.actionCount++;
+    } else if (seat.actionCount == 1) {
+      seat.setActionTimer(60, remainingTime: 45);
+      seat.actionCount++;
+    } else {
+      seat.player.highlight = false;
+      seat.actionCount = 0;
+    }
+    seat.notify();
+  }
 }

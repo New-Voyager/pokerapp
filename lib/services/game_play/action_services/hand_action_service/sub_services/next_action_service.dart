@@ -42,6 +42,7 @@ class NextActionService {
     // highlight next action player
     player.highlight = true;
     final seat = gameState.getSeat(context, seatNo);
+    seat.setActionTimer(gameState.gameInfo.actionTime);
     seat.notify();
 
     /* check if pot is available, if true, update the pot value in the table state object */

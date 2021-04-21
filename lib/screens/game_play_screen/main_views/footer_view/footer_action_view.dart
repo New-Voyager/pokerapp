@@ -341,11 +341,11 @@ class _FooterActionViewState extends State<FooterActionView> {
 
   @override
   Widget build(BuildContext context) {
-    print("---------------------- rebuilding. ");
+    // print("---------------------- rebuilding. ");
     return Consumer<ActionState>(
       key: ValueKey('buildActionButtons'),
       builder: (_, actionState, __) {
-        print("STATE CHANGDDD ----- ${actionState.action}");
+        // print("STATE CHANGDDD ----- ${actionState.action}");
         return Container(
           height: MediaQuery.of(context).size.height / 2.5,
           child: Stack(
