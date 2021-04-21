@@ -101,6 +101,16 @@ dependencies:
   sleek_circular_slider: ^2.0.0
   flutter_circular_slider: ^2.5.0
 
+  # firebase services
+  firebase_core: ^1.0.4
+  firebase_messaging: ^9.1.2
+  firebase_analytics: ^8.0.1
+
+dependency_overrides:
+  http: ^0.12.2
+  http_parser: ^3.1.1
+  plugin_platform_interface: ^1.0.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
