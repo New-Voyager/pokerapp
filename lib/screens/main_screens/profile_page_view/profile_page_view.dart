@@ -6,7 +6,7 @@ import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/game_play_screen/card_views/stack_card_view.dart';
 import 'package:pokerapp/screens/util_screens/numeric_keyboard.dart';
 import 'package:pokerapp/screens/util_screens/replay_hand_screen/replay_hand_screen.dart';
-import 'package:pokerapp/screens/util_screens/svg_border.dart';
+import 'package:pokerapp/screens/game_play_screen/widgets/plate_border.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:pokerapp/utils/numeric_keyboard.dart';

@@ -11,7 +11,7 @@ import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/milliseconds_counter.dart';
-import 'package:pokerapp/screens/util_screens/svg_border.dart';
+import 'package:pokerapp/screens/game_play_screen/widgets/plate_border.dart';
 import 'package:provider/provider.dart';
 import 'package:timer_count_down/timer_count_down.dart';
 

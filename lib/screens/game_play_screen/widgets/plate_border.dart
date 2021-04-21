@@ -56,7 +56,7 @@ class FilledPathPainter extends CustomPainter {
 
     if (progressPath != null && percent > 0.0) {
       if (this.percent <= 0.50) {
-        progressColor = Colors.green;
+        progressColor = Colors.greenAccent;
       } else if (this.percent <= 0.75) {
         progressColor = Colors.yellow;
       } else {
