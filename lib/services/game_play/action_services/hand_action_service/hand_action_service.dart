@@ -23,7 +23,7 @@ class HandActionService {
     assert(message != null && message.isNotEmpty);
 
     var data = jsonDecode(message);
-    debugPrint('hand: $message');
+    // debugPrint('hand: $message');
     String messageType = data['messageType'];
 
     // delegate further actions to sub services as per messageType

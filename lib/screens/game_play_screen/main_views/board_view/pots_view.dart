@@ -55,7 +55,6 @@ class PotsView extends StatelessWidget {
                   bottom: 5.0,
                   left: 5.0,
                 ),
-
                 child: Text(
                   potText,
                   style: AppStyles.itemInfoTextStyleHeavy.copyWith(

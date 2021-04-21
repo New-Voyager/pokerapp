@@ -33,6 +33,11 @@ class Seat extends ChangeNotifier {
   Offset _screenPos;
   Size _size;
 
+  // action timer
+  ActionTimer _actionTimer;
+  int actionCount = 0;
+  bool _showTimer;
+
   Seat(int localSeatPos, int serverSeatPos, PlayerModel player) {
     this.localSeatPos = localSeatPos;
     this._openSeat = false;
@@ -42,6 +47,8 @@ class Seat extends ChangeNotifier {
     this._player = player;
     this.serverSeatPos = serverSeatPos;
     this._seatBet = SeatBet();
+    this._actionTimer = ActionTimer();
+    this._showTimer = false;
   }
 
   @override
@@ -109,6 +116,21 @@ class Seat extends ChangeNotifier {
   void notify() {
     this.notifyListeners();
   }
+
+  void showTimer({bool show = false}) {
+    this._showTimer = show;
+  }
+
+  void setActionTimer(int total, {int remainingTime = -1}) {
+    if (remainingTime == -1) {
+      remainingTime = total;
+    }
+    this._actionTimer.setTime(total, remainingTime);
+  }
+
+  ActionTimer get actionTimer {
+    return this._actionTimer;
+  }
 }
 
 class SeatBet extends ChangeNotifier {
@@ -136,4 +158,23 @@ class SeatBet extends ChangeNotifier {
 
   Offset get potViewPos => this._potViewPos;
   set potViewPos(Offset pos) => this._potViewPos = pos;
+}
+
+class ActionTimer extends ChangeNotifier {
+  int _totalTime = 0;
+  int _remainingTime = 0;
+
+  void setTime(int totalTime, int remainingTime) {
+    this._totalTime = totalTime;
+    this._remainingTime = remainingTime;
+    notifyListeners();
+  }
+
+  int getRemainingTime() {
+    return this._remainingTime;
+  }
+
+  int getTotalTime() {
+    return this._totalTime;
+  }
 }

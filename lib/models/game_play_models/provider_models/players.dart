@@ -61,7 +61,7 @@ class Players extends ChangeNotifier {
 
     /* reset allin flag */
     this.removeAllAllinPlayersSilent();
-    
+
     if (notify) {
       this.notifyAll();
     }
@@ -318,7 +318,6 @@ class Players extends ChangeNotifier {
     this._players = players;
     notifyAll();
   }
-
 }
 
 /**
@@ -331,6 +330,7 @@ class MyState extends ChangeNotifier {
   set seatNo(int v) {
     this._seatNo = v;
   }
+
   int get seatNo => this._seatNo;
 
   set status(PlayerStatus status) => this._status = status;

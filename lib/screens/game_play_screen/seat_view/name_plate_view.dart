@@ -7,8 +7,11 @@ import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
+import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/screens/game_play_screen/widgets/milliseconds_counter.dart';
+import 'package:pokerapp/screens/util_screens/svg_border.dart';
 import 'package:provider/provider.dart';
 import 'package:timer_count_down/timer_count_down.dart';
 
@@ -141,7 +144,35 @@ class NamePlateWidget extends StatelessWidget {
     bool isFeedBack = false,
     bool childWhenDragging = false,
   }) {
+    // log('rebuild seat ${seat.serverSeatPos}');
     final shadow = getShadow(hostSeatChange, isFeedBack);
+
+    Widget plateWidget;
+    if (seat.player.highlight) {
+      int remaining = seat.actionTimer.getRemainingTime();
+      int total = seat.actionTimer.getTotalTime();
+      int current = total - remaining;
+      final int totalMs = seat.actionTimer.getTotalTime() * 1000;
+      plateWidget = CountdownMs(
+          totalSeconds: total,
+          currentSeconds: current,
+          build: (_, time) {
+            int remainingMs = totalMs - time.toInt();
+            // log('rebuild plate: current: $remainingMs, total: $totalMs');
+            return PlateWidget(
+              remainingMs,
+              totalMs,
+              showProgress: true,
+            );
+          });
+    } else {
+      plateWidget = PlateWidget(
+        0,
+        0,
+        showProgress: false,
+      );
+    }
+
     return Opacity(
       opacity: childWhenDragging ? 0.50 : 1.0,
       child: Container(
@@ -152,52 +183,64 @@ class NamePlateWidget extends StatelessWidget {
         ),
         decoration: BoxDecoration(
           shape: BoxShape.rectangle,
-          borderRadius: BorderRadius.circular(5),
-          color: Color(0XFF494444),
-          border: Border.all(
-            color: Color.fromARGB(255, 206, 134, 57),
-            width: 2.0,
-          ),
+          // borderRadius: BorderRadius.circular(5),
+          // color: Color(0XFF494444),
+          // border: Border.all(
+          //   color: AppColors.plateBorderColor,
+          //   width: 2.0,
+          // ),
           boxShadow: shadow,
         ),
-        child: AnimatedSwitcher(
-          duration: AppConstants.animationDuration,
-          reverseDuration: AppConstants.animationDuration,
-          child: AnimatedOpacity(
-            duration: AppConstants.animationDuration,
-            opacity: seat.isOpen ? 0.0 : 1.0,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                FittedBox(
-                  child: Text(
-                    seat.player.name,
-                    style: AppStyles.gamePlayScreenPlayerName.copyWith(
-                      // FIXME: may be this is permanant?
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-                PlayerViewDivider(),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 5),
-                    child: FittedBox(
-                      child: bottomWidget(context),
-                    ),
-                  ),
-                ),
-              ],
+        child: Stack(
+          children: [
+            // name plate border
+            Container(
+              width: boardAttributes.namePlateSize.width,
+              height: boardAttributes.namePlateSize.height,
+              child: plateWidget,
             ),
-          ),
+            AnimatedSwitcher(
+              duration: AppConstants.animationDuration,
+              reverseDuration: AppConstants.animationDuration,
+              child: AnimatedOpacity(
+                duration: AppConstants.animationDuration,
+                opacity: seat.isOpen ? 0.0 : 1.0,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    FittedBox(
+                      child: Text(
+                        seat.player.name,
+                        style: AppStyles.gamePlayScreenPlayerName.copyWith(
+                          // FIXME: may be this is permanant?
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                    PlayerViewDivider(),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 5),
+                        child: FittedBox(
+                          child: bottomWidget(context),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
 
   Widget bottomWidget(BuildContext context) {
-    if (!seat.player.allIn && seat.player.stack == 0 && seat.player.buyInTimeExpAt != null) {
+    if (!seat.player.allIn &&
+        seat.player.stack == 0 &&
+        seat.player.buyInTimeExpAt != null) {
       final now = DateTime.now().toUtc();
       final diff = seat.player.buyInTimeExpAt.difference(now);
 
@@ -227,39 +270,36 @@ class NamePlateWidget extends StatelessWidget {
 
   Widget buyInTimer(BuildContext context, int time) {
     return Countdown(
-          seconds: time,
-          onFinished: () {
-            if (seat.isMe) {
-              // hide buyin button
-              final gameState = GameState.getState(context);
-              final players = gameState.getPlayers(context);
-              seat.player.showBuyIn = false;
-              players.notifyAll();
-              seat.notify();
-            }
-          },
-          build: (_, time) {
-            if (time <= 10) {
-              return BlinkText(
-                _printDuration(Duration(seconds: time.toInt())),
+        seconds: time,
+        onFinished: () {
+          if (seat.isMe) {
+            // hide buyin button
+            final gameState = GameState.getState(context);
+            final players = gameState.getPlayers(context);
+            seat.player.showBuyIn = false;
+            players.notifyAll();
+            seat.notify();
+          }
+        },
+        build: (_, time) {
+          if (time <= 10) {
+            return BlinkText(_printDuration(Duration(seconds: time.toInt())),
                 style: AppStyles.itemInfoTextStyle.copyWith(
                   color: Colors.white,
                 ),
                 beginColor: Colors.white,
                 endColor: Colors.orange,
                 times: time.toInt(),
-                duration: Duration(seconds: 1)
-              );
-            } else {
-              return Text(
-                _printDuration(Duration(seconds: time.toInt())),
-                style: AppStyles.itemInfoTextStyle.copyWith(
-                  color: Colors.white,
-                ),
-              );
-            }
+                duration: Duration(seconds: 1));
+          } else {
+            return Text(
+              _printDuration(Duration(seconds: time.toInt())),
+              style: AppStyles.itemInfoTextStyle.copyWith(
+                color: Colors.white,
+              ),
+            );
           }
-        );
+        });
   }
 
   String _printDuration(Duration duration) {
@@ -270,10 +310,8 @@ class NamePlateWidget extends StatelessWidget {
     String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
     String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
     return "$twoDigitMinutes:$twoDigitSeconds";
-  }  
+  }
 }
-
-
 
 class PlayerViewDivider extends StatelessWidget {
   const PlayerViewDivider({

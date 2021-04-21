@@ -11,8 +11,7 @@ class ChipAmountWidget extends StatelessWidget {
   ChipAmountWidget({
     Key key,
     @required this.seat,
-  }) : super(key: key) {
-  }
+  }) : super(key: key) {}
 
   @override
   Widget build(BuildContext context) {
@@ -24,36 +23,39 @@ class ChipAmountWidget extends StatelessWidget {
     Widget child;
     if (!showBet) {
       // show bet position
-      child = Container(width: 10, height: 10, color: Colors.transparent,);
+      child = Container(
+        width: 10,
+        height: 10,
+        color: Colors.transparent,
+      );
     } else {
       child = Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              /* show the coin svg */
-              Container(
-                height: 20,
-                width: 20.0,
-                child: SvgPicture.asset(
-                  AppAssets.coinsImages,
-                ),
-              ),
-              const SizedBox(height: 5.0),
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          /* show the coin svg */
+          Container(
+            height: 20,
+            width: 20.0,
+            child: SvgPicture.asset(
+              AppAssets.coinsImages,
+            ),
+          ),
+          const SizedBox(height: 5.0),
 
-              /* show the coin amount */
-              Text(
-                seat.player?.coinAmount.toString(),
-                style: AppStyles.gamePlayScreenPlayerChips,
-              ),
-            ],
-          );
+          /* show the coin amount */
+          Text(
+            seat.player?.coinAmount.toString(),
+            style: AppStyles.gamePlayScreenPlayerChips,
+          ),
+        ],
+      );
     }
 
     return Consumer<BoardAttributesObject>(
-        builder: (_, boardAttrObj, __) => Transform.translate(
-          offset:
-              boardAttrObj.chipAmountWidgetOffsetMapping[seat.serverSeatPos],
-          child: child,
-        ),
-      );
+      builder: (_, boardAttrObj, __) => Transform.translate(
+        offset: boardAttrObj.chipAmountWidgetOffsetMapping[seat.serverSeatPos],
+        child: child,
+      ),
+    );
   }
 }

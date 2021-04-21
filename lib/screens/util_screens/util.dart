@@ -4,7 +4,7 @@ showAlertDialog(BuildContext context, String title, String message) {
   // set up the button
   Widget okButton = ElevatedButton(
     child: Text("Close"),
-    onPressed: () { 
+    onPressed: () {
       Navigator.of(context).pop();
     },
   );

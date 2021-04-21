@@ -44,7 +44,9 @@ class DealService {
         int localSeatNo =
             mySeatNo == null ? seatNo : ((seatNo - mySeatNo) % 9) + 1;
         final seat = gameState.getSeat(context, seatNo);
-        if (seat.player == null || seat.player.stack == 0 || seat.player.status != AppConstants.PLAYING) {
+        if (seat.player == null ||
+            seat.player.stack == 0 ||
+            seat.player.status != AppConstants.PLAYING) {
           continue;
         }
 

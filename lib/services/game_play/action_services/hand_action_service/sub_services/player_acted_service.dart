@@ -33,7 +33,6 @@ class PlayerActedService {
       player.playerFolded = true;
     }
 
-
     if (action == AppConstants.ALLIN) {
       player.allIn = true;
     }
