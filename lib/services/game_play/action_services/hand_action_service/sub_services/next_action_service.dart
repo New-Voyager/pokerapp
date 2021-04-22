@@ -33,6 +33,7 @@ class NextActionService {
     );
 
     final player = gameState.fromSeat(context, seatNo);
+    assert(player != null);
 
     if (!player.isMe) {
       // hide action widget

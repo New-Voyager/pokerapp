@@ -22,6 +22,7 @@ class PlayerActedService {
       listen: false,
     );
     final player = gameState.fromSeat(context, seatNo);
+    assert(player != null);
 
     // show the status message
     player.action = "${playerActed['action']}";

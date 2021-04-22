@@ -30,35 +30,37 @@ class _GameOptionState extends State<GameOption> {
 
   void onLeave() {
     GameService.leaveGame(this.gameCode);
-
-    final snackBar = SnackBar(
-      content: Text('You will leave after this hand'),
-      duration: Duration(seconds: 15),
-      backgroundColor: Colors.black38,
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Text('You will leave after this hand'),
+        duration: Duration(seconds: 15),
+        backgroundColor: Colors.black38,
+      ),
     );
-    Scaffold.of(context).showSnackBar(snackBar);
   }
 
   void onEndGame() {
     // We need to broadcast to all the players
     GameService.endGame(this.gameCode);
 
-    final snackBar = SnackBar(
-      content: Text('The game will end after this hand'),
-      duration: Duration(seconds: 30),
-      backgroundColor: Colors.black38,
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Text('The game will end after this hand'),
+        duration: Duration(seconds: 15),
+        backgroundColor: Colors.black38,
+      ),
     );
-    Scaffold.of(context).showSnackBar(snackBar);
   }
 
   void onPause() {
-    // final snackBar = SnackBar(
-    //   content: Text('Game will be paused after this hand'),
-    //   duration: Duration(seconds: 30),
-    //   backgroundColor: Colors.black38,
-    // );
-    // Scaffold.of(context).showSnackBar(snackBar);
-    print("Game will be paused before next hand");
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Text('Game will be paused after this hand'),
+        duration: Duration(seconds: 15),
+        backgroundColor: Colors.black38,
+      ),
+    );
+
     GameService.pauseGame(this.gameCode);
   }
 

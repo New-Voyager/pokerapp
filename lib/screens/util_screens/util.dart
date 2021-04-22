@@ -1,3 +1,4 @@
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 
 showAlertDialog(BuildContext context, String title, String message) {
@@ -25,4 +26,39 @@ showAlertDialog(BuildContext context, String title, String message) {
       return alert;
     },
   );
+}
+
+showWaitlistStatus(BuildContext context, String message, int duration) async {
+  Flushbar(
+    flushbarPosition: FlushbarPosition.TOP,
+    flushbarStyle: FlushbarStyle.GROUNDED,
+    // reverseAnimationCurve: Curves.decelerate,
+    // forwardAnimationCurve: Curves.elasticOut,
+    backgroundColor: Colors.red,
+    //boxShadows: [BoxShadow(color: Colors.blue[800], offset: Offset(0.0, 2.0), blurRadius: 3.0)],
+    backgroundGradient: LinearGradient(colors: [Colors.black, Colors.blueGrey]),
+    isDismissible: false,
+    duration: Duration(seconds: duration),
+    icon: Icon(
+      Icons.queue_play_next,
+      color: Colors.greenAccent,
+    ),
+    showProgressIndicator: false,
+    progressIndicatorBackgroundColor: Colors.blueGrey,
+    titleText: Text(
+      "Waitlist Seating",
+      style: TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: 15.0,
+          color: Colors.white,
+          fontFamily: "ShadowsIntoLightTwo"),
+    ),
+    messageText: Text(
+      message,
+      style: TextStyle(
+          fontSize: 12.0,
+          color: Colors.green,
+          fontFamily: "ShadowsIntoLightTwo"),
+    ),
+  )..show(context);
 }

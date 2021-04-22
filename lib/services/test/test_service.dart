@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
@@ -257,5 +258,41 @@ class TestService {
       seat.actionCount = 0;
     }
     seat.notify();
+  }
+
+  static Future<void> showFlushBar() async {
+    Flushbar(
+      flushbarPosition: FlushbarPosition.TOP,
+      flushbarStyle: FlushbarStyle.GROUNDED,
+      // reverseAnimationCurve: Curves.decelerate,
+      // forwardAnimationCurve: Curves.elasticOut,
+      backgroundColor: Colors.red,
+      //boxShadows: [BoxShadow(color: Colors.blue[800], offset: Offset(0.0, 2.0), blurRadius: 3.0)],
+      backgroundGradient:
+          LinearGradient(colors: [Colors.black, Colors.blueGrey]),
+      isDismissible: false,
+      duration: Duration(seconds: 10),
+      icon: Icon(
+        Icons.queue_play_next,
+        color: Colors.greenAccent,
+      ),
+      showProgressIndicator: false,
+      progressIndicatorBackgroundColor: Colors.blueGrey,
+      titleText: Text(
+        "Waitlist Seating",
+        style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 15.0,
+            color: Colors.white,
+            fontFamily: "ShadowsIntoLightTwo"),
+      ),
+      messageText: Text(
+        "bob is invited to take the open seat",
+        style: TextStyle(
+            fontSize: 12.0,
+            color: Colors.green,
+            fontFamily: "ShadowsIntoLightTwo"),
+      ),
+    )..show(_context);
   }
 }
