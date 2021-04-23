@@ -60,4 +60,5 @@ class AppColors {
     fontSize: 12.0,
   );
 
+  static const plateBorderColor = Color.fromARGB(255, 206, 134, 57);
 }

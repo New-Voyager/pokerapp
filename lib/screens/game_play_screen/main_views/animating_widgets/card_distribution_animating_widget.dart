@@ -34,7 +34,7 @@ class CardDistributionAnimatingWidget extends StatelessWidget {
     int seatNo,
   ) {
     if (_finalPositionCache.containsKey(seatNo)) {
-      log('final position from cache');
+      // log('final position from cache');
       return _finalPositionCache[seatNo];
     }
 

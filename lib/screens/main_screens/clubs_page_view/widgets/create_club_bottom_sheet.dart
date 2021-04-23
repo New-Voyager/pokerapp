@@ -31,7 +31,7 @@ class _CreateClubBottomSheetState extends State<CreateClubBottomSheet> {
 
     return Container(
         height: MediaQuery.of(context).size.height - 200,
-       /*  padding: EdgeInsets.only(
+        /*  padding: EdgeInsets.only(
          // bottom: MediaQuery.of(context).viewInsets.bottom,
         ), */
         color: AppColors.cardBackgroundColor,

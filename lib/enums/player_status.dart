@@ -1,4 +1,3 @@
-
 enum PlayerStatus {
   NOT_PLAYING,
   PLAYING,

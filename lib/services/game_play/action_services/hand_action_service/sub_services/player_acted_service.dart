@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
@@ -22,6 +24,8 @@ class PlayerActedService {
       listen: false,
     );
     final player = gameState.fromSeat(context, seatNo);
+    // log('player acted seat no: $seatNo');
+    assert(player != null);
 
     // show the status message
     player.action = "${playerActed['action']}";
@@ -32,7 +36,6 @@ class PlayerActedService {
     if (action == AppConstants.FOLD) {
       player.playerFolded = true;
     }
-
 
     if (action == AppConstants.ALLIN) {
       player.allIn = true;

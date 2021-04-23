@@ -100,6 +100,7 @@ dependencies:
   
   sleek_circular_slider: ^2.0.0
   flutter_circular_slider: ^2.5.0
+  flushbar: ^1.10.4
 
   # firebase services
   firebase_core: ^1.0.4

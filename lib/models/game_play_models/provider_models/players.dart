@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/player_status.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
@@ -61,7 +63,7 @@ class Players extends ChangeNotifier {
 
     /* reset allin flag */
     this.removeAllAllinPlayersSilent();
-    
+
     if (notify) {
       this.notifyAll();
     }
@@ -237,6 +239,7 @@ class Players extends ChangeNotifier {
     // stacks contains, <seatNo, stack> mapping
     stacks.forEach((seatNo, stack) {
       int idx = _players.indexWhere((p) => p.seatNo == seatNo);
+      // log('player seat no: $seatNo index: $idx');
       _players[idx].stack = stack;
     });
   }
@@ -318,7 +321,6 @@ class Players extends ChangeNotifier {
     this._players = players;
     notifyAll();
   }
-
 }
 
 /**
@@ -331,6 +333,7 @@ class MyState extends ChangeNotifier {
   set seatNo(int v) {
     this._seatNo = v;
   }
+
   int get seatNo => this._seatNo;
 
   set status(PlayerStatus status) => this._status = status;

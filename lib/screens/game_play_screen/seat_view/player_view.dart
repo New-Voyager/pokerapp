@@ -221,11 +221,11 @@ class PlayerView extends StatelessWidget {
                   : shrinkedSizedBox,
 
               // clock
-              UserViewUtilWidgets.buildTimer(
-                context: context,
-                time: actionTime,
-                seat: seat,
-              ),
+              // UserViewUtilWidgets.buildTimer(
+              //   context: context,
+              //   time: actionTime,
+              //   seat: seat,
+              // ),
 
               // /* building the chip amount widget */
               UserViewUtilWidgets.buildChipAmountWidget(

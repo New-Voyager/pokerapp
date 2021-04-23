@@ -25,8 +25,8 @@ class PlayerModel {
   // buyin status/timer
   bool showBuyIn = false;
   DateTime buyInTimeExpAt; // unix time in UTC
-  bool  buyInExpired = false; // buy in time expired
-  bool waitForBuyInApproval = false;  // waiting for buyin approval
+  bool buyInExpired = false; // buy in time expired
+  bool waitForBuyInApproval = false; // waiting for buyin approval
 
   // player action
   bool allIn = false;
@@ -85,8 +85,9 @@ class PlayerModel {
       //   this.buyInTimeExpAt = this.buyInTimeExpAt.toLocal();
       // }
       DateTime now = DateTime.now();
-      
-      print('buyin expires at ${this.buyInTimeExpAt} now: ${now.toIso8601String()} utcNow: ${now.toUtc().toIso8601String()}');
+
+      print(
+          'buyin expires at ${this.buyInTimeExpAt} now: ${now.toIso8601String()} utcNow: ${now.toUtc().toIso8601String()}');
     }
 
     // default values
@@ -137,7 +138,6 @@ class PlayerModel {
     return this.cards.map<CardObject>((c) => CardHelper.getCard(c)).toList();
   }
 
-  
   @override
   String toString() => this.name;
 }

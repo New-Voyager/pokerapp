@@ -1,9 +1,12 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/game_play_screen/card_views/stack_card_view.dart';
 import 'package:pokerapp/screens/util_screens/numeric_keyboard.dart';
 import 'package:pokerapp/screens/util_screens/replay_hand_screen/replay_hand_screen.dart';
+import 'package:pokerapp/screens/game_play_screen/widgets/plate_border.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:pokerapp/utils/numeric_keyboard.dart';
@@ -19,6 +22,7 @@ class _ProfilePageViewState extends State<ProfilePageView> {
 
   @override
   Widget build(BuildContext context) {
+    final plateWidget = PlateWidget(1, 30);
     return Container(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -37,17 +41,37 @@ class _ProfilePageViewState extends State<ProfilePageView> {
             },
           ),
           Spacer(),
+          // ClipPath(
+          //   clipper: PracticeClip(),
+          //   child: Container(
+          //     //Container color
+          //     color: Colors.red,
+          //     //decoration: ,
+          //     //width and height of container
+          //     width: 50.0,
+          //     height: 50.0,
+          //   )),
+
+          Container(width: 150, height: 100, child: plateWidget),
+
+          //SvgWidget(),
+          Spacer(),
           ElevatedButton(
-            child: Text('Numeric Keyboard'),
-            onPressed: () async {
-              final double value = await NumericKeyboard.show(
-                context,
-                title: 'Please enter your BET amount',
-                min: 45,
-              );
-              print('numeric value: $value');
-            },
-          ),
+              child: Text('SVG border'),
+              onPressed: () async {
+                log('show svg border');
+                // plateWidget.animate()
+              }
+              // child: Text('Numeric Keyboard'),
+              // onPressed: () async {
+              //   final double value = await NumericKeyboard.show(
+              //     context,
+              //     title: 'Please enter your BET amount',
+              //     min: 45,
+              //   );
+              //   print('numeric value: $value');
+              // },
+              ),
           Spacer(),
           ElevatedButton(
             child: Text('Logout'),

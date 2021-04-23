@@ -241,15 +241,15 @@ class AppStyles {
   static const TextStyle stickerDialogActionText =
       TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold);
 
-  static const TextStyle  betChipsText = TextStyle(
-                            fontSize: 16,
-                            color: Colors.yellow,
-                            fontWeight: FontWeight.w600,
-                          );
+  static const TextStyle betChipsText = TextStyle(
+    fontSize: 16,
+    color: Colors.yellow,
+    fontWeight: FontWeight.w600,
+  );
 
   static const disabledButtonTextStyle = TextStyle(
     color: Colors.grey,
     fontSize: 12.0,
     fontFamily: AppAssets.fontFamilyLato,
-  );                          
+  );
 }

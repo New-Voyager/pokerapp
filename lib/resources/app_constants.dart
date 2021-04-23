@@ -87,6 +87,7 @@ class AppConstants {
   static const String SWITCH_SEAT = 'SWITCH_SEAT';
   static const String TAKE_BREAK = 'TAKE_BREAK';
   static const String SIT_BACK = 'SIT_BACK';
+  static const String LEFT = 'LEFT';
   static const String LEFT_THE_GAME = 'LEFT_THE_GAME';
   static const String EMPTY_STACK = 'EMPTY_STACK';
   static const String NOT_PLAYING = 'NOT_PLAYING';
@@ -94,7 +95,8 @@ class AppConstants {
   static const String PLAYING = 'PLAYING';
   static const String BUYIN_TIMEDOUT = 'BUYIN_TIMEDOUT';
   static const String WAIT_FOR_BUYIN_APPROVAL = 'WAIT_FOR_BUYIN_APPROVAL';
-  static const String NEWUPDATE_WAIT_FOR_BUYIN_APPROVAL = 'NEWUPDATE_WAIT_FOR_BUYIN_APPROVAL';
+  static const String NEWUPDATE_WAIT_FOR_BUYIN_APPROVAL =
+      'NEWUPDATE_WAIT_FOR_BUYIN_APPROVAL';
   static const String NEW_BUYIN = 'NEW_BUYIN';
   static const String BUYIN_DENIED = 'BUYIN_DENIED';
 

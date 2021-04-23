@@ -20,6 +20,7 @@ import 'hand_result.dart';
 import 'player_action.dart';
 import 'players.dart';
 import 'table_state.dart';
+import 'waitlist_state.dart';
 
 /*
  * This class maintains game state. This game state is used by game play screen.
@@ -34,6 +35,8 @@ class GameState {
   ListenableProvider<ActionState> _playerAction;
   ListenableProvider<HandResultState> _handResult;
   ListenableProvider<MyState> _myStateProvider;
+  ListenableProvider<WaitlistState> _waitlistProvider;
+
   MyState _myState;
 
   String _gameCode;
@@ -82,6 +85,9 @@ class GameState {
     this._markedCards =
         ListenableProvider<MarkedCards>(create: (_) => MarkedCards());
 
+    this._waitlistProvider =
+        ListenableProvider<WaitlistState>(create: (_) => WaitlistState());
+
     List<PlayerModel> players = [];
     if (gameInfo.playersInSeats != null) {
       players = gameInfo.playersInSeats;
@@ -95,7 +101,8 @@ class GameState {
           player.status = AppConstants.NOT_PLAYING;
         }
         log('name: ${player.name} player status: ${player.status}');
-        this._myState.status = values.firstWhere((e) => e.toString() == 'PlayerStatus.'+player.status);
+        this._myState.status = values
+            .firstWhere((e) => e.toString() == 'PlayerStatus.' + player.status);
       }
       if (player.buyInTimeExpAt != null && player.stack == 0) {
         // show buyin button/timer if the player is in middle of buyin
@@ -218,6 +225,9 @@ class GameState {
   HandResultState getResultState(BuildContext context, {bool listen = false}) =>
       Provider.of<HandResultState>(context, listen: listen);
 
+  WaitlistState getWaitlistState(BuildContext context, {bool listen = false}) =>
+      Provider.of<WaitlistState>(context, listen: listen);
+
   MarkedCards getMarkedCards(
     BuildContext context, {
     bool listen = false,
@@ -283,6 +293,7 @@ class GameState {
       this._myStateProvider,
       this._markedCards,
       this._gameMessagingService,
+      this._waitlistProvider,
     ];
   }
 

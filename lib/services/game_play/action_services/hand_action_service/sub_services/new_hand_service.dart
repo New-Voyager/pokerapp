@@ -63,7 +63,29 @@ class NewHandService {
 
     // update player's state and stack
     final dynamic playersInSeats = newHand['playersInSeats'];
-    for(final seatNoStr in playersInSeats.keys) {
+    bool refresh = false;
+    for (final seatNoStr in playersInSeats.keys) {
+      final seatNo = int.parse(seatNoStr);
+      final seat = gameState.getSeat(context, seatNo);
+      if (seat == null && seat.player == null) {
+        refresh = true;
+        break;
+      }
+
+      final player = players.fromSeat(seatNo);
+      if (player == null) {
+        refresh = true;
+        break;
+      }
+    }
+
+    if (refresh) {
+      log('NewHand and existing game state are inconsistent. **** REFRESHING ***');
+      // the game state does not have all the players, refresh
+      gameState.refresh(context);
+    }
+
+    for (final seatNoStr in playersInSeats.keys) {
       final seatNo = int.parse(seatNoStr);
       final seat = gameState.getSeat(context, seatNo);
       if (seat != null && seat.player != null) {
@@ -72,13 +94,15 @@ class NewHandService {
         seat.player.stack = stack.toInt();
 
         final String statusStr = playerUpdate['status'].toString();
-        final status = PlayerStatus.values.firstWhere((element) => (element.toString() == 'PlayerStatus.'+statusStr));
+        final status = PlayerStatus.values.firstWhere(
+            (element) => (element.toString() == 'PlayerStatus.' + statusStr));
         seat.player.status = playerUpdate['status'].toString();
-        if (status == PlayerStatus.WAIT_FOR_BUYIN || 
+        if (status == PlayerStatus.WAIT_FOR_BUYIN ||
             status == PlayerStatus.WAIT_FOR_BUYIN_APPROVAL) {
           // show buyin timer
           seat.player.showBuyIn = true;
-          seat.player.buyInTimeExpAt = DateTime.parse(playerUpdate['buyInExpTime'].toString());
+          seat.player.buyInTimeExpAt =
+              DateTime.parse(playerUpdate['buyInExpTime'].toString());
 
           // show buyin button
           if (seat.player.isMe) {

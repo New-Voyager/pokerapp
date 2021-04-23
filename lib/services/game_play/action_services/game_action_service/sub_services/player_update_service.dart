@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
@@ -31,14 +32,14 @@ class PlayerUpdateService {
 
     // fixme: this is until all the player update messages have a newUpdate field
     if (player == null) {
-      return ;
+      return;
     }
     //   return handleNewPlayer(
     //     context: context,
     //     playerUpdate: playerUpdate,
     //   );
     // }
-    
+
     bool showBuyIn = false;
     if (status == AppConstants.PLAYING) {
       showBuyIn = false;
@@ -74,7 +75,7 @@ class PlayerUpdateService {
     );
     seat.notify();
 
-    // update my state to remove buyin button 
+    // update my state to remove buyin button
     if (player.isMe) {
       final myState = gameState.getMyState(context);
       myState.notify();
@@ -145,8 +146,7 @@ class PlayerUpdateService {
     );
 
     int seatNo = playerUpdate['seatNo'];
-    gameState.removePlayer(context, seatNo);
-    gameState.updatePlayers(context);
+    removePlayer(context, seatNo);
   }
 
   static void handlePlayerNotPlaying({
@@ -159,34 +159,25 @@ class PlayerUpdateService {
     );
 
     int seatNo = playerUpdate['seatNo'];
-    final seat = gameState.getSeat(context, seatNo);
-    if (seat != null && seat.player != null) {
-      // update my state to update widgets around my seat
-      if (seat.player.isMe) {
-        final myState = gameState.getMyState(context);
-        myState.notify();
-      }
-    }
-
-    gameState.removePlayer(context, seatNo);
-    gameState.updatePlayers(context);
-    
-    
-
+    removePlayer(context, seatNo);
   }
 
   static void handlePlayerBuyinTimedout({
     @required BuildContext context,
     @required var playerUpdate,
   }) {
+    int seatNo = playerUpdate['seatNo'];
+    removePlayer(context, seatNo);
+  }
+
+  static void removePlayer(BuildContext context, int seatNo) {
     final GameState gameState = Provider.of<GameState>(
       context,
       listen: false,
     );
 
-    int seatNo = playerUpdate['seatNo'];
     final seat = gameState.getSeat(context, seatNo);
-    if(seat != null && seat.player != null && seat.player.isMe) {
+    if (seat != null && seat.player != null && seat.player.isMe) {
       gameState.myState.status = PlayerStatus.NOT_PLAYING;
       gameState.myState.notify();
     }
@@ -247,7 +238,6 @@ class PlayerUpdateService {
     gameState.updatePlayers(context);
   }
 
-
   static void handlePlayerWaitForBuyinApproval({
     @required BuildContext context,
     @required var playerUpdate,
@@ -256,7 +246,7 @@ class PlayerUpdateService {
     int seatNo = playerUpdate['seatNo'];
     final seat = gameState.getSeat(context, seatNo);
 
-    if(seat.player.isMe) {
+    if (seat.player.isMe) {
       gameState.myState.status = PlayerStatus.WAIT_FOR_BUYIN_APPROVAL;
       gameState.myState.notify();
     }
@@ -279,7 +269,7 @@ class PlayerUpdateService {
     final players = gameState.getPlayers(context);
     players.removePlayerSilent(seatNo);
     bool isMe = false;
-    if(seat.player.isMe) {
+    if (seat.player.isMe) {
       isMe = true;
     }
     seat.player = null;
@@ -289,9 +279,10 @@ class PlayerUpdateService {
       final myState = gameState.getMyState(context);
       myState.notify();
 
-      showAlertDialog(context, "BuyIn Request", "The host denied the buyin request");      
+      showAlertDialog(
+          context, "BuyIn Request", "The host denied the buyin request");
     }
-  }  
+  }
 
   static void handle({
     BuildContext context,
@@ -299,7 +290,8 @@ class PlayerUpdateService {
   }) {
     var playerUpdate = data['playerUpdate'];
     String newUpdate = playerUpdate['newUpdate'];
-
+    var jsonData = jsonEncode(newUpdate);
+    log(jsonData);
     switch (newUpdate) {
       case AppConstants.NEW_PLAYER:
         return handleNewPlayer(
@@ -307,6 +299,7 @@ class PlayerUpdateService {
           playerUpdate: playerUpdate,
         );
 
+      case AppConstants.LEFT:
       case AppConstants.LEFT_THE_GAME:
         return handlePlayerLeftGame(
           context: context,
