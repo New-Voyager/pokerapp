@@ -29,11 +29,12 @@ showAlertDialog(BuildContext context, String title, String message) {
 }
 
 showWaitlistStatus(BuildContext context, String message, int duration) async {
-  Flushbar(
+  Flushbar flush;
+  flush = Flushbar(
     flushbarPosition: FlushbarPosition.TOP,
-    flushbarStyle: FlushbarStyle.GROUNDED,
-    // reverseAnimationCurve: Curves.decelerate,
-    // forwardAnimationCurve: Curves.elasticOut,
+    flushbarStyle: FlushbarStyle.FLOATING,
+    reverseAnimationCurve: Curves.decelerate,
+    forwardAnimationCurve: Curves.bounceInOut,
     backgroundColor: Colors.red,
     //boxShadows: [BoxShadow(color: Colors.blue[800], offset: Offset(0.0, 2.0), blurRadius: 3.0)],
     backgroundGradient: LinearGradient(colors: [Colors.black, Colors.blueGrey]),
@@ -43,6 +44,21 @@ showWaitlistStatus(BuildContext context, String message, int duration) async {
       Icons.queue_play_next,
       color: Colors.greenAccent,
     ),
+    mainButton: 
+      Material( // pause button (round)
+          borderRadius: BorderRadius.circular(50), // change radius size
+          color: Colors.black12, //button colour
+          child: InkWell(
+            splashColor: Colors.white, // inkwell onPress colour
+            child: SizedBox(
+              width: 35,height: 35, //customisable size of 'button'
+              child: Icon(Icons.close_rounded,color: Colors.blue,size: 16,),
+            ),
+            onTap: () {
+              flush.dismiss();
+            }, // or use onPressed: () {}
+          ),
+        ),    
     showProgressIndicator: false,
     progressIndicatorBackgroundColor: Colors.blueGrey,
     titleText: Text(
