@@ -1,3 +1,7 @@
+import 'dart:convert';
+import 'dart:developer';
+
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
@@ -6,6 +10,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/notification_mo
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/count_down_timer.dart';
 import 'package:pokerapp/screens/game_play_screen/pop_ups/seat_change_confirmation_pop_up.dart';
+import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/game_play/graphql/seat_change_service.dart';
 import 'package:provider/provider.dart';
 
@@ -38,6 +43,8 @@ class TableUpdateService {
   }) async {
     var tableUpdate = data['tableUpdate'];
     String type = tableUpdate['type'];
+    String jsonData = jsonEncode(data);
+    log(jsonData);
 
     // TODO: HOW TO HANDLE MULTIPLE PLAYER'S SEAT CHANGE?
     if (type == AppConstants.SeatChangeInProgress) {
@@ -48,7 +55,26 @@ class TableUpdateService {
       handleHostSeatChangeMove(context: context, data: data);
     } else if (type == AppConstants.TableHostSeatChangeProcessEnd) {
       handleHostSeatChangeDone(context: context, data: data);
+    } else if (type == AppConstants.TableWaitlistSeating) {
+      // show a flush bar at the top
+      handleWaitlistSeating(context: context, data: data);
     }
+  }
+
+  static void handleWaitlistSeating({
+    BuildContext context,
+    var data,
+  }) async {
+    final gameState = Provider.of<GameState>(
+      context,
+      listen: false,
+    );
+    log('waitlist seating message received');
+    final waitlistState = gameState.getWaitlistState(context);
+    waitlistState.fromJson(data);
+    waitlistState.notify();
+    String message = '${waitlistState.name} is invited to take the open seat.';
+    showWaitlistStatus(context, message, waitlistState.expSeconds);
   }
 
   static void handlePlayerSeatChange({

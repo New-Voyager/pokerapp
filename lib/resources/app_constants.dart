@@ -87,6 +87,7 @@ class AppConstants {
   static const String SWITCH_SEAT = 'SWITCH_SEAT';
   static const String TAKE_BREAK = 'TAKE_BREAK';
   static const String SIT_BACK = 'SIT_BACK';
+  static const String LEFT = 'LEFT';
   static const String LEFT_THE_GAME = 'LEFT_THE_GAME';
   static const String EMPTY_STACK = 'EMPTY_STACK';
   static const String NOT_PLAYING = 'NOT_PLAYING';

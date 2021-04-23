@@ -63,6 +63,28 @@ class NewHandService {
 
     // update player's state and stack
     final dynamic playersInSeats = newHand['playersInSeats'];
+    bool refresh = false;
+    for (final seatNoStr in playersInSeats.keys) {
+      final seatNo = int.parse(seatNoStr);
+      final seat = gameState.getSeat(context, seatNo);
+      if (seat == null && seat.player == null) {
+        refresh = true;
+        break;
+      }
+
+      final player = players.fromSeat(seatNo);
+      if (player == null) {
+        refresh = true;
+        break;
+      }
+    }
+
+    if (refresh) {
+      log('NewHand and existing game state are inconsistent. **** REFRESHING ***');
+      // the game state does not have all the players, refresh
+      gameState.refresh(context);
+    }
+
     for (final seatNoStr in playersInSeats.keys) {
       final seatNo = int.parse(seatNoStr);
       final seat = gameState.getSeat(context, seatNo);

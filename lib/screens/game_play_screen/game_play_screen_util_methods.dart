@@ -64,6 +64,15 @@ class GamePlayScreenUtilMethods {
               color: Colors.white,
             ),
             backgroundColor: Colors.red,
+            label: 'Flushbar',
+            onTap: () => TestService.showFlushBar(),
+          ),
+          SpeedDialChild(
+            child: Icon(
+              Icons.adb_rounded,
+              color: Colors.white,
+            ),
+            backgroundColor: Colors.red,
             label: 'Distribute Cards',
             onTap: () => TestService.distributeCards(),
           ),

@@ -5,9 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:path_drawing/path_drawing.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 
-//final trianglePath = parseSvgPathData('M150 0 L75 200 L225 200 Z');
-final trianglePath = parseSvgPathData('M 0,0 L100,0 L100,100 Z');
-
 class FilledPathPainter extends CustomPainter {
   FilledPathPainter({
     @required this.path,
