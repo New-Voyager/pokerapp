@@ -67,4 +67,24 @@ class PlayerService {
 
     return playerInfo;
   }
+
+  static Future<bool> updateFirebaseToken(
+      String token) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+
+    Map<String, dynamic> variables = {"token": token};
+
+    String _query = """mutation firebaseToken(\$token: String!) {
+             ret: updateFirebaseToken(token: \$token)
+          }""";
+
+    QueryResult result = await _client.query(
+      QueryOptions(documentNode: gql(_query), variables: variables),
+    );
+
+    if (result.hasException) return null;
+
+    bool ret = result.data['ret']; 
+    return ret;
+  }  
 }
