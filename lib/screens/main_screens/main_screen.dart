@@ -23,7 +23,8 @@ class _MainScreenState extends State<MainScreen>
     String token = await FirebaseMessaging.instance.getToken();
     await saveFirebaseToken(token);
     // Any time the token refreshes, store this in the database too.
-    FirebaseMessaging.instance.onTokenRefresh.listen(saveFirebaseToken);    
+    FirebaseMessaging.instance.onTokenRefresh.listen(saveFirebaseToken);
+    registerPushNotifications();
   }
 
   @override
