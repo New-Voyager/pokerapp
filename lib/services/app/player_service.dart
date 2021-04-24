@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/widgets.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:pokerapp/main.dart';
+import 'package:pokerapp/models/pending_approvals.dart';
 import 'package:pokerapp/models/player_info.dart';
 
 class PlayerService {
@@ -66,5 +67,71 @@ class PlayerService {
     }
 
     return playerInfo;
+  }
+
+  static Future<bool> updateFirebaseToken(
+      String token) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+
+    Map<String, dynamic> variables = {"token": token};
+
+    String _query = """mutation firebaseToken(\$token: String!) {
+             ret: updateFirebaseToken(token: \$token)
+          }""";
+
+    QueryResult result = await _client.query(
+      QueryOptions(documentNode: gql(_query), variables: variables),
+    );
+
+    if (result.hasException) return null;
+
+    bool ret = result.data['ret']; 
+    return ret;
+  }
+
+  static Future<int> getPendingApprovalsCount() async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+
+    String _query = """query { approvals: pendingApprovals {name} }""";
+
+    QueryResult result = await _client.query(
+      QueryOptions(documentNode: gql(_query)),
+    );
+
+    if (result.hasException) return null;
+
+    var ret = result.data['approvals'] as List; 
+    return ret.length;
+  }
+
+  static Future<List<PendingApproval>> getPendingApprovals() async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+
+    String _query = """query { 
+      approvals: pendingApprovals {
+        name
+        amount
+        outstandingBalance
+        gameCode
+        clubCode
+        clubName
+        gameType
+        playerUuid        
+      } 
+    }""";
+
+    QueryResult result = await _client.query(
+      QueryOptions(documentNode: gql(_query)),
+    );
+
+    if (result.hasException) return null;
+
+    var resp = result.data['approvals'] as List;
+    List<PendingApproval> ret = [];
+    for(var item in resp) {
+      var approval = PendingApproval.fromJson(item);
+      ret.add(approval);
+    }
+    return ret;
   }
 }
