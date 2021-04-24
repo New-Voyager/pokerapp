@@ -5,7 +5,9 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/services/firebase/analytics_service.dart';
 import 'package:pokerapp/services/graphQL/configurations/graph_ql_configuration.dart';
+import 'package:pokerapp/services/nats/nats.dart';
 import 'package:pokerapp/utils/locator.dart';
+import 'package:provider/provider.dart';
 
 GraphQLConfiguration graphQLConfiguration = GraphQLConfiguration();
 final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
@@ -27,6 +29,7 @@ void main() {
 class MyApp extends StatelessWidget {
   // Create the initialization Future outside of `build`:
   final Future<FirebaseApp> _initialization = Firebase.initializeApp();
+  Nats nats;
 
   @override
   Widget build(BuildContext context) {
@@ -41,8 +44,15 @@ class MyApp extends StatelessWidget {
         }
         // Once complete, show your application
         if (snapshot.connectionState == ConnectionState.done) {
+          // create NATS instance (connection is done after login)
+          // we create here, since we need to access the Nats object across the app as provider
+          nats = Nats();
+          
           print('Firebase initialized successfully');
-          return MaterialApp(
+          return     
+          Provider<Nats> (create: (_) => this.nats,
+
+          child: MaterialApp(
             title: 'Poker App',
             debugShowCheckedModeBanner: false,
             navigatorKey: navigatorKey,
@@ -53,6 +63,7 @@ class MyApp extends StatelessWidget {
             ),
             onGenerateRoute: Routes.generateRoute,
             initialRoute: Routes.initial,
+          )
           );
         }
         // Otherwise, show something whilst waiting for initialization to complete

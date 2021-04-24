@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/club_homepage_model.dart';
 import 'package:pokerapp/models/club_weekly_activity_model.dart';
@@ -7,6 +9,7 @@ import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/club_screen/club_banner_view/club_banner_view.dart';
 import 'package:pokerapp/screens/club_screen/club_banner_view/club_graphics_view.dart';
 import 'package:pokerapp/services/app/clubs_service.dart';
+import 'package:pokerapp/services/nats/nats.dart';
 import 'package:pokerapp/widgets/custom_text_button.dart';
 import 'package:provider/provider.dart';
 
@@ -36,7 +39,11 @@ class ClubMainScreen extends StatelessWidget {
       ];
 
   @override
-  Widget build(BuildContext context) => FutureBuilder<ClubHomePageModel>(
+  Widget build(BuildContext context) {
+    final nats = Provider.of<Nats>(context, listen: false);
+    log('Club home screen nats: $nats');
+
+    return FutureBuilder<ClubHomePageModel>(
         initialData: null,
         future: ClubsService.getClubHomePageData(clubCode),
         builder: (BuildContext context, snapshot) {
@@ -90,4 +97,5 @@ class ClubMainScreen extends StatelessWidget {
           );
         },
       );
+  }
 }

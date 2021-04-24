@@ -15,6 +15,7 @@ class PlayerInfo {
   int id;
   String uuid;
   String name;
+  String channel;
   PlayerRole role;
 
   PlayerInfo({
@@ -22,6 +23,7 @@ class PlayerInfo {
     this.uuid,
     this.name,
     this.role,
+    this.channel,
   });
 
   static PlayerInfo fromJson(dynamic data) {
@@ -31,7 +33,11 @@ class PlayerInfo {
     info.id = int.parse(playerInfo['id'].toString());
     info.uuid = playerInfo['uuid'].toString();
     info.name = playerInfo['name'].toString();
-    info.role = PlayerRole.fromJson(data['role']);
+    info.channel = playerInfo['channel'].toString();
+
+    if (data['role'] != null) {
+      info.role = PlayerRole.fromJson(data['role']);
+    }
     return info;
   }
 }

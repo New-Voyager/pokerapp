@@ -11,24 +11,37 @@ class PlayerService {
 
   static Future<PlayerInfo> getMyInfo(String gameCode) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
+    Map<String, dynamic> variables;
 
-    String _query = """query (\$gameCode: String!){
+    String _query = """query {
       myInfo{
         id
         uuid
         name
-      }
-      role: playerRole (gameCode: \$gameCode) {
-        isHost
-        isOwner
-        isManager
+        channel
       }
     }
     """;
 
-    Map<String, dynamic> variables = {
-      "gameCode": gameCode,
-    };
+    if (gameCode != null) {
+      _query = """query (\$gameCode: String!){
+        myInfo{
+          id
+          uuid
+          name
+          channel
+        }
+        role: playerRole (gameCode: \$gameCode) {
+          isHost
+          isOwner
+          isManager
+        }
+      }
+      """;
+      variables = {
+        "gameCode": gameCode,
+      };
+    }
 
     QueryResult result = await _client.query(
       QueryOptions(documentNode: gql(_query), variables: variables),

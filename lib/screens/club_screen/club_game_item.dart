@@ -7,7 +7,9 @@ import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/routes.dart';
+import 'package:pokerapp/services/nats/nats.dart';
 import 'package:pokerapp/widgets/custom_text_button.dart';
+import 'package:provider/provider.dart';
 import '../../main.dart';
 
 class ClubGameItem extends StatelessWidget {
@@ -19,6 +21,7 @@ class ClubGameItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final nats = Provider.of<Nats>(context, listen: false);
     return Container(
       margin: EdgeInsets.fromLTRB(0, 5.0, 0, 5.0),
       decoration: BoxDecoration(
@@ -142,7 +145,7 @@ class ClubGameItem extends StatelessWidget {
                 text: _clubGameModel.waitList == 0 ? "Join" : "Join Waitlist",
                 onTap: () => navigatorKey.currentState.pushNamed(
                   Routes.game_play,
-                  arguments: clubGameModel.gameCode,
+                  arguments: { 'gameCode': clubGameModel.gameCode, 'nats': nats },
                 ),
               ),
             ),

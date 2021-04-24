@@ -24,6 +24,7 @@ import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/services/game_play/graphql/game_service.dart';
 import 'package:pokerapp/services/game_play/utils/audio.dart';
 import 'package:pokerapp/services/game_play/utils/audio_buffer.dart';
+import 'package:pokerapp/services/nats/nats.dart';
 import 'package:pokerapp/services/test/test_service.dart';
 import 'package:provider/provider.dart';
 
@@ -36,11 +37,13 @@ import 'game_play_screen_util_methods.dart';
 * */
 class GamePlayScreen extends StatefulWidget {
   final String gameCode;
-
+  final Nats nats;
   // NOTE: Enable this for agora audio testing
   GamePlayScreen({
     @required this.gameCode,
-  }) : assert(gameCode != null);
+    @required this.nats
+  }) : assert(gameCode != null), 
+       assert(nats != null);
 
   @override
   _GamePlayScreenState createState() => _GamePlayScreenState();
@@ -110,8 +113,8 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
     GameInfoModel _gameInfoModel = await _fetchGameInfo();
 
     if (_initiated == true) return _gameInfoModel;
-
     _gameComService = GameComService(
+      nats: widget.nats,
       currentPlayer: this._currentPlayer,
       gameToPlayerChannel: _gameInfoModel.gameToPlayerChannel,
       handToAllChannel: _gameInfoModel.handToAllChannel,

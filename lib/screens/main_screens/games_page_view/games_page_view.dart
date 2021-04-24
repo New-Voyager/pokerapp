@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:pokerapp/models/game_model.dart';
@@ -8,6 +10,8 @@ import 'package:pokerapp/resources/app_strings.dart';
 import 'package:pokerapp/screens/main_screens/games_page_view/enums.dart';
 import 'package:pokerapp/screens/main_screens/games_page_view/widgets/game_item.dart';
 import 'package:pokerapp/services/app/user_games_service.dart';
+import 'package:pokerapp/services/nats/nats.dart';
+import 'package:provider/provider.dart';
 
 class GamesPageView extends StatefulWidget {
   @override
@@ -73,6 +77,9 @@ class _GamesPageViewState extends State<GamesPageView> {
 
   @override
   Widget build(BuildContext context) {
+    final nats = Provider.of<Nats>(context, listen: false);
+    log('nats: ${nats}');
+    
     return Scaffold(
       backgroundColor: AppColors.screenBackgroundColor,
       body: _isLoading

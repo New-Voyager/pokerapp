@@ -103,10 +103,10 @@ class Routes {
         );
 
       case game_play:
-        var gameCode = settings.arguments as String;
+        var args = settings.arguments as dynamic;
         return _getPageRoute(
           routeName: settings.name,
-          viewToShow: GamePlayScreen(gameCode: gameCode),
+          viewToShow: GamePlayScreen(gameCode: args['gameCode'], nats: args['nats']),
         );
 
       case new_game_settings:

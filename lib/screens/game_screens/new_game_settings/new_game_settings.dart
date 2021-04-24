@@ -8,6 +8,7 @@ import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/services/app/rewards_service.dart';
 import 'package:pokerapp/services/game_play/graphql/game_service.dart';
+import 'package:pokerapp/services/nats/nats.dart';
 import 'package:pokerapp/widgets/custom_text_button.dart';
 import 'package:provider/provider.dart';
 
@@ -22,7 +23,7 @@ class NewGameSettings extends StatefulWidget {
 
 class _NewGameSettingsState extends State<NewGameSettings> {
   final String clubCode;
-  List<Rewards> rewards = new List<Rewards>();
+  List<Rewards> rewards = [];
   _NewGameSettingsState({
     @required this.clubCode,
   }) : assert(clubCode != null);
@@ -72,11 +73,13 @@ class _NewGameSettingsState extends State<NewGameSettings> {
     );
   }
 
-  void _joinGame(BuildContext context, String gameCode) =>
-      navigatorKey.currentState.pushNamed(
-        Routes.game_play,
-        arguments: gameCode,
-      );
+  void _joinGame(BuildContext context, String gameCode) {
+    final nats = Provider.of<Nats>(context, listen: false);
+    navigatorKey.currentState.pushNamed(
+      Routes.game_play,
+      arguments: {'gameCode': gameCode, 'nats': nats},
+    );
+  }
 
   @override
   Widget build(BuildContext context) {

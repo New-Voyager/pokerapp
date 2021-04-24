@@ -11,6 +11,7 @@ import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/main_screens/clubs_page_view/widgets/club_item.dart';
 import 'package:pokerapp/screens/main_screens/clubs_page_view/widgets/create_club_bottom_sheet.dart';
 import 'package:pokerapp/services/app/clubs_service.dart';
+import 'package:pokerapp/services/nats/nats.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/widgets/round_raised_button.dart';
 import 'package:pokerapp/widgets/custom_text_button.dart';
@@ -189,8 +190,7 @@ class _ClubsPageViewState extends State<ClubsPageView> {
 
   void openClub(BuildContext context, ClubModel club) async {
     if (club.memberStatus == 'ACTIVE') {
-      Navigator.pushNamed(
-        context,
+      Navigator.of(context)..pushNamed(
         Routes.club_main,
         arguments: club.clubCode,
       );
@@ -200,6 +200,8 @@ class _ClubsPageViewState extends State<ClubsPageView> {
   @override
   Widget build(BuildContext context) {
     final separator = SizedBox(height: 14.0);
+    final nats = Provider.of<Nats>(context, listen: false);
+    log('Club screen nats: $nats');
 
     return ListenableProvider<ValueNotifier<String>>(
       create: (_) => ValueNotifier<String>(''),

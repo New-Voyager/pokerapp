@@ -8,7 +8,9 @@ import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/main_screens/games_page_view/enums.dart';
+import 'package:pokerapp/services/nats/nats.dart';
 import 'package:pokerapp/widgets/custom_text_button.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../utils/color_generator.dart';
 
@@ -21,11 +23,14 @@ class GameItem extends StatelessWidget {
   final GameModel game;
   final LiveOrPlayedGames gameStatus;
 
-  void _joinGame(BuildContext context) => Navigator.pushNamed(
-        context,
-        Routes.game_play,
-        arguments: game.gameCode,
-      );
+  void _joinGame(BuildContext context) {
+    final nats = Provider.of<Nats>(context, listen: false);
+    Navigator.pushNamed(
+      context,
+      Routes.game_play,
+      arguments: {'gameCode': game.gameCode, 'nats': nats},
+    );
+  }
 
   @override
   Widget build(BuildContext context) {

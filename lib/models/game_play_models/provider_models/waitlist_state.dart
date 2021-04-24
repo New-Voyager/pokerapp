@@ -1,8 +1,4 @@
-import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
-import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
-import 'package:pokerapp/resources/app_constants.dart';
-import 'package:pokerapp/utils/card_helper.dart';
 
 class WaitlistState extends ChangeNotifier {
   String playerUuid;

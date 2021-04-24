@@ -17,7 +17,7 @@ Future<void> saveFirebaseToken(String token) async {
   // call graphql to save the token
   String playerId = await AuthService.fetchUUID();
   bool ret = await PlayerService.updateFirebaseToken(token);
-  if (ret) {
+  if (ret ?? false) {
     log('Successfully updated firebase token for the player');
   } else {
     log('Failed to update firebase token');
