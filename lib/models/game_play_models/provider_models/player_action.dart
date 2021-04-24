@@ -7,12 +7,12 @@ const String BET = 'BET';
 const String RAISE = 'RAISE';
 const String ALLIN = 'ALLIN';
 
-class Action {
+class AvailableAction {
   String actionName;
   int actionValue;
   int minActionValue;
 
-  Action({
+  AvailableAction({
     @required this.actionName,
     this.actionValue,
     this.minActionValue,
@@ -31,7 +31,7 @@ class Option {
 
 class PlayerAction {
   int _seatNo;
-  List<Action> _actions;
+  List<AvailableAction> _actions;
 
   int _minRaiseAmount;
   int _maxRaiseAmount;
@@ -81,7 +81,7 @@ class PlayerAction {
     seatAction['availableActions']
         .map<String>((s) => s.toString())
         .forEach((String actionName) {
-      Action action = Action(
+      AvailableAction action = AvailableAction(
         actionName: actionName,
       );
 
@@ -101,7 +101,7 @@ class PlayerAction {
     });
   }
 
-  List<Action> get actions => _actions;
+  List<AvailableAction> get actions => _actions;
   List<Option> get options => _options;
 
   int get minRaiseAmount => _minRaiseAmount;

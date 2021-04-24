@@ -3,12 +3,12 @@ import 'dart:developer';
 import 'package:dart_nats/dart_nats.dart';
 import 'package:flutter/foundation.dart';
 import 'package:pokerapp/models/player_info.dart';
-import 'package:pokerapp/services/app/util_service.dart';
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
+import 'package:pokerapp/services/nats/nats.dart';
 
 class GameComService {
-  Client _client;
-  Client _clientPub;
+  // Client _client;
+  // Client _clientPub;
   bool active;
 
   String gameToPlayerChannel;
@@ -28,6 +28,8 @@ class GameComService {
   // game chat object
   GameMessagingService _chat;
 
+  Nats _nats;
+
   GameComService({
     @required this.currentPlayer,
     @required this.gameToPlayerChannel,
@@ -36,54 +38,43 @@ class GameComService {
     @required this.playerToHandChannel,
     @required this.gameChatChannel,
   }) {
-    _client = Client();
-    _clientPub = Client();
+    // _client = Client();
+    // _clientPub = Client();
     this.active = false;
   }
 
-  Future<void> init() async {
+  Future<void> init2(Nats nats) async {
     // if already active, do not resubscribe again
     if (active) return;
 
-    String natsUrl = await UtilService.getNatsURL();
-
-    // chop the scheme and port number
-    natsUrl = natsUrl
-        .replaceFirst('nats://', '')
-        .replaceFirst('tls://', '')
-        .replaceFirst(':4222', '');
-    await _client.connect(natsUrl);
-
-    // todo: do we need two clients?
-    await _clientPub.connect(natsUrl);
-
     // subscribe
     log('subscribing to ${this.gameToPlayerChannel}');
-    _gameToPlayerChannelSubs = _client.sub(this.gameToPlayerChannel);
+    _gameToPlayerChannelSubs = nats.subClient.sub(this.gameToPlayerChannel);
 
     log('subscribing to ${this.handToAllChannel}');
-    _handToAllChannelSubs = _client.sub(this.handToAllChannel);
+    _handToAllChannelSubs = nats.subClient.sub(this.handToAllChannel);
 
     log('subscribing to ${this.handToPlayerChannel}');
-    _handToPlayerChannelSubs = _client.sub(this.handToPlayerChannel);
+    _handToPlayerChannelSubs = nats.subClient.sub(this.handToPlayerChannel);
 
     log('subscribing to ${this.gameChatChannel}');
-    _gameChatChannelSubs = _client.sub(this.gameChatChannel);
+    _gameChatChannelSubs = nats.subClient.sub(this.gameChatChannel);
 
     this._chat = GameMessagingService(
       this.currentPlayer,
       this.gameChatChannel,
-      this._clientPub,
+      nats.pubClient,
       _gameChatChannelSubs.stream,
       true,
     );
     this._chat.start();
+    this._nats = nats;
     this.active = true;
-  }
+  }  
 
   void sendPlayerToHandChannel(String data) {
     assert(active);
-    this._clientPub.pubString(this.playerToHandChannel, data);
+    this._nats.pubClient.pubString(this.playerToHandChannel, data);
   }
 
   void dispose() {
@@ -102,8 +93,8 @@ class GameComService {
     gameMessaging.close();
 
     active = false;
-    _client?.close();
-    _clientPub?.close();
+    // _client?.close();
+    // _clientPub?.close();
   }
 
   Stream<Message> get gameToPlayerChannelStream {

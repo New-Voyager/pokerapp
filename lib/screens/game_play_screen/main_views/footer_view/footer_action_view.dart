@@ -2,8 +2,6 @@ import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/player_action.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
@@ -12,11 +10,8 @@ import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/bet_widget.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
-import 'package:pokerapp/widgets/card_form_text_field.dart';
-import 'package:pokerapp/widgets/round_raised_button.dart';
 import 'package:pokerapp/services/game_play/message_id.dart';
 import 'package:provider/provider.dart';
-import 'package:tuple/tuple.dart';
 
 const shrinkedBox = const SizedBox.shrink(
   key: ValueKey('none'),
@@ -243,79 +238,95 @@ class _FooterActionViewState extends State<FooterActionView> {
     _actionTaken(context);
   }
 
-  Widget _buildTopActionRow(PlayerAction playerAction) => Row(
+  Widget _buildTopActionRow(PlayerAction playerAction) {
+    List<Widget> actions = [];
+    if (playerAction != null && playerAction.actions != null) {   
+      AvailableAction allInAction;
+      for(final playerAction in playerAction.actions) {
+        switch (playerAction.actionName) {
+          case FOLD:
+            actions.add(_buildRoundButton(
+              text: playerAction.actionName,
+              onTap: () => _fold(
+                playerAction.actionValue,
+                context: context,
+              ),
+            ));
+            break;
+          case CHECK:
+            actions.add(_buildRoundButton(
+              text: playerAction.actionName,
+              onTap: () => _check(
+                context: context,
+              ),
+            ));
+            break;
+
+          /* on tapping on BET this button should highlight and show further options */
+          case BET:
+            bet = true;
+            actions.add(_buildRoundButton(
+              //  isSelected: _showOptions,
+              text: playerAction.actionName,
+              disable: _disableBetButton,
+              onTap: () => setState(() {
+                _showOptions = true;
+                _disableBetButton = true;
+                // _showDialog(context);
+              }),
+            ));
+            break;
+          case CALL:
+            actions.add(_buildRoundButton(
+              text: playerAction.actionName +
+                  '\n' +
+                  playerAction.actionValue.toString(),
+              onTap: () => _call(
+                playerAction.actionValue,
+                context: context,
+              ),
+            ));
+            break;
+
+          /* on tapping on RAISE this button should highlight and show further options */
+          case RAISE:
+            raise = true;
+            actions.add(_buildRoundButton(
+              isSelected: _showOptions,
+              text: playerAction.actionName,
+              onTap: () => setState(() {
+                _showOptions = true;
+              }),
+            ));
+            break;
+          case ALLIN:
+            allInAction = playerAction;
+            break;
+          }
+        }
+
+        if (actions.length == 1) {
+          // add all in button
+          if (allInAction != null) {
+            actions.add(_buildRoundButton(
+                        text: allInAction.actionName +
+                            '\n' +
+                            allInAction.actionValue.toString(),
+                        onTap: () => _allIn(
+                          amount: allInAction.actionValue,
+                          context: context,
+                        ),
+                      )); 
+          }
+        }
+    }
+
+    return Row(
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.max,
-        children: playerAction?.actions?.map<Widget>(
-              (playerAction) {
-                switch (playerAction.actionName) {
-                  case FOLD:
-                    return _buildRoundButton(
-                      text: playerAction.actionName,
-                      onTap: () => _fold(
-                        playerAction.actionValue,
-                        context: context,
-                      ),
-                    );
-                  case CHECK:
-                    return _buildRoundButton(
-                      text: playerAction.actionName,
-                      onTap: () => _check(
-                        context: context,
-                      ),
-                    );
-
-                  /* on tapping on BET this button should highlight and show further options */
-                  case BET:
-                    bet = true;
-                    return _buildRoundButton(
-                      //  isSelected: _showOptions,
-                      text: playerAction.actionName,
-                      disable: _disableBetButton,
-                      onTap: () => setState(() {
-                        _showOptions = true;
-                        _disableBetButton = true;
-                        // _showDialog(context);
-                      }),
-                    );
-                  case CALL:
-                    return _buildRoundButton(
-                      text: playerAction.actionName +
-                          '\n' +
-                          playerAction.actionValue.toString(),
-                      onTap: () => _call(
-                        playerAction.actionValue,
-                        context: context,
-                      ),
-                    );
-
-                  /* on tapping on RAISE this button should highlight and show further options */
-                  case RAISE:
-                    raise = true;
-                    return _buildRoundButton(
-                      isSelected: _showOptions,
-                      text: playerAction.actionName,
-                      onTap: () => setState(() {
-                        _showOptions = true;
-                      }),
-                    );
-                  /* case ALLIN:
-                    return _buildRoundButton(
-                      text: playerAction.actionName +
-                          '\n' +
-                          playerAction.actionValue.toString(),
-                      onTap: () => _allIn(
-                        amount: playerAction.actionValue,
-                        context: context,
-                      ),
-                    ); */
-                }
-
-                return SizedBox.shrink();
-              },
-            )?.toList() ??
-            [],
+        children: actions,
       );
+  }
 
   Widget _buildOptionsRow(PlayerAction playerAction) {
     return AnimatedSwitcher(
