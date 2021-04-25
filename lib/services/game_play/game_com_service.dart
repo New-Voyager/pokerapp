@@ -70,7 +70,7 @@ class GameComService {
     this._chat.start();
     this._nats = nats;
     this.active = true;
-  }  
+  }
 
   void sendPlayerToHandChannel(String data) {
     assert(active);

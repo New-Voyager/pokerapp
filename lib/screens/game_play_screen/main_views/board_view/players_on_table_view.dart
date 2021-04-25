@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lottie/lottie.dart';
@@ -83,6 +85,7 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
   @override
   void initState() {
     // todo: commented onAnimation
+    log('setting on aniation handler');
     widget.gameComService?.gameMessaging?.listen(onAnimation: this.onAnimation);
     animationHandlers();
     _seatChangeAnimationHandler();

@@ -240,9 +240,9 @@ class _FooterActionViewState extends State<FooterActionView> {
 
   Widget _buildTopActionRow(PlayerAction playerAction) {
     List<Widget> actions = [];
-    if (playerAction != null && playerAction.actions != null) {   
+    if (playerAction != null && playerAction.actions != null) {
       AvailableAction allInAction;
-      for(final playerAction in playerAction.actions) {
+      for (final playerAction in playerAction.actions) {
         switch (playerAction.actionName) {
           case FOLD:
             actions.add(_buildRoundButton(
@@ -302,30 +302,30 @@ class _FooterActionViewState extends State<FooterActionView> {
           case ALLIN:
             allInAction = playerAction;
             break;
-          }
         }
+      }
 
-        if (actions.length == 1) {
-          // add all in button
-          if (allInAction != null) {
-            actions.add(_buildRoundButton(
-                        text: allInAction.actionName +
-                            '\n' +
-                            allInAction.actionValue.toString(),
-                        onTap: () => _allIn(
-                          amount: allInAction.actionValue,
-                          context: context,
-                        ),
-                      )); 
-          }
+      if (actions.length == 1) {
+        // add all in button
+        if (allInAction != null) {
+          actions.add(_buildRoundButton(
+            text: allInAction.actionName +
+                '\n' +
+                allInAction.actionValue.toString(),
+            onTap: () => _allIn(
+              amount: allInAction.actionValue,
+              context: context,
+            ),
+          ));
         }
+      }
     }
 
     return Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize: MainAxisSize.max,
-        children: actions,
-      );
+      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisSize: MainAxisSize.max,
+      children: actions,
+    );
   }
 
   Widget _buildOptionsRow(PlayerAction playerAction) {

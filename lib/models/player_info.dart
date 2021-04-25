@@ -37,7 +37,7 @@ class PlayerInfo {
 
     if (data['role'] != null) {
       info.role = PlayerRole.fromJson(data['role']);
-    }    
+    }
     return info;
   }
 }

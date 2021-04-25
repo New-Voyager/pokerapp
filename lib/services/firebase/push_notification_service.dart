@@ -1,4 +1,3 @@
-
 import 'dart:developer';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -24,7 +23,7 @@ Future<void> saveFirebaseToken(String token) async {
   }
 }
 
-void registerPushNotifications()  {
+void registerPushNotifications() {
   FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
     print('Got a message whilst in the foreground!');
     print('Message data: ${message.data}');

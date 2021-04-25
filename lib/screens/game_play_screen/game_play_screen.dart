@@ -144,74 +144,71 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
     // await _gameComService.init();
     final natsClient = Provider.of<Nats>(context, listen: false);
 
-      log('natsClient: $natsClient');
-      await _gameComService.init2(natsClient);
+    log('natsClient: $natsClient');
+    await _gameComService.init2(natsClient);
 
-
-      /* setup the listeners to the channels
+    /* setup the listeners to the channels
       * Any messages received from these channel updates,
       * will be taken care of by the respective class
       * and actions will be taken in the UI
       * as there will be Listeners implemented down this hierarchy level */
 
-      _gameComService.gameToPlayerChannelStream.listen((nats.Message message) {
-        if (!_gameComService.active) return;
+    _gameComService.gameToPlayerChannelStream.listen((nats.Message message) {
+      if (!_gameComService.active) return;
 
-        // log('gameToPlayerChannel(${message.subject}): ${message.string}');
+      // log('gameToPlayerChannel(${message.subject}): ${message.string}');
 
-        /* This stream will receive game related messages
+      /* This stream will receive game related messages
         * e.g.
         * 1. Player Actions - Sitting on table, getting more chips, leaving game, taking break,
         * 2. Game Actions - New hand, informing about Next actions, PLayer Acted
         *  */
 
-        GameActionService.handle(
-          context: _providerContext,
-          message: message.string,
-        );
-      });
+      GameActionService.handle(
+        context: _providerContext,
+        message: message.string,
+      );
+    });
 
-      _gameComService.handToAllChannelStream.listen((nats.Message message) {
-        if (!_gameComService.active) return;
+    _gameComService.handToAllChannelStream.listen((nats.Message message) {
+      if (!_gameComService.active) return;
 
-        // log('handToAllChannel(${message.subject}): ${message.string}');
+      // log('handToAllChannel(${message.subject}): ${message.string}');
 
-        /* This stream receives hand related messages that is common to all players
+      /* This stream receives hand related messages that is common to all players
         * e.g
         * New Hand - contains hand status, dealerPos, sbPos, bbPos, nextActionSeat
         * Next Action - contains the seat No which is to act next
         *
         * This stream also contains the output for the query of current hand*/
-        HandActionService.handle(
-          context: _providerContext,
-          message: message.string,
-        );
-      });
+      HandActionService.handle(
+        context: _providerContext,
+        message: message.string,
+      );
+    });
 
-      _gameComService.handToPlayerChannelStream.listen((nats.Message message) {
-        if (!_gameComService.active) return;
+    _gameComService.handToPlayerChannelStream.listen((nats.Message message) {
+      if (!_gameComService.active) return;
 
-        // log('handToPlayerChannel(${message.subject}): ${message.string}');
+      // log('handToPlayerChannel(${message.subject}): ${message.string}');
 
-        /* This stream receives hand related messages that is specific to THIS player only
+      /* This stream receives hand related messages that is specific to THIS player only
         * e.g
         * Deal - contains seat No and cards
         * Your Action - seat No, available actions & amounts */
-        HandActionService.handle(
-          context: _providerContext,
-          message: message.string,
-        );
+      HandActionService.handle(
+        context: _providerContext,
+        message: message.string,
+      );
 
-    // _gameComService.chat.listen(onText: this.onText);
+      // _gameComService.chat.listen(onText: this.onText);
       _gameComService.gameMessaging.listen(
         onCards: this.onCards,
         onText: this.onText,
         onAudio: this.onAudio,
-        onAnimation: this.onAnimation,
+        // onAnimation: this.onAnimation,
       );
-
     });
-
 
     _initiated = true;
     return _gameInfoModel;
@@ -283,9 +280,9 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
           seatPos: seatPos,
           gameCode: widget.gameCode,
         );
-      } catch(e) {
+      } catch (e) {
         showError(context, error: e);
-        return ;
+        return;
       }
       // join audio
       await joinAudio();
@@ -334,8 +331,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
         child: Scaffold(
           /* FIXME: THIS FLOATING ACTION BUTTON IS FOR SHOWING THE TESTS */
           floatingActionButton: GamePlayScreenUtilMethods.floatingActionButton(
-            onReload: () {
-            },
+            onReload: () {},
           ),
           resizeToAvoidBottomInset: false,
           backgroundColor: Colors.black,
