@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:flutter/widgets.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:pokerapp/enums/approval_type.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/pending_approvals.dart';
 import 'package:pokerapp/models/player_info.dart';
@@ -69,8 +70,7 @@ class PlayerService {
     return playerInfo;
   }
 
-  static Future<bool> updateFirebaseToken(
-      String token) async {
+  static Future<bool> updateFirebaseToken(String token) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
 
     Map<String, dynamic> variables = {"token": token};
@@ -85,7 +85,7 @@ class PlayerService {
 
     if (result.hasException) return null;
 
-    bool ret = result.data['ret']; 
+    bool ret = result.data['ret'];
     return ret;
   }
 
@@ -100,7 +100,7 @@ class PlayerService {
 
     if (result.hasException) return null;
 
-    var ret = result.data['approvals'] as List; 
+    var ret = result.data['approvals'] as List;
     return ret.length;
   }
 
@@ -128,10 +128,66 @@ class PlayerService {
 
     var resp = result.data['approvals'] as List;
     List<PendingApproval> ret = [];
-    for(var item in resp) {
+    for (var item in resp) {
       var approval = PendingApproval.fromJson(item);
       ret.add(approval);
     }
     return ret;
+  }
+
+  static Future<bool> approveBuyInRequest(
+      String gameCode, String playerUuid) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+
+    String _query = """
+    mutation approveRequest(\$gameCode: String!, \$playerId: String!) {
+      ret: approveRequest(gameCode: \$gameCode, playerUuid: \$playerId, type: BUYIN_REQUEST, status:APPROVED)
+    }
+  """;
+
+    Map<String, dynamic> variables = {
+      "gameCode": gameCode,
+      "playerId": playerUuid
+    };
+
+
+    print(_query);
+    QueryResult result = await _client.query(
+      QueryOptions(documentNode: gql(_query), variables: variables),
+    );
+
+    if (result.hasException) return null;
+
+    log("Result ${result.data['ret']}");
+
+    return result.data['ret'];
+  }
+
+  static Future<bool> declineBuyInRequest(
+      String gameCode, String playerUuid) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+
+    String _query = """
+    mutation denyRequest(\$gameCode: String!, \$playerId: String!) {
+      ret : approveRequest(gameCode: \$gameCode, playerUuid: \$playerId, type: BUYIN_REQUEST, status:DENIED)
+    }
+  """;
+
+    Map<String, dynamic> variables = {
+      "gameCode": gameCode,
+      "playerId": playerUuid
+    };
+
+
+    print(_query);
+    QueryResult result = await _client.query(
+      QueryOptions(documentNode: gql(_query), variables: variables),
+    );
+
+    if (result.hasException) return null;
+
+    log("Result ${result.data}");
+
+    return result.data['ret'];
   }
 }
