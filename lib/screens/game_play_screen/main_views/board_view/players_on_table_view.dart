@@ -499,6 +499,175 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
     return userView;
   }
 
+Widget positionUser_7inch({
+    @required bool isBoardHorizontal,
+    Seat seat,
+    double heightOfBoard,
+    double widthOfBoard,
+    int seatPos,
+    bool isPresent,
+    Function onUserTap,
+  }) {
+    seatPos++;
+
+    Alignment cardsAlignment = Alignment.centerRight;
+    log('board width: $widthOfBoard height: $heightOfBoard');
+
+    // left for 6, 7, 8, 9
+    if (seatPos == 6 || seatPos == 7 || seatPos == 8 || seatPos == 9)
+      cardsAlignment = Alignment.centerLeft;
+    Widget userView = createUserView(
+      isBoardHorizontal: isBoardHorizontal,
+      seatPos: seatPos,
+      seat: seat,
+      cardsAlignment: cardsAlignment,
+      onUserTap: onUserTap,
+    );
+    switch (seatPos) {
+      case 1:
+
+        // TODO: IF WE NEED TO SHIFT UP THIS PLAYER, USE TRANSLATE,
+        // TODO: IT'S RECOMMENDED NOT TO USE POSITIONED, BECAUSE USING POSITIONED, CENTERING IS NOT POSSIBLE, AND WITHOUT THIS PLAYER IN CENTER, IT MAY LOOK BAD
+
+        return Transform.translate(
+          offset:  Offset(0, -10),
+          child: Align(alignment: Alignment.bottomCenter, child: userView));
+
+
+      case 2:
+        return Transform.translate(
+          offset:  Offset(30, -20),
+          child: Align(alignment: Alignment.bottomLeft, child: userView));
+
+      case 3:
+        return Transform.translate(offset:  Offset(30, 0),
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: userView,
+          )
+        );
+
+      case 4:
+        return Transform.translate(
+          offset:  Offset(40, 30),
+          child: Align(alignment: Alignment.topLeft, child: userView));
+        
+      case 5:
+
+        return Transform.translate(
+          offset:  Offset(180, 0),
+          child: Align(alignment: Alignment.topLeft, child: userView));
+
+      case 6:
+        return Transform.translate(
+          offset:  Offset(320, 0),
+          child: Align(alignment: Alignment.topLeft, child: userView));
+
+      case 7:
+        return Transform.translate(
+          offset:  Offset(-30, 20),
+          child: Align(alignment: Alignment.topRight, child: userView));
+
+      case 8:
+        return Transform.translate(
+          offset:  Offset(-20, 0),
+          child: Align(alignment: Alignment.centerRight, child: userView));
+
+      case 9:
+        return Transform.translate(
+          offset:  Offset(-30, -20),
+          child: Align(alignment: Alignment.bottomRight, child: userView));
+
+      default:
+        return const SizedBox.shrink();
+    }
+  }
+
+
+Widget positionUser_5inch({
+    @required bool isBoardHorizontal,
+    Seat seat,
+    double heightOfBoard,
+    double widthOfBoard,
+    int seatPos,
+    bool isPresent,
+    Function onUserTap,
+  }) {
+    seatPos++;
+
+    Alignment cardsAlignment = Alignment.centerRight;
+    log('board width: $widthOfBoard height: $heightOfBoard');
+
+    // left for 6, 7, 8, 9
+    if (seatPos == 6 || seatPos == 7 || seatPos == 8 || seatPos == 9)
+      cardsAlignment = Alignment.centerLeft;
+    Widget userView = createUserView(
+      isBoardHorizontal: isBoardHorizontal,
+      seatPos: seatPos,
+      seat: seat,
+      cardsAlignment: cardsAlignment,
+      onUserTap: onUserTap,
+    );
+    switch (seatPos) {
+      case 1:
+
+        // TODO: IF WE NEED TO SHIFT UP THIS PLAYER, USE TRANSLATE,
+        // TODO: IT'S RECOMMENDED NOT TO USE POSITIONED, BECAUSE USING POSITIONED, CENTERING IS NOT POSSIBLE, AND WITHOUT THIS PLAYER IN CENTER, IT MAY LOOK BAD
+
+        return Transform.translate(
+          offset:  Offset(0, -10),
+          child: Align(alignment: Alignment.bottomCenter, child: userView));
+
+
+      case 2:
+        return Transform.translate(
+          offset:  Offset(30, -20),
+          child: Align(alignment: Alignment.bottomLeft, child: userView));
+
+      case 3:
+        return Transform.translate(offset:  Offset(10, 0),
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: userView,
+          )
+        );
+
+      case 4:
+        return Transform.translate(
+          offset:  Offset(30, 20),
+          child: Align(alignment: Alignment.topLeft, child: userView));
+        
+      case 5:
+
+        return Transform.translate(
+          offset:  Offset(130, 0),
+          child: Align(alignment: Alignment.topLeft, child: userView));
+
+      case 6:
+        return Transform.translate(
+          offset:  Offset(220, 0),
+          child: Align(alignment: Alignment.topLeft, child: userView));
+
+      case 7:
+        return Transform.translate(
+          offset:  Offset(-10, 20),
+          child: Align(alignment: Alignment.topRight, child: userView));
+
+      case 8:
+        return Transform.translate(
+          offset:  Offset(0, 0),
+          child: Align(alignment: Alignment.centerRight, child: userView));
+
+      case 9:
+        return Transform.translate(
+          offset:  Offset(-20, -20),
+          child: Align(alignment: Alignment.bottomRight, child: userView));
+
+      default:
+        return const SizedBox.shrink();
+    }
+  }
+
   Widget positionUser({
     @required bool isBoardHorizontal,
     Seat seat,

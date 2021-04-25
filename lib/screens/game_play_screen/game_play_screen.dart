@@ -32,6 +32,20 @@ import 'package:provider/provider.dart';
 import '../../services/test/test_service.dart';
 import 'game_play_screen_util_methods.dart';
 
+
+/*
+7 inch tablet
+[log] rebuilding game screen. Screen: Size(600.0, 912.0)
+[log] Table width: 650.0 height: 294.8
+[log] board width: 600.0 height: 364.8
+
+10 inch tablet
+[log] rebuilding game screen. Screen: Size(800.0, 1232.0)
+Table width: 850.0 height: 422.8
+board width: 800.0 height: 492.8
+
+*/
+
 /*
 * This is the screen which will have contact with the NATS server
 * Every sub view of this screen will update according to the data fetched from the NATS

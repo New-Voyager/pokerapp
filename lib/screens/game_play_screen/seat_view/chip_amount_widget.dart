@@ -125,7 +125,7 @@ class ChipAmountWidget extends StatelessWidget {
 
     final double theta = math.atan(yy / xx);
 
-    final double moveByConstant = 100.0 * (xx < 0 ? -1 : 1);
+    final double moveByConstant = 100.0 * (xx < 0 ? -1 : 1);      // 100: 10 inch, 60: 5 inch,  75: 7 inch
 
     log('${seat.serverSeatPos} : $yy : $xx : $theta');
 
@@ -136,7 +136,7 @@ class ChipAmountWidget extends StatelessWidget {
 
     return Transform.translate(
       offset: offset,
-      child: Transform.scale(scale: 2.0, child: child),
+      child: Transform.scale(scale: 1.5, child: child),
     );
   }
 }
