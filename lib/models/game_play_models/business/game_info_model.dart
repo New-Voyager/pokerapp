@@ -58,9 +58,7 @@ class GameInfoModel {
         .toList();
     this.playersInSeats = data['seatInfo']['playersInSeats']
         .map<PlayerModel>((e) => PlayerModel.fromJson(e))
-        .toList()
-        .sublist(0, maxPlayers ?? data['maxPlayers'] as int);
-    // FIXME: FOR DEBUG - sublist
+        .toList();
 
     this.gameToken = data['gameToken'];
     this.playerGameStatus = data['playerGameStatus'];

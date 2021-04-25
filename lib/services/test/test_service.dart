@@ -39,7 +39,7 @@ class TestService {
                   "myInfo": {
                     "id": 1,
                     "uuid": "d04d24d1-be90-4c02-b8fb-c2499d9b76ed",
-                    "name": "john"
+                    "name": "tom"
                   },
                   "role": {
                     "isHost": true,
@@ -86,10 +86,21 @@ class TestService {
         _currentPlayer = PlayerInfo.fromJson(data);
         //_currentPlayer = PlayerInfo.fromJson(jsonData["currentPlayer"]);
       }
+      var maxPlayers = 4;
       if (jsonData["gameInfo"] != null) {
         // todo: debug remove: change the max Players in a game here
-        _gameInfo = GameInfoModel.fromJson(jsonData["gameInfo"], maxPlayers: 2);
+        _gameInfo = GameInfoModel.fromJson(jsonData["gameInfo"], maxPlayers: maxPlayers);
       }
+
+      List<PlayerModel> playerInSeats = [];
+      for(final player in _gameInfo.playersInSeats) {
+        if (player.seatNo <= maxPlayers) {
+          playerInSeats.add(player);
+        }
+      }
+      _gameInfo.playersInSeats = playerInSeats;
+
+
       final resultData =
           await rootBundle.loadString('assets/sample-data/result.json');
       _result = jsonDecode(resultData);
