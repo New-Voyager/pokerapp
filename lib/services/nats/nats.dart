@@ -46,7 +46,6 @@ class Nats {
   }
 
   void close() {
-
     if (_playerSub != null) {
       _playerSub.unSub();
     }

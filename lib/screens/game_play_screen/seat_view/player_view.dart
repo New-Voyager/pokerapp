@@ -226,7 +226,7 @@ class PlayerView extends StatelessWidget {
                 seat: seat,
               ),
 
-              SeatNoWidget(seat),
+              // SeatNoWidget(seat),
             ],
           ),
         );

@@ -148,15 +148,12 @@ class _PlateWidgetState extends State<PlateWidget>
       progressPath = trimPath(path, progressLength, origin: PathTrimOrigin.end);
     }
 
-    return GestureDetector(
-      onTap: () => print('tap'),
-      child: CustomPaint(
-        painter: FilledPathPainter(
-          path: path,
-          progressPath: progressPath,
-          color: borderColor,
-          percent: percent,
-        ),
+    return CustomPaint(
+      painter: FilledPathPainter(
+        path: path,
+        progressPath: progressPath,
+        color: borderColor,
+        percent: percent,
       ),
     );
   }

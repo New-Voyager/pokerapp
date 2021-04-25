@@ -13,7 +13,6 @@ GraphQLConfiguration graphQLConfiguration = GraphQLConfiguration();
 final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
 
 void main() {
-
   WidgetsFlutterBinding.ensureInitialized();
   // Register all the models and services before the app starts
   setupLocator();
@@ -47,20 +46,22 @@ class MyApp extends StatelessWidget {
         // Once complete, show your application
         if (snapshot.connectionState == ConnectionState.done) {
           print('Firebase initialized successfully');
-          return 
-          Provider<Nats> (create: (_) => this.nats,
-          child: MaterialApp(
-            title: 'Poker App',
-            debugShowCheckedModeBanner: false,
-            navigatorKey: navigatorKey,
-            navigatorObservers: [locator<AnalyticsService>().getAnalyticsObserver()],
-            theme: ThemeData(
-              primarySwatch: Colors.blue,
-              visualDensity: VisualDensity.adaptivePlatformDensity,
-            ),
-            onGenerateRoute: Routes.generateRoute,
-            initialRoute: Routes.initial,
-          ));
+          return Provider<Nats>(
+              create: (_) => this.nats,
+              child: MaterialApp(
+                title: 'Poker App',
+                debugShowCheckedModeBanner: false,
+                navigatorKey: navigatorKey,
+                navigatorObservers: [
+                  locator<AnalyticsService>().getAnalyticsObserver()
+                ],
+                theme: ThemeData(
+                  primarySwatch: Colors.blue,
+                  visualDensity: VisualDensity.adaptivePlatformDensity,
+                ),
+                onGenerateRoute: Routes.generateRoute,
+                initialRoute: Routes.initial,
+              ));
         }
         // Otherwise, show something whilst waiting for initialization to complete
         return Center(child: CircularProgressIndicator());

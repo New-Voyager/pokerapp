@@ -81,8 +81,7 @@ class PlayerService {
     return playerInfo;
   }
 
-  static Future<bool> updateFirebaseToken(
-      String token) async {
+  static Future<bool> updateFirebaseToken(String token) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
 
     Map<String, dynamic> variables = {"token": token};
@@ -97,7 +96,7 @@ class PlayerService {
 
     if (result.hasException) return null;
 
-    bool ret = result.data['ret']; 
+    bool ret = result.data['ret'];
     return ret;
   }
 
@@ -112,7 +111,7 @@ class PlayerService {
 
     if (result.hasException) return null;
 
-    var ret = result.data['approvals'] as List; 
+    var ret = result.data['approvals'] as List;
     return ret.length;
   }
 
@@ -140,7 +139,7 @@ class PlayerService {
 
     var resp = result.data['approvals'] as List;
     List<PendingApproval> ret = [];
-    for(var item in resp) {
+    for (var item in resp) {
       var approval = PendingApproval.fromJson(item);
       ret.add(approval);
     }

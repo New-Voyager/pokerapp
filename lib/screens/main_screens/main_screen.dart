@@ -22,7 +22,7 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen>
     with SingleTickerProviderStateMixin {
   TabController _controller;
-  PlayerInfo _currentPlayer; 
+  PlayerInfo _currentPlayer;
   Nats _nats;
   Future<void> _init() async {
     log('Initialize main screen');

@@ -77,21 +77,25 @@ showWaitlistStatus(BuildContext context, String message, int duration) async {
       Icons.queue_play_next,
       color: Colors.greenAccent,
     ),
-    mainButton: 
-      Material( // pause button (round)
-          borderRadius: BorderRadius.circular(50), // change radius size
-          color: Colors.black12, //button colour
-          child: InkWell(
-            splashColor: Colors.white, // inkwell onPress colour
-            child: SizedBox(
-              width: 35,height: 35, //customisable size of 'button'
-              child: Icon(Icons.close_rounded,color: Colors.blue,size: 16,),
-            ),
-            onTap: () {
-              flush.dismiss();
-            }, // or use onPressed: () {}
+    mainButton: Material(
+      // pause button (round)
+      borderRadius: BorderRadius.circular(50), // change radius size
+      color: Colors.black12, //button colour
+      child: InkWell(
+        splashColor: Colors.white, // inkwell onPress colour
+        child: SizedBox(
+          width: 35, height: 35, //customisable size of 'button'
+          child: Icon(
+            Icons.close_rounded,
+            color: Colors.blue,
+            size: 16,
           ),
-        ),    
+        ),
+        onTap: () {
+          flush.dismiss();
+        }, // or use onPressed: () {}
+      ),
+    ),
     showProgressIndicator: false,
     progressIndicatorBackgroundColor: Colors.blueGrey,
     titleText: Text(
