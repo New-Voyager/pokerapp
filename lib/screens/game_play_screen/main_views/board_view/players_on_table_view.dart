@@ -720,7 +720,7 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
 
       case 3:
         return Positioned(
-          top: 20,
+          top: 30,
           left: 10,
           child: userView,
         );
@@ -733,7 +733,7 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
 
       case 5:
         return Positioned(
-          top: 20,
+          top: 30,
           right: 10,
           child: userView,
         );

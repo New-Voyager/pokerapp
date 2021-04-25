@@ -5,6 +5,7 @@ import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
+import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/player_action.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
@@ -61,7 +62,7 @@ class TestService {
   static List<int> get pots => _pots;
 
   static get isTesting {
-    return false;
+    return true;
   }
 
   static Future<void> load() async {
@@ -86,7 +87,8 @@ class TestService {
         //_currentPlayer = PlayerInfo.fromJson(jsonData["currentPlayer"]);
       }
       if (jsonData["gameInfo"] != null) {
-        _gameInfo = GameInfoModel.fromJson(jsonData["gameInfo"]);
+        // todo: debug remove: change the max Players in a game here
+        _gameInfo = GameInfoModel.fromJson(jsonData["gameInfo"], maxPlayers: 2);
       }
       final resultData =
           await rootBundle.loadString('assets/sample-data/result.json');

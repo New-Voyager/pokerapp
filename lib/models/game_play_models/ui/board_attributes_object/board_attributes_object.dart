@@ -72,6 +72,7 @@ class BoardAttributesObject extends ChangeNotifier {
   Size _namePlateSize;
 
   GlobalKey _centerKey;
+  GlobalKey _emptyCenterKey;
   GlobalKey _centerPotBetKey;
   GlobalKey _dummyViewKey;
   List<PotAttribute> _pots;
@@ -181,7 +182,10 @@ class BoardAttributesObject extends ChangeNotifier {
   get centerOffset => this._centerOffset;
   get centerSize => this._centerSize;
   get centerKey => this._centerKey;
+  get emptyCenterKey => this._emptyCenterKey;
+
   set centerKey(Key key) => this._centerKey = key;
+  set emptyCenterKey(Key key) => this._emptyCenterKey = key;
 
   get dummyKey => this._dummyViewKey;
   set dummyKey(Key key) => this._dummyViewKey = key;
