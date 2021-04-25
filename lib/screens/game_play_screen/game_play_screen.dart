@@ -301,7 +301,8 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
 
   @override
   Widget build(BuildContext context) {
-    log('rebuilding game screen');
+    final screenSize = MediaQuery.of(context).size;
+    log('rebuilding game screen. Screen: $screenSize');
 
     if (TestService.isTesting) {
       try {

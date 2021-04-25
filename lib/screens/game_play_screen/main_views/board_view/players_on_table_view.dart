@@ -486,7 +486,8 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
     userView = ListenableProvider<Seat>(
       create: (_) => seat,
       builder: (context, _) => Consumer2<Seat, BoardAttributesObject>(
-        builder: (_, seat, boardAttributes, __) => PlayerView(
+        builder: (_, seat, boardAttributes, __) => 
+        PlayerView(
           gameComService: widget.gameComService,
           seat: seat,
           cardsAlignment: cardsAlignment,
@@ -510,6 +511,7 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
     seatPos++;
 
     Alignment cardsAlignment = Alignment.centerRight;
+    log('board width: $widthOfBoard height: $heightOfBoard');
 
     // left for 6, 7, 8, 9
     if (seatPos == 6 || seatPos == 7 || seatPos == 8 || seatPos == 9)
@@ -526,64 +528,55 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
 
         // TODO: IF WE NEED TO SHIFT UP THIS PLAYER, USE TRANSLATE,
         // TODO: IT'S RECOMMENDED NOT TO USE POSITIONED, BECAUSE USING POSITIONED, CENTERING IS NOT POSSIBLE, AND WITHOUT THIS PLAYER IN CENTER, IT MAY LOOK BAD
-        return Align(
-          alignment: Alignment.bottomCenter,
-          child: userView,
-        );
+
+        return Transform.translate(
+          offset:  Offset(0, -20),
+          child: Align(alignment: Alignment.bottomCenter, child: userView));
+
 
       case 2:
-        return Positioned(
-          bottom: 20,
-          left: 10,
-          child: userView,
-        );
+        return Transform.translate(
+          offset:  Offset(60, -40),
+          child: Align(alignment: Alignment.bottomLeft, child: userView));
 
       case 3:
-        return Align(
-          alignment: Alignment.centerLeft,
-          child: userView,
+        return Transform.translate(offset:  Offset(60, 0),
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: userView,
+          )
         );
 
       case 4:
-        return Positioned(
-          top: 20,
-          left: 10,
-          child: userView,
-        );
-
+        return Transform.translate(
+          offset:  Offset(60, 40),
+          child: Align(alignment: Alignment.topLeft, child: userView));
+        
       case 5:
-        return Positioned(
-          top: 0,
-          left: widthOfBoard / 3.5,
-          child: userView,
-        );
+
+        return Transform.translate(
+          offset:  Offset(280, 0),
+          child: Align(alignment: Alignment.topLeft, child: userView));
 
       case 6:
-        return Positioned(
-          top: 0,
-          right: widthOfBoard / 3.5,
-          child: userView,
-        );
+        return Transform.translate(
+          offset:  Offset(460, 0),
+          child: Align(alignment: Alignment.topLeft, child: userView));
 
       case 7:
-        return Positioned(
-          top: 20,
-          right: 10,
-          child: userView,
-        );
+        return Transform.translate(
+          offset:  Offset(-80, 40),
+          child: Align(alignment: Alignment.topRight, child: userView));
 
       case 8:
-        return Align(
-          alignment: Alignment.centerRight,
-          child: userView,
-        );
+        return Transform.translate(
+          offset:  Offset(-40, 0),
+          child: Align(alignment: Alignment.centerRight, child: userView));
 
       case 9:
-        return Positioned(
-          bottom: 20,
-          right: 10,
-          child: userView,
-        );
+        return Transform.translate(
+          offset:  Offset(-40, -40),
+          child: Align(alignment: Alignment.bottomRight, child: userView));
 
       default:
         return const SizedBox.shrink();
