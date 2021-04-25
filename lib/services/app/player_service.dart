@@ -18,6 +18,7 @@ class PlayerService {
         id
         uuid
         name
+        channel
       }
     }""";
 

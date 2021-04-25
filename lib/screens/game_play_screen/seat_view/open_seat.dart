@@ -15,12 +15,7 @@ class OpenSeat extends StatelessWidget {
     Key key,
   }) : super(key: key);
 
-  Widget _openSeat() => InkWell(
-        onTap: () {
-          log('Pressed $seatPos');
-          this.onUserTap(seatPos);
-        },
-        child: Padding(
+  Widget _openSeat() =>  Padding(
           padding: const EdgeInsets.all(5),
 
           // child: AnimatedTextKit(
@@ -40,21 +35,38 @@ class OpenSeat extends StatelessWidget {
               style: AppStyles.openSeatTextStyle,
             ),
           ),
-        ),
-      );
+        );
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return InkWell(
+      splashColor: Colors.blue,
+      onTap: () {
+        log('Pressed $seatPos');
+        this.onUserTap(seatPos);
+      },
+
+      child: Container(
       width: 45.0,
       height: 45.0,
-      child: Center(
-        child: _openSeat(),
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          _openSeat(),
+          // CircularProgressIndicator(
+          //   strokeWidth: 2.0,
+          //   valueColor : AlwaysStoppedAnimation(Colors.white),
+          // ),
+        ],
       ),
+      // child: Center(
+      //   child: _openSeat(),
+      // ),
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: Color(0XFF494444),
       ),
+    )
     );
   }
 }

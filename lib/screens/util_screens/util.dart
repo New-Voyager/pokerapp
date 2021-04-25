@@ -1,5 +1,6 @@
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
+import 'package:pokerapp/services/gql_errors.dart';
 
 showAlertDialog(BuildContext context, String title, String message) {
   // set up the button
@@ -13,6 +14,38 @@ showAlertDialog(BuildContext context, String title, String message) {
   // set up the AlertDialog
   AlertDialog alert = AlertDialog(
     title: Text(title),
+    content: Text(message),
+    actions: [
+      okButton,
+    ],
+  );
+
+  // show the dialog
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return alert;
+    },
+  );
+}
+
+showError(BuildContext context, {GqlError error, String message}) {
+  // translate to other languages here
+  if (error != null) {
+    message = error.message;
+  }
+
+  // set up the button
+  Widget okButton = ElevatedButton(
+    child: Text("Close"),
+    onPressed: () {
+      Navigator.of(context).pop();
+    },
+  );
+
+  // set up the AlertDialog
+  AlertDialog alert = AlertDialog(
+    title: Text('Error'),
     content: Text(message),
     actions: [
       okButton,

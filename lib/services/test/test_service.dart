@@ -33,7 +33,22 @@ class TestService {
   //
   // static bool get isTesting => _isTesting;
 
-  static PlayerInfo get currentPlayer => _currentPlayer;
+  static PlayerInfo get currentPlayer {
+    final data = jsonDecode('''  {
+                  "myInfo": {
+                    "id": 1,
+                    "uuid": "d04d24d1-be90-4c02-b8fb-c2499d9b76ed",
+                    "name": "john"
+                  },
+                  "role": {
+                    "isHost": true,
+                    "isOwner": true,
+                    "isManager": false
+                  }
+                }''');
+    _currentPlayer = PlayerInfo.fromJson(data);
+    return _currentPlayer;
+  }
 
   static GameInfoModel get gameInfo => _gameInfo;
 
@@ -46,7 +61,7 @@ class TestService {
   static List<int> get pots => _pots;
 
   static get isTesting {
-    return false;
+    return true;
   }
 
   static Future<void> load() async {
@@ -55,7 +70,20 @@ class TestService {
           await rootBundle.loadString('assets/sample-data/gameinfo.json');
       final jsonData = jsonDecode(gameData);
       if (jsonData["currentPlayer"] != null) {
-        _currentPlayer = PlayerInfo.fromJson(jsonData["currentPlayer"]);
+        final data = jsonDecode('''  {
+              "myInfo": {
+                "id": 1,
+                "uuid": "371e8c15-39cb-4bd9-a932-ced7a9dd6aac",
+                "name": "tom"
+              },
+              "role": {
+                "isHost": true,
+                "isOwner": true,
+                "isManager": false
+              }
+            }''');
+        _currentPlayer = PlayerInfo.fromJson(data);
+        //_currentPlayer = PlayerInfo.fromJson(jsonData["currentPlayer"]);
       }
       if (jsonData["gameInfo"] != null) {
         _gameInfo = GameInfoModel.fromJson(jsonData["gameInfo"]);

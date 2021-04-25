@@ -47,6 +47,7 @@ class PlayerView extends StatelessWidget {
   }) : super(key: key);
 
   onTap(BuildContext context) async {
+    log('seat ${seat.serverSeatPos} is tapped');
     if (seat.isOpen) {
       // the player tapped to sit-in
       onUserTap(seat.serverSeatPos);
@@ -233,7 +234,7 @@ class PlayerView extends StatelessWidget {
                 seat: seat,
               ),
 
-              //SeatNoWidget(seat),
+              SeatNoWidget(seat),
             ],
           ),
         );

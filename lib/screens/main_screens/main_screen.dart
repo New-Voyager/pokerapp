@@ -36,12 +36,14 @@ class _MainScreenState extends State<MainScreen>
     FirebaseMessaging.instance.onTokenRefresh.listen(saveFirebaseToken);
     registerPushNotifications();
 
-
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final natsClient = Provider.of<Nats>(context, listen: false);
-      _nats = natsClient;
-      natsClient.init(_currentPlayer.channel);
+    final natsClient = Provider.of<Nats>(context, listen: false);
+    _nats = natsClient;
+    Future.delayed(Duration(milliseconds: 100), () async {
+      await natsClient.init(_currentPlayer.channel);
     });
+
+    // WidgetsBinding.instance.addPostFrameCallback((_) async {
+    // });
   }
 
   @override

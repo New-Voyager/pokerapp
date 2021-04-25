@@ -8,8 +8,9 @@ class Nats {
   Client _clientPub;
   String _playerChannel;
   bool _initialized = false;
+  Subscription _playerSub;
 
-  void init(String playerChannel) async {
+  Future<void> init(String playerChannel) async {
     String natsUrl = await UtilService.getNatsURL();
     _client = Client();
     _clientPub = Client();
@@ -25,6 +26,10 @@ class Nats {
 
     // todo: do we need two clients?
     await _clientPub.connect(natsUrl);
+
+    // subscribe for player messages
+    this.subscribePlayerMessages();
+
     _initialized = true;
   }
 
@@ -41,6 +46,11 @@ class Nats {
   }
 
   void close() {
+
+    if (_playerSub != null) {
+      _playerSub.unSub();
+    }
+
     if (_client != null) {
       _client.close();
     }
@@ -52,5 +62,14 @@ class Nats {
 
   String get playerChannel {
     return this._playerChannel;
+  }
+
+  subscribePlayerMessages() {
+    log('subscribing to ${this._playerChannel}');
+    this._playerSub = this.subClient.sub(this._playerChannel);
+
+    _playerSub.stream.listen((Message message) {
+      log('message in player channel: ${message.string}');
+    });
   }
 }

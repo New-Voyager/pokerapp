@@ -13,6 +13,7 @@ import 'package:pokerapp/screens/game_play_screen/main_views/board_view/decorati
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/footer_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/header_view/header_view.dart';
 import 'package:pokerapp/screens/game_play_screen/notifications/notifications.dart';
+import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/agora/agora.dart';
 import 'package:pokerapp/services/app/player_service.dart';
 import 'package:pokerapp/services/game_play/action_services/game_action_service/game_action_service.dart';
@@ -277,11 +278,15 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
       log('Player ${me.name} switches seat to $seatPos');
       await GameService.switchSeat(widget.gameCode, seatPos);
     } else {
-      await GamePlayScreenUtilMethods.joinGame(
-        seatPos: seatPos,
-        gameCode: widget.gameCode,
-      );
-
+      try {
+        await GamePlayScreenUtilMethods.joinGame(
+          seatPos: seatPos,
+          gameCode: widget.gameCode,
+        );
+      } catch(e) {
+        showError(context, error: e);
+        return ;
+      }
       // join audio
       await joinAudio();
     }
@@ -290,7 +295,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
   @override
   void initState() {
     super.initState();
-
+    log('game screen initState');
     /* the init method is invoked only once */
     _init().then(
       (gameInfoModel) => setState(() => _gameInfoModel = gameInfoModel),
@@ -299,6 +304,16 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
 
   @override
   Widget build(BuildContext context) {
+    log('rebuilding game screen');
+
+    if (TestService.isTesting) {
+      try {
+        this._currentPlayer = TestService.currentPlayer;
+      } catch (e) {
+        print('test data loading error: $e');
+      }
+    }
+
     var width = MediaQuery.of(context).size.width;
     // var heightOfTopView = MediaQuery.of(context).size.height / 2;
 
@@ -320,11 +335,6 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
           /* FIXME: THIS FLOATING ACTION BUTTON IS FOR SHOWING THE TESTS */
           floatingActionButton: GamePlayScreenUtilMethods.floatingActionButton(
             onReload: () {
-              // if (!TestService.isTesting) {
-              //   TestService.isTesting = true;
-              //   print('refreshing entire UI');
-              //   setState(() {});
-              // }
             },
           ),
           resizeToAvoidBottomInset: false,

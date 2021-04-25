@@ -69,7 +69,7 @@ const Map<int, Offset> kChipAmountWidgetOffsetVerticalMapping = {
 
 const Map<int, Offset> kChipAmountWidgetOffsetHorizontalMapping = {
   1: Offset(0, -40),
-  2: Offset(-10, -20),
+  2: Offset(20, -30),
   3: Offset(45, 30),
   4: Offset(45, 45),
   5: Offset(-10, 70),
