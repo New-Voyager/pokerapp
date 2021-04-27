@@ -488,6 +488,7 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
     Alignment cardsAlignment,
   }) {
     Widget userView;
+    seat.uiSeatPos = seatPos;
     //debugPrint('Creating user view for seat: ${seat.serverSeatPos}');
     userView = ListenableProvider<Seat>(
       create: (_) => seat,
@@ -621,7 +622,7 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
     if (seatAttribs == null) {
       return SizedBox.shrink();
     }
-    log('seat: ${seat.serverSeatPos} seatPosIndex: $seatPosIndex seatPos: ${seatPos.toString()}');
+    //log('seat: ${seat.serverSeatPos} seatPosIndex: $seatPosIndex seatPos: ${seatPos.toString()}');
     Alignment cardsAlignment = seatAttribs.holeCardPos;
 
     Widget userView = createUserView(

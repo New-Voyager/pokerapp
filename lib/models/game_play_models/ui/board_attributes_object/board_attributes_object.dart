@@ -1,6 +1,8 @@
 /* This class holds board attributes data, like orientation,
 * mappings and everything that is variable */
 
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_mappings.dart';
@@ -89,7 +91,7 @@ Map<SeatPos, SeatPosAttribs> getSeatMap(int deviceSize) {
   if (deviceSize == 7) {
     return {
       SeatPos.bottomCenter: SeatPosAttribs(
-          Alignment.bottomCenter, Offset(0, -10), Alignment.centerRight),
+          Alignment.bottomCenter, Offset(0, -25), Alignment.centerRight),
       SeatPos.bottomLeft: SeatPosAttribs(
           Alignment.bottomLeft, Offset(30, -20), Alignment.centerRight),
       SeatPos.middleLeft: SeatPosAttribs(
@@ -109,7 +111,7 @@ Map<SeatPos, SeatPosAttribs> getSeatMap(int deviceSize) {
     };
   }
 
-  if (deviceSize == 10) {
+  if (deviceSize > 7) {
     return {
       SeatPos.bottomCenter: SeatPosAttribs(
           Alignment.bottomCenter, Offset(0, -20), Alignment.centerRight),
@@ -140,13 +142,13 @@ Map<SeatPos, SeatPosAttribs> getSeatMap(int deviceSize) {
     SeatPos.middleLeft: SeatPosAttribs(
         Alignment.centerLeft, Offset(10, 0), Alignment.centerRight),
     SeatPos.topLeft: SeatPosAttribs(
-        Alignment.topLeft, Offset(20, 20), Alignment.centerRight),
+        Alignment.topLeft, Offset(20, 40), Alignment.centerRight),
     SeatPos.topCenter1: SeatPosAttribs(
         Alignment.topLeft, Offset(130, 20), Alignment.centerRight),
     SeatPos.topCenter2: SeatPosAttribs(
         Alignment.topLeft, Offset(220, 20), Alignment.centerLeft),
     SeatPos.topRight: SeatPosAttribs(
-        Alignment.topRight, Offset(-10, 20), Alignment.centerLeft),
+        Alignment.topRight, Offset(-10, 40), Alignment.centerLeft),
     SeatPos.middleRight: SeatPosAttribs(
         Alignment.centerRight, Offset(0, 0), Alignment.centerLeft),
     SeatPos.bottomRight: SeatPosAttribs(
@@ -177,7 +179,7 @@ class BoardAttributesObject extends ChangeNotifier {
   // footer view dimensions
   Size _footerSize;
   Offset _footerOffset;
-  double _screenSize;
+  int _screenSize;
 
   // seat attrib map
   Map<SeatPos, SeatPosAttribs> _seatPosAttribs;
@@ -186,15 +188,15 @@ class BoardAttributesObject extends ChangeNotifier {
     @required double screenSize,
     BoardOrientation orientation = BoardOrientation.horizontal,
   }) {
-    this._screenSize = screenSize;
+    this._screenSize = screenSize.toInt();
+    log('screensize: ${this._screenSize}');
     this._boardOrientation = orientation;
     this._namePlateSize = Size(70, 55);
     this._pots = [];
 
     _playersOnTableOffset = Offset(0.0, -25.0);
 
-    int screenSizeInt = screenSize.toInt();
-    this._seatPosAttribs = getSeatMap(screenSizeInt);
+    this._seatPosAttribs = getSeatMap(this._screenSize);
   }
 
   set orientation(BoardOrientation o) {
@@ -339,4 +341,56 @@ class BoardAttributesObject extends ChangeNotifier {
   SeatPosAttribs getSeatPosAttrib(SeatPos pos) {
     return this._seatPosAttribs[pos];
   }
+
+  double getNameplateScale() {
+    if (this._screenSize == 7) {
+      return 1.5;
+    } else if (this._screenSize > 7) {
+      return 2;
+    } else {
+      return 1;
+    }
+  }
+
+  double getBetWidgetScale() {
+    if (this._screenSize == 7) {
+      return 1.2;
+    } else if (this._screenSize > 7) {
+      return 2;
+    } else {
+      return 1;
+    }
+  }
+
+  double getBetPos() {
+    if (this._screenSize == 7) {
+      return 70;
+    } else if (this._screenSize > 7) {
+      return 100;
+    } else {
+      return 60;
+    }
+  }
+
+  double getTableScale() {
+    if (this._screenSize == 7) {
+      return 0.90;
+    } else if (this._screenSize > 7) {
+      return 0.85;
+    } else {
+      return 1;
+    }
+  }
+
+  double getTableDividerHeightScale() {
+    if (this._screenSize > 7) {
+      return 0.60;
+    } else if (this._screenSize == 7) {
+      return 0.70;
+    } else {
+      return 0.40;
+    }
+  }
+
+  int get screenSize => this._screenSize;
 }

@@ -30,10 +30,6 @@ class TestService {
 
   static set context(BuildContext context) => _context = context;
 
-  // static set isTesting(bool isTesting) => _isTesting = isTesting;
-  //
-  // static bool get isTesting => _isTesting;
-
   static PlayerInfo get currentPlayer {
     final data = jsonDecode('''  {
                   "myInfo": {
@@ -62,7 +58,7 @@ class TestService {
   static List<int> get pots => _pots;
 
   static get isTesting {
-    return true;
+    return false;
   }
 
   static Future<void> load() async {

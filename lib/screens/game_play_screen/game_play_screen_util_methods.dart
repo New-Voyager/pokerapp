@@ -213,6 +213,7 @@ class GamePlayScreenUtilMethods {
     PlayerInfo currentPlayerInfo,
     @required String gameCode,
     @required Agora agora,
+    @required BoardAttributesObject boardAttributes,
     @required Function(String) sendPlayerToHandChannel,
   }) {
     // initialize game state object
@@ -224,10 +225,6 @@ class GamePlayScreenUtilMethods {
       uuid: currentPlayerInfo.uuid,
       gameMessagingService: gameMessagingService,
     );
-    Screen screen = Screen(context);
-
-    BoardAttributesObject boardAttributes =
-        BoardAttributesObject(screenSize: screen.diagonalInches());
 
     var providers = [
       /* this is for the seat change animation values */

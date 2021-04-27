@@ -130,7 +130,6 @@ class PlayerView extends StatelessWidget {
       context,
       listen: false,
     ).value;
-    int actionTime = gameInfo.actionTime;
     String gameCode = gameInfo.gameCode;
     bool isDealer = false;
 
@@ -217,17 +216,11 @@ class PlayerView extends StatelessWidget {
                       seat.serverSeatPos, isMe, GameType.HOLDEM)
                   : shrinkedSizedBox,
 
-              // clock
-              // UserViewUtilWidgets.buildTimer(
-              //   context: context,
-              //   time: actionTime,
-              //   seat: seat,
-              // ),
-
               // /* building the chip amount widget */
               UserViewUtilWidgets.buildChipAmountWidget(
                 context: context,
                 seat: seat,
+                boardAttributesObject: boardAttributes,
               ),
 
               // SeatNoWidget(seat),

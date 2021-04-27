@@ -178,11 +178,13 @@ class UserViewUtilWidgets {
   static Widget buildChipAmountWidget({
     @required BuildContext context,
     @required Seat seat,
+    @required BoardAttributesObject boardAttributesObject,
   }) {
     seat.seatBet.uiKey = GlobalKey();
     Widget chipAmountWidget = ChipAmountWidget(
       key: seat.seatBet.uiKey,
       seat: seat,
+      boardAttributesObject: boardAttributesObject,
     );
 
     bool animate = false;

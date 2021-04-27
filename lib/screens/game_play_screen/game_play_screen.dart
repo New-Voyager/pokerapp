@@ -4,6 +4,7 @@ import 'package:dart_nats/dart_nats.dart' as nats;
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
+import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/screens/game_context_screen/game_chat/chat.dart';
@@ -27,6 +28,7 @@ import 'package:pokerapp/services/game_play/utils/audio.dart';
 import 'package:pokerapp/services/game_play/utils/audio_buffer.dart';
 import 'package:pokerapp/services/nats/nats.dart';
 import 'package:pokerapp/services/test/test_service.dart';
+import 'package:pokerapp/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 import '../../services/test/test_service.dart';
@@ -365,8 +367,13 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
               }
 
               var dividerTotalHeight = MediaQuery.of(context).size.height / 6;
-              double divider1 =
-                  0.40 * dividerTotalHeight; // 5inch 0.40, 10 inch: 1*
+              Screen screen = Screen(context);
+              BoardAttributesObject boardAttributes =
+                  BoardAttributesObject(screenSize: screen.diagonalInches());
+
+              double tableScale = boardAttributes.getTableScale();
+              double divider1 = boardAttributes.getTableDividerHeightScale() *
+                  dividerTotalHeight; // 5inch 0.40, 10 inch: 1*
               final providers = GamePlayScreenUtilMethods.getProviders(
                 context: context,
                 gameMessagingService: _gameComService.gameMessaging,
@@ -374,6 +381,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                 gameCode: widget.gameCode,
                 currentPlayerInfo: this._currentPlayer,
                 agora: agora,
+                boardAttributes: boardAttributes,
                 sendPlayerToHandChannel:
                     _gameComService.sendPlayerToHandChannel,
               );
@@ -432,7 +440,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                               width: boardDimensions.width,
                               height: boardDimensions.height,
                               child: Transform.scale(
-                                scale: 1.0, // 10 inch: 0.85, 5inch: 1.0
+                                scale: tableScale, // 10 inch: 0.85, 5inch: 1.0
                                 child: BoardView(
                                   gameComService: _gameComService,
                                   gameInfo: _gameInfoModel,

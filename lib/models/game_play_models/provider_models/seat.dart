@@ -53,6 +53,9 @@ class Seat extends ChangeNotifier {
     this._showTimer = false;
   }
 
+  SeatPos get uiSeatPos => this._uiPos;
+  set uiSeatPos(SeatPos uiPos) => this._uiPos = uiPos;
+
   @override
   String toString() {
     if (player != null) {
