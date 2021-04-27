@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/enums/approval_type.dart';
 import 'package:pokerapp/models/hand_history_model.dart';
 import 'package:pokerapp/models/hand_log_model.dart';
@@ -8,6 +9,7 @@ import 'package:pokerapp/models/pending_approvals.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/screens/game_play_screen/widgets/icon_with_badge.dart';
 import 'package:pokerapp/services/app/player_service.dart';
 import 'package:pokerapp/services/firebase/push_notification_service.dart';
 import 'package:provider/provider.dart';
@@ -59,144 +61,157 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
         isScrollControlled: true,
         backgroundColor: AppColors.screenBackgroundColor.withOpacity(0.75),
         builder: (ctx) {
-          return Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ListTile(
-                  title: Text(
-                "Pending approvals",
-                style: AppStyles.clubCodeStyle,
-              )),
-              FutureBuilder(
-                  future: PlayerService.getPendingApprovals(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.done) {
-                      if (snapshot.hasData) {
-                        List<PendingApproval> list = snapshot.data;
+          return StatefulBuilder(
+            builder: (context, localSetState) => Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ListTile(
+                    title: Text(
+                  "Pending approvals",
+                  style: AppStyles.clubCodeStyle,
+                )),
+                FutureBuilder(
+                    future: PlayerService.getPendingApprovals(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.done) {
+                        if (snapshot.hasData) {
+                          List<PendingApproval> list = snapshot.data;
 
-                        if (list.length > 0) {
-                          return Container(
-                            constraints: BoxConstraints(
-                                minHeight: height / 3, maxHeight: height / 2),
-                            child: ListView.separated(
-                              itemCount: list.length,
-                              shrinkWrap: true,
-                              separatorBuilder: (context, index) => Divider(
-                                height: 8,
-                                color: Colors.black45,
-                              ),
-                              itemBuilder: (context, index) {
-                                final item = list[index];
-                                return ListTile(
-                                  tileColor: AppColors.cardBackgroundColor,
-                                  title: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      SizedBox(
-                                        height: 16,
-                                      ),
-                                      Text(
-                                        "${item.name} request buyin ${item.amount}",
-                                        style: AppStyles.itemInfoTextStyle
-                                            .copyWith(fontSize: 14),
-                                      ),
-                                      Text(
-                                          "Outstanding balance: ${item.balance}",
-                                          style: AppStyles.itemInfoTextStyle),
-                                      SizedBox(
-                                        height: 16,
-                                      ),
-                                    ],
-                                  ),
-                                  subtitle: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "Game: ${item.gameType}",
-                                        style: AppStyles.itemInfoTextStyle,
-                                      ),
-                                      Text(
-                                        "Code: ${item.gameCode}",
-                                        style: AppStyles.itemInfoTextStyle,
-                                      ),
-                                      Text(
-                                        "Club: ${item.clubName}",
-                                        style: AppStyles.itemInfoTextStyle,
-                                      ),
-                                      SizedBox(
-                                        height: 16,
-                                      )
-                                    ],
-                                  ),
-                                  trailing: Container(
-                                    width: 100,
-                                    child: Row(
+                          if (list.length > 0) {
+                            return Container(
+                              constraints: BoxConstraints(
+                                  minHeight: height / 3, maxHeight: height / 2),
+                              child: ListView.separated(
+                                itemCount: list.length,
+                                shrinkWrap: true,
+                                separatorBuilder: (context, index) => Divider(
+                                  height: 8,
+                                  color: Colors.black45,
+                                ),
+                                itemBuilder: (context, index) {
+                                  final item = list[index];
+                                  return ListTile(
+                                    tileColor: AppColors.cardBackgroundColor,
+                                    title: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
-                                        IconButton(
-                                            icon: Icon(
-                                              Icons.done,
-                                              color: Colors.green,
-                                            ),
-                                            onPressed: () async {
-                                              final bool val =
-                                                  await PlayerService
-                                                      .approveBuyInRequest(
-                                                item.gameCode,
-                                                item.playerUuid,
-                                              );
-                                              if (val == null) {
-                                                log("Exception in approve request");
-                                              } else if (val) {
-                                                Provider.of<PendingApprovalsState>(
-                                                        context,
-                                                        listen: false)
-                                                    .decreaseTotalPending();
-                                              } else {
-                                                log("Failed to approve request");
-                                              }
-                                            }),
-                                        IconButton(
-                                            icon: Icon(
-                                              Icons.close,
-                                              color: Colors.orange,
-                                            ),
-                                            onPressed: () async {
-                                              final bool val =
-                                                  await PlayerService
-                                                      .declineBuyInRequest(
-                                                item.gameCode,
-                                                item.playerUuid,
-                                              );
-
-                                              if (val == null) {
-                                                log("Exception occured decline Request");
-                                              } else if (val) {
-                                                Provider.of<PendingApprovalsState>(
-                                                        context,
-                                                        listen: false)
-                                                    .decreaseTotalPending();
-                                              } else {
-                                                log("Failed to decline Request");
-                                              }
-                                            })
+                                        SizedBox(
+                                          height: 16,
+                                        ),
+                                        Text(
+                                          "${item.name} request buyin ${item.amount}",
+                                          style: AppStyles.itemInfoTextStyle
+                                              .copyWith(fontSize: 14),
+                                        ),
+                                        Text(
+                                            "Outstanding balance: ${item.balance}",
+                                            style: AppStyles.itemInfoTextStyle),
+                                        SizedBox(
+                                          height: 16,
+                                        ),
                                       ],
                                     ),
-                                  ),
-                                );
-                              },
-                            ),
-                          );
+                                    subtitle: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "Game: ${item.gameType}",
+                                          style: AppStyles.itemInfoTextStyle,
+                                        ),
+                                        Text(
+                                          "Code: ${item.gameCode}",
+                                          style: AppStyles.itemInfoTextStyle,
+                                        ),
+                                        Text(
+                                          "Club: ${item.clubName}",
+                                          style: AppStyles.itemInfoTextStyle,
+                                        ),
+                                        SizedBox(
+                                          height: 16,
+                                        )
+                                      ],
+                                    ),
+                                    trailing: Container(
+                                      width: 100,
+                                      child: Row(
+                                        children: [
+                                          IconButton(
+                                              icon: Icon(
+                                                Icons.check_circle,
+                                                color: Colors.green,
+                                              ),
+                                              onPressed: () async {
+                                                final bool val =
+                                                    await PlayerService
+                                                        .approveBuyInRequest(
+                                                  item.gameCode,
+                                                  item.playerUuid,
+                                                );
+                                                if (val == null) {
+                                                  log("Exception in approve request");
+                                                } else if (val) {
+                                                  Provider.of<PendingApprovalsState>(
+                                                          context,
+                                                          listen: false)
+                                                      .decreaseTotalPending();
+                                                  localSetState(() {});
+                                                } else {
+                                                  log("Failed to approve request");
+                                                }
+                                              }),
+                                          IconButton(
+                                              icon: Icon(
+                                                Icons.cancel_rounded,
+                                                color: Colors.red,
+                                              ),
+                                              onPressed: () async {
+                                                final bool val =
+                                                    await PlayerService
+                                                        .declineBuyInRequest(
+                                                  item.gameCode,
+                                                  item.playerUuid,
+                                                );
+
+                                                if (val == null) {
+                                                  toast(
+                                                      "Exception occured decline Request");
+                                                } else if (val) {
+                                                  Provider.of<PendingApprovalsState>(
+                                                          context,
+                                                          listen: false)
+                                                      .decreaseTotalPending();
+                                                  localSetState(() {});
+                                                } else {
+                                                  toast(
+                                                      "Failed to decline Request");
+                                                }
+                                              })
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            );
+                          } else {
+                            return Container(
+                              height: height / 4,
+                              child: Center(
+                                child: Text(
+                                  "No pending approvals.",
+                                  style: AppStyles.subTitleTextStyle,
+                                ),
+                              ),
+                            );
+                          }
                         } else {
                           return Container(
                             height: height / 4,
                             child: Center(
-                              child: Text(
-                                "No pending approvals.",
-                                style: AppStyles.subTitleTextStyle,
-                              ),
+                              child: Text("Something went wrong. Try again!"),
                             ),
                           );
                         }
@@ -204,21 +219,13 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                         return Container(
                           height: height / 4,
                           child: Center(
-                            child: Text(
-                                "Something went wrong in getting pending approvals."),
+                            child: CircularProgressIndicator(),
                           ),
                         );
                       }
-                    } else {
-                      return Container(
-                        height: height / 4,
-                        child: Center(
-                          child: CircularProgressIndicator(),
-                        ),
-                      );
-                    }
-                  }),
-            ],
+                    }),
+              ],
+            ),
           );
         });
   }
@@ -243,41 +250,14 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
           Consumer<PendingApprovalsState>(
             builder: (context, value, child) {
               log("VALUE ======== ${value.totalPending}");
-              return InkWell(
-                onTap: onClickPendingBuyInApprovals,
-                child: Stack(
-                  children: [
-                    Container(
-                      margin: EdgeInsets.only(top: 5),
-                      padding: EdgeInsets.all(5),
-                      child: Icon(
-                        Icons.pending_actions,
-                        size: 24,
-                        color: AppColors.appAccentColor,
-                      ),
-                    ),
-                    Visibility(
-                      // get approval count and check condition > 0
-                      visible: value.totalPending > 0,
-                      child: Positioned(
-                          child: Container(
-                            padding: EdgeInsets.all(5),
-                            decoration: BoxDecoration(
-                                shape: BoxShape.circle, color: Colors.red),
-                            child: Text(
-                              // pending approval count
-                              "${value.totalPending}",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 10,
-                              ),
-                            ),
-                          ),
-                          top: 0,
-                          right: 0),
-                    ),
-                  ],
+              return IconWithBadge(
+                child: Icon(
+                  Icons.pending_actions,
+                  size: 32,
+                  color: AppColors.appAccentColor,
                 ),
+                count: value.totalPending,
+                onClickFunction: onClickPendingBuyInApprovals,
               );
             },
           ),
@@ -286,7 +266,6 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
     );
   }
 }
-
 class HandAnalysisCardView extends StatelessWidget {
   final VoidCallback onClickHandler;
 

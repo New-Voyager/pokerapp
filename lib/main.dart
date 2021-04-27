@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/models/pending_approvals.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/services/firebase/analytics_service.dart';
@@ -49,19 +50,21 @@ class MyApp extends StatelessWidget {
                 create: (_) => PendingApprovalsState(),
               ),
             ],
-            child: MaterialApp(
-              title: 'Poker App',
-              debugShowCheckedModeBanner: false,
-              navigatorKey: navigatorKey,
-              navigatorObservers: [
-                locator<AnalyticsService>().getAnalyticsObserver()
-              ],
-              theme: ThemeData(
-                primarySwatch: Colors.blue,
-                visualDensity: VisualDensity.adaptivePlatformDensity,
+            child: OverlaySupport.global(
+              child: MaterialApp(
+                title: 'Poker App',
+                debugShowCheckedModeBanner: false,
+                navigatorKey: navigatorKey,
+                navigatorObservers: [
+                  locator<AnalyticsService>().getAnalyticsObserver()
+                ],
+                theme: ThemeData(
+                  primarySwatch: Colors.blue,
+                  visualDensity: VisualDensity.adaptivePlatformDensity,
+                ),
+                onGenerateRoute: Routes.generateRoute,
+                initialRoute: Routes.initial,
               ),
-              onGenerateRoute: Routes.generateRoute,
-              initialRoute: Routes.initial,
             ),
           );
         }
