@@ -68,15 +68,15 @@ const Map<int, Offset> kChipAmountWidgetOffsetVerticalMapping = {
 };
 
 const Map<int, Offset> kChipAmountWidgetOffsetHorizontalMapping = {
-  1: Offset(0, -40),
-  2: Offset(20, -30),
-  3: Offset(45, 30),
-  4: Offset(45, 45),
-  5: Offset(-10, 70),
-  6: Offset(-10, 70),
-  7: Offset(-40, 30),
-  8: Offset(-40, 30),
-  9: Offset(-40, -20),
+  1: Offset(0, 0),
+  2: Offset(0, 0),
+  3: Offset(0, 0),
+  4: Offset(0, 0),
+  5: Offset(0, 0),
+  6: Offset(0, 0),
+  7: Offset(0, 0),
+  8: Offset(0, 0),
+  9: Offset(0, 0),
 };
 
 /* chip amount animation mapping */

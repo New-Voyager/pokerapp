@@ -4,6 +4,7 @@ import 'package:dart_nats/dart_nats.dart' as nats;
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
+import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/screens/game_context_screen/game_chat/chat.dart';
@@ -27,10 +28,24 @@ import 'package:pokerapp/services/game_play/utils/audio.dart';
 import 'package:pokerapp/services/game_play/utils/audio_buffer.dart';
 import 'package:pokerapp/services/nats/nats.dart';
 import 'package:pokerapp/services/test/test_service.dart';
+import 'package:pokerapp/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 import '../../services/test/test_service.dart';
 import 'game_play_screen_util_methods.dart';
+
+/*
+7 inch tablet
+[log] rebuilding game screen. Screen: Size(600.0, 912.0)
+[log] Table width: 650.0 height: 294.8
+[log] board width: 600.0 height: 364.8
+
+10 inch tablet
+[log] rebuilding game screen. Screen: Size(800.0, 1232.0)
+Table width: 850.0 height: 422.8
+board width: 800.0 height: 492.8
+
+*/
 
 /*
 * This is the screen which will have contact with the NATS server
@@ -301,7 +316,9 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
 
   @override
   Widget build(BuildContext context) {
-    log('rebuilding game screen');
+    final screenSize = MediaQuery.of(context).size;
+    final data = MediaQuery.of(context);
+    log('rebuilding game screen. Screen: $screenSize Query data: $data');
 
     if (TestService.isTesting) {
       try {
@@ -350,13 +367,21 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
               }
 
               var dividerTotalHeight = MediaQuery.of(context).size.height / 6;
-              double divider1 = 0.40 * dividerTotalHeight;
+              Screen screen = Screen(context);
+              BoardAttributesObject boardAttributes =
+                  BoardAttributesObject(screenSize: screen.diagonalInches());
+
+              double tableScale = boardAttributes.getTableScale();
+              double divider1 = boardAttributes.getTableDividerHeightScale() *
+                  dividerTotalHeight; // 5inch 0.40, 10 inch: 1*
               final providers = GamePlayScreenUtilMethods.getProviders(
+                context: context,
                 gameMessagingService: _gameComService.gameMessaging,
                 gameInfoModel: _gameInfoModel,
                 gameCode: widget.gameCode,
                 currentPlayerInfo: this._currentPlayer,
                 agora: agora,
+                boardAttributes: boardAttributes,
                 sendPlayerToHandChannel:
                     _gameComService.sendPlayerToHandChannel,
               );
@@ -414,13 +439,16 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                             Container(
                               width: boardDimensions.width,
                               height: boardDimensions.height,
-                              child: BoardView(
-                                gameComService: _gameComService,
-                                gameInfo: _gameInfoModel,
-                                onUserTap: onJoinGame,
-                                onStartGame: () =>
-                                    GamePlayScreenUtilMethods.startGame(
-                                  widget.gameCode,
+                              child: Transform.scale(
+                                scale: tableScale, // 10 inch: 0.85, 5inch: 1.0
+                                child: BoardView(
+                                  gameComService: _gameComService,
+                                  gameInfo: _gameInfoModel,
+                                  onUserTap: onJoinGame,
+                                  onStartGame: () =>
+                                      GamePlayScreenUtilMethods.startGame(
+                                    widget.gameCode,
+                                  ),
                                 ),
                               ),
                             ),

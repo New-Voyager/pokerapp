@@ -28,7 +28,7 @@ import 'open_seat.dart';
 import 'user_view_util_widgets.dart';
 
 /* this contains the player positions <seat-no, position> mapping */
-Map<int, Offset> playerPositions = Map();
+// Map<int, Offset> playerPositions = Map();
 
 class PlayerView extends StatelessWidget {
   final Seat seat;
@@ -36,6 +36,8 @@ class PlayerView extends StatelessWidget {
   final Function(int) onUserTap;
   final GameComService gameComService;
   final BoardAttributesObject boardAttributes;
+  final int seatPosIndex;
+  final SeatPos seatPos;
 
   PlayerView({
     Key key,
@@ -43,6 +45,8 @@ class PlayerView extends StatelessWidget {
     @required this.onUserTap,
     @required this.gameComService,
     @required this.boardAttributes,
+    @required this.seatPosIndex,
+    @required this.seatPos,
     this.cardsAlignment = Alignment.centerRight,
   }) : super(key: key);
 
@@ -85,21 +89,14 @@ class PlayerView extends StatelessWidget {
     }
   }
 
-  Future<void> afterBuild() async {
-    final RenderBox object = seat.key.currentContext.findRenderObject();
-    final pos = object.localToGlobal(Offset(0, 0));
-    final size = object.size;
-    seat.screenPos = pos;
-    seat.size = size;
-
-    playerPositions[seat.serverSeatPos] = pos;
-
-    print('\n\n\n\nafter build: $playerPositions\n\n\n\n');
-
+  void afterBuild() {
+    // final RenderBox object = seat.key.currentContext.findRenderObject();
+    // final pos = object.localToGlobal(Offset(0, 0));
+    // final size = object.size;
+    // seat.screenPos = pos;
+    // seat.size = size;
     //
-    // debugPrint(
-    //   'Seat: ${seat.serverSeatPos} is built. Key: ${globalKey} Position: $pos Size: $size',
-    // );
+    // playerPositions[seat.serverSeatPos] = pos;
   }
 
   @override
@@ -108,7 +105,6 @@ class PlayerView extends StatelessWidget {
         GlobalKey(debugLabel: 'Seat:${seat.serverSeatPos}'); //this.globalKey;
 
     WidgetsBinding.instance.addPostFrameCallback((_) => afterBuild);
-    //afterBuild();
 
     bool openSeat = seat.isOpen;
     bool isMe = seat.isMe;
@@ -134,7 +130,6 @@ class PlayerView extends StatelessWidget {
       context,
       listen: false,
     ).value;
-    int actionTime = gameInfo.actionTime;
     String gameCode = gameInfo.gameCode;
     bool isDealer = false;
 
@@ -221,17 +216,11 @@ class PlayerView extends StatelessWidget {
                       seat.serverSeatPos, isMe, GameType.HOLDEM)
                   : shrinkedSizedBox,
 
-              // clock
-              // UserViewUtilWidgets.buildTimer(
-              //   context: context,
-              //   time: actionTime,
-              //   seat: seat,
-              // ),
-
               // /* building the chip amount widget */
               UserViewUtilWidgets.buildChipAmountWidget(
                 context: context,
                 seat: seat,
+                boardAttributesObject: boardAttributes,
               ),
 
               // SeatNoWidget(seat),

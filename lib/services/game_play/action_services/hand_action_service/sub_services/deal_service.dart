@@ -38,38 +38,35 @@ class DealService {
 
     /* distribute cards to the players */
     /* this for loop will distribute cards one by one to all the players */
-    for (int i = 0; i < myCards.length; i++) {
-      /* for distributing the ith card, go through all the players, and give them */
-      for (int seatNo in seatNos) {
-        int localSeatNo =
-            mySeatNo == null ? seatNo : ((seatNo - mySeatNo) % 9) + 1;
-        final seat = gameState.getSeat(context, seatNo);
-        if (seat.player == null ||
-            seat.player.stack == 0 ||
-            seat.player.status != AppConstants.PLAYING) {
-          continue;
-        }
-
-        // start the animation
-        Provider.of<CardDistributionModel>(
-          context,
-          listen: false,
-        ).seatNo = localSeatNo;
-        // wait for the animation to finish
-        await Future.delayed(AppConstants.cardDistributionAnimationDuration);
-
-        if (seatNo == mySeatNo) {
-          // this is me - give me my cards one by one
-          players.updateCardSilent(
-            mySeatNo,
-            myCards.sublist(0, i + 1),
-          );
-        }
-        //debugPrint('Setting cards for $seatNo');
-        players.updateVisibleCardNumberSilent(seatNo, i + 1);
-        players.notifyAll();
+    //for (int i = 0; i < myCards.length; i++) {
+    /* for distributing the ith card, go through all the players, and give them */
+    for (int seatNo in seatNos) {
+      int localSeatNo =
+          mySeatNo == null ? seatNo : ((seatNo - mySeatNo) % 9) + 1;
+      final seat = gameState.getSeat(context, seatNo);
+      if (seat.player == null ||
+          seat.player.stack == 0 ||
+          seat.player.status != AppConstants.PLAYING) {
+        continue;
       }
+
+      // start the animation
+      Provider.of<CardDistributionModel>(
+        context,
+        listen: false,
+      ).seatNo = localSeatNo;
+      // wait for the animation to finish
+      await Future.delayed(AppConstants.cardDistributionAnimationDuration);
+
+      if (seatNo == mySeatNo) {
+        // this is me - give me my cards one by one
+        players.updateCardSilent(mySeatNo, myCards);
+      }
+      //debugPrint('Setting cards for $seatNo');
+      players.updateVisibleCardNumberSilent(seatNo, myCards.length);
+      players.notifyAll();
     }
+    //}
 
     /* card distribution ends, put the value to NULL */
     Provider.of<CardDistributionModel>(

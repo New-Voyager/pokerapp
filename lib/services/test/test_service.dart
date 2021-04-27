@@ -5,6 +5,7 @@ import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
+import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/player_action.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
@@ -29,16 +30,12 @@ class TestService {
 
   static set context(BuildContext context) => _context = context;
 
-  // static set isTesting(bool isTesting) => _isTesting = isTesting;
-  //
-  // static bool get isTesting => _isTesting;
-
   static PlayerInfo get currentPlayer {
     final data = jsonDecode('''  {
                   "myInfo": {
                     "id": 1,
                     "uuid": "d04d24d1-be90-4c02-b8fb-c2499d9b76ed",
-                    "name": "john"
+                    "name": "tom"
                   },
                   "role": {
                     "isHost": true,
@@ -85,9 +82,21 @@ class TestService {
         _currentPlayer = PlayerInfo.fromJson(data);
         //_currentPlayer = PlayerInfo.fromJson(jsonData["currentPlayer"]);
       }
+      var maxPlayers = 9;
       if (jsonData["gameInfo"] != null) {
-        _gameInfo = GameInfoModel.fromJson(jsonData["gameInfo"]);
+        // todo: debug remove: change the max Players in a game here
+        _gameInfo = GameInfoModel.fromJson(jsonData["gameInfo"],
+            maxPlayers: maxPlayers);
       }
+
+      List<PlayerModel> playerInSeats = [];
+      for (final player in _gameInfo.playersInSeats) {
+        if (player.seatNo <= maxPlayers) {
+          playerInSeats.add(player);
+        }
+      }
+      _gameInfo.playersInSeats = playerInSeats;
+
       final resultData =
           await rootBundle.loadString('assets/sample-data/result.json');
       _result = jsonDecode(resultData);
@@ -292,38 +301,17 @@ class TestService {
   static Future<void> showFlushBar() async {
     String message = 'emma is invited to take the open seat';
     showWaitlistStatus(_context, message, 10);
-    // Flushbar(
-    //   flushbarPosition: FlushbarPosition.TOP,
-    //   flushbarStyle: FlushbarStyle.GROUNDED,
-    //   // reverseAnimationCurve: Curves.decelerate,
-    //   // forwardAnimationCurve: Curves.elasticOut,
-    //   backgroundColor: Colors.red,
-    //   //boxShadows: [BoxShadow(color: Colors.blue[800], offset: Offset(0.0, 2.0), blurRadius: 3.0)],
-    //   backgroundGradient:
-    //       LinearGradient(colors: [Colors.black, Colors.blueGrey]),
-    //   isDismissible: false,
-    //   duration: Duration(seconds: 10),
-    //   icon: Icon(
-    //     Icons.queue_play_next,
-    //     color: Colors.greenAccent,
-    //   ),
-    //   showProgressIndicator: false,
-    //   progressIndicatorBackgroundColor: Colors.blueGrey,
-    //   titleText: Text(
-    //     "Waitlist Seating",
-    //     style: TextStyle(
-    //         fontWeight: FontWeight.bold,
-    //         fontSize: 15.0,
-    //         color: Colors.white,
-    //         fontFamily: "ShadowsIntoLightTwo"),
-    //   ),
-    //   messageText: Text(
-    //     "bob is invited to take the open seat",
-    //     style: TextStyle(
-    //         fontSize: 12.0,
-    //         color: Colors.green,
-    //         fontFamily: "ShadowsIntoLightTwo"),
-    //   ),
-    // )..show(_context);
+  }
+
+  static Future<void> showHoleCards() async {
+    GameState gameState = Provider.of<GameState>(
+      _context,
+      listen: false,
+    );
+    final player = gameState.me(_context);
+    player.cards = [194, 196, 200, 193];
+    player.noOfCardsVisible = 4;
+    final players = gameState.getPlayers(_context);
+    players.notifyAll();
   }
 }
