@@ -41,16 +41,6 @@ class _ProfilePageViewState extends State<ProfilePageView> {
             },
           ),
           Spacer(),
-          // ClipPath(
-          //   clipper: PracticeClip(),
-          //   child: Container(
-          //     //Container color
-          //     color: Colors.red,
-          //     //decoration: ,
-          //     //width and height of container
-          //     width: 50.0,
-          //     height: 50.0,
-          //   )),
 
           Container(width: 150, height: 100, child: plateWidget),
 

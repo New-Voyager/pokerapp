@@ -178,11 +178,13 @@ class UserViewUtilWidgets {
   static Widget buildChipAmountWidget({
     @required BuildContext context,
     @required Seat seat,
+    @required BoardAttributesObject boardAttributesObject,
   }) {
     seat.seatBet.uiKey = GlobalKey();
     Widget chipAmountWidget = ChipAmountWidget(
       key: seat.seatBet.uiKey,
       seat: seat,
+      boardAttributesObject: boardAttributesObject,
     );
 
     bool animate = false;
@@ -202,13 +204,13 @@ class UserViewUtilWidgets {
 
       if (potView == null || potBetView == null) return;
 
-      final globalPos = potView.localToGlobal(Offset(0, 20));
+      // final globalPos = potView.localToGlobal(Offset(0, 20));
       final potBetPos = potBetView.localToGlobal(Offset(0, 30));
 
       final RenderBox renderBox =
           seat.seatBet.uiKey.currentContext.findRenderObject();
-      final potViewPos = renderBox.globalToLocal(globalPos);
-      final pos = renderBox.localToGlobal(Offset(0, 0));
+      // final potViewPos = renderBox.globalToLocal(globalPos);
+      // final pos = renderBox.localToGlobal(Offset(0, 0));
       final potBetPosLocal = renderBox.globalToLocal(potBetPos);
       seat.seatBet.potViewPos = potBetPosLocal;
       //log('Seat: ${seat.serverSeatPos}, pos: $pos potView: $potViewPos potBetPos: $potBetPosLocal');

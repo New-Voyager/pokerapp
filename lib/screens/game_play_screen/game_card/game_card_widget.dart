@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
@@ -45,40 +47,22 @@ class GameCardWidget extends StatelessWidget {
             ),
           ),
         ),
-        /*Positioned(child: RichText(
-          text: TextSpan(
-            text: card.label == 'T' ? '10' : card.label,
-            style: cardTextStyle,
-            children: [
-              TextSpan(
-                text: "\n",
-              ),
-              TextSpan(
-                text: card.suit ?? AppConstants.redHeart,
-                style: suitTextStyle.copyWith(fontSize: 10),
-              )
-            ]
-          ),
-        ),top: 5,left: 5,),*/
 
         /* top left suit */
         Positioned(
-          child: InkWell(
-            onTap: onMarkTapCallback,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  card.label == 'T' ? '10' : card.label,
-                  style: cardTextStyle,
-                ),
-                Text(
-                  card.suit ?? AppConstants.redHeart,
-                  style: suitTextStyle.copyWith(fontSize: 11),
-                ),
-              ],
-            ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                card.label == 'T' ? '10' : card.label,
+                style: cardTextStyle,
+              ),
+              Text(
+                card.suit ?? AppConstants.redHeart,
+                style: suitTextStyle.copyWith(fontSize: 11),
+              ),
+            ],
           ),
           top: 5,
           left: 5,
@@ -115,6 +99,21 @@ class GameCardWidget extends StatelessWidget {
                 )
               : const SizedBox.shrink(),
         ),
+        Positioned(
+            top: 0,
+            left: 0,
+            width: 20,
+            height: 120,
+            child: InkWell(
+              splashColor: Colors.transparent,
+              onTap: () {
+                log('card is tapped for viewing');
+                onMarkTapCallback();
+              },
+              child: Container(
+                color: Colors.black26,
+              ),
+            ))
       ],
     );
 

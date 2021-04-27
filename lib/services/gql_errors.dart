@@ -1,7 +1,7 @@
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 class GqlError {
-  Map<String, String>  _extensions;
+  Map<String, String> _extensions;
   String _path;
   String _message;
   String _code;

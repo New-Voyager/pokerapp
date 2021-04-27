@@ -53,26 +53,26 @@ class DealStartedService {
 
     /* distribute cards to the players */
     /* this for loop will distribute cards one by one to all the players */
-    for (int i = 0; i < handInfo.noCards; i++) {
-      /* for distributing the ith card, go through all the players, and give them */
-      for (int seatNo in seatNos) {
-        final seat = gameState.getSeat(context, seatNo);
-        if (seat.player == null ||
-            seat.player.stack == 0 ||
-            seat.player.status != AppConstants.PLAYING) {
-          continue;
-        }
-
-        // start the animation
-        cardDistributionModel.seatNo = seatNo;
-
-        // wait for the animation to finish
-        await Future.delayed(AppConstants.cardDistributionAnimationDuration);
-
-        players.updateVisibleCardNumberSilent(seatNo, i + 1);
-        players.notifyAll();
+    //for (int i = 0; i < handInfo.noCards; i++) {
+    /* for distributing the ith card, go through all the players, and give them */
+    for (int seatNo in seatNos) {
+      final seat = gameState.getSeat(context, seatNo);
+      if (seat.player == null ||
+          seat.player.stack == 0 ||
+          seat.player.status != AppConstants.PLAYING) {
+        continue;
       }
+
+      // start the animation
+      cardDistributionModel.seatNo = seatNo;
+
+      // wait for the animation to finish
+      await Future.delayed(AppConstants.cardDistributionAnimationDuration);
+
+      players.updateVisibleCardNumberSilent(seatNo, handInfo.noCards);
+      players.notifyAll();
     }
+    //}
 
     /* card distribution ends, put the value to NULL */
     cardDistributionModel.seatNo = null;
