@@ -40,15 +40,15 @@ class GamePlayScreenUtilMethods {
         overlayOpacity: 0.1,
         icon: Icons.all_inclusive_rounded,
         children: [
-          // SpeedDialChild(
-          //   child: Icon(
-          //     Icons.adb_rounded,
-          //     color: Colors.white,
-          //   ),
-          //   backgroundColor: Colors.red,
-          //   label: 'Bet Widget',
-          //   onTap: () => TestService.testBetWidget(),
-          // ),
+          SpeedDialChild(
+            child: Icon(
+              Icons.adb_rounded,
+              color: Colors.white,
+            ),
+            backgroundColor: Colors.red,
+            label: 'Bet Widget',
+            onTap: () => TestService.testBetWidget(),
+          ),
           SpeedDialChild(
             child: Icon(
               Icons.adb_rounded,

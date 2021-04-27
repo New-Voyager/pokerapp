@@ -87,10 +87,10 @@ class _FooterActionViewState extends State<FooterActionView> {
       margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
       padding: const EdgeInsets.all(2.0),
       decoration: BoxDecoration(
-        color: isSelected ? const Color(0xff319ffe) : Colors.transparent,
+        color: isSelected ? AppColors.appAccentColor : Colors.transparent,
         shape: BoxShape.rectangle,
         border: Border.all(
-          color: btnColor,
+          color: isSelected ? AppColors.appAccentColor : btnColor,
           width: 2.0,
         ),
         borderRadius: BorderRadius.circular(16),
@@ -99,7 +99,8 @@ class _FooterActionViewState extends State<FooterActionView> {
         child: Text(
           text.toUpperCase(),
           textAlign: TextAlign.center,
-          style: btnTextStyle,
+          style: btnTextStyle.copyWith(
+              color: isSelected ? Colors.white : AppColors.appAccentColor),
         ),
       ),
     );
@@ -269,12 +270,13 @@ class _FooterActionViewState extends State<FooterActionView> {
                   case BET:
                     bet = true;
                     return _buildRoundButton(
-                      //  isSelected: _showOptions,
+                      isSelected: _showOptions,
                       text: playerAction.actionName,
                       disable: _disableBetButton,
                       onTap: () => setState(() {
                         _showOptions = true;
                         _disableBetButton = true;
+
                         // _showDialog(context);
                       }),
                     );
