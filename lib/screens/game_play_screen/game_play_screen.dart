@@ -32,7 +32,6 @@ import 'package:provider/provider.dart';
 import '../../services/test/test_service.dart';
 import 'game_play_screen_util_methods.dart';
 
-
 /*
 7 inch tablet
 [log] rebuilding game screen. Screen: Size(600.0, 912.0)
@@ -316,7 +315,8 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
-    log('rebuilding game screen. Screen: $screenSize');
+    final data = MediaQuery.of(context);
+    log('rebuilding game screen. Screen: $screenSize Query data: $data');
 
     if (TestService.isTesting) {
       try {
@@ -365,8 +365,10 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
               }
 
               var dividerTotalHeight = MediaQuery.of(context).size.height / 6;
-              double divider1 = 0.40 * dividerTotalHeight;
+              double divider1 =
+                  0.40 * dividerTotalHeight; // 5inch 0.40, 10 inch: 1*
               final providers = GamePlayScreenUtilMethods.getProviders(
+                context: context,
                 gameMessagingService: _gameComService.gameMessaging,
                 gameInfoModel: _gameInfoModel,
                 gameCode: widget.gameCode,
@@ -429,13 +431,16 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                             Container(
                               width: boardDimensions.width,
                               height: boardDimensions.height,
-                              child: BoardView(
-                                gameComService: _gameComService,
-                                gameInfo: _gameInfoModel,
-                                onUserTap: onJoinGame,
-                                onStartGame: () =>
-                                    GamePlayScreenUtilMethods.startGame(
-                                  widget.gameCode,
+                              child: Transform.scale(
+                                scale: 1.0, // 10 inch: 0.85, 5inch: 1.0
+                                child: BoardView(
+                                  gameComService: _gameComService,
+                                  gameInfo: _gameInfoModel,
+                                  onUserTap: onJoinGame,
+                                  onStartGame: () =>
+                                      GamePlayScreenUtilMethods.startGame(
+                                    widget.gameCode,
+                                  ),
                                 ),
                               ),
                             ),

@@ -125,9 +125,10 @@ class ChipAmountWidget extends StatelessWidget {
 
     final double theta = math.atan(yy / xx);
 
-    final double moveByConstant = 100.0 * (xx < 0 ? -1 : 1);      // 100: 10 inch, 60: 5 inch,  75: 7 inch
+    final double moveByConstant =
+        100.0 * (xx < 0 ? -1 : 1); // 100: 10 inch, 60: 5 inch,  75: 7 inch
 
-    log('${seat.serverSeatPos} : $yy : $xx : $theta');
+    // log('${seat.serverSeatPos} : $yy : $xx : $theta');
 
     final offset = Offset(
       moveByConstant * math.cos(theta),

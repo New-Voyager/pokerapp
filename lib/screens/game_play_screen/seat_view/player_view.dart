@@ -36,6 +36,8 @@ class PlayerView extends StatelessWidget {
   final Function(int) onUserTap;
   final GameComService gameComService;
   final BoardAttributesObject boardAttributes;
+  final int seatPosIndex;
+  final SeatPos seatPos;
 
   PlayerView({
     Key key,
@@ -43,6 +45,8 @@ class PlayerView extends StatelessWidget {
     @required this.onUserTap,
     @required this.gameComService,
     @required this.boardAttributes,
+    @required this.seatPosIndex,
+    @required this.seatPos,
     this.cardsAlignment = Alignment.centerRight,
   }) : super(key: key);
 

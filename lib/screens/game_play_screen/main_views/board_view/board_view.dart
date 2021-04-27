@@ -73,6 +73,7 @@ class _BoardViewState extends State<BoardView> {
 
     /* finally the view */
     final ret = Stack(
+      clipBehavior: Clip.none,
       alignment: Alignment.center,
       children: [
         // game board view

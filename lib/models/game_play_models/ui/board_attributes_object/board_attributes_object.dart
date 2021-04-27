@@ -4,6 +4,7 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_mappings.dart';
+import 'package:pokerapp/utils/utils.dart';
 import 'package:tuple/tuple.dart';
 
 enum BoardOrientation {
@@ -60,6 +61,99 @@ class PotAttribute {
   set globalPos(Offset pos) => this._globalPos = pos;
 }
 
+enum SeatPos {
+  bottomCenter,
+  bottomLeft,
+  middleLeft,
+  topLeft,
+  topCenter,
+  topCenter1,
+  topCenter2,
+  topRight,
+  middleRight,
+  bottomRight,
+}
+
+/**
+ * This UI attribute is used for positioning the seat within PlayerOnTableView.
+ */
+class SeatPosAttribs {
+  final Alignment alignment;
+  final Offset topLeft;
+  final Alignment holeCardPos;
+
+  SeatPosAttribs(this.alignment, this.topLeft, this.holeCardPos);
+}
+
+Map<SeatPos, SeatPosAttribs> getSeatMap(int deviceSize) {
+  if (deviceSize == 7) {
+    return {
+      SeatPos.bottomCenter: SeatPosAttribs(
+          Alignment.bottomCenter, Offset(0, -10), Alignment.centerRight),
+      SeatPos.bottomLeft: SeatPosAttribs(
+          Alignment.bottomLeft, Offset(30, -20), Alignment.centerRight),
+      SeatPos.middleLeft: SeatPosAttribs(
+          Alignment.centerLeft, Offset(30, 0), Alignment.centerRight),
+      SeatPos.topLeft: SeatPosAttribs(
+          Alignment.topLeft, Offset(40, 30), Alignment.centerRight),
+      SeatPos.topCenter1: SeatPosAttribs(
+          Alignment.topLeft, Offset(200, 20), Alignment.centerRight),
+      SeatPos.topCenter2: SeatPosAttribs(
+          Alignment.topLeft, Offset(320, 20), Alignment.centerLeft),
+      SeatPos.topRight: SeatPosAttribs(
+          Alignment.topRight, Offset(-30, 30), Alignment.centerLeft),
+      SeatPos.middleRight: SeatPosAttribs(
+          Alignment.centerRight, Offset(-20, 0), Alignment.centerLeft),
+      SeatPos.bottomRight: SeatPosAttribs(
+          Alignment.bottomRight, Offset(-30, -20), Alignment.centerLeft),
+    };
+  }
+
+  if (deviceSize == 10) {
+    return {
+      SeatPos.bottomCenter: SeatPosAttribs(
+          Alignment.bottomCenter, Offset(0, -20), Alignment.centerRight),
+      SeatPos.bottomLeft: SeatPosAttribs(
+          Alignment.bottomLeft, Offset(60, -40), Alignment.centerRight),
+      SeatPos.middleLeft: SeatPosAttribs(
+          Alignment.centerLeft, Offset(0, 0), Alignment.centerRight),
+      SeatPos.topLeft: SeatPosAttribs(
+          Alignment.topLeft, Offset(60, 40), Alignment.centerRight),
+      SeatPos.topCenter1: SeatPosAttribs(
+          Alignment.topLeft, Offset(280, 0), Alignment.centerRight),
+      SeatPos.topCenter2: SeatPosAttribs(
+          Alignment.topLeft, Offset(460, 0), Alignment.centerLeft),
+      SeatPos.topRight: SeatPosAttribs(
+          Alignment.topRight, Offset(-80, 40), Alignment.centerLeft),
+      SeatPos.middleRight: SeatPosAttribs(
+          Alignment.centerRight, Offset(0, 0), Alignment.centerLeft),
+      SeatPos.bottomRight: SeatPosAttribs(
+          Alignment.bottomRight, Offset(-40, -40), Alignment.centerLeft),
+    };
+  }
+
+  return {
+    SeatPos.bottomCenter: SeatPosAttribs(
+        Alignment.bottomCenter, Offset(0, -10), Alignment.centerRight),
+    SeatPos.bottomLeft: SeatPosAttribs(
+        Alignment.bottomLeft, Offset(30, -20), Alignment.centerRight),
+    SeatPos.middleLeft: SeatPosAttribs(
+        Alignment.centerLeft, Offset(10, 0), Alignment.centerRight),
+    SeatPos.topLeft: SeatPosAttribs(
+        Alignment.topLeft, Offset(20, 20), Alignment.centerRight),
+    SeatPos.topCenter1: SeatPosAttribs(
+        Alignment.topLeft, Offset(130, 20), Alignment.centerRight),
+    SeatPos.topCenter2: SeatPosAttribs(
+        Alignment.topLeft, Offset(220, 20), Alignment.centerLeft),
+    SeatPos.topRight: SeatPosAttribs(
+        Alignment.topRight, Offset(-10, 20), Alignment.centerLeft),
+    SeatPos.middleRight: SeatPosAttribs(
+        Alignment.centerRight, Offset(0, 0), Alignment.centerLeft),
+    SeatPos.bottomRight: SeatPosAttribs(
+        Alignment.bottomRight, Offset(-20, -20), Alignment.centerLeft),
+  };
+}
+
 class BoardAttributesObject extends ChangeNotifier {
   BoardOrientation _boardOrientation;
   Size _boardSize;
@@ -80,14 +174,27 @@ class BoardAttributesObject extends ChangeNotifier {
   // player view attributes
   Offset _playersOnTableOffset;
 
+  // footer view dimensions
+  Size _footerSize;
+  Offset _footerOffset;
+  double _screenSize;
+
+  // seat attrib map
+  Map<SeatPos, SeatPosAttribs> _seatPosAttribs;
+
   BoardAttributesObject({
+    @required double screenSize,
     BoardOrientation orientation = BoardOrientation.horizontal,
   }) {
+    this._screenSize = screenSize;
     this._boardOrientation = orientation;
     this._namePlateSize = Size(70, 55);
     this._pots = [];
 
     _playersOnTableOffset = Offset(0.0, -25.0);
+
+    int screenSizeInt = screenSize.toInt();
+    this._seatPosAttribs = getSeatMap(screenSizeInt);
   }
 
   set orientation(BoardOrientation o) {
@@ -218,4 +325,18 @@ class BoardAttributesObject extends ChangeNotifier {
 
   Offset get playerOnTableOffset => this._playersOnTableOffset;
   set playerOnTableOffset(Offset offset) => this._playersOnTableOffset = offset;
+
+  void setFooterDimensions(Offset offset, Size size) {
+    this._footerOffset = offset;
+    this._footerSize = size;
+  }
+
+  Size get footerSize => this._footerSize;
+  Screen getScreen(BuildContext c) {
+    return Screen(c);
+  }
+
+  SeatPosAttribs getSeatPosAttrib(SeatPos pos) {
+    return this._seatPosAttribs[pos];
+  }
 }
