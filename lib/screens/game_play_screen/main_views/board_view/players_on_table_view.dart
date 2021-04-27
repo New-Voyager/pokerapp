@@ -356,6 +356,8 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
 
   List<Widget> getPlayers(BuildContext context) {
     PlayerModel me = this.widget.players.me;
+    final gameState = GameState.getState(context);
+    final maxPlayers = gameState.gameInfo.maxPlayers;
     index = -1;
     // update seat states in game state
     final seatsState = this.getSeats(context, widget.players.players);
@@ -373,6 +375,7 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
           widthOfBoard: widget.widthOfBoard,
           seatPos: getAdjustedSeatPosition(
             u.key,
+            maxPlayers,
             me != null,
             me?.seatNo,
           ),
@@ -384,7 +387,8 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
     return seats;
   }
 
-  int getAdjustedSeatPosition(int pos, bool isPresent, int currentUserSeatNo) {
+  int getAdjustedSeatPosition(
+      int pos, int maxPlayers, bool isPresent, int currentUserSeatNo) {
     /*
     * if the current user is present, then the localSeatNo would be different from that of server seat number
     * This is done, so that the current user can stay at the bottom center of the table
@@ -396,7 +400,7 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
     * shifts (rotates) the local seat position by the x amount (x => current user seat NO.)
     * This is done so that current user is at seat 1 always
     * */
-    if (isPresent) return (pos - currentUserSeatNo + 1) % 9;
+    if (isPresent) return (pos - currentUserSeatNo + 1) % maxPlayers;
 
     return pos;
   }
@@ -425,51 +429,10 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
     bool isPresent,
     Function onUserTap,
   }) {
-    if (widget.maxPlayers == 2) {
-      return positionUser_2(
-        isBoardHorizontal: isBoardHorizontal,
-        seat: seat,
-        heightOfBoard: heightOfBoard,
-        widthOfBoard: widthOfBoard,
-        seatPosIndex: seatPos,
-        isPresent: isPresent,
-        onUserTap: onUserTap,
-      );
-    } else if (widget.maxPlayers == 4) {
-      return positionUser_4(
-        isBoardHorizontal: isBoardHorizontal,
-        seat: seat,
-        heightOfBoard: heightOfBoard,
-        widthOfBoard: widthOfBoard,
-        seatPosIndex: seatPos,
-        isPresent: isPresent,
-        onUserTap: onUserTap,
-      );
-    } else if (widget.maxPlayers == 6) {
-      return positionUser_6(
-        isBoardHorizontal: isBoardHorizontal,
-        seat: seat,
-        heightOfBoard: heightOfBoard,
-        widthOfBoard: widthOfBoard,
-        seatPosIndex: seatPos,
-        isPresent: isPresent,
-        onUserTap: onUserTap,
-      );
-    } else if (widget.maxPlayers == 8) {
-      return positionUser_8(
-        isBoardHorizontal: isBoardHorizontal,
-        seat: seat,
-        heightOfBoard: heightOfBoard,
-        widthOfBoard: widthOfBoard,
-        seatPosIndex: seatPos,
-        isPresent: isPresent,
-        onUserTap: onUserTap,
-      );
-    }
-
-    return positionUser_5inch(
+    return positionUser(
       boardAttribs: boardAttribs,
       isBoardHorizontal: isBoardHorizontal,
+      maxPlayers: widget.maxPlayers,
       seat: seat,
       heightOfBoard: heightOfBoard,
       widthOfBoard: widthOfBoard,
@@ -507,95 +470,64 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
     return userView;
   }
 
-  Widget positionUser_7inch({
-    @required bool isBoardHorizontal,
-    Seat seat,
-    double heightOfBoard,
-    double widthOfBoard,
-    SeatPos seatPos,
-    int seatPosIdx,
-    bool isPresent,
-    Function onUserTap,
-  }) {
-    seatPosIdx++;
-
-    Alignment cardsAlignment = Alignment.centerRight;
-    log('board width: $widthOfBoard height: $heightOfBoard');
-
-    // left for 6, 7, 8, 9
-    if (seatPosIdx == 6 ||
-        seatPosIdx == 7 ||
-        seatPosIdx == 8 ||
-        seatPosIdx == 9) cardsAlignment = Alignment.centerLeft;
-    Widget userView = createUserView(
-      isBoardHorizontal: isBoardHorizontal,
-      seatPos: seatPos,
-      seatPosIndex: seatPosIdx,
-      seat: seat,
-      cardsAlignment: cardsAlignment,
-      onUserTap: onUserTap,
-    );
-    switch (seatPosIdx) {
-      case 1:
-
-        // TODO: IF WE NEED TO SHIFT UP THIS PLAYER, USE TRANSLATE,
-        // TODO: IT'S RECOMMENDED NOT TO USE POSITIONED, BECAUSE USING POSITIONED, CENTERING IS NOT POSSIBLE, AND WITHOUT THIS PLAYER IN CENTER, IT MAY LOOK BAD
-
-        return Transform.translate(
-            offset: Offset(0, -10),
-            child: Align(alignment: Alignment.bottomCenter, child: userView));
-
-      case 2:
-        return Transform.translate(
-            offset: Offset(30, -20),
-            child: Align(alignment: Alignment.bottomLeft, child: userView));
-
-      case 3:
-        return Transform.translate(
-            offset: Offset(30, 0),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: userView,
-            ));
+  Map<int, SeatPos> getSeatLocations(int maxSeats) {
+    switch (maxSeats) {
+      case 9:
+        return {
+          1: SeatPos.bottomCenter,
+          2: SeatPos.bottomLeft,
+          3: SeatPos.middleLeft,
+          4: SeatPos.topLeft,
+          5: SeatPos.topCenter1,
+          6: SeatPos.topCenter2,
+          7: SeatPos.topRight,
+          8: SeatPos.middleRight,
+          9: SeatPos.bottomRight
+        };
+      case 8:
+        return {
+          1: SeatPos.bottomCenter,
+          2: SeatPos.bottomLeft,
+          3: SeatPos.middleLeft,
+          4: SeatPos.topLeft,
+          5: SeatPos.topCenter,
+          6: SeatPos.topRight,
+          7: SeatPos.middleRight,
+          8: SeatPos.bottomRight
+        };
+      case 6:
+        return {
+          1: SeatPos.bottomCenter,
+          2: SeatPos.middleLeft,
+          3: SeatPos.topLeft,
+          4: SeatPos.topCenter,
+          5: SeatPos.topRight,
+          6: SeatPos.middleRight,
+        };
 
       case 4:
-        return Transform.translate(
-            offset: Offset(40, 30),
-            child: Align(alignment: Alignment.topLeft, child: userView));
+        return {
+          1: SeatPos.bottomCenter,
+          2: SeatPos.middleLeft,
+          3: SeatPos.topCenter,
+          4: SeatPos.middleRight,
+        };
 
-      case 5:
-        return Transform.translate(
-            offset: Offset(180, 0),
-            child: Align(alignment: Alignment.topLeft, child: userView));
-
-      case 6:
-        return Transform.translate(
-            offset: Offset(320, 0),
-            child: Align(alignment: Alignment.topLeft, child: userView));
-
-      case 7:
-        return Transform.translate(
-            offset: Offset(-30, 20),
-            child: Align(alignment: Alignment.topRight, child: userView));
-
-      case 8:
-        return Transform.translate(
-            offset: Offset(-20, 0),
-            child: Align(alignment: Alignment.centerRight, child: userView));
-
-      case 9:
-        return Transform.translate(
-            offset: Offset(-30, -20),
-            child: Align(alignment: Alignment.bottomRight, child: userView));
+      case 2:
+        return {
+          1: SeatPos.bottomCenter,
+          2: SeatPos.topCenter,
+        };
 
       default:
-        return const SizedBox.shrink();
+        return {};
     }
   }
 
-  Widget positionUser_5inch({
+  Widget positionUser({
     @required BoardAttributesObject boardAttribs,
     @required bool isBoardHorizontal,
+    @required int maxPlayers,
     Seat seat,
     double heightOfBoard,
     double widthOfBoard,
@@ -606,17 +538,7 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
     seatPosIndex++;
 
     //log('board width: $widthOfBoard height: $heightOfBoard');
-    Map<int, SeatPos> seatPosLoc = {
-      1: SeatPos.bottomCenter,
-      2: SeatPos.bottomLeft,
-      3: SeatPos.middleLeft,
-      4: SeatPos.topLeft,
-      5: SeatPos.topCenter1,
-      6: SeatPos.topCenter2,
-      7: SeatPos.topRight,
-      8: SeatPos.middleRight,
-      9: SeatPos.bottomRight
-    };
+    Map<int, SeatPos> seatPosLoc = getSeatLocations(maxPlayers);
     SeatPos seatPos = seatPosLoc[seatPosIndex];
     SeatPosAttribs seatAttribs = boardAttribs.getSeatPosAttrib(seatPos);
     if (seatAttribs == null) {
@@ -637,397 +559,5 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
     return Transform.translate(
         offset: seatAttribs.topLeft,
         child: Align(alignment: seatAttribs.alignment, child: userView));
-  }
-
-  Widget positionUser({
-    @required bool isBoardHorizontal,
-    Seat seat,
-    double heightOfBoard,
-    double widthOfBoard,
-    int seatPosIndex,
-    bool isPresent,
-    Function onUserTap,
-  }) {
-    seatPosIndex++;
-
-    Alignment cardsAlignment = Alignment.centerRight;
-    log('board width: $widthOfBoard height: $heightOfBoard');
-    Map<int, SeatPos> seatPosLoc = {
-      1: SeatPos.bottomCenter,
-      2: SeatPos.bottomLeft,
-      3: SeatPos.middleLeft,
-      4: SeatPos.topRight,
-      5: SeatPos.topCenter1,
-      6: SeatPos.topCenter2,
-      7: SeatPos.topRight,
-      8: SeatPos.middleRight,
-      9: SeatPos.bottomRight
-    };
-    SeatPos seatPos = seatPosLoc[seatPosIndex];
-
-    // left for 6, 7, 8, 9
-    if (seatPosIndex == 6 ||
-        seatPosIndex == 7 ||
-        seatPosIndex == 8 ||
-        seatPosIndex == 9) cardsAlignment = Alignment.centerLeft;
-    Widget userView = createUserView(
-      isBoardHorizontal: isBoardHorizontal,
-      seatPos: seatPos,
-      seatPosIndex: seatPosIndex,
-      seat: seat,
-      cardsAlignment: cardsAlignment,
-      onUserTap: onUserTap,
-    );
-    switch (seatPosIndex) {
-      case 1:
-
-        // TODO: IF WE NEED TO SHIFT UP THIS PLAYER, USE TRANSLATE,
-        // TODO: IT'S RECOMMENDED NOT TO USE POSITIONED, BECAUSE USING POSITIONED, CENTERING IS NOT POSSIBLE, AND WITHOUT THIS PLAYER IN CENTER, IT MAY LOOK BAD
-
-        return Transform.translate(
-            offset: Offset(0, -20),
-            child: Align(alignment: Alignment.bottomCenter, child: userView));
-
-      case 2:
-        return Transform.translate(
-            offset: Offset(60, -40),
-            child: Align(alignment: Alignment.bottomLeft, child: userView));
-
-      case 3:
-        return Transform.translate(
-            offset: Offset(0, 0),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: userView,
-            ));
-
-      case 4:
-        return Transform.translate(
-            offset: Offset(60, 40),
-            child: Align(alignment: Alignment.topLeft, child: userView));
-
-      case 5:
-        return Transform.translate(
-            offset: Offset(280, 0),
-            child: Align(alignment: Alignment.topLeft, child: userView));
-
-      case 6:
-        return Transform.translate(
-            offset: Offset(460, 0),
-            child: Align(alignment: Alignment.topLeft, child: userView));
-
-      case 7:
-        return Transform.translate(
-            offset: Offset(-80, 40),
-            child: Align(alignment: Alignment.topRight, child: userView));
-
-      case 8:
-        return Transform.translate(
-            offset: Offset(0, 0),
-            child: Align(alignment: Alignment.centerRight, child: userView));
-
-      case 9:
-        return Transform.translate(
-            offset: Offset(-40, -40),
-            child: Align(alignment: Alignment.bottomRight, child: userView));
-
-      default:
-        return const SizedBox.shrink();
-    }
-  }
-
-  Widget positionUser_2(
-      {@required bool isBoardHorizontal,
-      Seat seat,
-      double heightOfBoard,
-      double widthOfBoard,
-      int seatPosIndex,
-      bool isPresent,
-      Function onUserTap,
-      GlobalKey key}) {
-    seatPosIndex++;
-
-    Map<int, SeatPos> seatPosLoc = {
-      1: SeatPos.bottomCenter,
-      2: SeatPos.topCenter,
-    };
-    SeatPos seatPos = seatPosLoc[seatPosIndex];
-    Alignment cardsAlignment = Alignment.centerRight;
-
-    Widget userView = createUserView(
-      isBoardHorizontal: isBoardHorizontal,
-      seatPos: seatPos,
-      seatPosIndex: seatPosIndex,
-      seat: seat,
-      cardsAlignment: cardsAlignment,
-      onUserTap: onUserTap,
-    );
-
-    switch (seatPosIndex) {
-      case 1:
-        return Align(
-          alignment: Alignment.bottomCenter,
-          child: userView,
-        );
-
-      case 2:
-        return Align(
-          alignment: Alignment.topCenter,
-          child: userView,
-        );
-
-      default:
-        return const SizedBox.shrink();
-    }
-  }
-
-  Widget positionUser_4(
-      {@required bool isBoardHorizontal,
-      Seat seat,
-      double heightOfBoard,
-      double widthOfBoard,
-      int seatPosIndex,
-      bool isPresent,
-      Function onUserTap,
-      GlobalKey key}) {
-    seatPosIndex++;
-
-    Map<int, SeatPos> seatPosLoc = {
-      1: SeatPos.bottomCenter,
-      2: SeatPos.middleLeft,
-      3: SeatPos.topCenter,
-      4: SeatPos.middleRight,
-    };
-    SeatPos seatPos = seatPosLoc[seatPosIndex];
-    Alignment cardsAlignment = Alignment.centerRight;
-
-    if (seatPosIndex == 2) cardsAlignment = Alignment.centerLeft;
-
-    Widget userView = createUserView(
-      isBoardHorizontal: isBoardHorizontal,
-      seatPos: seatPos,
-      seatPosIndex: seatPosIndex,
-      seat: seat,
-      cardsAlignment: cardsAlignment,
-      onUserTap: onUserTap,
-    );
-
-    switch (seatPosIndex) {
-      case 1:
-        return Align(
-          alignment: Alignment.bottomCenter,
-          child: userView,
-        );
-
-      case 2:
-        return Align(
-          alignment: Alignment.centerLeft,
-          child: userView,
-        );
-
-      case 3:
-        return Align(
-          alignment: Alignment.topCenter,
-          child: userView,
-        );
-
-      case 4:
-        return Align(
-          alignment: Alignment.centerRight,
-          child: userView,
-        );
-
-      default:
-        return const SizedBox.shrink();
-    }
-  }
-
-  Widget positionUser_6(
-      {@required bool isBoardHorizontal,
-      Seat seat,
-      double heightOfBoard,
-      double widthOfBoard,
-      int seatPosIndex,
-      bool isPresent,
-      Function onUserTap,
-      GlobalKey key}) {
-    seatPosIndex++;
-
-    Map<int, SeatPos> seatPosLoc = {
-      1: SeatPos.bottomCenter,
-      2: SeatPos.middleLeft,
-      3: SeatPos.topLeft,
-      4: SeatPos.topCenter,
-      5: SeatPos.topRight,
-      6: SeatPos.middleRight,
-    };
-    SeatPos seatPos = seatPosLoc[seatPosIndex];
-
-    Alignment cardsAlignment = Alignment.centerRight;
-
-    // left for 6, 7, 8, 9
-    if (seatPosIndex == 6 ||
-        seatPosIndex == 7 ||
-        seatPosIndex == 8 ||
-        seatPosIndex == 9) cardsAlignment = Alignment.centerLeft;
-
-    Widget userView = createUserView(
-      isBoardHorizontal: isBoardHorizontal,
-      seatPos: seatPos,
-      seatPosIndex: seatPosIndex,
-      seat: seat,
-      cardsAlignment: cardsAlignment,
-      onUserTap: onUserTap,
-    );
-
-    switch (seatPosIndex) {
-      case 1:
-        return Align(
-          alignment: Alignment.bottomCenter,
-          child: userView,
-        );
-
-      case 2:
-        return Positioned(
-          bottom: 20,
-          left: 10,
-          child: userView,
-        );
-
-      case 3:
-        return Positioned(
-          top: 30,
-          left: 10,
-          child: userView,
-        );
-
-      case 4:
-        return Align(
-          alignment: Alignment.topCenter,
-          child: userView,
-        );
-
-      case 5:
-        return Positioned(
-          top: 30,
-          right: 10,
-          child: userView,
-        );
-
-      case 6:
-        return Positioned(
-          bottom: 20,
-          right: 10,
-          child: userView,
-        );
-
-      default:
-        return const SizedBox.shrink();
-    }
-  }
-
-  Widget positionUser_8(
-      {@required bool isBoardHorizontal,
-      Seat seat,
-      double heightOfBoard,
-      double widthOfBoard,
-      int seatPosIndex,
-      bool isPresent,
-      Function onUserTap,
-      GlobalKey key}) {
-    seatPosIndex++;
-
-    /*
-        x      x       x
-
-        x              x
-
-        x      x       x  
-    */
-    Map<int, SeatPos> seatPosLoc = {
-      1: SeatPos.bottomCenter,
-      2: SeatPos.bottomLeft,
-      3: SeatPos.middleLeft,
-      4: SeatPos.topLeft,
-      5: SeatPos.topCenter,
-      6: SeatPos.topRight,
-      7: SeatPos.middleRight,
-      8: SeatPos.bottomRight,
-    };
-    SeatPos seatPos = seatPosLoc[seatPosIndex];
-
-    Alignment cardsAlignment = Alignment.centerRight;
-
-    // left for 6, 7, 8, 9
-    if (seatPosIndex == 6 ||
-        seatPosIndex == 7 ||
-        seatPosIndex == 8 ||
-        seatPosIndex == 9) cardsAlignment = Alignment.centerLeft;
-
-    Widget userView = createUserView(
-      isBoardHorizontal: isBoardHorizontal,
-      seatPos: seatPos,
-      seatPosIndex: seatPosIndex,
-      seat: seat,
-      cardsAlignment: cardsAlignment,
-      onUserTap: onUserTap,
-    );
-
-    switch (seatPosIndex) {
-      case 1:
-        return Align(
-          alignment: Alignment.bottomCenter,
-          child: userView,
-        );
-
-      case 2:
-        return Positioned(
-          bottom: 20,
-          left: 10,
-          child: userView,
-        );
-
-      case 3:
-        return Align(
-          alignment: Alignment.centerLeft,
-          child: userView,
-        );
-
-      case 4:
-        return Positioned(
-          top: 20,
-          left: 10,
-          child: userView,
-        );
-
-      case 5:
-        return Align(
-          alignment: Alignment.topCenter,
-          child: userView,
-        );
-
-      case 6:
-        return Positioned(
-          top: 20,
-          right: 10,
-          child: userView,
-        );
-
-      case 7:
-        return Align(
-          alignment: Alignment.centerRight,
-          child: userView,
-        );
-
-      case 8:
-        return Positioned(
-          bottom: 20,
-          right: 10,
-          child: userView,
-        );
-
-      default:
-        return const SizedBox.shrink();
-    }
   }
 }
