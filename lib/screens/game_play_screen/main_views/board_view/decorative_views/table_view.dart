@@ -22,6 +22,7 @@ class TableView extends StatelessWidget {
         child: Container(
           width: boardAttrObj.tableSize.width,
           height: boardAttrObj.tableSize.height,
+          clipBehavior: Clip.none,
           child: Image.asset(
             boardAttrObj.isOrientationHorizontal
                 ? AppAssets.horizontalTable

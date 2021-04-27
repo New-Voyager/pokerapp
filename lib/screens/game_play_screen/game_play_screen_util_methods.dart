@@ -20,6 +20,7 @@ import 'package:pokerapp/services/agora/agora.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:pokerapp/services/game_play/graphql/game_service.dart';
+import 'package:pokerapp/utils/utils.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
@@ -139,6 +140,15 @@ class GamePlayScreenUtilMethods {
             label: 'Buyin Test',
             onTap: () => TestService.buyInTest(),
           ),
+          SpeedDialChild(
+            child: Icon(
+              Icons.adb_rounded,
+              color: Colors.white,
+            ),
+            backgroundColor: Colors.red,
+            label: 'Show Bets',
+            onTap: () => TestService.testBetWidget(),
+          ),
         ],
         backgroundColor: AppColors.appAccentColor,
       );
@@ -187,11 +197,13 @@ class GamePlayScreenUtilMethods {
 
   /* provider method, returns list of all the providers used in the below hierarchy */
   static List<SingleChildWidget> getProviders({
+    @required BuildContext context,
     @required GameInfoModel gameInfoModel,
     @required GameMessagingService gameMessagingService,
     PlayerInfo currentPlayerInfo,
     @required String gameCode,
     @required Agora agora,
+    @required BoardAttributesObject boardAttributes,
     @required Function(String) sendPlayerToHandChannel,
   }) {
     // initialize game state object
@@ -246,7 +258,7 @@ class GamePlayScreenUtilMethods {
       /* board object used for changing board attributes */
       /* default is horizontal view */
       ListenableProvider<BoardAttributesObject>(
-        create: (_) => BoardAttributesObject(),
+        create: (_) => boardAttributes,
       ),
 
       /* a copy of Game Info Model is kept in the provider

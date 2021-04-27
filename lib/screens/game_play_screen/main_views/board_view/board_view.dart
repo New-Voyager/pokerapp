@@ -66,11 +66,14 @@ class _BoardViewState extends State<BoardView> {
     var dimensions = boardAttributes.dimensions(context);
 
     final centerKey = GlobalKey();
+    final emptyCenterKey = GlobalKey();
     boardAttributes.centerKey = centerKey;
+    boardAttributes.emptyCenterKey = emptyCenterKey;
     boardAttributes.dummyKey = GlobalKey();
 
     /* finally the view */
     final ret = Stack(
+      clipBehavior: Clip.none,
       alignment: Alignment.center,
       children: [
         // game board view
@@ -177,6 +180,13 @@ class _BoardViewState extends State<BoardView> {
               Align(
             alignment: Alignment.bottomCenter,
             child: buyInButton(context),
+          ),
+        ),
+
+        Align(
+          alignment: Alignment.center,
+          child: SizedBox(
+            key: emptyCenterKey,
           ),
         ),
       ],

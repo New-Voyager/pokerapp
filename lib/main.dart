@@ -6,6 +6,7 @@ import 'package:pokerapp/models/pending_approvals.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/services/firebase/analytics_service.dart';
 import 'package:pokerapp/services/graphQL/configurations/graph_ql_configuration.dart';
+import 'package:pokerapp/services/nats/nats.dart';
 import 'package:pokerapp/utils/locator.dart';
 import 'package:provider/provider.dart';
 
@@ -27,11 +28,13 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
+  Nats nats;
   // Create the initialization Future outside of `build`:
   final Future<FirebaseApp> _initialization = Firebase.initializeApp();
 
   @override
   Widget build(BuildContext context) {
+    this.nats = Nats();
     return FutureBuilder(
       // Initialize FlutterFire:
       future: _initialization,
@@ -48,6 +51,9 @@ class MyApp extends StatelessWidget {
             providers: [
               ListenableProvider<PendingApprovalsState>(
                 create: (_) => PendingApprovalsState(),
+              ),
+              Provider<Nats>(
+                create: (_) => this.nats,
               ),
             ],
             child: OverlaySupport.global(

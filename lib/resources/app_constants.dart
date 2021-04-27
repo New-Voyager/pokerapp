@@ -15,11 +15,11 @@ class AppConstants {
   );
 
   static const Duration cardShufflingAnimationDuration = const Duration(
-    milliseconds: 250,
+    milliseconds: 150,
   );
 
   static const Duration cardDistributionAnimationDuration = const Duration(
-    milliseconds: 250,
+    milliseconds: 150,
   );
 
   static const Duration buildWaitDuration = const Duration(

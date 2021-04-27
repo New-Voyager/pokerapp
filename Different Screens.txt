@@ -1,0 +1,68 @@
+10 inch
+Screen: Size(800.0, 1232.0) Query data: MediaQueryData(size: Size(800.0, 1232.0), 
+devicePixelRatio: 2.0, textScaleFactor: 1.0, platformBrightness: Brightness.light, 
+padding: EdgeInsets(0.0, 24.0, 0.0, 0.0), viewPadding: EdgeInsets(0.0, 24.0, 0.0, 0.0), 
+viewInsets: EdgeInsets.zero, alwaysUse24HourFormat: false, accessibleNavigation: false, 
+highContrast: false, disableAnimations: false, invertColors: false, boldText: false, 
+navigationMode: traditional)
+
+7inch
+ Screen: Size(600.0, 912.0) Query data: MediaQueryData(size: Size(600.0, 912.0), 
+ devicePixelRatio: 2.0, textScaleFactor: 1.0, platformBrightness: Brightness.light, p
+ adding: EdgeInsets(0.0, 24.0, 0.0, 0.0), viewPadding: EdgeInsets(0.0, 24.0, 0.0, 0.0), 
+ viewInsets: EdgeInsets.zero, alwaysUse24HourFormat: false, accessibleNavigation: false, 
+ highContrast: false, disableAnimations: false, invertColors: false, boldText: false, 
+ navigationMode: traditional)
+
+5inch (Nexus 4)
+Screen: Size(392.7, 781.1) Query data: MediaQueryData(size: Size(392.7, 781.1), 
+devicePixelRatio: 2.8, textScaleFactor: 1.0, platformBrightness: Brightness.light, 
+padding: EdgeInsets(0.0, 62.2, 0.0, 0.0), viewPadding: EdgeInsets(0.0, 62.2, 0.0, 0.0), 
+viewInsets: EdgeInsets.zero, alwaysUse24HourFormat: false, accessibleNavigation: false, 
+highContrast: false, disableAnimations: false, invertColors: false, boldText: false, 
+navigationMode: traditional)
+
+Table factor
+
+Gap between header and table
+var dividerTotalHeight = MediaQuery.of(context).size.height / 6;
+double divider1 = 1 * dividerTotalHeight;    // 5inch 0.40, 10 inch: 1*
+
+width: boardDimensions.width,
+height: boardDimensions.height,
+child: Transform.scale(scale: 0.85,       // 10 inch: 0.85, 5inch: 1.0
+
+PlayerView offset on the board
+// 10 inch
+1: offset:  Offset(0, -10),
+2: offset:  Offset(30, -20),
+3: offset:  Offset(0, 0)
+4: offset:  Offset(60, 40)
+5: offset:  Offset(280, 0)
+6: offset:  Offset(460, 0)
+7: offset:  Offset(-80, 40)
+8: offset:  Offset(0, 0)
+9: offset:  Offset(-40, -40)
+
+// 7 inch
+1: offset:  Offset(0, -10),
+2: offset:  Offset(60, -40),
+3: offset:  Offset(30, 0)
+4: offset:  Offset(40, 30)
+5: offset:  Offset(180, 0)
+6: offset:  Offset(320, 0)
+7: offset:  Offset(-30, 20)
+8: offset:  Offset(-20, 0)
+9: offset:  Offset(-30, -20)
+
+// 5 inch
+1: offset:  Offset(0, -10),
+2: offset:  Offset(30, -20),
+3: offset:  Offset(10, 0)
+4: offset:  Offset(30, 20)
+5: offset:  Offset(130, 0)
+6: offset:  Offset(220, 0)
+7: offset:  Offset(-10, 20)
+8: offset:  Offset(0, 0)
+9: offset:  Offset(-20, -20)
+
