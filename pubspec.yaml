@@ -105,6 +105,9 @@ dependencies:
   # toasts buyin requests globally
   overlay_support: ^1.2.1
 
+  # tenor gifs
+  tenor: any
+
   # firebase services
   firebase_core: ^1.0.4
   firebase_messaging: ^9.1.2

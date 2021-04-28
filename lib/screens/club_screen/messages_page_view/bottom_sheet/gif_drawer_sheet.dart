@@ -6,25 +6,28 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pokerapp/models/gif_model.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/services/app/gifhy_service.dart';
+import 'package:pokerapp/services/app/tenor_service.dart';
+import 'package:tenor/tenor.dart';
 
+// FIXME : is it duplicate of game_giphies.dart?
 class GifDrawerSheet extends StatefulWidget {
   @override
   _GifDrawerSheetState createState() => _GifDrawerSheetState();
 }
 
 class _GifDrawerSheetState extends State<GifDrawerSheet> {
-  List<GifModel> _gifs;
+  List<TenorResult> _gifs;
   Timer _timer;
 
-  Future<List<GifModel>> _fetchGifs({String query}) async {
+  Future<List<TenorResult>> _fetchGifs({String query}) async {
     setState(() {
       _gifs = null;
     });
 
-    if (query == null || query.isEmpty) return GiphyService.fetchTrending();
+    if (query == null || query.isEmpty) return TenorService.getTrendingGifs();
 
     // else fetch from search
-    return GiphyService.fetchQuery(query);
+    return TenorService.getGifsWithSearch(query);
   }
 
   @override
@@ -103,11 +106,12 @@ class _GifDrawerSheetState extends State<GifDrawerSheet> {
                           crossAxisSpacing: 10.0,
                           mainAxisSpacing: 10.0,
                           children: _gifs
-                              .map((GifModel gif) => GestureDetector(
+                              .map((TenorResult gif) {
+                                return GestureDetector(
                                     onTap: () =>
                                         Navigator.pop(context, gif.url),
                                     child: CachedNetworkImage(
-                                      imageUrl: gif.previewUrl,
+                                      imageUrl: gif.media.gif.url,
                                       placeholder: (_, __) => Icon(
                                         FontAwesomeIcons.image,
                                         size: 50.0,
@@ -115,7 +119,8 @@ class _GifDrawerSheetState extends State<GifDrawerSheet> {
                                       ),
                                       fit: BoxFit.cover,
                                     ),
-                                  ))
+                                  );
+                              })
                               .toList(),
                         ),
                       ),
