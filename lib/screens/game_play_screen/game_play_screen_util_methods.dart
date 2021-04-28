@@ -34,134 +34,126 @@ class GamePlayScreenUtilMethods {
   /* THIS SPEED DIAL IS JUST FOR SHOWING THE TEST BUTTONS */
   static SpeedDial floatingActionButton({
     Function onReload,
-  }) =>
-      SpeedDial(
-        onOpen: onReload,
-        overlayColor: Colors.black,
-        overlayOpacity: 0.1,
-        icon: Icons.all_inclusive_rounded,
-        children: [
-          SpeedDialChild(
-            child: Icon(
-              Icons.adb_rounded,
-              color: Colors.white,
-            ),
-            backgroundColor: Colors.red,
-            label: 'Show Holecards',
-            onTap: () => TestService.showHoleCards(),
+  }) {
+    return SpeedDial(
+      onOpen: onReload,
+      overlayColor: Colors.black,
+      visible: TestService.isTesting,
+      overlayOpacity: 0.1,
+      icon: Icons.all_inclusive_rounded,
+      children: [
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
           ),
-
-          // SpeedDialChild(
-          //   child: Icon(
-          //     Icons.adb_rounded,
-          //     color: Colors.white,
-          //   ),
-          //   backgroundColor: Colors.red,
-          //   label: 'Bet Widget',
-          //   onTap: () => TestService.testBetWidget(),
-          // ),
-          SpeedDialChild(
-            child: Icon(
-              Icons.adb_rounded,
-              color: Colors.white,
-            ),
-            backgroundColor: Colors.red,
-            label: 'Countdown Timer',
-            onTap: () => TestService.testCountdownTimer(),
+          backgroundColor: Colors.red,
+          label: 'Bet Widget',
+          onTap: () => TestService.testBetWidget(),
+        ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
           ),
-          SpeedDialChild(
-            child: Icon(
-              Icons.adb_rounded,
-              color: Colors.white,
-            ),
-            backgroundColor: Colors.red,
-            label: 'Flushbar',
-            onTap: () => TestService.showFlushBar(),
+          backgroundColor: Colors.red,
+          label: 'Countdown Timer',
+          onTap: () => TestService.testCountdownTimer(),
+        ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
           ),
-          SpeedDialChild(
-            child: Icon(
-              Icons.adb_rounded,
-              color: Colors.white,
-            ),
-            backgroundColor: Colors.red,
-            label: 'Distribute Cards',
-            onTap: () => TestService.distributeCards(),
+          backgroundColor: Colors.red,
+          label: 'Flushbar',
+          onTap: () => TestService.showFlushBar(),
+        ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
           ),
-          SpeedDialChild(
-            child: Icon(
-              Icons.adb_rounded,
-              color: Colors.white,
-            ),
-            backgroundColor: Colors.red,
-            label: 'Add River / Turn Card',
-            onTap: () => TestService.addTurnOrRiverCard(),
+          backgroundColor: Colors.red,
+          label: 'Distribute Cards',
+          onTap: () => TestService.distributeCards(),
+        ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
           ),
-          SpeedDialChild(
-            child: Icon(
-              Icons.adb_rounded,
-              color: Colors.white,
-            ),
-            backgroundColor: Colors.red,
-            label: 'Add Flop Cards',
-            onTap: () => TestService.addFlopCards(),
+          backgroundColor: Colors.red,
+          label: 'Add River / Turn Card',
+          onTap: () => TestService.addTurnOrRiverCard(),
+        ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
           ),
-          SpeedDialChild(
-            child: Icon(
-              Icons.adb_rounded,
-              color: Colors.white,
-            ),
-            backgroundColor: Colors.red,
-            label: 'Clear Cards',
-            onTap: () => TestService.clearBoardCards(),
+          backgroundColor: Colors.red,
+          label: 'Add Flop Cards',
+          onTap: () => TestService.addFlopCards(),
+        ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
           ),
-          SpeedDialChild(
-            child: Icon(
-              Icons.adb_rounded,
-              color: Colors.white,
-            ),
-            backgroundColor: Colors.red,
-            label: 'Simulate Bet Movement',
-            onTap: () => TestService.simulateBetMovement(),
+          backgroundColor: Colors.red,
+          label: 'Clear Cards',
+          onTap: () => TestService.clearBoardCards(),
+        ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
           ),
-          SpeedDialChild(
-            child: Icon(
-              Icons.adb_rounded,
-              color: Colors.white,
-            ),
-            backgroundColor: Colors.red,
-            label: 'Show Bets',
-            onTap: () => TestService.showBets(),
+          backgroundColor: Colors.red,
+          label: 'Simulate Bet Movement',
+          onTap: () => TestService.simulateBetMovement(),
+        ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
           ),
-          SpeedDialChild(
-            child: Icon(
-              Icons.adb_rounded,
-              color: Colors.white,
-            ),
-            backgroundColor: Colors.red,
-            label: 'Move Pot to Player',
-            onTap: () => TestService.movePotToPlayer(),
+          backgroundColor: Colors.red,
+          label: 'Show Bets',
+          onTap: () => TestService.showBets(),
+        ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
           ),
-          SpeedDialChild(
-            child: Icon(
-              Icons.adb_rounded,
-              color: Colors.white,
-            ),
-            backgroundColor: Colors.red,
-            label: 'Buyin Test',
-            onTap: () => TestService.buyInTest(),
+          backgroundColor: Colors.red,
+          label: 'Move Pot to Player',
+          onTap: () => TestService.movePotToPlayer(),
+        ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
           ),
-          SpeedDialChild(
-            child: Icon(
-              Icons.adb_rounded,
-              color: Colors.white,
-            ),
-            backgroundColor: Colors.red,
-            label: 'Show Bets',
-            onTap: () => TestService.testBetWidget(),
+          backgroundColor: Colors.red,
+          label: 'Buyin Test',
+          onTap: () => TestService.buyInTest(),
+        ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
           ),
-        ],
-        backgroundColor: AppColors.appAccentColor,
-      );
+          backgroundColor: Colors.red,
+          label: 'Show Bets',
+          onTap: () => TestService.testBetWidget(),
+        ),
+      ],
+      backgroundColor: AppColors.appAccentColor,
+    );
+  }
 
   /* After the entire table is drawn, if the current player (isMe == true)
     * is waiting for buyIn,then show the footer prompt */

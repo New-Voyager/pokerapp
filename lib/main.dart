@@ -1,7 +1,8 @@
-import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:overlay_support/overlay_support.dart';
+import 'package:pokerapp/models/pending_approvals.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/services/firebase/analytics_service.dart';
 import 'package:pokerapp/services/graphQL/configurations/graph_ql_configuration.dart';
@@ -46,8 +47,16 @@ class MyApp extends StatelessWidget {
         // Once complete, show your application
         if (snapshot.connectionState == ConnectionState.done) {
           print('Firebase initialized successfully');
-          return Provider<Nats>(
-              create: (_) => this.nats,
+          return MultiProvider(
+            providers: [
+              ListenableProvider<PendingApprovalsState>(
+                create: (_) => PendingApprovalsState(),
+              ),
+              Provider<Nats>(
+                create: (_) => this.nats,
+              ),
+            ],
+            child: OverlaySupport.global(
               child: MaterialApp(
                 title: 'Poker App',
                 debugShowCheckedModeBanner: false,
@@ -61,10 +70,14 @@ class MyApp extends StatelessWidget {
                 ),
                 onGenerateRoute: Routes.generateRoute,
                 initialRoute: Routes.initial,
-              ));
+              ),
+            ),
+          );
         }
         // Otherwise, show something whilst waiting for initialization to complete
-        return Center(child: CircularProgressIndicator());
+        return Center(
+          child: CircularProgressIndicator(),
+        );
       },
     );
   }

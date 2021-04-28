@@ -10,6 +10,7 @@ import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/marked_cards.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
+import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:pokerapp/services/game_play/graphql/game_service.dart';
@@ -42,6 +43,7 @@ class GameState {
   String _gameCode;
   GameInfoModel _gameInfo;
   Map<int, Seat> _seats = Map<int, Seat>();
+  Map<int, PlayerInfo> _playersInfo = Map<int, PlayerInfo>();
   String _currentPlayerUuid;
 
   void initialize({

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:flutter/widgets.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:pokerapp/enums/approval_type.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/pending_approvals.dart';
 import 'package:pokerapp/models/player_info.dart';
@@ -58,7 +59,7 @@ class PlayerService {
     Map<String, dynamic> variables = {"ids": ids};
 
     String _query = """query (\$ids: [Int!]{
-      players: idsToPlayerInfo(ids: \$ids) {
+      players: idsToPlayersInfo(ids: \$ids) {
         id
         uuid
         name
@@ -144,5 +145,61 @@ class PlayerService {
       ret.add(approval);
     }
     return ret;
+  }
+
+  static Future<bool> approveBuyInRequest(
+      String gameCode, String playerUuid) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+
+    String _query = """
+    mutation approveRequest(\$gameCode: String!, \$playerId: String!) {
+      ret: approveRequest(gameCode: \$gameCode, playerUuid: \$playerId, type: BUYIN_REQUEST, status:APPROVED)
+    }
+  """;
+
+    Map<String, dynamic> variables = {
+      "gameCode": gameCode,
+      "playerId": playerUuid
+    };
+
+
+    print(_query);
+    QueryResult result = await _client.query(
+      QueryOptions(documentNode: gql(_query), variables: variables),
+    );
+
+    if (result.hasException) return null;
+
+    log("Result ${result.data['ret']}");
+
+    return result.data['ret'];
+  }
+
+  static Future<bool> declineBuyInRequest(
+      String gameCode, String playerUuid) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+
+    String _query = """
+    mutation denyRequest(\$gameCode: String!, \$playerId: String!) {
+      ret : approveRequest(gameCode: \$gameCode, playerUuid: \$playerId, type: BUYIN_REQUEST, status:DENIED)
+    }
+  """;
+
+    Map<String, dynamic> variables = {
+      "gameCode": gameCode,
+      "playerId": playerUuid
+    };
+
+
+    print(_query);
+    QueryResult result = await _client.query(
+      QueryOptions(documentNode: gql(_query), variables: variables),
+    );
+
+    if (result.hasException) return null;
+
+    log("Result ${result.data}");
+
+    return result.data['ret'];
   }
 }

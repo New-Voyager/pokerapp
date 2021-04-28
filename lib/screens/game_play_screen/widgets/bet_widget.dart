@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/player_action.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/screens/game_play_screen/widgets/pulsating_button.dart';
 import 'package:pokerapp/utils/numeric_keyboard.dart';
 import 'package:sleek_circular_slider/sleek_circular_slider.dart';
 
@@ -54,6 +55,7 @@ class _BetWidgetState extends State<BetWidget> {
                   Align(
                     alignment: Alignment.center,
                     child: Container(
+                      margin: EdgeInsets.only(bottom: 16),
                       height: height / 5,
                       width: width / 2,
                       child: sleekSlider(),
@@ -105,8 +107,55 @@ class _BetWidgetState extends State<BetWidget> {
                     left: 0,
                     right: 0,
                     child: Align(
-                      alignment: Alignment.bottomCenter,
-                      child: InkWell(
+                        alignment: Alignment.bottomCenter,
+                        child: Container(
+                          margin: EdgeInsets.only(top: 16),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                ),
+                                child: IconButton(
+                                  icon: Icon(Icons.remove_circle_rounded),
+                                  color: Colors.blue,
+                                  onPressed: () {
+                                    val--;
+                                    setState(() {});
+                                  },
+                                ),
+                              ),
+                              PulsatingCircleIconButton(
+                                onTap: () {
+                                  if (widget.onSubmitCallBack != null) {
+                                    widget.onSubmitCallBack(val);
+                                  }
+                                },
+                                child: Text(
+                                  "BET",
+                                  style: TextStyle(
+                                      fontSize: 12, color: Colors.white),
+                                ),
+                              ),
+                              Container(
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                ),
+                                child: IconButton(
+                                  icon: Icon(
+                                    Icons.add_circle_rounded,
+                                  ),
+                                  color: Colors.blue,
+                                  onPressed: () {
+                                    val++;
+                                    setState(() {});
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ) /*  InkWell(
                         onTap: () {
                           log('BET hit $val');
                           if (widget.onSubmitCallBack != null) {
@@ -134,8 +183,8 @@ class _BetWidgetState extends State<BetWidget> {
                             style: TextStyle(fontSize: 12, color: Colors.white),
                           ),
                         ),
-                      ),
-                    ),
+                      ), */
+                        ),
                   ),
                 ],
               ),

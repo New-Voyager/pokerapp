@@ -1,6 +1,23 @@
 import 'package:flutter/material.dart';
 
 class PendingApprovalsState extends ChangeNotifier {
+  int totalPending = 0;
+
+  setTotalPending(int i) {
+    totalPending = i;
+    notify();
+  }
+
+  decreaseTotalPending() {
+    totalPending--;
+    notify();
+  }
+
+  incrementTotalPending() {
+    totalPending++;
+    notify();
+  }
+
   notify() {
     notifyListeners();
   }
@@ -14,6 +31,7 @@ class PendingApproval {
   String gameType;
   String clubCode;
   String clubName;
+  String playerUuid;
 
   static PendingApproval fromJson(dynamic data) {
     PendingApproval ret = new PendingApproval();
@@ -36,6 +54,7 @@ class PendingApproval {
     ret.clubCode = data['clubCode'].toString();
     ret.clubName = data['clubName'].toString();
     ret.gameType = data['gameType'].toString();
+    ret.playerUuid = data['playerUuid'].toString();
     return ret;
   }
 }

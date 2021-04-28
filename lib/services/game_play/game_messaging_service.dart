@@ -134,6 +134,7 @@ class GameMessagingService {
     dynamic body = jsonEncode({
       'id': uuid.v1(),
       'playerID': this.currentPlayer.id,
+      'name': this.currentPlayer.name,
       'text': text,
       'type': 'TEXT',
       'sent': DateTime.now().toUtc().toIso8601String(),
@@ -146,6 +147,7 @@ class GameMessagingService {
     dynamic body = jsonEncode({
       'id': uuid.v1(),
       'playerID': this.currentPlayer.id,
+      'name': this.currentPlayer.name,
       'audio': base64Encode(audio),
       'type': 'AUDIO',
       'sent': DateTime.now().toUtc().toIso8601String(),
@@ -157,6 +159,7 @@ class GameMessagingService {
     dynamic body = jsonEncode({
       'id': uuid.v1(),
       'playerID': this.currentPlayer.id,
+      'name': this.currentPlayer.name,
       'link': giphyLink,
       'type': 'GIPHY',
       'sent': DateTime.now().toUtc().toIso8601String(),
@@ -168,6 +171,7 @@ class GameMessagingService {
     dynamic body = jsonEncode({
       'id': uuid.v1(),
       'from': fromSeat,
+      'name': this.currentPlayer.name,
       'to': toSeat,
       'animation': animation,
       'type': 'ANIMATION',
@@ -184,6 +188,7 @@ class GameMessagingService {
       'id': uuid.v1(),
       'seatNo': seatNo,
       'playerID': this.currentPlayer.id,
+      'name': this.currentPlayer.name,
       'cards': cards,
       'type': 'CARDS',
       'sent': DateTime.now().toUtc().toIso8601String(),
@@ -209,12 +214,14 @@ class ChatMessage {
   int toSeat;
   int seatNo;
   List<int> cards;
+  String fromName;
 
   static ChatMessage fromMessage(String data) {
     try {
       var message = jsonDecode(data);
       ChatMessage msg = new ChatMessage();
       msg.type = message['type'].toString();
+      msg.fromName = message['name'].toString();
       if (msg.type == 'TEXT') {
         msg.text = message['text'].toString();
       } else if (msg.type == 'AUDIO') {

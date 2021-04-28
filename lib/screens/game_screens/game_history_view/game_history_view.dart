@@ -34,7 +34,10 @@ class _GameHistoryViewState extends State<GameHistoryView> {
   @override
   void initState() {
     super.initState();
-    _fetchData();
+    // method call 
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      _fetchData();
+    });
   }
 
   Widget gameHistoryItem(BuildContext context, int index) {
@@ -73,6 +76,7 @@ class _GameHistoryViewState extends State<GameHistoryView> {
         vertical: 10.0,
         horizontal: 15.0,
       ),
+      shrinkWrap: true,
       itemBuilder: gameHistoryItem,
       itemCount: _prevGames.length,
       separatorBuilder: (_, __) => const SizedBox(height: 10.0),
