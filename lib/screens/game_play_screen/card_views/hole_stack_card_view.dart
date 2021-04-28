@@ -7,8 +7,8 @@ import 'package:pokerapp/screens/game_play_screen/game_card/game_card_widget.dar
 import 'package:provider/provider.dart';
 
 const double pullUpOffset = -15.0;
-const kDisplacementConstant = 40.0;
-const kAngleConstant = 0.05;
+const kDisplacementConstant = 30.0;
+const kAngleConstant = 0.30;
 
 class HoleStackCardView extends StatelessWidget {
   final List<CardObject> cards;
@@ -40,45 +40,94 @@ class HoleStackCardView extends StatelessWidget {
     if (cards == null || cards.isEmpty) return const SizedBox.shrink();
     int mid = (cards.length ~/ 2);
 
-    return Transform.translate(
-      offset: Offset(0, 0),
-      //offset: Offset(-15, 30),
-      child: Stack(
-        alignment: Alignment.bottomLeft,
-        children: List.generate(
-          cards.length,
-          (i) => Transform.translate(
-            offset: Offset(
-              (i + 1 - mid) * kDisplacementConstant,
-              0,
-            ),
-            child: Transform.rotate(
-              alignment: Alignment.bottomLeft,
-              angle: (i - mid) * kAngleConstant,
-              child: Transform.translate(
-                offset: Offset(
-                  0.0,
-                  cards[i].highlight ? pullUpOffset : 0.0,
-                ),
-                child: deactivated
-                    ? GameCardWidget(
-                        marked: markedCards.isMarked(cards[i]),
-                        onMarkTapCallback: () => markedCards.mark(cards[i]),
-                        card: cards[i],
-                        grayOut: true,
-                        isCardVisible: isCardVisible,
-                      )
-                    : GameCardWidget(
-                        marked: markedCards.isMarked(cards[i]),
-                        onMarkTapCallback: () => markedCards.mark(cards[i]),
-                        card: cards[i],
-                        isCardVisible: isCardVisible,
-                      ),
-              ),
+    // 2 cards
+    // List<double> cardAngle = [-0.10,0.05, 0.10, 0.15, 0.20];
+    // List<double> cardOffset = [0, -5, -10, -15, -20];
+
+    List<double> cardAngle = [-0.10, -0.05, 0.05, 0.10, 0.20];
+    List<double> cardOffset = [0, -5, -10, -15, -20];
+    return Stack(
+      alignment: Alignment.bottomLeft,
+      children: List.generate(cards.length, (i) {
+        double angle = cardAngle[i];
+        return Transform.translate(
+          offset: Offset(0, 0),
+          // offset: Offset(
+          //   (i + 1 - mid) * kDisplacementConstant,
+          //   0,
+          // ),
+          child: Transform.rotate(
+            alignment: Alignment.bottomLeft,
+            angle: angle, // 0.0, //i * 0.40,//kAngleConstant,
+            child: Transform.translate(
+              offset: Offset(i * 30.0, cardOffset[i]
+                  //cards[i].highlight ? pullUpOffset : 0.0,
+                  ),
+              child: deactivated
+                  ? GameCardWidget(
+                      marked: markedCards.isMarked(cards[i]),
+                      onMarkTapCallback: () => markedCards.mark(cards[i]),
+                      card: cards[i],
+                      grayOut: true,
+                      isCardVisible: isCardVisible,
+                    )
+                  : GameCardWidget(
+                      marked: markedCards.isMarked(cards[i]),
+                      onMarkTapCallback: () => markedCards.mark(cards[i]),
+                      card: cards[i],
+                      isCardVisible: isCardVisible,
+                    ),
             ),
           ),
-        ),
-      ),
+        );
+      }),
     );
+
+    // return Transform.translate(
+    //   offset: Offset(0, 0),
+    //   //offset: Offset(-15, 30),
+    //   child: Stack(
+    //     alignment: Alignment.bottomLeft,
+    //     children: List.generate(
+    //       cards.length,
+    //       (i) {
+    //         double angle = cardAngle[i];
+    //         return Transform.translate(
+    //         offset: Offset(0,
+    //           0,
+    //         ),
+    //         // offset: Offset(
+    //         //   (i + 1 - mid) * kDisplacementConstant,
+    //         //   0,
+    //         // ),
+    //         child: Transform.rotate(
+    //           alignment: Alignment.bottomLeft,
+    //           angle: angle, // 0.0, //i * 0.40,//kAngleConstant,
+    //           child: Transform.translate(
+    //             offset: Offset(
+    //               0.0, 0
+    //               //cards[i].highlight ? pullUpOffset : 0.0,
+    //             ),
+    //             child: deactivated
+    //                 ? GameCardWidget(
+    //                     marked: markedCards.isMarked(cards[i]),
+    //                     onMarkTapCallback: () => markedCards.mark(cards[i]),
+    //                     card: cards[i],
+    //                     grayOut: true,
+    //                     isCardVisible: isCardVisible,
+    //                   )
+    //                 : GameCardWidget(
+    //                     marked: markedCards.isMarked(cards[i]),
+    //                     onMarkTapCallback: () => markedCards.mark(cards[i]),
+    //                     card: cards[i],
+    //                     isCardVisible: isCardVisible,
+    //                   ),
+    //           ),
+    //         ),
+    //       );
+    //     }
+    //     ),
+    //   ),
+    // );
   }
 }

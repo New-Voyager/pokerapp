@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:pokerapp/models/game_model.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
@@ -313,5 +314,17 @@ class TestService {
     player.noOfCardsVisible = 4;
     final players = gameState.getPlayers(_context);
     players.notifyAll();
+  }
+
+  static List<GameModel> fetchLiveGames() {
+    var json = jsonDecode('''{
+      "clubCode": "ABC",
+      "gameCode": "ABC",
+      "smallBlind": 1,
+      "bigBlind": 2,
+      "gameType": "HOLDEM"
+    }''');
+    final game1 = GameModel.fromJson(json);
+    return [game1];
   }
 }

@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 class IconWithBadge extends StatelessWidget {
@@ -43,4 +42,3 @@ class IconWithBadge extends StatelessWidget {
     );
   }
 }
-

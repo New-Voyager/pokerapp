@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:pokerapp/services/nats/nats.dart';
+import 'package:pokerapp/services/test/test_service.dart';
 
 class GameComService {
   // Client _client;
@@ -118,6 +119,9 @@ class GameComService {
   }
 
   GameMessagingService get gameMessaging {
+    if (TestService.isTesting) {
+      return this._chat;
+    }
     assert(active);
     return this._chat;
   }

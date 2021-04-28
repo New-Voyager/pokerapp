@@ -105,13 +105,13 @@ class GameCardWidget extends StatelessWidget {
             width: 20,
             height: 120,
             child: InkWell(
-              splashColor: Colors.transparent,
+              splashColor: Colors.black,
               onTap: () {
                 log('card is tapped for viewing');
                 onMarkTapCallback();
               },
               child: Container(
-                color: Colors.black26,
+                color: Colors.transparent,
               ),
             ))
       ],

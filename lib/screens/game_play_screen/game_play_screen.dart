@@ -155,75 +155,80 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
       playerToHandChannel: _gameInfoModel.playerToHandChannel,
       gameChatChannel: _gameInfoModel.gameChatChannel,
     );
-    // subscribe the NATs channels
-    // await _gameComService.init();
-    final natsClient = Provider.of<Nats>(context, listen: false);
 
-    log('natsClient: $natsClient');
-    await _gameComService.init2(natsClient);
+    if (TestService.isTesting) {
+      // testing code goes here
 
-    /* setup the listeners to the channels
-      * Any messages received from these channel updates,
-      * will be taken care of by the respective class
-      * and actions will be taken in the UI
-      * as there will be Listeners implemented down this hierarchy level */
+    } else {
+      // subscribe the NATs channels
+      final natsClient = Provider.of<Nats>(context, listen: false);
 
-    _gameComService.gameToPlayerChannelStream.listen((nats.Message message) {
-      if (!_gameComService.active) return;
+      log('natsClient: $natsClient');
+      await _gameComService.init2(natsClient);
 
-      // log('gameToPlayerChannel(${message.subject}): ${message.string}');
+      /* setup the listeners to the channels
+        * Any messages received from these channel updates,
+        * will be taken care of by the respective class
+        * and actions will be taken in the UI
+        * as there will be Listeners implemented down this hierarchy level */
 
-      /* This stream will receive game related messages
-        * e.g.
-        * 1. Player Actions - Sitting on table, getting more chips, leaving game, taking break,
-        * 2. Game Actions - New hand, informing about Next actions, PLayer Acted
-        *  */
+      _gameComService.gameToPlayerChannelStream.listen((nats.Message message) {
+        if (!_gameComService.active) return;
 
-      GameActionService.handle(
-        context: _providerContext,
-        message: message.string,
-      );
-    });
+        // log('gameToPlayerChannel(${message.subject}): ${message.string}');
 
-    _gameComService.handToAllChannelStream.listen((nats.Message message) {
-      if (!_gameComService.active) return;
+        /* This stream will receive game related messages
+          * e.g.
+          * 1. Player Actions - Sitting on table, getting more chips, leaving game, taking break,
+          * 2. Game Actions - New hand, informing about Next actions, PLayer Acted
+          *  */
 
-      // log('handToAllChannel(${message.subject}): ${message.string}');
+        GameActionService.handle(
+          context: _providerContext,
+          message: message.string,
+        );
+      });
 
-      /* This stream receives hand related messages that is common to all players
-        * e.g
-        * New Hand - contains hand status, dealerPos, sbPos, bbPos, nextActionSeat
-        * Next Action - contains the seat No which is to act next
-        *
-        * This stream also contains the output for the query of current hand*/
-      HandActionService.handle(
-        context: _providerContext,
-        message: message.string,
-      );
-    });
+      _gameComService.handToAllChannelStream.listen((nats.Message message) {
+        if (!_gameComService.active) return;
 
-    _gameComService.handToPlayerChannelStream.listen((nats.Message message) {
-      if (!_gameComService.active) return;
+        // log('handToAllChannel(${message.subject}): ${message.string}');
 
-      // log('handToPlayerChannel(${message.subject}): ${message.string}');
+        /* This stream receives hand related messages that is common to all players
+          * e.g
+          * New Hand - contains hand status, dealerPos, sbPos, bbPos, nextActionSeat
+          * Next Action - contains the seat No which is to act next
+          *
+          * This stream also contains the output for the query of current hand*/
+        HandActionService.handle(
+          context: _providerContext,
+          message: message.string,
+        );
+      });
 
-      /* This stream receives hand related messages that is specific to THIS player only
-        * e.g
-        * Deal - contains seat No and cards
-        * Your Action - seat No, available actions & amounts */
-      HandActionService.handle(
-        context: _providerContext,
-        message: message.string,
-      );
+      _gameComService.handToPlayerChannelStream.listen((nats.Message message) {
+        if (!_gameComService.active) return;
 
-      // _gameComService.chat.listen(onText: this.onText);
-      _gameComService.gameMessaging.listen(
-        onCards: this.onCards,
-       // onText: this.onText,
-        onAudio: this.onAudio,
-        // onAnimation: this.onAnimation,
-      );
-    });
+        // log('handToPlayerChannel(${message.subject}): ${message.string}');
+
+        /* This stream receives hand related messages that is specific to THIS player only
+          * e.g
+          * Deal - contains seat No and cards
+          * Your Action - seat No, available actions & amounts */
+        HandActionService.handle(
+          context: _providerContext,
+          message: message.string,
+        );
+
+        // _gameComService.chat.listen(onText: this.onText);
+        _gameComService.gameMessaging.listen(
+          onCards: this.onCards,
+          // onText: this.onText,
+          onAudio: this.onAudio,
+          // onAnimation: this.onAnimation,
+        );
+      });
+    }
 
     _initiated = true;
     return _gameInfoModel;
@@ -358,12 +363,14 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
               if (_gameInfoModel == null)
                 return Center(child: CircularProgressIndicator());
 
-              if (_gameInfoModel.tableStatus == AppConstants.GAME_RUNNING) {
-                // query current hand to get game update
-                GameService.queryCurrentHand(
-                  _gameInfoModel.gameCode,
-                  _gameComService.sendPlayerToHandChannel,
-                );
+              if (!TestService.isTesting) {
+                if (_gameInfoModel.tableStatus == AppConstants.GAME_RUNNING) {
+                  // query current hand to get game update
+                  GameService.queryCurrentHand(
+                    _gameInfoModel.gameCode,
+                    _gameComService.sendPlayerToHandChannel,
+                  );
+                }
               }
 
               var dividerTotalHeight = MediaQuery.of(context).size.height / 6;

@@ -41,7 +41,7 @@ class _GameOptionState extends State<GameOption> {
     );
   }
 
-  void onEndGame() { 
+  void onEndGame() {
     showSimpleNotification(
       Text('The game will end after this hand'),
       position: NotificationPosition.top,
@@ -50,9 +50,7 @@ class _GameOptionState extends State<GameOption> {
     // We need to broadcast to all the players
     GameService.endGame(this.gameCode);
 
-   
-
-   /*  ScaffoldMessenger.of(navigatorKey.currentContext).showSnackBar(
+    /*  ScaffoldMessenger.of(navigatorKey.currentContext).showSnackBar(
       SnackBar(
         content: const Text('The game will end after this hand'),
         duration: Duration(seconds: 15),

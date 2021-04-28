@@ -1,4 +1,1 @@
-enum ApprovalType{
-  APPROVED,
-  DENIED
-}
+enum ApprovalType { APPROVED, DENIED }

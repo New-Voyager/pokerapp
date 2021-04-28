@@ -54,41 +54,47 @@ class _FooterViewState extends State<FooterView>
     Screen s = boardAttributes.getScreen(context);
 
     final width = s.width() * 2 / 3;
+
+    // holecard scale
+    double scale5inch2cards = 1.5;
+    double scale5inch4cards = 1.3; //.3;
+
     return Consumer2<Players, ActionState>(
       builder: (_, players, actionState, __) {
-        return Stack(
-          children: [
-            Positioned(
-                left: 0,
-                top: 20.0,
-                width: width,
-                child: players.me == null
-                    ? const SizedBox.shrink()
-                    : HoleCardsView(
-                        playerModel: players.me,
-                        showActionWidget: actionState.show,
-                      )),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                HandAnalyseView(widget.gameCode, widget.clubCode),
-                CommunicationView(widget.chatVisibilityChange,
-                    widget.gameComService.gameMessaging),
-              ],
-            ),
-            Consumer2<HostSeatChange, GameContextObject>(
-              builder: (context, hostSeatChange, gameContextObject, _) =>
-                  hostSeatChange.seatChangeInProgress &&
-                          gameContextObject.playerId ==
-                              hostSeatChange.seatChangeHost
-                      ? Align(
-                          alignment: Alignment.center,
-                          child: SeatChangeConfirmWidget(),
-                        )
-                      : SizedBox.shrink(),
-            )
-          ],
-        );
+        bool me = players.me != null;
+
+        return Column(children: [
+          SizedBox.fromSize(size: Size(0, 0)),
+          Row(
+            children: [
+              HandAnalyseView(widget.gameCode, widget.clubCode),
+              Expanded(
+                child: !me
+                    ? SizedBox.shrink()
+                    : Transform.scale(
+                        scale: scale5inch4cards,
+                        child: HoleCardsView(
+                          playerModel: players.me,
+                          showActionWidget: actionState.show,
+                        ),
+                      ),
+              ),
+              CommunicationView(widget.chatVisibilityChange,
+                  widget.gameComService.gameMessaging),
+              Consumer2<HostSeatChange, GameContextObject>(
+                builder: (context, hostSeatChange, gameContextObject, _) =>
+                    hostSeatChange.seatChangeInProgress &&
+                            gameContextObject.playerId ==
+                                hostSeatChange.seatChangeHost
+                        ? Align(
+                            alignment: Alignment.center,
+                            child: SeatChangeConfirmWidget(),
+                          )
+                        : SizedBox.shrink(),
+              )
+            ],
+          )
+        ]);
       },
     );
   }
