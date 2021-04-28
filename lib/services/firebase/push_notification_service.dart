@@ -63,7 +63,6 @@ void registerPushNotifications() {
           pendingCount: approvalCount,
         ),
         duration: Duration(seconds: 5),
-        
       );
 
       /*    showSimpleNotification(

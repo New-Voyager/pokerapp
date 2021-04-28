@@ -33,14 +33,14 @@ class _HoleCardsViewState extends State<HoleCardsView> {
     final boardAttributes =
         Provider.of<BoardAttributesObject>(context, listen: false);
     final Size footerSize = boardAttributes.footerSize;
-    final height = footerSize.height / 2;
-    final width = footerSize.width;
+    final height = footerSize.height / 1.5;
+    final width = footerSize.width / 2;
     final screen = boardAttributes.getScreen(context);
     log('footer size: $footerSize width: $width, height: $height diagonal: ${screen.diagonalInches()}');
 
     return Stack(children: [
       Align(
-        alignment: Alignment.topCenter,
+        alignment: Alignment.center,
         child: Container(
           width: width,
           height: height,
@@ -62,21 +62,17 @@ class _HoleCardsViewState extends State<HoleCardsView> {
                 });
                 //debugPrint("HoleCardsView : Container");
               },
-              child: Align(
-                alignment: Alignment.topCenter,
-                child: cards(
-                  playerFolded: widget.playerModel.playerFolded,
-                  cards: widget.playerModel?.cards?.map(
-                        (int c) {
-                          CardObject card = CardHelper.getCard(c);
-                          card.smaller = true;
-                          card.cardFace = CardFace.FRONT;
-
-                          return card;
-                        },
-                      )?.toList() ??
-                      [],
-                ),
+              child: cards(
+                playerFolded: widget.playerModel.playerFolded,
+                cards: widget.playerModel?.cards?.map(
+                      (int c) {
+                        CardObject card = CardHelper.getCard(c);
+                        card.smaller = true;
+                        card.cardFace = CardFace.FRONT;
+                        return card;
+                      },
+                    )?.toList() ??
+                    [],
               ),
             ),
           ),

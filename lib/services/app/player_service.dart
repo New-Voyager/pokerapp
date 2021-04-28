@@ -162,7 +162,6 @@ class PlayerService {
       "playerId": playerUuid
     };
 
-
     print(_query);
     QueryResult result = await _client.query(
       QueryOptions(documentNode: gql(_query), variables: variables),
@@ -189,7 +188,6 @@ class PlayerService {
       "gameCode": gameCode,
       "playerId": playerUuid
     };
-
 
     print(_query);
     QueryResult result = await _client.query(

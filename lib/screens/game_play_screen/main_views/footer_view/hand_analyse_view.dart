@@ -266,6 +266,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
     );
   }
 }
+
 class HandAnalysisCardView extends StatelessWidget {
   final VoidCallback onClickHandler;
 

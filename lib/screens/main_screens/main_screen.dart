@@ -11,6 +11,7 @@ import 'package:pokerapp/screens/main_screens/profile_page_view/profile_page_vie
 import 'package:pokerapp/services/app/player_service.dart';
 import 'package:pokerapp/services/firebase/push_notification_service.dart';
 import 'package:pokerapp/services/nats/nats.dart';
+import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/widgets/tab_bar_item.dart';
 import 'package:provider/provider.dart';
 
@@ -27,20 +28,24 @@ class _MainScreenState extends State<MainScreen>
   Future<void> _init() async {
     log('Initialize main screen');
     //_nats = Nats();
-    _currentPlayer = await PlayerService.getMyInfo(null);
+    //
 
-    // Get the token each time the application loads
-    String token = await FirebaseMessaging.instance.getToken();
-    await saveFirebaseToken(token);
-    // Any time the token refreshes, store this in the database too.
-    FirebaseMessaging.instance.onTokenRefresh.listen(saveFirebaseToken);
-    registerPushNotifications();
+    if (!TestService.isTesting) {
+      _currentPlayer = await PlayerService.getMyInfo(null);
 
-    final natsClient = Provider.of<Nats>(context, listen: false);
-    _nats = natsClient;
-    Future.delayed(Duration(milliseconds: 100), () async {
-      await natsClient.init(_currentPlayer.channel);
-    });
+      // Get the token each time the application loads
+      String token = await FirebaseMessaging.instance.getToken();
+      await saveFirebaseToken(token);
+      // Any time the token refreshes, store this in the database too.
+      FirebaseMessaging.instance.onTokenRefresh.listen(saveFirebaseToken);
+      registerPushNotifications();
+
+      final natsClient = Provider.of<Nats>(context, listen: false);
+      _nats = natsClient;
+      Future.delayed(Duration(milliseconds: 100), () async {
+        await natsClient.init(_currentPlayer.channel);
+      });
+    }
 
     // WidgetsBinding.instance.addPostFrameCallback((_) async {
     // });

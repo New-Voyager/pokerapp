@@ -8,6 +8,7 @@ import 'package:pokerapp/resources/app_strings.dart';
 import 'package:pokerapp/screens/main_screens/games_page_view/enums.dart';
 import 'package:pokerapp/screens/main_screens/games_page_view/widgets/game_item.dart';
 import 'package:pokerapp/services/app/user_games_service.dart';
+import 'package:pokerapp/services/test/test_service.dart';
 
 class GamesPageView extends StatefulWidget {
   @override
@@ -59,7 +60,11 @@ class _GamesPageViewState extends State<GamesPageView> {
   void _fetchGameDetails() async {
     _toggleLoading();
 
-    _liveGames = await UserGamesService.fetchLiveGames();
+    if (TestService.isTesting) {
+      _liveGames = await TestService.fetchLiveGames();
+    } else {
+      _liveGames = await UserGamesService.fetchLiveGames();
+    }
     _playedGames = await UserGamesService.fetchPlayedGames();
 
     _toggleLoading();

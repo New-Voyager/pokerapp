@@ -8,6 +8,7 @@ import 'package:pokerapp/resources/app_strings.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
+import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/widgets/card_form_text_field.dart';
 import 'package:pokerapp/widgets/round_raised_button.dart';
@@ -70,18 +71,22 @@ class _LoginScreenState extends State<LoginScreen> {
   void _handleLogin(BuildContext ctx) async {
     _toggleLoading();
 
-    Map<String, dynamic> s = await AuthService.login(_authModel);
+    if (TestService.isTesting) {
+      // let the user login
+    } else {
+      Map<String, dynamic> s = await AuthService.login(_authModel);
 
-    bool status = s['status'];
-    String message = s['message'];
+      bool status = s['status'];
+      String message = s['message'];
 
-    _toggleLoading();
+      _toggleLoading();
 
-    if (!status)
-      return Alerts.showSnackBar(
-        ctx,
-        message,
-      );
+      if (!status)
+        return Alerts.showSnackBar(
+          ctx,
+          message,
+        );
+    }
 
     Navigator.pushReplacementNamed(
       context,
