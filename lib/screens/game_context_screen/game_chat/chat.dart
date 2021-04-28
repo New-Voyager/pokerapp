@@ -8,6 +8,7 @@ import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:pokerapp/widgets/chat_text_field.dart';
@@ -132,8 +133,11 @@ class _GameChatState extends State<GameChat> {
             child: ListView.builder(
               controller: _scrollController,
               itemCount: widget.chatService.messages.length,
+              physics: ClampingScrollPhysics(),
+              reverse: true,
               shrinkWrap: true,
               itemBuilder: (contex, index) {
+                ChatMessage message = widget.chatService.messages[index];
                 return Container(
                   margin: EdgeInsets.only(bottom: 4, right: 96, left: 8),
                   padding: EdgeInsets.all(8),
@@ -143,19 +147,19 @@ class _GameChatState extends State<GameChat> {
                     children: [
                       Flexible(
                         child: Text(
-                          widget.chatService.messages[index].fromName
-                              .toString(),
-                          style: AppStyles.itemInfoSecondaryTextStyle
+                          message.fromName.toString(),
+                          style: AppStyles.clubItemInfoTextStyle
                               .copyWith(fontSize: 12),
                           softWrap: true,
                         ),
                       ),
-                      widget.chatService.messages[index].text != null
+                      SizedBox(height: 5),
+                      message.text != null
                           ? Text(
                               widget.chatService.messages[index].text,
                               style: AppStyles.clubCodeStyle,
                             )
-                          : widget.chatService.messages[index].giphyLink != null
+                          : message.giphyLink != null
                               ? CachedNetworkImage(
                                   imageUrl: widget
                                       .chatService.messages[index].giphyLink,
@@ -170,6 +174,18 @@ class _GameChatState extends State<GameChat> {
                                   fit: BoxFit.cover,
                                 )
                               : Container(),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Text(
+                            "${AppConstants.CHAT_DATE_TIME_FORMAT.format(message.received.toLocal())}",
+                            style:
+                                AppStyles.itemInfoSecondaryTextStyle.copyWith(
+                              fontSize: 10,
+                            ),
+                          )
+                        ],
+                      ),
                     ],
                   ),
                 );

@@ -6,7 +6,7 @@ import 'package:pokerapp/resources/app_constants.dart';
 import 'package:http/http.dart' as http;
 
 class GiphyService {
-  static const String trendingEndpoint =
+  /* static const String trendingEndpoint =
       'https://api.giphy.com/v1/gifs/trending';
 
   static const String searchEndpoint = 'https://api.giphy.com/v1/gifs/search';
@@ -37,5 +37,5 @@ class GiphyService {
     String url = _attachQuery(query);
 
     return _get(url);
-  }
+  } */
 }
