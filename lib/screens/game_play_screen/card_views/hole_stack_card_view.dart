@@ -40,41 +40,40 @@ class HoleStackCardView extends StatelessWidget {
     if (cards == null || cards.isEmpty) return const SizedBox.shrink();
     int mid = (cards.length ~/ 2);
 
-    return Container(
-      child: Transform.translate(
-        offset: Offset(-15, 30),
-        child: Stack(
-          alignment: Alignment.bottomLeft,
-          children: List.generate(
-            cards.length,
-            (i) => Transform.translate(
-              offset: Offset(
-                (i + 1 - mid) * kDisplacementConstant,
-                0,
-              ),
-              child: Transform.rotate(
-                alignment: Alignment.bottomLeft,
-                angle: (i - mid) * kAngleConstant,
-                child: Transform.translate(
-                  offset: Offset(
-                    0.0,
-                    cards[i].highlight ? pullUpOffset : 0.0,
-                  ),
-                  child: deactivated
-                      ? GameCardWidget(
-                          marked: markedCards.isMarked(cards[i]),
-                          onMarkTapCallback: () => markedCards.mark(cards[i]),
-                          card: cards[i],
-                          grayOut: true,
-                          isCardVisible: isCardVisible,
-                        )
-                      : GameCardWidget(
-                          marked: markedCards.isMarked(cards[i]),
-                          onMarkTapCallback: () => markedCards.mark(cards[i]),
-                          card: cards[i],
-                          isCardVisible: isCardVisible,
-                        ),
+    return Transform.translate(
+      offset: Offset(0, 0),
+      //offset: Offset(-15, 30),
+      child: Stack(
+        alignment: Alignment.bottomLeft,
+        children: List.generate(
+          cards.length,
+          (i) => Transform.translate(
+            offset: Offset(
+              (i + 1 - mid) * kDisplacementConstant,
+              0,
+            ),
+            child: Transform.rotate(
+              alignment: Alignment.bottomLeft,
+              angle: (i - mid) * kAngleConstant,
+              child: Transform.translate(
+                offset: Offset(
+                  0.0,
+                  cards[i].highlight ? pullUpOffset : 0.0,
                 ),
+                child: deactivated
+                    ? GameCardWidget(
+                        marked: markedCards.isMarked(cards[i]),
+                        onMarkTapCallback: () => markedCards.mark(cards[i]),
+                        card: cards[i],
+                        grayOut: true,
+                        isCardVisible: isCardVisible,
+                      )
+                    : GameCardWidget(
+                        marked: markedCards.isMarked(cards[i]),
+                        onMarkTapCallback: () => markedCards.mark(cards[i]),
+                        card: cards[i],
+                        isCardVisible: isCardVisible,
+                      ),
               ),
             ),
           ),

@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
+import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 
 enum TablePosition {
   Dealer,
@@ -27,6 +28,7 @@ class Seat extends ChangeNotifier {
   bool _openSeat;
   PlayerModel _player;
   SeatBet _seatBet;
+  SeatPos _uiPos;
 
   // UI attributes
   GlobalKey _key;
@@ -50,6 +52,9 @@ class Seat extends ChangeNotifier {
     this._actionTimer = ActionTimer();
     this._showTimer = false;
   }
+
+  SeatPos get uiSeatPos => this._uiPos;
+  set uiSeatPos(SeatPos uiPos) => this._uiPos = uiPos;
 
   @override
   String toString() {

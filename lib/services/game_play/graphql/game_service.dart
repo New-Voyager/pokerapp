@@ -8,6 +8,8 @@ import 'package:pokerapp/models/game/new_game_model.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
 
+import '../../gql_errors.dart';
+
 class GameService {
   static String leaveGameQuery = """
     mutation (\$gameCode: String!) {
@@ -66,7 +68,9 @@ class GameService {
       MutationOptions(documentNode: gql(_mutation)),
     );
 
-    if (result.hasException) return null;
+    if (result.hasException) {
+      throw GqlError.fromException(result.exception);
+    }
 
     return result.data['joinGame'];
   }

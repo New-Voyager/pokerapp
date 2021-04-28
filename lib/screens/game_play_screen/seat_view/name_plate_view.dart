@@ -175,63 +175,70 @@ class NamePlateWidget extends StatelessWidget {
 
     return Opacity(
       opacity: childWhenDragging ? 0.50 : 1.0,
-      child: Container(
-        width: boardAttributes.namePlateSize.width,
-        height: boardAttributes.namePlateSize.height,
-        padding: const EdgeInsets.symmetric(
-          vertical: 5.0,
-        ),
-        decoration: BoxDecoration(
-          shape: BoxShape.rectangle,
-          // borderRadius: BorderRadius.circular(5),
-          // color: Color(0XFF494444),
-          // border: Border.all(
-          //   color: AppColors.plateBorderColor,
-          //   width: 2.0,
-          // ),
-          boxShadow: shadow,
-        ),
-        child: Stack(
-          children: [
-            // name plate border
-            Container(
-              width: boardAttributes.namePlateSize.width,
-              height: boardAttributes.namePlateSize.height,
-              child: plateWidget,
-            ),
-            AnimatedSwitcher(
-              duration: AppConstants.animationDuration,
-              reverseDuration: AppConstants.animationDuration,
-              child: AnimatedOpacity(
+      child: Transform.scale(
+        scale:
+            boardAttributes.getNameplateScale(), // NOTE: 10inch 2.0, 7 inch 1.5
+        child: Container(
+          width: boardAttributes.namePlateSize.width,
+          height: boardAttributes.namePlateSize.height,
+          padding: const EdgeInsets.symmetric(
+            vertical: 5.0,
+          ),
+          decoration: BoxDecoration(
+            shape: BoxShape.rectangle,
+            // borderRadius: BorderRadius.circular(5),
+            // color: Color(0XFF494444),
+            // border: Border.all(
+            //   color: AppColors.plateBorderColor,
+            //   width: 2.0,
+            // ),
+            boxShadow: shadow,
+          ),
+          child: Stack(
+            children: [
+              // name plate border
+              Container(
+                width: 75,
+                height: 50,
+
+                // width: boardAttributes.namePlateSize.width,
+                // height: boardAttributes.namePlateSize.height,
+                child: plateWidget,
+              ),
+              AnimatedSwitcher(
                 duration: AppConstants.animationDuration,
-                opacity: seat.isOpen ? 0.0 : 1.0,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    FittedBox(
-                      child: Text(
-                        seat.player.name,
-                        style: AppStyles.gamePlayScreenPlayerName.copyWith(
-                          // FIXME: may be this is permanant?
-                          color: Colors.white,
+                reverseDuration: AppConstants.animationDuration,
+                child: AnimatedOpacity(
+                  duration: AppConstants.animationDuration,
+                  opacity: seat.isOpen ? 0.0 : 1.0,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      FittedBox(
+                        child: Text(
+                          seat.player.name,
+                          style: AppStyles.gamePlayScreenPlayerName.copyWith(
+                            // FIXME: may be this is permanant?
+                            color: Colors.white,
+                          ),
                         ),
                       ),
-                    ),
-                    PlayerViewDivider(),
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 5),
-                        child: FittedBox(
-                          child: bottomWidget(context),
+                      PlayerViewDivider(),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 5),
+                          child: FittedBox(
+                            child: bottomWidget(context),
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

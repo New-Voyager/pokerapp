@@ -7,7 +7,7 @@ import 'package:pokerapp/resources/card_back_assets.dart';
 import 'package:pokerapp/screens/game_play_screen/card_views/animations/card_back.dart';
 import 'package:provider/provider.dart';
 
-const delayConst = 10;
+const delayConst = 1;
 const restOffsetMultiplier = 1 / 10;
 
 class AnimatingShuffleCardView extends StatefulWidget {
@@ -17,7 +17,7 @@ class AnimatingShuffleCardView extends StatefulWidget {
 }
 
 class _AnimatingShuffleCardViewState extends State<AnimatingShuffleCardView> {
-  final _noOfCards = 40;
+  final _noOfCards = 20;
   final List<CardBack> _cards = [];
 
   String cardBackAsset;
