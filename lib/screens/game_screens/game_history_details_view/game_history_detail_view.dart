@@ -412,7 +412,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
 
   Widget balanceTile() {
     return Container(
-      height: 120.0,
+      height: 140.0,
       decoration: BoxDecoration(
         color: Color(0xff313235),
         borderRadius: BorderRadius.all(
@@ -507,7 +507,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
 
   Widget gameTypeTile() {
     return Container(
-      height: 120.0,
+      height: 140.0,
       decoration: BoxDecoration(
         color: Color(0xff313235),
         borderRadius: BorderRadius.all(
@@ -534,6 +534,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
               padding: const EdgeInsets.only(top: 12.0, bottom: 12.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Column(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -580,9 +581,9 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
                       seprator
                     ],
                   ),
-                  SizedBox(
+                  /*  SizedBox(
                     height: 15,
-                  ),
+                  ), */
                   Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
                     Visibility(
                       visible: loadingDone && _gameDetail.endedAt != null,

@@ -48,7 +48,7 @@ class GameHistoryItem extends StatelessWidget {
     var colRunTimeSeparator = SizedBox(width: 5.0);
 
     return Container(
-        height: 140.0,
+        height: 180.0,
         decoration: const BoxDecoration(
           color: AppColors.cardBackgroundColor,
           borderRadius: BorderRadius.all(
@@ -107,6 +107,9 @@ class GameHistoryItem extends StatelessWidget {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
+                              SizedBox(
+                                height: 8,
+                              ),
                               Row(
                                 children: [
                                   /* Game type */
@@ -212,20 +215,24 @@ class GameHistoryItem extends StatelessWidget {
             ),
             Visibility(
               visible: item.gameNum != 0,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Text(
-                    item.gameCode,
-                    style: AppStyles.gameCodeTextStyle,
-                  ),
-                  colSeparator,
-                  Text(
-                    '#' + item.gameNum.toString(),
-                    style: AppStyles.hostNameTextStyle,
-                  ),
-                  colSeparator,
-                ],
+              child: Positioned(
+                right: 8,
+                top: 8,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(
+                      item.gameCode,
+                      style: AppStyles.gameCodeTextStyle,
+                    ),
+                    colSeparator,
+                    Text(
+                      '#' + item.gameNum.toString(),
+                      style: AppStyles.hostNameTextStyle,
+                    ),
+                    colSeparator,
+                  ],
+                ),
               ),
             ),
           ],

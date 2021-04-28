@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:overlay_support/overlay_support.dart';
+import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/hand_history_model.dart';
 import 'package:pokerapp/models/hand_log_model.dart';
 import 'package:pokerapp/models/option_item_model.dart';
@@ -39,17 +41,24 @@ class _GameOptionState extends State<GameOption> {
     );
   }
 
-  void onEndGame() {
+  void onEndGame() { 
+    showSimpleNotification(
+      Text('The game will end after this hand'),
+      position: NotificationPosition.top,
+      duration: Duration(seconds: 10),
+    );
     // We need to broadcast to all the players
     GameService.endGame(this.gameCode);
 
-    ScaffoldMessenger.of(context).showSnackBar(
+   
+
+   /*  ScaffoldMessenger.of(navigatorKey.currentContext).showSnackBar(
       SnackBar(
         content: const Text('The game will end after this hand'),
         duration: Duration(seconds: 15),
         backgroundColor: Colors.black38,
       ),
-    );
+    ); */
   }
 
   void onPause() {
