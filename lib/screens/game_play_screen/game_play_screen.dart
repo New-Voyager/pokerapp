@@ -219,7 +219,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
       // _gameComService.chat.listen(onText: this.onText);
       _gameComService.gameMessaging.listen(
         onCards: this.onCards,
-        onText: this.onText,
+       // onText: this.onText,
         onAudio: this.onAudio,
         // onAnimation: this.onAnimation,
       );

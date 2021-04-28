@@ -5,6 +5,23 @@ import 'package:pokerapp/resources/app_assets.dart';
 import 'app_colors.dart';
 
 class AppStyles {
+  static const othersMessageDecoration = BoxDecoration(
+    color: AppColors.cardBackgroundColor,
+    borderRadius: BorderRadius.only(
+      topLeft: Radius.circular(16),
+      topRight: Radius.circular(16),
+      bottomLeft: Radius.circular(16),
+    ),
+  );
+
+  static const myMessageDecoration = BoxDecoration(
+    color: AppColors.cardBackgroundColor,
+    borderRadius: BorderRadius.only(
+      topLeft: Radius.circular(16),
+      topRight: Radius.circular(16),
+      bottomRight: Radius.circular(16),
+    ),
+  );
   static const stackPopUpTextStyle = TextStyle(
     color: AppColors.lightGrayColor,
     fontSize: 12.0,

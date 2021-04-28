@@ -10,6 +10,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/host_seat_chang
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
+import 'package:pokerapp/utils/utils.dart';
 import 'package:provider/provider.dart';
 import 'communication_view.dart';
 import 'game_action.dart';
@@ -42,18 +43,23 @@ class _FooterViewState extends State<FooterView>
   Widget build(BuildContext context) {
     final boardAttributes =
         Provider.of<BoardAttributesObject>(context, listen: false);
-    final Size footerSize = boardAttributes.footerSize;
+    /*  final Size footerSize = boardAttributes.footerSize;
     final height = footerSize.height / 2;
     final width = footerSize.width * 2 / 3;
     final screen = boardAttributes.getScreen(context);
     final left = (footerSize.width - width) / 2;
     log('footer size: $footerSize width: $width, height: $height diagonal: ${screen.diagonalInches()}');
+     */
+
+    Screen s = boardAttributes.getScreen(context);
+
+    final width = s.width() * 2 / 3;
     return Consumer2<Players, ActionState>(
       builder: (_, players, actionState, __) {
         return Stack(
           children: [
             Positioned(
-                left: left,
+                left: 0,
                 top: 20.0,
                 width: width,
                 child: players.me == null

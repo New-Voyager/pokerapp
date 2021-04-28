@@ -59,7 +59,7 @@ class PlayerService {
     Map<String, dynamic> variables = {"ids": ids};
 
     String _query = """query (\$ids: [Int!]{
-      players: idsToPlayerInfo(ids: \$ids) {
+      players: idsToPlayersInfo(ids: \$ids) {
         id
         uuid
         name
