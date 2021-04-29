@@ -8,7 +8,6 @@ import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
-import 'package:pokerapp/resources/animation_assets.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_styles.dart';
@@ -22,10 +21,10 @@ import 'package:provider/provider.dart';
 import 'action_status.dart';
 import 'animating_widgets/fold_card_animating_widget.dart';
 import 'animating_widgets/stack_switch_seat_animating_widget.dart';
+import 'chip_amount_widget.dart';
 import 'dealer_button.dart';
 import 'name_plate_view.dart';
 import 'open_seat.dart';
-import 'user_view_util_widgets.dart';
 
 /* this contains the player positions <seat-no, position> mapping */
 // Map<int, Offset> playerPositions = Map();
@@ -89,22 +88,10 @@ class PlayerView extends StatelessWidget {
     }
   }
 
-  void afterBuild() {
-    // final RenderBox object = seat.key.currentContext.findRenderObject();
-    // final pos = object.localToGlobal(Offset(0, 0));
-    // final size = object.size;
-    // seat.screenPos = pos;
-    // seat.size = size;
-    //
-    // playerPositions[seat.serverSeatPos] = pos;
-  }
-
   @override
   Widget build(BuildContext context) {
     seat.key =
         GlobalKey(debugLabel: 'Seat:${seat.serverSeatPos}'); //this.globalKey;
-
-    WidgetsBinding.instance.addPostFrameCallback((_) => afterBuild);
 
     bool openSeat = seat.isOpen;
     bool isMe = seat.isMe;
@@ -123,9 +110,6 @@ class PlayerView extends StatelessWidget {
       return OpenSeat(seatPos: seat.serverSeatPos, onUserTap: this.onUserTap);
     }
 
-    // enable this line for debugging dealer position
-    // userObject.playerType = PlayerType.Dealer;
-
     final GameInfoModel gameInfo = Provider.of<ValueNotifier<GameInfoModel>>(
       context,
       listen: false,
@@ -139,8 +123,20 @@ class PlayerView extends StatelessWidget {
       }
     }
 
-    seat.seatBet.uiKey = GlobalKey();
+    final gameState = GameState.getState(context);
+    final boardAttributes = gameState.getBoardAttributes(context);
+    seat.betWidgetUIKey = GlobalKey();
 
+    bool animate = seat.player.action.animateAction;
+
+    Widget chipAmountWidget = ChipAmountWidget(
+      animate: animate,
+      potKey: boardAttributes.getPotsKey(0),
+      key: seat.betWidgetUIKey,
+      seat: seat,
+      boardAttributesObject: boardAttributes,
+      gameInfo: gameInfo,
+    );
     return DragTarget(
       onWillAccept: (data) {
         print("object data $data");
@@ -158,6 +154,7 @@ class PlayerView extends StatelessWidget {
         return InkWell(
           onTap: () => this.onTap(context),
           child: Stack(
+            clipBehavior: Clip.none,
             alignment: Alignment.center,
             children: [
               (!openSeat ? seat.player?.showFirework ?? false : false)
@@ -217,12 +214,13 @@ class PlayerView extends StatelessWidget {
                   : shrinkedSizedBox,
 
               // /* building the chip amount widget */
-              UserViewUtilWidgets.buildChipAmountWidget(
-                context: context,
-                seat: seat,
-                boardAttributesObject: boardAttributes,
-              ),
-
+              animate
+                  ? ChipAmountAnimatingWidget(
+                      seatPos: seat.serverSeatPos,
+                      child: chipAmountWidget,
+                      reverse: seat.player.action.winner,
+                    )
+                  : chipAmountWidget,
               // SeatNoWidget(seat),
             ],
           ),

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:pokerapp/enums/hand_actions.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
-import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_styles.dart';
+
 import 'animating_widgets/stack_switch_seat_animating_widget.dart';
 
 class ActionStatusWidget extends StatelessWidget {
@@ -17,53 +18,30 @@ class ActionStatusWidget extends StatelessWidget {
     * 2. The current user is to act - the current user is highlighted */
     if (seat.isOpen || seat.player.highlight) return shrinkedSizedBox;
 
-    String action;
+    //String action;
     //seat.player.status = "CHECK";
-    if (seat.player?.action != null && seat.player.action.isNotEmpty)
-      action = seat.player.action;
-
-    // if (seat.player?.status == AppConstants.WAIT_FOR_BUYIN)
-    //   // SOMA: disabled showing status
-    //   //status = 'Waiting for Buy In';
-    //   status = null;
-
-    //if (seat.player.buyIn != null) status = 'Buy In ${seat.player.buyIn} amount';
-
-    // if (seat.player?.status == AppConstants.PLAYING) status = null;
-
+    final action = seat.player.action.action;
+    String actionStr = '';
+    if (action == HandActions.BET ||
+        action == HandActions.CALL ||
+        action == HandActions.CHECK ||
+        action == HandActions.FOLD ||
+        action == HandActions.ALLIN ||
+        action == HandActions.STRADDLE) {
+      actionStr = action.toString().replaceAll('HandActions.', '');
+    }
     // decide color from the status message
     // raise, bet -> red
     // check, call -> green
-    return action == null
+    return actionStr == ''
         ? shrinkedSizedBox
         : ClipRRect(
             borderRadius: BorderRadius.circular(5.0),
             child: Text(
-              '  ' + action + '  ',
-              style: getStatusTextStyle(action),
+              '  ' + actionStr + '  ',
+              style: getStatusTextStyle(actionStr),
             ),
           );
-
-    // return AnimatedSwitcher(
-    //   duration: AppConstants.popUpAnimationDuration,
-    //   reverseDuration: AppConstants.popUpAnimationDuration,
-    //   switchInCurve: Curves.bounceInOut,
-    //   switchOutCurve: Curves.bounceInOut,
-    //   transitionBuilder: (widget, animation) => ScaleTransition(
-    //     alignment: Alignment.topCenter,
-    //     scale: animation,
-    //     child: widget,
-    //   ),
-    //   child: status == null
-    //       ? shrinkedSizedBox
-    //       : ClipRRect(
-    //           borderRadius: BorderRadius.circular(5.0),
-    //           child: Text(
-    //             status,
-    //             style: getStatusTextStyle(status),
-    //           ),
-    //         ),
-    // );
   }
 
   static TextStyle getStatusTextStyle(String status) {

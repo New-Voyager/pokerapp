@@ -31,6 +31,7 @@ class AppAssets {
   static const String fireworkGif = 'assets/images/fireworks.gif';
 
   static const String coinsImages = 'assets/images/coins.svg';
+  static const String bigBetImage = 'assets/images/game/bigbet.svg';
 
   static const String betRaiseSound = 'assets/sound_effects/bet_call1.mp3';
   static const String allInSound = 'assets/sound_effects/allin.mp3';
