@@ -1,10 +1,7 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
-import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
+import 'package:pokerapp/enums/hand_actions.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/resources/app_assets.dart';
-import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/services/game_play/utils/audio.dart';
 import 'package:provider/provider.dart';
 
@@ -23,50 +20,33 @@ class PlayerActedService {
       context,
       listen: false,
     );
-    final player = gameState.fromSeat(context, seatNo);
-    // log('player acted seat no: $seatNo');
-    assert(player != null);
+    final seat = gameState.getSeat(context, seatNo);
 
-    // show the status message
-    player.action = "${playerActed['action']}";
-
-    String action = playerActed['action'];
-
-    // check if player folded
-    if (action == AppConstants.FOLD) {
-      player.playerFolded = true;
-    }
-
-    if (action == AppConstants.ALLIN) {
-      player.allIn = true;
-    }
-
+    final action = seat.player.action;
+    action.setAction(playerActed);
     // play the bet-raise sound effect
-    if (action == AppConstants.BET ||
-        action == AppConstants.RAISE ||
-        action == AppConstants.CALL)
+    if (action.action == HandActions.BET ||
+        action.action == HandActions.RAISE ||
+        action.action == HandActions.CALL) {
       Audio.play(
         context: context,
         assetFile: AppAssets.betRaiseSound,
       );
-
-    if (action == AppConstants.FOLD)
+    } else if (action.action == HandActions.FOLD) {
       Audio.play(
         context: context,
         assetFile: AppAssets.foldSound,
       );
-
-    if (action == AppConstants.CHECK)
+    } else if (action.action == HandActions.CHECK) {
       Audio.play(
         context: context,
         assetFile: AppAssets.checkSound,
       );
-
-    int amount = playerActed['amount'];
-    if (amount != null) player.coinAmount = amount;
-
+    }
     int stack = playerActed['stack'];
-    if (stack != null) player.stack = stack;
+    if (stack != null) {
+      seat.player.stack = stack;
+    }
     // before showing the prompt --> turn off the highlight on other players
     gameState.resetActionHighlight(context, -1);
   }

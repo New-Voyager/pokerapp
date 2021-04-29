@@ -2,6 +2,7 @@
 * mappings and everything that is variable */
 
 import 'dart:developer';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_type.dart';
@@ -190,6 +191,9 @@ class BoardAttributesObject extends ChangeNotifier {
   // seat attrib map
   Map<SeatPos, SeatPosAttribs> _seatPosAttribs;
 
+  // bet image
+  Uint8List _betImage;
+
   BoardAttributesObject({
     @required double screenSize,
     BoardOrientation orientation = BoardOrientation.horizontal,
@@ -244,18 +248,6 @@ class BoardAttributesObject extends ChangeNotifier {
     if (_boardOrientation == BoardOrientation.horizontal)
       return kFoldCardAnimationOffsetHorizontalMapping;
     return kFoldCardAnimationOffsetVerticalMapping;
-  }
-
-  Map<int, Offset> get chipAmountAnimationOffsetMapping {
-    if (_boardOrientation == BoardOrientation.horizontal)
-      return kChipAmountAnimationOffsetHorizontalMapping;
-    return kChipAmountAnimationOffsetVerticalMapping;
-  }
-
-  Map<int, Offset> get chipAmountWidgetOffsetMapping {
-    if (_boardOrientation == BoardOrientation.horizontal)
-      return kChipAmountWidgetOffsetHorizontalMapping;
-    return kChipAmountWidgetOffsetVerticalMapping;
   }
 
   Map<int, Offset> get buttonPos {
@@ -399,4 +391,6 @@ class BoardAttributesObject extends ChangeNotifier {
   }
 
   int get screenSize => this._screenSize;
+  Uint8List get betImage => this._betImage;
+  set betImage(Uint8List betImage) => this._betImage = betImage;
 }

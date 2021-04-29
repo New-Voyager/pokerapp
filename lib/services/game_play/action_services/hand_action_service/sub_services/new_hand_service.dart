@@ -47,6 +47,8 @@ class NewHandService {
       context,
       listen: false,
     );
+    gameState.resetSeatActions();
+
     final handInfo = gameState.getHandInfo(context);
     handInfo.update(noCards: noCards);
 

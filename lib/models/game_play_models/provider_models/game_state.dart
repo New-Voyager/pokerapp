@@ -338,6 +338,20 @@ class GameState {
     final actionState = getActionState(context);
     actionState.setAction(seatNo, seatAction);
   }
+
+  void resetSeatActions() {
+    for (final seat in this._seats.values) {
+      seat.player.reset();
+      seat.notify();
+    }
+  }
+
+  Future<void> animateSeatActions() async {
+    for (final seat in this._seats.values) {
+      seat.player.action.animateAction = true;
+      seat.notify();
+    }
+  }
 }
 
 /*

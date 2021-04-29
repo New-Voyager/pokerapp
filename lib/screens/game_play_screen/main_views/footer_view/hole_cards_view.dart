@@ -36,7 +36,7 @@ class _HoleCardsViewState extends State<HoleCardsView> {
     final height = footerSize.height / 1.5;
     final width = footerSize.width / 2;
     final screen = boardAttributes.getScreen(context);
-    log('footer size: $footerSize width: $width, height: $height diagonal: ${screen.diagonalInches()}');
+    // log('footer size: $footerSize width: $width, height: $height diagonal: ${screen.diagonalInches()}');
 
     return Stack(children: [
       Align(

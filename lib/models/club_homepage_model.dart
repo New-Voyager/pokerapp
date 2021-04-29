@@ -1,7 +1,4 @@
-import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:pokerapp/models/club_weekly_activity_model.dart';
 
 import 'game_model.dart';

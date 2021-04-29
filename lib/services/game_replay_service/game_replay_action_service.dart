@@ -47,7 +47,7 @@ class GameReplayActionService {
     int amount = action.actionData['amount'] as int;
     bool timedOut = action.actionData['timedOut'] as bool;
     int stack = action.actionData['stack'] as int;
-
+    final gameState = GameState.getState(context);
     Players players = Provider.of<Players>(
       context,
       listen: false,
@@ -65,10 +65,12 @@ class GameReplayActionService {
         true,
       );
     else {
-      players.updateCoinAmountSilent(
-        idx,
-        amount,
-      );
+      final seat = gameState.getSeat(context, seatNo);
+      seat.player.action.setAction(action);
+      // players.updateCoinAmountSilent(
+      //   idx,
+      //   amount,
+      // );
 
       players.updateStatusSilent(
         idx,
@@ -99,7 +101,10 @@ class GameReplayActionService {
       listen: false,
     );
 
-    await players.moveCoinsToPot();
+    final gameState = GameState.getState(context);
+
+    //await players.moveCoinsToPot();
+    await gameState.animateSeatActions();
 
     tableState.updatePotChipsSilent(
       potChips: [action.actionData['pot']],
@@ -107,8 +112,6 @@ class GameReplayActionService {
     );
     tableState.notifyAll();
 
-    // remove all the status (last action) of all the players
-    players.removeAllPlayersStatusSilent();
     players.notifyAll();
   }
 
@@ -217,9 +220,6 @@ class GameReplayActionService {
 
     /* remove all highlight - silently */
     players.removeAllHighlightsSilent();
-
-    /* players remove last status and markers */
-    players.removeAllPlayersStatusSilent();
 
     players.removeMarkersFromAllPlayerSilent();
 

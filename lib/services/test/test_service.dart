@@ -1,14 +1,12 @@
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pokerapp/models/game_model.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
-import 'package:pokerapp/models/game_play_models/provider_models/player_action.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/player_info.dart';
@@ -175,17 +173,66 @@ class TestService {
     BuildContext context = _context;
 
     final gameState = Provider.of<GameState>(context, listen: false);
-    final players = gameState.getPlayers(context);
-    await players.moveCoinsToPot();
+    await gameState.animateSeatActions();
+    await Future.delayed(Duration(seconds: 1));
+    gameState.resetSeatActions();
   }
 
   static void showBets() {
     BuildContext context = _context;
 
     final gameState = Provider.of<GameState>(context, listen: false);
-    final players = gameState.getPlayers(context);
-    players.updateTestBet(20);
-    players.notifyAll();
+    gameState.resetSeatActions();
+
+    final seat1 = gameState.getSeat(context, 1);
+    seat1.player.action.button = true;
+
+    final seat2 = gameState.getSeat(context, 2);
+    seat2.player.action.amount = 1;
+    seat2.player.action.sb = true;
+
+    final seat3 = gameState.getSeat(context, 3);
+    seat3.player.action.amount = 2;
+    seat3.player.action.bb = true;
+
+    final seat4 = gameState.getSeat(context, 4);
+    seat4.player.action.amount = 4;
+    seat4.player.action.straddle = true;
+
+    final seat5 = gameState.getSeat(context, 5);
+    seat5.player.action.setAction(jsonDecode('''
+          {
+            "action": "CALL",
+            "amount": 4.0
+          }
+        '''));
+
+    for (final seat in gameState.seats) {
+      if (seat.serverSeatPos <= 5) {
+        seat.notify();
+        continue;
+      }
+
+      if (seat.serverSeatPos == 6) {
+        dynamic json = jsonDecode('''
+          {
+            "action": "BET",
+            "amount": 20.0
+          }
+        ''');
+        seat.player.action.setAction(json);
+      } else {
+        dynamic json = jsonDecode('''
+          {
+            "action": "CALL",
+            "amount": 20.0
+          }
+        ''');
+        seat.player.action.setAction(json);
+      }
+
+      seat.notify();
+    }
   }
 
   static Future<void> buyInTest() async {
@@ -214,33 +261,34 @@ class TestService {
     BuildContext context = _context;
 
     final gameState = Provider.of<GameState>(context, listen: false);
+
     final players = gameState.getPlayers(context);
     final seat1 = gameState.getSeat(context, 1);
     final seat2 = gameState.getSeat(context, 5);
     final seat3 = gameState.getSeat(context, 9);
     final player1 = seat1.player;
-    player1.coinAmount = 100;
-    player1.animatingCoinMovement = false;
-    player1.animatingCoinMovementReverse = true;
+    // player1.coinAmount = 100;
+    // player1.animatingCoinMovement = false;
+    // player1.animatingCoinMovementReverse = true;
 
-    seat2.player.coinAmount = 100;
-    seat2.player.animatingCoinMovement = false;
-    seat2.player.animatingCoinMovementReverse = true;
+    // seat2.player.coinAmount = 100;
+    // seat2.player.animatingCoinMovement = false;
+    // seat2.player.animatingCoinMovementReverse = true;
 
-    seat3.player.coinAmount = 100;
-    seat3.player.animatingCoinMovement = false;
-    seat3.player.animatingCoinMovementReverse = true;
-    log('Updating pot to players');
-    players.notifyAll();
-
-    // wait for the animation to finish, then update the stack
-    Future.delayed(Duration(seconds: 1)).then(
-      (_) {
-        players.removeWinnerHighlightSilent();
-        players.resetMoveCoinsFromPotSilent();
-        players.notifyAll();
-      },
-    );
+    // seat3.player.coinAmount = 100;
+    // seat3.player.animatingCoinMovement = false;
+    // seat3.player.animatingCoinMovementReverse = true;
+    // log('Updating pot to players');
+    // players.notifyAll();
+    seat1.player.action.amount = 100.0;
+    seat1.player.action.winner = true;
+    seat2.player.action.amount = 100.0;
+    seat2.player.action.winner = true;
+    seat3.player.action.amount = 100.0;
+    seat3.player.action.winner = true;
+    await gameState.animateSeatActions();
+    await Future.delayed(Duration(seconds: 1));
+    gameState.resetSeatActions();
   }
 
   static Future<void> testBetWidget() async {

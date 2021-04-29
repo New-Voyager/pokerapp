@@ -3,9 +3,7 @@ import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:pokerapp/models/gif_model.dart';
 import 'package:pokerapp/resources/app_colors.dart';
-import 'package:pokerapp/services/app/gifhy_service.dart';
 import 'package:pokerapp/services/app/tenor_service.dart';
 import 'package:tenor/tenor.dart';
 
@@ -105,23 +103,20 @@ class _GifDrawerSheetState extends State<GifDrawerSheet> {
                           crossAxisCount: 3,
                           crossAxisSpacing: 10.0,
                           mainAxisSpacing: 10.0,
-                          children: _gifs
-                              .map((TenorResult gif) {
-                                return GestureDetector(
-                                    onTap: () =>
-                                        Navigator.pop(context, gif.url),
-                                    child: CachedNetworkImage(
-                                      imageUrl: gif.media.gif.url,
-                                      placeholder: (_, __) => Icon(
-                                        FontAwesomeIcons.image,
-                                        size: 50.0,
-                                        color: AppColors.lightGrayColor,
-                                      ),
-                                      fit: BoxFit.cover,
-                                    ),
-                                  );
-                              })
-                              .toList(),
+                          children: _gifs.map((TenorResult gif) {
+                            return GestureDetector(
+                              onTap: () => Navigator.pop(context, gif.url),
+                              child: CachedNetworkImage(
+                                imageUrl: gif.media.gif.url,
+                                placeholder: (_, __) => Icon(
+                                  FontAwesomeIcons.image,
+                                  size: 50.0,
+                                  color: AppColors.lightGrayColor,
+                                ),
+                                fit: BoxFit.cover,
+                              ),
+                            );
+                          }).toList(),
                         ),
                       ),
           ),

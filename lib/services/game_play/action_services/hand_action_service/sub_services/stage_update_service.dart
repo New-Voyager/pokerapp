@@ -48,16 +48,13 @@ class StageUpdateService {
     final players = gameState.getPlayers(context);
 
     // show the move coin to pot animation, after that update the pot
-    players.moveCoinsToPot().then(
-      (_) async {
-        // update the pot
-        updatePot(data, key, context);
+    await gameState.animateSeatActions();
+    await Future.delayed(Duration(seconds: 1));
+    gameState.resetSeatActions();
+    // update the pot
+    updatePot(data, key, context);
 
-        // remove all the status (last action) of all the players
-        players.removeAllPlayersStatusSilent();
-        players.notifyAll();
-      },
-    );
+    players.notifyAll();
 
     // update the community cards
     if (key == 'flop') {
