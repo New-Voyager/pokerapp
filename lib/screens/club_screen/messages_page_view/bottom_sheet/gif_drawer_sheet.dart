@@ -105,23 +105,20 @@ class _GifDrawerSheetState extends State<GifDrawerSheet> {
                           crossAxisCount: 3,
                           crossAxisSpacing: 10.0,
                           mainAxisSpacing: 10.0,
-                          children: _gifs
-                              .map((TenorResult gif) {
-                                return GestureDetector(
-                                    onTap: () =>
-                                        Navigator.pop(context, gif.url),
-                                    child: CachedNetworkImage(
-                                      imageUrl: gif.media.gif.url,
-                                      placeholder: (_, __) => Icon(
-                                        FontAwesomeIcons.image,
-                                        size: 50.0,
-                                        color: AppColors.lightGrayColor,
-                                      ),
-                                      fit: BoxFit.cover,
-                                    ),
-                                  );
-                              })
-                              .toList(),
+                          children: _gifs.map((TenorResult gif) {
+                            return GestureDetector(
+                              onTap: () => Navigator.pop(context, gif.url),
+                              child: CachedNetworkImage(
+                                imageUrl: gif.media.gif.url,
+                                placeholder: (_, __) => Icon(
+                                  FontAwesomeIcons.image,
+                                  size: 50.0,
+                                  color: AppColors.lightGrayColor,
+                                ),
+                                fit: BoxFit.cover,
+                              ),
+                            );
+                          }).toList(),
                         ),
                       ),
           ),

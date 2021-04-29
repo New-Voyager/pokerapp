@@ -117,7 +117,7 @@ class CenterView extends StatelessWidget {
             alignment: Alignment.topCenter,
             child: Transform.translate(
               key: boardAttributes.centerPotBetKey,
-              offset: Offset(0, 15),
+              offset: Offset(0, 30),
               child: Container(
                 width: 50,
                 height: 50,

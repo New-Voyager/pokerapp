@@ -158,6 +158,7 @@ class PlayerView extends StatelessWidget {
         return InkWell(
           onTap: () => this.onTap(context),
           child: Stack(
+            clipBehavior: Clip.none,
             alignment: Alignment.center,
             children: [
               (!openSeat ? seat.player?.showFirework ?? false : false)

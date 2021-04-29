@@ -48,6 +48,25 @@ class GamePlayScreenUtilMethods {
             color: Colors.white,
           ),
           backgroundColor: Colors.red,
+          label: 'Show Bets',
+          onTap: () => TestService.showBets(),
+        ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
+          label: 'Simulate Bet Movement',
+          onTap: () => TestService.simulateBetMovement(),
+        ),
+        /*
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
           label: 'Show holecards',
           onTap: () => TestService.showHoleCards(),
         ),
@@ -114,24 +133,7 @@ class GamePlayScreenUtilMethods {
           label: 'Clear Cards',
           onTap: () => TestService.clearBoardCards(),
         ),
-        SpeedDialChild(
-          child: Icon(
-            Icons.adb_rounded,
-            color: Colors.white,
-          ),
-          backgroundColor: Colors.red,
-          label: 'Simulate Bet Movement',
-          onTap: () => TestService.simulateBetMovement(),
-        ),
-        SpeedDialChild(
-          child: Icon(
-            Icons.adb_rounded,
-            color: Colors.white,
-          ),
-          backgroundColor: Colors.red,
-          label: 'Show Bets',
-          onTap: () => TestService.showBets(),
-        ),
+
         SpeedDialChild(
           child: Icon(
             Icons.adb_rounded,
@@ -159,6 +161,7 @@ class GamePlayScreenUtilMethods {
           label: 'Show Bets',
           onTap: () => TestService.testBetWidget(),
         ),
+          */
       ],
       backgroundColor: AppColors.appAccentColor,
     );

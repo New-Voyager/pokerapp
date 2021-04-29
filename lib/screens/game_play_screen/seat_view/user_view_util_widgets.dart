@@ -1,22 +1,18 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/remaining_time.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
-import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
-import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/screens/game_play_screen/card_views/stack_card_view.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:provider/provider.dart';
 
 import 'action_status.dart';
-import 'animating_widgets/chip_amount_animating_widget.dart';
 import 'chip_amount_widget.dart';
 import 'count_down_timer.dart';
 
@@ -180,12 +176,9 @@ class UserViewUtilWidgets {
     @required Seat seat,
     @required BoardAttributesObject boardAttributesObject,
   }) {
+    final gameState = GameState.getState(context);
+    final boardAttributes = gameState.getBoardAttributes(context);
     seat.seatBet.uiKey = GlobalKey();
-    Widget chipAmountWidget = ChipAmountWidget(
-      key: seat.seatBet.uiKey,
-      seat: seat,
-      boardAttributesObject: boardAttributesObject,
-    );
 
     bool animate = false;
     if (seat.player.animatingCoinMovement ?? false) {
@@ -193,28 +186,21 @@ class UserViewUtilWidgets {
     } else if (seat.player.animatingCoinMovementReverse ?? false) {
       animate = true;
     }
-    // /* after the widgets are drawn get their positions */
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final gameState = GameState.getState(context);
-      final boardAttributes = gameState.getBoardAttributes(context);
-      final RenderBox potView =
-          boardAttributes.getPotsKey(0)?.currentContext?.findRenderObject();
-      final RenderBox potBetView =
-          boardAttributes.centerPotBetKey?.currentContext?.findRenderObject();
+    Widget chipAmountWidget = ChipAmountWidget(
+      animate: animate,
+      potKey: boardAttributes.getPotsKey(0),
+      key: seat.seatBet.uiKey,
+      seat: seat,
+      boardAttributesObject: boardAttributesObject,
+    );
 
-      if (potView == null || potBetView == null) return;
-
-      // final globalPos = potView.localToGlobal(Offset(0, 20));
-      final potBetPos = potBetView.localToGlobal(Offset(0, 30));
-
-      final RenderBox renderBox =
-          seat.seatBet.uiKey.currentContext.findRenderObject();
-      // final potViewPos = renderBox.globalToLocal(globalPos);
-      // final pos = renderBox.localToGlobal(Offset(0, 0));
-      final potBetPosLocal = renderBox.globalToLocal(potBetPos);
-      seat.seatBet.potViewPos = potBetPosLocal;
-      //log('Seat: ${seat.serverSeatPos}, pos: $pos potView: $potViewPos potBetPos: $potBetPosLocal');
-    });
+    // if (animate) {
+    //   if (seat.uiSeatPos == SeatPos.bottomLeft) {
+    //     animate = true;
+    //   } else {
+    //     animate = false;
+    //   }
+    // }
 
     return animate
         ? ChipAmountAnimatingWidget(

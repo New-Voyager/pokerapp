@@ -1,26 +1,38 @@
 import 'dart:developer';
 
+import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/resources/app_assets.dart';
-import 'package:pokerapp/resources/app_styles.dart';
-
-import 'dart:math' as math;
 
 Map<int, Offset> _finalPositionCache = Map();
 
-class ChipAmountWidget extends StatelessWidget {
+class ChipAmountWidget extends StatefulWidget {
+  final bool animate;
+  final GlobalKey potKey;
   final Seat seat;
   final BoardAttributesObject boardAttributesObject;
+  final GlobalKey key;
+
   ChipAmountWidget({
-    Key key,
+    @required this.animate,
+    @required this.potKey,
+    @required this.key,
     @required this.seat,
     @required this.boardAttributesObject,
-  }) : super(key: key);
+  });
 
+  @override
+  _ChipAmountWidgetState createState() => _ChipAmountWidgetState();
+}
+
+class _ChipAmountWidgetState extends State<ChipAmountWidget>
+    with AfterLayoutMixin<ChipAmountWidget> {
+  Offset betOffset;
   Offset _getCenterPos(BuildContext context) {
     List<Offset> _playerPositions = [];
 
@@ -70,9 +82,29 @@ class ChipAmountWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final gameState = GameState.getState(context);
+    final boardAttributes = gameState.getBoardAttributes(context);
+    if (boardAttributes.betImage == null) {
+      log('betimage is null');
+    } else {
+      log('betimage is not null');
+    }
+
     bool showBet = true;
-    if (seat.player?.coinAmount == null || seat.player?.coinAmount == 0) {
+    if (widget.seat.player?.coinAmount == null ||
+        widget.seat.player?.coinAmount == 0) {
       showBet = false;
+    }
+
+    bool bb = false;
+    bool sb = false;
+    bool bigbet = true;
+
+    if (widget.seat.serverSeatPos == 1) {
+      sb = true;
+    }
+    if (widget.seat.serverSeatPos == 2) {
+      bb = true;
     }
 
     Widget child;
@@ -86,17 +118,62 @@ class ChipAmountWidget extends StatelessWidget {
     } else {
       List<Widget> children = [];
 
-      /* show the coin svg */
-      final coin = Container(
-        height: 20,
-        width: 20.0,
-        child: SvgPicture.asset(
-          AppAssets.coinsImages,
-        ),
-      );
+      Widget coin;
+      if (sb) {
+        coin = Container(
+          height: 15,
+          width: 15.0,
+          child: SvgPicture.asset(
+            'assets/images/betchips/sb.svg',
+          ),
+        );
+      } else if (bb) {
+        coin = Container(
+          height: 20,
+          width: 20.0,
+          child: SvgPicture.asset(
+            'assets/images/betchips/bb.svg',
+          ),
+        );
+      } else if (widget.seat.serverSeatPos == 3) {
+        coin = Container(
+          height: 15,
+          width: 15.0,
+          child: SvgPicture.asset(
+            'assets/images/betchips/straddle.svg',
+          ),
+        );
+      } else {
+        if (widget.seat.serverSeatPos == 5 || widget.seat.serverSeatPos == 7) {
+          coin = Container(
+            height: 25,
+            width: 15.0,
+            child: SvgPicture.asset(
+              'assets/images/betchips/callbig.svg',
+            ),
+          );
+        } else if (widget.seat.serverSeatPos == 4 ||
+            widget.seat.serverSeatPos == 9) {
+          coin = Container(
+            height: 25,
+            width: 15.0,
+            child: SvgPicture.asset(
+              'assets/images/betchips/raisebig.svg',
+            ),
+          );
+        } else {
+          coin = Container(
+            height: 25,
+            width: 15.0,
+            child: SvgPicture.asset(
+              'assets/images/betchips/allin.svg',
+            ),
+          );
+        }
+      }
 
       /* show the coin amount */
-      final amount = Text(seat.player?.coinAmount.toString(),
+      final amount = Text(widget.seat.player?.coinAmount.toString(),
           style: TextStyle(
             color: Colors.white,
             fontSize: 12.0,
@@ -104,9 +181,9 @@ class ChipAmountWidget extends StatelessWidget {
             fontFamily: AppAssets.fontFamilyLato,
           ));
 
-      if (seat.uiSeatPos == SeatPos.middleRight ||
-          seat.uiSeatPos == SeatPos.bottomRight ||
-          seat.uiSeatPos == SeatPos.topRight) {
+      if (widget.seat.uiSeatPos == SeatPos.middleRight ||
+          widget.seat.uiSeatPos == SeatPos.bottomRight ||
+          widget.seat.uiSeatPos == SeatPos.topRight) {
         children.add(amount);
         children.add(SizedBox(height: 2.0));
         children.add(coin);
@@ -150,89 +227,184 @@ class ChipAmountWidget extends StatelessWidget {
     // log('${seat.uiSeatPos.toString()}: nameplate size: ${boardAttributesObject.namePlateSize}');
     Offset offset = Offset(0, 0);
 
+    Size namePlateSize = widget.boardAttributesObject.namePlateSize;
     // 5 inches
     Map<SeatPos, Offset> betAmountPos = {
-      SeatPos.bottomCenter:
-          Offset(0, -boardAttributesObject.namePlateSize.height + 10),
+      SeatPos.bottomCenter: Offset(0, -namePlateSize.height / 2 - 20),
       SeatPos.bottomLeft:
-          Offset(0, -boardAttributesObject.namePlateSize.height + 20),
-      SeatPos.middleLeft: Offset(boardAttributesObject.namePlateSize.width - 20,
-          boardAttributesObject.namePlateSize.height / 2),
-      SeatPos.topLeft: Offset(boardAttributesObject.namePlateSize.width / 2,
-          boardAttributesObject.namePlateSize.height / 2 + 10),
-      SeatPos.topCenter:
-          Offset(0, boardAttributesObject.namePlateSize.height - 20),
-      SeatPos.topCenter1:
-          Offset(0, boardAttributesObject.namePlateSize.height - 20),
-      SeatPos.topCenter2:
-          Offset(0, boardAttributesObject.namePlateSize.height - 20),
+          Offset(namePlateSize.width / 2, -namePlateSize.height / 2 - 10),
+      SeatPos.middleLeft: Offset(0, namePlateSize.height / 2 + 10),
+      SeatPos.topLeft:
+          Offset(namePlateSize.width / 2, namePlateSize.height / 2 + 10),
+      SeatPos.topCenter: Offset(0, namePlateSize.height / 2 + 10),
+      SeatPos.topCenter1: Offset(0, namePlateSize.height / 2 + 10),
+      SeatPos.topCenter2: Offset(0, namePlateSize.height / 2 + 10),
       SeatPos.topRight:
-          Offset(-20, boardAttributesObject.namePlateSize.height - 20),
-      SeatPos.middleRight: Offset(
-          -boardAttributesObject.namePlateSize.width + 10,
-          boardAttributesObject.namePlateSize.height / 2),
+          Offset(-namePlateSize.width / 2 - 10, namePlateSize.height / 2 + 10),
+      SeatPos.middleRight: Offset(-10, namePlateSize.height / 2 + 10),
       SeatPos.bottomRight:
-          Offset(-20, -boardAttributesObject.namePlateSize.height + 20),
+          Offset(-namePlateSize.width / 2 - 10, -namePlateSize.height / 2 - 10),
     };
-    if (boardAttributesObject.screenSize > 7) {
+    if (widget.boardAttributesObject.screenSize > 7) {
       betAmountPos = {
         SeatPos.bottomCenter:
-            Offset(0, -boardAttributesObject.namePlateSize.height - 30),
+            Offset(0, -widget.boardAttributesObject.namePlateSize.height - 30),
         SeatPos.bottomLeft:
-            Offset(0, -boardAttributesObject.namePlateSize.height - 30),
+            Offset(0, -widget.boardAttributesObject.namePlateSize.height - 30),
         SeatPos.middleLeft: Offset(
-            boardAttributesObject.namePlateSize.width + 30,
-            -(boardAttributesObject.namePlateSize.height / 2)),
-        SeatPos.topLeft: Offset(boardAttributesObject.namePlateSize.width,
-            boardAttributesObject.namePlateSize.height + 10),
+            widget.boardAttributesObject.namePlateSize.width + 30,
+            -(widget.boardAttributesObject.namePlateSize.height / 2)),
+        SeatPos.topLeft: Offset(
+            widget.boardAttributesObject.namePlateSize.width,
+            widget.boardAttributesObject.namePlateSize.height + 10),
         SeatPos.topCenter:
-            Offset(0, boardAttributesObject.namePlateSize.height + 30),
+            Offset(0, widget.boardAttributesObject.namePlateSize.height + 30),
         SeatPos.topCenter1:
-            Offset(0, boardAttributesObject.namePlateSize.height + 30),
+            Offset(0, widget.boardAttributesObject.namePlateSize.height + 30),
         SeatPos.topCenter2:
-            Offset(0, boardAttributesObject.namePlateSize.height + 30),
+            Offset(0, widget.boardAttributesObject.namePlateSize.height + 30),
         SeatPos.topRight:
-            Offset(-10, boardAttributesObject.namePlateSize.height + 20),
+            Offset(-10, widget.boardAttributesObject.namePlateSize.height + 20),
         SeatPos.middleRight: Offset(
-            -boardAttributesObject.namePlateSize.width - 50,
-            -(boardAttributesObject.namePlateSize.height / 2)),
-        SeatPos.bottomRight:
-            Offset(-30, -boardAttributesObject.namePlateSize.height - 30),
+            -widget.boardAttributesObject.namePlateSize.width - 50,
+            -(widget.boardAttributesObject.namePlateSize.height / 2)),
+        SeatPos.bottomRight: Offset(
+            -30, -widget.boardAttributesObject.namePlateSize.height - 30),
       };
-    } else if (boardAttributesObject.screenSize == 7) {
+    } else if (widget.boardAttributesObject.screenSize == 7) {
       betAmountPos = {
         SeatPos.bottomCenter:
-            Offset(0, -boardAttributesObject.namePlateSize.height),
+            Offset(0, -widget.boardAttributesObject.namePlateSize.height),
         SeatPos.bottomLeft:
-            Offset(0, -boardAttributesObject.namePlateSize.height),
-        SeatPos.middleLeft: Offset(boardAttributesObject.namePlateSize.width,
-            (boardAttributesObject.namePlateSize.height) / 2),
-        SeatPos.topLeft: Offset(boardAttributesObject.namePlateSize.width / 2,
-            boardAttributesObject.namePlateSize.height),
+            Offset(0, -widget.boardAttributesObject.namePlateSize.height),
+        SeatPos.middleLeft: Offset(
+            widget.boardAttributesObject.namePlateSize.width,
+            (widget.boardAttributesObject.namePlateSize.height) / 2),
+        SeatPos.topLeft: Offset(
+            widget.boardAttributesObject.namePlateSize.width / 2,
+            widget.boardAttributesObject.namePlateSize.height),
         SeatPos.topCenter:
-            Offset(0, boardAttributesObject.namePlateSize.height),
+            Offset(0, widget.boardAttributesObject.namePlateSize.height),
         SeatPos.topCenter1:
-            Offset(0, boardAttributesObject.namePlateSize.height),
+            Offset(0, widget.boardAttributesObject.namePlateSize.height),
         SeatPos.topCenter2:
-            Offset(0, boardAttributesObject.namePlateSize.height),
+            Offset(0, widget.boardAttributesObject.namePlateSize.height),
         SeatPos.topRight:
-            Offset(-10, boardAttributesObject.namePlateSize.height),
+            Offset(-10, widget.boardAttributesObject.namePlateSize.height),
         SeatPos.middleRight: Offset(
-            -boardAttributesObject.namePlateSize.width - 20,
-            (boardAttributesObject.namePlateSize.height / 2)),
+            -widget.boardAttributesObject.namePlateSize.width - 20,
+            (widget.boardAttributesObject.namePlateSize.height / 2)),
         SeatPos.bottomRight:
-            Offset(-30, -boardAttributesObject.namePlateSize.height),
+            Offset(-30, -widget.boardAttributesObject.namePlateSize.height),
       };
     }
 
-    if (betAmountPos[seat.uiSeatPos] != null) {
-      offset = betAmountPos[seat.uiSeatPos];
+    if (betAmountPos[widget.seat.uiSeatPos] != null) {
+      offset = betAmountPos[widget.seat.uiSeatPos];
     }
-
+    betOffset = offset;
+    final betWidget = Transform.scale(
+        scale: widget.boardAttributesObject.getBetWidgetScale(), child: child);
+    if (widget.animate) {
+      return betWidget;
+    }
     return Transform.translate(
       offset: offset,
-      child: Transform.scale(
-          scale: boardAttributesObject.getBetWidgetScale(), child: child),
+      child: betWidget,
+    );
+  }
+
+  @override
+  void afterFirstLayout(BuildContext context) {
+    if (this.widget.animate) {
+      return;
+    }
+
+    final RenderBox potViewBox =
+        this.widget.potKey.currentContext.findRenderObject();
+    final potViewPos = potViewBox.localToGlobal(Offset(0, 0));
+    final RenderBox box = context.findRenderObject();
+    final pos = box.localToGlobal(Offset(0, 0));
+    widget.seat.seatBet.betWidgetPos = betOffset; //Offset(0,0);
+    widget.seat.seatBet.potViewPos = box.globalToLocal(potViewPos);
+  }
+}
+
+class ChipAmountAnimatingWidget extends StatefulWidget {
+  final int seatPos;
+  final Widget child;
+  final bool reverse;
+
+  ChipAmountAnimatingWidget({
+    this.seatPos,
+    this.child,
+    this.reverse,
+  });
+
+  @override
+  _ChipAmountAnimatingWidgetState createState() =>
+      _ChipAmountAnimatingWidgetState();
+}
+
+class _ChipAmountAnimatingWidgetState extends State<ChipAmountAnimatingWidget>
+    with TickerProviderStateMixin {
+  AnimationController animationController;
+  Animation<Offset> animation;
+  Offset end;
+  Offset begin;
+
+  @override
+  void initState() {
+    /* calling animate in init state */
+    animate();
+
+    super.initState();
+  }
+
+  void animate() async {
+    animationController = new AnimationController(
+        vsync: this, duration: Duration(milliseconds: 800));
+
+    final gameState = GameState.getState(context);
+    final seat = gameState.getSeat(context, widget.seatPos);
+    Offset end = seat.seatBet.potViewPos;
+    Offset begin = Offset(0, 0);
+    begin = seat.seatBet.betWidgetPos;
+    this.begin = begin;
+
+    if (widget.reverse) {
+      Offset swap = end;
+      end = begin;
+      begin = swap;
+    }
+
+    this.end = end;
+
+    animation = Tween<Offset>(
+      begin: begin,
+      end: end,
+    ).animate(animationController);
+
+    animationController.addListener(() {
+      setState(() {});
+    });
+
+    animationController.forward();
+  }
+
+  @override
+  void dispose() {
+    animationController?.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    /* if animation is NULL do nothing */
+    if (animation == null) return Container();
+    return Transform.translate(
+      offset: animation.value,
+      child: widget.child,
     );
   }
 }

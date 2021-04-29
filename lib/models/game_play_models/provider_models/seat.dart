@@ -143,6 +143,7 @@ class SeatBet extends ChangeNotifier {
   bool _show = false;
   bool _animate = false;
   Offset _potViewPos;
+  Offset _betWidgetPos;
   GlobalKey _uiKey;
 
   void notify() {
@@ -163,6 +164,9 @@ class SeatBet extends ChangeNotifier {
 
   Offset get potViewPos => this._potViewPos;
   set potViewPos(Offset pos) => this._potViewPos = pos;
+
+  Offset get betWidgetPos => this._betWidgetPos;
+  set betWidgetPos(Offset offset) => this._betWidgetPos = offset;
 }
 
 class ActionTimer extends ChangeNotifier {

@@ -249,7 +249,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
           // Pending approval
           Consumer<PendingApprovalsState>(
             builder: (context, value, child) {
-              log("VALUE ======== ${value.totalPending}");
+              //  log("VALUE ======== ${value.totalPending}");
               return IconWithBadge(
                 child: Icon(
                   Icons.pending_actions,

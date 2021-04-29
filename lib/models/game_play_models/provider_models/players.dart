@@ -213,7 +213,8 @@ class Players extends ChangeNotifier {
     notifyListeners();
 
     // waiting for double the animation time
-    await Future.delayed(AppConstants.animationDuration);
+    await Future.delayed(Duration(seconds: 1));
+    //await Future.delayed(AppConstants.animationDuration);
 
     for (int i = 0; i < _players.length; i++) {
       _players[i].animatingCoinMovement = false;
