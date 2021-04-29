@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/models/game_play_models/business/hi_winners_model.dart';
@@ -111,16 +109,11 @@ class ResultService {
 
     /* update stack of every player after showing the reverse pot chip animation */
     for (HiWinnersModel winner in winners) {
-      int idx = players.players.indexWhere(
-        (player) => player.seatNo == winner.seatNo,
-      );
-
-      if (idx != -1) {
-        players.updateCoinAmountSilent(idx, winner.amount);
-        players.moveCoinsFromPotSilent(idx, winner.amount);
-      }
+      final seat = gameState.getSeat(context, winner.seatNo);
+      seat.player.action.amount = winner.amount.toDouble();
+      seat.player.action.winner = true;
     }
-
+    gameState.animateSeatActions();
     players.notifyAll();
 
     // wait for the animation to finish, then update the stack

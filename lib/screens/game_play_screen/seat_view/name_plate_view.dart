@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:blinking_text/blinking_text.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
@@ -7,7 +5,6 @@ import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
-import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/milliseconds_counter.dart';
@@ -35,17 +32,17 @@ class NamePlateWidget extends StatelessWidget {
     * check/call -> green
     * raise/bet -> shade of yellow / blue might b? */
 
-    Color statusColor = const Color(0xff474747); // default color
-    Color boxColor = const Color(0xff474747); // default color
-    final openSeat = seat.isOpen;
-    String action = !openSeat ? seat.player.action : '';
-    if (action != null) {
-      if (action.toUpperCase().contains('CHECK') ||
-          action.toUpperCase().contains('CALL'))
-        statusColor = Colors.green;
-      else if (action.toUpperCase().contains('RAISE') ||
-          action.toUpperCase().contains('BET')) statusColor = Colors.red;
-    }
+    // Color statusColor = const Color(0xff474747); // default color
+    // Color boxColor = const Color(0xff474747); // default color
+    // final openSeat = seat.isOpen;
+    // String action = !openSeat ? seat.player.action : '';
+    // if (action != null) {
+    //   if (action.toUpperCase().contains('CHECK') ||
+    //       action.toUpperCase().contains('CALL'))
+    //     statusColor = Colors.green;
+    //   else if (action.toUpperCase().contains('RAISE') ||
+    //       action.toUpperCase().contains('BET')) statusColor = Colors.red;
+    // }
     return Consumer2<HostSeatChange, GameContextObject>(
         key: globalKey,
         builder: (

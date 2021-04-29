@@ -48,11 +48,8 @@ class ClubActionButton extends StatelessWidget {
                 arguments: clubModel.clubCode,
               );
             case ClubActions.BOOKMARKED_HANDS:
-              // TODO: Temporary place to show high hand.
-              // TODO: Handle this case.
               break;
             case ClubActions.ANALYSIS:
-              // TODO: Handle this case.
               break;
             case ClubActions.ANNOUNCEMETS:
               break;

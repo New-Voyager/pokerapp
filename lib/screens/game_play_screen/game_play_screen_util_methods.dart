@@ -60,6 +60,15 @@ class GamePlayScreenUtilMethods {
           label: 'Simulate Bet Movement',
           onTap: () => TestService.simulateBetMovement(),
         ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
+          label: 'Move Pot to Player',
+          onTap: () => TestService.movePotToPlayer(),
+        ),
         /*
         SpeedDialChild(
           child: Icon(

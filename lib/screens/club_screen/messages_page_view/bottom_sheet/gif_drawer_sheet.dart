@@ -3,9 +3,7 @@ import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:pokerapp/models/gif_model.dart';
 import 'package:pokerapp/resources/app_colors.dart';
-import 'package:pokerapp/services/app/gifhy_service.dart';
 import 'package:pokerapp/services/app/tenor_service.dart';
 import 'package:tenor/tenor.dart';
 

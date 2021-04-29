@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:pokerapp/enums/hand_actions.dart';
 import 'package:pokerapp/enums/player_status.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
@@ -49,9 +50,6 @@ class Players extends ChangeNotifier {
     // before marking the small, big blind or the dealer, remove any marking from the old hand
     this.removeMarkersFromAllPlayerSilent();
 
-    // remove all the status (last action) of all the players
-    this.removeAllPlayersStatusSilent();
-
     // remove all the folder players
     this.removeAllFoldedPlayersSilent();
 
@@ -59,7 +57,7 @@ class Players extends ChangeNotifier {
     this.removeCardsFromAllSilent();
 
     /* reset the reverse pot chips animation */
-    this.resetMoveCoinsFromPotSilent();
+    // this.resetMoveCoinsFromPotSilent();
 
     /* reset allin flag */
     this.removeAllAllinPlayersSilent();
@@ -75,9 +73,6 @@ class Players extends ChangeNotifier {
 
     // before marking the small, big blind or the dealer, remove any marking from the old hand
     this.removeMarkersFromAllPlayerSilent();
-
-    // remove all the status (last action) of all the players
-    this.removeAllPlayersStatusSilent();
   }
 
   void refreshWithPlayerInSeat(List<PlayerInSeat> playersInSeat) {
@@ -127,15 +122,15 @@ class Players extends ChangeNotifier {
   void updatePlayerTypeSilent(int idx, TablePosition playerType,
       {int coinAmount}) {
     _players[idx].playerType = playerType;
-    if (coinAmount != null) {
-      _players[idx].coinAmount = coinAmount;
-    }
+    // if (coinAmount != null) {
+    //   _players[idx].coinAmount = coinAmount;
+    // }
   }
 
-  void updateTestBet(int coinAmount) {
-    for (int i = 0; i < _players.length; i++)
-      _players[i].coinAmount = coinAmount;
-  }
+  // void updateTestBet(int coinAmount) {
+  //   for (int i = 0; i < _players.length; i++)
+  //     _players[i].coinAmount = coinAmount;
+  // }
 
   void fireworkWinnerSilent(int seatNo) {
     int idx = _players.indexWhere((p) => p.seatNo == seatNo);
@@ -171,64 +166,6 @@ class Players extends ChangeNotifier {
 
   void updateStatusSilent(int idx, String status) {
     _players[idx].status = status;
-  }
-
-  void updateActionSilent(int idx, String action) {
-    _players[idx].action = action;
-  }
-
-  void updateCoinAmountSilent(int idx, int amount) {
-    _players[idx].coinAmount = amount;
-  }
-
-  Future<void> resetMoveCoinsFromPotSilent() async {
-    for (int idx = 0; idx < players.length; idx++) {
-      _players[idx].animatingCoinMovement = false;
-      _players[idx].animatingCoinMovementReverse = false;
-      _players[idx].coinAmount = null;
-    }
-  }
-
-  Future<void> moveCoinsFromPotSilent(int idx, int amount) async {
-    /* move all the coins to the pot  */
-    _players[idx].animatingCoinMovement = true;
-    _players[idx].animatingCoinMovementReverse = true;
-    _players[idx].coinAmount = amount;
-  }
-
-  Future<void> moveCoinsToPot({int seatNo}) async {
-    // debugPrint('moveCoinsToPot');
-
-    /* move all the coins to the pot  */
-    for (int i = 0; i < _players.length; i++) {
-      if (seatNo != null) {
-        if (_players[i].seatNo == seatNo) {
-          _players[i].animatingCoinMovement = true;
-          break;
-        }
-        continue;
-      }
-      _players[i].animatingCoinMovement = true;
-    }
-    notifyListeners();
-
-    // waiting for double the animation time
-    await Future.delayed(Duration(seconds: 1));
-    //await Future.delayed(AppConstants.animationDuration);
-
-    for (int i = 0; i < _players.length; i++) {
-      _players[i].animatingCoinMovement = false;
-      _players[i].coinAmount = null;
-    }
-    notifyListeners();
-  }
-
-  Future<void> removeAllPlayersStatusSilent() async {
-    for (int i = 0; i < _players.length; i++) {
-      _players[i].status = null;
-      _players[i].coinAmount = null;
-      _players[i].action = null;
-    }
   }
 
   void updateStackBulkSilent(var stackData) {

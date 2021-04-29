@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/game_replay_models/game_replay_controller.dart';
 import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/resources/app_colors.dart';
@@ -7,6 +8,7 @@ import 'package:pokerapp/screens/game_play_screen/game_play_screen_util_methods.
 import 'package:pokerapp/screens/util_screens/replay_hand_controls/replay_hand_controls.dart';
 import 'package:pokerapp/screens/util_screens/replay_hand_game_view/replay_hand_game_view.dart';
 import 'package:pokerapp/screens/util_screens/replay_hand_screen/replay_hand_screen_utils.dart';
+import 'package:pokerapp/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 class ReplayHandScreen extends StatelessWidget {
@@ -79,8 +81,14 @@ class _ReplayHandUtilScreenState extends State<ReplayHandUtilScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Screen screen = Screen(context);
+    BoardAttributesObject boardAttributes =
+        BoardAttributesObject(screenSize: screen.diagonalInches());
+
     return MultiProvider(
       providers: GamePlayScreenUtilMethods.getProviders(
+        context: context,
+        boardAttributes: boardAttributes,
         gameMessagingService: null,
         currentPlayerInfo: PlayerInfo(
           id: widget.playerID,

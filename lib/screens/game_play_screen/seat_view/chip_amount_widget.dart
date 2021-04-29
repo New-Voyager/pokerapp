@@ -4,18 +4,19 @@ import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:pokerapp/enums/hand_actions.dart';
+import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/resources/app_assets.dart';
-
-Map<int, Offset> _finalPositionCache = Map();
 
 class ChipAmountWidget extends StatefulWidget {
   final bool animate;
   final GlobalKey potKey;
   final Seat seat;
   final BoardAttributesObject boardAttributesObject;
+  final GameInfoModel gameInfo;
   final GlobalKey key;
 
   ChipAmountWidget({
@@ -24,6 +25,7 @@ class ChipAmountWidget extends StatefulWidget {
     @required this.key,
     @required this.seat,
     @required this.boardAttributesObject,
+    @required this.gameInfo,
   });
 
   @override
@@ -32,197 +34,9 @@ class ChipAmountWidget extends StatefulWidget {
 
 class _ChipAmountWidgetState extends State<ChipAmountWidget>
     with AfterLayoutMixin<ChipAmountWidget> {
-  Offset betOffset;
-  Offset _getCenterPos(BuildContext context) {
-    List<Offset> _playerPositions = [];
-
-    // go through all the seat nos
-    for (int i = 1; i <= 9; i++) {
-      try {
-        _playerPositions.add(_getFinalPosition(context, i));
-      } catch (_) {}
-    }
-
-    double xAvg = 0;
-    double yAvg = 0;
-
-    for (Offset offset in _playerPositions) {
-      xAvg += offset.dx;
-      yAvg += offset.dy;
-    }
-
-    xAvg /= _playerPositions.length;
-    yAvg /= _playerPositions.length;
-
-    return Offset(
-      xAvg,
-      yAvg,
-    );
-  }
-
-  Offset _getFinalPosition(
-    BuildContext context,
-    int seatNo,
-  ) {
-    Offset _getPositionOffsetFromKey(GlobalKey key) {
-      final RenderBox renderBox = key.currentContext.findRenderObject();
-      return renderBox.localToGlobal(Offset.zero);
-    }
-
-    if (_finalPositionCache.containsKey(seatNo)) {
-      // log('final position from cache');
-      return _finalPositionCache[seatNo];
-    }
-
-    final gameState = GameState.getState(context);
-    final seat = gameState.getSeat(context, seatNo);
-
-    return _getPositionOffsetFromKey(seat.key);
-  }
-
   @override
   Widget build(BuildContext context) {
-    final gameState = GameState.getState(context);
-    final boardAttributes = gameState.getBoardAttributes(context);
-    if (boardAttributes.betImage == null) {
-      log('betimage is null');
-    } else {
-      log('betimage is not null');
-    }
-
-    bool showBet = true;
-    if (widget.seat.player?.coinAmount == null ||
-        widget.seat.player?.coinAmount == 0) {
-      showBet = false;
-    }
-
-    bool bb = false;
-    bool sb = false;
-    bool bigbet = true;
-
-    if (widget.seat.serverSeatPos == 1) {
-      sb = true;
-    }
-    if (widget.seat.serverSeatPos == 2) {
-      bb = true;
-    }
-
-    Widget child;
-    if (!showBet) {
-      // show bet position
-      child = Container(
-        width: 10,
-        height: 10,
-        color: Colors.transparent,
-      );
-    } else {
-      List<Widget> children = [];
-
-      Widget coin;
-      if (sb) {
-        coin = Container(
-          height: 15,
-          width: 15.0,
-          child: SvgPicture.asset(
-            'assets/images/betchips/sb.svg',
-          ),
-        );
-      } else if (bb) {
-        coin = Container(
-          height: 20,
-          width: 20.0,
-          child: SvgPicture.asset(
-            'assets/images/betchips/bb.svg',
-          ),
-        );
-      } else if (widget.seat.serverSeatPos == 3) {
-        coin = Container(
-          height: 15,
-          width: 15.0,
-          child: SvgPicture.asset(
-            'assets/images/betchips/straddle.svg',
-          ),
-        );
-      } else {
-        if (widget.seat.serverSeatPos == 5 || widget.seat.serverSeatPos == 7) {
-          coin = Container(
-            height: 25,
-            width: 15.0,
-            child: SvgPicture.asset(
-              'assets/images/betchips/callbig.svg',
-            ),
-          );
-        } else if (widget.seat.serverSeatPos == 4 ||
-            widget.seat.serverSeatPos == 9) {
-          coin = Container(
-            height: 25,
-            width: 15.0,
-            child: SvgPicture.asset(
-              'assets/images/betchips/raisebig.svg',
-            ),
-          );
-        } else {
-          coin = Container(
-            height: 25,
-            width: 15.0,
-            child: SvgPicture.asset(
-              'assets/images/betchips/allin.svg',
-            ),
-          );
-        }
-      }
-
-      /* show the coin amount */
-      final amount = Text(widget.seat.player?.coinAmount.toString(),
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 12.0,
-            fontWeight: FontWeight.bold,
-            fontFamily: AppAssets.fontFamilyLato,
-          ));
-
-      if (widget.seat.uiSeatPos == SeatPos.middleRight ||
-          widget.seat.uiSeatPos == SeatPos.bottomRight ||
-          widget.seat.uiSeatPos == SeatPos.topRight) {
-        children.add(amount);
-        children.add(SizedBox(height: 2.0));
-        children.add(coin);
-      } else {
-        children.add(coin);
-        children.add(SizedBox(height: 2.0));
-        children.add(amount);
-      }
-
-      child = Row(
-        mainAxisSize: MainAxisSize.min,
-        children: children,
-      );
-    }
-
-    // final Offset p = _getFinalPosition(
-    //   context,
-    //   seat.serverSeatPos,
-    // );
-
-    // final Offset c = _getCenterPos(
-    //   context,
-    // );
-
-    // /* get the angle theta */
-    // final double yy = c.dy - p.dy;
-    // final double xx = c.dx - p.dx;
-
-    // final double theta = math.atan(yy / xx);
-
-    // final double moveByConstant =
-    //     boardAttributesObject.getBetPos() * (xx < 0 ? -1 : 1); // 100: 10 inch, 60: 5 inch,  75: 7 inch
-
-    // // log('${seat.serverSeatPos} : $yy : $xx : $theta');
-
-    // Offset offset = Offset(
-    //   moveByConstant * math.cos(theta),
-    //   moveByConstant * math.sin(theta),
-    // );
+    bool showBet = false;
 
     // log('${seat.uiSeatPos.toString()}: nameplate size: ${boardAttributesObject.namePlateSize}');
     Offset offset = Offset(0, 0);
@@ -302,7 +116,90 @@ class _ChipAmountWidgetState extends State<ChipAmountWidget>
     if (betAmountPos[widget.seat.uiSeatPos] != null) {
       offset = betAmountPos[widget.seat.uiSeatPos];
     }
-    betOffset = offset;
+    if (widget.seat.betWidgetPos == null) {
+      widget.seat.betWidgetPos = offset;
+    }
+
+    if (widget.seat.player.action.amount != null &&
+        widget.seat.player.action.amount != 0) {
+      showBet = true;
+    }
+
+    final action = widget.seat.player.action;
+    Widget child;
+    if (!showBet) {
+      // show bet position
+      child = Container(
+        width: 10,
+        height: 10,
+        color: Colors.transparent,
+      );
+      return child;
+    }
+
+    List<Widget> children = [];
+
+    Widget coin;
+    if (action.amount <= widget.gameInfo.bigBlind / 2) {
+      coin = Container(
+        height: 15,
+        width: 15.0,
+        child: SvgPicture.asset(
+          'assets/images/betchips/sb.svg',
+        ),
+      );
+    } else if (action.amount == widget.gameInfo.bigBlind) {
+      coin = Container(
+        height: 20,
+        width: 20.0,
+        child: SvgPicture.asset(
+          'assets/images/betchips/bb.svg',
+        ),
+      );
+    } else if (action.amount == 2 * widget.gameInfo.bigBlind) {
+      coin = Container(
+        height: 15,
+        width: 15.0,
+        child: SvgPicture.asset(
+          'assets/images/betchips/straddle.svg',
+        ),
+      );
+    } else if (action.amount > 0.0) {
+      coin = Container(
+        height: 25,
+        width: 15.0,
+        child: SvgPicture.asset(
+          'assets/images/betchips/raisebig.svg',
+        ),
+      );
+    }
+
+    /* show the coin amount */
+    final amount = Text(action.amount.toString(),
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 12.0,
+          fontWeight: FontWeight.bold,
+          fontFamily: AppAssets.fontFamilyLato,
+        ));
+
+    if (widget.seat.uiSeatPos == SeatPos.middleRight ||
+        widget.seat.uiSeatPos == SeatPos.bottomRight ||
+        widget.seat.uiSeatPos == SeatPos.topRight) {
+      children.add(amount);
+      children.add(SizedBox(height: 2.0));
+      children.add(coin);
+    } else {
+      children.add(coin);
+      children.add(SizedBox(height: 2.0));
+      children.add(amount);
+    }
+
+    child = Row(
+      mainAxisSize: MainAxisSize.min,
+      children: children,
+    );
+
     final betWidget = Transform.scale(
         scale: widget.boardAttributesObject.getBetWidgetScale(), child: child);
     if (widget.animate) {
@@ -316,17 +213,18 @@ class _ChipAmountWidgetState extends State<ChipAmountWidget>
 
   @override
   void afterFirstLayout(BuildContext context) {
+    if (widget.seat.potViewPos != null) {
+      return;
+    }
     if (this.widget.animate) {
       return;
     }
-
-    final RenderBox potViewBox =
-        this.widget.potKey.currentContext.findRenderObject();
+    final potKey = widget.boardAttributesObject.getPotsKey(0);
+    log('pot key: ${potKey.currentContext}');
+    final RenderBox potViewBox = potKey.currentContext.findRenderObject();
     final potViewPos = potViewBox.localToGlobal(Offset(0, 0));
     final RenderBox box = context.findRenderObject();
-    final pos = box.localToGlobal(Offset(0, 0));
-    widget.seat.seatBet.betWidgetPos = betOffset; //Offset(0,0);
-    widget.seat.seatBet.potViewPos = box.globalToLocal(potViewPos);
+    widget.seat.potViewPos = box.globalToLocal(potViewPos);
   }
 }
 
@@ -367,12 +265,13 @@ class _ChipAmountAnimatingWidgetState extends State<ChipAmountAnimatingWidget>
 
     final gameState = GameState.getState(context);
     final seat = gameState.getSeat(context, widget.seatPos);
-    Offset end = seat.seatBet.potViewPos;
+    Offset end = seat.potViewPos;
     Offset begin = Offset(0, 0);
-    begin = seat.seatBet.betWidgetPos;
+    begin = seat.betWidgetPos;
     this.begin = begin;
 
-    if (widget.reverse) {
+    log('reverse animation: ${widget.reverse ?? false}, winner: ${seat.player.action.winner}');
+    if (widget.reverse ?? false) {
       Offset swap = end;
       end = begin;
       begin = swap;
@@ -408,3 +307,81 @@ class _ChipAmountAnimatingWidgetState extends State<ChipAmountAnimatingWidget>
     );
   }
 }
+
+/*
+
+  Offset _getCenterPos(BuildContext context) {
+    List<Offset> _playerPositions = [];
+
+    // go through all the seat nos
+    for (int i = 1; i <= 9; i++) {
+      try {
+        _playerPositions.add(_getFinalPosition(context, i));
+      } catch (_) {}
+    }
+
+    double xAvg = 0;
+    double yAvg = 0;
+
+    for (Offset offset in _playerPositions) {
+      xAvg += offset.dx;
+      yAvg += offset.dy;
+    }
+
+    xAvg /= _playerPositions.length;
+    yAvg /= _playerPositions.length;
+
+    return Offset(
+      xAvg,
+      yAvg,
+    );
+  }
+
+  Offset _getFinalPosition(
+    BuildContext context,
+    int seatNo,
+  ) {
+    Offset _getPositionOffsetFromKey(GlobalKey key) {
+      final RenderBox renderBox = key.currentContext.findRenderObject();
+      return renderBox.localToGlobal(Offset.zero);
+    }
+
+    if (_finalPositionCache.containsKey(seatNo)) {
+      // log('final position from cache');
+      return _finalPositionCache[seatNo];
+    }
+
+    final gameState = GameState.getState(context);
+    final seat = gameState.getSeat(context, seatNo);
+
+    return _getPositionOffsetFromKey(seat.key);
+  }
+
+
+
+
+    // final Offset p = _getFinalPosition(
+    //   context,
+    //   seat.serverSeatPos,
+    // );
+
+    // final Offset c = _getCenterPos(
+    //   context,
+    // );
+
+    // /* get the angle theta */
+    // final double yy = c.dy - p.dy;
+    // final double xx = c.dx - p.dx;
+
+    // final double theta = math.atan(yy / xx);
+
+    // final double moveByConstant =
+    //     boardAttributesObject.getBetPos() * (xx < 0 ? -1 : 1); // 100: 10 inch, 60: 5 inch,  75: 7 inch
+
+    // // log('${seat.serverSeatPos} : $yy : $xx : $theta');
+
+    // Offset offset = Offset(
+    //   moveByConstant * math.cos(theta),
+    //   moveByConstant * math.sin(theta),
+    // );
+*/

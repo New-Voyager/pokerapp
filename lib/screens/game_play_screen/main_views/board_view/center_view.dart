@@ -120,7 +120,7 @@ class CenterView extends StatelessWidget {
               offset: Offset(0, 30),
               child: Container(
                 width: 50,
-                height: 50,
+                height: 30,
                 color: Colors.transparent,
               ),
             ),

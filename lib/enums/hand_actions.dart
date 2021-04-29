@@ -1,4 +1,5 @@
 enum HandActions {
+  NONE,
   SB,
   BB,
   CALL,
@@ -7,6 +8,7 @@ enum HandActions {
   RAISE,
   FOLD,
   STRADDLE,
+  ALLIN,
   UNKNOWN,
 }
 
