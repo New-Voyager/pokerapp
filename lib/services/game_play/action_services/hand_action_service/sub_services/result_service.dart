@@ -75,6 +75,7 @@ class ResultService {
         showNotification: false,
       );
     }
+    gameState.resetSeatActions();
     players.clearForShowdown();
     // debugPrint(jsonEncode(data));
     // get hand winners data and update results

@@ -60,7 +60,7 @@ class Players extends ChangeNotifier {
     // this.resetMoveCoinsFromPotSilent();
 
     /* reset allin flag */
-    this.removeAllAllinPlayersSilent();
+    // this.removeAllAllinPlayersSilent();
 
     if (notify) {
       this.notifyAll();
@@ -102,9 +102,9 @@ class Players extends ChangeNotifier {
     for (int i = 0; i < _players.length; i++) _players[i].playerFolded = null;
   }
 
-  void removeAllAllinPlayersSilent() {
-    for (int i = 0; i < _players.length; i++) _players[i].allIn = false;
-  }
+  // void removeAllAllinPlayersSilent() {
+  //   for (int i = 0; i < _players.length; i++) _players[i].allIn = false;
+  // }
 
   void removeMarkersFromAllPlayerSilent() {
     for (int i = 0; i < _players.length; i++)

@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
@@ -33,14 +32,9 @@ class PlayerModel {
   bool waitForBuyInApproval = false; // waiting for buyin approval
 
   // player action
-  bool allIn = false;
-  // int coinAmount = 0;
-  // bool animatingCoinMovement = false;
-  // bool animatingCoinMovementReverse = false;
   bool animatingFold = false;
   bool highlight = false;
   bool playerFolded = false;
-  //String action = '';
 
   // break time
   bool inBreak = false;
@@ -103,13 +97,8 @@ class PlayerModel {
 
     this.highlight = false;
     this.playerFolded = false;
-    this.winner = false;
-    // this.coinAmount = 0;
-    // this.animatingCoinMovement = false;
-    // this.animatingCoinMovementReverse = false;
     this.animatingFold = false;
     this.showFirework = false;
-    this.allIn = false;
 
     this.noOfCardsVisible = 0;
 

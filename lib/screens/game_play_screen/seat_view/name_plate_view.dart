@@ -1,5 +1,6 @@
 import 'package:blinking_text/blinking_text.dart';
 import 'package:flutter/material.dart';
+import 'package:pokerapp/enums/hand_actions.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
@@ -242,7 +243,7 @@ class NamePlateWidget extends StatelessWidget {
   }
 
   Widget bottomWidget(BuildContext context) {
-    if (!seat.player.allIn &&
+    if (seat.player.action.action != HandActions.ALLIN &&
         seat.player.stack == 0 &&
         seat.player.buyInTimeExpAt != null) {
       final now = DateTime.now().toUtc();
