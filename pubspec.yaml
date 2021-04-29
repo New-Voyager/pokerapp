@@ -39,6 +39,7 @@ dependencies:
 
   # network images
   cached_network_image: 2.3.2+1
+  flutter_cache_manager: any
 
   # formatter
   intl: ^0.16.1

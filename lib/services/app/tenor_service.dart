@@ -7,11 +7,11 @@ class TenorService {
   static Tenor tenor = Tenor(apiKey: _token);
 
   static Future<List<TenorResult>> getTrendingGifs() async {
-    TenorResponse res = await tenor.requestTrendingGIF(limit: 15);
+    TenorResponse res = await tenor.requestTrendingGIF(limit: 24);
     final List<TenorResult> list = [];
     res?.results?.forEach((TenorResult tenorResult) {
       list.add(tenorResult);
-      /*      var title = tenorResult.title;
+     /*  var title = tenorResult.title;
       var media = tenorResult.media;
       print('$title: gif : ${media?.gif?.previewUrl?.toString()}'); */
     });
@@ -20,15 +20,14 @@ class TenorService {
   }
 
   static Future<List<TenorResult>> getGifsWithSearch(String query) async {
-    TenorResponse res = await tenor.searchGIF(query, limit: 15);
+    TenorResponse res = await tenor.searchGIF(query, limit: 20);
     final List<TenorResult> list = [];
 
     res?.results?.forEach((TenorResult tenorResult) {
       list.add(tenorResult);
-/* 
       var title = tenorResult.title;
       var media = tenorResult.media;
-      print('$title: gif : ${media?.gif?.url?.toString()}'); */
+     // print('******* : ${media?.nanogif?.url?.toString()}');
     });
     return list;
   }

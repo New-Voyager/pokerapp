@@ -275,7 +275,7 @@ class _GameGiphiesState extends State<GameGiphies> {
                           : Padding(
                               padding: const EdgeInsets.only(top: 10.0),
                               child: GridView.count(
-                                crossAxisCount: 3,
+                                crossAxisCount: 4,
                                 crossAxisSpacing: 10.0,
                                 mainAxisSpacing: 10.0,
                                 children: _gifs.map((TenorResult gif) {
@@ -287,7 +287,7 @@ class _GameGiphiesState extends State<GameGiphies> {
                                       Navigator.pop(context, gif.media.gif.url);
                                     },
                                     child: CachedNetworkImage(
-                                      imageUrl: gif.media.gif.url,
+                                      imageUrl: gif.media.tinygif.url,
                                       progressIndicatorBuilder: (context, url,
                                               downloadProgress) =>
                                           Center(

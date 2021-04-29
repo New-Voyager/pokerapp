@@ -1,10 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/auth_model.dart';
 import 'package:pokerapp/models/club_members_model.dart';
 import 'package:pokerapp/models/club_message_model.dart';
 import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/club_screen/messages_page_view/bottom_sheet/gif_drawer_sheet.dart';
 import 'package:pokerapp/screens/club_screen/messages_page_view/widgets/message_item.dart';
@@ -62,8 +64,7 @@ class _MessagesPageViewState extends State<MessagesPageView> {
 
   void _openGifDrawer() async {
     String gifUrl = await showModalBottomSheet<String>(
-      context: context,
-      isScrollControlled: true,
+      context: navigatorKey.currentContext,
       builder: (_) => GifDrawerSheet(),
     );
 
@@ -113,6 +114,7 @@ class _MessagesPageViewState extends State<MessagesPageView> {
             child: StreamBuilder<List<ClubMessageModel>>(
               stream: ClubMessageService.pollMessages(widget.clubCode),
               builder: (_, snapshot) {
+
                 if (!snapshot.hasData || _players == null)
                   return Center(
                     child: CircularProgressIndicator(),
@@ -153,6 +155,7 @@ class _MessagesPageViewState extends State<MessagesPageView> {
     return AppBar(
       backgroundColor: chatHeaderColor,
       leading: IconButton(
+        iconSize: 24,
         icon: Icon(
           Icons.arrow_back_ios,
           color: AppColors.appAccentColor,
@@ -161,10 +164,10 @@ class _MessagesPageViewState extends State<MessagesPageView> {
           Navigator.of(context).pop();
         },
       ),
-      centerTitle: true,
+      centerTitle: false,
       title: Text(
         'Club Chat',
-        style: TextStyle(color: Colors.white),
+        style: AppStyles.titleBarTextStyle.copyWith(fontSize: 16),
       ),
     );
   }
