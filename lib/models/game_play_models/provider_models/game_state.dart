@@ -341,6 +341,9 @@ class GameState {
 
   void resetSeatActions() {
     for (final seat in this._seats.values) {
+      if (seat.player == null) {
+        continue;
+      }
       seat.player.reset();
       seat.notify();
     }
@@ -348,6 +351,9 @@ class GameState {
 
   Future<void> animateSeatActions() async {
     for (final seat in this._seats.values) {
+      if (seat.player == null) {
+        continue;
+      }
       seat.player.action.animateAction = true;
       seat.notify();
     }
