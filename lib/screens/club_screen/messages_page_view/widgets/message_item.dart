@@ -125,15 +125,15 @@ class MessageItem extends StatelessWidget {
                     isMe: isMe,
                   )
                 : Container(
-                  padding: EdgeInsets.all(3),
-                  child: Text(
+                    padding: EdgeInsets.all(3),
+                    child: Text(
                       messageModel.text,
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 15.0,
                       ),
                     ),
-                ),
+                  ),
 
             /* show the message time */
             if (messageModel.messageType != MessageType.GIPHY)

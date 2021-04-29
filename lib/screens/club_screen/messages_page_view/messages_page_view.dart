@@ -114,7 +114,6 @@ class _MessagesPageViewState extends State<MessagesPageView> {
             child: StreamBuilder<List<ClubMessageModel>>(
               stream: ClubMessageService.pollMessages(widget.clubCode),
               builder: (_, snapshot) {
-
                 if (!snapshot.hasData || _players == null)
                   return Center(
                     child: CircularProgressIndicator(),

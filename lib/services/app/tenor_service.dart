@@ -11,7 +11,7 @@ class TenorService {
     final List<TenorResult> list = [];
     res?.results?.forEach((TenorResult tenorResult) {
       list.add(tenorResult);
-     /*  var title = tenorResult.title;
+      /*  var title = tenorResult.title;
       var media = tenorResult.media;
       print('$title: gif : ${media?.gif?.previewUrl?.toString()}'); */
     });
@@ -27,7 +27,7 @@ class TenorService {
       list.add(tenorResult);
       var title = tenorResult.title;
       var media = tenorResult.media;
-     // print('******* : ${media?.nanogif?.url?.toString()}');
+      // print('******* : ${media?.nanogif?.url?.toString()}');
     });
     return list;
   }
