@@ -69,7 +69,6 @@ class GamePlayScreenUtilMethods {
           label: 'Move Pot to Player',
           onTap: () => TestService.movePotToPlayer(),
         ),
-        /*
         SpeedDialChild(
           child: Icon(
             Icons.adb_rounded,
@@ -79,6 +78,7 @@ class GamePlayScreenUtilMethods {
           label: 'Show holecards',
           onTap: () => TestService.showHoleCards(),
         ),
+
         SpeedDialChild(
           child: Icon(
             Icons.adb_rounded,
@@ -88,6 +88,7 @@ class GamePlayScreenUtilMethods {
           label: 'Bet Widget',
           onTap: () => TestService.testBetWidget(),
         ),
+      /*
         SpeedDialChild(
           child: Icon(
             Icons.adb_rounded,

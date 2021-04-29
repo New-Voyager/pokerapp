@@ -53,7 +53,9 @@ class _FooterViewState extends State<FooterView>
 
     Screen s = boardAttributes.getScreen(context);
 
-    final width = s.width() * 2 / 3;
+    final width = s.width() - 100;
+    final screen = boardAttributes.getScreen(context);
+    final height = screen.height() / 3;
 
     // holecard scale
     double scale5inch2cards = 1.5;
@@ -63,24 +65,29 @@ class _FooterViewState extends State<FooterView>
       builder: (_, players, actionState, __) {
         bool me = players.me != null;
 
-        return Column(children: [
-          SizedBox.fromSize(size: Size(0, 0)),
-          Row(
+        return 
+        Stack(
             children: [
-              HandAnalyseView(widget.gameCode, widget.clubCode),
-              Expanded(
-                child: !me
+              Align(
+                alignment: Alignment.topLeft,
+                child: HandAnalyseView(widget.gameCode, widget.clubCode)
+              ),
+              !me
                     ? SizedBox.shrink()
-                    : Transform.scale(
-                        scale: scale5inch4cards,
-                        child: HoleCardsView(
+                    : Positioned(
+                      left: 50, top: 0,width: width, height: height,
+                      child: HoleCardsView(
                           playerModel: players.me,
                           showActionWidget: actionState.show,
-                        ),
-                      ),
+                        )
+                    ),
+                      
+              Align(
+                alignment: Alignment.topRight,
+                child: CommunicationView(widget.chatVisibilityChange,
+                  widget.gameComService.gameMessaging)
               ),
-              CommunicationView(widget.chatVisibilityChange,
-                  widget.gameComService.gameMessaging),
+
               Consumer2<HostSeatChange, GameContextObject>(
                 builder: (context, hostSeatChange, gameContextObject, _) =>
                     hostSeatChange.seatChangeInProgress &&
@@ -93,8 +100,38 @@ class _FooterViewState extends State<FooterView>
                         : SizedBox.shrink(),
               )
             ],
-          )
-        ]);
+          );
+
+        // Column(children: [
+        //   SizedBox.fromSize(size: Size(0, 0)),
+        //   Row(
+        //     children: [
+        //       HandAnalyseView(widget.gameCode, widget.clubCode),
+        //       Expanded(
+        //         child: !me
+        //             ? SizedBox.shrink()
+        //             : HoleCardsView(
+        //                   playerModel: players.me,
+        //                   showActionWidget: actionState.show,
+        //                 ),
+                      
+        //       ),
+        //       CommunicationView(widget.chatVisibilityChange,
+        //           widget.gameComService.gameMessaging),
+        //       Consumer2<HostSeatChange, GameContextObject>(
+        //         builder: (context, hostSeatChange, gameContextObject, _) =>
+        //             hostSeatChange.seatChangeInProgress &&
+        //                     gameContextObject.playerId ==
+        //                         hostSeatChange.seatChangeHost
+        //                 ? Align(
+        //                     alignment: Alignment.center,
+        //                     child: SeatChangeConfirmWidget(),
+        //                   )
+        //                 : SizedBox.shrink(),
+        //       )
+        //     ],
+        //   )
+        // ]);
       },
     );
   }

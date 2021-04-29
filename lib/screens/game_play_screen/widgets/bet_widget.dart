@@ -42,7 +42,7 @@ class _BetWidgetState extends State<BetWidget> {
     return Container(
       height: height / 3,
       width: width,
-      color: Colors.black12, //.withOpacity(0.65),
+      color: Colors.transparent,
       alignment: Alignment.center,
       child: FittedBox(
         fit: BoxFit.fitHeight,

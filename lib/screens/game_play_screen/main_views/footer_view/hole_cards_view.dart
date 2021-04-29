@@ -40,10 +40,34 @@ class _HoleCardsViewState extends State<HoleCardsView> {
 
     return Stack(children: [
       Align(
-        alignment: Alignment.center,
-        child: Container(
-          width: width,
-          height: height,
+        //top: 0, left: 0,
+        alignment: Alignment.topCenter,
+        child: 
+        Transform.translate(
+          offset: Offset(-10, 40),
+          child: Transform.scale(
+          scale: 1.5,
+          child: holeCardView(context)
+        )),       
+      ),
+
+      // action view (show when it is time for this user to act)
+      Positioned(
+        width: MediaQuery.of(context).size.width,
+        bottom: 0,
+        child: widget.showActionWidget ?? false
+            ? Transform.translate(offset:Offset(-50, 30),
+              child: 
+              Transform.scale(scale: 0.80, child: FooterActionView()))
+            : SizedBox(
+                height: 0,
+              ),
+      )
+    ]);
+  }
+
+  Widget holeCardView(BuildContext context) {
+    return Container(
           child: GestureDetector(
             onLongPress: () {
               setState(() => isCardVisible = true);
@@ -76,20 +100,7 @@ class _HoleCardsViewState extends State<HoleCardsView> {
               ),
             ),
           ),
-        ),
-      ),
-
-      // action view (show when it is time for this user to act)
-      Positioned(
-        width: MediaQuery.of(context).size.width,
-        bottom: 0,
-        child: widget.showActionWidget ?? false
-            ? FooterActionView()
-            : SizedBox(
-                height: 0,
-              ),
-      )
-    ]);
+        );
   }
 
   Widget cards({

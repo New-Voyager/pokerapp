@@ -43,9 +43,15 @@ class HoleStackCardView extends StatelessWidget {
     // 2 cards
     // List<double> cardAngle = [-0.10,0.05, 0.10, 0.15, 0.20];
     // List<double> cardOffset = [0, -5, -10, -15, -20];
+    List<double> cardAngle;
+    List<double> cardOffset;
+    cardAngle = [-0.10, 0.05, 0.05, 0.10, 0.20];
+    cardOffset = [0, -5, -5, -15, -20];
+    if (cards.length == 2) {
+      cardAngle = [-0.10, 0.05];
+      cardOffset = [0, -5];
+    }
 
-    List<double> cardAngle = [-0.10, -0.05, 0.05, 0.10, 0.20];
-    List<double> cardOffset = [0, -5, -10, -15, -20];
     return Stack(
       alignment: Alignment.bottomLeft,
       children: List.generate(cards.length, (i) {

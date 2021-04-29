@@ -350,7 +350,6 @@ class _FooterActionViewState extends State<FooterActionView> {
               Container(
                 constraints: BoxConstraints.expand(),
                 alignment: Alignment.bottomCenter,
-                margin: EdgeInsets.only(bottom: 8),
                 child: _buildTopActionRow(actionState.action),
               ),
               Container(
