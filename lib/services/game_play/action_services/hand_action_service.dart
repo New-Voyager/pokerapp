@@ -668,6 +668,9 @@ class HandActionService {
         context: _context,
         assetFile: AppAssets.foldSound,
       );
+      seat.player.playerFolded = true;
+      seat.player.animatingFold = true;
+      seat.notify();
     } else if (action.action == HandActions.CHECK) {
       Audio.play(
         context: _context,

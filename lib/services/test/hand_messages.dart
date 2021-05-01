@@ -293,3 +293,62 @@ String flopMessage() => '''
 	}]
 }
 ''';
+
+
+String foldMessage() => '''
+{
+	"version": "",
+	"clubId": 1,
+	"gameId": "1",
+	"gameCode": "CG-R7T5F6PQYPL857",
+	"handNum": 54,
+	"seatNo": 0,
+	"playerId": "0",
+	"messageId": "ACTION:54:PREFLOP:7:200",
+	"gameToken": "",
+	"handStatus": "PREFLOP",
+	"messages": [{
+		"messageType": "PLAYER_ACTED",
+		"playerActed": {
+			"seatNo": 1,
+			"action": "FOLD",
+			"amount": 0,
+			"timedOut": false,
+			"actionTime": 0,
+			"stack": 58
+		}
+	}, {
+		"messageType": "YOUR_ACTION",
+		"seatAction": {
+			"seatNo": 8,
+			"availableActions": ["FOLD", "CALL", "RAISE", "ALLIN"],
+			"straddleAmount": 0,
+			"callAmount": 30,
+			"raiseAmount": 0,
+			"minBetAmount": 0,
+			"maxBetAmount": 0,
+			"minRaiseAmount": 58,
+			"maxRaiseAmount": 152,
+			"allInAmount": 152,
+			"betOptions": [{
+				"text": "2x",
+				"amount": 116
+			}, {
+				"text": "All-In",
+				"amount": 152
+			}]
+		}
+	}, {
+		"messageType": "NEXT_ACTION",
+		"actionChange": {
+			"seatNo": 8,
+			"pots": [0],
+			"potUpdates": 41,
+			"seatsPots": [{
+				"seats": [],
+				"pot": 0
+			}]
+		}
+	}]
+}
+''';

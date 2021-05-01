@@ -399,6 +399,15 @@ class TestService {
     await _handActionService.handle(flopMessage());
   }
 
+  static Future<void> fold() async {
+    final gameState = GameState.getState(_context);
+    if (_handActionService == null) {
+      _handActionService = HandActionService(_context, gameState);
+      _handActionService.loop();
+    }
+    await _handActionService.handle(foldMessage());
+  }
+
   static void resetGameState() {
     final gameState = GameState.getState(_context);
     gameState.clear(_context);
@@ -407,6 +416,12 @@ class TestService {
     state.show = false;
 
     gameState.resetSeatActions();
+    final seats = gameState.seats;
+    for(final seat in seats) {
+      seat.player.noOfCardsVisible = 2;
+    }
+    final players = gameState.getPlayers(_context);
+    players.notifyAll();
   }
 
   static void handMessage() {
