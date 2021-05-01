@@ -65,42 +65,39 @@ class _FooterViewState extends State<FooterView>
       builder: (_, players, actionState, __) {
         bool me = players.me != null;
 
-        return 
-        Stack(
-            children: [
-              Align(
+        return Stack(
+          children: [
+            Align(
                 alignment: Alignment.topLeft,
-                child: HandAnalyseView(widget.gameCode, widget.clubCode)
-              ),
-              !me
-                    ? SizedBox.shrink()
-                    : Positioned(
-                      left: 50, top: 0,width: width, height: height,
-                      child: HoleCardsView(
-                          playerModel: players.me,
-                          showActionWidget: actionState.show,
-                        )
-                    ),
-                      
-              Align(
+                child: HandAnalyseView(widget.gameCode, widget.clubCode)),
+            !me
+                ? SizedBox.shrink()
+                : Positioned(
+                    left: 50,
+                    top: 0,
+                    width: width,
+                    height: height,
+                    child: HoleCardsView(
+                      playerModel: players.me,
+                      showActionWidget: actionState.show,
+                    )),
+            Align(
                 alignment: Alignment.topRight,
                 child: CommunicationView(widget.chatVisibilityChange,
-                  widget.gameComService.gameMessaging)
-              ),
-
-              Consumer2<HostSeatChange, GameContextObject>(
-                builder: (context, hostSeatChange, gameContextObject, _) =>
-                    hostSeatChange.seatChangeInProgress &&
-                            gameContextObject.playerId ==
-                                hostSeatChange.seatChangeHost
-                        ? Align(
-                            alignment: Alignment.center,
-                            child: SeatChangeConfirmWidget(),
-                          )
-                        : SizedBox.shrink(),
-              )
-            ],
-          );
+                    widget.gameComService.gameMessaging)),
+            Consumer2<HostSeatChange, GameContextObject>(
+              builder: (context, hostSeatChange, gameContextObject, _) =>
+                  hostSeatChange.seatChangeInProgress &&
+                          gameContextObject.playerId ==
+                              hostSeatChange.seatChangeHost
+                      ? Align(
+                          alignment: Alignment.center,
+                          child: SeatChangeConfirmWidget(),
+                        )
+                      : SizedBox.shrink(),
+            )
+          ],
+        );
 
         // Column(children: [
         //   SizedBox.fromSize(size: Size(0, 0)),
@@ -114,7 +111,7 @@ class _FooterViewState extends State<FooterView>
         //                   playerModel: players.me,
         //                   showActionWidget: actionState.show,
         //                 ),
-                      
+
         //       ),
         //       CommunicationView(widget.chatVisibilityChange,
         //           widget.gameComService.gameMessaging),

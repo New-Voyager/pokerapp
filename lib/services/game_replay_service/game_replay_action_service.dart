@@ -8,7 +8,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/table_state.dar
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/game_replay_models/game_replay_action.dart';
 import 'package:pokerapp/resources/app_constants.dart';
-import 'package:pokerapp/services/game_play/action_services/hand_action_service/sub_services/deal_started_service.dart';
+import 'package:pokerapp/services/game_play/action_services/hand_action_service.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:provider/provider.dart';
 
@@ -306,9 +306,11 @@ class GameReplayActionService {
 
         // TODO: DO SOMETHING ABOUT THE DURATION
         await Future.delayed(const Duration(seconds: 2));
+        HandActionService handActionService =
+            HandActionService(context, gameState);
+        await handActionService.handleDealStarted();
 
-        return DealStartedService.handle(
-          context: context,
+        return handActionService.handleDealStarted(
           fromGameReplay: true,
         );
 

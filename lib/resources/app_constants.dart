@@ -112,6 +112,7 @@ class AppConstants {
   static const String GAME_RUNNING = 'GAME_RUNNING';
   static const String GAME_ENDED = 'ENDED';
   static const String GAME_PAUSED = 'PAUSED';
+  static const String CLEAR = 'CLEAR';
 
   static const String FOLD = 'FOLD';
   static const String CHECK = 'CHECK';

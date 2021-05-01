@@ -144,15 +144,19 @@ class _FooterActionViewState extends State<FooterActionView> {
     int messageId = MessageId.incrementAndGet(gameCode);
     String message = """{
       "gameId": "${gameContext.gameId}",
+      "gameCode": "$gameCode",
       "playerId": "$playerID",
       "handNum": $handNum,
-      "messageType": "PLAYER_ACTED",
-      "messageId": $messageId,
-      "playerActed": {
-        "seatNo": ${actionState.action.seatNo},
-        "action": "$action",
-        "amount": $amount
-      }
+      "seatNo": ${actionState.action.seatNo}, 
+      "messageId": "$messageId",
+      "messages": [{
+        "messageType": "PLAYER_ACTED",
+        "playerActed": {
+          "seatNo": ${actionState.action.seatNo},
+          "action": "$action",
+          "amount": $amount
+        }
+      }]
     }""";
 
     log(message);

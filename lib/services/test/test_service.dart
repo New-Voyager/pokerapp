@@ -11,7 +11,8 @@ import 'package:pokerapp/models/game_play_models/provider_models/table_state.dar
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
-import 'package:pokerapp/services/game_play/action_services/hand_action_service/sub_services/deal_started_service.dart';
+import 'package:pokerapp/services/game_play/action_services/hand_action_service.dart';
+import 'package:pokerapp/services/test/hand_messages.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:provider/provider.dart';
 
@@ -24,6 +25,7 @@ class TestService {
   static List<int> _pots;
 
   static BuildContext _context;
+  static HandActionService _handActionService;
 
   TestService._();
 
@@ -33,8 +35,8 @@ class TestService {
     final data = jsonDecode('''  {
                   "myInfo": {
                     "id": 1,
-                    "uuid": "d04d24d1-be90-4c02-b8fb-c2499d9b76ed",
-                    "name": "tom"
+                    "uuid": "185ecfc9c80b5ee6",
+                    "name": "s"
                   },
                   "role": {
                     "isHost": true,
@@ -132,10 +134,10 @@ class TestService {
     tableState.notifyAll();
 
     await Future.delayed(const Duration(seconds: 2));
-
-    await DealStartedService.handle(
-      context: _context,
-    );
+    final gameState = GameState.getState(_context);
+    HandActionService handActionService =
+        HandActionService(_context, gameState);
+    await handActionService.handleDealStarted();
 
     tableState.updateTableStatusSilent(null);
     tableState.notifyAll();
@@ -374,5 +376,60 @@ class TestService {
     }''');
     final game1 = GameModel.fromJson(json);
     return [game1];
+  }
+
+  static Future<void> sendNewHand() async {
+    final gameState = GameState.getState(_context);
+    if (_handActionService == null) {
+      _handActionService = HandActionService(_context, gameState);
+      _handActionService.loop();
+    }
+    await _handActionService.handle(newHandMessage());
+    await _handActionService.handle(dealCardsMessage());
+    //await HandActionService.handle(context: _context, message: yourActionNextActionMsg());
+    //await HandActionService.handle(context: _context, message: dealStartedMessage());
+  }
+
+  static Future<void> flop() async {
+    final gameState = GameState.getState(_context);
+    if (_handActionService == null) {
+      _handActionService = HandActionService(_context, gameState);
+      _handActionService.loop();
+    }
+    await _handActionService.handle(flopMessage());
+  }
+
+  static void resetGameState() {
+    final gameState = GameState.getState(_context);
+    gameState.clear(_context);
+    gameState.getTableState(_context).notifyAll();
+    ActionState state = gameState.getActionState(_context);
+    state.show = false;
+
+    gameState.resetSeatActions();
+  }
+
+  static void handMessage() {
+    final gameState = GameState.getState(_context);
+    // final seat = gameState.getSeat(_context, 1);
+    // seat.player.highlight = true;
+    // seat.setActionTimer(gameState.gameInfo.actionTime);
+    // seat.notify();
+    if (_handActionService == null) {
+      _handActionService = HandActionService(_context, gameState);
+      _handActionService.loop();
+    }
+    String message =
+        '''{"version":"", "clubId":254, "gameId":"284", "gameCode":"CG-A2DHJIG7497MNKP", "handNum":36,
+     "seatNo":0, "playerId":"0", "messageId":"ACTION:36:RIVER:2443:40", "gameToken":"", "handStatus":"RIVER", 
+     "messages":[
+       {"messageType":"PLAYER_ACTED", "playerActed":{"seatNo":1, "action":"CHECK", "amount":0, "timedOut":false, "actionTime":0, "stack":28}}, 
+       {"messageType":"RIVER", "river":{"board":[97, 145, 2, 130, 66], "riverCard":66, "cardsStr":"[ 8♠  J♠  2❤  T❤  6❤ ]", "pots":[4], "seatsPots":[{"seats":[1, 2], "pot":4}], "playerBalance":{"1":28, "2":98}}}, 
+       {"messageType":"YOUR_ACTION", "seatAction":{"seatNo":2, "availableActions":["FOLD", "CHECK", "BET", "ALLIN"], "straddleAmount":0, "callAmount":0, "raiseAmount":0, "minBetAmount":0, "maxBetAmount":0, "minRaiseAmount":2, "maxRaiseAmount":98, "allInAmount":98, "betOptions":[{"text":"100%", "amount":4}, {"text":"All-In", "amount":98}]}}, 
+       {"messageType":"NEXT_ACTION", "actionChange":{"seatNo":2, "pots":[4], "potUpdates":0, "seatsPots":[{"seats":[1, 2], "pot":4}]}}
+      ]}''';
+    //final handActionService = HandActionService( _context, gameState);
+    _handActionService.clear();
+    _handActionService.handle(message);
   }
 }

@@ -44,7 +44,7 @@ class GameComService {
     this.active = false;
   }
 
-  Future<void> init2(Nats nats) async {
+  Future<void> init(Nats nats) async {
     // if already active, do not resubscribe again
     if (active) return;
 

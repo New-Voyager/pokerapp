@@ -115,8 +115,8 @@ class _CardBackWidgetState extends State<_CardBackWidget>
 
   @override
   void dispose() {
-    super.dispose();
     _controller.dispose();
+    super.dispose();
   }
 
   @override

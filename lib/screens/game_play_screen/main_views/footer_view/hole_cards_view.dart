@@ -33,22 +33,25 @@ class _HoleCardsViewState extends State<HoleCardsView> {
     final boardAttributes =
         Provider.of<BoardAttributesObject>(context, listen: false);
     final Size footerSize = boardAttributes.footerSize;
-    final height = footerSize.height / 1.5;
-    final width = footerSize.width / 2;
+    double height = 0.0, width = 0.0;
     final screen = boardAttributes.getScreen(context);
-    // log('footer size: $footerSize width: $width, height: $height diagonal: ${screen.diagonalInches()}');
 
+    if (footerSize != null) {
+      height = footerSize.height / 1.5;
+      width = footerSize.width / 2;
+    } else {
+      height = screen.height() / 2;
+      width = screen.width() - 100;
+    }
+    // log('footer size: $footerSize width: $width, height: $height diagonal: ${screen.diagonalInches()}');
+    // log('rebuilding action view');
     return Stack(children: [
       Align(
         //top: 0, left: 0,
         alignment: Alignment.topCenter,
-        child: 
-        Transform.translate(
-          offset: Offset(-10, 40),
-          child: Transform.scale(
-          scale: 1.5,
-          child: holeCardView(context)
-        )),       
+        child: Transform.translate(
+            offset: Offset(-10, 40),
+            child: Transform.scale(scale: 1.5, child: holeCardView(context))),
       ),
 
       // action view (show when it is time for this user to act)
@@ -56,9 +59,9 @@ class _HoleCardsViewState extends State<HoleCardsView> {
         width: MediaQuery.of(context).size.width,
         bottom: 0,
         child: widget.showActionWidget ?? false
-            ? Transform.translate(offset:Offset(-50, 30),
-              child: 
-              Transform.scale(scale: 0.80, child: FooterActionView()))
+            ? Transform.translate(
+                offset: Offset(-50, 30),
+                child: Transform.scale(scale: 0.80, child: FooterActionView()))
             : SizedBox(
                 height: 0,
               ),
@@ -68,39 +71,39 @@ class _HoleCardsViewState extends State<HoleCardsView> {
 
   Widget holeCardView(BuildContext context) {
     return Container(
-          child: GestureDetector(
-            onLongPress: () {
-              setState(() => isCardVisible = true);
-            },
-            onLongPressEnd: (_) {
-              setState(() => isCardVisible = false);
-            },
-            child: InkWell(
-              highlightColor: Colors.black,
-              focusColor: Colors.black,
-              splashColor: Colors.black,
-              onTap: () {
-                log('card is tapped');
-                setState(() {
-                  isCardVisible = !isCardVisible;
-                });
-                //debugPrint("HoleCardsView : Container");
-              },
-              child: cards(
-                playerFolded: widget.playerModel.playerFolded,
-                cards: widget.playerModel?.cards?.map(
-                      (int c) {
-                        CardObject card = CardHelper.getCard(c);
-                        card.smaller = true;
-                        card.cardFace = CardFace.FRONT;
-                        return card;
-                      },
-                    )?.toList() ??
-                    [],
-              ),
-            ),
+      child: GestureDetector(
+        onLongPress: () {
+          setState(() => isCardVisible = true);
+        },
+        onLongPressEnd: (_) {
+          setState(() => isCardVisible = false);
+        },
+        child: InkWell(
+          highlightColor: Colors.black,
+          focusColor: Colors.black,
+          splashColor: Colors.black,
+          onTap: () {
+            log('card is tapped');
+            setState(() {
+              isCardVisible = !isCardVisible;
+            });
+            //debugPrint("HoleCardsView : Container");
+          },
+          child: cards(
+            playerFolded: widget.playerModel.playerFolded,
+            cards: widget.playerModel?.cards?.map(
+                  (int c) {
+                    CardObject card = CardHelper.getCard(c);
+                    card.smaller = true;
+                    card.cardFace = CardFace.FRONT;
+                    return card;
+                  },
+                )?.toList() ??
+                [],
           ),
-        );
+        ),
+      ),
+    );
   }
 
   Widget cards({
