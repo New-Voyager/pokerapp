@@ -34,6 +34,12 @@ class _PulsatingCircleIconButtonState extends State<PulsatingCircleIconButton>
   }
 
   @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: widget.onTap,

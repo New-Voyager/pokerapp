@@ -139,6 +139,7 @@ class PlayerModel {
   PlayerActedState get action => this._action;
 
   void reset() {
+    this.highlight = false;
     this._action.reset();
   }
 }

@@ -43,6 +43,7 @@ class CenterView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String _text = showDown ? null : BoardViewUtilMethods.getText(tableStatus);
+    log('table status: $_text');
     //log('board_view : center_view : _text : $_text');
     /* if the game is paused, show the options available during game pause */
     if (_text == AppConstants.GAME_PAUSED ||
@@ -56,11 +57,13 @@ class CenterView extends StatelessWidget {
     }
 
     /* in case of new hand, show the deck shuffling animation */
-    if (_text == AppConstants.NEW_HAND)
+    if (_text == AppConstants.NEW_HAND) {
+      // log('show shuffling');
       return Transform.scale(
         scale: 1.2,
         child: AnimatingShuffleCardView(),
       );
+    }
     /* if reached here, means, the game is RUNNING */
     /* The following view, shows the community cards
     * and the pot chips, if they are nulls, put the default values */

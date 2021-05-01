@@ -220,6 +220,11 @@ class _ChipAmountWidgetState extends State<ChipAmountWidget>
       return;
     }
     final potKey = widget.boardAttributesObject.getPotsKey(0);
+
+    if (potKey == null || potKey.currentContext == null) {
+      return;
+    }
+
     log('pot key: ${potKey.currentContext}');
     final RenderBox potViewBox = potKey.currentContext.findRenderObject();
     final potViewPos = potViewBox.localToGlobal(Offset(0, 0));

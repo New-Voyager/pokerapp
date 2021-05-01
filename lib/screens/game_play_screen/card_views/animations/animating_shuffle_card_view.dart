@@ -111,7 +111,6 @@ class _AnimatingShuffleCardViewState extends State<AnimatingShuffleCardView> {
 
     // wait till the second half of animation finishes
     await _animationWait();
-
     if (mounted && reset) setState(() => _normalizeCards());
   }
 
@@ -159,7 +158,6 @@ class _AnimatingShuffleCardViewState extends State<AnimatingShuffleCardView> {
     } catch (e) {}
 
     cardBackAsset = cardBackAssetImage;
-
     _initAnimate();
   }
 
@@ -171,9 +169,8 @@ class _AnimatingShuffleCardViewState extends State<AnimatingShuffleCardView> {
 
   @override
   void dispose() {
-    super.dispose();
-
     _animateDispose();
+    super.dispose();
   }
 
   @override

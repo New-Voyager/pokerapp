@@ -48,6 +48,42 @@ class GamePlayScreenUtilMethods {
             color: Colors.white,
           ),
           backgroundColor: Colors.red,
+          label: 'Hand Message',
+          onTap: () => TestService.handMessage(),
+        ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
+          label: 'New Hand',
+          onTap: () => TestService.sendNewHand(),
+        ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
+          label: 'Reset',
+          onTap: () => TestService.resetGameState(),
+        ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
+          label: 'Flop',
+          onTap: () => TestService.flop(),
+        ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
           label: 'Show Bets',
           onTap: () => TestService.showBets(),
         ),
@@ -78,7 +114,6 @@ class GamePlayScreenUtilMethods {
           label: 'Show holecards',
           onTap: () => TestService.showHoleCards(),
         ),
-
         SpeedDialChild(
           child: Icon(
             Icons.adb_rounded,
@@ -88,7 +123,7 @@ class GamePlayScreenUtilMethods {
           label: 'Bet Widget',
           onTap: () => TestService.testBetWidget(),
         ),
-      /*
+        /*
         SpeedDialChild(
           child: Icon(
             Icons.adb_rounded,
