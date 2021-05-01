@@ -199,7 +199,7 @@ class BoardAttributesObject extends ChangeNotifier {
     BoardOrientation orientation = BoardOrientation.horizontal,
   }) {
     this._screenSize = screenSize.toInt();
-    log('screensize: ${this._screenSize}');
+    //log('screensize: ${this._screenSize}');
     this._boardOrientation = orientation;
     this._namePlateSize = Size(70, 55);
     this._pots = [];

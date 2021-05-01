@@ -15,8 +15,8 @@ String newHandMessage() => '''
       "newHand": {
         "handNum": 1,
         "buttonPos": 1,
-        "sbPos": 5,
-        "bbPos": 8,
+        "sbPos": 2,
+        "bbPos": 3,
         "nextActionSeat": 1,
         "playerCards": {},
         "gameType": "HOLDEM",

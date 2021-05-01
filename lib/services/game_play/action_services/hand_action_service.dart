@@ -45,12 +45,12 @@ class HandActionService {
       if (_messages.length > 0) {
         dynamic m = _messages.removeAt(0);
         bool done = false;
-        String messageType = m['messageType'];
-        debugPrint('$messageType start');
+        //String messageType = m['messageType'];
+        //debugPrint('$messageType start');
         while (!done && !closed) {
           if (m != null) {
             handleMessage(m).whenComplete(() {
-              debugPrint('$messageType end');
+              // debugPrint('$messageType end');
               done = true;
             });
           }
@@ -66,6 +66,8 @@ class HandActionService {
     assert(_gameState != null);
     assert(_context != null);
     assert(message != null && message.isNotEmpty);
+
+    debugPrint(message);
     var data = jsonDecode(message);
     List<dynamic> messages = data['messages'];
     _messages.addAll(messages);
@@ -140,6 +142,15 @@ class HandActionService {
     int smallBlind = double.parse(newHand['smallBlind'].toString()).toInt();
 
     _gameState.resetSeatActions();
+
+    // set small blind and big blind
+    final sbSeat = _gameState.getSeat(_context, sbPos);
+    sbSeat.player.action.sb = true;
+    sbSeat.player.action.amount = _gameState.gameInfo.smallBlind.toDouble();
+
+    final bbSeat = _gameState.getSeat(_context, bbPos);
+    bbSeat.player.action.bb = true;
+    bbSeat.player.action.amount = _gameState.gameInfo.bigBlind.toDouble();
 
     final gameContext = Provider.of<GameContextObject>(_context, listen: false);
     gameContext.currentHandNum = int.parse(newHand['handNum'].toString());
@@ -339,7 +350,7 @@ class HandActionService {
 
   Future<void> handleNextAction(var data) async {
     // Audio.stop(context: context); fixme: this also does not play when we need to notify the user of his/her turn
-    log('handle next action start');
+    // log('handle next action start');
     var actionChange = data['actionChange'];
     int seatNo = actionChange['seatNo'];
 
@@ -356,7 +367,7 @@ class HandActionService {
       // hide action widget
       _gameState.showAction(_context, false);
     }
-    log('next action seat: $seatNo player: ${player.name}');
+    // log('next action seat: $seatNo player: ${player.name}');
     // highlight next action player
     player.highlight = true;
     final seat = _gameState.getSeat(_context, seatNo);
@@ -378,7 +389,7 @@ class HandActionService {
 
     tableState.updateTableStatusSilent(null);
     tableState.notifyAll();
-    log('handle next action end');
+    // log('handle next action end');
   }
 
   Future<void> handleDealStarted({
@@ -472,7 +483,7 @@ class HandActionService {
     String stage,
   ) async {
     assert(stage != null);
-    log('stage update start');
+    // log('stage update start');
     final TableState tableState = _gameState.getTableState(_context);
     final players = _gameState.getPlayers(_context);
 
@@ -509,7 +520,7 @@ class HandActionService {
 
     tableState.notifyAll();
     await Future.delayed(Duration(seconds: 1));
-    log('stage update end');
+    // log('stage update end');
   }
 
   Future<void> handleQueryCurrentHand(var data) async {
@@ -641,7 +652,7 @@ class HandActionService {
       listen: false,
     );
     final seat = gameState.getSeat(_context, seatNo);
-    log('player acted: $seatNo, player: ${seat.player.name}');
+    //log('player acted: $seatNo, player: ${seat.player.name}');
     final action = seat.player.action;
     action.setAction(playerActed);
     // play the bet-raise sound effect

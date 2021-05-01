@@ -385,7 +385,7 @@ class TestService {
       _handActionService.loop();
     }
     await _handActionService.handle(newHandMessage());
-    await _handActionService.handle(dealCardsMessage());
+    //await _handActionService.handle(dealCardsMessage());
     //await HandActionService.handle(context: _context, message: yourActionNextActionMsg());
     //await HandActionService.handle(context: _context, message: dealStartedMessage());
   }

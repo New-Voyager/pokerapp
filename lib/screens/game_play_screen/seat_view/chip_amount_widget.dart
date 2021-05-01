@@ -275,7 +275,7 @@ class _ChipAmountAnimatingWidgetState extends State<ChipAmountAnimatingWidget>
     begin = seat.betWidgetPos;
     this.begin = begin;
 
-    log('reverse animation: ${widget.reverse ?? false}, winner: ${seat.player.action.winner}');
+    //log('reverse animation: ${widget.reverse ?? false}, winner: ${seat.player.action.winner}');
     if (widget.reverse ?? false) {
       Offset swap = end;
       end = begin;

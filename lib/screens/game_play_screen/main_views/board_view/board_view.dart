@@ -205,7 +205,7 @@ class _BoardViewState extends State<BoardView> {
     if (mySeat == null || mySeat.isOpen || mySeat.player == null) {
       return SizedBox.shrink();
     }
-    log('Rebuild buyin button: Status: ${myState.status.toString()}');
+    // log('Rebuild buyin button: Status: ${myState.status.toString()}');
 
     if (!mySeat.player.showBuyIn || mySeat.player.waitForBuyInApproval) {
       return SizedBox.shrink();

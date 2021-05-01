@@ -102,7 +102,7 @@ class GameState {
         if (player.status == null) {
           player.status = AppConstants.NOT_PLAYING;
         }
-        log('name: ${player.name} player status: ${player.status}');
+        //log('name: ${player.name} player status: ${player.status}');
         this._myState.status = values
             .firstWhere((e) => e.toString() == 'PlayerStatus.' + player.status);
       }

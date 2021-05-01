@@ -159,7 +159,7 @@ class _FooterActionViewState extends State<FooterActionView> {
       }]
     }""";
 
-    log(message);
+    // log(message);
 
     // todo: will this work?
     // delegate the request to the GameComService
@@ -243,10 +243,10 @@ class _FooterActionViewState extends State<FooterActionView> {
     _actionTaken(context);
   }
 
-  Widget _buildTopActionRow(PlayerAction playerAction) => Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize: MainAxisSize.max,
-        children: playerAction?.actions?.map<Widget>(
+  Widget _buildTopActionRow(PlayerAction playerAction) {
+    final allin = playerAction?.actions?.firstWhere((element) => element.actionName == ALLIN);
+    var actionButtons = [];
+    actionButtons = playerAction?.actions?.map<Widget>(
               (playerAction) {
                 switch (playerAction.actionName) {
                   case FOLD:
@@ -314,9 +314,25 @@ class _FooterActionViewState extends State<FooterActionView> {
 
                 return SizedBox.shrink();
               },
-            )?.toList() ??
-            [],
+            )?.toList();
+    
+    if (actionButtons.length > 0 && actionButtons.length < 3 && allin != null) {
+      actionButtons.add(_buildRoundButton(
+                    text: allin.actionName +
+                        '\n' +
+                        allin.actionValue.toString(),
+                    onTap: () => _allIn(
+                      amount: allin.actionValue,
+                      context: context,
+                    ),
+                  ));
+    }
+    return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.max,
+        children: actionButtons,
       );
+  }
 
   Widget _buildOptionsRow(PlayerAction playerAction) {
     return AnimatedSwitcher(

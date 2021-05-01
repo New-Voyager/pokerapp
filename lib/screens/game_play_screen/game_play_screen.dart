@@ -333,7 +333,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
     final data = MediaQuery.of(context);
-    log('rebuilding game screen. Screen: $screenSize Query data: $data');
+    // log('rebuilding game screen. Screen: $screenSize Query data: $data');
 
     if (TestService.isTesting) {
       try {
