@@ -114,12 +114,13 @@ class _BoardViewState extends State<BoardView> {
             ) {
               var cards = tableState.cards;
               var pots = tableState.potChips;
-              if (TestService.isTesting) {
-                // FIXME: BOARD CARDS NEED TO TO BE FETCHED FROM TEST SERVICE, BECAUSE TO CAUSE THEM TO CHANGE,
-                //  FIXME: IT'S BETTER TO PUT THEM IN THE PROVIDER IN THE TEST SERVICE
-                // cards = TestService.boardCards;
-                pots = TestService.pots;
-              }
+
+              // if (TestService.isTesting) {
+              //   // FIXME: BOARD CARDS NEED TO TO BE FETCHED FROM TEST SERVICE, BECAUSE TO CAUSE THEM TO CHANGE,
+              //   //  FIXME: IT'S BETTER TO PUT THEM IN THE PROVIDER IN THE TEST SERVICE
+              //   // cards = TestService.boardCards;
+              //   pots = TestService.pots;
+              // }
 
               return CenterView(
                 centerKey,

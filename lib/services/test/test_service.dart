@@ -390,6 +390,32 @@ class TestService {
     //await HandActionService.handle(context: _context, message: dealStartedMessage());
   }
 
+  static void fillCenterView() {
+    final gameState = GameState.getState(_context);
+    final TableState tableState = gameState.getTableState(_context);
+
+    tableState.addFlopCards(
+      1,
+      [50, 50, 50].map((e) => CardHelper.getCard(e)).toList(),
+    );
+
+    tableState.addTurnOrRiverCard(
+      1,
+      CardHelper.getCard(200),
+    );
+    tableState.addTurnOrRiverCard(
+      1,
+      CardHelper.getCard(200),
+    );
+
+    tableState.updatePotChipsSilent(
+      potChips: [578],
+      potUpdatesChips: 120,
+    );
+
+    tableState.notifyAll();
+  }
+
   static Future<void> flop() async {
     final gameState = GameState.getState(_context);
     if (_handActionService == null) {
@@ -417,7 +443,7 @@ class TestService {
 
     gameState.resetSeatActions();
     final seats = gameState.seats;
-    for(final seat in seats) {
+    for (final seat in seats) {
       seat.player.noOfCardsVisible = 2;
     }
     final players = gameState.getPlayers(_context);

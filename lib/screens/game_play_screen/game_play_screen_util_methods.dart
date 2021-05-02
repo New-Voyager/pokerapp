@@ -48,9 +48,18 @@ class GamePlayScreenUtilMethods {
             color: Colors.white,
           ),
           backgroundColor: Colors.red,
+          label: 'Fill center view',
+          onTap: () => TestService.fillCenterView(),
+        ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
           label: 'Fold',
           onTap: () => TestService.fold(),
-        ),        
+        ),
         SpeedDialChild(
           child: Icon(
             Icons.adb_rounded,

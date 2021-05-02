@@ -71,6 +71,8 @@ class CenterView extends StatelessWidget {
   }
 
   Widget multiplePots(BuildContext context) {
+    print('potchips $potChips');
+
     final gameState = Provider.of<GameState>(context, listen: false);
     final boardAttributes = gameState.getBoardAttributes(context);
     List<Widget> pots = [];
@@ -89,9 +91,11 @@ class CenterView extends StatelessWidget {
       );
       boardAttributes.setPotsKey(i, key);
       pots.add(potsView);
-      pots.add(SizedBox(
-        width: 5,
-      ));
+      pots.add(
+        SizedBox(
+          width: 5,
+        ),
+      );
     }
 
     return Row(mainAxisAlignment: MainAxisAlignment.center, children: pots);
