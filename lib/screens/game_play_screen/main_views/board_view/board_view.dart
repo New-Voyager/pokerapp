@@ -87,7 +87,6 @@ class _BoardViewState extends State<BoardView> {
 
         Positioned(
           top: boardAttributes.centerOffset.dy,
-          left: boardAttributes.centerOffset.dx,
           width: boardAttributes.centerSize.width,
           height: boardAttributes.centerSize.height,
           child: Opacity(

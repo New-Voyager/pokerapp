@@ -169,7 +169,7 @@ class BoardAttributesObject extends ChangeNotifier {
   Size _tableSize;
 
   // center attributes
-  Offset _centerOffset;
+  // TODO HOW IS THIS CENTER SIZE RELEVANT
   Size _centerSize;
 
   Size _namePlateSize;
@@ -200,8 +200,9 @@ class BoardAttributesObject extends ChangeNotifier {
     @required double screenSize,
     BoardOrientation orientation = BoardOrientation.horizontal,
   }) {
-    this._screenSize = screenSize.toInt();
-    log('screen size: $_screenSize');
+    // todo: rounding screen sizes
+    this._screenSize = screenSize.round();
+    log('original screen size: $screenSize, rounded screen size: $_screenSize');
     this._boardOrientation = orientation;
     this._namePlateSize = Size(70, 55);
     this._pots = [];
@@ -281,15 +282,12 @@ class BoardAttributesObject extends ChangeNotifier {
     /* NOTE: THE IMAGE IS SET TO STRETCH TO THE ENTIRE HEIGHT OF THIS AVAILABLE CONTAINER,
     THIS HEIGHT - 40 VARIABLE CAN BE CHANGED TO STRETCH IT FURTHER OR SQUEEZE IT*/
     this._tableSize = Size(widthOfBoard + 50, heightOfBoard - 70);
-    this._centerOffset = Offset(10, 50);
     this._centerSize = Size(widthOfBoard - 30, this._tableSize.height - 70);
 
     return this._boardSize;
   }
 
   get tableSize => this._tableSize;
-  get centerOffset => this._centerOffset;
-  get centerSize => this._centerSize;
   get centerKey => this._centerKey;
   get emptyCenterKey => this._emptyCenterKey;
 
@@ -343,45 +341,62 @@ class BoardAttributesObject extends ChangeNotifier {
   }
 
   dynamic _decide({
-    dynamic lessThan7Inches,
-    dynamic equalTo7Inches,
-    dynamic greaterThan7Inches,
+    @required dynamic lessThan6Inches,
+    @required dynamic equalTo6Inches,
+    @required dynamic equalTo7Inches,
+    @required dynamic greaterThan7Inches,
   }) {
-    if (this._screenSize < 7) return lessThan7Inches;
+    if (this._screenSize < 6) return lessThan6Inches;
+
+    if (this._screenSize == 6) return equalTo6Inches;
 
     if (this._screenSize == 7) return equalTo7Inches;
 
     if (this._screenSize > 7) return greaterThan7Inches;
   }
 
+  Offset get centerOffset => _decide(
+        lessThan6Inches: Offset(10, 40),
+        equalTo6Inches: Offset(10, 60),
+        equalTo7Inches: Offset(10, 75),
+        greaterThan7Inches: Offset(10, 50),
+      ) as Offset;
+
+  Size get centerSize => this._centerSize;
+
   /* hole card view offsets */
   Offset get holeCardViewOffset => _decide(
-        lessThan7Inches: const Offset(-10, 50),
-        equalTo7Inches: const Offset(-10, 40),
+        lessThan6Inches: const Offset(-10, 50),
+        equalTo6Inches: const Offset(-10, 60),
+        equalTo7Inches: const Offset(-10, 80),
         greaterThan7Inches: const Offset(-10, 40),
       ) as Offset;
 
   /* hold card view scales */
   double get holeCardViewScale => _decide(
-        lessThan7Inches: 1.4,
+        lessThan6Inches: 1.4,
+        equalTo6Inches: 1.4,
         equalTo7Inches: 1.5,
         greaterThan7Inches: 1.5,
       ) as double;
 
   double get footerActionViewScale => _decide(
-        lessThan7Inches: 1.0,
+        lessThan6Inches: 1.0,
+        equalTo6Inches: 1.0,
         equalTo7Inches: 1.0,
         greaterThan7Inches: 1.0,
       ) as double;
 
   double get namePlateScale => _decide(
-        lessThan7Inches: 1.0,
+        lessThan6Inches: 1.0,
+        equalTo6Inches: 1.0,
         equalTo7Inches: 1.5,
         greaterThan7Inches: 2.0,
       ) as double;
 
   double get betWidgetScale => _decide(
-        lessThan7Inches: 1.0,
+        lessThan6Inches: 1.0,
+        equalTo6Inches: 1.0,
         equalTo7Inches: 1.2,
         greaterThan7Inches: 2.0,
       ) as double;
@@ -397,13 +412,15 @@ class BoardAttributesObject extends ChangeNotifier {
   // }
 
   double get tableScale => _decide(
-        lessThan7Inches: 1.0,
+        lessThan6Inches: 1.0,
+        equalTo6Inches: 1.0,
         equalTo7Inches: 0.90,
         greaterThan7Inches: 0.85,
       ) as double;
 
   double get tableDividerHeightScale => _decide(
-        lessThan7Inches: 0.40,
+        lessThan6Inches: 0.40,
+        equalTo6Inches: 0.40,
         equalTo7Inches: 0.70,
         greaterThan7Inches: 0.60,
       ) as double;
