@@ -355,6 +355,20 @@ class BoardAttributesObject extends ChangeNotifier {
     if (this._screenSize > 7) return greaterThan7Inches;
   }
 
+  double get holeCardViewDisplacementConstant => _decide(
+        lessThan6Inches: 60.0,
+        equalTo6Inches: 60.0,
+        equalTo7Inches: 60.0,
+        greaterThan7Inches: 60.0,
+      );
+
+  double get holdCardViewAngleConstant => _decide(
+        lessThan6Inches: 0.05,
+        equalTo6Inches: 0.05,
+        equalTo7Inches: 0.05,
+        greaterThan7Inches: 0.05,
+      );
+
   Offset get centerOffset => _decide(
         lessThan6Inches: Offset(10, 40),
         equalTo6Inches: Offset(10, 60),

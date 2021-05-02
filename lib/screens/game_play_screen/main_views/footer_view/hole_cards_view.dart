@@ -5,6 +5,7 @@ import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/screens/game_play_screen/card_views/hole_stack_card_view.dart';
+import 'package:pokerapp/screens/game_play_screen/card_views/hole_stack_card_view_2.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:provider/provider.dart';
 
@@ -114,7 +115,7 @@ class _HoleCardsViewState extends State<HoleCardsView> {
     List<CardObject> cards,
     @required playerFolded,
   }) {
-    return HoleStackCardView(
+    return HoleStackCardView2(
       cards: cards,
       deactivated: playerFolded ?? false,
       isCardVisible: isCardVisible,

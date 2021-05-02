@@ -360,8 +360,11 @@ class TestService {
       listen: false,
     );
     final player = gameState.me(_context);
-    player.cards = [194, 196]; //, 200, 193];
-    player.noOfCardsVisible = 4;
+    player.cards = [
+      194,
+      196,
+    ];
+    player.noOfCardsVisible = 2;
     final players = gameState.getPlayers(_context);
     players.notifyAll();
   }
