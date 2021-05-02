@@ -195,11 +195,13 @@ class BoardAttributesObject extends ChangeNotifier {
   Uint8List _betImage;
 
   BoardAttributesObject({
+    /*
+    * This screen size is diagonal inches*/
     @required double screenSize,
     BoardOrientation orientation = BoardOrientation.horizontal,
   }) {
     this._screenSize = screenSize.toInt();
-    //log('screensize: ${this._screenSize}');
+    log('screen size: $_screenSize');
     this._boardOrientation = orientation;
     this._namePlateSize = Size(70, 55);
     this._pots = [];
@@ -340,55 +342,71 @@ class BoardAttributesObject extends ChangeNotifier {
     return this._seatPosAttribs[pos];
   }
 
-  double getNameplateScale() {
-    if (this._screenSize == 7) {
-      return 1.5;
-    } else if (this._screenSize > 7) {
-      return 2;
-    } else {
-      return 1;
-    }
+  dynamic _decide({
+    dynamic lessThan7Inches,
+    dynamic equalTo7Inches,
+    dynamic greaterThan7Inches,
+  }) {
+    if (this._screenSize < 7) return lessThan7Inches;
+
+    if (this._screenSize == 7) return equalTo7Inches;
+
+    if (this._screenSize > 7) return greaterThan7Inches;
   }
 
-  double getBetWidgetScale() {
-    if (this._screenSize == 7) {
-      return 1.2;
-    } else if (this._screenSize > 7) {
-      return 2;
-    } else {
-      return 1;
-    }
-  }
+  /* hole card view offsets */
+  Offset get holeCardViewOffset => _decide(
+        lessThan7Inches: const Offset(-10, 50),
+        equalTo7Inches: const Offset(-10, 40),
+        greaterThan7Inches: const Offset(-10, 40),
+      ) as Offset;
 
-  double getBetPos() {
-    if (this._screenSize == 7) {
-      return 70;
-    } else if (this._screenSize > 7) {
-      return 100;
-    } else {
-      return 60;
-    }
-  }
+  /* hold card view scales */
+  double get holeCardViewScale => _decide(
+        lessThan7Inches: 1.4,
+        equalTo7Inches: 1.5,
+        greaterThan7Inches: 1.5,
+      ) as double;
 
-  double getTableScale() {
-    if (this._screenSize == 7) {
-      return 0.90;
-    } else if (this._screenSize > 7) {
-      return 0.85;
-    } else {
-      return 1;
-    }
-  }
+  double get footerActionViewScale => _decide(
+        lessThan7Inches: 1.0,
+        equalTo7Inches: 1.0,
+        greaterThan7Inches: 1.0,
+      ) as double;
 
-  double getTableDividerHeightScale() {
-    if (this._screenSize > 7) {
-      return 0.60;
-    } else if (this._screenSize == 7) {
-      return 0.70;
-    } else {
-      return 0.40;
-    }
-  }
+  double get namePlateScale => _decide(
+        lessThan7Inches: 1.0,
+        equalTo7Inches: 1.5,
+        greaterThan7Inches: 2.0,
+      ) as double;
+
+  double get betWidgetScale => _decide(
+        lessThan7Inches: 1.0,
+        equalTo7Inches: 1.2,
+        greaterThan7Inches: 2.0,
+      ) as double;
+
+  // double getBetPos() {
+  //   if (this._screenSize == 7) {
+  //     return 70;
+  //   } else if (this._screenSize > 7) {
+  //     return 100;
+  //   } else {
+  //     return 60;
+  //   }
+  // }
+
+  double get tableScale => _decide(
+        lessThan7Inches: 1.0,
+        equalTo7Inches: 0.90,
+        greaterThan7Inches: 0.85,
+      ) as double;
+
+  double get tableDividerHeightScale => _decide(
+        lessThan7Inches: 0.40,
+        equalTo7Inches: 0.70,
+        greaterThan7Inches: 0.60,
+      ) as double;
 
   int get screenSize => this._screenSize;
   Uint8List get betImage => this._betImage;

@@ -174,8 +174,7 @@ class NamePlateWidget extends StatelessWidget {
     return Opacity(
       opacity: childWhenDragging ? 0.50 : 1.0,
       child: Transform.scale(
-        scale:
-            boardAttributes.getNameplateScale(), // NOTE: 10inch 2.0, 7 inch 1.5
+        scale: boardAttributes.namePlateScale,
         child: Container(
           width: boardAttributes.namePlateSize.width,
           height: boardAttributes.namePlateSize.height,

@@ -68,8 +68,9 @@ class _FooterViewState extends State<FooterView>
         return Stack(
           children: [
             Align(
-                alignment: Alignment.topLeft,
-                child: HandAnalyseView(widget.gameCode, widget.clubCode)),
+              alignment: Alignment.topLeft,
+              child: HandAnalyseView(widget.gameCode, widget.clubCode),
+            ),
             !me
                 ? SizedBox.shrink()
                 : Positioned(
@@ -80,7 +81,8 @@ class _FooterViewState extends State<FooterView>
                     child: HoleCardsView(
                       playerModel: players.me,
                       showActionWidget: actionState.show,
-                    )),
+                    ),
+                  ),
             Align(
                 alignment: Alignment.topRight,
                 child: CommunicationView(widget.chatVisibilityChange,

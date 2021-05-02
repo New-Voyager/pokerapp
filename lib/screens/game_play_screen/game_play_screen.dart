@@ -384,13 +384,16 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
               }
 
               var dividerTotalHeight = MediaQuery.of(context).size.height / 6;
-              Screen screen = Screen(context);
-              BoardAttributesObject boardAttributes =
-                  BoardAttributesObject(screenSize: screen.diagonalInches());
 
-              double tableScale = boardAttributes.getTableScale();
-              double divider1 = boardAttributes.getTableDividerHeightScale() *
-                  dividerTotalHeight; // 5inch 0.40, 10 inch: 1*
+              /* get the screen sizes, and initialize the board attributes */
+              Screen screen = Screen(context);
+              BoardAttributesObject boardAttributes = BoardAttributesObject(
+                screenSize: screen.diagonalInches(),
+              );
+
+              double tableScale = boardAttributes.tableScale;
+              double divider1 =
+                  boardAttributes.tableDividerHeightScale * dividerTotalHeight;
               final providers = GamePlayScreenUtilMethods.getProviders(
                 context: context,
                 gameMessagingService: _gameContext.gameComService.gameMessaging,

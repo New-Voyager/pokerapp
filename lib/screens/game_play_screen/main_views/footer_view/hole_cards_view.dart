@@ -45,28 +45,32 @@ class _HoleCardsViewState extends State<HoleCardsView> {
     }
     // log('footer size: $footerSize width: $width, height: $height diagonal: ${screen.diagonalInches()}');
     // log('rebuilding action view');
-    return Stack(children: [
-      Align(
-        //top: 0, left: 0,
-        alignment: Alignment.topCenter,
-        child: Transform.translate(
-            offset: Offset(-10, 40),
-            child: Transform.scale(scale: 1.5, child: holeCardView(context))),
-      ),
+    return Stack(
+      children: [
+        Align(
+          alignment: Alignment.topCenter,
+          child: Transform.translate(
+            // TODO: SCREEN_SIZES: NEED TO CHANGE THIS OFFSET AS PER SCREEN SIZE VALUE
+            offset: boardAttributes.holeCardViewOffset,
+            child: Transform.scale(
+              scale: boardAttributes.holeCardViewScale,
+              child: holeCardView(context),
+            ),
+          ),
+        ),
 
-      // action view (show when it is time for this user to act)
-      Positioned(
-        width: MediaQuery.of(context).size.width,
-        bottom: 0,
-        child: widget.showActionWidget ?? false
-            ? Transform.translate(
-                offset: Offset(-50, 30),
-                child: Transform.scale(scale: 0.80, child: FooterActionView()))
-            : SizedBox(
-                height: 0,
-              ),
-      )
-    ]);
+        // action view (show when it is time for this user to act)
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: widget.showActionWidget ?? false
+              ? Transform.scale(
+                  scale: boardAttributes.footerActionViewScale,
+                  child: FooterActionView(),
+                )
+              : const SizedBox.shrink(),
+        ),
+      ],
+    );
   }
 
   Widget holeCardView(BuildContext context) {
