@@ -65,6 +65,7 @@ class _HoleCardsViewState extends State<HoleCardsView> {
           alignment: Alignment.bottomCenter,
           child: widget.showActionWidget ?? false
               ? Transform.scale(
+                  origin: Offset.zero,
                   scale: boardAttributes.footerActionViewScale,
                   child: FooterActionView(),
                 )

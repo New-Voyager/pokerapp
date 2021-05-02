@@ -244,138 +244,127 @@ class _FooterActionViewState extends State<FooterActionView> {
   }
 
   Widget _buildTopActionRow(PlayerAction playerAction) {
-    final allin = playerAction?.actions?.firstWhere((element) => element.actionName == ALLIN);
+    final allin = playerAction?.actions
+        ?.firstWhere((element) => element.actionName == ALLIN);
     var actionButtons = [];
     actionButtons = playerAction?.actions?.map<Widget>(
-              (playerAction) {
-                switch (playerAction.actionName) {
-                  case FOLD:
-                    return _buildRoundButton(
-                      text: playerAction.actionName,
-                      onTap: () => _fold(
-                        playerAction.actionValue,
-                        context: context,
-                      ),
-                    );
-                  case CHECK:
-                    return _buildRoundButton(
-                      text: playerAction.actionName,
-                      onTap: () => _check(
-                        context: context,
-                      ),
-                    );
+      (playerAction) {
+        switch (playerAction.actionName) {
+          case FOLD:
+            return _buildRoundButton(
+              text: playerAction.actionName,
+              onTap: () => _fold(
+                playerAction.actionValue,
+                context: context,
+              ),
+            );
+          case CHECK:
+            return _buildRoundButton(
+              text: playerAction.actionName,
+              onTap: () => _check(
+                context: context,
+              ),
+            );
 
-                  /* on tapping on BET this button should highlight and show further options */
-                  case BET:
-                    bet = true;
-                    return _buildRoundButton(
-                      isSelected: _showOptions,
-                      text: playerAction.actionName,
-                      disable: _disableBetButton,
-                      onTap: () => setState(() {
-                        _showOptions = true;
-                        _disableBetButton = true;
+          /* on tapping on BET this button should highlight and show further options */
+          case BET:
+            bet = true;
+            return _buildRoundButton(
+              isSelected: _showOptions,
+              text: playerAction.actionName,
+              onTap: () => setState(() {
+                _showOptions = !_showOptions;
+              }),
+            );
+          case CALL:
+            return _buildRoundButton(
+              text: playerAction.actionName +
+                  '\n' +
+                  playerAction.actionValue.toString(),
+              onTap: () => _call(
+                playerAction.actionValue,
+                context: context,
+              ),
+            );
 
-                        // _showDialog(context);
-                      }),
-                    );
-                  case CALL:
-                    return _buildRoundButton(
-                      text: playerAction.actionName +
-                          '\n' +
-                          playerAction.actionValue.toString(),
-                      onTap: () => _call(
-                        playerAction.actionValue,
-                        context: context,
-                      ),
-                    );
+          /* on tapping on RAISE this button should highlight and show further options */
+          case RAISE:
+            raise = true;
+            return _buildRoundButton(
+              isSelected: _showOptions,
+              text: playerAction.actionName,
+              onTap: () => setState(() {
+                _showOptions = true;
+              }),
+            );
+        }
 
-                  /* on tapping on RAISE this button should highlight and show further options */
-                  case RAISE:
-                    raise = true;
-                    return _buildRoundButton(
-                      isSelected: _showOptions,
-                      text: playerAction.actionName,
-                      onTap: () => setState(() {
-                        _showOptions = true;
-                      }),
-                    );
-                  /* case ALLIN:
-                    return _buildRoundButton(
-                      text: playerAction.actionName +
-                          '\n' +
-                          playerAction.actionValue.toString(),
-                      onTap: () => _allIn(
-                        amount: playerAction.actionValue,
-                        context: context,
-                      ),
-                    ); */
-                }
+        return SizedBox.shrink();
+      },
+    )?.toList();
 
-                return SizedBox.shrink();
-              },
-            )?.toList();
-    
     if (actionButtons.length > 0 && actionButtons.length < 3 && allin != null) {
       actionButtons.add(_buildRoundButton(
-                    text: allin.actionName +
-                        '\n' +
-                        allin.actionValue.toString(),
-                    onTap: () => _allIn(
-                      amount: allin.actionValue,
-                      context: context,
-                    ),
-                  ));
+        text: allin.actionName + '\n' + allin.actionValue.toString(),
+        onTap: () => _allIn(
+          amount: allin.actionValue,
+          context: context,
+        ),
+      ));
     }
     return Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize: MainAxisSize.max,
-        children: actionButtons,
-      );
-  }
-
-  Widget _buildOptionsRow(PlayerAction playerAction) {
-    return AnimatedSwitcher(
-      duration: AppConstants.fastAnimationDuration,
-      reverseDuration: AppConstants.fastAnimationDuration,
-      transitionBuilder: (child, animation) => ScaleTransition(
-        scale: animation,
-        child: child,
-      ),
-      child: playerAction?.options == null
-          ? shrinkedBox
-          : _showOptions
-              ? Container(
-                  color: Colors.black.withOpacity(0.85),
-                  child: BetWidget(
-                    action: playerAction,
-                    onSubmitCallBack: _betOrRaise,
-                  ),
-                )
-              : shrinkedBox,
+      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisSize: MainAxisSize.max,
+      children: actionButtons,
     );
   }
 
+  Widget _buildOptionsRow(PlayerAction playerAction) => AnimatedSwitcher(
+        duration: AppConstants.fastAnimationDuration,
+        reverseDuration: AppConstants.fastAnimationDuration,
+        transitionBuilder: (child, animation) => ScaleTransition(
+          alignment: Alignment.bottomCenter,
+          scale: animation,
+          child: child,
+        ),
+        child: playerAction?.options == null
+            ? shrinkedBox
+            : _showOptions
+                ? Container(
+                    color: Colors.black.withOpacity(0.85),
+                    child: BetWidget(
+                      action: playerAction,
+                      onSubmitCallBack: _betOrRaise,
+                    ),
+                  )
+                : shrinkedBox,
+      );
+
   @override
   Widget build(BuildContext context) {
-    // print("---------------------- rebuilding. ");
     return Consumer<ActionState>(
       key: ValueKey('buildActionButtons'),
       builder: (_, actionState, __) {
-        // print("STATE CHANGDDD ----- ${actionState.action}");
         return Container(
           height: MediaQuery.of(context).size.height / 2.5,
-          child: Stack(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
+              /* bet widget */
+              Expanded(
+                child: Container(
+                  margin: const EdgeInsets.symmetric(
+                    vertical: 10.0,
+                  ),
+                  alignment: Alignment.topCenter,
+                  child: _buildOptionsRow(actionState.action),
+                ),
+              ),
+
+              /* bottom row */
               Container(
-                constraints: BoxConstraints.expand(),
                 alignment: Alignment.bottomCenter,
                 child: _buildTopActionRow(actionState.action),
-              ),
-              Container(
-                constraints: BoxConstraints.expand(),
-                alignment: Alignment.topCenter,
-                child: _buildOptionsRow(actionState.action),
               ),
             ],
           ),
