@@ -122,7 +122,7 @@ class GameComService {
     if (TestService.isTesting) {
       return this._chat;
     }
-    assert(active);
+    // assert(active);
     return this._chat;
   }
 }

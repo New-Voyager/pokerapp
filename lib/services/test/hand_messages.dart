@@ -294,7 +294,6 @@ String flopMessage() => '''
 }
 ''';
 
-
 String foldMessage() => '''
 {
 	"version": "",

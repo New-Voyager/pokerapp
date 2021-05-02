@@ -3,30 +3,28 @@ import 'dart:developer';
 import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
-import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:provider/provider.dart';
 import 'communication_view.dart';
-import 'game_action.dart';
 import 'hand_analyse_view.dart';
 import 'hole_cards_view.dart';
 import 'seat_change_confirm_widget.dart';
 
 class FooterView extends StatefulWidget {
-  final GameComService gameComService;
+  //final GameComService gameComService;
   final String gameCode;
   final String clubCode;
   final String playerUuid;
   final Function chatVisibilityChange;
+  final GameContextObject gameContext;
 
   FooterView(
-    this.gameComService,
+    this.gameContext,
     this.gameCode,
     this.playerUuid,
     this.chatVisibilityChange,
@@ -78,13 +76,14 @@ class _FooterViewState extends State<FooterView>
                     width: width,
                     height: height,
                     child: HoleCardsView(
+                      gameContext: widget.gameContext,
                       playerModel: players.me,
                       showActionWidget: actionState.show,
                     )),
             Align(
                 alignment: Alignment.topRight,
                 child: CommunicationView(widget.chatVisibilityChange,
-                    widget.gameComService.gameMessaging)),
+                    widget.gameContext.gameComService.gameMessaging)),
             Consumer2<HostSeatChange, GameContextObject>(
               builder: (context, hostSeatChange, gameContextObject, _) =>
                   hostSeatChange.seatChangeInProgress &&

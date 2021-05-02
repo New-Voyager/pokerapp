@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/player_info.dart';
+import 'package:pokerapp/services/game_play/action_services/hand_action_service.dart';
+import 'package:pokerapp/services/game_play/game_com_service.dart';
+
+import 'game_state.dart';
 
 class GameContextObject extends ChangeNotifier {
   String _gameCode;
@@ -7,14 +11,23 @@ class GameContextObject extends ChangeNotifier {
   int _currentHandNum;
   PlayerInfo _currentPlayer;
   bool _gameEnded = false;
+  GameState gameState;
+  HandActionService handActionService;
+  GameComService gameComService;
 
   GameContextObject({
     @required String gameCode,
     @required PlayerInfo player,
+    GameState gameState,
+    HandActionService handActionService,
+    GameComService gameComService,
   }) {
     this._gameCode = gameCode;
     this._currentPlayer = player;
     this._gameId = 0;
+    this.gameComService = gameComService;
+    this.gameState = gameState;
+    this.handActionService = handActionService;
   }
 
   set currentHandNum(int newValue) {
@@ -43,5 +56,12 @@ class GameContextObject extends ChangeNotifier {
         _currentPlayer?.role?.isOwner == true) return true;
 
     return false;
+  }
+
+  @override
+  void dispose() {
+    handActionService.close();
+    gameComService.dispose();
+    super.dispose();
   }
 }

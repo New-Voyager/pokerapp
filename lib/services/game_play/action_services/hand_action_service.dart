@@ -23,17 +23,91 @@ import 'package:pokerapp/services/game_play/utils/audio.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:provider/provider.dart';
 
+import '../game_com_service.dart';
+import '../message_id.dart';
+
+enum PlayerActedSendState {
+  NONE,
+  SENT,
+  ACK_RECEIVED,
+}
+
+class RetrySendingMsg {
+  GameComService _gameComService;
+  String _messageType;
+  String _messageId;
+  DateTime _messageSentTime;
+  String _message;
+  int _retryCount = 0;
+  int _retrySeconds = 2;
+  bool _ackReceived = false;
+  bool _cancel = false;
+  RetrySendingMsg(
+      this._gameComService, this._message, this._messageType, this._messageId);
+
+  run() async {
+    DateTime lastSentTime = DateTime.now();
+    _messageSentTime = lastSentTime;
+    bool firstAttempt = true;
+    // runs a loop until we receive acknowledgement or cancel
+    while (!_cancel || !_ackReceived) {
+      DateTime now = DateTime.now();
+      final d = now.difference(lastSentTime);
+      if (firstAttempt || d.inSeconds >= _retrySeconds) {
+        log('Sending $_messageType again');
+        lastSentTime = now;
+        _gameComService.sendPlayerToHandChannel(_message);
+        _retryCount++;
+      }
+      firstAttempt = false;
+      await Future.delayed(Duration(milliseconds: 50));
+    }
+  }
+
+  cancel() {
+    _cancel = true;
+  }
+
+  /**
+   * 1. If the current message is acknowledgement for previously sent message, then
+   * this method returns true and stops the retry loop.
+   * 2. If the current message is not an acknowledgement, this method will return false.
+   * We should send a QUERY_CURRENT_HAND and refresh the screen.
+   */
+  bool handleMsg(var data) {
+    String messageType = data['messageType'].toString();
+    if (messageType == AppConstants.MSG_ACK) {
+      var msgAck = data['msgAck'];
+      String messageId = msgAck['messageId'].toString();
+      if (messageId == _messageId) {
+        log('Received acknowledgement');
+        _ackReceived = true;
+        return true;
+      }
+      log('Received incorrect acknowledgement $messageId');
+      return false;
+    }
+    // some other messsge
+    log('Received some other message type messageType');
+    return false;
+  }
+}
+
 class HandActionService {
   final GameState _gameState;
   final BuildContext _context;
   final List<dynamic> _messages = [];
   bool closed = false;
-
-  HandActionService(this._context, this._gameState);
+  GameComService _gameComService;
+  RetrySendingMsg _retryMsg;
+  HandActionService(this._context, this._gameState, this._gameComService);
 
   void close() {
     closed = true;
     _messages.clear();
+    if (_retryMsg != null) {
+      _retryMsg.cancel();
+    }
   }
 
   void clear() {
@@ -62,6 +136,44 @@ class HandActionService {
     }
   }
 
+  playerActed(
+      int playerID, int handNum, int seatNo, String action, int amount) {
+    if (_retryMsg != null) {
+      _retryMsg.cancel();
+    }
+    _retryMsg = null;
+
+    int msgId = MessageId.incrementAndGet(_gameState.gameCode);
+    String messageId = msgId.toString();
+    String message = """{
+      "gameCode": "${_gameState.gameCode}",
+      "playerId": "$playerID",
+      "handNum": $handNum,
+      "seatNo": $seatNo, 
+      "messageId": "$messageId",
+      "messages": [{
+        "messageType": "PLAYER_ACTED",
+        "playerActed": {
+          "seatNo": $seatNo,
+          "action": "$action",
+          "amount": $amount
+        }
+      }]
+    }""";
+    _retryMsg =
+        RetrySendingMsg(_gameComService, message, 'PLAYER_ACTED', messageId);
+    _retryMsg.run();
+  }
+
+  queryCurrentHand() {
+    String query = """{
+        "gameCode": "$_gameState.gameCode",
+        "messageType": "QUERY_CURRENT_HAND",
+        "playerId": "${_gameState.currentPlayerId}"
+      }""";
+    this._gameComService.sendPlayerToHandChannel(query);
+  }
+
   handle(String message) async {
     assert(_gameState != null);
     assert(_context != null);
@@ -75,6 +187,20 @@ class HandActionService {
 
   Future<void> handleMessage(dynamic data) async {
     String messageType = data['messageType'];
+    if (_retryMsg != null) {
+      bool handled = _retryMsg.handleMsg(data);
+      // cancel retry now
+      _retryMsg.cancel();
+      _retryMsg = null;
+      if (handled) {
+        // acknowledgement message
+        return;
+      } else {
+        // something went wrong, we need to refresh the screen
+        this.queryCurrentHand();
+      }
+    }
+
     // delegate further actions to sub services as per messageType
     switch (messageType) {
       case AppConstants.RESULT:

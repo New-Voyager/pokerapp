@@ -307,7 +307,7 @@ class GameReplayActionService {
         // TODO: DO SOMETHING ABOUT THE DURATION
         await Future.delayed(const Duration(seconds: 2));
         HandActionService handActionService =
-            HandActionService(context, gameState);
+            HandActionService(context, gameState, null);
         await handActionService.handleDealStarted();
 
         return handActionService.handleDealStarted(

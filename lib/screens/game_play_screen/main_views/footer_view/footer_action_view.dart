@@ -9,8 +9,6 @@ import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/bet_widget.dart';
-import 'package:pokerapp/services/app/auth_service.dart';
-import 'package:pokerapp/services/game_play/message_id.dart';
 import 'package:provider/provider.dart';
 
 const shrinkedBox = const SizedBox.shrink(
@@ -18,6 +16,10 @@ const shrinkedBox = const SizedBox.shrink(
 );
 
 class FooterActionView extends StatefulWidget {
+  final GameContextObject gameContext;
+
+  FooterActionView(this.gameContext);
+
   @override
   _FooterActionViewState createState() => _FooterActionViewState();
 }
@@ -129,44 +131,19 @@ class _FooterActionViewState extends State<FooterActionView> {
     assert(context != null);
     assert(action != null);
 
-    String playerID = await AuthService.getPlayerID();
     final gameState = Provider.of<GameState>(context, listen: false);
     final actionState = gameState.getActionState(context);
-    final gameContext = Provider.of<GameContextObject>(
+    final gameContextObject = Provider.of<GameContextObject>(
       context,
       listen: false,
     );
+
     // get current hand number
-    int handNum = gameContext.currentHandNum;
+    int handNum = gameContextObject.currentHandNum;
+    String gameCode = gameContextObject.gameCode;
 
-    String gameCode = gameContext.gameCode;
-
-    int messageId = MessageId.incrementAndGet(gameCode);
-    String message = """{
-      "gameId": "${gameContext.gameId}",
-      "gameCode": "$gameCode",
-      "playerId": "$playerID",
-      "handNum": $handNum,
-      "seatNo": ${actionState.action.seatNo}, 
-      "messageId": "$messageId",
-      "messages": [{
-        "messageType": "PLAYER_ACTED",
-        "playerActed": {
-          "seatNo": ${actionState.action.seatNo},
-          "action": "$action",
-          "amount": $amount
-        }
-      }]
-    }""";
-
-    // log(message);
-
-    // todo: will this work?
-    // delegate the request to the GameComService
-    Provider.of<Function(String)>(
-      context,
-      listen: false,
-    )(message);
+    widget.gameContext.handActionService.playerActed(gameContextObject.playerId,
+        handNum, actionState.action.seatNo, action, amount);
   }
 
   /* These utility function actually takes actions */
@@ -244,63 +221,64 @@ class _FooterActionViewState extends State<FooterActionView> {
   }
 
   Widget _buildTopActionRow(PlayerAction playerAction) {
-    final allin = playerAction?.actions?.firstWhere((element) => element.actionName == ALLIN);
+    final allin = playerAction?.actions
+        ?.firstWhere((element) => element.actionName == ALLIN);
     var actionButtons = [];
     actionButtons = playerAction?.actions?.map<Widget>(
-              (playerAction) {
-                switch (playerAction.actionName) {
-                  case FOLD:
-                    return _buildRoundButton(
-                      text: playerAction.actionName,
-                      onTap: () => _fold(
-                        playerAction.actionValue,
-                        context: context,
-                      ),
-                    );
-                  case CHECK:
-                    return _buildRoundButton(
-                      text: playerAction.actionName,
-                      onTap: () => _check(
-                        context: context,
-                      ),
-                    );
+      (playerAction) {
+        switch (playerAction.actionName) {
+          case FOLD:
+            return _buildRoundButton(
+              text: playerAction.actionName,
+              onTap: () => _fold(
+                playerAction.actionValue,
+                context: context,
+              ),
+            );
+          case CHECK:
+            return _buildRoundButton(
+              text: playerAction.actionName,
+              onTap: () => _check(
+                context: context,
+              ),
+            );
 
-                  /* on tapping on BET this button should highlight and show further options */
-                  case BET:
-                    bet = true;
-                    return _buildRoundButton(
-                      isSelected: _showOptions,
-                      text: playerAction.actionName,
-                      disable: _disableBetButton,
-                      onTap: () => setState(() {
-                        _showOptions = true;
-                        _disableBetButton = true;
+          /* on tapping on BET this button should highlight and show further options */
+          case BET:
+            bet = true;
+            return _buildRoundButton(
+              isSelected: _showOptions,
+              text: playerAction.actionName,
+              disable: _disableBetButton,
+              onTap: () => setState(() {
+                _showOptions = true;
+                _disableBetButton = true;
 
-                        // _showDialog(context);
-                      }),
-                    );
-                  case CALL:
-                    return _buildRoundButton(
-                      text: playerAction.actionName +
-                          '\n' +
-                          playerAction.actionValue.toString(),
-                      onTap: () => _call(
-                        playerAction.actionValue,
-                        context: context,
-                      ),
-                    );
+                // _showDialog(context);
+              }),
+            );
+          case CALL:
+            return _buildRoundButton(
+              text: playerAction.actionName +
+                  '\n' +
+                  playerAction.actionValue.toString(),
+              onTap: () => _call(
+                playerAction.actionValue,
+                context: context,
+              ),
+            );
 
-                  /* on tapping on RAISE this button should highlight and show further options */
-                  case RAISE:
-                    raise = true;
-                    return _buildRoundButton(
-                      isSelected: _showOptions,
-                      text: playerAction.actionName,
-                      onTap: () => setState(() {
-                        _showOptions = true;
-                      }),
-                    );
-                  /* case ALLIN:
+          /* on tapping on RAISE this button should highlight and show further options */
+          case RAISE:
+            raise = true;
+            return _buildRoundButton(
+              isSelected: _showOptions,
+              text: playerAction.actionName,
+              onTap: () => setState(() {
+                _showOptions = true;
+              }),
+            );
+          /* case ALLIN:
                     return _buildRoundButton(
                       text: playerAction.actionName +
                           '\n' +
@@ -310,28 +288,26 @@ class _FooterActionViewState extends State<FooterActionView> {
                         context: context,
                       ),
                     ); */
-                }
+        }
 
-                return SizedBox.shrink();
-              },
-            )?.toList();
-    
+        return SizedBox.shrink();
+      },
+    )?.toList();
+
     if (actionButtons.length > 0 && actionButtons.length < 3 && allin != null) {
       actionButtons.add(_buildRoundButton(
-                    text: allin.actionName +
-                        '\n' +
-                        allin.actionValue.toString(),
-                    onTap: () => _allIn(
-                      amount: allin.actionValue,
-                      context: context,
-                    ),
-                  ));
+        text: allin.actionName + '\n' + allin.actionValue.toString(),
+        onTap: () => _allIn(
+          amount: allin.actionValue,
+          context: context,
+        ),
+      ));
     }
     return Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize: MainAxisSize.max,
-        children: actionButtons,
-      );
+      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisSize: MainAxisSize.max,
+      children: actionButtons,
+    );
   }
 
   Widget _buildOptionsRow(PlayerAction playerAction) {

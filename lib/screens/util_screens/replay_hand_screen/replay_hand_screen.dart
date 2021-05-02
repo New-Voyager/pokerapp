@@ -89,15 +89,10 @@ class _ReplayHandUtilScreenState extends State<ReplayHandUtilScreen> {
       providers: GamePlayScreenUtilMethods.getProviders(
         context: context,
         boardAttributes: boardAttributes,
-        gameMessagingService: null,
-        currentPlayerInfo: PlayerInfo(
-          id: widget.playerID,
-          uuid: widget.gameReplayController.playerUuid,
-        ),
+        gameState: null,
         gameInfoModel: widget.gameReplayController.gameInfoModel,
         gameCode: widget.gameCode,
         agora: null,
-        sendPlayerToHandChannel: null,
       ),
       builder: (BuildContext context, _) {
         /* initialize the game controller, after we have the context

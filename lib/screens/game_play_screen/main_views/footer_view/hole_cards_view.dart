@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/screens/game_play_screen/card_views/hole_stack_card_view.dart';
@@ -17,8 +18,10 @@ class HoleCardsView extends StatefulWidget {
   final PlayerModel playerModel;
   //final FooterStatus footerStatus;
   final bool showActionWidget;
+  final GameContextObject gameContext;
 
-  const HoleCardsView({Key key, this.playerModel, this.showActionWidget})
+  const HoleCardsView(
+      {Key key, this.playerModel, this.gameContext, this.showActionWidget})
       : super(key: key);
 
   @override
@@ -61,7 +64,8 @@ class _HoleCardsViewState extends State<HoleCardsView> {
         child: widget.showActionWidget ?? false
             ? Transform.translate(
                 offset: Offset(-50, 30),
-                child: Transform.scale(scale: 0.80, child: FooterActionView()))
+                child: Transform.scale(
+                    scale: 0.80, child: FooterActionView(widget.gameContext)))
             : SizedBox(
                 height: 0,
               ),
