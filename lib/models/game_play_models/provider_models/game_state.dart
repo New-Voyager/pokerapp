@@ -37,6 +37,7 @@ class GameState {
   ListenableProvider<HandResultState> _handResult;
   ListenableProvider<MyState> _myStateProvider;
   ListenableProvider<WaitlistState> _waitlistProvider;
+  ListenableProvider<ServerConnectionState> _connectionState;
 
   MyState _myState;
 
@@ -45,10 +46,12 @@ class GameState {
   Map<int, Seat> _seats = Map<int, Seat>();
   Map<int, PlayerInfo> _playersInfo = Map<int, PlayerInfo>();
   String _currentPlayerUuid;
+  int _currentPlayerId;
 
   void initialize({
     String gameCode,
     GameInfoModel gameInfo,
+    int playerId,
     String uuid,
     GameMessagingService gameMessagingService,
   }) {
@@ -56,6 +59,7 @@ class GameState {
     this._gameInfo = gameInfo;
     this._gameCode = gameCode;
     this._currentPlayerUuid = uuid;
+    this._currentPlayerId = playerId;
 
     for (int seatNo = 1; seatNo <= gameInfo.maxPlayers; seatNo++) {
       this._seats[seatNo] = Seat(seatNo, seatNo, null);
@@ -89,6 +93,9 @@ class GameState {
 
     this._waitlistProvider =
         ListenableProvider<WaitlistState>(create: (_) => WaitlistState());
+
+    this._connectionState = ListenableProvider<ServerConnectionState>(
+        create: (_) => ServerConnectionState());
 
     List<PlayerModel> players = [];
     if (gameInfo.playersInSeats != null) {
@@ -129,6 +136,10 @@ class GameState {
 
   String get currentPlayerUuid {
     return this._currentPlayerUuid;
+  }
+
+  int get currentPlayerId {
+    return this._currentPlayerId;
   }
 
   void refresh(BuildContext context) async {
@@ -230,6 +241,10 @@ class GameState {
   WaitlistState getWaitlistState(BuildContext context, {bool listen = false}) =>
       Provider.of<WaitlistState>(context, listen: listen);
 
+  ServerConnectionState getConnectionState(BuildContext context,
+          {bool listen = false}) =>
+      Provider.of<ServerConnectionState>(context, listen: listen);
+
   MarkedCards getMarkedCards(
     BuildContext context, {
     bool listen = false,
@@ -296,6 +311,7 @@ class GameState {
       this._markedCards,
       this._gameMessagingService,
       this._waitlistProvider,
+      this._connectionState,
     ];
   }
 
@@ -426,4 +442,22 @@ void loadGameStateFromFile(BuildContext context) async {
   final jsonData = json.decode(data);
   final List players = jsonData['players'];
   final gameState = GameState.getState(context);
+}
+
+enum ConnectionStatus {
+  UNKNOWN,
+  CONNECTED,
+  DISCONNECTED,
+  RECONNECTING,
+}
+
+class ServerConnectionState extends ChangeNotifier {
+  ConnectionStatus _status = ConnectionStatus.UNKNOWN;
+
+  ConnectionStatus get status => this._status;
+  set status(ConnectionStatus status) => this._status = status;
+
+  notify() {
+    notifyListeners();
+  }
 }

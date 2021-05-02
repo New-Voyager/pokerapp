@@ -113,21 +113,6 @@ class GameService {
     return result.data['approved'];
   }
 
-  /* query current hand method is to get in between insight in a game */
-  static void queryCurrentHand(String gameCode, Function(String) send) async {
-    assert(send != null);
-
-    String playerID = await AuthService.getPlayerID();
-
-    String _query = """{
-      "gameCode": "$gameCode",
-      "messageType": "QUERY_CURRENT_HAND",
-      "playerId": "$playerID"
-    }""";
-
-    send(_query);
-  }
-
   static Future<String> configureClubGame(
       String clubCode, NewGameModel input) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();

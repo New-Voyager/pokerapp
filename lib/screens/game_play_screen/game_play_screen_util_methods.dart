@@ -50,7 +50,7 @@ class GamePlayScreenUtilMethods {
           backgroundColor: Colors.red,
           label: 'Fold',
           onTap: () => TestService.fold(),
-        ),        
+        ),
         SpeedDialChild(
           child: Icon(
             Icons.adb_rounded,
@@ -266,23 +266,14 @@ class GamePlayScreenUtilMethods {
   /* provider method, returns list of all the providers used in the below hierarchy */
   static List<SingleChildWidget> getProviders({
     @required BuildContext context,
+    @required GameState gameState,
     @required GameInfoModel gameInfoModel,
-    @required GameMessagingService gameMessagingService,
-    PlayerInfo currentPlayerInfo,
     @required String gameCode,
     @required Agora agora,
     @required BoardAttributesObject boardAttributes,
-    @required Function(String) sendPlayerToHandChannel,
+    @required GameContextObject gameContextObject,
   }) {
     // initialize game state object
-    final gameState = GameState();
-
-    gameState.initialize(
-      gameCode: gameCode,
-      gameInfo: gameInfoModel,
-      uuid: currentPlayerInfo.uuid,
-      gameMessagingService: gameMessagingService,
-    );
 
     var providers = [
       /* this is for the seat change animation values */
@@ -314,10 +305,7 @@ class GamePlayScreenUtilMethods {
         * the game screen - it contains data regarding the current hand no, club name,
         * club code and so on */
       ListenableProvider<GameContextObject>(
-        create: (_) => GameContextObject(
-          gameCode: gameCode,
-          player: currentPlayerInfo,
-        ),
+        create: (_) => gameContextObject,
       ),
       Provider<GameState>(
         create: (_) => gameState,
@@ -347,9 +335,9 @@ class GamePlayScreenUtilMethods {
 
       /* This provider contains the sendPlayerToHandChannel function
         * so that the function can be called from anywhere down the widget tree */
-      Provider<Function(String)>(
-        create: (_) => sendPlayerToHandChannel,
-      ),
+      // Provider<Function(String)>(
+      //   create: (_) => sendPlayerToHandChannel,
+      // ),
 
       /* This provider holds the audioPlayer object, which facilitates playing
         * audio in the game */
