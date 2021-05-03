@@ -365,7 +365,7 @@ class TestService {
       196,
       200,
       50,
-      50,
+      56,
     ];
     player.noOfCardsVisible = 2;
     final players = gameState.getPlayers(_context);

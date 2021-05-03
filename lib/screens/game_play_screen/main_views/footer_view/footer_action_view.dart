@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/player_action.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
+import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_styles.dart';
@@ -17,8 +18,12 @@ const shrinkedBox = const SizedBox.shrink(
 
 class FooterActionView extends StatefulWidget {
   final GameContextObject gameContext;
+  final Function isBetWidgetVisible;
 
-  FooterActionView(this.gameContext);
+  FooterActionView({
+    this.gameContext,
+    this.isBetWidgetVisible(bool _),
+  });
 
   @override
   _FooterActionViewState createState() => _FooterActionViewState();
@@ -31,14 +36,6 @@ class _FooterActionViewState extends State<FooterActionView> {
   String selectedOptionText;
   bool bet = false;
   bool raise = false;
-  final TextEditingController _controller = TextEditingController();
-
-  // /* this function decides, whom to call - bet or raise? */
-  // void _submit(PlayerAction playerAction) {
-  //   int idx = playerAction.actions.indexWhere((pa) => pa.actionName == BET);
-  //   if (idx == -1) return _raise();
-  //   _bet();
-  // }
 
   void _betOrRaise(double val) {
     _showOptions = false;
@@ -246,6 +243,7 @@ class _FooterActionViewState extends State<FooterActionView> {
               text: playerAction.actionName,
               onTap: () => setState(() {
                 _showOptions = !_showOptions;
+                widget.isBetWidgetVisible?.call(_showOptions);
               }),
             );
           case CALL:
@@ -266,7 +264,8 @@ class _FooterActionViewState extends State<FooterActionView> {
               isSelected: _showOptions,
               text: playerAction.actionName,
               onTap: () => setState(() {
-                _showOptions = true;
+                _showOptions = !_showOptions;
+                widget.isBetWidgetVisible?.call(_showOptions);
               }),
             );
         }
@@ -302,38 +301,46 @@ class _FooterActionViewState extends State<FooterActionView> {
         child: playerAction?.options == null
             ? shrinkedBox
             : _showOptions
-                ? Container(
-                    color: Colors.black.withOpacity(0.85),
-                    child: BetWidget(
-                      action: playerAction,
-                      onSubmitCallBack: _betOrRaise,
-                    ),
+                ? BetWidget(
+                    action: playerAction,
+                    onSubmitCallBack: _betOrRaise,
                   )
                 : shrinkedBox,
       );
 
   @override
-  Widget build(BuildContext context) => Container(
-        margin: const EdgeInsets.only(
-          bottom: 10.0,
-        ),
-        child: Consumer<ActionState>(
-          key: ValueKey('buildActionButtons'),
-          builder: (_, actionState, __) => Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              /* bet widget */
-              Expanded(
+  Widget build(BuildContext context) {
+    final boardAttributes = Provider.of<BoardAttributesObject>(
+      context,
+      listen: false,
+    );
+
+    return Container(
+      margin: const EdgeInsets.only(
+        bottom: 10.0,
+      ),
+      child: Consumer<ActionState>(
+        key: ValueKey('buildActionButtons'),
+        builder: (_, actionState, __) => Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            /* bet widget */
+            Expanded(
+              child: Transform.scale(
+                scale: boardAttributes.footerActionViewScale,
                 child: _buildBetWidget(actionState.action),
               ),
+            ),
 
-              /* bottom row */
-              Container(
-                alignment: Alignment.bottomCenter,
-                child: _buildActionWidgets(actionState.action),
-              ),
-            ],
-          ),
+            /* bottom row */
+            Transform.scale(
+              scale: boardAttributes.footerActionViewScale,
+              alignment: Alignment.bottomCenter,
+              child: _buildActionWidgets(actionState.action),
+            ),
+          ],
         ),
-      );
+      ),
+    );
+  }
 }

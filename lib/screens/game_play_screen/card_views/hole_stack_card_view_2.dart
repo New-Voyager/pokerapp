@@ -35,49 +35,64 @@ class HoleStackCardView2 extends StatelessWidget {
       listen: true,
     );
 
-    final BoardAttributesObject boardAttributesObject =
-        gameState.getBoardAttributes(
-      context,
-    );
+    // final BoardAttributesObject boardAttributesObject =
+    //     gameState.getBoardAttributes(
+    //   context,
+    // );
 
     if (cards == null || cards.isEmpty) return const SizedBox.shrink();
     int mid = (cards.length ~/ 2);
 
     final double kDisplacementConstant =
-        boardAttributesObject.holeCardViewDisplacementConstant;
+        BoardAttributesObject.holeCardViewDisplacementConstant;
     final double kAngleConstant =
-        boardAttributesObject.holdCardViewAngleConstant;
+        BoardAttributesObject.holeCardViewAngleConstant;
+
+    double getEvenNoDisplacement() {
+      if (cards.length % 2 == 0) return -kDisplacementConstant / 2;
+
+      return 0.0;
+    }
 
     return FittedBox(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        children: List.generate(cards.length, (i) {
-          return Transform.translate(
-            offset: Offset(
-              -(i - mid) * kDisplacementConstant,
-              0,
-            ),
-            child: Transform.rotate(
-              alignment: Alignment.bottomCenter,
-              angle: (i - mid) * kAngleConstant,
-              child: deactivated
-                  ? GameCardWidget(
-                      marked: markedCards.isMarked(cards[i]),
-                      onMarkTapCallback: () => markedCards.mark(cards[i]),
-                      card: cards[i],
-                      grayOut: true,
-                      isCardVisible: isCardVisible,
-                    )
-                  : GameCardWidget(
-                      marked: markedCards.isMarked(cards[i]),
-                      onMarkTapCallback: () => markedCards.mark(cards[i]),
-                      card: cards[i],
-                      isCardVisible: isCardVisible,
-                    ),
-            ),
-          );
-        }),
+      child: Transform.translate(
+        offset: Offset(
+          getEvenNoDisplacement(),
+          0.0,
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: List.generate(
+            cards.length,
+            (i) {
+              return Transform.translate(
+                offset: Offset(
+                  -(i - mid) * kDisplacementConstant,
+                  0,
+                ),
+                child: Transform.rotate(
+                  alignment: Alignment.bottomCenter,
+                  angle: (i - mid) * kAngleConstant,
+                  child: deactivated
+                      ? GameCardWidget(
+                          marked: markedCards.isMarked(cards[i]),
+                          onMarkTapCallback: () => markedCards.mark(cards[i]),
+                          card: cards[i],
+                          grayOut: true,
+                          isCardVisible: isCardVisible,
+                        )
+                      : GameCardWidget(
+                          marked: markedCards.isMarked(cards[i]),
+                          onMarkTapCallback: () => markedCards.mark(cards[i]),
+                          card: cards[i],
+                          isCardVisible: isCardVisible,
+                        ),
+                ),
+              );
+            },
+          ),
+        ),
       ),
     );
 

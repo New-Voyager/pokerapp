@@ -355,19 +355,23 @@ class BoardAttributesObject extends ChangeNotifier {
     if (this._screenSize > 7) return greaterThan7Inches;
   }
 
-  double get holeCardViewDisplacementConstant => _decide(
-        lessThan6Inches: 60.0,
-        equalTo6Inches: 60.0,
-        equalTo7Inches: 60.0,
-        greaterThan7Inches: 60.0,
-      );
+  static const holeCardViewDisplacementConstant = 60.0;
 
-  double get holdCardViewAngleConstant => _decide(
-        lessThan6Inches: 0.05,
-        equalTo6Inches: 0.05,
-        equalTo7Inches: 0.05,
-        greaterThan7Inches: 0.05,
-      );
+  // double get holeCardViewDisplacementConstant => _decide(
+  //       lessThan6Inches: 60.0,
+  //       equalTo6Inches: 60.0,
+  //       equalTo7Inches: 60.0,
+  //       greaterThan7Inches: 60.0,
+  //     );
+
+  static const holeCardViewAngleConstant = 0.05;
+
+  // double get holeCardViewAngleConstant => _decide(
+  //       lessThan6Inches: 0.05,
+  //       equalTo6Inches: 0.05,
+  //       equalTo7Inches: 0.05,
+  //       greaterThan7Inches: 0.05,
+  //     );
 
   Offset get centerOffset => _decide(
         lessThan6Inches: Offset(10, 40),
@@ -383,7 +387,7 @@ class BoardAttributesObject extends ChangeNotifier {
         lessThan6Inches: const Offset(0, 50),
         equalTo6Inches: const Offset(0, 60),
         equalTo7Inches: const Offset(0, 80),
-        greaterThan7Inches: const Offset(0, 40),
+        greaterThan7Inches: const Offset(0, 130),
       ) as Offset;
 
   /* hold card view scales */
@@ -391,14 +395,14 @@ class BoardAttributesObject extends ChangeNotifier {
         lessThan6Inches: 1.4,
         equalTo6Inches: 1.4,
         equalTo7Inches: 1.5,
-        greaterThan7Inches: 1.5,
+        greaterThan7Inches: 1.6,
       ) as double;
 
   double get footerActionViewScale => _decide(
         lessThan6Inches: 1.0,
         equalTo6Inches: 1.05,
-        equalTo7Inches: 1.0,
-        greaterThan7Inches: 1.0,
+        equalTo7Inches: 1.2,
+        greaterThan7Inches: 1.3,
       ) as double;
 
   double get namePlateScale => _decide(

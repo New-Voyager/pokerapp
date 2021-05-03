@@ -1,10 +1,12 @@
 import 'dart:developer';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
+import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/screens/game_play_screen/card_views/hole_stack_card_view.dart';
 import 'package:pokerapp/screens/game_play_screen/card_views/hole_stack_card_view_2.dart';
 import 'package:pokerapp/utils/card_helper.dart';
@@ -35,7 +37,8 @@ class HoleCardsViewAndFooterActionView extends StatefulWidget {
 
 class _HoleCardsViewAndFooterActionViewState
     extends State<HoleCardsViewAndFooterActionView> {
-  bool isCardVisible = false;
+  bool _isCardVisible = false;
+  bool _isBetWidgetVisible = false;
 
   @override
   Widget build(BuildContext context) {
@@ -43,41 +46,6 @@ class _HoleCardsViewAndFooterActionViewState
       context,
       listen: false,
     );
-
-    // final Size footerSize = boardAttributes.footerSize;
-    // final screen = boardAttributes.getScreen(context);
-    // double height, width;
-    // if (footerSize != null) {
-    //   height = footerSize.height / 1.5;
-    //   width = footerSize.width / 2;
-    // } else {
-    //   height = screen.height() / 2;
-    //   width = screen.width() - 100;
-    // }
-    // log('footer size: $footerSize width: $width, height: $height diagonal: ${screen.diagonalInches()}');
-    // log('rebuilding action view');
-
-    // return Column(
-    //   children: [
-    //     /* hole card view - shows the user's cards */
-    //     Transform.translate(
-    //       offset: boardAttributes.holeCardViewOffset,
-    //       child: Transform.scale(
-    //         scale: boardAttributes.holeCardViewScale,
-    //         child: holeCardView(context),
-    //       ),
-    //     ),
-    //     Spacer(),
-    //
-    //     widget.showActionWidget ?? false
-    //         ? Transform.scale(
-    //             // TODO: FIX THE SCALING OF THIS WIDGET FOR DIFFERENT SCREEN SIZES
-    //             scale: boardAttributes.footerActionViewScale,
-    //             child: FooterActionView(widget.gameContext),
-    //           )
-    //         : const SizedBox.shrink(),
-    //   ],
-    // );
 
     return Stack(
       children: [
@@ -92,14 +60,28 @@ class _HoleCardsViewAndFooterActionViewState
           ),
         ),
 
+        /* dark overlay to show in-front of cards, when the bet widget is displayed */
+        AnimatedSwitcher(
+          duration: AppConstants.fastAnimationDuration,
+          reverseDuration: AppConstants.fastAnimationDuration,
+          child: _isBetWidgetVisible
+              ? Container(
+                  width: double.infinity,
+                  height: double.infinity,
+                  color: Colors.black.withOpacity(0.80),
+                )
+              : const SizedBox.shrink(),
+        ),
+
         // action view (show when it is time for this user to act)
         Align(
           alignment: Alignment.bottomCenter,
           child: widget.showActionWidget ?? false
-              ? Transform.scale(
-                  alignment: Alignment.bottomCenter,
-                  scale: boardAttributes.footerActionViewScale,
-                  child: FooterActionView(widget.gameContext),
+              ? FooterActionView(
+                  gameContext: widget.gameContext,
+                  isBetWidgetVisible: (bool isBetWidgetVisible) {
+                    setState(() => _isBetWidgetVisible = isBetWidgetVisible);
+                  },
                 )
               : const SizedBox.shrink(),
         ),
@@ -109,13 +91,13 @@ class _HoleCardsViewAndFooterActionViewState
 
   Widget holeCardView(BuildContext context) => GestureDetector(
         onTap: () {
-          setState(() => isCardVisible = !isCardVisible);
+          setState(() => _isCardVisible = !_isCardVisible);
         },
         onLongPress: () {
-          setState(() => isCardVisible = true);
+          setState(() => _isCardVisible = true);
         },
         onLongPressEnd: (_) {
-          setState(() => isCardVisible = false);
+          setState(() => _isCardVisible = false);
         },
         child: cards(
           playerFolded: widget.playerModel.playerFolded,
@@ -140,7 +122,7 @@ class _HoleCardsViewAndFooterActionViewState
     return HoleStackCardView2(
       cards: cards,
       deactivated: playerFolded ?? false,
-      isCardVisible: isCardVisible,
+      isCardVisible: _isCardVisible,
     );
   }
 }
