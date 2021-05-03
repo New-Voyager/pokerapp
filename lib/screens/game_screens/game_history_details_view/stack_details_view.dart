@@ -31,6 +31,7 @@ class _PointsLineChart extends State<PointsLineChart> {
   List<PlayerStack> stackList = [];
   bool _popUpVisible = false;
   charts.SelectionModel<num> _selectionModel;
+  int refreshcount = 1;
 
   @override
   void initState() {
@@ -86,36 +87,42 @@ class _PointsLineChart extends State<PointsLineChart> {
                           });
                           print("VISIBLE : $_popUpVisible");
                         },
-                        /* onTap: () {
-                         
-                        }, */
                         child: charts.LineChart(
                           _createSampleData(),
                           animate: false,
                           behaviors: [
                             // new charts.SlidingViewport(),
-                            new charts.PanAndZoomBehavior(),
+                            charts.PanAndZoomBehavior(),
+                            charts.SelectNearest(),
                           ],
                           selectionModels: [
-                            new charts.SelectionModelConfig(
+                            charts.SelectionModelConfig(
+                                type: charts.SelectionModelType.info,
                                 updatedListener: (model) {
-                              if (model.hasDatumSelection) {
-                                setState(() {
-                                  _selectionModel = model;
-                                  _popUpVisible = true;
-                                });
-                              }
-                              print(
-                                  "Update listener: ${model.hasDatumSelection} : ${model.hasAnySelection} : ${model.hasSeriesSelection}");
-                              print(
-                                  "Update listener: ${model.selectedDatum} : ${model.selectedSeries} ");
-                            }, changedListener: (charts.SelectionModel model) {
-                              print("CHANGED LISTERNER");
-                              // Navigator.push(
-                              //     context,
-                              //     MaterialPageRoute(
-                              //         builder: (_) =>
-                              //             HighHandLogView(widget.gameDetail.gameCode)));
+                                  print(refreshcount++);
+                                  print(model);
+                                  print(model.hasAnySelection.toString());
+                                  print(model.hasDatumSelection.toString());
+                                  print(model.hasSeriesSelection.toString());
+
+                                  if (model.hasDatumSelection) {
+                                    setState(() {
+                                      _selectionModel = model;
+                                      _popUpVisible = true;
+                                    });
+                                  }
+                                  print(
+                                      "Update listener: ${model.hasDatumSelection} : ${model.hasAnySelection} : ${model.hasSeriesSelection}");
+                                  print(
+                                      "Update listener: ${model.selectedDatum} : ${model.selectedSeries} ");
+                                },
+                                changedListener: (charts.SelectionModel model) {
+                                  print("CHANGED LISTERNER");
+                                  // Navigator.push(
+                                  //     context,
+                                  //     MaterialPageRoute(
+                                  //         builder: (_) =>
+                                  //             HighHandLogView(widget.gameDetail.gameCode)));
 /* 
                                   showMenu(
                                       context: context,
@@ -135,12 +142,12 @@ class _PointsLineChart extends State<PointsLineChart> {
                                         PopupMenuItem(child: Text("adfs")),
                                         PopupMenuItem(child: Text("asdfdsf")),
                                       ]); */
-                              print(model.selectedSeries[0]
-                                  .measureFn(model.selectedDatum[0].index));
+                                  print(model.selectedSeries[0]
+                                      .measureFn(model.selectedDatum[0].index));
 
-                              print(model.selectedSeries[0]
-                                  .domainFn(model.selectedDatum[0].index));
-                            })
+                                  print(model.selectedSeries[0]
+                                      .domainFn(model.selectedDatum[0].index));
+                                })
                           ],
                           defaultRenderer: new charts.LineRendererConfig(
                             includePoints: true,
