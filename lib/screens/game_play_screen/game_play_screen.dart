@@ -25,7 +25,6 @@ import 'package:pokerapp/services/game_play/action_services/hand_action_service.
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/services/game_play/graphql/game_service.dart';
-import 'package:pokerapp/services/game_play/utils/audio.dart';
 import 'package:pokerapp/services/game_play/utils/audio_buffer.dart';
 import 'package:pokerapp/services/nats/nats.dart';
 import 'package:pokerapp/services/test/test_service.dart';
@@ -446,11 +445,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
                         Column(
                           children: [
                             // header section
-<<<<<<< HEAD
-                            HeaderView(),
-=======
                             HeaderView(_gameState),
->>>>>>> master
                             // empty space to highlight the background view
                             SizedBox(
                               width: width,
