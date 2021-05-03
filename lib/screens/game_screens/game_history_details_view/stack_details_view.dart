@@ -10,6 +10,7 @@ import 'package:charts_flutter/flutter.dart' as charts;
 
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:pokerapp/resources/app_strings.dart';
+import 'package:pokerapp/utils/formatter.dart';
 
 import 'dart:convert';
 
@@ -27,7 +28,7 @@ class PointsLineChart extends StatefulWidget {
 class _PointsLineChart extends State<PointsLineChart> {
   static dynamic jsonData;
   bool loadingDone = false;
-  Offset _tapPostion = Offset(100, 100);
+  Offset _tapPosition = Offset(100, 100);
   List<PlayerStack> stackList = [];
   bool _popUpVisible = false;
   charts.SelectionModel<num> _selectionModel;
@@ -82,7 +83,7 @@ class _PointsLineChart extends State<PointsLineChart> {
                         onTapDown: (details) {
                           print("ONTAP : ");
                           setState(() {
-                            _tapPostion = Offset(details.localPosition.dx,
+                            _tapPosition = Offset(details.localPosition.dx,
                                 details.localPosition.dy);
                           });
                         },
@@ -114,12 +115,12 @@ class _PointsLineChart extends State<PointsLineChart> {
                                               showMenu(
                                                   context: context,
                                                   position: RelativeRect.fromLTRB(
-                                                      _tapPostion.dx,
-                                                      _tapPostion.dy,
+                                                      _tapPosition.dx,
+                                                      _tapPosition.dy,
                                                       MediaQuery.of(context).size.width -
-                                                          _tapPostion.dx,
+                                                          _tapPosition.dx,
                                                       MediaQuery.of(context).size.height -
-                                                          _tapPostion.dy),
+                                                          _tapPosition.dy),
                                                   items: [
                                                    PopupMenuItem(
                                                      textStyle: TextStyle(backgroundColor: Colors.black),
@@ -157,7 +158,7 @@ class _PointsLineChart extends State<PointsLineChart> {
   List<charts.Series<PlayerStack, int>> _createSampleData() {
     return [
       new charts.Series<PlayerStack, int>(
-          id: 'Sales',
+          id: 'Stack',
           //colorFn: (_, __) => charts.ColorUtil.fromDartColor(Colors.transparent),
           fillColorFn: (PlayerStack stat, __) => (stat.neutral)
               ? charts.ColorUtil.fromDartColor(Colors.transparent)
@@ -173,16 +174,16 @@ class _PointsLineChart extends State<PointsLineChart> {
 
   _buildPopUp(BuildContext context) {
     print("Building pipup");
-    double x = _tapPostion.dx, y = _tapPostion.dy;
+    double x = _tapPosition.dx, y = _tapPosition.dy;
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
     PlayerStack currentStack = _selectionModel.selectedDatum[0].datum;
 
-    if (_tapPostion.dx > width / 2) {
-      x = _tapPostion.dx - 100.0;
+    if (_tapPosition.dx > width / 2) {
+      x = _tapPosition.dx - 100.0;
     }
-    if (_tapPostion.dy > height / 2) {
-      y = _tapPostion.dy - 50.0;
+    if (_tapPosition.dy > height / 2) {
+      y = _tapPosition.dy - 50.0;
     }
 
     if (currentStack.neutral) {
@@ -218,11 +219,11 @@ class _PointsLineChart extends State<PointsLineChart> {
                       style: AppStyles.stackPopUpTextStyle,
                     ),
                     Text(
-                      "Before:${getFormattedString(currentStack.before)}",
+                      "Before:${DataFormatter.chipsFormat(currentStack.before)}",
                       style: AppStyles.stackPopUpTextStyle,
                     ),
                     Text(
-                      "After:${getFormattedString(currentStack.after)}",
+                      "After:${DataFormatter.chipsFormat(currentStack.after)}",
                       style: AppStyles.stackPopUpTextStyle,
                     ),
                   ],
@@ -238,7 +239,7 @@ class _PointsLineChart extends State<PointsLineChart> {
                       color: currentStack.color,
                     ),
                     Text(
-                      "${getFormattedString(currentStack.difference)}",
+                      "${DataFormatter.chipsFormat(currentStack.difference)}",
                       style: AppStyles.stackPopUpTextStyle.copyWith(
                         color: currentStack.color,
                       ),
@@ -251,15 +252,6 @@ class _PointsLineChart extends State<PointsLineChart> {
         ),
       ),
     );
-  }
-
-  String getFormattedString(double amount) {
-    var a = amount.toString().split(".");
-    if (a.length > 1 && int.parse(a[1]) > 0) {
-      return amount.toString();
-    } else {
-      return a[0];
-    }
   }
 }
 
