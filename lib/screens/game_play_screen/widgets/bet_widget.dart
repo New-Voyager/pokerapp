@@ -63,39 +63,69 @@ class _BetWidgetState extends State<BetWidget> {
                   right: 0,
                   left: 0,
                   child: Align(
-                    alignment: Alignment.center,
+                    alignment: Alignment.topCenter,
+                    child: Transform.translate(offset: Offset(0, 40), 
                     child: Container(
                       width: 64,
                       // height: 64,
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                            color: AppColors.buttonBorderColor, width: 2.0),
-                        shape: BoxShape.circle,
-                      ),
-                      child: TextField(
-                        textAlign: TextAlign.center,
-                        readOnly: true,
-                        controller: _controller,
-                        decoration: InputDecoration(
-                          filled: false,
-                          fillColor: Colors.transparent,
-                          border: InputBorder.none,
-                        ),
-                        style: AppStyles.betChipsText,
-                        onTap: () async {
-                          double min = widget.action.minRaiseAmount.toDouble();
-                          double max = widget.action.maxRaiseAmount.toDouble();
+                      // decoration: BoxDecoration(
+                      //   border: Border.all(
+                      //       color: AppColors.buttonBorderColor, width: 2.0),
+                      //   shape: BoxShape.circle,
+                      // ),
+                      child: Column(
+                        children: [
+                          TextField(
+                            textAlign: TextAlign.center,
+                            readOnly: true,
+                            controller: _controller,
+                            decoration: InputDecoration(
+                              filled: false,
+                              fillColor: Colors.transparent,
+                              border: InputBorder.none,
+                            ),
+                            style: AppStyles.betChipsText,
+                            onTap: () async {
+                              double min = widget.action.minRaiseAmount.toDouble();
+                              double max = widget.action.maxRaiseAmount.toDouble();
 
-                          final double res = await NumericKeyboard.show(
-                            context,
-                            title: 'Enter your bet/raise amount ($min - $max)',
-                            min: min,
-                            max: max,
-                          );
+                              final double res = await NumericKeyboard.show(
+                                context,
+                                title: 'Enter your bet/raise amount ($min - $max)',
+                                min: min,
+                                max: max,
+                              );
 
-                          if (res != null) setState(() => val = res);
-                        },
+                              if (res != null) setState(() => val = res);
+                            },
+                          ),
+                          Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                              ),
+                              child: IconButton(
+                                icon: Icon(
+                                  Icons.keyboard,
+                                ),
+                                color: Colors.blue,
+                                onPressed: () async {
+                                  double min = widget.action.minRaiseAmount.toDouble();
+                                  double max = widget.action.maxRaiseAmount.toDouble();
+
+                                  final double res = await NumericKeyboard.show(
+                                    context,
+                                    title: 'Enter your bet/raise amount ($min - $max)',
+                                    min: min,
+                                    max: max,
+                                  );
+
+                                  if (res != null) setState(() => val = res);                                  
+                                },
+                              ),
+                            ),                   
+                        ],
                       ),
+                    )
                     ),
                   ),
                 ),
@@ -123,16 +153,21 @@ class _BetWidgetState extends State<BetWidget> {
                                 },
                               ),
                             ),
-                            PulsatingCircleIconButton(
-                              onTap: () {
-                                if (widget.onSubmitCallBack != null) {
-                                  widget.onSubmitCallBack(val);
-                                }
-                              },
-                              child: Text(
-                                "BET",
-                                style: TextStyle(
-                                    fontSize: 12, color: Colors.white),
+                            Container(
+                              width: 50, height: 50,
+                              child: PulsatingCircleIconButton(
+                                onTap: () {
+                                  if (widget.onSubmitCallBack != null) {
+                                    widget.onSubmitCallBack(val);
+                                  }
+                                },
+                                child: Center(
+                                  child: Text(
+                                    "BET",
+                                    style: TextStyle(
+                                        fontSize: 12, color: Colors.white),
+                                  ),
+                                ),
                               ),
                             ),
                             Container(
@@ -211,8 +246,8 @@ class _BetWidgetState extends State<BetWidget> {
       initialValue: val,
       appearance: CircularSliderAppearance(
         size: 350,
-        startAngle: 145,
-        angleRange: 245,
+        startAngle: 180,
+        angleRange: 180,
         animationEnabled: false,
         infoProperties: InfoProperties(
           mainLabelStyle: TextStyle(
