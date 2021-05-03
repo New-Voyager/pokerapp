@@ -21,9 +21,12 @@ class HoleCardsView extends StatefulWidget {
   final bool showActionWidget;
   final GameContextObject gameContext;
 
-  const HoleCardsView(
-      {Key key, this.playerModel, this.gameContext, this.showActionWidget})
-      : super(key: key);
+  const HoleCardsView({
+    Key key,
+    this.playerModel,
+    this.gameContext,
+    this.showActionWidget,
+  }) : super(key: key);
 
   @override
   _HoleCardsViewState createState() => _HoleCardsViewState();
@@ -34,91 +37,109 @@ class _HoleCardsViewState extends State<HoleCardsView> {
 
   @override
   Widget build(BuildContext context) {
-    final boardAttributes =
-        Provider.of<BoardAttributesObject>(context, listen: false);
-    final Size footerSize = boardAttributes.footerSize;
-    double height = 0.0, width = 0.0;
-    final screen = boardAttributes.getScreen(context);
+    final boardAttributes = Provider.of<BoardAttributesObject>(
+      context,
+      listen: false,
+    );
 
-    if (footerSize != null) {
-      height = footerSize.height / 1.5;
-      width = footerSize.width / 2;
-    } else {
-      height = screen.height() / 2;
-      width = screen.width() - 100;
-    }
+    // final Size footerSize = boardAttributes.footerSize;
+    // final screen = boardAttributes.getScreen(context);
+    // double height, width;
+    // if (footerSize != null) {
+    //   height = footerSize.height / 1.5;
+    //   width = footerSize.width / 2;
+    // } else {
+    //   height = screen.height() / 2;
+    //   width = screen.width() - 100;
+    // }
     // log('footer size: $footerSize width: $width, height: $height diagonal: ${screen.diagonalInches()}');
     // log('rebuilding action view');
-    return Stack(
+
+    return Column(
       children: [
-        Align(
-          alignment: Alignment.topCenter,
-          child: Transform.translate(
-            // TODO: SCREEN_SIZES: NEED TO CHANGE THIS OFFSET AS PER SCREEN SIZE VALUE
-            offset: boardAttributes.holeCardViewOffset,
-            child: Transform.scale(
-              scale: boardAttributes.holeCardViewScale,
-              child: holeCardView(context),
-            ),
+        Transform.translate(
+          offset: boardAttributes.holeCardViewOffset,
+          child: Transform.scale(
+            scale: boardAttributes.holeCardViewScale,
+            child: holeCardView(context),
           ),
         ),
 
         // action view (show when it is time for this user to act)
-        Align(
-          alignment: Alignment.bottomCenter,
-          child: widget.showActionWidget ?? false
-              ? Transform.scale(
-                  origin: Offset.zero,
-                  scale: boardAttributes.footerActionViewScale,
-                  child: FooterActionView(widget.gameContext),
-                )
-              : const SizedBox.shrink(),
-        ),
+        widget.showActionWidget ?? false
+            ? FooterActionView(widget.gameContext)
+            : const SizedBox.shrink(),
+
+        // widget.showActionWidget ?? false
+        //     ? Transform.scale(
+        //         // TODO: FIX THE SCALING OF THIS WIDGET FOR DIFFERENT SCREEN SIZES
+        //         origin: Offset.zero,
+        //         scale: boardAttributes.footerActionViewScale,
+        //         child: FooterActionView(widget.gameContext),
+        //       )
+        //     : const SizedBox.shrink(),
       ],
     );
+
+    // return Stack(
+    //   children: [
+    //     Align(
+    //       alignment: Alignment.topCenter,
+    //       child: Transform.translate(
+    //         offset: boardAttributes.holeCardViewOffset,
+    //         child: Transform.scale(
+    //           scale: boardAttributes.holeCardViewScale,
+    //           child: holeCardView(context),
+    //         ),
+    //       ),
+    //     ),
+    //
+    //     // action view (show when it is time for this user to act)
+    //     Align(
+    //       alignment: Alignment.bottomCenter,
+    //       child: widget.showActionWidget ?? false
+    //           ? Transform.scale(
+    //               // TODO: FIX THE SCALING OF THIS WIDGET FOR DIFFERENT SCREEN SIZES
+    //               origin: Offset.zero,
+    //               scale: boardAttributes.footerActionViewScale,
+    //               child: FooterActionView(widget.gameContext),
+    //             )
+    //           : const SizedBox.shrink(),
+    //     ),
+    //   ],
+    // );
   }
 
-  Widget holeCardView(BuildContext context) {
-    return Container(
-      child: GestureDetector(
+  Widget holeCardView(BuildContext context) => GestureDetector(
+        onTap: () {
+          setState(() => isCardVisible = !isCardVisible);
+        },
         onLongPress: () {
           setState(() => isCardVisible = true);
         },
         onLongPressEnd: (_) {
           setState(() => isCardVisible = false);
         },
-        child: InkWell(
-          highlightColor: Colors.black,
-          focusColor: Colors.black,
-          splashColor: Colors.black,
-          onTap: () {
-            log('card is tapped');
-            setState(() {
-              isCardVisible = !isCardVisible;
-            });
-            //debugPrint("HoleCardsView : Container");
-          },
-          child: cards(
-            playerFolded: widget.playerModel.playerFolded,
-            cards: widget.playerModel?.cards?.map(
-                  (int c) {
-                    CardObject card = CardHelper.getCard(c);
-                    card.smaller = true;
-                    card.cardFace = CardFace.FRONT;
-                    return card;
-                  },
-                )?.toList() ??
-                [],
-          ),
+        child: cards(
+          playerFolded: widget.playerModel.playerFolded,
+          cardsInt: widget.playerModel?.cards,
         ),
-      ),
-    );
-  }
+      );
 
   Widget cards({
-    List<CardObject> cards,
+    List<int> cardsInt,
     @required playerFolded,
   }) {
+    final List<CardObject> cards = cardsInt?.map(
+          (int c) {
+            CardObject card = CardHelper.getCard(c);
+            card.smaller = true;
+            card.cardFace = CardFace.FRONT;
+            return card;
+          },
+        )?.toList() ??
+        [];
+
     return HoleStackCardView2(
       cards: cards,
       deactivated: playerFolded ?? false,

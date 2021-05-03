@@ -380,10 +380,10 @@ class BoardAttributesObject extends ChangeNotifier {
 
   /* hole card view offsets */
   Offset get holeCardViewOffset => _decide(
-        lessThan6Inches: const Offset(-10, 50),
-        equalTo6Inches: const Offset(-10, 60),
-        equalTo7Inches: const Offset(-10, 80),
-        greaterThan7Inches: const Offset(-10, 40),
+        lessThan6Inches: const Offset(0, 50),
+        equalTo6Inches: const Offset(0, 60),
+        equalTo7Inches: const Offset(0, 80),
+        greaterThan7Inches: const Offset(0, 40),
       ) as Offset;
 
   /* hold card view scales */

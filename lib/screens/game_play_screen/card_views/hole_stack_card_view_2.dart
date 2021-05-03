@@ -48,35 +48,37 @@ class HoleStackCardView2 extends StatelessWidget {
     final double kAngleConstant =
         boardAttributesObject.holdCardViewAngleConstant;
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      mainAxisSize: MainAxisSize.min,
-      children: List.generate(cards.length, (i) {
-        return Transform.translate(
-          offset: Offset(
-            -(i - mid) * kDisplacementConstant,
-            0,
-          ),
-          child: Transform.rotate(
-            alignment: Alignment.bottomCenter,
-            angle: (i - mid) * kAngleConstant,
-            child: deactivated
-                ? GameCardWidget(
-                    marked: markedCards.isMarked(cards[i]),
-                    onMarkTapCallback: () => markedCards.mark(cards[i]),
-                    card: cards[i],
-                    grayOut: true,
-                    isCardVisible: isCardVisible,
-                  )
-                : GameCardWidget(
-                    marked: markedCards.isMarked(cards[i]),
-                    onMarkTapCallback: () => markedCards.mark(cards[i]),
-                    card: cards[i],
-                    isCardVisible: isCardVisible,
-                  ),
-          ),
-        );
-      }),
+    return FittedBox(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: List.generate(cards.length, (i) {
+          return Transform.translate(
+            offset: Offset(
+              -(i - mid) * kDisplacementConstant,
+              0,
+            ),
+            child: Transform.rotate(
+              alignment: Alignment.bottomCenter,
+              angle: (i - mid) * kAngleConstant,
+              child: deactivated
+                  ? GameCardWidget(
+                      marked: markedCards.isMarked(cards[i]),
+                      onMarkTapCallback: () => markedCards.mark(cards[i]),
+                      card: cards[i],
+                      grayOut: true,
+                      isCardVisible: isCardVisible,
+                    )
+                  : GameCardWidget(
+                      marked: markedCards.isMarked(cards[i]),
+                      onMarkTapCallback: () => markedCards.mark(cards[i]),
+                      card: cards[i],
+                      isCardVisible: isCardVisible,
+                    ),
+            ),
+          );
+        }),
+      ),
     );
 
     // return Transform.translate(
