@@ -10,9 +10,6 @@ import 'package:pokerapp/services/test/test_service.dart';
 import 'package:provider/provider.dart';
 
 class HeaderView extends StatelessWidget {
-  final GameComService _gameComService;
-  HeaderView(this._gameComService);
-
   @override
   Widget build(BuildContext context) => Container(
         color: Colors.black.withOpacity(0.5),
@@ -77,9 +74,10 @@ class HeaderView extends StatelessWidget {
                                 context: context,
                                 isScrollControlled: true,
                                 builder: (ctx) => GameOptionsBottomSheet(
-                                    obj.gameCode,
-                                    _gameComService.currentPlayer.uuid,
-                                    obj.isAdmin()),
+                                  obj.gameCode,
+                                  obj.gameComService.currentPlayer.uuid,
+                                  obj.isAdmin(),
+                                ),
                               );
                             },
                             child: Container(

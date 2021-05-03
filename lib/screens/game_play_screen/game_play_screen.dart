@@ -168,7 +168,12 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
 
     if (TestService.isTesting) {
       // testing code goes here
-
+      _gameContextObj = GameContextObject(
+        gameCode: widget.gameCode,
+        player: this._currentPlayer,
+        gameComService: gameComService,
+        gameState: _gameState,
+      );
     } else {
       // subscribe the NATs channels
       final natsClient = Provider.of<Nats>(context, listen: false);
@@ -442,7 +447,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                         Column(
                           children: [
                             // header section
-                            HeaderView(_gameContextObj.gameComService),
+                            HeaderView(),
                             // empty space to highlight the background view
                             SizedBox(
                               width: width,
@@ -456,7 +461,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                                 scale: tableScale, // 10 inch: 0.85, 5inch: 1.0
                                 child: BoardView(
                                   gameComService:
-                                      _gameContextObj.gameComService,
+                                      _gameContextObj?.gameComService,
                                   gameInfo: _gameInfoModel,
                                   onUserTap: onJoinGame,
                                   onStartGame: () =>
