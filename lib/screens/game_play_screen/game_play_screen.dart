@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:after_layout/after_layout.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:dart_nats/dart_nats.dart' as nats;
 import 'package:flutter/material.dart';
@@ -63,7 +64,8 @@ class GamePlayScreen extends StatefulWidget {
   _GamePlayScreenState createState() => _GamePlayScreenState();
 }
 
-class _GamePlayScreenState extends State<GamePlayScreen> {
+class _GamePlayScreenState extends State<GamePlayScreen>
+    with AfterLayoutMixin<GamePlayScreen> {
   bool _initiated;
   BuildContext _providerContext;
   PlayerInfo _currentPlayer;
@@ -161,8 +163,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
     _gameState.initialize(
       gameCode: _gameInfoModel.gameCode,
       gameInfo: _gameInfoModel,
-      uuid: _currentPlayer.uuid,
-      playerId: _currentPlayer.id,
+      currentPlayer: _currentPlayer,
       gameMessagingService: gameComService.gameMessaging,
     );
 
@@ -206,52 +207,10 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
         );
       });
 
-      gameComService.handToAllChannelStream.listen((nats.Message message) {
-        if (!gameComService.active) return;
-
-        GameState gameState = GameState.getState(_providerContext);
-        if (_gameContextObj.handActionService == null) {
-          _gameContextObj.handActionService = HandActionService(
-              _providerContext, gameState, _gameContextObj.gameComService);
-          _gameContextObj.handActionService.loop();
-        }
-        // log('handToAllChannel(${message.subject}): ${message.string}');
-
-        /* This stream receives hand related messages that is common to all players
-          * e.g
-          * New Hand - contains hand status, dealerPos, sbPos, bbPos, nextActionSeat
-          * Next Action - contains the seat No which is to act next
-          *
-          * This stream also contains the output for the query of current hand*/
-        _gameContextObj.handActionService.handle(message.string);
-      });
-
-      _gameContextObj.gameComService.handToPlayerChannelStream
-          .listen((nats.Message message) {
-        if (!_gameContextObj.gameComService.active) return;
-
-        GameState gameState = GameState.getState(_providerContext);
-        if (_gameContextObj.handActionService == null) {
-          _gameContextObj.handActionService = HandActionService(
-              _providerContext, gameState, _gameContextObj.gameComService);
-          _gameContextObj.handActionService.loop();
-        }
-        // log('handToPlayerChannel(${message.subject}): ${message.string}');
-
-        /* This stream receives hand related messages that is specific to THIS player only
-          * e.g
-          * Deal - contains seat No and cards
-          * Your Action - seat No, available actions & amounts */
-        _gameContextObj.handActionService.handle(message.string);
-
-        // _gameComService.chat.listen(onText: this.onText);
-        _gameContextObj.gameComService.gameMessaging.listen(
-          onCards: this.onCards,
-          // onText: this.onText,
-          onAudio: this.onAudio,
-          // onAnimation: this.onAnimation,
-        );
-      });
+      _gameContextObj.gameComService.gameMessaging.listen(
+        onCards: this.onCards,
+        onAudio: this.onAudio,
+      );
     }
 
     _initiated = true;
@@ -262,16 +221,19 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
   @override
   void dispose() {
     // TestService.isTesting = false;
+    try {
+      _gameContextObj?.dispose();
+      agora?.disposeObject();
+      // Audio.dispose(context: _providerContext);
 
-    agora?.disposeObject();
-    Audio.dispose(context: _providerContext);
-
-    if (_audioPlayer != null) {
-      _audioPlayer.dispose();
-      _audioPlayer = null;
+      if (_audioPlayer != null) {
+        _audioPlayer.dispose();
+        _audioPlayer = null;
+      }
+    } catch (e) {
+      log('Caught exception: ${e.toString()}');
     }
 
-    _gameContextObj?.dispose();
     super.dispose();
   }
 
@@ -356,6 +318,14 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
       } catch (e) {
         print('test data loading error: $e');
       }
+    } else {
+      // if (!TestService.isTesting) {
+      if (_gameInfoModel?.tableStatus == AppConstants.GAME_RUNNING) {
+        // query current hand to get game update
+        Future.delayed(Duration(milliseconds: 500), () {
+          _gameContextObj.handActionService.queryCurrentHand();
+        });
+      }
     }
 
     var width = MediaQuery.of(context).size.width;
@@ -387,13 +357,6 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
               if (_gameInfoModel == null)
                 return Center(child: CircularProgressIndicator());
 
-              if (!TestService.isTesting) {
-                if (_gameInfoModel.tableStatus == AppConstants.GAME_RUNNING) {
-                  // query current hand to get game update
-                  _gameContextObj.handActionService.queryCurrentHand();
-                }
-              }
-
               var dividerTotalHeight = MediaQuery.of(context).size.height / 6;
               Screen screen = Screen(context);
               BoardAttributesObject boardAttributes =
@@ -415,6 +378,42 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                 providers: providers,
                 builder: (BuildContext context, _) {
                   this._providerContext = context;
+
+                  if (_gameContextObj.handActionService == null) {
+                    _gameContextObj.handActionService = HandActionService(
+                        _providerContext,
+                        _gameState,
+                        _gameContextObj.gameComService);
+                    _gameContextObj.handActionService.loop();
+
+                    if (!TestService.isTesting) {
+                      _gameContextObj.gameComService.handToAllChannelStream
+                          .listen((nats.Message message) {
+                        if (!_gameContextObj.gameComService.active) return;
+                        if (_gameContextObj.handActionService == null) return;
+                        /* This stream receives hand related messages that is common to all players
+                        * e.g
+                        * New Hand - contains hand status, dealerPos, sbPos, bbPos, nextActionSeat
+                        * Next Action - contains the seat No which is to act next
+                        *
+                        * This stream also contains the output for the query of current hand*/
+                        _gameContextObj.handActionService
+                            .handle(message.string);
+                      });
+
+                      _gameContextObj.gameComService.handToPlayerChannelStream
+                          .listen((nats.Message message) {
+                        if (!_gameContextObj.gameComService.active) return;
+                        if (_gameContextObj.handActionService == null) return;
+                        /* This stream receives hand related messages that is specific to THIS player only
+                        * e.g
+                        * Deal - contains seat No and cards
+                        * Your Action - seat No, available actions & amounts */
+                        _gameContextObj.handActionService
+                            .handle(message.string);
+                      });
+                    }
+                  }
 
                   /* set proper context for test service */
                   TestService.context = context;
@@ -439,7 +438,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                         Column(
                           children: [
                             // header section
-                            HeaderView(_gameContextObj.gameComService),
+                            HeaderView(_gameState),
                             // empty space to highlight the background view
                             SizedBox(
                               width: width,
@@ -510,4 +509,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
       ),
     );
   }
+
+  @override
+  void afterFirstLayout(BuildContext context) {}
 }
