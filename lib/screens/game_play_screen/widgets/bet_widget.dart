@@ -12,6 +12,7 @@ import 'package:sleek_circular_slider/sleek_circular_slider.dart';
 class BetWidget extends StatefulWidget {
   final Function onSubmitCallBack;
   final PlayerAction action;
+
   BetWidget({
     @required this.action,
     this.onSubmitCallBack,
@@ -29,9 +30,9 @@ class _BetWidgetState extends State<BetWidget> {
   void initState() {
     super.initState();
     // always start with min
+
     val = widget.action.minRaiseAmount.toDouble();
     _controller = TextEditingController(text: "${val.toStringAsFixed(0)}");
-    setState(() {});
   }
 
   @override
@@ -39,165 +40,160 @@ class _BetWidgetState extends State<BetWidget> {
     //log('val: $val min: ${widget.rangeMin} max: ${widget.rangeMax}');
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
-    return Container(
-      height: height / 3,
-      width: width,
-      color: Colors.transparent,
-      alignment: Alignment.center,
-      child: FittedBox(
-        fit: BoxFit.fitHeight,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              child: Stack(
-                children: [
-                  Align(
+    return FittedBox(
+      fit: BoxFit.fitHeight,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            child: Stack(
+              children: [
+                Align(
+                  alignment: Alignment.center,
+                  child: Container(
+                    margin: EdgeInsets.only(bottom: 16),
+                    height: height / 5,
+                    width: width / 2,
+                    child: sleekSlider(),
+                  ),
+                ),
+                Positioned(
+                  top: 0,
+                  bottom: 0,
+                  right: 0,
+                  left: 0,
+                  child: Align(
                     alignment: Alignment.center,
                     child: Container(
-                      margin: EdgeInsets.only(bottom: 16),
-                      height: height / 5,
-                      width: width / 2,
-                      child: sleekSlider(),
-                    ),
-                  ),
-                  Positioned(
-                    top: 0,
-                    bottom: 0,
-                    right: 0,
-                    left: 0,
-                    child: Align(
-                      alignment: Alignment.center,
-                      child: Container(
-                        width: 64,
-                        // height: 64,
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                              color: AppColors.buttonBorderColor, width: 2.0),
-                          shape: BoxShape.circle,
+                      width: 64,
+                      // height: 64,
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                            color: AppColors.buttonBorderColor, width: 2.0),
+                        shape: BoxShape.circle,
+                      ),
+                      child: TextField(
+                        textAlign: TextAlign.center,
+                        readOnly: true,
+                        controller: _controller,
+                        decoration: InputDecoration(
+                          filled: false,
+                          fillColor: Colors.transparent,
+                          border: InputBorder.none,
                         ),
-                        child: TextField(
-                          textAlign: TextAlign.center,
-                          readOnly: true,
-                          controller: _controller,
-                          decoration: InputDecoration(
-                            filled: false,
-                            fillColor: Colors.transparent,
-                            border: InputBorder.none,
-                          ),
-                          style: AppStyles.betChipsText,
-                          onTap: () async {
-                            // todo: neeed to find the title
+                        style: AppStyles.betChipsText,
+                        onTap: () async {
+                          double min = widget.action.minRaiseAmount.toDouble();
+                          double max = widget.action.maxRaiseAmount.toDouble();
 
-                            final double res = await NumericKeyboard.show(
-                              context,
-                              title: '',
-                              min: widget.action.minRaiseAmount.toDouble(),
-                              max: widget.action.maxRaiseAmount.toDouble(),
-                            );
+                          final double res = await NumericKeyboard.show(
+                            context,
+                            title: 'Enter your bet/raise amount ($min - $max)',
+                            min: min,
+                            max: max,
+                          );
 
-                            if (res != null) setState(() => val = res);
-                          },
-                        ),
+                          if (res != null) setState(() => val = res);
+                        },
                       ),
                     ),
                   ),
-                  Positioned(
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
-                    child: Align(
-                        alignment: Alignment.bottomCenter,
-                        child: Container(
-                          margin: EdgeInsets.only(top: 16),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              Container(
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                ),
-                                child: IconButton(
-                                  icon: Icon(Icons.remove_circle_rounded),
-                                  color: Colors.blue,
-                                  onPressed: () {
-                                    val--;
-                                    setState(() {});
-                                  },
-                                ),
+                ),
+                Positioned(
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Container(
+                        margin: EdgeInsets.only(top: 16),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
                               ),
-                              PulsatingCircleIconButton(
-                                onTap: () {
-                                  if (widget.onSubmitCallBack != null) {
-                                    widget.onSubmitCallBack(val);
-                                  }
+                              child: IconButton(
+                                icon: Icon(Icons.remove_circle_rounded),
+                                color: Colors.blue,
+                                onPressed: () {
+                                  val--;
+                                  setState(() {});
                                 },
-                                child: Text(
-                                  "BET",
-                                  style: TextStyle(
-                                      fontSize: 12, color: Colors.white),
-                                ),
                               ),
-                              Container(
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                ),
-                                child: IconButton(
-                                  icon: Icon(
-                                    Icons.add_circle_rounded,
-                                  ),
-                                  color: Colors.blue,
-                                  onPressed: () {
-                                    val++;
-                                    setState(() {});
-                                  },
-                                ),
+                            ),
+                            PulsatingCircleIconButton(
+                              onTap: () {
+                                if (widget.onSubmitCallBack != null) {
+                                  widget.onSubmitCallBack(val);
+                                }
+                              },
+                              child: Text(
+                                "BET",
+                                style: TextStyle(
+                                    fontSize: 12, color: Colors.white),
                               ),
+                            ),
+                            Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                              ),
+                              child: IconButton(
+                                icon: Icon(
+                                  Icons.add_circle_rounded,
+                                ),
+                                color: Colors.blue,
+                                onPressed: () {
+                                  val++;
+                                  setState(() {});
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      ) /*  InkWell(
+                      onTap: () {
+                        log('BET hit $val');
+                        if (widget.onSubmitCallBack != null) {
+                          widget.onSubmitCallBack(val);
+                        }
+                      },
+                      child: Container(
+                        padding: EdgeInsets.all(10),
+                        margin: EdgeInsets.symmetric(vertical: 4),
+                        decoration: BoxDecoration(
+                          //color: Colors.red,
+                          border: Border.all(
+                              color: AppColors.buttonBorderColor, width: 2.0),
+                          shape: BoxShape.circle,
+                          gradient: LinearGradient(
+                            colors: [
+                              Colors.red,
+                              Colors.redAccent,
                             ],
                           ),
-                        ) /*  InkWell(
-                        onTap: () {
-                          log('BET hit $val');
-                          if (widget.onSubmitCallBack != null) {
-                            widget.onSubmitCallBack(val);
-                          }
-                        },
-                        child: Container(
-                          padding: EdgeInsets.all(10),
-                          margin: EdgeInsets.symmetric(vertical: 4),
-                          decoration: BoxDecoration(
-                            //color: Colors.red,
-                            border: Border.all(
-                                color: AppColors.buttonBorderColor, width: 2.0),
-                            shape: BoxShape.circle,
-                            gradient: LinearGradient(
-                              colors: [
-                                Colors.red,
-                                Colors.redAccent,
-                              ],
-                            ),
-                            //color: Colors.amber,
-                          ),
-                          child: Text(
-                            "BET",
-                            style: TextStyle(fontSize: 12, color: Colors.white),
-                          ),
+                          //color: Colors.amber,
                         ),
-                      ), */
+                        child: Text(
+                          "BET",
+                          style: TextStyle(fontSize: 12, color: Colors.white),
                         ),
-                  ),
-                ],
-              ),
+                      ),
+                    ), */
+                      ),
+                ),
+              ],
             ),
-            Container(
-              padding: EdgeInsets.symmetric(vertical: 4),
-              alignment: Alignment.center,
-              width: width / 1.5,
-              height: 64,
-              child: betAmountList(),
-            )
-          ],
-        ),
+          ),
+          Container(
+            padding: EdgeInsets.symmetric(vertical: 4),
+            alignment: Alignment.center,
+            width: width / 1.5,
+            height: 64,
+            child: betAmountList(),
+          )
+        ],
       ),
     );
   }

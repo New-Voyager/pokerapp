@@ -396,7 +396,7 @@ class BoardAttributesObject extends ChangeNotifier {
 
   double get footerActionViewScale => _decide(
         lessThan6Inches: 1.0,
-        equalTo6Inches: 1.0,
+        equalTo6Inches: 1.05,
         equalTo7Inches: 1.0,
         greaterThan7Inches: 1.0,
       ) as double;
@@ -408,7 +408,7 @@ class BoardAttributesObject extends ChangeNotifier {
         greaterThan7Inches: 2.0,
       ) as double;
 
-  double get betWidgetScale => _decide(
+  double get betChipWidgetScale => _decide(
         lessThan6Inches: 1.0,
         equalTo6Inches: 1.0,
         equalTo7Inches: 1.2,

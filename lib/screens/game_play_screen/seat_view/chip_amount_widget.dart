@@ -201,7 +201,7 @@ class _ChipAmountWidgetState extends State<ChipAmountWidget>
     );
 
     final betWidget = Transform.scale(
-      scale: widget.boardAttributesObject.betWidgetScale,
+      scale: widget.boardAttributesObject.betChipWidgetScale,
       child: child,
     );
     if (widget.animate) {

@@ -15,13 +15,13 @@ import 'footer_action_view.dart';
 // MyCardView represent the player who has hole cards
 // The cards may be active or dead/folded
 //
-class HoleCardsView extends StatefulWidget {
+class HoleCardsViewAndFooterActionView extends StatefulWidget {
   final PlayerModel playerModel;
   //final FooterStatus footerStatus;
   final bool showActionWidget;
   final GameContextObject gameContext;
 
-  const HoleCardsView({
+  const HoleCardsViewAndFooterActionView({
     Key key,
     this.playerModel,
     this.gameContext,
@@ -29,10 +29,12 @@ class HoleCardsView extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _HoleCardsViewState createState() => _HoleCardsViewState();
+  _HoleCardsViewAndFooterActionViewState createState() =>
+      _HoleCardsViewAndFooterActionViewState();
 }
 
-class _HoleCardsViewState extends State<HoleCardsView> {
+class _HoleCardsViewAndFooterActionViewState
+    extends State<HoleCardsViewAndFooterActionView> {
   bool isCardVisible = false;
 
   @override
@@ -55,59 +57,54 @@ class _HoleCardsViewState extends State<HoleCardsView> {
     // log('footer size: $footerSize width: $width, height: $height diagonal: ${screen.diagonalInches()}');
     // log('rebuilding action view');
 
-    return Column(
+    // return Column(
+    //   children: [
+    //     /* hole card view - shows the user's cards */
+    //     Transform.translate(
+    //       offset: boardAttributes.holeCardViewOffset,
+    //       child: Transform.scale(
+    //         scale: boardAttributes.holeCardViewScale,
+    //         child: holeCardView(context),
+    //       ),
+    //     ),
+    //     Spacer(),
+    //
+    //     widget.showActionWidget ?? false
+    //         ? Transform.scale(
+    //             // TODO: FIX THE SCALING OF THIS WIDGET FOR DIFFERENT SCREEN SIZES
+    //             scale: boardAttributes.footerActionViewScale,
+    //             child: FooterActionView(widget.gameContext),
+    //           )
+    //         : const SizedBox.shrink(),
+    //   ],
+    // );
+
+    return Stack(
       children: [
-        Transform.translate(
-          offset: boardAttributes.holeCardViewOffset,
-          child: Transform.scale(
-            scale: boardAttributes.holeCardViewScale,
-            child: holeCardView(context),
+        Align(
+          alignment: Alignment.topCenter,
+          child: Transform.translate(
+            offset: boardAttributes.holeCardViewOffset,
+            child: Transform.scale(
+              scale: boardAttributes.holeCardViewScale,
+              child: holeCardView(context),
+            ),
           ),
         ),
 
         // action view (show when it is time for this user to act)
-        widget.showActionWidget ?? false
-            ? FooterActionView(widget.gameContext)
-            : const SizedBox.shrink(),
-
-        // widget.showActionWidget ?? false
-        //     ? Transform.scale(
-        //         // TODO: FIX THE SCALING OF THIS WIDGET FOR DIFFERENT SCREEN SIZES
-        //         origin: Offset.zero,
-        //         scale: boardAttributes.footerActionViewScale,
-        //         child: FooterActionView(widget.gameContext),
-        //       )
-        //     : const SizedBox.shrink(),
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: widget.showActionWidget ?? false
+              ? Transform.scale(
+                  alignment: Alignment.bottomCenter,
+                  scale: boardAttributes.footerActionViewScale,
+                  child: FooterActionView(widget.gameContext),
+                )
+              : const SizedBox.shrink(),
+        ),
       ],
     );
-
-    // return Stack(
-    //   children: [
-    //     Align(
-    //       alignment: Alignment.topCenter,
-    //       child: Transform.translate(
-    //         offset: boardAttributes.holeCardViewOffset,
-    //         child: Transform.scale(
-    //           scale: boardAttributes.holeCardViewScale,
-    //           child: holeCardView(context),
-    //         ),
-    //       ),
-    //     ),
-    //
-    //     // action view (show when it is time for this user to act)
-    //     Align(
-    //       alignment: Alignment.bottomCenter,
-    //       child: widget.showActionWidget ?? false
-    //           ? Transform.scale(
-    //               // TODO: FIX THE SCALING OF THIS WIDGET FOR DIFFERENT SCREEN SIZES
-    //               origin: Offset.zero,
-    //               scale: boardAttributes.footerActionViewScale,
-    //               child: FooterActionView(widget.gameContext),
-    //             )
-    //           : const SizedBox.shrink(),
-    //     ),
-    //   ],
-    // );
   }
 
   Widget holeCardView(BuildContext context) => GestureDetector(

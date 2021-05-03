@@ -33,17 +33,12 @@ class _FooterActionViewState extends State<FooterActionView> {
   bool raise = false;
   final TextEditingController _controller = TextEditingController();
 
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  /* this function decides, whom to call - bet or raise? */
-  void _submit(PlayerAction playerAction) {
-    int idx = playerAction.actions.indexWhere((pa) => pa.actionName == BET);
-    if (idx == -1) return _raise();
-    _bet();
-  }
+  // /* this function decides, whom to call - bet or raise? */
+  // void _submit(PlayerAction playerAction) {
+  //   int idx = playerAction.actions.indexWhere((pa) => pa.actionName == BET);
+  //   if (idx == -1) return _raise();
+  //   _bet();
+  // }
 
   void _betOrRaise(double val) {
     _showOptions = false;
@@ -220,7 +215,7 @@ class _FooterActionViewState extends State<FooterActionView> {
     _actionTaken(context);
   }
 
-  Widget _buildTopActionRow(PlayerAction playerAction) {
+  Widget _buildActionWidgets(PlayerAction playerAction) {
     final allin = playerAction?.actions
         ?.firstWhere((element) => element.actionName == ALLIN);
     var actionButtons = [];
@@ -296,7 +291,7 @@ class _FooterActionViewState extends State<FooterActionView> {
     );
   }
 
-  Widget _buildOptionsRow(PlayerAction playerAction) => AnimatedSwitcher(
+  Widget _buildBetWidget(PlayerAction playerAction) => AnimatedSwitcher(
         duration: AppConstants.fastAnimationDuration,
         reverseDuration: AppConstants.fastAnimationDuration,
         transitionBuilder: (child, animation) => ScaleTransition(
@@ -318,35 +313,27 @@ class _FooterActionViewState extends State<FooterActionView> {
       );
 
   @override
-  Widget build(BuildContext context) {
-    return Consumer<ActionState>(
-      key: ValueKey('buildActionButtons'),
-      builder: (_, actionState, __) {
-        return Container(
-          height: MediaQuery.of(context).size.height / 2.5,
-          child: Column(
+  Widget build(BuildContext context) => Container(
+        margin: const EdgeInsets.only(
+          bottom: 10.0,
+        ),
+        child: Consumer<ActionState>(
+          key: ValueKey('buildActionButtons'),
+          builder: (_, actionState, __) => Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               /* bet widget */
               Expanded(
-                child: Container(
-                  margin: const EdgeInsets.symmetric(
-                    vertical: 10.0,
-                  ),
-                  alignment: Alignment.topCenter,
-                  child: _buildOptionsRow(actionState.action),
-                ),
+                child: _buildBetWidget(actionState.action),
               ),
 
               /* bottom row */
               Container(
                 alignment: Alignment.bottomCenter,
-                child: _buildTopActionRow(actionState.action),
+                child: _buildActionWidgets(actionState.action),
               ),
             ],
           ),
-        );
-      },
-    );
-  }
+        ),
+      );
 }

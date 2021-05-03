@@ -74,7 +74,7 @@ class _FooterViewState extends State<FooterView>
             !me
                 ? SizedBox.shrink()
                 : Expanded(
-                    child: HoleCardsView(
+                    child: HoleCardsViewAndFooterActionView(
                       gameContext: widget.gameContext,
                       playerModel: players.me,
                       showActionWidget: actionState.show,
@@ -88,6 +88,7 @@ class _FooterViewState extends State<FooterView>
             ),
 
             /* seat confirm widget */
+            // FIXME: BUG INTRODUCED HERE, CHECK HOW THE SEAT CHANGE CONFIRMED WIDGET IS DISPLAYED
             Consumer2<HostSeatChange, GameContextObject>(
               builder: (
                 context,
@@ -192,8 +193,10 @@ class _FooterViewState extends State<FooterView>
     final pos = object.localToGlobal(Offset(0, 0));
     final size = object.size;
     log('Footer view size: $size pos: $pos');
-    final boardAttr =
-        Provider.of<BoardAttributesObject>(context, listen: false);
+    final boardAttr = Provider.of<BoardAttributesObject>(
+      context,
+      listen: false,
+    );
     boardAttr.setFooterDimensions(pos, size);
   }
 }
