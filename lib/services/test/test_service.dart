@@ -136,7 +136,7 @@ class TestService {
     await Future.delayed(const Duration(seconds: 2));
     final gameState = GameState.getState(_context);
     HandActionService handActionService =
-        HandActionService(_context, gameState);
+        HandActionService(_context, gameState, null);
     await handActionService.handleDealStarted();
 
     tableState.updateTableStatusSilent(null);
@@ -384,7 +384,7 @@ class TestService {
   static Future<void> sendNewHand() async {
     final gameState = GameState.getState(_context);
     if (_handActionService == null) {
-      _handActionService = HandActionService(_context, gameState);
+      _handActionService = HandActionService(_context, gameState, null);
       _handActionService.loop();
     }
     await _handActionService.handle(newHandMessage());
@@ -422,7 +422,7 @@ class TestService {
   static Future<void> flop() async {
     final gameState = GameState.getState(_context);
     if (_handActionService == null) {
-      _handActionService = HandActionService(_context, gameState);
+      _handActionService = HandActionService(_context, gameState, null);
       _handActionService.loop();
     }
     await _handActionService.handle(flopMessage());
@@ -431,7 +431,7 @@ class TestService {
   static Future<void> fold() async {
     final gameState = GameState.getState(_context);
     if (_handActionService == null) {
-      _handActionService = HandActionService(_context, gameState);
+      _handActionService = HandActionService(_context, gameState, null);
       _handActionService.loop();
     }
     await _handActionService.handle(foldMessage());
@@ -460,7 +460,7 @@ class TestService {
     // seat.setActionTimer(gameState.gameInfo.actionTime);
     // seat.notify();
     if (_handActionService == null) {
-      _handActionService = HandActionService(_context, gameState);
+      _handActionService = HandActionService(_context, gameState, null);
       _handActionService.loop();
     }
     String message =

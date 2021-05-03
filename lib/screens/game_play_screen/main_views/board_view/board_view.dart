@@ -105,10 +105,12 @@ class _BoardViewState extends State<BoardView> {
             left: boardAttributes.centerOffset.dx,
             width: boardAttributes.centerSize.width,
             height: boardAttributes.centerSize.height,
-            child: Consumer2<TableState, ValueNotifier<FooterStatus>>(builder: (
+            child: Consumer3<TableState, ValueNotifier<FooterStatus>,
+                ServerConnectionState>(builder: (
               _,
               TableState tableState,
               ValueNotifier<FooterStatus> valueNotifierFooterStatus,
+              ServerConnectionState connectionState,
               __,
             ) {
               var cards = tableState.cards;
