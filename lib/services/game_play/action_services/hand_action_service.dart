@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
+import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
 import 'package:pokerapp/enums/player_status.dart';
 import 'package:pokerapp/models/game_play_models/business/card_distribution_model.dart';
@@ -166,12 +167,19 @@ class HandActionService {
   }
 
   queryCurrentHand() {
-    String query = """{
-        "gameCode": "$_gameState.gameCode",
-        "messageType": "QUERY_CURRENT_HAND",
-        "playerId": "${_gameState.currentPlayerId}"
-      }""";
-    this._gameComService.sendPlayerToHandChannel(query);
+    int msgId = MessageId.incrementAndGet(_gameState.gameCode);
+    String messageId = msgId.toString();
+    int playerID = _gameState.currentPlayerId;
+    String message = """{
+      "gameCode": "${_gameState.gameCode}",
+      "playerId": "$playerID",
+      "messageId": "$messageId",
+      "messages": [{
+        "messageType": "QUERY_CURRENT_HAND"
+      }]
+    }""";
+    log(message);
+    this._gameComService.sendPlayerToHandChannel(message);
   }
 
   handle(String message) async {
@@ -186,6 +194,11 @@ class HandActionService {
   }
 
   Future<void> handleMessage(dynamic data) async {
+    // if the service is closed, don't process incoming messages
+    if (closed) {
+      return;
+    }
+
     String messageType = data['messageType'];
     if (_retryMsg != null) {
       bool handled = _retryMsg.handleMsg(data);
@@ -201,50 +214,54 @@ class HandActionService {
       }
     }
 
-    // delegate further actions to sub services as per messageType
-    switch (messageType) {
-      case AppConstants.RESULT:
-        await handleResult(data);
-        return;
+    try {
+      // delegate further actions to sub services as per messageType
+      switch (messageType) {
+        case AppConstants.RESULT:
+          await handleResult(data);
+          return;
 
-      case AppConstants.NEW_HAND:
-        await handleNewHand(data);
-        return;
+        case AppConstants.NEW_HAND:
+          await handleNewHand(data);
+          return;
 
-      case AppConstants.DEAL_STARTED:
-        // await handleDealStarted(
-        //   context: context,
-        // );
-        return null;
+        case AppConstants.DEAL_STARTED:
+          // await handleDealStarted(
+          //   context: context,
+          // );
+          return null;
 
-      case AppConstants.DEAL:
-        await handleDeal(data);
-        return null;
+        case AppConstants.DEAL:
+          await handleDeal(data);
+          return null;
 
-      case AppConstants.QUERY_CURRENT_HAND:
-        await handleQueryCurrentHand(data);
-        return;
+        case AppConstants.QUERY_CURRENT_HAND:
+          await handleQueryCurrentHand(data);
+          return;
 
-      case AppConstants.NEXT_ACTION:
-        await handleNextAction(data);
-        return;
+        case AppConstants.NEXT_ACTION:
+          await handleNextAction(data);
+          return;
 
-      case AppConstants.PLAYER_ACTED:
-        return handlePlayerActed(data);
+        case AppConstants.PLAYER_ACTED:
+          return handlePlayerActed(data);
 
-      case AppConstants.YOUR_ACTION:
-        await handleYourAction(data);
-        return;
+        case AppConstants.YOUR_ACTION:
+          await handleYourAction(data);
+          return;
 
-      case AppConstants.FLOP:
-        await handleStageChange(data, 'flop');
-        return;
+        case AppConstants.FLOP:
+          await handleStageChange(data, 'flop');
+          return;
 
-      case AppConstants.TURN:
-        return handleStageChange(data, 'turn');
+        case AppConstants.TURN:
+          return handleStageChange(data, 'turn');
 
-      case AppConstants.RIVER:
-        return handleStageChange(data, 'river');
+        case AppConstants.RIVER:
+          return handleStageChange(data, 'river');
+      }
+    } catch (err) {
+      log('Error: ${err.toString()}');
     }
   }
 
@@ -264,10 +281,16 @@ class HandActionService {
     int sbPos = newHand['sbPos'];
     int bbPos = newHand['bbPos'];
     int noCards = newHand['noCards'];
-    int bigBlind = double.parse(newHand['bigBlind'].toString()).toInt();
-    int smallBlind = double.parse(newHand['smallBlind'].toString()).toInt();
-
+    double bigBlind = double.parse(newHand['bigBlind'].toString());
+    double smallBlind = double.parse(newHand['smallBlind'].toString());
+    int handNum = int.parse(newHand["handNum"].toString());
+    String gameTypeStr = newHand['gameType'].toString();
+    final gameType = GameType.values.firstWhere(
+        (element) => (element.toString() == 'GameType.' + gameTypeStr));
     _gameState.resetSeatActions();
+
+    final handInfo = _gameState.getHandInfo(_context);
+    handInfo.update(handNum: handNum, noCards: noCards, gameType: gameType, smallBlind: smallBlind, bigBlind: bigBlind);
 
     // set small blind and big blind
     final sbSeat = _gameState.getSeat(_context, sbPos);
@@ -277,12 +300,6 @@ class HandActionService {
     final bbSeat = _gameState.getSeat(_context, bbPos);
     bbSeat.player.action.bb = true;
     bbSeat.player.action.amount = _gameState.gameInfo.bigBlind.toDouble();
-
-    final gameContext = Provider.of<GameContextObject>(_context, listen: false);
-    gameContext.currentHandNum = int.parse(newHand['handNum'].toString());
-
-    final handInfo = _gameState.getHandInfo(_context);
-    handInfo.update(noCards: noCards);
 
     final Players players = _gameState.getPlayers(_context);
 
@@ -358,7 +375,7 @@ class HandActionService {
     players.updatePlayerTypeSilent(
       smallBlindIdx,
       TablePosition.SmallBlind,
-      coinAmount: smallBlind,
+      coinAmount: smallBlind.toInt(),
     );
 
     /* marking the big blind */
@@ -367,7 +384,7 @@ class HandActionService {
     players.updatePlayerTypeSilent(
       bigBlindIdx,
       TablePosition.BigBlind,
-      coinAmount: bigBlind,
+      coinAmount: bigBlind.toInt(),
     );
 
     /* marking the dealer */
@@ -378,7 +395,7 @@ class HandActionService {
       dealerIdx,
       TablePosition.Dealer,
     );
-
+    handInfo.notify();
     players.notifyAll();
 
     /* get a new card back asset to be shown */
@@ -650,12 +667,6 @@ class HandActionService {
   }
 
   Future<void> handleQueryCurrentHand(var data) async {
-    int handNum = data['handNum'];
-    Provider.of<GameContextObject>(
-      _context,
-      listen: false,
-    ).currentHandNum = handNum;
-
     var currentHandState = data['currentHandState'];
     // log('Current hand state: $currentHandState');
 
@@ -678,16 +689,43 @@ class HandActionService {
         CardHelper.getRawCardNumbers(playerCards),
       );
 
+    int handNum = int.parse(currentHandState["handNum"].toString());
+    double smallBlind = double.parse(currentHandState["smallBlind"].toString());
+    double bigBlind = double.parse(currentHandState["bigBlind"].toString());
+        String gameTypeStr = currentHandState['gameType'].toString();
+    final gameType = GameType.values.firstWhere(
+        (element) => (element.toString() == 'GameType.' + gameTypeStr));
+
+    handInfo.update(handNum: handNum, smallBlind: smallBlind, bigBlind: bigBlind, gameType: gameType);
+
     /* set the noOfVisible cards for other players */
     int noOfCards = int.parse(currentHandState["noCards"].toString());
     handInfo.update(noCards: noOfCards);
     players.visibleCardNumbersForAllSilent(noOfCards);
 
     // boardCards update if available
+    String currentRound = currentHandState["currentRound"];
+
     try {
       List<int> boardCardsNum = currentHandState['boardCards']
           .map<int>((e) => int.parse(e.toString()))
           .toList();
+      if (currentRound == "FLOP") {
+        if (boardCardsNum.length >= 3) {
+          boardCardsNum = boardCardsNum.sublist(0, 3);
+        }
+      } else if (currentRound == "TURN") {
+        if (boardCardsNum.length >= 4) {
+          boardCardsNum = boardCardsNum.sublist(0, 4);
+        }
+      } else if (currentRound == "RIVER" || currentRound == "SHOWDOWN") {
+        if (boardCardsNum.length >= 5) {
+          boardCardsNum = boardCardsNum;
+        }
+      } else if (currentRound == 'PREFLOP') {
+        boardCardsNum = [];
+      }
+
       if (boardCardsNum != null)
         tableState.setBoardCards(
           1,
@@ -726,9 +764,10 @@ class HandActionService {
     );
 
     players.notifyAll();
+    handInfo.notify();
 
     // next seat to ACT - handle using Next_Action service
-    debugPrint('$currentHandState');
+    // debugPrint('$currentHandState');
     int nextSeatToAct = int.parse(
       currentHandState['nextSeatToAct']?.toString() ?? '-1',
     );
@@ -766,7 +805,7 @@ class HandActionService {
           },
         },
       );
-    log('stage update done');
+    // log('stage update done');
   }
 
   Future<void> handlePlayerActed(var data) async {

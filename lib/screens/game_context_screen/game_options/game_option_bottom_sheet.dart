@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_model.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/option_item_model.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
@@ -10,10 +11,8 @@ import 'game_option/game_option.dart';
 import 'pending_approvals_option.dart';
 
 class GameOptionsBottomSheet extends StatefulWidget {
-  String gameCode;
-  String playerUuid;
-  bool isAdmin;
-  GameOptionsBottomSheet(this.gameCode, this.playerUuid, this.isAdmin);
+  final GameState gameState;
+  GameOptionsBottomSheet(this.gameState);
 
   @override
   _GameOptionsState createState() => _GameOptionsState();
@@ -35,6 +34,7 @@ class _GameOptionsState extends State<GameOptionsBottomSheet> {
   Widget build(BuildContext context) {
     height = MediaQuery.of(context).size.height;
     width = MediaQuery.of(context).size.width;
+    final currentPlayer = widget.gameState.currentPlayer;
     return Container(
       color: Colors.black,
       height: height / 2,
@@ -53,7 +53,8 @@ class _GameOptionsState extends State<GameOptionsBottomSheet> {
           ),
           Expanded(
             child: selectedOptionIndex == 0
-                ? GameOption(widget.gameCode, widget.playerUuid, widget.isAdmin)
+                ? GameOption(widget.gameState.gameCode, currentPlayer.uuid,
+                    currentPlayer.isAdmin())
                 : selectedOptionIndex == 1
                     ? SingleChildScrollView(
                         child: FutureBuilder<List<GameModel>>(

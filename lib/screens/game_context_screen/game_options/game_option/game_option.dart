@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:overlay_support/overlay_support.dart';
-import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/hand_history_model.dart';
 import 'package:pokerapp/models/hand_log_model.dart';
 import 'package:pokerapp/models/option_item_model.dart';

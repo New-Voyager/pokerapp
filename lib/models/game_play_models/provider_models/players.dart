@@ -88,7 +88,6 @@ class Players extends ChangeNotifier {
         stack: playerInSeatModel.stack.toInt(),
       ));
     });
-    debugPrint('refreshWithPlayerInSeat');
     notifyAll();
   }
 

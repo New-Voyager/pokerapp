@@ -8,7 +8,6 @@ import 'game_state.dart';
 class GameContextObject extends ChangeNotifier {
   String _gameCode;
   int _gameId;
-  int _currentHandNum;
   PlayerInfo _currentPlayer;
   bool _gameEnded = false;
   GameState gameState;
@@ -30,13 +29,6 @@ class GameContextObject extends ChangeNotifier {
     this.handActionService = handActionService;
   }
 
-  set currentHandNum(int newValue) {
-    if (this._currentHandNum == newValue) return;
-
-    this._currentHandNum = newValue;
-    notifyListeners();
-  }
-
   set gameEnded(bool ended) {
     if (ended == _gameEnded) return;
     this._gameEnded = ended;
@@ -45,7 +37,6 @@ class GameContextObject extends ChangeNotifier {
 
   int get gameId => _gameId;
   String get gameCode => _gameCode;
-  int get currentHandNum => _currentHandNum;
   bool get gameEnded => _gameEnded;
   String get playerUuid => _currentPlayer.uuid;
   int get playerId => _currentPlayer.id;
@@ -60,8 +51,8 @@ class GameContextObject extends ChangeNotifier {
 
   @override
   void dispose() {
-    handActionService.close();
-    gameComService.dispose();
+    handActionService?.close();
+    gameComService?.dispose();
     super.dispose();
   }
 }

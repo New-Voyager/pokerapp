@@ -40,4 +40,11 @@ class PlayerInfo {
     }
     return info;
   }
+
+  bool isAdmin() {
+    if (role == null) {
+      return false;
+    }
+    return role.isHost || role.isOwner || role.isManager;
+  }
 }

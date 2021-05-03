@@ -44,22 +44,21 @@ class GameState {
   String _gameCode;
   GameInfoModel _gameInfo;
   Map<int, Seat> _seats = Map<int, Seat>();
-  Map<int, PlayerInfo> _playersInfo = Map<int, PlayerInfo>();
-  String _currentPlayerUuid;
-  int _currentPlayerId;
+  PlayerInfo _currentPlayer;
+
+  int _currentHandNum;
 
   void initialize({
     String gameCode,
     GameInfoModel gameInfo,
-    int playerId,
-    String uuid,
+    PlayerInfo currentPlayer,
     GameMessagingService gameMessagingService,
   }) {
     this._seats = Map<int, Seat>();
     this._gameInfo = gameInfo;
     this._gameCode = gameCode;
-    this._currentPlayerUuid = uuid;
-    this._currentPlayerId = playerId;
+    this._currentPlayer = currentPlayer;
+    this._currentHandNum = -1;
 
     for (int seatNo = 1; seatNo <= gameInfo.maxPlayers; seatNo++) {
       this._seats[seatNo] = Seat(seatNo, seatNo, null);
@@ -104,7 +103,7 @@ class GameState {
 
     final values = PlayerStatus.values;
     for (var player in players) {
-      if (player.playerUuid == this._currentPlayerUuid) {
+      if (player.playerUuid == this._currentPlayer.uuid) {
         player.isMe = true;
         if (player.status == null) {
           player.status = AppConstants.NOT_PLAYING;
@@ -135,12 +134,19 @@ class GameState {
   }
 
   String get currentPlayerUuid {
-    return this._currentPlayerUuid;
+    return this._currentPlayer.uuid;
   }
 
   int get currentPlayerId {
-    return this._currentPlayerId;
+    return this._currentPlayer.id;
   }
+
+  PlayerInfo get currentPlayer {
+    return this._currentPlayer;
+  }
+
+  int get currentHandNum => this._currentHandNum;
+  set currentHandNum(int handNum) => this._currentHandNum = currentHandNum;
 
   void refresh(BuildContext context) async {
     log('************ Refreshing game state');
@@ -171,7 +177,7 @@ class GameState {
         seat.player = player;
       }
 
-      if (player.playerUuid == this._currentPlayerUuid) {
+      if (player.playerUuid == this._currentPlayer.uuid) {
         player.isMe = true;
       }
     }
@@ -383,13 +389,35 @@ class HandInfoState extends ChangeNotifier {
   int _noCards = 0;
   GameType _gameType = GameType.UNKNOWN;
   int _handNum = 0;
+  double _smallBlind = 0;
+  double _bigBlind = 0;
 
   int get noCards {
     return _noCards;
   }
 
-  GameType get gameType {
-    return _gameType;
+  String get gameType {
+    String gameTypeStr = '';
+    switch(this._gameType) {
+      case GameType.HOLDEM:
+        gameTypeStr = 'No Limit Holdem';
+        break;
+      case GameType.PLO:
+        gameTypeStr = 'Omaha (PLO)';
+        break;
+      case GameType.PLO_HILO:
+        gameTypeStr = 'Omaha (Hi Lo)';
+        break;
+      case GameType.FIVE_CARD_PLO:
+        gameTypeStr = '5 cards Omaha';
+        break;
+      case GameType.FIVE_CARD_PLO_HILO:
+        gameTypeStr = '5 cards Omaha (Hi Lo)';
+        break;
+      default:
+        gameTypeStr = 'Unknown game';
+    }
+    return gameTypeStr;
   }
 
   int get handNum {
@@ -398,15 +426,26 @@ class HandInfoState extends ChangeNotifier {
 
   void clear() {
     this._noCards = 0;
-    // this._gameType = GameType.UNKNOWN;
-    // this._handNum = 0;
   }
 
-  update({int noCards, GameType gameType, int handNum}) {
+  double get smallBlind => this._smallBlind;
+  double get bigBlind => this._bigBlind;
+
+  update(
+      {int noCards,
+      GameType gameType,
+      int handNum,
+      double smallBlind,
+      double bigBlind}) {
     if (noCards != null) this._noCards = noCards;
     if (gameType != null) this._gameType = gameType;
     if (handNum != null) this._handNum = handNum;
+    if (smallBlind != null) this._smallBlind = smallBlind;
+    if (bigBlind != null) this._bigBlind = bigBlind;
+    this.notifyListeners();
+  }
 
+  void notify() {
     this.notifyListeners();
   }
 }

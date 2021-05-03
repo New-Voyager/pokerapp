@@ -125,15 +125,14 @@ class _FooterActionViewState extends State<FooterActionView> {
 
     final gameState = Provider.of<GameState>(context, listen: false);
     final actionState = gameState.getActionState(context);
+    final handInfo = gameState.getHandInfo(context);
     final gameContextObject = Provider.of<GameContextObject>(
       context,
       listen: false,
     );
 
     // get current hand number
-    int handNum = gameContextObject.currentHandNum;
-    String gameCode = gameContextObject.gameCode;
-
+    int handNum = handInfo.handNum;
     widget.gameContext.handActionService.playerActed(gameContextObject.playerId,
         handNum, actionState.action.seatNo, action, amount);
   }
