@@ -27,7 +27,7 @@ class PointsLineChart extends StatefulWidget {
 class _PointsLineChart extends State<PointsLineChart> {
   static dynamic jsonData;
   bool loadingDone = false;
-  Offset _tapPostion = Offset(0, 0);
+  Offset _tapPostion = Offset(100, 100);
   List<PlayerStack> stackList = [];
   bool _popUpVisible = false;
   charts.SelectionModel<num> _selectionModel;
@@ -80,12 +80,11 @@ class _PointsLineChart extends State<PointsLineChart> {
                     children: [
                       GestureDetector(
                         onTapDown: (details) {
-                          print(details.localPosition);
+                          print("ONTAP : ");
                           setState(() {
-                            //  _popUpVisible = !_popUpVisible;
-                            _tapPostion = details.localPosition;
+                            _tapPostion = Offset(details.localPosition.dx,
+                                details.localPosition.dy);
                           });
-                          print("VISIBLE : $_popUpVisible");
                         },
                         child: charts.LineChart(
                           _createSampleData(),
@@ -93,60 +92,48 @@ class _PointsLineChart extends State<PointsLineChart> {
                           behaviors: [
                             // new charts.SlidingViewport(),
                             charts.PanAndZoomBehavior(),
-                            charts.SelectNearest(),
+                            charts.SelectNearest()
                           ],
                           selectionModels: [
                             charts.SelectionModelConfig(
                                 type: charts.SelectionModelType.info,
-                                updatedListener: (model) {
-                                  print(refreshcount++);
-                                  print(model);
-                                  print(model.hasAnySelection.toString());
-                                  print(model.hasDatumSelection.toString());
-                                  print(model.hasSeriesSelection.toString());
-
+                                changedListener: (charts.SelectionModel model) {
+                                  print("cccUpdate Refresh: ${refreshcount++}");
                                   if (model.hasDatumSelection) {
                                     setState(() {
                                       _selectionModel = model;
                                       _popUpVisible = true;
                                     });
                                   }
-                                  print(
-                                      "Update listener: ${model.hasDatumSelection} : ${model.hasAnySelection} : ${model.hasSeriesSelection}");
-                                  print(
-                                      "Update listener: ${model.selectedDatum} : ${model.selectedSeries} ");
-                                },
-                                changedListener: (charts.SelectionModel model) {
-                                  print("CHANGED LISTERNER");
                                   // Navigator.push(
                                   //     context,
                                   //     MaterialPageRoute(
                                   //         builder: (_) =>
                                   //             HighHandLogView(widget.gameDetail.gameCode)));
 /* 
-                                  showMenu(
-                                      context: context,
-                                      position: RelativeRect.fromLTRB(
-                                          _tapPostion.dx,
-                                          _tapPostion.dy,
-                                          MediaQuery.of(context).size.width -
-                                              _tapPostion.dx,
-                                          MediaQuery.of(context).size.height -
-                                              _tapPostion.dy),
-                                      items: [
-                                       PopupMenuItem(
-                                         textStyle: TextStyle(backgroundColor: Colors.black),
+                                              showMenu(
+                                                  context: context,
+                                                  position: RelativeRect.fromLTRB(
+                                                      _tapPostion.dx,
+                                                      _tapPostion.dy,
+                                                      MediaQuery.of(context).size.width -
+                                                          _tapPostion.dx,
+                                                      MediaQuery.of(context).size.height -
+                                                          _tapPostion.dy),
+                                                  items: [
+                                                   PopupMenuItem(
+                                                     textStyle: TextStyle(backgroundColor: Colors.black),
 
-                                          child: Container(color : Colors.yellow, child: Text("Helow"),), ),
-                                        
-                                        PopupMenuItem(child: Text("adfs")),
-                                        PopupMenuItem(child: Text("asdfdsf")),
-                                      ]); */
-                                  print(model.selectedSeries[0]
+                                                      child: Container(color : Colors.yellow, child: Text("Helow"),), ),
+                                                    
+                                                    PopupMenuItem(child: Text("adfs")),
+                                                    PopupMenuItem(child: Text("asdfdsf")),
+                                                  ]); */
+                                  /* print(model.selectedSeries[0]
                                       .measureFn(model.selectedDatum[0].index));
 
                                   print(model.selectedSeries[0]
-                                      .domainFn(model.selectedDatum[0].index));
+                                      .domainFn(model.selectedDatum[0].index)); */
                                 })
                           ],
                           defaultRenderer: new charts.LineRendererConfig(
@@ -170,34 +157,39 @@ class _PointsLineChart extends State<PointsLineChart> {
   List<charts.Series<PlayerStack, int>> _createSampleData() {
     return [
       new charts.Series<PlayerStack, int>(
-        id: 'Sales',
-        colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
-        fillColorFn: (PlayerStack stat, __) => (stat.neutral)
-            ? charts.MaterialPalette.transparent
-            : stat.red
-                ? charts.MaterialPalette.red.shadeDefault
-                : charts.MaterialPalette.green.shadeDefault,
-        domainFn: (PlayerStack game, _) => game.handNum,
-        measureFn: (PlayerStack game, _) => game.after,
-        data: stackList,
-      )
+          id: 'Sales',
+          //colorFn: (_, __) => charts.ColorUtil.fromDartColor(Colors.transparent),
+          fillColorFn: (PlayerStack stat, __) => (stat.neutral)
+              ? charts.ColorUtil.fromDartColor(Colors.transparent)
+              : stat.red
+                  ? charts.ColorUtil.fromDartColor(Colors.red)
+                  : charts.ColorUtil.fromDartColor(Colors.green),
+          domainFn: (PlayerStack game, _) => game.handNum,
+          measureFn: (PlayerStack game, _) => game.after,
+          data: stackList,
+          seriesColor: charts.ColorUtil.fromDartColor(AppColors.appAccentColor))
     ];
   }
 
   _buildPopUp(BuildContext context) {
+    print("Building pipup");
     double x = _tapPostion.dx, y = _tapPostion.dy;
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
+    PlayerStack currentStack = _selectionModel.selectedDatum[0].datum;
+
     if (_tapPostion.dx > width / 2) {
       x = _tapPostion.dx - 100.0;
     }
     if (_tapPostion.dy > height / 2) {
       y = _tapPostion.dy - 50.0;
     }
-    PlayerStack currentStack = _selectionModel.selectedDatum[0].datum;
-    if (currentStack.neutral == true) {
+
+    if (currentStack.neutral) {
+      print("Netural item selected");
       return Container();
     }
+
     return Positioned(
       top: y,
       left: x,
@@ -226,11 +218,11 @@ class _PointsLineChart extends State<PointsLineChart> {
                       style: AppStyles.stackPopUpTextStyle,
                     ),
                     Text(
-                      "Before:${currentStack.before}",
+                      "Before:${getFormattedString(currentStack.before)}",
                       style: AppStyles.stackPopUpTextStyle,
                     ),
                     Text(
-                      "After:${currentStack.after}",
+                      "After:${getFormattedString(currentStack.after)}",
                       style: AppStyles.stackPopUpTextStyle,
                     ),
                   ],
@@ -246,7 +238,7 @@ class _PointsLineChart extends State<PointsLineChart> {
                       color: currentStack.color,
                     ),
                     Text(
-                      "${currentStack.difference}",
+                      "${getFormattedString(currentStack.difference)}",
                       style: AppStyles.stackPopUpTextStyle.copyWith(
                         color: currentStack.color,
                       ),
@@ -259,6 +251,15 @@ class _PointsLineChart extends State<PointsLineChart> {
         ),
       ),
     );
+  }
+
+  String getFormattedString(double amount) {
+    var a = amount.toString().split(".");
+    if (a.length > 1 && int.parse(a[1]) > 0) {
+      return amount.toString();
+    } else {
+      return a[0];
+    }
   }
 }
 

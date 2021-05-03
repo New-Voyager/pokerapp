@@ -51,7 +51,6 @@ class ClubHomePageModel extends ChangeNotifier {
   // build data from the graphql response
   ClubHomePageModel.fromGQLResponse(String clubCode, var data, var activity) {
     var member = data['member'];
-
     this.clubName = member['name'];
     this.clubCode = clubCode;
     this.isManager = member['isManager'];
