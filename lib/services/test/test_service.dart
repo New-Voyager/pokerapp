@@ -14,7 +14,12 @@ import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_service.dart';
 import 'package:pokerapp/services/test/hand_messages.dart';
 import 'package:pokerapp/utils/card_helper.dart';
+import 'package:pokerapp/utils/formatter.dart';
 import 'package:provider/provider.dart';
+import 'package:pokerapp/routes.dart';
+import 'package:pokerapp/main.dart';
+
+import 'iap_test.dart';
 
 class TestService {
   static var _showResult = false;
@@ -26,7 +31,7 @@ class TestService {
 
   static BuildContext _context;
   static HandActionService _handActionService;
-
+  static InAppPurchaseTest _testIap;
   TestService._();
 
   static set context(BuildContext context) => _context = context;
@@ -60,6 +65,13 @@ class TestService {
 
   static get isTesting {
     return true;
+  }
+
+  static void testIap() {
+    if (_testIap == null) {
+      _testIap = new InAppPurchaseTest();
+    }
+    _testIap.loadProducts();
   }
 
   static Future<void> load() async {
@@ -481,5 +493,73 @@ class TestService {
     //final handActionService = HandActionService( _context, gameState);
     _handActionService.clear();
     _handActionService.handle(message);
+  }
+
+  static void waitlistDialog() {
+    final data = '''
+        {
+          "type": "WAITLIST_SEATING",
+          "gameCode": "CG-Q8QC9I95J54N8BM",
+          "gameType": "HOLDEM",
+          "smallBlind": 1,
+          "bigBlind": 2,
+          "title": "HOLDEM 1/2",
+          "clubName": "test",
+          "expTime": "2021-05-03T15:03:27.304Z",
+          "requestId": "af4b966a-eee7-4bee-8f79-8aa5ec34543e"
+        }
+    ''';
+    final json = jsonDecode(data);
+    String type = json['type'].toString();
+    String gameCode = json['gameCode'].toString();
+    if (type == 'WAITLIST_SEATING') {
+      String game = '';
+      if (json["gameType"] != null) {
+        String gameType = json["gameType"].toString();
+        String sb = DataFormatter.chipsFormat(
+            double.parse(json['smallBlind'].toString()));
+        String bb = DataFormatter.chipsFormat(
+            double.parse(json['bigBlind'].toString()));
+        game = ' at $gameType $sb/$bb';
+      }
+      String title = 'Do you want to take a open seat $game?';
+      String subTitle = 'Code: ${json["gameCode"]}';
+      if (json['clubName'] != null) {
+        subTitle = subTitle + '\n' + 'Club: ${json["clubName"]}';
+      }
+
+      final alert = AlertDialog(
+        title: Text('Waitlist Seating'),
+        content: Text('$title \n$subTitle'),
+        actions: [
+          ElevatedButton(
+            //textColor: Color(0xFF6200EE),
+            onPressed: () {
+              Navigator.of(_context).pop();
+              navigatorKey.currentState.pushNamed(
+                Routes.game_play,
+                arguments: gameCode,
+              );
+            },
+            child: Text('Accept'),
+          ),
+          ElevatedButton(
+            //textColor: Color(0xFF6200EE),
+            onPressed: () {
+              Navigator.of(_context).pop();
+            },
+            child: Text('Decline'),
+          ),
+        ],
+      );
+      // show the dialog
+      showDialog(
+        context: _context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return alert;
+        },
+      );
+    }
   }
 }

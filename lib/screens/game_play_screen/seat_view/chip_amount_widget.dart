@@ -1,17 +1,15 @@
-import 'dart:developer';
-
 import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:pokerapp/enums/hand_actions.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:provider/provider.dart';
+import 'package:pokerapp/utils/formatter.dart';
 
 class ChipAmountWidget extends StatefulWidget {
   final bool animate;
@@ -101,7 +99,7 @@ class _ChipAmountWidgetState extends State<ChipAmountWidget>
 
     /* show the coin amount */
     final amount = Text(
-      action.amount.toString(),
+      DataFormatter.chipsFormat(action.amount),
       style: TextStyle(
         color: Colors.white,
         fontSize: 12.0,
@@ -165,7 +163,6 @@ class _ChipAmountWidgetState extends State<ChipAmountWidget>
       return;
     }
 
-    log('pot key: ${potKey.currentContext}');
     final RenderBox potViewBox = potKey.currentContext.findRenderObject();
     final potViewPos = potViewBox.localToGlobal(Offset(0, 0));
     final RenderBox box = context.findRenderObject();

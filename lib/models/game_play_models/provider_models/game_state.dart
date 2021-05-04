@@ -398,7 +398,7 @@ class HandInfoState extends ChangeNotifier {
 
   String get gameType {
     String gameTypeStr = '';
-    switch(this._gameType) {
+    switch (this._gameType) {
       case GameType.HOLDEM:
         gameTypeStr = 'No Limit Holdem';
         break;

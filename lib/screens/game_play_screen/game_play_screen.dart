@@ -386,39 +386,41 @@ class _GamePlayScreenState extends State<GamePlayScreen>
                 builder: (BuildContext context, _) {
                   this._providerContext = context;
 
-                  if (_gameContextObj.handActionService == null) {
-                    _gameContextObj.handActionService = HandActionService(
-                        _providerContext,
-                        _gameState,
-                        _gameContextObj.gameComService);
-                    _gameContextObj.handActionService.loop();
+                  if (_gameContextObj != null) {
+                    if (_gameContextObj.handActionService == null) {
+                      _gameContextObj.handActionService = HandActionService(
+                          _providerContext,
+                          _gameState,
+                          _gameContextObj.gameComService);
+                      _gameContextObj.handActionService.loop();
 
-                    if (!TestService.isTesting) {
-                      _gameContextObj.gameComService.handToAllChannelStream
-                          .listen((nats.Message message) {
-                        if (!_gameContextObj.gameComService.active) return;
-                        if (_gameContextObj.handActionService == null) return;
-                        /* This stream receives hand related messages that is common to all players
-                        * e.g
-                        * New Hand - contains hand status, dealerPos, sbPos, bbPos, nextActionSeat
-                        * Next Action - contains the seat No which is to act next
-                        *
-                        * This stream also contains the output for the query of current hand*/
-                        _gameContextObj.handActionService
-                            .handle(message.string);
-                      });
+                      if (!TestService.isTesting) {
+                        _gameContextObj.gameComService.handToAllChannelStream
+                            .listen((nats.Message message) {
+                          if (!_gameContextObj.gameComService.active) return;
+                          if (_gameContextObj.handActionService == null) return;
+                          /* This stream receives hand related messages that is common to all players
+                          * e.g
+                          * New Hand - contains hand status, dealerPos, sbPos, bbPos, nextActionSeat
+                          * Next Action - contains the seat No which is to act next
+                          *
+                          * This stream also contains the output for the query of current hand*/
+                          _gameContextObj.handActionService
+                              .handle(message.string);
+                        });
 
-                      _gameContextObj.gameComService.handToPlayerChannelStream
-                          .listen((nats.Message message) {
-                        if (!_gameContextObj.gameComService.active) return;
-                        if (_gameContextObj.handActionService == null) return;
-                        /* This stream receives hand related messages that is specific to THIS player only
-                        * e.g
-                        * Deal - contains seat No and cards
-                        * Your Action - seat No, available actions & amounts */
-                        _gameContextObj.handActionService
-                            .handle(message.string);
-                      });
+                        _gameContextObj.gameComService.handToPlayerChannelStream
+                            .listen((nats.Message message) {
+                          if (!_gameContextObj.gameComService.active) return;
+                          if (_gameContextObj.handActionService == null) return;
+                          /* This stream receives hand related messages that is specific to THIS player only
+                          * e.g
+                          * Deal - contains seat No and cards
+                          * Your Action - seat No, available actions & amounts */
+                          _gameContextObj.handActionService
+                              .handle(message.string);
+                        });
+                      }
                     }
                   }
 

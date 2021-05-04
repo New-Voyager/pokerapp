@@ -9,6 +9,7 @@ import 'package:pokerapp/screens/util_screens/replay_hand_screen/replay_hand_scr
 import 'package:pokerapp/screens/game_play_screen/widgets/plate_border.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/utils/card_helper.dart';
+import 'package:pokerapp/utils/loading_utils.dart';
 import 'package:pokerapp/utils/numeric_keyboard.dart';
 
 class ProfilePageView extends StatefulWidget {
@@ -31,13 +32,16 @@ class _ProfilePageViewState extends State<ProfilePageView> {
           ElevatedButton(
             child: Text('Replay Hand'),
             onPressed: () {
+              ConnectionDialog.show(
+                context: context,
+              );
               // TODO: USE ROUTES HERE INSTEAD OF NAVIGATOR.PUSH
-              Navigator.push(
+              /* Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (_) => ReplayHandScreen(),
                 ),
-              );
+              ); */
             },
           ),
           Spacer(),
