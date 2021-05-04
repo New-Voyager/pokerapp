@@ -126,15 +126,17 @@ class _ChipAmountWidgetState extends State<ChipAmountWidget>
     }
 
     final action = widget.seat.player.action;
-    Widget child;
+
+    Widget betWidget;
+
     if (!showBet) {
       // show bet position
-      child = Container(
+      betWidget = Container(
         width: 10,
         height: 10,
         color: Colors.transparent,
       );
-      return child;
+      return betWidget;
     }
 
     List<Widget> children = [];
@@ -195,15 +197,11 @@ class _ChipAmountWidgetState extends State<ChipAmountWidget>
       children.add(amount);
     }
 
-    child = Row(
+    betWidget = Row(
       mainAxisSize: MainAxisSize.min,
       children: children,
     );
 
-    final betWidget = Transform.scale(
-      scale: widget.boardAttributesObject.betChipWidgetScale,
-      child: child,
-    );
     if (widget.animate) {
       return betWidget;
     }

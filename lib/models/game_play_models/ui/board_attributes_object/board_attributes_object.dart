@@ -455,7 +455,7 @@ class BoardAttributesObject extends ChangeNotifier {
 
   SeatPosAttribs getSeatPosAttrib(SeatPos pos) {
     // TODO: REMOVE THIS DEBUG LINE
-    return getSeatMap(this._screenSize)[pos];
+    // return getSeatMap(this._screenSize)[pos];
     return this._seatPosAttribs[pos];
   }
 
@@ -476,21 +476,7 @@ class BoardAttributesObject extends ChangeNotifier {
 
   static const holeCardViewDisplacementConstant = 60.0;
 
-  // double get holeCardViewDisplacementConstant => _decide(
-  //       lessThan6Inches: 60.0,
-  //       equalTo6Inches: 60.0,
-  //       equalTo7Inches: 60.0,
-  //       greaterThan7Inches: 60.0,
-  //     );
-
   static const holeCardViewAngleConstant = 0.05;
-
-  // double get holeCardViewAngleConstant => _decide(
-  //       lessThan6Inches: 0.05,
-  //       equalTo6Inches: 0.05,
-  //       equalTo7Inches: 0.05,
-  //       greaterThan7Inches: 0.05,
-  //     );
 
   Offset get centerOffset => _decide(
         lessThan6Inches: Offset(10, 40),
@@ -524,18 +510,27 @@ class BoardAttributesObject extends ChangeNotifier {
         greaterThan7Inches: 1.3,
       ) as double;
 
-  double get namePlateScale => _decide(
+  /* players configurations */
+  double get playerViewScale => _decide(
         lessThan6Inches: 1.0,
         equalTo6Inches: 1.0,
-        equalTo7Inches: 1.5,
+        equalTo7Inches: 1.4,
         greaterThan7Inches: 2.0,
       ) as double;
 
-  double get betChipWidgetScale => _decide(
+  /* player hole card configurations */
+  Offset get playerHoleCardOffset => _decide(
+        lessThan6Inches: Offset.zero,
+        equalTo6Inches: Offset.zero,
+        equalTo7Inches: Offset(10.0, -10.0),
+        greaterThan7Inches: Offset(10.0, -10.0),
+      ) as Offset;
+
+  double get playerHoleCardScale => _decide(
         lessThan6Inches: 1.0,
         equalTo6Inches: 1.0,
-        equalTo7Inches: 1.2,
-        greaterThan7Inches: 2.0,
+        equalTo7Inches: 1.5,
+        greaterThan7Inches: 1.5,
       ) as double;
 
   // double getBetPos() {

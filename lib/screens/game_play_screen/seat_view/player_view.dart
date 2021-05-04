@@ -90,8 +90,9 @@ class PlayerView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    seat.key =
-        GlobalKey(debugLabel: 'Seat:${seat.serverSeatPos}'); //this.globalKey;
+    seat.key = GlobalKey(
+      debugLabel: 'Seat:${seat.serverSeatPos}',
+    ); //this.globalKey;
 
     bool openSeat = seat.isOpen;
     bool isMe = seat.isMe;
@@ -200,11 +201,17 @@ class PlayerView extends StatelessWidget {
               ),
 
               // player hole cards
-              PlayerCardsWidget(
-                seat,
-                this.cardsAlignment,
-                seat.player?.noOfCardsVisible,
-                showdown,
+              Transform.translate(
+                offset: boardAttributes.playerHoleCardOffset,
+                child: Transform.scale(
+                  scale: boardAttributes.playerHoleCardScale,
+                  child: PlayerCardsWidget(
+                    seat,
+                    this.cardsAlignment,
+                    seat.player?.noOfCardsVisible,
+                    showdown,
+                  ),
+                ),
               ),
 
               // show dealer button, if user is a dealer

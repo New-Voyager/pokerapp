@@ -174,62 +174,59 @@ class NamePlateWidget extends StatelessWidget {
 
     return Opacity(
       opacity: childWhenDragging ? 0.50 : 1.0,
-      child: Transform.scale(
-        scale: boardAttributes.namePlateScale,
-        child: Container(
-          width: boardAttributes.namePlateSize.width,
-          height: boardAttributes.namePlateSize.height,
-          padding: const EdgeInsets.symmetric(
-            vertical: 5.0,
-          ),
-          decoration: BoxDecoration(
-            boxShadow: shadow,
-          ),
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              // name plate
-              Container(
-                width: double.infinity,
-                height: double.infinity,
-                child: plateWidget,
-              ),
+      child: Container(
+        width: boardAttributes.namePlateSize.width,
+        height: boardAttributes.namePlateSize.height,
+        padding: const EdgeInsets.symmetric(
+          vertical: 5.0,
+        ),
+        decoration: BoxDecoration(
+          boxShadow: shadow,
+        ),
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            // name plate
+            Container(
+              width: double.infinity,
+              height: double.infinity,
+              child: plateWidget,
+            ),
 
-              /* main body contents */
-              AnimatedSwitcher(
+            /* main body contents */
+            AnimatedSwitcher(
+              duration: AppConstants.animationDuration,
+              reverseDuration: AppConstants.animationDuration,
+              child: AnimatedOpacity(
                 duration: AppConstants.animationDuration,
-                reverseDuration: AppConstants.animationDuration,
-                child: AnimatedOpacity(
-                  duration: AppConstants.animationDuration,
-                  opacity: seat.isOpen ? 0.0 : 1.0,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      FittedBox(
-                        child: Text(
-                          seat.player.name,
-                          style: AppStyles.gamePlayScreenPlayerName.copyWith(
-                            color: Colors.white,
-                          ),
+                opacity: seat.isOpen ? 0.0 : 1.0,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    FittedBox(
+                      child: Text(
+                        seat.player.name,
+                        style: AppStyles.gamePlayScreenPlayerName.copyWith(
+                          color: Colors.white,
                         ),
                       ),
-                      PlayerViewDivider(),
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 5),
-                          child: FittedBox(
-                            child: bottomWidget(context),
-                          ),
+                    ),
+                    PlayerViewDivider(),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 5),
+                        child: FittedBox(
+                          child: bottomWidget(context),
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

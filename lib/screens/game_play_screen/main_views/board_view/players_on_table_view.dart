@@ -457,14 +457,17 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
     userView = ListenableProvider<Seat>(
       create: (_) => seat,
       builder: (context, _) => Consumer2<Seat, BoardAttributesObject>(
-        builder: (_, seat, boardAttributes, __) => PlayerView(
-          gameComService: widget.gameComService,
-          seat: seat,
-          cardsAlignment: cardsAlignment,
-          onUserTap: onUserTap,
-          boardAttributes: boardAttributes,
-          seatPos: seatPos,
-          seatPosIndex: seatPosIndex,
+        builder: (_, seat, boardAttributes, __) => Transform.scale(
+          scale: boardAttributes.playerViewScale,
+          child: PlayerView(
+            gameComService: widget.gameComService,
+            seat: seat,
+            cardsAlignment: cardsAlignment,
+            onUserTap: onUserTap,
+            boardAttributes: boardAttributes,
+            seatPos: seatPos,
+            seatPosIndex: seatPosIndex,
+          ),
         ),
       ),
     );
