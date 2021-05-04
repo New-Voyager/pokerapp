@@ -146,23 +146,24 @@ class NamePlateWidget extends StatelessWidget {
     final shadow = getShadow(hostSeatChange, isFeedBack);
 
     Widget plateWidget;
+
     if (seat.player.highlight) {
       int remaining = seat.actionTimer.getRemainingTime();
       int total = seat.actionTimer.getTotalTime();
       int current = total - remaining;
       final int totalMs = seat.actionTimer.getTotalTime() * 1000;
       plateWidget = CountdownMs(
-          totalSeconds: total,
-          currentSeconds: current,
-          build: (_, time) {
-            int remainingMs = totalMs - time.toInt();
-            // log('rebuild plate: current: $remainingMs, total: $totalMs');
-            return PlateWidget(
-              remainingMs,
-              totalMs,
-              showProgress: true,
-            );
-          });
+        totalSeconds: total,
+        currentSeconds: current,
+        build: (_, time) {
+          int remainingMs = totalMs - time.toInt();
+          return PlateWidget(
+            remainingMs,
+            totalMs,
+            showProgress: true,
+          );
+        },
+      );
     } else {
       plateWidget = PlateWidget(
         0,
@@ -182,26 +183,19 @@ class NamePlateWidget extends StatelessWidget {
             vertical: 5.0,
           ),
           decoration: BoxDecoration(
-            shape: BoxShape.rectangle,
-            // borderRadius: BorderRadius.circular(5),
-            // color: Color(0XFF494444),
-            // border: Border.all(
-            //   color: AppColors.plateBorderColor,
-            //   width: 2.0,
-            // ),
             boxShadow: shadow,
           ),
           child: Stack(
+            alignment: Alignment.center,
             children: [
-              // name plate border
+              // name plate
               Container(
-                width: 75,
-                height: 50,
-
-                // width: boardAttributes.namePlateSize.width,
-                // height: boardAttributes.namePlateSize.height,
+                width: double.infinity,
+                height: double.infinity,
                 child: plateWidget,
               ),
+
+              /* main body contents */
               AnimatedSwitcher(
                 duration: AppConstants.animationDuration,
                 reverseDuration: AppConstants.animationDuration,
@@ -209,13 +203,13 @@ class NamePlateWidget extends StatelessWidget {
                   duration: AppConstants.animationDuration,
                   opacity: seat.isOpen ? 0.0 : 1.0,
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       FittedBox(
                         child: Text(
                           seat.player.name,
                           style: AppStyles.gamePlayScreenPlayerName.copyWith(
-                            // FIXME: may be this is permanant?
                             color: Colors.white,
                           ),
                         ),

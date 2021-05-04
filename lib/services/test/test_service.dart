@@ -83,11 +83,14 @@ class TestService {
         _currentPlayer = PlayerInfo.fromJson(data);
         //_currentPlayer = PlayerInfo.fromJson(jsonData["currentPlayer"]);
       }
+      // can't be -> 3, 5, 7
       var maxPlayers = 9;
       if (jsonData["gameInfo"] != null) {
         // todo: debug remove: change the max Players in a game here
-        _gameInfo = GameInfoModel.fromJson(jsonData["gameInfo"],
-            maxPlayers: maxPlayers);
+        _gameInfo = GameInfoModel.fromJson(
+          jsonData["gameInfo"],
+          maxPlayers: maxPlayers,
+        );
       }
 
       List<PlayerModel> playerInSeats = [];
