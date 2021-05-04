@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/models/pending_approvals.dart';
 import 'package:pokerapp/routes.dart';
@@ -17,6 +18,8 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
   // Register all the models and services before the app starts
   setupLocator();
+  InAppPurchaseConnection.enablePendingPurchases();
+
   runApp(
     GraphQLProvider(
       client: graphQLConfiguration.client,

@@ -48,6 +48,16 @@ class GamePlayScreenUtilMethods {
             color: Colors.white,
           ),
           backgroundColor: Colors.red,
+          label: 'Inapp',
+          onTap: () => TestService.testIap(),
+        ),
+
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
           label: 'Waitlist',
           onTap: () => TestService.waitlistDialog(),
         ),

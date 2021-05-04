@@ -79,6 +79,10 @@ PODS:
   - FMDB (2.7.5):
     - FMDB/standard (= 2.7.5)
   - FMDB/standard (2.7.5)
+  - in_app_purchase (0.0.1):
+    - Flutter
+  - just_audio (0.0.1):
+    - Flutter
   - GoogleAppMeasurement (7.3.0):
     - GoogleUtilities/AppDelegateSwizzler (~> 7.0)
     - GoogleUtilities/MethodSwizzler (~> 7.0)
@@ -140,6 +144,7 @@ DEPENDENCIES:
   - Flutter (from `Flutter`)
   - flutter_keyboard_visibility (from `.symlinks/plugins/flutter_keyboard_visibility/ios`)
   - flutter_udid (from `.symlinks/plugins/flutter_udid/ios`)
+  - in_app_purchase (from `.symlinks/plugins/in_app_purchase/ios`)
   - just_audio (from `.symlinks/plugins/just_audio/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
   - permission_handler (from `.symlinks/plugins/permission_handler/ios`)
@@ -190,6 +195,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_keyboard_visibility/ios"
   flutter_udid:
     :path: ".symlinks/plugins/flutter_udid/ios"
+  in_app_purchase:
+    :path: ".symlinks/plugins/in_app_purchase/ios"
   just_audio:
     :path: ".symlinks/plugins/just_audio/ios"
   path_provider:
@@ -223,6 +230,8 @@ SPEC CHECKSUMS:
   flutter_keyboard_visibility: 0339d06371254c3eb25eeb90ba8d17dca8f9c069
   flutter_udid: c9d59b0a440e137882faa5cf53a3501e906fb8c2
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
+  in_app_purchase: 3e2155afa9d03d4fa32d9e62d567885080ce97d6
+  just_audio: baa7252489dbcf47a4c7cc9ca663e9661c99aafa
   GoogleAppMeasurement: 8d3c0aeede16ab7764144b5a4ca8e1d4323841b7
   GoogleDataTransport: 116c84c4bdeb76be2a7a46de51244368f9794eab
   GoogleUtilities: e1d9ed4e544fc32a93e00e721400cbc3f377200d

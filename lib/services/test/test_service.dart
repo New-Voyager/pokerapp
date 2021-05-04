@@ -19,6 +19,8 @@ import 'package:provider/provider.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/main.dart';
 
+import 'iap_test.dart';
+
 class TestService {
   static var _showResult = false;
   static PlayerInfo _currentPlayer;
@@ -29,7 +31,7 @@ class TestService {
 
   static BuildContext _context;
   static HandActionService _handActionService;
-
+  static InAppPurchaseTest _testIap;
   TestService._();
 
   static set context(BuildContext context) => _context = context;
@@ -63,6 +65,13 @@ class TestService {
 
   static get isTesting {
     return false;
+  }
+
+  static void testIap() {
+    if (_testIap == null) {
+      _testIap = new InAppPurchaseTest();
+    }
+    _testIap.loadProducts();
   }
 
   static Future<void> load() async {
