@@ -1,6 +1,6 @@
 import 'dart:async';
+import 'dart:developer';
 import 'dart:io';
-
 
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -50,19 +50,13 @@ void main() {
   runApp(_MyApp());
 }
 
-
 const bool _kAutoConsume = true;
 
 const String _kConsumableId = 'chips';
 const String _kUpgradeId = 'upgrade';
 const String _kSilverSubscriptionId = 'subscription_silver';
 const String _kGoldSubscriptionId = 'subscription_gold';
-const List<String> _kProductIds = <String>[
-  _kConsumableId,
-  "",
-  "",
-  "",
-];
+const List<String> _kProductIds = <String>[_kConsumableId];
 
 class _MyApp extends StatefulWidget {
   @override
@@ -98,6 +92,7 @@ class _MyAppState extends State<_MyApp> {
 
   Future<void> initStoreInfo() async {
     final bool isAvailable = await _connection.isAvailable();
+    log("isConnectionAvailable = $isAvailable");
     if (!isAvailable) {
       setState(() {
         _isAvailable = isAvailable;
@@ -112,8 +107,13 @@ class _MyAppState extends State<_MyApp> {
     }
 
     ProductDetailsResponse productDetailResponse =
-    await _connection.queryProductDetails(_kProductIds.toSet());
+        await _connection.queryProductDetails(_kProductIds.toSet());
+    log("productDetailResponse.productDetails = ${productDetailResponse.productDetails}");
+    log("productDetailResponse.notFoundIDs = ${productDetailResponse.notFoundIDs}");
+
     if (productDetailResponse.error != null) {
+      log("productDetailResponse.error.message = ${productDetailResponse.error.message}");
+      log("productDetailResponse.error.details = ${productDetailResponse.error.details}");
       setState(() {
         _queryProductError = productDetailResponse.error.message;
         _isAvailable = isAvailable;
@@ -142,7 +142,7 @@ class _MyAppState extends State<_MyApp> {
     }
 
     final QueryPurchaseDetailsResponse purchaseResponse =
-    await _connection.queryPastPurchases();
+        await _connection.queryPastPurchases();
     if (purchaseResponse.error != null) {
       // handle query past purchase error..
     }
@@ -266,14 +266,14 @@ class _MyAppState extends State<_MyApp> {
     // In your app you should always verify the purchase data using the `verificationData` inside the [PurchaseDetails] object before trusting it.
     // We recommend that you use your own server to verify the purchase data.
     Map<String, PurchaseDetails> purchases =
-    Map.fromEntries(_purchases.map((PurchaseDetails purchase) {
+        Map.fromEntries(_purchases.map((PurchaseDetails purchase) {
       if (purchase.pendingCompletePurchase) {
         InAppPurchaseConnection.instance.completePurchase(purchase);
       }
       return MapEntry<String, PurchaseDetails>(purchase.productID, purchase);
     }));
     productList.addAll(_products.map(
-          (ProductDetails productDetails) {
+      (ProductDetails productDetails) {
         PurchaseDetails previousPurchase = purchases[productDetails.id];
         return ListTile(
             title: Text(
@@ -285,38 +285,38 @@ class _MyAppState extends State<_MyApp> {
             trailing: previousPurchase != null
                 ? Icon(Icons.check)
                 : TextButton(
-              child: Text(productDetails.price),
-              style: TextButton.styleFrom(
-                backgroundColor: Colors.green[800],
-                primary: Colors.white,
-              ),
-              onPressed: () {
-                // NOTE: If you are making a subscription purchase/upgrade/downgrade, we recommend you to
-                // verify the latest status of you your subscription by using server side receipt validation
-                // and update the UI accordingly. The subscription purchase status shown
-                // inside the app may not be accurate.
-                final oldSubscription =
-                _getOldSubscription(productDetails, purchases);
-                PurchaseParam purchaseParam = PurchaseParam(
-                    productDetails: productDetails,
-                    applicationUserName: null,
-                    sandboxTesting: true);
-                if (productDetails.id == _kConsumableId) {
-                  _connection.buyConsumable(
-                      purchaseParam: purchaseParam,
-                      autoConsume: _kAutoConsume || Platform.isIOS);
-                } else {
-                  _connection.buyNonConsumable(
-                      purchaseParam: purchaseParam);
-                }
-              },
-            ));
+                    child: Text(productDetails.price),
+                    style: TextButton.styleFrom(
+                      backgroundColor: Colors.green[800],
+                      primary: Colors.white,
+                    ),
+                    onPressed: () {
+                      // NOTE: If you are making a subscription purchase/upgrade/downgrade, we recommend you to
+                      // verify the latest status of you your subscription by using server side receipt validation
+                      // and update the UI accordingly. The subscription purchase status shown
+                      // inside the app may not be accurate.
+                      final oldSubscription =
+                          _getOldSubscription(productDetails, purchases);
+                      PurchaseParam purchaseParam = PurchaseParam(
+                          productDetails: productDetails,
+                          applicationUserName: null,
+                          sandboxTesting: true);
+                      if (productDetails.id == _kConsumableId) {
+                        _connection.buyConsumable(
+                            purchaseParam: purchaseParam,
+                            autoConsume: _kAutoConsume || Platform.isIOS);
+                      } else {
+                        _connection.buyNonConsumable(
+                            purchaseParam: purchaseParam);
+                      }
+                    },
+                  ));
       },
     ));
 
     return Card(
         child:
-        Column(children: <Widget>[productHeader, Divider()] + productList));
+            Column(children: <Widget>[productHeader, Divider()] + productList));
   }
 
   Card _buildConsumableBox() {
@@ -330,7 +330,7 @@ class _MyAppState extends State<_MyApp> {
       return Card();
     }
     final ListTile consumableHeader =
-    ListTile(title: Text('Purchased consumables'));
+        ListTile(title: Text('Purchased consumables'));
     final List<Widget> tokens = _consumables.map((String id) {
       return GridTile(
         child: IconButton(
@@ -346,15 +346,15 @@ class _MyAppState extends State<_MyApp> {
     }).toList();
     return Card(
         child: Column(children: <Widget>[
-          consumableHeader,
-          Divider(),
-          GridView.count(
-            crossAxisCount: 5,
-            children: tokens,
-            shrinkWrap: true,
-            padding: EdgeInsets.all(16.0),
-          )
-        ]));
+      consumableHeader,
+      Divider(),
+      GridView.count(
+        crossAxisCount: 5,
+        children: tokens,
+        shrinkWrap: true,
+        padding: EdgeInsets.all(16.0),
+      )
+    ]));
   }
 
   Future<void> consume(String id) async {
