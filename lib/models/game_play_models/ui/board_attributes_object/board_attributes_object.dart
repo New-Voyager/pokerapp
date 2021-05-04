@@ -123,12 +123,12 @@ Map<SeatPos, SeatPosAttribs> getSeatMap(int deviceSize) {
       /* middle left and middle right */
       SeatPos.middleLeft: SeatPosAttribs(
         Alignment.centerLeft,
-        Offset(20, 0),
+        Offset(20, -10),
         Alignment.centerRight,
       ),
       SeatPos.middleRight: SeatPosAttribs(
         Alignment.centerRight,
-        Offset(-20, 0),
+        Offset(-20, -10),
         Alignment.centerLeft,
       ),
 
@@ -188,12 +188,12 @@ Map<SeatPos, SeatPosAttribs> getSeatMap(int deviceSize) {
       /* middle left and middle right */
       SeatPos.middleLeft: SeatPosAttribs(
         Alignment.centerLeft,
-        Offset(0, 0),
+        Offset(20, -15),
         Alignment.centerRight,
       ),
       SeatPos.middleRight: SeatPosAttribs(
         Alignment.centerRight,
-        Offset(0, 0),
+        Offset(-20, -15),
         Alignment.centerLeft,
       ),
 
@@ -292,6 +292,167 @@ Map<SeatPos, SeatPosAttribs> getSeatMap(int deviceSize) {
   };
 }
 
+/* bet positions configurations for different screen sizes */
+Map<SeatPos, Offset> getBetAmountPositionMap({
+  @required Size namePlateSize,
+  @required int deviceSize,
+}) {
+  /* for screen sizes less than 7 inch */
+  if (deviceSize < 7)
+    return {
+      /* bottom, bottom left and bottom right */
+      SeatPos.bottomCenter: Offset(
+        0,
+        -namePlateSize.height * 0.80,
+      ),
+      SeatPos.bottomLeft: Offset(
+        namePlateSize.width * 0.60,
+        -namePlateSize.height * 0.80,
+      ),
+      SeatPos.bottomRight: Offset(
+        -namePlateSize.width * 0.60,
+        -namePlateSize.height * 0.80,
+      ),
+
+      /* middle left and middle right */
+      SeatPos.middleLeft: Offset(
+        namePlateSize.width * 0.10,
+        namePlateSize.height * 0.60,
+      ),
+      SeatPos.middleRight: Offset(
+        0,
+        namePlateSize.height * 0.60,
+      ),
+
+      /* top left and top right */
+      SeatPos.topLeft: Offset(
+        namePlateSize.width * 0.20,
+        namePlateSize.height * 0.70,
+      ),
+      SeatPos.topRight: Offset(
+        -namePlateSize.width * 0.20,
+        namePlateSize.height * 0.70,
+      ),
+
+      /* center, center left and center right */
+      SeatPos.topCenter: Offset(
+        namePlateSize.width * 0.20,
+        namePlateSize.height * 0.60,
+      ),
+      SeatPos.topCenter1: Offset(
+        namePlateSize.width * 0.20,
+        namePlateSize.height * 0.60,
+      ),
+      SeatPos.topCenter2: Offset(
+        namePlateSize.width * 0.20,
+        namePlateSize.height * 0.60,
+      ),
+    };
+
+  /* for screen sizes greater than 7 inch */
+  if (deviceSize > 7)
+    return {
+      /* bottom, bottom left and bottom right */
+      SeatPos.bottomCenter: Offset(
+        0,
+        -namePlateSize.height * 0.80,
+      ),
+      SeatPos.bottomLeft: Offset(
+        namePlateSize.width * 0.60,
+        -namePlateSize.height * 0.80,
+      ),
+      SeatPos.bottomRight: Offset(
+        -namePlateSize.width * 0.60,
+        -namePlateSize.height * 0.80,
+      ),
+
+      /* middle left and middle right */
+      SeatPos.middleLeft: Offset(
+        namePlateSize.width * 0.30,
+        namePlateSize.height * 0.60,
+      ),
+      SeatPos.middleRight: Offset(
+        -namePlateSize.width * 0.20,
+        namePlateSize.height * 0.60,
+      ),
+
+      /* top left and top right */
+      SeatPos.topLeft: Offset(
+        namePlateSize.width * 0.20,
+        namePlateSize.height * 0.70,
+      ),
+      SeatPos.topRight: Offset(
+        -namePlateSize.width * 0.20,
+        namePlateSize.height * 0.70,
+      ),
+
+      /* center, center left and center right */
+      SeatPos.topCenter: Offset(
+        namePlateSize.width * 0.20,
+        namePlateSize.height * 0.60,
+      ),
+      SeatPos.topCenter1: Offset(
+        namePlateSize.width * 0.20,
+        namePlateSize.height * 0.60,
+      ),
+      SeatPos.topCenter2: Offset(
+        namePlateSize.width * 0.20,
+        namePlateSize.height * 0.60,
+      ),
+    };
+
+  /* for screen sizes equals to 7 */
+  return {
+    /* bottom, bottom left and bottom right */
+    SeatPos.bottomCenter: Offset(
+      0,
+      -namePlateSize.height * 0.80,
+    ),
+    SeatPos.bottomLeft: Offset(
+      namePlateSize.width * 0.60,
+      -namePlateSize.height * 0.80,
+    ),
+    SeatPos.bottomRight: Offset(
+      -namePlateSize.width * 0.60,
+      -namePlateSize.height * 0.80,
+    ),
+
+    /* middle left and middle right */
+    SeatPos.middleLeft: Offset(
+      namePlateSize.width * 0.20,
+      namePlateSize.height * 0.60,
+    ),
+    SeatPos.middleRight: Offset(
+      -namePlateSize.width * 0.10,
+      namePlateSize.height * 0.60,
+    ),
+
+    /* top left and top right */
+    SeatPos.topLeft: Offset(
+      namePlateSize.width * 0.30,
+      namePlateSize.height * 0.70,
+    ),
+    SeatPos.topRight: Offset(
+      -namePlateSize.width * 0.30,
+      namePlateSize.height * 0.70,
+    ),
+
+    /* center, center left and center right */
+    SeatPos.topCenter: Offset(
+      namePlateSize.width * 0.20,
+      namePlateSize.height * 0.60,
+    ),
+    SeatPos.topCenter1: Offset(
+      namePlateSize.width * 0.20,
+      namePlateSize.height * 0.60,
+    ),
+    SeatPos.topCenter2: Offset(
+      namePlateSize.width * 0.20,
+      namePlateSize.height * 0.60,
+    ),
+  };
+}
+
 class BoardAttributesObject extends ChangeNotifier {
   BoardOrientation _boardOrientation;
   Size _boardSize;
@@ -329,7 +490,6 @@ class BoardAttributesObject extends ChangeNotifier {
     @required double screenSize,
     BoardOrientation orientation = BoardOrientation.horizontal,
   }) {
-    // todo: rounding screen sizes
     this._screenSize = screenSize.round();
     log('original screen size: $screenSize, rounded screen size: $_screenSize');
     this._boardOrientation = orientation;
@@ -455,9 +615,14 @@ class BoardAttributesObject extends ChangeNotifier {
 
   SeatPosAttribs getSeatPosAttrib(SeatPos pos) {
     // TODO: REMOVE THIS DEBUG LINE
-    // return getSeatMap(this._screenSize)[pos];
+    return getSeatMap(this._screenSize)[pos];
     return this._seatPosAttribs[pos];
   }
+
+  Map<SeatPos, Offset> get betAmountPosition => getBetAmountPositionMap(
+        namePlateSize: this._namePlateSize,
+        deviceSize: this._screenSize,
+      );
 
   dynamic _decide({
     @required dynamic lessThan6Inches,
@@ -481,16 +646,16 @@ class BoardAttributesObject extends ChangeNotifier {
   /* table center view offsets, scaling and sizes */
   Offset get centerOffset => _decide(
         lessThan6Inches: Offset(10, 40),
-        equalTo6Inches: Offset(10, 60),
-        equalTo7Inches: Offset(10, 80),
-        greaterThan7Inches: Offset(10, 170),
+        equalTo6Inches: Offset(15, 60),
+        equalTo7Inches: Offset(15, 85),
+        greaterThan7Inches: Offset(10, 180),
       ) as Offset;
 
   double get centerScale => _decide(
         lessThan6Inches: 0.85,
         equalTo6Inches: 1.0,
-        equalTo7Inches: 1.2,
-        greaterThan7Inches: 1.5,
+        equalTo7Inches: 1.25,
+        greaterThan7Inches: 1.6,
       ) as double;
 
   Size get centerSize => this._centerSize;
@@ -540,16 +705,6 @@ class BoardAttributesObject extends ChangeNotifier {
         equalTo7Inches: 1.5,
         greaterThan7Inches: 1.5,
       ) as double;
-
-  // double getBetPos() {
-  //   if (this._screenSize == 7) {
-  //     return 70;
-  //   } else if (this._screenSize > 7) {
-  //     return 100;
-  //   } else {
-  //     return 60;
-  //   }
-  // }
 
   double get tableScale => _decide(
         lessThan6Inches: 1.0,
