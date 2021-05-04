@@ -101,12 +101,13 @@ class _BoardViewState extends State<BoardView> {
         ),
 
         Positioned(
-            top: boardAttributes.centerOffset.dy,
-            left: boardAttributes.centerOffset.dx,
-            width: boardAttributes.centerSize.width,
-            height: boardAttributes.centerSize.height,
-            child: Consumer3<TableState, ValueNotifier<FooterStatus>,
-                ServerConnectionState>(builder: (
+          top: boardAttributes.centerOffset.dy,
+          left: boardAttributes.centerOffset.dx,
+          width: boardAttributes.centerSize.width,
+          height: boardAttributes.centerSize.height,
+          child: Consumer3<TableState, ValueNotifier<FooterStatus>,
+              ServerConnectionState>(
+            builder: (
               _,
               TableState tableState,
               ValueNotifier<FooterStatus> valueNotifierFooterStatus,
@@ -116,30 +117,28 @@ class _BoardViewState extends State<BoardView> {
               var cards = tableState.cards;
               var pots = tableState.potChips;
 
-              // if (TestService.isTesting) {
-              //   // FIXME: BOARD CARDS NEED TO TO BE FETCHED FROM TEST SERVICE, BECAUSE TO CAUSE THEM TO CHANGE,
-              //   //  FIXME: IT'S BETTER TO PUT THEM IN THE PROVIDER IN THE TEST SERVICE
-              //   // cards = TestService.boardCards;
-              //   pots = TestService.pots;
-              // }
-
-              return CenterView(
-                centerKey,
-                widget.gameInfo.gameCode,
-                widget.gameInfo.isHost,
-                isBoardHorizontal,
-                cards,
-                pots,
-                double.parse(
-                  tableState.potChipsUpdates != null
-                      ? tableState.potChipsUpdates.toString()
-                      : '0.0',
+              return Transform.scale(
+                scale: boardAttributes.centerScale,
+                child: CenterView(
+                  centerKey,
+                  widget.gameInfo.gameCode,
+                  widget.gameInfo.isHost,
+                  isBoardHorizontal,
+                  cards,
+                  pots,
+                  double.parse(
+                    tableState.potChipsUpdates != null
+                        ? tableState.potChipsUpdates.toString()
+                        : '0.0',
+                  ),
+                  tableState.tableStatus,
+                  valueNotifierFooterStatus.value == FooterStatus.Result,
+                  widget.onStartGame,
                 ),
-                tableState.tableStatus,
-                valueNotifierFooterStatus.value == FooterStatus.Result,
-                widget.onStartGame,
               );
-            })),
+            },
+          ),
+        ),
 
         Consumer<Players>(
           builder: (

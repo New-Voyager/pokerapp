@@ -478,12 +478,20 @@ class BoardAttributesObject extends ChangeNotifier {
 
   static const holeCardViewAngleConstant = 0.05;
 
+  /* table center view offsets, scaling and sizes */
   Offset get centerOffset => _decide(
         lessThan6Inches: Offset(10, 40),
         equalTo6Inches: Offset(10, 60),
-        equalTo7Inches: Offset(10, 75),
-        greaterThan7Inches: Offset(10, 50),
+        equalTo7Inches: Offset(10, 80),
+        greaterThan7Inches: Offset(10, 170),
       ) as Offset;
+
+  double get centerScale => _decide(
+        lessThan6Inches: 0.85,
+        equalTo6Inches: 1.0,
+        equalTo7Inches: 1.2,
+        greaterThan7Inches: 1.5,
+      ) as double;
 
   Size get centerSize => this._centerSize;
 
