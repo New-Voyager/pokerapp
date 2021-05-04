@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/player_action.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
+import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_styles.dart';
@@ -17,8 +18,12 @@ const shrinkedBox = const SizedBox.shrink(
 
 class FooterActionView extends StatefulWidget {
   final GameContextObject gameContext;
+  final Function isBetWidgetVisible;
 
-  FooterActionView(this.gameContext);
+  FooterActionView({
+    this.gameContext,
+    this.isBetWidgetVisible(bool _),
+  });
 
   @override
   _FooterActionViewState createState() => _FooterActionViewState();
@@ -26,24 +31,10 @@ class FooterActionView extends StatefulWidget {
 
 class _FooterActionViewState extends State<FooterActionView> {
   bool _showOptions = false;
-  bool _disableBetButton = false;
   double betAmount;
   String selectedOptionText;
   bool bet = false;
   bool raise = false;
-  final TextEditingController _controller = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  /* this function decides, whom to call - bet or raise? */
-  void _submit(PlayerAction playerAction) {
-    int idx = playerAction.actions.indexWhere((pa) => pa.actionName == BET);
-    if (idx == -1) return _raise();
-    _bet();
-  }
 
   void _betOrRaise(double val) {
     _showOptions = false;
@@ -219,7 +210,7 @@ class _FooterActionViewState extends State<FooterActionView> {
     _actionTaken(context);
   }
 
-  Widget _buildTopActionRow(PlayerAction playerAction) {
+  Widget _buildActionWidgets(PlayerAction playerAction) {
     final allin = playerAction?.actions
         ?.firstWhere((element) => element.actionName == ALLIN);
     var actionButtons = [];
@@ -248,12 +239,9 @@ class _FooterActionViewState extends State<FooterActionView> {
             return _buildRoundButton(
               isSelected: _showOptions,
               text: playerAction.actionName,
-              disable: _disableBetButton,
               onTap: () => setState(() {
-                _showOptions = true;
-                _disableBetButton = true;
-
-                // _showDialog(context);
+                _showOptions = !_showOptions;
+                widget.isBetWidgetVisible?.call(_showOptions);
               }),
             );
           case CALL:
@@ -274,19 +262,10 @@ class _FooterActionViewState extends State<FooterActionView> {
               isSelected: _showOptions,
               text: playerAction.actionName,
               onTap: () => setState(() {
-                _showOptions = true;
+                _showOptions = !_showOptions;
+                widget.isBetWidgetVisible?.call(_showOptions);
               }),
             );
-          /* case ALLIN:
-                    return _buildRoundButton(
-                      text: playerAction.actionName +
-                          '\n' +
-                          playerAction.actionValue.toString(),
-                      onTap: () => _allIn(
-                        amount: playerAction.actionValue,
-                        context: context,
-                      ),
-                    ); */
         }
 
         return SizedBox.shrink();
@@ -309,53 +288,57 @@ class _FooterActionViewState extends State<FooterActionView> {
     );
   }
 
-  Widget _buildOptionsRow(PlayerAction playerAction) {
-    return AnimatedSwitcher(
-      duration: AppConstants.fastAnimationDuration,
-      reverseDuration: AppConstants.fastAnimationDuration,
-      transitionBuilder: (child, animation) => ScaleTransition(
-        scale: animation,
-        child: child,
-      ),
-      child: playerAction?.options == null
-          ? shrinkedBox
-          : _showOptions
-              ? Container(
-                  color: Colors.black.withOpacity(0.85),
-                  child: BetWidget(
+  Widget _buildBetWidget(PlayerAction playerAction) => AnimatedSwitcher(
+        duration: AppConstants.fastAnimationDuration,
+        reverseDuration: AppConstants.fastAnimationDuration,
+        transitionBuilder: (child, animation) => ScaleTransition(
+          alignment: Alignment.bottomCenter,
+          scale: animation,
+          child: child,
+        ),
+        child: playerAction?.options == null
+            ? shrinkedBox
+            : _showOptions
+                ? BetWidget(
                     action: playerAction,
                     onSubmitCallBack: _betOrRaise,
-                  ),
-                )
-              : shrinkedBox,
-    );
-  }
+                  )
+                : shrinkedBox,
+      );
 
   @override
   Widget build(BuildContext context) {
-    // print("---------------------- rebuilding. ");
-    return Consumer<ActionState>(
-      key: ValueKey('buildActionButtons'),
-      builder: (_, actionState, __) {
-        // print("STATE CHANGDDD ----- ${actionState.action}");
-        return Container(
-          height: MediaQuery.of(context).size.height / 2.5,
-          child: Stack(
-            children: [
-              Container(
-                constraints: BoxConstraints.expand(),
-                alignment: Alignment.bottomCenter,
-                child: _buildTopActionRow(actionState.action),
+    final boardAttributes = Provider.of<BoardAttributesObject>(
+      context,
+      listen: false,
+    );
+
+    return Container(
+      margin: const EdgeInsets.only(
+        bottom: 10.0,
+      ),
+      child: Consumer<ActionState>(
+        key: ValueKey('buildActionButtons'),
+        builder: (_, actionState, __) => Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            /* bet widget */
+            Expanded(
+              child: Transform.scale(
+                scale: boardAttributes.footerActionViewScale,
+                child: _buildBetWidget(actionState.action),
               ),
-              Container(
-                constraints: BoxConstraints.expand(),
-                alignment: Alignment.topCenter,
-                child: _buildOptionsRow(actionState.action),
-              ),
-            ],
-          ),
-        );
-      },
+            ),
+
+            /* bottom row */
+            Transform.scale(
+              scale: boardAttributes.footerActionViewScale,
+              alignment: Alignment.bottomCenter,
+              child: _buildActionWidgets(actionState.action),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

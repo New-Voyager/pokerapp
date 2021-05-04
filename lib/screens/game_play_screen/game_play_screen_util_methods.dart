@@ -48,10 +48,9 @@ class GamePlayScreenUtilMethods {
             color: Colors.white,
           ),
           backgroundColor: Colors.red,
-          label: 'Inapp',
-          onTap: () => TestService.testIap(),
+          label: 'Fill center view',
+          onTap: () => TestService.fillCenterView(),
         ),
-
         SpeedDialChild(
           child: Icon(
             Icons.adb_rounded,

@@ -25,7 +25,6 @@ import 'package:pokerapp/services/game_play/action_services/hand_action_service.
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/services/game_play/graphql/game_service.dart';
-import 'package:pokerapp/services/game_play/utils/audio.dart';
 import 'package:pokerapp/services/game_play/utils/audio_buffer.dart';
 import 'package:pokerapp/services/nats/nats.dart';
 import 'package:pokerapp/services/test/test_service.dart';
@@ -363,13 +362,16 @@ class _GamePlayScreenState extends State<GamePlayScreen>
                 return Center(child: CircularProgressIndicator());
 
               var dividerTotalHeight = MediaQuery.of(context).size.height / 6;
-              Screen screen = Screen(context);
-              BoardAttributesObject boardAttributes =
-                  BoardAttributesObject(screenSize: screen.diagonalInches());
 
-              double tableScale = boardAttributes.getTableScale();
-              double divider1 = boardAttributes.getTableDividerHeightScale() *
-                  dividerTotalHeight; // 5inch 0.40, 10 inch: 1*
+              /* get the screen sizes, and initialize the board attributes */
+              Screen screen = Screen(context);
+              BoardAttributesObject boardAttributes = BoardAttributesObject(
+                screenSize: screen.diagonalInches(),
+              );
+
+              double tableScale = boardAttributes.tableScale;
+              double divider1 =
+                  boardAttributes.tableDividerHeightScale * dividerTotalHeight;
               final providers = GamePlayScreenUtilMethods.getProviders(
                 context: context,
                 gameInfoModel: _gameInfoModel,
@@ -459,7 +461,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
                                 scale: tableScale, // 10 inch: 0.85, 5inch: 1.0
                                 child: BoardView(
                                   gameComService:
-                                      _gameContextObj.gameComService,
+                                      _gameContextObj?.gameComService,
                                   gameInfo: _gameInfoModel,
                                   onUserTap: onJoinGame,
                                   onStartGame: () =>

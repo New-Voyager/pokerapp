@@ -80,8 +80,12 @@ class PlateWidget extends StatefulWidget {
   final int total;
   final bool animate;
   final bool showProgress;
-  PlateWidget(this.currentProgress, this.total,
-      {this.animate = false, this.showProgress = false});
+  PlateWidget(
+    this.currentProgress,
+    this.total, {
+    this.animate = false,
+    this.showProgress = false,
+  });
 
   @override
   _PlateWidgetState createState() {
@@ -125,10 +129,9 @@ class _PlateWidgetState extends State<PlateWidget>
 
   @override
   Widget build(BuildContext context) {
-    // log('building nameplate: showProgress: ${widget.showProgress} currentProgress: ${widget.currentProgress} total: ${widget.total}');
     var path = parseSvgPathData('M 0,0 L100,0 L 100,100 L 0,100 L 0,0Z');
     var roundedPath =
-        'M0,0 h200 a20,20 0 0 1 20,20 v200 a20,20 0 0 1 -20,20 h-200 a20,20 0 0 1 -20,-20 v-200 a20,20 0 0 1 20,-20 z';
+        'M 20 0 h 200 a 20 20 0 0 1 20 20 v 200 a 20 20 0 0 1 -20 20 h -200 a 20 20 0 0 1 -20 -20 v -200 a 20 20 0 0 1 20 -20 z';
     path = parseSvgPathData(roundedPath);
 
     Color borderColor = AppColors.plateBorderColor;
@@ -148,12 +151,14 @@ class _PlateWidgetState extends State<PlateWidget>
       progressPath = trimPath(path, progressLength, origin: PathTrimOrigin.end);
     }
 
-    return CustomPaint(
-      painter: FilledPathPainter(
-        path: path,
-        progressPath: progressPath,
-        color: borderColor,
-        percent: percent,
+    return Container(
+      child: CustomPaint(
+        painter: FilledPathPainter(
+          path: path,
+          progressPath: progressPath,
+          color: borderColor,
+          percent: percent,
+        ),
       ),
     );
   }

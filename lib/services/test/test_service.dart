@@ -64,7 +64,7 @@ class TestService {
   static List<int> get pots => _pots;
 
   static get isTesting {
-    return false;
+    return true;
   }
 
   static void testIap() {
@@ -95,11 +95,14 @@ class TestService {
         _currentPlayer = PlayerInfo.fromJson(data);
         //_currentPlayer = PlayerInfo.fromJson(jsonData["currentPlayer"]);
       }
+      // can't be -> 3, 5, 7
       var maxPlayers = 9;
       if (jsonData["gameInfo"] != null) {
         // todo: debug remove: change the max Players in a game here
-        _gameInfo = GameInfoModel.fromJson(jsonData["gameInfo"],
-            maxPlayers: maxPlayers);
+        _gameInfo = GameInfoModel.fromJson(
+          jsonData["gameInfo"],
+          maxPlayers: maxPlayers,
+        );
       }
 
       List<PlayerModel> playerInSeats = [];
@@ -372,8 +375,14 @@ class TestService {
       listen: false,
     );
     final player = gameState.me(_context);
-    player.cards = [194, 196]; //, 200, 193];
-    player.noOfCardsVisible = 4;
+    player.cards = [
+      194,
+      196,
+      200,
+      50,
+      56,
+    ];
+    player.noOfCardsVisible = 2;
     final players = gameState.getPlayers(_context);
     players.notifyAll();
   }
@@ -400,6 +409,32 @@ class TestService {
     //await _handActionService.handle(dealCardsMessage());
     //await HandActionService.handle(context: _context, message: yourActionNextActionMsg());
     //await HandActionService.handle(context: _context, message: dealStartedMessage());
+  }
+
+  static void fillCenterView() {
+    final gameState = GameState.getState(_context);
+    final TableState tableState = gameState.getTableState(_context);
+
+    tableState.addFlopCards(
+      1,
+      [50, 50, 50].map((e) => CardHelper.getCard(e)).toList(),
+    );
+
+    tableState.addTurnOrRiverCard(
+      1,
+      CardHelper.getCard(200),
+    );
+    tableState.addTurnOrRiverCard(
+      1,
+      CardHelper.getCard(200),
+    );
+
+    tableState.updatePotChipsSilent(
+      potChips: [578],
+      potUpdatesChips: 120,
+    );
+
+    tableState.notifyAll();
   }
 
   static Future<void> flop() async {

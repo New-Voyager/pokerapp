@@ -12,7 +12,7 @@ import 'package:pokerapp/utils/utils.dart';
 import 'package:provider/provider.dart';
 import 'communication_view.dart';
 import 'hand_analyse_view.dart';
-import 'hole_cards_view.dart';
+import 'hole_cards_view_and_footer_action_view.dart';
 import 'seat_change_confirm_widget.dart';
 
 class FooterView extends StatefulWidget {
@@ -39,8 +39,10 @@ class _FooterViewState extends State<FooterView>
     with AfterLayoutMixin<FooterView> {
   @override
   Widget build(BuildContext context) {
-    final boardAttributes =
-        Provider.of<BoardAttributesObject>(context, listen: false);
+    // final boardAttributes = Provider.of<BoardAttributesObject>(
+    //   context,
+    //   listen: false,
+    // );
     /*  final Size footerSize = boardAttributes.footerSize;
     final height = footerSize.height / 2;
     final width = footerSize.width * 2 / 3;
@@ -48,44 +50,52 @@ class _FooterViewState extends State<FooterView>
     final left = (footerSize.width - width) / 2;
     log('footer size: $footerSize width: $width, height: $height diagonal: ${screen.diagonalInches()}');
      */
-
-    Screen s = boardAttributes.getScreen(context);
-
-    final width = s.width() - 100;
-    final screen = boardAttributes.getScreen(context);
-    final height = screen.height() / 3;
-
-    // holecard scale
-    double scale5inch2cards = 1.5;
-    double scale5inch4cards = 1.3; //.3;
+    //
+    // Screen s = boardAttributes.getScreen(context);
+    //
+    // final width = s.width() - 100;
+    // final screen = boardAttributes.getScreen(context);
+    // final height = screen.height() / 3;
 
     return Consumer2<Players, ActionState>(
       builder: (_, players, actionState, __) {
         bool me = players.me != null;
 
-        return Stack(
+        return Row(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Align(
-                alignment: Alignment.topLeft,
-                child: HandAnalyseView(widget.gameCode, widget.clubCode)),
+            /* hand analyse view */
+            HandAnalyseView(
+              widget.gameCode,
+              widget.clubCode,
+            ),
+
+            /* hole card view */
             !me
                 ? SizedBox.shrink()
-                : Positioned(
-                    left: 50,
-                    top: 0,
-                    width: width,
-                    height: height,
-                    child: HoleCardsView(
+                : Expanded(
+                    child: HoleCardsViewAndFooterActionView(
                       gameContext: widget.gameContext,
                       playerModel: players.me,
                       showActionWidget: actionState.show,
-                    )),
-            Align(
-                alignment: Alignment.topRight,
-                child: CommunicationView(widget.chatVisibilityChange,
-                    widget.gameContext.gameComService.gameMessaging)),
+                    ),
+                  ),
+
+            /* communication widgets */
+            CommunicationView(
+              widget.chatVisibilityChange,
+              widget.gameContext.gameComService.gameMessaging,
+            ),
+
+            /* seat confirm widget */
+            // FIXME: BUG INTRODUCED HERE, CHECK HOW THE SEAT CHANGE CONFIRMED WIDGET IS DISPLAYED
             Consumer2<HostSeatChange, GameContextObject>(
-              builder: (context, hostSeatChange, gameContextObject, _) =>
+              builder: (
+                context,
+                hostSeatChange,
+                gameContextObject,
+                _,
+              ) =>
                   hostSeatChange.seatChangeInProgress &&
                           gameContextObject.playerId ==
                               hostSeatChange.seatChangeHost
@@ -97,6 +107,51 @@ class _FooterViewState extends State<FooterView>
             )
           ],
         );
+
+        /*
+
+        return Stack(
+          children: [
+            Align(
+              alignment: Alignment.topLeft,
+              child: HandAnalyseView(widget.gameCode, widget.clubCode),
+            ),
+            !me
+                ? SizedBox.shrink()
+                : Positioned(
+                    left: 50,
+                    top: 0,
+                    width: width,
+                    height: height,
+                    child: HoleCardsView(
+                      gameContext: widget.gameContext,
+                      playerModel: players.me,
+                      showActionWidget: actionState.show,
+                    ),
+                  ),
+            Align(
+                alignment: Alignment.topRight,
+                child: CommunicationView(widget.chatVisibilityChange,
+                    widget.gameContext.gameComService.gameMessaging)),
+            Consumer2<HostSeatChange, GameContextObject>(
+              builder: (
+                context,
+                hostSeatChange,
+                gameContextObject,
+                _,
+              ) =>
+                  hostSeatChange.seatChangeInProgress &&
+                          gameContextObject.playerId ==
+                              hostSeatChange.seatChangeHost
+                      ? Align(
+                          alignment: Alignment.center,
+                          child: SeatChangeConfirmWidget(),
+                        )
+                      : SizedBox.shrink(),
+            )
+          ],
+        );
+         */
 
         // Column(children: [
         //   SizedBox.fromSize(size: Size(0, 0)),
@@ -138,8 +193,10 @@ class _FooterViewState extends State<FooterView>
     final pos = object.localToGlobal(Offset(0, 0));
     final size = object.size;
     log('Footer view size: $size pos: $pos');
-    final boardAttr =
-        Provider.of<BoardAttributesObject>(context, listen: false);
+    final boardAttr = Provider.of<BoardAttributesObject>(
+      context,
+      listen: false,
+    );
     boardAttr.setFooterDimensions(pos, size);
   }
 }
