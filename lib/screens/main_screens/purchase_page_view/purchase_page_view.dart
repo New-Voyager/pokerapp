@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:pokerapp/main2.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/services/test/test_service.dart';
 
@@ -16,7 +17,7 @@ class _PurchasePageViewState extends State<PurchasePageView> {
     return Scaffold(
           /* FIXME: THIS FLOATING ACTION BUTTON IS FOR SHOWING THE TESTS */
           floatingActionButton: floatingActionButton(
-            onReload: () {},
+            onReload: () {}, context: context
           ),
           resizeToAvoidBottomInset: false,
           backgroundColor: Colors.black,
@@ -31,6 +32,7 @@ class _PurchasePageViewState extends State<PurchasePageView> {
  /* THIS SPEED DIAL IS JUST FOR SHOWING THE TEST BUTTONS */
   static SpeedDial floatingActionButton({
     Function onReload,
+    BuildContext context,
   }) {
     return SpeedDial(
       onOpen: onReload,
@@ -45,6 +47,20 @@ class _PurchasePageViewState extends State<PurchasePageView> {
             color: Colors.white,
           ),
           backgroundColor: Colors.red,
+          label: 'Products',
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => MyApp2()),
+            );
+          }
+        ),        
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
           label: 'Inapp Products',
           onTap: () => TestService.testIap(),
         ),
@@ -53,3 +69,4 @@ class _PurchasePageViewState extends State<PurchasePageView> {
     );
   }  
 }
+

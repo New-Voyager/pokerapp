@@ -47,7 +47,7 @@ void main2() {
   // [enablePendingPurchases](https://developer.android.com/reference/com/android/billingclient/api/BillingClient.Builder.html#enablependingpurchases)
   // as part of initializing the app.
   InAppPurchaseConnection.enablePendingPurchases();
-  runApp(_MyApp2());
+  runApp(MyApp2());
 }
 
 const bool _kAutoConsume = true;
@@ -58,12 +58,12 @@ const String _kSilverSubscriptionId = 'subscription_silver';
 const String _kGoldSubscriptionId = 'subscription_gold';
 const List<String> _kProductIds = <String>[_kConsumableId];
 
-class _MyApp2 extends StatefulWidget {
+class MyApp2 extends StatefulWidget {
   @override
   _MyApp2State createState() => _MyApp2State();
 }
 
-class _MyApp2State extends State<_MyApp2> {
+class _MyApp2State extends State<MyApp2> {
   final InAppPurchaseConnection _connection = InAppPurchaseConnection.instance;
   StreamSubscription<List<PurchaseDetails>> _subscription;
   List<String> _notFoundIds = [];
@@ -299,8 +299,8 @@ class _MyApp2State extends State<_MyApp2> {
                           _getOldSubscription(productDetails, purchases);
                       PurchaseParam purchaseParam = PurchaseParam(
                           productDetails: productDetails,
-                          applicationUserName: null,
-                          sandboxTesting: true);
+                          applicationUserName: null
+                          );
                       if (productDetails.id == _kConsumableId) {
                         _connection.buyConsumable(
                             purchaseParam: purchaseParam,
