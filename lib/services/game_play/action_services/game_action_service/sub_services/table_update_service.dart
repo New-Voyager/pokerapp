@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
+import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
@@ -10,6 +11,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/notification_mo
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/count_down_timer.dart';
 import 'package:pokerapp/screens/game_play_screen/pop_ups/seat_change_confirmation_pop_up.dart';
+import 'package:pokerapp/screens/game_play_screen/widgets/overlay_notification.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/game_play/graphql/seat_change_service.dart';
 import 'package:provider/provider.dart';
@@ -74,7 +76,25 @@ class TableUpdateService {
     waitlistState.fromJson(data);
     waitlistState.notify();
     String message = '${waitlistState.name} is invited to take the open seat.';
-    showWaitlistStatus(context, message, waitlistState.expSeconds);
+
+    showOverlayNotification(
+      (context) => OverlayNotificationWidget(
+        title: message,
+        subTitle: '',
+      ),
+      duration: Duration(seconds: 10),
+    );
+
+    // if (waitlistState.playerUuid != gameState.currentPlayer.uuid) {
+    //   showOverlayNotification(
+    //     (context) => OverlayNotificationWidget(
+    //       title: message,
+    //       subTitle: '',
+    //     ),
+    //     duration: Duration(seconds: 5),
+    //   );
+    // }
+    //showWaitlistStatus(context, message, waitlistState.expSeconds);
   }
 
   static void handlePlayerSeatChange({

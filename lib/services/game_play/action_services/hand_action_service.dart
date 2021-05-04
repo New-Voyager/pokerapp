@@ -57,7 +57,12 @@ class RetrySendingMsg {
       if (firstAttempt || d.inSeconds >= _retrySeconds) {
         log('Sending $_messageType again');
         lastSentTime = now;
-        _gameComService.sendPlayerToHandChannel(_message);
+        if (_gameComService.active) {
+          _gameComService.sendPlayerToHandChannel(_message);
+        } else {
+          _cancel = true;
+          break;
+        }
         _retryCount++;
       }
       firstAttempt = false;
@@ -290,7 +295,12 @@ class HandActionService {
     _gameState.resetSeatActions();
 
     final handInfo = _gameState.getHandInfo(_context);
-    handInfo.update(handNum: handNum, noCards: noCards, gameType: gameType, smallBlind: smallBlind, bigBlind: bigBlind);
+    handInfo.update(
+        handNum: handNum,
+        noCards: noCards,
+        gameType: gameType,
+        smallBlind: smallBlind,
+        bigBlind: bigBlind);
 
     // set small blind and big blind
     final sbSeat = _gameState.getSeat(_context, sbPos);
@@ -692,11 +702,15 @@ class HandActionService {
     int handNum = int.parse(currentHandState["handNum"].toString());
     double smallBlind = double.parse(currentHandState["smallBlind"].toString());
     double bigBlind = double.parse(currentHandState["bigBlind"].toString());
-        String gameTypeStr = currentHandState['gameType'].toString();
+    String gameTypeStr = currentHandState['gameType'].toString();
     final gameType = GameType.values.firstWhere(
         (element) => (element.toString() == 'GameType.' + gameTypeStr));
 
-    handInfo.update(handNum: handNum, smallBlind: smallBlind, bigBlind: bigBlind, gameType: gameType);
+    handInfo.update(
+        handNum: handNum,
+        smallBlind: smallBlind,
+        bigBlind: bigBlind,
+        gameType: gameType);
 
     /* set the noOfVisible cards for other players */
     int noOfCards = int.parse(currentHandState["noCards"].toString());

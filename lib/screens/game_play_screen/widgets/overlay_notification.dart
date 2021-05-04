@@ -7,10 +7,26 @@ class OverlayNotificationWidget extends StatelessWidget {
   final String amount;
   final String playerName;
   final int pendingCount;
+  final String title;
+  final String subTitle;
 
-  OverlayNotificationWidget({this.amount, this.playerName, this.pendingCount});
+  OverlayNotificationWidget(
+      {this.amount,
+      this.playerName,
+      this.pendingCount,
+      this.title,
+      this.subTitle});
   @override
   Widget build(BuildContext context) {
+    String title = this.title;
+    String subTitle = this.subTitle;
+    if (title == null || title == '') {
+      title = "Buyin request of '$amount' from '$playerName'";
+      if (subTitle == null || subTitle == '') {
+        subTitle = "Total pending buyin requests : $pendingCount";
+      }
+    }
+
     return SlideDismissible(
       key: ValueKey("overlayNotification"),
       direction: DismissDirection.horizontal,
@@ -26,21 +42,23 @@ class OverlayNotificationWidget extends StatelessWidget {
               contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
               tileColor: Colors.transparent,
               title: Text(
-                "Buyin request of '$amount' from '$playerName'",
+                title,
                 style: TextStyle(
                   color: AppColors.appAccentColor,
                   fontWeight: FontWeight.w600,
                   fontSize: 14,
                 ),
               ),
-              subtitle: Text(
-                "Total pending buyin requests : $pendingCount",
-                style: TextStyle(
-                  color: AppColors.lightGrayTextColor,
-                  fontWeight: FontWeight.w400,
-                  fontSize: 12,
-                ),
-              ),
+              subtitle: subTitle == null
+                  ? SizedBox.shrink()
+                  : Text(
+                      subTitle,
+                      style: TextStyle(
+                        color: AppColors.lightGrayTextColor,
+                        fontWeight: FontWeight.w400,
+                        fontSize: 12,
+                      ),
+                    ),
               trailing: IconButton(
                   icon: Icon(
                     Icons.cancel_rounded,

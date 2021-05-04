@@ -69,7 +69,9 @@ class _TurnOrRiverCommunityCardsState extends State<TurnOrRiverCommunityCards> {
       await _delay();
 
       /* do the flip animation */
-      _globalFlipKey.currentState.toggleCard();
+      if (_globalFlipKey.currentState != null) {
+        _globalFlipKey.currentState.toggleCard();
+      }
     });
   }
 

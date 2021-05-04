@@ -10,106 +10,103 @@ import 'package:provider/provider.dart';
 class HeaderView extends StatelessWidget {
   final GameState gameState;
   HeaderView(this.gameState);
-  
+
   @override
   Widget build(BuildContext context) {
-  
     return Container(
-        color: Colors.black.withOpacity(0.5),
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            /* general header view */
-            Consumer<HandInfoState>(
-              builder: (_, HandInfoState obj, __) {
-                String title = '';
-                String handNum = '';
-                if (obj != null) {
-                  String smallBlind = obj.smallBlind.toString();
-                  smallBlind = smallBlind.replaceAll('.0', '');
+      color: Colors.black.withOpacity(0.5),
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          /* general header view */
+          Consumer<HandInfoState>(builder: (_, HandInfoState obj, __) {
+            String title = '';
+            String handNum = '';
+            if (obj != null) {
+              String smallBlind = obj.smallBlind.toString();
+              smallBlind = smallBlind.replaceAll('.0', '');
 
-                  String bigBlind = obj.bigBlind.toString();
-                  bigBlind = bigBlind.replaceAll('.0', '');
+              String bigBlind = obj.bigBlind.toString();
+              bigBlind = bigBlind.replaceAll('.0', '');
 
-                  title = '${obj.gameType} $smallBlind/$bigBlind';
-                  handNum = 'Hand: #${obj.handNum}';
-                }
+              title = '${obj.gameType} $smallBlind/$bigBlind';
+              handNum = 'Hand: #${obj.handNum}';
+            }
 
-                return Container(
-                  margin: const EdgeInsets.symmetric(
-                    horizontal: 10.0,
-                    vertical: 10.0,
-                  ),
-                  child: Stack(
-                    alignment: Alignment.center,
+            return Container(
+              margin: const EdgeInsets.symmetric(
+                horizontal: 10.0,
+                vertical: 10.0,
+              ),
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  /* main content view */
+                  Column(
                     children: [
-                      /* main content view */
-                      Column(
-                        children: [
-                          /* game code */
-                          HeaderViewUtilWidgets.buildText(title),
+                      /* game code */
+                      HeaderViewUtilWidgets.buildText(title),
 
-                          /* hand num */
-                          HeaderViewUtilWidgets.buildText(handNum),
-                        ],
+                      /* hand num */
+                      HeaderViewUtilWidgets.buildText(handNum),
+                    ],
+                  ),
+
+                  /* back button */
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: InkWell(
+                      onTap: () => Navigator.pop(context),
+                      child: Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 5.0,
+                        ),
+                        child: Icon(
+                          FontAwesomeIcons.chevronLeft,
+                          color: Colors.white,
+                        ),
                       ),
+                    ),
+                  ),
 
-                      /* back button */
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: InkWell(
-                          onTap: () => Navigator.pop(context),
+                  /* fixme: temporary place for end game */
+
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        GestureDetector(
+                          onTap: () async {
+                            await showModalBottomSheet(
+                              context: context,
+                              isScrollControlled: true,
+                              builder: (ctx) =>
+                                  GameOptionsBottomSheet(gameState),
+                            );
+                          },
                           child: Container(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 5.0,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.blueGrey,
                             ),
+                            padding: EdgeInsets.all(5),
                             child: Icon(
-                              FontAwesomeIcons.chevronLeft,
-                              color: Colors.white,
+                              Icons.more_horiz,
+                              color: AppColors.appAccentColor,
+                              size: 35,
                             ),
                           ),
                         ),
-                      ),
-
-                      /* fixme: temporary place for end game */
-
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            GestureDetector(
-                              onTap: () async {
-                                await showModalBottomSheet(
-                                  context: context,
-                                  isScrollControlled: true,
-                                  builder: (ctx) =>
-                                      GameOptionsBottomSheet(gameState),
-                                );
-                              },
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Colors.blueGrey,
-                                ),
-                                padding: EdgeInsets.all(5),
-                                child: Icon(
-                                  Icons.more_horiz,
-                                  color: AppColors.appAccentColor,
-                                  size: 35,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                );
-              }
-            ),
-          ],
-        ),
-      );
+                ],
+              ),
+            );
+          }),
+        ],
+      ),
+    );
   }
 }

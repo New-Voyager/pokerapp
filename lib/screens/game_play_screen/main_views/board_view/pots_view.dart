@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/utils/formatter.dart';
 
 class PotsView extends StatelessWidget {
   final double potChips;
@@ -15,7 +16,7 @@ class PotsView extends StatelessWidget {
     if (potChips == null || potChips == 0) {
       potText = '0';
     } else {
-      potText = potChips.toString();
+      potText = DataFormatter.chipsFormat(potChips);
     }
     return Stack(children: [
       // This transparent child is used for chips pulling animation

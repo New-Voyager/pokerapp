@@ -48,6 +48,15 @@ class GamePlayScreenUtilMethods {
             color: Colors.white,
           ),
           backgroundColor: Colors.red,
+          label: 'Waitlist',
+          onTap: () => TestService.waitlistDialog(),
+        ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
           label: 'Fold',
           onTap: () => TestService.fold(),
         ),
