@@ -5,6 +5,36 @@ import 'package:pokerapp/resources/app_assets.dart';
 import 'app_colors.dart';
 
 class AppStyles {
+  static const othersMessageDecoration = BoxDecoration(
+    color: AppColors.cardBackgroundColor,
+    borderRadius: BorderRadius.only(
+      topLeft: Radius.circular(16),
+      topRight: Radius.circular(16),
+      bottomLeft: Radius.circular(16),
+    ),
+  );
+
+  static const myMessageDecoration = BoxDecoration(
+    color: AppColors.cardBackgroundColor,
+    borderRadius: BorderRadius.only(
+      topLeft: Radius.circular(16),
+      topRight: Radius.circular(16),
+      bottomRight: Radius.circular(16),
+    ),
+  );
+  static const stackPopUpTextStyle = TextStyle(
+    color: AppColors.lightGrayColor,
+    fontSize: 12.0,
+    fontFamily: AppAssets.fontFamilyLato,
+    fontWeight: FontWeight.w400,
+  );
+
+  static const titleBarTextStyle = TextStyle(
+    color: AppColors.appAccentColor,
+    fontSize: 14.0,
+    fontFamily: AppAssets.fontFamilyLato,
+    fontWeight: FontWeight.w600,
+  );
   static const cardTextStyle = TextStyle(
     fontSize: 20.0,
     fontWeight: FontWeight.w700,
@@ -227,4 +257,16 @@ class AppStyles {
 
   static const TextStyle stickerDialogActionText =
       TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold);
+
+  static const TextStyle betChipsText = TextStyle(
+    fontSize: 16,
+    color: Colors.yellow,
+    fontWeight: FontWeight.w600,
+  );
+
+  static const disabledButtonTextStyle = TextStyle(
+    color: Colors.grey,
+    fontSize: 12.0,
+    fontFamily: AppAssets.fontFamilyLato,
+  );
 }

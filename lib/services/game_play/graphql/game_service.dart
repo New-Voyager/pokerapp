@@ -1,12 +1,12 @@
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/game/new_game_model.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
-import 'package:pokerapp/services/app/auth_service.dart';
+
+import '../../gql_errors.dart';
 
 class GameService {
   static String leaveGameQuery = """
@@ -66,9 +66,29 @@ class GameService {
       MutationOptions(documentNode: gql(_mutation)),
     );
 
-    if (result.hasException) return null;
+    if (result.hasException) {
+      throw GqlError.fromException(result.exception);
+    }
 
     return result.data['joinGame'];
+  }
+
+  /* player switches to a open seat */
+  static Future<String> switchSeat(String gameCode, int seatNo) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+
+    String _mutation = """mutation{
+      switchSeat(gameCode: "$gameCode", seatNo: $seatNo)
+    }
+    """;
+
+    QueryResult result = await _client.mutate(
+      MutationOptions(documentNode: gql(_mutation)),
+    );
+
+    if (result.hasException) return null;
+
+    return result.data['switchSeat'];
   }
 
   /* the following method facilitates buying chips */
@@ -89,21 +109,6 @@ class GameService {
     if (result.hasException) return null;
 
     return result.data['approved'];
-  }
-
-  /* query current hand method is to get in between insight in a game */
-  static void queryCurrentHand(String gameCode, Function(String) send) async {
-    assert(send != null);
-
-    String playerID = await AuthService.getPlayerID();
-
-    String _query = """{
-      "gameCode": "$gameCode",
-      "messageType": "QUERY_CURRENT_HAND",
-      "playerId": "$playerID"
-    }""";
-
-    send(_query);
   }
 
   static Future<String> configureClubGame(

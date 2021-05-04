@@ -6,9 +6,11 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:pokerapp/main.dart';
 import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_styles.dart';
-import 'package:pokerapp/services/game_play/game_chat_service.dart';
+import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:pokerapp/widgets/chat_text_field.dart';
 import 'package:pokerapp/widgets/emoji_picker_widget.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -18,7 +20,7 @@ import 'game_giphys.dart';
 const int SAMPLE_RATE = 8000;
 
 class GameChat extends StatefulWidget {
-  final GameChatService chatService;
+  final GameMessagingService chatService;
   final Function chatVisibilityChange;
 
   static final GlobalKey<_GameChatState> globalKey = GlobalKey();
@@ -45,22 +47,23 @@ class _GameChatState extends State<GameChat> {
   // FlutterSoundRecorder _recorder = FlutterSoundRecorder();
 
   final focusNode = FocusNode();
-  List<ChatMessage> chatMessages = [];
+  // List<ChatMessage> chatMessages = [];
   @override
   void initState() {
     super.initState();
 
-    chatMessages.addAll(widget.chatService.messages.reversed);
+    //chatMessages.addAll(widget.chatService.messages.reversed);
     scrollToBottomOfChat(scrollTime: 100, waitTime: 200);
 
     widget.chatService.listen(onText: (ChatMessage message) {
       print("text dsa ${message.text}");
+
       setState(() {
-        chatMessages.add(message);
+        //   chatMessages.add(message);
       });
     }, onGiphy: (ChatMessage giphy) {
       setState(() {
-        chatMessages.add(giphy);
+        //  chatMessages.add(giphy);
       });
       scrollToBottomOfChat(scrollTime: 1, waitTime: 1);
     });
@@ -129,35 +132,60 @@ class _GameChatState extends State<GameChat> {
           Expanded(
             child: ListView.builder(
               controller: _scrollController,
-              itemCount: chatMessages.length,
+              itemCount: widget.chatService.messages.length,
+              physics: ClampingScrollPhysics(),
+              reverse: true,
               shrinkWrap: true,
               itemBuilder: (contex, index) {
+                ChatMessage message = widget.chatService.messages[index];
                 return Container(
-                  padding: EdgeInsets.all(5),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  margin: EdgeInsets.only(bottom: 4, right: 96, left: 8),
+                  padding: EdgeInsets.all(8),
+                  decoration: AppStyles.othersMessageDecoration,
+                  child: ListView(
+                    shrinkWrap: true,
                     children: [
-                      Text(
-                        chatMessages[index].type.toString() + ' : ',
-                        style: AppStyles.clubCodeStyle,
+                      Flexible(
+                        child: Text(
+                          message.fromName.toString(),
+                          style: AppStyles.clubItemInfoTextStyle
+                              .copyWith(fontSize: 12),
+                          softWrap: true,
+                        ),
                       ),
-                      chatMessages[index].text != null
+                      SizedBox(height: 5),
+                      message.text != null
                           ? Text(
-                              chatMessages[index].text,
-                              style: AppStyles.itemInfoSecondaryTextStyle,
+                              widget.chatService.messages[index].text,
+                              style: AppStyles.clubCodeStyle,
                             )
-                          : CachedNetworkImage(
-                              imageUrl: chatMessages[index].giphyLink,
-                              height: 150,
-                              width: 150,
-                              placeholder: (_, __) => Center(
-                                child: SizedBox(
-                                    height: 50,
-                                    width: 50,
-                                    child: CircularProgressIndicator()),
-                              ),
-                              fit: BoxFit.cover,
+                          : message.giphyLink != null
+                              ? CachedNetworkImage(
+                                  imageUrl: widget
+                                      .chatService.messages[index].giphyLink,
+                                  height: 150,
+                                  width: 150,
+                                  placeholder: (_, __) => Center(
+                                    child: SizedBox(
+                                        height: 50,
+                                        width: 50,
+                                        child: CircularProgressIndicator()),
+                                  ),
+                                  fit: BoxFit.cover,
+                                )
+                              : Container(),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Text(
+                            "${AppConstants.CHAT_DATE_TIME_FORMAT.format(message.received.toLocal())}",
+                            style:
+                                AppStyles.itemInfoSecondaryTextStyle.copyWith(
+                              fontSize: 10,
                             ),
+                          )
+                        ],
+                      ),
                     ],
                   ),
                 );
@@ -216,6 +244,8 @@ class _GameChatState extends State<GameChat> {
                     onTap: () {
                       if (controller.text.trim() != '') {
                         widget.chatService.sendText(controller.text.trim());
+                        // Hides keyboard
+                        FocusScope.of(context).unfocus();
                         setState(() {
                           controller.clear();
                         });

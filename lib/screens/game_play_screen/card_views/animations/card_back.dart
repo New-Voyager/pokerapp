@@ -62,8 +62,12 @@ class _CardBackWidgetState extends State<_CardBackWidget>
       (_animation.value * (widget.cardBack.dy + widget.cardBack.yTarget));
 
   void animate() =>
-      Future.delayed(Duration(milliseconds: widget.cardBack.delay))
-          .then((_) => _controller.forward());
+      Future.delayed(Duration(milliseconds: widget.cardBack.delay)).then((_) {
+        if (_controller == null) {
+          return;
+        }
+        _controller.forward();
+      });
 
   void animateReverse() => _controller.reverse();
 
@@ -115,8 +119,9 @@ class _CardBackWidgetState extends State<_CardBackWidget>
 
   @override
   void dispose() {
-    super.dispose();
     _controller.dispose();
+    _controller = null;
+    super.dispose();
   }
 
   @override

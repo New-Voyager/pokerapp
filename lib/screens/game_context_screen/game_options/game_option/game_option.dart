@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/models/hand_history_model.dart';
 import 'package:pokerapp/models/hand_log_model.dart';
 import 'package:pokerapp/models/option_item_model.dart';
@@ -30,35 +31,42 @@ class _GameOptionState extends State<GameOption> {
 
   void onLeave() {
     GameService.leaveGame(this.gameCode);
-
-    final snackBar = SnackBar(
-      content: Text('You will leave after this hand'),
-      duration: Duration(seconds: 15),
-      backgroundColor: Colors.black38,
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Text('You will leave after this hand'),
+        duration: Duration(seconds: 15),
+        backgroundColor: Colors.black38,
+      ),
     );
-    Scaffold.of(context).showSnackBar(snackBar);
   }
 
   void onEndGame() {
+    showSimpleNotification(
+      Text('The game will end after this hand'),
+      position: NotificationPosition.top,
+      duration: Duration(seconds: 10),
+    );
     // We need to broadcast to all the players
     GameService.endGame(this.gameCode);
 
-    final snackBar = SnackBar(
-      content: Text('The game will end after this hand'),
-      duration: Duration(seconds: 30),
-      backgroundColor: Colors.black38,
-    );
-    Scaffold.of(context).showSnackBar(snackBar);
+    /*  ScaffoldMessenger.of(navigatorKey.currentContext).showSnackBar(
+      SnackBar(
+        content: const Text('The game will end after this hand'),
+        duration: Duration(seconds: 15),
+        backgroundColor: Colors.black38,
+      ),
+    ); */
   }
 
   void onPause() {
-    // final snackBar = SnackBar(
-    //   content: Text('Game will be paused after this hand'),
-    //   duration: Duration(seconds: 30),
-    //   backgroundColor: Colors.black38,
-    // );
-    // Scaffold.of(context).showSnackBar(snackBar);
-    print("Game will be paused before next hand");
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Text('Game will be paused after this hand'),
+        duration: Duration(seconds: 15),
+        backgroundColor: Colors.black38,
+      ),
+    );
+
     GameService.pauseGame(this.gameCode);
   }
 
@@ -241,7 +249,7 @@ class _GameOptionState extends State<GameOption> {
               decoration: BoxDecoration(
                   color: AppColors.gameOptionBackGroundColor,
                   borderRadius: BorderRadius.circular(10)),
-              child: ListView.builder(
+              child: ListView.separated(
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
                 itemCount: gameSecondaryOptions.length,
@@ -249,6 +257,24 @@ class _GameOptionState extends State<GameOption> {
                   return gameSecondaryOptionItem(
                     gameSecondaryOptions[index],
                     context,
+                  );
+                },
+                separatorBuilder: (context, index) {
+                  return Row(
+                    children: [
+                      SizedBox(
+                        width: 24,
+                      ),
+                      Expanded(
+                        child: Divider(
+                          height: 2,
+                          color: Colors.grey,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 24,
+                      ),
+                    ],
                   );
                 },
               ),
@@ -259,7 +285,7 @@ class _GameOptionState extends State<GameOption> {
     );
   }
 
-  gameSecondaryOptionItem(
+  /*  gameSecondaryOptionItem(
       OptionItemModel optionItemModel, BuildContext context) {
     return GestureDetector(
       onTap: () => optionItemModel.onTap(context),
@@ -343,6 +369,40 @@ class _GameOptionState extends State<GameOption> {
           ],
         ),
       ),
+    );
+  }
+ */
+  gameSecondaryOptionItem(
+      OptionItemModel optionItemModel, BuildContext context) {
+    return ListTile(
+      onTap: () => optionItemModel.onTap(context),
+      title: Text(
+        optionItemModel.title,
+        style: AppStyles.credentialsTextStyle,
+      ),
+      leading: Container(
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: optionItemModel.backGroundColor,
+        ),
+        padding: EdgeInsets.all(5),
+        child: Image.asset(
+          optionItemModel.image,
+          height: 40,
+          width: 40,
+          color: Colors.white,
+        ),
+      ),
+      trailing: Icon(
+        Icons.arrow_forward_ios,
+        color: Colors.white,
+      ),
+      subtitle: optionItemModel.name != null
+          ? Text(
+              optionItemModel.name,
+              style: AppStyles.itemInfoSecondaryTextStyle,
+            )
+          : Container(),
     );
   }
 

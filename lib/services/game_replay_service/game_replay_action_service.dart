@@ -8,7 +8,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/table_state.dar
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/game_replay_models/game_replay_action.dart';
 import 'package:pokerapp/resources/app_constants.dart';
-import 'package:pokerapp/services/game_play/action_services/hand_action_service/sub_services/deal_started_service.dart';
+import 'package:pokerapp/services/game_play/action_services/hand_action_service.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:provider/provider.dart';
 
@@ -47,7 +47,7 @@ class GameReplayActionService {
     int amount = action.actionData['amount'] as int;
     bool timedOut = action.actionData['timedOut'] as bool;
     int stack = action.actionData['stack'] as int;
-
+    final gameState = GameState.getState(context);
     Players players = Provider.of<Players>(
       context,
       listen: false,
@@ -65,10 +65,12 @@ class GameReplayActionService {
         true,
       );
     else {
-      players.updateCoinAmountSilent(
-        idx,
-        amount,
-      );
+      final seat = gameState.getSeat(context, seatNo);
+      seat.player.action.setAction(action);
+      // players.updateCoinAmountSilent(
+      //   idx,
+      //   amount,
+      // );
 
       players.updateStatusSilent(
         idx,
@@ -99,7 +101,10 @@ class GameReplayActionService {
       listen: false,
     );
 
-    await players.moveCoinsToPot();
+    final gameState = GameState.getState(context);
+
+    //await players.moveCoinsToPot();
+    await gameState.animateSeatActions();
 
     tableState.updatePotChipsSilent(
       potChips: [action.actionData['pot']],
@@ -107,8 +112,6 @@ class GameReplayActionService {
     );
     tableState.notifyAll();
 
-    // remove all the status (last action) of all the players
-    players.removeAllPlayersStatusSilent();
     players.notifyAll();
   }
 
@@ -218,9 +221,6 @@ class GameReplayActionService {
     /* remove all highlight - silently */
     players.removeAllHighlightsSilent();
 
-    /* players remove last status and markers */
-    players.removeAllPlayersStatusSilent();
-
     players.removeMarkersFromAllPlayerSilent();
 
     /* seat no - list of cards */
@@ -306,9 +306,11 @@ class GameReplayActionService {
 
         // TODO: DO SOMETHING ABOUT THE DURATION
         await Future.delayed(const Duration(seconds: 2));
+        HandActionService handActionService =
+            HandActionService(context, gameState, null);
+        await handActionService.handleDealStarted();
 
-        return DealStartedService.handle(
-          context: context,
+        return handActionService.handleDealStarted(
           fromGameReplay: true,
         );
 

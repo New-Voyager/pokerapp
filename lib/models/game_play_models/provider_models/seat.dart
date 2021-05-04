@@ -1,5 +1,8 @@
 import 'package:flutter/widgets.dart';
+import 'package:pokerapp/enums/hand_actions.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
+import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
+import 'package:pokerapp/resources/app_constants.dart';
 
 enum TablePosition {
   Dealer,
@@ -26,12 +29,22 @@ class Seat extends ChangeNotifier {
   int serverSeatPos;
   bool _openSeat;
   PlayerModel _player;
-  SeatBet _seatBet;
+  SeatPos _uiPos;
 
   // UI attributes
   GlobalKey _key;
   Offset _screenPos;
   Size _size;
+
+  // action timer
+  ActionTimer _actionTimer;
+  int actionCount = 0;
+  bool _showTimer;
+
+  // bet widget attributes
+  Offset _potViewPos;
+  Offset _betWidgetPos;
+  GlobalKey _betWidgetUiKey;
 
   Seat(int localSeatPos, int serverSeatPos, PlayerModel player) {
     this.localSeatPos = localSeatPos;
@@ -41,8 +54,12 @@ class Seat extends ChangeNotifier {
     }
     this._player = player;
     this.serverSeatPos = serverSeatPos;
-    this._seatBet = SeatBet();
+    this._actionTimer = ActionTimer();
+    this._showTimer = false;
   }
+
+  SeatPos get uiSeatPos => this._uiPos;
+  set uiSeatPos(SeatPos uiPos) => this._uiPos = uiPos;
 
   @override
   String toString() {
@@ -90,7 +107,12 @@ class Seat extends ChangeNotifier {
     }
   }
 
-  get key => this._key;
+  set buyInExpired(bool v) {
+    this._player.buyInExpired = v;
+    this.notify();
+  }
+
+  GlobalKey get key => this._key;
   set key(Key key) => this._key = key;
 
   get screenPos => this._screenPos;
@@ -99,36 +121,50 @@ class Seat extends ChangeNotifier {
   get size => this._size;
   set size(Size size) => this._size = size;
 
-  SeatBet get seatBet => this._seatBet;
-
-  void notify() {
-    this.notifyListeners();
-  }
-}
-
-class SeatBet extends ChangeNotifier {
-  double _betAmount = 0.0;
-  bool _show = false;
-  bool _animate = false;
-  Offset _potViewPos;
-  GlobalKey _uiKey;
-
   void notify() {
     this.notifyListeners();
   }
 
-  get betAmount => this._betAmount;
-  set betAmount(double value) => this._betAmount = value;
+  void showTimer({bool show = false}) {
+    this._showTimer = show;
+  }
 
-  get animate => this._animate;
-  set animate(bool v) => this._animate = v;
+  void setActionTimer(int total, {int remainingTime = -1}) {
+    if (remainingTime == -1) {
+      remainingTime = total;
+    }
+    this._actionTimer.setTime(total, remainingTime);
+  }
 
-  get show => this._show;
-  set show(bool v) => this._show = v;
+  ActionTimer get actionTimer {
+    return this._actionTimer;
+  }
 
-  GlobalKey get uiKey => this._uiKey;
-  set uiKey(GlobalKey key) => this._uiKey = key;
+  GlobalKey get betWidgetUIKey => this._betWidgetUiKey;
+  set betWidgetUIKey(GlobalKey key) => this._betWidgetUiKey = key;
 
   Offset get potViewPos => this._potViewPos;
   set potViewPos(Offset pos) => this._potViewPos = pos;
+
+  Offset get betWidgetPos => this._betWidgetPos;
+  set betWidgetPos(Offset offset) => this._betWidgetPos = offset;
+}
+
+class ActionTimer extends ChangeNotifier {
+  int _totalTime = 0;
+  int _remainingTime = 0;
+
+  void setTime(int totalTime, int remainingTime) {
+    this._totalTime = totalTime;
+    this._remainingTime = remainingTime;
+    notifyListeners();
+  }
+
+  int getRemainingTime() {
+    return this._remainingTime;
+  }
+
+  int getTotalTime() {
+    return this._totalTime;
+  }
 }

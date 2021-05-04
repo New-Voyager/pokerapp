@@ -50,7 +50,7 @@ class GameItem extends StatelessWidget {
           * */
 
           Container(
-            width: 72.0,
+            width: MediaQuery.of(context).size.width / 15,
             height: double.infinity,
             decoration: BoxDecoration(
               color: generateColorFor(game.gameCode),

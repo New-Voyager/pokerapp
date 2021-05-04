@@ -17,11 +17,12 @@ class TableView extends StatelessWidget {
   // todo: do we need the center and fitted box?
   Widget build(BuildContext context) {
     return Consumer<BoardAttributesObject>(builder: (_, boardAttrObj, __) {
-      log('Table width: ${boardAttrObj.tableSize.width} height: ${boardAttrObj.tableSize.height}');
+      // log('Table width: ${boardAttrObj.tableSize.width} height: ${boardAttrObj.tableSize.height}');
       return Center(
         child: Container(
           width: boardAttrObj.tableSize.width,
           height: boardAttrObj.tableSize.height,
+          clipBehavior: Clip.none,
           child: Image.asset(
             boardAttrObj.isOrientationHorizontal
                 ? AppAssets.horizontalTable

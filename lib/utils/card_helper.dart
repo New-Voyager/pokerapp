@@ -62,6 +62,18 @@ const Map<int, String> _cardValues = {
 class CardHelper {
   CardHelper._();
 
+  static int getCardNumber(CardObject card) {
+    String cardValue = '${card.label}${card.suit}';
+    int _key = -1;
+
+    _cardValues.forEach((key, value) {
+      if (cardValue == value) _key = key;
+    });
+
+    assert(_key != -1);
+    return _key;
+  }
+
   /* following util methods deals with the raw card values and data */
   static String _getCardFromNumber(int number) => _cardValues[number];
 

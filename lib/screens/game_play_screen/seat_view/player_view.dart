@@ -21,32 +21,36 @@ import 'package:provider/provider.dart';
 import 'action_status.dart';
 import 'animating_widgets/fold_card_animating_widget.dart';
 import 'animating_widgets/stack_switch_seat_animating_widget.dart';
+import 'chip_amount_widget.dart';
 import 'dealer_button.dart';
 import 'name_plate_view.dart';
-import 'user_view_util_widgets.dart';
+import 'open_seat.dart';
 
 /* this contains the player positions <seat-no, position> mapping */
-Map<int, Offset> playerPositions = Map();
+// Map<int, Offset> playerPositions = Map();
 
 class PlayerView extends StatelessWidget {
-  final GlobalKey globalKey;
   final Seat seat;
   final Alignment cardsAlignment;
   final Function(int) onUserTap;
   final GameComService gameComService;
   final BoardAttributesObject boardAttributes;
+  final int seatPosIndex;
+  final SeatPos seatPos;
 
   PlayerView({
     Key key,
-    @required this.globalKey,
     @required this.seat,
     @required this.onUserTap,
     @required this.gameComService,
     @required this.boardAttributes,
+    @required this.seatPosIndex,
+    @required this.seatPos,
     this.cardsAlignment = Alignment.centerRight,
   }) : super(key: key);
 
   onTap(BuildContext context) async {
+    log('seat ${seat.serverSeatPos} is tapped');
     if (seat.isOpen) {
       // the player tapped to sit-in
       onUserTap(seat.serverSeatPos);
@@ -63,7 +67,7 @@ class PlayerView extends StatelessWidget {
         return;
       }
 
-      final jsonData = await showModalBottomSheet(
+      final data = await showModalBottomSheet(
         context: context,
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(top: Radius.circular(10))),
@@ -74,35 +78,20 @@ class PlayerView extends StatelessWidget {
         },
       );
 
-      if (jsonData == null) return;
+      if (data == null) return;
 
-      gameComService.chat.sendAnimation(me.seatNo, seat.serverSeatPos, 'poop');
+      gameComService.gameMessaging.sendAnimation(
+        me.seatNo,
+        seat.serverSeatPos,
+        data['animationID'],
+      );
     }
-  }
-
-  Future<void> afterBuild() async {
-    final RenderBox object = globalKey.currentContext.findRenderObject();
-    final pos = object.localToGlobal(Offset(0, 0));
-    final size = object.size;
-    seat.screenPos = pos;
-    seat.size = size;
-
-    playerPositions[seat.serverSeatPos] = pos;
-
-    print('\n\n\n\nafter build: $playerPositions\n\n\n\n');
-
-    //
-    // debugPrint(
-    //   'Seat: ${seat.serverSeatPos} is built. Key: ${globalKey} Position: $pos Size: $size',
-    // );
   }
 
   @override
   Widget build(BuildContext context) {
-    seat.key = this.globalKey;
-
-    WidgetsBinding.instance.addPostFrameCallback((_) => afterBuild);
-    //afterBuild();
+    seat.key =
+        GlobalKey(debugLabel: 'Seat:${seat.serverSeatPos}'); //this.globalKey;
 
     bool openSeat = seat.isOpen;
     bool isMe = seat.isMe;
@@ -116,17 +105,15 @@ class PlayerView extends StatelessWidget {
       showdown = true;
     }
 
-    // if open seat, just show openseat widget
+    // if open seat, just show open seat widget
     if (openSeat) {
       return OpenSeat(seatPos: seat.serverSeatPos, onUserTap: this.onUserTap);
     }
 
-    // enable this line for debugging dealer position
-    // userObject.playerType = PlayerType.Dealer;
-
-    final GameInfoModel gameInfo =
-        Provider.of<ValueNotifier<GameInfoModel>>(context, listen: false).value;
-    int actionTime = gameInfo.actionTime;
+    final GameInfoModel gameInfo = Provider.of<ValueNotifier<GameInfoModel>>(
+      context,
+      listen: false,
+    ).value;
     String gameCode = gameInfo.gameCode;
     bool isDealer = false;
 
@@ -136,8 +123,20 @@ class PlayerView extends StatelessWidget {
       }
     }
 
-    seat.seatBet.uiKey = GlobalKey();
+    final gameState = GameState.getState(context);
+    final boardAttributes = gameState.getBoardAttributes(context);
+    seat.betWidgetUIKey = GlobalKey();
 
+    bool animate = seat.player.action.animateAction;
+
+    Widget chipAmountWidget = ChipAmountWidget(
+      animate: animate,
+      potKey: boardAttributes.getPotsKey(0),
+      key: seat.betWidgetUIKey,
+      seat: seat,
+      boardAttributesObject: boardAttributes,
+      gameInfo: gameInfo,
+    );
     return DragTarget(
       onWillAccept: (data) {
         print("object data $data");
@@ -155,6 +154,7 @@ class PlayerView extends StatelessWidget {
         return InkWell(
           onTap: () => this.onTap(context),
           child: Stack(
+            clipBehavior: Clip.none,
             alignment: Alignment.center,
             children: [
               (!openSeat ? seat.player?.showFirework ?? false : false)
@@ -174,7 +174,7 @@ class PlayerView extends StatelessWidget {
               // // main user body
               NamePlateWidget(
                 seat,
-                globalKey: globalKey,
+                globalKey: seat.key,
                 boardAttributes: boardAttributes,
               ),
 
@@ -213,64 +213,19 @@ class PlayerView extends StatelessWidget {
                       seat.serverSeatPos, isMe, GameType.HOLDEM)
                   : shrinkedSizedBox,
 
-              // clock
-              UserViewUtilWidgets.buildTimer(
-                context: context,
-                time: actionTime,
-                seat: seat,
-              ),
-
               // /* building the chip amount widget */
-              UserViewUtilWidgets.buildChipAmountWidget(
-                context: context,
-                seat: seat,
-              ),
-
-              //SeatNoWidget(seat),
+              animate
+                  ? ChipAmountAnimatingWidget(
+                      seatPos: seat.serverSeatPos,
+                      child: chipAmountWidget,
+                      reverse: seat.player.action.winner,
+                    )
+                  : chipAmountWidget,
+              // SeatNoWidget(seat),
             ],
           ),
         );
       },
-    );
-  }
-}
-
-class OpenSeat extends StatelessWidget {
-  final int seatPos;
-  final Function(int) onUserTap;
-
-  const OpenSeat({
-    this.seatPos,
-    this.onUserTap,
-    Key key,
-  }) : super(key: key);
-
-  Widget _openSeat() {
-    return Padding(
-      padding: const EdgeInsets.all(5),
-      child: InkWell(
-        onTap: () {
-          log('Pressed $seatPos');
-          this.onUserTap(seatPos);
-        },
-        child: Text(
-          'Open $seatPos',
-          style: AppStyles.openSeatTextStyle,
-        ),
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 70.0,
-      padding: const EdgeInsets.all(10.0),
-      child: _openSeat(),
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: Color(0XFF494444),
-      ),
     );
   }
 }

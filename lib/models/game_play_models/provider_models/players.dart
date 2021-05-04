@@ -1,4 +1,8 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:pokerapp/enums/hand_actions.dart';
+import 'package:pokerapp/enums/player_status.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
 import 'package:pokerapp/resources/app_constants.dart';
@@ -46,9 +50,6 @@ class Players extends ChangeNotifier {
     // before marking the small, big blind or the dealer, remove any marking from the old hand
     this.removeMarkersFromAllPlayerSilent();
 
-    // remove all the status (last action) of all the players
-    this.removeAllPlayersStatusSilent();
-
     // remove all the folder players
     this.removeAllFoldedPlayersSilent();
 
@@ -56,7 +57,10 @@ class Players extends ChangeNotifier {
     this.removeCardsFromAllSilent();
 
     /* reset the reverse pot chips animation */
-    this.resetMoveCoinsFromPotSilent();
+    // this.resetMoveCoinsFromPotSilent();
+
+    /* reset allin flag */
+    // this.removeAllAllinPlayersSilent();
 
     if (notify) {
       this.notifyAll();
@@ -69,9 +73,6 @@ class Players extends ChangeNotifier {
 
     // before marking the small, big blind or the dealer, remove any marking from the old hand
     this.removeMarkersFromAllPlayerSilent();
-
-    // remove all the status (last action) of all the players
-    this.removeAllPlayersStatusSilent();
   }
 
   void refreshWithPlayerInSeat(List<PlayerInSeat> playersInSeat) {
@@ -87,7 +88,6 @@ class Players extends ChangeNotifier {
         stack: playerInSeatModel.stack.toInt(),
       ));
     });
-    debugPrint('refreshWithPlayerInSeat');
     notifyAll();
   }
 
@@ -100,6 +100,10 @@ class Players extends ChangeNotifier {
   void removeAllFoldedPlayersSilent() {
     for (int i = 0; i < _players.length; i++) _players[i].playerFolded = null;
   }
+
+  // void removeAllAllinPlayersSilent() {
+  //   for (int i = 0; i < _players.length; i++) _players[i].allIn = false;
+  // }
 
   void removeMarkersFromAllPlayerSilent() {
     for (int i = 0; i < _players.length; i++)
@@ -117,15 +121,15 @@ class Players extends ChangeNotifier {
   void updatePlayerTypeSilent(int idx, TablePosition playerType,
       {int coinAmount}) {
     _players[idx].playerType = playerType;
-    if (coinAmount != null) {
-      _players[idx].coinAmount = coinAmount;
-    }
+    // if (coinAmount != null) {
+    //   _players[idx].coinAmount = coinAmount;
+    // }
   }
 
-  void updateTestBet(int coinAmount) {
-    for (int i = 0; i < _players.length; i++)
-      _players[i].coinAmount = coinAmount;
-  }
+  // void updateTestBet(int coinAmount) {
+  //   for (int i = 0; i < _players.length; i++)
+  //     _players[i].coinAmount = coinAmount;
+  // }
 
   void fireworkWinnerSilent(int seatNo) {
     int idx = _players.indexWhere((p) => p.seatNo == seatNo);
@@ -163,58 +167,6 @@ class Players extends ChangeNotifier {
     _players[idx].status = status;
   }
 
-  void updateCoinAmountSilent(int idx, int amount) {
-    _players[idx].coinAmount = amount;
-  }
-
-  Future<void> resetMoveCoinsFromPotSilent() async {
-    for (int idx = 0; idx < players.length; idx++) {
-      _players[idx].animatingCoinMovement = false;
-      _players[idx].animatingCoinMovementReverse = false;
-      _players[idx].coinAmount = null;
-    }
-  }
-
-  Future<void> moveCoinsFromPotSilent(int idx, int amount) async {
-    /* move all the coins to the pot  */
-    _players[idx].animatingCoinMovement = true;
-    _players[idx].animatingCoinMovementReverse = true;
-    _players[idx].coinAmount = amount;
-  }
-
-  Future<void> moveCoinsToPot({int seatNo}) async {
-    // debugPrint('moveCoinsToPot');
-
-    /* move all the coins to the pot  */
-    for (int i = 0; i < _players.length; i++) {
-      if (seatNo != null) {
-        if (_players[i].seatNo == seatNo) {
-          _players[i].animatingCoinMovement = true;
-          break;
-        }
-        continue;
-      }
-      _players[i].animatingCoinMovement = true;
-    }
-    notifyListeners();
-
-    // waiting for double the animation time
-    await Future.delayed(AppConstants.animationDuration);
-
-    for (int i = 0; i < _players.length; i++) {
-      _players[i].animatingCoinMovement = false;
-      _players[i].coinAmount = null;
-    }
-    notifyListeners();
-  }
-
-  Future<void> removeAllPlayersStatusSilent() async {
-    for (int i = 0; i < _players.length; i++) {
-      _players[i].status = null;
-      _players[i].coinAmount = null;
-    }
-  }
-
   void updateStackBulkSilent(var stackData) {
     Map<int, int> stacks = Map<int, int>();
 
@@ -224,6 +176,7 @@ class Players extends ChangeNotifier {
     // stacks contains, <seatNo, stack> mapping
     stacks.forEach((seatNo, stack) {
       int idx = _players.indexWhere((p) => p.seatNo == seatNo);
+      // log('player seat no: $seatNo index: $idx');
       _players[idx].stack = stack;
     });
   }
@@ -242,16 +195,28 @@ class Players extends ChangeNotifier {
 
   void updateCardSilent(int seatNo, List<int> cards) {
     int idx = _players.indexWhere((p) => p.seatNo == seatNo);
+    if (idx == -1) {
+      return;
+    }
     _players[idx].cards = cards;
   }
 
   void updateVisibleCardNumberSilent(int seatNo, int n) {
     int idx = _players.indexWhere((p) => p.seatNo == seatNo);
+    if (idx == -1) {
+      return;
+    }
     _players[idx].noOfCardsVisible = n;
   }
 
   void visibleCardNumbersForAllSilent(int n) {
-    for (int i = 0; i < _players.length; i++) _players[i].noOfCardsVisible = n;
+    for (int i = 0; i < _players.length; i++) {
+      if (_players[i].status == AppConstants.PLAYING) {
+        _players[i].noOfCardsVisible = n;
+      } else {
+        _players[i].noOfCardsVisible = 0;
+      }
+    }
   }
 
   void removeCardsFromAllSilent() {
@@ -261,7 +226,9 @@ class Players extends ChangeNotifier {
 
   void removePlayerSilent(int seatNo) {
     int idx = _players.indexWhere((p) => p.seatNo == seatNo);
-    _players.removeAt(idx);
+    if (idx != -1) {
+      _players.removeAt(idx);
+    }
   }
 
   PlayerModel get me {
@@ -272,15 +239,44 @@ class Players extends ChangeNotifier {
     return tmp;
   }
 
-  bool get showBuyinPrompt {
-    if (this.me != null && this.me.stack == 0) {
-      return true;
-    }
-    return false;
-  }
+  // bool get showBuyinPrompt {
+  //   if (this.me != null && this.me.stack == 0) {
+  //     return true;
+  //   }
+  //   return false;
+  // }
 
   PlayerModel fromSeat(int seatNo) {
     int idx = _players.indexWhere((p) => p.seatNo == seatNo);
+    if (idx == -1) {
+      return null;
+    }
     return _players[idx];
+  }
+
+  void updatePlayersSilent(List<PlayerModel> players) {
+    this._players = players;
+    notifyAll();
+  }
+}
+
+/**
+ * The states that affect the current player.
+ */
+class MyState extends ChangeNotifier {
+  int _seatNo = 0;
+  PlayerStatus _status = PlayerStatus.NOT_PLAYING;
+
+  set seatNo(int v) {
+    this._seatNo = v;
+  }
+
+  int get seatNo => this._seatNo;
+
+  set status(PlayerStatus status) => this._status = status;
+  get status => this._status;
+
+  void notify() {
+    notifyListeners();
   }
 }

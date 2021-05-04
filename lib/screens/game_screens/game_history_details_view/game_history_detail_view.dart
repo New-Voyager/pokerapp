@@ -5,6 +5,7 @@ import 'package:pokerapp/models/hand_history_model.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
+import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/game_screens/game_history_details_view/stack_chart_view.dart';
 import 'package:pokerapp/services/app/game_service.dart';
@@ -65,12 +66,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
         title: Text(
           "Games",
           textAlign: TextAlign.left,
-          style: TextStyle(
-            color: AppColors.appAccentColor,
-            fontSize: 14.0,
-            fontFamily: AppAssets.fontFamilyLato,
-            fontWeight: FontWeight.w600,
-          ),
+          style: AppStyles.titleBarTextStyle,
         ),
       ),
       body: !loadingDone
@@ -416,7 +412,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
 
   Widget balanceTile() {
     return Container(
-      height: 120.0,
+      height: 140.0,
       decoration: BoxDecoration(
         color: Color(0xff313235),
         borderRadius: BorderRadius.all(
@@ -511,7 +507,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
 
   Widget gameTypeTile() {
     return Container(
-      height: 120.0,
+      height: 140.0,
       decoration: BoxDecoration(
         color: Color(0xff313235),
         borderRadius: BorderRadius.all(
@@ -538,6 +534,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
               padding: const EdgeInsets.only(top: 12.0, bottom: 12.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Column(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -584,9 +581,9 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
                       seprator
                     ],
                   ),
-                  SizedBox(
+                  /*  SizedBox(
                     height: 15,
-                  ),
+                  ), */
                   Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
                     Visibility(
                       visible: loadingDone && _gameDetail.endedAt != null,

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/models/hand_log_model.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_log_header_view.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_stage_view.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_winners_view.dart';
@@ -72,18 +73,9 @@ class _HandLogViewState extends State<HandLogView> {
               titleSpacing: 0,
               elevation: 0.0,
               backgroundColor: AppColors.screenBackgroundColor,
-              title: FlatButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: Text(
-                  "Hand History",
-                  textAlign: TextAlign.left,
-                  style: TextStyle(
-                    color: AppColors.appAccentColor,
-                    fontSize: 14.0,
-                    fontFamily: AppAssets.fontFamilyLato,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
+              title: Text(
+                "Hand History",
+                style: AppStyles.titleBarTextStyle,
               ),
             ),
       body: this._isLoading == true
@@ -188,7 +180,7 @@ class _HandLogViewState extends State<HandLogView> {
                   Container(
                     child: HandWinnersView(_handLogModel),
                   ),
-                  Container(
+                  /* Container(
                     child: HandStageView(_handLogModel.preFlopActions),
                   ),
                   Container(
@@ -199,7 +191,7 @@ class _HandLogViewState extends State<HandLogView> {
                   ),
                   Container(
                     child: HandStageView(_handLogModel.riverActions),
-                  ),
+                  ), */
                 ],
               ),
             ),

@@ -40,12 +40,12 @@ class GameInfoModel {
     @required this.playersInSeats,
   });
 
-  GameInfoModel.fromJson(var data) {
+  GameInfoModel.fromJson(var data, {int maxPlayers}) {
     this.gameCode = data['gameCode'];
     this.clubCode = data['clubCode'];
     this.buyInMax = data['buyInMax'];
     this.actionTime = data['actionTime'];
-    this.maxPlayers = data['maxPlayers'];
+    this.maxPlayers = maxPlayers ?? data['maxPlayers'];
     this.title = data['title'];
     this.gameType = data['gameType'];
     this.buyInMin = data['buyInMin'];
@@ -59,6 +59,7 @@ class GameInfoModel {
     this.playersInSeats = data['seatInfo']['playersInSeats']
         .map<PlayerModel>((e) => PlayerModel.fromJson(e))
         .toList();
+
     this.gameToken = data['gameToken'];
     this.playerGameStatus = data['playerGameStatus'];
     this.isHost = true;
@@ -101,6 +102,8 @@ class GameInfoModel {
           stack
           buyIn
           status
+          buyInExpTime
+          breakExpTime
         }
       }
       actionTime

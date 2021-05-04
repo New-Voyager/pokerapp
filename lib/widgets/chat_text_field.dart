@@ -44,11 +44,13 @@ class ChatTextField extends StatelessWidget {
         controller: controller,
         style: TextStyle(
           color: Colors.white,
-          fontSize: 17.0,
+          fontSize: 14.0,
         ),
+        textAlign: TextAlign.start,
         textAlignVertical: TextAlignVertical.center,
         decoration: InputDecoration(
             border: InputBorder.none,
+            hintText: "Enter text here",
             suffixIcon: GestureDetector(
               onTap: onClickedEmoji,
               child: Container(

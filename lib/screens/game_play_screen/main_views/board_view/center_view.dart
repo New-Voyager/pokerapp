@@ -43,6 +43,7 @@ class CenterView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String _text = showDown ? null : BoardViewUtilMethods.getText(tableStatus);
+    //log('table status: $_text');
     //log('board_view : center_view : _text : $_text');
     /* if the game is paused, show the options available during game pause */
     if (_text == AppConstants.GAME_PAUSED ||
@@ -56,11 +57,13 @@ class CenterView extends StatelessWidget {
     }
 
     /* in case of new hand, show the deck shuffling animation */
-    if (_text == AppConstants.NEW_HAND)
+    if (_text == AppConstants.NEW_HAND) {
+      // log('show shuffling');
       return Transform.scale(
         scale: 1.2,
         child: AnimatingShuffleCardView(),
       );
+    }
     /* if reached here, means, the game is RUNNING */
     /* The following view, shows the community cards
     * and the pot chips, if they are nulls, put the default values */
@@ -108,6 +111,7 @@ class CenterView extends StatelessWidget {
       key: ValueKey('tablePotAndCardWidget'),
       alignment: Alignment.center,
       child: Stack(
+        alignment: Alignment.center,
         clipBehavior: Clip.none,
         //mainAxisSize: MainAxisSize.min,
         children: [
@@ -116,21 +120,22 @@ class CenterView extends StatelessWidget {
             alignment: Alignment.topCenter,
             child: Transform.translate(
               key: boardAttributes.centerPotBetKey,
-              offset: Offset(0, 15),
-              child:
-                  Container(width: 50, height: 50, color: Colors.transparent),
+              offset: Offset(0, 30),
+              child: Container(
+                width: 50,
+                height: 30,
+                color: Colors.transparent,
+              ),
             ),
           ),
 
           /* main pot view */
           Align(
-              alignment: Alignment.topCenter,
-              child: Transform.translate(
-                offset: Offset(0, 15),
-                child: multiplePots(context),
-              )),
-          const SizedBox(
-            height: _gapHeight,
+            alignment: Alignment.topCenter,
+            child: Transform.translate(
+              offset: Offset(0, 15),
+              child: multiplePots(context),
+            ),
           ),
 
           /* community cards view */
@@ -144,7 +149,7 @@ class CenterView extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(height: _gapHeight + AppDimensions.cardHeight / 4),
+
           /* potUpdates view OR the rank widget (rank widget is shown only when we have a result) */
           this.showDown ? rankWidget() : potUpdatesView(),
         ],

@@ -25,7 +25,7 @@ class HandWinnersView extends StatelessWidget {
       );
     } else {
       return Container(
-        margin: EdgeInsets.all(5),
+        padding: EdgeInsets.symmetric(vertical: 8),
         child: Container(
           child: ListView.builder(
             physics: NeverScrollableScrollPhysics(),
@@ -55,7 +55,7 @@ class HandWinnersView extends StatelessWidget {
                       child: Column(
                         children: [
                           Container(
-                            margin: EdgeInsets.all(5),
+                            margin: EdgeInsets.symmetric(horizontal: 16),
                             alignment: Alignment.centerLeft,
                             child: Text(
                               "Pot: " +
@@ -80,7 +80,8 @@ class HandWinnersView extends StatelessWidget {
                                 shrinkWrap: true,
                                 itemBuilder: (context, winnerIndex) {
                                   return Container(
-                                    margin: EdgeInsets.only(left: 20),
+                                    margin: EdgeInsets.only(left: 16),
+                                    padding: EdgeInsets.only(bottom: 8),
                                     alignment: Alignment.centerLeft,
                                     child: Column(
                                       crossAxisAlignment:
@@ -88,15 +89,16 @@ class HandWinnersView extends StatelessWidget {
                                       children: [
                                         Padding(
                                           padding: EdgeInsets.only(
-                                              bottom: 10, top: 5),
+                                              bottom: 5, top: 5),
                                           child: Text(
-                                            _handLogModel
-                                                    .playerIDName[_handLogModel
-                                                        .potWinners[index]
-                                                        .hiWinners[winnerIndex]
-                                                        .seatNum]
-                                                    .toString() ??
-                                                "Unknown",
+                                            (_handLogModel.playerIDName[
+                                                        _handLogModel
+                                                            .potWinners[index]
+                                                            .hiWinners[
+                                                                winnerIndex]
+                                                            .seatNum] ??
+                                                    "Unknown")
+                                                .toString(),
                                             style: const TextStyle(
                                               fontFamily:
                                                   AppAssets.fontFamilyLato,

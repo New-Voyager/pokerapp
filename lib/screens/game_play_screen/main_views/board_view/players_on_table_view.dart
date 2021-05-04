@@ -1,5 +1,9 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lottie/lottie.dart';
+import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
@@ -9,9 +13,16 @@ import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/boar
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/name_plate_view.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/player_view.dart';
-import 'package:pokerapp/services/game_play/game_chat_service.dart';
+import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:provider/provider.dart';
+
+const double _lottieAnimationContainerSize = 120.0;
+const double _animatingAssetContainerSize = 40.0;
+
+// const Duration _durationWaitBeforeExplosion = const Duration(milliseconds: 10);
+const Duration _lottieAnimationDuration = const Duration(milliseconds: 1500);
+const Duration _animatingWidgetDuration = const Duration(milliseconds: 1200);
 
 // PlayersOnTableView encapsulates the players sitting on the table.
 // This view uses Stack layout to place the UserView on top of the table.
@@ -52,7 +63,7 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
   GlobalKey _parentKey = GlobalKey();
 
   // hold position of user tile
-  List<GlobalKey> _playerKeys = [];
+  //List<GlobalKey> _playerKeys = [];
 
   // some offset
   double offset = 0;
@@ -70,12 +81,13 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
   int seatChangerPlayer;
   int seatChangeToo;
 
+  String animationAssetID;
+
   @override
   void initState() {
-    _playerKeys = List.generate(9, (index) => GlobalKey());
     // todo: commented onAnimation
-    // widget.gameComService?.chat?.listen(onAnimation: this.onAnimation);
-    // animationHandlers();
+    widget.gameComService?.gameMessaging?.listen(onAnimation: this.onAnimation);
+    animationHandlers();
     _seatChangeAnimationHandler();
     // seatChangeAnimationHandler_old();
     super.initState();
@@ -143,74 +155,109 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
   animationHandlers() {
     _lottieController = AnimationController(
       vsync: this,
-      duration: Duration(seconds: 2),
+      duration: _lottieAnimationDuration,
     );
 
     animationController = AnimationController(
       vsync: this,
-      duration: Duration(seconds: 3),
+      duration: _animatingWidgetDuration,
     );
 
     _lottieController.addListener(() {
+      /* after the lottie animation is completed reset everything */
       if (_lottieController.isCompleted) {
-        isLottieAnimationAnimating = false;
+        setState(() {
+          isLottieAnimationAnimating = false;
+        });
+
         _lottieController.reset();
       }
-      setState(() {});
     });
 
-    animationController.addListener(() {
+    animationController.addListener(() async {
       if (animationController.isCompleted) {
-        Future.delayed(Duration(seconds: 1), () {
-          isAnimating = false;
-          animationController.reset();
+        /* wait before the explosion */
+        // await Future.delayed(_durationWaitBeforeExplosion);
+
+        isAnimating = false;
+        animationController.reset();
+
+        /* finally drive the lottie animation */
+
+        setState(() {
           isLottieAnimationAnimating = true;
-          _lottieController.forward();
         });
+        _lottieController.forward();
       }
-      // setState(() {});
     });
   }
 
-  // void onAnimation(ChatMessage message) async {
-  //   Offset from;
-  //   Offset to;
-  //   print(
-  //     'Here ${message.messageId} from player ${message.fromSeat} to ${message.toSeat}. Animation id: ${message.animationId}',
-  //   );
-  //
-  //   if (message.fromSeat == null || message.toSeat == null) {
-  //     return;
-  //   }
-  //
-  //   /*
-  //   * find position of to and from user
-  //   **/
-  //   final positions = findPositionOfFromAndToUser(
-  //     fromSeat: message.fromSeat,
-  //     toSeat: message.toSeat,
-  //   );
-  //
-  //   from = positions[0];
-  //   to = positions[1];
-  //
-  //   animation = Tween<Offset>(
-  //     begin: from,
-  //     end: to,
-  //   ).animate(animationController);
-  //
-  //   print('\n\n\n\n\n\n\n\nanimation value: $animation\n\n\n\n\n\n\n');
-  //
-  //   setState(() {
-  //     isAnimating = true;
-  //   });
-  //
-  //   animationController.forward();
-  // }
+  void onAnimation(ChatMessage message) async {
+    Offset from;
+    Offset to;
+    print(
+      'Here ${message.messageId} from player ${message.fromSeat} to ${message.toSeat}. Animation: ${message.animationID}',
+    );
+
+    if (message.fromSeat == null || message.toSeat == null) {
+      return;
+    }
+
+    /*
+    * find position of to and from user
+    **/
+    final positions = findPositionOfFromAndToUser(
+      fromSeat: message.fromSeat,
+      toSeat: message.toSeat,
+    );
+
+    final Size playerWidgetSize = getPlayerWidgetSize(message.toSeat);
+
+    from = positions[0];
+    to = positions[1];
+
+    /* get the middle point for the animated to player */
+    final Offset toMod = Offset(
+      to.dx + (playerWidgetSize.width / 2) - _animatingAssetContainerSize / 2,
+      to.dy + (playerWidgetSize.height / 2) - _animatingAssetContainerSize / 2,
+    );
+
+    animation = Tween<Offset>(
+      begin: from,
+      end: toMod,
+    ).animate(
+      CurvedAnimation(
+        parent: animationController,
+        curve: Curves.easeOut,
+      ),
+    );
+
+    // set the lottie animation position
+    lottieAnimationPosition = Offset(
+      to.dx + (playerWidgetSize.width / 2) - _lottieAnimationContainerSize / 2,
+      to.dy + (playerWidgetSize.height / 2) - _lottieAnimationContainerSize / 2,
+    );
+
+    setState(() {
+      animationAssetID = message.animationID;
+      isAnimating = true;
+    });
+
+    animationController.forward();
+  }
 
   Offset getPositionOffsetFromKey(GlobalKey key) {
     final RenderBox renderBox = key.currentContext.findRenderObject();
     return renderBox.localToGlobal(Offset.zero);
+  }
+
+  Size getPlayerWidgetSize(int seatNo) {
+    final gameState = GameState.getState(context);
+
+    final seat = gameState.getSeat(context, seatNo);
+    final RenderBox renderBox = seat.key.currentContext.findRenderObject();
+
+    return renderBox.size;
   }
 
   List<Offset> findPositionOfFromAndToUser({
@@ -218,28 +265,26 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
     int toSeat,
   }) {
     /* get parent position */
-    final parentWidgetPosition = getPositionOffsetFromKey(_parentKey);
+    //final parentWidgetPosition = getPositionOffsetFromKey(_parentKey);
+
+    final gameState = GameState.getState(context);
+    //final tableState = gameState.getTableState(context);
+
+    final from = gameState.getSeat(context, fromSeat);
+    final to = gameState.getSeat(context, toSeat);
 
     /* get from player position */
-    final fromPlayerWidgetPosition = getPositionOffsetFromKey(
-      _playerKeys[fromSeat - 1],
-    );
+    final fromPlayerWidgetPosition = getPositionOffsetFromKey(from.key);
 
     /* get to player position */
-    final toPlayerWidgetPosition = getPositionOffsetFromKey(
-      _playerKeys[toSeat - 1],
-    );
+    final toPlayerWidgetPosition = getPositionOffsetFromKey(to.key);
 
-    final Offset from = Offset(
-      fromPlayerWidgetPosition.dx,
-      fromPlayerWidgetPosition.dy - parentWidgetPosition.dy,
-    );
-    final Offset to = Offset(
-      toPlayerWidgetPosition.dx,
-      toPlayerWidgetPosition.dy - parentWidgetPosition.dy,
-    );
+    final RenderBox parentBox =
+        this._parentKey.currentContext.findRenderObject();
+    Offset fromOffset = parentBox.globalToLocal(fromPlayerWidgetPosition);
+    Offset toOffset = parentBox.globalToLocal(toPlayerWidgetPosition);
 
-    return [from, to];
+    return [fromOffset, toOffset];
   }
 
   @override
@@ -262,13 +307,10 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
           isAnimating && animation != null
               ? AnimatedBuilder(
                   child: Container(
-                    height: 50,
-                    width: 50,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage("assets/animations/poop.png"),
-                        fit: BoxFit.cover,
-                      ),
+                    height: _animatingAssetContainerSize,
+                    width: _animatingAssetContainerSize,
+                    child: SvgPicture.asset(
+                      'assets/animations/$animationAssetID.svg',
                     ),
                   ),
                   animation: animation,
@@ -280,14 +322,13 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
               : SizedBox.shrink(),
 
           isLottieAnimationAnimating
-              ? Positioned(
-                  top: lottieAnimationPosition.dy,
-                  left: lottieAnimationPosition.dx,
-                  child: SizedBox(
-                    height: 75,
-                    width: 75,
+              ? Transform.translate(
+                  offset: lottieAnimationPosition,
+                  child: Container(
+                    height: _lottieAnimationContainerSize,
+                    width: _lottieAnimationContainerSize,
                     child: Lottie.asset(
-                      'assets/animations/poop.json',
+                      'assets/animations/$animationAssetID.json',
                       controller: _lottieController,
                     ),
                   ),
@@ -315,22 +356,26 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
 
   List<Widget> getPlayers(BuildContext context) {
     PlayerModel me = this.widget.players.me;
+    final gameState = GameState.getState(context);
+    final maxPlayers = gameState.gameInfo.maxPlayers;
     index = -1;
-
     // update seat states in game state
     final seatsState = this.getSeats(context, widget.players.players);
+    final boardAttribs =
+        Provider.of<BoardAttributesObject>(context, listen: false);
 
     final seats = seatsState.asMap().entries.map(
       (var u) {
         index++;
         return this._positionedForUsers(
-          key: _playerKeys[index],
+          boardAttribs: boardAttribs,
           isBoardHorizontal: widget.isBoardHorizontal,
           seat: u.value,
           heightOfBoard: widget.heightOfBoard,
           widthOfBoard: widget.widthOfBoard,
           seatPos: getAdjustedSeatPosition(
             u.key,
+            maxPlayers,
             me != null,
             me?.seatNo,
           ),
@@ -342,7 +387,8 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
     return seats;
   }
 
-  int getAdjustedSeatPosition(int pos, bool isPresent, int currentUserSeatNo) {
+  int getAdjustedSeatPosition(
+      int pos, int maxPlayers, bool isPresent, int currentUserSeatNo) {
     /*
     * if the current user is present, then the localSeatNo would be different from that of server seat number
     * This is done, so that the current user can stay at the bottom center of the table
@@ -354,7 +400,7 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
     * shifts (rotates) the local seat position by the x amount (x => current user seat NO.)
     * This is done so that current user is at seat 1 always
     * */
-    if (isPresent) return (pos - currentUserSeatNo + 1) % 9;
+    if (isPresent) return (pos - currentUserSeatNo + 1) % maxPlayers;
 
     return pos;
   }
@@ -374,6 +420,7 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
   }
 
   Widget _positionedForUsers({
+    @required BoardAttributesObject boardAttribs,
     @required bool isBoardHorizontal,
     Seat seat,
     double heightOfBoard,
@@ -381,433 +428,136 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
     int seatPos,
     bool isPresent,
     Function onUserTap,
-    GlobalKey key,
   }) {
-    if (widget.maxPlayers == 2) {
-      return positionUser_2(
-        isBoardHorizontal: isBoardHorizontal,
-        seat: seat,
-        heightOfBoard: heightOfBoard,
-        widthOfBoard: widthOfBoard,
-        seatPos: seatPos,
-        isPresent: isPresent,
-        onUserTap: onUserTap,
-        key: key,
-      );
-    } else if (widget.maxPlayers == 4) {
-      return positionUser_4(
-        isBoardHorizontal: isBoardHorizontal,
-        seat: seat,
-        heightOfBoard: heightOfBoard,
-        widthOfBoard: widthOfBoard,
-        seatPos: seatPos,
-        isPresent: isPresent,
-        onUserTap: onUserTap,
-        key: key,
-      );
-    } else if (widget.maxPlayers == 6) {
-      return positionUser_6(
-        isBoardHorizontal: isBoardHorizontal,
-        seat: seat,
-        heightOfBoard: heightOfBoard,
-        widthOfBoard: widthOfBoard,
-        seatPos: seatPos,
-        isPresent: isPresent,
-        onUserTap: onUserTap,
-        key: key,
-      );
-    } else if (widget.maxPlayers == 8) {
-      return positionUser_8(
-          isBoardHorizontal: isBoardHorizontal,
-          seat: seat,
-          heightOfBoard: heightOfBoard,
-          widthOfBoard: widthOfBoard,
-          seatPos: seatPos,
-          isPresent: isPresent,
-          onUserTap: onUserTap,
-          key: key);
-    }
-
     return positionUser(
+      boardAttribs: boardAttribs,
       isBoardHorizontal: isBoardHorizontal,
+      maxPlayers: widget.maxPlayers,
       seat: seat,
       heightOfBoard: heightOfBoard,
       widthOfBoard: widthOfBoard,
-      seatPos: seatPos,
+      seatPosIndex: seatPos,
       isPresent: isPresent,
       onUserTap: onUserTap,
-      key: key,
     );
   }
 
   Widget createUserView({
     @required bool isBoardHorizontal,
     Seat seat,
-    int seatPos,
+    SeatPos seatPos,
+    int seatPosIndex,
     Function onUserTap,
     Alignment cardsAlignment,
-    GlobalKey key,
   }) {
     Widget userView;
+    seat.uiSeatPos = seatPos;
     //debugPrint('Creating user view for seat: ${seat.serverSeatPos}');
     userView = ListenableProvider<Seat>(
       create: (_) => seat,
       builder: (context, _) => Consumer2<Seat, BoardAttributesObject>(
         builder: (_, seat, boardAttributes, __) => PlayerView(
-          globalKey: key,
           gameComService: widget.gameComService,
-          key: ValueKey(seatPos),
           seat: seat,
           cardsAlignment: cardsAlignment,
           onUserTap: onUserTap,
           boardAttributes: boardAttributes,
+          seatPos: seatPos,
+          seatPosIndex: seatPosIndex,
         ),
       ),
     );
     return userView;
   }
 
+  Map<int, SeatPos> getSeatLocations(int maxSeats) {
+    switch (maxSeats) {
+      case 9:
+        return {
+          1: SeatPos.bottomCenter,
+          2: SeatPos.bottomLeft,
+          3: SeatPos.middleLeft,
+          4: SeatPos.topLeft,
+          5: SeatPos.topCenter1,
+          6: SeatPos.topCenter2,
+          7: SeatPos.topRight,
+          8: SeatPos.middleRight,
+          9: SeatPos.bottomRight
+        };
+      case 8:
+        return {
+          1: SeatPos.bottomCenter,
+          2: SeatPos.bottomLeft,
+          3: SeatPos.middleLeft,
+          4: SeatPos.topLeft,
+          5: SeatPos.topCenter,
+          6: SeatPos.topRight,
+          7: SeatPos.middleRight,
+          8: SeatPos.bottomRight
+        };
+      case 6:
+        return {
+          1: SeatPos.bottomCenter,
+          2: SeatPos.middleLeft,
+          3: SeatPos.topLeft,
+          4: SeatPos.topCenter,
+          5: SeatPos.topRight,
+          6: SeatPos.middleRight,
+        };
+
+      case 4:
+        return {
+          1: SeatPos.bottomCenter,
+          2: SeatPos.middleLeft,
+          3: SeatPos.topCenter,
+          4: SeatPos.middleRight,
+        };
+
+      case 2:
+        return {
+          1: SeatPos.bottomCenter,
+          2: SeatPos.topCenter,
+        };
+
+      default:
+        return {};
+    }
+  }
+
   Widget positionUser({
+    @required BoardAttributesObject boardAttribs,
     @required bool isBoardHorizontal,
+    @required int maxPlayers,
     Seat seat,
     double heightOfBoard,
     double widthOfBoard,
-    int seatPos,
+    int seatPosIndex,
     bool isPresent,
     Function onUserTap,
-    GlobalKey key,
   }) {
-    seatPos++;
+    seatPosIndex++;
 
-    Alignment cardsAlignment = Alignment.centerRight;
-
-    // left for 6, 7, 8, 9
-    if (seatPos == 6 || seatPos == 7 || seatPos == 8 || seatPos == 9)
-      cardsAlignment = Alignment.centerLeft;
-    Widget userView = createUserView(
-      isBoardHorizontal: isBoardHorizontal,
-      key: key,
-      seatPos: seatPos,
-      seat: seat,
-      cardsAlignment: cardsAlignment,
-      onUserTap: onUserTap,
-    );
-    switch (seatPos) {
-      case 1:
-
-        // TODO: IF WE NEED TO SHIFT UP THIS PLAYER, USE TRANSLATE,
-        // TODO: IT'S RECOMMENDED NOT TO USE POSITIONED, BECAUSE USING POSITIONED, CENTERING IS NOT POSSIBLE, AND WITHOUT THIS PLAYER IN CENTER, IT MAY LOOK BAD
-        return Align(
-          alignment: Alignment.bottomCenter,
-          child: userView,
-        );
-
-      case 2:
-        return Positioned(
-          bottom: 20,
-          left: 10,
-          child: userView,
-        );
-
-      case 3:
-        return Align(
-          alignment: Alignment.centerLeft,
-          child: userView,
-        );
-
-      case 4:
-        return Positioned(
-          top: 20,
-          left: 10,
-          child: userView,
-        );
-
-      case 5:
-        return Positioned(
-          top: 0,
-          left: widthOfBoard / 3.5,
-          child: userView,
-        );
-
-      case 6:
-        return Positioned(
-          top: 0,
-          right: widthOfBoard / 3.5,
-          child: userView,
-        );
-
-      case 7:
-        return Positioned(
-          top: 20,
-          right: 10,
-          child: userView,
-        );
-
-      case 8:
-        return Align(
-          alignment: Alignment.centerRight,
-          child: userView,
-        );
-
-      case 9:
-        return Positioned(
-          bottom: 20,
-          right: 10,
-          child: userView,
-        );
-
-      default:
-        return const SizedBox.shrink();
+    //log('board width: $widthOfBoard height: $heightOfBoard');
+    Map<int, SeatPos> seatPosLoc = getSeatLocations(maxPlayers);
+    SeatPos seatPos = seatPosLoc[seatPosIndex];
+    SeatPosAttribs seatAttribs = boardAttribs.getSeatPosAttrib(seatPos);
+    if (seatAttribs == null) {
+      return SizedBox.shrink();
     }
-  }
-
-  Widget positionUser_2(
-      {@required bool isBoardHorizontal,
-      Seat seat,
-      double heightOfBoard,
-      double widthOfBoard,
-      int seatPos,
-      bool isPresent,
-      Function onUserTap,
-      GlobalKey key}) {
-    seatPos++;
-
-    Alignment cardsAlignment = Alignment.centerRight;
+    //log('seat: ${seat.serverSeatPos} seatPosIndex: $seatPosIndex seatPos: ${seatPos.toString()}');
+    Alignment cardsAlignment = seatAttribs.holeCardPos;
 
     Widget userView = createUserView(
       isBoardHorizontal: isBoardHorizontal,
-      key: key,
       seatPos: seatPos,
+      seatPosIndex: seatPosIndex,
       seat: seat,
       cardsAlignment: cardsAlignment,
       onUserTap: onUserTap,
     );
 
-    switch (seatPos) {
-      case 1:
-        return Align(
-          alignment: Alignment.bottomCenter,
-          child: userView,
-        );
-
-      case 2:
-        return Align(
-          alignment: Alignment.topCenter,
-          child: userView,
-        );
-
-      default:
-        return const SizedBox.shrink();
-    }
-  }
-
-  Widget positionUser_4(
-      {@required bool isBoardHorizontal,
-      Seat seat,
-      double heightOfBoard,
-      double widthOfBoard,
-      int seatPos,
-      bool isPresent,
-      Function onUserTap,
-      GlobalKey key}) {
-    seatPos++;
-
-    Alignment cardsAlignment = Alignment.centerRight;
-
-    if (seatPos == 2) cardsAlignment = Alignment.centerLeft;
-
-    Widget userView = createUserView(
-      isBoardHorizontal: isBoardHorizontal,
-      key: key,
-      seatPos: seatPos,
-      seat: seat,
-      cardsAlignment: cardsAlignment,
-      onUserTap: onUserTap,
-    );
-
-    switch (seatPos) {
-      case 1:
-        return Align(
-          alignment: Alignment.bottomCenter,
-          child: userView,
-        );
-
-      case 2:
-        return Align(
-          alignment: Alignment.centerLeft,
-          child: userView,
-        );
-
-      case 3:
-        return Align(
-          alignment: Alignment.topCenter,
-          child: userView,
-        );
-
-      case 4:
-        return Align(
-          alignment: Alignment.centerRight,
-          child: userView,
-        );
-
-      default:
-        return const SizedBox.shrink();
-    }
-  }
-
-  Widget positionUser_6(
-      {@required bool isBoardHorizontal,
-      Seat seat,
-      double heightOfBoard,
-      double widthOfBoard,
-      int seatPos,
-      bool isPresent,
-      Function onUserTap,
-      GlobalKey key}) {
-    seatPos++;
-
-    Alignment cardsAlignment = Alignment.centerRight;
-
-    // left for 6, 7, 8, 9
-    if (seatPos == 6 || seatPos == 7 || seatPos == 8 || seatPos == 9)
-      cardsAlignment = Alignment.centerLeft;
-
-    Widget userView = createUserView(
-      isBoardHorizontal: isBoardHorizontal,
-      key: key,
-      seatPos: seatPos,
-      seat: seat,
-      cardsAlignment: cardsAlignment,
-      onUserTap: onUserTap,
-    );
-
-    switch (seatPos) {
-      case 1:
-        return Align(
-          alignment: Alignment.bottomCenter,
-          child: userView,
-        );
-
-      case 2:
-        return Positioned(
-          bottom: 20,
-          left: 10,
-          child: userView,
-        );
-
-      case 3:
-        return Positioned(
-          top: 20,
-          left: 10,
-          child: userView,
-        );
-
-      case 4:
-        return Align(
-          alignment: Alignment.topCenter,
-          child: userView,
-        );
-
-      case 5:
-        return Positioned(
-          top: 20,
-          right: 10,
-          child: userView,
-        );
-
-      case 6:
-        return Positioned(
-          bottom: 20,
-          right: 10,
-          child: userView,
-        );
-
-      default:
-        return const SizedBox.shrink();
-    }
-  }
-
-  Widget positionUser_8(
-      {@required bool isBoardHorizontal,
-      Seat seat,
-      double heightOfBoard,
-      double widthOfBoard,
-      int seatPos,
-      bool isPresent,
-      Function onUserTap,
-      GlobalKey key}) {
-    seatPos++;
-
-    Alignment cardsAlignment = Alignment.centerRight;
-
-    // left for 6, 7, 8, 9
-    if (seatPos == 6 || seatPos == 7 || seatPos == 8 || seatPos == 9)
-      cardsAlignment = Alignment.centerLeft;
-
-    Widget userView = createUserView(
-      isBoardHorizontal: isBoardHorizontal,
-      key: key,
-      seatPos: seatPos,
-      seat: seat,
-      cardsAlignment: cardsAlignment,
-      onUserTap: onUserTap,
-    );
-
-    switch (seatPos) {
-      case 1:
-        return Align(
-          alignment: Alignment.bottomCenter,
-          child: userView,
-        );
-
-      case 2:
-        return Positioned(
-          bottom: 20,
-          left: 10,
-          child: userView,
-        );
-
-      case 3:
-        return Align(
-          alignment: Alignment.centerLeft,
-          child: userView,
-        );
-
-      case 4:
-        return Positioned(
-          top: 20,
-          left: 10,
-          child: userView,
-        );
-
-      case 5:
-        return Align(
-          alignment: Alignment.topCenter,
-          child: userView,
-        );
-
-      case 6:
-        return Positioned(
-          top: 20,
-          right: 10,
-          child: userView,
-        );
-
-      case 7:
-        return Align(
-          alignment: Alignment.centerRight,
-          child: userView,
-        );
-
-      case 8:
-        return Positioned(
-          bottom: 20,
-          right: 10,
-          child: userView,
-        );
-
-      default:
-        return const SizedBox.shrink();
-    }
+    return Transform.translate(
+        offset: seatAttribs.topLeft,
+        child: Align(alignment: seatAttribs.alignment, child: userView));
   }
 }

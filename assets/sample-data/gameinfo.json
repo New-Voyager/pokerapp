@@ -2,8 +2,8 @@
 	"currentPlayer": {
 		"myInfo": {
 			"id": 1,
-			"uuid": "185ecfc9c80b5ee6",
-			"name": "s"
+			"uuid": "371e8c15-39cb-4bd9-a932-ced7a9dd6aac",
+			"name": "tom"
 		},
 		"role": {
 			"isHost": true,
@@ -32,8 +32,7 @@
 					"playerUuid": "185ecfc9c80b5ee6",
 					"stack": 98,
 					"buyIn": 100,
-					"status": "PLAYING",
-					"me": true
+					"status": "PLAYING"
 				},
 				{
 					"name": "yong",
@@ -57,7 +56,8 @@
 					"playerUuid": "371e8c15-39cb-4bd9-a932-ced7a9dd6aac",
 					"stack": 129,
 					"buyIn": 400,
-					"status": "PLAYING"
+					"status": "PLAYING",
+					"me": true
 				},
 				{
 					"name": "jim",

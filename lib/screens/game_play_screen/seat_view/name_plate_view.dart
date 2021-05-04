@@ -1,11 +1,17 @@
+import 'package:blinking_text/blinking_text.dart';
 import 'package:flutter/material.dart';
+import 'package:pokerapp/enums/hand_actions.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/screens/game_play_screen/widgets/milliseconds_counter.dart';
+import 'package:pokerapp/screens/game_play_screen/widgets/plate_border.dart';
 import 'package:provider/provider.dart';
+import 'package:timer_count_down/timer_count_down.dart';
 
 class NamePlateWidget extends StatelessWidget {
   final GlobalKey globalKey;
@@ -27,17 +33,17 @@ class NamePlateWidget extends StatelessWidget {
     * check/call -> green
     * raise/bet -> shade of yellow / blue might b? */
 
-    Color statusColor = const Color(0xff474747); // default color
-    Color boxColor = const Color(0xff474747); // default color
-    final openSeat = seat.isOpen;
-    String status = !openSeat ? seat.player.status : "";
-    if (status != null) {
-      if (status.toUpperCase().contains('CHECK') ||
-          status.toUpperCase().contains('CALL'))
-        statusColor = Colors.green;
-      else if (status.toUpperCase().contains('RAISE') ||
-          status.toUpperCase().contains('BET')) statusColor = Colors.red;
-    }
+    // Color statusColor = const Color(0xff474747); // default color
+    // Color boxColor = const Color(0xff474747); // default color
+    // final openSeat = seat.isOpen;
+    // String action = !openSeat ? seat.player.action : '';
+    // if (action != null) {
+    //   if (action.toUpperCase().contains('CHECK') ||
+    //       action.toUpperCase().contains('CALL'))
+    //     statusColor = Colors.green;
+    //   else if (action.toUpperCase().contains('RAISE') ||
+    //       action.toUpperCase().contains('BET')) statusColor = Colors.red;
+    // }
     return Consumer2<HostSeatChange, GameContextObject>(
         key: globalKey,
         builder: (
@@ -58,17 +64,19 @@ class NamePlateWidget extends StatelessWidget {
                 hostSeatChange.onSeatDragStart(seat.serverSeatPos);
               },
               feedback: buildSeat(
+                context,
                 hostSeatChange,
                 isFeedBack: true,
               ),
-              child: buildSeat(hostSeatChange),
+              child: buildSeat(context, hostSeatChange),
               childWhenDragging: buildSeat(
+                context,
                 hostSeatChange,
                 childWhenDragging: true,
               ),
             );
           } else {
-            widget = buildSeat(hostSeatChange);
+            widget = buildSeat(context, hostSeatChange);
           }
           return widget;
         });
@@ -129,69 +137,184 @@ class NamePlateWidget extends StatelessWidget {
   }
 
   Widget buildSeat(
+    BuildContext context,
     HostSeatChange hostSeatChange, {
     bool isFeedBack = false,
     bool childWhenDragging = false,
   }) {
+    // log('rebuild seat ${seat.serverSeatPos}');
     final shadow = getShadow(hostSeatChange, isFeedBack);
+
+    Widget plateWidget;
+    if (seat.player.highlight) {
+      int remaining = seat.actionTimer.getRemainingTime();
+      int total = seat.actionTimer.getTotalTime();
+      int current = total - remaining;
+      final int totalMs = seat.actionTimer.getTotalTime() * 1000;
+      plateWidget = CountdownMs(
+          totalSeconds: total,
+          currentSeconds: current,
+          build: (_, time) {
+            int remainingMs = totalMs - time.toInt();
+            // log('rebuild plate: current: $remainingMs, total: $totalMs');
+            return PlateWidget(
+              remainingMs,
+              totalMs,
+              showProgress: true,
+            );
+          });
+    } else {
+      plateWidget = PlateWidget(
+        0,
+        0,
+        showProgress: false,
+      );
+    }
+
     return Opacity(
       opacity: childWhenDragging ? 0.50 : 1.0,
-      child: Container(
-        width: boardAttributes.namePlateSize.width,
-        height: boardAttributes.namePlateSize.height,
-        padding: const EdgeInsets.symmetric(
-          vertical: 5.0,
-        ),
-        decoration: BoxDecoration(
-          shape: BoxShape.rectangle,
-          borderRadius: BorderRadius.circular(5),
-          color: Color(0XFF494444),
-          border: Border.all(
-            color: Color.fromARGB(255, 206, 134, 57),
-            width: 2.0,
+      child: Transform.scale(
+        scale:
+            boardAttributes.getNameplateScale(), // NOTE: 10inch 2.0, 7 inch 1.5
+        child: Container(
+          width: boardAttributes.namePlateSize.width,
+          height: boardAttributes.namePlateSize.height,
+          padding: const EdgeInsets.symmetric(
+            vertical: 5.0,
           ),
-          boxShadow: shadow,
-        ),
-        child: AnimatedSwitcher(
-          duration: AppConstants.animationDuration,
-          reverseDuration: AppConstants.animationDuration,
-          child: AnimatedOpacity(
-            duration: AppConstants.animationDuration,
-            opacity: seat.isOpen ? 0.0 : 1.0,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                FittedBox(
-                  child: Text(
-                    seat.player.name,
-                    style: AppStyles.gamePlayScreenPlayerName.copyWith(
-                      // FIXME: may be this is permanant?
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-                PlayerViewDivider(),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 5),
-                    child: FittedBox(
-                      child: Text(
-                        seat.player.stack?.toString() ?? 'XX',
-                        style: AppStyles.gamePlayScreenPlayerChips.copyWith(
-                          // FIXME: may be this is permanant?
-                          color: Colors.white,
+          decoration: BoxDecoration(
+            shape: BoxShape.rectangle,
+            // borderRadius: BorderRadius.circular(5),
+            // color: Color(0XFF494444),
+            // border: Border.all(
+            //   color: AppColors.plateBorderColor,
+            //   width: 2.0,
+            // ),
+            boxShadow: shadow,
+          ),
+          child: Stack(
+            children: [
+              // name plate border
+              Container(
+                width: 75,
+                height: 50,
+
+                // width: boardAttributes.namePlateSize.width,
+                // height: boardAttributes.namePlateSize.height,
+                child: plateWidget,
+              ),
+              AnimatedSwitcher(
+                duration: AppConstants.animationDuration,
+                reverseDuration: AppConstants.animationDuration,
+                child: AnimatedOpacity(
+                  duration: AppConstants.animationDuration,
+                  opacity: seat.isOpen ? 0.0 : 1.0,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      FittedBox(
+                        child: Text(
+                          seat.player.name,
+                          style: AppStyles.gamePlayScreenPlayerName.copyWith(
+                            // FIXME: may be this is permanant?
+                            color: Colors.white,
+                          ),
                         ),
                       ),
-                    ),
+                      PlayerViewDivider(),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 5),
+                          child: FittedBox(
+                            child: bottomWidget(context),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
     );
+  }
+
+  Widget bottomWidget(BuildContext context) {
+    if (seat.player.action.action != HandActions.ALLIN &&
+        seat.player.stack == 0 &&
+        seat.player.buyInTimeExpAt != null) {
+      final now = DateTime.now().toUtc();
+      final diff = seat.player.buyInTimeExpAt.difference(now);
+
+      final nowTime = now.toIso8601String();
+      final buyInTime = seat.player.buyInTimeExpAt.toIso8601String();
+      // log('nowTime: $nowTime buyInTime: $buyInTime');
+
+      return buyInTimer(context, diff.inSeconds);
+    } else if (seat.player.inBreak && seat.player.breakTimeExpAt != null) {
+      final now = DateTime.now().toUtc();
+      final diff = seat.player.buyInTimeExpAt.difference(now);
+      return buyInTimer(context, diff.inSeconds);
+    } else {
+      return stack(context);
+    }
+  }
+
+  Widget stack(BuildContext context) {
+    return Text(
+      seat.player.stack?.toString() ?? 'XX',
+      style: AppStyles.gamePlayScreenPlayerChips.copyWith(
+        // FIXME: may be this is permanant?
+        color: Colors.white,
+      ),
+    );
+  }
+
+  Widget buyInTimer(BuildContext context, int time) {
+    return Countdown(
+        seconds: time,
+        onFinished: () {
+          if (seat.isMe) {
+            // hide buyin button
+            final gameState = GameState.getState(context);
+            final players = gameState.getPlayers(context);
+            seat.player.showBuyIn = false;
+            players.notifyAll();
+            seat.notify();
+          }
+        },
+        build: (_, time) {
+          if (time <= 10) {
+            return BlinkText(_printDuration(Duration(seconds: time.toInt())),
+                style: AppStyles.itemInfoTextStyle.copyWith(
+                  color: Colors.white,
+                ),
+                beginColor: Colors.white,
+                endColor: Colors.orange,
+                times: time.toInt(),
+                duration: Duration(seconds: 1));
+          } else {
+            return Text(
+              _printDuration(Duration(seconds: time.toInt())),
+              style: AppStyles.itemInfoTextStyle.copyWith(
+                color: Colors.white,
+              ),
+            );
+          }
+        });
+  }
+
+  String _printDuration(Duration duration) {
+    String twoDigits(int n) => n.toString().padLeft(2, "0");
+    if (duration.inSeconds <= 0) {
+      return '0:00';
+    }
+    String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
+    String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
+    return "$twoDigitMinutes:$twoDigitSeconds";
   }
 }
 

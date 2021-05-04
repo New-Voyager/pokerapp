@@ -1,12 +1,10 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
-import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/resources/app_constants.dart';
-import 'package:pokerapp/services/game_play/action_services/hand_action_service/sub_services/board_service.dart';
-import 'package:pokerapp/services/game_play/graphql/game_service.dart';
+import 'package:pokerapp/services/game_play/action_services/board_service.dart';
 import 'package:provider/provider.dart';
 
 class GameStatusUpdateService {
@@ -29,6 +27,9 @@ class GameStatusUpdateService {
       listen: false,
     );
 
+    final GameContextObject gameContext =
+        Provider.of<GameContextObject>(context, listen: false);
+
     final tableState = gameState.getTableState(context);
 
     tableState.updateTableStatusSilent(tableStatus);
@@ -38,19 +39,7 @@ class GameStatusUpdateService {
       /* QUERY_CURRENT_HAND is done here, only after making sure,
       * that the game is running.
       * This is done to get update of the game */
-
-      String gameCode = Provider.of<ValueNotifier<GameInfoModel>>(
-        context,
-        listen: false,
-      ).value.gameCode;
-
-      GameService.queryCurrentHand(
-        gameCode,
-        Provider.of<Function(String)>(
-          context,
-          listen: false,
-        ),
-      );
+      gameContext.handActionService.queryCurrentHand();
     } else if (gameStatus == AppConstants.GAME_ENDED) {
       // end the game
       tableState.updateTableStatusSilent(AppConstants.GAME_ENDED);

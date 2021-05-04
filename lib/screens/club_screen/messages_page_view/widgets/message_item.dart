@@ -124,11 +124,14 @@ class MessageItem extends StatelessWidget {
                     ),
                     isMe: isMe,
                   )
-                : Text(
-                    messageModel.text,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 15.0,
+                : Container(
+                    padding: EdgeInsets.all(3),
+                    child: Text(
+                      messageModel.text,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 15.0,
+                      ),
                     ),
                   ),
 
@@ -163,23 +166,26 @@ class GiphyImageWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        CachedNetworkImage(
-          imageUrl: imgUrl,
-          placeholder: (_, __) => Center(
-            child: CircularProgressIndicator(),
+    return Container(
+      padding: EdgeInsets.all(8),
+      child: Stack(
+        children: [
+          CachedNetworkImage(
+            imageUrl: imgUrl,
+            placeholder: (_, __) => Center(
+              child: CircularProgressIndicator(),
+            ),
           ),
-        ),
-        Positioned(
-          right: 0,
-          bottom: 0,
-          child: ChatTimeWidget(
-            isSender: isMe,
-            date: date,
+          Positioned(
+            right: 0,
+            bottom: 0,
+            child: ChatTimeWidget(
+              isSender: isMe,
+              date: date,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

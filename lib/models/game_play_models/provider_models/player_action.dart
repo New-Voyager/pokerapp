@@ -7,12 +7,12 @@ const String BET = 'BET';
 const String RAISE = 'RAISE';
 const String ALLIN = 'ALLIN';
 
-class Action {
+class AvailableAction {
   String actionName;
   int actionValue;
   int minActionValue;
 
-  Action({
+  AvailableAction({
     @required this.actionName,
     this.actionValue,
     this.minActionValue,
@@ -31,7 +31,7 @@ class Option {
 
 class PlayerAction {
   int _seatNo;
-  List<Action> _actions;
+  List<AvailableAction> _actions;
 
   int _minRaiseAmount;
   int _maxRaiseAmount;
@@ -40,6 +40,35 @@ class PlayerAction {
 
   PlayerAction(int seatNo, var seatAction) {
     _seatNo = seatNo;
+
+    /*
+      {
+        ...
+        ...
+        "seatAction": {
+          "seatNo": 1,
+          "availableActions": ["FOLD", "CALL", "BET", "ALLIN"],
+          "callAmount": 2,
+          "minRaiseAmount": 4,
+          "maxRaiseAmount": 30,
+          "allInAmount": 30,
+          "betOptions": [{
+            "text": "3BB",
+            "amount": 6
+          }, {
+            "text": "5BB",
+            "amount": 10
+          }, {
+            "text": "10BB",
+            "amount": 20
+          }, {
+            "text": "All-In",
+            "amount": 30
+          }]
+        }
+      }
+    */
+
     // FIXME: MIN RAISE AMOUNT VALUE NOT RECEIVING?
     this._minRaiseAmount = seatAction['minRaiseAmount'] ?? 2;
     this._maxRaiseAmount = seatAction['maxRaiseAmount'];
@@ -52,7 +81,7 @@ class PlayerAction {
     seatAction['availableActions']
         .map<String>((s) => s.toString())
         .forEach((String actionName) {
-      Action action = Action(
+      AvailableAction action = AvailableAction(
         actionName: actionName,
       );
 
@@ -72,7 +101,7 @@ class PlayerAction {
     });
   }
 
-  List<Action> get actions => _actions;
+  List<AvailableAction> get actions => _actions;
   List<Option> get options => _options;
 
   int get minRaiseAmount => _minRaiseAmount;

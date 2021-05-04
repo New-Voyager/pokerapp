@@ -1,5 +1,7 @@
 import 'dart:ui';
 
+import 'package:flutter/material.dart';
+
 class AppColors {
   static const Color appAccentColor = Color(0xff319ffe);
 
@@ -27,6 +29,8 @@ class AppColors {
 
   static const Color gameOptionBackGroundColor = Color(0xff303335);
 
+  static const Color buttonBorderColor = Color(0xff319ffe);
+
   // gameoption screen colors
   static const Color gameOption1 = Color(0xffef9712);
   static const Color gameOption2 = appAccentColor;
@@ -43,4 +47,18 @@ class AppColors {
   static const Color stickerDialogBorderColor = Color(0xffB0EBA9);
   static const Color stickerDialogTextColor = Color(0xffD8D8D8);
   static const Color stickerDialogColor = Color(0xff5A66AA);
+
+  // open seat colors
+  static const openSeatColors = [
+    Colors.purple,
+    Colors.blue,
+    Colors.yellow,
+    Colors.red,
+  ];
+
+  static const openSeatTextStyle = TextStyle(
+    fontSize: 12.0,
+  );
+
+  static const plateBorderColor = Color.fromARGB(255, 206, 134, 57);
 }

@@ -48,7 +48,7 @@ class GameHistoryItem extends StatelessWidget {
     var colRunTimeSeparator = SizedBox(width: 5.0);
 
     return Container(
-        height: 140.0,
+        height: 180.0,
         decoration: const BoxDecoration(
           color: AppColors.cardBackgroundColor,
           borderRadius: BorderRadius.all(
@@ -59,7 +59,7 @@ class GameHistoryItem extends StatelessWidget {
         child: Stack(
           children: [
             Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 /*
           * member avatar
@@ -98,94 +98,100 @@ class GameHistoryItem extends StatelessWidget {
           * */
 
                 Expanded(
-                  child: Container(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Stack(
-                      children: <Widget>[
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Row(
-                              children: [
-                                /* Game type */
-                                Text(
-                                  item.GameType,
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 19.0,
-                                    fontFamily: AppAssets.fontFamilyLato,
-                                    fontWeight: FontWeight.w700,
+                  child: FittedBox(
+                    fit: BoxFit.fitWidth,
+                    child: Container(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Stack(
+                        children: <Widget>[
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              SizedBox(
+                                height: 8,
+                              ),
+                              Row(
+                                children: [
+                                  /* Game type */
+                                  Text(
+                                    item.GameType,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 19.0,
+                                      fontFamily: AppAssets.fontFamilyLato,
+                                      fontWeight: FontWeight.w700,
+                                    ),
                                   ),
+                                  colSeparator,
+                                  /* blinds */
+                                  separator,
+                                  Text(
+                                    item.Blinds,
+                                    style: AppStyles.blindsTextStyle,
+                                  ),
+                                ],
+                              ),
+                              /* hosted by */
+                              separator,
+                              Row(children: [
+                                Text(
+                                  'Hosted by',
+                                  style: AppStyles.hostInfoTextStyle,
                                 ),
                                 colSeparator,
-                                /* blinds */
-                                separator,
                                 Text(
-                                  item.Blinds,
-                                  style: AppStyles.blindsTextStyle,
+                                  item.startedBy,
+                                  style: AppStyles.hostNameTextStyle,
                                 ),
-                              ],
-                            ),
-                            /* hosted by */
-                            separator,
-                            Row(children: [
-                              Text(
-                                'Hosted by',
-                                style: AppStyles.hostInfoTextStyle,
-                              ),
-                              colSeparator,
-                              Text(
-                                item.startedBy,
-                                style: AppStyles.hostNameTextStyle,
-                              ),
-                            ]),
-                            separator,
-                            /** started at **/
-                            Row(children: [
-                              Text(
-                                'Started at',
-                                style: AppStyles.hostInfoTextStyle,
-                              ),
-                              colSeparator,
-                              Text(
-                                item.StartedAt,
-                                style: AppStyles.hostNameTextStyle,
-                              ),
-                            ]),
-                            separator,
-                            /** game time **/
-                            Row(children: [
-                              Text(
-                                'Game ran for',
-                                style: AppStyles.hostInfoTextStyle,
-                              ),
-                              colRunTimeSeparator,
-                              Text(
-                                item.runTimeStr,
-                                style: AppStyles.hostInfoTextStyle,
-                              ),
-                            ]),
-                            separator,
-                            Visibility(
-                              child: Row(children: [
-                                Visibility(
-                                  visible: item.handsPlayed > 0,
-                                  child: Text(
-                                    'Played for',
-                                    style: AppStyles.hostInfoTextStyle,
-                                  ),
+                              ]),
+                              separator,
+                              /** started at **/
+                              Row(children: [
+                                Text(
+                                  'Started at',
+                                  style: AppStyles.hostInfoTextStyle,
+                                ),
+                                colSeparator,
+                                Text(
+                                  item.StartedAt,
+                                  style: AppStyles.hostNameTextStyle,
+                                ),
+                              ]),
+                              separator,
+                              /** game time **/
+                              Row(children: [
+                                Text(
+                                  'Game ran for',
+                                  style: AppStyles.hostInfoTextStyle,
                                 ),
                                 colRunTimeSeparator,
                                 Text(
-                                  item.sessionTimeStr,
-                                  style: AppStyles.sessionTimeTextStyle,
+                                  item.runTimeStr,
+                                  style: AppStyles.hostInfoTextStyle,
                                 ),
                               ]),
-                              visible: item.sessionTimeStr != null,
-                            ),
-                          ],
-                        ),
-                      ],
+                              separator,
+                              Visibility(
+                                child: Row(children: [
+                                  Visibility(
+                                    visible: item.handsPlayed > 0,
+                                    child: Text(
+                                      'Played for',
+                                      style: AppStyles.hostInfoTextStyle,
+                                    ),
+                                  ),
+                                  colRunTimeSeparator,
+                                  Text(
+                                    item.sessionTimeStr,
+                                    style: AppStyles.sessionTimeTextStyle,
+                                  ),
+                                ]),
+                                visible: item.sessionTimeStr != null,
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -209,19 +215,24 @@ class GameHistoryItem extends StatelessWidget {
             ),
             Visibility(
               visible: item.gameNum != 0,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Text(
-                    item.gameCode,
-                    style: AppStyles.gameCodeTextStyle,
-                  ),
-                  colSeparator,
-                  Text(
-                    '#' + item.gameNum.toString(),
-                    style: AppStyles.hostNameTextStyle,
-                  ),
-                ],
+              child: Positioned(
+                right: 8,
+                top: 8,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(
+                      item.gameCode,
+                      style: AppStyles.gameCodeTextStyle,
+                    ),
+                    colSeparator,
+                    Text(
+                      '#' + item.gameNum.toString(),
+                      style: AppStyles.hostNameTextStyle,
+                    ),
+                    colSeparator,
+                  ],
+                ),
               ),
             ),
           ],

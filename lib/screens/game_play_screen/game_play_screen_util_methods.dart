@@ -17,7 +17,10 @@ import 'package:pokerapp/models/game_play_models/provider_models/game_context.da
 import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/resources/card_back_assets.dart';
 import 'package:pokerapp/services/agora/agora.dart';
+import 'package:pokerapp/services/app/auth_service.dart';
+import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:pokerapp/services/game_play/graphql/game_service.dart';
+import 'package:pokerapp/utils/utils.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
@@ -31,83 +34,215 @@ class GamePlayScreenUtilMethods {
   /* THIS SPEED DIAL IS JUST FOR SHOWING THE TEST BUTTONS */
   static SpeedDial floatingActionButton({
     Function onReload,
-  }) =>
-      SpeedDial(
-        onOpen: onReload,
-        overlayColor: Colors.black,
-        overlayOpacity: 0.1,
-        icon: Icons.all_inclusive_rounded,
-        children: [
-          SpeedDialChild(
-            child: Icon(
-              Icons.adb_rounded,
-              color: Colors.white,
-            ),
-            backgroundColor: Colors.red,
-            label: 'Add River / Turn Card',
-            onTap: () => TestService.addTurnOrRiverCard(),
+  }) {
+    return SpeedDial(
+      onOpen: onReload,
+      overlayColor: Colors.black,
+      visible: TestService.isTesting,
+      overlayOpacity: 0.1,
+      icon: Icons.all_inclusive_rounded,
+      children: [
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
           ),
-          SpeedDialChild(
-            child: Icon(
-              Icons.adb_rounded,
-              color: Colors.white,
-            ),
-            backgroundColor: Colors.red,
-            label: 'Add Flop Cards',
-            onTap: () => TestService.addFlopCards(),
+          backgroundColor: Colors.red,
+          label: 'Waitlist',
+          onTap: () => TestService.waitlistDialog(),
+        ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
           ),
-          SpeedDialChild(
-            child: Icon(
-              Icons.adb_rounded,
-              color: Colors.white,
-            ),
-            backgroundColor: Colors.red,
-            label: 'Clear Cards',
-            onTap: () => TestService.clearBoardCards(),
+          backgroundColor: Colors.red,
+          label: 'Fold',
+          onTap: () => TestService.fold(),
+        ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
           ),
-          SpeedDialChild(
-            child: Icon(
-              Icons.adb_rounded,
-              color: Colors.white,
-            ),
-            backgroundColor: Colors.red,
-            label: 'Simulate Bet Movement',
-            onTap: () => TestService.simulateBetMovement(),
+          backgroundColor: Colors.red,
+          label: 'Hand Message',
+          onTap: () => TestService.handMessage(),
+        ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
           ),
-          SpeedDialChild(
-            child: Icon(
-              Icons.adb_rounded,
-              color: Colors.white,
-            ),
-            backgroundColor: Colors.red,
-            label: 'Show Bets',
-            onTap: () => TestService.showBets(),
+          backgroundColor: Colors.red,
+          label: 'New Hand',
+          onTap: () => TestService.sendNewHand(),
+        ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
           ),
-          SpeedDialChild(
-            child: Icon(
-              Icons.adb_rounded,
-              color: Colors.white,
-            ),
-            backgroundColor: Colors.red,
-            label: 'Move Pot to Player',
-            onTap: () => TestService.movePotToPlayer(),
+          backgroundColor: Colors.red,
+          label: 'Reset',
+          onTap: () => TestService.resetGameState(),
+        ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
           ),
-        ],
-        backgroundColor: AppColors.appAccentColor,
-      );
+          backgroundColor: Colors.red,
+          label: 'Flop',
+          onTap: () => TestService.flop(),
+        ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
+          label: 'Show Bets',
+          onTap: () => TestService.showBets(),
+        ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
+          label: 'Simulate Bet Movement',
+          onTap: () => TestService.simulateBetMovement(),
+        ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
+          label: 'Move Pot to Player',
+          onTap: () => TestService.movePotToPlayer(),
+        ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
+          label: 'Show holecards',
+          onTap: () => TestService.showHoleCards(),
+        ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
+          label: 'Bet Widget',
+          onTap: () => TestService.testBetWidget(),
+        ),
+        /*
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
+          label: 'Countdown Timer',
+          onTap: () => TestService.testCountdownTimer(),
+        ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
+          label: 'Flushbar',
+          onTap: () => TestService.showFlushBar(),
+        ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
+          label: 'Distribute Cards',
+          onTap: () => TestService.distributeCards(),
+        ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
+          label: 'Add River / Turn Card',
+          onTap: () => TestService.addTurnOrRiverCard(),
+        ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
+          label: 'Add Flop Cards',
+          onTap: () => TestService.addFlopCards(),
+        ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
+          label: 'Clear Cards',
+          onTap: () => TestService.clearBoardCards(),
+        ),
+
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
+          label: 'Move Pot to Player',
+          onTap: () => TestService.movePotToPlayer(),
+        ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
+          label: 'Buyin Test',
+          onTap: () => TestService.buyInTest(),
+        ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
+          label: 'Show Bets',
+          onTap: () => TestService.testBetWidget(),
+        ),
+          */
+      ],
+      backgroundColor: AppColors.appAccentColor,
+    );
+  }
 
   /* After the entire table is drawn, if the current player (isMe == true)
     * is waiting for buyIn,then show the footer prompt */
-  static void checkForCurrentUserPrompt(BuildContext context) {
-    final players =
-        Provider.of<GameState>(context, listen: false).getPlayers(context);
-    if (players.showBuyinPrompt) {
-      Provider.of<ValueNotifier<FooterStatus>>(
-        context,
-        listen: false,
-      ).value = FooterStatus.Prompt;
-    }
-  }
+  // static void checkForCurrentUserPrompt(BuildContext context) {
+  //   final players =
+  //       Provider.of<GameState>(context, listen: false).getPlayers(context);
+
+  //   if (players.showBuyinPrompt) {
+  //     Provider.of<ValueNotifier<FooterStatus>>(
+  //       context,
+  //       listen: false,
+  //     ).value = FooterStatus.Prompt;
+  //   }
+  // }
 
   static void startGame(String gameCode) async {
     developer.log('Starting the game');
@@ -139,18 +274,15 @@ class GamePlayScreenUtilMethods {
 
   /* provider method, returns list of all the providers used in the below hierarchy */
   static List<SingleChildWidget> getProviders({
+    @required BuildContext context,
+    @required GameState gameState,
     @required GameInfoModel gameInfoModel,
-    PlayerInfo currentPlayerInfo,
     @required String gameCode,
     @required Agora agora,
-    @required Function(String) sendPlayerToHandChannel,
+    @required BoardAttributesObject boardAttributes,
+    @required GameContextObject gameContextObject,
   }) {
     // initialize game state object
-    final gameState = GameState();
-    gameState.initialize(
-      players: gameInfoModel.playersInSeats,
-      gameInfo: gameInfoModel,
-    );
 
     var providers = [
       /* this is for the seat change animation values */
@@ -182,10 +314,7 @@ class GamePlayScreenUtilMethods {
         * the game screen - it contains data regarding the current hand no, club name,
         * club code and so on */
       ListenableProvider<GameContextObject>(
-        create: (_) => GameContextObject(
-          gameCode: gameCode,
-          player: currentPlayerInfo,
-        ),
+        create: (_) => gameContextObject,
       ),
       Provider<GameState>(
         create: (_) => gameState,
@@ -194,7 +323,7 @@ class GamePlayScreenUtilMethods {
       /* board object used for changing board attributes */
       /* default is horizontal view */
       ListenableProvider<BoardAttributesObject>(
-        create: (_) => BoardAttributesObject(),
+        create: (_) => boardAttributes,
       ),
 
       /* a copy of Game Info Model is kept in the provider
@@ -215,9 +344,9 @@ class GamePlayScreenUtilMethods {
 
       /* This provider contains the sendPlayerToHandChannel function
         * so that the function can be called from anywhere down the widget tree */
-      Provider<Function(String)>(
-        create: (_) => sendPlayerToHandChannel,
-      ),
+      // Provider<Function(String)>(
+      //   create: (_) => sendPlayerToHandChannel,
+      // ),
 
       /* This provider holds the audioPlayer object, which facilitates playing
         * audio in the game */

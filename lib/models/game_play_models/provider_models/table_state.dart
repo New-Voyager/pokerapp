@@ -41,6 +41,7 @@ class TableState extends ChangeNotifier {
     _board2?.clear();
     _potChips?.clear();
     _potUpdatesChips = null;
+    _tableStatus = AppConstants.CLEAR;
     // _animateBoard1 = false;
     // _animateBoard1Flop = false;
     // _animateBoard1Turn = false;

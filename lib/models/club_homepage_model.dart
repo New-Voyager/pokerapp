@@ -1,7 +1,4 @@
-import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:pokerapp/models/club_weekly_activity_model.dart';
 
 import 'game_model.dart';
@@ -54,7 +51,6 @@ class ClubHomePageModel extends ChangeNotifier {
   // build data from the graphql response
   ClubHomePageModel.fromGQLResponse(String clubCode, var data, var activity) {
     var member = data['member'];
-
     this.clubName = member['name'];
     this.clubCode = clubCode;
     this.isManager = member['isManager'];

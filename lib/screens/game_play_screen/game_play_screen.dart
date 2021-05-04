@@ -1,8 +1,12 @@
 import 'dart:developer';
+import 'package:after_layout/after_layout.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:dart_nats/dart_nats.dart' as nats;
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
+import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/screens/game_context_screen/game_chat/chat.dart';
@@ -12,22 +16,37 @@ import 'package:pokerapp/screens/game_play_screen/main_views/board_view/decorati
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/footer_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/header_view/header_view.dart';
 import 'package:pokerapp/screens/game_play_screen/notifications/notifications.dart';
+import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/agora/agora.dart';
 import 'package:pokerapp/services/app/player_service.dart';
 import 'package:pokerapp/services/game_play/action_services/game_action_service/game_action_service.dart';
-import 'package:pokerapp/services/game_play/action_services/hand_action_service/hand_action_service.dart';
-import 'package:pokerapp/services/game_play/action_services/hand_action_service/sub_services/result_service.dart';
-import 'package:pokerapp/services/game_play/game_chat_service.dart';
+import 'package:pokerapp/services/game_play/action_services/game_action_service/util_action_services.dart';
+import 'package:pokerapp/services/game_play/action_services/hand_action_service.dart';
+import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/services/game_play/graphql/game_service.dart';
 import 'package:pokerapp/services/game_play/utils/audio.dart';
 import 'package:pokerapp/services/game_play/utils/audio_buffer.dart';
+import 'package:pokerapp/services/nats/nats.dart';
 import 'package:pokerapp/services/test/test_service.dart';
+import 'package:pokerapp/utils/utils.dart';
 import 'package:provider/provider.dart';
 
-import '../../routes.dart';
 import '../../services/test/test_service.dart';
 import 'game_play_screen_util_methods.dart';
+
+/*
+7 inch tablet
+[log] rebuilding game screen. Screen: Size(600.0, 912.0)
+[log] Table width: 650.0 height: 294.8
+[log] board width: 600.0 height: 364.8
+
+10 inch tablet
+[log] rebuilding game screen. Screen: Size(800.0, 1232.0)
+Table width: 850.0 height: 422.8
+board width: 800.0 height: 492.8
+
+*/
 
 /*
 * This is the screen which will have contact with the NATS server
@@ -45,14 +64,19 @@ class GamePlayScreen extends StatefulWidget {
   _GamePlayScreenState createState() => _GamePlayScreenState();
 }
 
-class _GamePlayScreenState extends State<GamePlayScreen> {
-  GameComService _gameComService;
+class _GamePlayScreenState extends State<GamePlayScreen>
+    with AfterLayoutMixin<GamePlayScreen> {
+  bool _initiated;
   BuildContext _providerContext;
   PlayerInfo _currentPlayer;
   String _audioToken = '';
   bool liveAudio = false;
   AudioPlayer _audioPlayer;
   Agora agora;
+  GameInfoModel _gameInfoModel;
+  GameContextObject _gameContextObj;
+  GameState _gameState;
+
   /* _init function is run only for the very first time,
   * and only once, the initial game screen is populated from here
   * also the NATS channel subscriptions are done here */
@@ -105,17 +129,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
   Future<GameInfoModel> _init() async {
     GameInfoModel _gameInfoModel = await _fetchGameInfo();
 
-    _gameComService = GameComService(
-      currentPlayer: this._currentPlayer,
-      gameToPlayerChannel: _gameInfoModel.gameToPlayerChannel,
-      handToAllChannel: _gameInfoModel.handToAllChannel,
-      handToPlayerChannel: _gameInfoModel.handToPlayerChannel,
-      playerToHandChannel: _gameInfoModel.playerToHandChannel,
-      gameChatChannel: _gameInfoModel.gameChatChannel,
-    );
-
-    // subscribe the NATs channels
-    await _gameComService.init();
+    if (_initiated == true) return _gameInfoModel;
 
     if (liveAudio) {
       // initialize agora
@@ -136,84 +150,103 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
     } else {
       _audioPlayer = AudioPlayer();
     }
+    final gameComService = GameComService(
+      currentPlayer: this._currentPlayer,
+      gameToPlayerChannel: _gameInfoModel.gameToPlayerChannel,
+      handToAllChannel: _gameInfoModel.handToAllChannel,
+      handToPlayerChannel: _gameInfoModel.handToPlayerChannel,
+      playerToHandChannel: _gameInfoModel.playerToHandChannel,
+      gameChatChannel: _gameInfoModel.gameChatChannel,
+    );
 
-    /* setup the listeners to the channels
-    * Any messages received from these channel updates,
-    * will be taken care of by the respective class
-    * and actions will be taken in the UI
-    * as there will be Listeners implemented down this hierarchy level */
+    _gameState = GameState();
+    _gameState.initialize(
+      gameCode: _gameInfoModel.gameCode,
+      gameInfo: _gameInfoModel,
+      currentPlayer: _currentPlayer,
+      gameMessagingService: gameComService.gameMessaging,
+    );
 
-    _gameComService.gameToPlayerChannelStream.listen((nats.Message message) {
-      if (!_gameComService.active) return;
-
-      // log('gameToPlayerChannel(${message.subject}): ${message.string}');
-
-      /* This stream will receive game related messages
-      * e.g.
-      * 1. Player Actions - Sitting on table, getting more chips, leaving game, taking break,
-      * 2. Game Actions - New hand, informing about Next actions, PLayer Acted
-      *  */
-
-      GameActionService.handle(
-        context: _providerContext,
-        message: message.string,
+    if (TestService.isTesting) {
+      // testing code goes here
+      _gameContextObj = GameContextObject(
+        gameCode: widget.gameCode,
+        player: this._currentPlayer,
+        gameComService: gameComService,
+        gameState: _gameState,
       );
-    });
+    } else {
+      // subscribe the NATs channels
+      final natsClient = Provider.of<Nats>(context, listen: false);
 
-    _gameComService.handToAllChannelStream.listen((nats.Message message) {
-      if (!_gameComService.active) return;
+      log('natsClient: $natsClient');
+      await gameComService.init(natsClient);
 
-      // log('handToAllChannel(${message.subject}): ${message.string}');
-
-      /* This stream receives hand related messages that is common to all players
-      * e.g
-      * New Hand - contains hand status, dealerPos, sbPos, bbPos, nextActionSeat
-      * Next Action - contains the seat No which is to act next
-      *
-      * This stream also contains the output for the query of current hand*/
-      HandActionService.handle(
-        context: _providerContext,
-        message: message.string,
+      _gameContextObj = GameContextObject(
+        gameCode: widget.gameCode,
+        player: this._currentPlayer,
+        gameComService: gameComService,
+        gameState: _gameState,
       );
-    });
 
-    _gameComService.handToPlayerChannelStream.listen((nats.Message message) {
-      if (!_gameComService.active) return;
+      /* setup the listeners to the channels
+        * Any messages received from these channel updates,
+        * will be taken care of by the respective class
+        * and actions will be taken in the UI
+        * as there will be Listeners implemented down this hierarchy level */
 
-      // log('handToPlayerChannel(${message.subject}): ${message.string}');
+      gameComService.gameToPlayerChannelStream.listen((nats.Message message) {
+        if (!gameComService.active) return;
 
-      /* This stream receives hand related messages that is specific to THIS player only
-      * e.g
-      * Deal - contains seat No and cards
-      * Your Action - seat No, available actions & amounts */
-      HandActionService.handle(
-        context: _providerContext,
-        message: message.string,
+        // log('gameToPlayerChannel(${message.subject}): ${message.string}');
+
+        /* This stream will receive game related messages
+          * e.g.
+          * 1. Player Actions - Sitting on table, getting more chips, leaving game, taking break,
+          * 2. Game Actions - New hand, informing about Next actions, PLayer Acted
+          *  */
+
+        GameActionService.handle(
+          context: _providerContext,
+          message: message.string,
+        );
+      });
+
+      _gameContextObj.gameComService.gameMessaging.listen(
+        onCards: this.onCards,
+        onAudio: this.onAudio,
       );
-    });
+    }
 
-    // _gameComService.chat.listen(onText: this.onText);
-    _gameComService.chat
-        .listen(onAudio: this.onAudio, onAnimation: this.onAnimation);
-
+    _initiated = true;
     return _gameInfoModel;
   }
 
   /* dispose method for closing connections and un subscribing to channels */
   @override
   void dispose() {
-    TestService.isTesting = false;
+    // TestService.isTesting = false;
+    try {
+      _gameContextObj?.dispose();
+      agora?.disposeObject();
+      // Audio.dispose(context: _providerContext);
 
-    agora?.disposeObject();
-    _gameComService?.dispose();
-    Audio.dispose(context: _providerContext);
-
-    if (_audioPlayer != null) {
-      _audioPlayer.dispose();
-      _audioPlayer = null;
+      if (_audioPlayer != null) {
+        _audioPlayer.dispose();
+        _audioPlayer = null;
+      }
+    } catch (e) {
+      log('Caught exception: ${e.toString()}');
     }
+
     super.dispose();
   }
+
+  void onCards(ChatMessage message) =>
+      UtilActionServices.showCardsOfFoldedPlayers(
+        _providerContext,
+        message,
+      );
 
   void onText(ChatMessage message) {
     log(message.text);
@@ -233,7 +266,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
   }
 
   void onAnimation(ChatMessage message) async {
-    log('Animation message is sent ${message.messageId} from player ${message.fromSeat} to ${message.toSeat}. Animation id: ${message.animationId}');
+    log('Animation message is sent ${message.messageId} from player ${message.fromSeat} to ${message.toSeat}. Animation id: ${message.animationID}');
     // todo initiate animation
   }
 
@@ -247,23 +280,64 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
   }
 
   Future onJoinGame(int seatPos) async {
-    await GamePlayScreenUtilMethods.joinGame(
-      seatPos: seatPos,
-      gameCode: widget.gameCode,
-    );
+    final gameState = GameState.getState(_providerContext);
+    final me = gameState.me(_providerContext);
 
-    // join audio
-    await joinAudio();
+    if (me != null && me.seatNo != null && me.seatNo != 0) {
+      log('Player ${me.name} switches seat to $seatPos');
+      await GameService.switchSeat(widget.gameCode, seatPos);
+    } else {
+      try {
+        await GamePlayScreenUtilMethods.joinGame(
+          seatPos: seatPos,
+          gameCode: widget.gameCode,
+        );
+      } catch (e) {
+        showError(context, error: e);
+        return;
+      }
+      // join audio
+      await joinAudio();
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    log('game screen initState');
+    /* the init method is invoked only once */
+    _init().then(
+      (gameInfoModel) => setState(() => _gameInfoModel = gameInfoModel),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    final screenSize = MediaQuery.of(context).size;
+    final data = MediaQuery.of(context);
+    // log('rebuilding game screen. Screen: $screenSize Query data: $data');
+
+    if (TestService.isTesting) {
+      try {
+        this._currentPlayer = TestService.currentPlayer;
+      } catch (e) {
+        print('test data loading error: $e');
+      }
+    } else {
+      // if (!TestService.isTesting) {
+      if (_gameInfoModel?.tableStatus == AppConstants.GAME_RUNNING) {
+        // query current hand to get game update
+        Future.delayed(Duration(milliseconds: 500), () {
+          _gameContextObj.handActionService.queryCurrentHand();
+        });
+      }
+    }
+
     var width = MediaQuery.of(context).size.width;
     // var heightOfTopView = MediaQuery.of(context).size.height / 2;
 
     bool isBoardHorizontal = true;
     var boardDimensions = BoardView.dimensions(context, isBoardHorizontal);
-
     return WillPopScope(
       onWillPop: () async {
         if (GameChat.globalKey.currentState.isEmojiVisible) {
@@ -278,85 +352,85 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
         child: Scaffold(
           /* FIXME: THIS FLOATING ACTION BUTTON IS FOR SHOWING THE TESTS */
           floatingActionButton: GamePlayScreenUtilMethods.floatingActionButton(
-            onReload: () {
-              if (!TestService.isTesting) {
-                TestService.isTesting = true;
-                print('refreshing entire UI');
-                setState(() {});
-              }
-            },
+            onReload: () {},
           ),
           resizeToAvoidBottomInset: false,
           backgroundColor: Colors.black,
-          body: FutureBuilder<GameInfoModel>(
-            // TODO: THIS UNIQUE KEY IS PLACED SO THAT A setState INVOCATION IN THIS CLASS WOULD CAUSE THIS WIDGET TO REBUILD
-            // TODO: THIS IS DONE, SO REFLECT THE GAME PLAY SCREEN CHANGES AFTER THE TEST MODE IS ACTIVATED
-            key: UniqueKey(),
-            future: _init(),
-            initialData: null,
-            builder: (_, AsyncSnapshot<GameInfoModel> snapshot) {
-              GameInfoModel _gameInfoModel = snapshot.data;
-
+          body: Builder(
+            builder: (_) {
               // show a progress indicator if the game info object is null
               if (_gameInfoModel == null)
                 return Center(child: CircularProgressIndicator());
 
-              if (_gameInfoModel.tableStatus == AppConstants.GAME_RUNNING) {
-                // query current hand to get game update
-                GameService.queryCurrentHand(
-                  _gameInfoModel.gameCode,
-                  _gameComService.sendPlayerToHandChannel,
-                );
-              }
-
               var dividerTotalHeight = MediaQuery.of(context).size.height / 6;
-              double divider1 = 0.40 * dividerTotalHeight;
+              Screen screen = Screen(context);
+              BoardAttributesObject boardAttributes =
+                  BoardAttributesObject(screenSize: screen.diagonalInches());
+
+              double tableScale = boardAttributes.getTableScale();
+              double divider1 = boardAttributes.getTableDividerHeightScale() *
+                  dividerTotalHeight; // 5inch 0.40, 10 inch: 1*
               final providers = GamePlayScreenUtilMethods.getProviders(
+                context: context,
                 gameInfoModel: _gameInfoModel,
                 gameCode: widget.gameCode,
-                currentPlayerInfo: this._currentPlayer,
+                gameState: _gameState,
                 agora: agora,
-                sendPlayerToHandChannel:
-                    _gameComService.sendPlayerToHandChannel,
+                boardAttributes: boardAttributes,
+                gameContextObject: _gameContextObj,
               );
               return MultiProvider(
                 providers: providers,
                 builder: (BuildContext context, _) {
                   this._providerContext = context;
 
-                  /* set proper context for test service */
-                  TestService.context = context;
+                  if (_gameContextObj != null) {
+                    if (_gameContextObj.handActionService == null) {
+                      _gameContextObj.handActionService = HandActionService(
+                          _providerContext,
+                          _gameState,
+                          _gameContextObj.gameComService);
+                      _gameContextObj.handActionService.loop();
 
-                  // handle test code
-                  if (TestService.isTesting) {
-                    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                      TestService.addBoardCards();
-                    });
+                      if (!TestService.isTesting) {
+                        _gameContextObj.gameComService.handToAllChannelStream
+                            .listen((nats.Message message) {
+                          if (!_gameContextObj.gameComService.active) return;
+                          if (_gameContextObj.handActionService == null) return;
+                          /* This stream receives hand related messages that is common to all players
+                          * e.g
+                          * New Hand - contains hand status, dealerPos, sbPos, bbPos, nextActionSeat
+                          * Next Action - contains the seat No which is to act next
+                          *
+                          * This stream also contains the output for the query of current hand*/
+                          _gameContextObj.handActionService
+                              .handle(message.string);
+                        });
 
-                    // TestService.showBets(_providerContext);
-
-                    if (TestService.showResult) {
-                      log('Show handresult');
-                      ResultService.handle(
-                          context: context, data: TestService.handResult);
-                      log('Show handresult');
+                        _gameContextObj.gameComService.handToPlayerChannelStream
+                            .listen((nats.Message message) {
+                          if (!_gameContextObj.gameComService.active) return;
+                          if (_gameContextObj.handActionService == null) return;
+                          /* This stream receives hand related messages that is specific to THIS player only
+                          * e.g
+                          * Deal - contains seat No and cards
+                          * Your Action - seat No, available actions & amounts */
+                          _gameContextObj.handActionService
+                              .handle(message.string);
+                        });
+                      }
                     }
                   }
 
-                  AudioBufferService.create().then(
-                      (Map<String, String> tmpAudioFiles) =>
-                          Provider.of<ValueNotifier<Map<String, String>>>(
-                            context,
-                            listen: false,
-                          ).value = tmpAudioFiles);
+                  /* set proper context for test service */
+                  TestService.context = context;
 
-                  // check for the current user prompt, after the following tree is built
-                  // waiting for a brief moment should suffice
-                  Future.delayed(
-                    AppConstants.buildWaitDuration,
-                    () => GamePlayScreenUtilMethods.checkForCurrentUserPrompt(
+                  AudioBufferService.create().then(
+                    (Map<String, String> tmpAudioFiles) =>
+                        Provider.of<ValueNotifier<Map<String, String>>>(
                       context,
-                    ),
+                      listen: false,
+                    ).value = tmpAudioFiles,
                   );
 
                   /* This listenable provider takes care of showing or hiding the chat widget */
@@ -371,7 +445,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                         Column(
                           children: [
                             // header section
-                            HeaderView(_gameComService),
+                            HeaderView(_gameState),
                             // empty space to highlight the background view
                             SizedBox(
                               width: width,
@@ -381,13 +455,17 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                             Container(
                               width: boardDimensions.width,
                               height: boardDimensions.height,
-                              child: BoardView(
-                                gameComService: _gameComService,
-                                gameInfo: _gameInfoModel,
-                                onUserTap: onJoinGame,
-                                onStartGame: () =>
-                                    GamePlayScreenUtilMethods.startGame(
-                                  widget.gameCode,
+                              child: Transform.scale(
+                                scale: tableScale, // 10 inch: 0.85, 5inch: 1.0
+                                child: BoardView(
+                                  gameComService:
+                                      _gameContextObj.gameComService,
+                                  gameInfo: _gameInfoModel,
+                                  onUserTap: onJoinGame,
+                                  onStartGame: () =>
+                                      GamePlayScreenUtilMethods.startGame(
+                                    widget.gameCode,
+                                  ),
                                 ),
                               ),
                             ),
@@ -401,7 +479,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                             // footer section
                             Expanded(
                               child: FooterView(
-                                this._gameComService,
+                                this._gameContextObj,
                                 widget.gameCode,
                                 _currentPlayer.uuid,
                                 () => toggleChatVisibility(context),
@@ -415,7 +493,10 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                               vnChatVisibility.value
                                   ? Align(
                                       child: GameChat(
-                                        this._gameComService.chat,
+                                        this
+                                            ._gameContextObj
+                                            .gameComService
+                                            .gameMessaging,
                                         () => toggleChatVisibility(context),
                                       ),
                                       alignment: Alignment.bottomCenter,
@@ -435,4 +516,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
       ),
     );
   }
+
+  @override
+  void afterFirstLayout(BuildContext context) {}
 }

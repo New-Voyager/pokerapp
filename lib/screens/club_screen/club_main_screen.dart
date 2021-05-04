@@ -22,16 +22,13 @@ class ClubMainScreen extends StatelessWidget {
   });
 
   List<Widget> _buildActions(String clubCode, BuildContext context) => [
-        Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: CustomTextButton(
-            onTap: () => Navigator.pushNamed(
-              context,
-              Routes.new_game_settings,
-              arguments: clubCode,
-            ),
-            text: '+ Create Game',
+        CustomTextButton(
+          onTap: () => Navigator.pushNamed(
+            context,
+            Routes.new_game_settings,
+            arguments: clubCode,
           ),
+          text: '+ Create Game',
         ),
       ];
 
@@ -44,7 +41,7 @@ class ClubMainScreen extends StatelessWidget {
 
           return Scaffold(
             backgroundColor: AppColors.screenBackgroundColor,
-            appBar: AppBar(
+            /*  appBar: AppBar(
               leading: IconButton(
                 icon: Icon(
                   Icons.arrow_back_ios,
@@ -52,6 +49,7 @@ class ClubMainScreen extends StatelessWidget {
                 ),
                 onPressed: () => Navigator.of(context).pop(),
               ),
+              title:,
               actions: clubModel == null
                   ? null
                   : _buildActions(
@@ -60,7 +58,7 @@ class ClubMainScreen extends StatelessWidget {
                     ),
               elevation: 0.0,
               backgroundColor: AppColors.screenBackgroundColor,
-            ),
+            ), */
             body: clubModel == null
                 ? Center(
                     child: CircularProgressIndicator(),
@@ -72,6 +70,31 @@ class ClubMainScreen extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
+                            Container(
+                              padding: EdgeInsets.only(left: 8, right: 16),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  IconButton(
+                                      icon: Icon(
+                                        Icons.arrow_back_ios,
+                                        color: AppColors.appAccentColor,
+                                      ),
+                                      onPressed: () =>
+                                          Navigator.of(context).pop()),
+                                  CustomTextButton(
+                                    onTap: () => Navigator.pushNamed(
+                                      context,
+                                      Routes.new_game_settings,
+                                      arguments: clubCode,
+                                    ),
+                                    text: '+ Create Game',
+                                  ),
+                                ],
+                              ),
+                            ),
                             ClubBannerView(
                               clubModel: clubModel,
                             ),
