@@ -1,7 +1,7 @@
 // import 'package:flutter/material.dart';
 //
 // import 'package:pokerapp/models/game_play_models/business/player_model.dart';
-// import 'hole_cards_view.dart';
+// import 'hole_cards_view_and_footer_action_view.dart';
 //
 // class GameAction extends StatelessWidget {
 //   final PlayerModel playerModel;

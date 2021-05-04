@@ -12,7 +12,7 @@ import 'package:pokerapp/utils/utils.dart';
 import 'package:provider/provider.dart';
 import 'communication_view.dart';
 import 'hand_analyse_view.dart';
-import 'hole_cards_view.dart';
+import 'hole_cards_view_and_footer_action_view.dart';
 import 'seat_change_confirm_widget.dart';
 
 class FooterView extends StatefulWidget {

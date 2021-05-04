@@ -31,7 +31,6 @@ class FooterActionView extends StatefulWidget {
 
 class _FooterActionViewState extends State<FooterActionView> {
   bool _showOptions = false;
-  bool _disableBetButton = false;
   double betAmount;
   String selectedOptionText;
   bool bet = false;
