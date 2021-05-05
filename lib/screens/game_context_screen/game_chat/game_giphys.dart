@@ -7,7 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/screens/game_play_screen/widgets/gif_list_widget.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/app/tenor_service.dart';
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
@@ -27,13 +29,10 @@ class _GameGiphiesState extends State<GameGiphies> {
   Timer _timer;
   bool isFavourite = true;
   String currentSelectedTab = '';
-  List<String> tabBarItems = ['All-in', "Donkey", "Fish", "HAHA"];
   List<String> favouriteGiphies;
   bool _expandSearchBar = false;
   Future<List<TenorResult>> _fetchGifs({String query}) async {
-    setState(() {
-      _gifs = null;
-    });
+    setState(() => _gifs = null);
 
     if (query == null || query.isEmpty) return TenorService.getTrendingGifs();
 
@@ -105,7 +104,7 @@ class _GameGiphiesState extends State<GameGiphies> {
                   SizedBox(
                     width: 10,
                   ),
-                  ...tabBarItems
+                  ...AppConstants.GIF_CATEGORIES
                       .map(
                         (e) => GestureDetector(
                           onTap: () {
@@ -276,68 +275,11 @@ class _GameGiphiesState extends State<GameGiphies> {
                             )
                           : Padding(
                               padding: const EdgeInsets.only(top: 10.0),
-                              child: StaggeredGridView.countBuilder(
-                                itemCount: _gifs.length,
-                                physics: BouncingScrollPhysics(),
-                                crossAxisCount: 4,
-                                crossAxisSpacing: 10.0,
-                                mainAxisSpacing: 10.0,
-                                staggeredTileBuilder: (_) => StaggeredTile.fit(
-                                  2,
-                                ),
-                                itemBuilder: (_, int index) {
-                                  final TenorResult gif = _gifs[index];
-
-                                  final String url = gif.media.gif.url;
-                                  final String previewUrl =
-                                      gif.media.tinygif.previewUrl;
-
-                                  /* we use this dimension to show the placeholder */
-                                  final Size gifSize = Size(
-                                    gif.media.gif.dims[0].toDouble(),
-                                    gif.media.gif.dims[1].toDouble(),
-                                  );
-
-                                  print(
-                                    "tiny gif size: ${gif.media.tinygif.size}",
-                                  );
-                                  print(
-                                    "normal gif size: ${gif.media.gif.size}",
-                                  );
-                                  print('size: $gifSize');
-                                  print('$url $previewUrl');
-
-                                  return GestureDetector(
-                                    onTap: () {
-                                      widget.chatService.sendGiphy(
-                                        url,
-                                      );
-                                      Navigator.pop(
-                                        context,
-                                        url,
-                                      );
-                                    },
-                                    child: Container(
-                                      color: Colors.red.withOpacity(0.20),
-                                      child: CachedNetworkImage(
-                                        imageUrl: previewUrl,
-                                        progressIndicatorBuilder: (
-                                          context,
-                                          url,
-                                          downloadProgress,
-                                        ) =>
-                                            AspectRatio(
-                                          aspectRatio:
-                                              gifSize.width / gifSize.height,
-                                          child: Container(
-                                            width: double.infinity,
-                                            height: double.infinity,
-                                            color: CupertinoColors.inactiveGray,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  );
+                              child: GifListWidget(
+                                gifs: _gifs,
+                                onGifSelect: (String url) {
+                                  widget.chatService.sendGiphy(url);
+                                  Navigator.pop(context, url);
                                 },
                               ),
                             ),

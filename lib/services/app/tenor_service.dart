@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:pokerapp/services/app/gif_cache_service.dart';
 import 'package:tenor/tenor.dart';
 
 class TenorService {
@@ -7,7 +8,7 @@ class TenorService {
   static Tenor tenor = Tenor(apiKey: _token);
 
   static Future<List<TenorResult>> getTrendingGifs() async {
-    TenorResponse res = await tenor.requestTrendingGIF(limit: 24);
+    TenorResponse res = await tenor.requestTrendingGIF(limit: 20);
     final List<TenorResult> list = [];
     res?.results?.forEach((TenorResult tenorResult) {
       list.add(tenorResult);
@@ -19,16 +20,28 @@ class TenorService {
     return list;
   }
 
-  static Future<List<TenorResult>> getGifsWithSearch(String query) async {
-    TenorResponse res = await tenor.searchGIF(query, limit: 20);
+  static Future<List<TenorResult>> getGifsWithSearch(
+    String query, {
+    int limit = 20,
+  }) async {
+    /* check in cache first */
+    final List<TenorResult> cacheResults = await GifCacheService.getFromCache(
+      query,
+    );
+
+    /* return from cache if not NULL */
+    if (cacheResults != null) return cacheResults;
+
+    TenorResponse res = await tenor.searchGIF(
+      query,
+      limit: limit,
+    );
     final List<TenorResult> list = [];
 
     res?.results?.forEach((TenorResult tenorResult) {
       list.add(tenorResult);
-      var title = tenorResult.title;
-      var media = tenorResult.media;
-      // print('******* : ${media?.nanogif?.url?.toString()}');
     });
+
     return list;
   }
 }

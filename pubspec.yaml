@@ -107,7 +107,10 @@ dependencies:
   overlay_support: ^1.2.1
 
   # tenor gifs
-  tenor: any
+  tenor:
+    git:
+      url: https://github.com/jyotirmoy-paul/tenor
+      ref: master
 
   # firebase services
   firebase_core: ^1.1.0

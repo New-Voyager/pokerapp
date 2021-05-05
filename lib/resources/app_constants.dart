@@ -3,6 +3,13 @@ import 'package:intl/intl.dart';
 class AppConstants {
   AppConstants._();
 
+  static const List<String> GIF_CATEGORIES = const [
+    'All-in',
+    'Donkey',
+    'Fish',
+    'HAHA',
+  ];
+
   static DateFormat CHAT_DATE_TIME_FORMAT = DateFormat("hh:mm a");
 
   static const PROD_MODE = false;

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/main.dart';
+import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
+import 'package:pokerapp/services/app/gif_cache_service.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -22,6 +24,11 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
+
+    /* cache all the category gifs */
+    GifCacheService.cacheGifCategories(
+      AppConstants.GIF_CATEGORIES,
+    );
 
     Future.delayed(Duration(milliseconds: 400), () async {
       String jwt = await AuthService.getJwt();

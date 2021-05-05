@@ -14,14 +14,14 @@ packages:
       name: agora_rtc_engine
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.2.1"
+    version: "3.3.3"
   animated_text_kit:
     dependency: "direct main"
     description:
       name: animated_text_kit
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.1.1"
+    version: "4.2.1"
   archive:
     dependency: transitive
     description:
@@ -242,7 +242,7 @@ packages:
       name: firebase_analytics
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "8.0.2"
+    version: "8.0.3"
   firebase_analytics_platform_interface:
     dependency: transitive
     description:
@@ -397,7 +397,7 @@ packages:
       name: font_awesome_flutter
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "8.11.0"
+    version: "8.12.0"
   get_it:
     dependency: "direct main"
     description:
@@ -565,14 +565,14 @@ packages:
       name: path_drawing
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.5.0"
+    version: "0.5.1"
   path_parsing:
     dependency: transitive
     description:
       name: path_parsing
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.2.0"
+    version: "0.2.1"
   path_provider:
     dependency: "direct main"
     description:
@@ -791,9 +791,11 @@ packages:
   tenor:
     dependency: "direct main"
     description:
-      name: tenor
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "."
+      ref: master
+      resolved-ref: eff30f55fe6cd1fd50485c8367621d96976086a2
+      url: "https://github.com/jyotirmoy-paul/tenor"
+    source: git
     version: "1.0.8"
   term_glyph:
     dependency: transitive
@@ -871,7 +873,7 @@ packages:
       name: win32
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.0"
+    version: "2.0.5"
   xdg_directories:
     dependency: transitive
     description:
