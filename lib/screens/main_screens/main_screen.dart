@@ -4,11 +4,13 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_icons.dart';
 import 'package:pokerapp/screens/main_screens/clubs_page_view/clubs_page_view.dart';
 import 'package:pokerapp/screens/main_screens/games_page_view/games_page_view.dart';
 import 'package:pokerapp/screens/main_screens/profile_page_view/profile_page_view.dart';
 import 'package:pokerapp/screens/main_screens/purchase_page_view/purchase_page_view.dart';
+import 'package:pokerapp/services/app/gif_cache_service.dart';
 import 'package:pokerapp/services/app/player_service.dart';
 import 'package:pokerapp/services/firebase/push_notification_service.dart';
 import 'package:pokerapp/services/nats/nats.dart';
@@ -28,8 +30,11 @@ class _MainScreenState extends State<MainScreen>
   Nats _nats;
   Future<void> _init() async {
     log('Initialize main screen');
-    //_nats = Nats();
-    //
+
+    /* cache all the category gifs */
+    GifCacheService.cacheGifCategories(
+      AppConstants.GIF_CATEGORIES,
+    );
 
     if (!TestService.isTesting) {
       _currentPlayer = await PlayerService.getMyInfo(null);

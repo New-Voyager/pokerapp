@@ -109,7 +109,7 @@ dependencies:
   # tenor gifs
   tenor:
     git:
-      url: https://github.com/jyotirmoy-paul/tenor
+      url: https://github.com/New-Voyager/tenor.git
       ref: master
 
   # firebase services

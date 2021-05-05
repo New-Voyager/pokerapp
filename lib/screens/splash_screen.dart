@@ -25,11 +25,6 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
 
-    /* cache all the category gifs */
-    GifCacheService.cacheGifCategories(
-      AppConstants.GIF_CATEGORIES,
-    );
-
     Future.delayed(Duration(milliseconds: 400), () async {
       String jwt = await AuthService.getJwt();
       await graphQLConfiguration.init();

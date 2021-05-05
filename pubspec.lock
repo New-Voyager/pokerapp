@@ -793,8 +793,8 @@ packages:
     description:
       path: "."
       ref: master
-      resolved-ref: eff30f55fe6cd1fd50485c8367621d96976086a2
-      url: "https://github.com/jyotirmoy-paul/tenor"
+      resolved-ref: "92be523ffbc911754a051f87cb5c14229aa1e596"
+      url: "https://github.com/New-Voyager/tenor.git"
     source: git
     version: "1.0.8"
   term_glyph:
