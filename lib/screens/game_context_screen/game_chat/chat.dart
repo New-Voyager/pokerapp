@@ -101,6 +101,52 @@ class _GameChatState extends State<GameChat> {
     });
   }
 
+  Widget _buildChatBubble(
+    ChatMessage message,
+    int index,
+  ) =>
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            message.fromName.toString(),
+            style: AppStyles.clubItemInfoTextStyle.copyWith(fontSize: 12),
+            softWrap: true,
+          ),
+          SizedBox(height: 5),
+          message.text != null
+              ? Text(
+                  widget.chatService.messages[index].text,
+                  style: AppStyles.clubCodeStyle,
+                )
+              : message.giphyLink != null
+                  ? CachedNetworkImage(
+                      imageUrl: widget.chatService.messages[index].giphyLink,
+                      height: 150,
+                      width: 150,
+                      placeholder: (_, __) => Center(
+                        child: SizedBox(
+                            height: 50,
+                            width: 50,
+                            child: CircularProgressIndicator()),
+                      ),
+                      fit: BoxFit.cover,
+                    )
+                  : Container(),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Text(
+                "${AppConstants.CHAT_DATE_TIME_FORMAT.format(message.received.toLocal())}",
+                style: AppStyles.itemInfoSecondaryTextStyle.copyWith(
+                  fontSize: 10,
+                ),
+              )
+            ],
+          ),
+        ],
+      );
+
   @override
   Widget build(BuildContext context) {
     height = MediaQuery.of(context).size.height;
@@ -110,14 +156,15 @@ class _GameChatState extends State<GameChat> {
           EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
       height: isEmojiVisible || isKeyboardVisible || isGiphyVisible
           ? height / 2
-          : height / 3.5,
+          : height / 3.0,
       child: Column(
         children: [
-          SizedBox(
-            height: 5,
-          ),
+          /* top margin */
+          const SizedBox(height: 5),
+
+          /* top right button */
           Align(
-            alignment: Alignment.centerRight,
+            alignment: Alignment.topRight,
             child: GestureDetector(
               onTap: widget.chatVisibilityChange,
               child: Padding(
@@ -129,47 +176,53 @@ class _GameChatState extends State<GameChat> {
               ),
             ),
           ),
+
+          /* message window */
           Expanded(
             child: ListView.builder(
+              padding: const EdgeInsets.all(2.0),
               controller: _scrollController,
               itemCount: widget.chatService.messages.length,
-              physics: ClampingScrollPhysics(),
+              physics: BouncingScrollPhysics(),
               reverse: true,
               shrinkWrap: true,
-              itemBuilder: (contex, index) {
+              itemBuilder: (context, index) {
                 ChatMessage message = widget.chatService.messages[index];
                 return Container(
-                  margin: EdgeInsets.only(bottom: 4, right: 96, left: 8),
+                  margin: EdgeInsets.only(
+                    bottom: 4,
+                    right: 96,
+                    left: 8,
+                  ),
                   padding: EdgeInsets.all(8),
                   decoration: AppStyles.othersMessageDecoration,
-                  child: ListView(
-                    shrinkWrap: true,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      Flexible(
-                        child: Text(
-                          message.fromName.toString(),
-                          style: AppStyles.clubItemInfoTextStyle
-                              .copyWith(fontSize: 12),
-                          softWrap: true,
+                      Text(
+                        message.fromName.toString(),
+                        style: AppStyles.clubItemInfoTextStyle.copyWith(
+                          fontSize: 12,
                         ),
+                        softWrap: true,
                       ),
                       SizedBox(height: 5),
                       message.text != null
                           ? Text(
-                              widget.chatService.messages[index].text,
+                              message.text,
                               style: AppStyles.clubCodeStyle,
                             )
                           : message.giphyLink != null
                               ? CachedNetworkImage(
-                                  imageUrl: widget
-                                      .chatService.messages[index].giphyLink,
+                                  imageUrl: message.giphyLink,
                                   height: 150,
                                   width: 150,
                                   placeholder: (_, __) => Center(
                                     child: SizedBox(
-                                        height: 50,
-                                        width: 50,
-                                        child: CircularProgressIndicator()),
+                                      height: 50,
+                                      width: 50,
+                                      child: CircularProgressIndicator(),
+                                    ),
                                   ),
                                   fit: BoxFit.cover,
                                 )

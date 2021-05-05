@@ -43,9 +43,12 @@ class _MainScreenState extends State<MainScreen>
 
       final natsClient = Provider.of<Nats>(context, listen: false);
       _nats = natsClient;
-      Future.delayed(Duration(milliseconds: 100), () async {
-        await natsClient.init(_currentPlayer.channel);
-      });
+      await natsClient.init(_currentPlayer.channel);
+
+      // TODO: WHY DO WE NEEDED THE DELAY?
+      // Future.delayed(Duration(milliseconds: 100), () async {
+      //   await natsClient.init(_currentPlayer.channel);
+      // });
     }
 
     // WidgetsBinding.instance.addPostFrameCallback((_) async {

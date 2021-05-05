@@ -1,7 +1,10 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
@@ -40,7 +43,7 @@ class _GameGiphiesState extends State<GameGiphies> {
 
   @override
   void initState() {
-    getfavouriteGiphy();
+    getFavouriteGiphy();
     _fetchGifs().then(
       (value) => setState(() {
         _gifs = value;
@@ -49,7 +52,7 @@ class _GameGiphiesState extends State<GameGiphies> {
     super.initState();
   }
 
-  getfavouriteGiphy() {
+  getFavouriteGiphy() {
     GameService.favouriteGiphies().then((value) {
       setState(() {
         favouriteGiphies = value;
@@ -151,16 +154,15 @@ class _GameGiphiesState extends State<GameGiphies> {
                       color: AppColors.lightGrayColor,
                     ),
                     onTap: () {
-                      setState(() {
-                        _expandSearchBar = !_expandSearchBar;
-                      });
+                      setState(() => _expandSearchBar = !_expandSearchBar);
                     },
                     onChanged: (String text) {
                       if (text.trim().isEmpty) return;
 
                       if (_timer?.isActive ?? false) _timer.cancel();
 
-                      _timer = Timer(const Duration(milliseconds: 0), () {
+                      /* we should wait before calling the API */
+                      _timer = Timer(const Duration(milliseconds: 500), () {
                         setState(() {
                           currentSelectedTab = '';
                           isFavourite = false;
@@ -215,7 +217,7 @@ class _GameGiphiesState extends State<GameGiphies> {
                                   content: AddFavouriteGiphy(),
                                 ),
                               );
-                              getfavouriteGiphy();
+                              getFavouriteGiphy();
                             },
                             child: Icon(
                               Icons.add_circle_outline,
@@ -274,45 +276,69 @@ class _GameGiphiesState extends State<GameGiphies> {
                             )
                           : Padding(
                               padding: const EdgeInsets.only(top: 10.0),
-                              child: GridView.count(
+                              child: StaggeredGridView.countBuilder(
+                                itemCount: _gifs.length,
+                                physics: BouncingScrollPhysics(),
                                 crossAxisCount: 4,
                                 crossAxisSpacing: 10.0,
                                 mainAxisSpacing: 10.0,
-                                children: _gifs.map((TenorResult gif) {
-                                  print("${gif.url}");
+                                staggeredTileBuilder: (_) => StaggeredTile.fit(
+                                  2,
+                                ),
+                                itemBuilder: (_, int index) {
+                                  final TenorResult gif = _gifs[index];
+
+                                  final String url = gif.media.gif.url;
+                                  final String previewUrl =
+                                      gif.media.tinygif.previewUrl;
+
+                                  /* we use this dimension to show the placeholder */
+                                  final Size gifSize = Size(
+                                    gif.media.gif.dims[0].toDouble(),
+                                    gif.media.gif.dims[1].toDouble(),
+                                  );
+
+                                  print(
+                                    "tiny gif size: ${gif.media.tinygif.size}",
+                                  );
+                                  print(
+                                    "normal gif size: ${gif.media.gif.size}",
+                                  );
+                                  print('size: $gifSize');
+                                  print('$url $previewUrl');
+
                                   return GestureDetector(
                                     onTap: () {
-                                      widget.chatService
-                                          .sendGiphy(gif.media.gif.url);
-                                      Navigator.pop(context, gif.media.gif.url);
+                                      widget.chatService.sendGiphy(
+                                        url,
+                                      );
+                                      Navigator.pop(
+                                        context,
+                                        url,
+                                      );
                                     },
-                                    child: CachedNetworkImage(
-                                      imageUrl: gif.media.tinygif.url,
-                                      progressIndicatorBuilder: (context, url,
-                                              downloadProgress) =>
-                                          Center(
-                                              child: CircularProgressIndicator(
-                                        backgroundColor:
-                                            AppColors.cardBackgroundColor,
-                                        value: downloadProgress.progress,
-                                        valueColor:
-                                            new AlwaysStoppedAnimation<Color>(
-                                          AppColors.appAccentColor,
+                                    child: Container(
+                                      color: Colors.red.withOpacity(0.20),
+                                      child: CachedNetworkImage(
+                                        imageUrl: previewUrl,
+                                        progressIndicatorBuilder: (
+                                          context,
+                                          url,
+                                          downloadProgress,
+                                        ) =>
+                                            AspectRatio(
+                                          aspectRatio:
+                                              gifSize.width / gifSize.height,
+                                          child: Container(
+                                            width: double.infinity,
+                                            height: double.infinity,
+                                            color: CupertinoColors.inactiveGray,
+                                          ),
                                         ),
-                                      )),
-                                      // placeholder: (_, __) => Center(
-                                      //     child: CircularProgressIndicator(
-                                      //   backgroundColor:
-                                      //       AppColors.cardBackgroundColor,
-                                      //   valueColor:
-                                      //       new AlwaysStoppedAnimation<Color>(
-                                      //     AppColors.appAccentColor,
-                                      //   ),
-                                      // )),
-                                      fit: BoxFit.cover,
+                                      ),
                                     ),
                                   );
-                                }).toList(),
+                                },
                               ),
                             ),
                 ),
