@@ -71,7 +71,7 @@ class BetWidget extends StatelessWidget {
                               margin: EdgeInsets.only(bottom: 16),
                               height: height / 5,
                               width: width / 2,
-                              child: sleekSlider(valueNotifierVal),
+                              child: sleekSlider(),
                             ),
                           ),
 
@@ -164,40 +164,42 @@ class BetWidget extends StatelessWidget {
     );
   }
 
-  Widget sleekSlider(ValueNotifier<double> vnValue) {
+  Widget sleekSlider() {
     // log('min: ${action.minRaiseAmount} max: ${action.maxRaiseAmount} val: $val');
 
-    return SleekCircularSlider(
-      onChange: (value) => vnValue.value = value,
-      min: action.minRaiseAmount.toDouble(),
-      max: action.maxRaiseAmount.toDouble(),
-      initialValue: action.minRaiseAmount.toDouble(),
-      appearance: CircularSliderAppearance(
-        size: 350,
-        startAngle: 180,
-        angleRange: 180,
-        animationEnabled: false,
-        infoProperties: InfoProperties(
-          mainLabelStyle: TextStyle(
-            fontSize: 0,
-            color: Colors.white70,
+    return Consumer<ValueNotifier<double>>(
+      builder: (_, vnValue, __) => SleekCircularSlider(
+        onChange: (value) => vnValue.value = value,
+        min: action.minRaiseAmount.toDouble(),
+        max: action.maxRaiseAmount.toDouble(),
+        initialValue: vnValue.value,
+        appearance: CircularSliderAppearance(
+          size: 350,
+          startAngle: 180,
+          angleRange: 180,
+          animationEnabled: false,
+          infoProperties: InfoProperties(
+            mainLabelStyle: TextStyle(
+              fontSize: 0,
+              color: Colors.white70,
+            ),
+            modifier: (double value) => '',
           ),
-          modifier: (double value) => '',
-        ),
-        customColors: CustomSliderColors(
-          hideShadow: false,
-          trackColor: AppColors.lightGrayColor,
-          dotColor: AppColors.buttonBorderColor,
-          progressBarColors: [
-            Colors.red,
-            Colors.yellow,
-            Colors.green,
-          ],
-        ),
-        customWidths: CustomSliderWidths(
-          trackWidth: 16,
-          progressBarWidth: 16,
-          handlerSize: 16,
+          customColors: CustomSliderColors(
+            hideShadow: false,
+            trackColor: AppColors.lightGrayColor,
+            dotColor: AppColors.buttonBorderColor,
+            progressBarColors: [
+              Colors.red,
+              Colors.yellow,
+              Colors.green,
+            ],
+          ),
+          customWidths: CustomSliderWidths(
+            trackWidth: 16,
+            progressBarWidth: 16,
+            handlerSize: 16,
+          ),
         ),
       ),
     );
