@@ -38,7 +38,6 @@ class HoleCardsViewAndFooterActionView extends StatefulWidget {
 class _HoleCardsViewAndFooterActionViewState
     extends State<HoleCardsViewAndFooterActionView> {
   bool _isCardVisible = false;
-  bool _isBetWidgetVisible = false;
 
   @override
   Widget build(BuildContext context) {
@@ -47,45 +46,52 @@ class _HoleCardsViewAndFooterActionViewState
       listen: false,
     );
 
-    return Stack(
-      children: [
-        Align(
-          alignment: Alignment.topCenter,
-          child: Transform.translate(
-            offset: boardAttributes.holeCardViewOffset,
-            child: Transform.scale(
-              scale: boardAttributes.holeCardViewScale,
-              child: holeCardView(context),
+    return ListenableProvider(
+      create: (_) => ValueNotifier<bool>(false),
+      builder: (BuildContext context, __) => Stack(
+        children: [
+          Align(
+            alignment: Alignment.topCenter,
+            child: Transform.translate(
+              offset: boardAttributes.holeCardViewOffset,
+              child: Transform.scale(
+                scale: boardAttributes.holeCardViewScale,
+                child: holeCardView(context),
+              ),
             ),
           ),
-        ),
 
-        /* dark overlay to show in-front of cards, when the bet widget is displayed */
-        AnimatedSwitcher(
-          duration: AppConstants.fastAnimationDuration,
-          reverseDuration: AppConstants.fastAnimationDuration,
-          child: _isBetWidgetVisible
-              ? Container(
-                  width: double.infinity,
-                  height: double.infinity,
-                  color: Colors.black.withOpacity(0.80),
-                )
-              : const SizedBox.shrink(),
-        ),
+          /* dark overlay to show in-front of cards, when the bet widget is displayed */
+          Consumer<ValueNotifier<bool>>(
+            builder: (_, vnIsBetWidgetVisible, __) => AnimatedSwitcher(
+              duration: AppConstants.fastAnimationDuration,
+              reverseDuration: AppConstants.fastAnimationDuration,
+              child: vnIsBetWidgetVisible.value
+                  ? Container(
+                      width: double.infinity,
+                      height: double.infinity,
+                      color: Colors.black.withOpacity(0.80),
+                    )
+                  : const SizedBox.shrink(),
+            ),
+          ),
 
-        // action view (show when it is time for this user to act)
-        Align(
-          alignment: Alignment.bottomCenter,
-          child: widget.showActionWidget ?? false
-              ? FooterActionView(
-                  gameContext: widget.gameContext,
-                  isBetWidgetVisible: (bool isBetWidgetVisible) {
-                    setState(() => _isBetWidgetVisible = isBetWidgetVisible);
-                  },
-                )
-              : const SizedBox.shrink(),
-        ),
-      ],
+          // action view (show when it is time for this user to act)
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: widget.showActionWidget ?? false
+                ? FooterActionView(
+                    gameContext: widget.gameContext,
+                    isBetWidgetVisible: (bool isBetWidgetVisible) =>
+                        Provider.of<ValueNotifier<bool>>(
+                      context,
+                      listen: false,
+                    ).value = isBetWidgetVisible,
+                  )
+                : const SizedBox.shrink(),
+          ),
+        ],
+      ),
     );
   }
 

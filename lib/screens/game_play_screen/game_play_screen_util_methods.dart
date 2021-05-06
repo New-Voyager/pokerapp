@@ -112,7 +112,7 @@ class GamePlayScreenUtilMethods {
           ),
           backgroundColor: Colors.red,
           label: 'Flop',
-          onTap: () => TestService.flop(),
+          onTap: () => TestService.addFlopCards(),
         ),
         SpeedDialChild(
           child: Icon(
