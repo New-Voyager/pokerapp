@@ -122,7 +122,7 @@ class _BoardViewState extends State<BoardView> {
                 // cards = TestService.boardCards;
                 pots = TestService.pots;
               }
-
+              log("111TABLE STATE : " + tableState.tableStatus);
               return CenterView(
                 centerKey,
                 widget.gameInfo.gameCode,

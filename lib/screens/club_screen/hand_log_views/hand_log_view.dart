@@ -180,7 +180,7 @@ class _HandLogViewState extends State<HandLogView> {
                   Container(
                     child: HandWinnersView(_handLogModel),
                   ),
-                  /* Container(
+                  Container(
                     child: HandStageView(_handLogModel.preFlopActions),
                   ),
                   Container(
@@ -191,7 +191,7 @@ class _HandLogViewState extends State<HandLogView> {
                   ),
                   Container(
                     child: HandStageView(_handLogModel.riverActions),
-                  ), */
+                  ),
                 ],
               ),
             ),

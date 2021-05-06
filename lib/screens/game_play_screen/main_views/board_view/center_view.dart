@@ -10,6 +10,7 @@ import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/screens/game_play_screen/card_views/animations/animating_shuffle_card_view.dart';
 import 'package:pokerapp/screens/game_play_screen/card_views/community_cards_view/community_cards_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/center_button_view.dart';
+import 'package:pokerapp/screens/game_play_screen/main_views/board_view/game_ended_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/pots_view.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:provider/provider.dart';
@@ -43,7 +44,7 @@ class CenterView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String _text = showDown ? null : BoardViewUtilMethods.getText(tableStatus);
-    //log('table status: $_text');
+    log('111table status: $_text $tableStatus');
     //log('board_view : center_view : _text : $_text');
     /* if the game is paused, show the options available during game pause */
     if (_text == AppConstants.GAME_PAUSED ||
@@ -63,6 +64,11 @@ class CenterView extends StatelessWidget {
         scale: 1.2,
         child: AnimatingShuffleCardView(),
       );
+    }
+
+    if (_text == AppConstants.GAME_ENDED) {
+      log('111Game Ended!!!!');
+      return GameEndedView();
     }
     /* if reached here, means, the game is RUNNING */
     /* The following view, shows the community cards

@@ -9,6 +9,7 @@ import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_log_view.dart';
 import 'package:pokerapp/screens/game_screens/hand_history/hand_history.dart';
 import 'package:pokerapp/services/game_play/graphql/game_service.dart';
+import 'package:pokerapp/utils/alerts.dart';
 import 'seat_change_bottom_sheet.dart';
 import 'waiting_list.dart';
 
@@ -41,36 +42,20 @@ class _GameOptionState extends State<GameOption> {
   }
 
   void onEndGame() {
-    showSimpleNotification(
-      Text('The game will end after this hand'),
-      position: NotificationPosition.top,
-      duration: Duration(seconds: 10),
-    );
+    Alerts.showNotification("The game will end after this hand");
     // We need to broadcast to all the players
     GameService.endGame(this.gameCode);
 
-    /*  ScaffoldMessenger.of(navigatorKey.currentContext).showSnackBar(
-      SnackBar(
-        content: const Text('The game will end after this hand'),
-        duration: Duration(seconds: 15),
-        backgroundColor: Colors.black38,
-      ),
-    ); */
+    Navigator.of(context).pop();
   }
 
   void onPause() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: const Text('Game will be paused after this hand'),
-        duration: Duration(seconds: 15),
-        backgroundColor: Colors.black38,
-      ),
-    );
-
+    Alerts.showNotification("Game will be paused after this hand");
     GameService.pauseGame(this.gameCode);
   }
 
   void onResume() {
+    Alerts.showNotification("Game resumed!");
     // final snackBar = SnackBar(
     //   content: Text('Resume game is not implemented'),
     //   duration: Duration(seconds: 30),

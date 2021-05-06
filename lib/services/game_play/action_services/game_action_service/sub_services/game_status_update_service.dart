@@ -42,6 +42,7 @@ class GameStatusUpdateService {
       gameContext.handActionService.queryCurrentHand();
     } else if (gameStatus == AppConstants.GAME_ENDED) {
       // end the game
+      log("111GameStatus : $gameStatus in gamestatusupdate service");
       tableState.updateTableStatusSilent(AppConstants.GAME_ENDED);
       BoardService.reset(context);
     } else if (gameStatus == AppConstants.GAME_PAUSED) {

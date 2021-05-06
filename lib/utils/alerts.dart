@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 
 class Alerts {
@@ -17,5 +18,15 @@ class Alerts {
       ),
       duration: duration,
     ));
+  }
+
+  static void showNotification(String text){
+     showSimpleNotification(
+      Text(text),
+      position: NotificationPosition.top,
+      autoDismiss: true,
+      background: AppColors.cardBackgroundColor,
+      duration: Duration(seconds: 5),
+    );
   }
 }
