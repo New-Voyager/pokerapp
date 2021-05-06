@@ -64,7 +64,7 @@ class TestService {
   static List<int> get pots => _pots;
 
   static get isTesting {
-    return false;
+    return true;
   }
 
   static void testIap() {

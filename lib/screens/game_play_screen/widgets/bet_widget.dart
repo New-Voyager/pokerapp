@@ -6,9 +6,10 @@ import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/pulsating_button.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/utils/numeric_keyboard.dart';
+import 'package:provider/provider.dart';
 import 'package:sleek_circular_slider/sleek_circular_slider.dart';
 
-class BetWidget extends StatefulWidget {
+class BetWidget extends StatelessWidget {
   final Function onSubmitCallBack;
   final PlayerAction action;
 
@@ -18,156 +19,159 @@ class BetWidget extends StatefulWidget {
   });
 
   @override
-  _BetWidgetState createState() => _BetWidgetState();
-}
-
-class _BetWidgetState extends State<BetWidget> {
-  double val;
-  TextEditingController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    // always start with min
-
-    val = widget.action.minRaiseAmount.toDouble();
-    _controller = TextEditingController(text: "${val.toStringAsFixed(0)}");
-  }
-
-  @override
   Widget build(BuildContext context) {
-    //log('val: $val min: ${widget.rangeMin} max: ${widget.rangeMax}');
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
-    return FittedBox(
-      fit: BoxFit.fitHeight,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Transform.translate(
-            offset: Offset(0, 40),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                  ),
-                  child: IconButton(
-                    icon: Icon(Icons.remove_circle_rounded),
-                    color: Colors.blue,
-                    onPressed: () {
-                      val--;
-                      setState(() {});
-                    },
-                  ),
-                ),
-                Container(
-                  child: Stack(
-                    children: [
-                      Align(
-                        alignment: Alignment.center,
-                        child: Container(
-                          margin: EdgeInsets.only(bottom: 16),
-                          height: height / 5,
-                          width: width / 2,
-                          child: sleekSlider(),
-                        ),
+
+    return ListenableProvider<ValueNotifier<double>>(
+      create: (_) => ValueNotifier<double>(
+        action.minRaiseAmount.toDouble(),
+      ),
+      builder: (BuildContext context, _) {
+        final valueNotifierVal = Provider.of<ValueNotifier<double>>(
+          context,
+          listen: false,
+        );
+
+        return FittedBox(
+          fit: BoxFit.fitHeight,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Transform.translate(
+                offset: Offset(0, 40),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    /* - button */
+                    Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
                       ),
-                      Positioned(
-                        top: 0,
-                        bottom: 0,
-                        right: 0,
-                        left: 0,
-                        child: Align(
-                          alignment: Alignment.topCenter,
-                          child: Transform.translate(
-                            offset: Offset(0, 40),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Container(
-                                  width: 70,
-                                  height: 70,
-                                  child: PulsatingCircleIconButton(
-                                    onTap: () {
-                                      if (widget.onSubmitCallBack != null) {
-                                        widget.onSubmitCallBack(val);
-                                      }
-                                    },
-                                    child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            DataFormatter.chipsFormat(val),
-                                            style: TextStyle(
-                                                fontSize: 12,
-                                                color: Colors.white),
-                                          ),
-                                          SizedBox(height: 5),
-                                          Text(
-                                            "BET",
-                                            style: TextStyle(
-                                                fontSize: 12,
-                                                color: Colors.white),
-                                          )
-                                        ]),
-                                  ),
-                                )
-                              ],
+                      child: IconButton(
+                        icon: Icon(Icons.remove_circle_rounded),
+                        color: Colors.blue,
+                        onPressed: () {
+                          if (valueNotifierVal.value <= action.minRaiseAmount)
+                            return;
+                          valueNotifierVal.value--;
+                        },
+                      ),
+                    ),
+
+                    /* center widget */
+                    Container(
+                      child: Stack(
+                        children: [
+                          /* seek slider */
+                          Align(
+                            alignment: Alignment.center,
+                            child: Container(
+                              margin: EdgeInsets.only(bottom: 16),
+                              height: height / 5,
+                              width: width / 2,
+                              child: sleekSlider(valueNotifierVal),
                             ),
                           ),
-                        ),
+
+                          /* bet button */
+                          Positioned(
+                            top: 0,
+                            bottom: 0,
+                            right: 0,
+                            left: 0,
+                            child: Transform.translate(
+                              offset: Offset(0, 40),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Consumer<ValueNotifier<double>>(
+                                    builder: (_, vnVal, __) => Container(
+                                      width: 70,
+                                      height: 70,
+                                      child: PulsatingCircleIconButton(
+                                        onTap: () =>
+                                            onSubmitCallBack?.call(vnVal.value),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              DataFormatter.chipsFormat(
+                                                vnVal.value,
+                                              ),
+                                              style: TextStyle(
+                                                fontSize: 12,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                            SizedBox(height: 5),
+                                            Text(
+                                              "BET",
+                                              style: TextStyle(
+                                                fontSize: 12,
+                                                color: Colors.white,
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                ),
-                Container(
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                  ),
-                  child: IconButton(
-                    icon: Icon(
-                      Icons.add_circle_rounded,
                     ),
-                    color: Colors.blue,
-                    onPressed: () {
-                      val++;
-                      setState(() {});
-                    },
-                  ),
+
+                    /* + button */
+                    Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                      ),
+                      child: IconButton(
+                        icon: Icon(
+                          Icons.add_circle_rounded,
+                        ),
+                        color: Colors.blue,
+                        onPressed: () {
+                          if (valueNotifierVal.value >= action.maxRaiseAmount)
+                            return;
+                          valueNotifierVal.value++;
+                        },
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+              Container(
+                padding: EdgeInsets.symmetric(vertical: 4),
+                alignment: Alignment.center,
+                width: width / 1.5,
+                height: 64,
+                child: betAmountList(valueNotifierVal),
+              )
+            ],
           ),
-          Container(
-            padding: EdgeInsets.symmetric(vertical: 4),
-            alignment: Alignment.center,
-            width: width / 1.5,
-            height: 64,
-            child: betAmountList(),
-          )
-        ],
-      ),
+        );
+      },
     );
   }
 
-  Widget sleekSlider() {
-    log('min: ${widget.action.minRaiseAmount} max: ${widget.action.maxRaiseAmount} val: $val');
+  Widget sleekSlider(ValueNotifier<double> vnValue) {
+    // log('min: ${action.minRaiseAmount} max: ${action.maxRaiseAmount} val: $val');
 
-    final slider = SleekCircularSlider(
-      onChange: (value) {
-        _controller.text = value.toStringAsFixed(0);
-        val = double.parse(_controller.text);
-      },
-      min: widget.action.minRaiseAmount.toDouble(),
-      max: widget.action.maxRaiseAmount.toDouble(),
-      initialValue: val,
+    return SleekCircularSlider(
+      onChange: (value) => vnValue.value = value,
+      min: action.minRaiseAmount.toDouble(),
+      max: action.maxRaiseAmount.toDouble(),
+      initialValue: action.minRaiseAmount.toDouble(),
       appearance: CircularSliderAppearance(
         size: 350,
         startAngle: 180,
@@ -178,10 +182,7 @@ class _BetWidgetState extends State<BetWidget> {
             fontSize: 0,
             color: Colors.white70,
           ),
-          modifier: (double value) {
-            final roundedValue = value.ceil().toInt().toString();
-            return '$roundedValue ';
-          },
+          modifier: (double value) => '',
         ),
         customColors: CustomSliderColors(
           hideShadow: false,
@@ -200,10 +201,9 @@ class _BetWidgetState extends State<BetWidget> {
         ),
       ),
     );
-    return slider;
   }
 
-  Widget betAmountList() {
+  Widget betAmountList(ValueNotifier<double> vnValue) {
     return ListView.builder(
       scrollDirection: Axis.horizontal,
       shrinkWrap: true,
@@ -214,8 +214,8 @@ class _BetWidgetState extends State<BetWidget> {
             Column(children: [
               InkWell(
                 onTap: () async {
-                  double min = widget.action.minRaiseAmount.toDouble();
-                  double max = widget.action.maxRaiseAmount.toDouble();
+                  double min = action.minRaiseAmount.toDouble();
+                  double max = action.maxRaiseAmount.toDouble();
 
                   final double res = await NumericKeyboard.show(
                     context,
@@ -224,7 +224,7 @@ class _BetWidgetState extends State<BetWidget> {
                     max: max,
                   );
 
-                  if (res != null) setState(() => val = res);
+                  if (res != null) vnValue.value = res;
                 },
                 child: Container(
                   margin: EdgeInsets.fromLTRB(0, 4, 0, 0),
@@ -256,14 +256,12 @@ class _BetWidgetState extends State<BetWidget> {
           ]);
         }
 
-        final option = widget.action.options[index - 1];
+        final option = action.options[index - 1];
         return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           Column(children: [
             InkWell(
               onTap: () {
-                log('option: ${option.amount} pressed');
-                val = option.amount.toDouble();
-                setState(() {});
+                vnValue.value = option.amount.toDouble();
               },
               child: Container(
                 padding: EdgeInsets.all(8),
@@ -297,7 +295,7 @@ class _BetWidgetState extends State<BetWidget> {
           SizedBox(width: 10),
         ]);
       },
-      itemCount: widget.action.options.length + 1,
+      itemCount: action.options.length + 1,
     );
   }
 }

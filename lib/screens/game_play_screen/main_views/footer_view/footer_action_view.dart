@@ -108,6 +108,11 @@ class _FooterActionViewState extends State<FooterActionView> {
   * */
   void _actionTaken(BuildContext context) {
     assert(context != null);
+
+    /* close the card overlay widget */
+    widget.isBetWidgetVisible?.call(false);
+
+    /* finally change the state to no more allow user to take action */
     final gameState = Provider.of<GameState>(context, listen: false);
     gameState.showAction(context, false);
   }
@@ -132,8 +137,13 @@ class _FooterActionViewState extends State<FooterActionView> {
 
     // get current hand number
     int handNum = handInfo.handNum;
-    widget.gameContext.handActionService.playerActed(gameContextObject.playerId,
-        handNum, actionState.action.seatNo, action, amount);
+    widget.gameContext.handActionService.playerActed(
+      gameContextObject.playerId,
+      handNum,
+      actionState.action.seatNo,
+      action,
+      amount,
+    );
   }
 
   /* These utility function actually takes actions */
