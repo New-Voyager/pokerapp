@@ -142,8 +142,40 @@ class HandActionService {
     }
   }
 
+  /* this function actually makes the connection with the GameComService
+  * and sends the message in the Player to Server channel */
+  static void takeAction({
+    BuildContext context,
+    String action,
+    int amount,
+  }) async {
+    assert(context != null);
+    assert(action != null);
+
+    final gameState = Provider.of<GameState>(context, listen: false);
+    final actionState = gameState.getActionState(context);
+    final handInfo = gameState.getHandInfo(context);
+    final gameContextObject = Provider.of<GameContextObject>(
+      context,
+      listen: false,
+    );
+
+    gameContextObject.handActionService.playerActed(
+      gameContextObject.playerId,
+      handInfo.handNum,
+      actionState.action.seatNo,
+      action,
+      amount,
+    );
+  }
+
   playerActed(
-      int playerID, int handNum, int seatNo, String action, int amount) {
+    int playerID,
+    int handNum,
+    int seatNo,
+    String action,
+    int amount,
+  ) {
     if (_retryMsg != null) {
       _retryMsg.cancel();
     }
