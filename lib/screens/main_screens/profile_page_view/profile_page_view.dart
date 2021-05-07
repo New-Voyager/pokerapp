@@ -52,7 +52,9 @@ class _ProfilePageViewState extends State<ProfilePageView> {
           ElevatedButton(
             child: Text('Prompt Run it twice'),
             onPressed: () async {
-              RunItTwiceDialog.promptRunItTwice(context);
+              RunItTwiceDialog.promptRunItTwice(
+                context: context,
+              );
             },
           ),
 
