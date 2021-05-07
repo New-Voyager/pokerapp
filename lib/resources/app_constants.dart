@@ -92,6 +92,11 @@ class AppConstants {
   static const String TableHostSeatChangeMove = "HostSeatChangeMove";
   static const String TableUpdatePlayerSeats = "UpdatePlayerSeats";
 
+  /* RUN IT TWICE constants */
+  static const String RUN_IT_TWICE_PROMPT = 'RUN_IT_TWICE_PROMPT';
+  static const String RUN_IT_TWICE_YES = 'RUN_IT_TWICE_YES';
+  static const String RUN_IT_TWICE_NO = 'RUN_IT_TWICE_NO';
+
   /* NEW UPDATE player statuses */
   static const String NEW_PLAYER = 'NEW_PLAYER';
   static const String RELOAD_CHIPS = 'RELOAD_CHIPS';

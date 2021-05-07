@@ -84,6 +84,15 @@ class GamePlayScreenUtilMethods {
             color: Colors.white,
           ),
           backgroundColor: Colors.red,
+          label: 'Run It Twice Prompt',
+          onTap: () => TestService.runItTwicePrompt(),
+        ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
           label: 'Hand Message',
           onTap: () => TestService.handMessage(),
         ),

@@ -471,6 +471,23 @@ class TestService {
     players.notifyAll();
   }
 
+  static void runItTwicePrompt() {
+    final gameState = GameState.getState(_context);
+    // final seat = gameState.getSeat(_context, 1);
+    // seat.player.highlight = true;
+    // seat.setActionTimer(gameState.gameInfo.actionTime);
+    // seat.notify();
+    if (_handActionService == null) {
+      _handActionService = HandActionService(_context, gameState, null);
+      _handActionService.loop();
+    }
+    String message =
+        '''{"clubId": 1,"gameId": "1620287740","gameCode": "1620287740","handNum": 1,"messageId": "ACTION:1:FLOP:0:","handStatus": "FLOP","messages": [{"messageType": "PLAYER_ACTED","playerActed": {"seatNo": 8,"action": "ALLIN","amount": 50}}, {"messageType": "YOUR_ACTION","seatAction": {"seatNo": 1,"availableActions": ["RUN_IT_TWICE_PROMPT"]}}, {"messageType": "YOUR_ACTION","seatAction": {"seatNo": 8,"availableActions": ["RUN_IT_TWICE_PROMPT"]}}]}''';
+    //final handActionService = HandActionService( _context, gameState);
+    _handActionService.clear();
+    _handActionService.handle(message);
+  }
+
   static void handMessage() {
     final gameState = GameState.getState(_context);
     // final seat = gameState.getSeat(_context, 1);

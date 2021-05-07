@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_service.dart';
 import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/widgets/general_dialog_widget.dart';
@@ -17,7 +18,7 @@ class RunItTwiceDialog {
       dismissible: false,
       expTimeInSecs: expTime,
       body: Text(
-        'Run it twice?',
+        'Do you want to run it twice?',
         style: TextStyle(
           fontSize: 25.0,
         ),
@@ -37,8 +38,9 @@ class RunItTwiceDialog {
 
     if (runItTwice == null) return;
 
-    final String playerAction =
-        runItTwice ? 'RUN_IT_TWICE_YES' : 'RUN_IT_TWICE_NO';
+    final String playerAction = runItTwice
+        ? AppConstants.RUN_IT_TWICE_YES
+        : AppConstants.RUN_IT_TWICE_NO;
 
     /* if we are in testing mode just return from this function */
     if (TestService.isTesting)

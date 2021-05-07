@@ -22,6 +22,7 @@ import 'package:pokerapp/resources/card_back_assets.dart';
 import 'package:pokerapp/services/game_play/action_services/game_action_service/sub_services/high_hand_service.dart';
 import 'package:pokerapp/services/game_play/utils/audio.dart';
 import 'package:pokerapp/utils/card_helper.dart';
+import 'package:pokerapp/widgets/run_it_twice_dialog.dart';
 import 'package:provider/provider.dart';
 
 import '../game_com_service.dart';
@@ -44,7 +45,11 @@ class RetrySendingMsg {
   bool _ackReceived = false;
   bool _cancel = false;
   RetrySendingMsg(
-      this._gameComService, this._message, this._messageType, this._messageId);
+    this._gameComService,
+    this._message,
+    this._messageType,
+    this._messageId,
+  );
 
   run() async {
     DateTime lastSentTime = DateTime.now();
@@ -529,6 +534,18 @@ class HandActionService {
     if (me.seatNo != seatNo) {
       return;
     }
+
+    /* this part handles if we receive a prompt for run it twice */
+    List<String> availableActions = seatAction['availableActions']
+        .map<String>((e) => e.toString())
+        .toList();
+    if (availableActions?.contains(AppConstants.RUN_IT_TWICE_PROMPT) ?? false) {
+      return RunItTwiceDialog.promptRunItTwice(
+        context: _context,
+        expTime: 30, // TODO: WE GET THIS TIME FROM THE SERVER
+      );
+    }
+
     _gameState.setAction(_context, seatNo, seatAction);
     _gameState.showAction(_context, true);
   }
@@ -902,7 +919,8 @@ class HandActionService {
 
     var players = data['handResult']['players'];
     players.forEach(
-        (key, p) => stacks[int.parse(key.toString())] = p['balance']['after']);
+      (key, p) => stacks[int.parse(key.toString())] = p['balance']['after'],
+    );
 
     return stacks;
   }
