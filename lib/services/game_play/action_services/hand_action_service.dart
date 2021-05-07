@@ -263,6 +263,10 @@ class HandActionService {
           await handleResult(data);
           return;
 
+        case AppConstants.RUN_IT_TWICE:
+          await handleRunItTwice(data);
+          return;
+
         case AppConstants.NEW_HAND:
           await handleNewHand(data);
           return;
@@ -305,6 +309,53 @@ class HandActionService {
     } catch (err) {
       log('Error: ${err.toString()}');
     }
+  }
+
+  Future<void> handleRunItTwice(var data) async {
+    final runItTwice = data['runItTwice'];
+
+    final List<int> board1Cards =
+        runItTwice['board1'].map<int>((c) => int.parse(c.toString())).toList();
+
+    final List<int> board2Cards =
+        runItTwice['board2'].map<int>((c) => int.parse(c.toString())).toList();
+
+    final GameState gameState = GameState.getState(_context);
+    final TableState tableState = gameState.getTableState(_context);
+
+    /* show the board 1 cards */
+    tableState.addMultipleCommunityCards(
+      1,
+      board1Cards.map((c) => CardHelper.getCard(c)).toList(),
+    );
+    tableState.notifyAll();
+
+    /* pause for a bit */
+    await Future.delayed(const Duration(milliseconds: 1500));
+
+    /* remove all cards */
+    tableState.addMultipleCommunityCards(1, []);
+    tableState.notifyAll();
+
+    await Future.delayed(const Duration(milliseconds: 750));
+
+    /* show the board 2 cards */
+    tableState.addMultipleCommunityCards(
+      1,
+      board2Cards.map((c) => CardHelper.getCard(c)).toList(),
+    );
+    tableState.notifyAll();
+
+    /* fixme: may be pause for a bit? */
+    await Future.delayed(const Duration(milliseconds: 1500));
+
+    /* TODO: THEN WHAT? */
+    tableState.addMultipleCommunityCards(1, []);
+    tableState.notifyAll();
+
+    /*
+
+     */
   }
 
   Future<void> handleNewHand(var data) async {

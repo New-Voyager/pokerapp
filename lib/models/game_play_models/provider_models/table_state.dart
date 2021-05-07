@@ -110,6 +110,15 @@ class TableState extends ChangeNotifier {
     }
   }
 
+  void addMultipleCommunityCards(int boardIndex, List<CardObject> cards) {
+    if (_board1 == null) _board1 = [];
+
+    if (boardIndex == 1) {
+      this._board1.clear();
+      this._board1.addAll(cards);
+    }
+  }
+
   void addTurnOrRiverCard(int boardIndex, CardObject card) {
     if (_board1 == null) return;
 

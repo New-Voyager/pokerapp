@@ -75,8 +75,8 @@ class GamePlayScreenUtilMethods {
             color: Colors.white,
           ),
           backgroundColor: Colors.red,
-          label: 'Fold',
-          onTap: () => TestService.fold(),
+          label: 'Send Run It Twice',
+          onTap: () => TestService.sendRunItTwiceMessage(),
         ),
         SpeedDialChild(
           child: Icon(
@@ -87,15 +87,15 @@ class GamePlayScreenUtilMethods {
           label: 'Run It Twice Prompt',
           onTap: () => TestService.runItTwicePrompt(),
         ),
-        SpeedDialChild(
-          child: Icon(
-            Icons.adb_rounded,
-            color: Colors.white,
-          ),
-          backgroundColor: Colors.red,
-          label: 'Hand Message',
-          onTap: () => TestService.handMessage(),
-        ),
+        // SpeedDialChild(
+        //   child: Icon(
+        //     Icons.adb_rounded,
+        //     color: Colors.white,
+        //   ),
+        //   backgroundColor: Colors.red,
+        //   label: 'Hand Message',
+        //   onTap: () => TestService.handMessage(),
+        // ),
         SpeedDialChild(
           child: Icon(
             Icons.adb_rounded,

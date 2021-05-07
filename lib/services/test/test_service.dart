@@ -471,12 +471,50 @@ class TestService {
     players.notifyAll();
   }
 
+  static void sendRunItTwiceMessage() {
+    final gameState = GameState.getState(_context);
+    if (_handActionService == null) {
+      _handActionService = HandActionService(_context, gameState, null);
+      _handActionService.loop();
+    }
+    String message = '''{
+   "messageType":"RUN_IT_TWICE",
+   "runItTwice":{
+      "board1":[
+         200,
+         196,
+         8,
+         132,
+         33
+      ],
+      "board2":[
+         72,
+         84,
+         40,
+         100,
+         97
+      ],
+      "stage":"PREFLOP",
+      "seatsPots":[
+         {
+            "seats":[
+               5,
+               8
+            ],
+            "pot":100
+         }
+      ],
+      "seat1":5,
+      "seat2":8
+   }
+}''';
+    //final handActionService = HandActionService( _context, gameState);
+    _handActionService.clear();
+    _handActionService.handle('{"messages": [$message]}');
+  }
+
   static void runItTwicePrompt() {
     final gameState = GameState.getState(_context);
-    // final seat = gameState.getSeat(_context, 1);
-    // seat.player.highlight = true;
-    // seat.setActionTimer(gameState.gameInfo.actionTime);
-    // seat.notify();
     if (_handActionService == null) {
       _handActionService = HandActionService(_context, gameState, null);
       _handActionService.loop();

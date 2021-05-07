@@ -147,6 +147,7 @@ class AppConstants {
   static const String QUERY_CURRENT_HAND = 'QUERY_CURRENT_HAND';
   static const String RESULT = 'RESULT';
   static const String MSG_ACK = 'MSG_ACK';
+  static const String RUN_IT_TWICE = 'RUN_IT_TWICE';
 
   static const String PREFLOP = 'PREFLOP';
   static const String FLOP = 'FLOP';
