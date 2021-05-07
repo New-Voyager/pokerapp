@@ -1,5 +1,9 @@
+import 'dart:developer';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:overlay_support/overlay_support.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/hand_history_model.dart';
 import 'package:pokerapp/models/hand_log_model.dart';
 import 'package:pokerapp/models/option_item_model.dart';
@@ -8,7 +12,7 @@ import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_log_view.dart';
 import 'package:pokerapp/screens/game_screens/hand_history/hand_history.dart';
-import 'package:pokerapp/services/game_play/graphql/game_service.dart';
+import 'package:pokerapp/services/app/game_service.dart';
 import 'seat_change_bottom_sheet.dart';
 import 'waiting_list.dart';
 
@@ -16,7 +20,8 @@ class GameOption extends StatefulWidget {
   final String gameCode;
   final String playerUuid;
   final bool isAdmin;
-  GameOption(this.gameCode, this.playerUuid, this.isAdmin);
+  final GameState gameState;
+  GameOption(this.gameState, this.gameCode, this.playerUuid, this.isAdmin);
 
   @override
   _GameOptionState createState() => _GameOptionState(gameCode);
@@ -191,6 +196,58 @@ class _GameOptionState extends State<GameOption> {
     ];
   }
 
+  Widget _buildCheckBox({
+    @required String text,
+    @required bool value,
+    @required void onChange(bool _),
+  }) {
+    return ListTile(
+      title: Text(
+        text,
+        style: TextStyle(color: Colors.white),
+      ),
+      trailing: CupertinoSwitch(
+          value: value,
+          onChanged: (value) {
+            onChange(value);
+          }),
+    );
+  }
+
+  Widget _buildOtherGameOptions() => Container(
+        margin: const EdgeInsets.symmetric(
+          horizontal: 5.0,
+        ),
+        padding: const EdgeInsets.all(5.0),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          color: AppColors.gameOptionBackGroundColor,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _buildCheckBox(
+                text: 'Muck Losing Hand',
+                value: widget.gameState.gameInfo.playerMuckLosingHand,
+                onChange: (bool v) async {
+                  await GameService.updateGameConfig(widget.gameState.gameCode,
+                      muckLosingHand: v);
+                  widget.gameState.gameInfo.playerMuckLosingHand = v;
+                  setState(() {});
+                }),
+            _buildCheckBox(
+              text: 'Prompt run it twice',
+              value: widget.gameState.gameInfo.playerRunItTwice,
+              onChange: (bool v) async {
+                await GameService.updateGameConfig(widget.gameState.gameCode,
+                    runItTwicePrompt: v);
+                widget.gameState.gameInfo.playerRunItTwice = v;
+                setState(() {});
+              },
+            ),
+          ],
+        ),
+      );
   @override
   Widget build(BuildContext context) {
     height = MediaQuery.of(context).size.height;
@@ -241,9 +298,15 @@ class _GameOptionState extends State<GameOption> {
                 ],
               ),
             ),
-            SizedBox(
-              height: 15,
+            SizedBox(height: 10),
+            Container(
+              padding: EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                  color: AppColors.gameOptionBackGroundColor,
+                  borderRadius: BorderRadius.circular(10)),
+              child: _buildOtherGameOptions(),
             ),
+            SizedBox(height: 10),
             Container(
               padding: EdgeInsets.all(10),
               decoration: BoxDecoration(
@@ -285,93 +348,6 @@ class _GameOptionState extends State<GameOption> {
     );
   }
 
-  /*  gameSecondaryOptionItem(
-      OptionItemModel optionItemModel, BuildContext context) {
-    return GestureDetector(
-      onTap: () => optionItemModel.onTap(context),
-      child: Container(
-        height: 70,
-        padding: EdgeInsets.all(5),
-        child: Column(
-          children: [
-            Row(
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: optionItemModel.backGroundColor,
-                  ),
-                  padding: EdgeInsets.all(5),
-                  child: Image.asset(
-                    optionItemModel.image,
-                    height: 40,
-                    width: 40,
-                    color: Colors.white,
-                  ),
-                ),
-                Expanded(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              optionItemModel.title,
-                              style: AppStyles.credentialsTextStyle,
-                            ),
-                            optionItemModel.name != null
-                                ? Column(
-                                    children: [
-                                      SizedBox(
-                                        height: 5,
-                                      ),
-                                      Text(
-                                        optionItemModel.name,
-                                        style: AppStyles
-                                            .itemInfoSecondaryTextStyle,
-                                      ),
-                                    ],
-                                  )
-                                : Container(),
-                          ],
-                        ),
-                      ),
-                      Icon(
-                        Icons.arrow_forward_ios,
-                        color: Colors.white,
-                      )
-                    ],
-                  ),
-                )
-              ],
-            ),
-            Spacer(),
-            Row(
-              children: [
-                SizedBox(
-                  width: 50,
-                ),
-                Expanded(
-                  child: Divider(
-                    color: Colors.white,
-                    height: 2,
-                  ),
-                ),
-              ],
-            )
-          ],
-        ),
-      ),
-    );
-  }
- */
   gameSecondaryOptionItem(
       OptionItemModel optionItemModel, BuildContext context) {
     return ListTile(

@@ -61,12 +61,12 @@ class NewGameModel {
   int actionTime = 30;
   bool locationCheck = false;
   bool ipCheck = false;
-  bool dontShowLosingHand = false;
   bool runItTwice = false;
   bool seatChangeAllowed = false;
   bool waitList = false;
   bool botGame = true;
   Rewards rewards;
+  bool muckLosingHand = false;
 
   NewGameModel(
       {this.clubCode,
@@ -85,13 +85,13 @@ class NewGameModel {
       this.buyInMin,
       this.buyInMax,
       this.actionTime,
-      this.dontShowLosingHand,
       this.seatChangeAllowed,
       this.runItTwice,
       this.ipCheck,
       this.locationCheck,
       this.waitList,
-      this.botGame});
+      this.botGame,
+      this.muckLosingHand});
 
   NewGameModel.withDefault(String clubCode) {
     this.clubCode = clubCode;
@@ -116,6 +116,8 @@ class NewGameModel {
     buyInMax = json['buyInMax'];
     actionTime = json['actionTime'];
     botGame = json['botGame'];
+    muckLosingHand = json['muckLosingHand'];
+    runItTwice = json['runItTwiceAllowed'];
   }
 
   Map<String, dynamic> toJson() {
@@ -136,6 +138,8 @@ class NewGameModel {
     data['buyInMax'] = this.buyInMax;
     data['actionTime'] = this.actionTime;
     data['botGame'] = this.botGame;
+    data['runItTwiceAllowed'] = this.runItTwice;
+    data['muckLosingHand'] = this.muckLosingHand;
 
     if (this.rewards != null && this.rewards.id != 0) {
       data['rewardIds'] = [this.rewards.id];
