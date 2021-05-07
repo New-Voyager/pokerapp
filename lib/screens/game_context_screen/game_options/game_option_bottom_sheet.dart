@@ -30,6 +30,71 @@ class _GameOptionsState extends State<GameOptionsBottomSheet> {
         image: "assets/images/casino.png", title: "Pending Approvals")
   ];
 
+  Widget _buildCheckBox({
+    @required String text,
+    @required bool value,
+    @required void onChange(bool _),
+  }) =>
+      Row(
+        children: [
+          /* check box */
+          Theme(
+            data: ThemeData(
+              unselectedWidgetColor: AppColors.appAccentColor,
+            ),
+            child: Checkbox(
+              checkColor: Colors.white,
+              value: value,
+              onChanged: (bool value) {
+                print('chosen value: $value');
+              },
+            ),
+          ),
+
+          /* text */
+          Text(
+            text,
+            style: TextStyle(
+              color: AppColors.appAccentColor,
+              fontSize: 17.0,
+            ),
+          ),
+        ],
+      );
+
+  Widget _buildOtherGameOptions() => Container(
+        margin: const EdgeInsets.symmetric(
+          horizontal: 15.0,
+        ),
+        padding: const EdgeInsets.all(10.0),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          color: AppColors.gameOptionBackGroundColor,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            /* check box one: Mock losing hand */
+            // TODO: THE VALUE OF THIS CHECKBOX SHOULD COME FROM THE PROVIDER,
+            // TODO: AND ON CHANGE SHOULD CHANGE THE VALUE IN THE PROVIDER
+            _buildCheckBox(
+              text: 'Mock Losing Hand',
+              value: false,
+              onChange: (bool _) {},
+            ),
+
+            /* check box two: Prompt run it twice */
+            // TODO: THE VALUE OF THIS CHECKBOX SHOULD COME FROM THE PROVIDER,
+            // TODO: AND ON CHANGE SHOULD CHANGE THE VALUE IN THE PROVIDER
+            _buildCheckBox(
+              text: 'Prompt run it twice',
+              value: true,
+              onChange: (bool _) {},
+            ),
+          ],
+        ),
+      );
+
   @override
   Widget build(BuildContext context) {
     height = MediaQuery.of(context).size.height;
@@ -51,26 +116,39 @@ class _GameOptionsState extends State<GameOptionsBottomSheet> {
               },
             ),
           ),
+
+          /* divider */
+          const SizedBox(height: 15.0),
+
+          /* other game options */
+          _buildOtherGameOptions(),
+
+          /* build other options */
           Expanded(
             child: selectedOptionIndex == 0
-                ? GameOption(widget.gameState.gameCode, currentPlayer.uuid,
-                    currentPlayer.isAdmin())
+                ? GameOption(
+                    widget.gameState.gameCode,
+                    currentPlayer.uuid,
+                    currentPlayer.isAdmin(),
+                  )
                 : selectedOptionIndex == 1
                     ? SingleChildScrollView(
                         child: FutureBuilder<List<GameModel>>(
-                            future: GameService.getLiveGames(),
-                            builder: (context, snapshot) {
-                              if (snapshot.connectionState ==
-                                  ConnectionState.done) {
-                                List<GameModel> allLiveGames = [];
-                                if (snapshot.data != null) {}
-                                allLiveGames = snapshot.data;
-                                return ClubGamesPageView(allLiveGames);
-                              }
-                              return Center(
-                                child: CircularProgressIndicator(),
-                              );
-                            }))
+                          future: GameService.getLiveGames(),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.done) {
+                              List<GameModel> allLiveGames = [];
+                              if (snapshot.data != null) {}
+                              allLiveGames = snapshot.data;
+                              return ClubGamesPageView(allLiveGames);
+                            }
+                            return Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          },
+                        ),
+                      )
                     : PendingApprovalsOption(),
           ),
         ],
