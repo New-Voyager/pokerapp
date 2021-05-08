@@ -64,7 +64,7 @@ class TestService {
   static List<int> get pots => _pots;
 
   static get isTesting {
-    return false;
+    return true;
   }
 
   static void testIap() {
@@ -561,5 +561,16 @@ class TestService {
         },
       );
     }
+  }
+
+  static void handlogView() {
+    navigatorKey.currentState.pushNamed(
+      Routes.hand_log_view,
+      arguments: {
+                  'gameCode': 'CG-7OF3IOXKBWJLDD',
+                  'handNum': 1,
+                  'isTest': true,
+                },
+    );
   }
 }

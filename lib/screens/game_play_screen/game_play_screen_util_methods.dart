@@ -48,6 +48,15 @@ class GamePlayScreenUtilMethods {
             color: Colors.white,
           ),
           backgroundColor: Colors.red,
+          label: 'Hand Log',
+          onTap: () => TestService.handlogView(),
+        ),        
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
           label: 'Bet Widget',
           onTap: () => TestService.testBetWidget(),
         ),
