@@ -18,7 +18,7 @@ class InAppPurchaseTest {
   List<ProductDetails> _products = [];
   List<PurchaseDetails> _purchases = [];
   List<String> _consumables = [];
-  
+
   void loadProducts() async {
     log('Loading IAP products');
     final bool isAvailable = await _connection.isAvailable();
@@ -28,6 +28,5 @@ class InAppPurchaseTest {
         await _connection.queryProductDetails(_kProductIds.toSet());
     log("productDetailResponse.productDetails = ${productDetailResponse.productDetails}");
     log("productDetailResponse.notFoundIDs = ${productDetailResponse.notFoundIDs}");
-
   }
 }

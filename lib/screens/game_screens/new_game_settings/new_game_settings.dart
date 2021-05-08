@@ -6,8 +6,8 @@ import 'package:pokerapp/models/game/new_game_provider.dart';
 import 'package:pokerapp/models/rewards_model.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/routes.dart';
+import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/app/rewards_service.dart';
-import 'package:pokerapp/services/game_play/graphql/game_service.dart';
 import 'package:pokerapp/widgets/custom_text_button.dart';
 import 'package:provider/provider.dart';
 
@@ -298,9 +298,9 @@ class _NewGameSettingsState extends State<NewGameSettings> {
                   style: TextStyle(color: Colors.white),
                 ),
                 trailing: CupertinoSwitch(
-                    value: data.dontShowLosingHand,
+                    value: data.muckLosingHand,
                     onChanged: (value) {
-                      data.dontShowLosingHand = value;
+                      data.muckLosingHand = value;
                     }),
               ),
               Divider(

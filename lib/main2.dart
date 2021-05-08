@@ -299,8 +299,7 @@ class _MyApp2State extends State<MyApp2> {
                           _getOldSubscription(productDetails, purchases);
                       PurchaseParam purchaseParam = PurchaseParam(
                           productDetails: productDetails,
-                          applicationUserName: null
-                          );
+                          applicationUserName: null);
                       if (productDetails.id == _kConsumableId) {
                         _connection.buyConsumable(
                             purchaseParam: purchaseParam,

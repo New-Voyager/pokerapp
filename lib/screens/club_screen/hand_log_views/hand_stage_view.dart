@@ -76,7 +76,7 @@ class HandStageView extends StatelessWidget {
           margin: EdgeInsets.only(left: 10, top: 5, bottom: 5, right: 10),
           alignment: Alignment.centerLeft,
           child: Text(
-            _handStageModel.stageName  +
+            _handStageModel.stageName +
                 ": " +
                 _handStageModel.potAmount.toString(),
             style: const TextStyle(
