@@ -1,7 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:pokerapp/enums/game_stages.dart';
 import 'package:pokerapp/models/hand_log_model.dart';
+import 'package:pokerapp/models/hand_log_model_new.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
@@ -11,43 +13,44 @@ import 'package:pokerapp/screens/club_screen/hand_log_views/hand_winners_view.da
 import 'package:pokerapp/services/app/hand_service.dart';
 
 class HandLogView extends StatefulWidget {
-  HandLogModel _handLogModel;
+  final String gameCode;
   bool isAppbarWithHandNumber;
   final String clubCode;
-  HandLogView(this._handLogModel,
+  final int handNum;
+  HandLogView(this.gameCode, this.handNum,
       {this.isAppbarWithHandNumber = false, this.clubCode});
 
   @override
-  State<StatefulWidget> createState() => _HandLogViewState(_handLogModel);
+  State<StatefulWidget> createState() => _HandLogViewState();
 }
 
 class _HandLogViewState extends State<HandLogView> {
-  HandLogModel _handLogModel;
+  HandLogModelNew _handLogModel;
   bool _isLoading = true;
   var handLogjson;
 
-  _HandLogViewState(this._handLogModel);
-
-  initState() {
+  @override
+  void initState() {
     super.initState();
-    _fetchData();
+    //_fetchData();
+    loadJsonData();
   }
 
   void _fetchData() async {
-    await HandService.getHandLog(_handLogModel);
-    _isLoading = false;
-    setState(() {
-      // update ui
-    });
+    // await HandService.getHandLog(_handLogModel);
+    // _isLoading = false;
+    // setState(() {
+    //   // update ui
+    // });
   }
 
   loadJsonData() async {
-    // String data = await DefaultAssetBundle.of(context)
-    //     .loadString("assets/sample-data/handlog.json");
-    // final jsonResult = json.decode(data);
-    //
+    String data = await DefaultAssetBundle.of(context)
+        .loadString("assets/sample-data/handlog.json");
+    final jsonResult = json.decode(data);
+    _handLogModel = HandLogModelNew.fromJson(jsonResult['data']);
+
     setState(() {
-      //_handLogModel = HandLogModel.fromJson(jsonResult);
       _isLoading = false;
     });
   }
@@ -116,8 +119,8 @@ class _HandLogViewState extends State<HandLogView> {
                                     onTap: () {
                                       // todo : just change to shareHand and pass club code as well
                                       HandService.bookMarkHand(
-                                        _handLogModel.gameCode,
-                                        _handLogModel.handNumber,
+                                        _handLogModel.hand.data.gameId,
+                                        _handLogModel.hand.data.handNum,
                                       );
                                     },
                                     child: Container(
@@ -142,8 +145,8 @@ class _HandLogViewState extends State<HandLogView> {
                         GestureDetector(
                           onTap: () {
                             HandService.bookMarkHand(
-                              _handLogModel.gameCode,
-                              _handLogModel.handNumber,
+                              _handLogModel.hand.data.gameId,
+                              _handLogModel.hand.data.handNum,
                             );
                           },
                           child: Container(
@@ -180,18 +183,30 @@ class _HandLogViewState extends State<HandLogView> {
                   Container(
                     child: HandWinnersView(_handLogModel),
                   ),
-                  /* Container(
-                    child: HandStageView(_handLogModel.preFlopActions),
+                  Container(
+                    child: HandStageView(
+                      handLogModel: _handLogModel,
+                      stageEnum: GameStages.PREFLOP,
+                    ),
                   ),
                   Container(
-                    child: HandStageView(_handLogModel.flopActions),
+                    child: HandStageView(
+                      handLogModel: _handLogModel,
+                      stageEnum: GameStages.FLOP,
+                    ),
                   ),
                   Container(
-                    child: HandStageView(_handLogModel.turnActions),
+                    child: HandStageView(
+                      handLogModel: _handLogModel,
+                      stageEnum: GameStages.TURN,
+                    ),
                   ),
                   Container(
-                    child: HandStageView(_handLogModel.riverActions),
-                  ), */
+                    child: HandStageView(
+                      handLogModel: _handLogModel,
+                      stageEnum: GameStages.RIVER,
+                    ),
+                  ),
                 ],
               ),
             ),

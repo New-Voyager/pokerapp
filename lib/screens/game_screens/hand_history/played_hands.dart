@@ -113,22 +113,23 @@ class PlayedHandsScreen extends StatelessWidget {
   }
 
   void onHistoryItemTapped(context, int index) async {
-    HandLogModel model =
-        new HandLogModel(this.gameCode, history[index].handNum);
     if (isInBottomSheet) {
       await showModalBottomSheet(
         context: context,
         isScrollControlled: true,
         builder: (ctx) => Container(
           height: MediaQuery.of(context).size.height / 2,
-          child: HandLogView(model),
+          child: HandLogView(this.gameCode, history[index].handNum),
         ),
       );
     } else {
       Navigator.pushNamed(
         context,
         Routes.hand_log_view,
-        arguments: model,
+        arguments: {
+          "gameCode" : this.gameCode,
+          "handNum"  : history[index].handNum
+        },
       );
     }
   }

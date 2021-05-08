@@ -2,6 +2,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/hand_history_model.dart';
 import 'package:pokerapp/models/hand_log_model.dart';
+import 'package:pokerapp/models/hand_log_model_new.dart';
 
 class HandService {
   static String allHands = """
@@ -103,14 +104,15 @@ class HandService {
     model.load();
   }
 
-  static void getHandLog(HandLogModel model) async {
+  static Future<HandLogModelNew> getHandLog(
+      String gameCode, int handNum) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
     Map<String, dynamic> variables = {
-      "gameCode": model.gameCode,
+      "gameCode": gameCode,
     };
     String query = handLogData;
-    if (model.handNumber != -1) {
-      variables["handNum"] = model.handNumber.toString();
+    if (handNum != -1) {
+      variables["handNum"] = handNum;
     } else {
       query = lastHandLogData;
     }
@@ -120,8 +122,9 @@ class HandService {
     if (result.hasException) return null;
 
     // instantiate game history detail object
-    model.jsonData = result.data;
-    model.load();
+    // model.jsonData = result.data;
+    // model.load();
+    HandLogModelNew.handLogModelNewFromJson(result.data);
   }
 
   static Future<bool> saveStarredHand(String gameCode, String handNum) async {
