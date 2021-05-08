@@ -58,26 +58,6 @@ class CardObject {
 
   bool isEmpty() => this.empty;
 
-  // void cardShowFront() {
-  //   if (cardFace == CardFace.FRONT) return;
-  //   flipCard();
-  // }
-
-  // void cardShowBack() {
-  //   if (cardFace == CardFace.BACK) return;
-  //   flipCard();
-  // }
-
-  // void flipCard() {
-  //   if (cardFace == CardFace.BACK)
-  //     cardFace = CardFace.FRONT;
-  //   else
-  //     cardFace = CardFace.BACK;
-  //   if (this.isCommunity) {
-  //     this.communityCardView.flipCard();
-  //   }
-  // }
-
   Widget get widget {
     if (this.isCommunity) {
       return this.communityCardView;

@@ -6,10 +6,6 @@ import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/screens/game_play_screen/game_card/game_card_widget.dart';
 import 'package:provider/provider.dart';
 
-const double pullUpOffset = -15.0;
-const kDisplacementConstant = 30.0;
-const kAngleConstant = 0.30;
-
 class HoleStackCardView extends StatelessWidget {
   final List<CardObject> cards;
   final bool deactivated;

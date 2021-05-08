@@ -52,8 +52,8 @@ class GamePlayScreenUtilMethods {
             color: Colors.white,
           ),
           backgroundColor: Colors.red,
-          label: 'Fill Both Board Cards',
-          onTap: () => TestService.fillBothBoardCards(),
+          label: 'Run it twice result',
+          onTap: () => TestService.runItTwiceResult(),
         ),
         // SpeedDialChild(
         //   child: Icon(

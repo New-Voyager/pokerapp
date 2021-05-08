@@ -315,15 +315,27 @@ class TableState extends ChangeNotifier {
   }
 
   /* this method highlights all community cards */
-  void highlightCardsSilent(List<int> rawCards) {
-    if (_board1 == null) return;
-    for (int i = 0; i < _board1.length; i++) {
-      String label = _board1[i].label;
-      String suit = _board1[i].suit;
+  void highlightCardsSilent(int boardIndex, List<int> rawCards) {
+    if (boardIndex == 1) {
+      if (_board1 == null) return;
 
-      int rawCardNumber = CardHelper.getRawCardNumber('$label$suit');
-      if (rawCards.any((rc) => rc == rawCardNumber))
-        _board1[i].highlight = true;
+      for (int i = 0; i < _board1.length; i++) {
+        String label = _board1[i].label;
+        String suit = _board1[i].suit;
+
+        int rawCardNumber = CardHelper.getRawCardNumber('$label$suit');
+        if (rawCards.any((rc) => rc == rawCardNumber))
+          _board1[i].highlight = true;
+      }
+    } else if (boardIndex == 2) {
+      for (int i = 0; i < _board2.length; i++) {
+        String label = _board2[i].label;
+        String suit = _board2[i].suit;
+
+        int rawCardNumber = CardHelper.getRawCardNumber('$label$suit');
+        if (rawCards.any((rc) => rc == rawCardNumber))
+          _board2[i].highlight = true;
+      }
     }
   }
 

@@ -269,6 +269,7 @@ class GameReplayActionService {
 
     /* highlight community cards */
     tableState.highlightCardsSilent(
+      1,
       highWinners[0]['boardCards']
           .map<int>((c) => int.parse(c.toString()))
           .toList(),

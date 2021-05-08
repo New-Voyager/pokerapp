@@ -6,6 +6,7 @@ import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
 import 'package:pokerapp/enums/player_status.dart';
+import 'package:pokerapp/models/game_history_model.dart';
 import 'package:pokerapp/models/game_play_models/business/card_distribution_model.dart';
 import 'package:pokerapp/models/game_play_models/business/hi_winners_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
@@ -21,6 +22,7 @@ import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/card_back_assets.dart';
 import 'package:pokerapp/services/game_play/action_services/game_action_service/sub_services/high_hand_service.dart';
 import 'package:pokerapp/services/game_play/utils/audio.dart';
+import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:pokerapp/widgets/run_it_twice_dialog.dart';
 import 'package:provider/provider.dart';
@@ -988,6 +990,49 @@ class HandActionService {
     return boardCards.map<int>((c) => int.parse(c.toString())).toList();
   }
 
+  /* RUN_IT_TWICE CASE: get back board cards, that needed to be highlighted */
+  static List<int> _getBoardCardsForRunItTwiceResult(
+    int boardIndex,
+    var data,
+  ) {
+    final runItTwiceResult = data['handResult']['handLog']['runItTwiceResult'];
+
+    final board1Winners = runItTwiceResult['board1Winners'];
+    final board2Winners = runItTwiceResult['board2Winners'];
+
+    final boardWinners = boardIndex == 1 ? board1Winners : board2Winners;
+
+    return boardWinners['0']['hiWinners'][0]['boardCards']
+        .map<int>((c) => int.parse(c.toString()))
+        .toList();
+  }
+
+  /* RUN IT TWICE CASE: get back player cards that needs to be highlighted */
+  static List<Map<String, dynamic>> _getPlayerDataForRunItTwice(var data) {
+    final runItTwiceResult = data['handResult']['handLog']['runItTwiceResult'];
+
+    final board1Result = runItTwiceResult['board1Winners']['0']['hiWinners'][0];
+    final int seatNo1 = board1Result['seatNo'];
+    final playerCards1 = board1Result['playerCards'];
+
+    final board2Result = runItTwiceResult['board2Winners']['0']['hiWinners'][0];
+    final int seatNo2 = board2Result['seatNo'];
+    final playerCards2 = board2Result['playerCards'];
+
+    return [
+      {
+        'seatNo': seatNo1,
+        'playerCards':
+            playerCards1.map<int>((c) => int.parse(c.toString())).toList(),
+      },
+      {
+        'seatNo': seatNo2,
+        'playerCards':
+            playerCards2.map<int>((c) => int.parse(c.toString())).toList(),
+      }
+    ];
+  }
+
   /* get back the player cards that needs to be highlighted */
   static Map<String, dynamic> _getPlayerData(var data) {
     var hiWinner =
@@ -1019,8 +1064,12 @@ class HandActionService {
     players.clearForShowdown();
     // debugPrint(jsonEncode(data));
     // get hand winners data and update results
-    final winnersData = data['handResult']['handLog']['potWinners'];
+
+    final handResult = data['handResult'];
+    final winnersData = handResult['handLog']['potWinners'];
     final winners = resultState.updateWinners(winnersData);
+
+    final bool isRunItTwice = handResult['runItTwice'] as bool;
 
     /* showdown time, show other players cards */
     players.updateUserCardsSilent(_getCards(data));
@@ -1038,22 +1087,84 @@ class HandActionService {
     ).value = FooterStatus.Result;
 
     /* highlight cards of players and community cards for winner */
-    tableState.highlightCardsSilent(_getBoardCards(data));
+    if (isRunItTwice) {
+      /* show two boards */
+
+      final boardCards = handResult['boardCards'];
+      final boardCards2 = handResult['boardCards2'];
+
+      /* set board 1 cards */
+      tableState.setBoardCards(
+        1,
+        boardCards.map<CardObject>((c) => CardHelper.getCard(c)).toList(),
+      );
+
+      /* set board 2 cards */
+      tableState.setBoardCards(
+        2,
+        boardCards2.map<CardObject>((c) => CardHelper.getCard(c)).toList(),
+      );
+
+      /* highlight community cards */
+      tableState.highlightCardsSilent(
+          1, _getBoardCardsForRunItTwiceResult(1, data));
+      tableState.highlightCardsSilent(
+          2, _getBoardCardsForRunItTwiceResult(2, data));
+
+      /* player highlight */
+      final playersData = _getPlayerDataForRunItTwice(data);
+      playersData.forEach((playerData) {
+        players.highlightCardsSilent(
+          seatNo: playerData['seatNo'],
+          cards: playerData['playerCards'],
+        );
+      });
+
+      final runItTwiceResult = handResult['handLog']['runItTwiceResult'];
+
+      List<HiWinnersModel> runItTwiceWinners = [];
+
+      /* add the board 1 winners */
+      runItTwiceResult['board1Winners']['0']['hiWinners'].forEach(
+        (hiWinner) {
+          runItTwiceWinners.add(HiWinnersModel.fromJson(hiWinner));
+        },
+      );
+
+      /* add the board 2 winners */
+      runItTwiceResult['board2Winners']['0']['hiWinners'].forEach(
+        (hiWinner) {
+          runItTwiceWinners.add(HiWinnersModel.fromJson(hiWinner));
+        },
+      );
+
+      /* update stack of every player */
+      for (HiWinnersModel winner in runItTwiceWinners) {
+        final seat = _gameState.getSeat(_context, winner.seatNo);
+        seat.player.action.amount = winner.amount.toDouble();
+        seat.player.action.winner = true;
+      }
+    } else {
+      /* highlight community cards */
+      tableState.highlightCardsSilent(1, _getBoardCards(data));
+
+      /* highlight player cards */
+      Map<String, dynamic> playerData = _getPlayerData(data);
+      players.highlightCardsSilent(
+        seatNo: playerData['seatNo'],
+        cards: playerData['playerCards'],
+      );
+
+      /* update stack of every player after showing the reverse pot chip animation */
+      for (HiWinnersModel winner in winners) {
+        final seat = _gameState.getSeat(_context, winner.seatNo);
+        seat.player.action.amount = winner.amount.toDouble();
+        seat.player.action.winner = true;
+      }
+    }
+
     tableState.notifyAll();
 
-    Map<String, dynamic> playerData = _getPlayerData(data);
-
-    players.highlightCardsSilent(
-      seatNo: playerData['seatNo'],
-      cards: playerData['playerCards'],
-    );
-
-    /* update stack of every player after showing the reverse pot chip animation */
-    for (HiWinnersModel winner in winners) {
-      final seat = _gameState.getSeat(_context, winner.seatNo);
-      seat.player.action.amount = winner.amount.toDouble();
-      seat.player.action.winner = true;
-    }
     _gameState.animateSeatActions();
     players.notifyAll();
 
@@ -1075,6 +1186,8 @@ class HandActionService {
 
     /* clear all the marked cards */
     markedCards.clear();
+
+    if (TestService.isTesting) return;
 
     // todo: put the delay in the const class after finalizing the delay constant
     /* finally send the cardNumbers to the gameChatChannel after 1500 ms */

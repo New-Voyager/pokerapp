@@ -15,8 +15,6 @@ import 'package:pokerapp/widgets/card_view.dart';
 import 'package:provider/provider.dart';
 import 'package:pokerapp/resources/card_back_assets.dart';
 
-const double pullUpOffset = -15.0;
-
 /* THIS VIEW ITSELF TAKES CARE OF THE ANIMATION PART FOR THE COMMUNITY CARDS */
 
 class CommunityCardsView extends StatelessWidget {
@@ -66,17 +64,11 @@ class CommunityCardsView extends StatelessWidget {
       /* THIS widget is a wrapper around the community card view, and helps in case of we need to highlight a card */
       Widget communityCardView = Container(
         margin: EdgeInsets.only(right: 2.0),
-        child: Transform.translate(
-          offset: Offset(
-            0.0,
-            card.highlight ? pullUpOffset : 0.0,
-          ),
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 3.0),
-            child: CommunityCardView(
-              key: globalKey,
-              card: card,
-            ),
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 3.0),
+          child: CommunityCardView(
+            key: globalKey,
+            card: card,
           ),
         ),
       );
@@ -100,8 +92,8 @@ class CommunityCardsView extends StatelessWidget {
       /* need to show board1 and board2 cards */
       return Transform.scale(
         alignment: Alignment.topCenter,
-        scale:
-            0.70, // TODO: WE MAY NEED TO CHANGE THE SCALE FOR DIFFERENT SCREEN SIZES
+        // TODO: WE MAY NEED TO CHANGE THE SCALE FOR DIFFERENT SCREEN SIZES
+        scale: 0.70,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
