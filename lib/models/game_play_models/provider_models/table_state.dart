@@ -110,12 +110,76 @@ class TableState extends ChangeNotifier {
     }
   }
 
-  void addMultipleCommunityCards(int boardIndex, List<CardObject> cards) {
-    if (_board1 == null) _board1 = [];
-
+  /* THIS METHOD IS ONLY USED WHEN WE RUN INTO A RUN IT TWICE SCENARIO */
+  Future<void> addAllCommunityCardsForRunItTwiceScenario(
+    int boardIndex,
+    List<CardObject> cards,
+  ) async {
     if (boardIndex == 1) {
-      this._board1.clear();
-      this._board1.addAll(cards);
+      if (_board1 == null) {
+        /* add all cards sequentially */
+
+        _board1 = [];
+
+        /* add the flop cards first */
+        addFlopCards(1, cards.sublist(0, 3));
+        notifyAll();
+
+        /* wait for the duration */
+        await Future.delayed(AppConstants.communityCardAnimationDuration);
+
+        /* add turn cards */
+        addTurnOrRiverCard(1, cards[3]);
+        notifyAll();
+
+        /* wait for the duration */
+        await Future.delayed(AppConstants.communityCardAnimationDuration);
+
+        /* finally, add the river cards */
+        addTurnOrRiverCard(1, cards[3]);
+        notifyAll();
+      } else if (_board1.length == 3) {
+        /* flop cards are added, just need to add turn and river cards sequentially */
+
+        /* add turn cards */
+        addTurnOrRiverCard(1, cards[3]);
+        notifyAll();
+
+        /* wait for the duration */
+        await Future.delayed(AppConstants.communityCardAnimationDuration);
+
+        /* finally, add the river cards */
+        addTurnOrRiverCard(1, cards.last);
+        notifyAll();
+      } else if (_board1.length == 4) {
+        /* cards till turn are added, just need to add river cards  */
+        addTurnOrRiverCard(1, cards.last);
+        notifyAll();
+      } else {
+        return;
+      }
+    } else if (boardIndex == 2) {
+      /* need to add all the cards - one by one */
+
+      _board2 = [];
+
+      /* add the flop cards first */
+      addFlopCards(2, cards.sublist(0, 3));
+      notifyAll();
+
+      /* wait for the duration */
+      await Future.delayed(AppConstants.communityCardAnimationDuration);
+
+      /* add turn cards */
+      addTurnOrRiverCard(2, cards[3]);
+      notifyAll();
+
+      /* wait for the duration */
+      await Future.delayed(AppConstants.communityCardAnimationDuration);
+
+      /* finally, add the river cards */
+      addTurnOrRiverCard(2, cards.last);
+      notifyAll();
     }
   }
 
