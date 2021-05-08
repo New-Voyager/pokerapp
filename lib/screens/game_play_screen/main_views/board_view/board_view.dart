@@ -114,8 +114,9 @@ class _BoardViewState extends State<BoardView> {
               ServerConnectionState connectionState,
               __,
             ) {
-              var cards = tableState.cards;
-              var pots = tableState.potChips;
+              final cards = tableState.cards;
+              final cardsOther = tableState.cardsOther;
+              final pots = tableState.potChips;
 
               return Transform.scale(
                 scale: boardAttributes.centerScale,
@@ -125,6 +126,7 @@ class _BoardViewState extends State<BoardView> {
                   widget.gameInfo.isHost,
                   isBoardHorizontal,
                   cards,
+                  cardsOther,
                   pots,
                   double.parse(
                     tableState.potChipsUpdates != null

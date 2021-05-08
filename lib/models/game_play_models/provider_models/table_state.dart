@@ -71,25 +71,8 @@ class TableState extends ChangeNotifier {
     this._potUpdatesChips = potUpdatesChips;
   }
 
-  // // this method flips all the cards after a short delay
-  // void flipCards() async {
-  //   for (int i = 0; i < this.cards.length; i++) {
-  //     cards[i].flipCard();
-  //     notifyListeners();
-  //     await Future.delayed(AppConstants.communityCardPushDuration);
-  //   }
-  // }
-  //
-  // void flipLastCard() {
-  //   this.cards.last.flipCard();
-  // }
-
   void setBoardCards(int boardIndex, List<CardObject> cards) {
     if (boardIndex == 1) {
-      // WHY THIS? DOES'NT MAKE SENSE WITH THE NEXT IF cards.length > 5 it will never be reached
-      // if (this._board1.length >= 3) {
-      //   return;
-      // }
       if (cards.length > 5) {
         this._board1 = cards.sublist(0, 5);
       } else {
@@ -99,24 +82,49 @@ class TableState extends ChangeNotifier {
   }
 
   void addFlopCards(int boardIndex, List<CardObject> cards) {
-    if (_board1 == null) _board1 = [];
-    _board1.clear();
-
     if (boardIndex == 1) {
+      if (_board1 == null) _board1 = [];
+      _board1.clear();
+
       if (this._board1.length >= 3) {
         return;
       }
       this._board1.addAll(cards);
+    } else if (boardIndex == 2) {
+      if (_board2 == null) _board2 = [];
+      _board2.clear();
+
+      if (this._board2.length >= 3) {
+        return;
+      }
+      this._board2.addAll(cards);
     }
   }
+
+  Future<void> _delay(int times) => Future.delayed(
+        Duration(
+          milliseconds:
+              AppConstants.communityCardAnimationDuration.inMilliseconds *
+                  times,
+        ),
+      );
 
   /* THIS METHOD IS ONLY USED WHEN WE RUN INTO A RUN IT TWICE SCENARIO */
   Future<void> addAllCommunityCardsForRunItTwiceScenario(
     int boardIndex,
     List<CardObject> cards,
   ) async {
+    /* set empty cards to the community cards */
+    if (cards.isEmpty) {
+      if (boardIndex == 1) this._board1 = [];
+      if (boardIndex == 2) this._board2 = [];
+
+      notifyAll();
+      return;
+    }
+
     if (boardIndex == 1) {
-      if (_board1 == null) {
+      if (_board1 == null || _board1.isEmpty) {
         /* add all cards sequentially */
 
         _board1 = [];
@@ -126,17 +134,17 @@ class TableState extends ChangeNotifier {
         notifyAll();
 
         /* wait for the duration */
-        await Future.delayed(AppConstants.communityCardAnimationDuration);
+        await _delay(4);
 
         /* add turn cards */
         addTurnOrRiverCard(1, cards[3]);
         notifyAll();
 
         /* wait for the duration */
-        await Future.delayed(AppConstants.communityCardAnimationDuration);
+        await _delay(3);
 
         /* finally, add the river cards */
-        addTurnOrRiverCard(1, cards[3]);
+        addTurnOrRiverCard(1, cards.last);
         notifyAll();
       } else if (_board1.length == 3) {
         /* flop cards are added, just need to add turn and river cards sequentially */
@@ -146,7 +154,7 @@ class TableState extends ChangeNotifier {
         notifyAll();
 
         /* wait for the duration */
-        await Future.delayed(AppConstants.communityCardAnimationDuration);
+        await _delay(3);
 
         /* finally, add the river cards */
         addTurnOrRiverCard(1, cards.last);
@@ -168,14 +176,14 @@ class TableState extends ChangeNotifier {
       notifyAll();
 
       /* wait for the duration */
-      await Future.delayed(AppConstants.communityCardAnimationDuration);
+      await _delay(4);
 
       /* add turn cards */
       addTurnOrRiverCard(2, cards[3]);
       notifyAll();
 
       /* wait for the duration */
-      await Future.delayed(AppConstants.communityCardAnimationDuration);
+      await _delay(3);
 
       /* finally, add the river cards */
       addTurnOrRiverCard(2, cards.last);
@@ -184,14 +192,22 @@ class TableState extends ChangeNotifier {
   }
 
   void addTurnOrRiverCard(int boardIndex, CardObject card) {
-    if (_board1 == null) return;
-
     if (boardIndex == 1) {
       /* prevent calling this method, if there are less than 4 cards */
-      if (this._board1.length < 3 || this._board1.length == 5) {
+      if (this._board1 == null ||
+          this._board1.length < 3 ||
+          this._board1.length == 5) {
         return;
       }
       this._board1.add(card);
+    } else if (boardIndex == 2) {
+      /* prevent calling this method, if there are less than 4 cards */
+      if (this._board2 == null ||
+          this._board2.length < 3 ||
+          this._board2.length == 5) {
+        return;
+      }
+      this._board2.add(card);
     }
   }
 
@@ -310,6 +326,7 @@ class TableState extends ChangeNotifier {
   List<int> get potChips => _potChips;
   int get potChipsUpdates => _potUpdatesChips;
   List<CardObject> get cards => _board1;
+  List<CardObject> get cardsOther => _board2;
 
   bool get gamePaused {
     if (_gameStatus == AppConstants.GAME_PAUSED) {

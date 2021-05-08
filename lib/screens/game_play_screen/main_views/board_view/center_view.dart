@@ -19,6 +19,7 @@ import 'board_view_util_methods.dart';
 class CenterView extends StatelessWidget {
   final String tableStatus;
   final List<CardObject> cards;
+  final List<CardObject> cardsOther;
   final List<int> potChips;
   final Function onStartGame;
   final bool showDown;
@@ -28,17 +29,18 @@ class CenterView extends StatelessWidget {
   final String gameCode;
 
   CenterView(
-      Key key,
-      this.gameCode,
-      this.isHost,
-      this.isBoardHorizontal,
-      this.cards,
-      this.potChips,
-      this.potChipsUpdates,
-      this.tableStatus,
-      this.showDown,
-      this.onStartGame)
-      : super(key: key);
+    Key key,
+    this.gameCode,
+    this.isHost,
+    this.isBoardHorizontal,
+    this.cards,
+    this.cardsOther,
+    this.potChips,
+    this.potChipsUpdates,
+    this.tableStatus,
+    this.showDown,
+    this.onStartGame,
+  ) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -149,6 +151,7 @@ class CenterView extends StatelessWidget {
               offset: Offset(0, 50),
               child: CommunityCardsView(
                 cards: this.cards,
+                cardsOther: this.cardsOther,
                 horizontal: true,
               ),
             ),

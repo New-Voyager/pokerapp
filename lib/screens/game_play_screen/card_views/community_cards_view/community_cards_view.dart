@@ -20,15 +20,17 @@ const double pullUpOffset = -15.0;
 
 class CommunityCardsView extends StatelessWidget {
   final List<CardObject> cards;
+  final List<CardObject> cardsOther;
   final bool horizontal;
 
   CommunityCardsView({
     @required this.cards,
+    this.cardsOther,
     this.horizontal = true,
   });
 
-  List<Widget> getCommunityCards() {
-    List<CardObject> reversedList = this.cards ?? [];
+  List<Widget> getCommunityCards(List<CardObject> cards) {
+    List<CardObject> reversedList = cards ?? [];
 
     /* if we do not have an already existing entry, then only go for the dummy card */
     if (!CommunityCardAttribute.hasEntry(0)) if (cards?.isEmpty ?? true) {
@@ -86,26 +88,31 @@ class CommunityCardsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    /* we only need to show animation for the following 3 cases */
+    /* for animation we use the boardCads only */
+    List<CardObject> boardCards;
 
-    if (cards?.length == 3)
+    if (cards != null && cards.isNotEmpty) boardCards = cards;
+    if (cardsOther != null && cardsOther.isNotEmpty) boardCards = cardsOther;
+
+    /* we only need to show animation for the following 3 cases */
+    if (boardCards?.length == 3)
       return FlopCommunityCards(
-        flopCards: getCommunityCards(),
+        flopCards: getCommunityCards(boardCards),
       );
 
-    if (cards?.length == 4 || cards?.length == 5)
+    if (boardCards?.length == 4 || boardCards?.length == 5)
       return TurnOrRiverCommunityCards(
-        key: ValueKey(cards.length),
-        riverOrTurnCards: getCommunityCards(),
+        key: ValueKey(boardCards.length),
+        riverOrTurnCards: getCommunityCards(boardCards),
       );
 
     /* default case - this is done to bake our data for animating in the future */
     return Opacity(
       /* if there are no community cards, do not show anything */
-      opacity: (cards?.isEmpty ?? true) ? 0.0 : 1.0,
+      opacity: (boardCards?.isEmpty ?? true) ? 0.0 : 1.0,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: getCommunityCards(),
+        children: getCommunityCards(boardCards),
       ),
     );
   }

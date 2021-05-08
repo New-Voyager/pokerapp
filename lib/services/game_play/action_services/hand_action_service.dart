@@ -328,29 +328,26 @@ class HandActionService {
       1,
       board1Cards.map((c) => CardHelper.getCard(c)).toList(),
     );
-    tableState.notifyAll();
 
-    /* pause for a bit */
+    /* pause for a bit todo: get duration */
     await Future.delayed(const Duration(milliseconds: 1500));
 
     /* remove all cards */
     tableState.addAllCommunityCardsForRunItTwiceScenario(1, []);
-    tableState.notifyAll();
 
+    /* pause for a bit todo: get duration */
     await Future.delayed(const Duration(milliseconds: 800));
 
     /* show the board 2 cards */
-    tableState.addAllCommunityCardsForRunItTwiceScenario(
+    await tableState.addAllCommunityCardsForRunItTwiceScenario(
       2,
       board2Cards.map((c) => CardHelper.getCard(c)).toList(),
     );
-    tableState.notifyAll();
 
-    /* pause for a bit */
+    /* pause for a bit todo: get duration */
     await Future.delayed(const Duration(milliseconds: 1500));
 
-    tableState.addAllCommunityCardsForRunItTwiceScenario(1, []);
-    tableState.notifyAll();
+    tableState.addAllCommunityCardsForRunItTwiceScenario(2, []);
   }
 
   Future<void> handleNewHand(var data) async {

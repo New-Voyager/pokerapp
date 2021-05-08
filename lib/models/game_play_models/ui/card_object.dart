@@ -90,7 +90,7 @@ class CardObject {
 
   @override
   String toString() =>
-      'suit: $suit, label: $label, highlight: $highlight empty: $empty';
+      '{suit: $suit, label: $label, highlight: $highlight empty: $empty}';
 
   static CardObject emptyCard() {
     CardObject card = new CardObject(suit: null, label: null, color: null);
