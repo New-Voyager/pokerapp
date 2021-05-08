@@ -411,6 +411,29 @@ class TestService {
     //await HandActionService.handle(context: _context, message: dealStartedMessage());
   }
 
+  static void fillBothBoardCards() {
+    final gameState = GameState.getState(_context);
+    final TableState tableState = gameState.getTableState(_context);
+
+    /* board 1 */
+    tableState.setBoardCards(
+      1,
+      [50, 50, 50, 50, 50].map((e) => CardHelper.getCard(e)).toList(),
+    );
+
+    /* board 2 */
+    tableState.setBoardCards(
+      2,
+      [50, 50, 50, 50, 50].map((e) => CardHelper.getCard(e)).toList(),
+    );
+
+    tableState.updatePotChipsSilent(
+      potChips: [578],
+    );
+
+    tableState.notifyAll();
+  }
+
   static void fillCenterView() {
     final gameState = GameState.getState(_context);
     final TableState tableState = gameState.getTableState(_context);

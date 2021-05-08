@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flip_card/flip_card.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
@@ -90,6 +91,38 @@ class CommunityCardsView extends StatelessWidget {
   Widget build(BuildContext context) {
     /* for animation we use the boardCads only */
     List<CardObject> boardCards;
+
+    if (cards != null &&
+        cards.isNotEmpty &&
+        cardsOther != null &&
+        cardsOther.isNotEmpty) {
+      /* WE REACH HERE ONLY IF WE ARE IN RESULT && WE RAN INTO A RUN IT TWICE SITUATION */
+      /* need to show board1 and board2 cards */
+      return Transform.scale(
+        alignment: Alignment.topCenter,
+        scale:
+            0.70, // TODO: WE MAY NEED TO CHANGE THE SCALE FOR DIFFERENT SCREEN SIZES
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            /* board 1 cards */
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: getCommunityCards(cards),
+            ),
+
+            /* divider */
+            const SizedBox(height: 12.0),
+
+            /* board 2 cards */
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: getCommunityCards(cardsOther),
+            ),
+          ],
+        ),
+      );
+    }
 
     if (cards != null && cards.isNotEmpty) boardCards = cards;
     if (cardsOther != null && cardsOther.isNotEmpty) boardCards = cardsOther;

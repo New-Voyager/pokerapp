@@ -78,6 +78,12 @@ class TableState extends ChangeNotifier {
       } else {
         this._board1 = cards;
       }
+    } else if (boardIndex == 2) {
+      if (cards.length > 5) {
+        this._board2 = cards.sublist(0, 5);
+      } else {
+        this._board2 = cards;
+      }
     }
   }
 

@@ -57,9 +57,18 @@ class GamePlayScreenUtilMethods {
             color: Colors.white,
           ),
           backgroundColor: Colors.red,
-          label: 'Fill center view',
-          onTap: () => TestService.fillCenterView(),
+          label: 'Fill Both Board Cards',
+          onTap: () => TestService.fillBothBoardCards(),
         ),
+        // SpeedDialChild(
+        //   child: Icon(
+        //     Icons.adb_rounded,
+        //     color: Colors.white,
+        //   ),
+        //   backgroundColor: Colors.red,
+        //   label: 'Fill center view',
+        //   onTap: () => TestService.fillCenterView(),
+        // ),
         SpeedDialChild(
           child: Icon(
             Icons.adb_rounded,
