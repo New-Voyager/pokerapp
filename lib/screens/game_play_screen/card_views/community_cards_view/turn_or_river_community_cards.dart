@@ -13,10 +13,11 @@ import 'package:provider/provider.dart';
 
 class TurnOrRiverCommunityCards extends StatefulWidget {
   final List<Widget> riverOrTurnCards;
-
+  final int speed;
   TurnOrRiverCommunityCards({
     Key key,
     @required this.riverOrTurnCards,
+    @required this.speed,
   }) : super(key: key);
 
   @override
@@ -52,6 +53,7 @@ class _TurnOrRiverCommunityCardsState extends State<TurnOrRiverCommunityCards> {
 
     return CustomFlipCard(
       onFlipDone: onFlipDone,
+      speed: widget.speed,
       globalKey: _globalFlipKey,
       cardWidget: widget.riverOrTurnCards.last,
       cardBackAsset: cardBackAsset,

@@ -58,7 +58,7 @@ class RetrySendingMsg {
     _messageSentTime = lastSentTime;
     bool firstAttempt = true;
     // runs a loop until we receive acknowledgement or cancel
-    while (!_cancel || !_ackReceived) {
+    while (!_cancel && !_ackReceived) {
       DateTime now = DateTime.now();
       final d = now.difference(lastSentTime);
       if (firstAttempt || d.inSeconds >= _retrySeconds) {
@@ -332,13 +332,13 @@ class HandActionService {
     );
 
     /* pause for a bit todo: get duration */
-    await Future.delayed(const Duration(milliseconds: 1500));
+    await Future.delayed(const Duration(milliseconds: 500));
 
     /* remove all cards */
     tableState.addAllCommunityCardsForRunItTwiceScenario(1, []);
 
     /* pause for a bit todo: get duration */
-    await Future.delayed(const Duration(milliseconds: 800));
+    await Future.delayed(const Duration(milliseconds: 1500));
 
     /* show the board 2 cards */
     await tableState.addAllCommunityCardsForRunItTwiceScenario(

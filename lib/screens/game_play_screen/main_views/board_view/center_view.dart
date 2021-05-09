@@ -27,6 +27,7 @@ class CenterView extends StatelessWidget {
   final double potChipsUpdates;
   final bool isHost;
   final String gameCode;
+  final int flipSpeed;
 
   CenterView(
     Key key,
@@ -40,6 +41,7 @@ class CenterView extends StatelessWidget {
     this.tableStatus,
     this.showDown,
     this.onStartGame,
+    this.flipSpeed,
   ) : super(key: key);
 
   @override
