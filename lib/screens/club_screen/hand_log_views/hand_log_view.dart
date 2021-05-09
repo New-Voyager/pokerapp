@@ -10,6 +10,7 @@ import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_log_header_view.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_stage_view.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_winners_view.dart';
+import 'package:pokerapp/screens/club_screen/hand_log_views/handlog_summary.dart';
 import 'package:pokerapp/services/app/hand_service.dart';
 
 class HandLogView extends StatefulWidget {
@@ -59,28 +60,25 @@ class _HandLogViewState extends State<HandLogView> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.screenBackgroundColor,
-      appBar: widget.isAppbarWithHandNumber
-          ? PreferredSize(
-              preferredSize: Size(0, 0),
-              child: Container(),
-            )
-          : AppBar(
-              leading: IconButton(
-                icon: Icon(
-                  Icons.arrow_back_ios,
-                  size: 14,
-                  color: AppColors.appAccentColor,
-                ),
-                onPressed: () => Navigator.of(context).pop(),
-              ),
-              titleSpacing: 0,
-              elevation: 0.0,
-              backgroundColor: AppColors.screenBackgroundColor,
-              title: Text(
-                "Hand History",
-                style: AppStyles.titleBarTextStyle,
-              ),
-            ),
+      appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back_ios,
+            size: 14,
+            color: AppColors.appAccentColor,
+          ),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        titleSpacing: 0,
+        elevation: 0.0,
+        backgroundColor: AppColors.screenBackgroundColor,
+        title: Text(
+          widget.isAppbarWithHandNumber
+              ? "Hand Log #" + widget.handNum.toString()
+              : "Last Hand Log",
+          style: AppStyles.titleBarTextStyle,
+        ),
+      ),
       body: this._isLoading == true
           ? Center(
               child: CircularProgressIndicator(),
@@ -88,7 +86,7 @@ class _HandLogViewState extends State<HandLogView> {
           : SingleChildScrollView(
               child: Column(
                 children: [
-                  Container(
+                  /*  Container(
                     margin:
                         EdgeInsets.only(left: 10, top: 5, bottom: 5, right: 10),
                     alignment: widget.isAppbarWithHandNumber
@@ -105,7 +103,7 @@ class _HandLogViewState extends State<HandLogView> {
                         fontWeight: FontWeight.w900,
                       ),
                     ),
-                  ),
+                  ), */
                   Container(
                     padding: EdgeInsets.symmetric(vertical: 5),
                     child: Row(
@@ -172,12 +170,7 @@ class _HandLogViewState extends State<HandLogView> {
                     alignment: Alignment.centerLeft,
                     child: Text(
                       "Winners",
-                      style: const TextStyle(
-                        fontFamily: AppAssets.fontFamilyLato,
-                        color: Colors.white,
-                        fontSize: 22.0,
-                        fontWeight: FontWeight.w900,
-                      ),
+                      style: AppStyles.boldTitleTextStyle,
                     ),
                   ),
                   Container(
@@ -207,6 +200,7 @@ class _HandLogViewState extends State<HandLogView> {
                       stageEnum: GameStages.RIVER,
                     ),
                   ),
+                  HandlogSummary(handlogModel: _handLogModel),
                 ],
               ),
             ),

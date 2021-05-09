@@ -471,7 +471,7 @@ class WinnerWidget extends StatelessWidget {
                 ),
               ),
               _separator,
-              CardsView(cards, showCards),
+              CardsView(cards: cards, show: showCards),
               _separator,
               Row(children: [
                 Text(

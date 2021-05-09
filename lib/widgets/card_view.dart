@@ -128,26 +128,46 @@ class CardView extends StatelessWidget {
 /* TODO: FIX THIS VIEW */
 
 class CardsView extends StatelessWidget {
-  List<int> cards;
-  List<CardObject> cardObjects;
-  bool show;
+  final List<int> cards;
+  final bool show;
+  final bool needToShowEmptyCards;
 
-  CardsView(List<int> cards, bool show) {
-    this.cards = cards;
-    this.show = show;
-    if (this.show == null) {
-      this.show = false;
-    }
-    this.cardObjects = cards.map((e) => CardHelper.getCard(e)).toList();
-  }
+  CardsView({this.cards, this.show, this.needToShowEmptyCards});
 
   @override
   Widget build(BuildContext context) {
     List<Widget> cardViews = [];
-    if (show) {
+    if (show ?? true) {
       for (int c in cards) {
         CardObject card = CardHelper.getCard(c);
         cardViews.add(CardView(card: card));
+        cardViews.add(
+          SizedBox(
+            width: 2.0,
+          ),
+        );
+      }
+      if ((needToShowEmptyCards ?? false) && cards.length < 5) {
+        for (int i = 0; i < 5 - cards.length; i++) {
+          // pass 0 for geting card backside
+          CardObject card = CardHelper.getCard(0);
+          cardViews.add(CardView(
+            card: card,
+            grayOut: true,
+          ));
+          cardViews.add(
+            SizedBox(
+              width: 2.0,
+            ),
+          );
+        }
+      }
+    } else {
+      for (int c in cards) {
+        CardObject card = CardHelper.getCard(0);
+        cardViews.add(CardView(
+          card: card,
+        ));
         cardViews.add(
           SizedBox(
             width: 2.0,

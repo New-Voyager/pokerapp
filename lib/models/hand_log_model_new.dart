@@ -1,6 +1,3 @@
-// To parse this JSON data, do
-//
-//     final handLogModelNew = handLogModelNewFromJson(jsonString);
 
 import 'dart:convert';
 import 'package:pokerapp/enums/game_stages.dart';

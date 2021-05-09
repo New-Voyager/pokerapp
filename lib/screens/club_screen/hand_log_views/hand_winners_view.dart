@@ -40,66 +40,84 @@ class HandWinnersView extends StatelessWidget {
               return Card(
                 elevation: 5.5,
                 color: AppColors.cardBackgroundColor,
-                child: ExpansionTile(
-                  title: Text(
-                    potNumbers[index],
-                    style: const TextStyle(
-                      fontFamily: AppAssets.fontFamilyLato,
-                      color: Colors.white,
-                      fontSize: 14.0,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                  initiallyExpanded: (index == 0),
-                  trailing: Icon(
-                    Icons.arrow_drop_down,
-                    color: AppColors.appAccentColor,
-                  ),
-                  children: [
-                    Container(
-                      child: Column(
-                        children: [
-                          Container(
-                            margin: EdgeInsets.symmetric(horizontal: 16),
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              "Pot: " +
-                                  potWinnersList[index].totalAmount.toString(),
-                              style: const TextStyle(
-                                fontFamily: AppAssets.fontFamilyLato,
-                                color: Colors.white,
-                                fontSize: 14.0,
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
+                child: Container(
+                  child: Column(
+                    children: [
+                      Container(
+                        margin: EdgeInsets.symmetric(horizontal: 16),
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          "Pot: " +
+                              potWinnersList[index].totalAmount.toString(),
+                          style: const TextStyle(
+                            fontFamily: AppAssets.fontFamilyLato,
+                            color: Colors.white,
+                            fontSize: 14.0,
+                            fontWeight: FontWeight.w400,
                           ),
-                          Container(
-                            margin: EdgeInsets.all(5),
-                            alignment: Alignment.centerRight,
-                            child: Container(
-                              child: ListView.builder(
-                                physics: NeverScrollableScrollPhysics(),
-                                itemCount:
-                                    potWinnersList[index].hiWinners.length,
-                                shrinkWrap: true,
-                                itemBuilder: (context, winnerIndex) {
-                                  return Container(
-                                    margin: EdgeInsets.only(left: 16),
-                                    padding: EdgeInsets.only(bottom: 8),
-                                    alignment: Alignment.centerLeft,
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                        ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.all(5),
+                        alignment: Alignment.centerRight,
+                        child: Container(
+                          child: ListView.builder(
+                            physics: NeverScrollableScrollPhysics(),
+                            itemCount: potWinnersList[index].hiWinners.length,
+                            shrinkWrap: true,
+                            itemBuilder: (context, winnerIndex) {
+                              return Container(
+                                margin: EdgeInsets.only(left: 16),
+                                padding: EdgeInsets.only(bottom: 8),
+                                alignment: Alignment.centerLeft,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding:
+                                          EdgeInsets.only(bottom: 5, top: 5),
+                                      child: Text(
+                                        _handLogModel.hand.data.players[
+                                                potWinnersList[index]
+                                                    .hiWinners[winnerIndex]
+                                                    .seatNo] ??
+                                            "Unknown",
+                                        style: const TextStyle(
+                                          fontFamily: AppAssets.fontFamilyLato,
+                                          color: Colors.white,
+                                          fontSize: 14.0,
+                                          fontWeight: FontWeight.w400,
+                                        ),
+                                        textAlign: TextAlign.left,
+                                      ),
+                                    ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Padding(
-                                          padding: EdgeInsets.only(
-                                              bottom: 5, top: 5),
+                                        CardsView(
+                                          cards: _handLogModel
+                                              .hand.data.boardCards,
+                                          show: true,
+                                        ),
+                                        CardsView(
+                                          cards: potWinnersList[index]
+                                              .hiWinners[winnerIndex]
+                                              .winningCards
+                                              .cast<int>()
+                                              .toList(),
+                                          show: _handLogModel
+                                                  .hand.data.handLog.showDown ??
+                                              false,
+                                        ),
+                                        /*  Padding(
+                                          padding: EdgeInsets.all(5),
                                           child: Text(
-                                            _handLogModel.hand.data.players[
-                                                    potWinnersList[index]
-                                                        .hiWinners[winnerIndex]
-                                                        .seatNo] ??
-                                                "Unknown",
+                                            "Received: " +
+                                                potWinnersList[index]
+                                                    .hiWinners[winnerIndex]
+                                                    .amount
+                                                    .toString(),
                                             style: const TextStyle(
                                               fontFamily:
                                                   AppAssets.fontFamilyLato,
@@ -109,27 +127,64 @@ class HandWinnersView extends StatelessWidget {
                                             ),
                                             textAlign: TextAlign.left,
                                           ),
-                                        ),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
+                                        ), */
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                      Visibility(
+                        visible: potWinnersList[index].lowWinners.length > 0,
+                        child: Container(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Divider(
+                                color: AppColors.listViewDividerColor,
+                                indent: 5,
+                                endIndent: 5,
+                              ),
+                              Padding(
+                                padding: EdgeInsets.all(5),
+                                child: Text(
+                                  "Low Winners",
+                                  style: const TextStyle(
+                                    fontFamily: AppAssets.fontFamilyLato,
+                                    color: Colors.white,
+                                    fontSize: 14.0,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                  textAlign: TextAlign.left,
+                                ),
+                              ),
+                              Container(
+                                margin: EdgeInsets.all(5),
+                                alignment: Alignment.centerRight,
+                                child: Container(
+                                  child: ListView.builder(
+                                    physics: NeverScrollableScrollPhysics(),
+                                    itemCount:
+                                        potWinnersList[index].lowWinners.length,
+                                    shrinkWrap: true,
+                                    itemBuilder: (context, winnerIndex) {
+                                      return Container(
+                                        margin: EdgeInsets.only(left: 20),
+                                        alignment: Alignment.centerLeft,
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
-                                            CommunityCardWidget(
-                                              potWinnersList[index]
-                                                  .hiWinners[winnerIndex]
-                                                  .winningCards
-                                                  .cast<int>()
-                                                  .toList(),
-                                              false,
-                                            ),
                                             Padding(
-                                              padding: EdgeInsets.all(5),
+                                              padding: EdgeInsets.only(
+                                                  top: 5, bottom: 5),
                                               child: Text(
-                                                "Received: " +
-                                                    potWinnersList[index]
-                                                        .hiWinners[winnerIndex]
-                                                        .amount
-                                                        .toString(),
+                                                potWinnersList[index]
+                                                    .lowWinners[winnerIndex]
+                                                    .name,
                                                 style: const TextStyle(
                                                   fontFamily:
                                                       AppAssets.fontFamilyLato,
@@ -140,65 +195,28 @@ class HandWinnersView extends StatelessWidget {
                                                 textAlign: TextAlign.left,
                                               ),
                                             ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                },
-                              ),
-                            ),
-                          ),
-                          Visibility(
-                            visible:
-                                potWinnersList[index].lowWinners.length > 0,
-                            child: Container(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Divider(
-                                    color: AppColors.listViewDividerColor,
-                                    indent: 5,
-                                    endIndent: 5,
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.all(5),
-                                    child: Text(
-                                      "Low Winners",
-                                      style: const TextStyle(
-                                        fontFamily: AppAssets.fontFamilyLato,
-                                        color: Colors.white,
-                                        fontSize: 14.0,
-                                        fontWeight: FontWeight.w400,
-                                      ),
-                                      textAlign: TextAlign.left,
-                                    ),
-                                  ),
-                                  Container(
-                                    margin: EdgeInsets.all(5),
-                                    alignment: Alignment.centerRight,
-                                    child: Container(
-                                      child: ListView.builder(
-                                        physics: NeverScrollableScrollPhysics(),
-                                        itemCount: potWinnersList[index]
-                                            .lowWinners
-                                            .length,
-                                        shrinkWrap: true,
-                                        itemBuilder: (context, winnerIndex) {
-                                          return Container(
-                                            margin: EdgeInsets.only(left: 20),
-                                            alignment: Alignment.centerLeft,
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
                                               children: [
+                                                CommunityCardWidget(
+                                                  potWinnersList[index]
+                                                      .lowWinners[winnerIndex]
+                                                      .winningCards
+                                                      .cast<int>()
+                                                      .toList(),
+                                                  true,
+                                                ),
                                                 Padding(
-                                                  padding: EdgeInsets.only(
-                                                      top: 5, bottom: 5),
+                                                  padding: EdgeInsets.all(5),
                                                   child: Text(
-                                                    potWinnersList[index]
-                                                        .lowWinners[winnerIndex]
-                                                        .name,
+                                                    "Received: " +
+                                                        potWinnersList[index]
+                                                            .lowWinners[
+                                                                winnerIndex]
+                                                            .amount
+                                                            .toString(),
                                                     style: const TextStyle(
                                                       fontFamily: AppAssets
                                                           .fontFamilyLato,
@@ -210,60 +228,21 @@ class HandWinnersView extends StatelessWidget {
                                                     textAlign: TextAlign.left,
                                                   ),
                                                 ),
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    CommunityCardWidget(
-                                                      potWinnersList[index]
-                                                          .lowWinners[
-                                                              winnerIndex]
-                                                          .winningCards
-                                                          .cast<int>()
-                                                          .toList(),
-                                                      true,
-                                                    ),
-                                                    Padding(
-                                                      padding:
-                                                          EdgeInsets.all(5),
-                                                      child: Text(
-                                                        "Received: " +
-                                                            potWinnersList[
-                                                                    index]
-                                                                .lowWinners[
-                                                                    winnerIndex]
-                                                                .amount
-                                                                .toString(),
-                                                        style: const TextStyle(
-                                                          fontFamily: AppAssets
-                                                              .fontFamilyLato,
-                                                          color: Colors.white,
-                                                          fontSize: 14.0,
-                                                          fontWeight:
-                                                              FontWeight.w400,
-                                                        ),
-                                                        textAlign:
-                                                            TextAlign.left,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
                                               ],
                                             ),
-                                          );
-                                        },
-                                      ),
-                                    ),
+                                          ],
+                                        ),
+                                      );
+                                    },
                                   ),
-                                ],
+                                ),
                               ),
-                            ),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               );
             },
