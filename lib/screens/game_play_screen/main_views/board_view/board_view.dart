@@ -117,6 +117,7 @@ class _BoardViewState extends State<BoardView> {
               final cards = tableState.cards;
               final cardsOther = tableState.cardsOther;
               final pots = tableState.potChips;
+              final flipSpeed = tableState.flipSpeed;
 
               return Transform.scale(
                 scale: boardAttributes.centerScale,
@@ -136,6 +137,7 @@ class _BoardViewState extends State<BoardView> {
                   tableState.tableStatus,
                   valueNotifierFooterStatus.value == FooterStatus.Result,
                   widget.onStartGame,
+                  flipSpeed,
                 ),
               );
             },

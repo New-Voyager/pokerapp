@@ -11,7 +11,7 @@ class TableState extends ChangeNotifier {
   int _potUpdatesChips;
   List<CardObject> _board1;
   List<CardObject> _board2;
-
+  int _flipSpeed;
   // // animation variables
   // bool _animateBoard1Flop;
   // bool _animateBoard1Turn;
@@ -34,6 +34,7 @@ class TableState extends ChangeNotifier {
     this._potChips = potChips;
     this._board1 = communityCards;
     this._potUpdatesChips = potUpdatesChips;
+    this._flipSpeed = 500;
   }
 
   void clear() {
@@ -42,6 +43,7 @@ class TableState extends ChangeNotifier {
     _potChips?.clear();
     _potUpdatesChips = null;
     _tableStatus = AppConstants.CLEAR;
+    _flipSpeed = 500;
     // _animateBoard1 = false;
     // _animateBoard1Flop = false;
     // _animateBoard1Turn = false;
@@ -120,6 +122,7 @@ class TableState extends ChangeNotifier {
     int boardIndex,
     List<CardObject> cards,
   ) async {
+    _flipSpeed = 200;
     /* set empty cards to the community cards */
     if (cards.isEmpty) {
       if (boardIndex == 1) this._board1 = [];
@@ -140,14 +143,14 @@ class TableState extends ChangeNotifier {
         notifyAll();
 
         /* wait for the duration */
-        await _delay(4);
+        await _delay(1);
 
         /* add turn cards */
         addTurnOrRiverCard(1, cards[3]);
         notifyAll();
 
         /* wait for the duration */
-        await _delay(3);
+        await _delay(1);
 
         /* finally, add the river cards */
         addTurnOrRiverCard(1, cards.last);
@@ -160,7 +163,7 @@ class TableState extends ChangeNotifier {
         notifyAll();
 
         /* wait for the duration */
-        await _delay(3);
+        await _delay(1);
 
         /* finally, add the river cards */
         addTurnOrRiverCard(1, cards.last);
@@ -182,14 +185,14 @@ class TableState extends ChangeNotifier {
       notifyAll();
 
       /* wait for the duration */
-      await _delay(4);
+      await _delay(1);
 
       /* add turn cards */
       addTurnOrRiverCard(2, cards[3]);
       notifyAll();
 
       /* wait for the duration */
-      await _delay(3);
+      await _delay(1);
 
       /* finally, add the river cards */
       addTurnOrRiverCard(2, cards.last);
@@ -365,5 +368,9 @@ class TableState extends ChangeNotifier {
       return true;
     }
     return false;
+  }
+
+  int get flipSpeed {
+    return this._flipSpeed;
   }
 }
