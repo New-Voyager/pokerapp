@@ -20,12 +20,14 @@ import 'package:pokerapp/resources/card_back_assets.dart';
 class CommunityCardsView extends StatelessWidget {
   final List<CardObject> cards;
   final List<CardObject> cardsOther;
+  final bool twoBoardsNeeded;
   final bool horizontal;
   final int speed;
 
   CommunityCardsView({
     @required this.cards,
     this.cardsOther,
+    this.twoBoardsNeeded,
     this.speed = 500,
     this.horizontal = true,
   });
@@ -81,46 +83,7 @@ class CommunityCardsView extends StatelessWidget {
     return communityCards.toList();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    /* for animation we use the boardCads only */
-    List<CardObject> boardCards;
-
-    if (cards != null &&
-        cards.isNotEmpty &&
-        cardsOther != null &&
-        cardsOther.isNotEmpty) {
-      /* WE REACH HERE ONLY IF WE ARE IN RESULT && WE RAN INTO A RUN IT TWICE SITUATION */
-      /* need to show board1 and board2 cards */
-      return Transform.scale(
-        alignment: Alignment.topCenter,
-        // TODO: WE MAY NEED TO CHANGE THE SCALE FOR DIFFERENT SCREEN SIZES
-        scale: 0.70,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            /* board 1 cards */
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: getCommunityCards(cards),
-            ),
-
-            /* divider */
-            const SizedBox(height: 12.0),
-
-            /* board 2 cards */
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: getCommunityCards(cardsOther),
-            ),
-          ],
-        ),
-      );
-    }
-
-    if (cards != null && cards.isNotEmpty) boardCards = cards;
-    if (cardsOther != null && cardsOther.isNotEmpty) boardCards = cardsOther;
-
+  Widget buildSingleBoardCards(List<CardObject> boardCards) {
     /* we only need to show animation for the following 3 cases */
     if (boardCards?.length == 3)
       return FlopCommunityCards(
@@ -144,5 +107,30 @@ class CommunityCardsView extends StatelessWidget {
         children: getCommunityCards(boardCards),
       ),
     );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (twoBoardsNeeded ?? false) {
+      // TODO: WE MAY NEED TO CHANGE THE SCALE FOR DIFFERENT SCREEN SIZES
+      return Transform.scale(
+        alignment: Alignment.topCenter,
+        scale: 0.70,
+        child: Column(
+          children: [
+            /* board 1 cards */
+            buildSingleBoardCards(cards),
+
+            /* divider */
+            const SizedBox(height: 12.0),
+
+            /* board 2 cards */
+            buildSingleBoardCards(cardsOther),
+          ],
+        ),
+      );
+    }
+
+    return buildSingleBoardCards(cards);
   }
 }

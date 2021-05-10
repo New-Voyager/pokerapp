@@ -18,6 +18,7 @@ import 'package:provider/provider.dart';
 import 'board_view_util_methods.dart';
 
 class CenterView extends StatelessWidget {
+  final bool twoBoardsNeeded;
   final String tableStatus;
   final List<CardObject> cards;
   final List<CardObject> cardsOther;
@@ -32,6 +33,7 @@ class CenterView extends StatelessWidget {
 
   CenterView(
     Key key,
+    this.twoBoardsNeeded,
     this.gameCode,
     this.isHost,
     this.isBoardHorizontal,
@@ -155,6 +157,7 @@ class CenterView extends StatelessWidget {
               child: CommunityCardsView(
                 cards: this.cards,
                 cardsOther: this.cardsOther,
+                twoBoardsNeeded: this.twoBoardsNeeded,
                 horizontal: true,
               ),
             ),
@@ -221,7 +224,7 @@ class CenterView extends StatelessWidget {
                   ),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(100.0),
-                    color: Colors.black26,
+                    color: Colors.black.withOpacity(0.70),
                   ),
                   child: Text(
                     tableState.rankStr,

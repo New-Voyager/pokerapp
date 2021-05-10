@@ -13,6 +13,7 @@ class TableState extends ChangeNotifier {
   List<CardObject> _board2;
   int _flipSpeed;
   String _rankStr;
+  bool _twoBoardsNeeded;
 
   // // animation variables
   // bool _animateBoard1Flop;
@@ -37,6 +38,7 @@ class TableState extends ChangeNotifier {
     this._board1 = communityCards;
     this._potUpdatesChips = potUpdatesChips;
     this._flipSpeed = 500;
+    this._twoBoardsNeeded = false;
   }
 
   void clear() {
@@ -47,6 +49,7 @@ class TableState extends ChangeNotifier {
     _tableStatus = AppConstants.CLEAR;
     _flipSpeed = 500;
     _rankStr = null;
+    _twoBoardsNeeded = false;
     // _animateBoard1 = false;
     // _animateBoard1Flop = false;
     // _animateBoard1Turn = false;
@@ -58,6 +61,10 @@ class TableState extends ChangeNotifier {
   }
 
   void notifyAll() => notifyListeners();
+
+  void updateTwoBoardsNeeded(bool b) {
+    this._twoBoardsNeeded = b;
+  }
 
   /* public methods for updating values into our TableState */
   void updateTableStatusSilent(String tableStatus) {
@@ -359,6 +366,7 @@ class TableState extends ChangeNotifier {
   }
 
   /* getters */
+  bool get twoBoardsNeeded => _twoBoardsNeeded;
   String get rankStr => _rankStr;
   String get tableStatus => _tableStatus;
   List<int> get potChips => _potChips;

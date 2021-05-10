@@ -317,40 +317,35 @@ class HandActionService {
   Future<void> handleRunItTwice(var data) async {
     final runItTwice = data['runItTwice'];
 
-    final List<int> board1Cards =
-        runItTwice['board1'].map<int>((c) => int.parse(c.toString())).toList();
+    final List<CardObject> board1Cards = runItTwice['board1']
+        .map<CardObject>((c) => CardHelper.getCard(int.parse(c.toString())))
+        .toList();
 
-    final List<int> board2Cards =
-        runItTwice['board2'].map<int>((c) => int.parse(c.toString())).toList();
+    final List<CardObject> board2Cards = runItTwice['board2']
+        .map<CardObject>((c) => CardHelper.getCard(int.parse(c.toString())))
+        .toList();
 
     final GameState gameState = GameState.getState(_context);
     final TableState tableState = gameState.getTableState(_context);
+    tableState.updateTwoBoardsNeeded(true);
 
     /* show the board 1 cards */
     await tableState.addAllCommunityCardsForRunItTwiceScenario(
       1,
-      board1Cards.map((c) => CardHelper.getCard(c)).toList(),
+      board1Cards,
     );
 
     /* pause for a bit todo: get duration */
     await Future.delayed(const Duration(milliseconds: 500));
 
-    /* remove all cards */
-    tableState.addAllCommunityCardsForRunItTwiceScenario(1, []);
-
-    /* pause for a bit todo: get duration */
-    await Future.delayed(const Duration(milliseconds: 1500));
-
     /* show the board 2 cards */
     await tableState.addAllCommunityCardsForRunItTwiceScenario(
       2,
-      board2Cards.map((c) => CardHelper.getCard(c)).toList(),
+      board2Cards,
     );
 
     /* pause for a bit todo: get duration */
-    await Future.delayed(const Duration(milliseconds: 1500));
-
-    tableState.addAllCommunityCardsForRunItTwiceScenario(2, []);
+    await Future.delayed(const Duration(milliseconds: 2000));
   }
 
   Future<void> handleNewHand(var data) async {
@@ -379,11 +374,12 @@ class HandActionService {
 
     final handInfo = _gameState.getHandInfo(_context);
     handInfo.update(
-        handNum: handNum,
-        noCards: noCards,
-        gameType: gameType,
-        smallBlind: smallBlind,
-        bigBlind: bigBlind);
+      handNum: handNum,
+      noCards: noCards,
+      gameType: gameType,
+      smallBlind: smallBlind,
+      bigBlind: bigBlind,
+    );
 
     // set small blind and big blind
     final sbSeat = _gameState.getSeat(_context, sbPos);
@@ -1021,6 +1017,25 @@ class HandActionService {
     players.notifyAll();
   }
 
+  /* only resets the highlights, and winners */
+  void resetResult({
+    TableState tableState,
+    Players players,
+    int boardIndex = 1,
+  }) {
+    tableState.unHighlightCardsSilent(boardIndex);
+    players.removeAllHighlightsSilent();
+    players.removeWinnerHighlightSilent();
+    players.unHighlightCardsSilentForAll();
+
+    tableState.updateRankStrSilent(null);
+
+    _gameState.resetSeatActions();
+
+    players.notifyAll();
+    tableState.notifyAll();
+  }
+
   Future<void> handleResult(var data) async {
     final Players players = _gameState.getPlayers(_context);
     final tableState = _gameState.getTableState(_context);
@@ -1035,6 +1050,8 @@ class HandActionService {
     }
     _gameState.resetSeatActions();
     players.clearForShowdown();
+
+    // TODO: VERITY THIS METHOD FOR (NOT) RUN IT TWICE RESULTS
 
     // get hand winners data and update results
     final handResult = data['handResult'];
@@ -1096,17 +1113,11 @@ class HandActionService {
       }
 
       /* cleanup all highlights and rankStr */
-      tableState.unHighlightCardsSilent(1);
-      players.removeAllHighlightsSilent();
-      players.removeWinnerHighlightSilent();
-      players.unHighlightCardsSilentForAll();
-
-      tableState.updateRankStrSilent(null);
-
-      _gameState.resetSeatActions();
-
-      players.notifyAll();
-      tableState.notifyAll();
+      resetResult(
+        tableState: tableState,
+        players: players,
+        boardIndex: 1,
+      );
 
       /* wait for a brief duration */
       await Future.delayed(AppConstants.animationDuration);
@@ -1131,6 +1142,16 @@ class HandActionService {
         /* todo: shall we wait here for a brief moment? */
         await Future.delayed(AppConstants.animationDuration);
       }
+
+      /* cleanup all highlights and rankStr */
+      resetResult(
+        tableState: tableState,
+        players: players,
+        boardIndex: 2,
+      );
+
+      /* turn off two boards needed flag */
+      tableState.updateTwoBoardsNeeded(false);
     } else {
       /* NOT RUN IT TWICE CASE */
 
@@ -1166,14 +1187,13 @@ class HandActionService {
 
     if (TestService.isTesting) return;
 
-    // todo: put the delay in the const class after finalizing the delay constant
     /* finally send the cardNumbers to the gameChatChannel after 1500 ms */
-    Future.delayed(const Duration(milliseconds: 1500)).then((_) {
-      final gameService = _gameState.getGameMessagingService(_context);
-      gameService.sendCards(
-        cardNumbers,
-        players.me?.seatNo,
-      );
-    });
+    // todo: put the delay in the const class after finalizing the delay constant
+    await Future.delayed(const Duration(milliseconds: 1500));
+    final gameService = _gameState.getGameMessagingService(_context);
+    gameService.sendCards(
+      cardNumbers,
+      players.me?.seatNo,
+    );
   }
 }

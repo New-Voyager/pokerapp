@@ -123,6 +123,7 @@ class _BoardViewState extends State<BoardView> {
                 scale: boardAttributes.centerScale,
                 child: CenterView(
                   centerKey,
+                  tableState.twoBoardsNeeded,
                   widget.gameInfo.gameCode,
                   widget.gameInfo.isHost,
                   isBoardHorizontal,
