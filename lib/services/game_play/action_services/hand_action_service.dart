@@ -1191,11 +1191,12 @@ class HandActionService {
 
     // todo: put the delay in the const class after finalizing the delay constant
     /* finally send the cardNumbers to the gameChatChannel after 1500 ms */
-    Future.delayed(const Duration(milliseconds: 1500)).then(
-      (_) => _gameState.getGameMessagingService(_context).sendCards(
-            cardNumbers,
-            players.me?.seatNo,
-          ),
-    );
+    Future.delayed(const Duration(milliseconds: 1500)).then((_) {
+      final gameService = _gameState.getGameMessagingService(_context);
+      gameService.sendCards(
+        cardNumbers,
+        players.me?.seatNo,
+      );
+    });
   }
 }
