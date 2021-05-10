@@ -22,16 +22,8 @@ class CommunityCardView extends StatelessWidget {
       grayOut: false,
       widthRatio: 1.5,
     );
-    final Widget cardWidget = cardView.buildCardWidget(context);
-    /* for visible cards, the smaller card size is shown to the left of user,
-    * and the bigger size is shown as the community card */
 
-    // String cardBackAsset = CardBackAssets.asset1_1;
-    // TODO:  WAY TO GET THE CARD BACK ASSET FOR CURRENT SETTINGS
-    // try {
-    //   cardBackAsset =
-    //       Provider.of<ValueNotifier<String>>(context, listen: false).value;
-    // } catch (_) {}
+    final Widget cardWidget = cardView.buildCardWidget(context);
 
     return Transform.scale(
       scale: 1.2,
@@ -43,19 +35,6 @@ class CommunityCardView extends StatelessWidget {
           height: cardView.height,
           width: cardView.width,
           child: cardWidget,
-          // child: FlipCard(
-          //   flipOnTouch: false,
-          //   // key: cardKey,
-          //   back: SizedBox(
-          //     height: AppDimensions.cardHeight * 1.3,
-          //     width: AppDimensions.cardWidth * 1.3,
-          //     child: Image.asset(
-          //       cardBackAsset,
-          //       fit: BoxFit.fitHeight,
-          //     ),
-          //   ),
-          //   front: cardWidget,
-          // ),
         ),
       ),
     );

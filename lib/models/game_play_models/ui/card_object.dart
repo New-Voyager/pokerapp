@@ -25,6 +25,8 @@ class CardObject {
   /* this is needed in showdown and
   while highlighting a winner */
   bool highlight;
+  bool dim;
+
   bool otherHighlightColor;
 
   CardView cardView;
@@ -39,6 +41,7 @@ class CardObject {
     this.isCommunity = false,
     this.smaller = false,
     this.highlight = false,
+    this.dim = false,
     this.isShownAtTable = false,
     this.highHandLog = false, // this is true for the community cards
     this.cardFace = CardFace.FRONT,
