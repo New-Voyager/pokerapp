@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/business/hi_winners_model.dart';
 
+// TODO: DO WE REALLY NEED THIS HAND_RESULT_STATE CLASS?
 class HandResultState extends ChangeNotifier {
   int _handNum;
   bool _isAvailable;

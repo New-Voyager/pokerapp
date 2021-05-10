@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/hand_result.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/resources/app_constants.dart';
@@ -17,8 +18,10 @@ import 'package:provider/provider.dart';
 import 'board_view_util_methods.dart';
 
 class CenterView extends StatelessWidget {
+  final bool twoBoardsNeeded;
   final String tableStatus;
   final List<CardObject> cards;
+  final List<CardObject> cardsOther;
   final List<int> potChips;
   final Function onStartGame;
   final bool showDown;
@@ -26,19 +29,23 @@ class CenterView extends StatelessWidget {
   final double potChipsUpdates;
   final bool isHost;
   final String gameCode;
+  final int flipSpeed;
 
   CenterView(
-      Key key,
-      this.gameCode,
-      this.isHost,
-      this.isBoardHorizontal,
-      this.cards,
-      this.potChips,
-      this.potChipsUpdates,
-      this.tableStatus,
-      this.showDown,
-      this.onStartGame)
-      : super(key: key);
+    Key key,
+    this.twoBoardsNeeded,
+    this.gameCode,
+    this.isHost,
+    this.isBoardHorizontal,
+    this.cards,
+    this.cardsOther,
+    this.potChips,
+    this.potChipsUpdates,
+    this.tableStatus,
+    this.showDown,
+    this.onStartGame,
+    this.flipSpeed,
+  ) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -149,6 +156,8 @@ class CenterView extends StatelessWidget {
               offset: Offset(0, 50),
               child: CommunityCardsView(
                 cards: this.cards,
+                cardsOther: this.cardsOther,
+                twoBoardsNeeded: this.twoBoardsNeeded,
                 horizontal: true,
               ),
             ),
@@ -196,11 +205,11 @@ class CenterView extends StatelessWidget {
 
   /* rankStr --> needs to be shown only when footer result is not null */
   Widget rankWidget() {
-    final child = Consumer<HandResultState>(
-      builder: (_, HandResultState result, __) => AnimatedSwitcher(
+    final child = Consumer<TableState>(
+      builder: (_, TableState tableState, __) => AnimatedSwitcher(
         duration: AppConstants.animationDuration,
         reverseDuration: AppConstants.animationDuration,
-        child: !result.isAvailable
+        child: tableState.rankStr == null
             ? const SizedBox.shrink()
             : Transform.translate(
                 offset: Offset(
@@ -215,10 +224,10 @@ class CenterView extends StatelessWidget {
                   ),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(100.0),
-                    color: Colors.black26,
+                    color: Colors.black.withOpacity(0.70),
                   ),
                   child: Text(
-                    result.potWinners.first.rankStr,
+                    tableState.rankStr,
                     style: AppStyles.footerResultTextStyle4,
                   ),
                 ),

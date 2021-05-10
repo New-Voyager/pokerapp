@@ -14,6 +14,7 @@ import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
+import 'package:pokerapp/services/test/test_service.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
@@ -54,7 +55,7 @@ class GameState {
     PlayerInfo currentPlayer,
     GameMessagingService gameMessagingService,
   }) {
-    assert(gameMessagingService != null);
+    if (TestService.isTesting == false) assert(gameMessagingService != null);
     this._seats = Map<int, Seat>();
     this._gameInfo = gameInfo;
     this._gameCode = gameCode;

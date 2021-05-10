@@ -11,6 +11,9 @@ class TableState extends ChangeNotifier {
   int _potUpdatesChips;
   List<CardObject> _board1;
   List<CardObject> _board2;
+  int _flipSpeed;
+  String _rankStr;
+  bool _twoBoardsNeeded;
 
   // // animation variables
   // bool _animateBoard1Flop;
@@ -34,6 +37,8 @@ class TableState extends ChangeNotifier {
     this._potChips = potChips;
     this._board1 = communityCards;
     this._potUpdatesChips = potUpdatesChips;
+    this._flipSpeed = 500;
+    this._twoBoardsNeeded = false;
   }
 
   void clear() {
@@ -42,6 +47,9 @@ class TableState extends ChangeNotifier {
     _potChips?.clear();
     _potUpdatesChips = null;
     _tableStatus = AppConstants.CLEAR;
+    _flipSpeed = 500;
+    _rankStr = null;
+    _twoBoardsNeeded = false;
     // _animateBoard1 = false;
     // _animateBoard1Flop = false;
     // _animateBoard1Turn = false;
@@ -53,6 +61,10 @@ class TableState extends ChangeNotifier {
   }
 
   void notifyAll() => notifyListeners();
+
+  void updateTwoBoardsNeeded(bool b) {
+    this._twoBoardsNeeded = b;
+  }
 
   /* public methods for updating values into our TableState */
   void updateTableStatusSilent(String tableStatus) {
@@ -71,54 +83,154 @@ class TableState extends ChangeNotifier {
     this._potUpdatesChips = potUpdatesChips;
   }
 
-  // // this method flips all the cards after a short delay
-  // void flipCards() async {
-  //   for (int i = 0; i < this.cards.length; i++) {
-  //     cards[i].flipCard();
-  //     notifyListeners();
-  //     await Future.delayed(AppConstants.communityCardPushDuration);
-  //   }
-  // }
-  //
-  // void flipLastCard() {
-  //   this.cards.last.flipCard();
-  // }
-
   void setBoardCards(int boardIndex, List<CardObject> cards) {
     if (boardIndex == 1) {
-      // WHY THIS? DOES'NT MAKE SENSE WITH THE NEXT IF cards.length > 5 it will never be reached
-      // if (this._board1.length >= 3) {
-      //   return;
-      // }
       if (cards.length > 5) {
         this._board1 = cards.sublist(0, 5);
       } else {
         this._board1 = cards;
       }
+    } else if (boardIndex == 2) {
+      if (cards.length > 5) {
+        this._board2 = cards.sublist(0, 5);
+      } else {
+        this._board2 = cards;
+      }
     }
   }
 
-  void addFlopCards(int boardIndex, List<CardObject> cards) {
-    if (_board1 == null) _board1 = [];
-    _board1.clear();
+  void updateRankStrSilent(String rankStr) {
+    this._rankStr = rankStr;
+  }
 
+  void addFlopCards(int boardIndex, List<CardObject> cards) {
     if (boardIndex == 1) {
+      if (_board1 == null) _board1 = [];
+      _board1.clear();
+
       if (this._board1.length >= 3) {
         return;
       }
       this._board1.addAll(cards);
+    } else if (boardIndex == 2) {
+      if (_board2 == null) _board2 = [];
+      _board2.clear();
+
+      if (this._board2.length >= 3) {
+        return;
+      }
+      this._board2.addAll(cards);
+    }
+  }
+
+  Future<void> _delay(int times) => Future.delayed(
+        Duration(
+          milliseconds:
+              AppConstants.communityCardAnimationDuration.inMilliseconds *
+                  times,
+        ),
+      );
+
+  /* THIS METHOD IS ONLY USED WHEN WE RUN INTO A RUN IT TWICE SCENARIO */
+  Future<void> addAllCommunityCardsForRunItTwiceScenario(
+    int boardIndex,
+    List<CardObject> cards,
+  ) async {
+    _flipSpeed = 200;
+    /* set empty cards to the community cards */
+    if (cards.isEmpty) {
+      if (boardIndex == 1) this._board1 = [];
+      if (boardIndex == 2) this._board2 = [];
+
+      notifyAll();
+      return;
+    }
+
+    if (boardIndex == 1) {
+      if (_board1 == null || _board1.isEmpty) {
+        /* add all cards sequentially */
+
+        _board1 = [];
+
+        /* add the flop cards first */
+        addFlopCards(1, cards.sublist(0, 3));
+        notifyAll();
+
+        /* wait for the duration */
+        await _delay(1);
+
+        /* add turn cards */
+        addTurnOrRiverCard(1, cards[3]);
+        notifyAll();
+
+        /* wait for the duration */
+        await _delay(1);
+
+        /* finally, add the river cards */
+        addTurnOrRiverCard(1, cards.last);
+        notifyAll();
+      } else if (_board1.length == 3) {
+        /* flop cards are added, just need to add turn and river cards sequentially */
+
+        /* add turn cards */
+        addTurnOrRiverCard(1, cards[3]);
+        notifyAll();
+
+        /* wait for the duration */
+        await _delay(1);
+
+        /* finally, add the river cards */
+        addTurnOrRiverCard(1, cards.last);
+        notifyAll();
+      } else if (_board1.length == 4) {
+        /* cards till turn are added, just need to add river cards  */
+        addTurnOrRiverCard(1, cards.last);
+        notifyAll();
+      } else {
+        return;
+      }
+    } else if (boardIndex == 2) {
+      /* need to add all the cards - one by one */
+
+      _board2 = [];
+
+      /* add the flop cards first */
+      addFlopCards(2, cards.sublist(0, 3));
+      notifyAll();
+
+      /* wait for the duration */
+      await _delay(1);
+
+      /* add turn cards */
+      addTurnOrRiverCard(2, cards[3]);
+      notifyAll();
+
+      /* wait for the duration */
+      await _delay(1);
+
+      /* finally, add the river cards */
+      addTurnOrRiverCard(2, cards.last);
+      notifyAll();
     }
   }
 
   void addTurnOrRiverCard(int boardIndex, CardObject card) {
-    if (_board1 == null) return;
-
     if (boardIndex == 1) {
       /* prevent calling this method, if there are less than 4 cards */
-      if (this._board1.length < 3 || this._board1.length == 5) {
+      if (this._board1 == null ||
+          this._board1.length < 3 ||
+          this._board1.length == 5) {
         return;
       }
       this._board1.add(card);
+    } else if (boardIndex == 2) {
+      /* prevent calling this method, if there are less than 4 cards */
+      if (this._board2 == null ||
+          this._board2.length < 3 ||
+          this._board2.length == 5) {
+        return;
+      }
+      this._board2.add(card);
     }
   }
 
@@ -219,24 +331,48 @@ class TableState extends ChangeNotifier {
     return this._board2[4];
   }
 
-  /* this method highlights all community cards */
-  void highlightCardsSilent(List<int> rawCards) {
-    if (_board1 == null) return;
-    for (int i = 0; i < _board1.length; i++) {
-      String label = _board1[i].label;
-      String suit = _board1[i].suit;
+  /* un highlight board cards */
+  void unHighlightCardsSilent(int boardIndex) {
+    if (boardIndex == 1) {
+      for (int i = 0; i < _board1.length; i++) _board1[i].highlight = false;
+    } else if (boardIndex == 2) {
+      for (int i = 0; i < _board1.length; i++) _board2[i].highlight = false;
+    }
+  }
 
-      int rawCardNumber = CardHelper.getRawCardNumber('$label$suit');
-      if (rawCards.any((rc) => rc == rawCardNumber))
-        _board1[i].highlight = true;
+  /* this method highlights all community cards */
+  void highlightCardsSilent(int boardIndex, List<int> rawCards) {
+    if (boardIndex == 1) {
+      if (_board1 == null) return;
+
+      for (int i = 0; i < _board1.length; i++) {
+        String label = _board1[i].label;
+        String suit = _board1[i].suit;
+
+        int rawCardNumber = CardHelper.getRawCardNumber('$label$suit');
+        if (rawCards.any((rc) => rc == rawCardNumber))
+          _board1[i].highlight = true;
+      }
+    } else if (boardIndex == 2) {
+      for (int i = 0; i < _board2.length; i++) {
+        String label = _board2[i].label;
+        String suit = _board2[i].suit;
+
+        int rawCardNumber = CardHelper.getRawCardNumber('$label$suit');
+        if (rawCards.any((rc) => rc == rawCardNumber))
+          _board2[i].highlight = true;
+      }
     }
   }
 
   /* getters */
+  bool get twoBoardsNeeded => _twoBoardsNeeded;
+  String get rankStr => _rankStr;
   String get tableStatus => _tableStatus;
   List<int> get potChips => _potChips;
   int get potChipsUpdates => _potUpdatesChips;
   List<CardObject> get cards => _board1;
+  List<CardObject> get cardsOther => _board2;
 
   bool get gamePaused {
     if (_gameStatus == AppConstants.GAME_PAUSED) {
@@ -257,5 +393,9 @@ class TableState extends ChangeNotifier {
       return true;
     }
     return false;
+  }
+
+  int get flipSpeed {
+    return this._flipSpeed;
   }
 }

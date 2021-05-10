@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flip_card/flip_card.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
@@ -14,21 +15,25 @@ import 'package:pokerapp/widgets/card_view.dart';
 import 'package:provider/provider.dart';
 import 'package:pokerapp/resources/card_back_assets.dart';
 
-const double pullUpOffset = -15.0;
-
 /* THIS VIEW ITSELF TAKES CARE OF THE ANIMATION PART FOR THE COMMUNITY CARDS */
 
 class CommunityCardsView extends StatelessWidget {
   final List<CardObject> cards;
+  final List<CardObject> cardsOther;
+  final bool twoBoardsNeeded;
   final bool horizontal;
+  final int speed;
 
   CommunityCardsView({
     @required this.cards,
+    this.cardsOther,
+    this.twoBoardsNeeded,
+    this.speed = 500,
     this.horizontal = true,
   });
 
-  List<Widget> getCommunityCards() {
-    List<CardObject> reversedList = this.cards ?? [];
+  List<Widget> getCommunityCards(List<CardObject> cards) {
+    List<CardObject> reversedList = cards ?? [];
 
     /* if we do not have an already existing entry, then only go for the dummy card */
     if (!CommunityCardAttribute.hasEntry(0)) if (cards?.isEmpty ?? true) {
@@ -63,17 +68,11 @@ class CommunityCardsView extends StatelessWidget {
       /* THIS widget is a wrapper around the community card view, and helps in case of we need to highlight a card */
       Widget communityCardView = Container(
         margin: EdgeInsets.only(right: 2.0),
-        child: Transform.translate(
-          offset: Offset(
-            0.0,
-            card.highlight ? pullUpOffset : 0.0,
-          ),
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 3.0),
-            child: CommunityCardView(
-              key: globalKey,
-              card: card,
-            ),
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 3.0),
+          child: CommunityCardView(
+            key: globalKey,
+            card: card,
           ),
         ),
       );
@@ -84,29 +83,54 @@ class CommunityCardsView extends StatelessWidget {
     return communityCards.toList();
   }
 
-  @override
-  Widget build(BuildContext context) {
+  Widget buildSingleBoardCards(List<CardObject> boardCards) {
     /* we only need to show animation for the following 3 cases */
-
-    if (cards?.length == 3)
+    if (boardCards?.length == 3)
       return FlopCommunityCards(
-        flopCards: getCommunityCards(),
+        flopCards: getCommunityCards(boardCards),
+        speed: speed,
       );
 
-    if (cards?.length == 4 || cards?.length == 5)
+    if (boardCards?.length == 4 || boardCards?.length == 5)
       return TurnOrRiverCommunityCards(
-        key: ValueKey(cards.length),
-        riverOrTurnCards: getCommunityCards(),
+        key: ValueKey(boardCards.length),
+        riverOrTurnCards: getCommunityCards(boardCards),
+        speed: speed,
       );
 
     /* default case - this is done to bake our data for animating in the future */
     return Opacity(
       /* if there are no community cards, do not show anything */
-      opacity: (cards?.isEmpty ?? true) ? 0.0 : 1.0,
+      opacity: (boardCards?.isEmpty ?? true) ? 0.0 : 1.0,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: getCommunityCards(),
+        children: getCommunityCards(boardCards),
       ),
     );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (twoBoardsNeeded ?? false) {
+      // TODO: WE MAY NEED TO CHANGE THE SCALE FOR DIFFERENT SCREEN SIZES
+      return Transform.scale(
+        alignment: Alignment.topCenter,
+        scale: 0.70,
+        child: Column(
+          children: [
+            /* board 1 cards */
+            buildSingleBoardCards(cards),
+
+            /* divider */
+            const SizedBox(height: 12.0),
+
+            /* board 2 cards */
+            buildSingleBoardCards(cardsOther),
+          ],
+        ),
+      );
+    }
+
+    return buildSingleBoardCards(cards);
   }
 }

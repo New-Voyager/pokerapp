@@ -25,6 +25,8 @@ class CardObject {
   /* this is needed in showdown and
   while highlighting a winner */
   bool highlight;
+  bool dim;
+
   bool otherHighlightColor;
 
   CardView cardView;
@@ -39,6 +41,7 @@ class CardObject {
     this.isCommunity = false,
     this.smaller = false,
     this.highlight = false,
+    this.dim = false,
     this.isShownAtTable = false,
     this.highHandLog = false, // this is true for the community cards
     this.cardFace = CardFace.FRONT,
@@ -58,26 +61,6 @@ class CardObject {
 
   bool isEmpty() => this.empty;
 
-  // void cardShowFront() {
-  //   if (cardFace == CardFace.FRONT) return;
-  //   flipCard();
-  // }
-
-  // void cardShowBack() {
-  //   if (cardFace == CardFace.BACK) return;
-  //   flipCard();
-  // }
-
-  // void flipCard() {
-  //   if (cardFace == CardFace.BACK)
-  //     cardFace = CardFace.FRONT;
-  //   else
-  //     cardFace = CardFace.BACK;
-  //   if (this.isCommunity) {
-  //     this.communityCardView.flipCard();
-  //   }
-  // }
-
   Widget get widget {
     if (this.isCommunity) {
       return this.communityCardView;
@@ -90,7 +73,7 @@ class CardObject {
 
   @override
   String toString() =>
-      'suit: $suit, label: $label, highlight: $highlight empty: $empty';
+      '{suit: $suit, label: $label, highlight: $highlight empty: $empty}';
 
   static CardObject emptyCard() {
     CardObject card = new CardObject(suit: null, label: null, color: null);
