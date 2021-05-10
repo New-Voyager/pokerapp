@@ -20,10 +20,16 @@ class HandLogHeaderView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: EdgeInsets.only(left: 10, top: 5, bottom: 5, right: 10),
-      elevation: 5.5,
-      color: AppColors.cardBackgroundColor,
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Colors.grey[850],
+              Colors.grey[700],
+            ],
+          ),
+          borderRadius: BorderRadius.circular(8)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -57,7 +63,7 @@ class HandLogHeaderView extends StatelessWidget {
             ],
           ),
           Container(
-            margin: EdgeInsets.only(left: 16, right: 16, bottom: 8),
+            margin: EdgeInsets.only(left: 8, right: 8, bottom: 8),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -92,7 +98,7 @@ class HandLogHeaderView extends StatelessWidget {
                     visible: _getMyCards(_handLogModel).length > 0,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Container(
                           margin: EdgeInsets.only(bottom: 5),
@@ -108,8 +114,7 @@ class HandLogHeaderView extends StatelessWidget {
                         ),
                         CardsView(
                             cards: _getMyCards(_handLogModel),
-                            show: _handLogModel.hand.handLog.showDown ??
-                                false),
+                            show: _handLogModel.hand.handLog.showDown ?? false),
                       ],
                     ),
                   ),

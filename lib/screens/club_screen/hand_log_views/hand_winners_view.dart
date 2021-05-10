@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pokerapp/enums/game_stages.dart';
 import 'package:pokerapp/models/hand_log_model.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
 import 'package:pokerapp/resources/app_assets.dart';
@@ -31,26 +32,41 @@ class HandWinnersView extends StatelessWidget {
       );
     } else {
       return Container(
-        margin: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8),
-            gradient:
-                LinearGradient(colors: [Colors.grey[850], Colors.grey[700]])),
-        padding: EdgeInsets.symmetric(vertical: 8),
+        margin: EdgeInsets.only(bottom: 16, left: 8, right: 8),
         child: Container(
-          child: ListView.builder(
+          child: ListView.separated(
             physics: NeverScrollableScrollPhysics(),
             shrinkWrap: true,
+            separatorBuilder: (context, index) => SizedBox(
+              height: 8,
+            ),
             itemCount: potWinnersList.length,
             itemBuilder: (context, index) {
+              String potStr = "Pot:";
+              if (index == 0 && potWinnersList.length > 1) {
+                potStr = "Main Pot:";
+              }
               return Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    gradient: LinearGradient(
+                        colors: [Colors.grey[850], Colors.grey[700]])),
+                padding: EdgeInsets.symmetric(vertical: 8),
                 child: Column(
                   children: [
                     Container(
                       margin: EdgeInsets.symmetric(horizontal: 16),
+                      alignment: Alignment.centerRight,
+                      child: Text(
+                        "$potStr " + potWinnersList[index].amount.toString(),
+                        style: AppStyles.playerNameTextStyle,
+                      ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.symmetric(horizontal: 16),
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        "Pot: " + potWinnersList[index].amount.toString(),
+                        "Hi-Winners",
                         style: const TextStyle(
                           fontFamily: AppAssets.fontFamilyLato,
                           color: Colors.white,
@@ -77,11 +93,12 @@ class HandWinnersView extends StatelessWidget {
                                   Padding(
                                     padding: EdgeInsets.only(bottom: 5, top: 5),
                                     child: Text(
-                                      _handLogModel.hand.players[
-                                              potWinnersList[index]
+                                      _handLogModel
+                                          .players[(potWinnersList[index]
                                                   .hiWinners[winnerIndex]
-                                                  .seatNo] ??
-                                          "Unknown",
+                                                  .seatNo -
+                                              1)]
+                                          .name,
                                       style: AppStyles.playerNameTextStyle,
                                       textAlign: TextAlign.left,
                                     ),
@@ -91,37 +108,28 @@ class HandWinnersView extends StatelessWidget {
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       CardsView(
-                                        cards: _handLogModel.hand.boardCards,
-                                        show: true,
+                                        cards: _handLogModel
+                                            .hand
+                                            .players[potWinnersList[index]
+                                                .hiWinners[winnerIndex]
+                                                .seatNo
+                                                .toString()]
+                                            .cards,
+                                        show:
+                                            _handLogModel.hand.handLog.wonAt ==
+                                                GameStages.SHOWDOWN,
                                       ),
-                                      CardsView(
-                                        cards: potWinnersList[index]
+                                      HighlightedCardsView(
+                                        totalCards: potWinnersList[index]
                                             .hiWinners[winnerIndex]
-                                            .winningCards
-                                            .cast<int>()
-                                            .toList(),
-                                        show: _handLogModel
-                                                .hand.handLog.showDown ??
-                                            false,
+                                            .winningCards,
+                                        cardsToHighlight: potWinnersList[index]
+                                            .hiWinners[winnerIndex]
+                                            .playerCards,
+                                        show:
+                                            _handLogModel.hand.handLog.wonAt ==
+                                                GameStages.SHOWDOWN,
                                       ),
-                                      /*  Padding(
-                                          padding: EdgeInsets.all(5),
-                                          child: Text(
-                                            "Received: " +
-                                                potWinnersList[index]
-                                                    .hiWinners[winnerIndex]
-                                                    .amount
-                                                    .toString(),
-                                            style: const TextStyle(
-                                              fontFamily:
-                                                  AppAssets.fontFamilyLato,
-                                              color: Colors.white,
-                                              fontSize: 14.0,
-                                              fontWeight: FontWeight.w400,
-                                            ),
-                                            textAlign: TextAlign.left,
-                                          ),
-                                        ), */
                                     ],
                                   ),
                                 ],
@@ -176,8 +184,13 @@ class HandWinnersView extends StatelessWidget {
                                             padding: EdgeInsets.only(
                                                 top: 5, bottom: 5),
                                             child: Text(
-                                              potWinnersList[index]
-                                                  .lowWinners[winnerIndex]
+                                              _handLogModel
+                                                  .players[
+                                                      (potWinnersList[index]
+                                                              .lowWinners[
+                                                                  winnerIndex]
+                                                              .seatNo -
+                                                          1)]
                                                   .name,
                                               style: const TextStyle(
                                                 fontFamily:
@@ -196,29 +209,18 @@ class HandWinnersView extends StatelessWidget {
                                               CommunityCardWidget(
                                                 potWinnersList[index]
                                                     .lowWinners[winnerIndex]
-                                                    .winningCards
+                                                    .playerCards
                                                     .cast<int>()
                                                     .toList(),
                                                 true,
                                               ),
-                                              Padding(
-                                                padding: EdgeInsets.all(5),
-                                                child: Text(
-                                                  "Received: " +
-                                                      potWinnersList[index]
-                                                          .lowWinners[
-                                                              winnerIndex]
-                                                          .amount
-                                                          .toString(),
-                                                  style: const TextStyle(
-                                                    fontFamily: AppAssets
-                                                        .fontFamilyLato,
-                                                    color: Colors.white,
-                                                    fontSize: 14.0,
-                                                    fontWeight: FontWeight.w400,
-                                                  ),
-                                                  textAlign: TextAlign.left,
-                                                ),
+                                              CommunityCardWidget(
+                                                potWinnersList[index]
+                                                    .lowWinners[winnerIndex]
+                                                    .winningCards
+                                                    .cast<int>()
+                                                    .toList(),
+                                                true,
                                               ),
                                             ],
                                           ),

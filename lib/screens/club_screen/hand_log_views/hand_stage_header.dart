@@ -92,20 +92,26 @@ class HandStageHeader extends StatelessWidget {
       String sidePots = "(";
       handLogModel.hand.handLog.potWinners.forEach((key, value) {
         if (key != "0") {
-          sidePots += value.toString();
-        }
-        if (int.parse(key) < length) {
-          sidePots += ",";
+          sidePots += value.amount.toString();
+          if (int.parse(key) < length) {
+            sidePots += ",";
+          }
         }
       });
       sidePots += ")";
       return Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Container(
-            child: Text("${handLogModel.hand.handLog.potWinners[0].amount}"),
-          ),
+              child: Text(
+            "Pot: ${handLogModel.hand.handLog.potWinners['0'].amount}",
+            style: AppStyles.playerNameTextStyle,
+          )),
           Container(
-            child: Text("$sidePots"),
+            child: Text(
+              "$sidePots",
+              style: AppStyles.playerNameTextStyle,
+            ),
           ),
         ],
       );

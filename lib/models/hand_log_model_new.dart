@@ -274,30 +274,32 @@ final stagesEnumValues = StageEnumValues({
 });
 
 class PotWinner {
-  PotWinner({this.hiWinners, this.lowWinners, this.amount,this.potNo});
+  PotWinner({this.hiWinners, this.lowWinners, this.amount, this.potNo});
   int potNo;
   int amount;
-  List<HiWinner> hiWinners;
-  List<dynamic> lowWinners;
+  List<WinnerPlayer> hiWinners;
+  List<WinnerPlayer> lowWinners;
 
   factory PotWinner.fromJson(Map<String, dynamic> json) => PotWinner(
-        hiWinners: List<HiWinner>.from(
-            json["hiWinners"].map((x) => HiWinner.fromJson(x))),
-        lowWinners: List<dynamic>.from(json["lowWinners"].map((x) => x)),
+        hiWinners: List<WinnerPlayer>.from(
+            json["hiWinners"].map((x) => WinnerPlayer.fromJson(x))),
+        lowWinners: List<WinnerPlayer>.from(
+            json["lowWinners"].map((x) => WinnerPlayer.fromJson(x))),
         amount: json['amount'],
         potNo: json['pot'],
       );
 
   Map<String, dynamic> toJson() => {
-        "hiWinners": List<dynamic>.from(hiWinners.map((x) => x.toJson())),
-        "lowWinners": List<dynamic>.from(lowWinners.map((x) => x)),
-        "amount" : amount,
-        "pot" : potNo,
+        "hiWinners": List<WinnerPlayer>.from(hiWinners.map((x) => x.toJson())),
+        "lowWinners":
+            List<WinnerPlayer>.from(lowWinners.map((x) => x.toJson())),
+        "amount": amount,
+        "pot": potNo,
       };
 }
 
-class HiWinner {
-  HiWinner({
+class WinnerPlayer {
+  WinnerPlayer({
     this.seatNo,
     this.loCard,
     this.amount,
@@ -319,7 +321,7 @@ class HiWinner {
   List<int> playerCards;
   List<int> boardCards;
 
-  factory HiWinner.fromJson(Map<String, dynamic> json) => HiWinner(
+  factory WinnerPlayer.fromJson(Map<String, dynamic> json) => WinnerPlayer(
         seatNo: json["seatNo"],
         loCard: json["loCard"],
         amount: json["amount"],
