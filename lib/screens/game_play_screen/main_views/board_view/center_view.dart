@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/hand_result.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/resources/app_constants.dart';
@@ -201,11 +202,11 @@ class CenterView extends StatelessWidget {
 
   /* rankStr --> needs to be shown only when footer result is not null */
   Widget rankWidget() {
-    final child = Consumer<HandResultState>(
-      builder: (_, HandResultState result, __) => AnimatedSwitcher(
+    final child = Consumer<TableState>(
+      builder: (_, TableState tableState, __) => AnimatedSwitcher(
         duration: AppConstants.animationDuration,
         reverseDuration: AppConstants.animationDuration,
-        child: !result.isAvailable
+        child: tableState.rankStr == null
             ? const SizedBox.shrink()
             : Transform.translate(
                 offset: Offset(
@@ -223,7 +224,7 @@ class CenterView extends StatelessWidget {
                     color: Colors.black26,
                   ),
                   child: Text(
-                    result.potWinners.first.rankStr,
+                    tableState.rankStr,
                     style: AppStyles.footerResultTextStyle4,
                   ),
                 ),

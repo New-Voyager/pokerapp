@@ -78,7 +78,7 @@ class GameReplayActionService {
       );
 
       players.updateStackWithValueSilent(
-        idx,
+        seatNo,
         stack,
       );
     }

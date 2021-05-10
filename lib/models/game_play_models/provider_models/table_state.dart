@@ -12,6 +12,8 @@ class TableState extends ChangeNotifier {
   List<CardObject> _board1;
   List<CardObject> _board2;
   int _flipSpeed;
+  String _rankStr;
+
   // // animation variables
   // bool _animateBoard1Flop;
   // bool _animateBoard1Turn;
@@ -44,6 +46,7 @@ class TableState extends ChangeNotifier {
     _potUpdatesChips = null;
     _tableStatus = AppConstants.CLEAR;
     _flipSpeed = 500;
+    _rankStr = null;
     // _animateBoard1 = false;
     // _animateBoard1Flop = false;
     // _animateBoard1Turn = false;
@@ -87,6 +90,10 @@ class TableState extends ChangeNotifier {
         this._board2 = cards;
       }
     }
+  }
+
+  void updateRankStrSilent(String rankStr) {
+    this._rankStr = rankStr;
   }
 
   void addFlopCards(int boardIndex, List<CardObject> cards) {
@@ -317,6 +324,15 @@ class TableState extends ChangeNotifier {
     return this._board2[4];
   }
 
+  /* un highlight board cards */
+  void unHighlightCardsSilent(int boardIndex) {
+    if (boardIndex == 1) {
+      for (int i = 0; i < _board1.length; i++) _board1[i].highlight = false;
+    } else if (boardIndex == 2) {
+      for (int i = 0; i < _board1.length; i++) _board2[i].highlight = false;
+    }
+  }
+
   /* this method highlights all community cards */
   void highlightCardsSilent(int boardIndex, List<int> rawCards) {
     if (boardIndex == 1) {
@@ -343,6 +359,7 @@ class TableState extends ChangeNotifier {
   }
 
   /* getters */
+  String get rankStr => _rankStr;
   String get tableStatus => _tableStatus;
   List<int> get potChips => _potChips;
   int get potChipsUpdates => _potUpdatesChips;
