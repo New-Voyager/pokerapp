@@ -158,6 +158,14 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       gameChatChannel: _gameInfoModel.gameChatChannel,
     );
 
+    if (!TestService.isTesting) {
+      // subscribe the NATs channels
+      final natsClient = Provider.of<Nats>(context, listen: false);
+
+      log('natsClient: $natsClient');
+      await gameComService.init(natsClient);
+    }
+
     _gameState = GameState();
     _gameState.initialize(
       gameCode: _gameInfoModel.gameCode,

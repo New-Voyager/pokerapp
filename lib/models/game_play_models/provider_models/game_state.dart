@@ -54,6 +54,7 @@ class GameState {
     PlayerInfo currentPlayer,
     GameMessagingService gameMessagingService,
   }) {
+    assert(gameMessagingService != null);
     this._seats = Map<int, Seat>();
     this._gameInfo = gameInfo;
     this._gameCode = gameCode;
