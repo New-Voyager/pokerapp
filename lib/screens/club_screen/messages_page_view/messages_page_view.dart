@@ -186,11 +186,12 @@ class _MessagesPageViewState extends State<MessagesPageView> {
         playerTags: m.playerTags,
         messageTimeInEpoc: m.messageTimeInEpoc,
         sender: m.sender,
+        sharedHand: m.sharedHand,
       );
       if (i == 0) {
         chat.isGroupLatest = true;
       } else {
-        if (messages[i].playerTags == messages[i - 1].playerTags)
+        if (messages[i].sender == messages[i - 1].sender)
           chat.isGroupLatest = false;
         else
           chat.isGroupLatest = true;
@@ -199,7 +200,7 @@ class _MessagesPageViewState extends State<MessagesPageView> {
       if (i == messages.length - 1) {
         chat.isGroupFirst = true;
       } else {
-        if (messages[i].playerTags == messages[i + 1].playerTags)
+        if (messages[i].sender == messages[i + 1].sender)
           chat.isGroupFirst = false;
         else
           chat.isGroupFirst = true;
