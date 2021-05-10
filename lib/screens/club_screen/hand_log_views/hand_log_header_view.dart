@@ -33,7 +33,7 @@ class HandLogHeaderView extends StatelessWidget {
               Container(
                 margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 child: Text(
-                  "Game: " + _handLogModel.hand.data.gameId,
+                  "Game: " + _handLogModel.hand.gameId,
                   style: const TextStyle(
                     fontFamily: AppAssets.fontFamilyLato,
                     color: Colors.white,
@@ -45,7 +45,7 @@ class HandLogHeaderView extends StatelessWidget {
               Container(
                 margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 child: Text(
-                  "Hand: #" + _handLogModel.hand.data.handNum.toString(),
+                  "Hand: #" + _handLogModel.hand.handNum.toString(),
                   style: const TextStyle(
                     fontFamily: AppAssets.fontFamilyLato,
                     color: Colors.white,
@@ -80,8 +80,8 @@ class HandLogHeaderView extends StatelessWidget {
                         ),
                       ),
                       CommunityCardWidget(
-                          _handLogModel.hand.data.boardCards,
-                          _handLogModel.hand.data.handLog.wonAt ==
+                          _handLogModel.hand.boardCards,
+                          _handLogModel.hand.handLog.wonAt ==
                               GameStages.SHOWDOWN),
                     ],
                   ),
@@ -108,7 +108,7 @@ class HandLogHeaderView extends StatelessWidget {
                         ),
                         CardsView(
                             cards: _getMyCards(_handLogModel),
-                            show: _handLogModel.hand.data.handLog.showDown ??
+                            show: _handLogModel.hand.handLog.showDown ??
                                 false),
                       ],
                     ),
@@ -125,7 +125,7 @@ class HandLogHeaderView extends StatelessWidget {
   _getMyCards(HandLogModelNew handLogModel) {
     List<int> myCards = [];
     int myId = handLogModel.myInfo.id;
-    handLogModel.hand.data.players.forEach((key, value) {
+    handLogModel.hand.players.forEach((key, value) {
       if (int.parse(key) == myId) {
         myCards.addAll(value.cards);
       }

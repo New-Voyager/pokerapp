@@ -151,6 +151,8 @@ flutter:
    - assets/images/gamesettings/
    - assets/images/name_plates/
    - assets/sample-data/
+   - assets/sample-data/handlog/
+   - assets/sample-data/handlog/holdem/
    - assets/sample-data/completed-game.json
    - assets/sample-data/completed-game2.json
    - assets/sample-data/handlog.json

@@ -1,4 +1,3 @@
-
 import 'dart:convert';
 import 'package:pokerapp/enums/game_stages.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
@@ -9,33 +8,32 @@ class HandLogModelNew {
   static String handLogModelNewToJson(HandLogModelNew data) =>
       json.encode(data.toJson());
 
-
   HandLogModelNew({
     this.hand,
     this.players,
     this.myInfo,
   });
 
-  Hand hand;
+  Data hand;
   List<PlayerElement> players;
   MyInfo myInfo;
 
   factory HandLogModelNew.fromJson(Map<String, dynamic> json) =>
       HandLogModelNew(
-        hand: Hand.fromJson(json["hand"]),
+        hand: Data.fromJson(json["handResult"]),
         players: List<PlayerElement>.from(
             json["players"].map((x) => PlayerElement.fromJson(x))),
         myInfo: MyInfo.fromJson(json["myInfo"]),
       );
 
   Map<String, dynamic> toJson() => {
-        "hand": hand.toJson(),
+        "handResult": hand.toJson(),
         "players": List<dynamic>.from(players.map((x) => x.toJson())),
         "myInfo": myInfo.toJson(),
       };
 }
 
-class Hand {
+/* class Hand {
   Hand({
     this.data,
     this.totalPot,
@@ -53,7 +51,7 @@ class Hand {
         "data": data.toJson(),
         "totalPot": totalPot,
       };
-}
+} */
 
 class Data {
   Data({
@@ -198,20 +196,24 @@ class HandLog {
 class GameActions {
   GameActions({
     this.pot,
+    this.potStart,
     this.actions,
   });
 
   int pot;
   List<ActionElement> actions;
+  int potStart;
 
   factory GameActions.fromJson(Map<String, dynamic> json) => GameActions(
         pot: json["pot"],
+        potStart: json["potStart"],
         actions: List<ActionElement>.from(
             json["actions"].map((x) => ActionElement.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
         "pot": pot,
+        "potStart": potStart,
         "actions": List<dynamic>.from(actions.map((x) => x.toJson())),
       };
 }
@@ -272,9 +274,9 @@ final stagesEnumValues = StageEnumValues({
 });
 
 class PotWinner {
-  PotWinner({this.hiWinners, this.lowWinners, this.totalAmount});
-
-  double totalAmount = 0;
+  PotWinner({this.hiWinners, this.lowWinners, this.amount,this.potNo});
+  int potNo;
+  int amount;
   List<HiWinner> hiWinners;
   List<dynamic> lowWinners;
 
@@ -282,11 +284,15 @@ class PotWinner {
         hiWinners: List<HiWinner>.from(
             json["hiWinners"].map((x) => HiWinner.fromJson(x))),
         lowWinners: List<dynamic>.from(json["lowWinners"].map((x) => x)),
+        amount: json['amount'],
+        potNo: json['pot'],
       );
 
   Map<String, dynamic> toJson() => {
         "hiWinners": List<dynamic>.from(hiWinners.map((x) => x.toJson())),
         "lowWinners": List<dynamic>.from(lowWinners.map((x) => x)),
+        "amount" : amount,
+        "pot" : potNo,
       };
 }
 

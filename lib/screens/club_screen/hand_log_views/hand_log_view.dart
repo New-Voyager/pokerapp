@@ -10,6 +10,8 @@ import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_log_header_view.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_stage_view.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_winners_view.dart';
+import 'package:pokerapp/screens/club_screen/hand_log_views/handlog_action.dart';
+import 'package:pokerapp/screens/club_screen/hand_log_views/handlog_showdown.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/handlog_summary.dart';
 import 'package:pokerapp/services/app/hand_service.dart';
 
@@ -47,9 +49,9 @@ class _HandLogViewState extends State<HandLogView> {
 
   loadJsonData() async {
     String data = await DefaultAssetBundle.of(context)
-        .loadString("assets/sample-data/handlog.json");
+        .loadString("assets/sample-data/handlog/holdem/twowinners.json");
     final jsonResult = json.decode(data);
-    _handLogModel = HandLogModelNew.fromJson(jsonResult['data']);
+    _handLogModel = HandLogModelNew.fromJson(jsonResult);
 
     setState(() {
       _isLoading = false;
@@ -117,8 +119,8 @@ class _HandLogViewState extends State<HandLogView> {
                                     onTap: () {
                                       // todo : just change to shareHand and pass club code as well
                                       HandService.bookMarkHand(
-                                        _handLogModel.hand.data.gameId,
-                                        _handLogModel.hand.data.handNum,
+                                        _handLogModel.hand.gameId,
+                                        _handLogModel.hand.handNum,
                                       );
                                     },
                                     child: Container(
@@ -143,8 +145,8 @@ class _HandLogViewState extends State<HandLogView> {
                         GestureDetector(
                           onTap: () {
                             HandService.bookMarkHand(
-                              _handLogModel.hand.data.gameId,
-                              _handLogModel.hand.data.handNum,
+                              _handLogModel.hand.gameId,
+                              _handLogModel.hand.handNum,
                             );
                           },
                           child: Container(
@@ -173,33 +175,27 @@ class _HandLogViewState extends State<HandLogView> {
                       style: AppStyles.boldTitleTextStyle,
                     ),
                   ),
-                  Container(
-                    child: HandWinnersView(_handLogModel),
+                  HandWinnersView(_handLogModel),
+                  HandStageView(
+                    handLogModel: _handLogModel,
+                    stageEnum: GameStages.PREFLOP,
                   ),
-                  Container(
-                    child: HandStageView(
-                      handLogModel: _handLogModel,
-                      stageEnum: GameStages.PREFLOP,
-                    ),
+                  HandStageView(
+                    handLogModel: _handLogModel,
+                    stageEnum: GameStages.FLOP,
                   ),
-                  Container(
-                    child: HandStageView(
-                      handLogModel: _handLogModel,
-                      stageEnum: GameStages.FLOP,
-                    ),
+                  HandStageView(
+                    handLogModel: _handLogModel,
+                    stageEnum: GameStages.TURN,
                   ),
-                  Container(
-                    child: HandStageView(
-                      handLogModel: _handLogModel,
-                      stageEnum: GameStages.TURN,
-                    ),
+                  HandStageView(
+                    handLogModel: _handLogModel,
+                    stageEnum: GameStages.RIVER,
                   ),
-                  Container(
-                    child: HandStageView(
-                      handLogModel: _handLogModel,
-                      stageEnum: GameStages.RIVER,
-                    ),
+                  HandlogShowDown(
+                    handLogModel: _handLogModel,
                   ),
+                  HandLogActionView(handLogModel: _handLogModel),
                   HandlogSummary(handlogModel: _handLogModel),
                 ],
               ),

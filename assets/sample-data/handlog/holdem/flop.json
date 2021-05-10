@@ -9,89 +9,102 @@
 			"preflopActions": {
 				"potStart": 0,
 				"pot": 6,
-				"actions": [{
-					"seatNo": 2,
-					"action": "SB",
-					"amount": 1,
-					"timedOut": false,
-					"actionTime": 0,
-					"stack": 99
-				}, {
-					"seatNo": 3,
-					"action": "BB",
-					"amount": 2,
-					"timedOut": false,
-					"actionTime": 0,
-					"stack": 98
-				}, {
-					"seatNo": 1,
-					"action": "CALL",
-					"amount": 2,
-					"timedOut": false,
-					"actionTime": 0,
-					"stack": 98
-				}, {
-					"seatNo": 2,
-					"action": "CALL",
-					"amount": 2,
-					"timedOut": false,
-					"actionTime": 0,
-					"stack": 98
-				}, {
-					"seatNo": 3,
-					"action": "CHECK",
-					"amount": 2,
-					"timedOut": false,
-					"actionTime": 0,
-					"stack": 98
-				}]
+				"actions": [
+					{
+						"seatNo": 2,
+						"action": "SB",
+						"amount": 1,
+						"timedOut": false,
+						"actionTime": 0,
+						"stack": 99
+					},
+					{
+						"seatNo": 3,
+						"action": "BB",
+						"amount": 2,
+						"timedOut": false,
+						"actionTime": 0,
+						"stack": 98
+					},
+					{
+						"seatNo": 1,
+						"action": "CALL",
+						"amount": 2,
+						"timedOut": false,
+						"actionTime": 0,
+						"stack": 98
+					},
+					{
+						"seatNo": 2,
+						"action": "CALL",
+						"amount": 2,
+						"timedOut": false,
+						"actionTime": 0,
+						"stack": 98
+					},
+					{
+						"seatNo": 3,
+						"action": "CHECK",
+						"amount": 2,
+						"timedOut": false,
+						"actionTime": 0,
+						"stack": 98
+					}
+				]
 			},
 			"flopActions": {
 				"potStart": 6,
 				"pot": 14,
-				"actions": [{
-					"seatNo": 2,
-					"action": "CHECK",
-					"amount": 0,
-					"timedOut": false,
-					"actionTime": 0,
-					"stack": 98
-				}, {
-					"seatNo": 3,
-					"action": "BET",
-					"amount": 2,
-					"timedOut": false,
-					"actionTime": 0,
-					"stack": 96
-				}, {
-					"seatNo": 1,
-					"action": "CALL",
-					"amount": 2,
-					"timedOut": false,
-					"actionTime": 0,
-					"stack": 96
-				}, {
-					"seatNo": 2,
-					"action": "RAISE",
-					"amount": 10,
-					"timedOut": false,
-					"actionTime": 0,
-					"stack": 88
-				}, {
-					"seatNo": 3,
-					"action": "FOLD",
-					"amount": 0,
-					"timedOut": false,
-					"actionTime": 0,
-					"stack": 96
-				}, {
-					"seatNo": 1,
-					"action": "FOLD",
-					"amount": 0,
-					"timedOut": false,
-					"actionTime": 0,
-					"stack": 96
-				}]
+				"actions": [
+					{
+						"seatNo": 2,
+						"action": "CHECK",
+						"amount": 0,
+						"timedOut": false,
+						"actionTime": 0,
+						"stack": 98
+					},
+					{
+						"seatNo": 3,
+						"action": "BET",
+						"amount": 2,
+						"timedOut": false,
+						"actionTime": 0,
+						"stack": 96
+					},
+					{
+						"seatNo": 1,
+						"action": "CALL",
+						"amount": 2,
+						"timedOut": false,
+						"actionTime": 0,
+						"stack": 96
+					},
+					{
+						"seatNo": 2,
+						"action": "RAISE",
+						"amount": 10,
+						"timedOut": false,
+						"actionTime": 0,
+						"stack": 88
+					},
+					{
+						"seatNo": 3,
+						"action": "FOLD",
+						"amount": 0,
+						"timedOut": false,
+						"actionTime": 0,
+						"stack": 96
+					},
+					{
+						"seatNo": 1,
+						"action": "FOLD",
+						"amount": 0,
+						"timedOut": false,
+						"actionTime": 0,
+						"stack": 96
+					}
+				]
 			},
 			"turnActions": {
 				"potStart": 0,
@@ -107,17 +120,19 @@
 				"0": {
 					"potNo": 0,
 					"amount": 0,
-					"hiWinners": [{
-						"seatNo": 2,
-						"loCard": false,
-						"amount": 19,
-						"winningCards": [],
-						"winningCardsStr": "",
-						"rankStr": "",
-						"rank": 0,
-						"playerCards": [],
-						"boardCards": []
-					}],
+					"hiWinners": [
+						{
+							"seatNo": 2,
+							"loCard": false,
+							"amount": 19,
+							"winningCards": [],
+							"winningCardsStr": "",
+							"rankStr": "",
+							"rank": 0,
+							"playerCards": [],
+							"boardCards": []
+						}
+					],
 					"lowWinners": []
 				}
 			},
@@ -129,9 +144,19 @@
 			"runItTwiceResult": null
 		},
 		"rewardTrackingIds": [],
-		"boardCards": [200, 196, 8, 132, 33],
+		"boardCards": [
+			200,
+			196,
+			8,
+			132,
+			33
+		],
 		"boardCards2": [],
-		"flop": [200, 196, 8],
+		"flop": [
+			200,
+			196,
+			8
+		],
 		"turn": 132,
 		"river": 33,
 		"players": {
@@ -152,7 +177,10 @@
 			},
 			"2": {
 				"id": "4111",
-				"cards": [178, 164],
+				"cards": [
+					178,
+					164
+				],
 				"bestCards": [],
 				"rank": 4294967295,
 				"playedUntil": "FLOP",
@@ -247,5 +275,48 @@
 			"endedAtShowdown": false
 		},
 		"runItTwice": false
+	},
+	"players": [
+		{
+			"id": 2,
+			"name": "yong"
+		},
+		{
+			"id": 5,
+			"name": "jim"
+		},
+		{
+			"id": 8,
+			"name": "michael"
+		},
+		{
+			"id": 10,
+			"name": "david"
+		},
+		{
+			"id": 3,
+			"name": "brian"
+		},
+		{
+			"id": 9,
+			"name": "bill"
+		},
+		{
+			"id": 4,
+			"name": "tom"
+		},
+		{
+			"id": 6,
+			"name": "rob"
+		},
+		{
+			"id": 7,
+			"name": "john"
+		}
+	],
+	"myInfo": {
+		"id": 1,
+		"uuid": "cfe63ff3712c594f",
+		"name": "asdf"
 	}
 }

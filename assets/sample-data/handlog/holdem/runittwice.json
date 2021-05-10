@@ -325,5 +325,48 @@
 			"endedAtShowdown": true
 		},
 		"runItTwice": true
+	},
+	"players": [
+		{
+			"id": 2,
+			"name": "yong"
+		},
+		{
+			"id": 5,
+			"name": "jim"
+		},
+		{
+			"id": 8,
+			"name": "michael"
+		},
+		{
+			"id": 10,
+			"name": "david"
+		},
+		{
+			"id": 3,
+			"name": "brian"
+		},
+		{
+			"id": 9,
+			"name": "bill"
+		},
+		{
+			"id": 4,
+			"name": "tom"
+		},
+		{
+			"id": 6,
+			"name": "rob"
+		},
+		{
+			"id": 7,
+			"name": "john"
+		}
+	],
+	"myInfo": {
+		"id": 1,
+		"uuid": "cfe63ff3712c594f",
+		"name": "asdf"
 	}
 }

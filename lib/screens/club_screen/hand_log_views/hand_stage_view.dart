@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_stages.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
@@ -5,6 +7,9 @@ import 'package:pokerapp/models/hand_log_model.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/screens/club_screen/hand_log_views/hand_log_header_view.dart';
+import 'package:pokerapp/screens/club_screen/hand_log_views/hand_stage_header.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:pokerapp/widgets/card_view.dart';
 
@@ -24,7 +29,7 @@ const bbTextStyle = TextStyle(
 
 const betTextStyle = TextStyle(
   fontFamily: AppAssets.fontFamilyLato,
-  color: Colors.amber,
+  color: Colors.redAccent,
   fontSize: 12.0,
   fontWeight: FontWeight.w600,
 );
@@ -52,7 +57,7 @@ const callTextStyle = TextStyle(
 
 const foldTextStyle = TextStyle(
   fontFamily: AppAssets.fontFamilyLato,
-  color: Colors.white,
+  color: Colors.blueGrey,
   fontSize: 12.0,
   fontWeight: FontWeight.w600,
 );
@@ -68,133 +73,45 @@ class HandStageView extends StatelessWidget {
   final HandLogModelNew handLogModel;
   final GameStages stageEnum;
   final bool shown;
+  String stageName;
 
   HandStageView({this.handLogModel, this.stageEnum, this.shown});
 
   @override
   Widget build(BuildContext context) {
     GameActions actions = _getActions(stageEnum);
-    String stageName = stagesEnumValues.reverse[stageEnum];
+    // String stageName = _getStageName(stageEnum);
     List<int> stageCards = _getStageCardsList(stageEnum);
 
     // This check will hide this stage.
-    return actions.actions.length > 0
+    return (actions != null && actions.actions.length > 0)
         ? Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                margin: EdgeInsets.only(left: 10, top: 5, bottom: 5, right: 10),
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  stageName,
-                  style: const TextStyle(
-                    fontFamily: AppAssets.fontFamilyLato,
-                    color: Colors.white,
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
+              HandStageHeader(
+                stageName: stageName,
+                handLogModel: handLogModel,
+                stageCards: stageCards,
+                actions: actions,
               ),
-              Card(
-                elevation: 5.5,
-                color: AppColors.cardBackgroundColor,
+              Container(
+                // padding: EdgeInsets.only(left: 10, right: 10, bottom: 5),
                 child: Column(
                   children: [
                     Container(
-                      margin: EdgeInsets.only(
-                          left: 10, top: 16, bottom: 10, right: 10),
-                      alignment: Alignment.centerLeft,
-                      child: CardsView(
-                        cards: stageCards,
-                        show: true,
-                        needToShowEmptyCards: true,
-                      ),
-                    ),
-                    Card(
                       margin: EdgeInsets.only(left: 10, right: 10, bottom: 5),
-                      color: AppColors.cardBackgroundColor,
-                      child: Column(
-                        children: [
-                          Container(
-                            margin:
-                                EdgeInsets.only(left: 10, right: 10, top: 16),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Expanded(
-                                  flex: 4,
-                                  child: Text(
-                                    "Player",
-                                    style: const TextStyle(
-                                      fontFamily: AppAssets.fontFamilyLato,
-                                      color: Colors.white,
-                                      fontSize: 14.0,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                    textAlign: TextAlign.left,
-                                  ),
-                                ),
-                                Expanded(
-                                  flex: 2,
-                                  child: Text(
-                                    "Action",
-                                    style: const TextStyle(
-                                      fontFamily: AppAssets.fontFamilyLato,
-                                      color: Colors.white,
-                                      fontSize: 14.0,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
-                                Expanded(
-                                  flex: 2,
-                                  child: Text(
-                                    "Amount",
-                                    style: const TextStyle(
-                                      fontFamily: AppAssets.fontFamilyLato,
-                                      color: Colors.white,
-                                      fontSize: 14.0,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
-                                Expanded(
-                                  flex: 2,
-                                  child: Text(
-                                    "Stack",
-                                    style: const TextStyle(
-                                      fontFamily: AppAssets.fontFamilyLato,
-                                      color: Colors.white,
-                                      fontSize: 14.0,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                    textAlign: TextAlign.right,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Divider(
-                            color: AppColors.listViewDividerColor,
-                            indent: 5.0,
-                            endIndent: 5.0,
-                          ),
-                          Container(
-                            margin:
-                                EdgeInsets.only(left: 10, right: 10, bottom: 5),
-                            child: ListView.builder(
-                              physics: NeverScrollableScrollPhysics(),
-                              shrinkWrap: true,
-                              itemCount: actions.actions.length,
-                              itemBuilder: (context, index) {
-                                return actionRow(index, actions);
-                              },
-                            ),
-                          ),
-                        ],
+                      padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                      child: ListView.separated(
+                        physics: NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: actions.actions.length,
+                        itemBuilder: (context, index) {
+                          return actionRow(index, actions);
+                        },
+                        separatorBuilder: (context, index) {
+                          return Divider(
+                            color: AppColors.veryLightGrayColor,
+                          );
+                        },
                       ),
                     ),
                   ],
@@ -212,42 +129,58 @@ class HandStageView extends StatelessWidget {
       fontSize: 12.0,
       fontWeight: FontWeight.w600,
     );
+
+    String action = "";
+
     switch (actions.actions[index].action) {
       case HandActions.SB:
         textStyle = sbTextStyle;
+        action = "SB";
         break;
       case HandActions.BB:
         textStyle = bbTextStyle;
+        action = "BB";
         break;
       case HandActions.BET:
         textStyle = betTextStyle;
+        action = "Bet";
         break;
       case HandActions.RAISE:
         textStyle = raiseTextStyle;
+        action = "Raise";
         break;
       case HandActions.CHECK:
         textStyle = checkTextStyle;
+        action = "Check";
         break;
       case HandActions.CALL:
         textStyle = callTextStyle;
+        action = "Call";
         break;
       case HandActions.FOLD:
         textStyle = foldTextStyle;
+        action = "Fold";
         break;
       case HandActions.STRADDLE:
         textStyle = straddleTextStyle;
+        action = "Straddle";
         break;
-      case HandActions.UNKNOWN:
-        // TODO: Handle this case.
-        textStyle = sbTextStyle;
+      case HandActions.ALLIN:
+        textStyle = straddleTextStyle;
+        action = "All-in";
         break;
+      // case HandActions.UNKNOWN:
+      //   // TODO: Handle this case.
+      //   textStyle = sbTextStyle;
+      //   break;
 
       default:
         textStyle = sbTextStyle;
+        action = "";
     }
 
     return Container(
-      margin: EdgeInsets.only(top: 5, bottom: 5),
+      // margin: EdgeInsets.only(top: 5, bottom: 5),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -256,19 +189,14 @@ class HandStageView extends StatelessWidget {
             flex: 4,
             child: Text(
               _getPlayerName(actions, index),
-              style: const TextStyle(
-                fontFamily: AppAssets.fontFamilyLato,
-                color: Colors.white,
-                fontSize: 12.0,
-                fontWeight: FontWeight.w600,
-              ),
+              style: AppStyles.playerNameTextStyle,
               textAlign: TextAlign.left,
             ),
           ),
           Expanded(
             flex: 2,
             child: Text(
-              handActionsToString(actions.actions[index].action),
+              action,
               style: textStyle,
               textAlign: TextAlign.center,
             ),
@@ -279,7 +207,7 @@ class HandStageView extends StatelessWidget {
               actions.actions[index].action != HandActions.CHECK &&
                       actions.actions[index].action != HandActions.FOLD
                   ? actions.actions[index].amount.toString()
-                  : "-",
+                  : "",
               style: const TextStyle(
                 fontFamily: AppAssets.fontFamilyLato,
                 color: Colors.white,
@@ -313,16 +241,16 @@ class HandStageView extends StatelessWidget {
       case GameStages.PREFLOP:
         break;
       case GameStages.FLOP:
-        stageCards.addAll(handLogModel.hand.data.flop);
+        stageCards.addAll(handLogModel.hand.flop);
         break;
       case GameStages.TURN:
-        stageCards.addAll(handLogModel.hand.data.flop);
-        stageCards.add(handLogModel.hand.data.turn);
+        stageCards.addAll(handLogModel.hand.flop);
+        stageCards.add(handLogModel.hand.turn);
         break;
       case GameStages.RIVER:
-        stageCards.addAll(handLogModel.hand.data.flop);
-        stageCards.add(handLogModel.hand.data.turn);
-        stageCards.add(handLogModel.hand.data.river);
+        stageCards.addAll(handLogModel.hand.flop);
+        stageCards.add(handLogModel.hand.turn);
+        stageCards.add(handLogModel.hand.river);
         break;
       default:
     }
@@ -332,15 +260,26 @@ class HandStageView extends StatelessWidget {
   GameActions _getActions(GameStages stage) {
     switch (stage) {
       case GameStages.PREFLOP:
-        return handLogModel.hand.data.handLog.preflopActions;
+        stageName = "Preflop";
+        return handLogModel.hand.handLog.preflopActions;
       case GameStages.FLOP:
-        return handLogModel.hand.data.handLog.flopActions;
+        stageName = "Flop";
+
+        return handLogModel.hand.handLog.flopActions;
 
       case GameStages.TURN:
-        return handLogModel.hand.data.handLog.turnActions;
+        stageName = "Turn";
+
+        return handLogModel.hand.handLog.turnActions;
 
       case GameStages.RIVER:
-        return handLogModel.hand.data.handLog.riverActions;
+        stageName = "River";
+
+        return handLogModel.hand.handLog.riverActions;
+      case GameStages.SHOWDOWN:
+        stageName = "Showdown";
+
+        return null;
 
       default:
         return null;
@@ -348,8 +287,14 @@ class HandStageView extends StatelessWidget {
   }
 
   String _getPlayerName(GameActions actions, int index) {
-    return handLogModel.players
-        .elementAt(actions.actions[index].seatNo - 1)
-        .name;
+    int i = handLogModel.players.lastIndexWhere(
+        (element) => (actions.actions[index].seatNo == element.id));
+    if (i == -1) {
+      return "Player";
+    } else {
+      return handLogModel.players[i].name;
+    }
   }
+
+  String _getStageName(GameStages stageEnum) {}
 }

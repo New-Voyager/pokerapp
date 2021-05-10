@@ -18,86 +18,34 @@ class HandlogSummary extends StatelessWidget {
       child: Column(
         children: [
           Container(
-            margin: EdgeInsets.all(8),
+            margin: EdgeInsets.symmetric(horizontal: 8),
+            decoration: BoxDecoration(
+                color: Colors.blueGrey,
+                borderRadius: BorderRadius.circular(7)),
+            padding: EdgeInsets.all(8),
+            width: double.infinity,
+            alignment: Alignment.center,
             child: Text(
-              "SUMMARY",
-              style: AppStyles.boldTitleTextStyle.copyWith(fontSize: 14),
+              "Summary",
+              style: AppStyles.boldTitleTextStyle.copyWith(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                color: Colors.white,
+              ),
             ),
           ),
-          Card(
-            color: AppColors.cardBackgroundColor,
-            child: Column(
-              children: [
-                Container(
-                  margin: EdgeInsets.only(left: 10, right: 10, top: 16),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        flex: 4,
-                        child: Text(
-                          "Player",
-                          style: const TextStyle(
-                            fontFamily: AppAssets.fontFamilyLato,
-                            color: Colors.white,
-                            fontSize: 14.0,
-                            fontWeight: FontWeight.w600,
-                          ),
-                          textAlign: TextAlign.left,
-                        ),
-                      ),
-                      Expanded(
-                        flex: 2,
-                        child: Text(
-                          "",
-                        ),
-                      ),
-                      Expanded(
-                        flex: 2,
-                        child: Text(
-                          "Diff",
-                          style: const TextStyle(
-                            fontFamily: AppAssets.fontFamilyLato,
-                            color: Colors.white,
-                            fontSize: 14.0,
-                            fontWeight: FontWeight.w600,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                      Expanded(
-                        flex: 2,
-                        child: Text(
-                          "Balance",
-                          style: const TextStyle(
-                            fontFamily: AppAssets.fontFamilyLato,
-                            color: Colors.white,
-                            fontSize: 14.0,
-                            fontWeight: FontWeight.w600,
-                          ),
-                          textAlign: TextAlign.right,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Divider(
-                  color: AppColors.listViewDividerColor,
-                  indent: 5.0,
-                  endIndent: 5.0,
-                ),
-                ListView.builder(
-                  itemBuilder: (context, index) {
-                    // log(handlogModel.hand.data.players[(index + 1).toString()].id);
-                    return actionRow(
-                        handlogModel.hand.data.players[(index + 1).toString()]);
-                  },
-                  itemCount: handlogModel.hand.data.players.length,
-                  shrinkWrap: true,
-                  physics: ClampingScrollPhysics(),
-                ),
-              ],
+          Container(
+            padding: EdgeInsets.only(bottom: 16),
+            child: ListView.builder(
+              itemBuilder: (context, index) {
+                log("TOTAL : ${handlogModel.hand.players.length}");
+                // log(handlogModel.hand.data.players[(index + 1).toString()].id);
+                return actionRow(
+                    handlogModel.hand.players[(index + 1).toString()]);
+              },
+              itemCount: handlogModel.hand.players.length,
+              shrinkWrap: true,
+              physics: ClampingScrollPhysics(),
             ),
           ),
         ],
@@ -107,6 +55,10 @@ class HandlogSummary extends StatelessWidget {
 
   Widget actionRow(Player player) {
     final int diff = player.balance.after - player.balance.before;
+    int index = handlogModel.players
+        .indexWhere((element) => element.id.toString() == player.id);
+    String playerName =
+        index != -1 ? handlogModel.players[index].name : "Player";
     return Container(
       margin: EdgeInsets.only(top: 5, bottom: 5, left: 16, right: 16),
       child: Row(
@@ -116,15 +68,8 @@ class HandlogSummary extends StatelessWidget {
           Expanded(
             flex: 4,
             child: Text(
-              handlogModel.players
-                  .lastWhere((element) => element.id.toString() == player.id)
-                  .name,
-              style: const TextStyle(
-                fontFamily: AppAssets.fontFamilyLato,
-                color: Colors.white,
-                fontSize: 12.0,
-                fontWeight: FontWeight.w600,
-              ),
+              playerName,
+              style: AppStyles.playerNameTextStyle,
               textAlign: TextAlign.left,
             ),
           ),
