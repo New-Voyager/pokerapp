@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -28,7 +30,7 @@ class MessageItem extends StatelessWidget {
   Widget build(BuildContext context) {
     /* ui */
 
-    final bool isMe = currentUser.uuid == messageModel.playerTags;
+    final bool isMe = currentUser.uuid == messageModel.sender;
 
     if (isMe) {
       return Row(
@@ -55,8 +57,8 @@ class MessageItem extends StatelessWidget {
   Widget _buildAvatar() {
     if (messageModel.isGroupLatest)
       return ChatUserAvatar(
-        name: players[messageModel.playerTags ?? ''] ?? 'Somebody',
-        userId: messageModel.playerTags ?? '',
+        name: players[messageModel.sender ?? ''] ?? 'Somebody',
+        userId: messageModel.sender ?? '',
       );
     return SizedBox();
   }
@@ -88,6 +90,9 @@ class MessageItem extends StatelessWidget {
   }
 
   Widget _buildMessage(bool isMe) {
+    final playerName = players[messageModel.sender ?? ''] ?? 'Somebody';
+    log('player: ${messageModel.sender} isMe: $isMe name: $playerName ${messageModel.text}');
+
     return Align(
       alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
       child: Container(
@@ -108,9 +113,7 @@ class MessageItem extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.all(3.0),
                 child: Text(
-                  isMe
-                      ? 'You'
-                      : players[messageModel.playerTags ?? ''] ?? 'Somebody',
+                  isMe ? 'You' : playerName,
                   style: TextStyle(
                     color: AppColors.appAccentColor,
                   ),

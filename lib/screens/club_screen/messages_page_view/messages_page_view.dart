@@ -185,6 +185,7 @@ class _MessagesPageViewState extends State<MessagesPageView> {
         giphyLink: m.giphyLink,
         playerTags: m.playerTags,
         messageTimeInEpoc: m.messageTimeInEpoc,
+        sender: m.sender,
       );
       if (i == 0) {
         chat.isGroupLatest = true;

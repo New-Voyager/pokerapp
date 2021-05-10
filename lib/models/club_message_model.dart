@@ -17,6 +17,7 @@ class ClubMessageModel {
   String giphyLink;
   String playerTags;
   int messageTimeInEpoc;
+  String sender;
 
   ClubMessageModel({
     this.clubCode,
@@ -55,16 +56,14 @@ class ClubMessageModel {
     this.giphyLink = jsonData['giphyLink'];
     this.playerTags = jsonData['playerTags'];
     this.messageTimeInEpoc = jsonData['messageTimeInEpoc'];
+    this.sender = jsonData['sender'];
   }
 
   // MUTATIONS
 
   Future<String> mutationSendClubMessage() async {
-    this.playerTags = await AuthService.getUuid();
-
     assert(this.clubCode != null);
     assert(this.messageType != null);
-    assert(this.playerTags != null);
 
     String messageType = '';
 
@@ -87,7 +86,6 @@ class ClubMessageModel {
       ${this.gameNum == null ? '' : 'gameNum: "${this.gameNum}"'}
       ${this.handNum == null ? '' : 'handNum: "${this.handNum}"'}
       ${this.giphyLink == null ? '' : 'giphyLink: "${this.giphyLink}"'}
-      playerTags: "${this.playerTags}",
     })
   }""";
   }
@@ -105,6 +103,7 @@ class ClubMessageModel {
       gameNum
       handNum
       giphyLink
+      sender
       playerTags
       messageTimeInEpoc
     }

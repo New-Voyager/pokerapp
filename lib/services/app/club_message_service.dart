@@ -32,11 +32,12 @@ class ClubMessageService {
     if (_stream == null || _stream.isClosed)
       _stream = StreamController<List<ClubMessageModel>>.broadcast();
 
-    if (_timer == null || !_timer.isActive)
+    if (_timer == null || !_timer.isActive) {
+      int next = 0;
+      List<ClubMessageModel> _messages = [];
       _timer = Timer.periodic(AppConstants.clubMessagePollDuration, (_) async {
-        List<ClubMessageModel> _messages = [];
-
-        String _query = ClubMessageModel.queryClubMessages(clubCode);
+        String _query =
+            ClubMessageModel.queryClubMessages(clubCode, next: next);
         GraphQLClient _client = graphQLConfiguration.clientToQuery();
 
         /* messages query */
@@ -45,18 +46,30 @@ class ClubMessageService {
             documentNode: gql(_query),
           ),
         );
-
+        bool newMessagesAdded = false;
         if (!result.hasException) {
           var jsonResponse = result.data['clubMessages'];
-
-          _messages.addAll(jsonResponse
+          final newMessages = jsonResponse
               .map<ClubMessageModel>(
                   (var messageItem) => ClubMessageModel.fromJson(messageItem))
-              .toList());
+              .toList();
+          if (newMessages.length > 0) {
+            newMessagesAdded = true;
+          }
+          _messages.addAll(newMessages);
+          for (final message in _messages) {
+            if (message.id > next) {
+              next = message.id;
+            }
+          }
         }
+        log('querying messages: next: $next newMessagesAdded: $newMessagesAdded');
 
-        _stream.sink.add(_messages.reversed.toList());
+        if (newMessagesAdded && !_stream.isClosed) {
+          _stream.sink.add(_messages.reversed.toList());
+        }
       });
+    }
 
     return _stream.stream;
   }
