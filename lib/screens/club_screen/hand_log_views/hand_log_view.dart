@@ -2,9 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_stages.dart';
-import 'package:pokerapp/models/hand_log_model.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
-import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_log_header_view.dart';
@@ -14,6 +12,7 @@ import 'package:pokerapp/screens/club_screen/hand_log_views/handlog_action.dart'
 import 'package:pokerapp/screens/club_screen/hand_log_views/handlog_showdown.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/handlog_summary.dart';
 import 'package:pokerapp/services/app/hand_service.dart';
+import 'package:pokerapp/services/test/test_service.dart';
 
 class HandLogView extends StatefulWidget {
   final String gameCode;
@@ -35,16 +34,21 @@ class _HandLogViewState extends State<HandLogView> {
   @override
   void initState() {
     super.initState();
-    //_fetchData();
-    loadJsonData();
+
+    if (TestService.isTesting) {
+      loadJsonData();
+    } else {
+      _fetchData();
+    }
   }
 
   void _fetchData() async {
-    // await HandService.getHandLog(_handLogModel);
-    // _isLoading = false;
-    // setState(() {
-    //   // update ui
-    // });
+    _handLogModel =
+        await HandService.getHandLog(widget.gameCode, widget.handNum);
+    _isLoading = false;
+    setState(() {
+      // update ui
+    });
   }
 
   loadJsonData() async {

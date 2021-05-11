@@ -100,12 +100,10 @@ class HandWinnersView extends StatelessWidget {
                                   Padding(
                                     padding: EdgeInsets.only(bottom: 5, top: 5),
                                     child: Text(
-                                      _handLogModel
-                                          .players[(potWinnersList[index]
-                                                  .hiWinners[winnerIndex]
-                                                  .seatNo -
-                                              1)]
-                                          .name,
+                                      _handLogModel.getPlayerNameBySeatNo(
+                                          potWinnersList[index]
+                                              .hiWinners[winnerIndex]
+                                              .seatNo),
                                       style: AppStyles.playerNameTextStyle,
                                       textAlign: TextAlign.left,
                                     ),
@@ -116,11 +114,10 @@ class HandWinnersView extends StatelessWidget {
                                     children: [
                                       HighlightedCardsView(
                                         totalCards: _handLogModel
-                                            .hand
-                                            .players[potWinnersList[index]
-                                                .hiWinners[winnerIndex]
-                                                .seatNo
-                                                .toString()]
+                                            .getPlayerBySeatNo(
+                                                potWinnersList[index]
+                                                    .hiWinners[winnerIndex]
+                                                    .seatNo)
                                             .cards,
                                         cardsToHighlight: potWinnersList[index]
                                             .hiWinners[winnerIndex]
@@ -195,13 +192,11 @@ class HandWinnersView extends StatelessWidget {
                                                 top: 5, bottom: 5),
                                             child: Text(
                                               _handLogModel
-                                                  .players[
-                                                      (potWinnersList[index]
-                                                              .lowWinners[
-                                                                  winnerIndex]
-                                                              .seatNo -
-                                                          1)]
-                                                  .name,
+                                                  .getPlayerNameBySeatNo(
+                                                      potWinnersList[index]
+                                                          .lowWinners[
+                                                              winnerIndex]
+                                                          .seatNo),
                                               style: const TextStyle(
                                                 fontFamily:
                                                     AppAssets.fontFamilyLato,
@@ -231,12 +226,11 @@ class HandWinnersView extends StatelessWidget {
                                               // ),
                                               HighlightedCardsView(
                                                 totalCards: _handLogModel
-                                                    .hand
-                                                    .players[potWinnersList[
-                                                            index]
-                                                        .lowWinners[winnerIndex]
-                                                        .seatNo
-                                                        .toString()]
+                                                    .getPlayerBySeatNo(
+                                                        potWinnersList[index]
+                                                            .lowWinners[
+                                                                winnerIndex]
+                                                            .seatNo)
                                                     .cards,
                                                 cardsToHighlight:
                                                     potWinnersList[index]

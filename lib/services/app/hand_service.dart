@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/hand_history_model.dart';
@@ -36,7 +38,7 @@ class HandService {
 
   static String handLogData = """
         query (\$gameCode: String! \$handNum: String!) {
-          hand: specificHandHistory(gameCode: \$gameCode, handNum: \$handNum) {
+          handResult: specificHandHistory(gameCode: \$gameCode, handNum: \$handNum) {
             data
             totalPot
           }  
@@ -112,7 +114,7 @@ class HandService {
     };
     String query = handLogData;
     if (handNum != -1) {
-      variables["handNum"] = handNum;
+      variables["handNum"] = handNum.toString();
     } else {
       query = lastHandLogData;
     }
@@ -124,7 +126,10 @@ class HandService {
     // instantiate game history detail object
     // model.jsonData = result.data;
     // model.load();
-    HandLogModelNew.handLogModelNewFromJson(result.data);
+    final data = jsonEncode(result.data);
+    final handLog =
+        HandLogModelNew.handLogModelNewFromJson(data, serviceResult: true);
+    return handLog;
   }
 
   static Future<bool> saveStarredHand(String gameCode, String handNum) async {

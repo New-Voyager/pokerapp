@@ -3,34 +3,74 @@ import 'package:pokerapp/enums/game_stages.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
 
 class HandLogModelNew {
-  static HandLogModelNew handLogModelNewFromJson(String str) =>
-      HandLogModelNew.fromJson(json.decode(str));
-  static String handLogModelNewToJson(HandLogModelNew data) =>
-      json.encode(data.toJson());
+  static HandLogModelNew handLogModelNewFromJson(String str,
+          {bool serviceResult = false}) =>
+      HandLogModelNew.fromJson(json.decode(str), serviceResult: serviceResult);
+  // static String handLogModelNewToJson(HandLogModelNew data) =>
+  //     json.encode(data.toJson());
 
   HandLogModelNew({
     this.hand,
-    this.players,
+    this.playerIdToName,
     this.myInfo,
   });
 
   Data hand;
-  List<PlayerElement> players;
+  //List<PlayerElement> players;
+  Map<int, String> playerIdToName;
   MyInfo myInfo;
 
-  factory HandLogModelNew.fromJson(Map<String, dynamic> json) =>
-      HandLogModelNew(
-        hand: Data.fromJson(json["handResult"]),
-        players: List<PlayerElement>.from(
-            json["players"].map((x) => PlayerElement.fromJson(x))),
-        myInfo: MyInfo.fromJson(json["myInfo"]),
-      );
+  factory HandLogModelNew.fromJson(Map<String, dynamic> json,
+      {bool serviceResult = false}) {
+    var hand = json["handResult"];
+    if (serviceResult) {
+      hand = hand["data"];
+    }
+    final players = json["players"];
+    final myInfo = json["myInfo"];
+    final playerIdToName = Map<int, String>();
+    for (final player in players) {
+      final playerId = int.parse(player["id"].toString());
+      final name = player["name"];
+      playerIdToName[playerId] = name;
+    }
+    return HandLogModelNew(
+      hand: Data.fromJson(hand),
+      playerIdToName: playerIdToName,
+      myInfo: MyInfo.fromJson(myInfo),
+    );
+  }
 
-  Map<String, dynamic> toJson() => {
-        "handResult": hand.toJson(),
-        "players": List<dynamic>.from(players.map((x) => x.toJson())),
-        "myInfo": myInfo.toJson(),
-      };
+  String getPlayerName(GameActions actions, int index) {
+    final seatNo = actions.actions[index].seatNo;
+    final player = this
+        .hand
+        .playersInSeats
+        .firstWhere((element) => element.seatNo == seatNo);
+    return this.playerIdToName[player.id];
+  }
+
+  String getPlayerNameBySeatNo(int seatNo) {
+    final player = this
+        .hand
+        .playersInSeats
+        .firstWhere((element) => element.seatNo == seatNo);
+    return this.playerIdToName[player.id];
+  }
+
+  Player getPlayerBySeatNo(int seatNo) {
+    final player = this
+        .hand
+        .playersInSeats
+        .firstWhere((element) => element.seatNo == seatNo);
+    return player;
+  }
+
+  // Map<String, dynamic> toJson() => {
+  //       "handResult": hand.toJson(),
+  //       "players": List<dynamic>.from(players.map((x) => x.toJson())),
+  //       "myInfo": myInfo.toJson(),
+  //     };
 }
 
 /* class Hand {
@@ -65,7 +105,7 @@ class Data {
     this.flop,
     this.turn,
     this.river,
-    this.players,
+    this.playersInSeats,
     this.rakeCollected,
     this.highHand,
     this.playerStats,
@@ -83,7 +123,7 @@ class Data {
   List<int> flop;
   int turn;
   int river;
-  Map<String, Player> players;
+  List<Player> playersInSeats;
   int rakeCollected;
   dynamic highHand;
   Map<String, PlayerStat> playerStats;
@@ -102,8 +142,13 @@ class Data {
         flop: List<int>.from(json["flop"].map((x) => x)),
         turn: json["turn"],
         river: json["river"],
-        players: Map.from(json["players"])
-            .map((k, v) => MapEntry<String, Player>(k, Player.fromJson(v))),
+        playersInSeats: Map.from(json["players"])
+            .map((k, v) {
+              final seatNo = int.parse(k.toString());
+              return MapEntry<int, Player>(seatNo, Player.fromJson(seatNo, v));
+            })
+            .values
+            .toList(),
         rakeCollected: json["rakeCollected"],
         highHand: json["highHand"],
         playerStats: Map.from(json["playerStats"]).map(
@@ -124,8 +169,7 @@ class Data {
         "flop": List<dynamic>.from(flop.map((x) => x)),
         "turn": turn,
         "river": river,
-        "players": Map.from(players)
-            .map((k, v) => MapEntry<String, dynamic>(k, v.toJson())),
+        "players": playersInSeats,
         "rakeCollected": rakeCollected,
         "highHand": highHand,
         "playerStats": Map.from(playerStats)
@@ -262,7 +306,8 @@ final actionEnumValues = EnumValues({
   "BET": HandActions.BET,
   "RAISE": HandActions.RAISE,
   "FOLD": HandActions.FOLD,
-  "STRADDLE": HandActions.STRADDLE
+  "STRADDLE": HandActions.STRADDLE,
+  "ALLIN": HandActions.ALLIN
 });
 
 final stagesEnumValues = StageEnumValues({
@@ -456,6 +501,7 @@ class PlayerStat {
 
 class Player {
   Player({
+    this.seatNo,
     this.id,
     this.cards,
     this.bestCards,
@@ -468,7 +514,8 @@ class Player {
     this.rakePaid,
   });
 
-  String id;
+  int seatNo;
+  int id;
   List<int> cards;
   List<int> bestCards;
   int rank;
@@ -479,8 +526,9 @@ class Player {
   int received;
   int rakePaid;
 
-  factory Player.fromJson(Map<String, dynamic> json) => Player(
-        id: json["id"],
+  factory Player.fromJson(int seatNo, Map<String, dynamic> json) => Player(
+        seatNo: seatNo,
+        id: int.parse(json["id"].toString()),
         cards: List<int>.from(json["cards"].map((x) => x)),
         bestCards: List<int>.from(json["bestCards"].map((x) => x)),
         rank: json["rank"],

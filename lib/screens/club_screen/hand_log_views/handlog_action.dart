@@ -10,7 +10,7 @@ class HandLogActionView extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView.separated(
       itemBuilder: (context, index) {
-        Player player = handLogModel.hand.players[(index + 1).toString()];
+        Player player = handLogModel.hand.playersInSeats[index];
         if (player.received <= 0) {
           return Container();
         }
@@ -23,7 +23,7 @@ class HandLogActionView extends StatelessWidget {
               Expanded(
                 flex: 4,
                 child: Text(
-                  _getPlayerName(player),
+                  handLogModel.getPlayerNameBySeatNo(player.seatNo),
                   style: AppStyles.playerNameTextStyle,
                   textAlign: TextAlign.left,
                 ),
@@ -68,19 +68,9 @@ class HandLogActionView extends StatelessWidget {
         );
       },
       separatorBuilder: (context, index) => Divider(),
-      itemCount: handLogModel.hand.players.length,
+      itemCount: handLogModel.hand.playersInSeats.length,
       shrinkWrap: true,
       physics: ClampingScrollPhysics(),
     );
-  }
-
-  String _getPlayerName(Player player) {
-    int i = handLogModel.players
-        .lastIndexWhere((element) => (player.id == element.id.toString()));
-    if (i == -1) {
-      return "Player";
-    } else {
-      return handLogModel.players[i].name;
-    }
   }
 }

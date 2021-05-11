@@ -129,11 +129,11 @@ class HandLogHeaderView extends StatelessWidget {
   _getMyCards(HandLogModelNew handLogModel) {
     List<int> myCards = [];
     int myId = handLogModel.myInfo.id;
-    handLogModel.hand.players.forEach((key, value) {
-      if (int.parse(key) == myId) {
-        myCards.addAll(value.cards);
-      }
-    });
+    final player = handLogModel.hand.playersInSeats
+        .firstWhere((element) => element.id == myId);
+    if (player != null) {
+      return player.cards;
+    }
     return myCards;
   }
 }

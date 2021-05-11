@@ -69,6 +69,13 @@ const straddleTextStyle = TextStyle(
   fontWeight: FontWeight.w600,
 );
 
+const allinTextStyle = TextStyle(
+  fontFamily: AppAssets.fontFamilyLato,
+  color: Colors.yellowAccent,
+  fontSize: 12.0,
+  fontWeight: FontWeight.w600,
+);
+
 class HandStageView extends StatelessWidget {
   final HandLogModelNew handLogModel;
   final GameStages stageEnum;
@@ -131,7 +138,7 @@ class HandStageView extends StatelessWidget {
     );
 
     String action = "";
-
+    log('action: ${actions.actions[index].action.toString()}');
     switch (actions.actions[index].action) {
       case HandActions.SB:
         textStyle = sbTextStyle;
@@ -166,7 +173,7 @@ class HandStageView extends StatelessWidget {
         action = "Straddle";
         break;
       case HandActions.ALLIN:
-        textStyle = straddleTextStyle;
+        textStyle = allinTextStyle;
         action = "All-in";
         break;
       // case HandActions.UNKNOWN:
@@ -188,7 +195,7 @@ class HandStageView extends StatelessWidget {
           Expanded(
             flex: 4,
             child: Text(
-              _getPlayerName(actions, index),
+              handLogModel.getPlayerName(actions, index),
               style: AppStyles.playerNameTextStyle,
               textAlign: TextAlign.left,
             ),
@@ -286,15 +293,11 @@ class HandStageView extends StatelessWidget {
     }
   }
 
-  String _getPlayerName(GameActions actions, int index) {
-    int i = handLogModel.players.lastIndexWhere(
-        (element) => (actions.actions[index].seatNo == element.id));
-    if (i == -1) {
-      return "Player";
-    } else {
-      return handLogModel.players[i].name;
-    }
-  }
+  // String _getPlayerName(GameActions actions, int index) {
+  //   final seatNo = actions.actions[index].seatNo;
+  //   final playerId = handLogModel.hand.playersInSeats[seatNo].id;
+  //   return handLogModel.playerIdToName[playerId];
+  // }
 
   String _getStageName(GameStages stageEnum) {}
 }

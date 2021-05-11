@@ -32,7 +32,7 @@ class HandlogShowDown extends StatelessWidget {
             shrinkWrap: true,
             physics: ClampingScrollPhysics(),
             itemBuilder: (context, index) {
-              Player player = handLogModel.hand.players[(index + 1).toString()];
+              Player player = handLogModel.hand.playersInSeats[index];
               if (player.playedUntil != "SHOW_DOWN") {
                 return Container();
               }
@@ -46,7 +46,7 @@ class HandlogShowDown extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            _getPlayerName(player),
+                            handLogModel.getPlayerNameBySeatNo(player.seatNo),
                             style: AppStyles.playerNameTextStyle,
                           ),
                         ],
@@ -55,8 +55,7 @@ class HandlogShowDown extends StatelessWidget {
                     Expanded(
                       flex: 2,
                       child: CardsView(
-                        cards: handLogModel
-                            .hand.players[(index + 1).toString()].cards,
+                        cards: player.cards,
                       ),
                     ),
                   ],
@@ -64,20 +63,20 @@ class HandlogShowDown extends StatelessWidget {
               );
             },
             separatorBuilder: (context, index) => Divider(),
-            itemCount: handLogModel.hand.players.length,
+            itemCount: handLogModel.hand.playersInSeats.length,
           ),
         )
       ],
     );
   }
 
-  String _getPlayerName(Player player) {
-    int i = handLogModel.players
-        .lastIndexWhere((element) => (player.id == element.id.toString()));
-    if (i == -1) {
-      return "Player";
-    } else {
-      return handLogModel.players[i].name;
-    }
-  }
+  // String _getPlayerName(Player player) {
+  //   int i = handLogModel.players
+  //       .lastIndexWhere((element) => (player.id == element.id.toString()));
+  //   if (i == -1) {
+  //     return "Player";
+  //   } else {
+  //     return handLogModel.players[i].name;
+  //   }
+  // }
 }

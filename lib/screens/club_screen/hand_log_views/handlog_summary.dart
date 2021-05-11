@@ -37,12 +37,11 @@ class HandlogSummary extends StatelessWidget {
             padding: EdgeInsets.only(bottom: 16),
             child: ListView.builder(
               itemBuilder: (context, index) {
-                log("TOTAL : ${handlogModel.hand.players.length}");
+                log("TOTAL : ${handlogModel.hand.playersInSeats.length}");
                 // log(handlogModel.hand.data.players[(index + 1).toString()].id);
-                return actionRow(
-                    handlogModel.hand.players[(index + 1).toString()]);
+                return actionRow(handlogModel.hand.playersInSeats[index]);
               },
-              itemCount: handlogModel.hand.players.length,
+              itemCount: handlogModel.hand.playersInSeats.length,
               shrinkWrap: true,
               physics: ClampingScrollPhysics(),
             ),
@@ -54,10 +53,14 @@ class HandlogSummary extends StatelessWidget {
 
   Widget actionRow(Player player) {
     final int diff = player.balance.after - player.balance.before;
-    int index = handlogModel.players
-        .indexWhere((element) => element.id.toString() == player.id);
-    String playerName =
-        index != -1 ? handlogModel.players[index].name : "Player";
+    // int index = handlogModel.players
+    //     .indexWhere((element) => element.id.toString() == player.id);
+    // String playerName =
+    //     index != -1 ? handlogModel.players[index].name : "Player";
+    String playerName = 'Player';
+    if (player != null) {
+      playerName = handlogModel.getPlayerNameBySeatNo(player.seatNo);
+    }
     return Container(
       margin: EdgeInsets.only(top: 5, bottom: 5, left: 16, right: 16),
       child: Row(
