@@ -62,7 +62,7 @@ class AppConstants {
   );
 
   static const Duration clubMessagePollDuration = const Duration(
-    milliseconds: 500,
+    milliseconds: 1000,
   );
 
   static const Duration userPopUpMessageHoldDuration = const Duration(
@@ -72,8 +72,6 @@ class AppConstants {
   static const Duration notificationDuration = const Duration(
     seconds: 5,
   );
-
-  static const String giphyApiKey = 'IoanUNVNMRCaTnTpYzB2UDxUdatagMkQ';
 
   static const String blackSpade = '♠';
   static const String redHeart = '♥';

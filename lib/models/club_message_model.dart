@@ -157,6 +157,7 @@ class ClubMessageModel {
         gameCode
         gameType
         sharedByPlayerId
+        sharedByPlayerUuid
         sharedByPlayerName
         data
       }
