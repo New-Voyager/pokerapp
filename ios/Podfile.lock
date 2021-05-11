@@ -1,8 +1,8 @@
 PODS:
-  - agora_rtc_engine (3.2.1):
-    - AgoraRtcEngine_iOS (= 3.2.1)
+  - agora_rtc_engine (3.3.3):
+    - AgoraRtcEngine_iOS (= 3.3.2)
     - Flutter
-  - AgoraRtcEngine_iOS (3.2.1)
+  - AgoraRtcEngine_iOS (3.3.2)
   - audio_recorder (0.0.1):
     - Flutter
   - audio_session (0.0.1):
@@ -24,7 +24,7 @@ PODS:
   - Firebase/Messaging (7.11.0):
     - Firebase/CoreOnly
     - FirebaseMessaging (~> 7.11.0)
-  - firebase_analytics (8.0.2):
+  - firebase_analytics (8.0.3):
     - Firebase/Analytics (= 7.11.0)
     - firebase_core
     - Flutter
@@ -228,15 +228,15 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/sqflite/ios"
 
 SPEC CHECKSUMS:
-  agora_rtc_engine: b9eb6ee2b4dd6c3854c0d94b0691e7d041fb437e
-  AgoraRtcEngine_iOS: bf8ee53108d31dd9e3b7e448701b9098162c42c7
+  agora_rtc_engine: 23c0066f14070ca989ddce82d4b28d7151e6ade1
+  AgoraRtcEngine_iOS: 851e11fa7cbc0cba04f407eac1a9e32b872765a1
   audio_recorder: 8d200bc5ca10f8a5f8121ad1d2fcf49108a0b3bf
   audio_session: 4f3e461722055d21515cf3261b64c973c062f345
   audioplayers: 455322b54050b30ea4b1af7cd9e9d105f74efa8c
   connectivity: c4130b2985d4ef6fd26f9702e886bd5260681467
   emoji_picker: 0e868059aa18f9473d234f3d0701fbd4d5fd310c
   Firebase: c121feb35e4126c0b355e3313fa9b487d47319fd
-  firebase_analytics: 620e8cc1705feb6b9c40b6127bea9b39e03e3970
+  firebase_analytics: 1212d578d019d82c6301bc64c818ef54abe385e4
   firebase_core: 84dcd80ac6d29c3d1039071b7306ee99688eb9c7
   firebase_messaging: 7aecb08eada5e5cde85b10875141706a8d18b818
   FirebaseAnalytics: cd3bd84d722a24a8923918af8af8e5236f615d77
@@ -265,4 +265,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: d4786cda02b3169045aa77046b1581de1274b7d9
 
-COCOAPODS: 1.10.0
+COCOAPODS: 1.10.1

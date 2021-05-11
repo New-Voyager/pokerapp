@@ -23,6 +23,11 @@ class HandLogModelNew {
   factory HandLogModelNew.fromJson(Map<String, dynamic> json,
       {bool serviceResult = false}) {
     var hand = json["handResult"];
+    if (hand == null) {
+      // HACK here
+      hand = json["hand"];
+    }
+
     if (serviceResult) {
       hand = hand["data"];
     }
