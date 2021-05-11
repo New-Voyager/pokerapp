@@ -113,8 +113,7 @@ class HandLogHeaderView extends StatelessWidget {
                           ),
                         ),
                         CardsView(
-                            cards: _getMyCards(_handLogModel),
-                            show: _handLogModel.hand.handLog.showDown ?? false),
+                            cards: _getMyCards(_handLogModel), show: true),
                       ],
                     ),
                   ),

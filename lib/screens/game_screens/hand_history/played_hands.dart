@@ -127,8 +127,8 @@ class PlayedHandsScreen extends StatelessWidget {
         context,
         Routes.hand_log_view,
         arguments: {
-          "gameCode" : this.gameCode,
-          "handNum"  : history[index].handNum
+          "gameCode": this.gameCode,
+          "handNum": history[index].handNum
         },
       );
     }

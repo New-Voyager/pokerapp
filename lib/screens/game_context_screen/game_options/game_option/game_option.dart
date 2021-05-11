@@ -165,7 +165,7 @@ class _GameOptionState extends State<GameOption> {
             isScrollControlled: true,
             builder: (ctx) => Container(
               height: height / 2,
-              child: HandLogView(widget.gameCode,-1),
+              child: HandLogView(widget.gameCode, -1),
             ),
           );
         },

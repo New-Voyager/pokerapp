@@ -17,7 +17,6 @@ class HandWinnersView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     _getPotWinnersList(_handLogModel);
-
     if (potWinnersList == null || potWinnersList.length == 0) {
       return Center(
         child: Text(
@@ -31,6 +30,14 @@ class HandWinnersView extends StatelessWidget {
         ),
       );
     } else {
+      String winnersTitle = 'Winners';
+      for (final potWinner in potWinnersList) {
+        if (potWinner.lowWinners.length > 0) {
+          winnersTitle = 'Hi-Winners';
+          break;
+        }
+      }
+
       return Container(
         margin: EdgeInsets.only(bottom: 16, left: 8, right: 8),
         child: Container(
@@ -66,7 +73,7 @@ class HandWinnersView extends StatelessWidget {
                       margin: EdgeInsets.symmetric(horizontal: 16),
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        "Hi-Winners",
+                        winnersTitle,
                         style: const TextStyle(
                           fontFamily: AppAssets.fontFamilyLato,
                           color: Colors.white,
@@ -107,14 +114,17 @@ class HandWinnersView extends StatelessWidget {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      CardsView(
-                                        cards: _handLogModel
+                                      HighlightedCardsView(
+                                        totalCards: _handLogModel
                                             .hand
                                             .players[potWinnersList[index]
                                                 .hiWinners[winnerIndex]
                                                 .seatNo
                                                 .toString()]
                                             .cards,
+                                        cardsToHighlight: potWinnersList[index]
+                                            .hiWinners[winnerIndex]
+                                            .playerCards,
                                         show:
                                             _handLogModel.hand.handLog.wonAt ==
                                                 GameStages.SHOWDOWN,
@@ -125,7 +135,7 @@ class HandWinnersView extends StatelessWidget {
                                             .winningCards,
                                         cardsToHighlight: potWinnersList[index]
                                             .hiWinners[winnerIndex]
-                                            .playerCards,
+                                            .winningCards,
                                         show:
                                             _handLogModel.hand.handLog.wonAt ==
                                                 GameStages.SHOWDOWN,
@@ -153,7 +163,7 @@ class HandWinnersView extends StatelessWidget {
                             Padding(
                               padding: EdgeInsets.all(5),
                               child: Text(
-                                "Low Winners",
+                                "Lo-Winners",
                                 style: const TextStyle(
                                   fontFamily: AppAssets.fontFamilyLato,
                                   color: Colors.white,
@@ -206,21 +216,48 @@ class HandWinnersView extends StatelessWidget {
                                             mainAxisAlignment:
                                                 MainAxisAlignment.spaceBetween,
                                             children: [
-                                              CommunityCardWidget(
-                                                potWinnersList[index]
-                                                    .lowWinners[winnerIndex]
-                                                    .playerCards
-                                                    .cast<int>()
-                                                    .toList(),
-                                                true,
+                                              // CardsView(
+                                              // cards: _handLogModel
+                                              //     .hand
+                                              //     .players[potWinnersList[
+                                              //             index]
+                                              //         .lowWinners[winnerIndex]
+                                              //         .seatNo
+                                              //         .toString()]
+                                              //     .cards,
+                                              //   show: _handLogModel
+                                              //           .hand.handLog.wonAt ==
+                                              //       GameStages.SHOWDOWN,
+                                              // ),
+                                              HighlightedCardsView(
+                                                totalCards: _handLogModel
+                                                    .hand
+                                                    .players[potWinnersList[
+                                                            index]
+                                                        .lowWinners[winnerIndex]
+                                                        .seatNo
+                                                        .toString()]
+                                                    .cards,
+                                                cardsToHighlight:
+                                                    potWinnersList[index]
+                                                        .lowWinners[winnerIndex]
+                                                        .playerCards,
+                                                show: _handLogModel
+                                                        .hand.handLog.wonAt ==
+                                                    GameStages.SHOWDOWN,
                                               ),
-                                              CommunityCardWidget(
-                                                potWinnersList[index]
-                                                    .lowWinners[winnerIndex]
-                                                    .winningCards
-                                                    .cast<int>()
-                                                    .toList(),
-                                                true,
+                                              HighlightedCardsView(
+                                                totalCards:
+                                                    potWinnersList[index]
+                                                        .lowWinners[winnerIndex]
+                                                        .winningCards,
+                                                cardsToHighlight:
+                                                    potWinnersList[index]
+                                                        .lowWinners[winnerIndex]
+                                                        .winningCards,
+                                                show: _handLogModel
+                                                        .hand.handLog.wonAt ==
+                                                    GameStages.SHOWDOWN,
                                               ),
                                             ],
                                           ),

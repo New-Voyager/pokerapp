@@ -45,7 +45,7 @@ class GamePlayScreenUtilMethods {
           backgroundColor: Colors.red,
           label: 'Hand Log',
           onTap: () => TestService.handlogView(),
-        ),        
+        ),
         SpeedDialChild(
           child: Icon(
             Icons.adb_rounded,

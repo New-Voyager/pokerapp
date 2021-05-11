@@ -27,13 +27,12 @@ class HandAnalyseView extends StatefulWidget {
 
 class _HandAnalyseViewState extends State<HandAnalyseView> {
   Future<void> onClickViewHand() async {
-
     await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (ctx) => LastHandAnalyseBottomSheet(
-        gameCode : widget.gameCode,
+        gameCode: widget.gameCode,
         clubCode: widget.clubCode,
       ),
     );

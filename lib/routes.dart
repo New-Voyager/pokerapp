@@ -236,7 +236,7 @@ class Routes {
         var args = settings.arguments as dynamic;
         return _getPageRoute(
           routeName: settings.name,
-          viewToShow: HandLogView(args['gameCode'],args['handNum']),
+          viewToShow: HandLogView(args['gameCode'], args['handNum']),
         );
 
       case rewards_list:

@@ -48,8 +48,9 @@ class _HandLogViewState extends State<HandLogView> {
   }
 
   loadJsonData() async {
-    String data = await DefaultAssetBundle.of(context)
-        .loadString("assets/sample-data/handlog/holdem/twowinners.json");
+    String data = await DefaultAssetBundle.of(context).loadString(
+        "assets/sample-data/handlog/plo-hilo/one-hi-lo-winner.json");
+
     final jsonResult = json.decode(data);
     _handLogModel = HandLogModelNew.fromJson(jsonResult);
 
@@ -170,10 +171,10 @@ class _HandLogViewState extends State<HandLogView> {
                     margin:
                         EdgeInsets.only(left: 10, top: 5, bottom: 5, right: 10),
                     alignment: Alignment.centerLeft,
-                    child: Text(
-                      "Winners",
-                      style: AppStyles.boldTitleTextStyle,
-                    ),
+                    // child: Text(
+                    //   "Winners",
+                    //   style: AppStyles.boldTitleTextStyle,
+                    // ),
                   ),
                   HandWinnersView(_handLogModel),
                   HandStageView(

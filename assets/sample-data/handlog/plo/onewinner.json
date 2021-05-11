@@ -171,7 +171,7 @@
 		"river": 33,
 		"players": {
 			"1": {
-				"id": "4578",
+				"id": "1",
 				"cards": [114, 1, 129, 145],
 				"bestCards": [129, 145, 200, 196, 132],
 				"rank": 2503,
@@ -186,7 +186,7 @@
 				"rakePaid": 0
 			},
 			"2": {
-				"id": "4579",
+				"id": "2",
 				"cards": [178, 164, 18, 49],
 				"bestCards": [18, 49, 200, 8, 33],
 				"rank": 1609,
@@ -201,7 +201,7 @@
 				"rakePaid": 2
 			},
 			"3": {
-				"id": "4580",
+				"id": "3",
 				"cards": [],
 				"bestCards": [],
 				"rank": 0,
@@ -282,5 +282,52 @@
 			"endedAtShowdown": true
 		},
 		"runItTwice": false
-	}
+	},
+	"players": [
+		{
+			"id": 2,
+			"name": "yong"
+		},
+		{
+			"id": 3,
+			"name": "jim"
+		},
+		{
+			"id": 4,
+			"name": "michael"
+		},
+		{
+			"id": 5,
+			"name": "david"
+		},
+		{
+			"id": 6,
+			"name": "brian"
+		},
+		{
+			"id": 7,
+			"name": "bill"
+		},
+		{
+			"id": 8,
+			"name": "tom"
+		},
+		{
+			"id": 9,
+			"name": "rob"
+		},
+		{
+			"id": 10,
+			"name": "john"
+		},
+		{
+			"id": 1,
+			"name": "siva"
+		}
+	],
+	"myInfo": {
+		"id": 1,
+		"uuid": "cfe63ff3712c594f",
+		"name": "asdf"
+	}	
 }

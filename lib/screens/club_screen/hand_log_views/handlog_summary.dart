@@ -20,8 +20,7 @@ class HandlogSummary extends StatelessWidget {
           Container(
             margin: EdgeInsets.symmetric(horizontal: 8),
             decoration: BoxDecoration(
-                color: Colors.blueGrey,
-                borderRadius: BorderRadius.circular(7)),
+                color: Colors.blueGrey, borderRadius: BorderRadius.circular(7)),
             padding: EdgeInsets.all(8),
             width: double.infinity,
             alignment: Alignment.center,
