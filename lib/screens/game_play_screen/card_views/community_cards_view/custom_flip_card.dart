@@ -7,18 +7,21 @@ class CustomFlipCard extends StatelessWidget {
   final GlobalKey<FlipCardState> globalKey;
   final Widget cardWidget;
   final String cardBackAsset;
+  final int speed;
 
   CustomFlipCard({
     @required this.onFlipDone,
     @required this.globalKey,
     @required this.cardWidget,
     @required this.cardBackAsset,
+    this.speed = 500,
   });
 
   @override
   Widget build(BuildContext context) => FlipCard(
         onFlipDone: onFlipDone,
         key: globalKey,
+        speed: this.speed,
         flipOnTouch: false,
         back: cardWidget,
         front: Transform.translate(

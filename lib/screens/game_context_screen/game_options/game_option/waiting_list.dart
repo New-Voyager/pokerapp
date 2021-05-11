@@ -6,8 +6,6 @@ import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:provider/provider.dart';
-import 'package:pokerapp/services/game_play/graphql/game_service.dart'
-    as gameService;
 
 class WaitingListBottomSheet extends StatefulWidget {
   final String gameCode;
@@ -33,7 +31,7 @@ class _WaitingListBottomSheetState extends State<WaitingListBottomSheet> {
 
   getAllCurretlyPlayingPlayer() async {
     GameInfoModel _gameInfoModel =
-        await gameService.GameService.getGameInfo(widget.gameCode);
+        await GameService.getGameInfo(widget.gameCode);
     if (_gameInfoModel == null) {
       return false;
     }

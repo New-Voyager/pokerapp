@@ -411,6 +411,40 @@ class TestService {
     //await HandActionService.handle(context: _context, message: dealStartedMessage());
   }
 
+  static void runItTwiceResult() {
+    final resultMessage = runItTwiceMessage();
+
+    final gameState = GameState.getState(_context);
+    if (_handActionService == null) {
+      _handActionService = HandActionService(_context, gameState, null);
+      _handActionService.loop();
+    }
+    _handActionService.handle(resultMessage);
+  }
+
+  static void fillBothBoardCards() {
+    final gameState = GameState.getState(_context);
+    final TableState tableState = gameState.getTableState(_context);
+
+    /* board 1 */
+    tableState.setBoardCards(
+      1,
+      [50, 50, 50, 50, 50].map((e) => CardHelper.getCard(e)).toList(),
+    );
+
+    /* board 2 */
+    tableState.setBoardCards(
+      2,
+      [50, 50, 50, 50, 50].map((e) => CardHelper.getCard(e)).toList(),
+    );
+
+    tableState.updatePotChipsSilent(
+      potChips: [578],
+    );
+
+    tableState.notifyAll();
+  }
+
   static void fillCenterView() {
     final gameState = GameState.getState(_context);
     final TableState tableState = gameState.getTableState(_context);
@@ -469,6 +503,61 @@ class TestService {
     }
     final players = gameState.getPlayers(_context);
     players.notifyAll();
+  }
+
+  static void sendRunItTwiceMessage() {
+    final gameState = GameState.getState(_context);
+    if (_handActionService == null) {
+      _handActionService = HandActionService(_context, gameState, null);
+      _handActionService.loop();
+    }
+    String message = '''{
+   "messageType":"RUN_IT_TWICE",
+   "runItTwice":{
+      "board1":[
+         200,
+         196,
+         8,
+         132,
+         33
+      ],
+      "board2":[
+         72,
+         84,
+         40,
+         100,
+         97
+      ],
+      "stage":"PREFLOP",
+      "seatsPots":[
+         {
+            "seats":[
+               5,
+               8
+            ],
+            "pot":100
+         }
+      ],
+      "seat1":5,
+      "seat2":8
+   }
+}''';
+    //final handActionService = HandActionService( _context, gameState);
+    _handActionService.clear();
+    _handActionService.handle('{"messages": [$message]}');
+  }
+
+  static void runItTwicePrompt() {
+    final gameState = GameState.getState(_context);
+    if (_handActionService == null) {
+      _handActionService = HandActionService(_context, gameState, null);
+      _handActionService.loop();
+    }
+    String message =
+        '''{"clubId": 1,"gameId": "1620287740","gameCode": "1620287740","handNum": 1,"messageId": "ACTION:1:FLOP:0:","handStatus": "FLOP","messages": [{"messageType": "PLAYER_ACTED","playerActed": {"seatNo": 8,"action": "ALLIN","amount": 50}}, {"messageType": "YOUR_ACTION","seatAction": {"seatNo": 1,"availableActions": ["RUN_IT_TWICE_PROMPT"]}}, {"messageType": "YOUR_ACTION","seatAction": {"seatNo": 8,"availableActions": ["RUN_IT_TWICE_PROMPT"]}}]}''';
+    //final handActionService = HandActionService( _context, gameState);
+    _handActionService.clear();
+    _handActionService.handle(message);
   }
 
   static void handMessage() {

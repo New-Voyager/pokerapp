@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/widgets/card_view.dart';
 
-const double pullUpOffset = -15.0;
-
 class StackCardView extends StatelessWidget {
   final List<CardObject> cards;
   final bool deactivated;
@@ -26,15 +24,9 @@ class StackCardView extends StatelessWidget {
           : cards.reversed
               .toList()
               .map(
-                (c) => Transform.translate(
-                  offset: Offset(
-                    0.0,
-                    c.highlight ? pullUpOffset : 0.0,
-                  ),
-                  child: deactivated
-                      ? CardView(card: c, grayOut: true)
-                      : CardView(card: c),
-                ),
+                (c) => deactivated
+                    ? CardView(card: c, grayOut: true)
+                    : CardView(card: c),
               )
               .toList()
               .reversed

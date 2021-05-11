@@ -13,8 +13,8 @@ import 'package:pokerapp/screens/game_play_screen/main_views/board_view/center_v
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/decorative_views/table_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/players_on_table_view.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/animating_widgets/stack_switch_seat_animating_widget.dart';
+import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
-import 'package:pokerapp/services/game_play/graphql/game_service.dart';
 import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/numeric_keyboard.dart';
 import 'package:pokerapp/widgets/round_raised_button.dart';
@@ -114,17 +114,21 @@ class _BoardViewState extends State<BoardView> {
               ServerConnectionState connectionState,
               __,
             ) {
-              var cards = tableState.cards;
-              var pots = tableState.potChips;
+              final cards = tableState.cards;
+              final cardsOther = tableState.cardsOther;
+              final pots = tableState.potChips;
+              final flipSpeed = tableState.flipSpeed;
 
               return Transform.scale(
                 scale: boardAttributes.centerScale,
                 child: CenterView(
                   centerKey,
+                  tableState.twoBoardsNeeded,
                   widget.gameInfo.gameCode,
                   widget.gameInfo.isHost,
                   isBoardHorizontal,
                   cards,
+                  cardsOther,
                   pots,
                   double.parse(
                     tableState.potChipsUpdates != null
@@ -134,6 +138,7 @@ class _BoardViewState extends State<BoardView> {
                   tableState.tableStatus,
                   valueNotifierFooterStatus.value == FooterStatus.Result,
                   widget.onStartGame,
+                  flipSpeed,
                 ),
               );
             },

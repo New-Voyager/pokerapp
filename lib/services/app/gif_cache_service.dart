@@ -1,7 +1,5 @@
-import 'dart:developer';
 import 'dart:io';
 
-import 'package:flutter_udid/flutter_udid.dart';
 import 'package:http/http.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pokerapp/services/app/tenor_service.dart';
@@ -13,20 +11,12 @@ class GifCacheService {
 
   static String _getSharedPrefKey(String category) => 'GIF CACHE: $category';
 
-  static String _getSharedPrefKeyTime(String category) =>
-      'GIF CACHE TIME: $category';
-
-  /* TODO: A EXPIRY FUNCTIONALITY TO INVALIDATE CACHES AFTER A WHILE */
-  /* TODO: ALSO NEED TO SCHEDULE FOR DELETION, IN CASE A CACHE IS IN VALIDATED */
+  /* fetch if key exists do not fetch again, if not, fetch */
   static bool _needToFetch(
     String category,
     SharedPreferences sharedPreferences,
-  ) {
-    // int expTime = sharedPreferences.getInt(_getSharedPrefKeyTime(category));
-
-    /* FIXME: FOW NOW: fetch if key exists do not fetch again, if not, fetch */
-    return !sharedPreferences.containsKey(_getSharedPrefKey(category));
-  }
+  ) =>
+      !sharedPreferences.containsKey(_getSharedPrefKey(category));
 
   /* use this method to keep a cache of the all the gifs from the categories array */
   static void cacheGifCategories(

@@ -6,8 +6,10 @@ import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
 import 'package:pokerapp/enums/player_status.dart';
+import 'package:pokerapp/models/game_history_model.dart';
 import 'package:pokerapp/models/game_play_models/business/card_distribution_model.dart';
 import 'package:pokerapp/models/game_play_models/business/hi_winners_model.dart';
+import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/marked_cards.dart';
@@ -21,7 +23,9 @@ import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/card_back_assets.dart';
 import 'package:pokerapp/services/game_play/action_services/game_action_service/sub_services/high_hand_service.dart';
 import 'package:pokerapp/services/game_play/utils/audio.dart';
+import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/card_helper.dart';
+import 'package:pokerapp/widgets/run_it_twice_dialog.dart';
 import 'package:provider/provider.dart';
 
 import '../game_com_service.dart';
@@ -44,14 +48,18 @@ class RetrySendingMsg {
   bool _ackReceived = false;
   bool _cancel = false;
   RetrySendingMsg(
-      this._gameComService, this._message, this._messageType, this._messageId);
+    this._gameComService,
+    this._message,
+    this._messageType,
+    this._messageId,
+  );
 
   run() async {
     DateTime lastSentTime = DateTime.now();
     _messageSentTime = lastSentTime;
     bool firstAttempt = true;
     // runs a loop until we receive acknowledgement or cancel
-    while (!_cancel || !_ackReceived) {
+    while (!_cancel && !_ackReceived) {
       DateTime now = DateTime.now();
       final d = now.difference(lastSentTime);
       if (firstAttempt || d.inSeconds >= _retrySeconds) {
@@ -142,8 +150,40 @@ class HandActionService {
     }
   }
 
+  /* this function actually makes the connection with the GameComService
+  * and sends the message in the Player to Server channel */
+  static void takeAction({
+    BuildContext context,
+    String action,
+    int amount,
+  }) async {
+    assert(context != null);
+    assert(action != null);
+
+    final gameState = Provider.of<GameState>(context, listen: false);
+    final actionState = gameState.getActionState(context);
+    final handInfo = gameState.getHandInfo(context);
+    final gameContextObject = Provider.of<GameContextObject>(
+      context,
+      listen: false,
+    );
+
+    gameContextObject.handActionService.playerActed(
+      gameContextObject.playerId,
+      handInfo.handNum,
+      actionState.action.seatNo,
+      action,
+      amount,
+    );
+  }
+
   playerActed(
-      int playerID, int handNum, int seatNo, String action, int amount) {
+    int playerID,
+    int handNum,
+    int seatNo,
+    String action,
+    int amount,
+  ) {
     if (_retryMsg != null) {
       _retryMsg.cancel();
     }
@@ -226,6 +266,10 @@ class HandActionService {
           await handleResult(data);
           return;
 
+        case AppConstants.RUN_IT_TWICE:
+          await handleRunItTwice(data);
+          return;
+
         case AppConstants.NEW_HAND:
           await handleNewHand(data);
           return;
@@ -270,6 +314,40 @@ class HandActionService {
     }
   }
 
+  Future<void> handleRunItTwice(var data) async {
+    final runItTwice = data['runItTwice'];
+
+    final List<CardObject> board1Cards = runItTwice['board1']
+        .map<CardObject>((c) => CardHelper.getCard(int.parse(c.toString())))
+        .toList();
+
+    final List<CardObject> board2Cards = runItTwice['board2']
+        .map<CardObject>((c) => CardHelper.getCard(int.parse(c.toString())))
+        .toList();
+
+    final GameState gameState = GameState.getState(_context);
+    final TableState tableState = gameState.getTableState(_context);
+    tableState.updateTwoBoardsNeeded(true);
+
+    /* show the board 1 cards */
+    await tableState.addAllCommunityCardsForRunItTwiceScenario(
+      1,
+      board1Cards,
+    );
+
+    /* pause for a bit todo: get duration */
+    await Future.delayed(const Duration(milliseconds: 500));
+
+    /* show the board 2 cards */
+    await tableState.addAllCommunityCardsForRunItTwiceScenario(
+      2,
+      board2Cards,
+    );
+
+    /* pause for a bit todo: get duration */
+    await Future.delayed(const Duration(milliseconds: 2000));
+  }
+
   Future<void> handleNewHand(var data) async {
     /* play the new hand sound effect */
     Audio.play(
@@ -296,11 +374,12 @@ class HandActionService {
 
     final handInfo = _gameState.getHandInfo(_context);
     handInfo.update(
-        handNum: handNum,
-        noCards: noCards,
-        gameType: gameType,
-        smallBlind: smallBlind,
-        bigBlind: bigBlind);
+      handNum: handNum,
+      noCards: noCards,
+      gameType: gameType,
+      smallBlind: smallBlind,
+      bigBlind: bigBlind,
+    );
 
     // set small blind and big blind
     final sbSeat = _gameState.getSeat(_context, sbPos);
@@ -497,6 +576,18 @@ class HandActionService {
     if (me.seatNo != seatNo) {
       return;
     }
+
+    /* this part handles if we receive a prompt for run it twice */
+    List<String> availableActions = seatAction['availableActions']
+        .map<String>((e) => e.toString())
+        .toList();
+    if (availableActions?.contains(AppConstants.RUN_IT_TWICE_PROMPT) ?? false) {
+      return RunItTwiceDialog.promptRunItTwice(
+        context: _context,
+        expTime: 30, // TODO: WE GET THIS TIME FROM THE SERVER
+      );
+    }
+
     _gameState.setAction(_context, seatNo, seatAction);
     _gameState.showAction(_context, true);
   }
@@ -864,19 +955,8 @@ class HandActionService {
     gameState.resetActionHighlight(_context, -1);
   }
 
-  /* seat-no, value mapping */
-  static Map<int, int> _getUpdatedStack(var data) {
-    Map<int, int> stacks = Map<int, int>();
-
-    var players = data['handResult']['players'];
-    players.forEach(
-        (key, p) => stacks[int.parse(key.toString())] = p['balance']['after']);
-
-    return stacks;
-  }
-
   /* seat-no, list of cards mapping */
-  static Map<int, List<int>> _getCards(var data) {
+  static Map<int, List<int>> _getCards(final data) {
     var players = data['handResult']['players'];
 
     Map<int, List<int>> seatNoCardsMap = Map<int, List<int>>();
@@ -887,33 +967,79 @@ class HandActionService {
     return seatNoCardsMap;
   }
 
-  /* get back the board cards that needs to be highlighted */
-  static List<int> _getBoardCards(var data) {
-    var boardCards = data['handResult']['handLog']['potWinners']['0']
-        ['hiWinners'][0]['boardCards'];
+  Future<void> _processWinner({
+    final HiWinnersModel winner,
+    final Players players,
+    final TableState tableState,
+    final boardIndex = 1,
+  }) async {
+    /* highlight the hi winners */
+    players.highlightWinnerSilent(winner.seatNo);
 
-    return boardCards.map<int>((c) => int.parse(c.toString())).toList();
+    /* highlight the winning cards for players */
+    players.highlightCardsSilent(
+      seatNo: winner.seatNo,
+      cards: winner.playerCards,
+    );
+
+    /* highlight the winning cards for board 1 */
+    tableState.highlightCardsSilent(
+      boardIndex,
+      winner.boardCards,
+    );
+
+    /* update the rank str */
+    tableState.updateRankStrSilent(winner.rankStr);
+
+    /* update the stack amount for the winners */
+    final PlayerModel player = players.getPlayerBySeat(winner.seatNo);
+    if (player != null) {
+      player.action.amount = winner.amount.toDouble();
+      player.action.winner = true;
+    }
+
+    /* update state */
+    players.notifyAll();
+    tableState.notifyAll();
+
+    /* finally animate the moving stack */
+    _gameState.animateSeatActions();
+
+    /* wait for the animation to finish */
+    await Future.delayed(AppConstants.animationDuration);
+
+    /* update the actual stack */
+    players.updateStackWithValueSilent(
+      winner.seatNo,
+      winner.amount,
+    );
+
+    players.notifyAll();
   }
 
-  /* get back the player cards that needs to be highlighted */
-  static Map<String, dynamic> _getPlayerData(var data) {
-    var hiWinner =
-        data['handResult']['handLog']['potWinners']['0']['hiWinners'][0];
+  /* only resets the highlights, and winners */
+  void resetResult({
+    TableState tableState,
+    Players players,
+    int boardIndex = 1,
+  }) {
+    tableState.unHighlightCardsSilent(boardIndex);
+    players.removeAllHighlightsSilent();
+    players.removeWinnerHighlightSilent();
+    players.unHighlightCardsSilentForAll();
 
-    int seatNo = hiWinner['seatNo'];
-    var playerCards = hiWinner['playerCards'];
+    tableState.updateRankStrSilent(null);
 
-    return {
-      'seatNo': seatNo,
-      'playerCards':
-          playerCards.map<int>((c) => int.parse(c.toString())).toList(),
-    };
+    _gameState.resetSeatActions();
+
+    players.notifyAll();
+    tableState.notifyAll();
   }
 
   Future<void> handleResult(var data) async {
     final Players players = _gameState.getPlayers(_context);
     final tableState = _gameState.getTableState(_context);
-    final resultState = _gameState.getResultState(_context);
+    // final resultState = _gameState.getResultState(_context);
 
     if (data['handResult']['highHand'] != null) {
       HighHandService.handle(
@@ -924,19 +1050,19 @@ class HandActionService {
     }
     _gameState.resetSeatActions();
     players.clearForShowdown();
-    // debugPrint(jsonEncode(data));
+
+    // TODO: VERITY THIS METHOD FOR (NOT) RUN IT TWICE RESULTS
+
     // get hand winners data and update results
-    final winnersData = data['handResult']['handLog']['potWinners'];
-    final winners = resultState.updateWinners(winnersData);
+    final handResult = data['handResult'];
+    final winnersData = handResult['handLog']['potWinners'];
+    // final winners = resultState.updateWinners(winnersData);
+
+    /* check if the result is a run it twice result */
+    final bool isRunItTwice = handResult['runItTwice'] as bool;
 
     /* showdown time, show other players cards */
     players.updateUserCardsSilent(_getCards(data));
-
-    // get the winner seat No and highlight the winner
-    winners.forEach((winner) {
-      // highlight the winner seat No
-      players.highlightWinnerSilent(winner.seatNo);
-    });
 
     /* then, change the status of the footer to show the result */
     Provider.of<ValueNotifier<FooterStatus>>(
@@ -944,33 +1070,109 @@ class HandActionService {
       listen: false,
     ).value = FooterStatus.Result;
 
-    /* highlight cards of players and community cards for winner */
-    tableState.highlightCardsSilent(_getBoardCards(data));
-    tableState.notifyAll();
+    if (isRunItTwice) {
+      /* RUN IT TWICE CASE */
+      final runItTwiceResult = handResult['handLog']['runItTwiceResult'];
 
-    Map<String, dynamic> playerData = _getPlayerData(data);
+      /* set the board cards first */
+      final boardCards = handResult['boardCards'];
+      final boardCards2 = handResult['boardCards2'];
 
-    players.highlightCardsSilent(
-      seatNo: playerData['seatNo'],
-      cards: playerData['playerCards'],
-    );
+      /* set board 1 cards */
+      tableState.setBoardCards(
+        1,
+        boardCards.map<CardObject>((c) => CardHelper.getCard(c)).toList(),
+      );
 
-    /* update stack of every player after showing the reverse pot chip animation */
-    for (HiWinnersModel winner in winners) {
-      final seat = _gameState.getSeat(_context, winner.seatNo);
-      seat.player.action.amount = winner.amount.toDouble();
-      seat.player.action.winner = true;
+      /* set board 2 cards */
+      tableState.setBoardCards(
+        2,
+        boardCards2.map<CardObject>((c) => CardHelper.getCard(c)).toList(),
+      );
+
+      /* process board 1 first
+      * 0. get all hi winner players for board 1
+      * 1. highlight hi winner
+      * 2. highlight winning cards - players and community one's
+      * 3. update the rankStr
+      * 4. move the pot chip to the winner */
+
+      final board1Winners = runItTwiceResult['board1Winners']['0']['hiWinners'];
+      for (final hiWinner in board1Winners) {
+        final HiWinnersModel winner = HiWinnersModel.fromJson(hiWinner);
+
+        await _processWinner(
+          winner: winner,
+          players: players,
+          tableState: tableState,
+          boardIndex: 1,
+        );
+
+        /* todo: shall we wait here for a brief moment? */
+        await Future.delayed(AppConstants.animationDuration);
+      }
+
+      /* cleanup all highlights and rankStr */
+      resetResult(
+        tableState: tableState,
+        players: players,
+        boardIndex: 1,
+      );
+
+      /* wait for a brief duration */
+      await Future.delayed(AppConstants.animationDuration);
+
+      /* then, process board 2
+      * 0. get all hi winner players for board 1
+      * 1. highlight hi winner
+      * 2. highlight winning cards - players and community one's
+      * 3. update the rankStr
+      * 4. move the pot chip to the winner */
+      final board2Winners = runItTwiceResult['board2Winners']['0']['hiWinners'];
+      for (final hiWinner in board2Winners) {
+        final HiWinnersModel winner = HiWinnersModel.fromJson(hiWinner);
+
+        await _processWinner(
+          winner: winner,
+          players: players,
+          tableState: tableState,
+          boardIndex: 2,
+        );
+
+        /* todo: shall we wait here for a brief moment? */
+        await Future.delayed(AppConstants.animationDuration);
+      }
+
+      /* cleanup all highlights and rankStr */
+      resetResult(
+        tableState: tableState,
+        players: players,
+        boardIndex: 2,
+      );
+
+      /* turn off two boards needed flag */
+      tableState.updateTwoBoardsNeeded(false);
+    } else {
+      /* NOT RUN IT TWICE CASE */
+
+      final winners = handResult['handLog']['potWinners']['0']['hiWinners'];
+      for (final hiWinner in winners) {
+        final HiWinnersModel winner = HiWinnersModel.fromJson(hiWinner);
+
+        await _processWinner(
+          winner: winner,
+          players: players,
+          tableState: tableState,
+          boardIndex: 1,
+        );
+
+        /* todo: shall we wait here for a brief moment? */
+        await Future.delayed(AppConstants.animationDuration);
+      }
     }
-    _gameState.animateSeatActions();
-    players.notifyAll();
 
-    // wait for the animation to finish, then update the stack
-    Future.delayed(AppConstants.animationDuration).then(
-      (_) {
-        players.updateStackBulkSilent(_getUpdatedStack(data));
-        players.notifyAll();
-      },
-    );
+    /* In case, if a player has folded, and want to show his/her cards, then that is done there
+    * only the marked cards are sent to he game channel are are shown to the other players */
 
     final MarkedCards markedCards = _gameState.getMarkedCards(_context);
 
@@ -983,13 +1185,15 @@ class HandActionService {
     /* clear all the marked cards */
     markedCards.clear();
 
-    // todo: put the delay in the const class after finalizing the delay constant
+    if (TestService.isTesting) return;
+
     /* finally send the cardNumbers to the gameChatChannel after 1500 ms */
-    Future.delayed(const Duration(milliseconds: 1500)).then(
-      (_) => _gameState.getGameMessagingService(_context).sendCards(
-            cardNumbers,
-            players.me?.seatNo,
-          ),
+    // todo: put the delay in the const class after finalizing the delay constant
+    await Future.delayed(const Duration(milliseconds: 1500));
+    final gameService = _gameState.getGameMessagingService(_context);
+    gameService.sendCards(
+      cardNumbers,
+      players.me?.seatNo,
     );
   }
 }

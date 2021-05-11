@@ -14,18 +14,13 @@ import 'package:pokerapp/models/game_play_models/provider_models/remaining_time.
 import 'package:pokerapp/models/game_play_models/provider_models/seat_change_model.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
-import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/resources/card_back_assets.dart';
 import 'package:pokerapp/services/agora/agora.dart';
-import 'package:pokerapp/services/app/auth_service.dart';
-import 'package:pokerapp/services/game_play/game_messaging_service.dart';
-import 'package:pokerapp/services/game_play/graphql/game_service.dart';
-import 'package:pokerapp/utils/utils.dart';
+import 'package:pokerapp/services/app/game_service.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
 import '../../resources/app_colors.dart';
-import '../../services/test/test_service.dart';
 import '../../services/test/test_service.dart';
 
 class GamePlayScreenUtilMethods {
@@ -66,9 +61,18 @@ class GamePlayScreenUtilMethods {
             color: Colors.white,
           ),
           backgroundColor: Colors.red,
-          label: 'Fill center view',
-          onTap: () => TestService.fillCenterView(),
+          label: 'Run it twice result',
+          onTap: () => TestService.runItTwiceResult(),
         ),
+        // SpeedDialChild(
+        //   child: Icon(
+        //     Icons.adb_rounded,
+        //     color: Colors.white,
+        //   ),
+        //   backgroundColor: Colors.red,
+        //   label: 'Fill center view',
+        //   onTap: () => TestService.fillCenterView(),
+        // ),
         SpeedDialChild(
           child: Icon(
             Icons.adb_rounded,
@@ -84,8 +88,8 @@ class GamePlayScreenUtilMethods {
             color: Colors.white,
           ),
           backgroundColor: Colors.red,
-          label: 'Fold',
-          onTap: () => TestService.fold(),
+          label: 'Send Run It Twice',
+          onTap: () => TestService.sendRunItTwiceMessage(),
         ),
         SpeedDialChild(
           child: Icon(
@@ -93,9 +97,18 @@ class GamePlayScreenUtilMethods {
             color: Colors.white,
           ),
           backgroundColor: Colors.red,
-          label: 'Hand Message',
-          onTap: () => TestService.handMessage(),
+          label: 'Run It Twice Prompt',
+          onTap: () => TestService.runItTwicePrompt(),
         ),
+        // SpeedDialChild(
+        //   child: Icon(
+        //     Icons.adb_rounded,
+        //     color: Colors.white,
+        //   ),
+        //   backgroundColor: Colors.red,
+        //   label: 'Hand Message',
+        //   onTap: () => TestService.handMessage(),
+        // ),
         SpeedDialChild(
           child: Icon(
             Icons.adb_rounded,
@@ -121,7 +134,7 @@ class GamePlayScreenUtilMethods {
           ),
           backgroundColor: Colors.red,
           label: 'Flop',
-          onTap: () => TestService.flop(),
+          onTap: () => TestService.addFlopCards(),
         ),
         SpeedDialChild(
           child: Icon(

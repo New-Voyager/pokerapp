@@ -1,10 +1,42 @@
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
 
 enum MessageType {
   TEXT,
   HAND,
   GIPHY,
+}
+
+class SharedHandMsg {
+  /*
+    sharedHand {
+      handNum
+      gameCode
+      gameType
+      sharedByPlayerId
+      sharedByPlayerUuid
+      sharedByPlayerName
+      data
+    }
+    */
+  final int handNum;
+  final String gameCode;
+  final String gameTypeStr;
+  final int sharedByPlayerId;
+  final String sharedByPlayerUuid;
+  final String sharedByPlayerName;
+  final dynamic data;
+
+  SharedHandMsg(
+    this.handNum,
+    this.gameCode,
+    this.gameTypeStr,
+    this.sharedByPlayerId,
+    this.sharedByPlayerUuid,
+    this.sharedByPlayerName,
+    this.data,
+  );
 }
 
 class ClubMessageModel {
@@ -17,6 +49,8 @@ class ClubMessageModel {
   String giphyLink;
   String playerTags;
   int messageTimeInEpoc;
+  String sender;
+  SharedHandMsg sharedHand;
 
   ClubMessageModel({
     this.clubCode,
@@ -55,16 +89,27 @@ class ClubMessageModel {
     this.giphyLink = jsonData['giphyLink'];
     this.playerTags = jsonData['playerTags'];
     this.messageTimeInEpoc = jsonData['messageTimeInEpoc'];
+    this.sender = jsonData['sender'];
+
+    if (this.messageType == MessageType.HAND) {
+      dynamic sharedHand = jsonData['sharedHand'];
+      this.sharedHand = SharedHandMsg(
+        sharedHand['handNum'],
+        sharedHand['gameCode'],
+        sharedHand['gameType'],
+        sharedHand['sharedByPlayerId'],
+        sharedHand['sharedByPlayerUuid'],
+        sharedHand['sharedByPlayerName'],
+        sharedHand['data'],
+      );
+    }
   }
 
   // MUTATIONS
 
   Future<String> mutationSendClubMessage() async {
-    this.playerTags = await AuthService.getUuid();
-
     assert(this.clubCode != null);
     assert(this.messageType != null);
-    assert(this.playerTags != null);
 
     String messageType = '';
 
@@ -87,7 +132,6 @@ class ClubMessageModel {
       ${this.gameNum == null ? '' : 'gameNum: "${this.gameNum}"'}
       ${this.handNum == null ? '' : 'handNum: "${this.handNum}"'}
       ${this.giphyLink == null ? '' : 'giphyLink: "${this.giphyLink}"'}
-      playerTags: "${this.playerTags}",
     })
   }""";
   }
@@ -105,8 +149,17 @@ class ClubMessageModel {
       gameNum
       handNum
       giphyLink
+      sender
       playerTags
       messageTimeInEpoc
+      sharedHand {
+        handNum
+        gameCode
+        gameType
+        sharedByPlayerId
+        sharedByPlayerName
+        data
+      }
     }
   }""";
 

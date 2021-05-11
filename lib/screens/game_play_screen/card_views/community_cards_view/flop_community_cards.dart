@@ -16,9 +16,10 @@ import 'package:provider/provider.dart';
 
 class FlopCommunityCards extends StatefulWidget {
   final List<Widget> flopCards;
-
+  final int speed;
   FlopCommunityCards({
     @required this.flopCards,
+    @required this.speed,
   });
 
   @override
@@ -49,7 +50,9 @@ class _FlopCommunityCardsState extends State<FlopCommunityCards> {
       await _delay();
 
       /* do the flip animation */
-      _globalFlipKey.currentState.toggleCard();
+      if (_globalFlipKey.currentState != null) {
+        _globalFlipKey.currentState.toggleCard();
+      }
     });
   }
 
@@ -78,6 +81,7 @@ class _FlopCommunityCardsState extends State<FlopCommunityCards> {
       ),
       child: CustomFlipCard(
         cardBackAsset: cardBackAsset,
+        speed: widget.speed,
         onFlipDone: onFlipDone,
         globalKey: _globalFlipKey,
         cardWidget: widget.flopCards.last,

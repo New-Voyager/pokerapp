@@ -21,6 +21,8 @@ class GameInfoModel {
   String gameToken;
   String playerGameStatus;
   bool isHost;
+  bool playerMuckLosingHand;
+  bool playerRunItTwice;
 
   // nats channels
   String gameToPlayerChannel;
@@ -62,6 +64,9 @@ class GameInfoModel {
 
     this.gameToken = data['gameToken'];
     this.playerGameStatus = data['playerGameStatus'];
+    this.playerRunItTwice = data['playerRunItTwiceConfig'] ?? false;
+    this.playerMuckLosingHand = data['playerMuckLosingHandConfig'] ?? false;
+
     this.isHost = true;
     if (data['isHost'] != null) {
       this.isHost = data['isHost'];
@@ -114,6 +119,8 @@ class GameInfoModel {
       handToAllChannel
       handToPlayerChannel
       gameChatChannel
+      playerRunItTwiceConfig
+      playerMuckLosingHandConfig
     }
   } """;
 }

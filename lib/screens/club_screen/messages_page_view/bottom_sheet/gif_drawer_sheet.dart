@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/screens/game_play_screen/widgets/gif_list_widget.dart';
 import 'package:pokerapp/services/app/tenor_service.dart';
 import 'package:tenor/tenor.dart';
 
@@ -69,10 +70,9 @@ class _GifDrawerSheetState extends State<GifDrawerSheet> {
               onChanged: (String text) {
                 if (text.trim().isEmpty) return;
 
-                // if (_timer?.isActive ?? false) _timer.cancel();
+                if (_timer?.isActive ?? false) _timer.cancel();
 
                 _timer = Timer(const Duration(milliseconds: 800), () async {
-                  FocusScope.of(context).unfocus();
                   await _fetchGifs(query: text.trim());
                 });
               },
@@ -92,49 +92,24 @@ class _GifDrawerSheetState extends State<GifDrawerSheet> {
             ),
           ),
 
+          /* divider */
+          const SizedBox(
+            height: 10.0,
+          ),
+
           /* GIFs */
           Expanded(
             child: _isLoading == true
                 ? Center(
                     child: CircularProgressIndicator(),
                   )
-                : _gifs.isEmpty
-                    ? Center(
-                        child: Text(
-                          'Nothing Found',
-                          style: AppStyles.itemInfoSecondaryTextStyle,
-                        ),
-                      )
-                    : Padding(
-                        padding: const EdgeInsets.only(top: 10.0),
-                        child: GridView.count(
-                          crossAxisCount: 4,
-                          crossAxisSpacing: 10.0,
-                          mainAxisSpacing: 10.0,
-                          children: _gifs.map((TenorResult gif) {
-                            return GestureDetector(
-                              onTap: () =>
-                                  Navigator.pop(context, gif.media.gif.url),
-                              child: CachedNetworkImage(
-                                imageUrl: gif.media.tinygif.url,
-                                progressIndicatorBuilder:
-                                    (context, url, downloadProgress) => Center(
-                                  child: CircularProgressIndicator(
-                                    backgroundColor:
-                                        AppColors.cardBackgroundColor,
-                                    value: downloadProgress.progress,
-                                    valueColor:
-                                        new AlwaysStoppedAnimation<Color>(
-                                      AppColors.appAccentColor,
-                                    ),
-                                  ),
-                                ),
-                                fit: BoxFit.cover,
-                              ),
-                            );
-                          }).toList(),
-                        ),
-                      ),
+                : GifListWidget(
+                    gifs: _gifs,
+                    onGifSelect: (String gifUrl) => Navigator.pop(
+                      context,
+                      gifUrl,
+                    ),
+                  ),
           ),
         ],
       ),

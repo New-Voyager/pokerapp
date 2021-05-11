@@ -10,6 +10,8 @@ class ClubChatModel {
   final String giphyLink;
   final String playerTags;
   final int messageTimeInEpoc;
+  final String sender;
+  final SharedHandMsg sharedHand;
 
   bool isGroupLatest;
   bool isGroupFirst;
@@ -26,5 +28,7 @@ class ClubChatModel {
     this.playerTags,
     this.isGroupLatest,
     this.isGroupFirst,
+    this.sender,
+    this.sharedHand,
   });
 }

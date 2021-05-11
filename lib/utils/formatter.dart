@@ -25,6 +25,24 @@ class DataFormatter {
     return _dateFormatter.format(dt);
   }
 
+  static String timeFormatMMSS(
+    double timeLeft, {
+    bool hourReq = false,
+  }) {
+    final Duration duration = Duration(
+      seconds: timeLeft.toInt(),
+    );
+
+    String twoDigits(int n) => n.toString().padLeft(2, "0");
+    String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
+    String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
+    String twoDigitHours = twoDigits(duration.inHours);
+
+    if (hourReq) return '$twoDigitHours:$twoDigitMinutes:$twoDigitSeconds';
+
+    return '$twoDigitMinutes:$twoDigitSeconds';
+  }
+
   static String timeFormat(int timeInSecs) {
     if (timeInSecs < 60) {
       timeInSecs = 60;

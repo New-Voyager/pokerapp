@@ -10,7 +10,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/seat_change_mod
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
-import 'package:pokerapp/services/game_play/graphql/game_service.dart';
+import 'package:pokerapp/services/app/game_service.dart';
 import 'package:provider/provider.dart';
 
 class PlayerUpdateService {

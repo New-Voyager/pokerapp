@@ -1,3 +1,6 @@
+import 'dart:developer';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
@@ -21,6 +24,7 @@ class GameOptionsBottomSheet extends StatefulWidget {
 class _GameOptionsState extends State<GameOptionsBottomSheet> {
   double height, width;
   int selectedOptionIndex = 0;
+
   List<OptionItemModel> items = [
     OptionItemModel(image: "assets/images/casino.png", title: "Game"),
     OptionItemModel(name: "Live", title: "Live Games"),
@@ -51,26 +55,37 @@ class _GameOptionsState extends State<GameOptionsBottomSheet> {
               },
             ),
           ),
+
+          /* divider */
+          const SizedBox(height: 15.0),
+
+          /* build other options */
           Expanded(
             child: selectedOptionIndex == 0
-                ? GameOption(widget.gameState.gameCode, currentPlayer.uuid,
-                    currentPlayer.isAdmin())
+                ? GameOption(
+                    widget.gameState,
+                    widget.gameState.gameCode,
+                    currentPlayer.uuid,
+                    currentPlayer.isAdmin(),
+                  )
                 : selectedOptionIndex == 1
                     ? SingleChildScrollView(
                         child: FutureBuilder<List<GameModel>>(
-                            future: GameService.getLiveGames(),
-                            builder: (context, snapshot) {
-                              if (snapshot.connectionState ==
-                                  ConnectionState.done) {
-                                List<GameModel> allLiveGames = [];
-                                if (snapshot.data != null) {}
-                                allLiveGames = snapshot.data;
-                                return ClubGamesPageView(allLiveGames);
-                              }
-                              return Center(
-                                child: CircularProgressIndicator(),
-                              );
-                            }))
+                          future: GameService.getLiveGames(),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.done) {
+                              List<GameModel> allLiveGames = [];
+                              if (snapshot.data != null) {}
+                              allLiveGames = snapshot.data;
+                              return ClubGamesPageView(allLiveGames);
+                            }
+                            return Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          },
+                        ),
+                      )
                     : PendingApprovalsOption(),
           ),
         ],

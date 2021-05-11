@@ -10,6 +10,7 @@ import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/bet_widget.dart';
+import 'package:pokerapp/services/game_play/action_services/hand_action_service.dart';
 import 'package:provider/provider.dart';
 
 const shrinkedBox = const SizedBox.shrink(
@@ -108,6 +109,11 @@ class _FooterActionViewState extends State<FooterActionView> {
   * */
   void _actionTaken(BuildContext context) {
     assert(context != null);
+
+    /* close the card overlay widget */
+    widget.isBetWidgetVisible?.call(false);
+
+    /* finally change the state to no more allow user to take action */
     final gameState = Provider.of<GameState>(context, listen: false);
     gameState.showAction(context, false);
   }
@@ -118,23 +124,12 @@ class _FooterActionViewState extends State<FooterActionView> {
     BuildContext context,
     String action,
     int amount,
-  }) async {
-    assert(context != null);
-    assert(action != null);
-
-    final gameState = Provider.of<GameState>(context, listen: false);
-    final actionState = gameState.getActionState(context);
-    final handInfo = gameState.getHandInfo(context);
-    final gameContextObject = Provider.of<GameContextObject>(
-      context,
-      listen: false,
-    );
-
-    // get current hand number
-    int handNum = handInfo.handNum;
-    widget.gameContext.handActionService.playerActed(gameContextObject.playerId,
-        handNum, actionState.action.seatNo, action, amount);
-  }
+  }) =>
+      HandActionService.takeAction(
+        context: context,
+        action: action,
+        amount: amount,
+      );
 
   /* These utility function actually takes actions */
 

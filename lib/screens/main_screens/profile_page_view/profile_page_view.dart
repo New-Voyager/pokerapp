@@ -11,6 +11,7 @@ import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
 import 'package:pokerapp/utils/numeric_keyboard.dart';
+import 'package:pokerapp/widgets/run_it_twice_dialog.dart';
 
 class ProfilePageView extends StatefulWidget {
   @override
@@ -47,6 +48,15 @@ class _ProfilePageViewState extends State<ProfilePageView> {
           Spacer(),
 
           Container(width: 150, height: 100, child: plateWidget),
+
+          ElevatedButton(
+            child: Text('Prompt Run it twice'),
+            onPressed: () async {
+              RunItTwiceDialog.promptRunItTwice(
+                context: context,
+              );
+            },
+          ),
 
           //SvgWidget(),
           Spacer(),

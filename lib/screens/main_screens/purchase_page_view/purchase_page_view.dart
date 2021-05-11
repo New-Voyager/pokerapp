@@ -15,21 +15,23 @@ class _PurchasePageViewState extends State<PurchasePageView> {
     //return Text("Purchase Page View", style:TextStyle(color: Colors.white),);
 
     return Scaffold(
-          /* FIXME: THIS FLOATING ACTION BUTTON IS FOR SHOWING THE TESTS */
-          floatingActionButton: floatingActionButton(
-            onReload: () {}, context: context
-          ),
-          resizeToAvoidBottomInset: false,
-          backgroundColor: Colors.black,
-          body: Builder(
-            builder: (_) {
-              return Text("Purchase Page View", style:TextStyle(color: Colors.white),);
-            },
-          ),
-        );
+      /* FIXME: THIS FLOATING ACTION BUTTON IS FOR SHOWING THE TESTS */
+      floatingActionButton:
+          floatingActionButton(onReload: () {}, context: context),
+      resizeToAvoidBottomInset: false,
+      backgroundColor: Colors.black,
+      body: Builder(
+        builder: (_) {
+          return Text(
+            "Purchase Page View",
+            style: TextStyle(color: Colors.white),
+          );
+        },
+      ),
+    );
   }
 
- /* THIS SPEED DIAL IS JUST FOR SHOWING THE TEST BUTTONS */
+  /* THIS SPEED DIAL IS JUST FOR SHOWING THE TEST BUTTONS */
   static SpeedDial floatingActionButton({
     Function onReload,
     BuildContext context,
@@ -42,19 +44,18 @@ class _PurchasePageViewState extends State<PurchasePageView> {
       icon: Icons.all_inclusive_rounded,
       children: [
         SpeedDialChild(
-          child: Icon(
-            Icons.adb_rounded,
-            color: Colors.white,
-          ),
-          backgroundColor: Colors.red,
-          label: 'Products',
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => MyApp2()),
-            );
-          }
-        ),        
+            child: Icon(
+              Icons.adb_rounded,
+              color: Colors.white,
+            ),
+            backgroundColor: Colors.red,
+            label: 'Products',
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => MyApp2()),
+              );
+            }),
         SpeedDialChild(
           child: Icon(
             Icons.adb_rounded,
@@ -67,6 +68,5 @@ class _PurchasePageViewState extends State<PurchasePageView> {
       ],
       backgroundColor: AppColors.appAccentColor,
     );
-  }  
+  }
 }
-

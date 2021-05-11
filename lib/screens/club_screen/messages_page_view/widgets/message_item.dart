@@ -1,9 +1,12 @@
+import 'dart:developer';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:pokerapp/models/auth_model.dart';
 import 'package:pokerapp/models/club_message_model.dart';
+import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/chat_time.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/chat_user_avatar.dart';
 
@@ -28,7 +31,7 @@ class MessageItem extends StatelessWidget {
   Widget build(BuildContext context) {
     /* ui */
 
-    final bool isMe = currentUser.uuid == messageModel.playerTags;
+    final bool isMe = currentUser.uuid == messageModel.sender;
 
     if (isMe) {
       return Row(
@@ -55,8 +58,8 @@ class MessageItem extends StatelessWidget {
   Widget _buildAvatar() {
     if (messageModel.isGroupLatest)
       return ChatUserAvatar(
-        name: players[messageModel.playerTags ?? ''] ?? 'Somebody',
-        userId: messageModel.playerTags ?? '',
+        name: players[messageModel.sender ?? ''] ?? 'Somebody',
+        userId: messageModel.sender ?? '',
       );
     return SizedBox();
   }
@@ -87,7 +90,74 @@ class MessageItem extends StatelessWidget {
     );
   }
 
+  Widget _buildSharedHand(bool isMe) {
+    final playerName = players[messageModel.sender ?? ''] ?? 'Somebody';
+    log('player: ${messageModel.sender} isMe: $isMe name: $playerName ${messageModel.text}');
+    String gameStr = messageModel.sharedHand.gameTypeStr;
+    if (gameStr == 'HOLDEM') {
+      gameStr = 'No Limit Holdem';
+    } else if (gameStr == 'PLO') {
+      gameStr = 'PLO';
+    } else if (gameStr == 'PLO_HILO') {
+      gameStr = 'PLO Hi-Lo';
+    } else if (gameStr == 'FIVE_CARD_PLO_HILO') {
+      gameStr = '5-Card Hi-Lo PLO';
+    } else if (gameStr == 'FIVE_CARD_PLO') {
+      gameStr = '5-Card PLO';
+    }
+
+    return Container(
+        margin: EdgeInsets.only(
+          right: isMe ? 0.0 : extraPadding,
+          left: isMe ? extraPadding : 0.0,
+        ),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(5.0),
+          color: isMe ? senderColor : receiverColor,
+        ),
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '$playerName shared a hand',
+                      style: AppStyles.hostInfoTextStyle,
+                    ),
+                    Text(
+                      gameStr,
+                      style: AppStyles.hostInfoTextStyle,
+                    ),
+                  ],
+                ),
+                Text('Replay')
+              ],
+            ),
+            SizedBox(height: 10),
+            Container(
+              height: 30,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(5.0),
+                color: Colors.black38,
+              ),
+            ),
+            SizedBox(height: 10),
+          ],
+        ));
+  }
+
   Widget _buildMessage(bool isMe) {
+    final playerName = players[messageModel.sender ?? ''] ?? 'Somebody';
+    log('player: ${messageModel.sender} isMe: $isMe name: $playerName ${messageModel.text}');
+    if (messageModel.messageType == MessageType.HAND) {
+      return _buildSharedHand(isMe);
+    }
+
     return Align(
       alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
       child: Container(
@@ -108,9 +178,7 @@ class MessageItem extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.all(3.0),
                 child: Text(
-                  isMe
-                      ? 'You'
-                      : players[messageModel.playerTags ?? ''] ?? 'Somebody',
+                  isMe ? 'You' : playerName,
                   style: TextStyle(
                     color: AppColors.appAccentColor,
                   ),

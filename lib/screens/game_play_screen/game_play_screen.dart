@@ -18,13 +18,13 @@ import 'package:pokerapp/screens/game_play_screen/main_views/header_view/header_
 import 'package:pokerapp/screens/game_play_screen/notifications/notifications.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/agora/agora.dart';
+import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/app/player_service.dart';
 import 'package:pokerapp/services/game_play/action_services/game_action_service/game_action_service.dart';
 import 'package:pokerapp/services/game_play/action_services/game_action_service/util_action_services.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_service.dart';
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
-import 'package:pokerapp/services/game_play/graphql/game_service.dart';
 import 'package:pokerapp/services/game_play/utils/audio_buffer.dart';
 import 'package:pokerapp/services/nats/nats.dart';
 import 'package:pokerapp/services/test/test_service.dart';
@@ -157,6 +157,14 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       playerToHandChannel: _gameInfoModel.playerToHandChannel,
       gameChatChannel: _gameInfoModel.gameChatChannel,
     );
+
+    if (!TestService.isTesting) {
+      // subscribe the NATs channels
+      final natsClient = Provider.of<Nats>(context, listen: false);
+
+      log('natsClient: $natsClient');
+      await gameComService.init(natsClient);
+    }
 
     _gameState = GameState();
     _gameState.initialize(

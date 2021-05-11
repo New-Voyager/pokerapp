@@ -7,10 +7,10 @@ class NewGameModelProvider extends ChangeNotifier {
   /* This object holds new game settings */
   NewGameModel settings;
   String clubCode;
-  List<String> actionTimes = new List<String>();
-  List<String> gameTypes = new List<String>();
-  List<String> gameLengths = new List<String>();
-  List<Rewards> rewards = new List<Rewards>();
+  List<String> actionTimes = [];
+  List<String> gameTypes = [];
+  List<String> gameLengths = [];
+  List<Rewards> rewards = [];
 
   NewGameModelProvider(String clubCode) {
     settings = NewGameModel.withDefault(clubCode);
@@ -232,12 +232,6 @@ class NewGameModelProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  get dontShowLosingHand => settings.dontShowLosingHand;
-  set dontShowLosingHand(bool value) {
-    settings.dontShowLosingHand = value;
-    notifyListeners();
-  }
-
   get runItTwice => settings.runItTwice;
   set runItTwice(bool value) {
     settings.runItTwice = value;
@@ -259,6 +253,12 @@ class NewGameModelProvider extends ChangeNotifier {
   get botGame => settings.botGame;
   set botGame(bool value) {
     settings.botGame = value;
+    notifyListeners();
+  }
+
+  get muckLosingHand => settings.muckLosingHand;
+  set muckLosingHand(bool value) {
+    settings.muckLosingHand = value;
     notifyListeners();
   }
 }

@@ -158,6 +158,12 @@ class Players extends ChangeNotifier {
     for (int i = 0; i < _players.length; i++) _players[i].highlight = false;
   }
 
+  void unHighlightCardsSilentForAll() {
+    for (int i = 0; i < _players.length; i++) {
+      _players[i].highlightCards = [];
+    }
+  }
+
   void highlightCardsSilent({int seatNo, List<int> cards}) {
     int idx = _players.indexWhere((p) => p.seatNo == seatNo);
     _players[idx].highlightCards = cards;
@@ -167,6 +173,7 @@ class Players extends ChangeNotifier {
     _players[idx].status = status;
   }
 
+  // TODO: WE DONT NEED THIS METHOD
   void updateStackBulkSilent(var stackData) {
     Map<int, int> stacks = Map<int, int>();
 
@@ -181,7 +188,11 @@ class Players extends ChangeNotifier {
     });
   }
 
-  void updateStackWithValueSilent(int idx, int newStack) {
+  void updateStackWithValueSilent(int seatNo, int newStack) {
+    int idx = _players.indexWhere((p) => p.seatNo == seatNo);
+    if (idx == -1) {
+      return;
+    }
     _players[idx].stack = newStack;
   }
 
@@ -218,6 +229,11 @@ class Players extends ChangeNotifier {
       }
     }
   }
+
+  PlayerModel getPlayerBySeat(int seatNo) => _players.firstWhere(
+        (p) => p.seatNo == seatNo,
+        orElse: null,
+      );
 
   void removeCardsFromAllSilent() {
     for (int i = 0; i < _players.length; i++) _players[i].noOfCardsVisible = 0;

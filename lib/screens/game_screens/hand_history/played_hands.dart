@@ -299,16 +299,35 @@ class PlayedHandsScreen extends StatelessWidget {
                           widget,
                         ],
                       ),
-                      Visibility(
-                        visible: true,
-                        child: Container(
-                          alignment: Alignment.bottomRight,
-                          child: Icon(
-                            Icons.star,
-                            color: Colors.amber,
-                            size: 12,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          InkWell(
+                            onTap: () async {
+                              await _shareHandWithClub(context, index);
+                            },
+                            child: Container(
+                              alignment: Alignment.bottomRight,
+                              child: Icon(
+                                Icons.share,
+                                color: Color(0xff319ffe),
+                                size: 24,
+                              ),
+                            ),
                           ),
-                        ),
+                          SizedBox(width: 20),
+                          InkWell(
+                            onTap: () {},
+                            child: Container(
+                              alignment: Alignment.bottomRight,
+                              child: Icon(
+                                Icons.star_outline,
+                                color: Color(0xff319ffe),
+                                size: 24,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),

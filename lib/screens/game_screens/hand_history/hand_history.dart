@@ -84,7 +84,7 @@ class _HandHistoryState extends State<HandHistoryListView>
               ),
             ),
             Text(
-              "Gane code: " + widget.data.gameCode,
+              "Game code: " + widget.data.gameCode,
               style: const TextStyle(
                 fontFamily: AppAssets.fontFamilyLato,
                 color: AppColors.lightGrayTextColor,
