@@ -5,6 +5,19 @@ import 'package:pokerapp/resources/app_assets.dart';
 import 'app_colors.dart';
 
 class AppStyles {
+  static const playerNameTextStyle = const TextStyle(
+    fontFamily: AppAssets.fontFamilyLato,
+    color: Colors.white,
+    fontSize: 14.0,
+    fontWeight: FontWeight.w600,
+  );
+  static const boldTitleTextStyle = TextStyle(
+    fontFamily: AppAssets.fontFamilyLato,
+    color: Colors.white,
+    fontSize: 22.0,
+    fontWeight: FontWeight.w900,
+  );
+
   static const othersMessageDecoration = BoxDecoration(
     color: AppColors.cardBackgroundColor,
     borderRadius: BorderRadius.only(

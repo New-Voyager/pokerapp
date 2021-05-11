@@ -4,9 +4,9 @@ import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_log_view.dart';
 
 class LastHandAnalyseBottomSheet extends StatefulWidget {
-  final HandLogModel handLogModel;
+  final String gameCode;
   final String clubCode;
-  LastHandAnalyseBottomSheet({this.handLogModel, this.clubCode});
+  LastHandAnalyseBottomSheet({this.gameCode, this.clubCode});
   @override
   _LastHandAnalyseBottomSheetState createState() =>
       _LastHandAnalyseBottomSheetState();
@@ -31,7 +31,8 @@ class _LastHandAnalyseBottomSheetState
               ),
               Expanded(
                 child: HandLogView(
-                  widget.handLogModel,
+                  widget.gameCode,
+                  -1, // for last hand we pass -1
                   isAppbarWithHandNumber: true,
                   clubCode: widget.clubCode,
                 ),

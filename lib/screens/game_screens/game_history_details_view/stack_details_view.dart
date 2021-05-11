@@ -196,9 +196,9 @@ class _PointsLineChart extends State<PointsLineChart> {
       left: x,
       child: InkWell(
         onTap: () {
-          HandLogModel handLogModel = HandLogModel("CG-7OF3IOXKBWJLDD", 1);
+          //HandLogModel handLogModel = HandLogModel("CG-7OF3IOXKBWJLDD", 1);
           Navigator.pushNamed(context, Routes.hand_log_view,
-              arguments: handLogModel);
+              arguments: {"gameCode": "CG-7OF3IOXKBWJLDD", "handNum": 1});
         },
         child: Container(
           padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),

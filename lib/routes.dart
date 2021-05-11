@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/hand_log_model_new.dart';
 import 'package:pokerapp/screens/game_screens/game_history_details_view/stack_details_view.dart';
 import 'package:provider/provider.dart';
 
@@ -232,10 +233,10 @@ class Routes {
         );
 
       case hand_log_view:
-        var model = settings.arguments as HandLogModel;
+        var args = settings.arguments as dynamic;
         return _getPageRoute(
           routeName: settings.name,
-          viewToShow: HandLogView(model),
+          viewToShow: HandLogView(args['gameCode'], args['handNum']),
         );
 
       case rewards_list:

@@ -5,10 +5,10 @@ class HandLogModel {
   String gameCode;
   int handNumber = -1;
   Duration handDuration;
-  List<int> communityCards = new List<int>();
-  List<int> yourcards = new List<int>();
+  List<int> communityCards = [];
+  List<int> yourcards = [];
   GameStages gameWonAt;
-  List<PotWinnerDetailsModel> potWinners = new List<PotWinnerDetailsModel>();
+  List<PotWinnerDetailsModel> potWinners = [];
   HandStageModel preFlopActions, flopActions, turnActions, riverActions;
   String unknownString = "u/k";
   int unknownInt = 0;
@@ -82,7 +82,7 @@ class HandLogModel {
     }
 
     // see whether the player was in this hand or not
-    potWinners = new List<PotWinnerDetailsModel>();
+    potWinners = [];
     for (dynamic key in potDetailsJson.keys) {
       potWinners.add(PotWinnerDetailsModel.fromJson(
           key, potDetailsJson[key], playersJson));
@@ -91,8 +91,8 @@ class HandLogModel {
     if (data["handLog"]["preflopActions"] != null) {
       var preFlopJson = data["handLog"]["preflopActions"] ??
           data["handLog"]["preflopActions"];
-      preFlopActions = HandStageModel.fromJson(this.playerIDName, "Pre-flop",
-          preFlopJson, new List<int>(), playersJson);
+      preFlopActions = HandStageModel.fromJson(
+          this.playerIDName, "Pre-flop", preFlopJson, [], playersJson);
     }
 
     if (data["handLog"]["flopActions"] != null) {
@@ -123,10 +123,10 @@ class HandLogModel {
   }
 
   // HandLogModel.fromJson(var jsonData) {
-  //   //gameId = jsonData["gameId"] == null ? unknownString : jsonData["gameId"];
-  //
-  //   //handNumber = jsonData["handNum"] == null ? 0 : jsonData["handNum"];
-  //
+  //   gameCode = jsonData["gameId"] == null ? unknownString : jsonData["gameId"];
+
+  //   handNumber = jsonData["handNum"] == null ? 0 : jsonData["handNum"];
+
   // }
 }
 

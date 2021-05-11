@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter_udid/flutter_udid.dart';
 import 'package:http/http.dart' as http;
@@ -154,6 +155,8 @@ class AuthService {
       authModel.uuid = await fetchUUID();
     }
     playerUuid = authModel.uuid;
+
+    log("PLAYER UUID : $playerUuid");
 
     return {
       'status': await _save(authModel),

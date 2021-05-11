@@ -160,13 +160,12 @@ class _GameOptionState extends State<GameOption> {
         image: "assets/images/casino.png",
         backGroundColor: AppColors.gameOption4,
         onTap: (context) async {
-          HandLogModel handLogModel = HandLogModel(widget.gameCode, -1);
           await showModalBottomSheet(
             context: context,
             isScrollControlled: true,
             builder: (ctx) => Container(
               height: height / 2,
-              child: HandLogView(handLogModel),
+              child: HandLogView(widget.gameCode, -1),
             ),
           );
         },

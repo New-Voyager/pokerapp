@@ -1,53 +1,60 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:pokerapp/enums/game_stages.dart';
 import 'package:pokerapp/models/hand_log_model.dart';
+import 'package:pokerapp/models/hand_log_model_new.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_log_header_view.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_stage_view.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_winners_view.dart';
+import 'package:pokerapp/screens/club_screen/hand_log_views/handlog_action.dart';
+import 'package:pokerapp/screens/club_screen/hand_log_views/handlog_showdown.dart';
+import 'package:pokerapp/screens/club_screen/hand_log_views/handlog_summary.dart';
 import 'package:pokerapp/services/app/hand_service.dart';
 
 class HandLogView extends StatefulWidget {
-  HandLogModel _handLogModel;
+  final String gameCode;
   bool isAppbarWithHandNumber;
   final String clubCode;
-  HandLogView(this._handLogModel,
+  final int handNum;
+  HandLogView(this.gameCode, this.handNum,
       {this.isAppbarWithHandNumber = false, this.clubCode});
 
   @override
-  State<StatefulWidget> createState() => _HandLogViewState(_handLogModel);
+  State<StatefulWidget> createState() => _HandLogViewState();
 }
 
 class _HandLogViewState extends State<HandLogView> {
-  HandLogModel _handLogModel;
+  HandLogModelNew _handLogModel;
   bool _isLoading = true;
   var handLogjson;
 
-  _HandLogViewState(this._handLogModel);
-
-  initState() {
+  @override
+  void initState() {
     super.initState();
-    _fetchData();
+    //_fetchData();
+    loadJsonData();
   }
 
   void _fetchData() async {
-    await HandService.getHandLog(_handLogModel);
-    _isLoading = false;
-    setState(() {
-      // update ui
-    });
+    // await HandService.getHandLog(_handLogModel);
+    // _isLoading = false;
+    // setState(() {
+    //   // update ui
+    // });
   }
 
   loadJsonData() async {
-    // String data = await DefaultAssetBundle.of(context)
-    //     .loadString("assets/sample-data/handlog.json");
-    // final jsonResult = json.decode(data);
-    //
+    String data = await DefaultAssetBundle.of(context).loadString(
+        "assets/sample-data/handlog/plo-hilo/one-hi-lo-winner.json");
+
+    final jsonResult = json.decode(data);
+    _handLogModel = HandLogModelNew.fromJson(jsonResult);
+
     setState(() {
-      //_handLogModel = HandLogModel.fromJson(jsonResult);
       _isLoading = false;
     });
   }
@@ -56,28 +63,25 @@ class _HandLogViewState extends State<HandLogView> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.screenBackgroundColor,
-      appBar: widget.isAppbarWithHandNumber
-          ? PreferredSize(
-              preferredSize: Size(0, 0),
-              child: Container(),
-            )
-          : AppBar(
-              leading: IconButton(
-                icon: Icon(
-                  Icons.arrow_back_ios,
-                  size: 14,
-                  color: AppColors.appAccentColor,
-                ),
-                onPressed: () => Navigator.of(context).pop(),
-              ),
-              titleSpacing: 0,
-              elevation: 0.0,
-              backgroundColor: AppColors.screenBackgroundColor,
-              title: Text(
-                "Hand History",
-                style: AppStyles.titleBarTextStyle,
-              ),
-            ),
+      appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back_ios,
+            size: 14,
+            color: AppColors.appAccentColor,
+          ),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        titleSpacing: 0,
+        elevation: 0.0,
+        backgroundColor: AppColors.screenBackgroundColor,
+        title: Text(
+          widget.isAppbarWithHandNumber
+              ? "Hand Log #" + widget.handNum.toString()
+              : "Last Hand Log",
+          style: AppStyles.titleBarTextStyle,
+        ),
+      ),
       body: this._isLoading == true
           ? Center(
               child: CircularProgressIndicator(),
@@ -85,7 +89,7 @@ class _HandLogViewState extends State<HandLogView> {
           : SingleChildScrollView(
               child: Column(
                 children: [
-                  Container(
+                  /*  Container(
                     margin:
                         EdgeInsets.only(left: 10, top: 5, bottom: 5, right: 10),
                     alignment: widget.isAppbarWithHandNumber
@@ -102,7 +106,7 @@ class _HandLogViewState extends State<HandLogView> {
                         fontWeight: FontWeight.w900,
                       ),
                     ),
-                  ),
+                  ), */
                   Container(
                     padding: EdgeInsets.symmetric(vertical: 5),
                     child: Row(
@@ -116,8 +120,8 @@ class _HandLogViewState extends State<HandLogView> {
                                     onTap: () {
                                       // todo : just change to shareHand and pass club code as well
                                       HandService.bookMarkHand(
-                                        _handLogModel.gameCode,
-                                        _handLogModel.handNumber,
+                                        _handLogModel.hand.gameId,
+                                        _handLogModel.hand.handNum,
                                       );
                                     },
                                     child: Container(
@@ -142,8 +146,8 @@ class _HandLogViewState extends State<HandLogView> {
                         GestureDetector(
                           onTap: () {
                             HandService.bookMarkHand(
-                              _handLogModel.gameCode,
-                              _handLogModel.handNumber,
+                              _handLogModel.hand.gameId,
+                              _handLogModel.hand.handNum,
                             );
                           },
                           child: Container(
@@ -167,31 +171,33 @@ class _HandLogViewState extends State<HandLogView> {
                     margin:
                         EdgeInsets.only(left: 10, top: 5, bottom: 5, right: 10),
                     alignment: Alignment.centerLeft,
-                    child: Text(
-                      "Winners",
-                      style: const TextStyle(
-                        fontFamily: AppAssets.fontFamilyLato,
-                        color: Colors.white,
-                        fontSize: 22.0,
-                        fontWeight: FontWeight.w900,
-                      ),
-                    ),
+                    // child: Text(
+                    //   "Winners",
+                    //   style: AppStyles.boldTitleTextStyle,
+                    // ),
                   ),
-                  Container(
-                    child: HandWinnersView(_handLogModel),
+                  HandWinnersView(_handLogModel),
+                  HandStageView(
+                    handLogModel: _handLogModel,
+                    stageEnum: GameStages.PREFLOP,
                   ),
-                  /* Container(
-                    child: HandStageView(_handLogModel.preFlopActions),
+                  HandStageView(
+                    handLogModel: _handLogModel,
+                    stageEnum: GameStages.FLOP,
                   ),
-                  Container(
-                    child: HandStageView(_handLogModel.flopActions),
+                  HandStageView(
+                    handLogModel: _handLogModel,
+                    stageEnum: GameStages.TURN,
                   ),
-                  Container(
-                    child: HandStageView(_handLogModel.turnActions),
+                  HandStageView(
+                    handLogModel: _handLogModel,
+                    stageEnum: GameStages.RIVER,
                   ),
-                  Container(
-                    child: HandStageView(_handLogModel.riverActions),
-                  ), */
+                  HandlogShowDown(
+                    handLogModel: _handLogModel,
+                  ),
+                  HandLogActionView(handLogModel: _handLogModel),
+                  HandlogSummary(handlogModel: _handLogModel),
                 ],
               ),
             ),

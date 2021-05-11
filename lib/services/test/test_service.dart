@@ -651,4 +651,15 @@ class TestService {
       );
     }
   }
+
+  static void handlogView() {
+    navigatorKey.currentState.pushNamed(
+      Routes.hand_log_view,
+      arguments: {
+        'gameCode': 'CG-7OF3IOXKBWJLDD',
+        'handNum': 1,
+        'isTest': true,
+      },
+    );
+  }
 }
