@@ -53,7 +53,7 @@ class _HandLogViewState extends State<HandLogView> {
 
   loadJsonData() async {
     String data = await DefaultAssetBundle.of(context).loadString(
-        "assets/sample-data/handlog/plo-hilo/one-hi-lo-winner.json");
+        "assets/sample-data/handlog/plo-hilo/two-hi-two-lo-winners.json");
 
     final jsonResult = json.decode(data);
     _handLogModel = HandLogModelNew.fromJson(jsonResult);
@@ -201,6 +201,7 @@ class _HandLogViewState extends State<HandLogView> {
                     handLogModel: _handLogModel,
                   ),
                   HandLogActionView(handLogModel: _handLogModel),
+                  SizedBox(height: 20),
                   HandlogSummary(handlogModel: _handLogModel),
                 ],
               ),
