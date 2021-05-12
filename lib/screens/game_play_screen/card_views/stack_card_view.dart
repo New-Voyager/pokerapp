@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
-import 'package:pokerapp/widgets/card_view.dart';
+import 'package:pokerapp/widgets/cards/card_view.dart';
+import 'package:pokerapp/widgets/card_view_old.dart';
 
 class StackCardView extends StatelessWidget {
   final List<CardObject> cards;
@@ -24,9 +25,14 @@ class StackCardView extends StatelessWidget {
           : cards.reversed
               .toList()
               .map(
-                (c) => deactivated
-                    ? CardView(card: c, grayOut: true)
-                    : CardView(card: c),
+                (CardObject c) {
+                  if (deactivated) {
+                    c.dim = true;
+                    return c.widget;
+                  } else {
+                    return c.widget;
+                  }
+                },
               )
               .toList()
               .reversed

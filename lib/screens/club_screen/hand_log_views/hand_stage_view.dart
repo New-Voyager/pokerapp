@@ -11,7 +11,7 @@ import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_log_header_view.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_stage_header.dart';
 import 'package:pokerapp/utils/card_helper.dart';
-import 'package:pokerapp/widgets/card_view.dart';
+import 'package:pokerapp/widgets/card_view_old.dart';
 
 const sbTextStyle = TextStyle(
   fontFamily: AppAssets.fontFamilyLato,

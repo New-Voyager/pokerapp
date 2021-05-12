@@ -9,7 +9,7 @@ import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_log_view.dart';
 import 'package:pokerapp/services/app/hand_service.dart';
 import 'package:pokerapp/utils/formatter.dart';
-import 'package:pokerapp/widgets/card_view.dart';
+import 'package:pokerapp/widgets/card_view_old.dart';
 
 final _separator = SizedBox(
   height: 10.0,
@@ -367,13 +367,21 @@ class WinnerWidget extends StatelessWidget {
 
   List<Widget> getCommunityCards() {
     List<Widget> communityCards = [
-      CommunityCardWidget(item.community, true),
+      NonGameScreenCommunityCardWidget(
+        cards: item.community,
+        show: true,
+      ),
       SizedBox(
         height: 5,
       ),
     ];
     if (item.community1 != null && item.community1.length > 0) {
-      communityCards.add(CommunityCardWidget(item.community, true));
+      communityCards.add(
+        NonGameScreenCommunityCardWidget(
+          cards: item.community,
+          show: true,
+        ),
+      );
     }
     return communityCards;
   }

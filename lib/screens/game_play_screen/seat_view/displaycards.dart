@@ -15,33 +15,36 @@ class DisplayCardsWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool showDown = this.status == FooterStatus.Result;
+    final seatPlayerCards = seat.player.cards;
 
     return Container(
       height: 19.50 * 3,
       child: AnimatedSwitcher(
         duration: AppConstants.fastAnimationDuration,
-        child: showDown &&
-                (seat.player.cards != null && seat.player.cards.isNotEmpty)
-            ? Transform.scale(
-                scale: 0.70,
-                child: StackCardView(
-                  cards: seat.player.cards?.map<CardObject>(
-                        (int c) {
-                          List<int> highlightedCards =
-                              seat.player.highlightCards;
-                          CardObject card = CardHelper.getCard(c);
+        child:
+            showDown && (seatPlayerCards != null && seatPlayerCards.isNotEmpty)
+                ? Transform.scale(
+                    scale: 0.70, // fixme: WHAT IS THIS scale used for?
+                    child: StackCardView(
+                      cards: seat.player.cards?.map<CardObject>(
+                            (int c) {
+                              List<int> highlightedCards =
+                                  seat.player.highlightCards;
+                              CardObject card = CardHelper.getCard(c);
 
-                          card.smaller = true;
-                          if (highlightedCards?.contains(c) ?? false)
-                            card.highlight = true;
+                              /* we use a small card type for display cards */
+                              card.cardType = CardType.Small;
 
-                          return card;
-                        },
-                      )?.toList() ??
-                      [],
-                ),
-              )
-            : SizedBox.shrink(),
+                              if (highlightedCards?.contains(c) ?? false)
+                                card.highlight = true;
+
+                              return card;
+                            },
+                          )?.toList() ??
+                          [],
+                    ),
+                  )
+                : SizedBox.shrink(),
       ),
     );
   }

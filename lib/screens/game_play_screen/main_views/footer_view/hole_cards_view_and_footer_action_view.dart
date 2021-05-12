@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
@@ -7,7 +5,6 @@ import 'package:pokerapp/models/game_play_models/provider_models/game_context.da
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/resources/app_constants.dart';
-import 'package:pokerapp/screens/game_play_screen/card_views/hole_stack_card_view.dart';
 import 'package:pokerapp/screens/game_play_screen/card_views/hole_stack_card_view_2.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:provider/provider.dart';
@@ -118,7 +115,7 @@ class _HoleCardsViewAndFooterActionViewState
     final List<CardObject> cards = cardsInt?.map(
           (int c) {
             CardObject card = CardHelper.getCard(c);
-            card.smaller = true;
+            card.cardType = CardType.Small;
             card.cardFace = CardFace.FRONT;
             return card;
           },

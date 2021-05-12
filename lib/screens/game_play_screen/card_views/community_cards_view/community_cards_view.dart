@@ -11,7 +11,7 @@ import 'package:pokerapp/screens/game_play_screen/card_views/community_cards_vie
 import 'package:pokerapp/screens/game_play_screen/card_views/community_cards_view/turn_or_river_community_cards.dart';
 import 'package:pokerapp/screens/game_play_screen/card_views/visible_card_view.dart';
 import 'package:pokerapp/utils/card_helper.dart';
-import 'package:pokerapp/widgets/card_view.dart';
+import 'package:pokerapp/widgets/card_view_old.dart';
 import 'package:provider/provider.dart';
 import 'package:pokerapp/resources/card_back_assets.dart';
 
