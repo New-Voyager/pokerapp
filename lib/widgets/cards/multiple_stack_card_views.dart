@@ -1,18 +1,52 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 
-final cardBackImage = new Image(
-  image: AssetImage('assets/images/card_back/set2/Asset 6.png'),
-);
+class StackCardView extends StatelessWidget {
+  final List<CardObject> cards;
+  final bool deactivated;
+  final bool horizontal;
+
+  StackCardView({
+    @required this.cards,
+    this.deactivated = false,
+    this.horizontal = true,
+  });
+
+  List<Widget> _buildChildren() {
+    List<Widget> _children = [];
+
+    cards.forEach((CardObject card) {
+      if (deactivated) card.dim = true;
+
+      _children.add(card.widget);
+      _children.add(const SizedBox(width: 2.0));
+    });
+
+    return _children;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (cards == null) return const SizedBox.shrink();
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: cards.isEmpty ? [SizedBox.shrink()] : _buildChildren(),
+    );
+  }
+}
 
 class CardsView extends StatelessWidget {
   final List<int> cards;
   final bool show;
   final bool needToShowEmptyCards;
 
-  CardsView({this.cards, this.show, this.needToShowEmptyCards});
+  CardsView({
+    this.cards,
+    this.show,
+    this.needToShowEmptyCards,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -128,8 +162,6 @@ class HighlightedCardsView extends StatelessWidget {
   }
 }
 
-/* FIXME: THIS COMMUNITY CARD WIDGET IS SHOWN IN RESULT VIEW OR HAND LOG VIEW, THIS IS NOT THE
-* FIXME: MAIN WIDGET SHOWN IN THE TABLE CENTER */
 class NonGameScreenCommunityCardWidget extends StatelessWidget {
   final List<int> cards;
   final bool show;

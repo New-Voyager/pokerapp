@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_stages.dart';
-import 'package:pokerapp/models/hand_log_model.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
-import 'package:pokerapp/widgets/cards/card_view_old.dart';
+import 'package:pokerapp/widgets/cards/multiple_stack_card_views.dart';
 
 class HandWinnersView extends StatelessWidget {
   final HandLogModelNew _handLogModel;

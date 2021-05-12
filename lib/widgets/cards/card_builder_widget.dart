@@ -24,6 +24,26 @@ class CardBuilderWidget extends StatelessWidget {
             isCardVisible != null &&
             cardBuilder != null);
 
+  /* this method returns the correct RATIO for a particular CARD TYPE */
+  double _getCardRatioFromCardType() {
+    switch (card.cardType) {
+      case CardType.CommunityCard:
+        return 1.0;
+
+      case CardType.HoleCard:
+        return 2.9;
+
+      case CardType.PlayerCard:
+        return 1.2;
+
+      case CardType.HandLogOrHandHistoryCard:
+        return 0.80;
+
+      default:
+        return 1.0;
+    }
+  }
+
   // TODO: WE NEED TO CHANGE THE WAY WE HIGHLIGHT CARDS
 
   @override
@@ -58,22 +78,7 @@ class CardBuilderWidget extends StatelessWidget {
       color: card.color,
     );
 
-    double _ratio = 1.0;
-
-    switch (card.cardType) {
-      case CardType.CommunityCard:
-        _ratio = 1.0;
-        break;
-      case CardType.HoleCard:
-        _ratio = 2.9;
-        break;
-      case CardType.PlayerCard:
-        _ratio = 1.2;
-        break;
-      case CardType.HandLogOrHandHistoryCard:
-        _ratio = 0.80;
-        break;
-    }
+    double _ratio = _getCardRatioFromCardType();
 
     Widget cardWidget = Container(
       height: AppDimensions.cardHeight * _ratio,

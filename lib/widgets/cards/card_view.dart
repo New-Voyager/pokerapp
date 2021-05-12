@@ -26,7 +26,7 @@ class CardView extends StatelessWidget {
             flex: 7,
             child: FittedBox(
               child: Text(
-                card.label == 'T' ? '10' : card.label,
+                card.label == 'T' ? '10' : card.label ?? 'X',
                 style: cardTextStyle,
                 textAlign: TextAlign.center,
               ),
