@@ -4,7 +4,7 @@ import 'package:pokerapp/models/hand_log_model.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
-import 'package:pokerapp/widgets/card_view_old.dart';
+import 'package:pokerapp/widgets/cards/card_view_old.dart';
 
 class HandLogHeaderView extends StatelessWidget {
   final HandLogModelNew _handLogModel;

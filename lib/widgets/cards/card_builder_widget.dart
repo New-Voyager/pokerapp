@@ -9,12 +9,16 @@ class CardBuilderWidget extends StatelessWidget {
   final bool isCardVisible;
   final Function cardBuilder;
   final bool dim;
+  final bool shadow;
+  final double roundRadius;
 
   CardBuilderWidget({
     @required this.card,
     @required this.dim,
     @required this.isCardVisible,
     @required Widget this.cardBuilder(TextStyle _, TextStyle __),
+    this.shadow = false,
+    this.roundRadius = 5.0,
   }) : assert(card != null &&
             dim != null &&
             isCardVisible != null &&
@@ -64,7 +68,7 @@ class CardBuilderWidget extends StatelessWidget {
         _ratio = 2.9;
         break;
       case CardType.PlayerCard:
-        _ratio = 0.50;
+        _ratio = 1.2;
         break;
       case CardType.HandLogOrHandHistoryCard:
         _ratio = 0.80;
@@ -81,14 +85,18 @@ class CardBuilderWidget extends StatelessWidget {
             )
           : null,
       decoration: BoxDecoration(
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.20),
-            blurRadius: 20.0,
-            spreadRadius: 10.0,
-          ),
-        ],
-        borderRadius: BorderRadius.all(Radius.circular(5)),
+        boxShadow: shadow
+            ? [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.20),
+                  blurRadius: 20.0,
+                  spreadRadius: 10.0,
+                ),
+              ]
+            : [],
+        borderRadius: BorderRadius.all(
+          Radius.circular(roundRadius),
+        ),
         color: highlight ? highlightColor : Colors.white,
       ),
       child: isCardVisible

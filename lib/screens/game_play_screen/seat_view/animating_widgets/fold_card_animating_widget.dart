@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/resources/app_constants.dart';
-import 'package:pokerapp/screens/game_play_screen/card_views/hidden_card_view.dart';
+import 'package:pokerapp/widgets/cards/hidden_card_view.dart';
 
 const Map<int, Offset> offsetMapping = {
   1: Offset(20, -140),

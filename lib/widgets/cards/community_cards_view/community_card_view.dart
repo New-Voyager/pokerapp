@@ -5,7 +5,7 @@
 * */
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
-import 'package:pokerapp/widgets/card_view_old.dart';
+import 'package:pokerapp/widgets/cards/card_view_old.dart';
 
 class CommunityCardView extends StatelessWidget {
   final CardObject card;

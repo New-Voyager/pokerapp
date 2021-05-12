@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/routes.dart';
-import 'package:pokerapp/screens/game_play_screen/card_views/stack_card_view.dart';
+import 'package:pokerapp/widgets/cards/stack_card_view.dart';
 import 'package:pokerapp/screens/util_screens/numeric_keyboard.dart';
 import 'package:pokerapp/screens/util_screens/replay_hand_screen/replay_hand_screen.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/plate_border.dart';

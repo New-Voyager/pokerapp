@@ -1,19 +1,11 @@
-import 'dart:developer';
-
-import 'package:flip_card/flip_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
-import 'package:pokerapp/resources/app_dimensions.dart';
-import 'package:pokerapp/screens/game_play_screen/card_views/community_cards_view/community_card_view.dart';
-import 'package:pokerapp/screens/game_play_screen/card_views/community_cards_view/flop_community_cards.dart';
-import 'package:pokerapp/screens/game_play_screen/card_views/community_cards_view/turn_or_river_community_cards.dart';
-import 'package:pokerapp/screens/game_play_screen/card_views/visible_card_view.dart';
+import 'package:pokerapp/widgets/cards/community_cards_view/community_card_view.dart';
 import 'package:pokerapp/utils/card_helper.dart';
-import 'package:pokerapp/widgets/card_view_old.dart';
-import 'package:provider/provider.dart';
-import 'package:pokerapp/resources/card_back_assets.dart';
+import 'package:pokerapp/widgets/cards/community_cards_view/flop_community_cards.dart';
+import 'package:pokerapp/widgets/cards/community_cards_view/turn_or_river_community_cards.dart';
 
 /* THIS VIEW ITSELF TAKES CARE OF THE ANIMATION PART FOR THE COMMUNITY CARDS */
 

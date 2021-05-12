@@ -53,6 +53,7 @@ class CardView extends StatelessWidget {
       dim: card.dim,
       isCardVisible: true,
       cardBuilder: _buildCardUI,
+      roundRadius: 2.5,
     );
   }
 }

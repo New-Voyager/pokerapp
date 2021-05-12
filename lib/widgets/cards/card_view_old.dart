@@ -3,8 +3,9 @@ import 'package:flutter/painting.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 
-final cardBackImage =
-    new Image(image: AssetImage('assets/images/card_back/set2/Asset 6.png'));
+final cardBackImage = new Image(
+  image: AssetImage('assets/images/card_back/set2/Asset 6.png'),
+);
 
 class CardsView extends StatelessWidget {
   final List<int> cards;
@@ -19,6 +20,7 @@ class CardsView extends StatelessWidget {
     if (show ?? true) {
       for (int c in cards) {
         CardObject card = CardHelper.getCard(c);
+        card.cardType = CardType.HandLogOrHandHistoryCard;
         cardViews.add(card.widget);
         cardViews.add(
           SizedBox(
@@ -30,6 +32,7 @@ class CardsView extends StatelessWidget {
         for (int i = 0; i < 5 - cards.length; i++) {
           // pass 0 for getting card backside
           CardObject card = CardHelper.getCard(0);
+          card.cardType = CardType.HandLogOrHandHistoryCard;
           card.dim = true;
           cardViews.add(card.widget);
           cardViews.add(
@@ -77,6 +80,7 @@ class HighlightedCardsView extends StatelessWidget {
     if (show ?? true) {
       for (int c in totalCards) {
         CardObject card = CardHelper.getCard(c);
+        card.cardType = CardType.HandLogOrHandHistoryCard;
         bool dim = true;
         for (int k in cardsToHighlight) {
           if (k == c) {
@@ -85,6 +89,7 @@ class HighlightedCardsView extends StatelessWidget {
           }
         }
         card.dim = dim;
+        card.cardType = CardType.HandLogOrHandHistoryCard;
         cardViews.add(card.widget);
         cardViews.add(
           SizedBox(
@@ -142,6 +147,7 @@ class NonGameScreenCommunityCardWidget extends StatelessWidget {
     if (cards != null) {
       for (int c in this.cards) {
         CardObject card = CardHelper.getCard(c);
+        card.cardType = CardType.HandLogOrHandHistoryCard;
         cardViews.add(card.widget);
         cardViews.add(SizedBox(width: 2.0));
       }
@@ -151,6 +157,7 @@ class NonGameScreenCommunityCardWidget extends StatelessWidget {
       // show back of the cards here
       for (int i = 0; i < 5 - this.cards.length; i++) {
         CardObject card = CardHelper.getCard(0);
+        card.cardType = CardType.HandLogOrHandHistoryCard;
         cardViews.add(card.widget);
         cardViews.add(
           SizedBox(

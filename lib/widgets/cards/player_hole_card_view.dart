@@ -103,6 +103,7 @@ class PlayerHoleCardView extends StatelessWidget {
     return CardBuilderWidget(
       card: card,
       dim: dim,
+      shadow: true,
       isCardVisible: isCardVisible,
       cardBuilder: _buildCardUI,
     );

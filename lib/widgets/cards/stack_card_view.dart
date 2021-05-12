@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/widgets/cards/card_view.dart';
-import 'package:pokerapp/widgets/card_view_old.dart';
+import 'package:pokerapp/widgets/cards/card_view_old.dart';
 
 class StackCardView extends StatelessWidget {
   final List<CardObject> cards;

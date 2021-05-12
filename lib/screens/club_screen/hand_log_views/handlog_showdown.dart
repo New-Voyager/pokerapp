@@ -5,7 +5,7 @@ import 'package:pokerapp/enums/game_stages.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_stage_header.dart';
-import 'package:pokerapp/widgets/card_view_old.dart';
+import 'package:pokerapp/widgets/cards/card_view_old.dart';
 
 class HandlogShowDown extends StatelessWidget {
   final HandLogModelNew handLogModel;

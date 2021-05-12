@@ -9,7 +9,7 @@ import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_log_view.dart';
 import 'package:pokerapp/services/app/hand_service.dart';
 import 'package:pokerapp/utils/formatter.dart';
-import 'package:pokerapp/widgets/card_view_old.dart';
+import 'package:pokerapp/widgets/cards/card_view_old.dart';
 
 final _separator = SizedBox(
   height: 10.0,
