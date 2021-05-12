@@ -17,12 +17,15 @@ class HighhandWidget extends StatelessWidget {
   HighhandWidget(this.winner);
 
   Widget cardsView(List<int> cards) {
-    List<Widget> cardViews = new List<Widget>();
+    List<Widget> cardViews = [];
+
     for (int cardValue in cards) {
       CardObject card = CardHelper.getCard(cardValue);
-      card.smaller = true;
+      /* we use a small card type for high hand widgets */
+      card.cardType = CardType.PlayerCard;
       cardViews.add(card.widget);
     }
+
     return Row(children: cardViews);
   }
 

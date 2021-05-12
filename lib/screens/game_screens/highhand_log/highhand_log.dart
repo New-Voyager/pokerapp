@@ -98,7 +98,7 @@ class _HighHandLogViewState extends State<HighHandLogView> {
                   Expanded(
                     child: ListView.separated(
                       itemBuilder: (context, index) {
-                        return new HighHandWidget(this.hhWinners[index]);
+                        return new HighhandWidget(this.hhWinners[index]);
                       },
                       itemCount: hhWinners.length,
                       separatorBuilder: (context, index) {

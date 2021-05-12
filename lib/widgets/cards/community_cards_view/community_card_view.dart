@@ -5,7 +5,6 @@
 * */
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
-import 'package:pokerapp/widgets/card_view.dart';
 
 class CommunityCardView extends StatelessWidget {
   final CardObject card;
@@ -17,13 +16,7 @@ class CommunityCardView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final CardView cardView = CardView(
-      card: card,
-      grayOut: false,
-      widthRatio: 1.5,
-    );
-
-    final Widget cardWidget = cardView.buildCardWidget(context);
+    card.cardType = CardType.CommunityCard;
 
     return Transform.scale(
       scale: 1.2,
@@ -31,11 +24,7 @@ class CommunityCardView extends StatelessWidget {
         borderRadius: BorderRadius.circular(
           3.0,
         ),
-        child: Container(
-          height: cardView.height,
-          width: cardView.width,
-          child: cardWidget,
-        ),
+        child: card.widget,
       ),
     );
   }

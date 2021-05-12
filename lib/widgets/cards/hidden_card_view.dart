@@ -4,24 +4,6 @@ import 'package:provider/provider.dart';
 
 const kDisplacementConstant = 3.0;
 
-//var kDefaultCards = Container(
-//  decoration: BoxDecoration(
-//    borderRadius: BorderRadius.circular(5.0),
-//    border: Border.all(
-//      color: Colors.white,
-//      width: 1.0,
-//    ),
-//    gradient: const LinearGradient(
-//      begin: Alignment.topCenter,
-//      end: Alignment.bottomCenter,
-//      colors: const [
-//        const Color(0xff0d4b74),
-//        const Color(0xff07263a),
-//      ],
-//    ),
-//  ),
-//);
-
 class HiddenCardView extends StatelessWidget {
   HiddenCardView({
     this.noOfCards = 0,

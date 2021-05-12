@@ -5,7 +5,7 @@ import 'package:pokerapp/enums/game_stages.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_stage_header.dart';
-import 'package:pokerapp/widgets/card_view.dart';
+import 'package:pokerapp/widgets/cards/multiple_stack_card_views.dart';
 
 class HandlogShowDown extends StatelessWidget {
   final HandLogModelNew handLogModel;
@@ -54,7 +54,7 @@ class HandlogShowDown extends StatelessWidget {
                     ),
                     Expanded(
                       flex: 2,
-                      child: CardsView(
+                      child: StackCardView00(
                         cards: player.cards,
                       ),
                     ),

@@ -11,7 +11,7 @@ import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/boar
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_styles.dart';
-import 'package:pokerapp/screens/game_play_screen/card_views/hidden_card_view.dart';
+import 'package:pokerapp/widgets/cards/hidden_card_view.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/displaycards.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/profile_popup.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
@@ -70,7 +70,10 @@ class PlayerView extends StatelessWidget {
       final data = await showModalBottomSheet(
         context: context,
         shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(10))),
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(10),
+          ),
+        ),
         builder: (context) {
           return ProfilePopup(
             seat: seat,
@@ -278,7 +281,11 @@ class PlayerCardsWidget extends StatelessWidget {
   final int noCards;
 
   const PlayerCardsWidget(
-      this.seat, this.alignment, this.noCards, this.showdown);
+    this.seat,
+    this.alignment,
+    this.noCards,
+    this.showdown,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -303,14 +310,15 @@ class PlayerCardsWidget extends StatelessWidget {
     }
     if (showdown) {
       return Transform.translate(
-          offset: Offset(
-            xOffset * 0.50,
-            45.0,
-          ),
-          child: AnimatedSwitcher(
-            duration: AppConstants.fastAnimationDuration,
-            child: Transform.scale(scale: 1.0, child: const SizedBox.shrink()),
-          ));
+        offset: Offset(
+          xOffset * 0.50,
+          45.0,
+        ),
+        child: AnimatedSwitcher(
+          duration: AppConstants.fastAnimationDuration,
+          child: Transform.scale(scale: 1.0, child: const SizedBox.shrink()),
+        ),
+      );
     } else if (seat.folded ?? false) {
       return Transform.translate(
         offset: Offset(
@@ -320,23 +328,26 @@ class PlayerCardsWidget extends StatelessWidget {
         child: AnimatedSwitcher(
           duration: AppConstants.fastAnimationDuration,
           child: Transform.scale(
-              scale: 1.0, child: FoldCardAnimatingWidget(seat: seat)),
+            scale: 1.0,
+            child: FoldCardAnimatingWidget(seat: seat),
+          ),
         ),
       );
     } else {
       //log('Hole cards');
       return Transform.translate(
-          offset: Offset(
-            xOffset * 0.50,
-            25.0,
+        offset: Offset(
+          xOffset * 0.50,
+          25.0,
+        ),
+        child: AnimatedSwitcher(
+          duration: AppConstants.fastAnimationDuration,
+          child: Transform.scale(
+            scale: 0.75,
+            child: HiddenCardView(noOfCards: this.noCards),
           ),
-          child: AnimatedSwitcher(
-            duration: AppConstants.fastAnimationDuration,
-            child: Transform.scale(
-              scale: 0.75,
-              child: HiddenCardView(noOfCards: this.noCards),
-            ),
-          ));
+        ),
+      );
     }
   }
 }

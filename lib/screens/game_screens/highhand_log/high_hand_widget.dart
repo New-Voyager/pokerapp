@@ -2,25 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:pokerapp/models/game_history_model.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
-import 'package:pokerapp/resources/app_colors.dart';
-import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/club_screen_icons_icons.dart';
-import 'package:pokerapp/screens/game_play_screen/card_views/visible_card_view.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 
 class HighHandWidget extends StatelessWidget {
-  final seprator = SizedBox(
+  final separator = SizedBox(
     height: 10.0,
   );
+
   final HighHandWinner winner;
+
   HighHandWidget(this.winner);
 
   Widget cardsView(List<int> cards) {
-    List<Widget> cardViews = new List<Widget>();
+    List<Widget> cardViews = [];
     for (int cardValue in cards) {
       CardObject card = CardHelper.getCard(cardValue);
-      card.smaller = true;
-      card.highHandLog = true;
+      /* we use a small card type for high hand widgets */
+      card.cardType = CardType.PlayerCard;
       cardViews.add(card.widget);
     }
     return Row(children: cardViews);
@@ -65,7 +64,7 @@ class HighHandWidget extends StatelessWidget {
                   ),
                 ],
               ),
-              seprator,
+              separator,
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
@@ -73,7 +72,7 @@ class HighHandWidget extends StatelessWidget {
                   style: TextStyle(color: Colors.white),
                 ),
               ),
-              seprator,
+              separator,
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -97,7 +96,7 @@ class HighHandWidget extends StatelessWidget {
                   ),
                 ],
               ),
-              seprator,
+              separator,
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
@@ -105,7 +104,7 @@ class HighHandWidget extends StatelessWidget {
                   style: TextStyle(color: Colors.orange),
                 ),
               ),
-              seprator,
+              separator,
               Row(
                 children: [
                   Flexible(
@@ -124,7 +123,7 @@ class HighHandWidget extends StatelessWidget {
                               style: TextStyle(color: Colors.white),
                             ),
                           ),
-                          seprator,
+                          separator,
                           Align(
                             alignment: Alignment.centerRight,
                             child: Text(

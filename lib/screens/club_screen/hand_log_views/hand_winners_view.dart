@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_stages.dart';
-import 'package:pokerapp/models/hand_log_model.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
-import 'package:pokerapp/widgets/card_view.dart';
+import 'package:pokerapp/widgets/cards/multiple_stack_card_views.dart';
 
 class HandWinnersView extends StatelessWidget {
   final HandLogModelNew _handLogModel;
@@ -112,7 +111,7 @@ class HandWinnersView extends StatelessWidget {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      HighlightedCardsView(
+                                      StackCardView01(
                                         totalCards: _handLogModel
                                             .getPlayerBySeatNo(
                                                 potWinnersList[index]
@@ -126,7 +125,7 @@ class HandWinnersView extends StatelessWidget {
                                             _handLogModel.hand.handLog.wonAt ==
                                                 GameStages.SHOWDOWN,
                                       ),
-                                      HighlightedCardsView(
+                                      StackCardView01(
                                         totalCards: potWinnersList[index]
                                             .hiWinners[winnerIndex]
                                             .winningCards,
@@ -224,7 +223,7 @@ class HandWinnersView extends StatelessWidget {
                                               //           .hand.handLog.wonAt ==
                                               //       GameStages.SHOWDOWN,
                                               // ),
-                                              HighlightedCardsView(
+                                              StackCardView01(
                                                 totalCards: _handLogModel
                                                     .getPlayerBySeatNo(
                                                         potWinnersList[index]
@@ -240,7 +239,7 @@ class HandWinnersView extends StatelessWidget {
                                                         .hand.handLog.wonAt ==
                                                     GameStages.SHOWDOWN,
                                               ),
-                                              HighlightedCardsView(
+                                              StackCardView01(
                                                 totalCards:
                                                     potWinnersList[index]
                                                         .lowWinners[winnerIndex]

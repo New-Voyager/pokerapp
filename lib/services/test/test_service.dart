@@ -22,6 +22,10 @@ import 'package:pokerapp/main.dart';
 import 'iap_test.dart';
 
 class TestService {
+  static get isTesting {
+    return false;
+  }
+
   static var _showResult = false;
   static PlayerInfo _currentPlayer;
   static GameInfoModel _gameInfo;
@@ -62,10 +66,6 @@ class TestService {
   // static List<CardObject> get boardCards => _boardCards;
 
   static List<int> get pots => _pots;
-
-  static get isTesting {
-    return false;
-  }
 
   static void testIap() {
     if (_testIap == null) {
