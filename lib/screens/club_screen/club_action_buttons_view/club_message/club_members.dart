@@ -128,7 +128,9 @@ class _ClubMembersState extends State<ClubMembers> {
                                       Text(
                                         DateFormat('d MMM, h:mm a')
                                             .format(DateTime.parse(snapshot
-                                                .data[index].lastMessageTime).toLocal())
+                                                    .data[index]
+                                                    .lastMessageTime)
+                                                .toLocal())
                                             .toString(),
                                         style: AppStyles
                                             .itemInfoSecondaryTextStyle,
