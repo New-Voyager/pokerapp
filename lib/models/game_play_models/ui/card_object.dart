@@ -9,10 +9,10 @@ enum CardFace {
 }
 
 enum CardType {
-  Large,
-  Medium,
-  Small,
-  Smallest,
+  CommunityCard,
+  HoleCard,
+  PlayerCard,
+  HandLogOrHandHistoryCard,
 }
 
 class CardObject {
@@ -38,7 +38,7 @@ class CardObject {
     @required this.color,
     this.highlight = false,
     this.dim = false,
-    this.cardType = CardType.Medium,
+    this.cardType = CardType.HoleCard,
     this.cardFace = CardFace.FRONT,
     this.empty = false,
   });

@@ -115,7 +115,7 @@ class _HoleCardsViewAndFooterActionViewState
     final List<CardObject> cards = cardsInt?.map(
           (int c) {
             CardObject card = CardHelper.getCard(c);
-            card.cardType = CardType.Small;
+            card.cardType = CardType.HoleCard;
             card.cardFace = CardFace.FRONT;
             return card;
           },

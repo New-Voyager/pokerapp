@@ -4,7 +4,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart
 import 'package:pokerapp/models/game_play_models/provider_models/marked_cards.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
-import 'package:pokerapp/screens/game_play_screen/game_card/game_card_widget.dart';
+import 'package:pokerapp/widgets/cards/player_hole_card_view.dart';
 import 'package:provider/provider.dart';
 
 class HoleStackCardView2 extends StatelessWidget {
@@ -75,14 +75,14 @@ class HoleStackCardView2 extends StatelessWidget {
                   alignment: Alignment.bottomCenter,
                   angle: (i - mid) * kAngleConstant,
                   child: deactivated
-                      ? GameCardWidget(
+                      ? PlayerHoleCardView(
                           marked: markedCards.isMarked(cards[i]),
                           onMarkTapCallback: () => markedCards.mark(cards[i]),
                           card: cards[i],
-                          grayOut: true,
+                          dim: true,
                           isCardVisible: isCardVisible,
                         )
-                      : GameCardWidget(
+                      : PlayerHoleCardView(
                           marked: markedCards.isMarked(cards[i]),
                           onMarkTapCallback: () => markedCards.mark(cards[i]),
                           card: cards[i],

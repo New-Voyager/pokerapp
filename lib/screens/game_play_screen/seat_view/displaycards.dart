@@ -33,7 +33,7 @@ class DisplayCardsWidget extends StatelessWidget {
                               CardObject card = CardHelper.getCard(c);
 
                               /* we use a small card type for display cards */
-                              card.cardType = CardType.Small;
+                              card.cardType = CardType.PlayerCard;
 
                               if (highlightedCards?.contains(c) ?? false)
                                 card.highlight = true;

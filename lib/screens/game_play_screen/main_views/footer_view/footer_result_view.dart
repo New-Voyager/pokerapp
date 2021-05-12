@@ -36,7 +36,7 @@ class FooterResultView extends StatelessWidget {
             }
 
             c.otherHighlightColor = true;
-            c.cardType = CardType.Smallest;
+            c.cardType = CardType.HandLogOrHandHistoryCard;
             return Padding(
               padding: const EdgeInsets.symmetric(
                 horizontal: 2.0,

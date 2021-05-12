@@ -22,7 +22,7 @@ class HighhandWidget extends StatelessWidget {
     for (int cardValue in cards) {
       CardObject card = CardHelper.getCard(cardValue);
       /* we use a small card type for high hand widgets */
-      card.cardType = CardType.Small;
+      card.cardType = CardType.PlayerCard;
       cardViews.add(card.widget);
     }
 
