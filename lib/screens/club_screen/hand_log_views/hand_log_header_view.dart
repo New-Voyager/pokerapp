@@ -83,7 +83,7 @@ class HandLogHeaderView extends StatelessWidget {
                           ),
                         ),
                       ),
-                      NonGameScreenCommunityCardWidget(
+                      StackCardView02(
                         cards: _handLogModel.hand.boardCards,
                         show: _handLogModel.hand.handLog.wonAt ==
                             GameStages.SHOWDOWN,
@@ -111,7 +111,7 @@ class HandLogHeaderView extends StatelessWidget {
                             ),
                           ),
                         ),
-                        CardsView(
+                        StackCardView00(
                           cards: _getMyCards(_handLogModel),
                           show: true,
                         ),

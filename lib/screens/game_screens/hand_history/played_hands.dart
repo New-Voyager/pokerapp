@@ -366,7 +366,7 @@ class WinnerWidget extends StatelessWidget {
 
   List<Widget> getCommunityCards() {
     List<Widget> communityCards = [
-      NonGameScreenCommunityCardWidget(
+      StackCardView02(
         cards: item.community,
         show: true,
       ),
@@ -376,7 +376,7 @@ class WinnerWidget extends StatelessWidget {
     ];
     if (item.community1 != null && item.community1.length > 0) {
       communityCards.add(
-        NonGameScreenCommunityCardWidget(
+        StackCardView02(
           cards: item.community,
           show: true,
         ),
@@ -497,7 +497,7 @@ class WinnerWidget extends StatelessWidget {
                 ),
               ),
               _separator,
-              CardsView(
+              StackCardView00(
                 cards: cards,
                 show: showCards,
               ),

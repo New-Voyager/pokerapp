@@ -111,7 +111,7 @@ class HandWinnersView extends StatelessWidget {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      HighlightedCardsView(
+                                      StackCardView01(
                                         totalCards: _handLogModel
                                             .getPlayerBySeatNo(
                                                 potWinnersList[index]
@@ -125,7 +125,7 @@ class HandWinnersView extends StatelessWidget {
                                             _handLogModel.hand.handLog.wonAt ==
                                                 GameStages.SHOWDOWN,
                                       ),
-                                      HighlightedCardsView(
+                                      StackCardView01(
                                         totalCards: potWinnersList[index]
                                             .hiWinners[winnerIndex]
                                             .winningCards,
@@ -223,7 +223,7 @@ class HandWinnersView extends StatelessWidget {
                                               //           .hand.handLog.wonAt ==
                                               //       GameStages.SHOWDOWN,
                                               // ),
-                                              HighlightedCardsView(
+                                              StackCardView01(
                                                 totalCards: _handLogModel
                                                     .getPlayerBySeatNo(
                                                         potWinnersList[index]
@@ -239,7 +239,7 @@ class HandWinnersView extends StatelessWidget {
                                                         .hand.handLog.wonAt ==
                                                     GameStages.SHOWDOWN,
                                               ),
-                                              HighlightedCardsView(
+                                              StackCardView01(
                                                 totalCards:
                                                     potWinnersList[index]
                                                         .lowWinners[winnerIndex]

@@ -37,12 +37,14 @@ class StackCardView extends StatelessWidget {
   }
 }
 
-class CardsView extends StatelessWidget {
+/* TODO: NEED TO CLEANUP THESE STACK CARD VIEWS XX */
+
+class StackCardView00 extends StatelessWidget {
   final List<int> cards;
   final bool show;
   final bool needToShowEmptyCards;
 
-  CardsView({
+  StackCardView00({
     this.cards,
     this.show,
     this.needToShowEmptyCards,
@@ -87,21 +89,18 @@ class CardsView extends StatelessWidget {
         );
       }
     }
-    return Container(
-      color: Colors.yellow,
-      child: Row(children: cardViews),
-    );
+    return Row(children: cardViews);
   }
 }
 
-class HighlightedCardsView extends StatelessWidget {
+class StackCardView01 extends StatelessWidget {
   final List<int> totalCards;
   final List<int> cardsToHighlight;
 
   final bool show;
   final bool needToShowEmptyCards;
 
-  HighlightedCardsView({
+  StackCardView01({
     this.totalCards,
     this.show,
     this.needToShowEmptyCards,
@@ -155,18 +154,15 @@ class HighlightedCardsView extends StatelessWidget {
         );
       }
     }
-    return Container(
-      color: Colors.green,
-      child: Row(children: cardViews),
-    );
+    return Row(children: cardViews);
   }
 }
 
-class NonGameScreenCommunityCardWidget extends StatelessWidget {
+class StackCardView02 extends StatelessWidget {
   final List<int> cards;
   final bool show;
 
-  NonGameScreenCommunityCardWidget({
+  StackCardView02({
     this.cards,
     this.show,
   });
@@ -198,9 +194,6 @@ class NonGameScreenCommunityCardWidget extends StatelessWidget {
         );
       }
     }
-    return Container(
-      color: Colors.red,
-      child: Row(children: cardViews),
-    );
+    return Row(children: cardViews);
   }
 }

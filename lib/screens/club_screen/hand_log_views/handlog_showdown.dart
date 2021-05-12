@@ -54,7 +54,7 @@ class HandlogShowDown extends StatelessWidget {
                     ),
                     Expanded(
                       flex: 2,
-                      child: CardsView(
+                      child: StackCardView00(
                         cards: player.cards,
                       ),
                     ),

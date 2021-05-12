@@ -51,7 +51,7 @@ class HandStageHeader extends StatelessWidget {
                 margin:
                     EdgeInsets.only(left: 10, top: 8, bottom: 10, right: 10),
                 alignment: Alignment.centerLeft,
-                child: CardsView(
+                child: StackCardView00(
                   cards: stageCards,
                   show: true,
                   needToShowEmptyCards: true,

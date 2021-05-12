@@ -106,8 +106,13 @@ class CardBuilderWidget extends StatelessWidget {
       ),
       child: isCardVisible
           ? cardBuilder(cardTextStyle, suitTextStyle)
-          : Image.asset(
-              AppAssets.cardBackImage,
+          : ClipRRect(
+              borderRadius: BorderRadius.all(
+                Radius.circular(roundRadius),
+              ),
+              child: Image.asset(
+                AppAssets.cardBackImage,
+              ),
             ),
     );
 
