@@ -35,7 +35,7 @@ class HandlogSummary extends StatelessWidget {
           ),
           Container(
             padding: EdgeInsets.only(bottom: 16),
-            child: ListView.builder(
+            child: ListView.separated(
               itemBuilder: (context, index) {
                 log("TOTAL : ${handlogModel.hand.playersInSeats.length}");
                 // log(handlogModel.hand.data.players[(index + 1).toString()].id);
@@ -44,6 +44,11 @@ class HandlogSummary extends StatelessWidget {
               itemCount: handlogModel.hand.playersInSeats.length,
               shrinkWrap: true,
               physics: ClampingScrollPhysics(),
+              separatorBuilder: (context, index) => Divider(
+                endIndent: 16,
+                indent: 16,
+                color: AppColors.veryLightGrayColor,
+              ),
             ),
           ),
         ],

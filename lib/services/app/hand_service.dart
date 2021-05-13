@@ -90,7 +90,7 @@ class HandService {
     }
   """;
 
-  static void getAllHands(HandHistoryListModel model) async {
+  static Future<void> getAllHands(HandHistoryListModel model) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
     Map<String, dynamic> variables = {
       "gameCode": model.gameCode,

@@ -200,8 +200,9 @@ class _HandLogViewState extends State<HandLogView> {
                   HandlogShowDown(
                     handLogModel: _handLogModel,
                   ),
+                  SizedBox(height: 8),
                   HandLogActionView(handLogModel: _handLogModel),
-                  SizedBox(height: 20),
+                  SizedBox(height: 16),
                   HandlogSummary(handlogModel: _handLogModel),
                 ],
               ),

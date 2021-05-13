@@ -85,10 +85,12 @@ class HandLogHeaderView extends StatelessWidget {
                           ),
                         ),
                       ),
-                      CommunityCardWidget(
-                          _handLogModel.hand.boardCards,
-                          _handLogModel.hand.handLog.wonAt ==
-                              GameStages.SHOWDOWN),
+                      CardsView(
+                        cards: _handLogModel.hand.boardCards,
+                        show: _handLogModel.hand.handLog.wonAt ==
+                            GameStages.SHOWDOWN,
+                        needToShowEmptyCards: true,
+                      ),
                     ],
                   ),
                 ),
@@ -129,8 +131,9 @@ class HandLogHeaderView extends StatelessWidget {
   _getMyCards(HandLogModelNew handLogModel) {
     List<int> myCards = [];
     int myId = handLogModel.myInfo.id;
+    // Need to use 'orElse', otherwise it will crash.
     final player = handLogModel.hand.playersInSeats
-        .firstWhere((element) => element.id == myId);
+        .firstWhere((element) => element.id == myId, orElse: () => null);
     if (player != null) {
       return player.cards;
     }

@@ -104,7 +104,9 @@ class _HandHistoryState extends State<HandHistoryListView>
                   children: [
                     Container(
                       child: TabBar(
-                        unselectedLabelColor: Color(0xff319ffe),
+                        unselectedLabelColor: AppColors.lightGrayTextColor,
+                        indicatorSize: TabBarIndicatorSize.label,
+                        indicatorColor: Colors.white,
                         labelColor: Colors.white,
                         labelStyle: TextStyle(
                           fontFamily: AppAssets.fontFamilyLato,
