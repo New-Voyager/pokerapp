@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/hand_history_model.dart';
-import 'package:pokerapp/models/hand_log_model.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
@@ -10,7 +9,7 @@ import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_log_view.dart';
 import 'package:pokerapp/services/app/hand_service.dart';
 import 'package:pokerapp/utils/formatter.dart';
-import 'package:pokerapp/widgets/card_view.dart';
+import 'package:pokerapp/widgets/cards/multiple_stack_card_views.dart';
 
 final _separator = SizedBox(
   height: 5.0,
@@ -399,13 +398,21 @@ class WinnerWidget extends StatelessWidget {
 
   List<Widget> getCommunityCards() {
     List<Widget> communityCards = [
-      CommunityCardWidget(item.community, true),
+      StackCardView02(
+        cards: item.community,
+        show: true,
+      ),
       SizedBox(
         height: 5,
       ),
     ];
     if (item.community1 != null && item.community1.length > 0) {
-      communityCards.add(CommunityCardWidget(item.community, true));
+      communityCards.add(
+        StackCardView02(
+          cards: item.community,
+          show: true,
+        ),
+      );
     }
     return communityCards;
   }
@@ -526,7 +533,10 @@ class WinnerWidget extends StatelessWidget {
                 ),
               ),
               _separator,
-              CardsView(cards: cards, show: showCards),
+              StackCardView00(
+                cards: cards,
+                show: showCards,
+              ),
               _separator,
               Row(children: [
                 Text(

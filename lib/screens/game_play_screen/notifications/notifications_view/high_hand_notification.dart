@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/notification_models/hh_notification_model.dart';
-import 'package:pokerapp/screens/game_play_screen/card_views/stack_card_view.dart';
+import 'package:pokerapp/widgets/cards/multiple_stack_card_views.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 
 class HighHandNotification extends StatelessWidget {

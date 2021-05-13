@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/card_back_assets.dart';
-import 'package:pokerapp/screens/game_play_screen/card_views/community_cards_view/custom_flip_card.dart';
+import 'package:pokerapp/widgets/cards/community_cards_view/custom_flip_card.dart';
 import 'package:provider/provider.dart';
 
 class TurnOrRiverCommunityCards extends StatefulWidget {

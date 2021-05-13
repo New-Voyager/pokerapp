@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:pokerapp/routes.dart';
+import 'package:pokerapp/services/app/appcoin_service.dart';
 import 'package:pokerapp/services/graphQL/configurations/graph_ql_configuration.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'consumable_store.dart';
@@ -393,9 +395,34 @@ class _MyApp2State extends State<MyApp2> {
     });
   }
 
-  Future<bool> _verifyPurchase(PurchaseDetails purchaseDetails) {
+  Future<bool> _verifyPurchase(PurchaseDetails purchaseDetails) async {
     // IMPORTANT!! Always verify a purchase before delivering the product.
     // For the purpose of an example, we directly return true.
+    try {
+      /*
+        UNKNOWN
+        IOS_APP_STORE
+        GOOGLE_PLAY_STORE
+        STRIPE_PAYMENT      
+      */
+      String sourceType = 'UNKNOWN';
+      String receipt = '';
+      if (purchaseDetails.verificationData.source == IAPSource.GooglePlay) {
+        sourceType = 'GOOGLE_PLAY_STORE';
+        receipt = purchaseDetails.verificationData.localVerificationData;
+      } else if (purchaseDetails.verificationData.source ==
+          IAPSource.AppStore) {
+        sourceType = 'IOS_APP_STORE';
+        receipt = purchaseDetails.verificationData.serverVerificationData;
+      }
+      bool ret = await AppCoinService.purchaseProduct(sourceType, receipt);
+      debugPrint('purchase product returned $ret');
+
+      int coins = await AppCoinService.availableCoins();
+      debugPrint('Available coins $coins');
+    } catch (err) {
+      debugPrint(err.toString());
+    }
     return Future<bool>.value(true);
   }
 
@@ -413,6 +440,8 @@ class _MyApp2State extends State<MyApp2> {
         } else if (purchaseDetails.status == PurchaseStatus.purchased) {
           bool valid = await _verifyPurchase(purchaseDetails);
           if (valid) {
+            //final data = jsonEncode(purchaseDetails);
+            //debugPrint(data);
             deliverProduct(purchaseDetails);
           } else {
             _handleInvalidPurchase(purchaseDetails);

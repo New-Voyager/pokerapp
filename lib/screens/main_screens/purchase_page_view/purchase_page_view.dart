@@ -39,7 +39,7 @@ class _PurchasePageViewState extends State<PurchasePageView> {
     return SpeedDial(
       onOpen: onReload,
       overlayColor: Colors.black,
-      visible: TestService.isTesting,
+      visible: true, //TestService.isTesting,
       overlayOpacity: 0.1,
       icon: Icons.all_inclusive_rounded,
       children: [

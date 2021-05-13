@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/resources/card_back_assets.dart';
-import 'package:pokerapp/screens/game_play_screen/card_views/animations/card_back.dart';
+import 'package:pokerapp/widgets/cards/animations/card_back.dart';
 import 'package:provider/provider.dart';
 
 const delayConst = 1;

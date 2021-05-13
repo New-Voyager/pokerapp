@@ -23,19 +23,32 @@ class HandLogModelNew {
   factory HandLogModelNew.fromJson(Map<String, dynamic> json,
       {bool serviceResult = false}) {
     var hand = json["handResult"];
+    if (hand == null) {
+      // HACK here
+      hand = json["hand"];
+    }
+
     if (serviceResult) {
       hand = hand["data"];
     }
-    final players = json["players"];
+    var players = json["players"];
     final myInfo = json["myInfo"];
+    final handLog = Data.fromJson(hand);
     final playerIdToName = Map<int, String>();
-    for (final player in players) {
-      final playerId = int.parse(player["id"].toString());
-      final name = player["name"];
-      playerIdToName[playerId] = name;
+    players = null;
+    if (players != null) {
+      for (final player in players) {
+        final playerId = int.parse(player["id"].toString());
+        final name = player["name"];
+        playerIdToName[playerId] = name;
+      }
+    } else {
+      for(final player in handLog.playersInSeats) {
+        playerIdToName[player.id] = player.name;
+      }
     }
     return HandLogModelNew(
-      hand: Data.fromJson(hand),
+      hand: handLog,
       playerIdToName: playerIdToName,
       myInfo: MyInfo.fromJson(myInfo),
     );
@@ -201,8 +214,8 @@ class HandLog {
   Map<String, PotWinner> potWinners;
   GameStages wonAt;
   dynamic showDown;
-  String handStartedAt;
-  String handEndedAt;
+  int handStartedAt;
+  int handEndedAt;
   bool runItTwice;
   dynamic runItTwiceResult;
 
@@ -503,6 +516,7 @@ class Player {
   Player({
     this.seatNo,
     this.id,
+    this.name,
     this.cards,
     this.bestCards,
     this.rank,
@@ -525,10 +539,12 @@ class Player {
   int hhRank;
   int received;
   int rakePaid;
+  String name;
 
   factory Player.fromJson(int seatNo, Map<String, dynamic> json) => Player(
         seatNo: seatNo,
         id: int.parse(json["id"].toString()),
+        name: json["name"],
         cards: List<int>.from(json["cards"].map((x) => x)),
         bestCards: List<int>.from(json["bestCards"].map((x) => x)),
         rank: json["rank"],
@@ -542,6 +558,7 @@ class Player {
 
   Map<String, dynamic> toJson() => {
         "id": id,
+        "name": name,
         "cards": List<dynamic>.from(cards.map((x) => x)),
         "bestCards": List<dynamic>.from(bestCards.map((x) => x)),
         "rank": rank,

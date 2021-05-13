@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_styles.dart';
-import 'package:pokerapp/widgets/card_view.dart';
+import 'package:pokerapp/widgets/cards/multiple_stack_card_views.dart';
 
 class HandStageHeader extends StatelessWidget {
   final String stageName;
@@ -51,7 +51,7 @@ class HandStageHeader extends StatelessWidget {
                 margin:
                     EdgeInsets.only(left: 10, top: 8, bottom: 10, right: 10),
                 alignment: Alignment.centerLeft,
-                child: CardsView(
+                child: StackCardView00(
                   cards: stageCards,
                   show: true,
                   needToShowEmptyCards: true,

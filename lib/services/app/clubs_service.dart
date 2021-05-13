@@ -17,7 +17,7 @@ class ClubsService {
   static String sendPlayerMessageQuery = """
   mutation sendPlayer(\$clubCode: String!, \$player: String!, \$text: String!) {
     sendMessageToMember(clubCode: \$clubCode, playerId:\$player, text: \$text) {
-      memberID
+      memberId
       messageTime
       messageType
     }
@@ -123,8 +123,7 @@ class ClubsService {
   static Future<List<HostMessageSummaryModel>> hostMessageSummary(
       {String clubCode}) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
-    List<HostMessageSummaryModel> allMemberMessages =
-        List<HostMessageSummaryModel>();
+    List<HostMessageSummaryModel> allMemberMessages = [];
     Map<String, dynamic> variables = {"clubCode": clubCode};
 
     QueryResult result;
@@ -144,7 +143,7 @@ class ClubsService {
   static Future<List<MessagesFromMember>> memberMessages(
       {String clubCode, String player}) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
-    List<MessagesFromMember> messages = List<MessagesFromMember>();
+    List<MessagesFromMember> messages = [];
     print("clubCode $clubCode player $player");
     if (player != null) {
       Map<String, dynamic> variables = {"clubCode": clubCode, "player": player};
