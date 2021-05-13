@@ -134,7 +134,7 @@ class HandStageView extends StatelessWidget {
     );
 
     String action = "";
-    log('action: ${actions.actions[index].action.toString()}');
+    //log('action: ${actions.actions[index].action.toString()}');
     switch (actions.actions[index].action) {
       case HandActions.SB:
         textStyle = sbTextStyle;
