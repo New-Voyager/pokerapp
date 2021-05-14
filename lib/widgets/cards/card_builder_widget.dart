@@ -11,6 +11,7 @@ class CardBuilderWidget extends StatelessWidget {
   final bool dim;
   final bool shadow;
   final double roundRadius;
+  final CardFace cardFace;
 
   CardBuilderWidget({
     @required this.card,
@@ -19,6 +20,7 @@ class CardBuilderWidget extends StatelessWidget {
     @required Widget this.cardBuilder(TextStyle _, TextStyle __),
     this.shadow = false,
     this.roundRadius = 5.0,
+    this.cardFace,
   }) : assert(card != null &&
             dim != null &&
             isCardVisible != null &&
@@ -104,8 +106,10 @@ class CardBuilderWidget extends StatelessWidget {
         ),
         color: highlight ? highlightColor : Colors.white,
       ),
-      child: isCardVisible
-          ? cardBuilder(cardTextStyle, suitTextStyle)
+      child: cardFace == CardFace.FRONT
+          ? isCardVisible
+              ? cardBuilder(cardTextStyle, suitTextStyle)
+              : Container()
           : ClipRRect(
               borderRadius: BorderRadius.all(
                 Radius.circular(roundRadius),

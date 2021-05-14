@@ -18,6 +18,7 @@ class ReplayButton extends StatelessWidget {
           'Replay',
           style: TextStyle(
             fontSize: 12,
+            color: Colors.white,
           ),
         ),
       ),

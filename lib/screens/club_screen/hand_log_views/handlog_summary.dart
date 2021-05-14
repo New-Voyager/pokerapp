@@ -12,7 +12,7 @@ class HandlogSummary extends StatelessWidget {
   HandlogSummary({this.handlogModel});
   @override
   Widget build(BuildContext context) {
-    //   log(handlogModel.hand.data.players.length.toString());
+    log(handlogModel.toString());
 
     return Container(
       child: Column(
