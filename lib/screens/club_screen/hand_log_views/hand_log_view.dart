@@ -180,7 +180,7 @@ class _HandLogViewState extends State<HandLogView> {
                     //   style: AppStyles.boldTitleTextStyle,
                     // ),
                   ),
-                  HandWinnersView(_handLogModel),
+                  HandWinnersView(handLogModel:_handLogModel),
                   HandStageView(
                     handLogModel: _handLogModel,
                     stageEnum: GameStages.PREFLOP,

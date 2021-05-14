@@ -8,15 +8,17 @@ import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/widgets/cards/multiple_stack_card_views.dart';
 
 class HandWinnersView extends StatelessWidget {
-  final HandLogModelNew _handLogModel;
+  final HandLogModelNew handLogModel;
   final List<PotWinner> potWinnersList = [];
   final List<String> potNumbers = [];
+  final LinearGradient gradient;
 
-  HandWinnersView(this._handLogModel);
+  HandWinnersView({this.handLogModel, this.gradient});
 
   @override
   Widget build(BuildContext context) {
-    _getPotWinnersList(_handLogModel);
+    _getPotWinnersList(handLogModel);
+    LinearGradient linearGradient = gradient ?? AppStyles.handlogGreyGradient;
     if (potWinnersList == null || potWinnersList.length == 0) {
       return Center(
         child: Text(
@@ -55,9 +57,9 @@ class HandWinnersView extends StatelessWidget {
               }
               return Container(
                 decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    gradient: LinearGradient(
-                        colors: [Colors.grey[850], Colors.grey[700]])),
+                  borderRadius: BorderRadius.circular(8),
+                  gradient: linearGradient,
+                ),
                 padding: EdgeInsets.symmetric(vertical: 8),
                 child: Column(
                   children: [
@@ -101,7 +103,7 @@ class HandWinnersView extends StatelessWidget {
                                     padding: EdgeInsets.only(bottom: 5, top: 5),
                                     child: Text(
                                       getPlayerNameBySeatNo(
-                                          handLogModel: _handLogModel,
+                                          handLogModel: handLogModel,
                                           seatNo: potWinnersList[index]
                                               .hiWinners[winnerIndex]
                                               .seatNo),
@@ -114,7 +116,7 @@ class HandWinnersView extends StatelessWidget {
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       StackCardView01(
-                                        totalCards: _handLogModel
+                                        totalCards: handLogModel
                                             .getPlayerBySeatNo(
                                                 potWinnersList[index]
                                                     .hiWinners[winnerIndex]
@@ -124,17 +126,17 @@ class HandWinnersView extends StatelessWidget {
                                             .hiWinners[winnerIndex]
                                             .playerCards,
                                         show:
-                                            _handLogModel.hand.handLog.wonAt ==
+                                            handLogModel.hand.handLog.wonAt ==
                                                 GameStages.SHOWDOWN,
                                       ),
                                       StackCardView01(
                                         totalCards:
-                                            _handLogModel.hand.boardCards,
+                                            handLogModel.hand.boardCards,
                                         cardsToHighlight: potWinnersList[index]
                                             .hiWinners[winnerIndex]
                                             .winningCards,
                                         show:
-                                            _handLogModel.hand.handLog.wonAt ==
+                                            handLogModel.hand.handLog.wonAt ==
                                                 GameStages.SHOWDOWN,
                                       ),
                                     ],
@@ -192,7 +194,7 @@ class HandWinnersView extends StatelessWidget {
                                                 top: 5, bottom: 5),
                                             child: Text(
                                               getPlayerNameBySeatNo(
-                                                handLogModel: _handLogModel,
+                                                handLogModel: handLogModel,
                                                 seatNo: potWinnersList[index]
                                                     .lowWinners[winnerIndex]
                                                     .seatNo,
@@ -225,7 +227,7 @@ class HandWinnersView extends StatelessWidget {
                                               //       GameStages.SHOWDOWN,
                                               // ),
                                               StackCardView01(
-                                                totalCards: _handLogModel
+                                                totalCards: handLogModel
                                                     .getPlayerBySeatNo(
                                                         potWinnersList[index]
                                                             .lowWinners[
@@ -236,7 +238,7 @@ class HandWinnersView extends StatelessWidget {
                                                     potWinnersList[index]
                                                         .lowWinners[winnerIndex]
                                                         .playerCards,
-                                                show: _handLogModel
+                                                show: handLogModel
                                                         .hand.handLog.wonAt ==
                                                     GameStages.SHOWDOWN,
                                               ),
@@ -249,7 +251,7 @@ class HandWinnersView extends StatelessWidget {
                                                     potWinnersList[index]
                                                         .lowWinners[winnerIndex]
                                                         .winningCards,
-                                                show: _handLogModel
+                                                show: handLogModel
                                                         .hand.handLog.wonAt ==
                                                     GameStages.SHOWDOWN,
                                               ),

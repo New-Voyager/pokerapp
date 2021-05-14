@@ -169,9 +169,10 @@ class MessageItem extends StatelessWidget {
             ),
             SizedBox(height: 10),
             HandWinnersView(
-              HandLogModelNew.fromJson(
+              handLogModel: HandLogModelNew.fromJson(
                 messageModel.sharedHand.data,
               ),
+              gradient: AppStyles.handlogBlueGradient,
             ),
             SizedBox(
               height: 8,
