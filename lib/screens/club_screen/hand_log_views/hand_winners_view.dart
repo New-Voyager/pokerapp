@@ -125,9 +125,8 @@ class HandWinnersView extends StatelessWidget {
                                         cardsToHighlight: potWinnersList[index]
                                             .hiWinners[winnerIndex]
                                             .playerCards,
-                                        show:
-                                            handLogModel.hand.handLog.wonAt ==
-                                                GameStages.SHOWDOWN,
+                                        show: handLogModel.hand.handLog.wonAt ==
+                                            GameStages.SHOWDOWN,
                                       ),
                                       StackCardView01(
                                         totalCards:
@@ -135,9 +134,8 @@ class HandWinnersView extends StatelessWidget {
                                         cardsToHighlight: potWinnersList[index]
                                             .hiWinners[winnerIndex]
                                             .winningCards,
-                                        show:
-                                            handLogModel.hand.handLog.wonAt ==
-                                                GameStages.SHOWDOWN,
+                                        show: handLogModel.hand.handLog.wonAt ==
+                                            GameStages.SHOWDOWN,
                                       ),
                                     ],
                                   ),

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
@@ -21,6 +22,7 @@ import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/card_back_assets.dart';
+import 'package:pokerapp/screens/game_play_screen/widgets/overlay_notification.dart';
 import 'package:pokerapp/services/game_play/action_services/game_action_service/sub_services/high_hand_service.dart';
 import 'package:pokerapp/services/game_play/utils/audio.dart';
 import 'package:pokerapp/services/test/test_service.dart';
@@ -308,6 +310,9 @@ class HandActionService {
 
         case AppConstants.RIVER:
           return handleStageChange(data, 'river');
+
+        case AppConstants.ANNOUNCEMENT:
+          return handleAnnouncement(data);
       }
     } catch (err) {
       log('Error: ${err.toString()}');
@@ -911,6 +916,23 @@ class HandActionService {
         },
       );
     // log('stage update done');
+  }
+
+  Future<void> handleAnnouncement(var data) async {
+    var announcement = data['announcement'];
+    String type = announcement['type'].toString();
+    if (type == 'NewGameType') {
+      String game = announcement['params'][0].toString();
+      GameType gameType = gameTypeFromStr(game);
+      String title = gameTypeStr(gameType);
+      showOverlayNotification(
+        (context) => OverlayNotificationWidget(
+          title: title,
+          subTitle: '',
+        ),
+        duration: Duration(seconds: 5),
+      );
+    }
   }
 
   Future<void> handlePlayerActed(var data) async {

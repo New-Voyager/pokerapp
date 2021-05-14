@@ -537,3 +537,24 @@ String runItTwiceMessage() => '''
 		"messageType": "END"
 	}]
 }''';
+
+String newGameAnnouncement() => '''
+{
+	"version": "",
+	"clubId": 456,
+	"gameId": "574",
+	"gameCode": "CG-QRR0QFQAPDXJ4D4",
+	"handNum": 1,
+	"seatNo": 0,
+	"playerId": "0",
+	"messageId": "ANNOUNCEMENT:1:DEAL:0:",
+	"gameToken": "",
+	"handStatus": "DEAL",
+	"messages": [{
+		"messageType": "ANNOUNCEMENT",
+		"announcement": {
+			"type": "NewGameType",
+			"params": ["HOLDEM"]
+		}
+	}]
+}''';

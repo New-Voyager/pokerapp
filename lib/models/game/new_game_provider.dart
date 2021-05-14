@@ -27,12 +27,10 @@ class NewGameModelProvider extends ChangeNotifier {
     NewGameConstants.SUPPORTED_GAMES.forEach((key, value) {
       gameTypes.add(value);
     });
-    roeSelectedGames.addAll(
-      [
-        GameType.HOLDEM,
-        GameType.PLO,
-      ]
-    );
+    roeSelectedGames.addAll([
+      GameType.HOLDEM,
+      GameType.PLO,
+    ]);
     settings.roeGames = roeSelectedGames;
   }
 

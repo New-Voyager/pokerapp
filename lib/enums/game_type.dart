@@ -10,7 +10,7 @@ enum GameType {
 }
 
 String gameTypeStr(GameType type) {
-  switch(type) {
+  switch (type) {
     case GameType.HOLDEM:
       return "No Limit Holdem";
     case GameType.PLO:
@@ -27,6 +27,17 @@ String gameTypeStr(GameType type) {
       return "Dealer Choice";
     default:
       return "Unknown";
+  }
+}
+
+GameType gameTypeFromStr(String gameTypeStr) {
+  List<String> types = GameType.values.map((e) => e.toString()).toList();
+  int i = types.indexOf('GameType.' + gameTypeStr);
+  if (i != -1) {
+    return GameType.values
+        .firstWhere((e) => e.toString() == 'GameType.' + gameTypeStr);
+  } else {
+    return GameType.UNKNOWN;
   }
 }
 
@@ -48,6 +59,6 @@ List<GameType> gameChoices() {
     GameType.FIVE_CARD_PLO,
     GameType.FIVE_CARD_PLO_HILO,
     GameType.ROE,
-    GameType.DEALER_CHOICE,    
+    GameType.DEALER_CHOICE,
   ];
 }
