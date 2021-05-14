@@ -1,5 +1,6 @@
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/hand_log_model_new.dart';
 import 'package:pokerapp/services/gql_errors.dart';
 
 showAlertDialog(BuildContext context, String title, String message) {
@@ -114,4 +115,10 @@ showWaitlistStatus(BuildContext context, String message, int duration) async {
           fontFamily: "ShadowsIntoLightTwo"),
     ),
   )..show(context);
+}
+
+String getPlayerNameBySeatNo({HandLogModelNew handLogModel, int seatNo}) {
+  final res = handLogModel.hand.playersInSeats
+      .firstWhere((element) => element.seatNo == seatNo, orElse: () => null);
+  return res == null ? "Player" : res.name;
 }

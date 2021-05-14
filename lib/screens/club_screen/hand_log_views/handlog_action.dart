@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
 import 'package:pokerapp/resources/app_assets.dart';
+import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/screens/util_screens/util.dart';
 
 class HandLogActionView extends StatelessWidget {
   final HandLogModelNew handLogModel;
@@ -23,7 +25,8 @@ class HandLogActionView extends StatelessWidget {
               Expanded(
                 flex: 4,
                 child: Text(
-                  handLogModel.getPlayerNameBySeatNo(player.seatNo),
+                  getPlayerNameBySeatNo(
+                      handLogModel: handLogModel, seatNo: player.seatNo),
                   style: AppStyles.playerNameTextStyle,
                   textAlign: TextAlign.left,
                 ),
@@ -67,7 +70,17 @@ class HandLogActionView extends StatelessWidget {
           ),
         );
       },
-      separatorBuilder: (context, index) => Divider(),
+      separatorBuilder: (context, index) {
+        Player player = handLogModel.hand.playersInSeats[index];
+        if (player.received <= 0) {
+          return Container();
+        }
+        return Divider(
+          endIndent: 16,
+          indent: 16,
+          color: AppColors.veryLightGrayColor,
+        );
+      },
       itemCount: handLogModel.hand.playersInSeats.length,
       shrinkWrap: true,
       physics: ClampingScrollPhysics(),

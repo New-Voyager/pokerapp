@@ -206,8 +206,16 @@ class _FooterActionViewState extends State<FooterActionView> {
   }
 
   Widget _buildActionWidgets(PlayerAction playerAction) {
-    final allin = playerAction?.actions
-        ?.firstWhere((element) => element.actionName == ALLIN);
+    debugPrint('Player acction: ${playerAction.actions}');
+    AvailableAction allin;
+    for(final action in playerAction?.actions) {
+      if (action.actionName == ALLIN) {
+        allin = action;
+        break;
+      }
+    }
+    // final allin = playerAction?.actions
+    //     ?.firstWhere((element) => element.actionName == ALLIN, orElse: null);
     var actionButtons = [];
     actionButtons = playerAction?.actions?.map<Widget>(
       (playerAction) {

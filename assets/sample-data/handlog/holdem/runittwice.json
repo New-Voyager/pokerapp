@@ -182,6 +182,7 @@
 		"players": {
 			"1": {
 				"id": "1",
+				"name": "siva",
 				"cards": [],
 				"bestCards": [],
 				"rank": 0,
@@ -197,6 +198,7 @@
 			},
 			"2": {
 				"id": "2",
+				"name": "yong",
 				"cards": [178, 164],
 				"bestCards": [200, 196, 84, 178, 164],
 				"rank": 3330,
@@ -212,6 +214,7 @@
 			},
 			"3": {
 				"id": "3",
+				"name": "jim",
 				"cards": [17, 81],
 				"bestCards": [200, 196, 72, 84, 81],
 				"rank": 2540,
@@ -227,6 +230,7 @@
 			},
 			"4": {
 				"id": "4",
+				"name": "tom",
 				"cards": [],
 				"bestCards": [],
 				"rank": 0,
