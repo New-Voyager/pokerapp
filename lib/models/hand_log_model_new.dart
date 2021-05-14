@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'package:pokerapp/enums/game_stages.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
 
@@ -11,65 +12,68 @@ class HandLogModelNew {
 
   HandLogModelNew({
     this.hand,
-    this.playerIdToName,
+    //  this.playerIdToName,
     this.myInfo,
   });
 
   Data hand;
   //List<PlayerElement> players;
-  Map<int, String> playerIdToName;
+  // Map<int, String> playerIdToName;
   MyInfo myInfo;
 
   factory HandLogModelNew.fromJson(Map<String, dynamic> json,
       {bool serviceResult = false}) {
+    log(json.toString());
     var hand = json["handResult"];
     if (hand == null) {
       // HACK here
-      hand = json["hand"];
+      hand = json;
     }
 
     if (serviceResult) {
-      hand = hand["data"];
+      hand = hand['data'];
     }
-    var players = json["players"];
-    final myInfo = json["myInfo"];
+    //var players = json["players"];
+    //final myInfo = json["myInfo"];
     final handLog = Data.fromJson(hand);
-    final playerIdToName = Map<int, String>();
-    players = null;
-    if (players != null) {
-      for (final player in players) {
-        final playerId = int.parse(player["id"].toString());
-        final name = player["name"];
-        playerIdToName[playerId] = name;
-      }
-    } else {
-      for(final player in handLog.playersInSeats) {
-        playerIdToName[player.id] = player.name;
-      }
-    }
+    // final playerIdToName = Map<int, String>();
+    // players = null;
+    // if (players != null) {
+    //   for (final player in players) {
+    //     final playerId = int.parse(player["id"].toString());
+    //     final name = player["name"];
+    //     playerIdToName[playerId] = name;
+    //   }
+    // } else {
+    //   for (final player in handLog.playersInSeats) {
+    //     playerIdToName[player.id] = player.name;
+    //   }
+    // }
     return HandLogModelNew(
       hand: handLog,
-      playerIdToName: playerIdToName,
-      myInfo: MyInfo.fromJson(myInfo),
+      //playerIdToName: playerIdToName,
+      myInfo: MyInfo.fromJson(
+        {"id": 1, "uuid": "cfe63ff3712c594f", "name": "asdf"},
+      ),
     );
   }
 
-  String getPlayerName(GameActions actions, int index) {
-    final seatNo = actions.actions[index].seatNo;
-    final player = this
-        .hand
-        .playersInSeats
-        .firstWhere((element) => element.seatNo == seatNo);
-    return this.playerIdToName[player.id];
-  }
+  // String getPlayerName(GameActions actions, int index) {
+  //   final seatNo = actions.actions[index].seatNo;
+  //   final player = this
+  //       .hand
+  //       .playersInSeats
+  //       .firstWhere((element) => element.seatNo == seatNo);
+  //   return this.playerIdToName[player.id];
+  // }
 
-  String getPlayerNameBySeatNo(int seatNo) {
-    final player = this
-        .hand
-        .playersInSeats
-        .firstWhere((element) => element.seatNo == seatNo);
-    return this.playerIdToName[player.id];
-  }
+  // String getPlayerNameBySeatNo(int seatNo) {
+  //   final player = this
+  //       .hand
+  //       .playersInSeats
+  //       .firstWhere((element) => element.seatNo == seatNo);
+  //   return this.playerIdToName[player.id];
+  // }
 
   Player getPlayerBySeatNo(int seatNo) {
     final player = this

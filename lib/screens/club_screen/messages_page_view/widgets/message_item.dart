@@ -168,17 +168,9 @@ class MessageItem extends StatelessWidget {
               ],
             ),
             SizedBox(height: 10),
-            Container(
-              height: 30,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(5.0),
-                color: Colors.black38,
-              ),
-              child: HandWinnersView(
-                HandLogModelNew.fromJson(
-                  messageModel.sharedHand.data,
-                  serviceResult: false,
-                ),
+            HandWinnersView(
+              HandLogModelNew.fromJson(
+                messageModel.sharedHand.data,
               ),
             ),
             SizedBox(

@@ -5,6 +5,7 @@ import 'package:pokerapp/models/hand_log_model_new.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/screens/util_screens/util.dart';
 
 class HandlogSummary extends StatelessWidget {
   final HandLogModelNew handlogModel;
@@ -64,7 +65,10 @@ class HandlogSummary extends StatelessWidget {
     //     index != -1 ? handlogModel.players[index].name : "Player";
     String playerName = 'Player';
     if (player != null) {
-      playerName = handlogModel.getPlayerNameBySeatNo(player.seatNo);
+      playerName = getPlayerNameBySeatNo(
+        handLogModel: handlogModel,
+        seatNo: player.seatNo,
+      );
     }
     return Container(
       margin: EdgeInsets.only(top: 5, bottom: 5, left: 16, right: 16),

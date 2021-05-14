@@ -4,6 +4,7 @@ import 'package:pokerapp/models/hand_log_model_new.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/widgets/cards/multiple_stack_card_views.dart';
 
 class HandWinnersView extends StatelessWidget {
@@ -69,13 +70,13 @@ class HandWinnersView extends StatelessWidget {
                       ),
                     ),
                     Container(
-                      margin: EdgeInsets.symmetric(horizontal: 16),
+                      margin: EdgeInsets.symmetric(horizontal: 8),
                       alignment: Alignment.centerLeft,
                       child: Text(
                         winnersTitle,
                         style: const TextStyle(
                           fontFamily: AppAssets.fontFamilyLato,
-                          color: Colors.white,
+                          color: Colors.green,
                           fontSize: 14.0,
                           fontWeight: FontWeight.w400,
                         ),
@@ -99,8 +100,9 @@ class HandWinnersView extends StatelessWidget {
                                   Padding(
                                     padding: EdgeInsets.only(bottom: 5, top: 5),
                                     child: Text(
-                                      _handLogModel.getPlayerNameBySeatNo(
-                                          potWinnersList[index]
+                                      getPlayerNameBySeatNo(
+                                          handLogModel: _handLogModel,
+                                          seatNo: potWinnersList[index]
                                               .hiWinners[winnerIndex]
                                               .seatNo),
                                       style: AppStyles.playerNameTextStyle,
@@ -126,9 +128,8 @@ class HandWinnersView extends StatelessWidget {
                                                 GameStages.SHOWDOWN,
                                       ),
                                       StackCardView01(
-                                        totalCards: potWinnersList[index]
-                                            .hiWinners[winnerIndex]
-                                            .winningCards,
+                                        totalCards:
+                                            _handLogModel.hand.boardCards,
                                         cardsToHighlight: potWinnersList[index]
                                             .hiWinners[winnerIndex]
                                             .winningCards,
@@ -190,12 +191,12 @@ class HandWinnersView extends StatelessWidget {
                                             padding: EdgeInsets.only(
                                                 top: 5, bottom: 5),
                                             child: Text(
-                                              _handLogModel
-                                                  .getPlayerNameBySeatNo(
-                                                      potWinnersList[index]
-                                                          .lowWinners[
-                                                              winnerIndex]
-                                                          .seatNo),
+                                              getPlayerNameBySeatNo(
+                                                handLogModel: _handLogModel,
+                                                seatNo: potWinnersList[index]
+                                                    .lowWinners[winnerIndex]
+                                                    .seatNo,
+                                              ),
                                               style: const TextStyle(
                                                 fontFamily:
                                                     AppAssets.fontFamilyLato,
