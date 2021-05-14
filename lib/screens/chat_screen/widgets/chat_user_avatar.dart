@@ -16,8 +16,10 @@ class ChatUserAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     return Container(
-      margin: const EdgeInsets.only(bottom: 10),
+      margin: EdgeInsets.only(bottom: height * 0.02),
       child: CircleAvatar(
         backgroundColor: generateColorFor(userId),
         child: Text(

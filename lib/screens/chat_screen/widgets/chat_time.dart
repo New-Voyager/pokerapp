@@ -14,15 +14,17 @@ class ChatTimeWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     return Align(
       alignment: Alignment.centerRight,
       child: Padding(
-        padding: const EdgeInsets.only(left: 5, right: 5, bottom: 5),
+        padding: EdgeInsets.only(right: width * 0.02, bottom: height * 0.01),
         child: Text(
           dateString(date),
           style: TextStyle(
             color: Colors.white.withOpacity(0.5),
-            fontSize: 12,
+            fontSize: height * 0.0165,
           ),
         ),
       ),

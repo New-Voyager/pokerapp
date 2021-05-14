@@ -114,9 +114,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final separator30 = SizedBox(height: 30.0);
-    final separator20 = SizedBox(height: 20.0);
-    final separator5 = SizedBox(height: 5.0);
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+    final separator30 = SizedBox(height: height * 0.03);
+    final separator20 = SizedBox(height: height * 0.05);
+    final separator5 = SizedBox(height: height * 0.01);
 
     return Scaffold(
       backgroundColor: Colors.black,
@@ -125,9 +127,9 @@ class _LoginScreenState extends State<LoginScreen> {
           child: ModalProgressHUD(
             inAsyncCall: _showLoading,
             child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 23.0,
-                vertical: 28.0,
+              padding: EdgeInsets.symmetric(
+                horizontal: width * 0.04,
+                vertical: height * 0.029,
               ),
               child: ListView(
                 physics: BouncingScrollPhysics(),
@@ -178,7 +180,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       AppStrings.registerNowText,
                       textAlign: TextAlign.end,
                       style: AppStyles.clubItemInfoTextStyle.copyWith(
-                        fontSize: 18.0,
+                        fontSize: height * 0.025,
                         // TODO PUT ALL STYLES IN SEPARATE MODULE
                       ),
                     ),
@@ -202,7 +204,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     buttonText: 'LOGIN',
                     radius: 100.0,
                     color: Color(0xff319ffe),
-                    verticalPadding: 15.0,
+                    verticalPadding: height * 0.019,
                     onButtonTap: () => _handleLogin(ctx),
                   ),
                 ],
@@ -215,6 +217,8 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   _loginWithUsername(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     String username = Provider.of<ValueNotifier<String>>(
       context,
       listen: false,
@@ -227,13 +231,16 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget _buildTempLogin() => ListenableProvider<ValueNotifier<String>>(
-        create: (_) => ValueNotifier<String>(''),
-        builder: (context, _) => Container(
-          margin: const EdgeInsets.symmetric(vertical: 20.0),
+      create: (_) => ValueNotifier<String>(''),
+      builder: (context, _) {
+        double width = MediaQuery.of(context).size.width;
+        double height = MediaQuery.of(context).size.height;
+        return Container(
+          margin: EdgeInsets.symmetric(vertical: height * 0.04),
           color: Colors.white,
-          padding: const EdgeInsets.symmetric(
-            horizontal: 10.0,
-            vertical: 5.0,
+          padding: EdgeInsets.symmetric(
+            horizontal: width * 0.01,
+            vertical: height * 0.01,
           ),
           child: Row(
             children: [
@@ -245,20 +252,20 @@ class _LoginScreenState extends State<LoginScreen> {
                   ).value = s,
                 ),
               ),
-              const SizedBox(width: 50.0),
+              SizedBox(width: width * 0.05),
               InkWell(
                 onTap: () => _loginWithUsername(context),
                 child: Text(
                   'LOGIN',
                   style: TextStyle(
                     color: Colors.black,
-                    fontSize: 20.0,
+                    fontSize: height * 0.025,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
               ),
             ],
           ),
-        ),
-      );
+        );
+      });
 }

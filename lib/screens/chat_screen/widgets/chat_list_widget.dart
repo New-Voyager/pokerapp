@@ -31,8 +31,11 @@ class _ChatListWidgetState extends State<ChatListWidget> {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     return ListView.builder(
-        padding: const EdgeInsets.only(top: 5, left: 5, right: 5),
+        padding: EdgeInsets.only(
+            top: height * 0.01, left: width * 0.01, right: width * 0.01),
         itemCount: widget.chats.length,
         reverse: true,
         physics: BouncingScrollPhysics(),
@@ -71,7 +74,7 @@ class _ChatListWidgetState extends State<ChatListWidget> {
           top: 3,
           bottom: 3,
         ),
-        child: _buildTextMessage(message),
+        child: _buildTextMessage(message, context),
       );
     }
 
@@ -128,14 +131,16 @@ class _ChatListWidgetState extends State<ChatListWidget> {
               top: 3,
               bottom: 3),
           child: Stack(
-            children: [_buildTextMessage(message), triangle],
+            children: [_buildTextMessage(message, context), triangle],
           ),
         ),
       ),
     );
   }
 
-  Widget _buildTextMessage(ChatModel message) {
+  Widget _buildTextMessage(ChatModel message, BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     bool isSender = _isSender(message.messageType);
     return Container(
       decoration:
@@ -150,7 +155,7 @@ class _ChatListWidgetState extends State<ChatListWidget> {
               padding: const EdgeInsets.all(7.0),
               child: Text(
                 message.text,
-                style: TextStyle(color: Colors.white, fontSize: 17),
+                style: TextStyle(color: Colors.white, fontSize: height * 0.025),
               ),
             ),
             ChatTimeWidget(

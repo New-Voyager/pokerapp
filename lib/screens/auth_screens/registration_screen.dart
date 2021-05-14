@@ -104,9 +104,11 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final separator30 = SizedBox(height: 30.0);
-    final separator20 = SizedBox(height: 20.0);
-    final separator5 = SizedBox(height: 5.0);
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+    final separator30 = SizedBox(height: height * 0.03);
+    final separator20 = SizedBox(height: height * 0.05);
+    final separator5 = SizedBox(height: height * 0.01);
 
     return Scaffold(
       backgroundColor: Colors.black,
@@ -115,8 +117,10 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         child: Builder(
           builder: (ctx) => SafeArea(
             child: Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 23.0, vertical: 28.0),
+              padding: EdgeInsets.symmetric(
+                horizontal: width * 0.04,
+                vertical: height * 0.029,
+              ),
               child: Form(
                 key: _formKey,
                 child: ListView(
@@ -174,7 +178,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                       buttonText: 'REGISTER',
                       radius: 100.0,
                       color: Color(0xff319ffe),
-                      verticalPadding: 15.0,
+                      verticalPadding: height * 0.025,
                       onButtonTap: () => _register(ctx),
                     ),
 
@@ -191,7 +195,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                       buttonText: 'REGISTER AS GUEST',
                       radius: 100.0,
                       color: Color(0xff319ffe),
-                      verticalPadding: 15.0,
+                      verticalPadding: height * 0.02,
                       onButtonTap: () => _registerAsGuest(ctx),
                     ),
                   ],
