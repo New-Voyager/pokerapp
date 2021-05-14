@@ -22,7 +22,7 @@ class NewGameSettings extends StatefulWidget {
 
 class _NewGameSettingsState extends State<NewGameSettings> {
   final String clubCode;
-  List<Rewards> rewards = new List<Rewards>();
+  List<Rewards> rewards = [];
   _NewGameSettingsState({
     @required this.clubCode,
   }) : assert(clubCode != null);

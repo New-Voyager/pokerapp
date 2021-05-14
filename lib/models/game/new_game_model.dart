@@ -8,6 +8,8 @@ class NewGameConstants {
     GameType.PLO_HILO: "PLO(Hi-Lo)",
     GameType.FIVE_CARD_PLO: "5 Card PLO",
     GameType.FIVE_CARD_PLO_HILO: "5 Card PLO(Hi-Lo)",
+    GameType.ROE: "Round Of Each",
+    GameType.DEALER_CHOICE: "Dealer Choice",
   };
 
   static const Map<int, String> ACTION_TIMES = {
@@ -26,6 +28,8 @@ class NewGameConstants {
     GameType.PLO_HILO: 9,
     GameType.FIVE_CARD_PLO: 8,
     GameType.FIVE_CARD_PLO_HILO: 8,
+    GameType.ROE: 9,
+    GameType.DEALER_CHOICE: 9
   };
 
   static const Map<int, String> GAME_LENGTH = {
@@ -67,6 +71,7 @@ class NewGameModel {
   bool botGame = true;
   Rewards rewards;
   bool muckLosingHand = false;
+  List<GameType> roeGames = [];
 
   NewGameModel(
       {this.clubCode,
@@ -91,7 +96,8 @@ class NewGameModel {
       this.locationCheck,
       this.waitList,
       this.botGame,
-      this.muckLosingHand});
+      this.muckLosingHand,
+      this.roeGames});
 
   NewGameModel.withDefault(String clubCode) {
     this.clubCode = clubCode;
@@ -140,6 +146,10 @@ class NewGameModel {
     data['botGame'] = this.botGame;
     data['runItTwiceAllowed'] = this.runItTwice;
     data['muckLosingHand'] = this.muckLosingHand;
+
+    if (this.gameType == GameType.ROE) {
+      data['roeGames'] = this.roeGames.map((e) => e.toString().replaceAll('GameType.', '')).toList();
+    }
 
     if (this.rewards != null && this.rewards.id != 0) {
       data['rewardIds'] = [this.rewards.id];
