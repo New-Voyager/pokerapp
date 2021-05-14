@@ -148,7 +148,10 @@ class NewGameModel {
     data['muckLosingHand'] = this.muckLosingHand;
 
     if (this.gameType == GameType.ROE) {
-      data['roeGames'] = this.roeGames.map((e) => e.toString().replaceAll('GameType.', '')).toList();
+      data['roeGames'] = this
+          .roeGames
+          .map((e) => e.toString().replaceAll('GameType.', ''))
+          .toList();
     }
 
     if (this.rewards != null && this.rewards.id != 0) {

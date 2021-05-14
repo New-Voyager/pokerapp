@@ -151,4 +151,6 @@ class AppConstants {
   static const String FLOP = 'FLOP';
   static const String TURN = 'TURN';
   static const String RIVER = 'RIVER';
+
+  static const String ANNOUNCEMENT = 'ANNOUNCEMENT';
 }
