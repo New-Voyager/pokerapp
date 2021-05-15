@@ -153,4 +153,5 @@ class AppConstants {
   static const String RIVER = 'RIVER';
 
   static const String ANNOUNCEMENT = 'ANNOUNCEMENT';
+  static const String DEALER_CHOICE = 'DEALER_CHOICE';
 }

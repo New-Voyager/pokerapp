@@ -30,6 +30,27 @@ String gameTypeStr(GameType type) {
   }
 }
 
+String gameTypeShortStr(GameType type) {
+  switch (type) {
+    case GameType.HOLDEM:
+      return "NLH";
+    case GameType.PLO:
+      return "PLO";
+    case GameType.PLO_HILO:
+      return "PLO Hi-Lo";
+    case GameType.FIVE_CARD_PLO:
+      return "5 card PLO";
+    case GameType.FIVE_CARD_PLO_HILO:
+      return "5 card PLO Hi-Lo";
+    case GameType.ROE:
+      return "Round of Each";
+    case GameType.DEALER_CHOICE:
+      return "Dealer Choice";
+    default:
+      return "Unknown";
+  }
+}
+
 GameType gameTypeFromStr(String gameTypeStr) {
   List<String> types = GameType.values.map((e) => e.toString()).toList();
   int i = types.indexOf('GameType.' + gameTypeStr);

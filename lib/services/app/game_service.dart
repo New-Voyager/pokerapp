@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/game/new_game_model.dart';
 import 'package:pokerapp/models/game_history_model.dart';
@@ -212,6 +213,15 @@ class GameService {
   static String leaveGameQuery = """
     mutation (\$gameCode: String!) {
       confirmed: leaveGame(gameCode: \$gameCode)
+    }
+    """;
+
+  static String dealerChoiceQuery = """
+    mutation dealerChoice(\$gameCode: String!, \$gameType: GameType!) {
+      ret: dealerChoice(
+        gameCode: \$gameCode
+        gameType: \$gameType
+      )
     }
     """;
 
@@ -710,5 +720,25 @@ class GameService {
     if (result.hasException) return '';
 
     return result.data['token'].toString();
+  }
+
+  static Future<bool> dealerChoice(
+    String gameCode,
+    GameType gameType,
+  ) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+    Map<String, dynamic> variables = {
+      "gameCode": gameCode,
+      "gameType": gameType.toString().replaceAll('GameType.', '')
+    };
+    QueryResult result = await _client.mutate(
+      MutationOptions(
+        documentNode: gql(dealerChoiceQuery),
+        variables: variables,
+      ),
+    );
+    if (result.hasException) return false;
+    print("result $result");
+    return result.data['ret'] ?? false;
   }
 }

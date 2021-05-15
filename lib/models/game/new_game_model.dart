@@ -72,6 +72,7 @@ class NewGameModel {
   Rewards rewards;
   bool muckLosingHand = false;
   List<GameType> roeGames = [];
+  List<GameType> dealerChoiceGames = [];
 
   NewGameModel(
       {this.clubCode,
@@ -97,7 +98,8 @@ class NewGameModel {
       this.waitList,
       this.botGame,
       this.muckLosingHand,
-      this.roeGames});
+      this.roeGames,
+      this.dealerChoiceGames});
 
   NewGameModel.withDefault(String clubCode) {
     this.clubCode = clubCode;
@@ -124,6 +126,8 @@ class NewGameModel {
     botGame = json['botGame'];
     muckLosingHand = json['muckLosingHand'];
     runItTwice = json['runItTwiceAllowed'];
+    roeGames = json['roeGames'];
+    dealerChoiceGames = json['dealerChoiceGames'];
   }
 
   Map<String, dynamic> toJson() {
@@ -150,6 +154,13 @@ class NewGameModel {
     if (this.gameType == GameType.ROE) {
       data['roeGames'] = this
           .roeGames
+          .map((e) => e.toString().replaceAll('GameType.', ''))
+          .toList();
+    }
+
+    if (this.gameType == GameType.DEALER_CHOICE) {
+      data['dealerChoiceGames'] = this
+          .dealerChoiceGames
           .map((e) => e.toString().replaceAll('GameType.', ''))
           .toList();
     }

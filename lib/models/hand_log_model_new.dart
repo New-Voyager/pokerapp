@@ -12,13 +12,10 @@ class HandLogModelNew {
 
   HandLogModelNew({
     this.hand,
-    //  this.playerIdToName,
     this.myInfo,
   });
 
   Data hand;
-  //List<PlayerElement> players;
-  // Map<int, String> playerIdToName;
   MyInfo myInfo;
 
   factory HandLogModelNew.fromJson(Map<String, dynamic> json,
@@ -32,22 +29,7 @@ class HandLogModelNew {
     if (serviceResult) {
       hand = hand['data'];
     }
-    //var players = json["players"];
-    //final myInfo = json["myInfo"];
     final handLog = Data.fromJson(hand);
-    // final playerIdToName = Map<int, String>();
-    // players = null;
-    // if (players != null) {
-    //   for (final player in players) {
-    //     final playerId = int.parse(player["id"].toString());
-    //     final name = player["name"];
-    //     playerIdToName[playerId] = name;
-    //   }
-    // } else {
-    //   for (final player in handLog.playersInSeats) {
-    //     playerIdToName[player.id] = player.name;
-    //   }
-    // }
     return HandLogModelNew(
       hand: handLog,
       //playerIdToName: playerIdToName,
@@ -57,23 +39,6 @@ class HandLogModelNew {
     );
   }
 
-  // String getPlayerName(GameActions actions, int index) {
-  //   final seatNo = actions.actions[index].seatNo;
-  //   final player = this
-  //       .hand
-  //       .playersInSeats
-  //       .firstWhere((element) => element.seatNo == seatNo);
-  //   return this.playerIdToName[player.id];
-  // }
-
-  // String getPlayerNameBySeatNo(int seatNo) {
-  //   final player = this
-  //       .hand
-  //       .playersInSeats
-  //       .firstWhere((element) => element.seatNo == seatNo);
-  //   return this.playerIdToName[player.id];
-  // }
-
   Player getPlayerBySeatNo(int seatNo) {
     final player = this
         .hand
@@ -81,33 +46,7 @@ class HandLogModelNew {
         .firstWhere((element) => element.seatNo == seatNo);
     return player;
   }
-
-  // Map<String, dynamic> toJson() => {
-  //       "handResult": hand.toJson(),
-  //       "players": List<dynamic>.from(players.map((x) => x.toJson())),
-  //       "myInfo": myInfo.toJson(),
-  //     };
 }
-
-/* class Hand {
-  Hand({
-    this.data,
-    this.totalPot,
-  });
-
-  Data data;
-  int totalPot;
-
-  factory Hand.fromJson(Map<String, dynamic> json) => Hand(
-        data: Data.fromJson(json["data"]),
-        totalPot: json["totalPot"],
-      );
-
-  Map<String, dynamic> toJson() => {
-        "data": data.toJson(),
-        "totalPot": totalPot,
-      };
-} */
 
 class Data {
   Data({

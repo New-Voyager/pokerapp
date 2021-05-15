@@ -1,8 +1,10 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/routes.dart';
+import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/widgets/cards/multiple_stack_card_views.dart';
 import 'package:pokerapp/screens/util_screens/numeric_keyboard.dart';
 import 'package:pokerapp/screens/util_screens/replay_hand_screen/replay_hand_screen.dart';
@@ -55,6 +57,18 @@ class _ProfilePageViewState extends State<ProfilePageView> {
               child: Text('SVG border'),
               onPressed: () async {
                 log('show svg border');
+                GameType type = await showGameSelectorDialog(
+                  listOfGameTypes: [
+                    GameType.HOLDEM,
+                    GameType.PLO,
+                    GameType.PLO_HILO,
+                    GameType.FIVE_CARD_PLO_HILO,
+                    GameType.FIVE_CARD_PLO,
+                  ],
+                  timeLimit: Duration(seconds: 60),
+                );
+
+                log("Selected Game Type: ${gameTypeStr(type)}");
                 // plateWidget.animate()
               }
               // child: Text('Numeric Keyboard'),

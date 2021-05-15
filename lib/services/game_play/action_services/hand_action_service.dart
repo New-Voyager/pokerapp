@@ -23,6 +23,8 @@ import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/card_back_assets.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/overlay_notification.dart';
+import 'package:pokerapp/screens/util_screens/util.dart';
+import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/game_play/action_services/game_action_service/sub_services/high_hand_service.dart';
 import 'package:pokerapp/services/game_play/utils/audio.dart';
 import 'package:pokerapp/services/test/test_service.dart';
@@ -313,6 +315,9 @@ class HandActionService {
 
         case AppConstants.ANNOUNCEMENT:
           return handleAnnouncement(data);
+
+        case AppConstants.DEALER_CHOICE:
+          return handleDealerChoice(data);
       }
     } catch (err) {
       log('Error: ${err.toString()}');
@@ -351,6 +356,29 @@ class HandActionService {
 
     /* pause for a bit todo: get duration */
     await Future.delayed(const Duration(milliseconds: 2000));
+  }
+
+  Future<void> handleDealerChoice(var data) async {
+    final dealerChoice = data['dealerChoice'];
+    if (dealerChoice == null) {
+      return;
+    }
+
+    List<GameType> gameChoices = [];
+    for (final type in dealerChoice['games']) {
+      final gameType =
+          GameType.values[type]; //.firstWhere((element) => element == type);
+      gameChoices.add(gameType);
+    }
+
+    GameType type = await showGameSelectorDialog(
+      listOfGameTypes: gameChoices,
+      timeLimit: Duration(seconds: 60),
+    );
+    log('selected game type: $type');
+    if (type != GameType.UNKNOWN) {
+      GameService.dealerChoice(_gameState.gameCode, type);
+    }
   }
 
   Future<void> handleNewHand(var data) async {
