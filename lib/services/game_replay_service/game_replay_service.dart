@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_replay_models/game_replay_action.dart';
@@ -7,26 +8,33 @@ import 'package:pokerapp/models/hand_log_model_new.dart';
 class GameReplayService {
   GameReplayService._();
 
-  static List<PlayerModel> _getPlayers(dynamic players) {
-    List<PlayerModel> playerModels = [];
-    players.forEach((String seatNo, var player) {
-      playerModels.add(
-        PlayerModel(
-          name: player['name'],
-          seatNo: int.parse(seatNo),
-          playerUuid: '',
-          // buyIn: null,
-          stack: player['balance']['before'],
-          status: null,
-        ),
-      );
-    });
+  static List<PlayerModel> _getPlayers(List<Player> players) => players
+      .map<PlayerModel>((p) => PlayerModel(
+            name: p.name,
+            seatNo: p.seatNo,
+            stack: p.balance.before,
+          ))
+      .toList();
 
-    return playerModels;
+  /* returns back the mapping of <seat.no-cards> */
+  static Map<int, List<int>> _getPlayerCards(List<Player> players) {
+    Map<int, List<int>> _playerCards = {};
+    for (Player p in players) _playerCards[p.seatNo] = p.cards;
+    return _playerCards;
   }
 
-  static List<GameReplayAction> _getActions(var data) {
-    final handLog = data['handLog'];
+  static List<GameReplayAction> _getActions({
+    @required HandLog handLog,
+    @required List<int> flopCards,
+    @required int turnCard,
+    @required int riverCard,
+    @required Map<int, List<int>> playerCards,
+    @required List<int> board1Cards,
+    @required List<int> board2Cards,
+    @required bool isRunItTwice,
+    @required dynamic runItTwiceResult,
+    @required Map<String, PotWinner> potWinners,
+  }) {
     final List<GameReplayAction> actions = [];
 
     /* card distribution */
@@ -38,91 +46,79 @@ class GameReplayService {
 
     /* pre flop */
 
-    var preflopActions = handLog['preflopActions'];
     actions.add(
       GameReplayAction(
         gameReplayActionType: GameReplayActionType.pre_flop_started,
-        actionData: {
-          'pot': preflopActions['pot'],
-        },
+        startPot: handLog.preflopActions.potStart,
       ),
     );
 
     /* add player actions */
     actions.addAll(
-      preflopActions['actions']
-          .map<GameReplayAction>((var action) => GameReplayAction(
+      handLog.preflopActions.actions
+          .map<GameReplayAction>((ActionElement action) => GameReplayAction(
                 gameReplayActionType: GameReplayActionType.player_action,
-                actionData: action,
+                action: action,
               ))
           .toList(),
     );
 
     /* flop */
 
-    var flopActions = handLog['flopActions'];
     actions.add(
       GameReplayAction(
         gameReplayActionType: GameReplayActionType.flop_started,
-        actionData: {
-          'pot': flopActions['pot'],
-          'cards': data['flopCards'],
-        },
+        startPot: handLog.flopActions.potStart,
+        boardCards: flopCards,
       ),
     );
 
     /* add player actions */
     actions.addAll(
-      flopActions['actions']
-          .map<GameReplayAction>((var action) => GameReplayAction(
+      handLog.flopActions.actions
+          .map<GameReplayAction>((ActionElement action) => GameReplayAction(
                 gameReplayActionType: GameReplayActionType.player_action,
-                actionData: action,
+                action: action,
               ))
           .toList(),
     );
 
     /* turn */
 
-    var turnActions = handLog['turnActions'];
     actions.add(
       GameReplayAction(
         gameReplayActionType: GameReplayActionType.turn_started,
-        actionData: {
-          'pot': turnActions['pot'],
-          'cards': data['turnCards'],
-        },
+        startPot: handLog.turnActions.potStart,
+        boardCard: turnCard,
       ),
     );
 
     /* add player actions */
     actions.addAll(
-      turnActions['actions']
-          .map<GameReplayAction>((var action) => GameReplayAction(
+      handLog.turnActions.actions
+          .map<GameReplayAction>((ActionElement action) => GameReplayAction(
                 gameReplayActionType: GameReplayActionType.player_action,
-                actionData: action,
+                action: action,
               ))
           .toList(),
     );
 
     /* river */
 
-    var riverActions = handLog['riverActions'];
     actions.add(
       GameReplayAction(
         gameReplayActionType: GameReplayActionType.river_started,
-        actionData: {
-          'pot': riverActions['pot'],
-          'cards': data['riverCards'],
-        },
+        startPot: handLog.riverActions.potStart,
+        boardCard: riverCard,
       ),
     );
 
     /* add player actions */
     actions.addAll(
-      riverActions['actions']
-          .map<GameReplayAction>((var action) => GameReplayAction(
+      handLog.riverActions.actions
+          .map<GameReplayAction>((ActionElement action) => GameReplayAction(
                 gameReplayActionType: GameReplayActionType.player_action,
-                actionData: action,
+                action: action,
               ))
           .toList(),
     );
@@ -132,18 +128,38 @@ class GameReplayService {
     actions.add(
       GameReplayAction(
         gameReplayActionType: GameReplayActionType.showdown,
-        actionData: data['players'],
+        playerCards: playerCards,
       ),
     );
 
-    /* show winner */
+    /* if run it twice case, we need to show the animation for the board cards */
+    if (isRunItTwice)
+      actions.add(
+        GameReplayAction(
+          gameReplayActionType: GameReplayActionType.run_it_twice_board,
+          boardCards: board1Cards,
+          board2Cards: board2Cards,
+        ),
+      );
 
-    actions.add(
-      GameReplayAction(
-        gameReplayActionType: GameReplayActionType.declare_winner,
-        actionData: handLog['potWinners'],
-      ),
-    );
+    /* declare winner */
+    /* if run it twice is true -> show run it twice result */
+    /* else show the regular pot winner result */
+
+    if (isRunItTwice)
+      actions.add(
+        GameReplayAction(
+          gameReplayActionType: GameReplayActionType.run_it_twice_winner,
+          runItTwiceWinners: runItTwiceResult,
+        ),
+      );
+    else
+      actions.add(
+        GameReplayAction(
+          gameReplayActionType: GameReplayActionType.pot_winner,
+          potWinners: potWinners,
+        ),
+      );
 
     return actions;
   }
@@ -153,21 +169,33 @@ class GameReplayService {
     final HandLogModelNew handLog = HandLogModelNew.fromJson(data);
 
     final GameInfoModel gameInfoModel = GameInfoModel(
-      maxPlayers: maxPlayers,
-      gameType: gameType,
-      tableStatus: tableStatus,
-      status: status,
-      smallBlind: smallBlind,
-      bigBlind: bigBlind,
-      playersInSeats: playersInSeats,
+      // FIXME: WE WOULD NEED THE MAX PLAYER INFORMATION IN HANDLOG
+      maxPlayers: 9,
+      gameType: handLog.hand.gameType,
+      tableStatus: null,
+      status: null,
+      smallBlind: null,
+      bigBlind: null,
+      playersInSeats: _getPlayers(handLog.hand.playersInSeats),
     );
 
-    final List<GameReplayAction> actions = [];
+    final List<GameReplayAction> actions = _getActions(
+      handLog: handLog.hand.handLog,
+      flopCards: handLog.hand.flop,
+      riverCard: handLog.hand.river,
+      turnCard: handLog.hand.turn,
+      playerCards: _getPlayerCards(handLog.hand.playersInSeats),
+      board1Cards: handLog.hand.boardCards,
+      board2Cards: handLog.hand.boardCards2,
+      isRunItTwice: handLog.hand.handLog.runItTwice,
+      runItTwiceResult: handLog.hand.handLog.runItTwiceResult,
+      potWinners: handLog.hand.handLog.potWinners,
+    );
 
     return GameReplayController(
       gameInfoModel: gameInfoModel,
       actions: actions,
-      playerUuid: null,
+      playerUuid: handLog.myInfo.uuid,
     );
   }
 }

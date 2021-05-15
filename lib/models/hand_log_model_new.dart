@@ -136,7 +136,7 @@ class Data {
   HandLog handLog;
   List<dynamic> rewardTrackingIds;
   List<int> boardCards;
-  List<dynamic> boardCards2;
+  List<int> boardCards2;
   List<int> flop;
   int turn;
   int river;
@@ -155,7 +155,7 @@ class Data {
         rewardTrackingIds:
             List<dynamic>.from(json["rewardTrackingIds"].map((x) => x)),
         boardCards: List<int>.from(json["boardCards"].map((x) => x)),
-        boardCards2: List<dynamic>.from(json["boardCards2"].map((x) => x)),
+        boardCards2: List<int>.from(json["boardCards2"].map((x) => x)),
         flop: List<int>.from(json["flop"].map((x) => x)),
         turn: json["turn"],
         river: json["river"],

@@ -23,7 +23,7 @@ class GameReplayController {
   GameReplayController({
     @required GameInfoModel gameInfoModel,
     @required List<GameReplayAction> actions,
-    @required playerUuid,
+    @required String playerUuid,
   }) {
     this._gameInfoModel = gameInfoModel;
     this._actions = actions;
