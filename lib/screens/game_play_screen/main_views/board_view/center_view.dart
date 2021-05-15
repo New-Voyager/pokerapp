@@ -75,8 +75,6 @@ class CenterView extends StatelessWidget {
   }
 
   Widget multiplePots(BuildContext context) {
-    print('potchips $potChips');
-
     final gameState = Provider.of<GameState>(context, listen: false);
     final boardAttributes = gameState.getBoardAttributes(context);
     List<Widget> pots = [];

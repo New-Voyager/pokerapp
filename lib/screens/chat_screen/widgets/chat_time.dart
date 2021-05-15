@@ -22,7 +22,7 @@ class ChatTimeWidget extends StatelessWidget {
           dateString(date),
           style: TextStyle(
             color: Colors.white.withOpacity(0.5),
-            fontSize: 12,
+            fontSize: 10,
           ),
         ),
       ),

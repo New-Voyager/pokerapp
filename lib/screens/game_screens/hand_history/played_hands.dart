@@ -4,6 +4,7 @@ import 'package:pokerapp/models/hand_history_model.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
+import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_log_view.dart';
 import 'package:pokerapp/services/app/hand_service.dart';
@@ -11,7 +12,7 @@ import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/widgets/cards/multiple_stack_card_views.dart';
 
 final _separator = SizedBox(
-  height: 10.0,
+  height: 5.0,
 );
 
 class PlayedHandsScreen extends StatelessWidget {
@@ -30,7 +31,10 @@ class PlayedHandsScreen extends StatelessWidget {
         backgroundColor: AppColors.screenBackgroundColor,
         body: Column(
           children: [
-            getHeader(),
+            SizedBox(
+              height: 16,
+            ),
+            //   getHeader(),
             Expanded(
               child: ListView.separated(
                 itemBuilder: (context, index) {
@@ -286,47 +290,75 @@ class PlayedHandsScreen extends StatelessWidget {
                   borderRadius: BorderRadius.all(
                     Radius.circular(AppDimensions.cardRadius),
                   ),
+                  gradient: LinearGradient(
+                    colors: [Colors.grey[850], Colors.grey[700]],
+                  ),
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(6.0),
                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          handNumWidget(history[index].handNum),
+                          //handNumWidget(history[index].handNum),
+                          SizedBox(
+                            width: 16,
+                          ),
                           widget,
                         ],
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          InkWell(
-                            onTap: () async {
-                              await _shareHandWithClub(context, index);
-                            },
-                            child: Container(
-                              alignment: Alignment.bottomRight,
-                              child: Icon(
-                                Icons.share,
-                                color: Color(0xff319ffe),
-                                size: 24,
+                      Divider(
+                        color: AppColors.veryLightGrayColor,
+                        indent: 8,
+                        endIndent: 8,
+                      ),
+                      Container(
+                        margin:
+                            EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Hand #${history[index].handNum}",
+                              style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 12,
                               ),
                             ),
-                          ),
-                          SizedBox(width: 20),
-                          InkWell(
-                            onTap: () {},
-                            child: Container(
-                              alignment: Alignment.bottomRight,
-                              child: Icon(
-                                Icons.star_outline,
-                                color: Color(0xff319ffe),
-                                size: 24,
-                              ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                InkWell(
+                                  onTap: () async {
+                                    await _shareHandWithClub(context, index);
+                                  },
+                                  child: Container(
+                                    alignment: Alignment.bottomRight,
+                                    child: Icon(
+                                      Icons.share,
+                                      color: Colors.white,
+                                      size: 20,
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(width: 20),
+                                InkWell(
+                                  onTap: () {},
+                                  child: Container(
+                                    alignment: Alignment.bottomRight,
+                                    child: Icon(
+                                      Icons.star_outline,
+                                      color: Colors.white,
+                                      size: 20,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ],
                   ),
@@ -389,11 +421,12 @@ class WinnerWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Expanded(
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
           Expanded(
             child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Flexible(
                   flex: 4,
@@ -425,7 +458,7 @@ class WinnerWidget extends StatelessWidget {
                             style: const TextStyle(
                               fontFamily: AppAssets.fontFamilyLato,
                               color: AppColors.lightGrayTextColor,
-                              fontSize: 14.0,
+                              fontSize: 12.0,
                               fontWeight: FontWeight.w400,
                             ),
                           ),
@@ -444,11 +477,14 @@ class WinnerWidget extends StatelessWidget {
             children: [
               Icon(
                 Icons.arrow_forward_ios,
-                color: AppColors.appAccentColor,
-                size: 10,
+                color: Colors.white,
+                size: 12,
               ),
             ],
           ),
+          SizedBox(
+            width: 8,
+          )
         ],
       ),
     );
@@ -468,8 +504,8 @@ class WinnerWidget extends StatelessWidget {
       },
       itemCount: this.item.winners.length,
       separatorBuilder: (context, index) {
-        return SizedBox(
-          height: 20.0,
+        return Divider(
+          color: AppColors.veryLightGrayColor,
         );
       },
     );
@@ -492,7 +528,7 @@ class WinnerWidget extends StatelessWidget {
                 style: const TextStyle(
                   fontFamily: AppAssets.fontFamilyLato,
                   color: Colors.orangeAccent,
-                  fontSize: 16.0,
+                  fontSize: 14.0,
                   fontWeight: FontWeight.w400,
                 ),
               ),
@@ -508,7 +544,7 @@ class WinnerWidget extends StatelessWidget {
                   style: const TextStyle(
                     fontFamily: AppAssets.fontFamilyLato,
                     color: AppColors.lightGrayTextColor,
-                    fontSize: 14.0,
+                    fontSize: 12.0,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -518,12 +554,12 @@ class WinnerWidget extends StatelessWidget {
                   style: const TextStyle(
                     fontFamily: AppAssets.fontFamilyLato,
                     color: Colors.lightGreenAccent,
-                    fontSize: 14.0,
+                    fontSize: 12.0,
                     fontWeight: FontWeight.w400,
                   ),
                 ),
               ]),
-              _separator,
+              // _separator,
             ],
           ),
         ),

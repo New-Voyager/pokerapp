@@ -130,8 +130,9 @@ class HandLogHeaderView extends StatelessWidget {
   _getMyCards(HandLogModelNew handLogModel) {
     List<int> myCards = [];
     int myId = handLogModel.myInfo.id;
+    // Need to use 'orElse', otherwise it will crash.
     final player = handLogModel.hand.playersInSeats
-        .firstWhere((element) => element.id == myId);
+        .firstWhere((element) => element.id == myId, orElse: () => null);
     if (player != null) {
       return player.cards;
     }

@@ -3,8 +3,10 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_stages.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
+import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_stage_header.dart';
+import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/widgets/cards/multiple_stack_card_views.dart';
 
 class HandlogShowDown extends StatelessWidget {
@@ -46,7 +48,10 @@ class HandlogShowDown extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            handLogModel.getPlayerNameBySeatNo(player.seatNo),
+                            getPlayerNameBySeatNo(
+                              handLogModel: handLogModel,
+                              seatNo: player.seatNo,
+                            ),
                             style: AppStyles.playerNameTextStyle,
                           ),
                         ],
@@ -62,7 +67,17 @@ class HandlogShowDown extends StatelessWidget {
                 ),
               );
             },
-            separatorBuilder: (context, index) => Divider(),
+            separatorBuilder: (context, index) {
+              Player player = handLogModel.hand.playersInSeats[index];
+              if (player.playedUntil != "SHOW_DOWN") {
+                return Container();
+              }
+              return Divider(
+                endIndent: 16,
+                indent: 16,
+                color: AppColors.veryLightGrayColor,
+              );
+            },
             itemCount: handLogModel.hand.playersInSeats.length,
           ),
         )

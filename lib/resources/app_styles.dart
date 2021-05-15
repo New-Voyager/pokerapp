@@ -5,6 +5,14 @@ import 'package:pokerapp/resources/app_assets.dart';
 import 'app_colors.dart';
 
 class AppStyles {
+  static LinearGradient handlogGreyGradient = LinearGradient(
+    colors: [Colors.grey[850], Colors.grey[700]],
+  );
+
+  static LinearGradient handlogBlueGradient = LinearGradient(
+    colors: [Color(0xFF02386E), Color(0xFF00498D)],
+  );
+
   static const playerNameTextStyle = const TextStyle(
     fontFamily: AppAssets.fontFamilyLato,
     color: Colors.white,

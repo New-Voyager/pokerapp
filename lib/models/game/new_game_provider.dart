@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/game/new_game_model.dart';
 import 'package:pokerapp/models/rewards_model.dart';
 import 'package:pokerapp/services/app/rewards_service.dart';
@@ -11,7 +12,7 @@ class NewGameModelProvider extends ChangeNotifier {
   List<String> gameTypes = [];
   List<String> gameLengths = [];
   List<Rewards> rewards = [];
-
+  List<GameType> roeSelectedGames = [];
   NewGameModelProvider(String clubCode) {
     settings = NewGameModel.withDefault(clubCode);
     settings.clubCode = clubCode;
@@ -26,6 +27,11 @@ class NewGameModelProvider extends ChangeNotifier {
     NewGameConstants.SUPPORTED_GAMES.forEach((key, value) {
       gameTypes.add(value);
     });
+    roeSelectedGames.addAll([
+      GameType.HOLDEM,
+      GameType.PLO,
+    ]);
+    settings.roeGames = roeSelectedGames;
   }
 
   get selectedReward {

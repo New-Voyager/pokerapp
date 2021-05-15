@@ -662,4 +662,13 @@ class TestService {
       },
     );
   }
+
+  static void handAnnouncement() async {
+    final gameState = GameState.getState(_context);
+    if (_handActionService == null) {
+      _handActionService = HandActionService(_context, gameState, null);
+      _handActionService.loop();
+    }
+    await _handActionService.handle(newGameAnnouncement());
+  }
 }

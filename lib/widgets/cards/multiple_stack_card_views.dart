@@ -70,6 +70,8 @@ class StackCardView00 extends StatelessWidget {
           CardObject card = CardHelper.getCard(0);
           card.cardType = CardType.HandLogOrHandHistoryCard;
           card.dim = true;
+          // card.empty = true;
+          card.cardFace = CardFace.BACK;
           cardViews.add(card.widget);
           cardViews.add(
             SizedBox(

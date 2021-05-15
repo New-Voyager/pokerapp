@@ -106,6 +106,7 @@ class PlayerHoleCardView extends StatelessWidget {
       shadow: true,
       isCardVisible: isCardVisible,
       cardBuilder: _buildCardUI,
+      cardFace: isCardVisible ? CardFace.FRONT : CardFace.BACK,
     );
   }
 }
