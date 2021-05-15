@@ -18,6 +18,9 @@ class GameReplayAction {
   /* this contains the action type */
   final GameReplayActionType gameReplayActionType;
 
+  /* game related info */
+  final int noCards;
+
   /* the start pot holds the value of pot before the round begins */
   final int startPot;
 
@@ -26,7 +29,7 @@ class GameReplayAction {
 
   /* community cards - flop cards, turn card or river card */
   final List<int> boardCards;
-  final List<int> board2Cards;
+  final List<int> boardCards2;
   final int boardCard;
 
   /* for show down & run it twice result / pot winners */
@@ -34,17 +37,18 @@ class GameReplayAction {
 
   /* result data */
   final Map<String, PotWinner> potWinners;
-  final dynamic runItTwiceWinners;
+  final dynamic runItTwiceResult;
 
   GameReplayAction({
     @required this.gameReplayActionType,
+    this.noCards,
     this.startPot,
     this.action,
     this.boardCards,
-    this.board2Cards,
+    this.boardCards2,
     this.boardCard,
     this.playerCards,
     this.potWinners,
-    this.runItTwiceWinners,
+    this.runItTwiceResult,
   }) : assert(gameReplayActionType != null);
 }

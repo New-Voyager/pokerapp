@@ -27,6 +27,7 @@ class GameReplayService {
 
   static List<GameReplayAction> _getActions({
     @required HandLog handLog,
+    @required int noCards,
     @required List<int> flopCards,
     @required int turnCard,
     @required int riverCard,
@@ -43,6 +44,7 @@ class GameReplayService {
     actions.add(
       GameReplayAction(
         gameReplayActionType: GameReplayActionType.card_distribution,
+        noCards: noCards,
       ),
     );
 
@@ -140,7 +142,7 @@ class GameReplayService {
         GameReplayAction(
           gameReplayActionType: GameReplayActionType.run_it_twice_board,
           boardCards: board1Cards,
-          board2Cards: board2Cards,
+          boardCards2: board2Cards,
         ),
       );
 
@@ -152,7 +154,7 @@ class GameReplayService {
       actions.add(
         GameReplayAction(
           gameReplayActionType: GameReplayActionType.run_it_twice_winner,
-          runItTwiceWinners: runItTwiceResult,
+          runItTwiceResult: runItTwiceResult,
         ),
       );
     else
@@ -183,6 +185,7 @@ class GameReplayService {
 
     final List<GameReplayAction> actions = _getActions(
       handLog: handLog.hand.handLog,
+      noCards: handLog.hand.noCards,
       flopCards: handLog.hand.flop,
       riverCard: handLog.hand.river,
       turnCard: handLog.hand.turn,

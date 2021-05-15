@@ -53,6 +53,7 @@ class Data {
     this.gameId,
     this.handNum,
     this.gameType,
+    this.noCards,
     this.handLog,
     this.rewardTrackingIds,
     this.boardCards,
@@ -71,6 +72,7 @@ class Data {
   String gameId;
   int handNum;
   String gameType;
+  int noCards;
   HandLog handLog;
   List<dynamic> rewardTrackingIds;
   List<int> boardCards;
@@ -89,6 +91,7 @@ class Data {
         gameId: json["gameId"],
         handNum: json["handNum"],
         gameType: json["gameType"],
+        noCards: json['noCards'],
         handLog: HandLog.fromJson(json["handLog"]),
         rewardTrackingIds:
             List<dynamic>.from(json["rewardTrackingIds"].map((x) => x)),
