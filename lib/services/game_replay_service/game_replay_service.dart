@@ -71,65 +71,67 @@ class GameReplayService {
           .toList(),
     );
 
-    /* flop */
+    /* flop actions */
 
-    actions.add(
-      GameReplayAction(
-        gameReplayActionType: GameReplayActionType.flop_started,
-        startPot: handLog.flopActions.potStart,
-        boardCards: flopCards,
-      ),
-    );
+    final List<GameReplayAction> flopActions = handLog.flopActions.actions
+        .map<GameReplayAction>((ActionElement action) => GameReplayAction(
+              gameReplayActionType: GameReplayActionType.player_action,
+              action: action,
+            ))
+        .toList();
 
-    /* add player actions */
-    actions.addAll(
-      handLog.flopActions.actions
-          .map<GameReplayAction>((ActionElement action) => GameReplayAction(
-                gameReplayActionType: GameReplayActionType.player_action,
-                action: action,
-              ))
-          .toList(),
-    );
+    if (flopActions.isNotEmpty) {
+      actions.add(
+        GameReplayAction(
+          gameReplayActionType: GameReplayActionType.flop_started,
+          startPot: handLog.flopActions.potStart,
+          boardCards: flopCards,
+        ),
+      );
 
-    /* turn */
+      actions.addAll(flopActions);
+    }
 
-    actions.add(
-      GameReplayAction(
-        gameReplayActionType: GameReplayActionType.turn_started,
-        startPot: handLog.turnActions.potStart,
-        boardCard: turnCard,
-      ),
-    );
+    /* turn actions */
+    final List<GameReplayAction> turnActions = handLog.turnActions.actions
+        .map<GameReplayAction>((ActionElement action) => GameReplayAction(
+              gameReplayActionType: GameReplayActionType.player_action,
+              action: action,
+            ))
+        .toList();
 
-    /* add player actions */
-    actions.addAll(
-      handLog.turnActions.actions
-          .map<GameReplayAction>((ActionElement action) => GameReplayAction(
-                gameReplayActionType: GameReplayActionType.player_action,
-                action: action,
-              ))
-          .toList(),
-    );
+    if (turnActions.isNotEmpty) {
+      actions.add(
+        GameReplayAction(
+          gameReplayActionType: GameReplayActionType.turn_started,
+          startPot: handLog.turnActions.potStart,
+          boardCard: turnCard,
+        ),
+      );
 
-    /* river */
+      actions.addAll(turnActions);
+    }
 
-    actions.add(
-      GameReplayAction(
-        gameReplayActionType: GameReplayActionType.river_started,
-        startPot: handLog.riverActions.potStart,
-        boardCard: riverCard,
-      ),
-    );
+    /* river actions */
+    final List<GameReplayAction> riverActions = handLog.riverActions.actions
+        .map<GameReplayAction>((ActionElement action) => GameReplayAction(
+              gameReplayActionType: GameReplayActionType.player_action,
+              action: action,
+            ))
+        .toList();
 
-    /* add player actions */
-    actions.addAll(
-      handLog.riverActions.actions
-          .map<GameReplayAction>((ActionElement action) => GameReplayAction(
-                gameReplayActionType: GameReplayActionType.player_action,
-                action: action,
-              ))
-          .toList(),
-    );
+    if (riverActions.isNotEmpty) {
+      actions.add(
+        GameReplayAction(
+          gameReplayActionType: GameReplayActionType.river_started,
+          startPot: handLog.riverActions.potStart,
+          boardCard: riverCard,
+        ),
+      );
+
+      /* add player actions */
+      actions.addAll(riverActions);
+    }
 
     /* showdown -> show the cards of all the players */
 
@@ -159,6 +161,8 @@ class GameReplayService {
         GameReplayAction(
           gameReplayActionType: GameReplayActionType.run_it_twice_winner,
           runItTwiceResult: runItTwiceResult,
+          boardCards: board1Cards,
+          boardCards2: board2Cards,
         ),
       );
     else

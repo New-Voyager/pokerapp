@@ -93,7 +93,7 @@ class ReplayHandScreenUtils {
     /* todo: the network call can be made here */
 
     final String dataString = await rootBundle.loadString(
-      'assets/sample-data/handlog/holdem/onewinner.json',
+      'assets/sample-data/handlog/holdem/runittwice.json',
     );
 
     final data = jsonDecode(dataString);

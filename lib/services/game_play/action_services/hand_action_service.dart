@@ -1108,6 +1108,7 @@ class HandActionService {
     @required final List<int> boardCards,
     @required final List<int> boardCards2,
     @required final BuildContext context,
+    final bool fromReplay = false,
   }) async {
     assert(context != null);
 
@@ -1200,8 +1201,8 @@ class HandActionService {
         boardIndex: 2,
       );
 
-      /* turn off two boards needed flag */
-      tableState.updateTwoBoardsNeeded(false);
+      /* turn off two boards needed flag -> only if we are not from replay */
+      if (!fromReplay) tableState.updateTwoBoardsNeeded(false);
     } else {
       /* NOT RUN IT TWICE CASE */
       for (final hiWinner in winners) {
