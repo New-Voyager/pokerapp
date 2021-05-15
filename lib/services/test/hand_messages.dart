@@ -558,3 +558,19 @@ String newGameAnnouncement() => '''
 		}
 	}]
 }''';
+
+String dealerChoiceMessage() => '''
+{
+	"version": "1.0",
+	"gameCode": "CG-W9PFBTYON2G2Q2M",
+	"playerId": "6026",
+	"gameToken": "",
+	"messageId": "DEALERCHOICE:1621057258053",
+	"messages": [{
+		"messageType": "DEALER_CHOICE",
+		"dealerChoice": {
+			"playerId": "6026",
+			"games": [1, 2, 3, 4, 5]
+		}
+	}]
+}''';

@@ -67,13 +67,12 @@ class _ProfilePageViewState extends State<ProfilePageView> {
               onPressed: () async {
                 log('show svg border');
                 GameType type = await showGameSelectorDialog(
-                  listOfGameTyeps: [
-                    GameType.DEALER_CHOICE,
-                    GameType.FIVE_CARD_PLO_HILO,
-                    GameType.FIVE_CARD_PLO,
+                  listOfGameTypes: [
                     GameType.HOLDEM,
                     GameType.PLO,
                     GameType.PLO_HILO,
+                    GameType.FIVE_CARD_PLO_HILO,
+                    GameType.FIVE_CARD_PLO,
                   ],
                   timeLimit: Duration(seconds: 60),
                 );

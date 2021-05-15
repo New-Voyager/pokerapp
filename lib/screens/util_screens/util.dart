@@ -131,13 +131,23 @@ String getPlayerNameBySeatNo({HandLogModelNew handLogModel, int seatNo}) {
   return res == null ? "Player" : res.name;
 }
 
+String printDuration(Duration duration) {
+  String twoDigits(int n) => n.toString().padLeft(2, "0");
+  if (duration.inSeconds <= 0) {
+    return '0:00';
+  }
+  String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
+  String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
+  return "$twoDigitMinutes:$twoDigitSeconds";
+}
+
 Future<GameType> showGameSelectorDialog({
-  @required List<GameType> listOfGameTyeps,
+  @required List<GameType> listOfGameTypes,
   @required Duration timeLimit,
 }) async {
-  log("LENGTH : ${listOfGameTyeps.length}");
+  log("LENGTH : ${listOfGameTypes.length}");
   int sec = timeLimit.inSeconds;
-
+  bool dismissed = false;
   final GameType result = await showDialog(
     context: navigatorKey.currentContext,
     barrierDismissible: false,
@@ -153,15 +163,16 @@ Future<GameType> showGameSelectorDialog({
         ),
         content: StatefulBuilder(
           builder: (context, localState) {
-            log("SECONDS : $sec");
             Future.delayed(Duration(seconds: 1), () {
               if (sec == 1) {
-                int random = math.Random().nextInt(listOfGameTyeps.length);
-                Navigator.of(context).pop(listOfGameTyeps[random]);
+                //int random = math.Random().nextInt(listOfGameTypes.length);
+                Navigator.of(context).pop(GameType.UNKNOWN);
               } else {
-                localState(() {
-                  sec--;
-                });
+                if (!dismissed) {
+                  localState(() {
+                    sec--;
+                  });
+                }
               }
             });
 
@@ -173,37 +184,38 @@ Future<GameType> showGameSelectorDialog({
                   //height: MediaQuery.of(context).size.height*0.4,
                   child: Wrap(
                     children: List.generate(
-                      listOfGameTyeps.length,
+                      listOfGameTypes.length,
                       (index) {
                         return Container(
                           margin:
                               EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                          width: 70,
+                          width: 32,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               InkWell(
                                 onTap: () {
+                                  dismissed = true;
                                   Navigator.of(context)
-                                      .pop(listOfGameTyeps[index]);
+                                      .pop(listOfGameTypes[index]);
                                 },
                                 child: Container(
-                                  padding: EdgeInsets.all(12),
+                                  padding: EdgeInsets.all(8),
                                   decoration: BoxDecoration(
                                       shape: BoxShape.circle,
                                       color: AppColors.appAccentColor),
                                   child: Image.asset(
                                     AppAssets.cardsImage,
-                                    height: 35,
+                                    height: 24,
                                     color: Colors.white,
                                   ),
                                 ),
                               ),
                               Text(
-                                "${gameTypeStr(listOfGameTyeps[index])}",
+                                "${gameTypeShortStr(listOfGameTypes[index])}",
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
-                                  fontSize: 12,
+                                  fontSize: 10,
                                   color: AppColors.appAccentColor,
                                 ),
                               ),
@@ -221,58 +233,40 @@ Future<GameType> showGameSelectorDialog({
                       margin: EdgeInsets.symmetric(horizontal: 4, vertical: 8),
                       child: Column(
                         children: [
-                          RichText(
-                            text: TextSpan(
-                              text: "Spinning in ",
-                              style: TextStyle(
-                                color: Colors.white,
-                              ),
-                              children: [
-                                TextSpan(
-                                  text:
-                                      "${Duration(seconds: sec).inMinutes} : ${Duration(seconds: sec).inSeconds} sec",
-                                  style: TextStyle(color: Colors.yellow),
-                                ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(
-                            height: 8,
-                          ),
                           InkWell(
                             onTap: () {
+                              dismissed = true;
                               int random =
-                                  math.Random().nextInt(listOfGameTyeps.length);
+                                  math.Random().nextInt(listOfGameTypes.length);
                               Navigator.of(context)
-                                  .pop(listOfGameTyeps[random]);
+                                  .pop(listOfGameTypes[random]);
                             },
                             child: Container(
-                              padding: EdgeInsets.all(12),
+                              padding: EdgeInsets.all(8),
                               decoration: BoxDecoration(
                                   shape: BoxShape.circle,
                                   color: AppColors.appAccentColor),
                               child: Image.asset(
                                 AppAssets.cardsImage,
-                                height: 35,
+                                height: 24,
                                 color: Colors.white,
                               ),
                             ),
                           ),
                           Text(
-                            "Spin",
+                            "Random",
                             style: TextStyle(
-                              fontSize: 14,
+                              fontSize: 12,
                               color: AppColors.appAccentColor,
                             ),
                           ),
                           SizedBox(
                             height: 8,
                           ),
-                          Text(
-                            "*Spinning randomly selects game type.",
-                            style: TextStyle(
-                              color: Colors.grey,
-                              fontSize: 10,
+                          RichText(
+                            text: TextSpan(
+                              text: printDuration(Duration(seconds: sec)),
+                              style: TextStyle(color: Colors.yellow),
                             ),
                           ),
                         ],
