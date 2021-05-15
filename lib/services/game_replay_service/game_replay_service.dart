@@ -1,9 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_replay_models/game_replay_action.dart';
 import 'package:pokerapp/models/game_replay_models/game_replay_controller.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
+import 'package:pokerapp/models/player_info.dart';
 
 class GameReplayService {
   GameReplayService._();
@@ -192,10 +194,21 @@ class GameReplayService {
       potWinners: handLog.hand.handLog.potWinners,
     );
 
+    final GameState gameState = GameState();
+    gameState.initialize(
+      // todo: take care of game code
+      gameCode: 'gameCode',
+      gameInfo: gameInfoModel,
+      currentPlayer: PlayerInfo(
+        id: handLog.myInfo.id,
+        uuid: handLog.myInfo.uuid,
+        name: handLog.myInfo.name,
+      ),
+    );
+
     return GameReplayController(
-      gameInfoModel: gameInfoModel,
+      gameState: gameState,
       actions: actions,
-      playerUuid: handLog.myInfo.uuid,
     );
   }
 }

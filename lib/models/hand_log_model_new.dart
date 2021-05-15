@@ -23,7 +23,6 @@ class HandLogModelNew {
 
   factory HandLogModelNew.fromJson(Map<String, dynamic> json,
       {bool serviceResult = false}) {
-    log(json.toString());
     var hand = json["handResult"];
     if (hand == null) {
       // HACK here
@@ -232,8 +231,8 @@ class HandLog {
             (k, v) => MapEntry<String, PotWinner>(k, PotWinner.fromJson(v))),
         wonAt: stagesEnumValues.map[json["wonAt"]],
         showDown: json["showDown"],
-        handStartedAt: json["handStartedAt"],
-        handEndedAt: json["handEndedAt"],
+        handStartedAt: int.parse(json["handStartedAt"].toString()),
+        handEndedAt: int.parse(json["handEndedAt"].toString()),
         runItTwice: json["runItTwice"],
         runItTwiceResult: json["runItTwiceResult"],
       );

@@ -29,57 +29,43 @@ class NamePlateWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    /* changing background color as per last action
-    * check/call -> green
-    * raise/bet -> shade of yellow / blue might b? */
-
-    // Color statusColor = const Color(0xff474747); // default color
-    // Color boxColor = const Color(0xff474747); // default color
-    // final openSeat = seat.isOpen;
-    // String action = !openSeat ? seat.player.action : '';
-    // if (action != null) {
-    //   if (action.toUpperCase().contains('CHECK') ||
-    //       action.toUpperCase().contains('CALL'))
-    //     statusColor = Colors.green;
-    //   else if (action.toUpperCase().contains('RAISE') ||
-    //       action.toUpperCase().contains('BET')) statusColor = Colors.red;
-    // }
     return Consumer2<HostSeatChange, GameContextObject>(
-        key: globalKey,
-        builder: (
-          context,
-          hostSeatChange,
-          gameContextObject,
-          _,
-        ) {
-          Widget widget;
-          if (gameContextObject.isAdmin() &&
-              hostSeatChange.seatChangeInProgress) {
-            widget = Draggable(
-              data: seat.serverSeatPos,
-              onDragEnd: (_) {
-                hostSeatChange.onSeatDragEnd();
-              },
-              onDragStarted: () {
-                hostSeatChange.onSeatDragStart(seat.serverSeatPos);
-              },
-              feedback: buildSeat(
-                context,
-                hostSeatChange,
-                isFeedBack: true,
-              ),
-              child: buildSeat(context, hostSeatChange),
-              childWhenDragging: buildSeat(
-                context,
-                hostSeatChange,
-                childWhenDragging: true,
-              ),
-            );
-          } else {
-            widget = buildSeat(context, hostSeatChange);
-          }
-          return widget;
-        });
+      key: globalKey,
+      builder: (
+        context,
+        hostSeatChange,
+        gameContextObject,
+        _,
+      ) {
+        Widget widget;
+        if (gameContextObject.isAdmin() &&
+            hostSeatChange.seatChangeInProgress) {
+          widget = Draggable(
+            data: seat.serverSeatPos,
+            onDragEnd: (_) {
+              hostSeatChange.onSeatDragEnd();
+            },
+            onDragStarted: () {
+              hostSeatChange.onSeatDragStart(seat.serverSeatPos);
+            },
+            feedback: buildSeat(
+              context,
+              hostSeatChange,
+              isFeedBack: true,
+            ),
+            child: buildSeat(context, hostSeatChange),
+            childWhenDragging: buildSeat(
+              context,
+              hostSeatChange,
+              childWhenDragging: true,
+            ),
+          );
+        } else {
+          widget = buildSeat(context, hostSeatChange);
+        }
+        return widget;
+      },
+    );
   }
 
   /*
@@ -206,7 +192,7 @@ class NamePlateWidget extends StatelessWidget {
                   children: [
                     FittedBox(
                       child: Text(
-                        seat.player.name,
+                        seat.player.name ?? 'name',
                         style: AppStyles.gamePlayScreenPlayerName.copyWith(
                           color: Colors.white,
                         ),

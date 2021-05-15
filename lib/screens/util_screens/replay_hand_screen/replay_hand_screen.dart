@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
@@ -38,7 +40,8 @@ class ReplayHandScreen extends StatelessWidget {
                 child: CircularProgressIndicator(),
               );
 
-            if (!snapshot.hasData || snapshot.hasError)
+            if (!snapshot.hasData || snapshot.hasError) {
+              log(snapshot.stackTrace.toString());
               return Center(
                 child: Text(
                   'Error: ${snapshot.error}',
@@ -48,6 +51,7 @@ class ReplayHandScreen extends StatelessWidget {
                   ),
                 ),
               );
+            }
 
             return ReplayHandUtilScreen(
               gameReplayController: snapshot.data,
@@ -77,8 +81,15 @@ class _ReplayHandUtilScreenState extends State<ReplayHandUtilScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final BoardAttributesObject boardAttributesObject = BoardAttributesObject(
+      screenSize: Screen(context).diagonalInches(),
+    );
+
     return MultiProvider(
-      providers: ReplayHandScreenUtils.getProviders(),
+      providers: ReplayHandScreenUtils.getProviders(
+        boardAttributesObject,
+        widget.gameReplayController.gameState,
+      ),
       builder: (BuildContext context, _) {
         /* initialize the game controller, after we have the context
            that can give access to the provider models */

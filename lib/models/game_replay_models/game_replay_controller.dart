@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_replay_models/game_replay_action.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/services/game_replay_service/game_replay_action_service.dart';
@@ -9,8 +10,7 @@ import 'package:pokerapp/services/game_replay_service/game_replay_action_service
 class GameReplayController {
   BuildContext _context;
 
-  String _playerUuid;
-  GameInfoModel _gameInfoModel;
+  GameState _gameState;
   List<GameReplayAction> _actions;
 
   StreamController<bool> _isPlayingStreamController;
@@ -21,19 +21,16 @@ class GameReplayController {
   Timer _timer;
 
   GameReplayController({
-    @required GameInfoModel gameInfoModel,
+    @required GameState gameState,
     @required List<GameReplayAction> actions,
-    @required String playerUuid,
   }) {
-    this._gameInfoModel = gameInfoModel;
+    this._gameState = gameState;
     this._actions = actions;
 
     this._isPlayingStreamController = StreamController<bool>.broadcast();
     this._isPlaying = false;
 
     this._actionCounter = -1;
-
-    this._playerUuid = playerUuid;
   }
 
   /* private util methods */
@@ -45,14 +42,6 @@ class GameReplayController {
     _actionCounter -= 1;
     return null;
   }
-
-  // GameReplayAction _getPreviousAction() {
-  //   _actionCounter -= 1;
-  //   if (_actionCounter >= 0) return _actions[_actionCounter];
-  //
-  //   _actionCounter += 1;
-  //   return null;
-  // }
 
   /* this method takes in an replay action and executes it */
   void _takeAction(GameReplayAction gameReplayAction) =>
@@ -120,7 +109,9 @@ class GameReplayController {
   Stream<bool> get isPlaying =>
       _isPlayingStreamController.stream.asBroadcastStream();
 
-  GameInfoModel get gameInfoModel => _gameInfoModel;
+  GameState get gameState => _gameState;
 
-  String get playerUuid => _playerUuid;
+  GameInfoModel get gameInfoModel => _gameState.gameInfo;
+
+  String get playerUuid => _gameState.currentPlayer.uuid;
 }
