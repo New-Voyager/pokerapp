@@ -43,6 +43,15 @@ class GamePlayScreenUtilMethods {
             color: Colors.white,
           ),
           backgroundColor: Colors.red,
+          label: 'Dealer Choice',
+          onTap: () => TestService.dealerChoiceGame(),
+        ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
           label: 'New Hand Announcement',
           onTap: () => TestService.handAnnouncement(),
         ),
