@@ -51,11 +51,10 @@ class GameState {
 
   void initialize({
     String gameCode,
-    GameInfoModel gameInfo,
-    PlayerInfo currentPlayer,
+    @required GameInfoModel gameInfo,
+    @required PlayerInfo currentPlayer,
     GameMessagingService gameMessagingService,
   }) {
-    if (TestService.isTesting == false) assert(gameMessagingService != null);
     this._seats = Map<int, Seat>();
     this._gameInfo = gameInfo;
     this._gameCode = gameCode;
@@ -278,8 +277,10 @@ class GameState {
     return seat;
   }
 
-  BoardAttributesObject getBoardAttributes(BuildContext context,
-      {bool listen: false}) {
+  BoardAttributesObject getBoardAttributes(
+    BuildContext context, {
+    bool listen: false,
+  }) {
     return Provider.of<BoardAttributesObject>(context, listen: listen);
   }
 

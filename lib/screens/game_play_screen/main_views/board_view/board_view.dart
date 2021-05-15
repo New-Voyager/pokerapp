@@ -53,7 +53,6 @@ class BoardView extends StatefulWidget {
 }
 
 class _BoardViewState extends State<BoardView> {
-  final _buyInKey = GlobalKey<FormState>();
   BuildContext providerContext;
 
   @override
@@ -72,7 +71,7 @@ class _BoardViewState extends State<BoardView> {
     boardAttributes.dummyKey = GlobalKey();
 
     /* finally the view */
-    final ret = Stack(
+    return Stack(
       clipBehavior: Clip.none,
       alignment: Alignment.center,
       children: [
@@ -197,8 +196,6 @@ class _BoardViewState extends State<BoardView> {
         ),
       ],
     );
-
-    return ret;
   }
 
   Widget buyInButton(BuildContext context) {

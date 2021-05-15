@@ -2,11 +2,13 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
+import 'package:pokerapp/enums/hand_actions.dart';
+import 'package:pokerapp/models/game_play_models/business/card_distribution_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
-import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/game_replay_models/game_replay_action.dart';
+import 'package:pokerapp/models/hand_log_model_new.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_service.dart';
 import 'package:pokerapp/utils/card_helper.dart';
@@ -24,14 +26,12 @@ class GameReplayActionService {
       listen: false,
     );
 
-    int pot = action.actionData['pot'] as int;
-
-    tableState.updatePotChipsSilent(potChips: [pot]);
+    tableState.updatePotChipsSilent(potChips: [action.startPot]);
     tableState.notifyAll();
   }
 
   static void _playerAction(
-    GameReplayAction action,
+    GameReplayAction replayAction,
     BuildContext context,
   ) {
     /*
@@ -42,11 +42,8 @@ class GameReplayActionService {
     "stack":0
     */
 
-    int seatNo = action.actionData['seatNo'] as int;
-    String actionName = action.actionData['action'] as String;
-    int amount = action.actionData['amount'] as int;
-    bool timedOut = action.actionData['timedOut'] as bool;
-    int stack = action.actionData['stack'] as int;
+    final ActionElement action = replayAction.action;
+
     final gameState = GameState.getState(context);
     Players players = Provider.of<Players>(
       context,
@@ -54,35 +51,39 @@ class GameReplayActionService {
     );
 
     int idx = players.players.indexWhere(
-      (p) => p.seatNo == seatNo,
+      (p) => p.seatNo == action.seatNo,
     );
 
     assert(idx != -1);
 
-    if (actionName == AppConstants.FOLD)
+    if (action.action == HandActions.FOLD)
       players.updatePlayerFoldedStatusSilent(
         idx,
         true,
       );
     else {
-      final seat = gameState.getSeat(context, seatNo);
+      final seat = gameState.getSeat(context, action.seatNo);
       seat.player.action.setAction(action);
-      // players.updateCoinAmountSilent(
-      //   idx,
-      //   amount,
-      // );
 
       players.updateStatusSilent(
         idx,
-        actionName,
+        handActionsToString(action.action),
       );
 
       players.updateStackWithValueSilent(
-        seatNo,
-        stack,
+        action.seatNo,
+        action.stack,
       );
     }
 
+    final tableState = gameState.getTableState(context);
+
+    tableState.updatePotChipsSilent(
+      potChips: tableState.potChips,
+      potUpdatesChips: (tableState.potChipsUpdates ?? 0) + action.amount,
+    );
+
+    tableState.notifyAll();
     players.notifyAll();
   }
 
@@ -91,27 +92,21 @@ class GameReplayActionService {
     BuildContext context,
   ) async {
     // show the move coin to pot animation, after that update the pot
-    final Players players = Provider.of<Players>(
-      context,
-      listen: false,
-    );
-
-    final TableState tableState = Provider.of<TableState>(
-      context,
-      listen: false,
-    );
 
     final gameState = GameState.getState(context);
+    final Players players = gameState.getPlayers(context);
+    final TableState tableState = gameState.getTableState(context);
 
-    //await players.moveCoinsToPot();
     await gameState.animateSeatActions();
+    await Future.delayed(Duration(seconds: 1));
+    gameState.resetSeatActions();
 
     tableState.updatePotChipsSilent(
-      potChips: [action.actionData['pot']],
+      potChips: [action.startPot],
       potUpdatesChips: null,
     );
-    tableState.notifyAll();
 
+    tableState.notifyAll();
     players.notifyAll();
   }
 
@@ -131,14 +126,9 @@ class GameReplayActionService {
       listen: false,
     );
 
-    /* FIXME: HARD CODED FOR BOARD 1 */
     tableState.addFlopCards(
       1,
-      action.actionData['cards']
-          .map<CardObject>(
-            (c) => CardHelper.getCard(c as int),
-          )
-          .toList(),
+      action.boardCards.map((c) => CardHelper.getCard(c)).toList(),
     );
 
     tableState.notifyAll();
@@ -146,9 +136,8 @@ class GameReplayActionService {
 
   static void _riverOrTurnStartedAction(
     GameReplayAction action,
-    BuildContext context, {
-    bool isRiver = false,
-  }) async {
+    BuildContext context,
+  ) async {
     /* show animation of chips moving to pots and update the pot */
     await _stageUpdateUtilAction(
       action,
@@ -161,30 +150,10 @@ class GameReplayActionService {
       listen: false,
     );
 
-    /* FIXME: HARD CODED FOR BOARD 0 */
-
     tableState.addTurnOrRiverCard(
       1,
-      CardHelper.getCard(
-        action.actionData['cards'][0],
-      ),
+      CardHelper.getCard(action.boardCard),
     );
-
-    // if (isRiver) {
-    //   tableState.turnOrRiver(
-    //     1,
-    //     CardHelper.getCard(
-    //       action.actionData['cards'][0],
-    //     ),
-    //   );
-    // } else {
-    //   tableState.turnOrRiver(
-    //     1,
-    //     CardHelper.getCard(
-    //       action.actionData['cards'][0],
-    //     ),
-    //   );
-    // }
 
     tableState.notifyAll();
   }
@@ -193,24 +162,13 @@ class GameReplayActionService {
     GameReplayAction action,
     BuildContext context,
   ) {
-    Map<int, List<int>> _getCards(var players) {
-      Map<int, List<int>> cards = {};
+    final GameState gameState = GameState.getState(context);
+    gameState.resetSeatActions();
 
-      players.forEach((var seatNo, var player) {
-        cards[int.parse(seatNo.toString())] =
-            player['cards'].map<int>((c) => int.parse(c.toString())).toList();
-      });
+    final Players players = gameState.getPlayers(context);
 
-      print(cards.toString());
-
-      return cards;
-    }
-
-    var playersData = action.actionData;
-    final Players players = Provider.of<Players>(
-      context,
-      listen: false,
-    );
+    /* clear players for showdown */
+    players.clearForShowdown();
 
     /* then, change the status of the footer to show the result */
     Provider.of<ValueNotifier<FooterStatus>>(
@@ -221,143 +179,139 @@ class GameReplayActionService {
     /* remove all highlight - silently */
     players.removeAllHighlightsSilent();
 
+    /* remove all markers from players - silently */
     players.removeMarkersFromAllPlayerSilent();
 
-    /* seat no - list of cards */
-    players.updateUserCardsSilent(_getCards(playersData));
+    /* update the player cards: map of <seatNo, cards> */
+    players.updateUserCardsSilent(action.playerCards);
 
     players.notifyAll();
   }
 
-  static void _declareWinnerAction(
+  static Future<void> _runItTwiceAction(
     GameReplayAction action,
     BuildContext context,
-  ) {
-    final Players players = Provider.of<Players>(
-      context,
-      listen: false,
-    );
+  ) =>
+      HandActionService.handleRunItTwiceStatic(
+        context: context,
+        board1Cards: action.boardCards,
+        board2Cards: action.boardCards2,
+      );
 
-    final TableState tableState = Provider.of<TableState>(
-      context,
-      listen: false,
-    );
+  static Future<void> _runItTwiceWinner(
+    GameReplayAction action,
+    BuildContext context,
+  ) =>
+      HandActionService.handleResultStatic(
+        fromReplay: true,
+        isRunItTwice: true,
+        runItTwiceResult: action.runItTwiceResult,
+        boardCards: action.boardCards,
+        boardCards2: action.boardCards2,
+        winners: null,
+        context: context,
+      );
 
-    // TODO: HANDLE LOW AND HIGH WINNERS
+  static Future<void> _potWinnerAction(
+    GameReplayAction action,
+    BuildContext context,
+  ) =>
+      HandActionService.handleResultStatic(
+        isRunItTwice: false,
+        runItTwiceResult: null,
+        boardCards2: null,
+        winners:
+            action.potWinners['0'].hiWinners.map((hw) => hw.toJson()).toList(),
+        boardCards: action.boardCards,
+        context: context,
+      );
 
-    /* highlight cards of players and community cards for winner */
+  /* this method sets no of cards & distributes the cards */
+  static Future<void> _distributeCards({
+    GameReplayAction action,
+    BuildContext context,
+  }) async {
+    GameState gameState = GameState.getState(context);
 
-    final potWinners = action.actionData;
+    final players = gameState.getPlayers(context);
 
-    // TODO: FOR NOW ONLY USING THE FIRST POT
-    final highWinners = potWinners[0]['hiWinners'];
-    final lowWinners = potWinners[0]['lowWinners'];
+    final handInfo = gameState.getHandInfo(context);
+    handInfo.update(noCards: action.noCards);
 
-    /* highlight players (winners) */
-    highWinners.forEach((winner) {
-      // highlight the winner seat No
-      players.highlightWinnerSilent(int.parse(winner['seatNo'].toString()));
-    });
+    /* set the table status to NEW_HAND and thus shows the card shuffle animation */
+    final tableState = gameState.getTableState(context);
+    tableState.updateTableStatusSilent(AppConstants.NEW_HAND);
+    tableState.notifyAll();
 
-    /* highlight players winning cards */
-    players.highlightCardsSilent(
-      seatNo: int.parse(highWinners[0]['seatNo'].toString()),
-      cards: highWinners[0]['playerCards']
-          .map<int>((c) => int.parse(c.toString()))
-          .toList(),
-    );
+    /* wait for the card shuffling animation to finish :todo can be tweaked */
+    await Future.delayed(const Duration(milliseconds: 800));
 
-    /* highlight community cards */
-    tableState.highlightCardsSilent(
-      1,
-      highWinners[0]['boardCards']
-          .map<int>((c) => int.parse(c.toString()))
-          .toList(),
-    );
+    final noCards = action.noCards;
+    final List<int> seatNos = action.seatNos;
+    final int mySeatNo = seatNos.first; // fixme: we would need this
 
-    /* finally notify */
-    players.notifyAll();
+    /* distribute cards to the players */
+    /* this for loop will distribute cards one by one to all the players */
+    /* for distributing the ith card, go through all the players, and give them */
+    for (int seatNo in seatNos) {
+      int localSeatNo = ((seatNo - mySeatNo) % 9) + 1;
+
+      // start the animation
+      Provider.of<CardDistributionModel>(
+        context,
+        listen: false,
+      ).seatNo = localSeatNo;
+      // wait for the animation to finish
+      await Future.delayed(AppConstants.cardDistributionAnimationDuration);
+
+      //debugPrint('Setting cards for $seatNo');
+      players.updateVisibleCardNumberSilent(seatNo, noCards);
+      players.notifyAll();
+    }
+
+    /* remove the center card */
+    tableState.updateTableStatusSilent(null);
     tableState.notifyAll();
   }
 
-  static void takeAction(
+  static Future<void> takeAction(
     GameReplayAction action,
     BuildContext context,
   ) async {
-    log('takeAction : ${action.actionType}');
+    log('takeAction: actionType: ${action.gameReplayActionType}');
 
     assert(context != null);
 
-    switch (action.actionType) {
+    switch (action.gameReplayActionType) {
       case GameReplayActionType.card_distribution:
-        GameState gameState = Provider.of<GameState>(
-          context,
-          listen: false,
-        );
-
-        // TODO: FIND A GOOD PLACE TO UPDATE THE NO. OF CARDS
-
-        final handInfo = gameState.getHandInfo(context);
-        handInfo.update(noCards: 2);
-
-        /* set the table status to NEW_HAND and thus shows the card shuffle animation */
-        final tableState = gameState.getTableState(context);
-        tableState.updateTableStatusSilent(AppConstants.NEW_HAND);
-        tableState.notifyAll();
-
-        // TODO: DO SOMETHING ABOUT THE DURATION
-        await Future.delayed(const Duration(seconds: 2));
-        HandActionService handActionService =
-            HandActionService(context, gameState, null);
-        await handActionService.handleDealStarted();
-
-        return handActionService.handleDealStarted(
-          fromGameReplay: true,
-        );
+        return _distributeCards(context: context, action: action);
 
       case GameReplayActionType.pre_flop_started:
-        return _preflopStartedAction(
-          action,
-          context,
-        );
+        return _preflopStartedAction(action, context);
 
       case GameReplayActionType.player_action:
-        return _playerAction(
-          action,
-          context,
-        );
+        return _playerAction(action, context);
 
       case GameReplayActionType.flop_started:
-        return _flopStartedAction(
-          action,
-          context,
-        );
+        return _flopStartedAction(action, context);
 
       case GameReplayActionType.river_started:
-        return _riverOrTurnStartedAction(
-          action,
-          context,
-          isRiver: true,
-        );
+        return _riverOrTurnStartedAction(action, context);
 
       case GameReplayActionType.turn_started:
-        return _riverOrTurnStartedAction(
-          action,
-          context,
-          isRiver: false,
-        );
+        return _riverOrTurnStartedAction(action, context);
 
       case GameReplayActionType.showdown:
-        return _showdownAction(
-          action,
-          context,
-        );
+        return _showdownAction(action, context);
 
-      case GameReplayActionType.declare_winner:
-        return _declareWinnerAction(
-          action,
-          context,
-        );
+      case GameReplayActionType.run_it_twice_board:
+        return _runItTwiceAction(action, context);
+
+      case GameReplayActionType.pot_winner:
+        return _potWinnerAction(action, context);
+
+      case GameReplayActionType.run_it_twice_winner:
+        return _runItTwiceWinner(action, context);
     }
   }
 }

@@ -20,7 +20,7 @@ class Players extends ChangeNotifier {
   List<PlayerModel> _players;
 
   Players({
-    @required players,
+    @required List<PlayerModel> players,
   }) {
     this._players = players;
     notifyAll();

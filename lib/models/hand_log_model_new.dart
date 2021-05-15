@@ -4,8 +4,10 @@ import 'package:pokerapp/enums/game_stages.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
 
 class HandLogModelNew {
-  static HandLogModelNew handLogModelNewFromJson(String str,
-          {bool serviceResult = false}) =>
+  static HandLogModelNew handLogModelNewFromJson(
+    String str, {
+    bool serviceResult = false,
+  }) =>
       HandLogModelNew.fromJson(json.decode(str), serviceResult: serviceResult);
 
   HandLogModelNew({
@@ -18,7 +20,6 @@ class HandLogModelNew {
 
   factory HandLogModelNew.fromJson(Map<String, dynamic> json,
       {bool serviceResult = false}) {
-    log(json.toString());
     var hand = json["handResult"];
     if (hand == null) {
       // HACK here
@@ -52,6 +53,7 @@ class Data {
     this.gameId,
     this.handNum,
     this.gameType,
+    this.noCards,
     this.handLog,
     this.rewardTrackingIds,
     this.boardCards,
@@ -70,10 +72,11 @@ class Data {
   String gameId;
   int handNum;
   String gameType;
+  int noCards;
   HandLog handLog;
   List<dynamic> rewardTrackingIds;
   List<int> boardCards;
-  List<dynamic> boardCards2;
+  List<int> boardCards2;
   List<int> flop;
   int turn;
   int river;
@@ -88,11 +91,12 @@ class Data {
         gameId: json["gameId"],
         handNum: json["handNum"],
         gameType: json["gameType"],
+        noCards: json['noCards'],
         handLog: HandLog.fromJson(json["handLog"]),
         rewardTrackingIds:
             List<dynamic>.from(json["rewardTrackingIds"].map((x) => x)),
         boardCards: List<int>.from(json["boardCards"].map((x) => x)),
-        boardCards2: List<dynamic>.from(json["boardCards2"].map((x) => x)),
+        boardCards2: List<int>.from(json["boardCards2"].map((x) => x)),
         flop: List<int>.from(json["flop"].map((x) => x)),
         turn: json["turn"],
         river: json["river"],
@@ -169,8 +173,8 @@ class HandLog {
             (k, v) => MapEntry<String, PotWinner>(k, PotWinner.fromJson(v))),
         wonAt: stagesEnumValues.map[json["wonAt"]],
         showDown: json["showDown"],
-        handStartedAt: json["handStartedAt"],
-        handEndedAt: json["handEndedAt"],
+        handStartedAt: int.parse(json["handStartedAt"].toString()),
+        handEndedAt: int.parse(json["handEndedAt"].toString()),
         runItTwice: json["runItTwice"],
         runItTwiceResult: json["runItTwiceResult"],
       );

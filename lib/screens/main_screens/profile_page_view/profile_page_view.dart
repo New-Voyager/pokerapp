@@ -35,30 +35,21 @@ class _ProfilePageViewState extends State<ProfilePageView> {
           ElevatedButton(
             child: Text('Replay Hand'),
             onPressed: () {
-              ConnectionDialog.show(
-                context: context,
-              );
+              // ConnectionDialog.show(
+              //   context: context,
+              // );
               // TODO: USE ROUTES HERE INSTEAD OF NAVIGATOR.PUSH
-              /* Navigator.push(
+              Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (_) => ReplayHandScreen(),
                 ),
-              ); */
+              );
             },
           ),
           Spacer(),
 
           Container(width: 150, height: 100, child: plateWidget),
-
-          ElevatedButton(
-            child: Text('Prompt Run it twice'),
-            onPressed: () async {
-              RunItTwiceDialog.promptRunItTwice(
-                context: context,
-              );
-            },
-          ),
 
           //SvgWidget(),
           Spacer(),

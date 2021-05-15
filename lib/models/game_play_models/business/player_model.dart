@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:pokerapp/enums/hand_actions.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
+import 'package:pokerapp/models/hand_log_model_new.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 
@@ -185,8 +186,14 @@ class PlayerActedState {
 
   HandActions get action => this._playerAction;
 
-  void setAction(dynamic json) {
-    dynamic action = json['action'];
+  void setAction(dynamic data) {
+    if (data is ActionElement) {
+      _playerAction = data.action;
+      _amount = data.amount.toDouble();
+      return;
+    }
+
+    dynamic action = data['action'];
     if (action == AppConstants.BET) {
       _playerAction = HandActions.BET;
     } else if (action == AppConstants.RAISE) {
@@ -200,7 +207,7 @@ class PlayerActedState {
     } else if (action == AppConstants.CHECK) {
       _playerAction = HandActions.CHECK;
     }
-    dynamic amountStr = json['amount'];
+    dynamic amountStr = data['amount'];
     if (amountStr != null) {
       double amount = double.parse(amountStr.toString());
       _amount = amount;

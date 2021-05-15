@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_replay_models/game_replay_action.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/services/game_replay_service/game_replay_action_service.dart';
@@ -9,8 +10,7 @@ import 'package:pokerapp/services/game_replay_service/game_replay_action_service
 class GameReplayController {
   BuildContext _context;
 
-  String _playerUuid;
-  GameInfoModel _gameInfoModel;
+  GameState _gameState;
   List<GameReplayAction> _actions;
 
   StreamController<bool> _isPlayingStreamController;
@@ -21,19 +21,16 @@ class GameReplayController {
   Timer _timer;
 
   GameReplayController({
-    @required GameInfoModel gameInfoModel,
+    @required GameState gameState,
     @required List<GameReplayAction> actions,
-    @required playerUuid,
   }) {
-    this._gameInfoModel = gameInfoModel;
+    this._gameState = gameState;
     this._actions = actions;
 
     this._isPlayingStreamController = StreamController<bool>.broadcast();
     this._isPlaying = false;
 
     this._actionCounter = -1;
-
-    this._playerUuid = playerUuid;
   }
 
   /* private util methods */
@@ -41,38 +38,77 @@ class GameReplayController {
   GameReplayAction _getNextAction() {
     _actionCounter += 1;
     if (_actionCounter < _actions.length) return _actions[_actionCounter];
-
     _actionCounter -= 1;
     return null;
   }
 
-  // GameReplayAction _getPreviousAction() {
-  //   _actionCounter -= 1;
-  //   if (_actionCounter >= 0) return _actions[_actionCounter];
-  //
-  //   _actionCounter += 1;
-  //   return null;
-  // }
-
   /* this method takes in an replay action and executes it */
-  void _takeAction(GameReplayAction gameReplayAction) =>
-      GameReplayActionService.takeAction(
-        gameReplayAction,
-        _context,
-      );
+  Future<void> _takeAction(GameReplayAction action) =>
+      GameReplayActionService.takeAction(action, _context);
 
-  Timer _buildTimer() => Timer.periodic(
-        AppConstants.replayPauseDuration,
-        (_) {
-          GameReplayAction nextAction = _getNextAction();
+  /* this method tries to estimate a delay for a particular action type
+  * and default delay is 800 ms */
+  int _estimateDelay(GameReplayAction action) {
+    switch (action.gameReplayActionType) {
+      case GameReplayActionType.card_distribution:
+        return 0;
 
-          /* if next Action is null, then there are no more actions to replay */
-          if (nextAction == null)
-            _timer.cancel();
-          else
-            _takeAction(nextAction);
-        },
-      );
+      case GameReplayActionType.pre_flop_started:
+        return 0;
+
+      case GameReplayActionType.player_action:
+        if (action.action.actionTime == 0) return 800;
+        return action.action.actionTime;
+
+      case GameReplayActionType.flop_started:
+        return 0;
+
+      case GameReplayActionType.river_started:
+        return 0;
+
+      case GameReplayActionType.turn_started:
+        return 0;
+
+      case GameReplayActionType.showdown:
+        return 0;
+
+      case GameReplayActionType.run_it_twice_board:
+        return 0;
+
+      case GameReplayActionType.pot_winner:
+        return 0;
+
+      case GameReplayActionType.run_it_twice_winner:
+        return 0;
+    }
+
+    return 0;
+  }
+
+  /* this method loads a GameReplayActionObject
+  * 1. prepares to execute it
+  * 2. wait for actionTime before execution
+  * 3. executes it and waits until the execution finishes, then moves to the next action */
+  /* and in case if the execution is interrupted, the load method ends and needs to be called
+  * once again from the initController */
+  void _load(final GameReplayAction action) async {
+    /* if there is no action to play end it */
+    if (action == null) return;
+
+    final int waitForInMs = _estimateDelay(action);
+
+    /* wait for the actionTime */
+    await Future.delayed(Duration(milliseconds: waitForInMs));
+
+    /* execute the action & wait for it to finish */
+    await _takeAction(action);
+
+    /* end function call if user paused */
+    if (_isPlaying == false) return;
+
+    /* if there is no interruption, load the next game action and continue */
+    _load(_getNextAction());
+  }
 
   /* this method initializes the controller, i.e puts data into the provider models
     & other initial setups are done here*/
@@ -80,11 +116,7 @@ class GameReplayController {
     this._context = context;
 
     isPlaying.listen((bool _isPlaying) {
-      if (_isPlaying) {
-        _timer = _buildTimer();
-      } else {
-        _timer.cancel();
-      }
+      if (_isPlaying) _load(_getNextAction());
     });
   }
 
@@ -120,7 +152,9 @@ class GameReplayController {
   Stream<bool> get isPlaying =>
       _isPlayingStreamController.stream.asBroadcastStream();
 
-  GameInfoModel get gameInfoModel => _gameInfoModel;
+  GameState get gameState => _gameState;
 
-  String get playerUuid => _playerUuid;
+  GameInfoModel get gameInfoModel => _gameState.gameInfo;
+
+  String get playerUuid => _gameState.currentPlayer.uuid;
 }
