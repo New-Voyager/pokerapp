@@ -28,6 +28,7 @@ class ReplayHandGameView extends StatelessWidget {
             width: boardDimensions.width,
             height: boardDimensions.height,
             child: BoardView(
+              gameComService: null,
               gameInfo: gameInfoModel,
               onUserTap: (_) {},
               onStartGame: () {},

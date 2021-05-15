@@ -320,10 +320,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
   @override
   Widget build(BuildContext context) {
-    final screenSize = MediaQuery.of(context).size;
-    final data = MediaQuery.of(context);
-    // log('rebuilding game screen. Screen: $screenSize Query data: $data');
-
     if (TestService.isTesting) {
       try {
         this._currentPlayer = TestService.currentPlayer;
@@ -397,9 +393,10 @@ class _GamePlayScreenState extends State<GamePlayScreen>
                   if (_gameContextObj != null) {
                     if (_gameContextObj.handActionService == null) {
                       _gameContextObj.handActionService = HandActionService(
-                          _providerContext,
-                          _gameState,
-                          _gameContextObj.gameComService);
+                        _providerContext,
+                        _gameState,
+                        _gameContextObj.gameComService,
+                      );
                       _gameContextObj.handActionService.loop();
 
                       if (!TestService.isTesting) {

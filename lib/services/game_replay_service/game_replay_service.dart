@@ -2,7 +2,7 @@ import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_replay_models/game_replay_action.dart';
 import 'package:pokerapp/models/game_replay_models/game_replay_controller.dart';
-import 'package:pokerapp/services/app/auth_service.dart';
+import 'package:pokerapp/models/hand_log_model_new.dart';
 
 class GameReplayService {
   GameReplayService._();
@@ -148,24 +148,26 @@ class GameReplayService {
     return actions;
   }
 
+  /* we parse the hand log data here, and instantiate the game reply controller */
   static Future<GameReplayController> buildController(dynamic data) async {
-    var handLog = data['handLog'];
+    final HandLogModelNew handLog = HandLogModelNew.fromJson(data);
 
-    /* prepare a game info model */
-    GameInfoModel gameInfoModel = GameInfoModel(
-      maxPlayers: 9, // TODO: WE NEED TO GET THE MAX PLAYERS HERE
-      status: null,
-      smallBlind: handLog['sbPos'],
-      bigBlind: handLog['bbPos'],
-      playersInSeats: _getPlayers(data['players']),
-      gameType: data['gameType'],
-      tableStatus: null,
+    final GameInfoModel gameInfoModel = GameInfoModel(
+      maxPlayers: maxPlayers,
+      gameType: gameType,
+      tableStatus: tableStatus,
+      status: status,
+      smallBlind: smallBlind,
+      bigBlind: bigBlind,
+      playersInSeats: playersInSeats,
     );
 
+    final List<GameReplayAction> actions = [];
+
     return GameReplayController(
-      playerUuid: await AuthService.fetchUUID(),
       gameInfoModel: gameInfoModel,
-      actions: _getActions(data),
+      actions: actions,
+      playerUuid: null,
     );
   }
 }

@@ -3,11 +3,11 @@ import 'package:pokerapp/enums/game_stages.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
 
 class HandLogModelNew {
-  static HandLogModelNew handLogModelNewFromJson(String str,
-          {bool serviceResult = false}) =>
+  static HandLogModelNew handLogModelNewFromJson(
+    String str, {
+    bool serviceResult = false,
+  }) =>
       HandLogModelNew.fromJson(json.decode(str), serviceResult: serviceResult);
-  // static String handLogModelNewToJson(HandLogModelNew data) =>
-  //     json.encode(data.toJson());
 
   HandLogModelNew({
     this.hand,
@@ -20,8 +20,10 @@ class HandLogModelNew {
   Map<int, String> playerIdToName;
   MyInfo myInfo;
 
-  factory HandLogModelNew.fromJson(Map<String, dynamic> json,
-      {bool serviceResult = false}) {
+  factory HandLogModelNew.fromJson(
+    Map<String, dynamic> json, {
+    bool serviceResult = false,
+  }) {
     var hand = json["handResult"];
     if (hand == null) {
       // HACK here
@@ -43,7 +45,7 @@ class HandLogModelNew {
         playerIdToName[playerId] = name;
       }
     } else {
-      for(final player in handLog.playersInSeats) {
+      for (final player in handLog.playersInSeats) {
         playerIdToName[player.id] = player.name;
       }
     }
