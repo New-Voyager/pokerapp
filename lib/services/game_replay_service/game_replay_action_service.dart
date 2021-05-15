@@ -3,11 +3,10 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
+import 'package:pokerapp/models/game_play_models/business/card_distribution_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
-import 'package:pokerapp/models/game_play_models/provider_models/hand_result.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
-import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/game_replay_models/game_replay_action.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
 import 'package:pokerapp/resources/app_constants.dart';
@@ -77,6 +76,14 @@ class GameReplayActionService {
       );
     }
 
+    final tableState = gameState.getTableState(context);
+
+    tableState.updatePotChipsSilent(
+      potChips: tableState.potChips,
+      potUpdatesChips: (tableState.potChipsUpdates ?? 0) + action.amount,
+    );
+
+    tableState.notifyAll();
     players.notifyAll();
   }
 
@@ -91,6 +98,8 @@ class GameReplayActionService {
     final TableState tableState = gameState.getTableState(context);
 
     await gameState.animateSeatActions();
+    await Future.delayed(Duration(seconds: 1));
+    gameState.resetSeatActions();
 
     tableState.updatePotChipsSilent(
       potChips: [action.startPot],
@@ -153,10 +162,13 @@ class GameReplayActionService {
     GameReplayAction action,
     BuildContext context,
   ) {
-    final Players players = Provider.of<Players>(
-      context,
-      listen: false,
-    );
+    final GameState gameState = GameState.getState(context);
+    gameState.resetSeatActions();
+
+    final Players players = gameState.getPlayers(context);
+
+    /* clear players for showdown */
+    players.clearForShowdown();
 
     /* then, change the status of the footer to show the result */
     Provider.of<ValueNotifier<FooterStatus>>(
@@ -220,6 +232,8 @@ class GameReplayActionService {
   }) async {
     GameState gameState = GameState.getState(context);
 
+    final players = gameState.getPlayers(context);
+
     final handInfo = gameState.getHandInfo(context);
     handInfo.update(noCards: action.noCards);
 
@@ -228,12 +242,35 @@ class GameReplayActionService {
     tableState.updateTableStatusSilent(AppConstants.NEW_HAND);
     tableState.notifyAll();
 
-    HandActionService handActionService =
-        HandActionService(context, gameState, null);
+    /* wait for the card shuffling animation to finish :todo can be tweaked */
+    await Future.delayed(const Duration(milliseconds: 800));
 
-    return handActionService.handleDealStarted(
-      fromGameReplay: true,
-    );
+    final noCards = action.noCards;
+    final List<int> seatNos = action.seatNos;
+    final int mySeatNo = seatNos.first; // fixme: we would need this
+
+    /* distribute cards to the players */
+    /* this for loop will distribute cards one by one to all the players */
+    /* for distributing the ith card, go through all the players, and give them */
+    for (int seatNo in seatNos) {
+      int localSeatNo = ((seatNo - mySeatNo) % 9) + 1;
+
+      // start the animation
+      Provider.of<CardDistributionModel>(
+        context,
+        listen: false,
+      ).seatNo = localSeatNo;
+      // wait for the animation to finish
+      await Future.delayed(AppConstants.cardDistributionAnimationDuration);
+
+      //debugPrint('Setting cards for $seatNo');
+      players.updateVisibleCardNumberSilent(seatNo, noCards);
+      players.notifyAll();
+    }
+
+    /* remove the center card */
+    tableState.updateTableStatusSilent(null);
+    tableState.notifyAll();
   }
 
   static Future<void> takeAction(

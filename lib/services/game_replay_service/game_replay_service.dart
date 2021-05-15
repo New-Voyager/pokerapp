@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
@@ -37,6 +39,7 @@ class GameReplayService {
     @required bool isRunItTwice,
     @required dynamic runItTwiceResult,
     @required Map<String, PotWinner> potWinners,
+    @required List<int> seatNos,
   }) {
     final List<GameReplayAction> actions = [];
 
@@ -45,6 +48,7 @@ class GameReplayService {
       GameReplayAction(
         gameReplayActionType: GameReplayActionType.card_distribution,
         noCards: noCards,
+        seatNos: seatNos,
       ),
     );
 
@@ -172,15 +176,18 @@ class GameReplayService {
   static Future<GameReplayController> buildController(dynamic data) async {
     final HandLogModelNew handLog = HandLogModelNew.fromJson(data);
 
+    final List<PlayerModel> players = _getPlayers(handLog.hand.playersInSeats);
+    final List<int> seatNos = players.map((p) => p.seatNo).toList();
+
     final GameInfoModel gameInfoModel = GameInfoModel(
       // FIXME: WE WOULD NEED THE MAX PLAYER INFORMATION IN HANDLOG
       maxPlayers: 9,
       gameType: handLog.hand.gameType,
       tableStatus: null,
       status: null,
-      smallBlind: null,
-      bigBlind: null,
-      playersInSeats: _getPlayers(handLog.hand.playersInSeats),
+      smallBlind: 1, // fixme: we need this data
+      bigBlind: 2, // fixme: we need this data
+      playersInSeats: players,
     );
 
     final List<GameReplayAction> actions = _getActions(
@@ -195,6 +202,7 @@ class GameReplayService {
       isRunItTwice: handLog.hand.handLog.runItTwice,
       runItTwiceResult: handLog.hand.handLog.runItTwiceResult,
       potWinners: handLog.hand.handLog.potWinners,
+      seatNos: seatNos,
     );
 
     final GameState gameState = GameState();

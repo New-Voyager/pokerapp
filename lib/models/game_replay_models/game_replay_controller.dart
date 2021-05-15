@@ -49,9 +49,40 @@ class GameReplayController {
   /* this method tries to estimate a delay for a particular action type
   * and default delay is 800 ms */
   int _estimateDelay(GameReplayAction action) {
-    /* todo: delay differs for cases like - card distribution or result wait */
+    switch (action.gameReplayActionType) {
+      case GameReplayActionType.card_distribution:
+        return 0;
 
-    return 800;
+      case GameReplayActionType.pre_flop_started:
+        return 0;
+
+      case GameReplayActionType.player_action:
+        if (action.action.actionTime == 0) return 800;
+        return action.action.actionTime;
+
+      case GameReplayActionType.flop_started:
+        return 0;
+
+      case GameReplayActionType.river_started:
+        return 0;
+
+      case GameReplayActionType.turn_started:
+        return 0;
+
+      case GameReplayActionType.showdown:
+        return 0;
+
+      case GameReplayActionType.run_it_twice_board:
+        return 0;
+
+      case GameReplayActionType.pot_winner:
+        return 0;
+
+      case GameReplayActionType.run_it_twice_winner:
+        return 0;
+    }
+
+    return 0;
   }
 
   /* this method loads a GameReplayActionObject
@@ -64,8 +95,7 @@ class GameReplayController {
     /* if there is no action to play end it */
     if (action == null) return;
 
-    final int waitForInMs =
-        action?.action?.actionTime ?? _estimateDelay(action);
+    final int waitForInMs = _estimateDelay(action);
 
     /* wait for the actionTime */
     await Future.delayed(Duration(milliseconds: waitForInMs));

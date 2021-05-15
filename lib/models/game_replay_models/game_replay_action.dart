@@ -20,6 +20,7 @@ class GameReplayAction {
 
   /* game related info */
   final int noCards;
+  final List<int> seatNos;
 
   /* the start pot holds the value of pot before the round begins */
   final int startPot;
@@ -50,5 +51,6 @@ class GameReplayAction {
     this.playerCards,
     this.potWinners,
     this.runItTwiceResult,
+    this.seatNos,
   }) : assert(gameReplayActionType != null);
 }
