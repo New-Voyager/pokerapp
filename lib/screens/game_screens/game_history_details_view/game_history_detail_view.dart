@@ -548,7 +548,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
                             style: const TextStyle(
                               fontFamily: AppAssets.fontFamilyLato,
                               color: Colors.white,
-                              fontSize: 24.0,
+                              fontSize: 18.0,
                               fontWeight: FontWeight.w800,
                             ),
                           )),

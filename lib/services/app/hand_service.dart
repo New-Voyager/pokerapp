@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:pokerapp/main.dart';
@@ -109,6 +110,7 @@ class HandService {
   static Future<HandLogModelNew> getHandLog(
       String gameCode, int handNum) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
+    log("Trying to get GameCode: $gameCode; handNum: $handNum");
     Map<String, dynamic> variables = {
       "gameCode": gameCode,
     };
@@ -127,6 +129,7 @@ class HandService {
     // model.jsonData = result.data;
     // model.load();
     final data = jsonEncode(result.data);
+    log("DATA\n: $data");
     final handLog =
         HandLogModelNew.handLogModelNewFromJson(data, serviceResult: true);
     return handLog;

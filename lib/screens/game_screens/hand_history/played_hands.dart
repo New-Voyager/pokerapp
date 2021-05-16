@@ -398,6 +398,9 @@ class WinnerWidget extends StatelessWidget {
 
   List<Widget> getCommunityCards() {
     List<Widget> communityCards = [
+      SizedBox(
+        height: 16,
+      ),
       StackCardView02(
         cards: item.community,
         show: true,
@@ -429,7 +432,7 @@ class WinnerWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Flexible(
-                  flex: 4,
+                  flex: 5,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -441,7 +444,7 @@ class WinnerWidget extends StatelessWidget {
                   ),
                 ),
                 Flexible(
-                  flex: 6,
+                  flex: 5,
                   child: Container(
                     margin: EdgeInsets.only(left: 30.0),
                     child: Column(
