@@ -377,7 +377,6 @@ class HandActionService {
       return;
     }
 
-
     final TableState tableState = _gameState.getTableState(_context);
     // remove all the community cards
     tableState.clear();
@@ -1260,15 +1259,27 @@ class HandActionService {
     /* check if the result is a run it twice result */
     final bool isRunItTwice = handResult['runItTwice'] as bool;
 
+    List<int> boardCards = [];
+    List<int> boardCards2 = [];
+    if (handResult['boardCards'] != null) {
+      for (dynamic card in handResult['boardCards']) {
+        int cardInt = int.parse(card.toString());
+        boardCards.add(cardInt);
+      }
+    }
+    if (handResult['boardCards2'] != null) {
+      for (dynamic card in handResult['boardCards2']) {
+        int cardInt = int.parse(card.toString());
+        boardCards2.add(cardInt);
+      }
+    }
+
     await handleResultStatic(
       isRunItTwice: isRunItTwice,
       runItTwiceResult: handResult['handLog']['runItTwiceResult'],
       winners: handResult['handLog']['potWinners']['0']['hiWinners'],
-      boardCards:
-          handResult['boardCards'].map((e) => int.parse(e.toString())).toList(),
-      boardCards2: handResult['boardCards2']
-          .map((e) => int.parse(e.toString()))
-          .toList(),
+      boardCards: boardCards,
+      boardCards2: boardCards2,
       context: _context,
     );
 

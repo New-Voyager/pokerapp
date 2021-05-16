@@ -16,6 +16,7 @@ import 'package:pokerapp/screens/chat_screen/widgets/chat_user_avatar.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/replay_button.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_winners_view.dart';
 import 'package:pokerapp/screens/game_screens/hand_history/played_hands.dart';
+import 'package:pokerapp/screens/util_screens/replay_hand_screen/replay_hand_screen.dart';
 
 import '../../../../resources/app_colors.dart';
 import '../../../chat_screen/utils.dart';
@@ -45,7 +46,7 @@ class MessageItem extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.end,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          _buildTile(isMe, messageModel.isGroupLatest),
+          _buildTile(context, isMe, messageModel.isGroupLatest),
           SizedBox(width: 5),
           _buildAvatar(),
         ],
@@ -57,7 +58,7 @@ class MessageItem extends StatelessWidget {
       children: [
         _buildAvatar(),
         SizedBox(width: 5),
-        _buildTile(isMe, messageModel.isGroupLatest),
+        _buildTile(context, isMe, messageModel.isGroupLatest),
       ],
     );
   }
@@ -71,7 +72,7 @@ class MessageItem extends StatelessWidget {
     return SizedBox();
   }
 
-  Widget _buildTile(bool isMe, bool isGroupLatest) {
+  Widget _buildTile(BuildContext context, bool isMe, bool isGroupLatest) {
     Widget triangle;
     CustomPaint trianglePainer =
         CustomPaint(painter: Triangle(isMe ? senderColor : receiverColor));
@@ -90,14 +91,14 @@ class MessageItem extends StatelessWidget {
               left: !isGroupLatest ? 20 : 0,
               right: !isGroupLatest ? 20 : 0,
             ),
-            child: _buildMessage(isMe),
+            child: _buildMessage(context, isMe),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildSharedHand(bool isMe) {
+  Widget _buildSharedHand(BuildContext context, bool isMe) {
     final playerName = players[messageModel.sender ?? ''] ?? 'Somebody';
     log('player: ${messageModel.sender} isMe: $isMe name: $playerName ${messageModel.text}');
     String gameStr = messageModel.sharedHand.gameTypeStr;
@@ -113,6 +114,15 @@ class MessageItem extends StatelessWidget {
       gameStr = '5-Card PLO';
     }
     log("DATA:  ${messageModel.sharedHand.data}");
+
+    // id: handLog.myInfo.id,
+    // uuid: handLog.myInfo.uuid,
+    // name: handLog.myInfo.name,
+    final playerInfo = {
+      'id': messageModel.sharedHand.sharedByPlayerId,
+      'uuid': messageModel.sharedHand.sharedByPlayerUuid,
+      'name': messageModel.sharedHand.sharedByPlayerName
+    };
     return Container(
         padding: EdgeInsets.all(8),
         margin: EdgeInsets.only(
@@ -162,7 +172,18 @@ class MessageItem extends StatelessWidget {
                 Flexible(
                   flex: 1,
                   child: ReplayButton(
-                    onTapFunction: () {},
+                    onTapFunction: () {
+                      // TODO: USE ROUTES HERE INSTEAD OF NAVIGATOR.PUSH
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => ReplayHandScreen(
+                            hand: messageModel.sharedHand.data,
+                            playerInfo: playerInfo,
+                          ),
+                        ),
+                      );
+                    },
                   ),
                 )
               ],
@@ -192,11 +213,11 @@ class MessageItem extends StatelessWidget {
         ));
   }
 
-  Widget _buildMessage(bool isMe) {
+  Widget _buildMessage(BuildContext context, bool isMe) {
     final playerName = players[messageModel.sender ?? ''] ?? 'Somebody';
     log('player: ${messageModel.sender} isMe: $isMe name: $playerName ${messageModel.text}');
     if (messageModel.messageType == MessageType.HAND) {
-      return _buildSharedHand(isMe);
+      return _buildSharedHand(context, isMe);
     }
 
     return Align(
