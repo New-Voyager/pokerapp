@@ -22,13 +22,20 @@ class HandLogModelNew {
       {bool serviceResult = false}) {
     var hand = json["handResult"];
     if (hand == null) {
-      // HACK here
-      hand = json;
+      if (json["hand"] == null) {
+        // HACK here
+        hand = json;
+      } else {
+        // HACK here
+        hand = json['hand'];
+      }
     }
 
     if (serviceResult) {
       hand = hand['data'];
     }
+    log("HandData : \n $hand");
+
     final handLog = Data.fromJson(hand);
 
     dynamic myInfo;

@@ -58,7 +58,7 @@ class GameReplayController {
 
       case GameReplayActionType.player_action:
         if (action.action.actionTime == 0) return 800;
-        return action.action.actionTime;
+        return action.action.actionTime*1000;
 
       case GameReplayActionType.flop_started:
         return 0;

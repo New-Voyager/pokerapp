@@ -48,7 +48,7 @@ class GameHistoryItem extends StatelessWidget {
     var colRunTimeSeparator = SizedBox(width: 5.0);
 
     return Container(
-        height: 180.0,
+        height: 180,
         decoration: const BoxDecoration(
           color: AppColors.cardBackgroundColor,
           borderRadius: BorderRadius.all(
@@ -98,22 +98,21 @@ class GameHistoryItem extends StatelessWidget {
           * */
 
                 Expanded(
-                  child: FittedBox(
-                    fit: BoxFit.fitWidth,
-                    child: Container(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Stack(
-                        children: <Widget>[
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              SizedBox(
-                                height: 8,
-                              ),
-                              Row(
-                                children: [
-                                  /* Game type */
-                                  Text(
+                  child: Container(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Stack(
+                      children: <Widget>[
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            SizedBox(
+                              height: 8,
+                            ),
+                            Row(
+                              children: [
+                                /* Game type */
+                                Flexible(
+                                  child: Text(
                                     item.GameType,
                                     style: const TextStyle(
                                       color: Colors.white,
@@ -122,44 +121,46 @@ class GameHistoryItem extends StatelessWidget {
                                       fontWeight: FontWeight.w700,
                                     ),
                                   ),
-                                  colSeparator,
-                                  /* blinds */
-                                  separator,
-                                  Text(
-                                    item.Blinds,
-                                    style: AppStyles.blindsTextStyle,
-                                  ),
-                                ],
+                                ),
+                                colSeparator,
+                                /* blinds */
+                                separator,
+                                Text(
+                                  item.Blinds,
+                                  style: AppStyles.blindsTextStyle,
+                                ),
+                              ],
+                            ),
+                            /* hosted by */
+                            separator,
+                            Row(children: [
+                              Text(
+                                'Hosted by',
+                                style: AppStyles.hostInfoTextStyle,
                               ),
-                              /* hosted by */
-                              separator,
-                              Row(children: [
-                                Text(
-                                  'Hosted by',
-                                  style: AppStyles.hostInfoTextStyle,
-                                ),
-                                colSeparator,
-                                Text(
-                                  item.startedBy,
-                                  style: AppStyles.hostNameTextStyle,
-                                ),
-                              ]),
-                              separator,
-                              /** started at **/
-                              Row(children: [
-                                Text(
-                                  'Started at',
-                                  style: AppStyles.hostInfoTextStyle,
-                                ),
-                                colSeparator,
-                                Text(
-                                  item.StartedAt,
-                                  style: AppStyles.hostNameTextStyle,
-                                ),
-                              ]),
-                              separator,
-                              /** game time **/
-                              Row(children: [
+                              colSeparator,
+                              Text(
+                                item.startedBy,
+                                style: AppStyles.hostNameTextStyle,
+                              ),
+                            ]),
+                            separator,
+                            /** started at **/
+                            Row(children: [
+                              Text(
+                                'Started at',
+                                style: AppStyles.hostInfoTextStyle,
+                              ),
+                              colSeparator,
+                              Text(
+                                item.StartedAt,
+                                style: AppStyles.hostNameTextStyle,
+                              ),
+                            ]),
+                            separator,
+                            /** game time **/
+                            Row(
+                              children: [
                                 Text(
                                   'Game ran for',
                                   style: AppStyles.hostInfoTextStyle,
@@ -169,10 +170,12 @@ class GameHistoryItem extends StatelessWidget {
                                   item.runTimeStr,
                                   style: AppStyles.hostInfoTextStyle,
                                 ),
-                              ]),
-                              separator,
-                              Visibility(
-                                child: Row(children: [
+                              ],
+                            ),
+                            separator,
+                            Visibility(
+                              child: Row(
+                                children: [
                                   Visibility(
                                     visible: item.handsPlayed > 0,
                                     child: Text(
@@ -185,13 +188,13 @@ class GameHistoryItem extends StatelessWidget {
                                     item.sessionTimeStr,
                                     style: AppStyles.sessionTimeTextStyle,
                                   ),
-                                ]),
-                                visible: item.sessionTimeStr != null,
+                                ],
                               ),
-                            ],
-                          ),
-                        ],
-                      ),
+                              visible: item.sessionTimeStr != null,
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
                   ),
                 ),

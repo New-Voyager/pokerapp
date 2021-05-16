@@ -193,7 +193,7 @@ class MessageItem extends StatelessWidget {
               handLogModel: HandLogModelNew.fromJson(
                 messageModel.sharedHand.data,
               ),
-              gradient: AppStyles.handlogBlueGradient,
+              chatWidget: true,
             ),
             SizedBox(
               height: 8,
