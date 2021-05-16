@@ -185,12 +185,12 @@ class GameReplayService {
 
     final GameInfoModel gameInfoModel = GameInfoModel(
       // FIXME: WE WOULD NEED THE MAX PLAYER INFORMATION IN HANDLOG
-      maxPlayers: 9,
+      maxPlayers: handLog.hand.maxPlayers,
       gameType: handLog.hand.gameType,
       tableStatus: null,
       status: null,
-      smallBlind: 1, // fixme: we need this data
-      bigBlind: 2, // fixme: we need this data
+      smallBlind: handLog.hand.smallBlind.toInt(), // fixme: we need this data
+      bigBlind: handLog.hand.bigBlind.toInt(), // fixme: we need this data
       playersInSeats: players,
     );
 

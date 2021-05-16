@@ -5,6 +5,9 @@
 		"handNum": 1,
 		"gameType": "HOLDEM",
 		"noCards": 2,
+		"maxPlayers": 4,
+		"smallBlind": 1,
+		"bigBlind": 2,
 		"handLog": {
 			"preflopActions": {
 				"potStart": 0,
