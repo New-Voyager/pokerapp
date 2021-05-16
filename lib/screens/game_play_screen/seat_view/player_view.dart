@@ -319,13 +319,7 @@ class PlayerCardsWidget extends StatelessWidget {
           xOffset * 0.50,
           45.0,
         ),
-        child: AnimatedSwitcher(
-          duration: AppConstants.fastAnimationDuration,
-          child: Transform.scale(
-            scale: 1.0,
-            child: FoldCardAnimatingWidget(seat: seat),
-          ),
-        ),
+        child: FoldCardAnimatingWidget(seat: seat),
       );
     } else {
       //log('Hole cards');

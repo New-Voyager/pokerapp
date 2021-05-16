@@ -7,14 +7,14 @@ import 'package:pokerapp/widgets/cards/hidden_card_view.dart';
 
 const Map<int, Offset> offsetMapping = {
   1: Offset(20, -140),
-  2: Offset(80, -80),
-  3: Offset(80, -50),
-  4: Offset(80, -30),
-  5: Offset(50, 50),
-  6: Offset(-50, 50),
-  7: Offset(-80, -30),
-  8: Offset(-80, -50),
-  9: Offset(-80, -80),
+  2: Offset(100, -120),
+  3: Offset(100, -50),
+  4: Offset(100, 0),
+  5: Offset(30, 20),
+  6: Offset(-10, 20),
+  7: Offset(-70, 0),
+  8: Offset(-70, -50),
+  9: Offset(-70, -120),
 };
 
 class FoldCardAnimatingWidget extends StatelessWidget {
@@ -28,7 +28,7 @@ class FoldCardAnimatingWidget extends StatelessWidget {
     final openSeat = seat.isOpen;
 
     final widget = TweenAnimationBuilder<Offset>(
-      curve: Curves.easeInOut,
+      curve: Curves.linearToEaseOut,
       tween: Tween<Offset>(
         begin: Offset(0, 0),
         end: offsetMapping[this.seat.serverSeatPos],
@@ -37,20 +37,22 @@ class FoldCardAnimatingWidget extends StatelessWidget {
         noOfCards: seat.player.noOfCardsVisible,
       ),
       onEnd: () {
-        // print('fold animation done ${this.seat.serverSeatPos}');
         if (!openSeat) {
           seat.player.animatingFold = false;
         }
       },
       duration: AppConstants.animationDuration,
       builder: (_, offset, child) {
-        double offsetPercentageLeft =
-            1 - (offset.dx / offsetMapping[this.seat.serverSeatPos].dx);
-        // todo: the opacity change can be smoothed out
+        /* percentage of animation done */
+        double pertDone = offset.dx / offsetMapping[this.seat.serverSeatPos].dx;
+
+        /* we start fading away the card after the cards have moved 90% */
+        double opacityValue = pertDone > 0.90 ? (10 - 10 * pertDone) : 1.0;
+
         return Transform.translate(
           offset: offset,
           child: Opacity(
-            opacity: offsetPercentageLeft == 0.0 ? 0.0 : 1.0,
+            opacity: opacityValue,
             child: child,
           ),
         );

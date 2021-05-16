@@ -503,6 +503,9 @@ class TestService {
     }
     final players = gameState.getPlayers(_context);
     players.notifyAll();
+
+    /* wait then run fold */
+    Future.delayed(const Duration(milliseconds: 800)).then((value) => fold());
   }
 
   static void sendRunItTwiceMessage() {

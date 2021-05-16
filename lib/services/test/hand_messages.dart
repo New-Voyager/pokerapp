@@ -317,36 +317,86 @@ String foldMessage() => '''
 			"stack": 58
 		}
 	}, {
-		"messageType": "YOUR_ACTION",
-		"seatAction": {
-			"seatNo": 8,
-			"availableActions": ["FOLD", "CALL", "RAISE", "ALLIN"],
-			"straddleAmount": 0,
-			"callAmount": 30,
-			"raiseAmount": 0,
-			"minBetAmount": 0,
-			"maxBetAmount": 0,
-			"minRaiseAmount": 58,
-			"maxRaiseAmount": 152,
-			"allInAmount": 152,
-			"betOptions": [{
-				"text": "2x",
-				"amount": 116
-			}, {
-				"text": "All-In",
-				"amount": 152
-			}]
+		"messageType": "PLAYER_ACTED",
+		"playerActed": {
+			"seatNo": 2,
+			"action": "FOLD",
+			"amount": 0,
+			"timedOut": false,
+			"actionTime": 0,
+			"stack": 58
 		}
-	}, {
-		"messageType": "NEXT_ACTION",
-		"actionChange": {
+	},{
+		"messageType": "PLAYER_ACTED",
+		"playerActed": {
+			"seatNo": 3,
+			"action": "FOLD",
+			"amount": 0,
+			"timedOut": false,
+			"actionTime": 0,
+			"stack": 58
+		}
+	},{
+		"messageType": "PLAYER_ACTED",
+		"playerActed": {
+			"seatNo": 4,
+			"action": "FOLD",
+			"amount": 0,
+			"timedOut": false,
+			"actionTime": 0,
+			"stack": 58
+		}
+	},{
+		"messageType": "PLAYER_ACTED",
+		"playerActed": {
+			"seatNo": 5,
+			"action": "FOLD",
+			"amount": 0,
+			"timedOut": false,
+			"actionTime": 0,
+			"stack": 58
+		}
+	},{
+		"messageType": "PLAYER_ACTED",
+		"playerActed": {
+			"seatNo": 6,
+			"action": "FOLD",
+			"amount": 0,
+			"timedOut": false,
+			"actionTime": 0,
+			"stack": 58
+		}
+	},{
+		"messageType": "PLAYER_ACTED",
+		"playerActed": {
+			"seatNo": 7,
+			"action": "FOLD",
+			"amount": 0,
+			"timedOut": false,
+			"actionTime": 0,
+			"stack": 58
+		}
+	},
+	{
+		"messageType": "PLAYER_ACTED",
+		"playerActed": {
 			"seatNo": 8,
-			"pots": [0],
-			"potUpdates": 41,
-			"seatsPots": [{
-				"seats": [],
-				"pot": 0
-			}]
+			"action": "FOLD",
+			"amount": 0,
+			"timedOut": false,
+			"actionTime": 0,
+			"stack": 58
+		}
+	},
+	{
+		"messageType": "PLAYER_ACTED",
+		"playerActed": {
+			"seatNo": 9,
+			"action": "FOLD",
+			"amount": 0,
+			"timedOut": false,
+			"actionTime": 0,
+			"stack": 58
 		}
 	}]
 }
