@@ -116,20 +116,20 @@ class AppStyles {
 
   static const hostInfoTextStyle = TextStyle(
     color: Color(0xff848484),
-    fontSize: 14.0,
+    fontSize: 12.0,
     fontFamily: AppAssets.fontFamilyLato,
   );
 
   static const hostNameTextStyle = TextStyle(
     color: Color(0xffffffff),
     fontSize: 14.0,
-    fontWeight: FontWeight.bold,
+    // fontWeight: FontWeight.bold,
     fontFamily: AppAssets.fontFamilyLato,
   );
   static const sessionTimeTextStyle = TextStyle(
     color: Color(0xffffffff),
     fontSize: 14.0,
-    fontWeight: FontWeight.bold,
+    //  fontWeight: FontWeight.bold,
     fontFamily: AppAssets.fontFamilyLato,
   );
   static const blindsTextStyle = TextStyle(
