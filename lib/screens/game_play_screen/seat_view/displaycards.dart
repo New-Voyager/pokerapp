@@ -12,6 +12,33 @@ class DisplayCardsWidget extends StatelessWidget {
 
   DisplayCardsWidget(this.seat, this.status);
 
+  List<CardObject> _getCards(List<int> cards) {
+    if (cards == null || cards.isEmpty) return [];
+
+    List<int> highlightedCards = seat.player.highlightCards;
+
+    final List<CardObject> cardObjects = cards.map<CardObject>(
+      (int c) {
+        CardObject card = CardHelper.getCard(c);
+        card.cardType = CardType.PlayerCard;
+
+        /* we dim cards ONLY IF other cards are highlighted */
+
+        if (highlightedCards?.contains(c) ?? false)
+          card.highlight = true;
+        else
+          card.dim = true;
+
+        if (highlightedCards == null || highlightedCards.isEmpty)
+          card.dim = false;
+
+        return card;
+      },
+    ).toList();
+
+    return cardObjects;
+  }
+
   @override
   Widget build(BuildContext context) {
     bool showDown = this.status == FooterStatus.Result;
@@ -23,26 +50,8 @@ class DisplayCardsWidget extends StatelessWidget {
         duration: AppConstants.fastAnimationDuration,
         child:
             showDown && (seatPlayerCards != null && seatPlayerCards.isNotEmpty)
-                ? Transform.scale(
-                    scale: 0.70, // fixme: WHAT IS THIS scale used for?
-                    child: StackCardView(
-                      cards: seat.player.cards?.map<CardObject>(
-                            (int c) {
-                              List<int> highlightedCards =
-                                  seat.player.highlightCards;
-                              CardObject card = CardHelper.getCard(c);
-
-                              /* we use a small card type for display cards */
-                              card.cardType = CardType.PlayerCard;
-
-                              if (highlightedCards?.contains(c) ?? false)
-                                card.highlight = true;
-
-                              return card;
-                            },
-                          )?.toList() ??
-                          [],
-                    ),
+                ? StackCardView(
+                    cards: _getCards(seat.player.cards),
                   )
                 : SizedBox.shrink(),
       ),

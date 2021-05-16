@@ -220,7 +220,10 @@ class PlayerView extends StatelessWidget {
               // show dealer button, if user is a dealer
               isDealer
                   ? DealerButtonWidget(
-                      seat.serverSeatPos, isMe, GameType.HOLDEM)
+                      seat.serverSeatPos,
+                      isMe,
+                      GameType.HOLDEM,
+                    )
                   : shrinkedSizedBox,
 
               // /* building the chip amount widget */
@@ -309,16 +312,7 @@ class PlayerCardsWidget extends StatelessWidget {
       xOffset = -45.0 * shiftMultiplier;
     }
     if (showdown) {
-      return Transform.translate(
-        offset: Offset(
-          xOffset * 0.50,
-          45.0,
-        ),
-        child: AnimatedSwitcher(
-          duration: AppConstants.fastAnimationDuration,
-          child: Transform.scale(scale: 1.0, child: const SizedBox.shrink()),
-        ),
-      );
+      return const SizedBox.shrink();
     } else if (seat.folded ?? false) {
       return Transform.translate(
         offset: Offset(
