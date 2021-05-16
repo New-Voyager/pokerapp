@@ -377,16 +377,28 @@ class HandActionService {
       return;
     }
 
+    final TableState tableState = _gameState.getTableState(_context);
+    // remove all the community cards
+    tableState.clear();
+    tableState.notifyAll();
+
+    _gameState.resetPlayers(_context, notify: true);
+
+    Provider.of<ValueNotifier<FooterStatus>>(
+      _context,
+      listen: false,
+    ).value = FooterStatus.None;
+
     List<GameType> gameChoices = [];
     for (final type in dealerChoice['games']) {
       final gameType =
           GameType.values[type]; //.firstWhere((element) => element == type);
       gameChoices.add(gameType);
     }
-
+    final timeout = int.parse(dealerChoice['timeout'].toString());
     GameType type = await showGameSelectorDialog(
       listOfGameTypes: gameChoices,
-      timeLimit: Duration(seconds: 60),
+      timeLimit: Duration(seconds: timeout),
     );
     log('selected game type: $type');
     if (type != GameType.UNKNOWN) {
@@ -1247,15 +1259,27 @@ class HandActionService {
     /* check if the result is a run it twice result */
     final bool isRunItTwice = handResult['runItTwice'] as bool;
 
+    List<int> boardCards = [];
+    List<int> boardCards2 = [];
+    if (handResult['boardCards'] != null) {
+      for (dynamic card in handResult['boardCards']) {
+        int cardInt = int.parse(card.toString());
+        boardCards.add(cardInt);
+      }
+    }
+    if (handResult['boardCards2'] != null) {
+      for (dynamic card in handResult['boardCards2']) {
+        int cardInt = int.parse(card.toString());
+        boardCards2.add(cardInt);
+      }
+    }
+
     await handleResultStatic(
       isRunItTwice: isRunItTwice,
       runItTwiceResult: handResult['handLog']['runItTwiceResult'],
       winners: handResult['handLog']['potWinners']['0']['hiWinners'],
-      boardCards:
-          handResult['boardCards'].map((e) => int.parse(e.toString())).toList(),
-      boardCards2: handResult['boardCards2']
-          .map((e) => int.parse(e.toString()))
-          .toList(),
+      boardCards: boardCards,
+      boardCards2: boardCards2,
       context: _context,
     );
 

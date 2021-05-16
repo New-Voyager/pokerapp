@@ -85,18 +85,44 @@ class ReplayHandScreenUtils {
 
   /* this method calls the API to fetch the handlog, process it and return a game replay controller */
   static Future<GameReplayController> getGameReplayController({
-    @required int playerID,
-    @required int handNumber,
-    @required String gameCode,
+    int playerID,
+    int handNumber,
+    String gameCode,
+    dynamic hand,
+    dynamic playerInfo,
+    dynamic assetFile,
   }) async {
     /* fixme: for now, use handlog data from sample */
     /* todo: the network call can be made here */
 
-    final String dataString = await rootBundle.loadString(
-      'assets/sample-data/handlog/holdem/runittwice.json',
+    String dataString = await rootBundle.loadString(
+      'assets/sample-data/handlog/holdem/flop.json',
     );
 
-    final data = jsonDecode(dataString);
+    if (assetFile != null) {
+      dataString = await rootBundle.loadString(assetFile);
+    }
+    final fileData = jsonDecode(dataString);
+
+    dynamic data;
+
+    if (hand != null && playerInfo != null) {
+      data = Map<String, dynamic>();
+      data['handResult'] = hand;
+      data['myInfo'] = playerInfo;
+    } else if (gameCode != null && playerID != null) {
+      // fetch hand using the graphql API
+
+    } else {
+      String dataString = await rootBundle.loadString(
+        'assets/sample-data/handlog/holdem/flop.json',
+      );
+
+      if (assetFile != null) {
+        dataString = await rootBundle.loadString(assetFile);
+      }
+      data = jsonDecode(dataString);
+    }
 
     /* process the handlog data to build a GameReplayController */
     return GameReplayService.buildController(data);

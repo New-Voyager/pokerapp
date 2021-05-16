@@ -15,11 +15,15 @@ class ReplayHandScreen extends StatelessWidget {
   final int playerID;
   final int handNumber;
   final String gameCode;
+  final dynamic hand;
+  final dynamic playerInfo;
 
   ReplayHandScreen({
-    @required this.playerID,
-    @required this.handNumber,
-    @required this.gameCode,
+    this.playerID,
+    this.handNumber,
+    this.gameCode,
+    this.hand,
+    this.playerInfo,
   });
 
   @override
@@ -30,6 +34,8 @@ class ReplayHandScreen extends StatelessWidget {
             playerID: playerID,
             handNumber: handNumber,
             gameCode: gameCode,
+            hand: hand,
+            playerInfo: playerInfo,
           ),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting)

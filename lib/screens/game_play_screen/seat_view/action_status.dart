@@ -25,6 +25,7 @@ class ActionStatusWidget extends StatelessWidget {
     if (action == HandActions.BET ||
         action == HandActions.CALL ||
         action == HandActions.CHECK ||
+        action == HandActions.RAISE ||
         action == HandActions.FOLD ||
         action == HandActions.ALLIN ||
         action == HandActions.STRADDLE) {

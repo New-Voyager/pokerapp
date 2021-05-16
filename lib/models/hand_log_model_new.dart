@@ -37,12 +37,20 @@ class HandLogModelNew {
     log("HandData : \n $hand");
 
     final handLog = Data.fromJson(hand);
+
+    dynamic myInfo;
+    if (json['myInfo'] != null) {
+      myInfo = MyInfo.fromJson(json['myInfo']);
+    } else {
+      // dummy
+      myInfo = MyInfo.fromJson(
+          {"id": 1, "uuid": "cfe63ff3712c594f", "name": "asdf"});
+    }
+
     return HandLogModelNew(
       hand: handLog,
       //playerIdToName: playerIdToName,
-      myInfo: MyInfo.fromJson(
-        {"id": 1, "uuid": "cfe63ff3712c594f", "name": "asdf"},
-      ),
+      myInfo: myInfo,
     );
   }
 
@@ -61,6 +69,9 @@ class Data {
     this.handNum,
     this.gameType,
     this.noCards,
+    this.maxPlayers,
+    this.smallBlind,
+    this.bigBlind,
     this.handLog,
     this.rewardTrackingIds,
     this.boardCards,
@@ -84,6 +95,9 @@ class Data {
   List<dynamic> rewardTrackingIds;
   List<int> boardCards;
   List<int> boardCards2;
+  int maxPlayers;
+  double smallBlind;
+  double bigBlind;
   List<int> flop;
   int turn;
   int river;
@@ -99,6 +113,9 @@ class Data {
         handNum: json["handNum"],
         gameType: json["gameType"],
         noCards: json['noCards'],
+        maxPlayers: json['maxPlayers'] ?? 9,
+        smallBlind: double.parse((json['smallBlind'] ?? 1).toString()),
+        bigBlind: double.parse((json['bigBlind'] ?? 2).toString()),
         handLog: HandLog.fromJson(json["handLog"]),
         rewardTrackingIds:
             List<dynamic>.from(json["rewardTrackingIds"].map((x) => x)),

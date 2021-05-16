@@ -21,8 +21,8 @@ const double _lottieAnimationContainerSize = 120.0;
 const double _animatingAssetContainerSize = 40.0;
 
 // const Duration _durationWaitBeforeExplosion = const Duration(milliseconds: 10);
-const Duration _lottieAnimationDuration = const Duration(milliseconds: 1500);
-const Duration _animatingWidgetDuration = const Duration(milliseconds: 1200);
+const Duration _lottieAnimationDuration = const Duration(milliseconds: 5000);
+const Duration _animatingWidgetDuration = const Duration(milliseconds: 1000);
 
 // PlayersOnTableView encapsulates the players sitting on the table.
 // This view uses Stack layout to place the UserView on top of the table.
