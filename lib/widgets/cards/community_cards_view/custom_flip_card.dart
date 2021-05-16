@@ -1,6 +1,8 @@
 import 'package:flip_card/flip_card.dart';
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
+import 'package:pokerapp/widgets/cards/card_builder_widget.dart';
 
 class CustomFlipCard extends StatelessWidget {
   final Function onFlipDone;
@@ -24,18 +26,18 @@ class CustomFlipCard extends StatelessWidget {
         speed: this.speed,
         flipOnTouch: false,
         back: cardWidget,
-        front: Transform.translate(
-          offset: Offset(
-            0.0,
-            -4.00,
-          ),
-          child: SizedBox(
-            height: AppDimensions.cardHeight * 1.4,
-            width: AppDimensions.cardWidth * 1.4,
-            child: Image.asset(
-              cardBackAsset,
-              fit: BoxFit.fill,
-            ),
+        front: ClipRRect(
+          borderRadius: BorderRadius.circular(5.0),
+          child: Image.asset(
+            cardBackAsset,
+            height: AppDimensions.cardHeight *
+                CardBuilderWidget.getCardRatioFromCardType(
+                  CardType.CommunityCard,
+                ),
+            width: AppDimensions.cardWidth *
+                CardBuilderWidget.getCardRatioFromCardType(
+                  CardType.CommunityCard,
+                ),
           ),
         ),
       );

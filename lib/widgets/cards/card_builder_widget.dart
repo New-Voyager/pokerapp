@@ -27,10 +27,10 @@ class CardBuilderWidget extends StatelessWidget {
             cardBuilder != null);
 
   /* this method returns the correct RATIO for a particular CARD TYPE */
-  double _getCardRatioFromCardType() {
-    switch (card.cardType) {
+  static double getCardRatioFromCardType(CardType cardType) {
+    switch (cardType) {
       case CardType.CommunityCard:
-        return 1.0;
+        return 1.2;
 
       case CardType.HoleCard:
         return 2.9;
@@ -80,7 +80,7 @@ class CardBuilderWidget extends StatelessWidget {
       color: card.color,
     );
 
-    double _ratio = _getCardRatioFromCardType();
+    double _ratio = getCardRatioFromCardType(card.cardType);
 
     Widget cardWidget = Container(
       height: AppDimensions.cardHeight * _ratio,

@@ -57,15 +57,11 @@ class CommunityCardsView extends StatelessWidget {
         _globalKeys[idx] = globalKey;
       }
 
-      /* THIS widget is a wrapper around the community card view, and helps in case of we need to highlight a card */
-      Widget communityCardView = Container(
-        margin: EdgeInsets.only(right: 2.0),
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 3.0),
-          child: CommunityCardView(
-            key: globalKey,
-            card: card,
-          ),
+      Widget communityCardView = Padding(
+        padding: EdgeInsets.symmetric(horizontal: 1.5),
+        child: CommunityCardView(
+          key: globalKey,
+          card: card,
         ),
       );
       communityCards.add(communityCardView);

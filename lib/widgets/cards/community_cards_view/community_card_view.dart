@@ -17,15 +17,6 @@ class CommunityCardView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     card.cardType = CardType.CommunityCard;
-
-    return Transform.scale(
-      scale: 1.2,
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(
-          3.0,
-        ),
-        child: card.widget,
-      ),
-    );
+    return card.widget;
   }
 }
