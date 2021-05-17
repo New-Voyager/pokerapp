@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 
 class GameInfoModel {
+  int gameID;
   String gameCode;
   String clubCode; // optional
   int actionTime;
@@ -43,6 +44,7 @@ class GameInfoModel {
   });
 
   GameInfoModel.fromJson(var data, {int maxPlayers}) {
+    this.gameID = data['gameID'] ?? 0;
     this.gameCode = data['gameCode'];
     this.clubCode = data['clubCode'];
     this.buyInMax = data['buyInMax'];
@@ -87,6 +89,7 @@ class GameInfoModel {
   // graph ql queries
   static String query(String gameCode) => """query gameInfo {
     gameInfo(gameCode:"$gameCode") {
+      gameID
       gameCode
       clubCode
       buyInMax

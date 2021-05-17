@@ -31,6 +31,11 @@ dependencies:
       url: https://github.com/New-Voyager/dart-nats.git
       ref: master
 
+  janus_client:
+    git:
+      url: https://github.com/New-Voyager/flutter_janus_client.git
+      ref: v2
+
   # device id
   flutter_udid: ^1.0.1
 
@@ -130,6 +135,9 @@ dependency_overrides:
   http_parser: ^3.1.1
   plugin_platform_interface: ^1.0.1
   json_annotation: ^4.0.1
+  uuid: ^3.0.4
+  path_provider: ^1.6.24
+  crypto: ^3.0.0 
 
 dev_dependencies:
   flutter_test:

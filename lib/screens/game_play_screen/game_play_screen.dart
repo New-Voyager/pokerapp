@@ -69,7 +69,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   BuildContext _providerContext;
   PlayerInfo _currentPlayer;
   String _audioToken = '';
-  bool liveAudio = false;
+  bool liveAudio = true;
   AudioPlayer _audioPlayer;
   Agora agora;
   GameInfoModel _gameInfoModel;
@@ -109,7 +109,9 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     if (!liveAudio) {
       return;
     }
-
+    //final janusEngine = _gameState.getJanusEngine(_providerContext);
+    _gameState.janusEngine.joinChannel('test');
+    return;
     this._audioToken = await GameService.getLiveAudioToken(widget.gameCode);
     print('Audio token: ${this._audioToken}');
     print('audio token: ${this._audioToken}');
@@ -142,7 +144,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         if (_gameInfoModel.playersInSeats[i].playerUuid ==
             _currentPlayer.uuid) {
           // player is in the table
-          await this.joinAudio();
+          // await this.joinAudio();
           break;
         }
       }
@@ -219,6 +221,16 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         );
       });
 
+      // if the current player is in the table, then join audio
+      for (int i = 0; i < _gameInfoModel.playersInSeats.length; i++) {
+        if (_gameInfoModel.playersInSeats[i].playerUuid ==
+            _currentPlayer.uuid) {
+          // player is in the table
+          await this.joinAudio();
+          break;
+        }
+      }
+
       _gameContextObj.gameComService.gameMessaging.listen(
         onCards: this.onCards,
         onAudio: this.onAudio,
@@ -237,6 +249,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       _gameContextObj?.dispose();
       agora?.disposeObject();
       // Audio.dispose(context: _providerContext);
+      _gameState?.janusEngine?.disposeObject();
 
       if (_audioPlayer != null) {
         _audioPlayer.dispose();

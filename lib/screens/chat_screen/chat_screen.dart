@@ -110,7 +110,8 @@ class _ChatScreenState extends State<ChatScreen> {
         player: widget.player,
       );
 
-      await ClubsService.markMemberRead(player: widget.player, clubCode: widget.clubCode);
+      await ClubsService.markMemberRead(
+          player: widget.player, clubCode: widget.clubCode);
     }
     return messages;
   }

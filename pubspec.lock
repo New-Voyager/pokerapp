@@ -172,12 +172,12 @@ packages:
     source: hosted
     version: "2.1.1"
   crypto:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
       name: crypto
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.5"
+    version: "3.0.1"
   cupertino_icons:
     dependency: "direct main"
     description:
@@ -391,6 +391,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_webrtc:
+    dependency: transitive
+    description:
+      name: flutter_webrtc
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.6.3"
   font_awesome_flutter:
     dependency: "direct main"
     description:
@@ -454,6 +461,15 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.16.1"
+  janus_client:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: v2
+      resolved-ref: c04b3e79fb8f6f39ea6bb68fd85176b9928a72f4
+      url: "https://github.com/New-Voyager/flutter_janus_client.git"
+    source: git
+    version: "2.0.0-beta"
   js:
     dependency: transitive
     description:
@@ -840,12 +856,12 @@ packages:
     source: hosted
     version: "1.0.2"
   uuid:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
       name: uuid
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.2.2"
+    version: "3.0.4"
   uuid_enhanced:
     dependency: transitive
     description:
@@ -857,6 +873,13 @@ packages:
     dependency: transitive
     description:
       name: vector_math
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.1.0"
+  web_socket_channel:
+    dependency: transitive
+    description:
+      name: web_socket_channel
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.0"
