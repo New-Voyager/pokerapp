@@ -620,7 +620,8 @@ String dealerChoiceMessage() => '''
 		"messageType": "DEALER_CHOICE",
 		"dealerChoice": {
 			"playerId": "6026",
-			"games": [1, 2, 3, 4, 5]
+			"games": [1, 2, 3, 4, 5],
+      "timeout": 10
 		}
 	}]
 }''';
