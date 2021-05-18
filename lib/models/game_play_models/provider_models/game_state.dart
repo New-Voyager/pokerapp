@@ -14,7 +14,7 @@ import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
-import 'package:pokerapp/services/test/test_service.dart';
+import 'package:pokerapp/services/janus/janus.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
@@ -39,6 +39,7 @@ class GameState {
   ListenableProvider<MyState> _myStateProvider;
   ListenableProvider<WaitlistState> _waitlistProvider;
   ListenableProvider<ServerConnectionState> _connectionState;
+  ListenableProvider<JanusEngine> _janusEngine;
 
   MyState _myState;
 
@@ -46,7 +47,7 @@ class GameState {
   GameInfoModel _gameInfo;
   Map<int, Seat> _seats = Map<int, Seat>();
   PlayerInfo _currentPlayer;
-
+  JanusEngine janusEngine;
   int _currentHandNum;
 
   void initialize({
@@ -96,6 +97,16 @@ class GameState {
 
     this._connectionState = ListenableProvider<ServerConnectionState>(
         create: (_) => ServerConnectionState());
+
+    this.janusEngine = JanusEngine(
+        gameState: this,
+        gameId: this.gameInfo.gameID,
+        gameCode: this.gameInfo.gameCode,
+        uuid: this._currentPlayer.uuid,
+        playerId: this._currentPlayer.id);
+
+    this._janusEngine =
+        ListenableProvider<JanusEngine>(create: (_) => this.janusEngine);
 
     List<PlayerModel> players = [];
     if (gameInfo.playersInSeats != null) {
@@ -205,6 +216,15 @@ class GameState {
     return this._seats.values.toList();
   }
 
+  Seat getSeatByPlayer(int playerId) {
+    for (final seat in this._seats.values.toList()) {
+      if (seat.player.playerId == playerId) {
+        return seat;
+      }
+    }
+    return null;
+  }
+
   static GameState getState(BuildContext context) =>
       Provider.of<GameState>(context, listen: false);
 
@@ -251,6 +271,9 @@ class GameState {
   ServerConnectionState getConnectionState(BuildContext context,
           {bool listen = false}) =>
       Provider.of<ServerConnectionState>(context, listen: listen);
+
+  // JanusEngine getJanusEngine(BuildContext context, {bool listen = false}) =>
+  //     Provider.of<JanusEngine>(context, listen: listen);
 
   MarkedCards getMarkedCards(
     BuildContext context, {
@@ -321,6 +344,7 @@ class GameState {
       this._gameMessagingService,
       this._waitlistProvider,
       this._connectionState,
+      this._janusEngine,
     ];
   }
 
