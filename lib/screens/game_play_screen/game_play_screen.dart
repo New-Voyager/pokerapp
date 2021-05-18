@@ -464,6 +464,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
                         /* main view */
                         Column(
                           children: [
+                            _gameState.janusEngine.audioWidget(),
                             // header section
                             HeaderView(_gameState),
                             // empty space to highlight the background view

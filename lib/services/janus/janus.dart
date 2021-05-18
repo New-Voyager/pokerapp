@@ -9,7 +9,7 @@ import 'package:flutter_webrtc/flutter_webrtc.dart';
 class JanusEngine extends ChangeNotifier {
   JanusClient engine;
 
-  bool isJoined = false, openMicrophone = true, enableSpeakerphone = true;
+  bool isJoined = false, muted = false, enableSpeakerphone = true;
 
   int gameId;
   String gameCode;
@@ -32,6 +32,18 @@ class JanusEngine extends ChangeNotifier {
     //engine?.
   }
 
+  Widget audioWidget() {
+    log('audio widget is called');
+    return Container(
+              color: Colors.red,
+              height: 20,
+              width: 0,
+              child: RTCVideoView(
+                _remoteRenderer,
+              )
+    );
+  }
+
   joinChannel(String janusToken) async {
     initialized = false;
     janusToken = 'test';
@@ -49,7 +61,13 @@ class JanusEngine extends ChangeNotifier {
           withCredentials: true,
           apiSecret: janusSecret,
           transport: transport,
-          iceServers: []);
+          iceServers: [
+           RTCIceServer(
+              url: "stun:stun2.l.google.com:19302",
+              //url: "stun:stun1.l.google.com:19302",
+              username: "",
+              credential: "")  
+          ]);
       initialized = true;
       await _localRenderer.initialize();
       await _remoteRenderer.initialize();
@@ -111,7 +129,31 @@ class JanusEngine extends ChangeNotifier {
     engine = null;
   }
 
-  switchMicrophone() {}
+  void mute() async {
+    var data = {
+      "request" : "mute",
+      "room" : gameId,
+      "id" : playerId,
+    };
+    try {
+      await plugin.send(data: data);
+      muted = true;
+    } catch(err) {
+      log('mute operation failed. err: ${err.toString()}');
+    }
+  }
 
-  switchSpeakerphone() {}
+  void unmute() async {
+    var data = {
+      "request" : "mute",
+      "room" : gameId,
+      "id" : playerId,
+    };
+    try {
+      await plugin.send(data: data);
+      muted = true;
+    } catch(err) {
+      log('mute operation failed. err: ${err.toString()}');
+    }
+  }
 }
