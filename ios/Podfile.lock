@@ -95,6 +95,10 @@ PODS:
   - flutter_udid (0.0.1):
     - Flutter
     - SAMKeychain
+  - flutter_webrtc (0.2.2):
+    - Flutter
+    - GoogleWebRTC (= 1.1.31999)
+    - Libyuv (= 1703)
   - FMDB (2.7.5):
     - FMDB/standard (= 2.7.5)
   - FMDB/standard (2.7.5)
@@ -127,10 +131,14 @@ PODS:
     - GoogleUtilities/Logger
   - GoogleUtilities/UserDefaults (7.4.0):
     - GoogleUtilities/Logger
+  - GoogleWebRTC (1.1.31999)
   - in_app_purchase (0.0.1):
+    - Flutter
+  - janus_client (0.0.1):
     - Flutter
   - just_audio (0.0.1):
     - Flutter
+  - Libyuv (1703)
   - nanopb (2.30908.0):
     - nanopb/decode (= 2.30908.0)
     - nanopb/encode (= 2.30908.0)
@@ -163,7 +171,9 @@ DEPENDENCIES:
   - Flutter (from `Flutter`)
   - flutter_keyboard_visibility (from `.symlinks/plugins/flutter_keyboard_visibility/ios`)
   - flutter_udid (from `.symlinks/plugins/flutter_udid/ios`)
+  - flutter_webrtc (from `.symlinks/plugins/flutter_webrtc/ios`)
   - in_app_purchase (from `.symlinks/plugins/in_app_purchase/ios`)
+  - janus_client (from `.symlinks/plugins/janus_client/ios`)
   - just_audio (from `.symlinks/plugins/just_audio/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
   - permission_handler (from `.symlinks/plugins/permission_handler/ios`)
@@ -184,6 +194,8 @@ SPEC REPOS:
     - GoogleAppMeasurement
     - GoogleDataTransport
     - GoogleUtilities
+    - GoogleWebRTC
+    - Libyuv
     - nanopb
     - PromisesObjC
     - Reachability
@@ -214,8 +226,12 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_keyboard_visibility/ios"
   flutter_udid:
     :path: ".symlinks/plugins/flutter_udid/ios"
+  flutter_webrtc:
+    :path: ".symlinks/plugins/flutter_webrtc/ios"
   in_app_purchase:
     :path: ".symlinks/plugins/in_app_purchase/ios"
+  janus_client:
+    :path: ".symlinks/plugins/janus_client/ios"
   just_audio:
     :path: ".symlinks/plugins/just_audio/ios"
   path_provider:
@@ -248,12 +264,16 @@ SPEC CHECKSUMS:
   Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
   flutter_keyboard_visibility: 0339d06371254c3eb25eeb90ba8d17dca8f9c069
   flutter_udid: c9d59b0a440e137882faa5cf53a3501e906fb8c2
+  flutter_webrtc: 39898454258b54ba51996850d5da8d5d53bf1524
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   GoogleAppMeasurement: fd19169c3034975cb934e865e5667bfdce59df7f
   GoogleDataTransport: cd9db2180fcecd8da1b561aea31e3e56cf834aa7
   GoogleUtilities: 284cddc7fffc14ae1907efb6f78ab95c1fccaedc
+  GoogleWebRTC: b39a78c4f5cc6b0323415b9233db03a2faa7b0f0
   in_app_purchase: 3e2155afa9d03d4fa32d9e62d567885080ce97d6
+  janus_client: d77ae8ecd25551407740931f9506f1a64ba067a3
   just_audio: baa7252489dbcf47a4c7cc9ca663e9661c99aafa
+  Libyuv: 5f79ced0ee66e60a612ca97de1e6ccacd187a437
   nanopb: a0ba3315591a9ae0a16a309ee504766e90db0c96
   path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
   permission_handler: ccb20a9fad0ee9b1314a52b70b76b473c5f8dab0
