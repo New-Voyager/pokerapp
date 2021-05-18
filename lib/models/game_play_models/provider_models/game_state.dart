@@ -40,6 +40,7 @@ class GameState {
   ListenableProvider<MyState> _myStateProvider;
   ListenableProvider<WaitlistState> _waitlistProvider;
   ListenableProvider<ServerConnectionState> _connectionState;
+  ListenableProvider<JanusEngine> _janusEngine;
 
   MyState _myState;
 
@@ -104,8 +105,8 @@ class GameState {
         uuid: this._currentPlayer.uuid,
         playerId: this._currentPlayer.id);
 
-    // this._janusEngine = ListenableProvider<JanusEngine>(
-    //     create: (_) => this._janusEngine);
+    this._janusEngine = ListenableProvider<JanusEngine>(
+        create: (_) => this.janusEngine);
 
     List<PlayerModel> players = [];
     if (gameInfo.playersInSeats != null) {
@@ -334,6 +335,7 @@ class GameState {
       this._gameMessagingService,
       this._waitlistProvider,
       this._connectionState,
+      this._janusEngine,
     ];
   }
 

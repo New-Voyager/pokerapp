@@ -26,6 +26,7 @@ import 'package:pokerapp/services/game_play/action_services/hand_action_service.
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/services/game_play/utils/audio_buffer.dart';
+import 'package:pokerapp/services/janus/janus.dart';
 import 'package:pokerapp/services/nats/nats.dart';
 import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/utils.dart';
@@ -464,7 +465,10 @@ class _GamePlayScreenState extends State<GamePlayScreen>
                         /* main view */
                         Column(
                           children: [
-                            _gameState.janusEngine.audioWidget(),
+                            Consumer<JanusEngine>(builder: (_, __, ___){
+                              return _gameState.janusEngine.audioWidget();
+                            }),
+                            
                             // header section
                             HeaderView(_gameState),
                             // empty space to highlight the background view
