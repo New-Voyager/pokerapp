@@ -31,12 +31,12 @@ class HandLogHeaderView extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(
-                margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                child: Text(
+          Container(
+            margin: EdgeInsets.all(8),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
                   "Game: " + _handLogModel.hand.gameId,
                   style: const TextStyle(
                     fontFamily: AppAssets.fontFamilyLato,
@@ -45,10 +45,7 @@ class HandLogHeaderView extends StatelessWidget {
                     fontWeight: FontWeight.w400,
                   ),
                 ),
-              ),
-              Container(
-                margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                child: Text(
+                Text(
                   "Hand: #" + _handLogModel.hand.handNum.toString(),
                   style: const TextStyle(
                     fontFamily: AppAssets.fontFamilyLato,
@@ -57,8 +54,8 @@ class HandLogHeaderView extends StatelessWidget {
                     fontWeight: FontWeight.w400,
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
           Container(
             margin: EdgeInsets.only(left: 8, right: 8, bottom: 8),

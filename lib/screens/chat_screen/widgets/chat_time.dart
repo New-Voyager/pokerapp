@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 
 import '../utils.dart';
@@ -14,6 +16,7 @@ class ChatTimeWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    log("DATE : $date");
     return Align(
       alignment: Alignment.centerRight,
       child: Padding(

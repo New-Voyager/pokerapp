@@ -1,8 +1,10 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/enums/game_stages.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
+import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_log_header_view.dart';
@@ -13,6 +15,7 @@ import 'package:pokerapp/screens/club_screen/hand_log_views/handlog_showdown.dar
 import 'package:pokerapp/screens/club_screen/hand_log_views/handlog_summary.dart';
 import 'package:pokerapp/services/app/hand_service.dart';
 import 'package:pokerapp/services/test/test_service.dart';
+import 'package:pokerapp/utils/alerts.dart';
 
 class HandLogView extends StatefulWidget {
   final String gameCode;
@@ -113,55 +116,83 @@ class _HandLogViewState extends State<HandLogView> {
                   ), */
                   Container(
                     padding: EdgeInsets.symmetric(vertical: 5),
+                    margin: EdgeInsets.symmetric(horizontal: 16),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        widget.clubCode != null
-                            ? Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  GestureDetector(
-                                    onTap: () {
-                                      // todo : just change to shareHand and pass club code as well
-                                      HandService.bookMarkHand(
-                                        _handLogModel.hand.gameId,
-                                        _handLogModel.hand.handNum,
-                                      );
-                                    },
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: Colors.black,
-                                      ),
-                                      padding: EdgeInsets.all(10),
-                                      child: Icon(
-                                        Icons.share,
-                                        size: 20,
-                                        color: AppColors.appAccentColor,
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 10,
-                                  ),
-                                ],
-                              )
-                            : Container(),
                         GestureDetector(
-                          onTap: () {
-                            HandService.bookMarkHand(
-                              _handLogModel.hand.gameId,
+                          onTap: () async {
+                            // TODO: replay integration
+
+                            Alerts.showTextNotification(text: "Replay hand");
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: AppColors.cardBackgroundColor,
+                            ),
+                            padding: EdgeInsets.all(10),
+                            child: Icon(
+                              Icons.replay,
+                              size: 20,
+                              color: AppColors.appAccentColor,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        GestureDetector(
+                          onTap: () async {
+                            // todo : just change to shareHand and pass club code as well
+                            var result = await HandService.shareHand(
+                              "CG-G9IBTXKLLLJJ89", // should be _handLogModel.hand.gameCode,
                               _handLogModel.hand.handNum,
+                              widget.clubCode,
+                            );
+                            String text = result
+                                ? "Hand " +
+                                    _handLogModel.hand.handNum.toString() +
+                                    " has been shared with the club"
+                                : "Couldn't share the hand. Please try again later";
+                            Alerts.showTextNotification(text: text);
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: AppColors.cardBackgroundColor,
+                            ),
+                            padding: EdgeInsets.all(10),
+                            child: Icon(
+                              Icons.share,
+                              size: 20,
+                              color: AppColors.appAccentColor,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        GestureDetector(
+                          onTap: () async {
+                            final results = await HandService.bookMarkHand(
+                              "CG-G9IBTXKLLLJJ89", // should bne _handLogModel.hand.gameCode,
+                              _handLogModel.hand.handNum,
+                            );
+                            Alerts.showTextNotification(
+                              text: results
+                                  ? "Hand ${_handLogModel.hand.handNum} has been bookmarked."
+                                  : "Couldn't bookmark this hand! Please try again.",
                             );
                           },
                           child: Container(
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              color: Colors.black,
+                              color: AppColors.cardBackgroundColor,
                             ),
                             padding: EdgeInsets.all(10),
                             child: Icon(
-                              Icons.bookmark,
+                              Icons.star_outline,
                               size: 20,
                               color: AppColors.appAccentColor,
                             ),
@@ -171,7 +202,10 @@ class _HandLogViewState extends State<HandLogView> {
                     ),
                   ),
                   HandLogHeaderView(_handLogModel),
-                  Container(
+                  SizedBox(
+                    height: 8,
+                  ),
+                  /*  Container(
                     margin:
                         EdgeInsets.only(left: 10, top: 5, bottom: 5, right: 10),
                     alignment: Alignment.centerLeft,
@@ -179,7 +213,7 @@ class _HandLogViewState extends State<HandLogView> {
                     //   "Winners",
                     //   style: AppStyles.boldTitleTextStyle,
                     // ),
-                  ),
+                  ), */
                   HandWinnersView(handLogModel: _handLogModel),
                   HandStageView(
                     handLogModel: _handLogModel,

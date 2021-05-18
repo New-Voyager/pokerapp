@@ -91,6 +91,16 @@ class HandService {
     }
   """;
 
+  static String bookmarkedHands = """
+    query bookMarkedHands {
+    bookmarkedHands {
+      gameCode
+      handNum
+      data
+    }
+  }
+  """;
+
   static Future<void> getAllHands(HandHistoryListModel model) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
     Map<String, dynamic> variables = {
@@ -135,7 +145,7 @@ class HandService {
     return handLog;
   }
 
-  static Future<bool> saveStarredHand(String gameCode, String handNum) async {
+/*   static Future<bool> saveStarredHand(String gameCode, String handNum) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
 
     Map<String, dynamic> variables = {
@@ -151,7 +161,7 @@ class HandService {
     }
     return true;
   }
-
+ */
   static Future<bool> shareHand(
       String gameCode, int handNum, String clubCode) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
@@ -161,6 +171,8 @@ class HandService {
       "handNum": handNum,
       "clubCode": clubCode,
     };
+
+    log("Variables : $variables");
 
     QueryResult result = await _client.mutate(MutationOptions(
         documentNode: gql(shareHandMutation), variables: variables));
@@ -179,12 +191,38 @@ class HandService {
       "handNum": handNum,
     };
 
+    log("Variables : $variables");
     QueryResult result = await _client.mutate(
         MutationOptions(documentNode: gql(bookmarkHand), variables: variables));
+    //print("Bookmarking API : ${result.data.values}");
+
     if (result.hasException) {
-      print(result.exception);
+      print("Exception in BookmarkHand: ${result.exception}");
       return false;
     }
     return true;
+  }
+
+  static getBookMarkedHands() async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+
+    // Map<String, dynamic> variables = {
+    //   "gameCode": gameCode,
+    //   "handNum": handNum,
+    // };
+
+    //  log("Variables : $variables");
+    QueryResult result = await _client.mutate(MutationOptions(
+      documentNode: gql(bookmarkedHands),
+    ));
+    //print("Bookmarking API : ${result.data.values}");
+    log("results : ${result.data.keys}");
+    log("results : ${result.data.values}");
+
+    if (result.hasException) {
+      print("Exception in BookmarkHand: ${result.exception}");
+      return null;
+    }
+    return result.data;
   }
 }
