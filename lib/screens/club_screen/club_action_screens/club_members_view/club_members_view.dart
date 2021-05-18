@@ -55,6 +55,8 @@ class _ClubMembersViewState extends State<ClubMembersView>
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     if (_isLoading) {
       return Center(
         child: CircularProgressIndicator(),
@@ -69,7 +71,7 @@ class _ClubMembersViewState extends State<ClubMembersView>
           leading: IconButton(
             icon: Icon(
               Icons.arrow_back_ios,
-              size: 14,
+              size: height * 0.02,
               color: AppColors.appAccentColor,
             ),
             onPressed: () => Navigator.of(context).pop(),
@@ -82,7 +84,7 @@ class _ClubMembersViewState extends State<ClubMembersView>
             textAlign: TextAlign.left,
             style: TextStyle(
               color: AppColors.appAccentColor,
-              fontSize: 14.0,
+              fontSize: height * 0.02,
               fontFamily: AppAssets.fontFamilyLato,
               fontWeight: FontWeight.w600,
             ),
@@ -91,14 +93,18 @@ class _ClubMembersViewState extends State<ClubMembersView>
         body: Column(
           children: [
             Container(
-              margin: EdgeInsets.only(left: 15, top: 5, bottom: 5, right: 15),
+              margin: EdgeInsets.only(
+                left: width * 0.03,
+                top: height * 0.015,
+                bottom: height * 0.015,
+              ),
               alignment: Alignment.centerLeft,
               child: Text(
                 "Members",
-                style: const TextStyle(
+                style: TextStyle(
                   fontFamily: AppAssets.fontFamilyLato,
                   color: Colors.white,
-                  fontSize: 30.0,
+                  fontSize: height * 0.037,
                   fontWeight: FontWeight.w900,
                 ),
               ),
@@ -151,7 +157,7 @@ class _ClubMembersViewState extends State<ClubMembersView>
           leading: IconButton(
             icon: Icon(
               Icons.arrow_back_ios,
-              size: 14.0,
+              size: height * 0.02,
               color: AppColors.appAccentColor,
             ),
             onPressed: () => Navigator.of(context).pop(),
@@ -164,7 +170,7 @@ class _ClubMembersViewState extends State<ClubMembersView>
             textAlign: TextAlign.left,
             style: TextStyle(
               color: AppColors.appAccentColor,
-              fontSize: 14.0,
+              fontSize: height * 0.017,
               fontFamily: AppAssets.fontFamilyLato,
               fontWeight: FontWeight.w600,
             ),
@@ -212,7 +218,7 @@ class _ClubMembersViewState extends State<ClubMembersView>
                                 textAlign: TextAlign.left,
                                 style: TextStyle(
                                   color: Colors.white,
-                                  fontSize: 17,
+                                  fontSize: height * 0.02,
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),

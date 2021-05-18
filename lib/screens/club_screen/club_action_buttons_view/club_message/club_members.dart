@@ -22,6 +22,8 @@ class ClubMembers extends StatefulWidget {
 class _ClubMembersState extends State<ClubMembers> {
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     return Scaffold(
       backgroundColor: AppColors.screenBackgroundColor,
       appBar: AppBar(
@@ -86,8 +88,11 @@ class _ClubMembersState extends State<ClubMembers> {
                     });
                   },
                   child: Container(
-                    padding:
-                        EdgeInsets.only(left: 5, right: 5, top: 5, bottom: 5),
+                    padding: EdgeInsets.only(
+                        left: width * 0.02,
+                        right: width * 0.02,
+                        top: height * 0.02,
+                        bottom: height * 0.015),
                     child: Column(
                       children: [
                         Row(
@@ -96,10 +101,10 @@ class _ClubMembersState extends State<ClubMembers> {
                                 ? Icon(
                                     Icons.circle,
                                     color: AppColors.appAccentColor,
-                                    size: 15,
+                                    size: height * 0.015,
                                   )
                                 : SizedBox(
-                                    width: 15,
+                                    width: width * 0.015,
                                   ),
                             Padding(
                               padding:
@@ -149,7 +154,7 @@ class _ClubMembersState extends State<ClubMembers> {
                           ],
                         ),
                         SizedBox(
-                          height: 5,
+                          height: height * 0.01,
                         ),
                         Divider(
                           color: AppColors.contentColor,

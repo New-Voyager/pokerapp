@@ -34,6 +34,8 @@ class _ClubMembersListViewState extends State<ClubMembersListView> {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     List<ClubMemberModel> _filteredList;
     _filteredList = widget._membersList;
     return Container(
@@ -85,7 +87,7 @@ class _ClubMembersListViewState extends State<ClubMembersListView> {
                           visible: _filteredList[index].isManager ?? false,
                           child: Container(
                             padding: EdgeInsets.only(
-                              top: 10,
+                              top: height * 0.01,
                             ),
                             child: Visibility(
                               visible: _filteredList[index].isManager ?? false,
@@ -93,7 +95,7 @@ class _ClubMembersListViewState extends State<ClubMembersListView> {
                                 "Manager",
                                 style: TextStyle(
                                   fontFamily: AppAssets.fontFamilyLato,
-                                  fontSize: 14,
+                                  fontSize: height * 0.017,
                                   fontWeight: FontWeight.w400,
                                   color: AppColors.contentColor,
                                 ),
@@ -109,7 +111,8 @@ class _ClubMembersListViewState extends State<ClubMembersListView> {
                     child: Column(
                       children: <Widget>[
                         Padding(
-                          padding: EdgeInsets.only(top: 5, bottom: 5),
+                          padding: EdgeInsets.only(
+                              top: height * 0.01, bottom: height * 0.01),
                           child: Row(
                             children: <Widget>[
                               Expanded(
@@ -120,7 +123,7 @@ class _ClubMembersListViewState extends State<ClubMembersListView> {
                                   style: TextStyle(
                                     fontFamily: AppAssets.fontFamilyLato,
                                     color: Colors.white,
-                                    fontSize: 24,
+                                    fontSize: height * 0.027,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
@@ -133,7 +136,7 @@ class _ClubMembersListViewState extends State<ClubMembersListView> {
                                   style: TextStyle(
                                     fontFamily: AppAssets.fontFamilyLato,
                                     color: Colors.white,
-                                    fontSize: 10,
+                                    fontSize: height * 0.012,
                                     fontWeight: FontWeight.w400,
                                   ),
                                 ),
@@ -252,7 +255,7 @@ class _ClubMembersListViewState extends State<ClubMembersListView> {
                                   style: TextStyle(
                                     fontFamily: AppAssets.fontFamilyLato,
                                     color: Colors.white,
-                                    fontSize: 12,
+                                    fontSize: height * 0.015,
                                     fontWeight: FontWeight.w400,
                                   ),
                                 ),
@@ -273,7 +276,7 @@ class _ClubMembersListViewState extends State<ClubMembersListView> {
                                   style: TextStyle(
                                     fontFamily: AppAssets.fontFamilyLato,
                                     color: Colors.white,
-                                    fontSize: 17,
+                                    fontSize: height * 0.018,
                                     fontWeight: FontWeight.w500,
                                   ),
                                 ),
@@ -306,7 +309,7 @@ class _ClubMembersListViewState extends State<ClubMembersListView> {
                                 "Approve",
                                 style: TextStyle(
                                   fontFamily: AppAssets.fontFamilyLato,
-                                  fontSize: 17,
+                                  fontSize: height * 0.018,
                                   fontWeight: FontWeight.w400,
                                   color: AppColors.appAccentColor,
                                 ),
@@ -328,7 +331,7 @@ class _ClubMembersListViewState extends State<ClubMembersListView> {
                                 "Deny",
                                 style: TextStyle(
                                   fontFamily: AppAssets.fontFamilyLato,
-                                  fontSize: 17,
+                                  fontSize: height * 0.018,
                                   fontWeight: FontWeight.w400,
                                   color: AppColors.appAccentColor,
                                 ),
@@ -370,7 +373,7 @@ class _ClubMembersListViewState extends State<ClubMembersListView> {
                                     fontFamily: AppAssets.fontFamilyLato,
                                     color: Colors.white,
                                     backgroundColor: Colors.transparent,
-                                    fontSize: 12,
+                                    fontSize: height * 0.015,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
@@ -395,7 +398,7 @@ class _ClubMembersListViewState extends State<ClubMembersListView> {
                           Icon(
                             Icons.arrow_forward_ios,
                             color: AppColors.appAccentColor,
-                            size: 10,
+                            size: height * 0.02,
                           )
                           // Visibility(
                           //   visible: _filteredList[index].isManager ?? false,

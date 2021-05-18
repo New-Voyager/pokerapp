@@ -21,6 +21,8 @@ class ClubActionButton extends StatelessWidget {
       {this.onTap});
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     List<ClubMemberModel> _sampleList = new List<ClubMemberModel>();
 
     return Consumer<ClubHomePageModel>(
@@ -92,15 +94,15 @@ class ClubActionButton extends StatelessWidget {
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 14.0,
+                      fontSize: height * 0.017,
                       fontFamily: AppAssets.fontFamilyLato,
                       fontWeight: FontWeight.w400,
                     ),
                   ),
                 ),
                 SizedBox(
-                  width: 50,
-                  height: 50,
+                  width: width * 0.05,
+                  height: height * 0.06,
                   child: _actionIcon,
                 ),
               ],

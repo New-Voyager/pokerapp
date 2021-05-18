@@ -5,6 +5,7 @@ import 'package:pokerapp/models/hand_log_model_new.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/screens/util_screens/util.dart';
 
 class HandlogSummary extends StatelessWidget {
   final HandLogModelNew handlogModel;
@@ -12,7 +13,7 @@ class HandlogSummary extends StatelessWidget {
   HandlogSummary({this.handlogModel});
   @override
   Widget build(BuildContext context) {
-    //   log(handlogModel.hand.data.players.length.toString());
+    log(handlogModel.toString());
 
     return Container(
       child: Column(
@@ -35,7 +36,7 @@ class HandlogSummary extends StatelessWidget {
           ),
           Container(
             padding: EdgeInsets.only(bottom: 16),
-            child: ListView.builder(
+            child: ListView.separated(
               itemBuilder: (context, index) {
                 log("TOTAL : ${handlogModel.hand.playersInSeats.length}");
                 // log(handlogModel.hand.data.players[(index + 1).toString()].id);
@@ -44,6 +45,11 @@ class HandlogSummary extends StatelessWidget {
               itemCount: handlogModel.hand.playersInSeats.length,
               shrinkWrap: true,
               physics: ClampingScrollPhysics(),
+              separatorBuilder: (context, index) => Divider(
+                endIndent: 16,
+                indent: 16,
+                color: AppColors.veryLightGrayColor,
+              ),
             ),
           ),
         ],
@@ -59,7 +65,10 @@ class HandlogSummary extends StatelessWidget {
     //     index != -1 ? handlogModel.players[index].name : "Player";
     String playerName = 'Player';
     if (player != null) {
-      playerName = handlogModel.getPlayerNameBySeatNo(player.seatNo);
+      playerName = getPlayerNameBySeatNo(
+        handLogModel: handlogModel,
+        seatNo: player.seatNo,
+      );
     }
     return Container(
       margin: EdgeInsets.only(top: 5, bottom: 5, left: 16, right: 16),

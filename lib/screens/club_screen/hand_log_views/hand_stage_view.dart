@@ -8,6 +8,7 @@ import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_stage_header.dart';
+import 'package:pokerapp/screens/util_screens/util.dart';
 
 const sbTextStyle = TextStyle(
   fontFamily: AppAssets.fontFamilyLato,
@@ -191,7 +192,10 @@ class HandStageView extends StatelessWidget {
           Expanded(
             flex: 4,
             child: Text(
-              handLogModel.getPlayerName(actions, index),
+              getPlayerNameBySeatNo(
+                handLogModel: handLogModel,
+                seatNo: actions.actions[index].seatNo,
+              ),
               style: AppStyles.playerNameTextStyle,
               textAlign: TextAlign.left,
             ),
@@ -288,12 +292,4 @@ class HandStageView extends StatelessWidget {
         return null;
     }
   }
-
-  // String _getPlayerName(GameActions actions, int index) {
-  //   final seatNo = actions.actions[index].seatNo;
-  //   final playerId = handLogModel.hand.playersInSeats[seatNo].id;
-  //   return handLogModel.playerIdToName[playerId];
-  // }
-
-  String _getStageName(GameStages stageEnum) {}
 }

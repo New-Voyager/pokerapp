@@ -17,6 +17,8 @@ class ListOfClubMemberBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     return Container(
       color: AppColors.screenBackgroundColor,
       height: 3 * MediaQuery.of(context).size.height / 4,
@@ -55,8 +57,10 @@ class ListOfClubMemberBottomSheet extends StatelessWidget {
                           Navigator.pop(context);
                         },
                         child: Container(
-                          padding:
-                              EdgeInsets.only(bottom: 5, top: 10, left: 10),
+                          padding: EdgeInsets.only(
+                              bottom: height * 0.02,
+                              top: height * 0.01,
+                              left: width * 0.03),
                           child: Column(
                             children: [
                               Row(
@@ -82,7 +86,7 @@ class ListOfClubMemberBottomSheet extends StatelessWidget {
                                 ],
                               ),
                               SizedBox(
-                                height: 5,
+                                height: height * 0.01,
                               ),
                               Divider(
                                 color: AppColors.contentColor,

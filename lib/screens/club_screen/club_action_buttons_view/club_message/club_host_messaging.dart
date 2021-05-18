@@ -40,7 +40,7 @@ class _ClubChatState extends State<ClubHostMessaging> {
     height = MediaQuery.of(context).size.height;
     return Scaffold(
       backgroundColor: AppColors.screenBackgroundColor,
-      appBar: getappBar(),
+      appBar: getappBar(height, width),
       body: Container(
         child: Column(
           children: [
@@ -106,22 +106,23 @@ class _ClubChatState extends State<ClubHostMessaging> {
                     );
                   }),
             ),
-            inputBox(),
+            inputBox(height, width),
           ],
         ),
       ),
     );
   }
 
-  inputBox() {
+  inputBox(height, width) {
     return Container(
       color: AppColors.screenBackgroundColor,
       child: Row(
         children: [
           Expanded(
             child: Container(
-              height: 45,
-              margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+              height: height * 0.45,
+              margin: EdgeInsets.symmetric(
+                  horizontal: width * 0.01, vertical: height * 0.01),
               child: Container(
                 decoration: BoxDecoration(
                   color: AppColors.chatInputBgColor,
@@ -131,12 +132,12 @@ class _ClubChatState extends State<ClubHostMessaging> {
                     ),
                   ),
                 ),
-                padding: const EdgeInsets.symmetric(horizontal: 15),
+                padding: EdgeInsets.symmetric(horizontal: width * 0.015),
                 child: TextField(
                   controller: controller,
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: 20.0,
+                    fontSize: height * 0.02,
                   ),
                   textAlignVertical: TextAlignVertical.center,
                   decoration: InputDecoration(
@@ -162,18 +163,18 @@ class _ClubChatState extends State<ClubHostMessaging> {
             child: Icon(
               Icons.send_outlined,
               color: Colors.white,
-              size: 25,
+              size: height * 0.025,
             ),
           ),
           SizedBox(
-            width: 10,
+            width: width * 0.01,
           ),
         ],
       ),
     );
   }
 
-  getappBar() {
+  getappBar(height, width) {
     return PreferredSize(
       preferredSize: Size(width, 80),
       child: SafeArea(

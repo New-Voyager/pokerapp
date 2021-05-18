@@ -4,18 +4,23 @@ import 'package:pokerapp/models/hand_log_model_new.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/widgets/cards/multiple_stack_card_views.dart';
 
 class HandWinnersView extends StatelessWidget {
-  final HandLogModelNew _handLogModel;
+  final HandLogModelNew handLogModel;
   final List<PotWinner> potWinnersList = [];
   final List<String> potNumbers = [];
+  final bool chatWidget;
 
-  HandWinnersView(this._handLogModel);
+  HandWinnersView({this.handLogModel, this.chatWidget});
 
   @override
   Widget build(BuildContext context) {
-    _getPotWinnersList(_handLogModel);
+    _getPotWinnersList(handLogModel);
+    LinearGradient linearGradient = this.chatWidget ?? false
+        ? AppStyles.handlogBlueGradient
+        : AppStyles.handlogGreyGradient;
     if (potWinnersList == null || potWinnersList.length == 0) {
       return Center(
         child: Text(
@@ -54,9 +59,9 @@ class HandWinnersView extends StatelessWidget {
               }
               return Container(
                 decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    gradient: LinearGradient(
-                        colors: [Colors.grey[850], Colors.grey[700]])),
+                  borderRadius: BorderRadius.circular(8),
+                  gradient: linearGradient,
+                ),
                 padding: EdgeInsets.symmetric(vertical: 8),
                 child: Column(
                   children: [
@@ -69,20 +74,20 @@ class HandWinnersView extends StatelessWidget {
                       ),
                     ),
                     Container(
-                      margin: EdgeInsets.symmetric(horizontal: 16),
+                      margin: EdgeInsets.symmetric(horizontal: 8),
                       alignment: Alignment.centerLeft,
                       child: Text(
                         winnersTitle,
                         style: const TextStyle(
                           fontFamily: AppAssets.fontFamilyLato,
-                          color: Colors.white,
+                          color: Colors.green,
                           fontSize: 14.0,
                           fontWeight: FontWeight.w400,
                         ),
                       ),
                     ),
                     Container(
-                      margin: EdgeInsets.all(5),
+                      margin: EdgeInsets.symmetric(horizontal: 8),
                       alignment: Alignment.centerRight,
                       child: Container(
                         child: ListView.builder(
@@ -99,45 +104,92 @@ class HandWinnersView extends StatelessWidget {
                                   Padding(
                                     padding: EdgeInsets.only(bottom: 5, top: 5),
                                     child: Text(
-                                      _handLogModel.getPlayerNameBySeatNo(
-                                          potWinnersList[index]
+                                      getPlayerNameBySeatNo(
+                                          handLogModel: handLogModel,
+                                          seatNo: potWinnersList[index]
                                               .hiWinners[winnerIndex]
                                               .seatNo),
                                       style: AppStyles.playerNameTextStyle,
                                       textAlign: TextAlign.left,
                                     ),
                                   ),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      StackCardView01(
-                                        totalCards: _handLogModel
-                                            .getPlayerBySeatNo(
-                                                potWinnersList[index]
-                                                    .hiWinners[winnerIndex]
-                                                    .seatNo)
-                                            .cards,
-                                        cardsToHighlight: potWinnersList[index]
-                                            .hiWinners[winnerIndex]
-                                            .playerCards,
-                                        show:
-                                            _handLogModel.hand.handLog.wonAt ==
-                                                GameStages.SHOWDOWN,
-                                      ),
-                                      StackCardView01(
-                                        totalCards: potWinnersList[index]
-                                            .hiWinners[winnerIndex]
-                                            .winningCards,
-                                        cardsToHighlight: potWinnersList[index]
-                                            .hiWinners[winnerIndex]
-                                            .winningCards,
-                                        show:
-                                            _handLogModel.hand.handLog.wonAt ==
-                                                GameStages.SHOWDOWN,
-                                      ),
-                                    ],
-                                  ),
+                                  chatWidget ?? false
+                                      ? Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            StackCardView01(
+                                              totalCards: handLogModel
+                                                  .getPlayerBySeatNo(
+                                                      potWinnersList[index]
+                                                          .hiWinners[
+                                                              winnerIndex]
+                                                          .seatNo)
+                                                  .cards,
+                                              cardsToHighlight:
+                                                  potWinnersList[index]
+                                                      .hiWinners[winnerIndex]
+                                                      .playerCards,
+                                              show: handLogModel
+                                                      .hand.handLog.wonAt ==
+                                                  GameStages.SHOWDOWN,
+                                            ),
+                                            Container(
+                                              margin: EdgeInsets.only(
+                                                  bottom: 4, top: 8),
+                                              child: Text(
+                                                "Community Cards",
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 12),
+                                              ),
+                                            ),
+                                            StackCardView01(
+                                              totalCards:
+                                                  handLogModel.hand.boardCards,
+                                              cardsToHighlight:
+                                                  potWinnersList[index]
+                                                      .hiWinners[winnerIndex]
+                                                      .winningCards,
+                                              show: handLogModel
+                                                      .hand.handLog.wonAt ==
+                                                  GameStages.SHOWDOWN,
+                                            ),
+                                          ],
+                                        )
+                                      : Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            StackCardView01(
+                                              totalCards: handLogModel
+                                                  .getPlayerBySeatNo(
+                                                      potWinnersList[index]
+                                                          .hiWinners[
+                                                              winnerIndex]
+                                                          .seatNo)
+                                                  .cards,
+                                              cardsToHighlight:
+                                                  potWinnersList[index]
+                                                      .hiWinners[winnerIndex]
+                                                      .playerCards,
+                                              show: handLogModel
+                                                      .hand.handLog.wonAt ==
+                                                  GameStages.SHOWDOWN,
+                                            ),
+                                            StackCardView01(
+                                              totalCards:
+                                                  handLogModel.hand.boardCards,
+                                              cardsToHighlight:
+                                                  potWinnersList[index]
+                                                      .hiWinners[winnerIndex]
+                                                      .winningCards,
+                                              show: handLogModel
+                                                      .hand.handLog.wonAt ==
+                                                  GameStages.SHOWDOWN,
+                                            ),
+                                          ],
+                                        ),
                                 ],
                               ),
                             );
@@ -148,26 +200,19 @@ class HandWinnersView extends StatelessWidget {
                     Visibility(
                       visible: potWinnersList[index].lowWinners.length > 0,
                       child: Container(
+                        margin: EdgeInsets.symmetric(horizontal: 8),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Divider(
-                              color: AppColors.listViewDividerColor,
-                              indent: 5,
-                              endIndent: 5,
-                            ),
-                            Padding(
-                              padding: EdgeInsets.all(5),
-                              child: Text(
-                                "Lo-Winners",
-                                style: const TextStyle(
-                                  fontFamily: AppAssets.fontFamilyLato,
-                                  color: Colors.white,
-                                  fontSize: 14.0,
-                                  fontWeight: FontWeight.w400,
-                                ),
-                                textAlign: TextAlign.left,
+                            Text(
+                              "Lo-Winners",
+                              style: const TextStyle(
+                                fontFamily: AppAssets.fontFamilyLato,
+                                color: Colors.green,
+                                fontSize: 14.0,
+                                fontWeight: FontWeight.w400,
                               ),
+                              textAlign: TextAlign.left,
                             ),
                             Container(
                               margin: EdgeInsets.all(5),
@@ -180,7 +225,6 @@ class HandWinnersView extends StatelessWidget {
                                   shrinkWrap: true,
                                   itemBuilder: (context, winnerIndex) {
                                     return Container(
-                                      margin: EdgeInsets.only(left: 20),
                                       alignment: Alignment.centerLeft,
                                       child: Column(
                                         crossAxisAlignment:
@@ -190,12 +234,12 @@ class HandWinnersView extends StatelessWidget {
                                             padding: EdgeInsets.only(
                                                 top: 5, bottom: 5),
                                             child: Text(
-                                              _handLogModel
-                                                  .getPlayerNameBySeatNo(
-                                                      potWinnersList[index]
-                                                          .lowWinners[
-                                                              winnerIndex]
-                                                          .seatNo),
+                                              getPlayerNameBySeatNo(
+                                                handLogModel: handLogModel,
+                                                seatNo: potWinnersList[index]
+                                                    .lowWinners[winnerIndex]
+                                                    .seatNo,
+                                              ),
                                               style: const TextStyle(
                                                 fontFamily:
                                                     AppAssets.fontFamilyLato,
@@ -224,7 +268,7 @@ class HandWinnersView extends StatelessWidget {
                                               //       GameStages.SHOWDOWN,
                                               // ),
                                               StackCardView01(
-                                                totalCards: _handLogModel
+                                                totalCards: handLogModel
                                                     .getPlayerBySeatNo(
                                                         potWinnersList[index]
                                                             .lowWinners[
@@ -235,7 +279,7 @@ class HandWinnersView extends StatelessWidget {
                                                     potWinnersList[index]
                                                         .lowWinners[winnerIndex]
                                                         .playerCards,
-                                                show: _handLogModel
+                                                show: handLogModel
                                                         .hand.handLog.wonAt ==
                                                     GameStages.SHOWDOWN,
                                               ),
@@ -248,7 +292,7 @@ class HandWinnersView extends StatelessWidget {
                                                     potWinnersList[index]
                                                         .lowWinners[winnerIndex]
                                                         .winningCards,
-                                                show: _handLogModel
+                                                show: handLogModel
                                                         .hand.handLog.wonAt ==
                                                     GameStages.SHOWDOWN,
                                               ),

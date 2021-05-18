@@ -4,11 +4,19 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:intl/intl.dart';
 import 'package:pokerapp/models/auth_model.dart';
 import 'package:pokerapp/models/club_message_model.dart';
+import 'package:pokerapp/models/hand_history_model.dart';
+import 'package:pokerapp/models/hand_log_model_new.dart';
+import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/chat_time.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/chat_user_avatar.dart';
+import 'package:pokerapp/screens/chat_screen/widgets/replay_button.dart';
+import 'package:pokerapp/screens/club_screen/hand_log_views/hand_winners_view.dart';
+import 'package:pokerapp/screens/game_screens/hand_history/played_hands.dart';
+import 'package:pokerapp/screens/util_screens/replay_hand_screen/replay_hand_screen.dart';
 
 import '../../../../resources/app_colors.dart';
 import '../../../chat_screen/utils.dart';
@@ -38,7 +46,7 @@ class MessageItem extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.end,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          _buildTile(isMe, messageModel.isGroupLatest),
+          _buildTile(context, isMe, messageModel.isGroupLatest),
           SizedBox(width: 5),
           _buildAvatar(),
         ],
@@ -50,7 +58,7 @@ class MessageItem extends StatelessWidget {
       children: [
         _buildAvatar(),
         SizedBox(width: 5),
-        _buildTile(isMe, messageModel.isGroupLatest),
+        _buildTile(context, isMe, messageModel.isGroupLatest),
       ],
     );
   }
@@ -64,7 +72,7 @@ class MessageItem extends StatelessWidget {
     return SizedBox();
   }
 
-  Widget _buildTile(bool isMe, bool isGroupLatest) {
+  Widget _buildTile(BuildContext context, bool isMe, bool isGroupLatest) {
     Widget triangle;
     CustomPaint trianglePainer =
         CustomPaint(painter: Triangle(isMe ? senderColor : receiverColor));
@@ -83,14 +91,14 @@ class MessageItem extends StatelessWidget {
               left: !isGroupLatest ? 20 : 0,
               right: !isGroupLatest ? 20 : 0,
             ),
-            child: _buildMessage(isMe),
+            child: _buildMessage(context, isMe),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildSharedHand(bool isMe) {
+  Widget _buildSharedHand(BuildContext context, bool isMe) {
     final playerName = players[messageModel.sender ?? ''] ?? 'Somebody';
     log('player: ${messageModel.sender} isMe: $isMe name: $playerName ${messageModel.text}');
     String gameStr = messageModel.sharedHand.gameTypeStr;
@@ -105,8 +113,18 @@ class MessageItem extends StatelessWidget {
     } else if (gameStr == 'FIVE_CARD_PLO') {
       gameStr = '5-Card PLO';
     }
+    log("DATA:  ${messageModel.sharedHand.data}");
 
+    // id: handLog.myInfo.id,
+    // uuid: handLog.myInfo.uuid,
+    // name: handLog.myInfo.name,
+    final playerInfo = {
+      'id': messageModel.sharedHand.sharedByPlayerId,
+      'uuid': messageModel.sharedHand.sharedByPlayerUuid,
+      'name': messageModel.sharedHand.sharedByPlayerName
+    };
     return Container(
+        padding: EdgeInsets.all(8),
         margin: EdgeInsets.only(
           right: isMe ? 0.0 : extraPadding,
           left: isMe ? extraPadding : 0.0,
@@ -121,41 +139,85 @@ class MessageItem extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      '$playerName shared a hand',
-                      style: AppStyles.hostInfoTextStyle,
-                    ),
-                    Text(
-                      gameStr,
-                      style: AppStyles.hostInfoTextStyle,
-                    ),
-                  ],
+                Flexible(
+                  flex: 3,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      RichText(
+                        text: TextSpan(
+                            text: "$playerName",
+                            style: TextStyle(
+                              color: Colors.amber,
+                              fontSize: 14,
+                            ),
+                            children: [
+                              TextSpan(
+                                text: " shared a hand",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ]),
+                      ),
+                      Text(
+                        "($gameStr)",
+                        style: AppStyles.hostInfoTextStyle
+                            .copyWith(color: Colors.white70, fontSize: 12),
+                      ),
+                    ],
+                  ),
                 ),
-                Text('Replay')
+                Flexible(
+                  flex: 1,
+                  child: ReplayButton(
+                    onTapFunction: () {
+                      // TODO: USE ROUTES HERE INSTEAD OF NAVIGATOR.PUSH
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => ReplayHandScreen(
+                            hand: messageModel.sharedHand.data,
+                            playerInfo: playerInfo,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                )
               ],
             ),
             SizedBox(height: 10),
+            HandWinnersView(
+              handLogModel: HandLogModelNew.fromJson(
+                messageModel.sharedHand.data,
+              ),
+              chatWidget: true,
+            ),
+            SizedBox(
+              height: 8,
+            ),
             Container(
-              height: 30,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(5.0),
-                color: Colors.black38,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  ChatTimeWidget(
+                    date: DateTime(messageModel.messageTimeInEpoc).toLocal(),
+                    isSender: isMe,
+                  )
+                ],
               ),
             ),
-            SizedBox(height: 10),
           ],
         ));
   }
 
-  Widget _buildMessage(bool isMe) {
+  Widget _buildMessage(BuildContext context, bool isMe) {
     final playerName = players[messageModel.sender ?? ''] ?? 'Somebody';
     log('player: ${messageModel.sender} isMe: $isMe name: $playerName ${messageModel.text}');
     if (messageModel.messageType == MessageType.HAND) {
-      return _buildSharedHand(isMe);
+      return _buildSharedHand(context, isMe);
     }
 
     return Align(
