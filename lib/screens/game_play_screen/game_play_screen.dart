@@ -107,22 +107,24 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   }
 
   Future joinAudio() async {
-    if (!liveAudio) {
+    if (!_gameState.audioConfEnabled) {
       return;
     }
     //final janusEngine = _gameState.getJanusEngine(_providerContext);
     _gameState.janusEngine.joinChannel('test');
     return;
-    this._audioToken = await GameService.getLiveAudioToken(widget.gameCode);
-    print('Audio token: ${this._audioToken}');
-    print('audio token: ${this._audioToken}');
-    if (this._audioToken != null && this._audioToken != '') {
-      agora.initEngine().then((_) async {
-        print('Joining audio channel ${widget.gameCode}');
-        await agora.joinChannel(this._audioToken);
-        print('Joined audio channel ${widget.gameCode}');
-      });
-    }
+
+    // agora code
+    // this._audioToken = await GameService.getLiveAudioToken(widget.gameCode);
+    // print('Audio token: ${this._audioToken}');
+    // print('audio token: ${this._audioToken}');
+    // if (this._audioToken != null && this._audioToken != '') {
+    //   agora.initEngine().then((_) async {
+    //     print('Joining audio channel ${widget.gameCode}');
+    //     await agora.joinChannel(this._audioToken);
+    //     print('Joined audio channel ${widget.gameCode}');
+    //   });
+    // }
   }
 
   /* The init method returns a Future of all the initial game constants
@@ -465,9 +467,11 @@ class _GamePlayScreenState extends State<GamePlayScreen>
                         /* main view */
                         Column(
                           children: [
-                            Consumer<JanusEngine>(builder: (_, __, ___) {
-                              return _gameState.janusEngine.audioWidget();
-                            }),
+                            _gameState.audioConfEnabled ? 
+                                Consumer<JanusEngine>(builder: (_, __, ___) {
+                                      return _gameState.janusEngine.audioWidget();
+                                    }) : 
+                                SizedBox.shrink(),
 
                             // header section
                             HeaderView(_gameState),

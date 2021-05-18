@@ -49,7 +49,7 @@ class GameState {
   PlayerInfo _currentPlayer;
   JanusEngine janusEngine;
   int _currentHandNum;
-
+  
   void initialize({
     String gameCode,
     @required GameInfoModel gameInfo,
@@ -155,6 +155,10 @@ class GameState {
 
   PlayerInfo get currentPlayer {
     return this._currentPlayer;
+  }
+
+  bool get audioConfEnabled {
+    return false;
   }
 
   int get currentHandNum => this._currentHandNum;

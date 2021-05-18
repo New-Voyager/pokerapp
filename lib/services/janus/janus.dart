@@ -44,11 +44,6 @@ class JanusEngine extends ChangeNotifier {
     }
   }
 
-  // Participant2 get currentPlayer {
-  //   final player = participants.getById(playerId);
-  //   return player;
-  // }
-
   Widget audioWidget() {
     log('audio widget is called');
     return Container(
