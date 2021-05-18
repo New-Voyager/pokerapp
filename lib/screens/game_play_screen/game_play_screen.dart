@@ -465,10 +465,10 @@ class _GamePlayScreenState extends State<GamePlayScreen>
                         /* main view */
                         Column(
                           children: [
-                            Consumer<JanusEngine>(builder: (_, __, ___){
+                            Consumer<JanusEngine>(builder: (_, __, ___) {
                               return _gameState.janusEngine.audioWidget();
                             }),
-                            
+
                             // header section
                             HeaderView(_gameState),
                             // empty space to highlight the background view

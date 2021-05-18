@@ -15,7 +15,6 @@ import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:pokerapp/services/janus/janus.dart';
-import 'package:pokerapp/services/test/test_service.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
@@ -100,13 +99,14 @@ class GameState {
         create: (_) => ServerConnectionState());
 
     this.janusEngine = JanusEngine(
+        gameState: this,
         gameId: this.gameInfo.gameID,
         gameCode: this.gameInfo.gameCode,
         uuid: this._currentPlayer.uuid,
         playerId: this._currentPlayer.id);
 
-    this._janusEngine = ListenableProvider<JanusEngine>(
-        create: (_) => this.janusEngine);
+    this._janusEngine =
+        ListenableProvider<JanusEngine>(create: (_) => this.janusEngine);
 
     List<PlayerModel> players = [];
     if (gameInfo.playersInSeats != null) {
@@ -214,6 +214,15 @@ class GameState {
 
   List<Seat> get seats {
     return this._seats.values.toList();
+  }
+
+  Seat getSeatByPlayer(int playerId) {
+    for (final seat in this._seats.values.toList()) {
+      if (seat.player.playerId == playerId) {
+        return seat;
+      }
+    }
+    return null;
   }
 
   static GameState getState(BuildContext context) =>

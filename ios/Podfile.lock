@@ -134,8 +134,6 @@ PODS:
   - GoogleWebRTC (1.1.31999)
   - in_app_purchase (0.0.1):
     - Flutter
-  - janus_client (0.0.1):
-    - Flutter
   - just_audio (0.0.1):
     - Flutter
   - Libyuv (1703)
@@ -173,7 +171,6 @@ DEPENDENCIES:
   - flutter_udid (from `.symlinks/plugins/flutter_udid/ios`)
   - flutter_webrtc (from `.symlinks/plugins/flutter_webrtc/ios`)
   - in_app_purchase (from `.symlinks/plugins/in_app_purchase/ios`)
-  - janus_client (from `.symlinks/plugins/janus_client/ios`)
   - just_audio (from `.symlinks/plugins/just_audio/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
   - permission_handler (from `.symlinks/plugins/permission_handler/ios`)
@@ -230,8 +227,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_webrtc/ios"
   in_app_purchase:
     :path: ".symlinks/plugins/in_app_purchase/ios"
-  janus_client:
-    :path: ".symlinks/plugins/janus_client/ios"
   just_audio:
     :path: ".symlinks/plugins/just_audio/ios"
   path_provider:
@@ -271,7 +266,6 @@ SPEC CHECKSUMS:
   GoogleUtilities: 284cddc7fffc14ae1907efb6f78ab95c1fccaedc
   GoogleWebRTC: b39a78c4f5cc6b0323415b9233db03a2faa7b0f0
   in_app_purchase: 3e2155afa9d03d4fa32d9e62d567885080ce97d6
-  janus_client: d77ae8ecd25551407740931f9506f1a64ba067a3
   just_audio: baa7252489dbcf47a4c7cc9ca663e9661c99aafa
   Libyuv: 5f79ced0ee66e60a612ca97de1e6ccacd187a437
   nanopb: a0ba3315591a9ae0a16a309ee504766e90db0c96

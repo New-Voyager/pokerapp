@@ -106,6 +106,7 @@ class GameInfoModel {
         playersInSeats {
           name
           seatNo
+          playerId
           playerUuid
           stack
           buyIn

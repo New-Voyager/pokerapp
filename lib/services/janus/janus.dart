@@ -3,9 +3,14 @@ import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:janus_client/JanusClient.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
+
+import 'JanusPlugin.dart';
+import 'JanusSession.dart';
+import 'JanusTransport.dart';
+import 'JanusClient.dart';
 
 class JanusEngine extends ChangeNotifier {
   JanusClient engine;
@@ -16,37 +21,45 @@ class JanusEngine extends ChangeNotifier {
   String gameCode;
   String uuid;
   int playerId;
-//  String janusUrl = 'ws://143.110.189.156:8188/';
   String janusUrl = 'ws://139.59.57.29:8188/';
-  //String janusUrl = 'wss://master-janus.onemandev.tech/websocket';
   String janusToken;
   String janusSecret = 'janusrocks';
-  //String janusSecret = 'SecureIt';
   WebSocketJanusTransport transport;
   RTCVideoRenderer _localRenderer = new RTCVideoRenderer();
   RTCVideoRenderer _remoteRenderer = new RTCVideoRenderer();
   JanusPlugin plugin;
   JanusSession session;
   bool initialized = false;
-  JanusEngine({this.gameId, this.gameCode, this.uuid, this.playerId});
+  // Participants participants = Participants();
+  GameState gameState;
+
+  JanusEngine(
+      {this.gameState, this.gameId, this.gameCode, this.uuid, this.playerId}) {
+    // participants.add(currentPlayer);
+  }
+
   void disposeObject() {
     if (initialized) {
       leaveChannel();
     }
-    //engine?.
   }
+
+  // Participant2 get currentPlayer {
+  //   final player = participants.getById(playerId);
+  //   return player;
+  // }
 
   Widget audioWidget() {
     log('audio widget is called');
     return Container(
-              color: Colors.red,
-              height: 20,
-              width: 0,
-              child: RTCVideoView(
-                _remoteRenderer,
-              )
-    );
+        color: Colors.red,
+        height: 0,
+        width: 0,
+        child: RTCVideoView(
+          _remoteRenderer,
+        ));
   }
+
   createRoom() async {
     var request = {
       'request': 'create',
@@ -55,7 +68,7 @@ class JanusEngine extends ChangeNotifier {
     try {
       final response = await plugin.send(data: request);
       debugPrint('createRoom returned ${jsonEncode(response)}');
-    } catch(err) {
+    } catch (err) {
       debugPrint('createRoom failed ${err.toString()}');
     }
   }
@@ -78,11 +91,11 @@ class JanusEngine extends ChangeNotifier {
           //apiSecret: janusSecret,
           transport: transport,
           iceServers: [
-           RTCIceServer(
-              url: "stun:stun2.l.google.com:19302",
-              //url: "stun:stun1.l.google.com:19302",
-              username: "",
-              credential: "")  
+            RTCIceServer(
+                url: "stun:stun2.l.google.com:19302",
+                //url: "stun:stun1.l.google.com:19302",
+                username: "",
+                credential: "")
           ]);
       initialized = true;
       await _localRenderer.initialize();
@@ -108,7 +121,7 @@ class JanusEngine extends ChangeNotifier {
         try {
           final response = await plugin.send(data: join);
           debugPrint('Joined the room ${jsonEncode(response)}');
-        } catch(err) {
+        } catch (err) {
           debugPrint('No room in that name. error: ${err.toString()}');
         }
       } else {
@@ -122,12 +135,13 @@ class JanusEngine extends ChangeNotifier {
         try {
           final response = await plugin.send(data: echoAudio);
           debugPrint('Joined the room ${jsonEncode(response)}');
-        } catch(err) {
+        } catch (err) {
           debugPrint('No room in that name. error: ${err.toString()}');
         }
       }
 
-      debugPrint('session id: ${session.sessionId} plugin handle id: ${plugin.handleId}');
+      debugPrint(
+          'session id: ${session.sessionId} plugin handle id: ${plugin.handleId}');
 
       // to play audio from the remote
       plugin.remoteStream.listen((event) {
@@ -146,16 +160,17 @@ class JanusEngine extends ChangeNotifier {
                 var publish = {"request": "configure"};
                 await plugin.send(data: publish, jsep: offer);
               }
-            }
-            else if (data['audiobridge'] == 'joined') {
+            } else if (data['audiobridge'] == 'joined') {
               // player joined
               RTCSessionDescription offer = await plugin.createOffer(
                   offerToReceiveVideo: false, offerToReceiveAudio: true);
               var publish = {"request": "configure"};
               await plugin.send(data: publish, jsep: offer);
+              listParticipants();
             } else if (data['audiobridge'] == 'event') {
               var participants = data['participants'];
               // get participant changes like player talking
+              updateParticipants(participants);
             }
           }
         }
@@ -182,31 +197,111 @@ class JanusEngine extends ChangeNotifier {
     engine = null;
   }
 
+  void updateParticipants(var participantsList) {
+    if (participantsList is List && participantsList != null) {
+      for (final element in participantsList) {
+        // final participant = Participant(
+        //     id: element['id'],
+        //     display: element['display'],
+        //     setup: element['setup'],
+        //     muted: element['muted'],
+        //     talking: element['talking']);
+        // participants.add(participant);
+
+        final seat = gameState.getSeatByPlayer(element['id']);
+        if (seat != null) {
+          seat.player.muted = element['muted'];
+          seat.player.talking = element['talking'];
+
+          if (seat.player.playerId == playerId) {
+            seat.notify();
+          }
+        }
+      }
+    }
+  }
+
+  void muteUnmute() {
+    final currentPlayer = gameState.getSeatByPlayer(playerId)?.player;
+    if (currentPlayer != null) {
+      if (currentPlayer.muted) {
+        currentPlayer.muted = false;
+        unmute();
+      } else {
+        currentPlayer.muted = true;
+        mute();
+      }
+    }
+  }
+
   void mute() async {
     var data = {
-      "request" : "mute",
-      "room" : gameId,
-      "id" : playerId,
+      "request": "mute",
+      "room": gameId,
+      "id": playerId,
     };
     try {
       await plugin.send(data: data);
       muted = true;
-    } catch(err) {
+    } catch (err) {
       log('mute operation failed. err: ${err.toString()}');
     }
   }
 
   void unmute() async {
     var data = {
-      "request" : "mute",
-      "room" : gameId,
-      "id" : playerId,
+      "request": "unmute",
+      "room": gameId,
+      "id": playerId,
     };
     try {
       await plugin.send(data: data);
       muted = true;
-    } catch(err) {
+    } catch (err) {
       log('mute operation failed. err: ${err.toString()}');
+    }
+  }
+
+  void mutePlayer(int playerId) async {
+    var data = {
+      "request": "mute",
+      "room": gameId,
+      "id": playerId,
+    };
+    try {
+      await plugin.send(data: data);
+      muted = true;
+    } catch (err) {
+      log('mute operation failed. err: ${err.toString()}');
+    }
+  }
+
+  void unmutePlayer(int playerId) async {
+    var data = {
+      "request": "mute",
+      "room": gameId,
+      "id": playerId,
+    };
+    try {
+      await plugin.send(data: data);
+      muted = true;
+    } catch (err) {
+      log('mute operation failed. err: ${err.toString()}');
+    }
+  }
+
+  void listParticipants() async {
+    var data = {
+      "request": "listparticipants",
+      "room": gameId,
+    };
+    try {
+      final resp = await plugin.send(data: data);
+      if (resp['plugindata']['data']['participants'] != null) {
+        updateParticipants(resp['plugindata']['data']['participants']);
+      }
+    } catch (err) {
+      log('list participants operation failed. err: ${err.toString()}');
     }
   }
 }
