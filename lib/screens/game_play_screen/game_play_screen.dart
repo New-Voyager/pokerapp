@@ -69,8 +69,8 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   bool _initiated;
   BuildContext _providerContext;
   PlayerInfo _currentPlayer;
-  String _audioToken = '';
-  bool liveAudio = true;
+  // String _audioToken = '';
+  // bool liveAudio = true;
   AudioPlayer _audioPlayer;
   Agora agora;
   GameInfoModel _gameInfoModel;
@@ -135,19 +135,19 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
     if (_initiated == true) return _gameInfoModel;
 
-    if (liveAudio) {
+    if (_gameInfoModel.audioConfEnabled) {
       // initialize agora
-      agora = Agora(
-          gameCode: widget.gameCode,
-          uuid: this._currentPlayer.uuid,
-          playerId: this._currentPlayer.id);
+      // agora = Agora(
+      //     gameCode: widget.gameCode,
+      //     uuid: this._currentPlayer.uuid,
+      //     playerId: this._currentPlayer.id);
 
       // if the current player is in the table, then join audio
       for (int i = 0; i < _gameInfoModel.playersInSeats.length; i++) {
         if (_gameInfoModel.playersInSeats[i].playerUuid ==
             _currentPlayer.uuid) {
           // player is in the table
-          // await this.joinAudio();
+          await this.joinAudio();
           break;
         }
       }
@@ -250,7 +250,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     // TestService.isTesting = false;
     try {
       _gameContextObj?.dispose();
-      agora?.disposeObject();
+      // agora?.disposeObject();
       // Audio.dispose(context: _providerContext);
       _gameState?.janusEngine?.disposeObject();
 
