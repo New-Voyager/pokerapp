@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
+import 'package:pokerapp/screens/club_screen/bookmarked_hands.dart';
 import 'package:pokerapp/screens/game_screens/game_history_details_view/stack_details_view.dart';
+import 'package:pokerapp/screens/util_screens/replay_hand_screen/replay_hand_screen.dart';
 import 'package:provider/provider.dart';
 
 import 'package:pokerapp/screens/screens.dart';
@@ -76,6 +78,11 @@ class Routes {
   static const String pointsLineChart = '/points_line_chart';
   //ChatScreen
   static const String chatScreen = '/chatScreen';
+  // Bookmarks Screen
+  static const String bookmarked_hands = '/bookmarked_hands';
+
+  // Replay Screen
+  static const String replay_hand = "/replay_hand";
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -236,7 +243,11 @@ class Routes {
         var args = settings.arguments as dynamic;
         return _getPageRoute(
           routeName: settings.name,
-          viewToShow: HandLogView(args['gameCode'], args['handNum']),
+          viewToShow: HandLogView(
+            args['gameCode'],
+            args['handNum'],
+            clubCode: args['clubCode'],
+          ),
         );
 
       case rewards_list:
@@ -356,6 +367,21 @@ class Routes {
             player: args['player'],
             name: args['name'],
           ),
+        );
+
+      case bookmarked_hands:
+        var args = settings.arguments as dynamic;
+
+        return _getPageRoute(
+          routeName: settings.name,
+          viewToShow: BookmarkedHands(),
+        );
+
+      case replay_hand:
+        var args = settings.arguments as dynamic;
+        return _getPageRoute(
+          routeName: settings.name,
+          viewToShow: ReplayHandScreen(),
         );
 
       default:

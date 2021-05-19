@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -127,11 +129,16 @@ class _MessagesPageViewState extends State<MessagesPageView> {
                 return ListView.separated(
                   reverse: true,
                   padding: const EdgeInsets.all(5),
-                  itemBuilder: (_, int index) => MessageItem(
-                    messageModel: mess[index],
-                    currentUser: _authModel,
-                    players: _players,
-                  ),
+                  itemBuilder: (_, int index) {
+                    log("MESSAGE : ${mess[index].messageTimeInEpoc}");
+                    log("currentuser : ${_authModel.name}");
+                    log("players : ${_players}");
+                    return MessageItem(
+                      messageModel: mess[index],
+                      currentUser: _authModel,
+                      players: _players,
+                    );
+                  },
                   separatorBuilder: (_, __) => const SizedBox(height: 10.0),
                   itemCount: snapshot.data.length,
                 );

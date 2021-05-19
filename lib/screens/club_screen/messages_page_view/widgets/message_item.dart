@@ -123,6 +123,9 @@ class MessageItem extends StatelessWidget {
       'uuid': messageModel.sharedHand.sharedByPlayerUuid,
       'name': messageModel.sharedHand.sharedByPlayerName
     };
+    log("TIME : ${DateTime.fromMillisecondsSinceEpoch(messageModel.messageTimeInEpoc)}");
+    log("TIME : ${DateTime.now().millisecondsSinceEpoch}");
+
     return Container(
         padding: EdgeInsets.all(8),
         margin: EdgeInsets.only(
@@ -173,6 +176,7 @@ class MessageItem extends StatelessWidget {
                   flex: 1,
                   child: ReplayButton(
                     onTapFunction: () {
+                      
                       // TODO: USE ROUTES HERE INSTEAD OF NAVIGATOR.PUSH
                       Navigator.push(
                         context,
@@ -203,7 +207,8 @@ class MessageItem extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   ChatTimeWidget(
-                    date: DateTime(messageModel.messageTimeInEpoc).toLocal(),
+                    date: DateTime.fromMillisecondsSinceEpoch(
+                        messageModel.messageTimeInEpoc),
                     isSender: isMe,
                   )
                 ],

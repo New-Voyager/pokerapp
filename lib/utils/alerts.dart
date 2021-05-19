@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:overlay_support/overlay_support.dart';
+import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 
 class Alerts {
@@ -17,5 +19,21 @@ class Alerts {
       ),
       duration: duration,
     ));
+  }
+
+  static void showTextNotification({@required String text}) {
+    showSimpleNotification(
+      Text(
+        text,
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 16.0,
+          fontFamily: AppAssets.fontFamilyLato,
+          fontWeight: FontWeight.w400,
+        ),
+      ),
+      background: AppColors.cardBackgroundColor,
+      position: NotificationPosition.top,
+    );
   }
 }
