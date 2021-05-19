@@ -176,7 +176,6 @@ class MessageItem extends StatelessWidget {
                   flex: 1,
                   child: ReplayButton(
                     onTapFunction: () {
-                      
                       // TODO: USE ROUTES HERE INSTEAD OF NAVIGATOR.PUSH
                       Navigator.push(
                         context,

@@ -17,26 +17,31 @@ class JanusEngine extends ChangeNotifier {
 
   bool isJoined = false, muted = false, enableSpeakerphone = true;
 
-  int gameId;
-  String gameCode;
   String uuid;
   int playerId;
   String janusUrl = 'ws://139.59.57.29:8188/';
   String janusToken;
-  String janusSecret = 'janusrocks';
+  String janusSecret;
+  String roomPin;
+  int roomId;
+  //String janusSecret = 'janusrocks';
   WebSocketJanusTransport transport;
   RTCVideoRenderer _localRenderer = new RTCVideoRenderer();
   RTCVideoRenderer _remoteRenderer = new RTCVideoRenderer();
   JanusPlugin plugin;
   JanusSession session;
   bool initialized = false;
-  // Participants participants = Participants();
   GameState gameState;
 
   JanusEngine(
-      {this.gameState, this.gameId, this.gameCode, this.uuid, this.playerId}) {
-    // participants.add(currentPlayer);
-  }
+      {this.janusUrl,
+      this.janusToken,
+      this.janusSecret,
+      this.gameState,
+      this.roomId,
+      this.roomPin,
+      this.uuid,
+      this.playerId}) {}
 
   void disposeObject() {
     if (initialized) {
@@ -58,7 +63,7 @@ class JanusEngine extends ChangeNotifier {
   createRoom() async {
     var request = {
       'request': 'create',
-      'room': this.gameId,
+      'room': this.roomId,
     };
     try {
       final response = await plugin.send(data: request);
@@ -70,7 +75,6 @@ class JanusEngine extends ChangeNotifier {
 
   joinChannel(String janusToken) async {
     initialized = false;
-    janusToken = 'test';
     this.janusToken = janusToken;
     if (this.janusToken.isEmpty) {
       return;
@@ -78,7 +82,6 @@ class JanusEngine extends ChangeNotifier {
     if (defaultTargetPlatform == TargetPlatform.android) {
       await Permission.microphone.request();
     }
-    print("gameCode $gameCode uuid $uuid");
     if (engine == null) {
       transport = WebSocketJanusTransport(url: janusUrl);
       engine = JanusClient(
@@ -109,7 +112,7 @@ class JanusEngine extends ChangeNotifier {
 
         var join = {
           'request': 'join',
-          'room': this.gameId,
+          'room': this.roomId,
           'pin': 'abcd',
           'id': playerId
         };
@@ -195,19 +198,13 @@ class JanusEngine extends ChangeNotifier {
   void updateParticipants(var participantsList) {
     if (participantsList is List && participantsList != null) {
       for (final element in participantsList) {
-        // final participant = Participant(
-        //     id: element['id'],
-        //     display: element['display'],
-        //     setup: element['setup'],
-        //     muted: element['muted'],
-        //     talking: element['talking']);
-        // participants.add(participant);
-
         final seat = gameState.getSeatByPlayer(element['id']);
         if (seat != null) {
-          seat.player.muted = element['muted'];
-          seat.player.talking = element['talking'];
-
+          seat.player.muted = element['muted'] ?? false;
+          seat.player.talking = element['talking'] ?? false;
+          if (seat.player.talking) {
+            log('${seat.player.name} is talking');
+          }
           if (seat.player.playerId == playerId) {
             seat.notify();
           }
@@ -232,8 +229,8 @@ class JanusEngine extends ChangeNotifier {
   void mute() async {
     var data = {
       "request": "mute",
-      "room": gameId,
-      "id": playerId,
+      "room": this.roomId,
+      "id": this.playerId,
     };
     try {
       await plugin.send(data: data);
@@ -246,21 +243,21 @@ class JanusEngine extends ChangeNotifier {
   void unmute() async {
     var data = {
       "request": "unmute",
-      "room": gameId,
-      "id": playerId,
+      "room": this.roomId,
+      "id": this.playerId,
     };
     try {
       await plugin.send(data: data);
       muted = true;
     } catch (err) {
-      log('mute operation failed. err: ${err.toString()}');
+      log('unmute operation failed. err: ${err.toString()}');
     }
   }
 
   void mutePlayer(int playerId) async {
     var data = {
       "request": "mute",
-      "room": gameId,
+      "room": this.roomId,
       "id": playerId,
     };
     try {
@@ -274,21 +271,21 @@ class JanusEngine extends ChangeNotifier {
   void unmutePlayer(int playerId) async {
     var data = {
       "request": "mute",
-      "room": gameId,
+      "room": this.roomId,
       "id": playerId,
     };
     try {
       await plugin.send(data: data);
       muted = true;
     } catch (err) {
-      log('mute operation failed. err: ${err.toString()}');
+      log('unmute operation failed. err: ${err.toString()}');
     }
   }
 
   void listParticipants() async {
     var data = {
       "request": "listparticipants",
-      "room": gameId,
+      "room": this.roomId,
     };
     try {
       final resp = await plugin.send(data: data);

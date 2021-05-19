@@ -467,11 +467,11 @@ class _GamePlayScreenState extends State<GamePlayScreen>
                         /* main view */
                         Column(
                           children: [
-                            _gameState.audioConfEnabled ? 
-                                Consumer<JanusEngine>(builder: (_, __, ___) {
-                                      return _gameState.janusEngine.audioWidget();
-                                    }) : 
-                                SizedBox.shrink(),
+                            _gameState.audioConfEnabled
+                                ? Consumer<JanusEngine>(builder: (_, __, ___) {
+                                    return _gameState.janusEngine.audioWidget();
+                                  })
+                                : SizedBox.shrink(),
 
                             // header section
                             HeaderView(_gameState),
