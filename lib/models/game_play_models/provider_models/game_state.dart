@@ -49,7 +49,7 @@ class GameState {
   PlayerInfo _currentPlayer;
   JanusEngine janusEngine;
   int _currentHandNum;
-  
+
   void initialize({
     String gameCode,
     @required GameInfoModel gameInfo,
@@ -100,8 +100,11 @@ class GameState {
 
     this.janusEngine = JanusEngine(
         gameState: this,
-        gameId: this.gameInfo.gameID,
-        gameCode: this.gameInfo.gameCode,
+        janusUrl: this.gameInfo.janusUrl,
+        roomId: this.gameInfo.janusRoomId,
+        janusToken: this.gameInfo.janusToken,
+        roomPin: this.gameInfo.janusRoomPin,
+        janusSecret: this.gameInfo.janusSecret,
         uuid: this._currentPlayer.uuid,
         playerId: this._currentPlayer.id);
 
@@ -158,7 +161,7 @@ class GameState {
   }
 
   bool get audioConfEnabled {
-    return false;
+    return this._gameInfo.audioConfEnabled;
   }
 
   int get currentHandNum => this._currentHandNum;
@@ -222,7 +225,7 @@ class GameState {
 
   Seat getSeatByPlayer(int playerId) {
     for (final seat in this._seats.values.toList()) {
-      if (seat.player.playerId == playerId) {
+      if (seat.player?.playerId == playerId) {
         return seat;
       }
     }

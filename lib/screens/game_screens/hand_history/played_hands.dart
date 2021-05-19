@@ -150,8 +150,8 @@ class PlayedHandsScreen extends StatelessWidget {
   }
 
   _saveStarredHand(BuildContext context, int index) async {
-    var result = await HandService.bookMarkHand(
-        gameCode, history[index].handNum);
+    var result =
+        await HandService.bookMarkHand(gameCode, history[index].handNum);
     Alerts.showTextNotification(
       text: result
           ? "Hand " + history[index].handNum.toString() + " has been bookmarked"

@@ -32,6 +32,14 @@ class GameInfoModel {
   String handToPlayerChannel;
   String gameChatChannel;
 
+  // janus related settings
+  bool audioConfEnabled;
+  String janusUrl;
+  String janusToken;
+  String janusSecret;
+  int janusRoomId;
+  String janusRoomPin;
+
   /* this constructor is used in the replay hand section */
   GameInfoModel({
     @required this.maxPlayers,
@@ -80,6 +88,13 @@ class GameInfoModel {
     this.handToAllChannel = data['handToAllChannel'];
     this.handToPlayerChannel = data['handToPlayerChannel'];
     this.gameChatChannel = data['gameChatChannel'];
+
+    this.audioConfEnabled = data['audioConfEnabled'];
+    this.janusUrl = data['janusUrl'];
+    this.janusRoomId = data['janusRoomId'];
+    this.janusRoomPin = data['janusRoomPin'];
+    this.janusToken = data['janusToken'];
+    this.janusSecret = data['janusSecret'];
   }
 
   void gameEnded() {
@@ -125,6 +140,12 @@ class GameInfoModel {
       gameChatChannel
       playerRunItTwiceConfig
       playerMuckLosingHandConfig
+      audioConfEnabled
+      janusUrl
+      janusToken
+      janusSecret
+      janusRoomId
+      janusRoomPin
     }
   } """;
 }
