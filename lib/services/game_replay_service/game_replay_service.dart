@@ -184,13 +184,12 @@ class GameReplayService {
     final List<int> seatNos = players.map((p) => p.seatNo).toList();
 
     final GameInfoModel gameInfoModel = GameInfoModel(
-      // FIXME: WE WOULD NEED THE MAX PLAYER INFORMATION IN HANDLOG
       maxPlayers: handLog.hand.maxPlayers,
       gameType: handLog.hand.gameType,
       tableStatus: null,
       status: null,
-      smallBlind: handLog.hand.smallBlind.toInt(), // fixme: we need this data
-      bigBlind: handLog.hand.bigBlind.toInt(), // fixme: we need this data
+      smallBlind: handLog.hand.smallBlind.toInt(),
+      bigBlind: handLog.hand.bigBlind.toInt(),
       playersInSeats: players,
     );
 
@@ -222,6 +221,8 @@ class GameReplayService {
     );
 
     return GameReplayController(
+      playerActionTime:
+          handLog.hand.actionTime ?? 30, // todo: if null default back to 30
       gameState: gameState,
       actions: actions,
     );

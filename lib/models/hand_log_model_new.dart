@@ -68,6 +68,7 @@ class Data {
     this.gameId,
     this.handNum,
     this.gameType,
+    this.actionTime,
     this.noCards,
     this.maxPlayers,
     this.smallBlind,
@@ -90,6 +91,7 @@ class Data {
   String gameId;
   int handNum;
   String gameType;
+  int actionTime;
   int noCards;
   HandLog handLog;
   List<dynamic> rewardTrackingIds;
@@ -112,6 +114,7 @@ class Data {
         gameId: json["gameId"],
         handNum: json["handNum"],
         gameType: json["gameType"],
+        actionTime: json["actionTime"],
         noCards: json['noCards'],
         maxPlayers: json['maxPlayers'] ?? 9,
         smallBlind: double.parse((json['smallBlind'] ?? 1).toString()),
@@ -143,6 +146,7 @@ class Data {
         "gameId": gameId,
         "handNum": handNum,
         "gameType": gameType,
+        "actionTime": actionTime,
         "handLog": handLog.toJson(),
         "rewardTrackingIds":
             List<dynamic>.from(rewardTrackingIds.map((x) => x)),

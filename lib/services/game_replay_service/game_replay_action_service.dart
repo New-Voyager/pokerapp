@@ -30,6 +30,22 @@ class GameReplayActionService {
     tableState.notifyAll();
   }
 
+  static void _playerToAct(
+    GameReplayAction action,
+    BuildContext context,
+  ) {
+    final gameState = GameState.getState(context);
+
+    final player = gameState.fromSeat(context, action.action.seatNo);
+    final seat = gameState.getSeat(context, action.action.seatNo);
+
+    assert(player != null && seat != null);
+
+    player.highlight = true;
+    seat.setActionTimer(action.action.actionTime);
+    seat.notify();
+  }
+
   static void _playerAction(
     GameReplayAction replayAction,
     BuildContext context,
@@ -45,6 +61,10 @@ class GameReplayActionService {
     final ActionElement action = replayAction.action;
 
     final gameState = GameState.getState(context);
+
+    // reset highlight for other players
+    gameState.resetActionHighlight(context, -1);
+
     Players players = Provider.of<Players>(
       context,
       listen: false,
@@ -312,6 +332,9 @@ class GameReplayActionService {
 
       case GameReplayActionType.run_it_twice_winner:
         return _runItTwiceWinner(action, context);
+
+      case GameReplayActionType.player_to_act:
+        return _playerToAct(action, context);
     }
   }
 }

@@ -96,7 +96,7 @@ class ReplayHandScreenUtils {
     /* todo: the network call can be made here */
 
     String dataString = await rootBundle.loadString(
-      'assets/sample-data/handlog/holdem/flop.json',
+      'assets/sample-data/handlog/holdem/onewinner.json',
     );
 
     if (assetFile != null) {
@@ -115,7 +115,7 @@ class ReplayHandScreenUtils {
 
     } else {
       String dataString = await rootBundle.loadString(
-        'assets/sample-data/handlog/holdem/flop.json',
+        'assets/sample-data/handlog/holdem/onewinner.json',
       );
 
       if (assetFile != null) {
