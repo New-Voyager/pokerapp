@@ -64,7 +64,6 @@ class JanusEngine extends ChangeNotifier {
     var request = {
       'request': 'create',
       'room': this.roomId,
-      'is_private': true,
       'audiolevel_event': true,
       'audio_level_average': 60,
       'pin': 'abcd'
@@ -79,7 +78,6 @@ class JanusEngine extends ChangeNotifier {
 
   joinChannel(String janusToken) async {
     initialized = false;
-    return;
 
     this.janusToken = janusToken;
     if (this.janusToken.isEmpty) {
