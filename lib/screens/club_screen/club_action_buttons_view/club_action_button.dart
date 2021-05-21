@@ -21,8 +21,6 @@ class ClubActionButton extends StatelessWidget {
       {this.onTap});
   @override
   Widget build(BuildContext context) {
-    List<ClubMemberModel> _sampleList = new List<ClubMemberModel>();
-
     return Consumer<ClubHomePageModel>(
       builder: (_, ClubHomePageModel clubModel, __) => GestureDetector(
         onTap: () {
@@ -48,6 +46,10 @@ class ClubActionButton extends StatelessWidget {
                 arguments: clubModel.clubCode,
               );
             case ClubActions.BOOKMARKED_HANDS:
+              return navigatorKey.currentState.pushNamed(
+                Routes.bookmarked_hands,
+                arguments: clubModel.clubCode,
+              );
               break;
             case ClubActions.ANALYSIS:
               break;

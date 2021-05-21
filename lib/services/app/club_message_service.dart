@@ -35,9 +35,7 @@ class ClubMessageService {
     if (_timer == null || !_timer.isActive) {
       int next = 0;
       List<ClubMessageModel> _messages = [];
-      _timer = Timer.periodic(
-          AppConstants.clubMessagePollDuration,
-          (_) async {
+      _timer = Timer.periodic(AppConstants.clubMessagePollDuration, (_) async {
         String _query =
             ClubMessageModel.queryClubMessages(clubCode, next: next);
         GraphQLClient _client = graphQLConfiguration.clientToQuery();

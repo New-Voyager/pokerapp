@@ -11,6 +11,7 @@ class PlayerModel {
   bool isMe = false;
   String name = '';
   int seatNo = -1;
+  int playerId = 0;
   String playerUuid = '';
   int buyIn = 0;
   int stack = 0;
@@ -41,9 +42,14 @@ class PlayerModel {
   bool inBreak = false;
   DateTime breakTimeExpAt;
 
+  // audio chat
+  bool muted = false;
+  bool talking = false;
+
   PlayerModel({
     String name,
     int seatNo,
+    int playerId,
     String playerUuid,
     int buyIn,
     int stack,
@@ -51,6 +57,7 @@ class PlayerModel {
   }) {
     this.name = name;
     this.seatNo = seatNo;
+    this.playerId = playerId;
     this.playerUuid = playerUuid;
     this.buyIn = buyIn;
     this.stack = stack;
@@ -77,6 +84,7 @@ class PlayerModel {
     this.buyIn = data['buyIn'];
     this.stack = data['stack'];
     this.status = data['status'];
+    this.playerId = data['playerId'];
     this._action = PlayerActedState();
 
     if (data['buyInExpTime'] != null) {

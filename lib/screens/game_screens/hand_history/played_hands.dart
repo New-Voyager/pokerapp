@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/models/hand_history_model.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
@@ -7,7 +8,9 @@ import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_log_view.dart';
+import 'package:pokerapp/screens/util_screens/replay_hand_screen/replay_hand_screen.dart';
 import 'package:pokerapp/services/app/hand_service.dart';
+import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/widgets/cards/multiple_stack_card_views.dart';
 
@@ -122,7 +125,11 @@ class PlayedHandsScreen extends StatelessWidget {
         isScrollControlled: true,
         builder: (ctx) => Container(
           height: MediaQuery.of(context).size.height / 2,
-          child: HandLogView(this.gameCode, history[index].handNum),
+          child: HandLogView(
+            this.gameCode,
+            history[index].handNum,
+            clubCode: clubCode,
+          ),
         ),
       );
     } else {
@@ -131,7 +138,8 @@ class PlayedHandsScreen extends StatelessWidget {
         Routes.hand_log_view,
         arguments: {
           "gameCode": this.gameCode,
-          "handNum": history[index].handNum
+          "handNum": history[index].handNum,
+          "clubCode": clubCode,
         },
       );
     }
@@ -142,46 +150,24 @@ class PlayedHandsScreen extends StatelessWidget {
   }
 
   _saveStarredHand(BuildContext context, int index) async {
-    var result = await HandService.saveStarredHand(
-        gameCode, history[index].handNum.toString());
-    Scaffold.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          result
-              ? "Hand " +
-                  history[index].handNum.toString() +
-                  " has been bookmarked"
-              : "Couldn't bookmark the hand. Please try again later",
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 16.0,
-            fontFamily: AppAssets.fontFamilyLato,
-            fontWeight: FontWeight.w400,
-          ),
-        ),
-      ),
+    var result =
+        await HandService.bookMarkHand(gameCode, history[index].handNum);
+    Alerts.showTextNotification(
+      text: result
+          ? "Hand " + history[index].handNum.toString() + " has been bookmarked"
+          : "Couldn't bookmark the hand. Please try again later",
     );
   }
 
   _shareHandWithClub(BuildContext context, int index) async {
     var result =
         await HandService.shareHand(gameCode, history[index].handNum, clubCode);
-    Scaffold.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          result
-              ? "Hand " +
-                  history[index].handNum.toString() +
-                  " has been shared with the club"
-              : "Couldn't share the hand. Please try again later",
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 16.0,
-            fontFamily: AppAssets.fontFamilyLato,
-            fontWeight: FontWeight.w400,
-          ),
-        ),
-      ),
+    Alerts.showTextNotification(
+      text: result
+          ? "Hand " +
+              history[index].handNum.toString() +
+              " has been shared with the club"
+          : "Couldn't share the hand. Please try again later",
     );
   }
 
@@ -332,6 +318,20 @@ class PlayedHandsScreen extends StatelessWidget {
                               children: [
                                 InkWell(
                                   onTap: () async {
+                                    await _saveStarredHand(context, index);
+                                  },
+                                  child: Container(
+                                    alignment: Alignment.bottomRight,
+                                    child: Icon(
+                                      Icons.star_outline,
+                                      color: Colors.white,
+                                      size: 20,
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(width: 20),
+                                InkWell(
+                                  onTap: () async {
                                     await _shareHandWithClub(context, index);
                                   },
                                   child: Container(
@@ -345,11 +345,23 @@ class PlayedHandsScreen extends StatelessWidget {
                                 ),
                                 SizedBox(width: 20),
                                 InkWell(
-                                  onTap: () {},
+                                  onTap: () {
+                                    /* Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => ReplayHandScreen(
+                            hand: messageModel.sharedHand.data,
+                            playerInfo: playerInfo,
+                          ),
+                        ),
+                      ); */
+                                    // await _shareHandWithClub(context, index);
+                                    toast("Replay hand");
+                                  },
                                   child: Container(
                                     alignment: Alignment.bottomRight,
                                     child: Icon(
-                                      Icons.star_outline,
+                                      Icons.replay,
                                       color: Colors.white,
                                       size: 20,
                                     ),

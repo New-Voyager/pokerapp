@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 
 class GameInfoModel {
+  int gameID;
   String gameCode;
   String clubCode; // optional
   int actionTime;
@@ -31,6 +32,14 @@ class GameInfoModel {
   String handToPlayerChannel;
   String gameChatChannel;
 
+  // janus related settings
+  bool audioConfEnabled;
+  String janusUrl;
+  String janusToken;
+  String janusSecret;
+  int janusRoomId;
+  String janusRoomPin;
+
   /* this constructor is used in the replay hand section */
   GameInfoModel({
     @required this.maxPlayers,
@@ -43,6 +52,7 @@ class GameInfoModel {
   });
 
   GameInfoModel.fromJson(var data, {int maxPlayers}) {
+    this.gameID = data['gameID'] ?? 0;
     this.gameCode = data['gameCode'];
     this.clubCode = data['clubCode'];
     this.buyInMax = data['buyInMax'];
@@ -78,6 +88,13 @@ class GameInfoModel {
     this.handToAllChannel = data['handToAllChannel'];
     this.handToPlayerChannel = data['handToPlayerChannel'];
     this.gameChatChannel = data['gameChatChannel'];
+
+    this.audioConfEnabled = data['audioConfEnabled'];
+    this.janusUrl = data['janusUrl'];
+    this.janusRoomId = data['janusRoomId'];
+    this.janusRoomPin = data['janusRoomPin'];
+    this.janusToken = data['janusToken'];
+    this.janusSecret = data['janusSecret'];
   }
 
   void gameEnded() {
@@ -87,6 +104,7 @@ class GameInfoModel {
   // graph ql queries
   static String query(String gameCode) => """query gameInfo {
     gameInfo(gameCode:"$gameCode") {
+      gameID
       gameCode
       clubCode
       buyInMax
@@ -103,6 +121,7 @@ class GameInfoModel {
         playersInSeats {
           name
           seatNo
+          playerId
           playerUuid
           stack
           buyIn
@@ -121,6 +140,12 @@ class GameInfoModel {
       gameChatChannel
       playerRunItTwiceConfig
       playerMuckLosingHandConfig
+      audioConfEnabled
+      janusUrl
+      janusToken
+      janusSecret
+      janusRoomId
+      janusRoomPin
     }
   } """;
 }

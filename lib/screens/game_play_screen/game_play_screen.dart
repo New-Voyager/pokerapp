@@ -26,6 +26,7 @@ import 'package:pokerapp/services/game_play/action_services/hand_action_service.
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/services/game_play/utils/audio_buffer.dart';
+import 'package:pokerapp/services/janus/janus.dart';
 import 'package:pokerapp/services/nats/nats.dart';
 import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/utils.dart';
@@ -68,8 +69,8 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   bool _initiated;
   BuildContext _providerContext;
   PlayerInfo _currentPlayer;
-  String _audioToken = '';
-  bool liveAudio = false;
+  // String _audioToken = '';
+  // bool liveAudio = true;
   AudioPlayer _audioPlayer;
   Agora agora;
   GameInfoModel _gameInfoModel;
@@ -106,20 +107,24 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   }
 
   Future joinAudio() async {
-    if (!liveAudio) {
+    if (!_gameState.audioConfEnabled) {
       return;
     }
+    //final janusEngine = _gameState.getJanusEngine(_providerContext);
+    _gameState.janusEngine.joinChannel('test');
+    return;
 
-    this._audioToken = await GameService.getLiveAudioToken(widget.gameCode);
-    print('Audio token: ${this._audioToken}');
-    print('audio token: ${this._audioToken}');
-    if (this._audioToken != null && this._audioToken != '') {
-      agora.initEngine().then((_) async {
-        print('Joining audio channel ${widget.gameCode}');
-        await agora.joinChannel(this._audioToken);
-        print('Joined audio channel ${widget.gameCode}');
-      });
-    }
+    // agora code
+    // this._audioToken = await GameService.getLiveAudioToken(widget.gameCode);
+    // print('Audio token: ${this._audioToken}');
+    // print('audio token: ${this._audioToken}');
+    // if (this._audioToken != null && this._audioToken != '') {
+    //   agora.initEngine().then((_) async {
+    //     print('Joining audio channel ${widget.gameCode}');
+    //     await agora.joinChannel(this._audioToken);
+    //     print('Joined audio channel ${widget.gameCode}');
+    //   });
+    // }
   }
 
   /* The init method returns a Future of all the initial game constants
@@ -130,12 +135,12 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
     if (_initiated == true) return _gameInfoModel;
 
-    if (liveAudio) {
+    if (_gameInfoModel.audioConfEnabled) {
       // initialize agora
-      agora = Agora(
-          gameCode: widget.gameCode,
-          uuid: this._currentPlayer.uuid,
-          playerId: this._currentPlayer.id);
+      // agora = Agora(
+      //     gameCode: widget.gameCode,
+      //     uuid: this._currentPlayer.uuid,
+      //     playerId: this._currentPlayer.id);
 
       // if the current player is in the table, then join audio
       for (int i = 0; i < _gameInfoModel.playersInSeats.length; i++) {
@@ -219,6 +224,16 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         );
       });
 
+      // if the current player is in the table, then join audio
+      for (int i = 0; i < _gameInfoModel.playersInSeats.length; i++) {
+        if (_gameInfoModel.playersInSeats[i].playerUuid ==
+            _currentPlayer.uuid) {
+          // player is in the table
+          await this.joinAudio();
+          break;
+        }
+      }
+
       _gameContextObj.gameComService.gameMessaging.listen(
         onCards: this.onCards,
         onAudio: this.onAudio,
@@ -235,8 +250,9 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     // TestService.isTesting = false;
     try {
       _gameContextObj?.dispose();
-      agora?.disposeObject();
+      // agora?.disposeObject();
       // Audio.dispose(context: _providerContext);
+      _gameState?.janusEngine?.disposeObject();
 
       if (_audioPlayer != null) {
         _audioPlayer.dispose();
@@ -451,6 +467,12 @@ class _GamePlayScreenState extends State<GamePlayScreen>
                         /* main view */
                         Column(
                           children: [
+                            _gameState.audioConfEnabled
+                                ? Consumer<JanusEngine>(builder: (_, __, ___) {
+                                    return _gameState.janusEngine.audioWidget();
+                                  })
+                                : SizedBox.shrink(),
+
                             // header section
                             HeaderView(_gameState),
                             // empty space to highlight the background view

@@ -5,6 +5,8 @@ import 'package:audio_recorder/audio_recorder.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/services/agora/agora.dart';
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
@@ -26,17 +28,17 @@ class _CommunicationViewState extends State<CommunicationView> {
   bool _recordingCancelled;
   String _audioFile;
 
-  @override
-  Widget build(BuildContext context) {
+  Widget build2(BuildContext context) {
     var ret = Consumer<ValueNotifier<Agora>>(
       builder: (_, agora, __) {
         bool liveAudio = agora.value != null;
-        var children = new List<Widget>();
+        var children = [];
         if (liveAudio) {
           children.addAll(liveAudioWidgets(agora));
         } else {
           children.addAll(audioChatWidgets());
         }
+
         children.add(GestureDetector(
           onTap: widget.chatVisibilityChange,
           child: Container(
@@ -55,6 +57,69 @@ class _CommunicationViewState extends State<CommunicationView> {
       },
     );
     return ret;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final gameState = GameState.getState(context);
+    final currentPlayerSeat =
+        gameState.getSeatByPlayer(gameState.currentPlayerId);
+    if (currentPlayerSeat == null) {
+      return SizedBox.shrink();
+    }
+
+    var ret = ListenableProvider<Seat>(
+        create: (_) => currentPlayerSeat,
+        builder: (context, _) => Consumer<Seat>(
+              builder: (_, seat, __) {
+                var children = [];
+
+                children = janusAudioWidgets(gameState, seat);
+
+                children.add(GestureDetector(
+                  onTap: widget.chatVisibilityChange,
+                  child: Container(
+                    padding: EdgeInsets.all(5),
+                    child: Icon(
+                      Icons.chat,
+                      size: 35,
+                      color: AppColors.appAccentColor,
+                    ),
+                  ),
+                ));
+
+                return Column(
+                  children: children,
+                );
+              },
+            ));
+    return ret;
+  }
+
+  janusAudioWidgets(GameState gameState, Seat seat) {
+    return [
+      Padding(
+        padding: const EdgeInsets.all(5.0),
+        child: Icon(
+          Icons.circle,
+          size: 15,
+          color: AppColors.positiveColor,
+        ),
+      ),
+      GestureDetector(
+        onTap: () {
+          gameState.janusEngine.muteUnmute();
+        },
+        child: Container(
+          padding: EdgeInsets.all(5),
+          child: Icon(
+            seat.player.muted ? Icons.mic_off : Icons.mic,
+            size: 35,
+            color: AppColors.appAccentColor,
+          ),
+        ),
+      ),
+    ];
   }
 
   liveAudioWidgets(ValueNotifier<Agora> agora) {
