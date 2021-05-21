@@ -1,6 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
@@ -9,15 +7,11 @@ import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
-import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat_change_model.dart';
-import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/game_replay_models/game_replay_controller.dart';
-import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/card_back_assets.dart';
 import 'package:pokerapp/services/game_replay_service/game_replay_service.dart';
-import 'package:pokerapp/utils/utils.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
@@ -96,7 +90,7 @@ class ReplayHandScreenUtils {
     /* todo: the network call can be made here */
 
     String dataString = await rootBundle.loadString(
-      'assets/sample-data/handlog/holdem/onewinner.json',
+      'assets/sample-data/handlog/holdem/flop.json',
     );
 
     if (assetFile != null) {
@@ -115,7 +109,7 @@ class ReplayHandScreenUtils {
 
     } else {
       String dataString = await rootBundle.loadString(
-        'assets/sample-data/handlog/holdem/onewinner.json',
+        'assets/sample-data/handlog/holdem/flop.json',
       );
 
       if (assetFile != null) {

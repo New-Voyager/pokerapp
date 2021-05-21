@@ -17,17 +17,12 @@ class ReplayHandControls extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            /* repeat button */
-            ReplayHandControlsUtils.buildControlButton(
-              iconData: Icons.repeat_rounded,
-              onPressed: gameReplayController.repeat,
-            ),
-
-            /* skip previous button */
-            ReplayHandControlsUtils.buildControlButton(
-              iconData: Icons.skip_previous_rounded,
-              onPressed: gameReplayController.skipPrevious,
-            ),
+            // ! LOW PRIORITY: WILL WORK ON LATER
+            // /* repeat button */
+            // ReplayHandControlsUtils.buildControlButton(
+            //   iconData: Icons.repeat_rounded,
+            //   onPressed: gameReplayController.repeat,
+            // ),
 
             /* play / pause button */
             StreamBuilder<bool>(

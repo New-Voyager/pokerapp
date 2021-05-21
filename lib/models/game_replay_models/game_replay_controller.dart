@@ -166,7 +166,7 @@ class GameReplayController {
   void skipNext() => _goNext = true;
 
   void repeat() {
-    // _actionCounter = 0;
+    // reset everything and start from beginning
   }
 
   /* getters */
