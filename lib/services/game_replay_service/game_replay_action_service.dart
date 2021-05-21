@@ -228,7 +228,7 @@ class GameReplayActionService {
         runItTwiceResult: action.runItTwiceResult,
         boardCards: action.boardCards,
         boardCards2: action.boardCards2,
-        winners: null,
+        potWinners: null,
         context: context,
       );
 
@@ -240,8 +240,7 @@ class GameReplayActionService {
         isRunItTwice: false,
         runItTwiceResult: null,
         boardCards2: null,
-        winners:
-            action.potWinners['0'].hiWinners.map((hw) => hw.toJson()).toList(),
+        potWinners: action.potWinners,
         boardCards: action.boardCards,
         context: context,
       );

@@ -19,6 +19,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/remaining_time.
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
+import 'package:pokerapp/models/hand_log_model_new.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/card_back_assets.dart';
@@ -1048,6 +1049,7 @@ class HandActionService {
     final TableState tableState,
     final boardIndex = 1,
     final GameState gameState,
+    final bool setState = false,
   }) async {
     /* highlight the hi winners */
     players.highlightWinnerSilent(winner.seatNo);
@@ -1074,23 +1076,50 @@ class HandActionService {
       player.action.winner = true;
     }
 
-    /* update state */
-    players.notifyAll();
-    tableState.notifyAll();
+    /** set state */
+    if (setState) {
+      /* update state */
+      players.notifyAll();
+      tableState.notifyAll();
 
-    /* finally animate the moving stack */
-    gameState.animateSeatActions();
+      /* finally animate the moving stack */
+      gameState.animateSeatActions();
 
-    /* wait for the animation to finish */
-    await Future.delayed(AppConstants.animationDuration);
+      /* wait for the animation to finish */
+      await Future.delayed(AppConstants.animationDuration);
 
-    /* update the actual stack */
-    players.updateStackWithValueSilent(
-      winner.seatNo,
-      winner.amount,
-    );
+      /* update the actual stack */
+      players.updateStackWithValueSilent(
+        winner.seatNo,
+        winner.amount,
+      );
 
-    players.notifyAll();
+      players.notifyAll();
+    }
+  }
+
+  /* this method processes multiple winners */
+  static Future<void> processWinners({
+    List highWinners,
+    final Players players,
+    final TableState tableState,
+    final boardIndex = 1,
+    final GameState gameState,
+  }) async {
+    /** process the high pot winners */
+    for (int i = 0; i < highWinners.length; i++) {
+      final HiWinnersModel winner = HiWinnersModel.fromJson(highWinners[i]);
+
+      await processWinner(
+        winner: winner,
+        players: players,
+        tableState: tableState,
+        boardIndex: boardIndex,
+        gameState: gameState,
+        // for the last element only we set the state
+        setState: i == highWinners.length - 1,
+      );
+    }
   }
 
   /* only resets the highlights, and winners */
@@ -1116,7 +1145,7 @@ class HandActionService {
   static Future<void> handleResultStatic({
     @required final bool isRunItTwice,
     @required final dynamic runItTwiceResult,
-    @required final dynamic winners,
+    @required final Map<String, dynamic> potWinners,
     @required final List<int> boardCards,
     @required final List<int> boardCards2,
     @required final BuildContext context,
@@ -1216,19 +1245,51 @@ class HandActionService {
       /* turn off two boards needed flag -> only if we are not from replay */
       if (!fromReplay) tableState.updateTwoBoardsNeeded(false);
     } else {
-      /* NOT RUN IT TWICE CASE */
-      for (final hiWinner in winners) {
-        final HiWinnersModel winner = HiWinnersModel.fromJson(hiWinner);
+      /* SIMPLE POT WINNER CASE */
 
-        await processWinner(
-          winner: winner,
+      /**
+       * DO the following for each pot:
+       *    1. show all the high pot winners
+       *    2. delay
+       *    3. show all the low pot winners
+       */
+
+      for (final potWinner in potWinners.entries) {
+        final potNo = potWinner.key;
+        final PotWinner winners = potWinner.value;
+
+        final List highWinners =
+            winners.hiWinners.map((e) => e.toJson()).toList();
+        final List lowWinners =
+            winners.lowWinners.map((e) => e.toJson()).toList();
+
+        /** process the high pot winners */
+        await processWinners(
+          highWinners: highWinners,
           players: players,
           tableState: tableState,
           boardIndex: 1,
           gameState: gameState,
         );
 
+        /** delay for a bit */
         await Future.delayed(AppConstants.animationDuration);
+
+        /* need to clear the board */
+        resetResult(
+          tableState: tableState,
+          players: players,
+          gameState: gameState,
+        );
+
+        /** process the low pot winners */
+        await processWinners(
+          highWinners: lowWinners,
+          players: players,
+          tableState: tableState,
+          boardIndex: 1,
+          gameState: gameState,
+        );
       }
     }
   }
@@ -1277,7 +1338,7 @@ class HandActionService {
     await handleResultStatic(
       isRunItTwice: isRunItTwice,
       runItTwiceResult: handResult['handLog']['runItTwiceResult'],
-      winners: handResult['handLog']['potWinners']['0']['hiWinners'],
+      potWinners: handResult['handLog']['potWinners'],
       boardCards: boardCards,
       boardCards2: boardCards2,
       context: _context,
