@@ -176,15 +176,10 @@ class MessageItem extends StatelessWidget {
                   flex: 1,
                   child: ReplayButton(
                     onTapFunction: () {
-                      // TODO: USE ROUTES HERE INSTEAD OF NAVIGATOR.PUSH
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => ReplayHandScreen(
-                            hand: messageModel.sharedHand.data,
-                            playerInfo: playerInfo,
-                          ),
-                        ),
+                      ReplayHandDialog.show(
+                        context: context,
+                        hand: messageModel.sharedHand.data,
+                        playerInfo: playerInfo,
                       );
                     },
                   ),

@@ -11,14 +11,34 @@ import 'package:pokerapp/screens/util_screens/replay_hand_screen/replay_hand_scr
 import 'package:pokerapp/utils/utils.dart';
 import 'package:provider/provider.dart';
 
-class ReplayHandScreen extends StatelessWidget {
+class ReplayHandDialog extends StatelessWidget {
+  static void show({
+    @required BuildContext context,
+    int playerID,
+    int handNumber,
+    String gameCode,
+    dynamic hand,
+    dynamic playerInfo,
+  }) =>
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (_) => ReplayHandDialog(
+          playerID: playerID,
+          handNumber: handNumber,
+          gameCode: gameCode,
+          hand: hand,
+          playerInfo: playerInfo,
+        ),
+      );
+
   final int playerID;
   final int handNumber;
   final String gameCode;
   final dynamic hand;
   final dynamic playerInfo;
 
-  ReplayHandScreen({
+  ReplayHandDialog({
     this.playerID,
     this.handNumber,
     this.gameCode,
@@ -28,7 +48,7 @@ class ReplayHandScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext _) => Scaffold(
-        backgroundColor: AppColors.screenBackgroundColor,
+        backgroundColor: Colors.transparent,
         body: FutureBuilder<GameReplayController>(
           future: ReplayHandScreenUtils.getGameReplayController(
             playerID: playerID,
@@ -100,22 +120,16 @@ class _ReplayHandUtilScreenState extends State<ReplayHandUtilScreen> {
 
         return SafeArea(
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               /* game view */
-              Expanded(
-                child: ReplayHandGameView(
-                  gameInfoModel: widget.gameReplayController.gameInfoModel,
-                ),
+              ReplayHandGameView(
+                gameInfoModel: widget.gameReplayController.gameInfoModel,
               ),
 
               /* controls */
-              Expanded(
-                child: Align(
-                  alignment: Alignment.topCenter,
-                  child: ReplayHandControls(
-                    gameReplayController: widget.gameReplayController,
-                  ),
-                ),
+              ReplayHandControls(
+                gameReplayController: widget.gameReplayController,
               ),
             ],
           ),
