@@ -1142,6 +1142,43 @@ class HandActionService {
     tableState.notifyAll();
   }
 
+  static Future<void> processForHighWinnersDelayProcessForLowWinners({
+    final List highWinners,
+    final List lowWinners,
+    final gameState,
+    final tableState,
+    final players,
+    int boardIndex = 1,
+  }) async {
+    /** process the high pot winners */
+    await processWinners(
+      highWinners: highWinners,
+      players: players,
+      tableState: tableState,
+      boardIndex: boardIndex,
+      gameState: gameState,
+    );
+
+    /** delay for a bit */
+    await Future.delayed(AppConstants.animationDuration);
+
+    /* need to clear the board */
+    resetResult(
+      tableState: tableState,
+      players: players,
+      gameState: gameState,
+    );
+
+    /** process the low pot winners */
+    await processWinners(
+      highWinners: lowWinners,
+      players: players,
+      tableState: tableState,
+      boardIndex: boardIndex,
+      gameState: gameState,
+    );
+  }
+
   static Future<void> handleResultStatic({
     @required final bool isRunItTwice,
     @required final dynamic runItTwiceResult,
@@ -1187,19 +1224,22 @@ class HandActionService {
       * 3. update the rankStr
       * 4. move the pot chip to the winner */
 
-      final board1Winners = runItTwiceResult['board1Winners']['0']['hiWinners'];
-      for (final hiWinner in board1Winners) {
-        final HiWinnersModel winner = HiWinnersModel.fromJson(hiWinner);
+      final Map board1PotWinners = runItTwiceResult['board1Winners'];
 
-        await processWinner(
-          winner: winner,
-          players: players,
-          tableState: tableState,
-          boardIndex: 1,
+      for (final board1Winners in board1PotWinners.entries) {
+        final potNo = board1Winners.key;
+        final Map winners = board1Winners.value;
+
+        final List highWinners = winners['hiWinners'];
+        final List lowWinners = winners['lowWinners'];
+
+        await processForHighWinnersDelayProcessForLowWinners(
+          highWinners: highWinners,
+          lowWinners: lowWinners,
           gameState: gameState,
+          tableState: tableState,
+          players: players,
         );
-
-        await Future.delayed(AppConstants.animationDuration);
       }
 
       /* cleanup all highlights and rankStr */
@@ -1219,19 +1259,24 @@ class HandActionService {
       * 2. highlight winning cards - players and community one's
       * 3. update the rankStr
       * 4. move the pot chip to the winner */
-      final board2Winners = runItTwiceResult['board2Winners']['0']['hiWinners'];
-      for (final hiWinner in board2Winners) {
-        final HiWinnersModel winner = HiWinnersModel.fromJson(hiWinner);
 
-        await processWinner(
-          winner: winner,
-          players: players,
-          tableState: tableState,
-          boardIndex: 2,
+      final Map board2PotWinners = runItTwiceResult['board2Winners'];
+
+      for (final board2Winners in board2PotWinners.entries) {
+        final potNo = board2Winners.key;
+        final Map winners = board2Winners.value;
+
+        final List highWinners = winners['hiWinners'];
+        final List lowWinners = winners['lowWinners'];
+
+        await processForHighWinnersDelayProcessForLowWinners(
+          highWinners: highWinners,
+          lowWinners: lowWinners,
           gameState: gameState,
+          tableState: tableState,
+          players: players,
+          boardIndex: 2,
         );
-
-        await Future.delayed(AppConstants.animationDuration);
       }
 
       /* cleanup all highlights and rankStr */
@@ -1263,32 +1308,12 @@ class HandActionService {
         final List lowWinners =
             winners.lowWinners.map((e) => e.toJson()).toList();
 
-        /** process the high pot winners */
-        await processWinners(
+        await processForHighWinnersDelayProcessForLowWinners(
           highWinners: highWinners,
-          players: players,
-          tableState: tableState,
-          boardIndex: 1,
-          gameState: gameState,
-        );
-
-        /** delay for a bit */
-        await Future.delayed(AppConstants.animationDuration);
-
-        /* need to clear the board */
-        resetResult(
-          tableState: tableState,
+          lowWinners: lowWinners,
           players: players,
           gameState: gameState,
-        );
-
-        /** process the low pot winners */
-        await processWinners(
-          highWinners: lowWinners,
-          players: players,
           tableState: tableState,
-          boardIndex: 1,
-          gameState: gameState,
         );
       }
     }
