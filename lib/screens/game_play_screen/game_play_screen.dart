@@ -20,8 +20,8 @@ import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/agora/agora.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/app/player_service.dart';
-import 'package:pokerapp/services/game_play/action_services/game_action_service/game_action_service.dart';
 import 'package:pokerapp/services/game_play/action_services/game_action_service/util_action_services.dart';
+import 'package:pokerapp/services/game_play/action_services/game_update_service.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_service.dart';
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
@@ -110,6 +110,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     if (!_gameState.audioConfEnabled) {
       return;
     }
+
     //final janusEngine = _gameState.getJanusEngine(_providerContext);
     _gameState.janusEngine.joinChannel('test');
     return;
@@ -135,25 +136,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
     if (_initiated == true) return _gameInfoModel;
 
-    if (_gameInfoModel.audioConfEnabled) {
-      // initialize agora
-      // agora = Agora(
-      //     gameCode: widget.gameCode,
-      //     uuid: this._currentPlayer.uuid,
-      //     playerId: this._currentPlayer.id);
-
-      // if the current player is in the table, then join audio
-      for (int i = 0; i < _gameInfoModel.playersInSeats.length; i++) {
-        if (_gameInfoModel.playersInSeats[i].playerUuid ==
-            _currentPlayer.uuid) {
-          // player is in the table
-          await this.joinAudio();
-          break;
-        }
-      }
-    } else {
-      _audioPlayer = AudioPlayer();
-    }
     final gameComService = GameComService(
       currentPlayer: this._currentPlayer,
       gameToPlayerChannel: _gameInfoModel.gameToPlayerChannel,
@@ -179,6 +161,26 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       gameMessagingService: gameComService.gameMessaging,
     );
 
+    if (_gameInfoModel.audioConfEnabled) {
+      // initialize agora
+      // agora = Agora(
+      //     gameCode: widget.gameCode,
+      //     uuid: this._currentPlayer.uuid,
+      //     playerId: this._currentPlayer.id);
+
+      // if the current player is in the table, then join audio
+      for (int i = 0; i < _gameInfoModel.playersInSeats.length; i++) {
+        if (_gameInfoModel.playersInSeats[i].playerUuid ==
+            _currentPlayer.uuid) {
+          // player is in the table
+          await this.joinAudio();
+          break;
+        }
+      }
+    } else {
+      _audioPlayer = AudioPlayer();
+    }
+
     if (TestService.isTesting) {
       // testing code goes here
       _gameContextObj = GameContextObject(
@@ -200,29 +202,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         gameComService: gameComService,
         gameState: _gameState,
       );
-
-      /* setup the listeners to the channels
-        * Any messages received from these channel updates,
-        * will be taken care of by the respective class
-        * and actions will be taken in the UI
-        * as there will be Listeners implemented down this hierarchy level */
-
-      gameComService.gameToPlayerChannelStream.listen((nats.Message message) {
-        if (!gameComService.active) return;
-
-        // log('gameToPlayerChannel(${message.subject}): ${message.string}');
-
-        /* This stream will receive game related messages
-          * e.g.
-          * 1. Player Actions - Sitting on table, getting more chips, leaving game, taking break,
-          * 2. Game Actions - New hand, informing about Next actions, PLayer Acted
-          *  */
-
-        GameActionService.handle(
-          context: _providerContext,
-          message: message.string,
-        );
-      });
 
       // if the current player is in the table, then join audio
       for (int i = 0; i < _gameInfoModel.playersInSeats.length; i++) {
@@ -407,6 +386,36 @@ class _GamePlayScreenState extends State<GamePlayScreen>
                   this._providerContext = context;
 
                   if (_gameContextObj != null) {
+                    if (_gameContextObj.gameUpdateService == null) {
+                      /* setup the listeners to the channels
+                        * Any messages received from these channel updates,
+                        * will be taken care of by the respective class
+                        * and actions will be taken in the UI
+                        * as there will be Listeners implemented down this hierarchy level */
+
+                      _gameContextObj.gameUpdateService = GameUpdateService(
+                        _providerContext,
+                        _gameState,
+                      );
+                      _gameContextObj.gameUpdateService.loop();
+
+                      _gameContextObj.gameComService.gameToPlayerChannelStream
+                          .listen((nats.Message message) {
+                        if (!_gameContextObj.gameComService.active) return;
+
+                        // log('gameToPlayerChannel(${message.subject}): ${message.string}');
+
+                        /* This stream will receive game related messages
+                          * e.g.
+                          * 1. Player Actions - Sitting on table, getting more chips, leaving game, taking break,
+                          * 2. Game Actions - New hand, informing about Next actions, PLayer Acted
+                          *  */
+
+                        _gameContextObj.gameUpdateService
+                            .handle(message.string);
+                      });
+                    }
+
                     if (_gameContextObj.handActionService == null) {
                       _gameContextObj.handActionService = HandActionService(
                         _providerContext,
