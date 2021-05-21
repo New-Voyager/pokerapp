@@ -25,7 +25,6 @@ import 'package:pokerapp/resources/card_back_assets.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/overlay_notification.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/app/game_service.dart';
-import 'package:pokerapp/services/game_play/action_services/game_action_service/sub_services/high_hand_service.dart';
 import 'package:pokerapp/services/game_play/utils/audio.dart';
 import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/card_helper.dart';
@@ -1235,16 +1234,14 @@ class HandActionService {
 
   Future<void> handleResult(var data) async {
     final Players players = _gameState.getPlayers(_context);
-    final tableState = _gameState.getTableState(_context);
-    // final resultState = _gameState.getResultState(_context);
 
-    if (data['handResult']['highHand'] != null) {
-      HighHandService.handle(
-        context: _context,
-        data: data['handResult']['highHand'],
-        showNotification: false,
-      );
-    }
+    // if (data['handResult']['highHand'] != null) {
+    //   HighHandService.handle(
+    //     context: _context,
+    //     data: data['handResult']['highHand'],
+    //     showNotification: false,
+    //   );
+    // }
     _gameState.resetSeatActions();
     players.clearForShowdown();
 

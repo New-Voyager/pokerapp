@@ -64,6 +64,10 @@ class JanusEngine extends ChangeNotifier {
     var request = {
       'request': 'create',
       'room': this.roomId,
+      'is_private': true,
+      'audiolevel_event': true,
+      'audio_level_average': 60,
+      'pin': 'abcd'
     };
     try {
       final response = await plugin.send(data: request);
@@ -75,6 +79,8 @@ class JanusEngine extends ChangeNotifier {
 
   joinChannel(String janusToken) async {
     initialized = false;
+    return;
+
     this.janusToken = janusToken;
     if (this.janusToken.isEmpty) {
       return;
@@ -82,6 +88,7 @@ class JanusEngine extends ChangeNotifier {
     if (defaultTargetPlatform == TargetPlatform.android) {
       await Permission.microphone.request();
     }
+    final start = DateTime.now();
     if (engine == null) {
       transport = WebSocketJanusTransport(url: janusUrl);
       engine = JanusClient(
@@ -108,7 +115,9 @@ class JanusEngine extends ChangeNotifier {
             mediaConstraints: {"audio": true, "video": false});
 
         // create a room
-        createRoom();
+        if (gameState.currentPlayer.isAdmin()) {
+          createRoom();
+        }
 
         var join = {
           'request': 'join',
@@ -137,9 +146,10 @@ class JanusEngine extends ChangeNotifier {
           debugPrint('No room in that name. error: ${err.toString()}');
         }
       }
-
+      final end = DateTime.now();
+      final duration = end.difference(start);
       debugPrint(
-          'session id: ${session.sessionId} plugin handle id: ${plugin.handleId}');
+          'session id: ${session.sessionId} plugin handle id: ${plugin.handleId}. Time take to initialize: ${duration.inSeconds}');
 
       // to play audio from the remote
       plugin.remoteStream.listen((event) {
