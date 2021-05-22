@@ -1,10 +1,10 @@
 club:
-  name: Tester Club
+  name: Manchester Club
   description: Club used for testing with the bot runner
 
 game:
   create: true
-  title: "1 Human 2 Bots"
+  title: "NLH Testing Game"
   game-type: "HOLDEM"
   small-blind: 1.0
   big-blind: 2.0
@@ -31,8 +31,12 @@ starting-seats:
     player: tom
     buy-in: 100
 
-# Human plays this user.
-tester: tom
+tester:
+auto-play: false
+
+bot-config:
+  min-action-pause-time: 500
+  max-action-pause-time: 1000
 
 # deal the following hands in the table
 hands:
@@ -90,7 +94,8 @@ hands:
     result:
       winners:
         - seat: 1
-          receive: 56.0
+          receive: 54.0
+          rank: Two Pair
       action-ended: SHOW_DOWN
       
       # balance indicates the player balance after the hand

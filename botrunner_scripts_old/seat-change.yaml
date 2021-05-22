@@ -1,5 +1,5 @@
 club:
-  name: Waitlist Testing Club
+  name: Seat-Change Testing Club
   description: Club used for testing with the bot runner
   rewards:
     - name: High Hand
@@ -9,7 +9,7 @@ club:
 
 game:
   create: true
-  title: "Waitlist Testing"
+  title: "Seat-Change"
   game-type: "HOLDEM"
   small-blind: 1.0
   big-blind: 2.0
@@ -55,44 +55,23 @@ starting-seats:
     player: michael
     buy-in: 1000
 
-observers:
-  - player: david
-    waitlist: true
-    confirm: true
-    buy-in: 500
-  - player: olivia
-    waitlist: true
-    confirm: true
-    buy-in: 500
-  - player: emma
-    waitlist: true
-    confirm: true
-    buy-in: 500
-
 # deal the following hands in the table
 hands:
   - setup:
       button-pos: 1
       auto: true
-      leave-game:
-        - seat: 5
-
-  - setup:
-      pause: 10
-      auto: true
-      leave-game:
-        - seat: 3
-
-  - setup:
-      pause: 10
-      auto: true
-      leave-game:
+      seat-change:
         - seat: 2
+          confirm: true
+      leave-game:
+        - seat: 6
 
   - setup:
+      pause: 5
       auto: true
 
   - setup:
+      pause: 5
       auto: true
 
   # - num: 4
@@ -113,20 +92,20 @@ hands:
   #     verify:
   #       table-pos:
   #         - seat: 1
-  #           playerName: yong
+  #           player-name: yong
   #         - seat: 2
   #           empty: true
   #         - seat: 3
   #           empty: tom
   #         - seat: 4
-  #           playerName: jim
+  #           player-name: jim
   #         - seat: 5
-  #           playerName: rob
+  #           player-name: rob
   #         - seat: 6
-  #           playerName: rich
+  #           player-name: rich
   #         - seat: 7
-  #           playerName: josh
+  #           player-name: josh
   #         - seat: 8
-  #           playerName: chris
+  #           player-name: chris
   #         - seat: 9
-  #           playerName: michael
+  #           player-name: michael

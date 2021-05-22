@@ -84,6 +84,8 @@ services:
       REDIS_HOST: redis
       REDIS_PORT: 6379
       REDIS_DB: 0
+    volumes:
+      - ../botrunner_scripts:/app/botrunner_scripts
 
 volumes:
   db-data:

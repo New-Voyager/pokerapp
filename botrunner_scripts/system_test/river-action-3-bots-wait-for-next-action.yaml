@@ -1,10 +1,10 @@
 club:
-  name: Tester Club
-  description: Club used for testing with the bot runner
+  name: Crash Test
+  description: Club used for crash testing
 
 game:
   create: true
-  title: "1 Human 2 Bots"
+  title: "Crash Test - WAIT_FOR_NEXT_ACTION"
   game-type: "HOLDEM"
   small-blind: 1.0
   big-blind: 2.0
@@ -31,8 +31,12 @@ starting-seats:
     player: tom
     buy-in: 100
 
-# Human plays this user.
-tester: tom
+tester:
+auto-play: false
+
+bot-config:
+  min-action-pause-time: 0
+  max-action-pause-time: 0
 
 # deal the following hands in the table
 hands:
@@ -58,7 +62,13 @@ hands:
       seat-actions:
         # seat number/action/amount
         - action: 1, CALL, 2
+          pre-action:
+            - setup-server-crash:
+                crash-point: WAIT_FOR_NEXT_ACTION_1
         - action: 5, CALL, 2
+          pre-action:
+            - setup-server-crash:
+                crash-point: WAIT_FOR_NEXT_ACTION_2
         - action: 8, CHECK
 
     flop:
@@ -90,7 +100,8 @@ hands:
     result:
       winners:
         - seat: 1
-          receive: 56.0
+          receive: 54.0
+          rank: Two Pair
       action-ended: SHOW_DOWN
       
       # balance indicates the player balance after the hand

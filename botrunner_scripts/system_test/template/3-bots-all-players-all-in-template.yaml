@@ -1,10 +1,10 @@
 club:
-  name: Tester Club
-  description: Club used for testing with the bot runner
+  name: Crash Test
+  description: Club used for crash testing
 
 game:
   create: true
-  title: "1 Human 2 Bots"
+  title: "Crash Test - ALL_PLAYERS_ALL_IN_{{SEQ}}"
   game-type: "HOLDEM"
   small-blind: 1.0
   big-blind: 2.0
@@ -16,23 +16,27 @@ game:
   buy-in-approval: true
   rake-percentage: 5.0
   rake-cap: 5.0
-  buy-in-min: 100
+  buy-in-min: 30
   buy-in-max: 300
   action-time: 100
 
 starting-seats:
   - seat: 1
     player: yong
-    buy-in: 100
+    buy-in: 50
   - seat: 5
     player: brian
-    buy-in: 100
+    buy-in: 50
   - seat: 8
     player: tom
-    buy-in: 100
+    buy-in: 50
 
-# Human plays this user.
-tester: tom
+tester:
+auto-play: false
+
+bot-config:
+  min-action-pause-time: 0
+  max-action-pause-time: 0
 
 # deal the following hands in the table
 hands:
@@ -57,48 +61,26 @@ hands:
     preflop:
       seat-actions:
         # seat number/action/amount
-        - action: 1, CALL, 2
-        - action: 5, CALL, 2
-        - action: 8, CHECK
-
-    flop:
-      verify:
-        board: ["Ac", "Ad", "2c"]
-      seat-actions:
-        - action: 5, CHECK
-        - action: 8, BET, 2
-        - action: 1, CALL, 2
-        - action: 5, RAISE, 4
-        - action: 8, FOLD
-        - action: 1, CALL, 4
-
-    turn:
-      verify:
-        board: ["Ac", "Ad", "2c", "Td"]
-      seat-actions:
-        - action: 5, CHECK
-        - action: 1, BET, 10
-        - action: 5, CALL, 10
-
-    river:
-      verify:
-        board: ["Ac", "Ad", "2c", "Td", "4s"]
-      seat-actions:
-        - action: 5, BET, 10
-        - action: 1, CALL, 10
+        - action: 1, ALLIN
+        - action: 5, ALLIN
+        - action: 8, ALLIN
+          pre-action:
+            - setup-server-crash:
+                crash-point: ALL_PLAYERS_ALL_IN_{{SEQ}}
 
     result:
       winners:
         - seat: 1
-          receive: 56.0
+          receive: 145.0
+          rank: Two Pair
       action-ended: SHOW_DOWN
       
       # balance indicates the player balance after the hand
       # bb player won a chip
       stacks:
         - seat: 1
-          stack: 84
+          stack: 150
         - seat: 5
-          stack: 120
+          stack: 0
         - seat: 8
-          stack: 96
+          stack: 0
