@@ -219,16 +219,17 @@ class NamePlateWidget extends StatelessWidget {
   }
 
   Widget bottomWidget(BuildContext context) {
+    if (seat.player.inBreak && seat.player.breakTimeExpAt != null) {
+      final now = DateTime.now().toUtc();
+      final diff = seat.player.breakTimeExpAt.difference(now);
+      return buyInTimer(context, diff.inSeconds);
+    }
+
     if (seat.player.action.action != HandActions.ALLIN &&
         seat.player.stack == 0 &&
         seat.player.buyInTimeExpAt != null) {
       final now = DateTime.now().toUtc();
       final diff = seat.player.buyInTimeExpAt.difference(now);
-
-      final nowTime = now.toIso8601String();
-      final buyInTime = seat.player.buyInTimeExpAt.toIso8601String();
-      // log('nowTime: $nowTime buyInTime: $buyInTime');
-
       return buyInTimer(context, diff.inSeconds);
     } else if (seat.player.inBreak && seat.player.breakTimeExpAt != null) {
       final now = DateTime.now().toUtc();

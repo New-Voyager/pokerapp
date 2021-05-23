@@ -112,8 +112,7 @@ class Data {
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
         gameId: json["gameId"],
-                gameCode:json["gameCode"],
-
+        gameCode: json["gameCode"],
         handNum: json["handNum"],
         gameType: json["gameType"],
         noCards: json['noCards'],
@@ -145,7 +144,7 @@ class Data {
 
   Map<String, dynamic> toJson() => {
         "gameId": gameId,
-        "gameCode" : gameCode,
+        "gameCode": gameCode,
         "handNum": handNum,
         "gameType": gameType,
         "handLog": handLog.toJson(),

@@ -56,7 +56,6 @@ class BookmarkedHand {
   HandLogModelNew handlogData;
 
   factory BookmarkedHand.fromJson(Map<String, dynamic> json) {
-
     return BookmarkedHand(
       id: json["id"],
       sharedBy: json["sharedBy"] == null

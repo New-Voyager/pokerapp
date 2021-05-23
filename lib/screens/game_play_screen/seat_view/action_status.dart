@@ -31,6 +31,10 @@ class ActionStatusWidget extends StatelessWidget {
         action == HandActions.STRADDLE) {
       actionStr = action.toString().replaceAll('HandActions.', '');
     }
+
+    if (seat.player.inBreak) {
+      actionStr = "In Break";
+    }
     // decide color from the status message
     // raise, bet -> red
     // check, call -> green

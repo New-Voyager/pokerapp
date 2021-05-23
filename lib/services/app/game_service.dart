@@ -766,4 +766,27 @@ class GameService {
     return status;
   }
 
+  static Future<bool> sitBack(String gameCode) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+    String _query = """
+          mutation (\$gameCode: String!){
+            status: sitBack(gameCode: \$gameCode)
+          }""";
+
+    Map<String, dynamic> variables = {
+      "gameCode": gameCode,
+    };
+
+    QueryResult result = await _client.mutate(
+      MutationOptions(documentNode: gql(_query), variables: variables),
+    );
+
+    if (result.hasException) return null;
+
+    Map game = (result.data as LazyCacheMap).data;
+    bool status = game["status"];
+    log('Sit back Game code: $gameCode status: $status');
+
+    return status;
+  }
 }

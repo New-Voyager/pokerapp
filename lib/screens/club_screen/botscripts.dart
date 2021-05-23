@@ -35,7 +35,6 @@ class _BotScriptsScreenState extends State<BotScriptsScreen> {
       getBotScripts();
     });
 
-
     super.initState();
   }
 

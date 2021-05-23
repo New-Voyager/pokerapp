@@ -80,6 +80,7 @@ class JanusEngine extends ChangeNotifier {
 
   joinChannel(String janusToken) async {
     initialized = false;
+    return;
 
     this.janusToken = janusToken;
     if (this.janusToken.isEmpty) {

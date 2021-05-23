@@ -232,7 +232,7 @@ class PlayerView extends StatelessWidget {
                       reverse: seat.player.action.winner,
                     )
                   : chipAmountWidget,
-              // SeatNoWidget(seat),
+              SeatNoWidget(seat),
               Visibility(
                   visible: seat.player.talking,
                   child: Positioned(
