@@ -222,6 +222,11 @@ class JanusEngine extends ChangeNotifier {
         final seat = gameState.getSeatByPlayer(element['id']);
         if (seat != null) {
           seat.player.muted = element['muted'] ?? false;
+          if (seat.player.muted) {
+            seat.player.showMicOff = true;
+          } else {
+            seat.player.showMicOn = true;
+          }
           seat.player.talking = element['talking'] ?? false;
           if (seat.player.talking) {
             log('${seat.player.name} is talking');

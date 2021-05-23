@@ -30,9 +30,6 @@ import 'open_seat.dart';
 /* this contains the player positions <seat-no, position> mapping */
 // Map<int, Offset> playerPositions = Map();
 
-bool _prevUnmuteContainerVisible = false, _curUnmuteContainerVisible = false;
-bool _prevMuteContainerVisible = false, _curMuteContainerVisible = false;
-
 class PlayerView extends StatelessWidget {
   final Seat seat;
   final Alignment cardsAlignment;
@@ -136,27 +133,16 @@ class PlayerView extends StatelessWidget {
     seat.betWidgetUIKey = GlobalKey();
 
     bool animate = seat.player.action.animateAction;
-    debugPrint(
-        'seat.player.muted = ${seat.player.muted}, _curMuteContainerVisible = $_curMuteContainerVisible,'
-        '_prevMuteContainerVisible = $_prevMuteContainerVisible, _curUnmuteContainerVisible = $_curUnmuteContainerVisible, '
-        '_prevUnmuteContainerVisible = $_prevUnmuteContainerVisible');
-
-    if (seat.player.muted && seat.player.muted != _curMuteContainerVisible) {
-      _curMuteContainerVisible = true;
-      _prevMuteContainerVisible = true;
-      Timer(Duration(seconds: 2), () {
-        _prevMuteContainerVisible = false;
+    if (seat.player.showMicOff) {
+      Timer(Duration(seconds: 1), () {
+        seat.player.showMicOff = false;
         seat.notify();
-        _curUnmuteContainerVisible = true;
       });
-    } else if (!seat.player.muted &&
-        seat.player.muted != _curUnmuteContainerVisible) {
-      _curUnmuteContainerVisible = false;
-      _prevUnmuteContainerVisible = true;
-      Timer(Duration(seconds: 2), () {
-        _prevUnmuteContainerVisible = false;
+    }
+    if (seat.player.showMicOn) {
+      Timer(Duration(seconds: 1), () {
+        seat.player.showMicOn = false;
         seat.notify();
-        _curMuteContainerVisible = false;
       });
     }
 
@@ -271,7 +257,7 @@ class PlayerView extends StatelessWidget {
                           child: Icon(
                             Icons.volume_up_outlined,
                           )))),
-              _prevMuteContainerVisible
+              seat.player.showMicOff
                   ? Positioned(
                       top: 0,
                       right: -12,
@@ -283,7 +269,7 @@ class PlayerView extends StatelessWidget {
                             Icons.mic_off,
                           )))
                   : SizedBox(),
-              _prevUnmuteContainerVisible
+              seat.player.showMicOn
                   ? Positioned(
                       top: 0,
                       right: -12,
