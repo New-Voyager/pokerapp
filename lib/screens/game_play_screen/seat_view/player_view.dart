@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
@@ -232,6 +233,42 @@ class PlayerView extends StatelessWidget {
                     )
                   : chipAmountWidget,
               // SeatNoWidget(seat),
+              Visibility(
+                  visible: seat.player.talking,
+                  child: Positioned(
+                      top: 0,
+                      right: -12,
+                      child: Container(
+                          width: 22,
+                          height: 22,
+                          color: Colors.white,
+                          child: Icon(
+                            Icons.volume_up_outlined,
+                          )))),
+              seat.player.showMicOff
+                  ? Positioned(
+                      top: 0,
+                      right: -12,
+                      child: Container(
+                          width: 22,
+                          height: 22,
+                          color: Colors.white,
+                          child: Icon(
+                            Icons.mic_off,
+                          )))
+                  : SizedBox(),
+              seat.player.showMicOn
+                  ? Positioned(
+                      top: 0,
+                      right: -12,
+                      child: Container(
+                          width: 22,
+                          height: 22,
+                          color: Colors.white,
+                          child: Icon(
+                            Icons.mic,
+                          )))
+                  : SizedBox(),
             ],
           ),
         );

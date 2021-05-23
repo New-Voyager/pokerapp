@@ -45,6 +45,8 @@ class PlayerModel {
   // audio chat
   bool muted = false;
   bool talking = false;
+  bool showMicOn = false;
+  bool showMicOff = false;
 
   PlayerModel({
     String name,
@@ -169,27 +171,35 @@ class PlayerActedState {
   }
 
   get amount => this._amount;
+
   set amount(double value) => this._amount = value;
 
   get animateAction => this._animate;
+
   set animateAction(bool v) => this._animate = v;
 
   get show => this._show;
+
   set show(bool v) => this._show = v;
 
   bool get winner => this._winner;
+
   set winner(bool winner) => this._winner = winner;
 
   bool get sb => this._sb;
+
   set sb(bool v) => this._sb = v;
 
   bool get bb => this._bb;
+
   set bb(bool v) => this._bb = v;
 
   bool get straddle => this._straddle;
+
   set straddle(bool v) => this._straddle = v;
 
   bool get button => this._button;
+
   set button(bool v) => this._button = v;
 
   HandActions get action => this._playerAction;
