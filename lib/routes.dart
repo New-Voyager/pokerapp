@@ -380,12 +380,14 @@ class Routes {
           viewToShow: BookmarkedHands(),
         );
 
-   case bot_scripts:
+      case bot_scripts:
         var args = settings.arguments as dynamic;
 
         return _getPageRoute(
           routeName: settings.name,
-          viewToShow: BotScriptsScreen(clubModel: args,),
+          viewToShow: BotScriptsScreen(
+            clubModel: args,
+          ),
         );
       case replay_hand:
         var args = settings.arguments as dynamic;

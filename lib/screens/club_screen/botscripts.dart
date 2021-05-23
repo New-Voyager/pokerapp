@@ -3,11 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:overlay_support/overlay_support.dart';
-import 'package:pokerapp/main2.dart';
 import 'package:pokerapp/models/club_homepage_model.dart';
-import 'package:pokerapp/models/club_model.dart';
-import 'package:pokerapp/models/game_model.dart';
-import 'package:pokerapp/resources/app_apis.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_styles.dart';
@@ -16,8 +12,6 @@ import 'package:http/http.dart' as http;
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/app/clubs_service.dart';
-import 'package:pokerapp/services/app/game_service.dart';
-import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -31,19 +25,26 @@ class BotScriptsScreen extends StatefulWidget {
 
 class _BotScriptsScreenState extends State<BotScriptsScreen> {
   ScriptsModel scripts;
-  List<GameModel> oldLiveGames = [];
-  List<GameModel> newLiveGames = [];
+  List<String> oldLiveGames = [];
+  List<String> newLiveGames = [];
   int retryCount = 0;
+  String botRunnerHost;
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       getBotScripts();
     });
+
+
     super.initState();
   }
 
   getBotScripts() async {
-    var result = await http.get("http://143.110.253.94:8081/app-games");
+    final prefs = await SharedPreferences.getInstance();
+    String apiUrl = prefs.getString(AppConstants.API_SERVER_URL);
+    final url = Uri.parse(apiUrl);
+    botRunnerHost = url.host;
+    var result = await http.get("http://${botRunnerHost}:8081/app-games");
     log("URL : ${result.request.url}");
     if (result.statusCode != 200) {
       toast("Failed to get Results : ${result.reasonPhrase}");
@@ -77,7 +78,7 @@ class _BotScriptsScreenState extends State<BotScriptsScreen> {
         ),
         trailing: IconButton(
           icon: Icon(
-            Icons.play_circle,
+            Icons.play_circle_fill,
             color: AppColors.appAccentColor,
           ),
           onPressed: () => _handlePlay(script, context),
@@ -88,7 +89,6 @@ class _BotScriptsScreenState extends State<BotScriptsScreen> {
 
   _handlePlay(Script script, BuildContext context) async {
     ConnectionDialog.show(context: context, loadingText: "Launching Game..");
-    String gameCode = "";
     await launchScript(script);
   }
 
@@ -97,12 +97,11 @@ class _BotScriptsScreenState extends State<BotScriptsScreen> {
     oldLiveGames.clear();
     ClubHomePageModel model =
         await ClubsService.getClubHomePageData(widget.clubModel.clubCode);
-    oldLiveGames.addAll(model.liveGames);
-    log("OLD GAMES : LENGTH : ${oldLiveGames.length}");
-
-    log("clubhcode : ${widget.clubModel.clubCode}");
+    for (final game in model.liveGames) {
+      oldLiveGames.add(game.gameCode);
+    }
     var result = await http.post(
-      "http://143.110.253.94:8081/start-app-game",
+      "http://${botRunnerHost}:8081/start-app-game",
       body: jsonEncode(<String, dynamic>{
         "clubCode": widget.clubModel.clubCode,
         "name": script.appGame
@@ -117,41 +116,44 @@ class _BotScriptsScreenState extends State<BotScriptsScreen> {
   }
 
   handleLoop(BuildContext context) async {
-    ClubHomePageModel model1 =
-        await ClubsService.getClubHomePageData(widget.clubModel.clubCode);
-    newLiveGames.addAll(model1.liveGames);
+    int retryCount = 60;
 
-    Future.delayed(Duration(seconds: 1), () async {
-      log("Retrying in Future : $retryCount : newLength : ${newLiveGames.length}");
-      if (retryCount > 30) {
-        ConnectionDialog.dismiss(context: context);
-        showAlertDialog(context, "Timeout", "Failed to start Game");
-      } else if (newLiveGames.length > oldLiveGames.length) {
-        ConnectionDialog.dismiss(context: context);
-        toast("Botgame success!");
-        String gameCode = "";
-        for (GameModel game in newLiveGames) {
-          final res =
-              oldLiveGames.indexWhere((old) => game.gameCode == old.gameCode);
-          if (res == -1) {
-            log("Newgamecode");
-            gameCode = game.gameCode;
-            break;
-          }
-        }
-        log("GAMECODE : $gameCode");
-
-        if (gameCode.isNotEmpty) {
-          Navigator.pushNamed(
-            context,
-            Routes.game_play,
-            arguments: gameCode,
-          );
-        }
-      } else {
-        handleLoop(context);
+    String newGameCode = "";
+    while (retryCount > 0) {
+      ClubHomePageModel model1 =
+          await ClubsService.getClubHomePageData(widget.clubModel.clubCode);
+      newLiveGames.clear();
+      for (final game in model1.liveGames) {
+        newLiveGames.add(game.gameCode);
       }
-    });
+
+      for (final gameCode in newLiveGames) {
+        int index = oldLiveGames.indexOf(gameCode);
+        if (index == -1) {
+          // new game
+          newGameCode = gameCode;
+          break;
+        }
+        await Future.delayed(Duration(seconds: 1));
+      }
+      if (newGameCode.isNotEmpty) {
+        break;
+      }
+      retryCount--;
+    }
+    // dismiss launch dialog
+    Navigator.pop(context);
+
+    if (newGameCode.isNotEmpty) {
+      log('New gamecode: $newGameCode');
+      Navigator.pushNamed(
+        context,
+        Routes.game_play,
+        arguments: newGameCode,
+      );
+    } else {
+      showAlertDialog(context, "Timeout", "Failed to start Game");
+    }
   }
 
   @override
@@ -162,7 +164,7 @@ class _BotScriptsScreenState extends State<BotScriptsScreen> {
       appBar: AppBar(
         title: Text("Bot scripts", style: AppStyles.titleBarTextStyle),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new),
+          icon: Icon(Icons.arrow_back_ios),
           color: AppColors.appAccentColor,
           onPressed: () => Navigator.of(context).pop(),
         ),
