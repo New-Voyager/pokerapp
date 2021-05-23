@@ -24,6 +24,7 @@ class JanusEngine extends ChangeNotifier {
   String janusSecret;
   String roomPin;
   int roomId;
+
   //String janusSecret = 'janusrocks';
   WebSocketJanusTransport transport;
   RTCVideoRenderer _localRenderer = new RTCVideoRenderer();
@@ -174,9 +175,21 @@ class JanusEngine extends ChangeNotifier {
               await plugin.send(data: publish, jsep: offer);
               listParticipants();
             } else if (data['audiobridge'] == 'event') {
+              debugPrint('audiobridge: $data');
               var participants = data['participants'];
-              // get participant changes like player talking
               updateParticipants(participants);
+            } else if (data['audiobridge'] == 'talking') {
+              debugPrint('audiobridge: ${data["id"]} is talking');
+              var seat = gameState.getSeatByPlayer(data['id']);
+              seat.player.talking = true;
+              debugPrint('seat info $seat');
+              seat.notify();
+            } else if (data['audiobridge'] == 'stopped-talking') {
+              debugPrint('audiobridge: ${data["id"]} stopped talking');
+              var seat = gameState.getSeatByPlayer(data['id']);
+              seat.player.talking = false;
+              debugPrint('seat info $seat');
+              seat.notify();
             }
           }
         }

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
@@ -28,6 +29,9 @@ import 'open_seat.dart';
 
 /* this contains the player positions <seat-no, position> mapping */
 // Map<int, Offset> playerPositions = Map();
+
+bool _prevUnmuteContainerVisible = false, _curUnmuteContainerVisible = false;
+bool _prevMuteContainerVisible = false, _curMuteContainerVisible = false;
 
 class PlayerView extends StatelessWidget {
   final Seat seat;
@@ -132,6 +136,29 @@ class PlayerView extends StatelessWidget {
     seat.betWidgetUIKey = GlobalKey();
 
     bool animate = seat.player.action.animateAction;
+    debugPrint(
+        'seat.player.muted = ${seat.player.muted}, _curMuteContainerVisible = $_curMuteContainerVisible,'
+        '_prevMuteContainerVisible = $_prevMuteContainerVisible, _curUnmuteContainerVisible = $_curUnmuteContainerVisible, '
+        '_prevUnmuteContainerVisible = $_prevUnmuteContainerVisible');
+
+    if (seat.player.muted && seat.player.muted != _curMuteContainerVisible) {
+      _curMuteContainerVisible = true;
+      _prevMuteContainerVisible = true;
+      Timer(Duration(seconds: 2), () {
+        _prevMuteContainerVisible = false;
+        seat.notify();
+        _curUnmuteContainerVisible = true;
+      });
+    } else if (!seat.player.muted &&
+        seat.player.muted != _curUnmuteContainerVisible) {
+      _curUnmuteContainerVisible = false;
+      _prevUnmuteContainerVisible = true;
+      Timer(Duration(seconds: 2), () {
+        _prevUnmuteContainerVisible = false;
+        seat.notify();
+        _curMuteContainerVisible = false;
+      });
+    }
 
     Widget chipAmountWidget = ChipAmountWidget(
       animate: animate,
@@ -232,6 +259,42 @@ class PlayerView extends StatelessWidget {
                     )
                   : chipAmountWidget,
               // SeatNoWidget(seat),
+              Visibility(
+                  visible: seat.player.talking,
+                  child: Positioned(
+                      top: 0,
+                      right: -12,
+                      child: Container(
+                          width: 22,
+                          height: 22,
+                          color: Colors.white,
+                          child: Icon(
+                            Icons.volume_up_outlined,
+                          )))),
+              _prevMuteContainerVisible
+                  ? Positioned(
+                      top: 0,
+                      right: -12,
+                      child: Container(
+                          width: 22,
+                          height: 22,
+                          color: Colors.white,
+                          child: Icon(
+                            Icons.mic_off,
+                          )))
+                  : SizedBox(),
+              _prevUnmuteContainerVisible
+                  ? Positioned(
+                      top: 0,
+                      right: -12,
+                      child: Container(
+                          width: 22,
+                          height: 22,
+                          color: Colors.white,
+                          child: Icon(
+                            Icons.mic,
+                          )))
+                  : SizedBox(),
             ],
           ),
         );
