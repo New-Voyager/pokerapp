@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
 import 'package:pokerapp/screens/club_screen/bookmarked_hands.dart';
@@ -371,10 +373,12 @@ class Routes {
 
       case bookmarked_hands:
         var args = settings.arguments as dynamic;
-
+        log("ARGS : ${args.toString()}");
         return _getPageRoute(
           routeName: settings.name,
-          viewToShow: BookmarkedHands(),
+          viewToShow: BookmarkedHands(
+            clubCode: args.toString(),
+          ),
         );
 
       case replay_hand:

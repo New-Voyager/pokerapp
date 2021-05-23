@@ -91,12 +91,49 @@ class HandService {
     }
   """;
 
+  static String removeBookmarkedHand = """
+   mutation(\$bookmarkId: Int!) {
+      update: removeBookmark(bookmarkId: \$bookmarkId)
+    }
+  """;
+
   static String bookmarkedHands = """
     query bookMarkedHands {
     bookmarkedHands {
+      id
+      sharedBy{
+        playerId
+      }
+      savedBy{
+        name
+      }
+      sharedTo{
+        name
+      }
       gameCode
       handNum
       data
+      updatedAt 
+    }
+  }
+  """;
+  static String bookmarkedHandsForGame = """
+    query bookMarkedHandsForGame(\$gameCode : String!) {
+    bookmarkedHandsByGame(gameCode: \$gameCode){
+      id
+      sharedBy{
+        playerId
+      }
+      savedBy{
+        name
+      }
+      sharedTo{
+        name
+      }
+      gameCode
+      handNum
+      data
+      updatedAt 
     }
   }
   """;
@@ -106,7 +143,7 @@ class HandService {
     Map<String, dynamic> variables = {
       "gameCode": model.gameCode,
     };
-    print(allHands);
+    // print(allHands);
     QueryResult result = await _client
         .query(QueryOptions(documentNode: gql(allHands), variables: variables));
 
@@ -169,10 +206,11 @@ class HandService {
     Map<String, dynamic> variables = {
       "gameCode": gameCode,
       "handNum": handNum,
-      "clubCode": clubCode,
+      "clubCode": clubCode
     };
 
     log("Variables : $variables");
+    log("CODE IN GRAPHQL : $clubCode");
 
     QueryResult result = await _client.mutate(MutationOptions(
         documentNode: gql(shareHandMutation), variables: variables));
@@ -203,6 +241,23 @@ class HandService {
     return true;
   }
 
+  static Future<bool> removeBookmark(int bookmarkId) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+
+    Map<String, dynamic> variables = {"bookmarkId": bookmarkId};
+
+    log("Variables : $variables");
+    QueryResult result = await _client.mutate(MutationOptions(
+        documentNode: gql(removeBookmarkedHand), variables: variables));
+    //print("Bookmarking API : ${result.data.values}");
+
+    if (result.hasException) {
+      print("Exception in removing BookmarkHand: ${result.exception}");
+      return false;
+    }
+    return true;
+  }
+
   static getBookMarkedHands() async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
 
@@ -221,6 +276,27 @@ class HandService {
 
     if (result.hasException) {
       print("Exception in BookmarkHand: ${result.exception}");
+      return null;
+    }
+    return result.data;
+  }
+
+  static Future<dynamic> getBookmarkedHandsForGame(String gameCode) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+
+    Map<String, dynamic> variables = {
+      "gameCode": gameCode,
+      //   "handNum": handNum,
+    };
+
+    //  log("Variables : $variables");
+    QueryResult result = await _client.mutate(MutationOptions(
+        documentNode: gql(bookmarkedHandsForGame), variables: variables));
+    // print("Bookmarking DFGSDFG API : ${result.data.values}");
+    // print("Bookmarking DFGSDFG API : ${result.data.keys}");
+
+    if (result.hasException) {
+      print("Exception in BookmarkHand for game: ${result.exception}");
       return null;
     }
     return result.data;
