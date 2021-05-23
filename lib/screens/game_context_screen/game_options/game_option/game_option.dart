@@ -13,6 +13,7 @@ import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_log_view.dart';
 import 'package:pokerapp/screens/game_screens/hand_history/hand_history.dart';
 import 'package:pokerapp/services/app/game_service.dart';
+import 'package:pokerapp/utils/alerts.dart';
 import 'seat_change_bottom_sheet.dart';
 import 'waiting_list.dart';
 
@@ -75,6 +76,12 @@ class _GameOptionState extends State<GameOption> {
     GameService.pauseGame(this.gameCode);
   }
 
+  void onBreak() {
+    Alerts.showTextNotification(text: 'Your break will start after this hand');
+
+    GameService.takeBreak(this.gameCode);
+  }
+
   void onResume() {
     // final snackBar = SnackBar(
     //   content: Text('Resume game is not implemented'),
@@ -97,7 +104,12 @@ class _GameOptionState extends State<GameOption> {
           onTap: (context) {
             this.onLeave();
           }),
-      OptionItemModel(title: "Break"),
+      OptionItemModel(
+          title: "Break",
+          iconData: Icons.shop,
+          onTap: (context) {
+            this.onBreak();
+          }),
       OptionItemModel(title: "Reload"),
     ];
 

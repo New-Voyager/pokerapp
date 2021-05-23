@@ -99,6 +99,16 @@ class PlayerModel {
           'buyin expires at ${this.buyInTimeExpAt} now: ${now.toIso8601String()} utcNow: ${now.toUtc().toIso8601String()}');
     }
 
+    if (data['breakExpTime'] != null) {
+      // buyin time is kept in UTC
+      this.breakTimeExpAt = DateTime.tryParse(data['breakExpTime']);
+      DateTime now = DateTime.now();
+      print(
+          'break time expires at ${this.buyInTimeExpAt} now: ${now.toIso8601String()} utcNow: ${now.toUtc().toIso8601String()}');
+    }
+
+        
+
     // default values
     this.isMe = false;
     this.playerType = TablePosition.None;

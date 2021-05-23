@@ -332,6 +332,29 @@ class GameUpdateService {
     }
   }
 
+  void handlePlayerTakeBreak({
+    @required var playerUpdate,
+  }) async {
+    final GameState gameState = GameState.getState(_context);
+    int seatNo = playerUpdate['seatNo'];
+    final seat = gameState.getSeat(_context, seatNo);
+    GameInfoModel _gameInfoModel =
+        await GameService.getGameInfo(_gameState.gameCode);
+    assert(_gameInfoModel != null);
+    seat.player.inBreak = true;
+    // get break exp time
+    for(final player in _gameInfoModel.playersInSeats) {
+      if (player.seatNo == seat.serverSeatPos) {
+        seat.player.breakTimeExpAt = player.breakTimeExpAt;
+        DateTime now = DateTime.now();
+        final diff = seat.player.breakTimeExpAt.difference(now);
+        log('break time expires in ${diff.inSeconds}');
+        break;
+      }
+    }
+    seat.notify();
+  }
+
   void handlePlayerUpdate({
     var data,
   }) {
@@ -373,6 +396,11 @@ class GameUpdateService {
         );
       case AppConstants.BUYIN_DENIED:
         return handlePlayerBuyinDenied(
+          playerUpdate: playerUpdate,
+        );
+
+      case AppConstants.TAKE_BREAK:
+        return handlePlayerTakeBreak(
           playerUpdate: playerUpdate,
         );
 
