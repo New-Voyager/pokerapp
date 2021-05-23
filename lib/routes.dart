@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
 import 'package:pokerapp/screens/club_screen/bookmarked_hands.dart';
+import 'package:pokerapp/screens/club_screen/botscripts.dart';
 import 'package:pokerapp/screens/game_screens/game_history_details_view/stack_details_view.dart';
 import 'package:pokerapp/screens/util_screens/replay_hand_screen/replay_hand_screen.dart';
 import 'package:provider/provider.dart';
@@ -80,6 +81,8 @@ class Routes {
   static const String chatScreen = '/chatScreen';
   // Bookmarks Screen
   static const String bookmarked_hands = '/bookmarked_hands';
+  // BotScripts screen
+  static const String bot_scripts = '/bot_scripts';
 
   // Replay Screen
   static const String replay_hand = "/replay_hand";
@@ -377,6 +380,13 @@ class Routes {
           viewToShow: BookmarkedHands(),
         );
 
+   case bot_scripts:
+        var args = settings.arguments as dynamic;
+
+        return _getPageRoute(
+          routeName: settings.name,
+          viewToShow: BotScriptsScreen(clubModel: args,),
+        );
       case replay_hand:
         var args = settings.arguments as dynamic;
         return _getPageRoute(

@@ -36,4 +36,5 @@ class Alerts {
       position: NotificationPosition.top,
     );
   }
+
 }
