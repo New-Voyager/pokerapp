@@ -133,18 +133,6 @@ class PlayerView extends StatelessWidget {
     seat.betWidgetUIKey = GlobalKey();
 
     bool animate = seat.player.action.animateAction;
-    if (seat.player.showMicOff) {
-      Timer(Duration(seconds: 1), () {
-        seat.player.showMicOff = false;
-        seat.notify();
-      });
-    }
-    if (seat.player.showMicOn) {
-      Timer(Duration(seconds: 1), () {
-        seat.player.showMicOn = false;
-        seat.notify();
-      });
-    }
 
     Widget chipAmountWidget = ChipAmountWidget(
       animate: animate,

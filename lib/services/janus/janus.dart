@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 
@@ -224,8 +225,18 @@ class JanusEngine extends ChangeNotifier {
           seat.player.muted = element['muted'] ?? false;
           if (seat.player.muted) {
             seat.player.showMicOff = true;
+            seat.notify();
+            Timer(Duration(seconds: 1), () {
+              seat.player.showMicOff = false;
+              seat.notify();
+            });
           } else {
             seat.player.showMicOn = true;
+            seat.notify();
+            Timer(Duration(seconds: 1), () {
+              seat.player.showMicOn = false;
+              seat.notify();
+            });
           }
           seat.player.talking = element['talking'] ?? false;
           if (seat.player.talking) {
