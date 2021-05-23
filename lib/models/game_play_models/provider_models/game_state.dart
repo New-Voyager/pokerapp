@@ -131,6 +131,16 @@ class GameState {
         // show buyin button/timer if the player is in middle of buyin
         player.showBuyIn = true;
       }
+      if (player.status == 'IN_BREAK') {
+        // show buyin button/timer if the player is in middle of buyin
+        player.inBreak = true;
+        player.breakTimeExpAt = player.breakTimeExpAt.toLocal();
+        DateTime now = DateTime.now();
+        if (player.breakTimeExpAt != null) {
+          final diff = player.breakTimeExpAt.difference(now);
+          log('now: ${now.toIso8601String()} breakTimeExpAt: ${player.breakTimeExpAt.toIso8601String()} break time expires in ${diff.inSeconds}');
+        }
+      }
     }
 
     this._players = ListenableProvider<Players>(

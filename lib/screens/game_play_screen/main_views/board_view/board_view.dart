@@ -188,6 +188,18 @@ class _BoardViewState extends State<BoardView> {
           ),
         ),
 
+        Consumer<MyState>(
+          builder: (
+            BuildContext _,
+            MyState myState,
+            Widget __,
+          ) =>
+              Align(
+            alignment: Alignment.bottomCenter,
+            child: sitBackButton(context),
+          ),
+        ),
+
         Align(
           alignment: Alignment.center,
           child: SizedBox(
@@ -236,6 +248,38 @@ class _BoardViewState extends State<BoardView> {
     return widget;
   }
 
+  Widget sitBackButton(BuildContext context) {
+    // show buyin button only for if the current player is in a seat
+    final gameState = GameState.getState(providerContext);
+    final mySeat = gameState.mySeat(providerContext);
+
+    if (mySeat == null || mySeat.isOpen || mySeat.player == null) {
+      return SizedBox.shrink();
+    }
+    // log('Rebuild buyin button: Status: ${myState.status.toString()}');
+
+    if (!mySeat.player.inBreak) {
+      return SizedBox.shrink();
+    }
+
+    final widget = ListenableProvider<Seat>(
+      create: (_) => mySeat,
+      builder: (context, _) => Consumer<Seat>(
+        builder: (_, seat, __) => Transform.translate(
+            offset: Offset(0, 10),
+            child: RoundRaisedButton(
+              buttonText: 'Sit Back',
+              color: Colors.blueGrey,
+              verticalPadding: 1,
+              fontSize: 15,
+              onButtonTap: () async => {await onSitBack(context)},
+            )),
+      ),
+    );
+
+    return widget;
+  }
+
   // Future<void> onBuyinAlert(BuildContext context) async {
   //   dynamic ret = await showBuyinDialog(context, _buyInKey, 30, 100);
   // }
@@ -259,5 +303,12 @@ class _BoardViewState extends State<BoardView> {
       gameInfo.gameCode,
       value.toInt(),
     );
+  }
+
+  Future<void> onSitBack(BuildContext context) async {
+    final gameState = GameState.getState(context);
+    final gameInfo = gameState.gameInfo;
+    //sit back in the seat
+    await GameService.sitBack(gameInfo.gameCode);
   }
 }

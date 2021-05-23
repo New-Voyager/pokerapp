@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:pokerapp/enums/hand_actions.dart';
+import 'package:pokerapp/enums/player_status.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
@@ -41,6 +42,7 @@ class PlayerModel {
   // break time
   bool inBreak = false;
   DateTime breakTimeExpAt;
+  DateTime breakTimeStartedAt;
 
   // audio chat
   bool muted = false;
@@ -92,13 +94,21 @@ class PlayerModel {
     if (data['buyInExpTime'] != null) {
       // buyin time is kept in UTC
       this.buyInTimeExpAt = DateTime.tryParse(data['buyInExpTime']);
-      // if (this.buyInTimeExpAt != null) {
-      //   this.buyInTimeExpAt = this.buyInTimeExpAt.toLocal();
-      // }
       DateTime now = DateTime.now();
 
       print(
           'buyin expires at ${this.buyInTimeExpAt} now: ${now.toIso8601String()} utcNow: ${now.toUtc().toIso8601String()}');
+    }
+
+    if (this.status == 'IN_BREAK' && data['breakExpTime'] != null) {
+      // buyin time is kept in UTC
+      this.breakTimeExpAt = DateTime.tryParse(data['breakExpTime']);
+      this.breakTimeStartedAt = DateTime.now();
+      if (data['breakStartedTime'] != null) {
+        this.breakTimeExpAt = DateTime.tryParse(data['breakStartedTime']);
+      }
+      print(
+          'break time expires at ${this.buyInTimeExpAt} started at: ${this.breakTimeExpAt.toIso8601String()}');
     }
 
     // default values

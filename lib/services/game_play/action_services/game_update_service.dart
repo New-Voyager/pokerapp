@@ -228,6 +228,22 @@ class GameUpdateService {
     removePlayer(seatNo);
   }
 
+  void handlePlayerBreakTimedout({
+    @required var playerUpdate,
+  }) {
+    int seatNo = playerUpdate['seatNo'];
+    if (seatNo != null) {
+      final seat = _gameState.getSeat(_context, seatNo);
+      // update my state to show sitback button
+      if (seat != null && seat.player != null && seat.player.isMe) {
+        final myState = _gameState.getMyState(_context);
+        myState.notify();
+      }
+
+      removePlayer(seatNo);
+    }
+  }
+
   void removePlayer(int seatNo) {
     final seat = _gameState.getSeat(_context, seatNo);
     if (seat != null && seat.player != null && seat.player.isMe) {
@@ -332,6 +348,70 @@ class GameUpdateService {
     }
   }
 
+  void handlePlayerTakeBreak({
+    @required var playerUpdate,
+  }) async {
+    final GameState gameState = GameState.getState(_context);
+    int seatNo = playerUpdate['seatNo'];
+    final seat = gameState.getSeat(_context, seatNo);
+    GameInfoModel _gameInfoModel =
+        await GameService.getGameInfo(_gameState.gameCode);
+    assert(_gameInfoModel != null);
+
+    if (seat != null && seat.player != null) {
+      seat.player.inBreak = true;
+      // get break exp time
+      for (final player in _gameInfoModel.playersInSeats) {
+        if (player.seatNo == seat.serverSeatPos) {
+          seat.player.breakTimeExpAt = player.breakTimeExpAt.toLocal();
+          DateTime now = DateTime.now();
+          if (seat.player.breakTimeExpAt != null) {
+            final diff = seat.player.breakTimeExpAt.difference(now);
+            log('now: ${now.toIso8601String()} breakTimeExpAt: ${seat.player.breakTimeExpAt.toIso8601String()} break time expires in ${diff.inSeconds}');
+          }
+
+          // update my state to show sitback button
+          if (seat.player.isMe) {
+            final myState = _gameState.getMyState(_context);
+            myState.notify();
+          }
+          break;
+        }
+      }
+      seat.notify();
+    }
+  }
+
+  void handlePlayerSitBack({
+    @required var playerUpdate,
+  }) async {
+    final GameState gameState = GameState.getState(_context);
+    int seatNo = playerUpdate['seatNo'];
+    final seat = gameState.getSeat(_context, seatNo);
+    GameInfoModel _gameInfoModel =
+        await GameService.getGameInfo(_gameState.gameCode);
+    assert(_gameInfoModel != null);
+
+    if (seat != null && seat.player != null) {
+      // get break exp time
+      for (final player in _gameInfoModel.playersInSeats) {
+        if (player.seatNo == seat.serverSeatPos) {
+          seat.player.status = player.status;
+          if (player.status != 'IN_BREAK') {
+            seat.player.inBreak = false;
+          }
+          // update my state to show sitback button
+          if (seat.player.isMe) {
+            final myState = _gameState.getMyState(_context);
+            myState.notify();
+          }
+          break;
+        }
+      }
+      seat.notify();
+    }
+  }
+
   void handlePlayerUpdate({
     var data,
   }) {
@@ -366,6 +446,11 @@ class GameUpdateService {
           playerUpdate: playerUpdate,
         );
 
+      case AppConstants.TAKE_BREAK:
+        return handlePlayerTakeBreak(
+          playerUpdate: playerUpdate,
+        );
+
       case AppConstants.NEWUPDATE_WAIT_FOR_BUYIN_APPROVAL:
       case AppConstants.WAIT_FOR_BUYIN_APPROVAL:
         return handlePlayerWaitForBuyinApproval(
@@ -373,6 +458,11 @@ class GameUpdateService {
         );
       case AppConstants.BUYIN_DENIED:
         return handlePlayerBuyinDenied(
+          playerUpdate: playerUpdate,
+        );
+
+      case AppConstants.SIT_BACK:
+        return handlePlayerSitBack(
           playerUpdate: playerUpdate,
         );
 

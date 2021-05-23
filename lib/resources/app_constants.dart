@@ -113,6 +113,7 @@ class AppConstants {
       'NEWUPDATE_WAIT_FOR_BUYIN_APPROVAL';
   static const String NEW_BUYIN = 'NEW_BUYIN';
   static const String BUYIN_DENIED = 'BUYIN_DENIED';
+  static const String NEWUPDATE_NOT_PLAYING = 'NEWUPDATE_NOT_PLAYING';
 
   /* table statuses */
   static const String WAITING_TO_BE_STARTED = 'WAITING_TO_BE_STARTED';

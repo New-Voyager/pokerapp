@@ -128,6 +128,7 @@ class GameInfoModel {
           status
           buyInExpTime
           breakExpTime
+          breakStartedTime
         }
       }
       actionTime

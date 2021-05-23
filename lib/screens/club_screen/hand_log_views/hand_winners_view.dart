@@ -194,7 +194,7 @@ class HandWinnersView extends StatelessWidget {
                                                   GameStages.SHOWDOWN,
                                             ),
                                             StackCardView01(
-                                              totalCards: subCards >=5
+                                              totalCards: subCards >= 5
                                                   ? handLogModel.hand.boardCards
                                                   : handLogModel.hand.boardCards
                                                       .sublist(0, subCards),
@@ -203,7 +203,8 @@ class HandWinnersView extends StatelessWidget {
                                                   ? potWinnersList[index]
                                                       .hiWinners[winnerIndex]
                                                       .winningCards
-                                                  : handLogModel.hand.boardCards,
+                                                  : handLogModel
+                                                      .hand.boardCards,
                                               show: true,
                                             ),
                                           ],
