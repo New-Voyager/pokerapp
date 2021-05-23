@@ -94,6 +94,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         print('test data loading error: $e');
       }
     } else {
+      debugPrint('fetching game data: ${widget.gameCode}');
       gameInfo = await GameService.getGameInfo(widget.gameCode);
       this._currentPlayer = await PlayerService.getMyInfo(widget.gameCode);
     }
