@@ -287,7 +287,7 @@ class ClubsService {
       ),
     );
 
-    log('query result: ${result.exception}');
+    // log('query result: ${result.exception}');
 
     if (result.hasException) return null;
 

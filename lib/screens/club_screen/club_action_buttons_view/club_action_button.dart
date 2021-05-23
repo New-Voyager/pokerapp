@@ -77,6 +77,14 @@ class ClubActionButton extends StatelessWidget {
             case ClubActions.REWARDS:
               this.onTap();
               break;
+
+            case ClubActions.BOTSCRIPTS:
+              Navigator.pushNamed(
+                context,
+                Routes.bot_scripts,
+                arguments: clubModel,
+              );
+              break;
           }
         },
         child: Card(

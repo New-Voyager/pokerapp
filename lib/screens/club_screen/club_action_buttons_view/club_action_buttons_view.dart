@@ -155,6 +155,24 @@ class ClubActionButtonsView extends StatelessWidget {
               ],
             ),
           ),
+          IntrinsicHeight(
+            child: Row(
+              children: [
+                Expanded(
+                  flex: 3,
+                  child: ClubActionButton(
+                    this._clubHomePageModel,
+                    ClubActions.BOTSCRIPTS,
+                    "BOT Scripts",
+                    Icon(
+                      ClubScreenIcons.announcements,
+                      color: AppColors.appAccentColor,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );
