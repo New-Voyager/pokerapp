@@ -34,7 +34,7 @@ class HandLogModelNew {
     if (serviceResult) {
       hand = hand['data'];
     }
-    log("HandData : \n $hand");
+    //log("HandData : \n $hand");
 
     final handLog = Data.fromJson(hand);
 
@@ -66,6 +66,7 @@ class HandLogModelNew {
 class Data {
   Data({
     this.gameId,
+    this.gameCode,
     this.handNum,
     this.gameType,
     this.noCards,
@@ -88,6 +89,7 @@ class Data {
   });
 
   String gameId;
+  String gameCode;
   int handNum;
   String gameType;
   int noCards;
@@ -110,6 +112,8 @@ class Data {
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
         gameId: json["gameId"],
+                gameCode:json["gameCode"],
+
         handNum: json["handNum"],
         gameType: json["gameType"],
         noCards: json['noCards'],
@@ -141,6 +145,7 @@ class Data {
 
   Map<String, dynamic> toJson() => {
         "gameId": gameId,
+        "gameCode" : gameCode,
         "handNum": handNum,
         "gameType": gameType,
         "handLog": handLog.toJson(),

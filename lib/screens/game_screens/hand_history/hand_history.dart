@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -16,25 +18,28 @@ class HandHistoryListView extends StatefulWidget {
   final String _clubCode;
 
   @override
-  _HandHistoryState createState() => _HandHistoryState(this.data);
+  _HandHistoryState createState() => _HandHistoryState();
 }
 
 class _HandHistoryState extends State<HandHistoryListView>
     with SingleTickerProviderStateMixin {
   bool loadingDone = false;
-  final HandHistoryListModel _data;
+  HandHistoryListModel _data;
 
   TabController _tabController;
-  _HandHistoryState(this._data);
 
   @override
   void initState() {
     _tabController = new TabController(length: 2, vsync: this);
+    _data = widget.data;
     super.initState();
-    _fetchData();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      _fetchData();
+    });
   }
 
   _fetchData() async {
+    log("DATA LOG IN HANDHISTORY: $_data");
     await HandService.getAllHands(_data);
     loadingDone = true;
     setState(() {

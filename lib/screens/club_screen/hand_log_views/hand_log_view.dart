@@ -3,10 +3,12 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/enums/game_stages.dart';
+import 'package:pokerapp/models/bookmarkedHands_model.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/screens/club_screen/bookmarked_hands.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_log_header_view.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_stage_view.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_winners_view.dart';
@@ -33,16 +35,19 @@ class _HandLogViewState extends State<HandLogView> {
   HandLogModelNew _handLogModel;
   bool _isLoading = true;
   var handLogjson;
+  List<BookmarkedHand> list = [];
 
   @override
   void initState() {
     super.initState();
-
-    if (TestService.isTesting) {
-      loadJsonData();
-    } else {
-      _fetchData();
-    }
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      _fetchBookmarksForGame(widget.gameCode);
+      if (TestService.isTesting) {
+        loadJsonData();
+      } else {
+        _fetchData();
+      }
+    });
   }
 
   void _fetchData() async {
@@ -54,9 +59,20 @@ class _HandLogViewState extends State<HandLogView> {
     });
   }
 
+  _fetchBookmarksForGame(String gameCode) async {
+    list.clear();
+    var result = await HandService.getBookmarkedHandsForGame(widget.gameCode);
+    BookmarkedHandModel model = BookmarkedHandModel.fromJson(result);
+
+    for (var item in model.bookmarkedHands) {
+      list.add(item);
+    }
+    setState(() {});
+  }
+
   loadJsonData() async {
-    String data = await DefaultAssetBundle.of(context).loadString(
-        "assets/sample-data/handlog/plo-hilo/two-hi-two-lo-winners.json");
+    String data = await DefaultAssetBundle.of(context)
+        .loadString("assets/sample-data/handlog/holdem/flop.json");
 
     final jsonResult = json.decode(data);
     _handLogModel = HandLogModelNew.fromJson(jsonResult);
@@ -64,6 +80,33 @@ class _HandLogViewState extends State<HandLogView> {
     setState(() {
       _isLoading = false;
     });
+  }
+
+  _removeBookmark(int handnum) async {
+    var hand =
+        list.firstWhere((element) => element.handNum == handnum, orElse: null);
+    if (hand != null) {
+      var result = await HandService.removeBookmark(hand.id);
+      Alerts.showTextNotification(
+        text: result
+            ? "Hand " + widget.handNum.toString() + " removed from bookmarks"
+            : "Couldn't remove bookmark. Please try again later",
+      );
+      if (result) {
+        await _fetchBookmarksForGame(widget.gameCode);
+      }
+    } else {
+      Alerts.showTextNotification(
+        text: "Couldn't remove bookmark. Please try again later",
+      );
+    }
+  }
+
+  bool _isTheHandBookmarked(int handNum) {
+    // log("HAND UNDER TEST : $handNum");
+    final index = list.indexWhere((element) => element.handNum == handNum);
+    if (index < 0) return false;
+    return true;
   }
 
   @override
@@ -146,7 +189,7 @@ class _HandLogViewState extends State<HandLogView> {
                           onTap: () async {
                             // todo : just change to shareHand and pass club code as well
                             var result = await HandService.shareHand(
-                              "CG-G9IBTXKLLLJJ89", // should be _handLogModel.hand.gameCode,
+                              _handLogModel.hand.gameCode,
                               _handLogModel.hand.handNum,
                               widget.clubCode,
                             );
@@ -175,15 +218,20 @@ class _HandLogViewState extends State<HandLogView> {
                         ),
                         GestureDetector(
                           onTap: () async {
-                            final results = await HandService.bookMarkHand(
-                              "CG-G9IBTXKLLLJJ89", // should bne _handLogModel.hand.gameCode,
-                              _handLogModel.hand.handNum,
-                            );
-                            Alerts.showTextNotification(
-                              text: results
-                                  ? "Hand ${_handLogModel.hand.handNum} has been bookmarked."
-                                  : "Couldn't bookmark this hand! Please try again.",
-                            );
+                            if (_isTheHandBookmarked(widget.handNum)) {
+                              _removeBookmark(widget.handNum);
+                            } else {
+                              final results = await HandService.bookMarkHand(
+                                _handLogModel.hand.gameCode,
+                                _handLogModel.hand.handNum,
+                              );
+                              Alerts.showTextNotification(
+                                text: results
+                                    ? "Hand ${_handLogModel.hand.handNum} has been bookmarked."
+                                    : "Couldn't bookmark this hand! Please try again.",
+                              );
+                              await _fetchBookmarksForGame(widget.gameCode);
+                            }
                           },
                           child: Container(
                             decoration: BoxDecoration(
@@ -192,7 +240,9 @@ class _HandLogViewState extends State<HandLogView> {
                             ),
                             padding: EdgeInsets.all(10),
                             child: Icon(
-                              Icons.star_outline,
+                              _isTheHandBookmarked(widget.handNum)
+                                  ? Icons.star
+                                  : Icons.star_outline,
                               size: 20,
                               color: AppColors.appAccentColor,
                             ),
