@@ -172,23 +172,29 @@ class _TableResultScreenState extends State<TableResultScreen> {
                           Expanded(
                             flex: widget.buyInWidth,
                             child: Center(
-                                child: Text(DataFormatter.chipsFormat(this.data.rows[dataIdx].buyIn),
-                                style: TextStyle(color: Color(0xffa09f9e)),
+                                child: Text(
+                              DataFormatter.chipsFormat(
+                                  this.data.rows[dataIdx].buyIn),
+                              style: TextStyle(color: Color(0xffa09f9e)),
                             )),
                           ),
                           Expanded(
                             flex: widget.profitWidth,
                             child: Center(
                                 child: Text(
-                              DataFormatter.chipsFormat(this.data.rows[dataIdx].profit),
-                              style: this.data.rows[dataIdx].profit >= 0 ? AppStyles.profitStyle : AppStyles.lossStyle,
+                              DataFormatter.chipsFormat(
+                                  this.data.rows[dataIdx].profit),
+                              style: this.data.rows[dataIdx].profit >= 0
+                                  ? AppStyles.profitStyle
+                                  : AppStyles.lossStyle,
                             )),
                           ),
                           Expanded(
                             flex: widget.rakeWidth,
                             child: Center(
-                                child: 
-                                Text(DataFormatter.chipsFormat(this.data.rows[dataIdx].rakePaid),
+                                child: Text(
+                              DataFormatter.chipsFormat(
+                                  this.data.rows[dataIdx].rakePaid),
                               style: TextStyle(color: Color(0xffef9712)),
                             )),
                           ),
@@ -350,7 +356,7 @@ class _TableResultScreenState extends State<TableResultScreen> {
                               onTap: () async {
                                 downloadTable(widget.gameCode);
                               },
-                             child: Text(
+                              child: Text(
                                 "Download",
                                 style: TextStyle(
                                   color: Color(0xff319ffe),
@@ -399,15 +405,18 @@ class _TableResultScreenState extends State<TableResultScreen> {
 
   downloadTable(String gameCode) async {
     log('table is downloaded');
-    try {
-      final result = await GameService.downloadResult(gameCode);
-      String subject = 'Table result Game: $gameCode';
-      if (widget.clubCode != null && widget.clubCode.isEmpty) {
-        subject = subject + ' Club: ${widget.clubCode}';
+
+    Future.delayed(Duration(seconds: 1), () async {
+      try {
+        final result = await GameService.downloadResult(gameCode);
+        String subject = 'Table result Game: $gameCode';
+        if (widget.clubCode != null && widget.clubCode.isNotEmpty) {
+          subject = subject + ' Club: ${widget.clubCode}';
+        }
+        Share.share(result, subject: subject);
+      } catch (err) {
+        log('Error: ${err.toString()}');
       }
-      Share.share(result, subject: subject);
-    } catch(err) {
-      log('Error: ${err.toString()}');
-    }
+    });
   }
 }
