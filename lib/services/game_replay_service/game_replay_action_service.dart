@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
 import 'package:pokerapp/models/game_play_models/business/card_distribution_model.dart';
+import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
@@ -264,6 +265,12 @@ class GameReplayActionService {
 
     /* wait for the card shuffling animation to finish :todo can be tweaked */
     await Future.delayed(const Duration(milliseconds: 800));
+
+    /* finding the current Player */
+    final playerID = gameState.currentPlayerId;
+    final PlayerModel currPlayer =
+        players.players.firstWhere((p) => p.playerId == playerID);
+    currPlayer.cards = action.myCards;
 
     final noCards = action.noCards;
     final List<int> seatNos = action.seatNos;

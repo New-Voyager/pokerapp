@@ -30,9 +30,9 @@ class Players extends ChangeNotifier {
 
   List<PlayerModel> get players => _players;
 
-  void notifyAll() async {
+  void notifyAll() {
     // search and mark the current player (isMe field)
-    String myUUID = await AuthService.getUuid();
+    String myUUID = AuthService.getUuid();
     int idx = this._players.indexWhere((p) => p.playerUuid == myUUID);
 
     // the current user is a player, thus update it and notify the listeners

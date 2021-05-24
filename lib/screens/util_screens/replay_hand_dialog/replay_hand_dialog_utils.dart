@@ -86,11 +86,13 @@ class ReplayHandScreenUtils {
     dynamic playerInfo,
     dynamic assetFile,
   }) async {
+    assert(playerID != null);
+
     /* fixme: for now, use handlog data from sample */
     /* todo: the network call can be made here */
 
     String dataString = await rootBundle.loadString(
-      'assets/sample-data/handlog/holdem/runittwice.json',
+      'assets/sample-data/handlog/holdem/flop.json',
     );
 
     if (assetFile != null) {
@@ -109,7 +111,7 @@ class ReplayHandScreenUtils {
 
     } else {
       String dataString = await rootBundle.loadString(
-        'assets/sample-data/handlog/holdem/runittwice.json',
+        'assets/sample-data/handlog/holdem/flop.json',
       );
 
       if (assetFile != null) {
@@ -119,6 +121,11 @@ class ReplayHandScreenUtils {
     }
 
     /* process the handlog data to build a GameReplayController */
-    return GameReplayService.buildController(data);
+    return GameReplayService.buildController(
+      data,
+      playerID: playerID,
+      gameCode: gameCode,
+      handNumber: handNumber,
+    );
   }
 }

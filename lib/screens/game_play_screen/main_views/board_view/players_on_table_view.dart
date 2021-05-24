@@ -355,8 +355,17 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
   }
 
   List<Widget> getPlayers(BuildContext context) {
-    PlayerModel me = this.widget.players.me;
+    // todo: THIS MAY INTRODUCE A BUG?
+    // PlayerModel me = this.widget.players.me;
     final gameState = GameState.getState(context);
+
+    final currPlayerID = gameState.currentPlayerId;
+    PlayerModel me = this
+        .widget
+        .players
+        .players
+        .firstWhere((p) => p.playerId == currPlayerID);
+
     final maxPlayers = gameState.gameInfo.maxPlayers;
     index = -1;
     // update seat states in game state

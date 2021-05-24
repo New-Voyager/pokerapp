@@ -20,6 +20,7 @@ class GameReplayAction {
   final GameReplayActionType gameReplayActionType;
 
   /* game related info */
+  final List<int> myCards; // current players cards ; used in distribution
   final int noCards;
   final List<int> seatNos;
 
@@ -43,6 +44,7 @@ class GameReplayAction {
 
   GameReplayAction({
     @required this.gameReplayActionType,
+    this.myCards,
     this.noCards,
     this.startPot,
     this.action,

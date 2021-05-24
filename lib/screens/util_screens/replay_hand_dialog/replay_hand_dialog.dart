@@ -13,7 +13,7 @@ import 'package:provider/provider.dart';
 class ReplayHandDialog extends StatelessWidget {
   static void show({
     @required BuildContext context,
-    int playerID,
+    @required int playerID,
     int handNumber,
     String gameCode,
     dynamic hand,

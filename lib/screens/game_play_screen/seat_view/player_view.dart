@@ -209,12 +209,17 @@ class PlayerView extends StatelessWidget {
                 offset: boardAttributes.playerHoleCardOffset,
                 child: Transform.scale(
                   scale: boardAttributes.playerHoleCardScale,
-                  child: PlayerCardsWidget(
-                    seat,
-                    this.cardsAlignment,
-                    seat.player?.noOfCardsVisible,
-                    showdown,
-                  ),
+                  child: gameState.currentPlayerId == seat.player.playerId
+                      ? DisplayCardsWidget(
+                          seat,
+                          FooterStatus.Result,
+                        )
+                      : PlayerCardsWidget(
+                          seat,
+                          this.cardsAlignment,
+                          seat.player?.noOfCardsVisible,
+                          showdown,
+                        ),
                 ),
               ),
 
@@ -267,13 +272,15 @@ class PlayerView extends StatelessWidget {
                       top: 0,
                       right: -20,
                       child: Container(
-                          width: 22,
-                          height: 22,
-                          color: Colors.transparent,
-                          child: Icon(
-                            Icons.mic,
-                            color: Colors.white70,
-                          )))
+                        width: 22,
+                        height: 22,
+                        color: Colors.transparent,
+                        child: Icon(
+                          Icons.mic,
+                          color: Colors.white70,
+                        ),
+                      ),
+                    )
                   : SizedBox(),
             ],
           ),
@@ -368,12 +375,9 @@ class PlayerCardsWidget extends StatelessWidget {
           xOffset * 0.50,
           25.0,
         ),
-        child: AnimatedSwitcher(
-          duration: AppConstants.fastAnimationDuration,
-          child: Transform.scale(
-            scale: 0.75,
-            child: HiddenCardView(noOfCards: this.noCards),
-          ),
+        child: Transform.scale(
+          scale: 0.75,
+          child: HiddenCardView(noOfCards: this.noCards),
         ),
       );
     }

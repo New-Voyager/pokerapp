@@ -17,6 +17,7 @@ class GameReplayService {
             name: p.name,
             seatNo: p.seatNo,
             stack: p.balance.before,
+            playerId: p.id,
           ))
       .toList();
 
@@ -29,6 +30,7 @@ class GameReplayService {
 
   static List<GameReplayAction> _getActions({
     @required HandLog handLog,
+    @required List<int> myCards,
     @required int noCards,
     @required List<int> flopCards,
     @required int turnCard,
@@ -47,6 +49,7 @@ class GameReplayService {
     actions.add(
       GameReplayAction(
         gameReplayActionType: GameReplayActionType.card_distribution,
+        myCards: myCards,
         noCards: noCards,
         seatNos: seatNos,
       ),
@@ -177,7 +180,12 @@ class GameReplayService {
   }
 
   /* we parse the hand log data here, and instantiate the game reply controller */
-  static Future<GameReplayController> buildController(dynamic data) async {
+  static Future<GameReplayController> buildController(
+    dynamic data, {
+    int playerID,
+    String gameCode,
+    int handNumber,
+  }) async {
     final HandLogModelNew handLog = HandLogModelNew.fromJson(data);
 
     final List<PlayerModel> players = _getPlayers(handLog.hand.playersInSeats);
@@ -193,13 +201,21 @@ class GameReplayService {
       playersInSeats: players,
     );
 
+    final Map<int, List<int>> playerCards =
+        _getPlayerCards(handLog.hand.playersInSeats);
+
+    /* finding the current Player */
+    final PlayerModel currPlayer =
+        players.firstWhere((p) => p.playerId == playerID);
+
     final List<GameReplayAction> actions = _getActions(
+      myCards: playerCards[currPlayer.seatNo],
       handLog: handLog.hand.handLog,
       noCards: handLog.hand.noCards,
       flopCards: handLog.hand.flop,
       riverCard: handLog.hand.river,
       turnCard: handLog.hand.turn,
-      playerCards: _getPlayerCards(handLog.hand.playersInSeats),
+      playerCards: playerCards,
       board1Cards: handLog.hand.boardCards,
       board2Cards: handLog.hand.boardCards2,
       isRunItTwice: handLog.hand.handLog.runItTwice,
@@ -210,13 +226,12 @@ class GameReplayService {
 
     final GameState gameState = GameState();
     gameState.initialize(
-      // todo: take care of game code
-      gameCode: 'gameCode',
+      gameCode: gameCode,
       gameInfo: gameInfoModel,
       currentPlayer: PlayerInfo(
-        id: handLog.myInfo.id,
-        uuid: handLog.myInfo.uuid,
-        name: handLog.myInfo.name,
+        id: currPlayer.playerId,
+        uuid: currPlayer.playerUuid,
+        name: currPlayer.name,
       ),
     );
 
