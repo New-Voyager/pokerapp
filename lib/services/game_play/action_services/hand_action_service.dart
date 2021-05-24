@@ -1323,12 +1323,10 @@ class HandActionService {
 
       for (final potWinner in potWinners.entries) {
         final potNo = potWinner.key;
-        final PotWinner winners = potWinner.value;
+        final Map winners = potWinner.value;
 
-        final List highWinners =
-            winners.hiWinners.map((e) => e.toJson()).toList();
-        final List lowWinners =
-            winners.lowWinners.map((e) => e.toJson()).toList();
+        final List highWinners = winners['hiWinners'];
+        final List lowWinners = winners['lowWinners'];
 
         await processForHighWinnersDelayProcessForLowWinners(
           highWinners: highWinners,
@@ -1389,121 +1387,6 @@ class HandActionService {
       boardCards2: boardCards2,
       context: _context,
     );
-
-    // /* then, change the status of the footer to show the result */
-    // Provider.of<ValueNotifier<FooterStatus>>(
-    //   _context,
-    //   listen: false,
-    // ).value = FooterStatus.Result;
-    //
-    // if (isRunItTwice) {
-    //   /* RUN IT TWICE CASE */
-    //   final runItTwiceResult = handResult['handLog']['runItTwiceResult'];
-    //
-    //   /* set the board cards first */
-    //   final boardCards = handResult['boardCards'];
-    //   final boardCards2 = handResult['boardCards2'];
-    //
-    //   /* set board 1 cards */
-    //   tableState.setBoardCards(
-    //     1,
-    //     boardCards.map<CardObject>((c) => CardHelper.getCard(c)).toList(),
-    //   );
-    //
-    //   /* set board 2 cards */
-    //   tableState.setBoardCards(
-    //     2,
-    //     boardCards2.map<CardObject>((c) => CardHelper.getCard(c)).toList(),
-    //   );
-    //
-    //   /* process board 1 first
-    //   * 0. get all hi winner players for board 1
-    //   * 1. highlight hi winner
-    //   * 2. highlight winning cards - players and community one's
-    //   * 3. update the rankStr
-    //   * 4. move the pot chip to the winner */
-    //
-    //   final board1Winners = runItTwiceResult['board1Winners']['0']['hiWinners'];
-    //   for (final hiWinner in board1Winners) {
-    //     final HiWinnersModel winner = HiWinnersModel.fromJson(hiWinner);
-    //
-    //     await processWinner(
-    //       winner: winner,
-    //       players: players,
-    //       tableState: tableState,
-    //       boardIndex: 1,
-    //       gameState: _gameState,
-    //     );
-    //
-    //     /* todo: shall we wait here for a brief moment? */
-    //     await Future.delayed(AppConstants.animationDuration);
-    //   }
-    //
-    //   /* cleanup all highlights and rankStr */
-    //   resetResult(
-    //     tableState: tableState,
-    //     players: players,
-    //     gameState: _gameState,
-    //     boardIndex: 1,
-    //   );
-    //
-    //   /* wait for a brief duration */
-    //   await Future.delayed(AppConstants.animationDuration);
-    //
-    //   /* then, process board 2
-    //   * 0. get all hi winner players for board 1
-    //   * 1. highlight hi winner
-    //   * 2. highlight winning cards - players and community one's
-    //   * 3. update the rankStr
-    //   * 4. move the pot chip to the winner */
-    //   final board2Winners = runItTwiceResult['board2Winners']['0']['hiWinners'];
-    //   for (final hiWinner in board2Winners) {
-    //     final HiWinnersModel winner = HiWinnersModel.fromJson(hiWinner);
-    //
-    //     await processWinner(
-    //       winner: winner,
-    //       players: players,
-    //       tableState: tableState,
-    //       boardIndex: 2,
-    //       gameState: _gameState,
-    //     );
-    //
-    //     /* todo: shall we wait here for a brief moment? */
-    //     await Future.delayed(AppConstants.animationDuration);
-    //   }
-    //
-    //   /* cleanup all highlights and rankStr */
-    //   resetResult(
-    //     tableState: tableState,
-    //     players: players,
-    //     gameState: _gameState,
-    //     boardIndex: 2,
-    //   );
-    //
-    //   /* turn off two boards needed flag */
-    //   tableState.updateTwoBoardsNeeded(false);
-    // } else {
-    //   /* NOT RUN IT TWICE CASE */
-    //
-    //   final winners = handResult['handLog']['potWinners']['0']['hiWinners'];
-    //   for (final hiWinner in winners) {
-    //     final HiWinnersModel winner = HiWinnersModel.fromJson(hiWinner);
-    //
-    //     await processWinner(
-    //       winner: winner,
-    //       players: players,
-    //       tableState: tableState,
-    //       boardIndex: 1,
-    //       gameState: _gameState,
-    //     );
-    //
-    //     /* todo: shall we wait here for a brief moment? */
-    //     await Future.delayed(AppConstants.animationDuration);
-    //   }
-    // }
-
-    /* In case, if a player has folded, and want to show his/her cards, then that is done there
-    * only the marked cards are sent to he game channel are are shown to the other players */
 
     final MarkedCards markedCards = _gameState.getMarkedCards(_context);
 
