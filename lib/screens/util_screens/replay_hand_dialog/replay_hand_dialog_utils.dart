@@ -83,7 +83,6 @@ class ReplayHandScreenUtils {
     int handNumber,
     String gameCode,
     dynamic hand,
-    dynamic playerInfo,
     dynamic assetFile,
   }) async {
     assert(playerID != null);
@@ -102,10 +101,10 @@ class ReplayHandScreenUtils {
 
     dynamic data;
 
-    if (hand != null && playerInfo != null) {
+    if (hand != null && playerID != null) {
       data = Map<String, dynamic>();
       data['handResult'] = hand;
-      data['myInfo'] = playerInfo;
+      data['myInfo'] = {'id': playerID};
     } else if (gameCode != null && playerID != null) {
       // fetch hand using the graphql API
 

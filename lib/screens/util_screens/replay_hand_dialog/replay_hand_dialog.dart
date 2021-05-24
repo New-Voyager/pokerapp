@@ -17,32 +17,29 @@ class ReplayHandDialog extends StatelessWidget {
     int handNumber,
     String gameCode,
     dynamic hand,
-    dynamic playerInfo,
-  }) =>
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (_) => ReplayHandDialog(
-          playerID: playerID,
-          handNumber: handNumber,
-          gameCode: gameCode,
-          hand: hand,
-          playerInfo: playerInfo,
-        ),
-      );
+  }) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => ReplayHandDialog(
+        playerID: playerID,
+        handNumber: handNumber,
+        gameCode: gameCode,
+        hand: hand,
+      ),
+    );
+  }
 
   final int playerID;
   final int handNumber;
   final String gameCode;
   final dynamic hand;
-  final dynamic playerInfo;
 
   ReplayHandDialog({
     this.playerID,
     this.handNumber,
     this.gameCode,
     this.hand,
-    this.playerInfo,
   });
 
   @override
@@ -54,7 +51,6 @@ class ReplayHandDialog extends StatelessWidget {
             handNumber: handNumber,
             gameCode: gameCode,
             hand: hand,
-            playerInfo: playerInfo,
           ),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting)

@@ -13,8 +13,10 @@ class HandLogModelNew {
   HandLogModelNew({
     this.hand,
     this.myInfo,
+    this.handData,
   });
 
+  String handData;
   Data hand;
   MyInfo myInfo;
 
@@ -37,6 +39,7 @@ class HandLogModelNew {
     //log("HandData : \n $hand");
 
     final handLog = Data.fromJson(hand);
+    final handData = jsonEncode(hand);
 
     dynamic myInfo;
     if (json['myInfo'] != null) {
@@ -49,6 +52,7 @@ class HandLogModelNew {
 
     return HandLogModelNew(
       hand: handLog,
+      handData: handData,
       //playerIdToName: playerIdToName,
       myInfo: myInfo,
     );

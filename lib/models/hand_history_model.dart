@@ -1,8 +1,6 @@
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
-import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/utils/formatter.dart';
 
 class Winner {
@@ -25,7 +23,7 @@ class Winner {
       winner.showCards = true;
       winner.cards = List<int>.from(jsonData['cards']);
     } else {
-      winner.cards = new List<int>();
+      winner.cards = [];
       for (int i = 0; i < noCards; i++) {
         winner.cards.add(0);
       }
@@ -91,7 +89,7 @@ class HandHistoryListModel extends ChangeNotifier {
       }
 
       List hiWinners = summary['hiWinners'] as List;
-      item.winners = new List<Winner>();
+      item.winners = [];
       for (final winnnerData in hiWinners) {
         item.winners.add(Winner.fromJson(this, item.noCards, winnnerData,
             showCards: showCards));
@@ -101,8 +99,8 @@ class HandHistoryListModel extends ChangeNotifier {
   }
 
   void load() async {
-    allHands = new List<HandHistoryItem>();
-    winningHands = new List<HandHistoryItem>();
+    allHands = [];
+    winningHands = [];
 
     final players = jsonData['players'] as List;
     if (players != null) {

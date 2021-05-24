@@ -4,10 +4,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pokerapp/models/hand_history_model.dart';
+import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/screens/game_screens/hand_history/played_hands.dart';
 import 'package:pokerapp/services/app/hand_service.dart';
+import 'package:pokerapp/services/app/player_service.dart';
 
 class HandHistoryListView extends StatefulWidget {
   final HandHistoryListModel data;
@@ -25,6 +27,7 @@ class _HandHistoryState extends State<HandHistoryListView>
     with SingleTickerProviderStateMixin {
   bool loadingDone = false;
   HandHistoryListModel _data;
+  PlayerInfo currentPlayer;
 
   TabController _tabController;
 
@@ -41,6 +44,8 @@ class _HandHistoryState extends State<HandHistoryListView>
   _fetchData() async {
     log("DATA LOG IN HANDHISTORY: $_data");
     await HandService.getAllHands(_data);
+    currentPlayer = await PlayerService.getMyInfo(null);
+
     loadingDone = true;
     setState(() {
       // update ui
@@ -134,12 +139,14 @@ class _HandHistoryState extends State<HandHistoryListView>
                             _data.gameCode,
                             _data.getAllHands(),
                             widget._clubCode,
+                            currentPlayer,
                             isInBottomSheet: widget.isInBottomSheet,
                           ),
                           PlayedHandsScreen(
                             _data.gameCode,
                             _data.getWinningHands(),
                             widget._clubCode,
+                            currentPlayer,
                             isInBottomSheet: widget.isInBottomSheet,
                           ),
                         ],

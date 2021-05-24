@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/resources/app_constants.dart';
@@ -221,6 +222,9 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     }
 
     _initiated = true;
+
+    print('gameInfo players: ${_gameInfoModel.playersInSeats}');
+
     return _gameInfoModel;
   }
 
@@ -310,7 +314,9 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     log('game screen initState');
     /* the init method is invoked only once */
     _init().then(
-      (gameInfoModel) => setState(() => _gameInfoModel = gameInfoModel),
+      (gameInfoModel) => setState(
+        () => _gameInfoModel = gameInfoModel,
+      ),
     );
   }
 
