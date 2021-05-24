@@ -124,6 +124,12 @@ class GameService {
       }
   """;
 
+  static String downloadResultQuery = """
+    query download(\$gameCode:String!) {
+      result: downloadResult(gameCode:\$gameCode)  
+    }
+  """;
+
   static String highhandLogQuery = """
       query (\$gameCode: String!) {
           hhWinners: highHandsByGame(gameCode: \$gameCode) {
@@ -449,6 +455,19 @@ class GameService {
     if (result.hasException) return null;
 
     return TableRecord.fromJson(result.data['gameResultTable']);
+  }
+
+  static Future<String> downloadResult(String gameCode) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+    Map<String, dynamic> variables = {
+      "gameCode": gameCode,
+    };
+    QueryResult result = await _client.query(QueryOptions(
+        documentNode: gql(downloadResultQuery), variables: variables));
+
+    if (result.hasException) return null;
+
+    return result.data['result'].toString();
   }
 
   static Future<List<HighHandWinner>> getHighHandLog(String gameCode) async {

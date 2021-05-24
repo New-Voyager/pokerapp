@@ -12,17 +12,17 @@ class HandTableBarChartProfit extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<charts.Series<TableRecordRow, String>> series = [
+      // charts.Series(
+      //   id: "Buy In",
+      //   data: _handTableRecord.rows,
+      //   domainFn: (TableRecordRow tableRow, _) => tableRow.playerName,
+      //   measureFn: (TableRecordRow tableRow, _) => tableRow.buyIn,
+      //   colorFn: (TableRecordRow tableRow, _) =>
+      //       charts.ColorUtil.fromDartColor(Colors.blue[200]),
+      // )..setAttribute(
+      //     charts.measureAxisIdKey, charts.Axis.secondaryMeasureAxisId),
       charts.Series(
-        id: "Buy In",
-        data: _handTableRecord.rows,
-        domainFn: (TableRecordRow tableRow, _) => tableRow.playerName,
-        measureFn: (TableRecordRow tableRow, _) => tableRow.buyIn,
-        colorFn: (TableRecordRow tableRow, _) =>
-            charts.ColorUtil.fromDartColor(Colors.amber),
-      )..setAttribute(
-          charts.measureAxisIdKey, charts.Axis.secondaryMeasureAxisId),
-      charts.Series(
-        id: "Profit",
+        id: "Profit/Loss",
         data: _handTableRecord.rows,
         domainFn: (TableRecordRow tableRow, _) => tableRow.playerName,
         measureFn: (TableRecordRow tableRow, _) => tableRow.profit,
@@ -32,38 +32,18 @@ class HandTableBarChartProfit extends StatelessWidget {
       ),
     ];
 
-    return charts.BarChart(
+    final chart = charts.BarChart(
       series,
       animate: true,
       vertical: false,
-      // behaviors: [
-      //   charts.ChartTitle(
-      //     "Balance",
-      //     behaviorPosition: charts.BehaviorPosition.top,
-      //     titleStyleSpec: charts.TextStyleSpec(
-      //       color: charts.MaterialPalette.white,
-      //       fontFamily: AppAssets.fontFamilyLato,
-      //       fontSize: 14,
-      //     ),
-      //   ),
-      //   charts.ChartTitle(
-      //     "Profit",
-      //     behaviorPosition: charts.BehaviorPosition.bottom,
-      //     titleStyleSpec: charts.TextStyleSpec(
-      //       color: charts.MaterialPalette.white,
-      //       fontFamily: AppAssets.fontFamilyLato,
-      //       fontSize: 14,
-      //     ),
-      //   ),
-      // ],
       behaviors: [
-        charts.SeriesLegend(
-          position: charts.BehaviorPosition.top,
-          outsideJustification: charts.OutsideJustification.endDrawArea,
-          entryTextStyle: charts.TextStyleSpec(
-            color: charts.ColorUtil.fromDartColor(Colors.white),
-          ),
-        ),
+        // charts.SeriesLegend(
+        //   position: charts.BehaviorPosition.top,
+        //   outsideJustification: charts.OutsideJustification.endDrawArea,
+        //   entryTextStyle: charts.TextStyleSpec(
+        //     color: charts.ColorUtil.fromDartColor(Colors.white),
+        //   ),
+        // ),
       ],
       primaryMeasureAxis: charts.NumericAxisSpec(
         tickProviderSpec: charts.BasicNumericTickProviderSpec(
@@ -112,5 +92,7 @@ class HandTableBarChartProfit extends StatelessWidget {
         ),
       ),
     );
+
+    return chart;
   }
 }

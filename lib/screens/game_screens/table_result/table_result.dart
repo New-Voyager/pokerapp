@@ -1,23 +1,27 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pokerapp/models/table_record.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/services/app/game_service.dart';
-import 'package:pokerapp/utils/hand_table_bar_chart_balance.dart';
+import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/utils/hand_table_bar_chart_profit.dart';
+import 'package:share/share.dart';
 
 class TableResultScreen extends StatefulWidget {
   final String gameCode;
+  final String clubCode;
   final int playerWidth = 15;
   final int sessionWidth = 20;
   final int numHandsWidth = 15;
   final int buyInWidth = 15;
   final int profitWidth = 15;
   final int rakeWidth = 15;
-  TableResultScreen(this.gameCode);
+  TableResultScreen(this.gameCode, this.clubCode);
 
   @override
   State<StatefulWidget> createState() {
@@ -124,7 +128,7 @@ class _TableResultScreenState extends State<TableResultScreen> {
                               flex: widget.rakeWidth,
                               child: Center(
                                   child: Text(
-                                "Rake",
+                                "Tips",
                                 style: TextStyle(color: Color(0xffef9712)),
                               ))),
                         ],
@@ -168,24 +172,23 @@ class _TableResultScreenState extends State<TableResultScreen> {
                           Expanded(
                             flex: widget.buyInWidth,
                             child: Center(
-                                child: Text(
-                              this.data.rows[dataIdx].buyIn.toString(),
-                              style: TextStyle(color: Color(0xffa09f9e)),
+                                child: Text(DataFormatter.chipsFormat(this.data.rows[dataIdx].buyIn),
+                                style: TextStyle(color: Color(0xffa09f9e)),
                             )),
                           ),
                           Expanded(
                             flex: widget.profitWidth,
                             child: Center(
                                 child: Text(
-                              this.data.rows[dataIdx].profit.toString(),
-                              style: TextStyle(color: Color(0xff1aff22)),
+                              DataFormatter.chipsFormat(this.data.rows[dataIdx].profit),
+                              style: this.data.rows[dataIdx].profit >= 0 ? AppStyles.profitStyle : AppStyles.lossStyle,
                             )),
                           ),
                           Expanded(
                             flex: widget.rakeWidth,
                             child: Center(
-                                child: Text(
-                              this.data.rows[dataIdx].rakePaid.toString(),
+                                child: 
+                                Text(DataFormatter.chipsFormat(this.data.rows[dataIdx].rakePaid),
                               style: TextStyle(color: Color(0xffef9712)),
                             )),
                           ),
@@ -211,13 +214,13 @@ class _TableResultScreenState extends State<TableResultScreen> {
           child: Column(
             children: [
               Container(
-                height: MediaQuery.of(context).size.height / 3,
+                height: MediaQuery.of(context).size.height * 3 / 4,
                 child: HandTableBarChartProfit(this.data),
               ),
-              Container(
-                height: MediaQuery.of(context).size.height / 3,
-                child: HandTableBarChartBalance(this.data),
-              ),
+              // Container(
+              //   height: MediaQuery.of(context).size.height / 3,
+              //   child: HandTableBarChartBalance(this.data),
+              // ),
             ],
           ),
         ),
@@ -299,7 +302,7 @@ class _TableResultScreenState extends State<TableResultScreen> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Text(
-                              "Rake",
+                              "Tips",
                               style: TextStyle(
                                 color: Colors.white,
                                 fontFamily: AppAssets.fontFamilyLato,
@@ -324,32 +327,37 @@ class _TableResultScreenState extends State<TableResultScreen> {
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            SvgPicture.asset(
-                              'assets/images/gamesettings/gambling.svg',
-                              color: Color(0xffef9712),
-                            ),
-                            SizedBox(
-                              width: 5.0,
-                            ),
-                            Text(
-                              "5",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontFamily: AppAssets.fontFamilyLato,
-                                fontSize: 18.0,
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
+                            // SvgPicture.asset(
+                            //   'assets/images/gamesettings/gambling.svg',
+                            //   color: Color(0xffef9712),
+                            // ),
+                            // SizedBox(
+                            //   width: 5.0,
+                            // ),
+                            // Text(
+                            //   "5",
+                            //   style: TextStyle(
+                            //     color: Colors.white,
+                            //     fontFamily: AppAssets.fontFamilyLato,
+                            //     fontSize: 18.0,
+                            //     fontWeight: FontWeight.w400,
+                            //   ),
+                            // ),
                             SizedBox(
                               width: 20.0,
                             ),
-                            Text(
-                              "Download",
-                              style: TextStyle(
-                                color: Color(0xff319ffe),
-                                fontFamily: AppAssets.fontFamilyLato,
-                                fontSize: 18.0,
-                                fontWeight: FontWeight.w400,
+                            InkWell(
+                              onTap: () async {
+                                downloadTable(widget.gameCode);
+                              },
+                             child: Text(
+                                "Download",
+                                style: TextStyle(
+                                  color: Color(0xff319ffe),
+                                  fontFamily: AppAssets.fontFamilyLato,
+                                  fontSize: 18.0,
+                                  fontWeight: FontWeight.w400,
+                                ),
                               ),
                             ),
                           ],
@@ -387,5 +395,19 @@ class _TableResultScreenState extends State<TableResultScreen> {
         ),
       ),
     );
+  }
+
+  downloadTable(String gameCode) async {
+    log('table is downloaded');
+    try {
+      final result = await GameService.downloadResult(gameCode);
+      String subject = 'Table result Game: $gameCode';
+      if (widget.clubCode != null && widget.clubCode.isEmpty) {
+        subject = subject + ' Club: ${widget.clubCode}';
+      }
+      Share.share(result, subject: subject);
+    } catch(err) {
+      log('Error: ${err.toString()}');
+    }
   }
 }
