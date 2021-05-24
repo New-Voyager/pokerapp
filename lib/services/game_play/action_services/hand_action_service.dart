@@ -1147,7 +1147,8 @@ class HandActionService {
     final gameState,
     final tableState,
     final players,
-    int boardIndex = 1,
+    final int boardIndex = 1,
+    final bool fromReplay = false,
   }) async {
     /** process the high pot winners */
     await processWinners(
@@ -1160,6 +1161,10 @@ class HandActionService {
 
     /** delay for a bit */
     await Future.delayed(AppConstants.animationDuration);
+
+    /* if we dont have any low winners to show AND we are from
+    replay hand, we end the function call here */
+    if (lowWinners.isEmpty && fromReplay) return;
 
     /* need to clear the board */
     resetResult(
@@ -1174,6 +1179,16 @@ class HandActionService {
       players: players,
       tableState: tableState,
       boardIndex: boardIndex,
+      gameState: gameState,
+    );
+
+    /* if we are from replay, we dont need to clear the result state */
+    if (fromReplay) return;
+
+    /* need to clear the board */
+    resetResult(
+      tableState: tableState,
+      players: players,
       gameState: gameState,
     );
   }
@@ -1216,14 +1231,16 @@ class HandActionService {
         boardCards2.map<CardObject>((c) => CardHelper.getCard(c)).toList(),
       );
 
+      final Map board1PotWinners = runItTwiceResult['board1Winners'];
+
+      final Map board2PotWinners = runItTwiceResult['board2Winners'];
+
       /* process board 1 first
       * 0. get all hi winner players for board 1
       * 1. highlight hi winner
       * 2. highlight winning cards - players and community one's
       * 3. update the rankStr
       * 4. move the pot chip to the winner */
-
-      final Map board1PotWinners = runItTwiceResult['board1Winners'];
 
       for (final board1Winners in board1PotWinners.entries) {
         final potNo = board1Winners.key;
@@ -1238,8 +1255,12 @@ class HandActionService {
           gameState: gameState,
           tableState: tableState,
           players: players,
+          fromReplay: fromReplay,
         );
       }
+
+      /* if we dont have any board 2 winners to show, we pause here */
+      if (board2PotWinners.isEmpty && fromReplay) return;
 
       /* cleanup all highlights and rankStr */
       resetResult(
@@ -1259,8 +1280,6 @@ class HandActionService {
       * 3. update the rankStr
       * 4. move the pot chip to the winner */
 
-      final Map board2PotWinners = runItTwiceResult['board2Winners'];
-
       for (final board2Winners in board2PotWinners.entries) {
         final potNo = board2Winners.key;
         final Map winners = board2Winners.value;
@@ -1275,8 +1294,12 @@ class HandActionService {
           tableState: tableState,
           players: players,
           boardIndex: 2,
+          fromReplay: fromReplay,
         );
       }
+
+      /* if we are from reply, DO NOT remove the result state */
+      if (fromReplay) return;
 
       /* cleanup all highlights and rankStr */
       resetResult(
@@ -1313,6 +1336,7 @@ class HandActionService {
           players: players,
           gameState: gameState,
           tableState: tableState,
+          fromReplay: fromReplay,
         );
       }
     }

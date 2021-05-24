@@ -117,12 +117,14 @@ class ReplayHandScreenUtils {
       data = jsonDecode(dataString);
     }
 
-    /* process the handlog data to build a GameReplayController */
-    return GameReplayService.buildController(
+    final gameReplayService = GameReplayService(
       data,
       playerID: playerID,
       gameCode: gameCode,
       handNumber: handNumber,
     );
+
+    /* process the handlog data to build a GameReplayController */
+    return gameReplayService.buildController();
   }
 }

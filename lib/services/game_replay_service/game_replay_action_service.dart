@@ -238,6 +238,7 @@ class GameReplayActionService {
     BuildContext context,
   ) =>
       HandActionService.handleResultStatic(
+        fromReplay: true,
         isRunItTwice: false,
         runItTwiceResult: null,
         boardCards2: null,

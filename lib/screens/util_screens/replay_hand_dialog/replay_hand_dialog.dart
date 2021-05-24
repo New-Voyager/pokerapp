@@ -93,7 +93,7 @@ class ReplayHandUtilScreen extends StatefulWidget {
 class _ReplayHandUtilScreenState extends State<ReplayHandUtilScreen> {
   @override
   void dispose() {
-    widget.gameReplayController.dispose();
+    widget.gameReplayController.dispose(context);
     super.dispose();
   }
 

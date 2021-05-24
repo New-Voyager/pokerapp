@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/cupertino.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
@@ -10,9 +8,19 @@ import 'package:pokerapp/models/hand_log_model_new.dart';
 import 'package:pokerapp/models/player_info.dart';
 
 class GameReplayService {
-  GameReplayService._();
+  final dynamic data;
+  final int playerID;
+  final String gameCode;
+  final int handNumber;
 
-  static List<PlayerModel> _getPlayers(List<Player> players) => players
+  GameReplayService(
+    this.data, {
+    this.playerID,
+    this.gameCode,
+    this.handNumber,
+  });
+
+  List<PlayerModel> _getPlayers(List<Player> players) => players
       .map<PlayerModel>((p) => PlayerModel(
             name: p.name,
             seatNo: p.seatNo,
@@ -22,13 +30,13 @@ class GameReplayService {
       .toList();
 
   /* returns back the mapping of <seat.no-cards> */
-  static Map<int, List<int>> _getPlayerCards(List<Player> players) {
+  Map<int, List<int>> _getPlayerCards(List<Player> players) {
     Map<int, List<int>> _playerCards = {};
     for (Player p in players) _playerCards[p.seatNo] = p.cards;
     return _playerCards;
   }
 
-  static List<GameReplayAction> _getActions({
+  List<GameReplayAction> _getActions({
     @required HandLog handLog,
     @required List<int> myCards,
     @required int noCards,
@@ -180,12 +188,7 @@ class GameReplayService {
   }
 
   /* we parse the hand log data here, and instantiate the game reply controller */
-  static Future<GameReplayController> buildController(
-    dynamic data, {
-    int playerID,
-    String gameCode,
-    int handNumber,
-  }) async {
+  Future<GameReplayController> buildController() async {
     final HandLogModelNew handLog = HandLogModelNew.fromJson(data);
 
     final List<PlayerModel> players = _getPlayers(handLog.hand.playersInSeats);
@@ -237,8 +240,8 @@ class GameReplayService {
     );
 
     return GameReplayController(
-      playerActionTime:
-          handLog.hand.actionTime ?? 30, // todo: if null default back to 30
+      // todo: if null default back to 30
+      playerActionTime: handLog.hand.actionTime ?? 30,
       gameState: gameState,
       actions: actions,
     );
