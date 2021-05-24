@@ -163,7 +163,7 @@ class GameState {
   }
 
   int get currentPlayerId {
-    return this._currentPlayer.id;
+    return this._currentPlayer?.id;
   }
 
   PlayerInfo get currentPlayer {

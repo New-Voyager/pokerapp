@@ -3,6 +3,7 @@
 	"handResult": {
 		"gameId": "412",
 		"handNum": 1,
+		"actionTime": 30,
 		"gameType": "HOLDEM",
 		"noCards": 2,
 		"maxPlayers": 4,

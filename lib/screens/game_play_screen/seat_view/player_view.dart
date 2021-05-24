@@ -190,9 +190,13 @@ class PlayerView extends StatelessWidget {
                   valueNotifierFooterStatus,
                   __,
                 ) {
-                  return DisplayCardsWidget(
-                    seat,
-                    valueNotifierFooterStatus.value,
+                  return Container(
+                    height: boardAttributes.namePlateSize.height,
+                    width: boardAttributes.namePlateSize.width,
+                    child: DisplayCardsWidget(
+                      seat,
+                      valueNotifierFooterStatus.value,
+                    ),
                   );
                 },
               ),
@@ -209,19 +213,27 @@ class PlayerView extends StatelessWidget {
                 offset: boardAttributes.playerHoleCardOffset,
                 child: Transform.scale(
                   scale: boardAttributes.playerHoleCardScale,
-                  child: PlayerCardsWidget(
-                    seat,
-                    this.cardsAlignment,
-                    seat.player?.noOfCardsVisible,
-                    showdown,
-                  ),
+                  child: gameState.currentPlayerId == seat.player.playerId
+                      ? DisplayCardsWidget(
+                          seat,
+                          FooterStatus.Result,
+                        )
+                      : PlayerCardsWidget(
+                          seat,
+                          this.cardsAlignment,
+                          seat.player?.noOfCardsVisible,
+                          showdown,
+                        ),
                 ),
               ),
 
               // show dealer button, if user is a dealer
               isDealer
                   ? DealerButtonWidget(
-                      seat.serverSeatPos, isMe, GameType.HOLDEM)
+                      seat.serverSeatPos,
+                      isMe,
+                      GameType.HOLDEM,
+                    )
                   : shrinkedSizedBox,
 
               // /* building the chip amount widget */
@@ -264,13 +276,15 @@ class PlayerView extends StatelessWidget {
                       top: 0,
                       right: -20,
                       child: Container(
-                          width: 22,
-                          height: 22,
-                          color: Colors.transparent,
-                          child: Icon(
-                            Icons.mic,
-                            color: Colors.white70,
-                          )))
+                        width: 22,
+                        height: 22,
+                        color: Colors.transparent,
+                        child: Icon(
+                          Icons.mic,
+                          color: Colors.white70,
+                        ),
+                      ),
+                    )
                   : SizedBox(),
             ],
           ),
@@ -349,29 +363,14 @@ class PlayerCardsWidget extends StatelessWidget {
       xOffset = -45.0 * shiftMultiplier;
     }
     if (showdown) {
-      return Transform.translate(
-        offset: Offset(
-          xOffset * 0.50,
-          45.0,
-        ),
-        child: AnimatedSwitcher(
-          duration: AppConstants.fastAnimationDuration,
-          child: Transform.scale(scale: 1.0, child: const SizedBox.shrink()),
-        ),
-      );
+      return const SizedBox.shrink();
     } else if (seat.folded ?? false) {
       return Transform.translate(
         offset: Offset(
           xOffset * 0.50,
           45.0,
         ),
-        child: AnimatedSwitcher(
-          duration: AppConstants.fastAnimationDuration,
-          child: Transform.scale(
-            scale: 1.0,
-            child: FoldCardAnimatingWidget(seat: seat),
-          ),
-        ),
+        child: FoldCardAnimatingWidget(seat: seat),
       );
     } else {
       //log('Hole cards');
@@ -380,12 +379,9 @@ class PlayerCardsWidget extends StatelessWidget {
           xOffset * 0.50,
           25.0,
         ),
-        child: AnimatedSwitcher(
-          duration: AppConstants.fastAnimationDuration,
-          child: Transform.scale(
-            scale: 0.75,
-            child: HiddenCardView(noOfCards: this.noCards),
-          ),
+        child: Transform.scale(
+          scale: 0.75,
+          child: HiddenCardView(noOfCards: this.noCards),
         ),
       );
     }

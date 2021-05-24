@@ -1,11 +1,9 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:pokerapp/models/hand_log_model_new.dart';
 import 'package:pokerapp/screens/club_screen/bookmarked_hands.dart';
 import 'package:pokerapp/screens/club_screen/botscripts.dart';
 import 'package:pokerapp/screens/game_screens/game_history_details_view/stack_details_view.dart';
-import 'package:pokerapp/screens/util_screens/replay_hand_screen/replay_hand_screen.dart';
 import 'package:provider/provider.dart';
 
 import 'package:pokerapp/screens/screens.dart';
@@ -15,7 +13,6 @@ import 'package:pokerapp/models/club_members_model.dart';
 import 'package:pokerapp/models/game/new_game_provider.dart';
 import 'package:pokerapp/models/game_history_model.dart';
 import 'package:pokerapp/models/hand_history_model.dart';
-import 'package:pokerapp/models/hand_log_model.dart';
 import 'package:pokerapp/models/rewards_model.dart';
 
 class Routes {
@@ -85,9 +82,6 @@ class Routes {
   static const String bookmarked_hands = '/bookmarked_hands';
   // BotScripts screen
   static const String bot_scripts = '/bot_scripts';
-
-  // Replay Screen
-  static const String replay_hand = "/replay_hand";
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -392,12 +386,6 @@ class Routes {
           viewToShow: BotScriptsScreen(
             clubModel: args,
           ),
-        );
-      case replay_hand:
-        var args = settings.arguments as dynamic;
-        return _getPageRoute(
-          routeName: settings.name,
-          viewToShow: ReplayHandScreen(),
         );
 
       default:

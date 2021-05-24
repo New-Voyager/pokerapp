@@ -19,6 +19,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/remaining_time.
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
+import 'package:pokerapp/models/hand_log_model_new.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/card_back_assets.dart';
@@ -1047,6 +1048,7 @@ class HandActionService {
     final TableState tableState,
     final boardIndex = 1,
     final GameState gameState,
+    final bool setState = false,
   }) async {
     /* highlight the hi winners */
     players.highlightWinnerSilent(winner.seatNo);
@@ -1073,23 +1075,50 @@ class HandActionService {
       player.action.winner = true;
     }
 
-    /* update state */
-    players.notifyAll();
-    tableState.notifyAll();
+    /** set state */
+    if (setState) {
+      /* update state */
+      players.notifyAll();
+      tableState.notifyAll();
 
-    /* finally animate the moving stack */
-    gameState.animateSeatActions();
+      /* finally animate the moving stack */
+      gameState.animateSeatActions();
 
-    /* wait for the animation to finish */
-    await Future.delayed(AppConstants.animationDuration);
+      /* wait for the animation to finish */
+      await Future.delayed(AppConstants.animationDuration);
 
-    /* update the actual stack */
-    players.updateStackWithValueSilent(
-      winner.seatNo,
-      winner.amount,
-    );
+      /* update the actual stack */
+      players.updateStackWithValueSilent(
+        winner.seatNo,
+        winner.amount,
+      );
 
-    players.notifyAll();
+      players.notifyAll();
+    }
+  }
+
+  /* this method processes multiple winners */
+  static Future<void> processWinners({
+    List highWinners,
+    final Players players,
+    final TableState tableState,
+    final boardIndex = 1,
+    final GameState gameState,
+  }) async {
+    /** process the high pot winners */
+    for (int i = 0; i < highWinners.length; i++) {
+      final HiWinnersModel winner = HiWinnersModel.fromJson(highWinners[i]);
+
+      await processWinner(
+        winner: winner,
+        players: players,
+        tableState: tableState,
+        boardIndex: boardIndex,
+        gameState: gameState,
+        // for the last element only we set the state
+        setState: i == highWinners.length - 1,
+      );
+    }
   }
 
   /* only resets the highlights, and winners */
@@ -1112,10 +1141,47 @@ class HandActionService {
     tableState.notifyAll();
   }
 
+  static Future<void> processForHighWinnersDelayProcessForLowWinners({
+    final List highWinners,
+    final List lowWinners,
+    final gameState,
+    final tableState,
+    final players,
+    int boardIndex = 1,
+  }) async {
+    /** process the high pot winners */
+    await processWinners(
+      highWinners: highWinners,
+      players: players,
+      tableState: tableState,
+      boardIndex: boardIndex,
+      gameState: gameState,
+    );
+
+    /** delay for a bit */
+    await Future.delayed(AppConstants.animationDuration);
+
+    /* need to clear the board */
+    resetResult(
+      tableState: tableState,
+      players: players,
+      gameState: gameState,
+    );
+
+    /** process the low pot winners */
+    await processWinners(
+      highWinners: lowWinners,
+      players: players,
+      tableState: tableState,
+      boardIndex: boardIndex,
+      gameState: gameState,
+    );
+  }
+
   static Future<void> handleResultStatic({
     @required final bool isRunItTwice,
     @required final dynamic runItTwiceResult,
-    @required final dynamic winners,
+    @required final Map<String, dynamic> potWinners,
     @required final List<int> boardCards,
     @required final List<int> boardCards2,
     @required final BuildContext context,
@@ -1157,19 +1223,22 @@ class HandActionService {
       * 3. update the rankStr
       * 4. move the pot chip to the winner */
 
-      final board1Winners = runItTwiceResult['board1Winners']['0']['hiWinners'];
-      for (final hiWinner in board1Winners) {
-        final HiWinnersModel winner = HiWinnersModel.fromJson(hiWinner);
+      final Map board1PotWinners = runItTwiceResult['board1Winners'];
 
-        await processWinner(
-          winner: winner,
-          players: players,
-          tableState: tableState,
-          boardIndex: 1,
+      for (final board1Winners in board1PotWinners.entries) {
+        final potNo = board1Winners.key;
+        final Map winners = board1Winners.value;
+
+        final List highWinners = winners['hiWinners'];
+        final List lowWinners = winners['lowWinners'];
+
+        await processForHighWinnersDelayProcessForLowWinners(
+          highWinners: highWinners,
+          lowWinners: lowWinners,
           gameState: gameState,
+          tableState: tableState,
+          players: players,
         );
-
-        await Future.delayed(AppConstants.animationDuration);
       }
 
       /* cleanup all highlights and rankStr */
@@ -1189,19 +1258,24 @@ class HandActionService {
       * 2. highlight winning cards - players and community one's
       * 3. update the rankStr
       * 4. move the pot chip to the winner */
-      final board2Winners = runItTwiceResult['board2Winners']['0']['hiWinners'];
-      for (final hiWinner in board2Winners) {
-        final HiWinnersModel winner = HiWinnersModel.fromJson(hiWinner);
 
-        await processWinner(
-          winner: winner,
-          players: players,
-          tableState: tableState,
-          boardIndex: 2,
+      final Map board2PotWinners = runItTwiceResult['board2Winners'];
+
+      for (final board2Winners in board2PotWinners.entries) {
+        final potNo = board2Winners.key;
+        final Map winners = board2Winners.value;
+
+        final List highWinners = winners['hiWinners'];
+        final List lowWinners = winners['lowWinners'];
+
+        await processForHighWinnersDelayProcessForLowWinners(
+          highWinners: highWinners,
+          lowWinners: lowWinners,
           gameState: gameState,
+          tableState: tableState,
+          players: players,
+          boardIndex: 2,
         );
-
-        await Future.delayed(AppConstants.animationDuration);
       }
 
       /* cleanup all highlights and rankStr */
@@ -1215,19 +1289,31 @@ class HandActionService {
       /* turn off two boards needed flag -> only if we are not from replay */
       if (!fromReplay) tableState.updateTwoBoardsNeeded(false);
     } else {
-      /* NOT RUN IT TWICE CASE */
-      for (final hiWinner in winners) {
-        final HiWinnersModel winner = HiWinnersModel.fromJson(hiWinner);
+      /* SIMPLE POT WINNER CASE */
 
-        await processWinner(
-          winner: winner,
+      /**
+       * DO the following for each pot:
+       *    1. show all the high pot winners
+       *    2. delay
+       *    3. show all the low pot winners
+       */
+
+      for (final potWinner in potWinners.entries) {
+        final potNo = potWinner.key;
+        final PotWinner winners = potWinner.value;
+
+        final List highWinners =
+            winners.hiWinners.map((e) => e.toJson()).toList();
+        final List lowWinners =
+            winners.lowWinners.map((e) => e.toJson()).toList();
+
+        await processForHighWinnersDelayProcessForLowWinners(
+          highWinners: highWinners,
+          lowWinners: lowWinners,
           players: players,
-          tableState: tableState,
-          boardIndex: 1,
           gameState: gameState,
+          tableState: tableState,
         );
-
-        await Future.delayed(AppConstants.animationDuration);
       }
     }
   }
@@ -1274,7 +1360,7 @@ class HandActionService {
     await handleResultStatic(
       isRunItTwice: isRunItTwice,
       runItTwiceResult: handResult['handLog']['runItTwiceResult'],
-      winners: handResult['handLog']['potWinners']['0']['hiWinners'],
+      potWinners: handResult['handLog']['potWinners'],
       boardCards: boardCards,
       boardCards2: boardCards2,
       context: _context,

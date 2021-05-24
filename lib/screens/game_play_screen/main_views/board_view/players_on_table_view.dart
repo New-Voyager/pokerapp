@@ -15,6 +15,7 @@ import 'package:pokerapp/screens/game_play_screen/seat_view/name_plate_view.dart
 import 'package:pokerapp/screens/game_play_screen/seat_view/player_view.dart';
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
+import 'package:pokerapp/services/test/test_service.dart';
 import 'package:provider/provider.dart';
 
 const double _lottieAnimationContainerSize = 120.0;
@@ -355,8 +356,22 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
   }
 
   List<Widget> getPlayers(BuildContext context) {
-    PlayerModel me = this.widget.players.me;
+    // todo: THIS MAY INTRODUCE A BUG?
+    // PlayerModel me = this.widget.players.me;
+    PlayerModel me;
     final gameState = GameState.getState(context);
+
+    final currPlayerID = gameState.currentPlayerId;
+
+    if (TestService.isTesting)
+      me = this.widget.players.me;
+    else
+      me = this
+          .widget
+          .players
+          .players
+          .firstWhere((p) => p.playerId == currPlayerID);
+
     final maxPlayers = gameState.gameInfo.maxPlayers;
     index = -1;
     // update seat states in game state

@@ -306,8 +306,9 @@ class PlayerViewDivider extends StatelessWidget {
       padding: const EdgeInsets.all(5),
       child: Container(
         decoration: BoxDecoration(
-            color: Color.fromARGB(255, 129, 129, 129),
-            borderRadius: BorderRadius.circular(5)),
+          color: Color.fromARGB(255, 129, 129, 129),
+          borderRadius: BorderRadius.circular(5),
+        ),
         height: 1,
         width: double.infinity,
       ),

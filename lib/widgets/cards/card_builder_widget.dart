@@ -3,12 +3,17 @@ import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/widgets/cards/pulsating_card_container.dart';
+
+// todo: turn off the pulsating highlight if you don't like it ;-)
+bool keepPulsatingHighlight = true;
 
 class CardBuilderWidget extends StatelessWidget {
   final CardObject card;
   final bool isCardVisible;
   final Function cardBuilder;
   final bool dim;
+  final bool highlight;
   final bool shadow;
   final double roundRadius;
   final CardFace cardFace;
@@ -16,6 +21,7 @@ class CardBuilderWidget extends StatelessWidget {
   CardBuilderWidget({
     @required this.card,
     @required this.dim,
+    @required this.highlight,
     @required this.isCardVisible,
     @required Widget this.cardBuilder(TextStyle _, TextStyle __),
     this.shadow = false,
@@ -27,16 +33,16 @@ class CardBuilderWidget extends StatelessWidget {
             cardBuilder != null);
 
   /* this method returns the correct RATIO for a particular CARD TYPE */
-  double _getCardRatioFromCardType() {
-    switch (card.cardType) {
+  static double getCardRatioFromCardType(CardType cardType) {
+    switch (cardType) {
       case CardType.CommunityCard:
-        return 1.0;
+        return 1.2;
 
       case CardType.HoleCard:
         return 2.9;
 
       case CardType.PlayerCard:
-        return 1.2;
+        return 0.90;
 
       case CardType.HandLogOrHandHistoryCard:
         return 0.80;
@@ -53,9 +59,6 @@ class CardBuilderWidget extends StatelessWidget {
     TextStyle cardTextStyle = AppStyles.cardTextStyle.copyWith(fontSize: 12);
     TextStyle suitTextStyle = AppStyles.cardTextStyle.copyWith(fontSize: 12);
 
-    bool highlight = false;
-    Color highlightColor = Colors.blue.shade100;
-
     cardTextStyle = AppStyles.cardTextStyle.copyWith(
       color: card.color,
       fontSize: 12,
@@ -66,9 +69,9 @@ class CardBuilderWidget extends StatelessWidget {
       fontSize: 8,
     );
 
-    highlight = card.highlight ?? false;
+    bool highlight = card.highlight ?? false;
 
-    highlightColor = (card.otherHighlightColor ?? false)
+    Color highlightColor = (card.otherHighlightColor ?? false)
         ? Colors.blue.shade100
         : Colors.green.shade100;
 
@@ -80,12 +83,19 @@ class CardBuilderWidget extends StatelessWidget {
       color: card.color,
     );
 
-    double _ratio = _getCardRatioFromCardType();
+    double _ratio = getCardRatioFromCardType(card.cardType);
+
+    // IMP: we ignore "dim" value if "highlight" is true
+    bool toDim = dim;
+    if (highlight) toDim = false;
+
+    final double height = AppDimensions.cardHeight * _ratio;
+    final double width = AppDimensions.cardWidth * _ratio;
 
     Widget cardWidget = Container(
-      height: AppDimensions.cardHeight * _ratio,
-      width: AppDimensions.cardWidth * _ratio,
-      foregroundDecoration: dim
+      height: height,
+      width: width,
+      foregroundDecoration: toDim
           ? BoxDecoration(
               color: Colors.black54,
               backgroundBlendMode: BlendMode.darken,
@@ -104,7 +114,7 @@ class CardBuilderWidget extends StatelessWidget {
         borderRadius: BorderRadius.all(
           Radius.circular(roundRadius),
         ),
-        color: highlight ? highlightColor : Colors.white,
+        color: Colors.white,
       ),
       child: cardFace == CardFace.FRONT
           ? isCardVisible
@@ -119,6 +129,15 @@ class CardBuilderWidget extends StatelessWidget {
               ),
             ),
     );
+
+    if (highlight && keepPulsatingHighlight)
+      return PulsatingCardContainer(
+        child: cardWidget,
+        height: height,
+        width: width,
+        color: Colors.green.withOpacity(0.80),
+        animationUpToWidth: 4.0,
+      );
 
     return cardWidget;
   }

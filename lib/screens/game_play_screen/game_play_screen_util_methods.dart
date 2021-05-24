@@ -43,9 +43,45 @@ class GamePlayScreenUtilMethods {
             color: Colors.white,
           ),
           backgroundColor: Colors.red,
-          label: 'Dealer Choice',
-          onTap: () => TestService.dealerChoiceGame(),
+          label: 'Reset & fold all players',
+          onTap: () => TestService.resetGameState(),
         ),
+        // SpeedDialChild(
+        //   child: Icon(
+        //     Icons.adb_rounded,
+        //     color: Colors.white,
+        //   ),
+        //   backgroundColor: Colors.red,
+        //   label: 'Remove showdown cards',
+        //   onTap: () => TestService.removeShowDownCards(),
+        // ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
+          label: 'show player status',
+          onTap: () => TestService.showPlayerStatus(),
+        ),
+        // SpeedDialChild(
+        //   child: Icon(
+        //     Icons.adb_rounded,
+        //     color: Colors.white,
+        //   ),
+        //   backgroundColor: Colors.red,
+        //   label: 'Showdown cards',
+        //   onTap: () => TestService.showDownCards(),
+        // ),
+        // SpeedDialChild(
+        //   child: Icon(
+        //     Icons.adb_rounded,
+        //     color: Colors.white,
+        //   ),
+        //   backgroundColor: Colors.red,
+        //   label: 'Dealer Choice',
+        //   onTap: () => TestService.dealerChoiceGame(),
+        // ),
         SpeedDialChild(
           child: Icon(
             Icons.adb_rounded,
@@ -106,8 +142,8 @@ class GamePlayScreenUtilMethods {
             color: Colors.white,
           ),
           backgroundColor: Colors.red,
-          label: 'Send Run It Twice',
-          onTap: () => TestService.sendRunItTwiceMessage(),
+          label: 'Fold card',
+          onTap: () => TestService.fold(),
         ),
         SpeedDialChild(
           child: Icon(
@@ -136,15 +172,7 @@ class GamePlayScreenUtilMethods {
           label: 'New Hand',
           onTap: () => TestService.sendNewHand(),
         ),
-        SpeedDialChild(
-          child: Icon(
-            Icons.adb_rounded,
-            color: Colors.white,
-          ),
-          backgroundColor: Colors.red,
-          label: 'Reset',
-          onTap: () => TestService.resetGameState(),
-        ),
+
         SpeedDialChild(
           child: Icon(
             Icons.adb_rounded,

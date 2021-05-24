@@ -99,8 +99,8 @@ class GameComService {
   }
 
   Stream<Message> get gameToPlayerChannelStream {
-    assert(active);
-    return _gameToPlayerChannelSubs.stream;
+    // assert(active);
+    return _gameToPlayerChannelSubs?.stream;
   }
 
   Stream<Message> get handToAllChannelStream {

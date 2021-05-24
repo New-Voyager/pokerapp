@@ -51,6 +51,7 @@ class CardView extends StatelessWidget {
     return CardBuilderWidget(
       card: card,
       dim: card.dim,
+      highlight: card.highlight,
       isCardVisible: true,
       cardBuilder: _buildCardUI,
       roundRadius: 2.5,

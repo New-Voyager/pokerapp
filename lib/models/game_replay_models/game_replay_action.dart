@@ -4,6 +4,7 @@ import 'package:pokerapp/models/hand_log_model_new.dart';
 enum GameReplayActionType {
   card_distribution,
   pre_flop_started,
+  player_to_act,
   player_action,
   flop_started,
   river_started,
@@ -19,6 +20,7 @@ class GameReplayAction {
   final GameReplayActionType gameReplayActionType;
 
   /* game related info */
+  final List<int> myCards; // current players cards ; used in distribution
   final int noCards;
   final List<int> seatNos;
 
@@ -42,6 +44,7 @@ class GameReplayAction {
 
   GameReplayAction({
     @required this.gameReplayActionType,
+    this.myCards,
     this.noCards,
     this.startPot,
     this.action,

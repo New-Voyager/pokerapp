@@ -4,17 +4,19 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_replay_models/game_replay_action.dart';
-import 'package:pokerapp/resources/app_constants.dart';
+import 'package:pokerapp/models/hand_log_model_new.dart';
 import 'package:pokerapp/services/game_replay_service/game_replay_action_service.dart';
 
 class GameReplayController {
   BuildContext _context;
 
+  int _playerActionTime;
   GameState _gameState;
   List<GameReplayAction> _actions;
 
   StreamController<bool> _isPlayingStreamController;
   bool _isPlaying;
+  bool _goNext;
 
   int _actionCounter;
 
@@ -23,9 +25,11 @@ class GameReplayController {
   GameReplayController({
     @required GameState gameState,
     @required List<GameReplayAction> actions,
+    @required int playerActionTime,
   }) {
     this._gameState = gameState;
     this._actions = actions;
+    this._playerActionTime = playerActionTime;
 
     this._isPlayingStreamController = StreamController<bool>.broadcast();
     this._isPlaying = false;
@@ -42,44 +46,68 @@ class GameReplayController {
     return null;
   }
 
+  Future<void> waitAndAlsoHandleInterrupt(int waitForInMs) async {
+    // run a loop for every 100 ms and check for a interrupt,
+    // if there is an interrupt, return,
+    // else we continue for the specified time
+
+    int checkDurationInMs = 100;
+
+    int n = waitForInMs ~/ checkDurationInMs;
+
+    // invoke a loop for n times
+    for (int i = 0; i < n; i++) {
+      // if we need to interrupt, return from this function will end the wait
+      if (_goNext == true) {
+        _goNext = false; // change the _goNext value
+        return;
+      }
+
+      // else we wait
+      await Future.delayed(Duration(milliseconds: checkDurationInMs));
+    }
+  }
+
+  /* this method needs to highlight the next player to act, before we actually
+  wait for that players actionTime */
+  Future<void> _playerToAct(GameReplayAction action) async {
+    if (action.gameReplayActionType == GameReplayActionType.player_action) {
+      // call take action function, using a new action type : player_to_act
+      // along with the seat No, thus we show the player to act highlight
+      _takeAction(
+        GameReplayAction(
+          gameReplayActionType: GameReplayActionType.player_to_act,
+          action: ActionElement(
+            seatNo: action.action.seatNo,
+            actionTime: _playerActionTime,
+          ),
+        ),
+      );
+
+      // after we highlight the player, need to wait for that particular duration
+      // and also during wait, need to handle any interruptions,
+      // so that incase of skip request, we can end the wait and continue
+
+      // we need to show next action player
+      final int waitForInMs = _estimateDelay(action);
+
+      await waitAndAlsoHandleInterrupt(waitForInMs);
+    }
+
+    // if actionType is not playerActed, then we dont care about the delay
+    // just return from this function
+  }
+
   /* this method takes in an replay action and executes it */
   Future<void> _takeAction(GameReplayAction action) =>
       GameReplayActionService.takeAction(action, _context);
 
-  /* this method tries to estimate a delay for a particular action type
+  /* this method estimates a delay for a "player_action" action type
   * and default delay is 800 ms */
   int _estimateDelay(GameReplayAction action) {
-    switch (action.gameReplayActionType) {
-      case GameReplayActionType.card_distribution:
-        return 0;
-
-      case GameReplayActionType.pre_flop_started:
-        return 0;
-
-      case GameReplayActionType.player_action:
-        if (action.action.actionTime == 0) return 800;
-        return action.action.actionTime * 1000;
-
-      case GameReplayActionType.flop_started:
-        return 0;
-
-      case GameReplayActionType.river_started:
-        return 0;
-
-      case GameReplayActionType.turn_started:
-        return 0;
-
-      case GameReplayActionType.showdown:
-        return 0;
-
-      case GameReplayActionType.run_it_twice_board:
-        return 0;
-
-      case GameReplayActionType.pot_winner:
-        return 0;
-
-      case GameReplayActionType.run_it_twice_winner:
-        return 0;
+    if (action.gameReplayActionType == GameReplayActionType.player_action) {
+      if (action.action.actionTime == 0) return 800;
+      return action.action.actionTime * 1000;
     }
 
     return 0;
@@ -95,10 +123,8 @@ class GameReplayController {
     /* if there is no action to play end it */
     if (action == null) return;
 
-    final int waitForInMs = _estimateDelay(action);
-
-    /* wait for the actionTime */
-    await Future.delayed(Duration(milliseconds: waitForInMs));
+    /* check for player action, and if true wait for actionTime duration */
+    await _playerToAct(action);
 
     /* execute the action & wait for it to finish */
     await _takeAction(action);
@@ -133,19 +159,14 @@ class GameReplayController {
     _isPlayingStreamController.add(_isPlaying);
   }
 
-  /* TODO: FOR THE BELOW 3 METHODS, THE BOARD CLEANUP IS NECESSARY
-  *  FIXME: WITHOUT THE BOARD CLEANUP THE SKIP FORWARD AND BACKWARD WONT LOOK GOOD */
-
   void skipPrevious() {
     // _actionCounter -= 1;
   }
 
-  void skipNext() {
-    // _actionCounter += 1;
-  }
+  void skipNext() => _goNext = true;
 
   void repeat() {
-    // _actionCounter = 0;
+    // reset everything and start from beginning
   }
 
   /* getters */

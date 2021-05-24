@@ -4,21 +4,40 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/game_replay_models/game_replay_controller.dart';
-import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/screens/util_screens/replay_hand_controls/replay_hand_controls.dart';
 import 'package:pokerapp/screens/util_screens/replay_hand_game_view/replay_hand_game_view.dart';
-import 'package:pokerapp/screens/util_screens/replay_hand_screen/replay_hand_screen_utils.dart';
+import 'package:pokerapp/screens/util_screens/replay_hand_dialog/replay_hand_dialog_utils.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:provider/provider.dart';
 
-class ReplayHandScreen extends StatelessWidget {
+class ReplayHandDialog extends StatelessWidget {
+  static void show({
+    @required BuildContext context,
+    @required int playerID,
+    int handNumber,
+    String gameCode,
+    dynamic hand,
+    dynamic playerInfo,
+  }) =>
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (_) => ReplayHandDialog(
+          playerID: playerID,
+          handNumber: handNumber,
+          gameCode: gameCode,
+          hand: hand,
+          playerInfo: playerInfo,
+        ),
+      );
+
   final int playerID;
   final int handNumber;
   final String gameCode;
   final dynamic hand;
   final dynamic playerInfo;
 
-  ReplayHandScreen({
+  ReplayHandDialog({
     this.playerID,
     this.handNumber,
     this.gameCode,
@@ -28,7 +47,7 @@ class ReplayHandScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext _) => Scaffold(
-        backgroundColor: AppColors.screenBackgroundColor,
+        backgroundColor: Colors.transparent,
         body: FutureBuilder<GameReplayController>(
           future: ReplayHandScreenUtils.getGameReplayController(
             playerID: playerID,
@@ -100,22 +119,16 @@ class _ReplayHandUtilScreenState extends State<ReplayHandUtilScreen> {
 
         return SafeArea(
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               /* game view */
-              Expanded(
-                child: ReplayHandGameView(
-                  gameInfoModel: widget.gameReplayController.gameInfoModel,
-                ),
+              ReplayHandGameView(
+                gameInfoModel: widget.gameReplayController.gameInfoModel,
               ),
 
               /* controls */
-              Expanded(
-                child: Align(
-                  alignment: Alignment.topCenter,
-                  child: ReplayHandControls(
-                    gameReplayController: widget.gameReplayController,
-                  ),
-                ),
+              ReplayHandControls(
+                gameReplayController: widget.gameReplayController,
               ),
             ],
           ),

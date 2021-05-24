@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
 import 'package:pokerapp/models/game_play_models/business/card_distribution_model.dart';
+import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
@@ -30,6 +31,22 @@ class GameReplayActionService {
     tableState.notifyAll();
   }
 
+  static void _playerToAct(
+    GameReplayAction action,
+    BuildContext context,
+  ) {
+    final gameState = GameState.getState(context);
+
+    final player = gameState.fromSeat(context, action.action.seatNo);
+    final seat = gameState.getSeat(context, action.action.seatNo);
+
+    assert(player != null && seat != null);
+
+    player.highlight = true;
+    seat.setActionTimer(action.action.actionTime);
+    seat.notify();
+  }
+
   static void _playerAction(
     GameReplayAction replayAction,
     BuildContext context,
@@ -45,6 +62,10 @@ class GameReplayActionService {
     final ActionElement action = replayAction.action;
 
     final gameState = GameState.getState(context);
+
+    // reset highlight for other players
+    gameState.resetActionHighlight(context, -1);
+
     Players players = Provider.of<Players>(
       context,
       listen: false,
@@ -208,7 +229,7 @@ class GameReplayActionService {
         runItTwiceResult: action.runItTwiceResult,
         boardCards: action.boardCards,
         boardCards2: action.boardCards2,
-        winners: null,
+        potWinners: null,
         context: context,
       );
 
@@ -220,8 +241,7 @@ class GameReplayActionService {
         isRunItTwice: false,
         runItTwiceResult: null,
         boardCards2: null,
-        winners:
-            action.potWinners['0'].hiWinners.map((hw) => hw.toJson()).toList(),
+        potWinners: action.potWinners,
         boardCards: action.boardCards,
         context: context,
       );
@@ -245,6 +265,12 @@ class GameReplayActionService {
 
     /* wait for the card shuffling animation to finish :todo can be tweaked */
     await Future.delayed(const Duration(milliseconds: 800));
+
+    /* finding the current Player */
+    final playerID = gameState.currentPlayerId;
+    final PlayerModel currPlayer =
+        players.players.firstWhere((p) => p.playerId == playerID);
+    currPlayer.cards = action.myCards;
 
     final noCards = action.noCards;
     final List<int> seatNos = action.seatNos;
@@ -312,6 +338,9 @@ class GameReplayActionService {
 
       case GameReplayActionType.run_it_twice_winner:
         return _runItTwiceWinner(action, context);
+
+      case GameReplayActionType.player_to_act:
+        return _playerToAct(action, context);
     }
   }
 }

@@ -3,12 +3,15 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
+import 'package:pokerapp/enums/hand_actions.dart';
 import 'package:pokerapp/models/game_model.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
+import 'package:pokerapp/models/hand_log_model_new.dart';
 import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_service.dart';
@@ -23,7 +26,7 @@ import 'iap_test.dart';
 
 class TestService {
   static get isTesting {
-    return false;
+    return true;
   }
 
   static var _showResult = false;
@@ -95,7 +98,7 @@ class TestService {
         _currentPlayer = PlayerInfo.fromJson(data);
         //_currentPlayer = PlayerInfo.fromJson(jsonData["currentPlayer"]);
       }
-      // can't be -> 3, 5, 7
+      // 2 4 6 8 9
       var maxPlayers = 9;
       if (jsonData["gameInfo"] != null) {
         // todo: debug remove: change the max Players in a game here
@@ -503,6 +506,9 @@ class TestService {
     }
     final players = gameState.getPlayers(_context);
     players.notifyAll();
+
+    /* wait then run fold */
+    Future.delayed(const Duration(milliseconds: 800)).then((value) => fold());
   }
 
   static void sendRunItTwiceMessage() {
@@ -670,6 +676,48 @@ class TestService {
       _handActionService.loop();
     }
     await _handActionService.handle(newGameAnnouncement());
+  }
+
+  static void showPlayerStatus() {
+    final gameState = GameState.getState(_context);
+    final players = gameState.getPlayers(_context);
+
+    for (int i = 1; i < 10; i++) {
+      final seat = gameState.getSeat(_context, i);
+
+      final action = seat.player.action;
+      action.setAction(ActionElement(
+        action: HandActions.CALL,
+      ));
+    }
+
+    players.notifyAll();
+  }
+
+  static void showDownCards() {
+    final gameState = GameState.getState(_context);
+    final players = gameState.getPlayers(_context);
+
+    _context.read<ValueNotifier<FooterStatus>>().value = FooterStatus.Result;
+
+    for (int i = 1; i < 10; i++) {
+      players.updateCardSilent(i, [50, 50, 50, 50, 50]);
+    }
+
+    players.notifyAll();
+  }
+
+  static void removeShowDownCards() {
+    final gameState = GameState.getState(_context);
+    final players = gameState.getPlayers(_context);
+
+    _context.read<ValueNotifier<FooterStatus>>().value = FooterStatus.None;
+
+    for (int i = 1; i < 10; i++) {
+      players.updateCardSilent(i, []);
+    }
+
+    players.notifyAll();
   }
 
   static void dealerChoiceGame() async {

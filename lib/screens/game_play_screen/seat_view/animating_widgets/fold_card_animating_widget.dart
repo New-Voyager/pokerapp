@@ -1,21 +1,10 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
+import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/widgets/cards/hidden_card_view.dart';
-
-const Map<int, Offset> offsetMapping = {
-  1: Offset(20, -140),
-  2: Offset(80, -80),
-  3: Offset(80, -50),
-  4: Offset(80, -30),
-  5: Offset(50, 50),
-  6: Offset(-50, 50),
-  7: Offset(-80, -30),
-  8: Offset(-80, -50),
-  9: Offset(-80, -80),
-};
+import 'package:provider/provider.dart';
 
 class FoldCardAnimatingWidget extends StatelessWidget {
   final Seat seat;
@@ -27,8 +16,13 @@ class FoldCardAnimatingWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final openSeat = seat.isOpen;
 
+    final ba = context.read<BoardAttributesObject>();
+    final gameState = context.read<GameState>();
+
+    Map offsetMapping = ba.foldCardPos(gameState.gameInfo.maxPlayers);
+
     final widget = TweenAnimationBuilder<Offset>(
-      curve: Curves.easeInOut,
+      curve: Curves.linearToEaseOut,
       tween: Tween<Offset>(
         begin: Offset(0, 0),
         end: offsetMapping[this.seat.serverSeatPos],
@@ -37,20 +31,22 @@ class FoldCardAnimatingWidget extends StatelessWidget {
         noOfCards: seat.player.noOfCardsVisible,
       ),
       onEnd: () {
-        // print('fold animation done ${this.seat.serverSeatPos}');
         if (!openSeat) {
           seat.player.animatingFold = false;
         }
       },
       duration: AppConstants.animationDuration,
       builder: (_, offset, child) {
-        double offsetPercentageLeft =
-            1 - (offset.dx / offsetMapping[this.seat.serverSeatPos].dx);
-        // todo: the opacity change can be smoothed out
+        /* percentage of animation done */
+        double pertDone = offset.dx / offsetMapping[this.seat.serverSeatPos].dx;
+
+        /* we start fading away the card after the cards have moved 90% */
+        double opacityValue = pertDone > 0.90 ? (10 - 10 * pertDone) : 1.0;
+
         return Transform.translate(
           offset: offset,
           child: Opacity(
-            opacity: offsetPercentageLeft == 0.0 ? 0.0 : 1.0,
+            opacity: opacityValue,
             child: child,
           ),
         );
