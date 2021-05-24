@@ -217,7 +217,7 @@ class PlayerActedState {
   void setAction(dynamic data) {
     if (data is ActionElement) {
       _playerAction = data.action;
-      _amount = data.amount.toDouble();
+      _amount = data.amount?.toDouble();
       return;
     }
 

@@ -530,9 +530,15 @@ class BoardAttributesObject extends ChangeNotifier {
     return kSeatChangeStackVerticalOffsetMapping;
   }
 
-  Map<int, Offset> get buttonPos {
-    if (_boardOrientation == BoardOrientation.horizontal)
-      return kDealerButtonHorizontalOffsetMapping;
+  Map<int, Offset> buttonPos(int maxPlayers) {
+    if (_boardOrientation == BoardOrientation.horizontal) {
+      if (maxPlayers == 2) return kDealerButtonHorizontalOffsetMapping2;
+      if (maxPlayers == 4) return kDealerButtonHorizontalOffsetMapping4;
+      if (maxPlayers == 6) return kDealerButtonHorizontalOffsetMapping6;
+      if (maxPlayers == 8) return kDealerButtonHorizontalOffsetMapping8;
+      if (maxPlayers == 9) return kDealerButtonHorizontalOffsetMapping9;
+    }
+
     return kDealerButtonVerticalOffsetMapping;
   }
 

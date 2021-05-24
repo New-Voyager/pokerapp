@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_type.dart';
+import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:provider/provider.dart';
@@ -13,11 +15,11 @@ class DealerButtonWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final attributes = Provider.of<BoardAttributesObject>(
-      context,
-      listen: false,
-    );
-    final buttonPos = attributes.buttonPos;
+    final attributes = context.read<BoardAttributesObject>();
+    final gameState = context.read<GameState>();
+
+    final buttonPos = attributes.buttonPos(gameState.gameInfo.maxPlayers);
+
     final buttonColor = attributes.buttonColor(gameType);
     final textStyle =
         AppStyles.dealerTextStyle.copyWith(color: buttonColor.item2);
