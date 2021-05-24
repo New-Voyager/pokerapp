@@ -179,7 +179,7 @@ class MessageItem extends StatelessWidget {
                       ReplayHandDialog.show(
                         context: context,
                         hand: messageModel.sharedHand.data,
-                        playerInfo: playerInfo,
+                        playerID: playerInfo['id'],
                       );
                     },
                   ),
