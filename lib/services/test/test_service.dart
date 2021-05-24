@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/models/game_model.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
@@ -673,6 +674,32 @@ class TestService {
       _handActionService.loop();
     }
     await _handActionService.handle(newGameAnnouncement());
+  }
+
+  static void showDownCards() {
+    final gameState = GameState.getState(_context);
+    final players = gameState.getPlayers(_context);
+
+    _context.read<ValueNotifier<FooterStatus>>().value = FooterStatus.Result;
+
+    for (int i = 1; i < 10; i++) {
+      players.updateCardSilent(i, [50, 50, 50, 50, 50]);
+    }
+
+    players.notifyAll();
+  }
+
+  static void removeShowDownCards() {
+    final gameState = GameState.getState(_context);
+    final players = gameState.getPlayers(_context);
+
+    _context.read<ValueNotifier<FooterStatus>>().value = FooterStatus.None;
+
+    for (int i = 1; i < 10; i++) {
+      players.updateCardSilent(i, []);
+    }
+
+    players.notifyAll();
   }
 
   static void dealerChoiceGame() async {

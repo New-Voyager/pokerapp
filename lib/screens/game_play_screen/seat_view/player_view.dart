@@ -190,9 +190,13 @@ class PlayerView extends StatelessWidget {
                   valueNotifierFooterStatus,
                   __,
                 ) {
-                  return DisplayCardsWidget(
-                    seat,
-                    valueNotifierFooterStatus.value,
+                  return Container(
+                    height: boardAttributes.namePlateSize.height,
+                    width: boardAttributes.namePlateSize.width,
+                    child: DisplayCardsWidget(
+                      seat,
+                      valueNotifierFooterStatus.value,
+                    ),
                   );
                 },
               ),

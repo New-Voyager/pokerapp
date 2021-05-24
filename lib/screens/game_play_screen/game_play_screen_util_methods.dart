@@ -46,16 +46,33 @@ class GamePlayScreenUtilMethods {
           label: 'Reset & fold all players',
           onTap: () => TestService.resetGameState(),
         ),
-
         SpeedDialChild(
           child: Icon(
             Icons.adb_rounded,
             color: Colors.white,
           ),
           backgroundColor: Colors.red,
-          label: 'Dealer Choice',
-          onTap: () => TestService.dealerChoiceGame(),
+          label: 'Remove showdown cards',
+          onTap: () => TestService.removeShowDownCards(),
         ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
+          label: 'Showdown cards',
+          onTap: () => TestService.showDownCards(),
+        ),
+        // SpeedDialChild(
+        //   child: Icon(
+        //     Icons.adb_rounded,
+        //     color: Colors.white,
+        //   ),
+        //   backgroundColor: Colors.red,
+        //   label: 'Dealer Choice',
+        //   onTap: () => TestService.dealerChoiceGame(),
+        // ),
         SpeedDialChild(
           child: Icon(
             Icons.adb_rounded,
