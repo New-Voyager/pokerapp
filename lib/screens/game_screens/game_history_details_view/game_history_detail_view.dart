@@ -432,7 +432,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Balance",
+                  _gameDetail.profit < 0 ? "Loss" : "Profit",
                   style: const TextStyle(
                     fontFamily: AppAssets.fontFamilyLato,
                     color: Colors.white,

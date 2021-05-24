@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
@@ -9,8 +10,10 @@ import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_winners_view.dart';
+import 'package:pokerapp/screens/util_screens/replay_hand_dialog/replay_hand_dialog.dart';
 import 'package:pokerapp/services/app/hand_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
+import 'package:pokerapp/utils/loading_utils.dart';
 
 class BookmarkedHands extends StatefulWidget {
   final String clubCode;
@@ -84,6 +87,28 @@ class _BookmarkedHandsState extends State<BookmarkedHands> {
               " has been shared with the club"
           : "Couldn't share the hand. Please try again later",
     );
+  }
+
+  _replayHand(HandLogModelNew model) async {
+    final handNum = model.hand.handNum;
+    final gameCode = model.hand.gameCode;
+    Future.delayed(Duration(milliseconds: 10), () async {
+      try {
+        ConnectionDialog.show(
+            context: context, loadingText: "Loading hand ...");
+        final handLogModel = await HandService.getHandLog(gameCode, handNum);
+        Navigator.pop(context);
+
+        ReplayHandDialog.show(
+          context: context,
+          hand: jsonDecode(handLogModel.handData),
+          playerID: handLogModel.myInfo.id,
+        );
+      } catch (err) {
+        // ignore the error
+        log('error: ${err.toString()}');
+      }
+    });
   }
 
   @override
@@ -192,18 +217,10 @@ class _BookmarkedHandsState extends State<BookmarkedHands> {
                                               ),
                                               SizedBox(width: 20),
                                               InkWell(
-                                                onTap: () {
-                                                  /* Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => ReplayHandScreen(
-                            hand: messageModel.sharedHand.data,
-                            playerInfo: playerInfo,
-                          ),
-                        ),
-                      ); */
-                                                  // await _shareHandWithClub(context, index);
-                                                  toast("Replay hand");
+                                                onTap: () async {
+                                                  await _replayHand(
+                                                    list[index].handlogData,
+                                                  );                                                  
                                                 },
                                                 child: Container(
                                                   alignment:

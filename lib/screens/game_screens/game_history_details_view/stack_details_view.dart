@@ -47,6 +47,8 @@ class _PointsLineChart extends State<PointsLineChart> {
         .then((data) {
       jsonData = json.decode(data);
       final List playerStack = jsonData['stackStat'];
+      playerStack.sort((a, b) => a['handNum'] < b['handNum']);
+      debugPrint(data);
       stackList = playerStack.map((e) => new PlayerStackChartModel(e)).toList();
       setState(() {
         loadingDone = true;
@@ -65,6 +67,7 @@ class _PointsLineChart extends State<PointsLineChart> {
       for (dynamic item in data) {
         stackList.add(new PlayerStackChartModel(item));
       }
+      stackList.sort((a, b) => a.handNum.compareTo(b.handNum));
     }
     setState(() {
       loadingDone = true;
@@ -295,6 +298,7 @@ class PlayerStackChartModel {
     handNum = e["handNum"];
     before = double.parse(e["before"].toString());
     if (first) {
+      handNum = handNum - 1;
       after = double.parse(e["before"].toString());
     } else {
       after = double.parse(e["after"].toString());
