@@ -213,7 +213,8 @@ class PlayerView extends StatelessWidget {
                 offset: boardAttributes.playerHoleCardOffset,
                 child: Transform.scale(
                   scale: boardAttributes.playerHoleCardScale,
-                  child: gameState.currentPlayerId == seat.player.playerId
+                  child: gameState.currentPlayerId == seat.player.playerId &&
+                          gameState.currentPlayerUuid == ''
                       ? DisplayCardsWidget(
                           seat,
                           FooterStatus.Result,
