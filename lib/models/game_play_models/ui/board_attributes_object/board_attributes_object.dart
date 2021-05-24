@@ -542,6 +542,18 @@ class BoardAttributesObject extends ChangeNotifier {
     return kDealerButtonVerticalOffsetMapping;
   }
 
+  Map<int, Offset> foldCardPos(int maxPlayers) {
+    if (_boardOrientation == BoardOrientation.horizontal) {
+      if (maxPlayers == 2) return kFoldCardAnimationOffsetHorizontalMapping2;
+      if (maxPlayers == 4) return kFoldCardAnimationOffsetHorizontalMapping4;
+      if (maxPlayers == 6) return kFoldCardAnimationOffsetHorizontalMapping6;
+      if (maxPlayers == 8) return kFoldCardAnimationOffsetHorizontalMapping8;
+      if (maxPlayers == 9) return kFoldCardAnimationOffsetHorizontalMapping9;
+    }
+
+    return kDealerButtonVerticalOffsetMapping;
+  }
+
   Tuple2<Color, Color> buttonColor(GameType gameType) {
     if (kDealerButtonColor.containsKey(gameType)) {
       return kDealerButtonColor[gameType];
