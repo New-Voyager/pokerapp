@@ -18,16 +18,16 @@ class ReplayHandDialog extends StatelessWidget {
     String gameCode,
     dynamic hand,
   }) {
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (_) => ReplayHandDialog(
-          playerID: playerID,
-          handNumber: handNumber,
-          gameCode: gameCode,
-          hand: hand,
-        ),
-      );
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => ReplayHandDialog(
+        playerID: playerID,
+        handNumber: handNumber,
+        gameCode: gameCode,
+        hand: hand,
+      ),
+    );
   }
 
   final int playerID;

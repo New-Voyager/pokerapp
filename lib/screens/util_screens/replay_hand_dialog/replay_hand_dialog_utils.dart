@@ -104,9 +104,7 @@ class ReplayHandScreenUtils {
     if (hand != null && playerID != null) {
       data = Map<String, dynamic>();
       data['handResult'] = hand;
-      data['myInfo'] = {
-        'id': playerID
-      };
+      data['myInfo'] = {'id': playerID};
     } else if (gameCode != null && playerID != null) {
       // fetch hand using the graphql API
 

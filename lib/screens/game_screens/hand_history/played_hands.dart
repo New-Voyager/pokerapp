@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
@@ -5,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/models/bookmarkedHands_model.dart';
 import 'package:pokerapp/models/hand_history_model.dart';
+import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
@@ -15,6 +17,7 @@ import 'package:pokerapp/screens/util_screens/replay_hand_dialog/replay_hand_dia
 import 'package:pokerapp/services/app/hand_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/formatter.dart';
+import 'package:pokerapp/utils/loading_utils.dart';
 import 'package:pokerapp/widgets/cards/multiple_stack_card_views.dart';
 
 final _separator = SizedBox(
@@ -26,8 +29,9 @@ class PlayedHandsScreen extends StatefulWidget {
   final String gameCode;
   final String clubCode;
   final bool isInBottomSheet;
-
-  PlayedHandsScreen(this.gameCode, this.history, this.clubCode,
+  final PlayerInfo currentPlayer;
+  PlayedHandsScreen(
+      this.gameCode, this.history, this.clubCode, this.currentPlayer,
       {this.isInBottomSheet = false});
 
   @override
@@ -232,6 +236,29 @@ class _PlayedHandsScreenState extends State<PlayedHandsScreen> {
     );
   }
 
+  _replayHand(int index) async {
+    final item = widget.history[index];
+    final handNum = item.handNum;
+    final gameCode = widget.gameCode;
+    Future.delayed(Duration(milliseconds: 10), () async {
+      try {
+        ConnectionDialog.show(
+            context: context, loadingText: "Loading hand ...");
+        final handLogModel = await HandService.getHandLog(gameCode, handNum);
+        Navigator.pop(context);
+
+        ReplayHandDialog.show(
+          context: context,
+          hand: jsonDecode(handLogModel.handData),
+          playerID: widget.currentPlayer.id,
+        );
+      } catch (err) {
+        // ignore the error
+        log('error: ${err.toString()}');
+      }
+    });
+  }
+
   showCustomMenu(context, int index) {
     final RenderBox overlay = Overlay.of(context).context.findRenderObject();
     showMenu(
@@ -324,7 +351,7 @@ class _PlayedHandsScreenState extends State<PlayedHandsScreen> {
         builder: (context) {
           return GestureDetector(
             onTapDown: _storeTapPosition,
-            onLongPress: () => {showCustomMenu(context, index)},
+            //onLongPress: () => {showCustomMenu(context, index)},
             onTap: () => onHistoryItemTapped(context, index),
             child: Padding(
               padding: const EdgeInsets.only(
@@ -413,17 +440,7 @@ class _PlayedHandsScreenState extends State<PlayedHandsScreen> {
                                 SizedBox(width: 20),
                                 InkWell(
                                   onTap: () {
-                                    /* Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => ReplayHandScreen(
-                            hand: messageModel.sharedHand.data,
-                            playerInfo: playerInfo,
-                          ),
-                        ),
-                      ); */
-                                    // await _shareHandWithClub(context, index);
-                                    toast("Replay hand");
+                                    _replayHand(index);
                                   },
                                   child: Container(
                                     alignment: Alignment.bottomRight,
