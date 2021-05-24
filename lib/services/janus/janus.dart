@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 
@@ -24,6 +25,7 @@ class JanusEngine extends ChangeNotifier {
   String janusSecret;
   String roomPin;
   int roomId;
+
   //String janusSecret = 'janusrocks';
   WebSocketJanusTransport transport;
   RTCVideoRenderer _localRenderer = new RTCVideoRenderer();
@@ -64,6 +66,9 @@ class JanusEngine extends ChangeNotifier {
     var request = {
       'request': 'create',
       'room': this.roomId,
+      'audiolevel_event': true,
+      'audio_level_average': 60,
+      'pin': 'abcd'
     };
     try {
       final response = await plugin.send(data: request);
@@ -75,6 +80,8 @@ class JanusEngine extends ChangeNotifier {
 
   joinChannel(String janusToken) async {
     initialized = false;
+    return;
+
     this.janusToken = janusToken;
     if (this.janusToken.isEmpty) {
       return;
@@ -82,6 +89,7 @@ class JanusEngine extends ChangeNotifier {
     if (defaultTargetPlatform == TargetPlatform.android) {
       await Permission.microphone.request();
     }
+    final start = DateTime.now();
     if (engine == null) {
       transport = WebSocketJanusTransport(url: janusUrl);
       engine = JanusClient(
@@ -108,7 +116,9 @@ class JanusEngine extends ChangeNotifier {
             mediaConstraints: {"audio": true, "video": false});
 
         // create a room
-        createRoom();
+        if (gameState.currentPlayer.isAdmin()) {
+          createRoom();
+        }
 
         var join = {
           'request': 'join',
@@ -137,9 +147,10 @@ class JanusEngine extends ChangeNotifier {
           debugPrint('No room in that name. error: ${err.toString()}');
         }
       }
-
+      final end = DateTime.now();
+      final duration = end.difference(start);
       debugPrint(
-          'session id: ${session.sessionId} plugin handle id: ${plugin.handleId}');
+          'session id: ${session.sessionId} plugin handle id: ${plugin.handleId}. Time take to initialize: ${duration.inSeconds}');
 
       // to play audio from the remote
       plugin.remoteStream.listen((event) {
@@ -166,9 +177,21 @@ class JanusEngine extends ChangeNotifier {
               await plugin.send(data: publish, jsep: offer);
               listParticipants();
             } else if (data['audiobridge'] == 'event') {
+              debugPrint('audiobridge: $data');
               var participants = data['participants'];
-              // get participant changes like player talking
               updateParticipants(participants);
+            } else if (data['audiobridge'] == 'talking') {
+              debugPrint('audiobridge: ${data["id"]} is talking');
+              var seat = gameState.getSeatByPlayer(data['id']);
+              seat.player.talking = true;
+              debugPrint('seat info $seat');
+              seat.notify();
+            } else if (data['audiobridge'] == 'stopped-talking') {
+              debugPrint('audiobridge: ${data["id"]} stopped talking');
+              var seat = gameState.getSeatByPlayer(data['id']);
+              seat.player.talking = false;
+              debugPrint('seat info $seat');
+              seat.notify();
             }
           }
         }
@@ -201,6 +224,21 @@ class JanusEngine extends ChangeNotifier {
         final seat = gameState.getSeatByPlayer(element['id']);
         if (seat != null) {
           seat.player.muted = element['muted'] ?? false;
+          if (seat.player.muted) {
+            seat.player.showMicOff = true;
+            seat.notify();
+            Timer(Duration(seconds: 1), () {
+              seat.player.showMicOff = false;
+              seat.notify();
+            });
+          } else {
+            seat.player.showMicOn = true;
+            seat.notify();
+            Timer(Duration(seconds: 1), () {
+              seat.player.showMicOn = false;
+              seat.notify();
+            });
+          }
           seat.player.talking = element['talking'] ?? false;
           if (seat.player.talking) {
             log('${seat.player.name} is talking');

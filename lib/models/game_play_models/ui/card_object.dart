@@ -46,6 +46,8 @@ class CardObject {
   factory CardObject.emptyCard() {
     CardObject card = new CardObject(suit: null, label: null, color: null);
     card.empty = true;
+    card.cardFace = CardFace.BACK;
+    card.cardType = CardType.HandLogOrHandHistoryCard;
     return card;
   }
 

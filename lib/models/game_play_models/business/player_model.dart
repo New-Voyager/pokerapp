@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:pokerapp/enums/hand_actions.dart';
+import 'package:pokerapp/enums/player_status.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
@@ -41,10 +42,13 @@ class PlayerModel {
   // break time
   bool inBreak = false;
   DateTime breakTimeExpAt;
+  DateTime breakTimeStartedAt;
 
   // audio chat
   bool muted = false;
   bool talking = false;
+  bool showMicOn = false;
+  bool showMicOff = false;
 
   PlayerModel({
     String name,
@@ -90,13 +94,21 @@ class PlayerModel {
     if (data['buyInExpTime'] != null) {
       // buyin time is kept in UTC
       this.buyInTimeExpAt = DateTime.tryParse(data['buyInExpTime']);
-      // if (this.buyInTimeExpAt != null) {
-      //   this.buyInTimeExpAt = this.buyInTimeExpAt.toLocal();
-      // }
       DateTime now = DateTime.now();
 
       print(
           'buyin expires at ${this.buyInTimeExpAt} now: ${now.toIso8601String()} utcNow: ${now.toUtc().toIso8601String()}');
+    }
+
+    if (this.status == 'IN_BREAK' && data['breakExpTime'] != null) {
+      // buyin time is kept in UTC
+      this.breakTimeExpAt = DateTime.tryParse(data['breakExpTime']);
+      this.breakTimeStartedAt = DateTime.now();
+      if (data['breakStartedTime'] != null) {
+        this.breakTimeExpAt = DateTime.tryParse(data['breakStartedTime']);
+      }
+      print(
+          'break time expires at ${this.buyInTimeExpAt} started at: ${this.breakTimeExpAt.toIso8601String()}');
     }
 
     // default values
@@ -169,27 +181,35 @@ class PlayerActedState {
   }
 
   get amount => this._amount;
+
   set amount(double value) => this._amount = value;
 
   get animateAction => this._animate;
+
   set animateAction(bool v) => this._animate = v;
 
   get show => this._show;
+
   set show(bool v) => this._show = v;
 
   bool get winner => this._winner;
+
   set winner(bool winner) => this._winner = winner;
 
   bool get sb => this._sb;
+
   set sb(bool v) => this._sb = v;
 
   bool get bb => this._bb;
+
   set bb(bool v) => this._bb = v;
 
   bool get straddle => this._straddle;
+
   set straddle(bool v) => this._straddle = v;
 
   bool get button => this._button;
+
   set button(bool v) => this._button = v;
 
   HandActions get action => this._playerAction;

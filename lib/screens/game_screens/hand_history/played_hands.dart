@@ -1,6 +1,9 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:overlay_support/overlay_support.dart';
+import 'package:pokerapp/models/bookmarkedHands_model.dart';
 import 'package:pokerapp/models/hand_history_model.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
@@ -18,15 +21,41 @@ final _separator = SizedBox(
   height: 5.0,
 );
 
-class PlayedHandsScreen extends StatelessWidget {
+class PlayedHandsScreen extends StatefulWidget {
   final List<HandHistoryItem> history;
   final String gameCode;
-  var _tapPosition;
   final String clubCode;
   final bool isInBottomSheet;
 
   PlayedHandsScreen(this.gameCode, this.history, this.clubCode,
       {this.isInBottomSheet = false});
+
+  @override
+  _PlayedHandsScreenState createState() => _PlayedHandsScreenState();
+}
+
+class _PlayedHandsScreenState extends State<PlayedHandsScreen> {
+  var _tapPosition;
+  List<BookmarkedHand> list = [];
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      _fetchBookmarksForGame(widget.gameCode);
+    });
+    super.initState();
+  }
+
+  _fetchBookmarksForGame(String gameCode) async {
+    list.clear();
+    var result = await HandService.getBookmarkedHandsForGame(widget.gameCode);
+    BookmarkedHandModel model = BookmarkedHandModel.fromJson(result);
+
+    for (var item in model.bookmarkedHands) {
+      list.add(item);
+    }
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,9 +70,13 @@ class PlayedHandsScreen extends StatelessWidget {
             Expanded(
               child: ListView.separated(
                 itemBuilder: (context, index) {
-                  return getListItem(context, index);
+                  return getListItem(
+                    context,
+                    index,
+                    _isTheHandBookmarked(widget.history[index].handNum),
+                  );
                 },
-                itemCount: history.length,
+                itemCount: widget.history.length,
                 separatorBuilder: (context, index) {
                   return Divider();
                 },
@@ -119,16 +152,16 @@ class PlayedHandsScreen extends StatelessWidget {
   }
 
   void onHistoryItemTapped(context, int index) async {
-    if (isInBottomSheet) {
+    if (widget.isInBottomSheet) {
       await showModalBottomSheet(
         context: context,
         isScrollControlled: true,
         builder: (ctx) => Container(
           height: MediaQuery.of(context).size.height / 2,
           child: HandLogView(
-            this.gameCode,
-            history[index].handNum,
-            clubCode: clubCode,
+            this.widget.gameCode,
+            widget.history[index].handNum,
+            clubCode: widget.clubCode,
           ),
         ),
       );
@@ -137,9 +170,9 @@ class PlayedHandsScreen extends StatelessWidget {
         context,
         Routes.hand_log_view,
         arguments: {
-          "gameCode": this.gameCode,
-          "handNum": history[index].handNum,
-          "clubCode": clubCode,
+          "gameCode": this.widget.gameCode,
+          "handNum": widget.history[index].handNum,
+          "clubCode": widget.clubCode,
         },
       );
     }
@@ -149,23 +182,51 @@ class PlayedHandsScreen extends StatelessWidget {
     _tapPosition = tapDownDetails.globalPosition;
   }
 
-  _saveStarredHand(BuildContext context, int index) async {
-    var result =
-        await HandService.bookMarkHand(gameCode, history[index].handNum);
-    Alerts.showTextNotification(
-      text: result
-          ? "Hand " + history[index].handNum.toString() + " has been bookmarked"
-          : "Couldn't bookmark the hand. Please try again later",
-    );
-  }
-
-  _shareHandWithClub(BuildContext context, int index) async {
-    var result =
-        await HandService.shareHand(gameCode, history[index].handNum, clubCode);
+  _bookmarkdHand(int index) async {
+    var result = await HandService.bookMarkHand(
+        widget.gameCode, widget.history[index].handNum);
     Alerts.showTextNotification(
       text: result
           ? "Hand " +
-              history[index].handNum.toString() +
+              widget.history[index].handNum.toString() +
+              " has been bookmarked"
+          : "Couldn't bookmark the hand. Please try again later",
+    );
+    if (result) {
+      await _fetchBookmarksForGame(widget.gameCode);
+    }
+  }
+
+  _removeBookmark(int index) async {
+    var hand = list.firstWhere(
+        (element) => element.handNum == widget.history[index].handNum,
+        orElse: null);
+    if (hand != null) {
+      var result = await HandService.removeBookmark(hand.id);
+      Alerts.showTextNotification(
+        text: result
+            ? "Hand " +
+                widget.history[index].handNum.toString() +
+                " removed from bookmarks"
+            : "Couldn't remove bookmark. Please try again later",
+      );
+      if (result) {
+        await _fetchBookmarksForGame(widget.gameCode);
+      }
+    } else {
+      Alerts.showTextNotification(
+        text: "Couldn't remove bookmark. Please try again later",
+      );
+    }
+  }
+
+  _shareHandWithClub(int index) async {
+    var result = await HandService.shareHand(
+        widget.gameCode, widget.history[index].handNum, widget.clubCode);
+    Alerts.showTextNotification(
+      text: result
+          ? "Hand " +
+              widget.history[index].handNum.toString() +
               " has been shared with the club"
           : "Couldn't share the hand. Please try again later",
     );
@@ -206,7 +267,7 @@ class PlayedHandsScreen extends StatelessWidget {
             ],
           ),
         ),
-        if (clubCode != null)
+        if (widget.clubCode != null)
           PopupMenuItem(
             value: 1,
             child: Column(
@@ -242,18 +303,18 @@ class PlayedHandsScreen extends StatelessWidget {
       } else {
         switch (delta) {
           case 0:
-            _saveStarredHand(context, index);
+            _bookmarkdHand(index);
             break;
           case 1:
-            _shareHandWithClub(context, index);
+            _shareHandWithClub(index);
             break;
         }
       }
     });
   }
 
-  getListItem(BuildContext context, int index) {
-    WinnerWidget widget = new WinnerWidget(history[index]);
+  getListItem(BuildContext context, int index, bool isTheHandBookmarked) {
+    WinnerWidget winnerWidget = new WinnerWidget(widget.history[index]);
     return Theme(
       data: Theme.of(context).copyWith(
         cardColor: AppColors.popUpMenuColor,
@@ -292,7 +353,7 @@ class PlayedHandsScreen extends StatelessWidget {
                           SizedBox(
                             width: 16,
                           ),
-                          widget,
+                          winnerWidget,
                         ],
                       ),
                       Divider(
@@ -307,7 +368,7 @@ class PlayedHandsScreen extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              "Hand #${history[index].handNum}",
+                              "Hand #${widget.history[index].handNum}",
                               style: TextStyle(
                                 color: Colors.grey,
                                 fontSize: 12,
@@ -318,12 +379,18 @@ class PlayedHandsScreen extends StatelessWidget {
                               children: [
                                 InkWell(
                                   onTap: () async {
-                                    await _saveStarredHand(context, index);
+                                    if (isTheHandBookmarked) {
+                                      await _removeBookmark(index);
+                                    } else {
+                                      await _bookmarkdHand(index);
+                                    }
                                   },
                                   child: Container(
                                     alignment: Alignment.bottomRight,
                                     child: Icon(
-                                      Icons.star_outline,
+                                      isTheHandBookmarked
+                                          ? Icons.star
+                                          : Icons.star_outline,
                                       color: Colors.white,
                                       size: 20,
                                     ),
@@ -332,7 +399,7 @@ class PlayedHandsScreen extends StatelessWidget {
                                 SizedBox(width: 20),
                                 InkWell(
                                   onTap: () async {
-                                    await _shareHandWithClub(context, index);
+                                    await _shareHandWithClub(index);
                                   },
                                   child: Container(
                                     alignment: Alignment.bottomRight,
@@ -398,6 +465,13 @@ class PlayedHandsScreen extends StatelessWidget {
             ),
           ),
         ));
+  }
+
+  bool _isTheHandBookmarked(int handNum) {
+    // log("HAND UNDER TEST : $handNum");
+    final index = list.indexWhere((element) => element.handNum == handNum);
+    if (index < 0) return false;
+    return true;
   }
 }
 
@@ -528,6 +602,7 @@ class WinnerWidget extends StatelessWidget {
 
   Widget getWinnerWidget(
       {String name, List<int> cards, double pot, bool showCards}) {
+    // log("IN WINNER : ${cards} ${showCards}");
     return Row(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.start,

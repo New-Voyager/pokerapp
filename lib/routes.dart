@@ -1,5 +1,8 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:pokerapp/screens/club_screen/bookmarked_hands.dart';
+import 'package:pokerapp/screens/club_screen/botscripts.dart';
 import 'package:pokerapp/screens/game_screens/game_history_details_view/stack_details_view.dart';
 import 'package:provider/provider.dart';
 
@@ -77,6 +80,8 @@ class Routes {
   static const String chatScreen = '/chatScreen';
   // Bookmarks Screen
   static const String bookmarked_hands = '/bookmarked_hands';
+  // BotScripts screen
+  static const String bot_scripts = '/bot_scripts';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -365,10 +370,22 @@ class Routes {
 
       case bookmarked_hands:
         var args = settings.arguments as dynamic;
+        log("ARGS : ${args.toString()}");
+        return _getPageRoute(
+          routeName: settings.name,
+          viewToShow: BookmarkedHands(
+            clubCode: args.toString(),
+          ),
+        );
+
+      case bot_scripts:
+        var args = settings.arguments as dynamic;
 
         return _getPageRoute(
           routeName: settings.name,
-          viewToShow: BookmarkedHands(),
+          viewToShow: BotScriptsScreen(
+            clubModel: args,
+          ),
         );
 
       default:

@@ -84,6 +84,13 @@ services:
       REDIS_HOST: redis
       REDIS_PORT: 6379
       REDIS_DB: 0
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: game
+      POSTGRES_PASSWORD: game
+      POSTGRES_DB: game
+    volumes:
+      - ../botrunner_scripts:/app/botrunner_scripts
 
 volumes:
   db-data:

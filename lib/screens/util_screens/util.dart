@@ -23,6 +23,7 @@ showAlertDialog(BuildContext context, String title, String message) {
   // set up the AlertDialog
   AlertDialog alert = AlertDialog(
     title: Text(title),
+    backgroundColor: AppColors.cardBackgroundColor,
     content: Text(message),
     actions: [
       okButton,

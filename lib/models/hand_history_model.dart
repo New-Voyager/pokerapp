@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
@@ -18,6 +19,8 @@ class Winner {
     Winner winner = new Winner();
     winner.id = int.parse(jsonData['playerId'].toString());
     winner.name = item.playerName(winner.id);
+    winner.showCards = showCards;
+    winner.low = low;
     if (showCards) {
       winner.showCards = true;
       winner.cards = List<int>.from(jsonData['cards']);
@@ -73,6 +76,7 @@ class HandHistoryListModel extends ChangeNotifier {
         }
       }
       bool showCards = false;
+
       String wonAt = hand['wonAt'].toString();
       if (wonAt == 'SHOW_DOWN') {
         showCards = true;

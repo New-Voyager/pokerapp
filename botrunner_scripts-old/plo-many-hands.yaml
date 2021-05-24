@@ -1,5 +1,0 @@
-setup-script: botrunner_scripts/setup/plo-bots-full-table.yaml
-game:
-  auto-play: true
-game-title: "Full Table NLH"
-reset-db: true
