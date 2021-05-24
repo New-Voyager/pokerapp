@@ -290,4 +290,7 @@ class AppStyles {
     fontSize: 12.0,
     fontFamily: AppAssets.fontFamilyLato,
   );
+
+  static final profitStyle = TextStyle(color: Colors.green[400]);
+  static final lossStyle = TextStyle(color: Colors.red[800]);
 }

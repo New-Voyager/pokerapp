@@ -745,7 +745,10 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
                   Navigator.pushNamed(
                     context,
                     Routes.table_result,
-                    arguments: _gameDetail.gameCode,
+                    arguments: {
+                      "gameCode": _gameDetail.gameCode,
+                      "clubCode": widget.clubCode
+                    },
                   );
                 }),
             Padding(

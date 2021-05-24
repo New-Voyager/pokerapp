@@ -216,10 +216,12 @@ class Routes {
         );
 
       case table_result:
-        var gameCode = settings.arguments as String;
+        var args = settings.arguments as dynamic;
+        var gameCode = args["gameCode"];
+        var clubCode = args["clubCode"];
         return _getPageRoute(
           routeName: settings.name,
-          viewToShow: TableResultScreen(gameCode),
+          viewToShow: TableResultScreen(gameCode, clubCode),
         );
 
       case game_history_detail_view:

@@ -3,10 +3,8 @@ import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/models/bookmarkedHands_model.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
-import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_winners_view.dart';
@@ -220,7 +218,7 @@ class _BookmarkedHandsState extends State<BookmarkedHands> {
                                                 onTap: () async {
                                                   await _replayHand(
                                                     list[index].handlogData,
-                                                  );                                                  
+                                                  );
                                                 },
                                                 child: Container(
                                                   alignment:
