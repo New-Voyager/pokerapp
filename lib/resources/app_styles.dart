@@ -43,8 +43,8 @@ class AppStyles {
       bottomRight: Radius.circular(16),
     ),
   );
-  static const stackPopUpTextStyle = TextStyle(
-    color: AppColors.lightGrayColor,
+  static final stackPopUpTextStyle = TextStyle(
+    color: Colors.blue[900],
     fontSize: 12.0,
     fontFamily: AppAssets.fontFamilyLato,
     fontWeight: FontWeight.w400,

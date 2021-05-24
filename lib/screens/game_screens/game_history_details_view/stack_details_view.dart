@@ -16,6 +16,7 @@ import 'dart:convert';
 
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/routes.dart';
+import 'package:pokerapp/utils/utils.dart';
 
 class PointsLineChart extends StatefulWidget {
   final GameHistoryDetailModel gameDetail;
@@ -72,6 +73,8 @@ class _PointsLineChart extends State<PointsLineChart> {
 
   @override
   Widget build(BuildContext context) {
+    final screen = Screen(context);
+    _tapPosition = Offset((screen.width() - 100) / 2, screen.height() - 100);
     return !loadingDone
         ? Center(child: CircularProgressIndicator())
         : Scaffold(
@@ -98,36 +101,46 @@ class _PointsLineChart extends State<PointsLineChart> {
                     children: [
                       GestureDetector(
                         onTapDown: (details) {
-                          print("ONTAP : ");
                           setState(() {
-                            _tapPosition = Offset(details.localPosition.dx,
-                                details.localPosition.dy);
+                            debugPrint(
+                                '=====================\n\nStack item tapped');
+                            // _tapPosition = Offset(details.localPosition.dx,
+                            //     details.localPosition.dy);
                           });
                         },
-                        child: charts.LineChart(
-                          _createSampleData(),
-                          animate: false,
-                          behaviors: [
-                            // new charts.SlidingViewport(),
-                            charts.PanAndZoomBehavior(),
-                            charts.SelectNearest()
-                          ],
-                          selectionModels: [
-                            charts.SelectionModelConfig(
-                                type: charts.SelectionModelType.info,
-                                changedListener: (charts.SelectionModel model) {
-                                  print("cccUpdate Refresh: ${refreshcount++}");
-                                  if (model.hasDatumSelection) {
-                                    setState(() {
-                                      _selectionModel = model;
-                                      _popUpVisible = true;
-                                    });
-                                  }
-                                })
-                          ],
-                          defaultRenderer: new charts.LineRendererConfig(
-                            includePoints: true,
-                            radiusPx: 5,
+                        child: GestureDetector(
+                          onTapDown: (details) {
+                            debugPrint(
+                                '=====================\n\LineChart item tapped');
+                          },
+                          child: charts.LineChart(
+                            _createSampleData(),
+                            animate: false,
+                            behaviors: [
+                              // new charts.SlidingViewport(),
+                              charts.PanAndZoomBehavior(),
+                              charts.SelectNearest(),
+                            ],
+                            selectionModels: [
+                              charts.SelectionModelConfig(
+                                  type: charts.SelectionModelType.info,
+                                  changedListener:
+                                      (charts.SelectionModel model) {
+                                    if (model.hasDatumSelection) {
+                                      setState(() {
+                                        debugPrint(
+                                            '\n circle tapped: ${model.hasDatumSelection}\n');
+                                        debugPrint('=====================');
+                                        _selectionModel = model;
+                                        _popUpVisible = true;
+                                      });
+                                    }
+                                  })
+                            ],
+                            defaultRenderer: new charts.LineRendererConfig(
+                              includePoints: true,
+                              radiusPx: 5,
+                            ),
                           ),
                         ),
                       ),
@@ -161,22 +174,42 @@ class _PointsLineChart extends State<PointsLineChart> {
   }
 
   _buildPopUp(BuildContext context) {
-    print("Building pipup");
     double x = _tapPosition.dx, y = _tapPosition.dy;
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
     PlayerStackChartModel currentStack = _selectionModel.selectedDatum[0].datum;
-
+    debugPrint('selected hand: ${currentStack.handNum}');
     if (_tapPosition.dx > width / 2) {
       x = _tapPosition.dx - 100.0;
     }
     if (_tapPosition.dy > height / 2) {
-      y = _tapPosition.dy - 50.0;
+      y = _tapPosition.dy - 80.0;
     }
 
     if (currentStack.neutral) {
-      print("Netural item selected");
+      debugPrint("Netural item selected");
       return Container();
+    }
+
+    BoxDecoration boxDecoration;
+    Color textColor = Colors.white;
+    if (currentStack.red) {
+      boxDecoration = BoxDecoration(
+          color: Colors.red[300],
+          border: Border.all(
+            color: Colors.red[500],
+          ),
+          borderRadius: BorderRadius.all(Radius.circular(20)));
+      textColor = Colors.red[900];
+    } else {
+      boxDecoration = BoxDecoration(
+          color: Colors.green[200],
+          border: Border.all(
+            color: Colors.green[500],
+          ),
+          borderRadius: BorderRadius.all(Radius.circular(20)));
+
+      textColor = Colors.green[900];
     }
 
     return Positioned(
@@ -185,14 +218,17 @@ class _PointsLineChart extends State<PointsLineChart> {
       child: InkWell(
         onTap: () {
           //HandLogModel handLogModel = HandLogModel("CG-7OF3IOXKBWJLDD", 1);
-          Navigator.pushNamed(context, Routes.hand_log_view,
-              arguments: {"gameCode": "CG-7OF3IOXKBWJLDD", "handNum": 1});
+          Navigator.pushNamed(context, Routes.hand_log_view, arguments: {
+            "gameCode": widget.gameDetail.gameCode,
+            "handNum": currentStack.handNum
+          });
         },
         child: Container(
           padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
           height: 60,
           width: 120,
-          color: Colors.black,
+          //color: currentStack.color,
+          decoration: boxDecoration,
           child: FittedBox(
             fit: BoxFit.fitWidth,
             child: Row(
@@ -224,12 +260,12 @@ class _PointsLineChart extends State<PointsLineChart> {
                       currentStack.green
                           ? Icons.expand_less
                           : Icons.expand_more,
-                      color: currentStack.color,
+                      color: textColor, //currentStack.color,
                     ),
                     Text(
                       "${DataFormatter.chipsFormat(currentStack.difference)}",
                       style: AppStyles.stackPopUpTextStyle.copyWith(
-                        color: currentStack.color,
+                        color: textColor,
                       ),
                     ),
                   ],
@@ -272,7 +308,8 @@ class PlayerStackChartModel {
     color = Colors.blueGrey;
     if (absDiff > tenPer) {
       neutral = false;
-      log('stack view: handNum: $handNum, before: $before after: $after diff: $difference tenPercent: $tenPer');
+      debugPrint(
+          'stack view: handNum: $handNum, before: $before after: $after diff: $difference tenPercent: $tenPer');
       if (difference < 0) {
         red = true;
         color = Colors.red;
@@ -296,7 +333,8 @@ class PlayerStackChartModel {
     color = Colors.blueGrey;
     if (absDiff > tenPer) {
       neutral = false;
-      log('stack view: handNum: $handNum, before: $before after: $after diff: $difference tenPercent: $tenPer');
+      debugPrint(
+          'stack view: handNum: $handNum, before: $before after: $after diff: $difference tenPercent: $tenPer');
       if (difference < 0) {
         red = true;
         color = Colors.red;

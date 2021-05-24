@@ -1,23 +1,23 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/enums/game_stages.dart';
 import 'package:pokerapp/models/bookmarkedHands_model.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
-import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
-import 'package:pokerapp/screens/club_screen/bookmarked_hands.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_log_header_view.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_stage_view.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_winners_view.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/handlog_action.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/handlog_showdown.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/handlog_summary.dart';
+import 'package:pokerapp/screens/util_screens/replay_hand_dialog/replay_hand_dialog.dart';
 import 'package:pokerapp/services/app/hand_service.dart';
 import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
+import 'package:pokerapp/utils/loading_utils.dart';
 
 class HandLogView extends StatefulWidget {
   final String gameCode;
@@ -102,6 +102,28 @@ class _HandLogViewState extends State<HandLogView> {
     }
   }
 
+  _replayHand() async {
+    final handNum = widget.handNum;
+    final gameCode = widget.gameCode;
+    Future.delayed(Duration(milliseconds: 10), () async {
+      try {
+        ConnectionDialog.show(
+            context: context, loadingText: "Loading hand ...");
+        final handLogModel = await HandService.getHandLog(gameCode, handNum);
+        Navigator.pop(context);
+
+        ReplayHandDialog.show(
+          context: context,
+          hand: jsonDecode(handLogModel.handData),
+          playerID: handLogModel.myInfo.id,
+        );
+      } catch (err) {
+        // ignore the error
+        log('error: ${err.toString()}');
+      }
+    });
+  }
+
   bool _isTheHandBookmarked(int handNum) {
     // log("HAND UNDER TEST : $handNum");
     final index = list.indexWhere((element) => element.handNum == handNum);
@@ -165,9 +187,7 @@ class _HandLogViewState extends State<HandLogView> {
                       children: [
                         GestureDetector(
                           onTap: () async {
-                            // TODO: replay integration
-
-                            Alerts.showTextNotification(text: "Replay hand");
+                            _replayHand();
                           },
                           child: Container(
                             decoration: BoxDecoration(
