@@ -370,7 +370,7 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
           .widget
           .players
           .players
-          .firstWhere((p) => p.playerId == currPlayerID);
+          .firstWhere((p) => p.playerId == currPlayerID, orElse: () => null);
 
     final maxPlayers = gameState.gameInfo.maxPlayers;
     index = -1;
