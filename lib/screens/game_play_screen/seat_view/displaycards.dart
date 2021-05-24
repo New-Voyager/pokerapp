@@ -42,19 +42,15 @@ class DisplayCardsWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool showDown = this.status == FooterStatus.Result;
-    final seatPlayerCards = seat.player.cards;
+    final seatPlayerCards = seat.player.cards + seat.player.cards;
 
-    return Container(
-      height: 19.50 * 3,
-      child: AnimatedSwitcher(
-        duration: AppConstants.fastAnimationDuration,
-        child:
-            showDown && (seatPlayerCards != null && seatPlayerCards.isNotEmpty)
-                ? StackCardView(
-                    cards: _getCards(seat.player.cards),
-                  )
-                : SizedBox.shrink(),
-      ),
+    return AnimatedSwitcher(
+      duration: AppConstants.fastAnimationDuration,
+      child: showDown && (seatPlayerCards != null && seatPlayerCards.isNotEmpty)
+          ? StackCardView(
+              cards: _getCards(seatPlayerCards),
+            )
+          : SizedBox.shrink(),
     );
   }
 }

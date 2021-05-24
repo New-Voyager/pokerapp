@@ -88,12 +88,12 @@ class ReplayHandScreenUtils {
   }) async {
     assert(playerID != null);
 
+    final s = 'assets/sample-data/handlog/plo/onewinner.json';
+
     /* fixme: for now, use handlog data from sample */
     /* todo: the network call can be made here */
 
-    String dataString = await rootBundle.loadString(
-      'assets/sample-data/handlog/holdem/flop.json',
-    );
+    String dataString = await rootBundle.loadString(s);
 
     if (assetFile != null) {
       dataString = await rootBundle.loadString(assetFile);
@@ -110,9 +110,7 @@ class ReplayHandScreenUtils {
       // fetch hand using the graphql API
 
     } else {
-      String dataString = await rootBundle.loadString(
-        'assets/sample-data/handlog/holdem/flop.json',
-      );
+      String dataString = await rootBundle.loadString(s);
 
       if (assetFile != null) {
         dataString = await rootBundle.loadString(assetFile);

@@ -162,7 +162,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       gameMessagingService: gameComService.gameMessaging,
     );
 
-    if (_gameInfoModel.audioConfEnabled) {
+    if (_gameInfoModel?.audioConfEnabled ?? false) {
       // initialize agora
       // agora = Agora(
       //     gameCode: widget.gameCode,
@@ -401,7 +401,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
                       _gameContextObj.gameUpdateService.loop();
 
                       _gameContextObj.gameComService.gameToPlayerChannelStream
-                          .listen((nats.Message message) {
+                          ?.listen((nats.Message message) {
                         if (!_gameContextObj.gameComService.active) return;
 
                         // log('gameToPlayerChannel(${message.subject}): ${message.string}');
@@ -477,10 +477,13 @@ class _GamePlayScreenState extends State<GamePlayScreen>
                         /* main view */
                         Column(
                           children: [
-                            _gameState.audioConfEnabled
-                                ? Consumer<JanusEngine>(builder: (_, __, ___) {
-                                    return _gameState.janusEngine.audioWidget();
-                                  })
+                            _gameState?.audioConfEnabled ?? false
+                                ? Consumer<JanusEngine>(
+                                    builder: (_, __, ___) {
+                                      return _gameState.janusEngine
+                                          .audioWidget();
+                                    },
+                                  )
                                 : SizedBox.shrink(),
 
                             // header section
