@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:pokerapp/models/game_history_model.dart';
@@ -359,8 +361,11 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
       print(_gameDetail.stack);
     }
     return GestureDetector(
-      onTap: () => Navigator.pushNamed(context, Routes.pointsLineChart,
-          arguments: _gameDetail),
+      onTap: () {
+        log('Opening points chart');
+        Navigator.pushNamed(context, Routes.pointsLineChart,
+            arguments: _gameDetail);
+      },
       child: Container(
         height: 150.0,
         decoration: BoxDecoration(

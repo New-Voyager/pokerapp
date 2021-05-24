@@ -134,7 +134,7 @@ class HighHandWinner {
 class GameHistoryDetailModel extends ChangeNotifier {
   final String gameCode;
   final bool isOwner;
-  List<PlayerStack> stack = new List<PlayerStack>();
+  List<PlayerStack> stack = [];
   int preflopHands;
   int flopHands;
   int turnHands;
@@ -153,8 +153,8 @@ class GameHistoryDetailModel extends ChangeNotifier {
   double profit;
   bool playedGame = false;
 
-  List<HandData> handsData = new List<HandData>();
-  List<HighHandWinner> hhWinners = new List<HighHandWinner>();
+  List<HandData> handsData = [];
+  List<HighHandWinner> hhWinners = [];
   dynamic jsonData;
 
   GameHistoryDetailModel(this.gameCode, this.isOwner);

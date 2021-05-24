@@ -3,13 +3,12 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_history_model.dart';
-import 'package:pokerapp/models/hand_log_model.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 
 import 'package:charts_flutter/flutter.dart' as charts;
 
 import 'package:flutter/services.dart' show rootBundle;
-import 'package:pokerapp/resources/app_strings.dart';
+import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/formatter.dart';
 
@@ -56,6 +55,16 @@ class _PointsLineChart extends State<PointsLineChart> {
 
   _loadStackData() async {
     stackList.clear();
+    final data = await GameService.getStackStat(widget.gameDetail.gameCode);
+    if (data.length >= 1) {
+      // set handnum 0 with starting stack
+      dynamic item0 = data[0];
+      stackList.add(new PlayerStackChartModel(item0, first: true));
+
+      for (dynamic item in data) {
+        stackList.add(new PlayerStackChartModel(item));
+      }
+    }
     setState(() {
       loadingDone = true;
     });
@@ -114,35 +123,6 @@ class _PointsLineChart extends State<PointsLineChart> {
                                       _popUpVisible = true;
                                     });
                                   }
-                                  // Navigator.push(
-                                  //     context,
-                                  //     MaterialPageRoute(
-                                  //         builder: (_) =>
-                                  //             HighHandLogView(widget.gameDetail.gameCode)));
-/* 
-                                              showMenu(
-                                                  context: context,
-                                                  position: RelativeRect.fromLTRB(
-                                                      _tapPosition.dx,
-                                                      _tapPosition.dy,
-                                                      MediaQuery.of(context).size.width -
-                                                          _tapPosition.dx,
-                                                      MediaQuery.of(context).size.height -
-                                                          _tapPosition.dy),
-                                                  items: [
-                                                   PopupMenuItem(
-                                                     textStyle: TextStyle(backgroundColor: Colors.black),
-
-                                                      child: Container(color : Colors.yellow, child: Text("Helow"),), ),
-                                                    
-                                                    PopupMenuItem(child: Text("adfs")),
-                                                    PopupMenuItem(child: Text("asdfdsf")),
-                                                  ]); */
-                                  /* print(model.selectedSeries[0]
-                                      .measureFn(model.selectedDatum[0].index));
-
-                                  print(model.selectedSeries[0]
-                                      .domainFn(model.selectedDatum[0].index)); */
                                 })
                           ],
                           defaultRenderer: new charts.LineRendererConfig(
@@ -274,10 +254,15 @@ class PlayerStackChartModel {
   bool red;
   bool neutral;
   Color color;
-  PlayerStackChartModel(var e) {
+
+  PlayerStackChartModel(var e, {bool first: false}) {
     handNum = e["handNum"];
     before = double.parse(e["before"].toString());
-    after = double.parse(e["after"].toString());
+    if (first) {
+      after = double.parse(e["before"].toString());
+    } else {
+      after = double.parse(e["after"].toString());
+    }
     difference = (after - before);
     var absDiff = difference.abs();
     tenPer = (before / 10).abs();
