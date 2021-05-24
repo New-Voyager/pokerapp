@@ -3,13 +3,13 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_history_model.dart';
-import 'package:pokerapp/models/hand_log_model.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 
 import 'package:charts_flutter/flutter.dart' as charts;
 
 import 'package:flutter/services.dart' show rootBundle;
-import 'package:pokerapp/resources/app_strings.dart';
+import 'package:pokerapp/services/app/game_service.dart';
+import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/formatter.dart';
 
 import 'dart:convert';
@@ -29,7 +29,7 @@ class _PointsLineChart extends State<PointsLineChart> {
   static dynamic jsonData;
   bool loadingDone = false;
   Offset _tapPosition = Offset(100, 100);
-  List<PlayerStack> stackList = [];
+  List<PlayerStackChartModel> stackList = [];
   bool _popUpVisible = false;
   charts.SelectionModel<num> _selectionModel;
   int refreshcount = 1;
@@ -37,7 +37,7 @@ class _PointsLineChart extends State<PointsLineChart> {
   @override
   void initState() {
     super.initState();
-    _fetchData();
+    TestService.isTesting ? _fetchData() : _loadStackData();
   }
 
   _fetchData() async {
@@ -46,10 +46,27 @@ class _PointsLineChart extends State<PointsLineChart> {
         .then((data) {
       jsonData = json.decode(data);
       final List playerStack = jsonData['stackStat'];
-      stackList = playerStack.map((e) => new PlayerStack(e)).toList();
+      stackList = playerStack.map((e) => new PlayerStackChartModel(e)).toList();
       setState(() {
         loadingDone = true;
       });
+    });
+  }
+
+  _loadStackData() async {
+    stackList.clear();
+    final data = await GameService.getStackStat(widget.gameDetail.gameCode);
+    if (data.length >= 1) {
+      // set handnum 0 with starting stack
+      dynamic item0 = data[0];
+      stackList.add(new PlayerStackChartModel(item0, first: true));
+
+      for (dynamic item in data) {
+        stackList.add(new PlayerStackChartModel(item));
+      }
+    }
+    setState(() {
+      loadingDone = true;
     });
   }
 
@@ -57,7 +74,7 @@ class _PointsLineChart extends State<PointsLineChart> {
   Widget build(BuildContext context) {
     return !loadingDone
         ? Center(child: CircularProgressIndicator())
-        : new Scaffold(
+        : Scaffold(
             backgroundColor: AppColors.screenBackgroundColor,
             appBar: AppBar(
                 leading: IconButton(
@@ -106,35 +123,6 @@ class _PointsLineChart extends State<PointsLineChart> {
                                       _popUpVisible = true;
                                     });
                                   }
-                                  // Navigator.push(
-                                  //     context,
-                                  //     MaterialPageRoute(
-                                  //         builder: (_) =>
-                                  //             HighHandLogView(widget.gameDetail.gameCode)));
-/* 
-                                              showMenu(
-                                                  context: context,
-                                                  position: RelativeRect.fromLTRB(
-                                                      _tapPosition.dx,
-                                                      _tapPosition.dy,
-                                                      MediaQuery.of(context).size.width -
-                                                          _tapPosition.dx,
-                                                      MediaQuery.of(context).size.height -
-                                                          _tapPosition.dy),
-                                                  items: [
-                                                   PopupMenuItem(
-                                                     textStyle: TextStyle(backgroundColor: Colors.black),
-
-                                                      child: Container(color : Colors.yellow, child: Text("Helow"),), ),
-                                                    
-                                                    PopupMenuItem(child: Text("adfs")),
-                                                    PopupMenuItem(child: Text("asdfdsf")),
-                                                  ]); */
-                                  /* print(model.selectedSeries[0]
-                                      .measureFn(model.selectedDatum[0].index));
-
-                                  print(model.selectedSeries[0]
-                                      .domainFn(model.selectedDatum[0].index)); */
                                 })
                           ],
                           defaultRenderer: new charts.LineRendererConfig(
@@ -155,18 +143,18 @@ class _PointsLineChart extends State<PointsLineChart> {
   }
 
   /// Create one series with sample hard coded data.
-  List<charts.Series<PlayerStack, int>> _createSampleData() {
+  List<charts.Series<PlayerStackChartModel, int>> _createSampleData() {
     return [
-      new charts.Series<PlayerStack, int>(
+      new charts.Series<PlayerStackChartModel, int>(
           id: 'Stack',
           //colorFn: (_, __) => charts.ColorUtil.fromDartColor(Colors.transparent),
-          fillColorFn: (PlayerStack stat, __) => (stat.neutral)
+          fillColorFn: (PlayerStackChartModel stat, __) => (stat.neutral)
               ? charts.ColorUtil.fromDartColor(Colors.transparent)
               : stat.red
                   ? charts.ColorUtil.fromDartColor(Colors.red)
                   : charts.ColorUtil.fromDartColor(Colors.green),
-          domainFn: (PlayerStack game, _) => game.handNum,
-          measureFn: (PlayerStack game, _) => game.after,
+          domainFn: (PlayerStackChartModel game, _) => game.handNum,
+          measureFn: (PlayerStackChartModel game, _) => game.after,
           data: stackList,
           seriesColor: charts.ColorUtil.fromDartColor(AppColors.appAccentColor))
     ];
@@ -177,7 +165,7 @@ class _PointsLineChart extends State<PointsLineChart> {
     double x = _tapPosition.dx, y = _tapPosition.dy;
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
-    PlayerStack currentStack = _selectionModel.selectedDatum[0].datum;
+    PlayerStackChartModel currentStack = _selectionModel.selectedDatum[0].datum;
 
     if (_tapPosition.dx > width / 2) {
       x = _tapPosition.dx - 100.0;
@@ -256,7 +244,7 @@ class _PointsLineChart extends State<PointsLineChart> {
 }
 
 /// Sample linear data type.
-class PlayerStack {
+class PlayerStackChartModel {
   int handNum;
   double before;
   double after;
@@ -266,10 +254,39 @@ class PlayerStack {
   bool red;
   bool neutral;
   Color color;
-  PlayerStack(var e) {
+
+  PlayerStackChartModel(var e, {bool first: false}) {
     handNum = e["handNum"];
     before = double.parse(e["before"].toString());
-    after = double.parse(e["after"].toString());
+    if (first) {
+      after = double.parse(e["before"].toString());
+    } else {
+      after = double.parse(e["after"].toString());
+    }
+    difference = (after - before);
+    var absDiff = difference.abs();
+    tenPer = (before / 10).abs();
+    neutral = true;
+    red = false;
+    green = false;
+    color = Colors.blueGrey;
+    if (absDiff > tenPer) {
+      neutral = false;
+      log('stack view: handNum: $handNum, before: $before after: $after diff: $difference tenPercent: $tenPer');
+      if (difference < 0) {
+        red = true;
+        color = Colors.red;
+      } else {
+        green = true;
+        color = Colors.green;
+      }
+    }
+  }
+
+  PlayerStackChartModel.fromPlayerStack(PlayerStack stack) {
+    handNum = stack.handNum;
+    before = 10;
+    after = before + double.parse(stack.balance.toString());
     difference = (after - before);
     var absDiff = difference.abs();
     tenPer = (before / 10).abs();

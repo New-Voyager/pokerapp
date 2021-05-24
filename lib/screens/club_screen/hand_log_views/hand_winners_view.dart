@@ -95,7 +95,7 @@ class HandWinnersView extends StatelessWidget {
                           itemCount: potWinnersList[index].hiWinners.length,
                           shrinkWrap: true,
                           itemBuilder: (context, winnerIndex) {
-                            int subCards = -1;
+                            int subCards = 0;
                             GameStages stageAtWon =
                                 handLogModel.hand.handLog.wonAt;
 
@@ -161,15 +161,18 @@ class HandWinnersView extends StatelessWidget {
                                               ),
                                             ),
                                             StackCardView01(
-                                              totalCards:
-                                                  handLogModel.hand.boardCards,
-                                              cardsToHighlight:
-                                                  potWinnersList[index]
+                                              totalCards: subCards >= 5
+                                                  ? handLogModel.hand.boardCards
+                                                  : handLogModel.hand.boardCards
+                                                      .sublist(0, subCards),
+                                              needToShowEmptyCards: true,
+                                              cardsToHighlight: subCards == 6
+                                                  ? potWinnersList[index]
                                                       .hiWinners[winnerIndex]
-                                                      .winningCards,
-                                              show: handLogModel
-                                                      .hand.handLog.wonAt ==
-                                                  GameStages.SHOWDOWN,
+                                                      .winningCards
+                                                  : handLogModel
+                                                      .hand.boardCards,
+                                              show: true,
                                             ),
                                           ],
                                         )
