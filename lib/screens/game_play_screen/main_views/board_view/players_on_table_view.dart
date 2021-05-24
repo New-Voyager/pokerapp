@@ -366,11 +366,15 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
     if (TestService.isTesting)
       me = this.widget.players.me;
     else
-      me = this
-          .widget
-          .players
-          .players
-          .firstWhere((p) => p.playerId == currPlayerID);
+      try {
+        me = this
+            .widget
+            .players
+            .players
+            .firstWhere((p) => p.playerId == currPlayerID);
+      } catch (_) {
+        me = this.widget.players.me;
+      }
 
     final maxPlayers = gameState.gameInfo.maxPlayers;
     index = -1;
@@ -399,6 +403,9 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
         );
       },
     ).toList();
+
+    print('seats: $seats');
+
     return seats;
   }
 
@@ -489,6 +496,11 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
   }
 
   Map<int, SeatPos> getSeatLocations(int maxSeats) {
+    assert(maxSeats != 1);
+    assert(maxSeats != 3);
+    assert(maxSeats != 5);
+    assert(maxSeats != 7);
+
     switch (maxSeats) {
       case 9:
         return {
@@ -555,8 +567,13 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
   }) {
     seatPosIndex++;
 
+    print('maxPlayers: $maxPlayers');
+
     //log('board width: $widthOfBoard height: $heightOfBoard');
     Map<int, SeatPos> seatPosLoc = getSeatLocations(maxPlayers);
+
+    print('seatPosLoc: $seatPosLoc');
+
     SeatPos seatPos = seatPosLoc[seatPosIndex];
     SeatPosAttribs seatAttribs = boardAttribs.getSeatPosAttrib(seatPos);
     if (seatAttribs == null) {
