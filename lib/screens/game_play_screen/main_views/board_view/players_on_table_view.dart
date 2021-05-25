@@ -567,12 +567,12 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
   }) {
     seatPosIndex++;
 
-    print('maxPlayers: $maxPlayers');
+    print('1123maxPlayers: $maxPlayers');
 
     //log('board width: $widthOfBoard height: $heightOfBoard');
     Map<int, SeatPos> seatPosLoc = getSeatLocations(maxPlayers);
 
-    print('seatPosLoc: $seatPosLoc');
+    print('1123seatPosLoc: $seatPosLoc');
 
     SeatPos seatPos = seatPosLoc[seatPosIndex];
     SeatPosAttribs seatAttribs = boardAttribs.getSeatPosAttrib(seatPos);

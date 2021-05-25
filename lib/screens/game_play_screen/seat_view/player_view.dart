@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'dart:developer';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
@@ -12,6 +14,7 @@ import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/boar
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/screens/game_play_screen/game_play_screen_util_methods.dart';
 import 'package:pokerapp/widgets/cards/hidden_card_view.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/displaycards.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/profile_popup.dart';
@@ -30,7 +33,7 @@ import 'open_seat.dart';
 /* this contains the player positions <seat-no, position> mapping */
 // Map<int, Offset> playerPositions = Map();
 
-class PlayerView extends StatelessWidget {
+class PlayerView extends StatefulWidget {
   final Seat seat;
   final Alignment cardsAlignment;
   final Function(int) onUserTap;
@@ -50,12 +53,40 @@ class PlayerView extends StatelessWidget {
     this.cardsAlignment = Alignment.centerRight,
   }) : super(key: key);
 
+  @override
+  _PlayerViewState createState() => _PlayerViewState();
+}
+
+class _PlayerViewState extends State<PlayerView>
+    with SingleTickerProviderStateMixin {
+  AnimationController _animationController;
+
+  @override
+  void initState() {
+    _animationController = AnimationController(
+      vsync: this,
+      lowerBound: 0.0,
+      upperBound: 1.0,
+      duration: Duration(milliseconds: 200),
+    );
+    _animationController.addListener(() {
+      // print("11234 value : ${_animationController.value}");
+      setState(() {});
+    });
+    super.initState();
+  }
+
   onTap(BuildContext context) async {
-    log('seat ${seat.serverSeatPos} is tapped');
-    if (seat.isOpen) {
+    // log('11234seat ${widget.seat.serverSeatPos} is tapped');
+    if (widget.seat.isOpen) {
       // the player tapped to sit-in
-      onUserTap(seat.serverSeatPos);
+      widget.onUserTap(widget.seat.serverSeatPos);
     } else {
+      // log('11234seat starting animation');
+
+      _animationController.value > 0
+          ? _animationController.reverse()
+          : _animationController.forward();
       // the player tapped to see the player profile
       final gameState = Provider.of<GameState>(
         context,
@@ -68,38 +99,38 @@ class PlayerView extends StatelessWidget {
         return;
       }
 
-      final data = await showModalBottomSheet(
-        context: context,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(
-            top: Radius.circular(10),
-          ),
-        ),
-        builder: (context) {
-          return ProfilePopup(
-            seat: seat,
-          );
-        },
-      );
+      // final data = await showModalBottomSheet(
+      //   context: context,
+      //   shape: RoundedRectangleBorder(
+      //     borderRadius: BorderRadius.vertical(
+      //       top: Radius.circular(10),
+      //     ),
+      //   ),
+      //   builder: (context) {
+      //     return ProfilePopup(
+      //       seat: widget.seat,
+      //     );
+      //   },
+      // );
 
-      if (data == null) return;
+      // if (data == null) return;
 
-      gameComService.gameMessaging.sendAnimation(
-        me.seatNo,
-        seat.serverSeatPos,
-        data['animationID'],
-      );
+      // widget.gameComService.gameMessaging.sendAnimation(
+      //   me.seatNo,
+      //   widget.seat.serverSeatPos,
+      //   data['animationID'],
+      // );
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    seat.key = GlobalKey(
-      debugLabel: 'Seat:${seat.serverSeatPos}',
+    widget.seat.key = GlobalKey(
+      debugLabel: 'Seat:${widget.seat.serverSeatPos}',
     ); //this.globalKey;
 
-    bool openSeat = seat.isOpen;
-    bool isMe = seat.isMe;
+    bool openSeat = widget.seat.isOpen;
+    bool isMe = widget.seat.isMe;
     FooterStatus footerStatus = Provider.of<ValueNotifier<FooterStatus>>(
       context,
       listen: false,
@@ -112,7 +143,8 @@ class PlayerView extends StatelessWidget {
 
     // if open seat, just show open seat widget
     if (openSeat) {
-      return OpenSeat(seatPos: seat.serverSeatPos, onUserTap: this.onUserTap);
+      return OpenSeat(
+          seatPos: widget.seat.serverSeatPos, onUserTap: this.widget.onUserTap);
     }
 
     final GameInfoModel gameInfo = Provider.of<ValueNotifier<GameInfoModel>>(
@@ -123,22 +155,22 @@ class PlayerView extends StatelessWidget {
     bool isDealer = false;
 
     if (!openSeat) {
-      if (seat.player.playerType == TablePosition.Dealer) {
+      if (widget.seat.player.playerType == TablePosition.Dealer) {
         isDealer = true;
       }
     }
 
     final gameState = GameState.getState(context);
     final boardAttributes = gameState.getBoardAttributes(context);
-    seat.betWidgetUIKey = GlobalKey();
+    widget.seat.betWidgetUIKey = GlobalKey();
 
-    bool animate = seat.player.action.animateAction;
+    bool animate = widget.seat.player.action.animateAction;
 
     Widget chipAmountWidget = ChipAmountWidget(
       animate: animate,
       potKey: boardAttributes.getPotsKey(0),
-      key: seat.betWidgetUIKey,
-      seat: seat,
+      key: widget.seat.betWidgetUIKey,
+      seat: widget.seat,
       boardAttributesObject: boardAttributes,
       gameInfo: gameInfo,
     );
@@ -152,17 +184,63 @@ class PlayerView extends StatelessWidget {
         SeatChangeService.hostSeatChangeMove(
           gameCode,
           data,
-          seat.serverSeatPos,
+          widget.seat.serverSeatPos,
         );
       },
       builder: (context, List<int> candidateData, rejectedData) {
+        // log("112345OFFSET: ${widget.boardAttributes.getSeatPosAttrib(widget.seatPos).topLeft.dx} : ${widget.boardAttributes.betAmountPosition[widget.seatPos]}");
         return InkWell(
           onTap: () => this.onTap(context),
           child: Stack(
             clipBehavior: Clip.none,
             alignment: Alignment.center,
             children: [
-              (!openSeat ? seat.player?.showFirework ?? false : false)
+              FloatingMenuItem(
+                child: Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.yellow,
+                  ),
+                  child: Icon(Icons.volume_down),
+                ),
+                controller: _animationController,
+                seatPosition: widget.seatPos,
+                itemNo: 1,
+                onTapFunc: () {
+                  log("TAPPED 1");
+                },
+              ),
+              FloatingMenuItem(
+                child: Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.blue,
+                  ),
+                  child: Icon(Icons.star),
+                ),
+                controller: _animationController,
+                seatPosition: widget.seatPos,
+                itemNo: 2,
+                onTapFunc: () {
+                  log("TAPPED 2");
+                },
+              ),
+              FloatingMenuItem(
+                child: Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.red,
+                  ),
+                  child: Icon(Icons.volume_mute),
+                ),
+                controller: _animationController,
+                seatPosition: widget.seatPos,
+                itemNo: 3,
+                onTapFunc: () {
+                  log("TAPPED 3");
+                },
+              ),
+              (!openSeat ? widget.seat.player?.showFirework ?? false : false)
                   ? Transform.translate(
                       offset: Offset(
                         0.0,
@@ -178,8 +256,8 @@ class PlayerView extends StatelessWidget {
 
               // // main user body
               NamePlateWidget(
-                seat,
-                globalKey: seat.key,
+                widget.seat,
+                globalKey: widget.seat.key,
                 boardAttributes: boardAttributes,
               ),
 
@@ -194,7 +272,7 @@ class PlayerView extends StatelessWidget {
                     height: boardAttributes.namePlateSize.height,
                     width: boardAttributes.namePlateSize.width,
                     child: DisplayCardsWidget(
-                      seat,
+                      widget.seat,
                       valueNotifierFooterStatus.value,
                     ),
                   );
@@ -205,7 +283,7 @@ class PlayerView extends StatelessWidget {
               Positioned(
                 top: 0,
                 left: 0,
-                child: ActionStatusWidget(seat, cardsAlignment),
+                child: ActionStatusWidget(widget.seat, widget.cardsAlignment),
               ),
 
               // player hole cards
@@ -213,16 +291,17 @@ class PlayerView extends StatelessWidget {
                 offset: boardAttributes.playerHoleCardOffset,
                 child: Transform.scale(
                   scale: boardAttributes.playerHoleCardScale,
-                  child: gameState.currentPlayerId == seat.player.playerId &&
+                  child: gameState.currentPlayerId ==
+                              widget.seat.player.playerId &&
                           gameState.currentPlayerUuid == ''
                       ? DisplayCardsWidget(
-                          seat,
+                          widget.seat,
                           FooterStatus.Result,
                         )
                       : PlayerCardsWidget(
-                          seat,
-                          this.cardsAlignment,
-                          seat.player?.noOfCardsVisible,
+                          widget.seat,
+                          this.widget.cardsAlignment,
+                          widget.seat.player?.noOfCardsVisible,
                           showdown,
                         ),
                 ),
@@ -231,7 +310,7 @@ class PlayerView extends StatelessWidget {
               // show dealer button, if user is a dealer
               isDealer
                   ? DealerButtonWidget(
-                      seat.serverSeatPos,
+                      widget.seat.serverSeatPos,
                       isMe,
                       GameType.HOLDEM,
                     )
@@ -240,14 +319,14 @@ class PlayerView extends StatelessWidget {
               // /* building the chip amount widget */
               animate
                   ? ChipAmountAnimatingWidget(
-                      seatPos: seat.serverSeatPos,
+                      seatPos: widget.seat.serverSeatPos,
                       child: chipAmountWidget,
-                      reverse: seat.player.action.winner,
+                      reverse: widget.seat.player.action.winner,
                     )
                   : chipAmountWidget,
               // SeatNoWidget(seat),
               Visibility(
-                  visible: seat.player.talking,
+                  visible: widget.seat.player.talking,
                   child: Positioned(
                       top: 0,
                       right: -20,
@@ -259,7 +338,7 @@ class PlayerView extends StatelessWidget {
                             Icons.volume_up_outlined,
                             color: Colors.white70,
                           )))),
-              seat.player.showMicOff
+              widget.seat.player.showMicOff
                   ? Positioned(
                       top: 0,
                       right: -20,
@@ -272,7 +351,7 @@ class PlayerView extends StatelessWidget {
                             color: Colors.white70,
                           )))
                   : SizedBox(),
-              seat.player.showMicOn
+              widget.seat.player.showMicOn
                   ? Positioned(
                       top: 0,
                       right: -20,
@@ -386,5 +465,66 @@ class PlayerCardsWidget extends StatelessWidget {
         ),
       );
     }
+  }
+}
+
+class FloatingMenuItem extends StatelessWidget {
+  final Widget child;
+  final AnimationController controller;
+  final SeatPos seatPosition;
+  final int itemNo;
+  final Function onTapFunc;
+
+  FloatingMenuItem(
+      {this.child,
+      this.controller,
+      this.seatPosition,
+      this.itemNo,
+      this.onTapFunc});
+
+  double angleInDegrees = 45.0;
+  double offsetDistance = 60.0;
+
+  @override
+  Widget build(BuildContext context) {
+    switch (seatPosition) {
+      case SeatPos.bottomCenter:
+        angleInDegrees = 180.0;
+        break;
+      case SeatPos.bottomLeft:
+        angleInDegrees = 225.0;
+        break;
+      case SeatPos.bottomRight:
+        angleInDegrees = 135.0;
+        break;
+      case SeatPos.middleRight:
+        angleInDegrees = 90.0;
+        break;
+      case SeatPos.middleLeft:
+        angleInDegrees = -90;
+        break;
+      case SeatPos.topCenter:
+      case SeatPos.topCenter1:
+      case SeatPos.topCenter2:
+        angleInDegrees = 0.0;
+        break;
+      case SeatPos.topLeft:
+        angleInDegrees = -45;
+        break;
+      case SeatPos.topRight:
+        angleInDegrees = 45.0;
+        break;
+    }
+
+    return InkWell(
+      onTap: onTapFunc,
+      child: Transform.translate(
+        offset: Offset.fromDirection(
+            GamePlayScreenUtilMethods.getRadiansFromDegree(
+                angleInDegrees + (itemNo * 45)),
+            controller.value * offsetDistance),
+        child: child,
+      ),
+    );
   }
 }

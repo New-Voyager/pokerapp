@@ -37,10 +37,10 @@ class NamePlateWidget extends StatelessWidget {
         gameContextObject,
         _,
       ) {
-        Widget widget;
+        Widget displayWidget;
         if (gameContextObject.isAdmin() &&
             hostSeatChange.seatChangeInProgress) {
-          widget = Draggable(
+          displayWidget = Draggable(
             data: seat.serverSeatPos,
             onDragEnd: (_) {
               hostSeatChange.onSeatDragEnd();
@@ -61,9 +61,9 @@ class NamePlateWidget extends StatelessWidget {
             ),
           );
         } else {
-          widget = buildSeat(context, hostSeatChange);
+          displayWidget = buildSeat(context, hostSeatChange);
         }
-        return widget;
+        return displayWidget;
       },
     );
   }
