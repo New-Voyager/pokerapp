@@ -179,9 +179,9 @@ class _GamePlayScreenState extends State<GamePlayScreen>
           break;
         }
       }
-    } else {
-      _audioPlayer = AudioPlayer();
-    }
+    } else {}
+
+    _audioPlayer = AudioPlayer();
 
     if (TestService.isTesting) {
       // testing code goes here
@@ -289,6 +289,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   Future onJoinGame(int seatPos) async {
     final gameState = GameState.getState(_providerContext);
     final me = gameState.me(_providerContext);
+    log("11234Taplocation onJoinGame()");
 
     if (me != null && me.seatNo != null && me.seatNo != 0) {
       log('Player ${me.name} switches seat to $seatPos');
@@ -509,6 +510,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
                                   gameComService:
                                       _gameContextObj?.gameComService,
                                   gameInfo: _gameInfoModel,
+                                  audioPlayer: _audioPlayer,
                                   onUserTap: onJoinGame,
                                   onStartGame: () =>
                                       GamePlayScreenUtilMethods.startGame(

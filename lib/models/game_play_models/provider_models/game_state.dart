@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -40,8 +41,11 @@ class GameState {
   ListenableProvider<WaitlistState> _waitlistProvider;
   ListenableProvider<ServerConnectionState> _connectionState;
   ListenableProvider<JanusEngine> _janusEngine;
+  ListenableProvider<PopupButtonState> _popupButtonState;
+  final Map<String, Uint8List> cache = Map<String, Uint8List>();
 
   MyState _myState;
+  SeatPos _tappedSeatPos;
 
   String _gameCode;
   GameInfoModel _gameInfo;
@@ -61,6 +65,7 @@ class GameState {
     this._gameCode = gameCode;
     this._currentPlayer = currentPlayer;
     this._currentHandNum = -1;
+    this._tappedSeatPos = null;
 
     for (int seatNo = 1; seatNo <= gameInfo.maxPlayers; seatNo++) {
       this._seats[seatNo] = Seat(seatNo, seatNo, null);
@@ -111,6 +116,9 @@ class GameState {
     this._janusEngine =
         ListenableProvider<JanusEngine>(create: (_) => this.janusEngine);
 
+    this._popupButtonState =
+        ListenableProvider<PopupButtonState>(create: (_) => PopupButtonState());
+
     List<PlayerModel> players = [];
     if (gameInfo.playersInSeats != null) {
       players = gameInfo.playersInSeats;
@@ -149,6 +157,33 @@ class GameState {
       ),
     );
   }
+
+  void setTappedSeatPos(BuildContext context, SeatPos seatPos) {
+    bool showPopup = true;
+    if (this._tappedSeatPos != null) {
+      if (this._tappedSeatPos == seatPos) {
+        showPopup = false;
+      }
+      this._tappedSeatPos = null;
+      final state = this.getPopupState(context);
+      state.notify();
+    }
+
+    if (showPopup) {
+      Future.delayed(Duration(milliseconds: 100), () {
+        if (seatPos != null) {
+          this._tappedSeatPos = seatPos;
+        } else {
+          this._tappedSeatPos = null;
+        }
+
+        final state = this.getPopupState(context);
+        state.notify();
+      });
+    }
+  }
+
+  SeatPos get getTappedSeatPos => this._tappedSeatPos;
 
   GameInfoModel get gameInfo {
     return this._gameInfo;
@@ -289,6 +324,9 @@ class GameState {
           {bool listen = false}) =>
       Provider.of<ServerConnectionState>(context, listen: listen);
 
+  PopupButtonState getPopupState(BuildContext context, {bool listen = false}) =>
+      Provider.of<PopupButtonState>(context, listen: listen);
+
   // JanusEngine getJanusEngine(BuildContext context, {bool listen = false}) =>
   //     Provider.of<JanusEngine>(context, listen: listen);
 
@@ -362,6 +400,7 @@ class GameState {
       this._waitlistProvider,
       this._connectionState,
       this._janusEngine,
+      this._popupButtonState
     ];
   }
 
@@ -541,6 +580,19 @@ class ServerConnectionState extends ChangeNotifier {
   set status(ConnectionStatus status) => this._status = status;
 
   notify() {
+    notifyListeners();
+  }
+}
+
+class PopupButtonState extends ChangeNotifier {
+  SeatPos _prevPos = null;
+  SeatPos _currentPos = null;
+
+  setCurrentPos(SeatPos pos) {
+    _currentPos = pos;
+  }
+
+  void notify() {
     notifyListeners();
   }
 }

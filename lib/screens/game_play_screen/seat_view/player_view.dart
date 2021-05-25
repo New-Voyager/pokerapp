@@ -68,6 +68,9 @@ class PlayerView extends StatelessWidget {
         return;
       }
 
+      // Enable this for popup buttons
+      //gameState.setTappedSeatPos(context, seatPos);
+
       final data = await showModalBottomSheet(
         context: context,
         shape: RoundedRectangleBorder(
