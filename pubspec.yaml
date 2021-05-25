@@ -24,7 +24,7 @@ dependencies:
   font_awesome_flutter: ^8.8.1
 
   # networking
-  graphql_flutter: ^3.1.0
+  graphql_flutter: ^3.0.1
   http: ^0.12.2
   dart_nats:
     git:
@@ -133,6 +133,7 @@ dependencies:
   flutter_webrtc: ^0.6.3
   web_socket_channel: ^2.0.0
   stream_channel: ^2.1.0
+  share: ^2.0.1
 
 dependency_overrides:
   http: ^0.12.2
@@ -142,6 +143,7 @@ dependency_overrides:
   uuid: ^3.0.4
   path_provider: ^1.6.24
   crypto: ^3.0.0 
+  mime: ^1.0.0
 
 dev_dependencies:
   flutter_test:
