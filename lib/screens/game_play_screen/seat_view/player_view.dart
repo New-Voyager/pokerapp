@@ -98,7 +98,7 @@ class PlayerView extends StatelessWidget {
   ) =>
       Transform.translate(
         // TODO: NEED TO VERIFY THIS FOR DIFF SCREEN SIZES
-        offset: const Offset(0.0, 10.0),
+        offset: const Offset(0.0, 20.0),
         child: Container(
           height: boardAttributes.namePlateSize.height,
           width: boardAttributes.namePlateSize.width,
