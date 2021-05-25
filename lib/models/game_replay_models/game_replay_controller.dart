@@ -15,12 +15,12 @@ class GameReplayController {
   List<GameReplayAction> _actions;
 
   StreamController<bool> _isPlayingStreamController;
+  StreamController<bool> _isEnded;
+
   bool _isPlaying;
   bool _goNext;
 
   int _actionCounter;
-
-  Timer _timer;
 
   GameReplayController({
     @required GameState gameState,
@@ -32,6 +32,7 @@ class GameReplayController {
     this._playerActionTime = playerActionTime;
 
     this._isPlayingStreamController = StreamController<bool>.broadcast();
+    this._isEnded = StreamController<bool>.broadcast();
     this._isPlaying = false;
 
     this._actionCounter = -1;
@@ -121,7 +122,10 @@ class GameReplayController {
   * once again from the initController */
   void _load(final GameReplayAction action) async {
     /* if there is no action to play end it */
-    if (action == null) return;
+    if (action == null) {
+      onEnd();
+      return;
+    }
 
     /* check for player action, and if true wait for actionTime duration */
     await _playerToAct(action);
@@ -144,12 +148,25 @@ class GameReplayController {
     isPlaying.listen((bool _isPlaying) {
       if (_isPlaying) _load(_getNextAction());
     });
+
+    /* play when the controller is initiated */
+    playOrPause();
+  }
+
+  void onEnd() {
+    if (_isPlaying) playOrPause();
+    _isEnded.sink.add(true);
   }
 
   /* util methods */
-  void dispose() {
+  void dispose(BuildContext context) {
+    /* if we were playing something, stop that and dispose */
+    if (_isPlaying) playOrPause();
+
     _isPlayingStreamController?.close();
-    _timer?.cancel();
+    _isEnded?.close();
+
+    Navigator.pop(context);
   }
 
   /* methods for controlling the game */
@@ -172,6 +189,8 @@ class GameReplayController {
   /* getters */
   Stream<bool> get isPlaying =>
       _isPlayingStreamController.stream.asBroadcastStream();
+
+  Stream<bool> get isEnded => _isEnded.stream.asBroadcastStream();
 
   GameState get gameState => _gameState;
 

@@ -236,15 +236,22 @@ class GameReplayActionService {
   static Future<void> _potWinnerAction(
     GameReplayAction action,
     BuildContext context,
-  ) =>
-      HandActionService.handleResultStatic(
-        isRunItTwice: false,
-        runItTwiceResult: null,
-        boardCards2: null,
-        potWinners: action.potWinners,
-        boardCards: action.boardCards,
-        context: context,
-      );
+  ) {
+    final Map<String, dynamic> potWinners = {};
+
+    for (final pw in action.potWinners.entries)
+      potWinners[pw.key] = pw.value.toJson();
+
+    return HandActionService.handleResultStatic(
+      fromReplay: true,
+      isRunItTwice: false,
+      runItTwiceResult: null,
+      boardCards2: null,
+      potWinners: potWinners,
+      boardCards: action.boardCards,
+      context: context,
+    );
+  }
 
   /* this method sets no of cards & distributes the cards */
   static Future<void> _distributeCards({
