@@ -1028,12 +1028,17 @@ class HandActionService {
 
   /* seat-no, list of cards mapping */
   static Map<int, List<int>> _getCards(final data) {
-    var players = data['handResult']['players'];
+    final Map players = data['handResult']['players'];
+
+    final String kShowDown = 'SHOW_DOWN';
 
     Map<int, List<int>> seatNoCardsMap = Map<int, List<int>>();
-    players.forEach((seatNo, d) =>
+    players.forEach((seatNo, d) {
+      /* WE ONLY SHOW CARDS FOR PLAYERS, WHO PLAYED TILL THE SHOWDOWN */
+      if (d['playedUntil'] == kShowDown)
         seatNoCardsMap[int.parse(seatNo.toString())] =
-            d['cards']?.map<int>((e) => int.parse(e.toString()))?.toList());
+            d['cards']?.map<int>((e) => int.parse(e.toString()))?.toList();
+    });
 
     return seatNoCardsMap;
   }

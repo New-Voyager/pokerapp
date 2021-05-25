@@ -32,7 +32,11 @@ class GameReplayService {
   /* returns back the mapping of <seat.no-cards> */
   Map<int, List<int>> _getPlayerCards(List<Player> players) {
     Map<int, List<int>> _playerCards = {};
-    for (Player p in players) _playerCards[p.seatNo] = p.cards;
+
+    /* IF I played until showdown then only show my cards */
+    for (Player p in players)
+      if (p.playedUntil == 'SHOW_DOWN') _playerCards[p.seatNo] = p.cards;
+
     return _playerCards;
   }
 
