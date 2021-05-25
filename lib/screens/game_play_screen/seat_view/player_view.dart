@@ -92,6 +92,23 @@ class PlayerView extends StatelessWidget {
     }
   }
 
+  Widget _buildDisplayCardsWidget(
+    Seat seat,
+    FooterStatus footerStatus,
+  ) =>
+      Transform.translate(
+        // TODO: NEED TO VERIFY THIS FOR DIFF SCREEN SIZES
+        offset: const Offset(0.0, 10.0),
+        child: Container(
+          height: boardAttributes.namePlateSize.height,
+          width: boardAttributes.namePlateSize.width,
+          child: DisplayCardsWidget(
+            seat,
+            footerStatus,
+          ),
+        ),
+      );
+
   @override
   Widget build(BuildContext context) {
     seat.key = GlobalKey(
@@ -185,20 +202,8 @@ class PlayerView extends StatelessWidget {
 
               // result cards and show selected cards by a user
               Consumer<ValueNotifier<FooterStatus>>(
-                builder: (
-                  _,
-                  valueNotifierFooterStatus,
-                  __,
-                ) {
-                  return Container(
-                    height: boardAttributes.namePlateSize.height,
-                    width: boardAttributes.namePlateSize.width,
-                    child: DisplayCardsWidget(
-                      seat,
-                      valueNotifierFooterStatus.value,
-                    ),
-                  );
-                },
+                builder: (_, vnFooterStatus, __) =>
+                    _buildDisplayCardsWidget(seat, vnFooterStatus.value),
               ),
 
               // player action text
@@ -215,10 +220,7 @@ class PlayerView extends StatelessWidget {
                   scale: boardAttributes.playerHoleCardScale,
                   child: gameState.currentPlayerId == seat.player.playerId &&
                           gameState.currentPlayerUuid == ''
-                      ? DisplayCardsWidget(
-                          seat,
-                          FooterStatus.Result,
-                        )
+                      ? _buildDisplayCardsWidget(seat, FooterStatus.Result)
                       : PlayerCardsWidget(
                           seat,
                           this.cardsAlignment,

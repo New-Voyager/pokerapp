@@ -404,8 +404,6 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
       },
     ).toList();
 
-    print('seats: $seats');
-
     return seats;
   }
 

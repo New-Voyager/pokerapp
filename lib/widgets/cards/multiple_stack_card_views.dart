@@ -28,11 +28,11 @@ class StackCardView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (cards == null) return const SizedBox.shrink();
+    if (cards == null || cards.isEmpty) return const SizedBox.shrink();
     return Row(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
-      children: cards.isEmpty ? [SizedBox.shrink()] : _buildChildren(),
+      children: _buildChildren(),
     );
   }
 }
