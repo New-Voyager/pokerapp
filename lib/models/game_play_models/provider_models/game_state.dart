@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -41,6 +42,7 @@ class GameState {
   ListenableProvider<ServerConnectionState> _connectionState;
   ListenableProvider<JanusEngine> _janusEngine;
   ListenableProvider<PopupButtonState> _popupButtonState;
+  final Map<String, Uint8List> cache = Map<String, Uint8List>();
 
   MyState _myState;
   SeatPos _tappedSeatPos;

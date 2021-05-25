@@ -1,6 +1,8 @@
 import 'dart:developer';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lottie/lottie.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
@@ -17,6 +19,7 @@ import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/services/test/test_service.dart';
 import 'package:provider/provider.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 const double _lottieAnimationContainerSize = 120.0;
 const double _animatingAssetContainerSize = 40.0;
@@ -34,7 +37,9 @@ class PlayersOnTableView extends StatefulWidget {
   final double heightOfBoard;
   final double widthOfBoard;
   final GameComService gameComService;
+  final GameState gameState;
   final int maxPlayers;
+  final AudioPlayer audioPlayer;
 
   PlayersOnTableView({
     @required this.gameComService,
@@ -44,6 +49,8 @@ class PlayersOnTableView extends StatefulWidget {
     @required this.heightOfBoard,
     @required this.onUserTap,
     @required this.maxPlayers,
+    @required this.gameState,
+    @required this.audioPlayer,
   });
 
   @override
@@ -184,6 +191,18 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
         animationController.reset();
 
         /* finally drive the lottie animation */
+        // play the audio
+        final animationSound = 'assets/animations/$animationAssetID.mp3';
+        Uint8List data = widget.gameState.cache[animationSound];
+        if (data == null) {
+          log('Loading file $animationSound');
+          data = (await rootBundle.load(animationSound)).buffer.asUint8List();
+          widget.gameState.cache[animationSound] = data;
+        } else {
+          log('$animationSound is in cache');
+        }
+
+        widget.audioPlayer.playBytes(data);
 
         setState(() {
           isLottieAnimationAnimating = true;
@@ -565,12 +584,12 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
   }) {
     seatPosIndex++;
 
-    print('1123maxPlayers: $maxPlayers');
+    //print('1123maxPlayers: $maxPlayers');
 
     //log('board width: $widthOfBoard height: $heightOfBoard');
     Map<int, SeatPos> seatPosLoc = getSeatLocations(maxPlayers);
 
-    print('1123seatPosLoc: $seatPosLoc');
+    //print('1123seatPosLoc: $seatPosLoc');
 
     SeatPos seatPos = seatPosLoc[seatPosIndex];
     SeatPosAttribs seatAttribs = boardAttribs.getSeatPosAttrib(seatPos);

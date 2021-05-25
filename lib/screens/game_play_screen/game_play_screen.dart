@@ -179,9 +179,9 @@ class _GamePlayScreenState extends State<GamePlayScreen>
           break;
         }
       }
-    } else {
-      _audioPlayer = AudioPlayer();
-    }
+    } else {}
+
+    _audioPlayer = AudioPlayer();
 
     if (TestService.isTesting) {
       // testing code goes here
@@ -510,6 +510,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
                                   gameComService:
                                       _gameContextObj?.gameComService,
                                   gameInfo: _gameInfoModel,
+                                  audioPlayer: _audioPlayer,
                                   onUserTap: onJoinGame,
                                   onStartGame: () =>
                                       GamePlayScreenUtilMethods.startGame(

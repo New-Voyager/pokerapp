@@ -19,6 +19,7 @@ import 'package:pokerapp/utils/numeric_keyboard.dart';
 import 'package:pokerapp/widgets/round_raised_button.dart';
 import 'package:provider/provider.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/popup_buttons.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class BoardView extends StatefulWidget {
   BoardView({
@@ -26,11 +27,13 @@ class BoardView extends StatefulWidget {
     @required this.onUserTap,
     @required this.onStartGame,
     @required this.gameComService,
+    @required this.audioPlayer,
   });
   final GameComService gameComService;
   final GameInfoModel gameInfo;
   final Function(int index) onUserTap;
   final Function() onStartGame;
+  final AudioPlayer audioPlayer;
 
   static Size dimensions(BuildContext context, bool isHorizontal) {
     var _widthMultiplier = 0.78;
@@ -162,6 +165,8 @@ class _BoardViewState extends State<BoardView> {
               heightOfBoard: dimensions.height,
               onUserTap: widget.onUserTap,
               maxPlayers: widget.gameInfo.maxPlayers,
+              audioPlayer: widget.audioPlayer,
+              gameState: gameState,
             ),
           ),
         ),
