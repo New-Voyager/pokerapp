@@ -18,6 +18,7 @@ import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/utils/numeric_keyboard.dart';
 import 'package:pokerapp/widgets/round_raised_button.dart';
 import 'package:provider/provider.dart';
+import 'package:pokerapp/screens/game_play_screen/seat_view/popup_buttons.dart';
 
 class BoardView extends StatefulWidget {
   BoardView({
@@ -74,6 +75,7 @@ class _BoardViewState extends State<BoardView> {
       clipBehavior: Clip.none,
       alignment: Alignment.center,
       children: [
+        // Container(width: 800, height: 900, color: Colors.red),
         // game board view
         Align(
           alignment: Alignment.center,
@@ -205,6 +207,24 @@ class _BoardViewState extends State<BoardView> {
             key: emptyCenterKey,
           ),
         ),
+
+      Consumer<PopupButtonState>(
+          builder: (
+            BuildContext _,
+            PopupButtonState popupState,
+            Widget __,
+          ) {
+          final seatPos = gameState?.getTappedSeatPos;
+          bool showPopupButtons = false;
+          if(seatPos != null) {
+            showPopupButtons = true;
+          }
+
+          return Visibility(visible: showPopupButtons,
+            child: Align(alignment: Alignment.topLeft, child: PopupWidget(seatPos)));
+        }),
+
+
       ],
     );
   }

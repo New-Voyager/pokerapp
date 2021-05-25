@@ -15,6 +15,7 @@ import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/screens/game_play_screen/game_play_screen_util_methods.dart';
+import 'package:pokerapp/screens/game_play_screen/seat_view/popup_buttons.dart';
 import 'package:pokerapp/widgets/cards/hidden_card_view.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/displaycards.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/profile_popup.dart';
@@ -59,20 +60,20 @@ class PlayerView extends StatefulWidget {
 
 class _PlayerViewState extends State<PlayerView>
     with SingleTickerProviderStateMixin {
-  AnimationController _animationController;
-
+  //AnimationController _animationController;
+  PopupWidget popupWidget;
   @override
   void initState() {
-    _animationController = AnimationController(
-      vsync: this,
-      lowerBound: 0.0,
-      upperBound: 1.0,
-      duration: Duration(milliseconds: 200),
-    );
-    _animationController.addListener(() {
-      // print("11234 value : ${_animationController.value}");
-      setState(() {});
-    });
+    // _animationController = AnimationController(
+    //   vsync: this,
+    //   lowerBound: 0.0,
+    //   upperBound: 1.0,
+    //   duration: Duration(milliseconds: 200),
+    // );
+    // _animationController.addListener(() {
+    //   // print("11234 value : ${_animationController.value}");
+    //   setState(() {});
+    // });
     super.initState();
   }
 
@@ -84,9 +85,11 @@ class _PlayerViewState extends State<PlayerView>
     } else {
       // log('11234seat starting animation');
 
-      _animationController.value > 0
-          ? _animationController.reverse()
-          : _animationController.forward();
+      //popupWidget.toggle();
+
+      // _animationController.value > 0
+      //     ? _animationController.reverse()
+      //     : _animationController.forward();
       // the player tapped to see the player profile
       final gameState = Provider.of<GameState>(
         context,
@@ -99,6 +102,11 @@ class _PlayerViewState extends State<PlayerView>
         return;
       }
 
+      if (gameState.getTappedSeatPos == null) {
+        gameState.setTappedSeatPos(context, widget.seatPos);
+      } else {
+        gameState.setTappedSeatPos(context, null);
+      }
       // final data = await showModalBottomSheet(
       //   context: context,
       //   shape: RoundedRectangleBorder(
@@ -195,51 +203,52 @@ class _PlayerViewState extends State<PlayerView>
             clipBehavior: Clip.none,
             alignment: Alignment.center,
             children: [
-              FloatingMenuItem(
-                child: Container(
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.yellow,
-                  ),
-                  child: Icon(Icons.volume_down),
-                ),
-                controller: _animationController,
-                seatPosition: widget.seatPos,
-                itemNo: 1,
-                onTapFunc: () {
-                  log("TAPPED 1");
-                },
-              ),
-              FloatingMenuItem(
-                child: Container(
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.blue,
-                  ),
-                  child: Icon(Icons.star),
-                ),
-                controller: _animationController,
-                seatPosition: widget.seatPos,
-                itemNo: 2,
-                onTapFunc: () {
-                  log("TAPPED 2");
-                },
-              ),
-              FloatingMenuItem(
-                child: Container(
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.red,
-                  ),
-                  child: Icon(Icons.volume_mute),
-                ),
-                controller: _animationController,
-                seatPosition: widget.seatPos,
-                itemNo: 3,
-                onTapFunc: () {
-                  log("TAPPED 3");
-                },
-              ),
+              // FloatingMenuItem(
+              //   child: Container(
+              //     decoration: BoxDecoration(
+              //       shape: BoxShape.circle,
+              //       color: Colors.yellow,
+              //     ),
+              //     child: Icon(Icons.volume_down),
+              //   ),
+              //   controller: _animationController,
+              //   seatPosition: widget.seatPos,
+              //   itemNo: 1,
+              //   onTapFunc: () {
+              //     log("TAPPED 1");
+              //   },
+              // ),
+              // FloatingMenuItem(
+              //   child: Container(
+              //     decoration: BoxDecoration(
+              //       shape: BoxShape.circle,
+              //       color: Colors.blue,
+              //     ),
+              //     child: Icon(Icons.star),
+              //   ),
+              //   controller: _animationController,
+              //   seatPosition: widget.seatPos,
+              //   itemNo: 2,
+              //   onTapFunc: () {
+              //     log("TAPPED 2");
+              //   },
+              // ),
+              // FloatingMenuItem(
+              //   child: Container(
+              //     decoration: BoxDecoration(
+              //       shape: BoxShape.circle,
+              //       color: Colors.red,
+              //     ),
+              //     child: Icon(Icons.volume_mute),
+              //   ),
+              //   controller: _animationController,
+              //   seatPosition: widget.seatPos,
+              //   itemNo: 3,
+              //   onTapFunc: () {
+              //     log("TAPPED 3");
+              //   },
+              // ),
+              
               (!openSeat ? widget.seat.player?.showFirework ?? false : false)
                   ? Transform.translate(
                       offset: Offset(
@@ -468,63 +477,3 @@ class PlayerCardsWidget extends StatelessWidget {
   }
 }
 
-class FloatingMenuItem extends StatelessWidget {
-  final Widget child;
-  final AnimationController controller;
-  final SeatPos seatPosition;
-  final int itemNo;
-  final Function onTapFunc;
-
-  FloatingMenuItem(
-      {this.child,
-      this.controller,
-      this.seatPosition,
-      this.itemNo,
-      this.onTapFunc});
-
-  double angleInDegrees = 45.0;
-  double offsetDistance = 60.0;
-
-  @override
-  Widget build(BuildContext context) {
-    switch (seatPosition) {
-      case SeatPos.bottomCenter:
-        angleInDegrees = 180.0;
-        break;
-      case SeatPos.bottomLeft:
-        angleInDegrees = 225.0;
-        break;
-      case SeatPos.bottomRight:
-        angleInDegrees = 135.0;
-        break;
-      case SeatPos.middleRight:
-        angleInDegrees = 90.0;
-        break;
-      case SeatPos.middleLeft:
-        angleInDegrees = -90;
-        break;
-      case SeatPos.topCenter:
-      case SeatPos.topCenter1:
-      case SeatPos.topCenter2:
-        angleInDegrees = 0.0;
-        break;
-      case SeatPos.topLeft:
-        angleInDegrees = -45;
-        break;
-      case SeatPos.topRight:
-        angleInDegrees = 45.0;
-        break;
-    }
-
-    return InkWell(
-      onTap: onTapFunc,
-      child: Transform.translate(
-        offset: Offset.fromDirection(
-            GamePlayScreenUtilMethods.getRadiansFromDegree(
-                angleInDegrees + (itemNo * 45)),
-            controller.value * offsetDistance),
-        child: child,
-      ),
-    );
-  }
-}
