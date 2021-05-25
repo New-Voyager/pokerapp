@@ -279,14 +279,10 @@ class HandActionService {
           return;
 
         case AppConstants.DEAL_STARTED:
-          // await handleDealStarted(
-          //   context: context,
-          // );
-          return null;
+          return handleDealStarted();
 
         case AppConstants.DEAL:
-          await handleDeal(data);
-          return null;
+          return handleDeal(data);
 
         case AppConstants.QUERY_CURRENT_HAND:
           await handleQueryCurrentHand(data);
@@ -1149,6 +1145,7 @@ class HandActionService {
     final players,
     final int boardIndex = 1,
     final bool fromReplay = false,
+    final bool resetState = false,
   }) async {
     /** process the high pot winners */
     await processWinners(
@@ -1183,7 +1180,7 @@ class HandActionService {
     );
 
     /* if we are from replay, we dont need to clear the result state */
-    if (fromReplay) return;
+    if (fromReplay || resetState) return;
 
     /* need to clear the board */
     resetResult(
@@ -1256,6 +1253,7 @@ class HandActionService {
           tableState: tableState,
           players: players,
           fromReplay: fromReplay,
+          resetState: true,
         );
       }
 
@@ -1298,16 +1296,16 @@ class HandActionService {
         );
       }
 
-      /* if we are from reply, DO NOT remove the result state */
-      if (fromReplay) return;
+      // /* if we are from reply, DO NOT remove the result state */
+      // if (fromReplay) return;
 
-      /* cleanup all highlights and rankStr */
-      resetResult(
-        tableState: tableState,
-        players: players,
-        gameState: gameState,
-        boardIndex: 2,
-      );
+      // /* cleanup all highlights and rankStr */
+      // resetResult(
+      //   tableState: tableState,
+      //   players: players,
+      //   gameState: gameState,
+      //   boardIndex: 2,
+      // );
 
       /* turn off two boards needed flag -> only if we are not from replay */
       if (!fromReplay) tableState.updateTwoBoardsNeeded(false);
@@ -1352,8 +1350,6 @@ class HandActionService {
     // }
     _gameState.resetSeatActions();
     players.clearForShowdown();
-
-    // TODO: VERITY THIS METHOD FOR (NOT) RUN IT TWICE RESULTS
 
     // get hand winners data and update results
     final handResult = data['handResult'];
