@@ -208,23 +208,22 @@ class _BoardViewState extends State<BoardView> {
           ),
         ),
 
-      Consumer<PopupButtonState>(
-          builder: (
-            BuildContext _,
-            PopupButtonState popupState,
-            Widget __,
-          ) {
+        Consumer<PopupButtonState>(builder: (
+          BuildContext _,
+          PopupButtonState popupState,
+          Widget __,
+        ) {
           final seatPos = gameState?.getTappedSeatPos;
           bool showPopupButtons = false;
-          if(seatPos != null) {
+          if (seatPos != null) {
             showPopupButtons = true;
           }
 
-          return Visibility(visible: showPopupButtons,
-            child: Align(alignment: Alignment.topLeft, child: PopupWidget(seatPos)));
+          return Visibility(
+              visible: showPopupButtons,
+              child: Align(
+                  alignment: Alignment.topLeft, child: PopupWidget(seatPos)));
         }),
-
-
       ],
     );
   }

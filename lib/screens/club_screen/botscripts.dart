@@ -133,11 +133,11 @@ class _BotScriptsScreenState extends State<BotScriptsScreen> {
           newGameCode = gameCode;
           break;
         }
-        await Future.delayed(Duration(seconds: 1));
       }
       if (newGameCode.isNotEmpty) {
         break;
       }
+      await Future.delayed(Duration(seconds: 1));
       retryCount--;
     }
     // dismiss launch dialog

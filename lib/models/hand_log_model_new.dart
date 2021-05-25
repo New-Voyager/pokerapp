@@ -329,9 +329,10 @@ class PotWinner {
       );
 
   Map<String, dynamic> toJson() => {
-        "hiWinners": List<WinnerPlayer>.from(hiWinners.map((x) => x.toJson())),
+        "hiWinners":
+            List<Map<String, dynamic>>.from(hiWinners.map((x) => x.toJson())),
         "lowWinners":
-            List<WinnerPlayer>.from(lowWinners.map((x) => x.toJson())),
+            List<Map<String, dynamic>>.from(lowWinners.map((x) => x.toJson())),
         "amount": amount,
         "pot": potNo,
       };

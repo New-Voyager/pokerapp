@@ -7,21 +7,25 @@ class ReplayHandControlsUtils {
   static Widget buildControlButton({
     @required IconData iconData,
     @required void onPressed(),
+    @required bool isActive,
   }) =>
       InkWell(
-        onTap: onPressed,
-        child: Container(
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: AppColors.appAccentColor,
-              width: 1.0,
+        onTap: isActive ? onPressed : null,
+        child: Opacity(
+          opacity: isActive ? 1.0 : 0.50,
+          child: Container(
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: AppColors.appAccentColor,
+                width: 1.0,
+              ),
             ),
-          ),
-          padding: EdgeInsets.all(10.0),
-          child: Icon(
-            iconData,
-            color: AppColors.appAccentColor,
-            size: 30.0,
+            padding: EdgeInsets.all(10.0),
+            child: Icon(
+              iconData,
+              color: AppColors.appAccentColor,
+              size: 30.0,
+            ),
           ),
         ),
       );

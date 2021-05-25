@@ -632,11 +632,7 @@ class BoardAttributesObject extends ChangeNotifier {
   }
 
   SeatPosAttribs getSeatPosAttrib(SeatPos pos) {
-    // TODO: REMOVE THIS DEBUG LINE
-
-    print('receiving pos: $pos');
     return getSeatMap(this._screenSize)[pos];
-    return this._seatPosAttribs[pos];
   }
 
   Map<SeatPos, Offset> get betAmountPosition => getBetAmountPositionMap(

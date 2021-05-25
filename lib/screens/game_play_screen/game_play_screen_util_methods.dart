@@ -26,7 +26,7 @@ import '../../services/test/test_service.dart';
 class GamePlayScreenUtilMethods {
   GamePlayScreenUtilMethods._();
 
- static double getRadiansFromDegree(double degree) {
+  static double getRadiansFromDegree(double degree) {
     double unitRadian = 57.295779513;
     return degree / unitRadian;
   }

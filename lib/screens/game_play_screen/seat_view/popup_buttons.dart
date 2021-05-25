@@ -12,30 +12,26 @@ class PopupWidget extends StatefulWidget {
   PopupWidget(this.seatPos);
 
   @override
-  _PopupWidget createState() { 
+  _PopupWidget createState() {
     return state;
   }
-  
+
   void toggle() {
     state.toggle();
   }
 }
 
-class _PopupWidget extends State<PopupWidget>
-    with TickerProviderStateMixin  {
+class _PopupWidget extends State<PopupWidget> with TickerProviderStateMixin {
   AnimationController _animationController;
   AnimationController _controller;
   void toggle() {
     if (_animationController.value == null) {
-      setState(() {
-        
-      });
+      setState(() {});
     } else {
       _animationController.value > 0
           ? _animationController.reverse()
           : _animationController.forward();
     }
-
   }
 
   @override
@@ -59,16 +55,19 @@ class _PopupWidget extends State<PopupWidget>
 
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
-    return Container(width: 500, height: 300,
+    return Container(
+      width: 500,
+      height: 300,
       child: buttons(),
     );
   }
 
   Widget buttons() {
     Offset offset = Offset(160, 150);
-    switch(widget.seatPos) {
+    switch (widget.seatPos) {
       case SeatPos.bottomCenter:
         offset = Offset(180, 230);
         break;
@@ -102,69 +101,80 @@ class _PopupWidget extends State<PopupWidget>
         break;
     }
 
-    return Stack(children: [
-          //Container(color: Colors.blue),
-          Transform.translate(offset: offset, child: FloatingMenuItem(
-            child: Container(
-              padding: EdgeInsets.all(3.0),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(color: Colors.green[200]),
-                color: Colors.green[200],
+    return Stack(
+      children: [
+        //Container(color: Colors.blue),
+        Transform.translate(
+            offset: offset,
+            child: FloatingMenuItem(
+              child: Container(
+                  padding: EdgeInsets.all(3.0),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.green[200]),
+                    color: Colors.green[200],
+                  ),
+                  child: Icon(
+                    Icons.note_outlined,
+                    color: Colors.black,
+                  )),
+              controller: _animationController,
+              seatPosition: widget.seatPos,
+              itemNo: 1,
+              onTapFunc: () {
+                log("TAPPED 1");
+              },
+            )),
+        Transform.translate(
+            offset: offset,
+            child: FloatingMenuItem(
+              child: Container(
+                padding: EdgeInsets.all(3.0),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(color: Colors.green[200]),
+                  color: Colors.green[200],
+                ),
+                child: Icon(
+                  Icons.mic,
+                  color: Colors.black,
+                ),
               ),
-              child: Icon(Icons.note_outlined, color: Colors.black,)
-            ),
-            controller: _animationController,
-            seatPosition: widget.seatPos,
-            itemNo: 1,
-            onTapFunc: () {
-              log("TAPPED 1");
-            },
-          )),
-          Transform.translate(offset: offset, child: FloatingMenuItem(
-            child: Container(
-              padding: EdgeInsets.all(3.0),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(color: Colors.green[200]),
-                color: Colors.green[200],
-              ),
-              child: Icon(Icons.mic, color: Colors.black,),
-            ),
-            controller: _animationController,
-            seatPosition: widget.seatPos,
-            itemNo: 2,
-            onTapFunc: () {
-              log("TAPPED 2");
-            },
-          )),
-        Transform.translate(offset: offset, child: FloatingMenuItem(
-            child: 
-              Container(
+              controller: _animationController,
+              seatPosition: widget.seatPos,
+              itemNo: 2,
+              onTapFunc: () {
+                log("TAPPED 2");
+              },
+            )),
+        Transform.translate(
+            offset: offset,
+            child: FloatingMenuItem(
+              child: Container(
                 width: 32,
                 height: 32,
-                  child: Lottie.asset(
-              'assets/animations/chicken.json',
-              controller: _controller,
-              onLoaded: (composition) {
-                // Configure the AnimationController with the duration of the
-                // Lottie file and start the animation.
-                _controller
-                  ..duration = composition.duration
-                  ..forward();
-              },
-            ),
+                child: Lottie.asset(
+                  'assets/animations/chicken.json',
+                  controller: _controller,
+                  onLoaded: (composition) {
+                    // Configure the AnimationController with the duration of the
+                    // Lottie file and start the animation.
+                    _controller
+                      ..duration = composition.duration
+                      ..forward();
+                  },
                 ),
-            controller: _animationController,
-            seatPosition: widget.seatPos,
-            itemNo: 3,
-            onTapFunc: () {
-              log("TAPPED 3");
-            },
-          )),
-      ],);    
+              ),
+              controller: _animationController,
+              seatPosition: widget.seatPos,
+              itemNo: 3,
+              onTapFunc: () {
+                log("TAPPED 3");
+              },
+            )),
+      ],
+    );
   }
-
 }
 
 class FloatingMenuItem extends StatelessWidget {
@@ -215,15 +225,16 @@ class FloatingMenuItem extends StatelessWidget {
         break;
     }
 
-    return  Transform.translate(
-        offset: Offset.fromDirection(
-            GamePlayScreenUtilMethods.getRadiansFromDegree(
-                angleInDegrees + (itemNo * 45)),
-            controller.value * offsetDistance),
-        child: GestureDetector(onTap: () {
-          onTapFunc();
-        }, child: child),
-      );
-    
+    return Transform.translate(
+      offset: Offset.fromDirection(
+          GamePlayScreenUtilMethods.getRadiansFromDegree(
+              angleInDegrees + (itemNo * 45)),
+          controller.value * offsetDistance),
+      child: GestureDetector(
+          onTap: () {
+            onTapFunc();
+          },
+          child: child),
+    );
   }
 }

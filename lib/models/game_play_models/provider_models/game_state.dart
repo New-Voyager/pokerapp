@@ -114,9 +114,8 @@ class GameState {
     this._janusEngine =
         ListenableProvider<JanusEngine>(create: (_) => this.janusEngine);
 
-    this._popupButtonState = 
+    this._popupButtonState =
         ListenableProvider<PopupButtonState>(create: (_) => PopupButtonState());
-
 
     List<PlayerModel> players = [];
     if (gameInfo.playersInSeats != null) {
@@ -158,14 +157,28 @@ class GameState {
   }
 
   void setTappedSeatPos(BuildContext context, SeatPos seatPos) {
-    if (seatPos != null) {
-      this._tappedSeatPos = seatPos;
-    } else {
+    bool showPopup = true;
+    if (this._tappedSeatPos != null) {
+      if (this._tappedSeatPos == seatPos) {
+        showPopup = false;
+      }
       this._tappedSeatPos = null;
+      final state = this.getPopupState(context);
+      state.notify();
     }
 
-    final state = this.getPopupState(context);
-    state.notify();
+    if (showPopup) {
+      Future.delayed(Duration(milliseconds: 100), () {
+        if (seatPos != null) {
+          this._tappedSeatPos = seatPos;
+        } else {
+          this._tappedSeatPos = null;
+        }
+
+        final state = this.getPopupState(context);
+        state.notify();
+      });
+    }
   }
 
   SeatPos get getTappedSeatPos => this._tappedSeatPos;
