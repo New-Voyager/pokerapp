@@ -158,7 +158,7 @@ class NamePlateWidget extends StatelessWidget {
 
           //int progress = seat.actionTimer.getProgressTime();
           int currentProgress = total * 1000 - time.toInt();
-          log('Rebuilding highlight remaining: ${time.toInt() ~/ 1000} total: ${total} current: ${total - remainingSeconds}');
+          //log('Rebuilding highlight remaining: ${time.toInt() ~/ 1000} total: ${total} current: ${total - remainingSeconds}');
 
           return PlateWidget(
             currentProgress,
