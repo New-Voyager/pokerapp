@@ -1099,6 +1099,7 @@ class HandActionService {
   }
 
   /* this method processes multiple winners */
+  /* THIS METHOD TAKES ONLY 500 MS (the pot moving animation time) */
   static Future<void> processWinners({
     List highWinners,
     final Players players,
@@ -1152,7 +1153,15 @@ class HandActionService {
     final bool fromReplay = false,
     final bool resetState = false,
   }) async {
-    /** process the high pot winners */
+    /* we have 3000 ms to complete this entire pot */
+    int totalWaitTimeInMs = 3000;
+
+    // if we dont have lowWinners to process, spend entire time for highWinners
+    int highWinnersTimeInMs =
+        lowWinners.isEmpty ? totalWaitTimeInMs : totalWaitTimeInMs ~/ 2;
+    int lowWinnersTimeInMs = totalWaitTimeInMs ~/ 2;
+
+    /** process the high pot winners: this method already takes 500ms*/
     await processWinners(
       highWinners: highWinners,
       players: players,
@@ -1161,8 +1170,11 @@ class HandActionService {
       gameState: gameState,
     );
 
-    /** delay for a bit */
-    await Future.delayed(AppConstants.animationDuration);
+    /** wait for the extra duration */
+    int balancedMstoWait =
+        highWinnersTimeInMs - AppConstants.animationDuration.inMilliseconds;
+
+    await Future.delayed(Duration(milliseconds: balancedMstoWait));
 
     /* if we dont have any low winners to show AND we are from
     replay hand, we end the function call here */
@@ -1175,6 +1187,7 @@ class HandActionService {
       gameState: gameState,
     );
 
+    // this method takes another 500 MS
     /** process the low pot winners */
     await processWinners(
       highWinners: lowWinners,
@@ -1183,6 +1196,12 @@ class HandActionService {
       boardIndex: boardIndex,
       gameState: gameState,
     );
+
+    /** wait for the extra duration */
+    balancedMstoWait =
+        lowWinnersTimeInMs - AppConstants.animationDuration.inMilliseconds;
+
+    await Future.delayed(Duration(milliseconds: balancedMstoWait));
 
     /* if we are from replay, we dont need to clear the result state */
     if (fromReplay || resetState) return;
@@ -1244,6 +1263,7 @@ class HandActionService {
       * 3. update the rankStr
       * 4. move the pot chip to the winner */
 
+      // this loop should take 3000 ms per POT winners
       for (final board1Winners in board1PotWinners.entries) {
         final potNo = board1Winners.key;
         final Map winners = board1Winners.value;
@@ -1273,9 +1293,6 @@ class HandActionService {
         boardIndex: 1,
       );
 
-      /* wait for a brief duration */
-      await Future.delayed(AppConstants.animationDuration);
-
       /* then, process board 2
       * 0. get all hi winner players for board 1
       * 1. highlight hi winner
@@ -1283,6 +1300,7 @@ class HandActionService {
       * 3. update the rankStr
       * 4. move the pot chip to the winner */
 
+      // this loop should take 3000 ms per POT winners
       for (final board2Winners in board2PotWinners.entries) {
         final potNo = board2Winners.key;
         final Map winners = board2Winners.value;
@@ -1301,17 +1319,6 @@ class HandActionService {
         );
       }
 
-      // /* if we are from reply, DO NOT remove the result state */
-      // if (fromReplay) return;
-
-      // /* cleanup all highlights and rankStr */
-      // resetResult(
-      //   tableState: tableState,
-      //   players: players,
-      //   gameState: gameState,
-      //   boardIndex: 2,
-      // );
-
       /* turn off two boards needed flag -> only if we are not from replay */
       if (!fromReplay) tableState.updateTwoBoardsNeeded(false);
     } else {
@@ -1324,6 +1331,8 @@ class HandActionService {
        *    3. show all the low pot winners
        */
 
+      // time we get for each pot is 3 seconds
+
       for (final potWinner in potWinners.entries) {
         final potNo = potWinner.key;
         final Map winners = potWinner.value;
@@ -1331,6 +1340,7 @@ class HandActionService {
         final List highWinners = winners['hiWinners'];
         final List lowWinners = winners['lowWinners'];
 
+        /* this method should complete in timePerPotInMs time */
         await processForHighWinnersDelayProcessForLowWinners(
           highWinners: highWinners,
           lowWinners: lowWinners,
