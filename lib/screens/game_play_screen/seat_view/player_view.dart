@@ -69,29 +69,28 @@ class PlayerView extends StatelessWidget {
       }
 
       // Enable this for popup buttons
-      //gameState.setTappedSeatPos(context, seatPos);
+      gameState.setTappedSeatPos(context, seatPos, seat, gameComService);
 
-      final data = await showModalBottomSheet(
-        context: context,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(
-            top: Radius.circular(10),
-          ),
-        ),
-        builder: (context) {
-          return ProfilePopup(
-            seat: seat,
-          );
-        },
-      );
+      // final data = await showModalBottomSheet(
+      //   context: context,
+      //   shape: RoundedRectangleBorder(
+      //     borderRadius: BorderRadius.vertical(
+      //       top: Radius.circular(10),
+      //     ),
+      //   ),
+      //   builder: (context) {
+      //     return ProfilePopup(
+      //       seat: seat,
+      //     );
+      //   },
+      // );
+      // if (data == null) return;
 
-      if (data == null) return;
-
-      gameComService.gameMessaging.sendAnimation(
-        me.seatNo,
-        seat.serverSeatPos,
-        data['animationID'],
-      );
+      // gameComService.gameMessaging.sendAnimation(
+      //   me.seatNo,
+      //   seat.serverSeatPos,
+      //   data['animationID'],
+      // );
     }
   }
 

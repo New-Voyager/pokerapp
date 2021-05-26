@@ -219,6 +219,8 @@ class _BoardViewState extends State<BoardView> {
           Widget __,
         ) {
           final seatPos = gameState?.getTappedSeatPos;
+          final Seat seat = gameState?.popupSelectedSeat;
+          final GameComService gameComService = gameState?.gameComService;
           bool showPopupButtons = false;
           if (seatPos != null) {
             showPopupButtons = true;
@@ -227,7 +229,7 @@ class _BoardViewState extends State<BoardView> {
           return Visibility(
               visible: showPopupButtons,
               child: Align(
-                  alignment: Alignment.topLeft, child: PopupWidget(seatPos)));
+                  alignment: Alignment.topLeft, child: PopupWidget(gameState)));
         }),
       ],
     );
