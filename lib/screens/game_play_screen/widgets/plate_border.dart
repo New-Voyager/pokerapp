@@ -80,6 +80,7 @@ class PlateWidget extends StatefulWidget {
   final int total;
   final bool animate;
   final bool showProgress;
+
   PlateWidget(
     this.currentProgress,
     this.total, {
@@ -97,6 +98,7 @@ class _PlateWidgetState extends State<PlateWidget>
     with TickerProviderStateMixin {
   AnimationController _animationController;
   Animation _animation;
+
   @override
   void dispose() {
     super.dispose();
@@ -147,7 +149,7 @@ class _PlateWidgetState extends State<PlateWidget>
       }
     } else if (widget.showProgress) {
       percent = widget.currentProgress.toDouble() / widget.total.toDouble();
-      progressLength = 1.0 - percent;
+      progressLength += percent;
       progressPath = trimPath(path, progressLength, origin: PathTrimOrigin.end);
     }
 
