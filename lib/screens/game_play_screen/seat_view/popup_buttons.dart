@@ -1,15 +1,23 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:overlay_support/overlay_support.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/screens/game_play_screen/game_play_screen_util_methods.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:lottie/lottie.dart';
+import 'package:pokerapp/screens/game_play_screen/seat_view/profile_popup.dart';
+import 'package:pokerapp/services/game_play/game_com_service.dart';
 
 class PopupWidget extends StatefulWidget {
+  final GameState gameState;
   final _PopupWidget state = _PopupWidget();
-  final SeatPos seatPos;
-  PopupWidget(this.seatPos);
+  // final SeatPos seatPos;
+  // final Seat seat;
+  // final GameComService gameComService;
+  PopupWidget(this.gameState);
 
   @override
   _PopupWidget createState() {
@@ -67,7 +75,7 @@ class _PopupWidget extends State<PopupWidget> with TickerProviderStateMixin {
 
   Widget buttons() {
     Offset offset = Offset(160, 150);
-    switch (widget.seatPos) {
+    switch (widget.gameState.getTappedSeatPos) {
       case SeatPos.bottomCenter:
         offset = Offset(180, 230);
         break;
@@ -119,7 +127,7 @@ class _PopupWidget extends State<PopupWidget> with TickerProviderStateMixin {
                     color: Colors.black,
                   )),
               controller: _animationController,
-              seatPosition: widget.seatPos,
+              seatPosition: widget.gameState.getTappedSeatPos,
               itemNo: 1,
               onTapFunc: () {
                 log("TAPPED 1");
@@ -141,7 +149,7 @@ class _PopupWidget extends State<PopupWidget> with TickerProviderStateMixin {
                 ),
               ),
               controller: _animationController,
-              seatPosition: widget.seatPos,
+              seatPosition: widget.gameState.getTappedSeatPos,
               itemNo: 2,
               onTapFunc: () {
                 log("TAPPED 2");
@@ -166,10 +174,44 @@ class _PopupWidget extends State<PopupWidget> with TickerProviderStateMixin {
                 ),
               ),
               controller: _animationController,
-              seatPosition: widget.seatPos,
+              seatPosition: widget.gameState.getTappedSeatPos,
               itemNo: 3,
-              onTapFunc: () {
-                log("TAPPED 3");
+              onTapFunc: () async {
+                // final data = await showModalBottomSheet(
+                //   context: context,
+                //   shape: RoundedRectangleBorder(
+                //     borderRadius: BorderRadius.vertical(
+                //       top: Radius.circular(10),
+                //     ),
+                //   ),
+                //   builder: (context) {
+                //     return ProfilePopup(
+                //       seat: widget.seat,
+                //     );
+                //   },
+                // );
+                final data = await showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      backgroundColor: Colors.transparent,
+                      elevation: 10,
+                      contentPadding: EdgeInsets.zero,
+                      content: ProfilePopup(
+                        seat: widget.gameState.popupSelectedSeat,
+                      ),
+                    );
+                  },
+                );
+
+                if (data == null) return;
+
+                widget.gameState.gameComService.gameMessaging.sendAnimation(
+                  1, // TODO : GET SEAT NO.
+                  widget.gameState.popupSelectedSeat.serverSeatPos,
+                  data['animationID'],
+                );
+                widget.gameState.dismissPopup(context);
               },
             )),
       ],

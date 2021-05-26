@@ -14,6 +14,7 @@ import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/boar
 import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/services/app/game_service.dart';
+import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:pokerapp/services/janus/janus.dart';
 import 'package:provider/provider.dart';
@@ -43,6 +44,8 @@ class GameState {
   ListenableProvider<JanusEngine> _janusEngine;
   ListenableProvider<PopupButtonState> _popupButtonState;
   final Map<String, Uint8List> cache = Map<String, Uint8List>();
+  GameComService gameComService;
+  Seat popupSelectedSeat;
 
   MyState _myState;
   SeatPos _tappedSeatPos;
@@ -158,8 +161,11 @@ class GameState {
     );
   }
 
-  void setTappedSeatPos(BuildContext context, SeatPos seatPos) {
+  void setTappedSeatPos(BuildContext context, SeatPos seatPos, Seat seat,
+      GameComService gameComService) {
     bool showPopup = true;
+    this.gameComService = gameComService;
+    this.popupSelectedSeat = seat;
     if (this._tappedSeatPos != null) {
       if (this._tappedSeatPos == seatPos) {
         showPopup = false;
@@ -181,6 +187,12 @@ class GameState {
         state.notify();
       });
     }
+  }
+
+  void dismissPopup(BuildContext context) {
+    this._tappedSeatPos = null;
+    final state = this.getPopupState(context);
+    state.notify();
   }
 
   SeatPos get getTappedSeatPos => this._tappedSeatPos;

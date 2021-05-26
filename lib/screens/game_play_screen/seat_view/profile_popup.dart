@@ -25,40 +25,36 @@ class _ProfilePopupState extends State<ProfilePopup> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.stickerDialogColor,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
-      ),
-      padding: EdgeInsets.all(5),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          getCloseButton(),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              /*
-              * member avatar
-              * */
-              SizedBox(width: 10),
-              getUserDetails(),
-              Spacer(),
-              communication(),
-              SizedBox(width: 15),
-            ],
-          ),
-          /*
-          * stickers
-          **/
-          SizedBox(height: 10),
-          getStickers(),
-          /*
-          * confirm button
-          * * */
-          getConfirmButton()
-        ],
-      ),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        getStickers(),
+      ],
+
+      //getCloseButton(),
+      //   Row(
+      //     crossAxisAlignment: CrossAxisAlignment.start,
+      //     children: [
+      //       /*
+      //         * member avatar
+      //         * */
+      //       //   SizedBox(width: 10),
+      //       //    getUserDetails(),
+      //       //    Spacer(),
+      //       //    communication(),
+      //       //   SizedBox(width: 15),
+      //     ],
+      //   ),
+      //   /*
+      //     * stickers
+      //     **/
+      //   //  SizedBox(height: 10),
+      //   getStickers(),
+      //   /*
+      //     * confirm button
+      //     * * */
+      //   //  getConfirmButton()
+      // ],
     );
   }
 
@@ -105,42 +101,52 @@ class _ProfilePopupState extends State<ProfilePopup> {
         ),
       );
 
-  Widget getStickers() => Column(
-        children: [
-          Wrap(
-            alignment: WrapAlignment.start,
-            crossAxisAlignment: WrapCrossAlignment.start,
-            children: AnimationAssets.animationObjects
+  Widget getStickers() => SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: [
+            ...AnimationAssets.animationObjects
                 .map(
                   (animationObject) => GestureDetector(
                     onTap: () {
-                      setState(
-                        () => _animationID = animationObject.id,
+                      Navigator.pop(
+                        context,
+                        {
+                          "isMicOn": _isMicOn,
+                          "isChatOn": _isChatOn,
+                          "animationID": animationObject.id,
+                        },
                       );
+                      // setState(
+                      //   () => _animationID = animationObject.id,
+                      // );
                     },
                     child: Container(
                       height: 50,
                       width: 50,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border.all(
-                          color: _animationID == animationObject.id
-                              ? AppColors.stickerDialogActionColor
-                              : Colors.grey,
-                          width: 2,
+                      decoration:
+                          BoxDecoration(color: Colors.transparent, boxShadow: [
+                          
+                        BoxShadow(
+                          color: AppColors.appAccentColor,
+                          spreadRadius: 0.1,
+                          blurRadius: 0.1,
                         ),
-                      ),
+                      ]),
                       padding: const EdgeInsets.all(5),
                       margin: const EdgeInsets.all(5),
                       child: SvgPicture.asset(
                         animationObject.assetSvg,
+                        height: 50,
+                        width: 50,
+                        fit: BoxFit.contain,
                       ),
                     ),
                   ),
                 )
                 .toList(),
-          ),
-        ],
+          ],
+        ),
       );
 
   Widget communication() => Column(
