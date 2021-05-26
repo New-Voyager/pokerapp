@@ -148,20 +148,29 @@ class Seat extends ChangeNotifier {
 
   Offset get betWidgetPos => this._betWidgetPos;
   set betWidgetPos(Offset offset) => this._betWidgetPos = offset;
+
+  void setProgressTime(int progressTime) {
+    _actionTimer.setProgressTime(progressTime);
+  }
 }
 
 class ActionTimer extends ChangeNotifier {
   int _totalTime = 0;
-  int _remainingTime = 0;
+  //int _remainingTime = 0;
+  int _progressTime = 0;
 
   void setTime(int totalTime, int remainingTime) {
     this._totalTime = totalTime;
-    this._remainingTime = remainingTime;
+    this._progressTime = totalTime - remainingTime;
     notifyListeners();
   }
 
-  int getRemainingTime() {
-    return this._remainingTime;
+  void setProgressTime(int progressTime) {
+    this._progressTime = progressTime;
+  }
+
+  int getProgressTime() {
+    return this._progressTime;
   }
 
   int getTotalTime() {

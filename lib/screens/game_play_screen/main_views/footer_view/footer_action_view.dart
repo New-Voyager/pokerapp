@@ -206,7 +206,6 @@ class _FooterActionViewState extends State<FooterActionView> {
   }
 
   Widget _buildActionWidgets(PlayerAction playerAction) {
-    debugPrint('Player acction: ${playerAction.actions}');
     AvailableAction allin;
     for (final action in playerAction?.actions) {
       if (action.actionName == ALLIN) {

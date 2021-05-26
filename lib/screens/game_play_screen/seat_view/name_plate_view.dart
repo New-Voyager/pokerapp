@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:blinking_text/blinking_text.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
@@ -133,24 +135,40 @@ class NamePlateWidget extends StatelessWidget {
 
     Widget plateWidget;
 
+/*
+[log] Timer remaining: 6698 total: 30 current: 23
+[log] Rebuilding highlight remaining: 7 total: 30 current: 23
+[log] Timer remaining: 22977 total: 30 current: 7
+*/
     if (seat.player.highlight) {
-      int remaining = seat.actionTimer.getRemainingTime();
+      int current = seat.actionTimer.getProgressTime();
       int total = seat.actionTimer.getTotalTime();
-      int current = total - remaining;
+      int remaining = total - current;
       final int totalMs = seat.actionTimer.getTotalTime() * 1000;
+
+      //log('Rebuilding highlight remaining: ${remaining} total: ${total} current: ${current}');
+
       plateWidget = CountdownMs(
         totalSeconds: total,
         currentSeconds: current,
         build: (_, time) {
-          int remainingMs = totalMs - time.toInt();
+          int total = seat.actionTimer.getTotalTime();
+          int remainingSeconds = time.toInt() ~/ 1000;
+          seat.setProgressTime(total - remainingSeconds);
+
+          //int progress = seat.actionTimer.getProgressTime();
+          int currentProgress = total * 1000 - time.toInt();
+          log('Rebuilding highlight remaining: ${time.toInt() ~/ 1000} total: ${total} current: ${total - remainingSeconds}');
+
           return PlateWidget(
-            remainingMs,
+            currentProgress,
             totalMs,
             showProgress: true,
           );
         },
       );
     } else {
+      //log('Rebuilding no highlight');
       plateWidget = PlateWidget(
         0,
         0,

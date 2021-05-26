@@ -36,14 +36,12 @@ class _GameOptionState extends State<GameOption> {
   _GameOptionState(this.gameCode);
 
   void onLeave() {
-    GameService.leaveGame(this.gameCode);
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: const Text('You will leave after this hand'),
-        duration: Duration(seconds: 15),
-        backgroundColor: Colors.black38,
-      ),
+    showSimpleNotification(
+      Text('You will standup after this hand'),
+      position: NotificationPosition.top,
+      duration: Duration(seconds: 10),
     );
+    GameService.leaveGame(this.gameCode);
   }
 
   void onEndGame() {
@@ -54,30 +52,24 @@ class _GameOptionState extends State<GameOption> {
     );
     // We need to broadcast to all the players
     GameService.endGame(this.gameCode);
-
-    /*  ScaffoldMessenger.of(navigatorKey.currentContext).showSnackBar(
-      SnackBar(
-        content: const Text('The game will end after this hand'),
-        duration: Duration(seconds: 15),
-        backgroundColor: Colors.black38,
-      ),
-    ); */
   }
 
   void onPause() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: const Text('Game will be paused after this hand'),
-        duration: Duration(seconds: 15),
-        backgroundColor: Colors.black38,
-      ),
+    showSimpleNotification(
+      Text('Game will be paused after this hand'),
+      position: NotificationPosition.top,
+      duration: Duration(seconds: 10),
     );
-
     GameService.pauseGame(this.gameCode);
   }
 
   void onBreak() {
-    Alerts.showTextNotification(text: 'Your break will start after this hand');
+    showSimpleNotification(
+      Text('Your break will start after this hand'),
+      position: NotificationPosition.top,
+      duration: Duration(seconds: 10),
+    );
+    //Alerts.showTextNotification(text: 'Your break will start after this hand');
 
     GameService.takeBreak(this.gameCode);
   }
@@ -99,7 +91,7 @@ class _GameOptionState extends State<GameOption> {
     super.initState();
     gameActions = [
       OptionItemModel(
-          title: "Leave",
+          title: "Standup",
           iconData: Icons.exit_to_app_sharp,
           onTap: (context) {
             this.onLeave();
@@ -120,12 +112,7 @@ class _GameOptionState extends State<GameOption> {
           onTap: (context) {
             this.onPause();
           }));
-      // OptionItemModel(
-      //     title: "Resume",
-      //     iconData: Icons.play_circle_outline,
-      //     onTap: (context) {
-      //       this.onResume();
-      //     }),
+
       gameActions.add(OptionItemModel(
           title: "Terminate",
           iconData: Icons.cancel_outlined,
@@ -167,43 +154,43 @@ class _GameOptionState extends State<GameOption> {
                       widget.gameCode, widget.playerUuid);
                 });
           }),
-      OptionItemModel(
-        title: "Last Hand",
-        image: "assets/images/casino.png",
-        backGroundColor: AppColors.gameOption4,
-        onTap: (context) async {
-          await showModalBottomSheet(
-            context: context,
-            isScrollControlled: true,
-            builder: (ctx) => Container(
-              height: height / 2,
-              child: HandLogView(widget.gameCode, -1),
-            ),
-          );
-        },
-      ),
-      OptionItemModel(
-        title: "Hand History",
-        image: "assets/images/casino.png",
-        backGroundColor: AppColors.gameOption5,
-        onTap: (context) async {
-          // todo: true need to change with isOwner actual value
-          final model = HandHistoryListModel(widget.gameCode, true);
-          await showModalBottomSheet(
-              context: context,
-              isScrollControlled: true,
-              builder: (ctx) {
-                return Container(
-                    height: height / 2,
-                    child: HandHistoryListView(
-                      model,
-                      // todo: club code need to get
-                      null,
-                      isInBottomSheet: true,
-                    ));
-              });
-        },
-      ),
+      // OptionItemModel(
+      //   title: "Last Hand",
+      //   image: "assets/images/casino.png",
+      //   backGroundColor: AppColors.gameOption4,
+      //   onTap: (context) async {
+      //     await showModalBottomSheet(
+      //       context: context,
+      //       isScrollControlled: true,
+      //       builder: (ctx) => Container(
+      //         height: height / 2,
+      //         child: HandLogView(widget.gameCode, -1),
+      //       ),
+      //     );
+      //   },
+      // ),
+      // OptionItemModel(
+      //   title: "Hand History",
+      //   image: "assets/images/casino.png",
+      //   backGroundColor: AppColors.gameOption5,
+      //   onTap: (context) async {
+      //     // todo: true need to change with isOwner actual value
+      //     final model = HandHistoryListModel(widget.gameCode, true);
+      //     await showModalBottomSheet(
+      //         context: context,
+      //         isScrollControlled: true,
+      //         builder: (ctx) {
+      //           return Container(
+      //               height: height / 2,
+      //               child: HandHistoryListView(
+      //                 model,
+      //                 // todo: club code need to get
+      //                 null,
+      //                 isInBottomSheet: true,
+      //               ));
+      //         });
+      //   },
+      // ),
     ];
   }
 

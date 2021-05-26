@@ -80,7 +80,8 @@ class JanusEngine extends ChangeNotifier {
 
   joinChannel(String janusToken) async {
     initialized = false;
-    return false;
+
+    //return false;
     if (defaultTargetPlatform == TargetPlatform.android) {
       await Permission.microphone.request();
     }

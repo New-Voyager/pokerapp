@@ -227,7 +227,7 @@ class HandActionService {
         "messageType": "QUERY_CURRENT_HAND"
       }]
     }""";
-    log(message);
+    // log(message);
     this._gameComService.sendPlayerToHandChannel(message);
   }
 
@@ -236,7 +236,7 @@ class HandActionService {
     assert(_context != null);
     assert(message != null && message.isNotEmpty);
 
-    debugPrint(message);
+    // debugPrint(message);
     var data = jsonDecode(message);
     List<dynamic> messages = data['messages'];
     _messages.addAll(messages);
