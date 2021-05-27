@@ -346,13 +346,13 @@ class HandActionService {
     await tableState.addAllCommunityCardsForRunItTwiceScenario(1, b1);
 
     /* pause for a bit todo: get duration */
-    await Future.delayed(const Duration(milliseconds: 500));
+    // await Future.delayed(const Duration(milliseconds: 200));
 
     /* show the board 2 cards */
     await tableState.addAllCommunityCardsForRunItTwiceScenario(2, b2);
 
     /* pause for a bit todo: get duration */
-    await Future.delayed(const Duration(milliseconds: 2000));
+    // await Future.delayed(const Duration(milliseconds: 2000));
   }
 
   Future<void> handleRunItTwice(var data) async {
