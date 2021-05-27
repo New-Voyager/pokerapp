@@ -12,6 +12,8 @@ import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/boar
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/screens/game_play_screen/game_play_screen_util_methods.dart';
+import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/widgets/cards/hidden_card_view.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/displaycards.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/profile_popup.dart';
@@ -207,6 +209,10 @@ class PlayerView extends StatelessWidget {
                 builder: (_, vnFooterStatus, __) =>
                     _buildDisplayCardsWidget(seat, vnFooterStatus.value),
               ),
+              Transform.translate(
+                  offset: Offset(0, 30),
+                  child:
+                      GamePlayScreenUtilMethods.breakBuyIntimer(context, seat)),
 
               // player action text
               Positioned(

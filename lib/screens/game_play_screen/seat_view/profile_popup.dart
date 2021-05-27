@@ -126,7 +126,6 @@ class _ProfilePopupState extends State<ProfilePopup> {
                       width: 50,
                       decoration:
                           BoxDecoration(color: Colors.transparent, boxShadow: [
-                          
                         BoxShadow(
                           color: AppColors.appAccentColor,
                           spreadRadius: 0.1,

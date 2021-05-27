@@ -1,9 +1,11 @@
 import 'dart:developer' as developer;
 
 import 'package:audioplayers/audioplayers.dart';
+import 'package:blinking_text/blinking_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
+import 'package:pokerapp/enums/hand_actions.dart';
 import 'package:pokerapp/models/game_play_models/business/card_distribution_model.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
@@ -11,14 +13,18 @@ import 'package:pokerapp/models/game_play_models/provider_models/host_seat_chang
 import 'package:pokerapp/models/game_play_models/provider_models/notification_models/general_notification_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/notification_models/hh_notification_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/remaining_time.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat_change_model.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
+import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/resources/card_back_assets.dart';
+import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/agora/agora.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
+import 'package:timer_count_down/timer_count_down.dart';
 
 import '../../resources/app_colors.dart';
 import '../../services/test/test_service.dart';
@@ -465,5 +471,57 @@ class GamePlayScreenUtilMethods {
     /* add all the providers in the game state to our providers */
     providers.addAll(gameState.providers);
     return providers;
+  }
+
+  static Widget breakBuyIntimer(BuildContext context, Seat seat) {
+    if (seat.player.inBreak && seat.player.breakTimeExpAt != null) {
+      final now = DateTime.now().toUtc();
+      final diff = seat.player.breakTimeExpAt.difference(now);
+      return buyInTimer(context, seat, diff.inSeconds);
+    }
+
+    if (seat.player.action.action != HandActions.ALLIN &&
+        seat.player.stack == 0 &&
+        seat.player.buyInTimeExpAt != null) {
+      final now = DateTime.now().toUtc();
+      final diff = seat.player.buyInTimeExpAt.difference(now);
+      return buyInTimer(context, seat, diff.inSeconds);
+    } else {
+      return SizedBox.shrink();
+    }
+  }
+
+  static Widget buyInTimer(BuildContext context, Seat seat, int time) {
+    return Countdown(
+        seconds: time,
+        onFinished: () {
+          if (seat.isMe) {
+            // hide buyin button
+            final gameState = GameState.getState(context);
+            final players = gameState.getPlayers(context);
+            seat.player.showBuyIn = false;
+            players.notifyAll();
+            seat.notify();
+          }
+        },
+        build: (_, time) {
+          if (time <= 10) {
+            return BlinkText(printDuration(Duration(seconds: time.toInt())),
+                style: AppStyles.itemInfoTextStyle.copyWith(
+                  color: Colors.white,
+                ),
+                beginColor: Colors.white,
+                endColor: Colors.orange,
+                times: time.toInt(),
+                duration: Duration(seconds: 1));
+          } else {
+            return Text(
+              printDuration(Duration(seconds: time.toInt())),
+              style: AppStyles.itemInfoTextStyle.copyWith(
+                color: Colors.white,
+              ),
+            );
+          }
+        });
   }
 }

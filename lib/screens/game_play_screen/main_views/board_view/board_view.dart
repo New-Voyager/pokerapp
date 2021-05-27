@@ -8,11 +8,13 @@ import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
+import 'package:pokerapp/screens/game_play_screen/game_play_screen_util_methods.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/animating_widgets/card_distribution_animating_widget.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/center_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/decorative_views/table_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/players_on_table_view.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/animating_widgets/stack_switch_seat_animating_widget.dart';
+import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/utils/numeric_keyboard.dart';
@@ -20,6 +22,10 @@ import 'package:pokerapp/widgets/round_raised_button.dart';
 import 'package:provider/provider.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/popup_buttons.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:blinking_text/blinking_text.dart';
+import 'package:pokerapp/enums/hand_actions.dart';
+import 'package:pokerapp/resources/app_styles.dart';
+import 'package:timer_count_down/timer_count_down.dart';
 
 class BoardView extends StatefulWidget {
   BoardView({
@@ -201,9 +207,8 @@ class _BoardViewState extends State<BoardView> {
             Widget __,
           ) =>
               Align(
-            alignment: Alignment.bottomCenter,
-            child: sitBackButton(context),
-          ),
+                  alignment: Alignment.bottomCenter,
+                  child: sitBackButton(context)),
         ),
 
         Align(
@@ -260,12 +265,13 @@ class _BoardViewState extends State<BoardView> {
       builder: (context, _) => Consumer<Seat>(
         builder: (_, seat, __) => Transform.translate(
             offset: Offset(0, 10),
-            child: RoundRaisedButton(
+            child: RoundRaisedButtonWithTimer(
               buttonText: 'Buyin',
               color: Colors.blueGrey,
               verticalPadding: 1,
               fontSize: 15,
               onButtonTap: () async => {await onBuyin(context)},
+              timerWidget: breakBuyIntimer(context, seat),
             )),
       ),
     );
@@ -289,17 +295,19 @@ class _BoardViewState extends State<BoardView> {
 
     final widget = ListenableProvider<Seat>(
       create: (_) => mySeat,
-      builder: (context, _) => Consumer<Seat>(
-        builder: (_, seat, __) => Transform.translate(
+      builder: (context, _) => Consumer<Seat>(builder: (_, seat, __) {
+        return Transform.translate(
             offset: Offset(0, 10),
-            child: RoundRaisedButton(
+            child: RoundRaisedButtonWithTimer(
               buttonText: 'Sit Back',
               color: Colors.blueGrey,
               verticalPadding: 1,
-              fontSize: 15,
+              fontSize: 14,
               onButtonTap: () async => {await onSitBack(context)},
-            )),
-      ),
+              timerWidget:
+                  GamePlayScreenUtilMethods.breakBuyIntimer(context, seat),
+            ));
+      }),
     );
 
     return widget;

@@ -436,6 +436,7 @@ class GameUpdateService {
           playerUpdate: playerUpdate,
         );
 
+      case AppConstants.NEWUPDATE_NOT_PLAYING:
       case AppConstants.NOT_PLAYING:
         return handlePlayerNotPlaying(
           playerUpdate: playerUpdate,
