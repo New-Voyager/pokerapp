@@ -5,8 +5,9 @@ DO_REGISTRY := registry.digitalocean.com/voyager
 REGISTRY := $(DO_REGISTRY)
 
 API_SERVER_IMAGE := $(REGISTRY)/api-server:0.3.17
-GAME_SERVER_IMAGE := $(REGISTRY)/game-server:0.3.14
+GAME_SERVER_IMAGE := $(REGISTRY)/game-server:0.3.15
 BOTRUNNER_IMAGE := $(REGISTRY)/botrunner:0.4.20
+TIMER_IMAGE := $(REGISTRY)/timer:0.0.1
 
 NATS_SERVER_IMAGE := $(REGISTRY)/nats:2.1.7-alpine3.11
 REDIS_IMAGE := $(REGISTRY)/redis:6.0.9
@@ -24,7 +25,8 @@ pull: login
 	docker pull $(REDIS_IMAGE)
 	docker pull $(POSTGRES_IMAGE)
 	docker pull $(BOTRUNNER_IMAGE)
- 
+	docker pull $(TIMER_IMAGE)
+
 .PHONY: load-data
 load-data:
 	docker exec -it docker_api-server_1 node build/script-tests/testdriver.js ./script-tests/script/
@@ -43,6 +45,7 @@ stack-up: create-network login
 		echo "REDIS_IMAGE=$(REDIS_IMAGE)" >> .env && \
 		echo "POSTGRES_IMAGE=$(POSTGRES_IMAGE)" >> .env && \
 		echo "BOTRUNNER_IMAGE=$(BOTRUNNER_IMAGE)" >> .env && \
+		echo "TIMER_IMAGE=$(TIMER_IMAGE)" >> .env && \
 		echo "PROJECT_ROOT=$(PWD)" >> .env && \
 		docker-compose up -d
 
@@ -70,6 +73,7 @@ stack-reset: create-network login
 		echo "REDIS_IMAGE=$(REDIS_IMAGE)" >> .env && \
 		echo "POSTGRES_IMAGE=$(POSTGRES_IMAGE)" >> .env && \
 		echo "BOTRUNNER_IMAGE=$(BOTRUNNER_IMAGE)" >> .env && \
+		echo "TIMER_IMAGE=$(TIMER_IMAGE)" >> .env && \
 		echo "PROJECT_ROOT=$(PWD)" >> .env && \
 		docker-compose up -d
 #
@@ -80,7 +84,10 @@ stack-reset: create-network login
 #
 .PHONY: botrunner
 botrunner:
-	@DOCKER_NET=$(DEFAULT_DOCKER_NET) BOTRUNNER_IMAGE=$(BOTRUNNER_IMAGE) BOTRUNNER_SCRIPT=$(BOTRUNNER_SCRIPT) ./botrunner.sh
+	@DOCKER_NET=$(DEFAULT_DOCKER_NET) \
+		BOTRUNNER_IMAGE=$(BOTRUNNER_IMAGE) \
+		BOTRUNNER_SCRIPT=$(BOTRUNNER_SCRIPT) \
+		./botrunner.sh
 
 botrunner-sh:
 	@DOCKER_NET=$(DEFAULT_DOCKER_NET) BOTRUNNER_IMAGE=$(BOTRUNNER_IMAGE) BOTRUNNER_SCRIPT=$(BOTRUNNER_SCRIPT) /bin/sh
