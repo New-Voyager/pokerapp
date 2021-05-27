@@ -134,6 +134,8 @@ dependencies:
   web_socket_channel: ^2.0.0
   stream_channel: ^2.1.0
   share: ^2.0.1
+  curved_bottom_navigation: ^1.0.0
+
 
 dependency_overrides:
   http: ^0.12.2
