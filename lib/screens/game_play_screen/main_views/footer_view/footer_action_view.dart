@@ -213,6 +213,7 @@ class _FooterActionViewState extends State<FooterActionView> {
         break;
       }
     }
+    playerAction.actions.map((e) => log("player actionsL:  ${e.actionName} "));
     // final allin = playerAction?.actions
     //     ?.firstWhere((element) => element.actionName == ALLIN, orElse: null);
     var actionButtons = [];
@@ -274,7 +275,7 @@ class _FooterActionViewState extends State<FooterActionView> {
       },
     )?.toList();
 
-    if (actionButtons.length > 0 && actionButtons.length < 3 && allin != null) {
+    if ((!bet) && (!raise) && (allin != null)) {
       actionButtons.add(_buildRoundButton(
         text: allin.actionName + '\n' + allin.actionValue.toString(),
         onTap: () => _allIn(
@@ -283,6 +284,16 @@ class _FooterActionViewState extends State<FooterActionView> {
         ),
       ));
     }
+
+    /*  if (actionButtons.length > 0 && actionButtons.length < 3 && allin != null) {
+      actionButtons.add(_buildRoundButton(
+        text: allin.actionName + '\n' + allin.actionValue.toString(),
+        onTap: () => _allIn(
+          amount: allin.actionValue,
+          context: context,
+        ),
+      ));
+    } */
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       mainAxisSize: MainAxisSize.max,
