@@ -133,6 +133,7 @@ class _BoardViewState extends State<BoardView> {
                   cards,
                   cardsOther,
                   pots,
+                  tableState.potToHighlight,
                   double.parse(
                     tableState.potChipsUpdates != null
                         ? tableState.potChipsUpdates.toString()
