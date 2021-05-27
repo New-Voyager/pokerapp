@@ -43,6 +43,13 @@ class _PopupWidget extends State<PopupWidget> with TickerProviderStateMixin {
   }
 
   @override
+  void dispose() {
+    _animationController?.dispose();
+    _controller?.dispose();
+    super.dispose();
+  }
+
+  @override
   void initState() {
     log('PopupWidget initState');
     _animationController = AnimationController(
@@ -57,9 +64,9 @@ class _PopupWidget extends State<PopupWidget> with TickerProviderStateMixin {
       // print("11234 value : ${_animationController.value}");
       setState(() {});
     });
-    Future.delayed(Duration(milliseconds: 100), () {
-      _animationController.forward();
-    });
+    //Future.delayed(Duration(milliseconds: 100), () {
+    _animationController.forward();
+    // });
 
     super.initState();
   }
@@ -77,16 +84,19 @@ class _PopupWidget extends State<PopupWidget> with TickerProviderStateMixin {
     Offset offset = Offset(160, 150);
     switch (widget.gameState.getTappedSeatPos) {
       case SeatPos.bottomCenter:
-        offset = Offset(180, 230);
+        offset = Offset(180, 260);
         break;
       case SeatPos.bottomLeft:
-        offset = Offset(30, 230);
+        offset = Offset(30, 260);
         break;
       case SeatPos.middleLeft:
-        offset = Offset(20, 110);
+        offset = Offset(20, 120);
         break;
       case SeatPos.topLeft:
         offset = Offset(20, 0);
+        break;
+      case SeatPos.topCenter:
+        offset = Offset(185, -20);
         break;
       case SeatPos.topCenter1:
         offset = Offset(140, -20);
@@ -98,10 +108,10 @@ class _PopupWidget extends State<PopupWidget> with TickerProviderStateMixin {
         offset = Offset(340, 0);
         break;
       case SeatPos.middleRight:
-        offset = Offset(360, 110);
+        offset = Offset(340, 120);
         break;
       case SeatPos.bottomRight:
-        offset = Offset(330, 230);
+        offset = Offset(330, 260);
         break;
 
       default:
@@ -205,9 +215,13 @@ class _PopupWidget extends State<PopupWidget> with TickerProviderStateMixin {
                 );
 
                 if (data == null) return;
+                // log("SEATNO1:: ${widget.gameState.myState.seatNo}");
+                // log("SEATNO2:: ${widget.gameState.getMyState(context).seatNo}");
+                // log("SEAT FROM:: ${widget.gameState.me(context).seatNo}");
+                // log("SEAT TO:: ${widget.gameState.popupSelectedSeat.serverSeatPos}");
 
                 widget.gameState.gameComService.gameMessaging.sendAnimation(
-                  1, // TODO : GET SEAT NO.
+                  widget.gameState.me(context).seatNo,
                   widget.gameState.popupSelectedSeat.serverSeatPos,
                   data['animationID'],
                 );
@@ -272,11 +286,7 @@ class FloatingMenuItem extends StatelessWidget {
           GamePlayScreenUtilMethods.getRadiansFromDegree(
               angleInDegrees + (itemNo * 45)),
           controller.value * offsetDistance),
-      child: GestureDetector(
-          onTap: () {
-            onTapFunc();
-          },
-          child: child),
+      child: GestureDetector(onTap: onTapFunc, child: child),
     );
   }
 }
