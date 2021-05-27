@@ -272,7 +272,7 @@ class _BoardViewState extends State<BoardView> {
               verticalPadding: 1,
               fontSize: 15,
               onButtonTap: () async => {await onBuyin(context)},
-              timerWidget: breakBuyIntimer(context, seat),
+              timerWidget: GamePlayScreenUtilMethods.breakBuyIntimer(context, seat),
             )),
       ),
     );
