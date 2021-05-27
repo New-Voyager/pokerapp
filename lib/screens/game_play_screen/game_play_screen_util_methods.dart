@@ -1,4 +1,5 @@
 import 'dart:developer' as developer;
+import 'dart:developer';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:blinking_text/blinking_text.dart';
@@ -17,6 +18,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat_change_model.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
+import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/resources/card_back_assets.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
@@ -474,19 +476,31 @@ class GamePlayScreenUtilMethods {
   }
 
   static Widget breakBuyIntimer(BuildContext context, Seat seat) {
+    if (seat.player.status == AppConstants.PLAYING) {
+      return SizedBox.shrink();
+    }
+
+    if (!(seat.player.status == AppConstants.IN_BREAK ||
+        seat.player.status == AppConstants.WAIT_FOR_BUYIN ||
+        seat.player.status == AppConstants.WAIT_FOR_BUYIN_APPROVAL)) {
+      return SizedBox.shrink();
+    }
+
     if (seat.player.inBreak && seat.player.breakTimeExpAt != null) {
       final now = DateTime.now().toUtc();
       final diff = seat.player.breakTimeExpAt.difference(now);
       return buyInTimer(context, seat, diff.inSeconds);
     }
-
+    //log('Rebuild buyin button: buyInTimeExpAt:');
     if (seat.player.action.action != HandActions.ALLIN &&
         seat.player.stack == 0 &&
         seat.player.buyInTimeExpAt != null) {
       final now = DateTime.now().toUtc();
       final diff = seat.player.buyInTimeExpAt.difference(now);
+      //log('Rebuild buyin button: buyInTimeExpAt: ${seat.player.buyInTimeExpAt.toIso8601String()} Remaining Diff: ${diff}');
       return buyInTimer(context, seat, diff.inSeconds);
     } else {
+      //log('No buyin and no break in buttons');
       return SizedBox.shrink();
     }
   }

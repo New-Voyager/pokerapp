@@ -115,6 +115,8 @@ class AppConstants {
   static const String BUYIN_DENIED = 'BUYIN_DENIED';
   static const String NEWUPDATE_NOT_PLAYING = 'NEWUPDATE_NOT_PLAYING';
 
+  static const String IN_BREAK = 'IN_BREAK';
+
   /* table statuses */
   static const String WAITING_TO_BE_STARTED = 'WAITING_TO_BE_STARTED';
   static const String TABLE_STATUS_NOT_ENOUGH_PLAYERS = 'NOT_ENOUGH_PLAYERS';
