@@ -41,5 +41,11 @@ class AnimationAssets {
       assetSvg: '$_base/rat.svg',
       assetJson: '$_base/rat.json',
     ),
+    const AnimationObject(
+      id: 'gorilla',
+      assetSvg: '$_base/gorilla.svg',
+      assetJson: '$_base/gorilla.json',
+    ),
+
   ];
 }
