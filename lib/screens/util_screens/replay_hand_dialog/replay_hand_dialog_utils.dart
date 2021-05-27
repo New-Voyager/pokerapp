@@ -87,7 +87,7 @@ class ReplayHandScreenUtils {
   }) async {
     assert(playerID != null);
 
-    final s = 'assets/sample-data/handlog/plo/onewinner.json';
+    final s = 'assets/sample-data/handlog/holdem/threepots.json';
 
     /* fixme: for now, use handlog data from sample */
     /* todo: the network call can be made here */

@@ -233,24 +233,24 @@ class HandLog {
 
 class GameActions {
   GameActions({
-    this.pot,
+    this.pots,
     this.potStart,
     this.actions,
   });
 
-  int pot;
+  List<int> pots;
   List<ActionElement> actions;
   int potStart;
 
   factory GameActions.fromJson(Map<String, dynamic> json) => GameActions(
-        pot: json["pot"],
+        pots: json["pots"].map<int>((e) => int.parse(e.toString())).toList(),
         potStart: json["potStart"],
         actions: List<ActionElement>.from(
             json["actions"].map((x) => ActionElement.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
-        "pot": pot,
+        "pot": pots,
         "potStart": potStart,
         "actions": List<dynamic>.from(actions.map((x) => x.toJson())),
       };
