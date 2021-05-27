@@ -150,7 +150,7 @@ class _PlateWidgetState extends State<PlateWidget>
     } else if (widget.showProgress) {
       percent = widget.currentProgress.toDouble() / widget.total.toDouble();
       progressLength += percent;
-      progressPath = trimPath(path, progressLength, origin: PathTrimOrigin.end);
+      progressPath = trimPath(path, progressLength, origin: PathTrimOrigin.begin);
     }
 
     return Container(
