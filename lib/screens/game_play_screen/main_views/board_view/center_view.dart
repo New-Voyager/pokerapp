@@ -84,6 +84,7 @@ class CenterView extends StatelessWidget {
     final List<int> cleanedPotChips = potChips ?? [];
 
     for (int i = 0; i < cleanedPotChips.length; i++) {
+      if (cleanedPotChips[i] == null) cleanedPotChips[i] = 0;
       GlobalKey key = GlobalKey();
       double potChipValue = 0;
       potChipValue = cleanedPotChips[i].toDouble();

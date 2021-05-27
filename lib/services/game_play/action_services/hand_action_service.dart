@@ -1393,6 +1393,36 @@ class HandActionService {
     }
   }
 
+  static void updatePotBeforeResultStatic({
+    @required final runItTwiceResult,
+    @required final potWinners,
+    @required final BuildContext context,
+    final bool isRunItTwice = false,
+  }) {
+    List<int> pots = [];
+
+    /* get the pots and update them */
+    if (isRunItTwice) {
+      // todo: handle this situation
+      final Map board1Winners = runItTwiceResult['board1Winners'];
+      board1Winners.forEach((key, winner) {
+        final amount = winner['amount'] as int;
+        pots.add(amount);
+      });
+    } else {
+      potWinners.forEach((key, potWinner) {
+        final amount = potWinner['amount'] as int;
+        pots.add(amount);
+      });
+    }
+
+    /* update the table pots before the result */
+    final gameState = GameState.getState(context);
+    final tableState = gameState.getTableState(context);
+    tableState.updatePotChipsSilent(potChips: pots);
+    tableState.notifyAll();
+  }
+
   Future<void> handleResult(var data) async {
     final Players players = _gameState.getPlayers(_context);
 
@@ -1431,27 +1461,12 @@ class HandActionService {
     final runItTwiceResult = handResult['handLog']['runItTwiceResult'];
     final potWinners = handResult['handLog']['potWinners'];
 
-    List<int> pots = [];
-
-    /* get the pots and update them */
-    if (isRunItTwice) {
-      // todo: handle this situation
-      final Map board1Winners = runItTwiceResult['board1Winners'];
-      board1Winners.forEach((key, winner) {
-        final amount = winner['amount'] as int;
-        pots.add(amount);
-      });
-    } else {
-      potWinners.forEach((key, potWinner) {
-        final amount = potWinner['amount'] as int;
-        pots.add(amount);
-      });
-    }
-
-    /* update the table pots before the result */
-    final tableState = _gameState.getTableState(_context);
-    tableState.updatePotChipsSilent(potChips: pots);
-    tableState.notifyAll();
+    updatePotBeforeResultStatic(
+      potWinners: potWinners,
+      runItTwiceResult: runItTwiceResult,
+      isRunItTwice: isRunItTwice,
+      context: _context,
+    );
 
     await handleResultStatic(
       isRunItTwice: isRunItTwice,
