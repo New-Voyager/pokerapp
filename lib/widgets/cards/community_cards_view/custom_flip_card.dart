@@ -16,7 +16,7 @@ class CustomFlipCard extends StatelessWidget {
     @required this.globalKey,
     @required this.cardWidget,
     @required this.cardBackAsset,
-    this.speed = 500,
+    this.speed = 200,
   });
 
   @override

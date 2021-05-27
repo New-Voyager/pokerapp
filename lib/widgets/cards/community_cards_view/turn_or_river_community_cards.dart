@@ -67,9 +67,6 @@ class _TurnOrRiverCommunityCardsState extends State<TurnOrRiverCommunityCards> {
     _isFlipDone = false;
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      // wait
-      await _delay();
-
       /* do the flip animation */
       if (_globalFlipKey.currentState != null) {
         _globalFlipKey.currentState.toggleCard();
