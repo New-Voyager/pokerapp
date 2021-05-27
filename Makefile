@@ -79,8 +79,8 @@ stack-reset: create-network login
 #
 # Usage:
 #
-# BOTRUNNER_SCRIPT=river-action-3-bots.yaml make botrunner
-# BOTRUNNER_SCRIPT=river-action-2-bots-1-human.yaml make botrunner
+# BOTRUNNER_SCRIPT=botrunner_scripts/river-action-3-bots.yaml make botrunner
+# BOTRUNNER_SCRIPT=botrunner_scripts/river-action-2-bots-1-human.yaml make botrunner
 #
 .PHONY: botrunner
 botrunner:
@@ -94,14 +94,14 @@ botrunner-sh:
 
 .PHONY: seat-change
 seat-change:
-	BOTRUNNER_SCRIPT=seat-change.yaml make botrunner
+	BOTRUNNER_SCRIPT=botrunner_scripts/seat-change.yaml make botrunner
 
 .PHONY: nlh-full
 nlh-full: reset-db
-	BOTRUNNER_SCRIPT=play-many-hands.yaml make botrunner
+	BOTRUNNER_SCRIPT=botrunner_scripts/play-many-hands.yaml make botrunner
 
 wait-list:
-	BOTRUNNER_SCRIPT=waitlist.yaml make botrunner
+	BOTRUNNER_SCRIPT=botrunner_scripts/waitlist.yaml make botrunner
 
 reset-db:
 	curl -X POST -v  -H 'Content-Type: application/json' -d '{"query":"mutation {resetDB}"}' http://localhost:9501/graphql

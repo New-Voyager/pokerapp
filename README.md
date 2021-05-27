@@ -30,18 +30,18 @@ docker ps
 
 Run botrunner.
 ```
-BOTRUNNER_SCRIPT=river-action-3-bots.yaml make botrunner
+BOTRUNNER_SCRIPT=botrunner_scripts/river-action-3-bots.yaml make botrunner
         Club Owner: c2dc2c3d-13da-46cc-8c66-caa0c77459de
         Club Player: 4b93e2be-7992-45c3-a2dd-593c2f708cb7
-BOTRUNNER_SCRIPT=river-action-2-bots-1-human.yaml make botrunner
-BOTRUNNER_SCRIPT=play-many-hands.yaml make botrunner
-BOTRUNNER_SCRIPT=3-bots-reward-tracking.yaml make botrunner
+BOTRUNNER_SCRIPT=botrunner_scripts/river-action-2-bots-1-human.yaml make botrunner
+BOTRUNNER_SCRIPT=botrunner_scripts/play-many-hands.yaml make botrunner
+BOTRUNNER_SCRIPT=botrunner_scripts/3-bots-reward-tracking.yaml make botrunner
 
 Use the following commands to run 4-card PLO
-BOTRUNNER_SCRIPT=plo-many-hands.yaml make botrunner
+BOTRUNNER_SCRIPT=botrunner_scripts/plo-many-hands.yaml make botrunner
 
 # You can disable nats messages using PRINT_GAME_MSG and PRINT_HAND_MSG variables.
-BOTRUNNER_SCRIPT=river-action-3-bots.yaml PRINT_GAME_MSG=false PRINT_HAND_MSG=false make botrunner
+BOTRUNNER_SCRIPT=botrunner_scripts/river-action-3-bots.yaml PRINT_GAME_MSG=false PRINT_HAND_MSG=false make botrunner
 ```
 
 Bring down the servers and clean up data.

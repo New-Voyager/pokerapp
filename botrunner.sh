@@ -49,5 +49,5 @@ docker run -t --rm \
             sleep 1; \
         done \
         && \
-        ./botrunner --script ./botrunner_scripts/${BOTRUNNER_SCRIPT} \
+        ./botrunner --script ${BOTRUNNER_SCRIPT} \
     "
