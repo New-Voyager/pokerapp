@@ -78,7 +78,7 @@ class GameUpdateService {
     if (closed) {
       return;
     }
-
+    debugPrint(jsonEncode(data));
     String messageType = data['messageType'];
     // delegate further actions to sub services as per messageType
     switch (messageType) {
@@ -307,18 +307,39 @@ class GameUpdateService {
 
   void handlePlayerWaitForBuyinApproval({
     @required var playerUpdate,
-  }) {
+  }) async {
     int seatNo = playerUpdate['seatNo'];
     final seat = _gameState.getSeat(_context, seatNo);
 
-    if (seat.player.isMe) {
-      _gameState.myState.status = PlayerStatus.WAIT_FOR_BUYIN_APPROVAL;
-      _gameState.myState.notify();
-    }
+    GameInfoModel _gameInfoModel =
+        await GameService.getGameInfo(_gameState.gameCode);
+    assert(_gameInfoModel != null);
 
-    seat.player.waitForBuyInApproval = true;
-    seat.notify();
-    log('Player ${seat.player.name} is waiting for approval');
+    if (seat != null && seat.player != null) {
+      seat.player.waitForBuyInApproval = true;
+      seat.player.status = PlayerStatus.WAIT_FOR_BUYIN
+          .toString()
+          .replaceAll('PlayerStatus.', '');
+      // get break exp time
+      for (final player in _gameInfoModel.playersInSeats) {
+        if (player.seatNo == seat.serverSeatPos) {
+          seat.player.buyInTimeExpAt = player.buyInTimeExpAt.toLocal();
+          DateTime now = DateTime.now();
+          if (seat.player.buyInTimeExpAt != null) {
+            final diff = seat.player.buyInTimeExpAt.difference(now);
+            log('now: ${now.toIso8601String()} buyInTimeExpAt: ${seat.player.buyInTimeExpAt.toIso8601String()} buyInTimeExpAt time expires in ${diff.inSeconds}');
+          }
+
+          // update my state to show sitback button
+          if (seat.player.isMe) {
+            final myState = _gameState.getMyState(_context);
+            myState.notify();
+          }
+          break;
+        }
+      }
+      seat.notify();
+    }
     final tableState = _gameState.getTableState(_context);
     tableState.notifyAll();
   }
