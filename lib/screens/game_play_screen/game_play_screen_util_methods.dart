@@ -483,6 +483,7 @@ class GamePlayScreenUtilMethods {
     if (!(seat.player.status == AppConstants.IN_BREAK ||
         seat.player.status == AppConstants.WAIT_FOR_BUYIN ||
         seat.player.status == AppConstants.WAIT_FOR_BUYIN_APPROVAL)) {
+      log('breakBuyIntimer Rebuild buyin button: seat.player.status: ${seat.player.status}');
       return SizedBox.shrink();
     }
 
@@ -491,13 +492,15 @@ class GamePlayScreenUtilMethods {
       final diff = seat.player.breakTimeExpAt.difference(now);
       return buyInTimer(context, seat, diff.inSeconds);
     }
+    log('breakBuyIntimer Rebuild buyin button: seat.player.action.action: ${seat.player.action.action} seat.player.stack: ${seat.player.stack} seat.player.buyInTimeExpAt: ${seat.player.buyInTimeExpAt}');
+
     //log('Rebuild buyin button: buyInTimeExpAt:');
     if (seat.player.action.action != HandActions.ALLIN &&
         seat.player.stack == 0 &&
         seat.player.buyInTimeExpAt != null) {
       final now = DateTime.now().toUtc();
       final diff = seat.player.buyInTimeExpAt.difference(now);
-      //log('Rebuild buyin button: buyInTimeExpAt: ${seat.player.buyInTimeExpAt.toIso8601String()} Remaining Diff: ${diff}');
+      log('breakBuyIntimer Rebuild buyin button: buyInTimeExpAt: ${seat.player.buyInTimeExpAt.toIso8601String()} Remaining Diff: ${diff}');
       return buyInTimer(context, seat, diff.inSeconds);
     } else {
       //log('No buyin and no break in buttons');
