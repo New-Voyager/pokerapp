@@ -9,6 +9,7 @@ import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_icons.dart';
 import 'package:pokerapp/screens/main_screens/clubs_page_view/clubs_page_view.dart';
 import 'package:pokerapp/screens/main_screens/games_page_view/games_page_view.dart';
+import 'package:pokerapp/screens/main_screens/games_page_view/live_games.dart';
 import 'package:pokerapp/screens/main_screens/profile_page_view/profile_page_view.dart';
 import 'package:pokerapp/screens/main_screens/purchase_page_view/purchase_page_view.dart';
 import 'package:pokerapp/services/app/gif_cache_service.dart';
@@ -150,7 +151,7 @@ class _MainScreenState extends State<MainScreen>
           IndexedStack(
             index: _navPos,
             children: [
-              GamesPageView(),
+              LiveGamesScreen(),
               ClubsPageView(),
               ProfilePageView(),
               PurchasePageView()
@@ -162,8 +163,9 @@ class _MainScreenState extends State<MainScreen>
               selected: _navPos,
               fabSize: 48,
               navHeight: 56,
-              bgColor: AppColors.cardBackgroundColor,
-              fabBgColor: AppColors.appAccentColor,
+              bgColor: AppColors.newNavBarColor,
+              fabBgColor: AppColors.newNavBarColor,
+              
               iconSize: 24,
               onItemClick: (i) {
                 setState(() {
@@ -216,7 +218,9 @@ class CurvedNavItem extends StatelessWidget {
       children: <Widget>[
         Icon(
           iconData,
-          color: selected ? Colors.white : Colors.grey[600],
+          color: selected
+              ? AppColors.newTextGreenColor
+              : AppColors.newNavBarInactiveItemColor,
         ),
         selected
             ? Container()
@@ -229,9 +233,9 @@ class CurvedNavItem extends StatelessWidget {
                     title.toUpperCase() ?? 'Title'.toUpperCase(),
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      color: Colors.grey[300],
-                      fontSize: 12,
-                      letterSpacing: 1.2,
+                      color: AppColors.newTextColor,
+                      fontSize: 10,
+                      letterSpacing: 0.7,
                       fontWeight: FontWeight.w300,
                     ),
                   )

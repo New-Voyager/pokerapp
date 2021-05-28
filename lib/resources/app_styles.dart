@@ -5,6 +5,19 @@ import 'package:pokerapp/resources/app_assets.dart';
 import 'app_colors.dart';
 
 class AppStyles {
+  static TextStyle newTitleTextStyle = TextStyle(
+      fontSize: 18,
+      color: AppColors.newTextColor,
+      fontFamily: AppAssets.fontFamilyRockwell,
+      fontWeight: FontWeight.w700,
+      shadows: [
+        BoxShadow(
+            color: Colors.green,
+            blurRadius: 10,
+            spreadRadius: 1,
+            offset: Offset(0, 3)),
+      ]);
+
   static LinearGradient handlogGreyGradient = LinearGradient(
     colors: [Colors.grey[850], Colors.grey[700]],
   );

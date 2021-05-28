@@ -7,6 +7,25 @@ const sizedBox20 = const SizedBox(
   height: 20,
 );
 
+const sizedBox10 = const SizedBox(
+  height: 10,
+);
+
+const sizedBox16 = const SizedBox(
+  height: 16,
+);
+
+const sizedBox8 = const SizedBox(
+  height: 8,
+);
+
+const sizedBox4 = const SizedBox(
+  height: 4,
+);
+const sizedBox2 = const SizedBox(
+  height: 2,
+);
+
 class NumericKeyboard {
   static void _onDone(
     BuildContext context,
