@@ -292,13 +292,18 @@ class _BoardViewState extends State<BoardView> {
     // show buyin button only for if the current player is in a seat
     final gameState = GameState.getState(providerContext);
     final mySeat = gameState.mySeat(providerContext);
+    if (mySeat?.player != null) {
+      log('Rebuild sitBackButton button: Status: ${mySeat.player.status.toString()}');
+    }
 
     if (mySeat == null || mySeat.isOpen || mySeat.player == null) {
+      log('Rebuild (mySeat == null || mySeat.isOpen || mySeat.player == null');
       return SizedBox.shrink();
     }
     // log('Rebuild buyin button: Status: ${myState.status.toString()}');
 
     if (!mySeat.player.inBreak) {
+      log('mySeat.player.inBreak');
       return SizedBox.shrink();
     }
 
@@ -308,8 +313,10 @@ class _BoardViewState extends State<BoardView> {
         if (!(seat.player.status == AppConstants.IN_BREAK ||
             seat.player.status == AppConstants.WAIT_FOR_BUYIN ||
             seat.player.status == AppConstants.WAIT_FOR_BUYIN_APPROVAL)) {
+          log('Rebuild sitBackButton seat.player.status == AppConstants.IN_BREAK');
           return SizedBox.shrink();
         }
+        log('Rebuild sitBackButton show');
         return Transform.translate(
             offset: Offset(0, 10),
             child: RoundRaisedButtonWithTimer(

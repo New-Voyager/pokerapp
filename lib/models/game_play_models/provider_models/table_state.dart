@@ -328,12 +328,12 @@ class TableState extends ChangeNotifier {
 
   /* un highlight board cards */
   void unHighlightCardsSilent(int boardIndex) {
-    if (boardIndex == 1) {
+    if (boardIndex == 1 && _board1 != null) {
       for (final card in _board1) {
         card.highlight = false;
         card.dim = false;
       }
-    } else if (boardIndex == 2) {
+    } else if (boardIndex == 2 && _board2 != null) {
       for (final card in _board2) {
         card.highlight = false;
         card.dim = false;

@@ -384,6 +384,7 @@ class GameUpdateService {
       // get break exp time
       for (final player in _gameInfoModel.playersInSeats) {
         if (player.seatNo == seat.serverSeatPos) {
+          seat.player.status = player.status;
           seat.player.breakTimeExpAt = player.breakTimeExpAt.toLocal();
           DateTime now = DateTime.now();
           if (seat.player.breakTimeExpAt != null) {
