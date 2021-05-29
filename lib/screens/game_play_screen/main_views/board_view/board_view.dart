@@ -31,6 +31,7 @@ class BoardView extends StatefulWidget {
     @required this.gameComService,
     @required this.audioPlayer,
   });
+
   final GameComService gameComService;
   final GameInfoModel gameInfo;
   final Function(int index) onUserTap;
@@ -59,6 +60,7 @@ class BoardView extends StatefulWidget {
 
 class _BoardViewState extends State<BoardView> {
   BuildContext providerContext;
+  GlobalKey boardViewKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
@@ -229,9 +231,11 @@ class _BoardViewState extends State<BoardView> {
           }
 
           return Visibility(
+            key: boardViewKey,
               visible: showPopupButtons,
               child: Align(
-                  alignment: Alignment.topLeft, child: PopupWidget(gameState, seat)));
+                  alignment: Alignment.topLeft,
+                  child: PopupWidget(gameState, seat, boardViewKey)));
         }),
       ],
     );

@@ -16,12 +16,13 @@ import 'package:pokerapp/services/game_play/game_com_service.dart';
 class PopupWidget extends StatefulWidget {
   final GameState gameState;
   final Seat seat;
+  final GlobalKey boardViewKey;
   final _PopupWidget state = _PopupWidget();
 
   // final SeatPos seatPos;
   // final Seat seat;
   // final GameComService gameComService;
-  PopupWidget(this.gameState, this.seat);
+  PopupWidget(this.gameState, this.seat, this.boardViewKey);
 
   @override
   _PopupWidget createState() {
@@ -239,12 +240,22 @@ class _PopupWidget extends State<PopupWidget> with TickerProviderStateMixin {
     );
   }
 
+  Offset getOffset() {
+    RenderBox globalRenderBox =
+        widget.seat.key.currentContext.findRenderObject();
+    Offset globalOffset = globalRenderBox.localToGlobal(Offset(0, 0));
+    RenderBox localRenderBox =
+        widget.boardViewKey.currentContext.findRenderObject();
+    Offset localOffset = localRenderBox.globalToLocal(globalOffset);
+    return localOffset;
+  }
+
   showCustomMenu(context, int index) {
     final RenderBox overlay = Overlay.of(context).context.findRenderObject();
     showMenu(
       context: context,
       position: RelativeRect.fromRect(
-          const Offset(1.0, 2.0) & const Size(40, 40),
+          getOffset() & const Size(40, 40),
           // smaller rect, the touch area
           Offset.zero & overlay.size // Bigger rect, the entire screen
           ),
@@ -310,11 +321,9 @@ class _PopupWidget extends State<PopupWidget> with TickerProviderStateMixin {
       } else {
         switch (delta) {
           case 0:
-            // _bookmarkdHand(index);
-            log('user selected option 0');
+            log('user selected mute option');
             break;
           case 1:
-            //_shareHandWithClub(index);
             log('calling kickPlayer with ${widget.gameState.gameCode} and ${widget.seat.player.playerUuid}');
             PlayerService.kickPlayer(
                 widget.gameState.gameCode, widget.seat.player.playerUuid);
