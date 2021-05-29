@@ -182,8 +182,8 @@ class GamePlayScreenUtilMethods {
             color: Colors.white,
           ),
           backgroundColor: Colors.red,
-          label: 'New Hand',
-          onTap: () => TestService.sendNewHand(),
+          label: 'addTurnOrRiverCard',
+          onTap: () => TestService.addTurnOrRiverCard(),
         ),
 
         SpeedDialChild(
