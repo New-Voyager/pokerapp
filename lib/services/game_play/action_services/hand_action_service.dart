@@ -249,6 +249,7 @@ class HandActionService {
     if (closed) {
       return;
     }
+    debugPrint(jsonEncode(data));
 
     String messageType = data['messageType'];
     if (_retryMsg != null) {
@@ -1391,6 +1392,12 @@ class HandActionService {
         tableState.notifyAll();
       }
     }
+
+    // remove all the community cards
+    tableState.clear();
+    tableState.notifyAll();
+
+    gameState.resetPlayers(context, notify: false);
   }
 
   static void updatePotBeforeResultStatic({

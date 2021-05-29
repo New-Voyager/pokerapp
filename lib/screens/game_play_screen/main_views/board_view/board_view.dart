@@ -243,39 +243,45 @@ class _BoardViewState extends State<BoardView> {
     final mySeat = gameState.mySeat(providerContext);
     final myState = gameState.getMyState(context);
 
+    log('Rebuild buyin button: Status: ${myState.status.toString()}');
     bool showBuyInButton = true;
     if (mySeat == null || mySeat.isOpen || mySeat.player == null) {
+      log('mySeat == null || mySeat.isOpen || mySeat.player == null');
       return SizedBox.shrink();
     }
-    // log('Rebuild buyin button: Status: ${myState.status.toString()}');
 
-    if (!mySeat.player.showBuyIn || mySeat.player.waitForBuyInApproval) {
+    if (!(mySeat.player.showBuyIn || mySeat.player.waitForBuyInApproval)) {
+      log('!(mySeat.player.showBuyIn || mySeat.player.waitForBuyInApproval)');
       return SizedBox.shrink();
     }
 
     if (!showBuyInButton) {
+      log('!showBuyInButton');
       return SizedBox.shrink();
     }
+    log('Rebuilding buyin button');
 
     final widget = ListenableProvider<Seat>(
       create: (_) => mySeat,
       builder: (context, _) => Consumer<Seat>(builder: (_, seat, __) {
-        if (!(seat.player.status == AppConstants.IN_BREAK ||
-            seat.player.status == AppConstants.WAIT_FOR_BUYIN ||
-            seat.player.status == AppConstants.WAIT_FOR_BUYIN_APPROVAL)) {
+        if (seat.player.status == AppConstants.WAIT_FOR_BUYIN ||
+            seat.player.status == AppConstants.WAIT_FOR_BUYIN_APPROVAL) {
+          log('Rebuilding buyin button now');
+          return Transform.translate(
+              offset: Offset(0, 10),
+              child: RoundRaisedButtonWithTimer(
+                buttonText: 'Buyin',
+                color: Colors.blueGrey,
+                verticalPadding: 1,
+                fontSize: 15,
+                onButtonTap: () async => {await onBuyin(context)},
+                timerWidget:
+                    GamePlayScreenUtilMethods.breakBuyIntimer(context, seat),
+              ));
+        } else {
+          log('Cannot rebuild buyin button now ${seat.player.status}');
           return SizedBox.shrink();
         }
-        return Transform.translate(
-            offset: Offset(0, 10),
-            child: RoundRaisedButtonWithTimer(
-              buttonText: 'Buyin',
-              color: Colors.blueGrey,
-              verticalPadding: 1,
-              fontSize: 15,
-              onButtonTap: () async => {await onBuyin(context)},
-              timerWidget:
-                  GamePlayScreenUtilMethods.breakBuyIntimer(context, seat),
-            ));
       }),
     );
 
@@ -286,13 +292,18 @@ class _BoardViewState extends State<BoardView> {
     // show buyin button only for if the current player is in a seat
     final gameState = GameState.getState(providerContext);
     final mySeat = gameState.mySeat(providerContext);
+    if (mySeat?.player != null) {
+      log('Rebuild sitBackButton button: Status: ${mySeat.player.status.toString()}');
+    }
 
     if (mySeat == null || mySeat.isOpen || mySeat.player == null) {
+      log('Rebuild (mySeat == null || mySeat.isOpen || mySeat.player == null');
       return SizedBox.shrink();
     }
     // log('Rebuild buyin button: Status: ${myState.status.toString()}');
 
     if (!mySeat.player.inBreak) {
+      log('mySeat.player.inBreak');
       return SizedBox.shrink();
     }
 
@@ -302,8 +313,10 @@ class _BoardViewState extends State<BoardView> {
         if (!(seat.player.status == AppConstants.IN_BREAK ||
             seat.player.status == AppConstants.WAIT_FOR_BUYIN ||
             seat.player.status == AppConstants.WAIT_FOR_BUYIN_APPROVAL)) {
+          log('Rebuild sitBackButton seat.player.status == AppConstants.IN_BREAK');
           return SizedBox.shrink();
         }
+        log('Rebuild sitBackButton show');
         return Transform.translate(
             offset: Offset(0, 10),
             child: RoundRaisedButtonWithTimer(
