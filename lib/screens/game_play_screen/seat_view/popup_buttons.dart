@@ -5,19 +5,23 @@ import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
+import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/screens/game_play_screen/game_play_screen_util_methods.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:lottie/lottie.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/profile_popup.dart';
+import 'package:pokerapp/services/app/player_service.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
 
 class PopupWidget extends StatefulWidget {
   final GameState gameState;
+  final Seat seat;
   final _PopupWidget state = _PopupWidget();
+
   // final SeatPos seatPos;
   // final Seat seat;
   // final GameComService gameComService;
-  PopupWidget(this.gameState);
+  PopupWidget(this.gameState, this.seat);
 
   @override
   _PopupWidget createState() {
@@ -32,6 +36,7 @@ class PopupWidget extends StatefulWidget {
 class _PopupWidget extends State<PopupWidget> with TickerProviderStateMixin {
   AnimationController _animationController;
   AnimationController _controller;
+
   void toggle() {
     if (_animationController.value == null) {
       setState(() {});
@@ -143,93 +148,185 @@ class _PopupWidget extends State<PopupWidget> with TickerProviderStateMixin {
                 log("TAPPED 1");
               },
             )),
-        Transform.translate(
-            offset: offset,
-            child: FloatingMenuItem(
-              child: Container(
-                padding: EdgeInsets.all(3.0),
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(color: Colors.green[200]),
-                  color: Colors.green[200],
-                ),
-                child: Icon(
-                  Icons.mic,
-                  color: Colors.black,
-                ),
-              ),
-              controller: _animationController,
-              seatPosition: widget.gameState.getTappedSeatPos,
-              itemNo: 2,
-              onTapFunc: () {
-                log("TAPPED 2");
-              },
-            )),
-        Transform.translate(
-            offset: offset,
-            child: FloatingMenuItem(
-              child: Container(
-                width: 32,
-                height: 32,
-                child: Lottie.asset(
-                  'assets/animations/chicken.json',
-                  controller: _controller,
-                  onLoaded: (composition) {
-                    // Configure the AnimationController with the duration of the
-                    // Lottie file and start the animation.
-                    _controller
-                      ..duration = composition.duration
-                      ..forward();
+        widget.gameState.currentPlayer.isAdmin()
+            ? Transform.translate(
+                offset: offset,
+                child: FloatingMenuItem(
+                  child: Container(
+                    padding: EdgeInsets.all(3.0),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(color: Colors.green[200]),
+                      color: Colors.green[200],
+                    ),
+                    child: Icon(
+                      Icons.more_horiz_outlined,
+                      color: Colors.black,
+                    ),
+                  ),
+                  controller: _animationController,
+                  seatPosition: widget.gameState.getTappedSeatPos,
+                  itemNo: 2,
+                  onTapFunc: () {
+                    log("TAPPED 2");
+                    showCustomMenu(context, 0);
                   },
-                ),
-              ),
-              controller: _animationController,
-              seatPosition: widget.gameState.getTappedSeatPos,
-              itemNo: 3,
-              onTapFunc: () async {
-                // final data = await showModalBottomSheet(
-                //   context: context,
-                //   shape: RoundedRectangleBorder(
-                //     borderRadius: BorderRadius.vertical(
-                //       top: Radius.circular(10),
-                //     ),
-                //   ),
-                //   builder: (context) {
-                //     return ProfilePopup(
-                //       seat: widget.seat,
-                //     );
-                //   },
-                // );
-                final data = await showDialog(
-                  context: context,
-                  builder: (context) {
-                    return AlertDialog(
-                      backgroundColor: Colors.transparent,
-                      elevation: 10,
-                      contentPadding: EdgeInsets.zero,
-                      content: ProfilePopup(
-                        seat: widget.gameState.popupSelectedSeat,
-                      ),
+                ))
+            : Transform.translate(
+                offset: offset,
+                child: FloatingMenuItem(
+                  child: Container(
+                    width: 32,
+                    height: 32,
+                    child: Lottie.asset(
+                      'assets/animations/chicken.json',
+                      controller: _controller,
+                      onLoaded: (composition) {
+                        // Configure the AnimationController with the duration of the
+                        // Lottie file and start the animation.
+                        _controller
+                          ..duration = composition.duration
+                          ..forward();
+                      },
+                    ),
+                  ),
+                  controller: _animationController,
+                  seatPosition: widget.gameState.getTappedSeatPos,
+                  itemNo: 3,
+                  onTapFunc: () async {
+                    // final data = await showModalBottomSheet(
+                    //   context: context,
+                    //   shape: RoundedRectangleBorder(
+                    //     borderRadius: BorderRadius.vertical(
+                    //       top: Radius.circular(10),
+                    //     ),
+                    //   ),
+                    //   builder: (context) {
+                    //     return ProfilePopup(
+                    //       seat: widget.seat,
+                    //     );
+                    //   },
+                    // );
+                    final data = await showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          backgroundColor: Colors.transparent,
+                          elevation: 10,
+                          contentPadding: EdgeInsets.zero,
+                          content: ProfilePopup(
+                            seat: widget.gameState.popupSelectedSeat,
+                          ),
+                        );
+                      },
                     );
+
+                    if (data == null) return;
+                    // log("SEATNO1:: ${widget.gameState.myState.seatNo}");
+                    // log("SEATNO2:: ${widget.gameState.getMyState(context).seatNo}");
+                    // log("SEAT FROM:: ${widget.gameState.me(context).seatNo}");
+                    // log("SEAT TO:: ${widget.gameState.popupSelectedSeat.serverSeatPos}");
+
+                    widget.gameState.gameComService.gameMessaging.sendAnimation(
+                      widget.gameState.me(context).seatNo,
+                      widget.gameState.popupSelectedSeat.serverSeatPos,
+                      data['animationID'],
+                    );
+                    widget.gameState.dismissPopup(context);
                   },
-                );
-
-                if (data == null) return;
-                // log("SEATNO1:: ${widget.gameState.myState.seatNo}");
-                // log("SEATNO2:: ${widget.gameState.getMyState(context).seatNo}");
-                // log("SEAT FROM:: ${widget.gameState.me(context).seatNo}");
-                // log("SEAT TO:: ${widget.gameState.popupSelectedSeat.serverSeatPos}");
-
-                widget.gameState.gameComService.gameMessaging.sendAnimation(
-                  widget.gameState.me(context).seatNo,
-                  widget.gameState.popupSelectedSeat.serverSeatPos,
-                  data['animationID'],
-                );
-                widget.gameState.dismissPopup(context);
-              },
-            )),
+                )),
       ],
     );
+  }
+
+  showCustomMenu(context, int index) {
+    final RenderBox overlay = Overlay.of(context).context.findRenderObject();
+    showMenu(
+      context: context,
+      position: RelativeRect.fromRect(
+          const Offset(1.0, 2.0) & const Size(40, 40),
+          // smaller rect, the touch area
+          Offset.zero & overlay.size // Bigger rect, the entire screen
+          ),
+      items: <PopupMenuEntry>[
+        PopupMenuItem(
+          value: 0,
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text(
+                    "Mute",
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 15.0,
+                    ),
+                  ),
+                  Icon(
+                    Icons.star_border_outlined,
+                    color: Colors.white,
+                  ),
+                ],
+              ),
+              Divider(
+                color: AppColors.listViewDividerColor,
+              ),
+            ],
+          ),
+        ),
+        PopupMenuItem(
+          value: 1,
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text(
+                    "Kick",
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 15.0,
+                    ),
+                  ),
+                  Icon(
+                    Icons.ios_share,
+                    color: Colors.white,
+                  ),
+                ],
+              ),
+              Divider(
+                color: AppColors.listViewDividerColor,
+              ),
+            ],
+          ),
+        )
+      ],
+    ).then<void>((delta) {
+      // delta would be null if user taps on outside the popup menu
+      // (causing it to close without making selection)
+      if (delta == null) {
+        return;
+      } else {
+        switch (delta) {
+          case 0:
+            // _bookmarkdHand(index);
+            log('user selected option 0');
+            break;
+          case 1:
+            //_shareHandWithClub(index);
+            log('calling kickPlayer with ${widget.gameState.gameCode} and ${widget.seat.player.playerUuid}');
+            PlayerService.kickPlayer(
+                widget.gameState.gameCode, widget.seat.player.playerUuid);
+            showSimpleNotification(
+              Text('Player will be removed after this hand'),
+              position: NotificationPosition.top,
+              duration: Duration(seconds: 10),
+            );
+            break;
+        }
+      }
+    });
   }
 }
 

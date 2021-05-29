@@ -231,7 +231,7 @@ class _BoardViewState extends State<BoardView> {
           return Visibility(
               visible: showPopupButtons,
               child: Align(
-                  alignment: Alignment.topLeft, child: PopupWidget(gameState)));
+                  alignment: Alignment.topLeft, child: PopupWidget(gameState, seat)));
         }),
       ],
     );
