@@ -664,7 +664,7 @@ class BoardAttributesObject extends ChangeNotifier {
   double get centerPotScale => _decide(
         lessThan6Inches: 0.85,
         equalTo6Inches: 1.0,
-        equalTo7Inches: 1.10,
+        equalTo7Inches: 1.20,
         greaterThan7Inches: 1.30,
       ) as double;
 
@@ -692,7 +692,7 @@ class BoardAttributesObject extends ChangeNotifier {
   double get communityCardSizeScales => _decide(
         lessThan6Inches: 0.85,
         equalTo6Inches: 1.0,
-        equalTo7Inches: 1.10,
+        equalTo7Inches: 1.05,
         greaterThan7Inches: 1.25,
       ) as double;
 

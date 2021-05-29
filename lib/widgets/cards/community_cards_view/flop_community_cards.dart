@@ -39,8 +39,6 @@ class _FlopCommunityCardsState extends State<FlopCommunityCards> {
   void initState() {
     super.initState();
 
-    print(CommunityCardAttribute.cardOffsets);
-
     _isFlipDone = false;
     _isAnimationCompleted = false;
 

@@ -134,8 +134,6 @@ class CenterView extends StatelessWidget {
 
     // boardAttributes.centerPotBetKey = GlobalKey();
 
-    final bool isCommunityCardsEmpty = this.cards == null || this.cards.isEmpty;
-
     Widget tablePotAndCardWidget = Align(
       key: ValueKey('tablePotAndCardWidget'),
       alignment: Alignment.topCenter,
@@ -145,6 +143,7 @@ class CenterView extends StatelessWidget {
           /* main pot view */
           Transform.scale(
             scale: boardAttributes.centerPotScale,
+            alignment: Alignment.topCenter,
             child: multiplePots(context, boardAttributes),
           ),
 
@@ -152,17 +151,12 @@ class CenterView extends StatelessWidget {
           const SizedBox(height: 5.0),
 
           /* community cards view */
-          Opacity(
-            opacity: isCommunityCardsEmpty ? 0.0 : 1.0,
-            child: CommunityCardsView(
-              cards:
-                  isCommunityCardsEmpty ? [CardHelper.getCard(17)] : this.cards,
-              cardsOther: this.cardsOther,
-              twoBoardsNeeded: this.twoBoardsNeeded,
-              horizontal: true,
-            ),
+          CommunityCardsView(
+            cards: this.cards,
+            cardsOther: this.cardsOther,
+            twoBoardsNeeded: this.twoBoardsNeeded,
+            horizontal: true,
           ),
-
           // divider
           const SizedBox(height: 5.0),
 
