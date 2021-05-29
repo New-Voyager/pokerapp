@@ -26,7 +26,7 @@ import 'iap_test.dart';
 
 class TestService {
   static get isTesting {
-    return true;
+    return false;
   }
 
   static var _showResult = false;

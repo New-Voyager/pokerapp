@@ -682,6 +682,13 @@ class BoardAttributesObject extends ChangeNotifier {
         greaterThan7Inches: 1.15,
       ) as double;
 
+  double get centerViewCenterScale => _decide(
+        lessThan6Inches: 0.85,
+        equalTo6Inches: 1.0,
+        equalTo7Inches: 1.10,
+        greaterThan7Inches: 1.30,
+      ) as double;
+
   double get communityCardSizeScales => _decide(
         lessThan6Inches: 0.85,
         equalTo6Inches: 1.0,
