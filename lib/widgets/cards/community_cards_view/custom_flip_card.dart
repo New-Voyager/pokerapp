@@ -33,10 +33,12 @@ class CustomFlipCard extends StatelessWidget {
             height: AppDimensions.cardHeight *
                 CardBuilderWidget.getCardRatioFromCardType(
                   CardType.CommunityCard,
+                  context,
                 ),
             width: AppDimensions.cardWidth *
                 CardBuilderWidget.getCardRatioFromCardType(
                   CardType.CommunityCard,
+                  context,
                 ),
           ),
         ),

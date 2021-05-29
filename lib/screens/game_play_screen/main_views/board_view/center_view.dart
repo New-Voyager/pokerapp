@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
+import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
@@ -113,112 +114,98 @@ class CenterView extends StatelessWidget {
 
     Widget tablePotAndCardWidget = Align(
       key: ValueKey('tablePotAndCardWidget'),
-      alignment: Alignment.center,
-      child: Stack(
-        alignment: Alignment.center,
-        clipBehavior: Clip.none,
-        //mainAxisSize: MainAxisSize.min,
+      alignment: Alignment.topCenter,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           /* main pot view */
-          Align(
-            alignment: Alignment.topCenter,
-            child: Transform.translate(
-              offset: Offset(0, 15),
-              child: multiplePots(context),
-            ),
+          Transform.scale(
+            scale: boardAttributes.centerPotScale,
+            child: multiplePots(context),
           ),
+
+          // divider
+          const SizedBox(height: 5.0),
 
           /* community cards view */
-          Align(
-            alignment: Alignment.topCenter,
-            child: Transform.translate(
-              offset: Offset(0, 50),
-              child: CommunityCardsView(
-                cards: this.cards,
-                cardsOther: this.cardsOther,
-                twoBoardsNeeded: this.twoBoardsNeeded,
-                horizontal: true,
-              ),
-            ),
+          CommunityCardsView(
+            cards: this.cards,
+            cardsOther: this.cardsOther,
+            twoBoardsNeeded: this.twoBoardsNeeded,
+            horizontal: true,
           ),
 
+          // divider
+          const SizedBox(height: 5.0),
+
           /* potUpdates view OR the rank widget (rank widget is shown only when we have a result) */
-          this.showDown ? rankWidget() : potUpdatesView(),
+          this.showDown
+              ? rankWidget(boardAttributes)
+              : potUpdatesView(boardAttributes),
         ],
       ),
     );
     return tablePotAndCardWidget;
   }
 
-  Widget potUpdatesView() {
-    final child = Opacity(
-      opacity:
-          showDown || (potChipsUpdates == null || potChipsUpdates == 0) ? 0 : 1,
-      child: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 10.0,
-          vertical: 5.0,
-        ),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(100.0),
-          color: Colors.black26,
-        ),
-        child: Text(
-          'Pot: ${DataFormatter.chipsFormat(potChipsUpdates)}',
-          style: AppStyles.itemInfoTextStyleHeavy.copyWith(
-            fontSize: 13,
-            fontWeight: FontWeight.w400,
+  Widget potUpdatesView(BoardAttributesObject boa) => Transform.scale(
+        scale: boa.centerPotUpdatesScale,
+        child: Opacity(
+          opacity: showDown || (potChipsUpdates == null || potChipsUpdates == 0)
+              ? 0
+              : 1,
+          child: Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 10.0,
+              vertical: 5.0,
+            ),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(100.0),
+              color: Colors.black26,
+            ),
+            child: Text(
+              'Pot: ${DataFormatter.chipsFormat(potChipsUpdates)}',
+              style: AppStyles.itemInfoTextStyleHeavy.copyWith(
+                fontSize: 13,
+                fontWeight: FontWeight.w400,
+              ),
+            ),
           ),
         ),
-      ),
-    );
-
-    return Align(
-      alignment: Alignment.topCenter,
-      child: Transform.translate(
-        offset: Offset(0, 100),
-        child: child,
-      ),
-    );
-  }
+      );
 
   /* rankStr --> needs to be shown only when footer result is not null */
-  Widget rankWidget() {
-    final child = Consumer<TableState>(
-      builder: (_, TableState tableState, __) => AnimatedSwitcher(
-        duration: AppConstants.animationDuration,
-        reverseDuration: AppConstants.animationDuration,
-        child: tableState.rankStr == null
-            ? const SizedBox.shrink()
-            : Transform.translate(
-                offset: Offset(
-                  0.0,
-                  -AppDimensions.cardHeight / 2,
+  Widget rankWidget(BoardAttributesObject boa) {
+    return Transform.scale(
+      scale: boa.centerRankStrScale,
+      child: Consumer<TableState>(
+        builder: (_, TableState tableState, __) => AnimatedSwitcher(
+          duration: AppConstants.animationDuration,
+          reverseDuration: AppConstants.animationDuration,
+          child: tableState.rankStr == null
+              ? const SizedBox.shrink()
+              : Transform.translate(
+                  offset: Offset(
+                    0.0,
+                    -0.0,
+                  ),
+                  child: Container(
+                    margin: EdgeInsets.only(top: 5.0),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10.0,
+                      vertical: 5.0,
+                    ),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(100.0),
+                      color: Colors.black.withOpacity(0.70),
+                    ),
+                    child: Text(
+                      tableState.rankStr,
+                      style: AppStyles.footerResultTextStyle4,
+                    ),
+                  ),
                 ),
-                child: Container(
-                  margin: EdgeInsets.only(top: 5.0),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10.0,
-                    vertical: 5.0,
-                  ),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(100.0),
-                    color: Colors.black.withOpacity(0.70),
-                  ),
-                  child: Text(
-                    tableState.rankStr,
-                    style: AppStyles.footerResultTextStyle4,
-                  ),
-                ),
-              ),
-      ),
-    );
-
-    return Align(
-      alignment: Alignment.topCenter,
-      child: Transform.translate(
-        offset: Offset(0, 120),
-        child: child,
+        ),
       ),
     );
   }

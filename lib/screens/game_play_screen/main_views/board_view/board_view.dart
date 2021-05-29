@@ -125,7 +125,7 @@ class _BoardViewState extends State<BoardView> {
               final flipSpeed = tableState.flipSpeed;
 
               return Transform.scale(
-                scale: boardAttributes.centerScale,
+                scale: 1 / boardAttributes.tableScale,
                 child: CenterView(
                   centerKey,
                   tableState.twoBoardsNeeded,

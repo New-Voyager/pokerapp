@@ -659,19 +659,49 @@ class BoardAttributesObject extends ChangeNotifier {
 
   static const holeCardViewAngleConstant = 0.05;
 
+  /* center view scales for different widgets */
+
+  double get centerPotScale => _decide(
+        lessThan6Inches: 0.85,
+        equalTo6Inches: 1.0,
+        equalTo7Inches: 1.10,
+        greaterThan7Inches: 1.30,
+      ) as double;
+
+  double get centerPotUpdatesScale => _decide(
+        lessThan6Inches: 0.85,
+        equalTo6Inches: 1.0,
+        equalTo7Inches: 1.10,
+        greaterThan7Inches: 1.25,
+      ) as double;
+
+  double get centerRankStrScale => _decide(
+        lessThan6Inches: 0.85,
+        equalTo6Inches: 1.0,
+        equalTo7Inches: 1.10,
+        greaterThan7Inches: 1.15,
+      ) as double;
+
+  double get communityCardSizeScales => _decide(
+        lessThan6Inches: 0.85,
+        equalTo6Inches: 1.0,
+        equalTo7Inches: 1.10,
+        greaterThan7Inches: 1.25,
+      ) as double;
+
   /* table center view offsets, scaling and sizes */
   Offset get centerOffset => _decide(
         lessThan6Inches: Offset(10, 40),
         equalTo6Inches: Offset(15, 60),
         equalTo7Inches: Offset(15, 85),
-        greaterThan7Inches: Offset(10, 180),
+        greaterThan7Inches: Offset(10, 150),
       ) as Offset;
 
-  double get centerScale => _decide(
-        lessThan6Inches: 0.85,
+  double get tableScale => _decide(
+        lessThan6Inches: 1.0,
         equalTo6Inches: 1.0,
-        equalTo7Inches: 1.25,
-        greaterThan7Inches: 1.6,
+        equalTo7Inches: 0.90,
+        greaterThan7Inches: 0.85,
       ) as double;
 
   Size get centerSize => this._centerSize;
@@ -720,13 +750,6 @@ class BoardAttributesObject extends ChangeNotifier {
         equalTo6Inches: 1.0,
         equalTo7Inches: 1.5,
         greaterThan7Inches: 1.5,
-      ) as double;
-
-  double get tableScale => _decide(
-        lessThan6Inches: 1.0,
-        equalTo6Inches: 1.0,
-        equalTo7Inches: 0.90,
-        greaterThan7Inches: 0.85,
       ) as double;
 
   double get tableDividerHeightScale => _decide(

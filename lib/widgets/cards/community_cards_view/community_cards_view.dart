@@ -32,7 +32,9 @@ class CommunityCardsView extends StatelessWidget {
       /* if empty, make dummy cards to calculate positions */
       /* why I choose 17? No reason!!! */
       for (int i = 0; i < 5; i++) {
-        reversedList.add(CardHelper.getCard(17));
+        final card = CardHelper.getCard(17);
+        card.cardType = CardType.CommunityCard;
+        reversedList.add(card);
       }
     }
 
