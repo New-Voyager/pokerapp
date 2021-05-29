@@ -7,6 +7,7 @@ import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_icons.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/screens/main_screens/clubs_page_view/clubs_page_view.dart';
 import 'package:pokerapp/screens/main_screens/games_page_view/games_page_view.dart';
 import 'package:pokerapp/screens/main_screens/games_page_view/live_games.dart';
@@ -163,9 +164,8 @@ class _MainScreenState extends State<MainScreen>
               selected: _navPos,
               fabSize: 48,
               navHeight: 56,
-              bgColor: AppColors.newNavBarColor,
-              fabBgColor: AppColors.newNavBarColor,
-              
+              bgColor: AppColorsNew.newNavBarColor,
+              fabBgColor: AppColorsNew.newNavBarColor,
               iconSize: 24,
               onItemClick: (i) {
                 setState(() {
@@ -219,8 +219,8 @@ class CurvedNavItem extends StatelessWidget {
         Icon(
           iconData,
           color: selected
-              ? AppColors.newTextGreenColor
-              : AppColors.newNavBarInactiveItemColor,
+              ? AppColorsNew.newTextGreenColor
+              : AppColorsNew.newNavBarInactiveItemColor,
         ),
         selected
             ? Container()
@@ -233,7 +233,7 @@ class CurvedNavItem extends StatelessWidget {
                     title.toUpperCase() ?? 'Title'.toUpperCase(),
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      color: AppColors.newTextColor,
+                      color: AppColorsNew.newTextColor,
                       fontSize: 10,
                       letterSpacing: 0.7,
                       fontWeight: FontWeight.w300,
