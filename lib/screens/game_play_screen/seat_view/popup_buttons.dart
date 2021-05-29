@@ -170,72 +170,74 @@ class _PopupWidget extends State<PopupWidget> with TickerProviderStateMixin {
                   itemNo: 2,
                   onTapFunc: () {
                     log("TAPPED 2");
+                    widget.gameState.dismissPopup(context);
                     showCustomMenu(context, 0);
                   },
                 ))
-            : Transform.translate(
-                offset: offset,
-                child: FloatingMenuItem(
-                  child: Container(
-                    width: 32,
-                    height: 32,
-                    child: Lottie.asset(
-                      'assets/animations/chicken.json',
-                      controller: _controller,
-                      onLoaded: (composition) {
-                        // Configure the AnimationController with the duration of the
-                        // Lottie file and start the animation.
-                        _controller
-                          ..duration = composition.duration
-                          ..forward();
-                      },
-                    ),
-                  ),
-                  controller: _animationController,
-                  seatPosition: widget.gameState.getTappedSeatPos,
-                  itemNo: 3,
-                  onTapFunc: () async {
-                    // final data = await showModalBottomSheet(
-                    //   context: context,
-                    //   shape: RoundedRectangleBorder(
-                    //     borderRadius: BorderRadius.vertical(
-                    //       top: Radius.circular(10),
-                    //     ),
-                    //   ),
-                    //   builder: (context) {
-                    //     return ProfilePopup(
-                    //       seat: widget.seat,
-                    //     );
-                    //   },
-                    // );
-                    final data = await showDialog(
-                      context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                          backgroundColor: Colors.transparent,
-                          elevation: 10,
-                          contentPadding: EdgeInsets.zero,
-                          content: ProfilePopup(
-                            seat: widget.gameState.popupSelectedSeat,
-                          ),
-                        );
-                      },
-                    );
-
-                    if (data == null) return;
-                    // log("SEATNO1:: ${widget.gameState.myState.seatNo}");
-                    // log("SEATNO2:: ${widget.gameState.getMyState(context).seatNo}");
-                    // log("SEAT FROM:: ${widget.gameState.me(context).seatNo}");
-                    // log("SEAT TO:: ${widget.gameState.popupSelectedSeat.serverSeatPos}");
-
-                    widget.gameState.gameComService.gameMessaging.sendAnimation(
-                      widget.gameState.me(context).seatNo,
-                      widget.gameState.popupSelectedSeat.serverSeatPos,
-                      data['animationID'],
-                    );
-                    widget.gameState.dismissPopup(context);
+            : SizedBox(),
+        Transform.translate(
+            offset: offset,
+            child: FloatingMenuItem(
+              child: Container(
+                width: 32,
+                height: 32,
+                child: Lottie.asset(
+                  'assets/animations/chicken.json',
+                  controller: _controller,
+                  onLoaded: (composition) {
+                    // Configure the AnimationController with the duration of the
+                    // Lottie file and start the animation.
+                    _controller
+                      ..duration = composition.duration
+                      ..forward();
                   },
-                )),
+                ),
+              ),
+              controller: _animationController,
+              seatPosition: widget.gameState.getTappedSeatPos,
+              itemNo: 3,
+              onTapFunc: () async {
+                // final data = await showModalBottomSheet(
+                //   context: context,
+                //   shape: RoundedRectangleBorder(
+                //     borderRadius: BorderRadius.vertical(
+                //       top: Radius.circular(10),
+                //     ),
+                //   ),
+                //   builder: (context) {
+                //     return ProfilePopup(
+                //       seat: widget.seat,
+                //     );
+                //   },
+                // );
+                final data = await showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      backgroundColor: Colors.transparent,
+                      elevation: 10,
+                      contentPadding: EdgeInsets.zero,
+                      content: ProfilePopup(
+                        seat: widget.gameState.popupSelectedSeat,
+                      ),
+                    );
+                  },
+                );
+
+                if (data == null) return;
+                // log("SEATNO1:: ${widget.gameState.myState.seatNo}");
+                // log("SEATNO2:: ${widget.gameState.getMyState(context).seatNo}");
+                // log("SEAT FROM:: ${widget.gameState.me(context).seatNo}");
+                // log("SEAT TO:: ${widget.gameState.popupSelectedSeat.serverSeatPos}");
+
+                widget.gameState.gameComService.gameMessaging.sendAnimation(
+                  widget.gameState.me(context).seatNo,
+                  widget.gameState.popupSelectedSeat.serverSeatPos,
+                  data['animationID'],
+                );
+                widget.gameState.dismissPopup(context);
+              },
+            )),
       ],
     );
   }
