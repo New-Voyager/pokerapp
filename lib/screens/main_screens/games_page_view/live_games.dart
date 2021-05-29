@@ -11,6 +11,7 @@ import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/main_screens/games_page_view/widgets/live_games_item.dart';
+import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
 
@@ -33,6 +34,13 @@ class _LiveGamesScreenState extends State<LiveGamesScreen> {
 
   _fetchLiveGames() async {
     // Load actual games from server graphql
+    ConnectionDialog.show(
+        context: context, loadingText: AppStringsNew.LoadingGamesText);
+    liveGames = await GameService.getLiveGamesNew();
+    setState(() {
+      _isLoading = false;
+    });
+    ConnectionDialog.dismiss(context: context);
   }
 
   _loadTestLiveGames() async {
