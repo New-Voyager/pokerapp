@@ -236,6 +236,7 @@ class GameState {
     // reset seats
     for (var seat in this._seats.values) {
       seat.player = null;
+      seat.potViewPos = null;
     }
 
     final players = this.getPlayers(context);
