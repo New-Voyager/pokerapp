@@ -43,7 +43,7 @@ class PlayerInfo {
 
   bool isAdmin() {
     if (role == null) {
-      return false;
+      return true;
     }
     return role.isHost || role.isOwner || role.isManager;
   }
