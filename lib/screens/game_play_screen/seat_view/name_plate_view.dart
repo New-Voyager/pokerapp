@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:blinking_text/blinking_text.dart';
 import 'package:flutter/material.dart';
-import 'package:pokerapp/enums/hand_actions.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
@@ -237,25 +236,21 @@ class NamePlateWidget extends StatelessWidget {
   }
 
   Widget bottomWidget(BuildContext context) {
-    if (seat.player.inBreak && seat.player.breakTimeExpAt != null) {
-      final now = DateTime.now().toUtc();
-      final diff = seat.player.breakTimeExpAt.difference(now);
-      return buyInTimer(context, diff.inSeconds);
-    }
+    // if (seat.player.inBreak && seat.player.breakTimeExpAt != null) {
+    //   final now = DateTime.now().toUtc();
+    //   final diff = seat.player.breakTimeExpAt.difference(now);
+    //   return buyInTimer(context, diff.inSeconds);
+    // }
 
-    if (seat.player.action.action != HandActions.ALLIN &&
-        seat.player.stack == 0 &&
-        seat.player.buyInTimeExpAt != null) {
-      final now = DateTime.now().toUtc();
-      final diff = seat.player.buyInTimeExpAt.difference(now);
-      return buyInTimer(context, diff.inSeconds);
-    } else if (seat.player.inBreak && seat.player.breakTimeExpAt != null) {
-      final now = DateTime.now().toUtc();
-      final diff = seat.player.buyInTimeExpAt.difference(now);
-      return buyInTimer(context, diff.inSeconds);
-    } else {
-      return stack(context);
-    }
+    // if (seat.player.action.action != HandActions.ALLIN &&
+    //     seat.player.stack == 0 &&
+    //     seat.player.buyInTimeExpAt != null) {
+    //   final now = DateTime.now().toUtc();
+    //   final diff = seat.player.buyInTimeExpAt.difference(now);
+    //   return buyInTimer(context, diff.inSeconds);
+    // } else {
+    return stack(context);
+    //}
   }
 
   Widget stack(BuildContext context) {

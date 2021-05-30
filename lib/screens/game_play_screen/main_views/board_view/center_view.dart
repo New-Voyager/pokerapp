@@ -20,6 +20,7 @@ class CenterView extends StatelessWidget {
   final List<CardObject> cards;
   final List<CardObject> cardsOther;
   final List<int> potChips;
+  final int whichPotToHighlight;
   final Function onStartGame;
   final bool showDown;
   final bool isBoardHorizontal;
@@ -37,6 +38,7 @@ class CenterView extends StatelessWidget {
     this.cards,
     this.cardsOther,
     this.potChips,
+    this.whichPotToHighlight,
     this.potChipsUpdates,
     this.tableStatus,
     this.showDown,
@@ -47,8 +49,7 @@ class CenterView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String _text = showDown ? null : BoardViewUtilMethods.getText(tableStatus);
-    //log('table status: $_text');
-    //log('board_view : center_view : _text : $_text');
+
     /* if the game is paused, show the options available during game pause */
     if (_text == AppConstants.GAME_PAUSED ||
         tableStatus == AppConstants.WAITING_TO_BE_STARTED) {
@@ -68,6 +69,7 @@ class CenterView extends StatelessWidget {
         child: AnimatingShuffleCardView(),
       );
     }
+
     /* if reached here, means, the game is RUNNING */
     /* The following view, shows the community cards
     * and the pot chips, if they are nulls, put the default values */
@@ -79,25 +81,23 @@ class CenterView extends StatelessWidget {
     final boardAttributes = gameState.getBoardAttributes(context);
     List<Widget> pots = [];
 
-    for (int i = 0; i < 1; i++) {
+    final List<int> cleanedPotChips = potChips ?? [];
+
+    for (int i = 0; i < cleanedPotChips.length; i++) {
+      if (cleanedPotChips[i] == null) cleanedPotChips[i] = 0;
       GlobalKey key = GlobalKey();
       double potChipValue = 0;
-      if (potChips != null && potChips.length > i)
-        potChipValue = this.potChips[i].toDouble();
+      potChipValue = cleanedPotChips[i].toDouble();
 
       final potsView = PotsView(
-        this.isBoardHorizontal,
-        potChipValue,
-        this.showDown,
-        key,
+        isBoardHorizontal: this.isBoardHorizontal,
+        potChip: potChipValue,
+        uiKey: key,
+        highlight: (whichPotToHighlight ?? -1) == i,
       );
+
       boardAttributes.setPotsKey(i, key);
       pots.add(potsView);
-      pots.add(
-        SizedBox(
-          width: 5,
-        ),
-      );
     }
 
     return Row(mainAxisAlignment: MainAxisAlignment.center, children: pots);
@@ -109,10 +109,8 @@ class CenterView extends StatelessWidget {
     final GlobalKey potsKey = GlobalKey();
     boardAttributes.setPotsKey(0, potsKey);
 
-    boardAttributes.centerPotBetKey = GlobalKey();
+    // boardAttributes.centerPotBetKey = GlobalKey();
 
-    /* this gap height is the separation height between the three widgets in the center pot */
-    const _gapHeight = 5.0;
     Widget tablePotAndCardWidget = Align(
       key: ValueKey('tablePotAndCardWidget'),
       alignment: Alignment.center,
@@ -121,20 +119,6 @@ class CenterView extends StatelessWidget {
         clipBehavior: Clip.none,
         //mainAxisSize: MainAxisSize.min,
         children: [
-          /* dummy view for pots to pull bets **/
-          Align(
-            alignment: Alignment.topCenter,
-            child: Transform.translate(
-              key: boardAttributes.centerPotBetKey,
-              offset: Offset(0, 30),
-              child: Container(
-                width: 50,
-                height: 30,
-                color: Colors.transparent,
-              ),
-            ),
-          ),
-
           /* main pot view */
           Align(
             alignment: Alignment.topCenter,

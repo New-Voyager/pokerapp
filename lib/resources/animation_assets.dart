@@ -46,6 +46,5 @@ class AnimationAssets {
       assetSvg: '$_base/gorilla.svg',
       assetJson: '$_base/gorilla.json',
     ),
-
   ];
 }

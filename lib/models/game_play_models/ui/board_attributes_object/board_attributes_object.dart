@@ -466,7 +466,7 @@ class BoardAttributesObject extends ChangeNotifier {
 
   GlobalKey _centerKey;
   GlobalKey _emptyCenterKey;
-  GlobalKey _centerPotBetKey;
+  // GlobalKey _centerPotBetKey;
   GlobalKey _dummyViewKey;
   List<PotAttribute> _pots;
 
@@ -615,8 +615,8 @@ class BoardAttributesObject extends ChangeNotifier {
 
   Size get namePlateSize => this._namePlateSize;
 
-  GlobalKey get centerPotBetKey => this._centerPotBetKey;
-  set centerPotBetKey(GlobalKey key) => this._centerPotBetKey = key;
+  // GlobalKey get centerPotBetKey => this._centerPotBetKey;
+  // set centerPotBetKey(GlobalKey key) => this._centerPotBetKey = key;
 
   Offset get playerOnTableOffset => this._playersOnTableOffset;
   set playerOnTableOffset(Offset offset) => this._playersOnTableOffset = offset;

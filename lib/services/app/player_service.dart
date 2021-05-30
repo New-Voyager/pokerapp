@@ -200,4 +200,30 @@ class PlayerService {
 
     return result.data['ret'];
   }
+
+  static Future<bool> kickPlayer(String gameCode, String playerUuid) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+
+    String _query = """
+    mutation (\$gameCode: String!, \$playerId: String!) {
+      ret : kickOut(gameCode: \$gameCode, playerUuid: \$playerId)
+    }
+  """;
+
+    Map<String, dynamic> variables = {
+      "gameCode": gameCode,
+      "playerId": playerUuid
+    };
+
+    print(_query);
+    QueryResult result = await _client.query(
+      QueryOptions(documentNode: gql(_query), variables: variables),
+    );
+
+    if (result.hasException) return null;
+
+    log("kickPlayer Result ${result.data}");
+
+    return result.data['ret'];
+  }
 }

@@ -14,17 +14,7 @@ class TableState extends ChangeNotifier {
   int _flipSpeed;
   String _rankStr;
   bool _twoBoardsNeeded;
-
-  // // animation variables
-  // bool _animateBoard1Flop;
-  // bool _animateBoard1Turn;
-  // bool _animateBoard1River;
-  // bool _animateBoard1; // all the 5 cards (run it twice)
-  //
-  // bool _animateBoard2Flop;
-  // bool _animateBoard2Turn;
-  // bool _animateBoard2River;
-  // bool _animateBoard2; // all the 5 cards (run it twice)
+  int _potToHighlight;
 
   TableState({
     String tableStatus,
@@ -50,6 +40,7 @@ class TableState extends ChangeNotifier {
     _flipSpeed = 500;
     _rankStr = null;
     _twoBoardsNeeded = false;
+    _potToHighlight = -1;
     // _animateBoard1 = false;
     // _animateBoard1Flop = false;
     // _animateBoard1Turn = false;
@@ -61,6 +52,10 @@ class TableState extends ChangeNotifier {
   }
 
   void notifyAll() => notifyListeners();
+
+  void updatePotToHighlightSilent(int potIdx) {
+    _potToHighlight = potIdx;
+  }
 
   void updateTwoBoardsNeeded(bool b) {
     this._twoBoardsNeeded = b;
@@ -333,12 +328,12 @@ class TableState extends ChangeNotifier {
 
   /* un highlight board cards */
   void unHighlightCardsSilent(int boardIndex) {
-    if (boardIndex == 1) {
+    if (boardIndex == 1 && _board1 != null) {
       for (final card in _board1) {
         card.highlight = false;
         card.dim = false;
       }
-    } else if (boardIndex == 2) {
+    } else if (boardIndex == 2 && _board2 != null) {
       for (final card in _board2) {
         card.highlight = false;
         card.dim = false;
@@ -381,6 +376,7 @@ class TableState extends ChangeNotifier {
   bool get twoBoardsNeeded => _twoBoardsNeeded;
   String get rankStr => _rankStr;
   String get tableStatus => _tableStatus;
+  int get potToHighlight => _potToHighlight;
   List<int> get potChips => _potChips;
   int get potChipsUpdates => _potUpdatesChips;
   List<CardObject> get cards => _board1;

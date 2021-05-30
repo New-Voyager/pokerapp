@@ -26,6 +26,7 @@ class GameReplayAction {
 
   /* the start pot holds the value of pot before the round begins */
   final int startPot;
+  final List<int> pots;
 
   /* action contains the acted player's action */
   final ActionElement action;
@@ -47,6 +48,7 @@ class GameReplayAction {
     this.myCards,
     this.noCards,
     this.startPot,
+    this.pots,
     this.action,
     this.boardCards,
     this.boardCards2,

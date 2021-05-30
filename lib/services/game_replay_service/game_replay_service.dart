@@ -72,7 +72,7 @@ class GameReplayService {
     actions.add(
       GameReplayAction(
         gameReplayActionType: GameReplayActionType.pre_flop_started,
-        startPot: handLog.preflopActions.potStart,
+        pots: handLog.preflopActions.pots,
       ),
     );
 
@@ -99,7 +99,8 @@ class GameReplayService {
       actions.add(
         GameReplayAction(
           gameReplayActionType: GameReplayActionType.flop_started,
-          startPot: handLog.flopActions.potStart,
+          // startPot: handLog.flopActions.potStart,
+          pots: handLog.flopActions.pots,
           boardCards: flopCards,
         ),
       );
@@ -119,7 +120,7 @@ class GameReplayService {
       actions.add(
         GameReplayAction(
           gameReplayActionType: GameReplayActionType.turn_started,
-          startPot: handLog.turnActions.potStart,
+          pots: handLog.turnActions.pots,
           boardCard: turnCard,
         ),
       );
@@ -139,7 +140,7 @@ class GameReplayService {
       actions.add(
         GameReplayAction(
           gameReplayActionType: GameReplayActionType.river_started,
-          startPot: handLog.riverActions.potStart,
+          pots: handLog.riverActions.pots,
           boardCard: riverCard,
         ),
       );

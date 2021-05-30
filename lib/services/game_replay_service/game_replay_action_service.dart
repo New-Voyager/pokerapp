@@ -123,7 +123,7 @@ class GameReplayActionService {
     gameState.resetSeatActions();
 
     tableState.updatePotChipsSilent(
-      potChips: [action.startPot],
+      potChips: action.pots,
       potUpdatesChips: null,
     );
 
@@ -222,18 +222,27 @@ class GameReplayActionService {
   static Future<void> _runItTwiceWinner(
     GameReplayAction action,
     BuildContext context,
-  ) =>
-      HandActionService.handleResultStatic(
-        fromReplay: true,
-        isRunItTwice: true,
-        runItTwiceResult: action.runItTwiceResult,
-        boardCards: action.boardCards,
-        boardCards2: action.boardCards2,
-        potWinners: null,
-        context: context,
-      );
+  ) {
+    // update pots before result
+    HandActionService.updatePotBeforeResultStatic(
+      isRunItTwice: true,
+      runItTwiceResult: action.runItTwiceResult,
+      potWinners: null,
+      context: context,
+    );
 
-  static Future<void> _potWinnerAction(
+    return HandActionService.handleResultStatic(
+      fromReplay: true,
+      isRunItTwice: true,
+      runItTwiceResult: action.runItTwiceResult,
+      boardCards: action.boardCards,
+      boardCards2: action.boardCards2,
+      potWinners: null,
+      context: context,
+    );
+  }
+
+  static Future<void> _potWinnerResult(
     GameReplayAction action,
     BuildContext context,
   ) {
@@ -241,6 +250,14 @@ class GameReplayActionService {
 
     for (final pw in action.potWinners.entries)
       potWinners[pw.key] = pw.value.toJson();
+
+    // update pots before result
+    HandActionService.updatePotBeforeResultStatic(
+      isRunItTwice: false,
+      runItTwiceResult: null,
+      potWinners: potWinners,
+      context: context,
+    );
 
     return HandActionService.handleResultStatic(
       fromReplay: true,
@@ -341,7 +358,7 @@ class GameReplayActionService {
         return _runItTwiceAction(action, context);
 
       case GameReplayActionType.pot_winner:
-        return _potWinnerAction(action, context);
+        return _potWinnerResult(action, context);
 
       case GameReplayActionType.run_it_twice_winner:
         return _runItTwiceWinner(action, context);

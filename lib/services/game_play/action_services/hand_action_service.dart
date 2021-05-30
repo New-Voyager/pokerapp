@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:flutter/material.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
@@ -232,6 +233,7 @@ class HandActionService {
   }
 
   handle(String message) async {
+    log('\n\n$message\n\n');
     assert(_gameState != null);
     assert(_context != null);
     assert(message != null && message.isNotEmpty);
@@ -247,6 +249,7 @@ class HandActionService {
     if (closed) {
       return;
     }
+    debugPrint(jsonEncode(data));
 
     String messageType = data['messageType'];
     if (_retryMsg != null) {
@@ -328,11 +331,15 @@ class HandActionService {
     final GameState gameState = GameState.getState(context);
     final TableState tableState = gameState.getTableState(context);
 
-    final List<CardObject> b1 =
-        board1Cards.map<CardObject>((c) => CardHelper.getCard(c)).toList();
+    final List<CardObject> b1 = [];
+    for (final c in board1Cards) {
+      b1.add(CardHelper.getCard(c));
+    }
 
-    final List<CardObject> b2 =
-        board2Cards.map<CardObject>((c) => CardHelper.getCard(c)).toList();
+    final List<CardObject> b2 = [];
+    for (final c in board2Cards) {
+      b2.add(CardHelper.getCard(c));
+    }
 
     tableState.updateTwoBoardsNeeded(true);
 
@@ -340,25 +347,29 @@ class HandActionService {
     await tableState.addAllCommunityCardsForRunItTwiceScenario(1, b1);
 
     /* pause for a bit todo: get duration */
-    await Future.delayed(const Duration(milliseconds: 500));
+    // await Future.delayed(const Duration(milliseconds: 200));
 
     /* show the board 2 cards */
     await tableState.addAllCommunityCardsForRunItTwiceScenario(2, b2);
 
     /* pause for a bit todo: get duration */
-    await Future.delayed(const Duration(milliseconds: 2000));
+    // await Future.delayed(const Duration(milliseconds: 2000));
   }
 
   Future<void> handleRunItTwice(var data) async {
     final runItTwice = data['runItTwice'];
 
-    final List<int> board1Cards = runItTwice['board1']
-        .map<CardObject>((c) => int.parse(c.toString()))
-        .toList();
+    final List<int> board1Cards = [];
+    final List board1 = runItTwice['board1'];
+    for (int c in board1) {
+      board1Cards.add(int.parse(c.toString()));
+    }
 
-    final List<int> board2Cards = runItTwice['board2']
-        .map<CardObject>((c) => int.parse(c.toString()))
-        .toList();
+    final List<int> board2Cards = [];
+    final List board2 = runItTwice['board2'];
+    for (int c in board2) {
+      board1Cards.add(int.parse(c.toString()));
+    }
 
     return handleRunItTwiceStatic(
       context: _context,
@@ -759,6 +770,7 @@ class HandActionService {
     players.notifyAll();
   }
 
+  // we update the pot only during
   void updatePot(var data, String key, BuildContext context) {
     try {
       List<int> pots =
@@ -1241,16 +1253,18 @@ class HandActionService {
       /* set the board cards first */
 
       /* set board 1 cards */
-      tableState.setBoardCards(
-        1,
-        boardCards.map<CardObject>((c) => CardHelper.getCard(c)).toList(),
-      );
+      List<CardObject> boardCards1CO = [];
+      for (final c in boardCards) {
+        boardCards1CO.add(CardHelper.getCard(c));
+      }
+      tableState.setBoardCards(1, boardCards1CO);
 
       /* set board 2 cards */
-      tableState.setBoardCards(
-        2,
-        boardCards2.map<CardObject>((c) => CardHelper.getCard(c)).toList(),
-      );
+      List<CardObject> boardCards2CO = [];
+      for (final c in boardCards2) {
+        boardCards2CO.add(CardHelper.getCard(c));
+      }
+      tableState.setBoardCards(2, boardCards2CO);
 
       final Map board1PotWinners = runItTwiceResult['board1Winners'];
 
@@ -1265,7 +1279,12 @@ class HandActionService {
 
       // this loop should take 3000 ms per POT winners
       for (final board1Winners in board1PotWinners.entries) {
-        final potNo = board1Winners.key;
+        final potNo = int.parse(board1Winners.key.toString());
+
+        // highlight the req pot no
+        tableState.updatePotToHighlightSilent(potNo);
+        tableState.notifyAll();
+
         final Map winners = board1Winners.value;
 
         final List highWinners = winners['hiWinners'];
@@ -1280,6 +1299,10 @@ class HandActionService {
           fromReplay: fromReplay,
           resetState: true,
         );
+
+        // UN highlight the req pot no
+        tableState.updatePotToHighlightSilent(-1);
+        tableState.notifyAll();
       }
 
       /* if we dont have any board 2 winners to show, we pause here */
@@ -1302,7 +1325,12 @@ class HandActionService {
 
       // this loop should take 3000 ms per POT winners
       for (final board2Winners in board2PotWinners.entries) {
-        final potNo = board2Winners.key;
+        final potNo = int.parse(board2Winners.key.toString());
+
+        // highlight the req pot no
+        tableState.updatePotToHighlightSilent(potNo);
+        tableState.notifyAll();
+
         final Map winners = board2Winners.value;
 
         final List highWinners = winners['hiWinners'];
@@ -1317,6 +1345,10 @@ class HandActionService {
           boardIndex: 2,
           fromReplay: fromReplay,
         );
+
+        // UN highlight the req pot no
+        tableState.updatePotToHighlightSilent(-1);
+        tableState.notifyAll();
       }
 
       /* turn off two boards needed flag -> only if we are not from replay */
@@ -1334,7 +1366,12 @@ class HandActionService {
       // time we get for each pot is 3 seconds
 
       for (final potWinner in potWinners.entries) {
-        final potNo = potWinner.key;
+        final potNo = int.parse(potWinner.key.toString());
+
+        // highlight the req pot no
+        tableState.updatePotToHighlightSilent(potNo);
+        tableState.notifyAll();
+
         final Map winners = potWinner.value;
 
         final List highWinners = winners['hiWinners'];
@@ -1349,8 +1386,48 @@ class HandActionService {
           tableState: tableState,
           fromReplay: fromReplay,
         );
+
+        // UN highlight the req pot no
+        tableState.updatePotToHighlightSilent(-1);
+        tableState.notifyAll();
       }
     }
+
+    // remove all the community cards
+    tableState.clear();
+    tableState.notifyAll();
+
+    gameState.resetPlayers(context, notify: false);
+  }
+
+  static void updatePotBeforeResultStatic({
+    @required final runItTwiceResult,
+    @required final potWinners,
+    @required final BuildContext context,
+    final bool isRunItTwice = false,
+  }) {
+    List<int> pots = [];
+
+    /* get the pots and update them */
+    if (isRunItTwice) {
+      // todo: handle this situation
+      final Map board1Winners = runItTwiceResult['board1Winners'];
+      board1Winners.forEach((key, winner) {
+        final amount = winner['amount'] as int;
+        pots.add(amount);
+      });
+    } else {
+      potWinners.forEach((key, potWinner) {
+        final amount = potWinner['amount'] as int;
+        pots.add(amount);
+      });
+    }
+
+    /* update the table pots before the result */
+    final gameState = GameState.getState(context);
+    final tableState = gameState.getTableState(context);
+    tableState.updatePotChipsSilent(potChips: pots);
+    tableState.notifyAll();
   }
 
   Future<void> handleResult(var data) async {
@@ -1378,22 +1455,30 @@ class HandActionService {
     List<int> boardCards = [];
     List<int> boardCards2 = [];
     if (handResult['boardCards'] != null) {
-      for (dynamic card in handResult['boardCards']) {
-        int cardInt = int.parse(card.toString());
-        boardCards.add(cardInt);
+      for (final c in handResult['boardCards']) {
+        boardCards.add(int.parse(c.toString()));
       }
     }
     if (handResult['boardCards2'] != null) {
-      for (dynamic card in handResult['boardCards2']) {
-        int cardInt = int.parse(card.toString());
-        boardCards2.add(cardInt);
+      for (final c in handResult['boardCards2']) {
+        boardCards2.add(int.parse(c.toString()));
       }
     }
 
+    final runItTwiceResult = handResult['handLog']['runItTwiceResult'];
+    final potWinners = handResult['handLog']['potWinners'];
+
+    updatePotBeforeResultStatic(
+      potWinners: potWinners,
+      runItTwiceResult: runItTwiceResult,
+      isRunItTwice: isRunItTwice,
+      context: _context,
+    );
+
     await handleResultStatic(
       isRunItTwice: isRunItTwice,
-      runItTwiceResult: handResult['handLog']['runItTwiceResult'],
-      potWinners: handResult['handLog']['potWinners'],
+      runItTwiceResult: runItTwiceResult,
+      potWinners: potWinners,
       boardCards: boardCards,
       boardCards2: boardCards2,
       context: _context,
@@ -1403,9 +1488,10 @@ class HandActionService {
 
     /* collect the cards needs to be revealed */
     List<CardObject> _cardsToBeRevealed = markedCards.getCards();
-    List<int> cardNumbers = _cardsToBeRevealed
-        .map<int>((card) => CardHelper.getCardNumber(card))
-        .toList();
+    List<int> cardNumbers = [];
+    for (final c in _cardsToBeRevealed) {
+      cardNumbers.add(CardHelper.getCardNumber(c));
+    }
 
     /* clear all the marked cards */
     markedCards.clear();

@@ -8,6 +8,8 @@ import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
+import 'package:pokerapp/resources/app_constants.dart';
+import 'package:pokerapp/screens/game_play_screen/game_play_screen_util_methods.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/animating_widgets/card_distribution_animating_widget.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/center_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/decorative_views/table_view.dart';
@@ -29,6 +31,7 @@ class BoardView extends StatefulWidget {
     @required this.gameComService,
     @required this.audioPlayer,
   });
+
   final GameComService gameComService;
   final GameInfoModel gameInfo;
   final Function(int index) onUserTap;
@@ -57,6 +60,7 @@ class BoardView extends StatefulWidget {
 
 class _BoardViewState extends State<BoardView> {
   BuildContext providerContext;
+  GlobalKey boardViewKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
@@ -133,6 +137,7 @@ class _BoardViewState extends State<BoardView> {
                   cards,
                   cardsOther,
                   pots,
+                  tableState.potToHighlight,
                   double.parse(
                     tableState.potChipsUpdates != null
                         ? tableState.potChipsUpdates.toString()
@@ -201,9 +206,8 @@ class _BoardViewState extends State<BoardView> {
             Widget __,
           ) =>
               Align(
-            alignment: Alignment.bottomCenter,
-            child: sitBackButton(context),
-          ),
+                  alignment: Alignment.bottomCenter,
+                  child: sitBackButton(context)),
         ),
 
         Align(
@@ -227,9 +231,11 @@ class _BoardViewState extends State<BoardView> {
           }
 
           return Visibility(
+            key: boardViewKey,
               visible: showPopupButtons,
               child: Align(
-                  alignment: Alignment.topLeft, child: PopupWidget(gameState)));
+                  alignment: Alignment.topLeft,
+                  child: PopupWidget(gameState, seat, boardViewKey)));
         }),
       ],
     );
@@ -241,33 +247,46 @@ class _BoardViewState extends State<BoardView> {
     final mySeat = gameState.mySeat(providerContext);
     final myState = gameState.getMyState(context);
 
+    log('Rebuild buyin button: Status: ${myState.status.toString()}');
     bool showBuyInButton = true;
     if (mySeat == null || mySeat.isOpen || mySeat.player == null) {
+      log('mySeat == null || mySeat.isOpen || mySeat.player == null');
       return SizedBox.shrink();
     }
-    // log('Rebuild buyin button: Status: ${myState.status.toString()}');
 
-    if (!mySeat.player.showBuyIn || mySeat.player.waitForBuyInApproval) {
+    if (!(mySeat.player.showBuyIn || mySeat.player.waitForBuyInApproval)) {
+      log('!(mySeat.player.showBuyIn || mySeat.player.waitForBuyInApproval)');
       return SizedBox.shrink();
     }
 
     if (!showBuyInButton) {
+      log('!showBuyInButton');
       return SizedBox.shrink();
     }
+    log('Rebuilding buyin button');
 
     final widget = ListenableProvider<Seat>(
       create: (_) => mySeat,
-      builder: (context, _) => Consumer<Seat>(
-        builder: (_, seat, __) => Transform.translate(
-            offset: Offset(0, 10),
-            child: RoundRaisedButton(
-              buttonText: 'Buyin',
-              color: Colors.blueGrey,
-              verticalPadding: 1,
-              fontSize: 15,
-              onButtonTap: () async => {await onBuyin(context)},
-            )),
-      ),
+      builder: (context, _) => Consumer<Seat>(builder: (_, seat, __) {
+        if (seat.player.status == AppConstants.WAIT_FOR_BUYIN ||
+            seat.player.status == AppConstants.WAIT_FOR_BUYIN_APPROVAL) {
+          log('Rebuilding buyin button now');
+          return Transform.translate(
+              offset: Offset(0, 10),
+              child: RoundRaisedButtonWithTimer(
+                buttonText: 'Buyin',
+                color: Colors.blueGrey,
+                verticalPadding: 1,
+                fontSize: 15,
+                onButtonTap: () async => {await onBuyin(context)},
+                timerWidget:
+                    GamePlayScreenUtilMethods.breakBuyIntimer(context, seat),
+              ));
+        } else {
+          log('Cannot rebuild buyin button now ${seat.player.status}');
+          return SizedBox.shrink();
+        }
+      }),
     );
 
     return widget;
@@ -277,29 +296,43 @@ class _BoardViewState extends State<BoardView> {
     // show buyin button only for if the current player is in a seat
     final gameState = GameState.getState(providerContext);
     final mySeat = gameState.mySeat(providerContext);
+    if (mySeat?.player != null) {
+      log('Rebuild sitBackButton button: Status: ${mySeat.player.status.toString()}');
+    }
 
     if (mySeat == null || mySeat.isOpen || mySeat.player == null) {
+      log('Rebuild (mySeat == null || mySeat.isOpen || mySeat.player == null');
       return SizedBox.shrink();
     }
     // log('Rebuild buyin button: Status: ${myState.status.toString()}');
 
     if (!mySeat.player.inBreak) {
+      log('mySeat.player.inBreak');
       return SizedBox.shrink();
     }
 
     final widget = ListenableProvider<Seat>(
       create: (_) => mySeat,
-      builder: (context, _) => Consumer<Seat>(
-        builder: (_, seat, __) => Transform.translate(
+      builder: (context, _) => Consumer<Seat>(builder: (_, seat, __) {
+        if (!(seat.player.status == AppConstants.IN_BREAK ||
+            seat.player.status == AppConstants.WAIT_FOR_BUYIN ||
+            seat.player.status == AppConstants.WAIT_FOR_BUYIN_APPROVAL)) {
+          log('Rebuild sitBackButton seat.player.status == AppConstants.IN_BREAK');
+          return SizedBox.shrink();
+        }
+        log('Rebuild sitBackButton show');
+        return Transform.translate(
             offset: Offset(0, 10),
-            child: RoundRaisedButton(
+            child: RoundRaisedButtonWithTimer(
               buttonText: 'Sit Back',
               color: Colors.blueGrey,
               verticalPadding: 1,
-              fontSize: 15,
+              fontSize: 14,
               onButtonTap: () async => {await onSitBack(context)},
-            )),
-      ),
+              timerWidget:
+                  GamePlayScreenUtilMethods.breakBuyIntimer(context, seat),
+            ));
+      }),
     );
 
     return widget;
