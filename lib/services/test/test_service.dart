@@ -13,6 +13,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/table_state.dar
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
 import 'package:pokerapp/models/player_info.dart';
+import 'package:pokerapp/screens/game_play_screen/pop_ups/seat_change_confirmation_pop_up.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_service.dart';
 import 'package:pokerapp/services/test/hand_messages.dart';
@@ -727,5 +728,16 @@ class TestService {
       _handActionService.loop();
     }
     await _handActionService.handle(dealerChoiceMessage());
+  }
+
+  static void showSeatChangePrompt() async {
+    final gameState = GameState.getState(_context);
+    final seat5 = gameState.getSeat(_context, 5);
+    seat5.player = null;
+    seat5.notify();
+    gameState.playerSeatChangeInProgress = true;
+
+    SeatChangeConfirmationPopUp.dialog(
+        context: _context, gameCode: 'test', promptSecs: 10);
   }
 }
