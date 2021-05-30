@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/resources/app_assets.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
 
 import 'app_colors.dart';
 

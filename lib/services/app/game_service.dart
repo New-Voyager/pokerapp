@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -7,6 +8,7 @@ import 'package:pokerapp/models/game/new_game_model.dart';
 import 'package:pokerapp/models/game_history_model.dart';
 import 'package:pokerapp/models/game_model.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
+import 'package:pokerapp/models/newmodels/game_model_new.dart';
 import 'package:pokerapp/models/seat_change_model.dart';
 import 'package:pokerapp/models/table_record.dart';
 import 'package:pokerapp/models/waiting_list_model.dart';
@@ -257,6 +259,47 @@ class GameService {
       )
     }
     """;
+
+  static String liveGamesNewQuery = """
+query liveGames {
+  liveGames {
+    gameCode
+    gameType
+    clubName
+    buyInMin
+    buyInMax
+    smallBlind
+    bigBlind
+    maxPlayers
+    elapsedTime
+    waitlistCount
+    tableCount
+  }
+}
+    """;
+  static Future<List<GameModelNew>> getLiveGamesNew() async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+    List<GameModelNew> liveGames = [];
+
+    QueryResult result =
+        await _client.query(QueryOptions(documentNode: gql(liveGamesNewQuery)));
+
+    print("result.data ${result.data} ${result.hasException}");
+    if (result.hasException) {
+      log("Exception In GraphQl Response: ${result.exception}");
+    } else {
+      try {
+        result.data['liveGames'].forEach((item) {
+          liveGames.add(GameModelNew.fromJson(item));
+        });
+      } catch (e) {
+        log("Exception in converting to model: $e");
+        return liveGames;
+      }
+    }
+    log("Returning liveGames Count: ${liveGames.length}");
+    return liveGames;
+  }
 
   static Future<bool> beginHostSeatChange(
     String gameCode,

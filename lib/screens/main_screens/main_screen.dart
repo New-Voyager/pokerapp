@@ -1,13 +1,16 @@
 import 'dart:developer';
 
+import 'package:curved_bottom_navigation/curved_bottom_navigation.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_icons.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/screens/main_screens/clubs_page_view/clubs_page_view.dart';
 import 'package:pokerapp/screens/main_screens/games_page_view/games_page_view.dart';
+import 'package:pokerapp/screens/main_screens/games_page_view/live_games.dart';
 import 'package:pokerapp/screens/main_screens/profile_page_view/profile_page_view.dart';
 import 'package:pokerapp/screens/main_screens/purchase_page_view/purchase_page_view.dart';
 import 'package:pokerapp/services/app/gif_cache_service.dart';
@@ -27,6 +30,7 @@ class _MainScreenState extends State<MainScreen>
     with SingleTickerProviderStateMixin {
   TabController _controller;
   PlayerInfo _currentPlayer;
+  int _navPos = 0;
   Nats _nats;
   Future<void> _init() async {
     log('Initialize main screen');
@@ -77,7 +81,7 @@ class _MainScreenState extends State<MainScreen>
       _nats.close();
     }
   }
-
+/* 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -135,6 +139,109 @@ class _MainScreenState extends State<MainScreen>
           ),
         ),
       ),
+    );
+  }
+
+ */
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Stack(
+        children: [
+          IndexedStack(
+            index: _navPos,
+            children: [
+              LiveGamesScreen(),
+              ClubsPageView(),
+              ProfilePageView(),
+              PurchasePageView()
+            ],
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: CurvedBottomNavigation(
+              selected: _navPos,
+              fabSize: 48,
+              navHeight: 56,
+              bgColor: AppColorsNew.newNavBarColor,
+              fabBgColor: AppColorsNew.newNavBarColor,
+              iconSize: 24,
+              onItemClick: (i) {
+                setState(() {
+                  _navPos = i;
+                });
+              },
+              items: [
+                CurvedNavItem(
+                  iconData: AppIcons.playing_card,
+                  title: 'Games',
+                  selected: _navPos == 0,
+                ),
+                CurvedNavItem(
+                  iconData: AppIcons.users,
+                  title: 'Clubs',
+                  selected: _navPos == 1,
+                ),
+                CurvedNavItem(
+                  iconData: AppIcons.user,
+                  title: 'Profile',
+                  selected: _navPos == 2,
+                ),
+                CurvedNavItem(
+                  iconData: Icons.money,
+                  title: 'Purchase',
+                  selected: _navPos == 3,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class CurvedNavItem extends StatelessWidget {
+  CurvedNavItem(
+      {@required this.title, @required this.iconData, @required this.selected});
+
+  final String title;
+  final IconData iconData;
+  final bool selected;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: <Widget>[
+        Icon(
+          iconData,
+          color: selected
+              ? AppColorsNew.newTextGreenColor
+              : AppColorsNew.newNavBarInactiveItemColor,
+        ),
+        selected
+            ? Container()
+            : Column(
+                children: [
+                  SizedBox(
+                    height: 4,
+                  ),
+                  Text(
+                    title.toUpperCase() ?? 'Title'.toUpperCase(),
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: AppColorsNew.newTextColor,
+                      fontSize: 10,
+                      letterSpacing: 0.7,
+                      fontWeight: FontWeight.w300,
+                    ),
+                  )
+                ],
+              ),
+      ],
     );
   }
 }

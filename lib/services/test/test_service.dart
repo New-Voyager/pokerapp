@@ -26,7 +26,7 @@ import 'package:pokerapp/main.dart';
 import 'iap_test.dart';
 
 class TestService {
-  static get isTesting {
+  static bool get isTesting {
     return false;
   }
 
