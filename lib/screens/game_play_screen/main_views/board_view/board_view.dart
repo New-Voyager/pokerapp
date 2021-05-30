@@ -231,7 +231,7 @@ class _BoardViewState extends State<BoardView> {
           }
 
           return Visibility(
-            key: boardViewKey,
+              key: boardViewKey,
               visible: showPopupButtons,
               child: Align(
                   alignment: Alignment.topLeft,

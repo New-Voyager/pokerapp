@@ -113,7 +113,11 @@ class _CommunicationViewState extends State<CommunicationView> {
         child: Container(
           padding: EdgeInsets.all(5),
           child: Icon(
-            seat.player.muted ? Icons.mic_off : Icons.mic,
+            seat.player == null
+                ? Icons.arrow_circle_down
+                : seat.player.muted
+                    ? Icons.mic_off
+                    : Icons.mic,
             size: 35,
             color: AppColors.appAccentColor,
           ),

@@ -120,6 +120,8 @@ class PlayerView extends StatelessWidget {
       debugLabel: 'Seat:${seat.serverSeatPos}',
     ); //this.globalKey;
 
+    // the player tapped to see the player profile
+    final gameState = GameState.getState(context);
     bool openSeat = seat.isOpen;
     bool isMe = seat.isMe;
     FooterStatus footerStatus = Provider.of<ValueNotifier<FooterStatus>>(
@@ -134,7 +136,15 @@ class PlayerView extends StatelessWidget {
 
     // if open seat, just show open seat widget
     if (openSeat) {
-      return OpenSeat(seatPos: seat.serverSeatPos, onUserTap: this.onUserTap);
+      bool seatChangeSeat = false;
+      if (gameState.playerSeatChangeInProgress) {
+        seatChangeSeat = seat.serverSeatPos == gameState.seatChangeSeat;
+      }
+      return OpenSeat(
+          seatPos: seat.serverSeatPos,
+          onUserTap: this.onUserTap,
+          seatChangeInProgress: gameState.playerSeatChangeInProgress,
+          seatChangeSeat: seatChangeSeat);
     }
 
     final GameInfoModel gameInfo = Provider.of<ValueNotifier<GameInfoModel>>(
@@ -150,7 +160,6 @@ class PlayerView extends StatelessWidget {
       }
     }
 
-    final gameState = GameState.getState(context);
     final boardAttributes = gameState.getBoardAttributes(context);
     seat.betWidgetUIKey = GlobalKey();
 

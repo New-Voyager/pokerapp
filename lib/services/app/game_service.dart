@@ -522,20 +522,45 @@ class GameService {
   }
 
   /* this method confirms the seat change */
-  static Future<bool> confirmSeatChange(String gameCode) async {
+  static Future<bool> confirmSeatChange(String gameCode, int seatNo) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
 
-    String _mutation = """mutation{
-        confirmSeatChange(gameCode: $gameCode)
+    String _mutation = """mutation (\$gameCode: String! \$seatNo: Int!){
+        confirmSeatChange(gameCode: \$gameCode, seatNo: \$seatNo)
       }""";
-
+    Map<String, dynamic> variables = {"gameCode": gameCode, "seatNo": seatNo};
     QueryResult result = await _client.mutate(
-      MutationOptions(documentNode: gql(_mutation)),
+      MutationOptions(
+        documentNode: gql(_mutation),
+        variables: variables,
+      ),
     );
 
     if (result.hasException) return null;
 
     return result.data['confirmSeatChange'];
+  }
+
+  /* this method declines the seat change */
+  static Future<bool> declineSeatChange(String gameCode) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+
+    String _mutation = """mutation (\$gameCode: String!){
+        declineSeatChange(gameCode: \$gameCode)
+      }""";
+    Map<String, dynamic> variables = {
+      "gameCode": gameCode,
+    };
+    QueryResult result = await _client.mutate(
+      MutationOptions(
+        documentNode: gql(_mutation),
+        variables: variables,
+      ),
+    );
+
+    if (result.hasException) return null;
+
+    return result.data['declineSeatChange'];
   }
 
   /* The following method returns back the Game Info Model */

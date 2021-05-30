@@ -101,6 +101,15 @@ class GamePlayScreenUtilMethods {
             color: Colors.white,
           ),
           backgroundColor: Colors.red,
+          label: 'Seatchange Dialog',
+          onTap: () => TestService.showSeatChangePrompt(),
+        ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
           label: 'New Hand Announcement',
           onTap: () => TestService.handAnnouncement(),
         ),
