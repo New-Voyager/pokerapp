@@ -35,9 +35,10 @@ class _LiveGamesScreenState extends State<LiveGamesScreen> {
 
   _fetchLiveGames() async {
     // Load actual games from server graphql
+    liveGames.clear();
     ConnectionDialog.show(
         context: context, loadingText: AppStringsNew.LoadingGamesText);
-    liveGames = await GameService.getLiveGamesNew();
+    liveGames.addAll(await GameService.getLiveGamesNew());
     setState(() {
       _isLoading = false;
     });
@@ -108,7 +109,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen> {
                                     await Navigator.of(context).pushNamed(
                                         Routes.game_play,
                                         arguments: liveGames[index].gameCode);
-                                        // Refreshes livegames again
+                                    // Refreshes livegames again
                                     TestService.isTesting
                                         ? _loadTestLiveGames()
                                         : _fetchLiveGames();
