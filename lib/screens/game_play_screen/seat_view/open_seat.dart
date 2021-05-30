@@ -18,8 +18,8 @@ class OpenSeat extends StatelessWidget {
   }) : super(key: key);
 
   Widget _openSeat() {
-    log('open seat $seatChangeInProgress');
     if (seatChangeInProgress && seatChangeSeat) {
+      log('open seat $seatChangeInProgress');
       return Padding(
         padding: const EdgeInsets.all(5),
         child: DefaultTextStyle(
@@ -42,7 +42,6 @@ class OpenSeat extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.all(5),
-
       child: FittedBox(
         child: Text(
           'Open $seatPos',

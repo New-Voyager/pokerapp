@@ -11,7 +11,7 @@ class LiveGameItem extends StatelessWidget {
   final GameModelNew game;
   final Function onTapFunction;
 
-  LiveGameItem({this.game,this.onTapFunction});
+  LiveGameItem({this.game, this.onTapFunction});
   @override
   Widget build(BuildContext context) {
     return Stack(

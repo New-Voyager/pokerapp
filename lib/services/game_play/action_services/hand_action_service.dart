@@ -68,7 +68,7 @@ class RetrySendingMsg {
       DateTime now = DateTime.now();
       final d = now.difference(lastSentTime);
       if (firstAttempt || d.inSeconds >= _retrySeconds) {
-        log('Sending $_messageType again');
+        // log('Sending $_messageType again');
         lastSentTime = now;
         if (_gameComService.active) {
           _gameComService.sendPlayerToHandChannel(_message);
@@ -99,7 +99,7 @@ class RetrySendingMsg {
       var msgAck = data['msgAck'];
       String messageId = msgAck['messageId'].toString();
       if (messageId == _messageId) {
-        log('Received acknowledgement');
+        // log('Received acknowledgement');
         _ackReceived = true;
         return true;
       }
@@ -233,7 +233,7 @@ class HandActionService {
   }
 
   handle(String message) async {
-    log('\n\n$message\n\n');
+    //log('\n\n$message\n\n');
     assert(_gameState != null);
     assert(_context != null);
     assert(message != null && message.isNotEmpty);
@@ -249,7 +249,7 @@ class HandActionService {
     if (closed) {
       return;
     }
-    debugPrint(jsonEncode(data));
+    // debugPrint(jsonEncode(data));
 
     String messageType = data['messageType'];
     if (_retryMsg != null) {

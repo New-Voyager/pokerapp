@@ -3,7 +3,6 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 
 class AppColors {
- 
   static const Color appAccentColor = Color(0xff319ffe);
 
   static const Color screenBackgroundColor = Color(0xff1c1c1c);

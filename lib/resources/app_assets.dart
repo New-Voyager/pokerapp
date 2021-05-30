@@ -25,7 +25,6 @@ class AppAssets {
   static const String fontFamilySourceSerif = 'SourceSerif';
   static const String fontFamilyTrocchi = 'Trocchi';
 
-
   static const String fireworkGif = 'assets/images/fireworks.gif';
 
   static const String coinsImages = 'assets/images/coins.svg';
