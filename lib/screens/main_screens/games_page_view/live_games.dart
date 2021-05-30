@@ -10,6 +10,7 @@ import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
+import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/main_screens/games_page_view/widgets/live_games_item.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/test/test_service.dart';
@@ -93,7 +94,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen> {
                           child: Center(
                             child: Text(
                               AppStringsNew.NoGamesText,
-                              style: TextStyle(color: Colors.white),
+                              style: AppStylesNew.TitleTextStyle,
                             ),
                           ),
                         )
@@ -101,7 +102,17 @@ class _LiveGamesScreenState extends State<LiveGamesScreen> {
                           child: ListView.separated(
                             shrinkWrap: true,
                             itemBuilder: (context, index) {
-                              return LiveGameItem(game: liveGames[index]);
+                              return LiveGameItem(
+                                  game: liveGames[index],
+                                  onTapFunction: () async {
+                                    await Navigator.of(context).pushNamed(
+                                        Routes.game_play,
+                                        arguments: liveGames[index].gameCode);
+                                        // Refreshes livegames again
+                                    TestService.isTesting
+                                        ? _loadTestLiveGames()
+                                        : _fetchLiveGames();
+                                  });
                             },
                             padding: EdgeInsets.only(bottom: 64, top: 16),
                             separatorBuilder: (context, index) =>

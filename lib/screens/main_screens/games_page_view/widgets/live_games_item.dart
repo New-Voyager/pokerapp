@@ -5,11 +5,13 @@ import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
+import 'package:pokerapp/routes.dart';
 
 class LiveGameItem extends StatelessWidget {
   final GameModelNew game;
+  final Function onTapFunction;
 
-  LiveGameItem({this.game});
+  LiveGameItem({this.game,this.onTapFunction});
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -116,9 +118,7 @@ class LiveGameItem extends StatelessWidget {
           bottom: 24,
           right: 8,
           child: InkWell(
-            onTap: () {
-              // TODO handle join
-            },
+            onTap: onTapFunction,
             child: Container(
               child: Text(
                 GameModelNew.getSeatsAvailble(game) > 0

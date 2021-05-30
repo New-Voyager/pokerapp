@@ -273,6 +273,7 @@ query liveGames {
     maxPlayers
     elapsedTime
     waitlistCount
+    tableCount
   }
 }
     """;
@@ -281,16 +282,22 @@ query liveGames {
     List<GameModelNew> liveGames = [];
 
     QueryResult result =
-        await _client.query(QueryOptions(documentNode: gql(waitlistQuery)));
+        await _client.query(QueryOptions(documentNode: gql(liveGamesNewQuery)));
 
     print("result.data ${result.data} ${result.hasException}");
     if (result.hasException) {
-      log("Exception: ${result.exception}");
+      log("Exception In GraphQl Response: ${result.exception}");
     } else {
-      result.data['liveGames'].forEach((item) {
-        liveGames.add(GameModelNew.fromJson(json.decode(item)));
-      });
+      try {
+        result.data['liveGames'].forEach((item) {
+          liveGames.add(GameModelNew.fromJson(item));
+        });
+      } catch (e) {
+        log("Exception in converting to model: $e");
+        return liveGames;
+      }
     }
+    log("Returning liveGames Count: ${liveGames.length}");
     return liveGames;
   }
 
