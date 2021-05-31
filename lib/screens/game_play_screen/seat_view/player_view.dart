@@ -140,11 +140,31 @@ class PlayerView extends StatelessWidget {
       if (gameState.playerSeatChangeInProgress) {
         seatChangeSeat = seat.serverSeatPos == gameState.seatChangeSeat;
       }
-      return OpenSeat(
-          seatPos: seat.serverSeatPos,
-          onUserTap: this.onUserTap,
-          seatChangeInProgress: gameState.playerSeatChangeInProgress,
-          seatChangeSeat: seatChangeSeat);
+
+      final openSeatWidget = OpenSeat(
+        seatPos: seat.serverSeatPos,
+        onUserTap: this.onUserTap,
+        seatChangeInProgress: gameState.playerSeatChangeInProgress,
+        seatChangeSeat: seatChangeSeat,
+      );
+
+      if (seat.isDealer)
+        return Stack(
+          alignment: Alignment.center,
+          children: [
+            // dealer button
+            DealerButtonWidget(
+              seat.serverSeatPos,
+              isMe,
+              GameType.HOLDEM,
+            ),
+
+            // main open seat widget
+            openSeatWidget,
+          ],
+        );
+
+      return openSeatWidget;
     }
 
     final GameInfoModel gameInfo = Provider.of<ValueNotifier<GameInfoModel>>(

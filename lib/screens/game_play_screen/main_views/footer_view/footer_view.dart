@@ -89,7 +89,7 @@ class _FooterViewState extends State<FooterView>
 
             /* seat confirm widget */
             // FIXME: BUG INTRODUCED HERE, CHECK HOW THE SEAT CHANGE CONFIRMED WIDGET IS DISPLAYED
-            Consumer2<HostSeatChange, GameContextObject>(
+            Consumer2<SeatChangeNotifier, GameContextObject>(
               builder: (
                 context,
                 hostSeatChange,

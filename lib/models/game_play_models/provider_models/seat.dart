@@ -46,6 +46,14 @@ class Seat extends ChangeNotifier {
   Offset _betWidgetPos;
   GlobalKey _betWidgetUiKey;
 
+  /* an empty seat can be a DEALER also, thus we need to keep it in Seat state */
+  bool get isDealer => _isDealer;
+  bool _isDealer;
+  set isDealer(bool isD) {
+    _isDealer = isD;
+    notify();
+  }
+
   Seat(int localSeatPos, int serverSeatPos, PlayerModel player) {
     this.localSeatPos = localSeatPos;
     this._openSeat = false;
@@ -56,6 +64,7 @@ class Seat extends ChangeNotifier {
     this.serverSeatPos = serverSeatPos;
     this._actionTimer = ActionTimer();
     this._showTimer = false;
+    this._isDealer = false;
   }
 
   SeatPos get uiSeatPos => this._uiPos;

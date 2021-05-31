@@ -7,7 +7,7 @@ class SeatChangeConfirmWidget extends StatelessWidget {
   const SeatChangeConfirmWidget({Key key}) : super(key: key);
 
   onCancel(context) {
-    Provider.of<HostSeatChange>(
+    Provider.of<SeatChangeNotifier>(
       context,
       listen: false,
     )

@@ -106,6 +106,8 @@ class GameUpdateService {
           );
       }
     } else if (type != null) {
+      print('\n\n\n\n type: $type \n\n\n\n');
+
       // new type
       switch (type) {
         case AppConstants.PLAYER_SEAT_CHANGE_PROMPT:
@@ -639,7 +641,7 @@ class GameUpdateService {
     final gameCode = data["gameCode"].toString();
     final seatChangeHost =
         int.parse(data["tableUpdate"]["seatChangeHost"].toString());
-    final seatChange = Provider.of<HostSeatChange>(_context, listen: false);
+    final seatChange = Provider.of<SeatChangeNotifier>(_context, listen: false);
     seatChange.updateSeatChangeInProgress(true);
     seatChange.updateSeatChangeHost(seatChangeHost);
 
@@ -664,7 +666,7 @@ class GameUpdateService {
     /* remove notification */
     valueNotifierNotModel.value = null;
 
-    final seatChange = Provider.of<HostSeatChange>(_context, listen: false);
+    final seatChange = Provider.of<SeatChangeNotifier>(_context, listen: false);
     seatChange.updateSeatChangeInProgress(false);
     seatChange.notifyAll();
   }
@@ -675,7 +677,8 @@ class GameUpdateService {
     // {"gameId":"18", "gameCode":"CG-LBH8IW24N7XGE5", "messageType":"TABLE_UPDATE", "tableUpdate":{"type":"HostSeatChangeMove", "seatMoves":[{"playerId":"131", "playerUuid":"290bf492-9dde-448e-922d-40270e163649", "name":"rich", "oldSeatNo":6, "newSeatNo":1}, {"playerId":"122", "playerUuid":"c2dc2c3d-13da-46cc-8c66-caa0c77459de", "name":"yong", "oldSeatNo":1, "newSeatNo":6}]}}
     // player is moved, show animation of the move
 
-    final hostSeatChange = Provider.of<HostSeatChange>(_context, listen: false);
+    final hostSeatChange =
+        Provider.of<SeatChangeNotifier>(_context, listen: false);
     var seatMoves = data['tableUpdate']['seatMoves'];
     for (var move in seatMoves) {
       int from = int.parse(move['oldSeatNo'].toString());
@@ -887,8 +890,16 @@ class GameUpdateService {
 
     log('Seat move: player name: $playerName id: $playerId oldSeatNo: $oldSeatNo newSeatNo: $newSeatNo');
 
-    // refresh the table
-    _gameState.refresh(_context);
+    final hostSeatChange =
+        Provider.of<SeatChangeNotifier>(_context, listen: false);
+
+    /* start animation */
+    hostSeatChange.onSeatDrop(oldSeatNo, newSeatNo);
+
+    /* wait for the animation to finish */
+    await Future.delayed(AppConstants.seatChangeAnimationDuration);
+
+    // we refresh, when we get the PLAYER_SEAT_CHANGE_DONE message
   }
 
   void handlePlayerSeatChangeDone({
