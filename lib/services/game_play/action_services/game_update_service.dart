@@ -669,6 +669,7 @@ class GameUpdateService {
     final seatChange = Provider.of<SeatChangeNotifier>(_context, listen: false);
     seatChange.updateSeatChangeInProgress(false);
     seatChange.notifyAll();
+    _gameState.refresh(_context);
   }
 
   void handleHostSeatChangeMove({
