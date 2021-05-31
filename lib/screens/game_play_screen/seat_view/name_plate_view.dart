@@ -30,7 +30,7 @@ class NamePlateWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer2<HostSeatChange, GameContextObject>(
+    return Consumer2<SeatChangeNotifier, GameContextObject>(
       key: globalKey,
       builder: (
         context,
@@ -77,7 +77,8 @@ class NamePlateWidget extends StatelessWidget {
    * green: when holding a seat during seat change process
    * blue: shows when a moving seat can be dropped
    */
-  List<BoxShadow> getShadow(HostSeatChange hostSeatChange, bool isFeedback) {
+  List<BoxShadow> getShadow(
+      SeatChangeNotifier hostSeatChange, bool isFeedback) {
     BoxShadow shadow;
     bool winner = seat.player?.winner ?? false;
     bool highlight = seat.player?.highlight ?? false;
@@ -125,7 +126,7 @@ class NamePlateWidget extends StatelessWidget {
 
   Widget buildSeat(
     BuildContext context,
-    HostSeatChange hostSeatChange, {
+    SeatChangeNotifier hostSeatChange, {
     bool isFeedBack = false,
     bool childWhenDragging = false,
   }) {

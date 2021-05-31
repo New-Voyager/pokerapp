@@ -474,8 +474,8 @@ class GamePlayScreenUtilMethods {
       ),
 
       /* Provider to deal with host seat change functionality */
-      ListenableProvider<HostSeatChange>(
-        create: (_) => HostSeatChange(),
+      ListenableProvider<SeatChangeNotifier>(
+        create: (_) => SeatChangeNotifier(),
       ),
     ];
 

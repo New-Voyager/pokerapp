@@ -417,7 +417,8 @@ class TestService {
   }
 
   static void seatChange() {
-    final hostSeatChange = Provider.of<HostSeatChange>(_context, listen: false);
+    final hostSeatChange =
+        Provider.of<SeatChangeNotifier>(_context, listen: false);
 
     /* start animation */
     hostSeatChange.onSeatDrop(1, 5);

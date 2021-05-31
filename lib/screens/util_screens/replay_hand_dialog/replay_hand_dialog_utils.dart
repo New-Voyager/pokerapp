@@ -29,8 +29,8 @@ class ReplayHandScreenUtils {
         create: (_) => ValueNotifier<SeatChangeModel>(null),
       ),
       /* host seat change model */
-      ListenableProvider<HostSeatChange>(
-        create: (_) => HostSeatChange(),
+      ListenableProvider<SeatChangeNotifier>(
+        create: (_) => SeatChangeNotifier(),
       ),
       /* game info model */
       ListenableProvider<ValueNotifier<GameInfoModel>>(

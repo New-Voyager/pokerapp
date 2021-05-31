@@ -89,7 +89,7 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
   int index;
 
   Offset seatChangeFrom, seatChangeTo;
-  HostSeatChange hostSeatChange;
+  SeatChangeNotifier hostSeatChange;
   int seatChangerPlayer;
   int seatChangeToo;
 
@@ -114,7 +114,7 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
   }
 
   void _seatChangeAnimationHandler() {
-    final HostSeatChange hostSeatChange = Provider.of<HostSeatChange>(
+    final SeatChangeNotifier hostSeatChange = Provider.of<SeatChangeNotifier>(
       context,
       listen: false,
     );
