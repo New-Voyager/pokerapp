@@ -1098,10 +1098,10 @@ class HandActionService {
       gameState.animateSeatActions();
 
       /* wait for the animation to finish */
-      await Future.delayed(AppConstants.animationDuration);
+      await Future.delayed(AppConstants.chipMovingAnimationDuration);
 
       /* update the actual stack */
-      players.updateStackWithValueSilent(
+      players.addStackWithValueSilent(
         winner.seatNo,
         winner.amount,
       );
