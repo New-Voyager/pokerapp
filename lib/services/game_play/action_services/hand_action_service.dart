@@ -543,14 +543,19 @@ class HandActionService {
 
     /* marking the dealer */
     int dealerIdx = players.players.indexWhere((p) => p.seatNo == dealerPos);
-    //print('dealer index: $dealerIdx');
-    assert(dealerIdx != -1);
-    players.updatePlayerTypeSilent(
-      dealerIdx,
-      TablePosition.Dealer,
-    );
-    handInfo.notify();
-    players.notifyAll();
+
+    if (dealerIdx == -1) {
+      /* we have a open seat, set the dealer */
+      final Seat seat = _gameState.getSeat(_context, dealerPos);
+      seat.isDealer = true;
+    } else {
+      players.updatePlayerTypeSilent(
+        dealerIdx,
+        TablePosition.Dealer,
+      );
+      handInfo.notify();
+      players.notifyAll();
+    }
 
     /* get a new card back asset to be shown */
     Provider.of<ValueNotifier<String>>(
@@ -565,6 +570,8 @@ class HandActionService {
     // log('display shuffling animation');
     tableState.updateTableStatusSilent(AppConstants.NEW_HAND);
     tableState.notifyAll();
+
+    // TODO: WHY DO WE WAIT HERE?
     await Future.delayed(Duration(milliseconds: 1000));
     tableState.updateTableStatusSilent(AppConstants.CLEAR);
     tableState.notifyAll();

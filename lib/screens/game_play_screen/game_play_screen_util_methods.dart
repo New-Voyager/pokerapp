@@ -137,8 +137,8 @@ class GamePlayScreenUtilMethods {
             color: Colors.white,
           ),
           backgroundColor: Colors.red,
-          label: 'Seat Change',
-          onTap: () => TestService.seatChange(),
+          label: 'Empty Seat Dealer',
+          onTap: () => TestService.emptySeatDealer(),
         ),
         // SpeedDialChild(
         //   child: Icon(

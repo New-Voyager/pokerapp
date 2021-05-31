@@ -28,7 +28,7 @@ import 'iap_test.dart';
 
 class TestService {
   static bool get isTesting {
-    return false;
+    return true;
   }
 
   static var _showResult = false;
@@ -116,6 +116,10 @@ class TestService {
           playerInSeats.add(player);
         }
       }
+
+      // this removes a player from middle
+      playerInSeats.removeAt(4);
+
       _gameInfo.playersInSeats = playerInSeats;
 
       final resultData =
@@ -414,6 +418,13 @@ class TestService {
     //await _handActionService.handle(dealCardsMessage());
     //await HandActionService.handle(context: _context, message: yourActionNextActionMsg());
     //await HandActionService.handle(context: _context, message: dealStartedMessage());
+  }
+
+  static void emptySeatDealer() {
+    final gameState = GameState.getState(_context);
+    final seat = gameState.getSeat(_context, 5);
+
+    seat.isDealer = true;
   }
 
   static void seatChange() {
