@@ -633,10 +633,10 @@ class GameUpdateService {
       listen: false,
     );
 
-    valueNotifierNotModel.value = GeneralNotificationModel(
-      titleText: 'Seat change',
-      subTitleText: 'Host is making changes to the table',
-    );
+    // valueNotifierNotModel.value = GeneralNotificationModel(
+    //   titleText: 'Seat change',
+    //   subTitleText: 'Host is making changes to the table',
+    // );
 
     final gameCode = data["gameCode"].toString();
     final seatChangeHost =

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
@@ -8,7 +10,6 @@ import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/center_button_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/pots_view.dart';
-import 'package:pokerapp/utils/card_helper.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/widgets/cards/animations/animating_shuffle_card_view.dart';
 import 'package:pokerapp/widgets/cards/community_cards_view/community_cards_view.dart';
@@ -18,6 +19,7 @@ import 'board_view_util_methods.dart';
 
 class CenterView extends StatelessWidget {
   final bool twoBoardsNeeded;
+  final String gameStatus;
   final String tableStatus;
   final List<CardObject> cards;
   final List<CardObject> cardsOther;
@@ -42,6 +44,7 @@ class CenterView extends StatelessWidget {
     this.potChips,
     this.whichPotToHighlight,
     this.potChipsUpdates,
+    this.gameStatus,
     this.tableStatus,
     this.showDown,
     this.onStartGame,
@@ -63,17 +66,18 @@ class CenterView extends StatelessWidget {
   Widget build(BuildContext context) {
     final gameState = Provider.of<GameState>(context, listen: false);
     final boardAttributes = gameState.getBoardAttributes(context);
-
+    log('gameStatus: $gameStatus tableStatus: $tableStatus');
     String _text = showDown ? null : BoardViewUtilMethods.getText(tableStatus);
 
     /* if the game is paused, show the options available during game pause */
-    if (_text == AppConstants.GAME_PAUSED ||
+    if (gameStatus == AppConstants.GAME_PAUSED ||
         tableStatus == AppConstants.WAITING_TO_BE_STARTED) {
       return _putToCenterOnBoard(
         scale: boardAttributes.centerViewCenterScale,
         child: CenterButtonView(
           gameCode: this.gameCode,
           isHost: this.isHost,
+          gameStatus: this.gameStatus,
           tableStatus: this.tableStatus,
           onStartGame: this.onStartGame,
         ),

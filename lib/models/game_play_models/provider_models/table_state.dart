@@ -376,6 +376,7 @@ class TableState extends ChangeNotifier {
   bool get twoBoardsNeeded => _twoBoardsNeeded;
   String get rankStr => _rankStr;
   String get tableStatus => _tableStatus;
+  String get gameStatus => _gameStatus;
   int get potToHighlight => _potToHighlight;
   List<int> get potChips => _potChips;
   int get potChipsUpdates => _potUpdatesChips;

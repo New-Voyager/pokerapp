@@ -101,7 +101,8 @@ class _FooterViewState extends State<FooterView>
                               hostSeatChange.seatChangeHost
                       ? Align(
                           alignment: Alignment.center,
-                          child: SeatChangeConfirmWidget(),
+                          child: SeatChangeConfirmWidget(
+                              gameCode: widget.gameContext.gameState.gameCode),
                         )
                       : SizedBox.shrink(),
             )

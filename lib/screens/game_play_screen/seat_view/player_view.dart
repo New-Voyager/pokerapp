@@ -7,6 +7,7 @@ import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/resources/app_assets.dart';
@@ -50,6 +51,14 @@ class PlayerView extends StatelessWidget {
   }) : super(key: key);
 
   onTap(BuildContext context) async {
+    final seatChangeContext = Provider.of<SeatChangeNotifier>(
+      context,
+      listen: false,
+    );
+
+    if (seatChangeContext != null && seatChangeContext.seatChangeInProgress) {
+      return;
+    }
     log('seat ${seat.serverSeatPos} is tapped');
     if (seat.isOpen) {
       // the player tapped to sit-in

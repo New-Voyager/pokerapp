@@ -250,7 +250,11 @@ class NamePlateWidget extends StatelessWidget {
     //   final diff = seat.player.buyInTimeExpAt.difference(now);
     //   return buyInTimer(context, diff.inSeconds);
     // } else {
-    return stack(context);
+    if (seat.player != null) {
+      return stack(context);
+    } else {
+      return Container();
+    }
     //}
   }
 
