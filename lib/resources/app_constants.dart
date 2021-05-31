@@ -157,4 +157,10 @@ class AppConstants {
 
   static const String ANNOUNCEMENT = 'ANNOUNCEMENT';
   static const String DEALER_CHOICE = 'DEALER_CHOICE';
+
+  /* new message types */
+  static const String PLAYER_SEAT_CHANGE_BEGIN = 'PLAYER_SEAT_CHANGE_BEGIN';
+  static const String PLAYER_SEAT_CHANGE_PROMPT = 'PLAYER_SEAT_CHANGE_PROMPT';
+  static const String PLAYER_SEAT_MOVE = 'PLAYER_SEAT_MOVE';
+  static const String PLAYER_SEAT_CHANGE_DONE = 'PLAYER_SEAT_CHANGE_DONE';
 }

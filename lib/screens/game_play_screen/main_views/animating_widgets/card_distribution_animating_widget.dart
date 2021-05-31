@@ -25,6 +25,9 @@ class CardDistributionAnimatingWidget extends StatelessWidget {
       );
 
   Offset _getPositionOffsetFromKey(GlobalKey key) {
+    if (key.currentContext == null) {
+      return Offset(0, 0);
+    }
     final RenderBox renderBox = key.currentContext.findRenderObject();
     return renderBox.localToGlobal(Offset.zero);
   }

@@ -134,6 +134,8 @@ dependencies:
   web_socket_channel: ^2.0.0
   stream_channel: ^2.1.0
   share: ^2.0.1
+  curved_bottom_navigation: ^1.0.0
+
 
 dependency_overrides:
   http: ^0.12.2
@@ -175,6 +177,9 @@ flutter:
    - assets/sample-data/handlog.json
    - assets/sample-data/weekly-data.json
    - assets/animations/
+   - assets/images/cards/
+   - assets/images/livegames/
+
 
   fonts:
     - family: Lato
@@ -188,9 +193,21 @@ flutter:
           weight: 700
         - asset: assets/fonts/Lato-Black.ttf
           weight: 900
+    - family: Poppins
+      fonts:
+        - asset: assets/fonts/Poppins-Regular.ttf
+        - asset: assets/fonts/Poppins-Light.ttf
+          weight: 300
+        - asset: assets/fonts/Poppins-Bold.ttf
+          weight: 700
     - family: NoticiaText
       fonts:
         - asset: assets/fonts/NoticiaText-Bold.ttf
+          weight: 700
+    - family: Rockwell
+      fonts:
+        - asset: assets/fonts/Rockwell-Regular.ttf
+        - asset: assets/fonts/Rockwell-Bold.ttf
           weight: 700
     - family: SourceSerif
       fonts:

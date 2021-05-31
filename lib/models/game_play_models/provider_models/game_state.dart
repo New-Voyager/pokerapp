@@ -56,6 +56,8 @@ class GameState {
   PlayerInfo _currentPlayer;
   JanusEngine janusEngine;
   int _currentHandNum;
+  bool _playerSeatChangeInProgress = false;
+  int _seatChangeSeat = 0;
 
   void initialize({
     String gameCode,
@@ -234,6 +236,8 @@ class GameState {
     // reset seats
     for (var seat in this._seats.values) {
       seat.player = null;
+      seat.potViewPos = null;
+      seat.betWidgetPos = null;
     }
 
     final players = this.getPlayers(context);
@@ -246,6 +250,12 @@ class GameState {
     for (var player in playersInSeats) {
       if (player.buyInTimeExpAt != null && player.stack == 0) {
         player.showBuyIn = true;
+        player.buyInTimeExpAt = player.buyInTimeExpAt.toLocal();
+      }
+
+      if (player.breakTimeExpAt != null) {
+        player.inBreak = true;
+        player.breakTimeExpAt = player.breakTimeExpAt.toLocal();
       }
 
       if (player.seatNo != 0) {
@@ -475,6 +485,12 @@ class GameState {
       seat.notify();
     }
   }
+
+  bool get playerSeatChangeInProgress => this._playerSeatChangeInProgress;
+  set playerSeatChangeInProgress(bool v) =>
+      this._playerSeatChangeInProgress = v;
+  int get seatChangeSeat => this._seatChangeSeat;
+  set seatChangeSeat(int seat) => this._seatChangeSeat = seat;
 }
 
 /*
