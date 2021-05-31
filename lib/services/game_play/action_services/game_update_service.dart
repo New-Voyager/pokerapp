@@ -106,6 +106,8 @@ class GameUpdateService {
           );
       }
     } else if (type != null) {
+      print('\n\n\n\n type: $type \n\n\n\n');
+
       // new type
       switch (type) {
         case AppConstants.PLAYER_SEAT_CHANGE_PROMPT:
@@ -887,8 +889,15 @@ class GameUpdateService {
 
     log('Seat move: player name: $playerName id: $playerId oldSeatNo: $oldSeatNo newSeatNo: $newSeatNo');
 
-    // refresh the table
-    _gameState.refresh(_context);
+    final hostSeatChange = Provider.of<HostSeatChange>(_context, listen: false);
+
+    /* start animation */
+    hostSeatChange.onSeatDrop(oldSeatNo, newSeatNo);
+
+    /* wait for the animation to finish */
+    await Future.delayed(AppConstants.seatChangeAnimationDuration);
+
+    // we refresh, when we get the PLAYER_SEAT_CHANGE_DONE message
   }
 
   void handlePlayerSeatChangeDone({

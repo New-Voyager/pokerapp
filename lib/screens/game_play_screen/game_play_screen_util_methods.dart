@@ -137,8 +137,8 @@ class GamePlayScreenUtilMethods {
             color: Colors.white,
           ),
           backgroundColor: Colors.red,
-          label: 'Run it twice result',
-          onTap: () => TestService.runItTwiceResult(),
+          label: 'Seat Change',
+          onTap: () => TestService.seatChange(),
         ),
         // SpeedDialChild(
         //   child: Icon(

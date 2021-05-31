@@ -22,6 +22,7 @@ import 'package:pokerapp/utils/formatter.dart';
 import 'package:provider/provider.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/main.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
 
 import 'iap_test.dart';
 
@@ -413,6 +414,17 @@ class TestService {
     //await _handActionService.handle(dealCardsMessage());
     //await HandActionService.handle(context: _context, message: yourActionNextActionMsg());
     //await HandActionService.handle(context: _context, message: dealStartedMessage());
+  }
+
+  static void seatChange() {
+    final hostSeatChange = Provider.of<HostSeatChange>(_context, listen: false);
+
+    /* start animation */
+    hostSeatChange.onSeatDrop(1, 5);
+
+    /* refresh */
+    final gameState = GameState.getState(_context);
+    gameState.refresh(_context);
   }
 
   static void runItTwiceResult() {

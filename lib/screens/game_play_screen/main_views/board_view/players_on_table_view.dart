@@ -59,6 +59,10 @@ class PlayersOnTableView extends StatefulWidget {
 
 class _PlayersOnTableViewState extends State<PlayersOnTableView>
     with TickerProviderStateMixin {
+  /* map for holding player positions */
+  /* map<"MAX_PLAYER-SEAT", POSITION> */
+  final Map<String, Offset> seatPositionsMap = {};
+
   // for animation
   Animation<Offset> animation;
   AnimationController animationController;
@@ -97,8 +101,16 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
     widget.gameComService?.gameMessaging?.listen(onAnimation: this.onAnimation);
     animationHandlers();
     _seatChangeAnimationHandler();
-    // seatChangeAnimationHandler_old();
+    cacheSeatPositions();
     super.initState();
+  }
+
+  // todo: this method can be optimized
+  void cacheSeatPositions() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      for (int seatNo = 1; seatNo <= 9; seatNo++)
+        findPositionOfUser(seatNo: seatNo);
+    });
   }
 
   void _seatChangeAnimationHandler() {
@@ -267,6 +279,8 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
   }
 
   Offset getPositionOffsetFromKey(GlobalKey key) {
+    if (key?.currentContext == null) return null;
+
     final RenderBox renderBox = key.currentContext.findRenderObject();
     return renderBox.localToGlobal(Offset.zero);
   }
@@ -280,35 +294,41 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
     return renderBox.size;
   }
 
-  List<Offset> findPositionOfFromAndToUser({
-    int fromSeat,
-    int toSeat,
-  }) {
-    /* get parent position */
-    //final parentWidgetPosition = getPositionOffsetFromKey(_parentKey);
-
+  Offset findPositionOfUser({int seatNo}) {
     final gameState = GameState.getState(context);
-    //final tableState = gameState.getTableState(context);
 
-    final from = gameState.getSeat(context, fromSeat);
-    final to = gameState.getSeat(context, toSeat);
+    final maxPlayers = gameState.gameInfo.maxPlayers;
+    final String cacheCode = '$maxPlayers-$seatNo';
 
-    /* get from player position */
-    final fromPlayerWidgetPosition = getPositionOffsetFromKey(from.key);
+    /* if available in cache, get from there */
+    if (seatPositionsMap[cacheCode] != null) return seatPositionsMap[cacheCode];
 
-    /* get to player position */
-    final toPlayerWidgetPosition = getPositionOffsetFromKey(to.key);
+    final seat = gameState.getSeat(context, seatNo);
+
+    final relativeSeatPos = getPositionOffsetFromKey(seat?.key);
+    if (relativeSeatPos == null) return null;
 
     final RenderBox parentBox =
         this._parentKey.currentContext.findRenderObject();
-    Offset fromOffset = parentBox.globalToLocal(fromPlayerWidgetPosition);
-    Offset toOffset = parentBox.globalToLocal(toPlayerWidgetPosition);
+    final Offset seatPos = parentBox.globalToLocal(relativeSeatPos);
 
-    return [fromOffset, toOffset];
+    /* we have the seatPos now, put in the cache */
+    return seatPositionsMap[cacheCode] = seatPos;
   }
+
+  List<Offset> findPositionOfFromAndToUser({
+    int fromSeat,
+    int toSeat,
+  }) =>
+      [
+        findPositionOfUser(seatNo: fromSeat),
+        findPositionOfUser(seatNo: toSeat),
+      ];
 
   @override
   Widget build(BuildContext context) {
+    cacheSeatPositions();
+
     // am I on this table?
     return Transform.translate(
       key: _parentKey,
@@ -395,7 +415,7 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
         me = this.widget.players.me;
       }
 
-    final maxPlayers = gameState.gameInfo.maxPlayers;
+    final maxPlayers = gameState.gameInfo?.maxPlayers ?? 9;
     index = -1;
     // update seat states in game state
     final seatsState = this.getSeats(context, widget.players.players);

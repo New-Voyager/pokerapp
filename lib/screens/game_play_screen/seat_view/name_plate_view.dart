@@ -79,8 +79,8 @@ class NamePlateWidget extends StatelessWidget {
    */
   List<BoxShadow> getShadow(HostSeatChange hostSeatChange, bool isFeedback) {
     BoxShadow shadow;
-    bool winner = seat.player.winner ?? false;
-    bool highlight = seat.player.highlight ?? false;
+    bool winner = seat.player?.winner ?? false;
+    bool highlight = seat.player?.highlight ?? false;
     if (winner) {
       shadow = BoxShadow(
         color: Colors.lightGreen,
@@ -139,7 +139,7 @@ class NamePlateWidget extends StatelessWidget {
 [log] Rebuilding highlight remaining: 7 total: 30 current: 23
 [log] Timer remaining: 22977 total: 30 current: 7
 */
-    if (seat.player.highlight) {
+    if (seat.player?.highlight ?? false) {
       int current = seat.actionTimer.getProgressTime();
       int total = seat.actionTimer.getTotalTime();
       int remaining = total - current;
@@ -209,7 +209,7 @@ class NamePlateWidget extends StatelessWidget {
                   children: [
                     FittedBox(
                       child: Text(
-                        seat.player.name ?? 'name',
+                        seat.player?.name ?? '',
                         style: AppStyles.gamePlayScreenPlayerName.copyWith(
                           color: Colors.white,
                         ),
