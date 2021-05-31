@@ -15,10 +15,8 @@ import 'package:provider/provider.dart';
 
 class FlopCommunityCards extends StatefulWidget {
   final List<Widget> flopCards;
-  final int speed;
   FlopCommunityCards({
     @required this.flopCards,
-    @required this.speed,
   });
 
   @override
@@ -78,7 +76,6 @@ class _FlopCommunityCardsState extends State<FlopCommunityCards> {
       ),
       child: CustomFlipCard(
         cardBackAsset: cardBackAsset,
-        speed: widget.speed,
         onFlipDone: onFlipDone,
         globalKey: _globalFlipKey,
         cardWidget: widget.flopCards.last,
