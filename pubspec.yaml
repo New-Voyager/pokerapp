@@ -1,7 +1,7 @@
 name: pokerapp
 description: A new Flutter application.
 
-publish_to: 'none'
+publish_to: "none"
 
 version: 0.1.0
 
@@ -59,7 +59,7 @@ dependencies:
   path_provider: ^1.6.24
 
   flutter_svg: ^0.21.0+1
-  
+
   charts_flutter: ^0.10.0
 
   # animations
@@ -103,7 +103,7 @@ dependencies:
   blinking_text: ^1.0.1+2
 
   sliding_up_panel: ^1.0.2
-  
+
   sleek_circular_slider: ^2.0.0
   flutter_circular_slider: ^2.5.0
   flushbar: ^1.10.4
@@ -119,7 +119,7 @@ dependencies:
 
   # firebase services
   firebase_core: ^1.1.0
-  firebase_messaging: ^9.1.3
+  firebase_messaging: ^10.0.0
   firebase_analytics: ^8.0.2
 
   # Service Locator
@@ -136,7 +136,6 @@ dependencies:
   share: ^2.0.1
   curved_bottom_navigation: ^1.0.0
 
-
 dependency_overrides:
   http: ^0.12.2
   http_parser: ^3.1.1
@@ -144,7 +143,7 @@ dependency_overrides:
   json_annotation: ^4.0.1
   uuid: ^3.0.4
   path_provider: ^1.6.24
-  crypto: ^3.0.0 
+  crypto: ^3.0.0
   mime: ^1.0.0
 
 dev_dependencies:
@@ -154,32 +153,31 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-   - assets/images/
-   - assets/animations/
-   - assets/images/backgrounds/
-   - assets/images/table/
-   - assets/images/game/
-   - assets/images/chips/
-   - assets/images/betchips/
-   - assets/images/card_back/set1/
-   - assets/images/card_back/set2/
-   - assets/sound_effects/
-   - assets/images/gamesettings/
-   - assets/images/name_plates/
-   - assets/sample-data/
-   - assets/sample-data/handlog/
-   - assets/sample-data/handlog/holdem/
-   - assets/sample-data/handlog/plo/
-   - assets/sample-data/handlog/plo-hilo/
-   - assets/sample-data/handlog/5card-plo/
-   - assets/sample-data/completed-game.json
-   - assets/sample-data/completed-game2.json
-   - assets/sample-data/handlog.json
-   - assets/sample-data/weekly-data.json
-   - assets/animations/
-   - assets/images/cards/
-   - assets/images/livegames/
-
+    - assets/images/
+    - assets/animations/
+    - assets/images/backgrounds/
+    - assets/images/table/
+    - assets/images/game/
+    - assets/images/chips/
+    - assets/images/betchips/
+    - assets/images/card_back/set1/
+    - assets/images/card_back/set2/
+    - assets/sound_effects/
+    - assets/images/gamesettings/
+    - assets/images/name_plates/
+    - assets/sample-data/
+    - assets/sample-data/handlog/
+    - assets/sample-data/handlog/holdem/
+    - assets/sample-data/handlog/plo/
+    - assets/sample-data/handlog/plo-hilo/
+    - assets/sample-data/handlog/5card-plo/
+    - assets/sample-data/completed-game.json
+    - assets/sample-data/completed-game2.json
+    - assets/sample-data/handlog.json
+    - assets/sample-data/weekly-data.json
+    - assets/animations/
+    - assets/images/cards/
+    - assets/images/livegames/
 
   fonts:
     - family: Lato

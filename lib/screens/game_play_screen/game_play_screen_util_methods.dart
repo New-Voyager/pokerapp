@@ -74,8 +74,8 @@ class GamePlayScreenUtilMethods {
             color: Colors.white,
           ),
           backgroundColor: Colors.red,
-          label: 'show player status',
-          onTap: () => TestService.showPlayerStatus(),
+          label: 'fillCenterView',
+          onTap: () => TestService.fillCenterView(),
         ),
         // SpeedDialChild(
         //   child: Icon(
@@ -191,8 +191,8 @@ class GamePlayScreenUtilMethods {
             color: Colors.white,
           ),
           backgroundColor: Colors.red,
-          label: 'New Hand',
-          onTap: () => TestService.sendNewHand(),
+          label: 'addTurnOrRiverCard',
+          onTap: () => TestService.addTurnOrRiverCard(),
         ),
 
         SpeedDialChild(

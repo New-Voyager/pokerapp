@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
+import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/screens/util_screens/replay_hand_dialog/replay_hand_dialog.dart';
@@ -23,9 +24,13 @@ class _ProfilePageViewState extends State<ProfilePageView> {
   Widget build(BuildContext context) {
     final plateWidget = PlateWidget(1, 30);
     return Container(
+      color: AppColors.screenBackgroundColor,
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          Container(
+            width: double.infinity,
+          ),
+
           Spacer(),
           ElevatedButton(
             child: Text('Replay Hand'),
@@ -82,6 +87,7 @@ class _ProfilePageViewState extends State<ProfilePageView> {
               );
             },
           ),
+          Spacer(),
         ],
       ),
     );
