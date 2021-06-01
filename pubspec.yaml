@@ -211,6 +211,10 @@ flutter:
       fonts:
         - asset: assets/fonts/Trocchi-Regular.ttf
           weight: 400
+    - family: Domine
+      fonts:
+        - asset: assets/fonts/Domine-VariableFont_wght.ttf
+          weight: 700
 
     # icon packs
     - family: AppIcons

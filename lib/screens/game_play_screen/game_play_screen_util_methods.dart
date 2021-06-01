@@ -56,6 +56,26 @@ class GamePlayScreenUtilMethods {
             color: Colors.white,
           ),
           backgroundColor: Colors.red,
+          label: 'addTurnOrRiverCard',
+          onTap: () => TestService.addTurnOrRiverCard(),
+        ),
+
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
+          label: 'Flop',
+          onTap: () => TestService.addFlopCards(),
+        ),
+
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
           label: 'Reset & fold all players',
           onTap: () => TestService.resetGameState(),
         ),
@@ -185,25 +205,6 @@ class GamePlayScreenUtilMethods {
         //   label: 'Hand Message',
         //   onTap: () => TestService.handMessage(),
         // ),
-        SpeedDialChild(
-          child: Icon(
-            Icons.adb_rounded,
-            color: Colors.white,
-          ),
-          backgroundColor: Colors.red,
-          label: 'addTurnOrRiverCard',
-          onTap: () => TestService.addTurnOrRiverCard(),
-        ),
-
-        SpeedDialChild(
-          child: Icon(
-            Icons.adb_rounded,
-            color: Colors.white,
-          ),
-          backgroundColor: Colors.red,
-          label: 'Flop',
-          onTap: () => TestService.addFlopCards(),
-        ),
         SpeedDialChild(
           child: Icon(
             Icons.adb_rounded,
