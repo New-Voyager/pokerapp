@@ -1,12 +1,9 @@
 import 'dart:convert';
 import 'dart:developer';
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/newmodels/game_model_new.dart';
 import 'package:pokerapp/resources/app_strings.dart';
-import 'package:pokerapp/resources/new/app_assets_new.dart';
-import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
@@ -67,15 +64,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-        color: AppColorsNew.newBackgroundBlackColor,
-        image: DecorationImage(
-          image: AssetImage(
-            AppAssetsNew.pathBackgroundImage,
-          ),
-          fit: BoxFit.cover,
-        ),
-      ),
+      decoration: AppStylesNew.bgDecoration,
       child: SafeArea(
         child: Scaffold(
           backgroundColor: Colors.transparent,
@@ -83,8 +72,9 @@ class _LiveGamesScreenState extends State<LiveGamesScreen> {
             children: [
               Container(
                 margin: EdgeInsets.symmetric(vertical: 8),
+                alignment: Alignment.center,
                 child: Text(
-                  AppStrings.liveGamesText.toUpperCase(),
+                  AppStringsNew.LiveGamesTitle.toUpperCase(),
                   style: AppStylesNew.TitleTextStyle,
                 ),
               ),

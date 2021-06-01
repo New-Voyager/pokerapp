@@ -1,3 +1,5 @@
+import 'package:pokerapp/resources/new/app_strings_new.dart';
+
 enum GameType {
   UNKNOWN,
   HOLDEM,
@@ -12,19 +14,19 @@ enum GameType {
 String gameTypeStr(GameType type) {
   switch (type) {
     case GameType.HOLDEM:
-      return "No Limit Holdem";
+      return AppStringsNew.HoldemType;
     case GameType.PLO:
-      return "PLO";
+      return AppStringsNew.PLOType;
     case GameType.PLO_HILO:
-      return "PLO Hi-Lo";
+      return AppStringsNew.PLOHiLoType;
     case GameType.FIVE_CARD_PLO:
-      return "5 card PLO";
+      return AppStringsNew.FiveCardPLOType;
     case GameType.FIVE_CARD_PLO_HILO:
-      return "5 card PLO Hi-Lo";
+      return  AppStringsNew.FiveCardPLOHiLoType;
     case GameType.ROE:
-      return "Round of Each";
+      return AppStringsNew.ROEType;
     case GameType.DEALER_CHOICE:
-      return "Dealer Choice";
+      return AppStringsNew.DealerChoiceType;
     default:
       return "Unknown";
   }

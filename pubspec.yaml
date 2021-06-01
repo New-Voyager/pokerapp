@@ -164,6 +164,7 @@ flutter:
     - assets/images/card_back/set2/
     - assets/sound_effects/
     - assets/images/gamesettings/
+    - assets/images/game-settings/
     - assets/images/name_plates/
     - assets/sample-data/
     - assets/sample-data/handlog/
