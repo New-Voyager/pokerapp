@@ -229,7 +229,9 @@ class GameUpdateService {
     @required var playerUpdate,
   }) {
     int seatNo = playerUpdate['seatNo'];
-    removePlayer(seatNo);
+    if (seatNo != null && seatNo != 0) {
+      removePlayer(seatNo);
+    }
   }
 
   void handlePlayerNotPlaying({
