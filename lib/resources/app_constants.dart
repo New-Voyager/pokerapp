@@ -85,6 +85,7 @@ class AppConstants {
   static const String redHeart = '♥';
   static const String blackClub = '♣';
   static const String redDiamond = '♦';
+  static const String redHeart2 = '❤';
 
   /* TABLE UPDATE types */
   static const String SeatChangeInProgress = 'SeatChangeInProgress';

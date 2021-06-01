@@ -24,6 +24,7 @@ class AppAssets {
   static const String fontFamilyNoticia = 'NoticiaText';
   static const String fontFamilySourceSerif = 'SourceSerif';
   static const String fontFamilyTrocchi = 'Trocchi';
+  static const String fontFamilyDomine = 'Domine';
 
   static const String fireworkGif = 'assets/images/fireworks.gif';
 
