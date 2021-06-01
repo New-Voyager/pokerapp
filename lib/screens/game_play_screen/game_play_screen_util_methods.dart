@@ -56,8 +56,8 @@ class GamePlayScreenUtilMethods {
             color: Colors.white,
           ),
           backgroundColor: Colors.red,
-          label: 'Reset & fold all players',
-          onTap: () => TestService.resetGameState(),
+          label: 'set isAdmin false',
+          onTap: () => TestService.setIsAdminFalse(),
         ),
         // SpeedDialChild(
         //   child: Icon(
@@ -74,8 +74,8 @@ class GamePlayScreenUtilMethods {
             color: Colors.white,
           ),
           backgroundColor: Colors.red,
-          label: 'show player status',
-          onTap: () => TestService.showPlayerStatus(),
+          label: 'set isAdmin true',
+          onTap: () => TestService.setIsAdminTrue(),
         ),
         // SpeedDialChild(
         //   child: Icon(
@@ -101,8 +101,8 @@ class GamePlayScreenUtilMethods {
             color: Colors.white,
           ),
           backgroundColor: Colors.red,
-          label: 'New Hand Announcement',
-          onTap: () => TestService.handAnnouncement(),
+          label: 'set current player not playing',
+          onTap: () => TestService.setCurrentPlayerStatusNotPlaying(),
         ),
         SpeedDialChild(
           child: Icon(
@@ -110,8 +110,8 @@ class GamePlayScreenUtilMethods {
             color: Colors.white,
           ),
           backgroundColor: Colors.red,
-          label: 'Hand Log',
-          onTap: () => TestService.handlogView(),
+          label: 'set current player as playing',
+          onTap: () => TestService.setCurrentPlayerStatusPlaying(),
         ),
         SpeedDialChild(
           child: Icon(
@@ -119,8 +119,8 @@ class GamePlayScreenUtilMethods {
             color: Colors.white,
           ),
           backgroundColor: Colors.red,
-          label: 'Bet Widget',
-          onTap: () => TestService.testBetWidget(),
+          label: 'set game status active',
+          onTap: () => TestService.setGameStateActive(),
         ),
         SpeedDialChild(
           child: Icon(
@@ -128,8 +128,8 @@ class GamePlayScreenUtilMethods {
             color: Colors.white,
           ),
           backgroundColor: Colors.red,
-          label: 'Run it twice result',
-          onTap: () => TestService.runItTwiceResult(),
+          label: 'set game status inactive',
+          onTap: () => TestService.setGameStateInActive(),
         ),
         // SpeedDialChild(
         //   child: Icon(
@@ -140,7 +140,7 @@ class GamePlayScreenUtilMethods {
         //   label: 'Fill center view',
         //   onTap: () => TestService.fillCenterView(),
         // ),
-        SpeedDialChild(
+        /*SpeedDialChild(
           child: Icon(
             Icons.adb_rounded,
             color: Colors.white,
@@ -230,7 +230,7 @@ class GamePlayScreenUtilMethods {
           backgroundColor: Colors.red,
           label: 'Show holecards',
           onTap: () => TestService.showHoleCards(),
-        ),
+        ),*/
         /*
         SpeedDialChild(
           child: Icon(

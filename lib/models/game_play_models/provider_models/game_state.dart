@@ -149,16 +149,22 @@ class GameState {
         DateTime now = DateTime.now();
         if (player.breakTimeExpAt != null) {
           final diff = player.breakTimeExpAt.difference(now);
-          log('now: ${now.toIso8601String()} breakTimeExpAt: ${player.breakTimeExpAt.toIso8601String()} break time expires in ${diff.inSeconds}');
+          log('now: ${now.toIso8601String()} breakTimeExpAt: ${player
+              .breakTimeExpAt.toIso8601String()} break time expires in ${diff
+              .inSeconds}');
         }
       }
     }
 
     this._players = ListenableProvider<Players>(
-      create: (_) => Players(
-        players: players,
-      ),
+      create: (_) =>
+          Players(
+            players: players,
+          ),
     );
+
+   /* this._myState.gameStatus = _gameInfo.status;
+    this._myState.notify();*/
   }
 
   void setTappedSeatPos(BuildContext context, SeatPos seatPos, Seat seat,
@@ -222,6 +228,7 @@ class GameState {
   }
 
   int get currentHandNum => this._currentHandNum;
+
   set currentHandNum(int handNum) => this._currentHandNum = currentHandNum;
 
   void refresh(BuildContext context) async {
@@ -257,6 +264,7 @@ class GameState {
         player.isMe = true;
       }
     }
+
     players.updatePlayersSilent(playersInSeats);
 
     final tableState = this.getTableState(context);
@@ -267,6 +275,9 @@ class GameState {
     for (Seat seat in this._seats.values) {
       seat.notify();
     }
+
+ /*   this._myState.gameStatus = _gameInfo.status;
+    this._myState.notify();*/
   }
 
   void seatPlayer(int seatNo, PlayerModel player) {
@@ -333,7 +344,7 @@ class GameState {
       Provider.of<WaitlistState>(context, listen: listen);
 
   ServerConnectionState getConnectionState(BuildContext context,
-          {bool listen = false}) =>
+      {bool listen = false}) =>
       Provider.of<ServerConnectionState>(context, listen: listen);
 
   PopupButtonState getPopupState(BuildContext context, {bool listen = false}) =>
@@ -342,8 +353,7 @@ class GameState {
   // JanusEngine getJanusEngine(BuildContext context, {bool listen = false}) =>
   //     Provider.of<JanusEngine>(context, listen: listen);
 
-  MarkedCards getMarkedCards(
-    BuildContext context, {
+  MarkedCards getMarkedCards(BuildContext context, {
     bool listen = false,
   }) =>
       Provider.of<MarkedCards>(
@@ -367,8 +377,7 @@ class GameState {
     return seat;
   }
 
-  BoardAttributesObject getBoardAttributes(
-    BuildContext context, {
+  BoardAttributesObject getBoardAttributes(BuildContext context, {
     bool listen: false,
   }) {
     return Provider.of<BoardAttributesObject>(context, listen: listen);
@@ -524,14 +533,14 @@ class HandInfoState extends ChangeNotifier {
   }
 
   double get smallBlind => this._smallBlind;
+
   double get bigBlind => this._bigBlind;
 
-  update(
-      {int noCards,
-      GameType gameType,
-      int handNum,
-      double smallBlind,
-      double bigBlind}) {
+  update({int noCards,
+    GameType gameType,
+    int handNum,
+    double smallBlind,
+    double bigBlind}) {
     if (noCards != null) this._noCards = noCards;
     if (gameType != null) this._gameType = gameType;
     if (handNum != null) this._handNum = handNum;
@@ -589,6 +598,7 @@ class ServerConnectionState extends ChangeNotifier {
   ConnectionStatus _status = ConnectionStatus.UNKNOWN;
 
   ConnectionStatus get status => this._status;
+
   set status(ConnectionStatus status) => this._status = status;
 
   notify() {
