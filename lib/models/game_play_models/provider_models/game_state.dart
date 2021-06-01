@@ -220,7 +220,7 @@ class GameState {
   }
 
   bool get audioConfEnabled {
-    return this._gameInfo.audioConfEnabled;
+    return this._gameInfo?.audioConfEnabled;
   }
 
   int get currentHandNum => this._currentHandNum;

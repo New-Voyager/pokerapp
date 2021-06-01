@@ -143,6 +143,7 @@ class _BoardViewState extends State<BoardView> {
                         ? tableState.potChipsUpdates.toString()
                         : '0.0',
                   ),
+                  tableState.gameStatus,
                   tableState.tableStatus,
                   valueNotifierFooterStatus.value == FooterStatus.Result,
                   widget.onStartGame,

@@ -30,7 +30,7 @@ class NamePlateWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer2<HostSeatChange, GameContextObject>(
+    return Consumer2<SeatChangeNotifier, GameContextObject>(
       key: globalKey,
       builder: (
         context,
@@ -77,10 +77,11 @@ class NamePlateWidget extends StatelessWidget {
    * green: when holding a seat during seat change process
    * blue: shows when a moving seat can be dropped
    */
-  List<BoxShadow> getShadow(HostSeatChange hostSeatChange, bool isFeedback) {
+  List<BoxShadow> getShadow(
+      SeatChangeNotifier hostSeatChange, bool isFeedback) {
     BoxShadow shadow;
-    bool winner = seat.player.winner ?? false;
-    bool highlight = seat.player.highlight ?? false;
+    bool winner = seat.player?.winner ?? false;
+    bool highlight = seat.player?.highlight ?? false;
     if (winner) {
       shadow = BoxShadow(
         color: Colors.lightGreen,
@@ -125,7 +126,7 @@ class NamePlateWidget extends StatelessWidget {
 
   Widget buildSeat(
     BuildContext context,
-    HostSeatChange hostSeatChange, {
+    SeatChangeNotifier hostSeatChange, {
     bool isFeedBack = false,
     bool childWhenDragging = false,
   }) {
@@ -139,7 +140,7 @@ class NamePlateWidget extends StatelessWidget {
 [log] Rebuilding highlight remaining: 7 total: 30 current: 23
 [log] Timer remaining: 22977 total: 30 current: 7
 */
-    if (seat.player.highlight) {
+    if (seat.player?.highlight ?? false) {
       int current = seat.actionTimer.getProgressTime();
       int total = seat.actionTimer.getTotalTime();
       int remaining = total - current;
@@ -209,7 +210,7 @@ class NamePlateWidget extends StatelessWidget {
                   children: [
                     FittedBox(
                       child: Text(
-                        seat.player.name ?? 'name',
+                        seat.player?.name ?? '',
                         style: AppStyles.gamePlayScreenPlayerName.copyWith(
                           color: Colors.white,
                         ),
@@ -249,7 +250,11 @@ class NamePlateWidget extends StatelessWidget {
     //   final diff = seat.player.buyInTimeExpAt.difference(now);
     //   return buyInTimer(context, diff.inSeconds);
     // } else {
-    return stack(context);
+    if (seat.player != null) {
+      return stack(context);
+    } else {
+      return Container();
+    }
     //}
   }
 
