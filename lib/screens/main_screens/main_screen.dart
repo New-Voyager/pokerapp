@@ -8,6 +8,7 @@ import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_icons.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
+import 'package:pokerapp/screens/game_screens/new_game_settings/choose_game_new.dart';
 import 'package:pokerapp/screens/main_screens/clubs_page_view/clubs_page_view.dart';
 import 'package:pokerapp/screens/main_screens/games_page_view/games_page_view.dart';
 import 'package:pokerapp/screens/main_screens/games_page_view/live_games.dart';
@@ -146,17 +147,22 @@ class _MainScreenState extends State<MainScreen>
 
   @override
   Widget build(BuildContext context) {
+    List<Widget> widgets = [];
+    widgets.addAll([
+      LiveGamesScreen(),
+      ClubsPageView(),
+      ProfilePageView(),
+      PurchasePageView()
+    ]);
+
+    if (TestService.isTesting) widgets.add(ChooseGameNew());
+
     return Scaffold(
       body: Stack(
         children: [
           IndexedStack(
             index: _navPos,
-            children: [
-              LiveGamesScreen(),
-              ClubsPageView(),
-              ProfilePageView(),
-              PurchasePageView()
-            ],
+            children: [...widgets],
           ),
           Align(
             alignment: Alignment.bottomCenter,
@@ -193,6 +199,12 @@ class _MainScreenState extends State<MainScreen>
                   title: 'Purchase',
                   selected: _navPos == 3,
                 ),
+                if (TestService.isTesting)
+                  CurvedNavItem(
+                    iconData: Icons.money,
+                    title: 'Test',
+                    selected: _navPos == 4,
+                  ),
               ],
             ),
           ),

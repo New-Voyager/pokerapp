@@ -13,29 +13,7 @@ class AppColorsNew {
   static const Color newActiveBoxColor = Color(0xFFD89E40);
   static const Color newInactiveBoxColor = Color(0xFF092913);
   static const Color newCheckboxActiveColor = Color(0xFF40D876);
-
-  static const RadialGradient newRadialGradientBg = RadialGradient(
-    colors: [
-      newGreenRadialStartColor,
-      newGreenRadialStopColor,
-      Colors.black,
-    ],
-    stops: [0.1, 0.3, 0.6],
-  );
-
-  static const RadialGradient newRadialGradientActiveBg = RadialGradient(
-    colors: [
-      Colors.black,
-      newActiveBoxColor,
-    ],
-    stops: [0.1, 0.3],
-  );
-
-  static const RadialGradient newRadialGradientInactiveBg = RadialGradient(
-    colors: [
-      Colors.black,
-      newInactiveBoxColor,
-    ],
-    stops: [0.1, 0.3],
-  );
+  static const Color newTileBgBlackColor = Color(0xFF000104);
+  static const Color newBlueShadeColor = Color(0xFF008FFF);
+  static const Color newSelectedGreenColor = Color(0xFF086027);
 }

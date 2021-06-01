@@ -15,6 +15,12 @@ class AppAssetsNew {
   static String pathFiveCardPLOTypeImage = 'assets/images/cards/5card-plo.png';
   static String pathFiveCardPLOHiLoTypeImage =
       'assets/images/cards/5card-plo-hi-lo.png';
+  static String pathROETypeImage = 'assets/images/game-settings/roe.png';
+  static String pathDealerChoiceTypeImage =
+      'assets/images/game-settings/dealer.png';
+
   static String pathDefaultTypeImage = 'assets/images/cards/livegame_chip.png';
   static String pathJoinBackground = 'assets/images/livegames/join.png';
+
+  static String pathArrowImage = "assets/images/game-settings/next_arrow.png";
 }

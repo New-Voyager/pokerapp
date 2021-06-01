@@ -3,6 +3,40 @@ import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 
 class AppStylesNew {
+  static const RadialGradient newRadialGradientBg = RadialGradient(
+    colors: [
+      AppColorsNew.newGreenRadialStartColor,
+      AppColorsNew.newGreenRadialStopColor,
+      Colors.black,
+    ],
+    stops: [0.1, 0.3, 0.6],
+  );
+
+  static const RadialGradient newRadialGradientActiveBg = RadialGradient(
+    colors: [
+      Colors.black,
+      AppColorsNew.newActiveBoxColor,
+    ],
+    stops: [0.1, 0.3],
+  );
+
+  static const RadialGradient newRadialGradientInactiveBg = RadialGradient(
+    colors: [
+      Colors.black,
+      AppColorsNew.newInactiveBoxColor,
+    ],
+    stops: [0.1, 0.3],
+  );
+  static const BoxDecoration bgDecoration = BoxDecoration(
+    color: AppColorsNew.newBackgroundBlackColor,
+    image: DecorationImage(
+      image: AssetImage(
+        AppAssetsNew.pathBackgroundImage,
+      ),
+      fit: BoxFit.cover,
+    ),
+  );
+
   static const TextStyle JoinTextStyle = TextStyle(
     color: AppColorsNew.newBackgroundBlackColor,
     fontWeight: FontWeight.w700,

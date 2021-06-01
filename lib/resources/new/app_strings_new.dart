@@ -3,11 +3,11 @@ class AppStringsNew {
   static const BuyIn = "BuyIn";
   static const OpenSeats = "Open Seats";
   static const HoldemType = "No Limit Holdem";
-  static const PLOType = "PLO";
-  static const PLOHiLoType = "PLO HiLo";
-  static const FiveCardPLOType = "5 Card PLO";
-  static const FiveCardPLOHiLoType = "5 Card PLO HiLo";
-  static const ROEType = "ROE";
+  static const PLOType = "Pot Limit Omaha";
+  static const PLOHiLoType = "Pot Limit Omaha Hi-Lo";
+  static const FiveCardPLOType = "5 Card Pot Limit Omaha";
+  static const FiveCardPLOHiLoType = "5 Card Pot Limit Omaha Hi-Lo";
+  static const ROEType = "Round of Each";
   static const DealerChoiceType = "Dealer Choice";
   static const DefaultType = "Game";
   static const TableFull = "Table is Full";
@@ -18,4 +18,6 @@ class AppStringsNew {
   static const NoGamesText = "No Live Games";
   static const Join = "JOIN";
   static const View = "VIEW";
+  static const LiveGamesTitle = "Live Games";
+  static const ChooseGameTitle = "Choose Game";
 }
