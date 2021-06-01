@@ -10,6 +10,7 @@ import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/app/rewards_service.dart';
 import 'package:pokerapp/widgets/custom_text_button.dart';
 import 'package:pokerapp/widgets/radio_list_widget.dart';
+import 'package:pokerapp/widgets/text_input_widget.dart';
 import 'package:provider/provider.dart';
 
 class NewGameSettings extends StatefulWidget {
@@ -99,6 +100,14 @@ class _NewGameSettingsState extends State<NewGameSettings> {
                     data.rewards = this.rewards;
                     return Column(
                       children: [
+                        TextInputWidget(
+                          label: 'Big Blind',
+                          minValue: 10,
+                          maxValue: 300,
+                          onChange: (int v) {
+                            print(v);
+                          },
+                        ),
                         RadioListWidget(
                           values: [1, 2, 3, 4, 5, 6],
                           onSelect: (int s) {
