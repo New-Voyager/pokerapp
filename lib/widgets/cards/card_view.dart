@@ -60,35 +60,61 @@ class CardView extends StatelessWidget {
     TextStyle cardTextStyle,
     TextStyle suitTextStyle,
   ) {
+    // final aclub =
+    // Row (
+    //   children: [
+    //       Container(
+    //             // decoration: BoxDecoration(
+    //             //   shape: BoxShape.circle,
+    //             //   color: optionItemModel.backGroundColor,
+    //             // ),
+    //             padding: EdgeInsets.all(5),
+    //             child: Transform.scale(
+    //               scale: 1.2,
+    //               child: Image.asset(
+    //               'assets/images/cards/aclub.png',
+    //               // height: 40,
+    //               // width: 20,
+    //               //color: Colors.white,
+    //             )),
+    //           ),
+    //   ]);
+    // return aclub;
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Expanded(
-          flex: 8,
+          flex: 6,
           child: FittedBox(
-            child: Text(
-              card.label == 'T' ? '10' : card.label ?? 'X',
-              style: TextStyle(
-                color: card.color,
-                fontSize: 32.0,
-                fontWeight: FontWeight.w700,
-                fontFamily: AppAssets.fontFamilyDomine,
-              ),
-              textAlign: TextAlign.center,
-            ),
+            child: Transform.translate(
+                offset: Offset(0, -2),
+                child: Transform.scale(
+                    scale: 1.8,
+                    child: Text(
+                      card.label == 'T' ? '10' : card.label ?? 'X',
+                      style: TextStyle(
+                        color: card.color,
+                        fontSize: 32.0,
+                        fontWeight: FontWeight.w700,
+                        fontFamily: AppAssets.fontFamilyLiterata,
+                      ),
+                      textAlign: TextAlign.center,
+                    ))),
           ),
         ),
+        SizedBox(height: 4.0),
         Expanded(
-          flex: 4,
+          flex: 6,
           child: FittedBox(
             child: Text(
               card.suit,
               style: TextStyle(
                 color: card.color,
-                fontSize: 14.0,
+                fontSize: 24.0,
                 fontWeight: FontWeight.w800,
-                fontFamily: AppAssets.fontFamilyLato,
+                fontFamily: AppAssets.fontFamilyLiterata,
               ),
               textAlign: TextAlign.center,
             ),
