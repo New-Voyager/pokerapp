@@ -5,7 +5,7 @@ class AppAssets {
   //     'assets/images/table/horizontal_table.png';
   // static const String verticalTable = 'assets/images/table/vertical_table.png';
 
-  static const String horizontalTable = 'assets/images/table/bar_table.png';
+  static const String horizontalTable = 'assets/images/table/red.png';
   static const String verticalTable = 'assets/images/table/vertical_table.png';
 
   static const String cityBackground1 =
