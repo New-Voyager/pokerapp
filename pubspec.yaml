@@ -88,9 +88,6 @@ dependencies:
   # tuple
   tuple: ^1.0.3
 
-  # live audio chat
-  agora_rtc_engine: ^3.2.1
-
   # lottie animation
   lottie: ^0.7.0
 
@@ -120,7 +117,6 @@ dependencies:
   # firebase services
   firebase_core: ^1.1.0
   firebase_messaging: ^10.0.0
-  firebase_analytics: ^8.0.2
 
   # Service Locator
   get_it: ^6.1.1

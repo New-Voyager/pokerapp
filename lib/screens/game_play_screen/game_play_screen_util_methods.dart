@@ -22,7 +22,7 @@ import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/resources/card_back_assets.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
-import 'package:pokerapp/services/agora/agora.dart';
+//import 'package:pokerapp/services/agora/agora.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
@@ -377,7 +377,7 @@ class GamePlayScreenUtilMethods {
     @required GameState gameState,
     @required GameInfoModel gameInfoModel,
     @required String gameCode,
-    @required Agora agora,
+    //@required Agora agora,
     @required BoardAttributesObject boardAttributes,
     @required GameContextObject gameContextObject,
   }) {
@@ -469,9 +469,9 @@ class GamePlayScreenUtilMethods {
       ),
 
       /* communication provider */
-      ListenableProvider<ValueNotifier<Agora>>(
-        create: (_) => ValueNotifier(agora),
-      ),
+      // ListenableProvider<ValueNotifier<Agora>>(
+      //   create: (_) => ValueNotifier(agora),
+      // ),
 
       /* Provider to deal with host seat change functionality */
       ListenableProvider<SeatChangeNotifier>(
