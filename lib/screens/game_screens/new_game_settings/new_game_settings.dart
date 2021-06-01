@@ -9,6 +9,7 @@ import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/app/rewards_service.dart';
 import 'package:pokerapp/widgets/custom_text_button.dart';
+import 'package:pokerapp/widgets/radio_list_widget.dart';
 import 'package:provider/provider.dart';
 
 class NewGameSettings extends StatefulWidget {
@@ -98,6 +99,12 @@ class _NewGameSettingsState extends State<NewGameSettings> {
                     data.rewards = this.rewards;
                     return Column(
                       children: [
+                        RadioListWidget(
+                          values: [1, 2, 3, 4, 5, 6],
+                          onSelect: (int s) {
+                            print(s);
+                          },
+                        ),
                         SizedBox(
                           height: 10.0,
                         ),
