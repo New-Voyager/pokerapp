@@ -215,6 +215,10 @@ flutter:
       fonts:
         - asset: assets/fonts/Domine-VariableFont_wght.ttf
           weight: 700
+    - family: Literata
+      fonts:
+        - asset: assets/fonts/Literata-Bold.ttf
+          weight: 700
 
     # icon packs
     - family: AppIcons

@@ -190,7 +190,7 @@ class TestService {
 
     tableState.addFlopCards(
       1,
-      [130, 84, 193].map<CardObject>((e) => CardHelper.getCard(e)).toList(),
+      [130, 152, 193].map<CardObject>((e) => CardHelper.getCard(e)).toList(),
     );
     tableState.notifyAll();
   }

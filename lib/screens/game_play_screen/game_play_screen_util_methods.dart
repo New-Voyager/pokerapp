@@ -56,6 +56,15 @@ class GamePlayScreenUtilMethods {
             color: Colors.white,
           ),
           backgroundColor: Colors.red,
+          label: 'Show holecards',
+          onTap: () => TestService.showHoleCards(),
+        ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
           label: 'addTurnOrRiverCard',
           onTap: () => TestService.addTurnOrRiverCard(),
         ),
@@ -232,15 +241,7 @@ class GamePlayScreenUtilMethods {
           label: 'Move Pot to Player',
           onTap: () => TestService.movePotToPlayer(),
         ),
-        SpeedDialChild(
-          child: Icon(
-            Icons.adb_rounded,
-            color: Colors.white,
-          ),
-          backgroundColor: Colors.red,
-          label: 'Show holecards',
-          onTap: () => TestService.showHoleCards(),
-        ),
+
         /*
         SpeedDialChild(
           child: Icon(
