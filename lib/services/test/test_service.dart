@@ -22,12 +22,13 @@ import 'package:pokerapp/utils/formatter.dart';
 import 'package:provider/provider.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/main.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
 
 import 'iap_test.dart';
 
 class TestService {
   static bool get isTesting {
-    return true;
+    return false;
   }
 
   static var _showResult = false;
@@ -115,6 +116,10 @@ class TestService {
           playerInSeats.add(player);
         }
       }
+
+      // this removes a player from middle
+      playerInSeats.removeAt(4);
+
       _gameInfo.playersInSeats = playerInSeats;
 
       final resultData =
@@ -413,6 +418,25 @@ class TestService {
     //await _handActionService.handle(dealCardsMessage());
     //await HandActionService.handle(context: _context, message: yourActionNextActionMsg());
     //await HandActionService.handle(context: _context, message: dealStartedMessage());
+  }
+
+  static void emptySeatDealer() {
+    final gameState = GameState.getState(_context);
+    final seat = gameState.getSeat(_context, 5);
+
+    seat.isDealer = true;
+  }
+
+  static void seatChange() {
+    final hostSeatChange =
+        Provider.of<SeatChangeNotifier>(_context, listen: false);
+
+    /* start animation */
+    hostSeatChange.onSeatDrop(1, 5);
+
+    /* refresh */
+    final gameState = GameState.getState(_context);
+    gameState.refresh(_context);
   }
 
   static void runItTwiceResult() {

@@ -2,20 +2,28 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/resources/app_constants.dart';
+import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/game_play/graphql/seat_change_service.dart';
 import 'package:pokerapp/widgets/custom_text_button.dart';
 import 'package:provider/provider.dart';
 
 class CenterButtonView extends StatelessWidget {
   final String tableStatus;
+  final String gameStatus;
   final String gameCode;
   final bool isHost;
   final Function onStartGame;
 
   CenterButtonView(
-      {this.gameCode, this.isHost, this.tableStatus, this.onStartGame});
+      {this.gameCode,
+      this.isHost,
+      this.gameStatus,
+      this.tableStatus,
+      this.onStartGame});
 
-  void _onResumePress() {}
+  void _onResumePress() {
+    GameService.resumeGame(gameCode);
+  }
 
   void _onTerminatePress() {}
 
@@ -24,7 +32,7 @@ class CenterButtonView extends StatelessWidget {
       context,
       listen: false,
     );
-    Provider.of<HostSeatChange>(
+    Provider.of<SeatChangeNotifier>(
       context,
       listen: false,
     )
@@ -37,8 +45,8 @@ class CenterButtonView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // TODO: Viren, please fix this correctly
-    final seatChange = Provider.of<HostSeatChange>(context, listen: true);
-    if (this.tableStatus == AppConstants.GAME_PAUSED &&
+    final seatChange = Provider.of<SeatChangeNotifier>(context, listen: true);
+    if (this.gameStatus == AppConstants.GAME_PAUSED &&
         !seatChange.seatChangeInProgress) {
       return pauseButtons(context);
     } else if (this.tableStatus == AppConstants.WAITING_TO_BE_STARTED) {

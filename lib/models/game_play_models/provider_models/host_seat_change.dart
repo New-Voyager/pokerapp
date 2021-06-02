@@ -24,7 +24,7 @@ class PlayerInSeat {
   }
 }
 
-class HostSeatChange extends ChangeNotifier {
+class SeatChangeNotifier extends ChangeNotifier {
   /* This object holds states related to host seat change functionality */
   bool _seatChangeInProgress = false;
   bool _animateSeatChange = false;

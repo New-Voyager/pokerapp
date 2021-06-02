@@ -26,14 +26,17 @@ class SeatChangeService {
     return result.data['seatChange'];
   }
 
-  static Future<bool> hostSeatChangeEnd(String gameCode) async {
+  static Future<bool> hostSeatChangeEnd(String gameCode,
+      {bool cancel = false}) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
 
-    String _mutation = """mutation seatChangeComplete(\$gameCode: String!) {
-            seatChange: seatChangeComplete(gameCode: \$gameCode)
+    String _mutation =
+        """mutation seatChangeComplete(\$gameCode: String! \$cancel: Boolean) {
+            seatChange: seatChangeComplete(gameCode: \$gameCode, cancelChanges: \$cancel)
           }""";
     Map<String, dynamic> variables = {
       "gameCode": gameCode,
+      "cancel": cancel,
     };
     QueryResult result = await _client.mutate(
       MutationOptions(documentNode: gql(_mutation), variables: variables),
