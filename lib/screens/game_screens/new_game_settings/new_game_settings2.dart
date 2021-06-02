@@ -5,23 +5,54 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/game/new_game_model.dart';
 import 'package:pokerapp/models/game/new_game_provider.dart';
+import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/widgets/heading_widget.dart';
 import 'package:pokerapp/widgets/radio_list_widget.dart';
 import 'package:pokerapp/widgets/switch_widget.dart';
 import 'package:pokerapp/widgets/text_input_widget.dart';
 import 'package:provider/provider.dart';
 
+import '../../../main.dart';
+import '../../../routes.dart';
+
 class NewGameSettings2 extends StatelessWidget {
+  static void _joinGame(BuildContext context, String gameCode) =>
+      navigatorKey.currentState.pushNamed(
+        Routes.game_play,
+        arguments: gameCode,
+      );
+
   static void show(
     BuildContext context, {
     @required String clubCode,
     @required GameType mainGameType,
     @required List<GameType> subGameTypes,
   }) async {
-    showDialog(
+    NewGameModelProvider gmp = await showDialog<NewGameModelProvider>(
       context: context,
-      builder: (_) => Dialog(child: NewGameSettings2(clubCode)),
+      builder: (_) => Dialog(
+        insetPadding: const EdgeInsets.symmetric(
+          horizontal: 15.0,
+          vertical: 30.0,
+        ),
+        child: NewGameSettings2(clubCode),
+      ),
     );
+
+    if (gmp == null) return;
+
+    /* otherwise, start tha game */
+    final NewGameModel gm = gmp.settings;
+
+    String gameCode = await GameService.configureClubGame(
+      gm.clubCode,
+      gm,
+    );
+
+    if (gameCode != null)
+      _joinGame(context, gameCode);
+    else
+      _showError(context, 'Error', 'Creating game failed');
   }
 
   final String clubCode;
@@ -113,8 +144,8 @@ class NewGameSettings2 extends StatelessWidget {
           return Container(
             decoration: BoxDecoration(
               gradient: RadialGradient(
-                center: Alignment.topLeft,
-                radius: 1.5,
+                center: Alignment.centerLeft,
+                radius: 0.8,
                 colors: [
                   const Color(0xff033614),
                   const Color(0xff02290F),
