@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/game/new_game_model.dart';
 import 'package:pokerapp/models/game/new_game_provider.dart';
 import 'package:pokerapp/widgets/heading_widget.dart';
@@ -11,6 +12,18 @@ import 'package:pokerapp/widgets/text_input_widget.dart';
 import 'package:provider/provider.dart';
 
 class NewGameSettings2 extends StatelessWidget {
+  static void show(
+    BuildContext context, {
+    @required String clubCode,
+    @required GameType mainGameType,
+    @required List<GameType> subGameTypes,
+  }) async {
+    showDialog(
+      context: context,
+      builder: (_) => Dialog(child: NewGameSettings2(clubCode)),
+    );
+  }
+
   final String clubCode;
   NewGameSettings2(this.clubCode);
 
@@ -110,298 +123,293 @@ class NewGameSettings2 extends StatelessWidget {
                 ],
               ),
             ),
-            child: Scaffold(
-              backgroundColor: Colors.transparent,
-              body: SafeArea(
-                child: SingleChildScrollView(
-                  physics: BouncingScrollPhysics(),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 20.0,
+            child: SingleChildScrollView(
+              physics: BouncingScrollPhysics(),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 20.0,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  /* HEADING */
+                  HeadingWidget(
+                    heading: 'game settings',
                   ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
+
+                  /* players */
+                  _buildLabel('Players'),
+                  sepV8,
+                  RadioListWidget(
+                    defaultValue: gmp.maxPlayers,
+                    values: [2, 4, 6, 8, 9],
+                    onSelect: (int value) => gmp.maxPlayers = value,
+                  ),
+
+                  /* big blind & ante */
+                  sepV20,
+                  Row(
                     children: [
-                      /* HEADING */
-                      HeadingWidget(
-                        heading: 'game settings',
-                      ),
-
-                      /* players */
-                      _buildLabel('Players'),
-                      sepV8,
-                      RadioListWidget(
-                        defaultValue: gmp.maxPlayers,
-                        values: [2, 4, 6, 8, 9],
-                        onSelect: (int value) => gmp.maxPlayers = value,
-                      ),
-
-                      /* big blind & ante */
-                      sepV20,
-                      Row(
-                        children: [
-                          /* big blind */
-                          Expanded(
-                            child: TextInputWidget(
-                              value: gmp.blinds.bigBlind,
-                              label: 'Big Blind',
-                              minValue: 0.0,
-                              maxValue: 100,
-                              onChange: (value) {
-                                gmp.bigBlind = value.toDouble();
-                              },
-                            ),
-                          ),
-
-                          // sep
-                          sepH10,
-
-                          /* ante */
-                          Expanded(
-                            child: TextInputWidget(
-                              value: gmp.blinds.ante,
-                              label: 'Ante',
-                              minValue: 0.0,
-                              maxValue: 100,
-                              onChange: (value) {
-                                gmp.ante = value.toDouble();
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-
-                      /* buyin */
-                      sepV20,
-                      _buildLabel('Buyin'),
-                      sepV8,
-                      _buildDecoratedContainer(
-                        child: Row(
-                          children: [
-                            /* min */
-                            Expanded(
-                              child: TextInputWidget(
-                                value: gmp.buyInMin,
-                                small: true,
-                                label: 'min',
-                                trailing: 'BB',
-                                minValue: 0.0,
-                                maxValue: 100,
-                                onChange: (value) {
-                                  gmp.buyInMin = value;
-                                },
-                              ),
-                            ),
-
-                            // sep
-                            sepH10,
-
-                            /* max */
-                            Expanded(
-                              child: TextInputWidget(
-                                value: gmp.buyInMax,
-                                small: true,
-                                label: 'max',
-                                trailing: 'BB',
-                                minValue: 0.0,
-                                maxValue: 100,
-                                onChange: (value) {
-                                  gmp.buyInMax = value;
-                                },
-                              ),
-                            ),
-                          ],
+                      /* big blind */
+                      Expanded(
+                        child: TextInputWidget(
+                          value: gmp.blinds.bigBlind,
+                          label: 'Big Blind',
+                          minValue: 0.0,
+                          maxValue: 100,
+                          onChange: (value) {
+                            gmp.bigBlind = value.toDouble();
+                          },
                         ),
                       ),
 
-                      /* tips */
-                      sepV20,
-                      _buildLabel('Tips'),
-                      sepV8,
-                      _buildDecoratedContainer(
-                        child: Row(
-                          children: [
-                            /* min */
-                            Expanded(
-                              child: TextInputWidget(
-                                value: gmp.rakePercentage,
-                                small: true,
-                                trailing: '%',
-                                minValue: 0.0,
-                                maxValue: 100,
-                                onChange: (value) {
-                                  gmp.rakePercentage = value.toDouble();
-                                },
-                              ),
-                            ),
+                      // sep
+                      sepH10,
 
-                            // sep
-                            sepH10,
-
-                            /* max */
-                            Expanded(
-                              child: TextInputWidget(
-                                value: gmp.rakeCap,
-                                small: true,
-                                leading: 'cap',
-                                minValue: 0.0,
-                                maxValue: 100,
-                                onChange: (value) {
-                                  gmp.rakeCap = value;
-                                },
-                              ),
-                            ),
-                          ],
+                      /* ante */
+                      Expanded(
+                        child: TextInputWidget(
+                          value: gmp.blinds.ante,
+                          label: 'Ante',
+                          minValue: 0.0,
+                          maxValue: 100,
+                          onChange: (value) {
+                            gmp.ante = value.toDouble();
+                          },
                         ),
                       ),
-
-                      /* action time */
-                      sepV20,
-                      _buildLabel('Action Time (in seconds)'),
-                      sepV8,
-                      RadioListWidget(
-                        defaultValue: gmp.actionTime,
-                        values: NewGameConstants.ACTION_TIMES,
-                        onSelect: (int value) {
-                          gmp.actionTime = value;
-                        },
-                      ),
-
-                      /* game time */
-                      sepV20,
-                      _buildLabel('Game Time (in hours)'),
-                      sepV8,
-                      RadioListWidget(
-                        defaultValue: gmp.gameLengthInMins ~/ 60,
-                        values: NewGameConstants.GAME_LENGTH,
-                        onSelect: (int value) {
-                          gmp.gameLengthInMins = value;
-                        },
-                      ),
-
-                      /* sep */
-                      sepV20,
-
-                      /* buy in approval */
-                      _buildDecoratedContainer(
-                        children: [
-                          SwitchWidget(
-                            value: gmp.buyInApproval,
-                            label: 'Buyin Approval',
-                            onChange: (bool value) {
-                              gmp.buyInApproval = value;
-                            },
-                          ),
-
-                          // buy in wait time
-                          Consumer<NewGameModelProvider>(
-                            builder: (_, vnGmp, __) => _buildAnimatedSwitcher(
-                              child: vnGmp.buyInApproval == false
-                                  ? const SizedBox.shrink()
-                                  : TextInputWidget(
-                                      label: 'Buyin wait time',
-                                      minValue: 0.0,
-                                      maxValue: 100,
-                                      onChange: (value) {},
-                                    ),
-                            ),
-                          ),
-
-                          /* seperator */
-                          sepV20,
-                          _buildSeperator(),
-
-                          /* sep */
-                          sepV20,
-
-                          SwitchWidget(
-                            value: gmp.breakAllowed,
-                            label: 'Break allowed',
-                            onChange: (bool value) {
-                              gmp.breakAllowed = value;
-                            },
-                          ),
-
-                          // buy in wait time
-                          Consumer<NewGameModelProvider>(
-                            builder: (_, vnGmp, __) => _buildAnimatedSwitcher(
-                              child: vnGmp.breakAllowed == false
-                                  ? const SizedBox.shrink()
-                                  : TextInputWidget(
-                                      label: 'Max break time',
-                                      minValue: 0.0,
-                                      maxValue: 100,
-                                      onChange: (value) {},
-                                    ),
-                            ),
-                          ),
-                        ],
-                      ),
-
-                      /* sep */
-                      sepV20,
-                      _buildDecoratedContainer(
-                        children: [
-                          /* UTG straddle */
-                          _buildRadio(
-                            label: 'UTG Straddle',
-                            value: gmp.straddleAllowed,
-                            onChange: (bool b) {
-                              gmp.straddleAllowed = b;
-                            },
-                          ),
-
-                          /* location check */
-                          _buildRadio(
-                            label: 'Location Check',
-                            value: gmp.locationCheck,
-                            onChange: (bool b) {
-                              gmp.locationCheck = b;
-                            },
-                          ),
-
-                          /* ip check */
-                          _buildRadio(
-                            label: 'IP Check',
-                            value: gmp.ipCheck,
-                            onChange: (bool b) {
-                              gmp.ipCheck = b;
-                            },
-                          ),
-
-                          /* waitlist */
-                          _buildRadio(
-                            label: 'Waitlist',
-                            value: gmp.waitList,
-                            onChange: (bool b) {
-                              gmp.waitList = b;
-                            },
-                          ),
-
-                          /* allow run it twice */
-                          _buildRadio(
-                            label: 'Allow run it twice',
-                            value: gmp.runItTwice,
-                            onChange: (bool b) {
-                              gmp.runItTwice = b;
-                            },
-                          ),
-
-                          /* shwo player buyin */
-                          _buildRadio(
-                            label: 'Show player buyin',
-                            value: gmp.showPlayerBuyin,
-                            onChange: (bool b) {
-                              gmp.showPlayerBuyin = b;
-                            },
-                          ),
-                        ],
-                      ),
-
-                      /* sep */
-                      sepV20,
                     ],
                   ),
-                ),
+
+                  /* buyin */
+                  sepV20,
+                  _buildLabel('Buyin'),
+                  sepV8,
+                  _buildDecoratedContainer(
+                    child: Row(
+                      children: [
+                        /* min */
+                        Expanded(
+                          child: TextInputWidget(
+                            value: gmp.buyInMin,
+                            small: true,
+                            label: 'min',
+                            trailing: 'BB',
+                            minValue: 0.0,
+                            maxValue: 100,
+                            onChange: (value) {
+                              gmp.buyInMin = value;
+                            },
+                          ),
+                        ),
+
+                        // sep
+                        sepH10,
+
+                        /* max */
+                        Expanded(
+                          child: TextInputWidget(
+                            value: gmp.buyInMax,
+                            small: true,
+                            label: 'max',
+                            trailing: 'BB',
+                            minValue: 0.0,
+                            maxValue: 100,
+                            onChange: (value) {
+                              gmp.buyInMax = value;
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  /* tips */
+                  sepV20,
+                  _buildLabel('Tips'),
+                  sepV8,
+                  _buildDecoratedContainer(
+                    child: Row(
+                      children: [
+                        /* min */
+                        Expanded(
+                          child: TextInputWidget(
+                            value: gmp.rakePercentage,
+                            small: true,
+                            trailing: '%',
+                            minValue: 0.0,
+                            maxValue: 100,
+                            onChange: (value) {
+                              gmp.rakePercentage = value.toDouble();
+                            },
+                          ),
+                        ),
+
+                        // sep
+                        sepH10,
+
+                        /* max */
+                        Expanded(
+                          child: TextInputWidget(
+                            value: gmp.rakeCap,
+                            small: true,
+                            leading: 'cap',
+                            minValue: 0.0,
+                            maxValue: 100,
+                            onChange: (value) {
+                              gmp.rakeCap = value;
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  /* action time */
+                  sepV20,
+                  _buildLabel('Action Time (in seconds)'),
+                  sepV8,
+                  RadioListWidget(
+                    defaultValue: gmp.actionTime,
+                    values: NewGameConstants.ACTION_TIMES,
+                    onSelect: (int value) {
+                      gmp.actionTime = value;
+                    },
+                  ),
+
+                  /* game time */
+                  sepV20,
+                  _buildLabel('Game Time (in hours)'),
+                  sepV8,
+                  RadioListWidget(
+                    defaultValue: gmp.gameLengthInMins ~/ 60,
+                    values: NewGameConstants.GAME_LENGTH,
+                    onSelect: (int value) {
+                      gmp.gameLengthInMins = value;
+                    },
+                  ),
+
+                  /* sep */
+                  sepV20,
+
+                  /* buy in approval */
+                  _buildDecoratedContainer(
+                    children: [
+                      SwitchWidget(
+                        value: gmp.buyInApproval,
+                        label: 'Buyin Approval',
+                        onChange: (bool value) {
+                          gmp.buyInApproval = value;
+                        },
+                      ),
+
+                      // buy in wait time
+                      Consumer<NewGameModelProvider>(
+                        builder: (_, vnGmp, __) => _buildAnimatedSwitcher(
+                          child: vnGmp.buyInApproval == false
+                              ? const SizedBox.shrink()
+                              : TextInputWidget(
+                                  label: 'Buyin wait time',
+                                  minValue: 0.0,
+                                  maxValue: 100,
+                                  onChange: (value) {},
+                                ),
+                        ),
+                      ),
+
+                      /* seperator */
+                      sepV20,
+                      _buildSeperator(),
+
+                      /* sep */
+                      sepV20,
+
+                      SwitchWidget(
+                        value: gmp.breakAllowed,
+                        label: 'Break allowed',
+                        onChange: (bool value) {
+                          gmp.breakAllowed = value;
+                        },
+                      ),
+
+                      // buy in wait time
+                      Consumer<NewGameModelProvider>(
+                        builder: (_, vnGmp, __) => _buildAnimatedSwitcher(
+                          child: vnGmp.breakAllowed == false
+                              ? const SizedBox.shrink()
+                              : TextInputWidget(
+                                  label: 'Max break time',
+                                  minValue: 0.0,
+                                  maxValue: 100,
+                                  onChange: (value) {},
+                                ),
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  /* sep */
+                  sepV20,
+                  _buildDecoratedContainer(
+                    children: [
+                      /* UTG straddle */
+                      _buildRadio(
+                        label: 'UTG Straddle',
+                        value: gmp.straddleAllowed,
+                        onChange: (bool b) {
+                          gmp.straddleAllowed = b;
+                        },
+                      ),
+
+                      /* location check */
+                      _buildRadio(
+                        label: 'Location Check',
+                        value: gmp.locationCheck,
+                        onChange: (bool b) {
+                          gmp.locationCheck = b;
+                        },
+                      ),
+
+                      /* ip check */
+                      _buildRadio(
+                        label: 'IP Check',
+                        value: gmp.ipCheck,
+                        onChange: (bool b) {
+                          gmp.ipCheck = b;
+                        },
+                      ),
+
+                      /* waitlist */
+                      _buildRadio(
+                        label: 'Waitlist',
+                        value: gmp.waitList,
+                        onChange: (bool b) {
+                          gmp.waitList = b;
+                        },
+                      ),
+
+                      /* allow run it twice */
+                      _buildRadio(
+                        label: 'Allow run it twice',
+                        value: gmp.runItTwice,
+                        onChange: (bool b) {
+                          gmp.runItTwice = b;
+                        },
+                      ),
+
+                      /* shwo player buyin */
+                      _buildRadio(
+                        label: 'Show player buyin',
+                        value: gmp.showPlayerBuyin,
+                        onChange: (bool b) {
+                          gmp.showPlayerBuyin = b;
+                        },
+                      ),
+                    ],
+                  ),
+
+                  /* sep */
+                  sepV20,
+                ],
               ),
             ),
           );

@@ -15,7 +15,7 @@ class HeadingWidget extends StatelessWidget {
         heading.toUpperCase(),
         textAlign: TextAlign.center,
         style: TextStyle(
-            fontSize: 30.0,
+            fontSize: 25.0,
             color: const Color(0xfff4f4f4),
             fontWeight: FontWeight.w900,
             shadows: [

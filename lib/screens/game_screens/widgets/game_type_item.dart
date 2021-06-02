@@ -6,8 +6,11 @@ import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
+import 'package:pokerapp/screens/game_screens/new_game_settings/new_game_settings.dart';
+import 'package:pokerapp/screens/game_screens/new_game_settings/new_game_settings2.dart';
 
 class GameTypeItem extends StatelessWidget {
+  final String clubCode;
   final GameType type;
   final String imagePath;
   final bool isSelected;
@@ -15,6 +18,7 @@ class GameTypeItem extends StatelessWidget {
   final List<GameType> gamesList;
   final Function onSettingsClick;
   GameTypeItem({
+    @required this.clubCode,
     this.type,
     this.imagePath,
     this.isSelected,
@@ -49,7 +53,13 @@ class GameTypeItem extends StatelessWidget {
           alignment: Alignment.centerRight,
           child: InkWell(
             onTap: () {
-              log("ARROWCLICK");
+              /* show game settings dialog */
+              NewGameSettings2.show(
+                context,
+                clubCode: clubCode,
+                mainGameType: type,
+                subGameTypes: gamesList,
+              );
             },
             child: Container(
               //this heigth should match with the image height of GameImage

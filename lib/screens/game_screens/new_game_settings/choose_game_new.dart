@@ -1,20 +1,13 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/enums/game_type.dart';
-import 'package:pokerapp/main.dart';
-import 'package:pokerapp/models/game/new_game_provider.dart';
-import 'package:pokerapp/resources/app_dimensions.dart';
-import 'package:pokerapp/resources/app_strings.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
-import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/game_screens/widgets/game_type_item.dart';
 import 'package:pokerapp/screens/game_screens/widgets/new_button_widget.dart';
-import 'package:provider/provider.dart';
+import 'package:pokerapp/widgets/heading_widget.dart';
 
 class ChooseGameNew extends StatefulWidget {
   final String clubCode;
@@ -42,10 +35,7 @@ class _ChooseGameNewState extends State<ChooseGameNew>
       lowerBound: 0.0,
       upperBound: 1.0,
     );
-    _animationController.addListener(() {
-      setState(() {});
-    });
-
+    _animationController.addListener(() => setState(() {}));
     super.initState();
   }
 
@@ -64,13 +54,9 @@ class _ChooseGameNewState extends State<ChooseGameNew>
           backgroundColor: Colors.transparent,
           body: Column(
             children: [
-              Container(
-                margin: EdgeInsets.symmetric(vertical: 8),
-                alignment: Alignment.center,
-                child: Text(
-                  AppStringsNew.ChooseGameTitle.toUpperCase(),
-                  style: AppStylesNew.TitleTextStyle,
-                ),
+              /* BUILD HEADER */
+              HeadingWidget(
+                heading: 'choose game',
               ),
               Expanded(
                 child: SingleChildScrollView(
@@ -188,11 +174,10 @@ class _ChooseGameNewState extends State<ChooseGameNew>
     // }
   }
 
-  Future<List<GameType>> handleSettingsClick(
+  Future<void> handleSettingsClick(
       GameType gameType, List<GameType> existingChoices) async {
-    setState(() {
-      _selectedGameType = null;
-    });
+    setState(() => _selectedGameType = null);
+
     final List<GameType> games = await showDialog(
       context: context,
       builder: (context) {
@@ -321,6 +306,7 @@ class _ChooseGameNewState extends State<ChooseGameNew>
         );
       },
     );
+
     if (games != null && games.isNotEmpty) {
       if (gameType == GameType.ROE) {
         gamesRoe.clear();
