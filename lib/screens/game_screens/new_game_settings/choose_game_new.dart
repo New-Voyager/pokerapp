@@ -68,6 +68,7 @@ class _ChooseGameNewState extends State<ChooseGameNew>
                         highlightColor: Colors.transparent,
                         onTap: () => handleItemClick(GameType.HOLDEM),
                         child: GameTypeItem(
+                          clubCode: widget.clubCode,
                           type: GameType.HOLDEM,
                           imagePath: AppAssetsNew.pathHoldemTypeImage,
                           isSelected: _selectedGameType == GameType.HOLDEM,
@@ -79,6 +80,7 @@ class _ChooseGameNewState extends State<ChooseGameNew>
                         highlightColor: Colors.transparent,
                         onTap: () => handleItemClick(GameType.PLO),
                         child: GameTypeItem(
+                          clubCode: widget.clubCode,
                           type: GameType.PLO,
                           imagePath: AppAssetsNew.pathPLOTypeImage,
                           isSelected: _selectedGameType == GameType.PLO,
@@ -90,6 +92,7 @@ class _ChooseGameNewState extends State<ChooseGameNew>
                         highlightColor: Colors.transparent,
                         onTap: () => handleItemClick(GameType.PLO_HILO),
                         child: GameTypeItem(
+                          clubCode: widget.clubCode,
                           type: GameType.PLO_HILO,
                           imagePath: AppAssetsNew.pathPLOHiLoTypeImage,
                           isSelected: _selectedGameType == GameType.PLO_HILO,
@@ -101,6 +104,7 @@ class _ChooseGameNewState extends State<ChooseGameNew>
                         highlightColor: Colors.transparent,
                         onTap: () => handleItemClick(GameType.FIVE_CARD_PLO),
                         child: GameTypeItem(
+                          clubCode: widget.clubCode,
                           type: GameType.FIVE_CARD_PLO,
                           imagePath: AppAssetsNew.pathFiveCardPLOTypeImage,
                           isSelected:
@@ -114,6 +118,7 @@ class _ChooseGameNewState extends State<ChooseGameNew>
                         onTap: () =>
                             handleItemClick(GameType.FIVE_CARD_PLO_HILO),
                         child: GameTypeItem(
+                          clubCode: widget.clubCode,
                           type: GameType.FIVE_CARD_PLO_HILO,
                           imagePath: AppAssetsNew.pathFiveCardPLOHiLoTypeImage,
                           isSelected:
@@ -126,6 +131,7 @@ class _ChooseGameNewState extends State<ChooseGameNew>
                         highlightColor: Colors.transparent,
                         onTap: () => handleItemClick(GameType.ROE),
                         child: GameTypeItem(
+                          clubCode: widget.clubCode,
                           type: GameType.ROE,
                           imagePath: AppAssetsNew.pathROETypeImage,
                           isSelected: _selectedGameType == GameType.ROE,
@@ -140,6 +146,7 @@ class _ChooseGameNewState extends State<ChooseGameNew>
                         highlightColor: Colors.transparent,
                         onTap: () => handleItemClick(GameType.DEALER_CHOICE),
                         child: GameTypeItem(
+                          clubCode: widget.clubCode,
                           type: GameType.DEALER_CHOICE,
                           imagePath: AppAssetsNew.pathDealerChoiceTypeImage,
                           isSelected:

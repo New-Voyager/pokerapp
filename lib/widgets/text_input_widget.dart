@@ -45,7 +45,7 @@ class TextInputWidget extends StatelessWidget {
 
             /* seperator */
             Container(
-              margin: const EdgeInsets.symmetric(horizontal: 15.0),
+              margin: const EdgeInsets.symmetric(horizontal: 10.0),
               height: 40.0,
               width: 0.30,
               color: Colors.white,
@@ -103,7 +103,7 @@ class TextInputWidget extends StatelessWidget {
                       trailing,
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: small ? 15.0 : 20.0,
+                        fontSize: small ? 12.0 : 15.0,
                         fontWeight: FontWeight.w300,
                       ),
                     ),

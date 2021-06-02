@@ -6,6 +6,8 @@ import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/game/new_game_model.dart';
 import 'package:pokerapp/models/game/new_game_provider.dart';
 import 'package:pokerapp/services/app/game_service.dart';
+import 'package:pokerapp/widgets/button_widget.dart';
+import 'package:pokerapp/widgets/custom_text_button.dart';
 import 'package:pokerapp/widgets/heading_widget.dart';
 import 'package:pokerapp/widgets/radio_list_widget.dart';
 import 'package:pokerapp/widgets/switch_widget.dart';
@@ -21,6 +23,34 @@ class NewGameSettings2 extends StatelessWidget {
         Routes.game_play,
         arguments: gameCode,
       );
+
+  static Future<void> _showError(
+      BuildContext context, String title, String error) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text(error),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            CustomTextButton(
+              text: 'OK',
+              onTap: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   static void show(
     BuildContext context, {
@@ -44,8 +74,12 @@ class NewGameSettings2 extends StatelessWidget {
     /* otherwise, start tha game */
     final NewGameModel gm = gmp.settings;
 
+    gm.gameType = mainGameType;
+    gm.roeGames = subGameTypes;
+    gm.dealerChoiceGames = subGameTypes;
+
     String gameCode = await GameService.configureClubGame(
-      gm.clubCode,
+      clubCode,
       gm,
     );
 
@@ -340,6 +374,8 @@ class NewGameSettings2 extends StatelessWidget {
                               ? const SizedBox.shrink()
                               : TextInputWidget(
                                   label: 'Buyin wait time',
+                                  value: 120,
+                                  trailing: 'secs',
                                   minValue: 0.0,
                                   maxValue: 100,
                                   onChange: (value) {},
@@ -369,6 +405,8 @@ class NewGameSettings2 extends StatelessWidget {
                               ? const SizedBox.shrink()
                               : TextInputWidget(
                                   label: 'Max break time',
+                                  value: 10,
+                                  trailing: 'mins',
                                   minValue: 0.0,
                                   maxValue: 100,
                                   onChange: (value) {},
@@ -382,6 +420,22 @@ class NewGameSettings2 extends StatelessWidget {
                   sepV20,
                   _buildDecoratedContainer(
                     children: [
+                      /* allow audio conference */
+                      _buildRadio(
+                        label: 'Allow Audio Conference',
+                        value: false,
+                        onChange: (bool b) {},
+                      ),
+
+                      /* bot games */
+                      _buildRadio(
+                        label: 'Bot Game',
+                        value: gmp.botGame,
+                        onChange: (bool b) {
+                          gmp.botGame = b;
+                        },
+                      ),
+
                       /* UTG straddle */
                       _buildRadio(
                         label: 'UTG Straddle',
@@ -420,14 +474,28 @@ class NewGameSettings2 extends StatelessWidget {
 
                       /* allow run it twice */
                       _buildRadio(
-                        label: 'Allow run it twice',
+                        label: 'Allow Run It Twice',
                         value: gmp.runItTwice,
                         onChange: (bool b) {
                           gmp.runItTwice = b;
                         },
                       ),
 
-                      /* shwo player buyin */
+                      /* allow run it twice */
+                      _buildRadio(
+                        label: 'Allow Fun Animations',
+                        value: true,
+                        onChange: (bool b) {},
+                      ),
+
+                      /* allow run it twice */
+                      _buildRadio(
+                        label: 'Muck Losing Hand',
+                        value: false,
+                        onChange: (bool b) {},
+                      ),
+
+                      /* show player buyin */
                       _buildRadio(
                         label: 'Show player buyin',
                         value: gmp.showPlayerBuyin,
@@ -436,6 +504,15 @@ class NewGameSettings2 extends StatelessWidget {
                         },
                       ),
                     ],
+                  ),
+
+                  /* start button */
+                  sepV20,
+                  ButtonWidget(
+                    text: 'Start',
+                    onTap: () {
+                      Navigator.pop(context, gmp);
+                    },
                   ),
 
                   /* sep */

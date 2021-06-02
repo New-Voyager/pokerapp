@@ -684,7 +684,9 @@ query liveGames {
   }
 
   static Future<String> configureClubGame(
-      String clubCode, NewGameModel input) async {
+    String clubCode,
+    NewGameModel input,
+  ) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
     String _query = """
           mutation (\$clubCode: String!, \$gameInput: GameCreateInput!){
@@ -702,7 +704,9 @@ query liveGames {
       MutationOptions(documentNode: gql(_query), variables: variables),
     );
 
+    print(result.exception);
     if (result.hasException) return null;
+
     Map game = (result.data as LazyCacheMap).data['configuredGame'];
     String gameCode = game["gameCode"];
     log('Created game: $gameCode');
