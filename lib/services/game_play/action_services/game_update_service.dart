@@ -444,11 +444,14 @@ class GameUpdateService {
     var playerUpdate = data['playerUpdate'];
     String newUpdate = playerUpdate['newUpdate'];
     String playerStatus = playerUpdate['status'];
+    String playerId = playerUpdate['playerId'];
 
-    if (playerStatus == AppConstants.PLAYING &&
-        _gameState.myState.status != PlayerStatus.PLAYING) {
-      _gameState.myState.status = PlayerStatus.PLAYING;
-      _gameState.myState.notify();
+    if (playerId == _gameState.currentPlayerId.toString()) {
+      if (playerStatus == AppConstants.PLAYING &&
+          _gameState.myState.status != PlayerStatus.PLAYING) {
+        _gameState.myState.status = PlayerStatus.PLAYING;
+        _gameState.myState.notify();
+      }
     }
 
     var jsonData = jsonEncode(newUpdate);
