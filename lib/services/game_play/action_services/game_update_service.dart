@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
+import 'package:pokerapp/enums/game_status.dart';
 import 'package:pokerapp/enums/player_status.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
@@ -30,6 +31,7 @@ class GameUpdateService {
   final BuildContext _context;
   final List<dynamic> _messages = [];
   bool closed = false;
+
   GameUpdateService(this._context, this._gameState);
 
   void close() {
@@ -441,6 +443,14 @@ class GameUpdateService {
   }) {
     var playerUpdate = data['playerUpdate'];
     String newUpdate = playerUpdate['newUpdate'];
+    String playerStatus = playerUpdate['status'];
+
+    if (playerStatus == AppConstants.PLAYING &&
+        _gameState.myState.status != PlayerStatus.PLAYING) {
+      _gameState.myState.status = PlayerStatus.PLAYING;
+      _gameState.myState.notify();
+    }
+
     var jsonData = jsonEncode(newUpdate);
     log(jsonData);
     switch (newUpdate) {

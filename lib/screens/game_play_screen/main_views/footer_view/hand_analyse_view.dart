@@ -246,8 +246,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
       child: Column(
         children: [
           Consumer<MyState>(builder: (context, myState, child) {
-            log('myState.gameStatus = ${myState.gameStatus}, myState.status = '
-                '${myState.status}');
+            log('myState.gameStatus = ${myState.gameStatus}, myState.status = ${myState.status}');
             return myState.gameStatus == GameStatus.RUNNING &&
                     myState.status == PlayerStatus.PLAYING
                 ? HandAnalysisCardView(
@@ -267,7 +266,9 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
             builder: (context, value, gameContextObj, child) {
               log('gameContextObj.isAdmin() = ${gameContextObj.isAdmin()}');
               //  log("VALUE ======== ${value.totalPending}");
-              return gameContextObj.isAdmin()
+              return gameContextObj.gameState.myState.gameStatus ==
+                          GameStatus.RUNNING &&
+                      gameContextObj.isAdmin()
                   ? IconWithBadge(
                       child: Icon(
                         Icons.pending_actions,
