@@ -101,27 +101,6 @@ class _NewGameSettingsState extends State<NewGameSettings> {
                     data.rewards = this.rewards;
                     return Column(
                       children: [
-                        SwitchWidget(
-                          label: 'Buyin Approval',
-                          value: false,
-                          onChange: (bool newValue) {
-                            print(newValue);
-                          },
-                        ),
-                        TextInputWidget(
-                          label: 'Big Blind',
-                          minValue: 10,
-                          maxValue: 300,
-                          onChange: (int v) {
-                            print(v);
-                          },
-                        ),
-                        RadioListWidget(
-                          values: [1, 2, 3, 4, 5, 6],
-                          onSelect: (int s) {
-                            print(s);
-                          },
-                        ),
                         SizedBox(
                           height: 10.0,
                         ),
