@@ -17,6 +17,12 @@ import 'package:pokerapp/screens/game_screens/widgets/new_button_widget.dart';
 import 'package:provider/provider.dart';
 
 class ChooseGameNew extends StatefulWidget {
+  final String clubCode;
+
+  ChooseGameNew({
+    @required this.clubCode,
+  });
+
   @override
   _ChooseGameNewState createState() => _ChooseGameNewState();
 }
@@ -68,9 +74,12 @@ class _ChooseGameNewState extends State<ChooseGameNew>
               ),
               Expanded(
                 child: SingleChildScrollView(
+                  physics: BouncingScrollPhysics(),
                   child: Column(
                     children: [
                       InkWell(
+                        splashColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
                         onTap: () => handleItemClick(GameType.HOLDEM),
                         child: GameTypeItem(
                           type: GameType.HOLDEM,
@@ -80,6 +89,8 @@ class _ChooseGameNewState extends State<ChooseGameNew>
                         ),
                       ),
                       InkWell(
+                        splashColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
                         onTap: () => handleItemClick(GameType.PLO),
                         child: GameTypeItem(
                           type: GameType.PLO,
@@ -89,6 +100,8 @@ class _ChooseGameNewState extends State<ChooseGameNew>
                         ),
                       ),
                       InkWell(
+                        splashColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
                         onTap: () => handleItemClick(GameType.PLO_HILO),
                         child: GameTypeItem(
                           type: GameType.PLO_HILO,
@@ -98,6 +111,8 @@ class _ChooseGameNewState extends State<ChooseGameNew>
                         ),
                       ),
                       InkWell(
+                        splashColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
                         onTap: () => handleItemClick(GameType.FIVE_CARD_PLO),
                         child: GameTypeItem(
                           type: GameType.FIVE_CARD_PLO,
@@ -108,6 +123,8 @@ class _ChooseGameNewState extends State<ChooseGameNew>
                         ),
                       ),
                       InkWell(
+                        splashColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
                         onTap: () =>
                             handleItemClick(GameType.FIVE_CARD_PLO_HILO),
                         child: GameTypeItem(
@@ -119,6 +136,8 @@ class _ChooseGameNewState extends State<ChooseGameNew>
                         ),
                       ),
                       InkWell(
+                        splashColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
                         onTap: () => handleItemClick(GameType.ROE),
                         child: GameTypeItem(
                           type: GameType.ROE,
@@ -131,6 +150,8 @@ class _ChooseGameNewState extends State<ChooseGameNew>
                         ),
                       ),
                       InkWell(
+                        splashColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
                         onTap: () => handleItemClick(GameType.DEALER_CHOICE),
                         child: GameTypeItem(
                           type: GameType.DEALER_CHOICE,
@@ -143,7 +164,7 @@ class _ChooseGameNewState extends State<ChooseGameNew>
                           gamesList: gamesDealerChoice,
                         ),
                       ),
-                      AppDimensionsNew.getVerticalSizedBox(64),
+                      // AppDimensionsNew.getVerticalSizedBox(64),
                     ],
                   ),
                 ),
