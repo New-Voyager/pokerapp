@@ -351,7 +351,7 @@ class _NewGameSettingsState extends State<NewGameSettings> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     Text(
-                      data.selectedGameLengthText,
+                      'data.selectedGameLengthText',
                       style: TextStyle(color: Color(0xff848484)),
                     ),
                     IconButton(
@@ -390,7 +390,7 @@ class _NewGameSettingsState extends State<NewGameSettings> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     Text(
-                      data.selectedActionTimeText,
+                      '',
                       style: TextStyle(color: Color(0xff848484)),
                     ),
                     IconButton(

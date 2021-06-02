@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/screens/club_screen/bookmarked_hands.dart';
 import 'package:pokerapp/screens/club_screen/botscripts.dart';
 import 'package:pokerapp/screens/game_screens/game_history_details_view/stack_details_view.dart';
+import 'package:pokerapp/screens/game_screens/new_game_settings/choose_game_new.dart';
+import 'package:pokerapp/screens/game_screens/new_game_settings/new_game_settings2.dart';
 import 'package:provider/provider.dart';
 
 import 'package:pokerapp/screens/screens.dart';
@@ -120,7 +122,7 @@ class Routes {
         var clubCode = settings.arguments as String;
         return _getPageRoute(
           routeName: settings.name,
-          viewToShow: NewGameSettings(clubCode),
+          viewToShow: ChooseGameNew(clubCode: clubCode),
         );
 
       case game_history:
