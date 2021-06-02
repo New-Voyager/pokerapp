@@ -1,4 +1,8 @@
 PODS:
+  - agora_rtc_engine (3.3.3):
+    - AgoraRtcEngine_iOS (= 3.3.2)
+    - Flutter
+  - AgoraRtcEngine_iOS (3.3.2)
   - audio_recorder (0.0.1):
     - Flutter
   - audio_session (0.0.1):
@@ -20,6 +24,10 @@ PODS:
   - Firebase/Messaging (8.0.0):
     - Firebase/CoreOnly
     - FirebaseMessaging (~> 8.0.0)
+  - firebase_analytics (8.1.0):
+    - Firebase/Analytics (= 8.0.0)
+    - firebase_core
+    - Flutter
   - firebase_core (1.2.0):
     - Firebase/CoreOnly (= 8.0.0)
     - Flutter
@@ -151,12 +159,14 @@ PODS:
     - FMDB (>= 2.7.5)
 
 DEPENDENCIES:
+  - agora_rtc_engine (from `.symlinks/plugins/agora_rtc_engine/ios`)
   - audio_recorder (from `.symlinks/plugins/audio_recorder/ios`)
   - audio_session (from `.symlinks/plugins/audio_session/ios`)
   - audioplayers (from `.symlinks/plugins/audioplayers/ios`)
   - connectivity (from `.symlinks/plugins/connectivity/ios`)
   - emoji_picker (from `.symlinks/plugins/emoji_picker/ios`)
   - Firebase/Analytics
+  - firebase_analytics (from `.symlinks/plugins/firebase_analytics/ios`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - firebase_messaging (from `.symlinks/plugins/firebase_messaging/ios`)
   - Flutter (from `Flutter`)
@@ -173,6 +183,7 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
+    - AgoraRtcEngine_iOS
     - Firebase
     - FirebaseAnalytics
     - FirebaseCore
@@ -191,6 +202,8 @@ SPEC REPOS:
     - SAMKeychain
 
 EXTERNAL SOURCES:
+  agora_rtc_engine:
+    :path: ".symlinks/plugins/agora_rtc_engine/ios"
   audio_recorder:
     :path: ".symlinks/plugins/audio_recorder/ios"
   audio_session:
@@ -201,6 +214,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/connectivity/ios"
   emoji_picker:
     :path: ".symlinks/plugins/emoji_picker/ios"
+  firebase_analytics:
+    :path: ".symlinks/plugins/firebase_analytics/ios"
   firebase_core:
     :path: ".symlinks/plugins/firebase_core/ios"
   firebase_messaging:
@@ -229,12 +244,15 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/sqflite/ios"
 
 SPEC CHECKSUMS:
+  agora_rtc_engine: 23c0066f14070ca989ddce82d4b28d7151e6ade1
+  AgoraRtcEngine_iOS: 851e11fa7cbc0cba04f407eac1a9e32b872765a1
   audio_recorder: 8d200bc5ca10f8a5f8121ad1d2fcf49108a0b3bf
   audio_session: 4f3e461722055d21515cf3261b64c973c062f345
   audioplayers: 455322b54050b30ea4b1af7cd9e9d105f74efa8c
   connectivity: c4130b2985d4ef6fd26f9702e886bd5260681467
   emoji_picker: 0e868059aa18f9473d234f3d0701fbd4d5fd310c
   Firebase: 73c3e3b216ec1ecbc54d2ffdd4670c65c749edb1
+  firebase_analytics: 221d3bc4e8f1b5144a4bd4cc6b33790ee51bd543
   firebase_core: e4d3efb030a2b2021819f8faa538bb23deb46695
   firebase_messaging: 3b6e0657b21261a57a1cd041fafa713f2aa6923f
   FirebaseAnalytics: dcb92c7c9ef4fa7ffac276e8f87bd4fc8c97f1b8

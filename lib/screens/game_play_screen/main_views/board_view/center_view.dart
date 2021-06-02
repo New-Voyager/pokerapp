@@ -66,7 +66,7 @@ class CenterView extends StatelessWidget {
   Widget build(BuildContext context) {
     final gameState = Provider.of<GameState>(context, listen: false);
     final boardAttributes = gameState.getBoardAttributes(context);
-    log('gameStatus: $gameStatus tableStatus: $tableStatus');
+    //log('gameStatus: $gameStatus tableStatus: $tableStatus');
     String _text = showDown ? null : BoardViewUtilMethods.getText(tableStatus);
 
     /* if the game is paused, show the options available during game pause */

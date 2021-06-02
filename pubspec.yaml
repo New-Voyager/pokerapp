@@ -24,7 +24,6 @@ dependencies:
       url: https://github.com/New-Voyager/tenor.git
       ref: master
   after_layout: ^1.1.0
-  agora_rtc_engine: ^3.2.1
 
   tuple: ^1.0.3
 

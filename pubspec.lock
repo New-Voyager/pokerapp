@@ -8,13 +8,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.1.0"
-  agora_rtc_engine:
-    dependency: "direct main"
-    description:
-      name: agora_rtc_engine
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "3.3.3"
   animated_text_kit:
     dependency: "direct main"
     description:

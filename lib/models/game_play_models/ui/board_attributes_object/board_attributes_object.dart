@@ -652,7 +652,7 @@ class BoardAttributesObject extends ChangeNotifier {
     }
 
     if (this._screenSize == 6) {
-      log('Device is 6 inches');
+      //log('Device is 6 inches');
       return equalTo6Inches;
     }
 

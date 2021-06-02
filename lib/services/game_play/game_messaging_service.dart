@@ -92,10 +92,9 @@ class GameMessagingService {
         }
       }
 
-      this.messages.insert(0, message);
-
       if (message.type == 'TEXT') {
         if (this.onText != null) {
+          this.messages.insert(0, message);
           this.onText(message);
         }
       }
@@ -108,6 +107,7 @@ class GameMessagingService {
 
       if (message.type == 'GIPHY') {
         if (this.onGiphy != null) {
+          this.messages.insert(0, message);
           this.onGiphy(message);
         }
       }
