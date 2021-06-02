@@ -9,6 +9,7 @@ class TextInputWidget extends StatelessWidget {
   final String leading;
   final String trailing;
   final FontWeight labelFontWeight;
+  final bool small;
   final void Function(int value) onChange;
 
   final double minValue;
@@ -19,6 +20,7 @@ class TextInputWidget extends StatelessWidget {
     this.leading,
     this.trailing,
     this.labelFontWeight = FontWeight.normal,
+    this.small = false,
     @required this.minValue,
     @required this.maxValue,
     @required this.onChange,
@@ -35,7 +37,7 @@ class TextInputWidget extends StatelessWidget {
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 15.0,
-                fontWeight: labelFontWeight,
+                fontWeight: small ? FontWeight.w300 : labelFontWeight,
               ),
             ),
 
@@ -68,6 +70,8 @@ class TextInputWidget extends StatelessWidget {
                     leading,
                     style: TextStyle(
                       color: Colors.white,
+                      fontSize: small ? 15.0 : 20.0,
+                      fontWeight: FontWeight.w300,
                     ),
                   ),
 
@@ -91,7 +95,7 @@ class TextInputWidget extends StatelessWidget {
                     trailing,
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 20.0,
+                      fontSize: small ? 15.0 : 20.0,
                       fontWeight: FontWeight.w300,
                     ),
                   ),
