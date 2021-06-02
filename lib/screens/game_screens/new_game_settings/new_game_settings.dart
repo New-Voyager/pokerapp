@@ -9,9 +9,6 @@ import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/app/rewards_service.dart';
 import 'package:pokerapp/widgets/custom_text_button.dart';
-import 'package:pokerapp/widgets/radio_list_widget.dart';
-import 'package:pokerapp/widgets/switch_widget.dart';
-import 'package:pokerapp/widgets/text_input_widget.dart';
 import 'package:provider/provider.dart';
 
 class NewGameSettings extends StatefulWidget {
@@ -354,7 +351,7 @@ class _NewGameSettingsState extends State<NewGameSettings> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     Text(
-                      data.selectedGameLengthText,
+                      'data.selectedGameLengthText',
                       style: TextStyle(color: Color(0xff848484)),
                     ),
                     IconButton(
@@ -393,7 +390,7 @@ class _NewGameSettingsState extends State<NewGameSettings> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     Text(
-                      data.selectedActionTimeText,
+                      '',
                       style: TextStyle(color: Color(0xff848484)),
                     ),
                     IconButton(

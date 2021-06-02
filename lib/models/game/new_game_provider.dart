@@ -7,9 +7,9 @@ class NewGameModelProvider extends ChangeNotifier {
   /* This object holds new game settings */
   NewGameModel settings;
   String clubCode;
-  List<String> actionTimes = [];
+  // List<String> actionTimes = [];
   List<String> gameTypes = [];
-  List<String> gameLengths = [];
+  // List<String> gameLengths = [];
   List<Rewards> rewards = [];
   List<GameType> roeSelectedGames = [];
   List<GameType> dealerSelectedGames = [];
@@ -17,13 +17,13 @@ class NewGameModelProvider extends ChangeNotifier {
   NewGameModelProvider(String clubCode) {
     settings = NewGameModel.withDefault(clubCode);
     settings.clubCode = clubCode;
-    NewGameConstants.ACTION_TIMES.forEach((key, value) {
-      actionTimes.add(value);
-    });
+    // NewGameConstants.ACTION_TIMES.forEach((key, value) {
+    //   actionTimes.add(value);
+    // });
 
-    NewGameConstants.GAME_LENGTH.forEach((key, value) {
-      gameLengths.add(value);
-    });
+    // NewGameConstants.GAME_LENGTH.forEach((key, value) {
+    //   gameLengths.add(value);
+    // });
 
     NewGameConstants.SUPPORTED_GAMES.forEach((key, value) {
       gameTypes.add(value);
@@ -118,63 +118,86 @@ class NewGameModelProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  int get gameLength => settings.gameLength;
-  int get selectedGameLength {
-    return gameLengths
-        .indexOf(NewGameConstants.GAME_LENGTH[settings.gameLength]);
-  }
-
-  set selectedGameLength(int index) {
-    if (index == -1) {
-    } else {
-      String selectedValue = gameLengths[index];
-      for (MapEntry e in NewGameConstants.GAME_LENGTH.entries) {
-        if (e.value == selectedValue) {
-          settings.gameLength = e.key;
-          break;
-        }
-      }
-    }
+  int get gameLengthInMins => settings.gameLength;
+  set gameLengthInMins(value) {
+    settings.gameLength = value;
     notifyListeners();
   }
 
-  String get selectedGameLengthText {
-    int index =
-        gameLengths.indexOf(NewGameConstants.GAME_LENGTH[settings.gameLength]);
-    if (index != -1) {
-      return gameLengths[index];
-    }
-    return "";
+  bool get buyInApproval => settings.buyInApproval ?? false;
+  set buyInApproval(value) {
+    settings.buyInApproval = value;
+    notifyListeners();
   }
+
+  // TODO: WE DONT HAVE A SETTING FOR BREAK ALLOWED
+  bool _breakAllowed;
+  bool get breakAllowed => _breakAllowed ?? false;
+  set breakAllowed(value) {
+    _breakAllowed = value;
+    notifyListeners();
+  }
+
+  // int get selectedGameLength {
+  //   return gameLengths
+  //       .indexOf(NewGameConstants.GAME_LENGTH[settings.gameLength]);
+  // }
+
+  // set selectedGameLength(int index) {
+  //   if (index == -1) {
+  //   } else {
+  //     String selectedValue = gameLengths[index];
+  //     for (MapEntry e in NewGameConstants.GAME_LENGTH.entries) {
+  //       if (e.value == selectedValue) {
+  //         settings.gameLength = e.key;
+  //         break;
+  //       }
+  //     }
+  //   }
+  //   notifyListeners();
+  // }
+
+  // String get selectedGameLengthText {
+  //   int index =
+  //       gameLengths.indexOf(NewGameConstants.GAME_LENGTH[settings.gameLength]);
+  //   if (index != -1) {
+  //     return gameLengths[index];
+  //   }
+  //   return "";
+  // }
 
   int get actionTime => settings.actionTime;
-  int get selectedActionTime {
-    return actionTimes
-        .indexOf(NewGameConstants.ACTION_TIMES[settings.actionTime]);
-  }
-
-  set selectedActionTime(int index) {
-    if (index == -1) {
-    } else {
-      String selectedValue = actionTimes[index];
-      for (MapEntry e in NewGameConstants.ACTION_TIMES.entries) {
-        if (e.value == selectedValue) {
-          settings.actionTime = e.key;
-          break;
-        }
-      }
-    }
+  set actionTime(int v) {
+    settings.actionTime = v;
     notifyListeners();
   }
+  // int get selectedActionTime {
+  //   return actionTimes
+  //       .indexOf(NewGameConstants.ACTION_TIMES[settings.actionTime]);
+  // }
 
-  String get selectedActionTimeText {
-    int index =
-        actionTimes.indexOf(NewGameConstants.ACTION_TIMES[settings.actionTime]);
-    if (index != -1) {
-      return actionTimes[index];
-    }
-    return "";
-  }
+  // set selectedActionTime(int index) {
+  //   if (index == -1) {
+  //   } else {
+  //     String selectedValue = actionTimes[index];
+  //     for (MapEntry e in NewGameConstants.ACTION_TIMES.entries) {
+  //       if (e.value == selectedValue) {
+  //         settings.actionTime = e.key;
+  //         break;
+  //       }
+  //     }
+  //   }
+  //   notifyListeners();
+  // }
+
+  // String get selectedActionTimeText {
+  //   int index =
+  //       actionTimes.indexOf(NewGameConstants.ACTION_TIMES[settings.actionTime]);
+  //   if (index != -1) {
+  //     return actionTimes[index];
+  //   }
+  //   return "";
+  // }
 
   Blinds get blinds {
     return Blinds(
@@ -245,6 +268,20 @@ class NewGameModelProvider extends ChangeNotifier {
   get locationCheck => settings.locationCheck;
   set locationCheck(bool value) {
     settings.locationCheck = value;
+    notifyListeners();
+  }
+
+  get ipCheck => settings.ipCheck;
+  set ipCheck(bool value) {
+    settings.locationCheck = value;
+    notifyListeners();
+  }
+
+  // TODO: WE NEED THIS IN THE SETTING
+  bool _showPlayerBuyin;
+  get showPlayerBuyin => _showPlayerBuyin ?? false;
+  set showPlayerBuyin(bool value) {
+    _showPlayerBuyin = value;
     notifyListeners();
   }
 

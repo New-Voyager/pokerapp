@@ -35,7 +35,7 @@ class RadioListWidget extends StatelessWidget {
             width: itemSize.width,
             alignment: Alignment.center,
             child: Text(
-              v.toString(),
+              v == -1 ? '∞' : v.toString(),
               style: TextStyle(
                 fontSize: 18.0,
                 color: Colors.white,
@@ -52,12 +52,16 @@ class RadioListWidget extends StatelessWidget {
         ),
       );
 
-  Widget _buildItems() => Row(
-        children: values
-            .map<Widget>(
-              (v) => _buildItem(v: v),
-            )
-            .toList(),
+  Widget _buildItems() => SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        physics: BouncingScrollPhysics(),
+        child: Row(
+          children: values
+              .map<Widget>(
+                (v) => _buildItem(v: v),
+              )
+              .toList(),
+        ),
       );
 
   @override

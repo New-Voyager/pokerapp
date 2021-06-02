@@ -15,13 +15,13 @@ class ActionTimeSelect extends StatelessWidget {
         elevation: 0.0,
       ),
       body: Consumer<NewGameModelProvider>(builder: (context, data, child) {
-        return IOSLikeCheckList(
-          list: data.actionTimes,
-          selectedIndex: data.selectedActionTime,
-          onTap: (index) {
-            data.selectedActionTime = index;
-          },
-        );
+        // return IOSLikeCheckList(
+        //   list: data.actionTimes,
+        //   selectedIndex: data.selectedActionTime,
+        //   onTap: (index) {
+        //     data.selectedActionTime = index;
+        //   },
+        // );
       }),
     );
   }

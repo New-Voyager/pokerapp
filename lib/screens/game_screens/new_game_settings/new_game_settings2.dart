@@ -2,10 +2,13 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/game/new_game_model.dart';
+import 'package:pokerapp/models/game/new_game_provider.dart';
 import 'package:pokerapp/widgets/heading_widget.dart';
 import 'package:pokerapp/widgets/radio_list_widget.dart';
 import 'package:pokerapp/widgets/switch_widget.dart';
 import 'package:pokerapp/widgets/text_input_widget.dart';
+import 'package:provider/provider.dart';
 
 class NewGameSettings2 extends StatelessWidget {
   final String clubCode;
@@ -71,265 +74,337 @@ class NewGameSettings2 extends StatelessWidget {
         ],
       );
 
+  Widget _buildAnimatedSwitcher({
+    Widget child,
+  }) =>
+      AnimatedSwitcher(
+        transitionBuilder: (child, animation) => SizeTransition(
+          sizeFactor: animation,
+          child: child,
+        ),
+        duration: const Duration(milliseconds: 200),
+        child: child,
+      );
+
   static const sepV20 = const SizedBox(height: 20.0);
   static const sepV8 = const SizedBox(height: 8.0);
 
   static const sepH10 = const SizedBox(width: 10.0);
 
   @override
-  Widget build(BuildContext context) => Container(
-        decoration: BoxDecoration(
-          gradient: RadialGradient(
-            center: Alignment.topLeft,
-            radius: 1.5,
-            colors: [
-              const Color(0xff033614),
-              const Color(0xff02290F),
-              const Color(0xff02290F),
-              Colors.black,
-            ],
-          ),
-        ),
-        child: Scaffold(
-          backgroundColor: Colors.transparent,
-          body: SafeArea(
-            child: SingleChildScrollView(
-              physics: BouncingScrollPhysics(),
-              padding: const EdgeInsets.symmetric(
-                horizontal: 20.0,
+  Widget build(BuildContext context) =>
+      ListenableProvider<NewGameModelProvider>(
+        create: (_) => NewGameModelProvider(clubCode),
+        builder: (BuildContext context, _) {
+          final NewGameModelProvider gmp = context.read<NewGameModelProvider>();
+          return Container(
+            decoration: BoxDecoration(
+              gradient: RadialGradient(
+                center: Alignment.topLeft,
+                radius: 1.5,
+                colors: [
+                  const Color(0xff033614),
+                  const Color(0xff02290F),
+                  const Color(0xff02290F),
+                  Colors.black,
+                ],
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  /* HEADING */
-                  HeadingWidget(
-                    heading: 'game settings',
+            ),
+            child: Scaffold(
+              backgroundColor: Colors.transparent,
+              body: SafeArea(
+                child: SingleChildScrollView(
+                  physics: BouncingScrollPhysics(),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20.0,
                   ),
-
-                  /* players */
-                  _buildLabel('Players'),
-                  sepV8,
-                  RadioListWidget(
-                    values: [2, 4, 6, 8, 9],
-                    onSelect: (int value) {},
-                  ),
-
-                  /* big blind & ante */
-                  sepV20,
-                  Row(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      /* big blind */
-                      Expanded(
-                        child: TextInputWidget(
-                          label: 'Big Blind',
-                          minValue: 0.0,
-                          maxValue: 100,
-                          onChange: (value) {},
-                        ),
+                      /* HEADING */
+                      HeadingWidget(
+                        heading: 'game settings',
                       ),
 
-                      // sep
-                      sepH10,
-
-                      /* ante */
-                      Expanded(
-                        child: TextInputWidget(
-                          label: 'Ante',
-                          minValue: 0.0,
-                          maxValue: 100,
-                          onChange: (value) {},
-                        ),
-                      ),
-                    ],
-                  ),
-
-                  /* buyin */
-                  sepV20,
-                  _buildLabel('Buyin'),
-                  sepV8,
-                  _buildDecoratedContainer(
-                    child: Row(
-                      children: [
-                        /* min */
-                        Expanded(
-                          child: TextInputWidget(
-                            small: true,
-                            label: 'min',
-                            trailing: 'BB',
-                            minValue: 0.0,
-                            maxValue: 100,
-                            onChange: (value) {},
-                          ),
-                        ),
-
-                        // sep
-                        sepH10,
-
-                        /* max */
-                        Expanded(
-                          child: TextInputWidget(
-                            small: true,
-                            label: 'max',
-                            trailing: 'BB',
-                            minValue: 0.0,
-                            maxValue: 100,
-                            onChange: (value) {},
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  /* tips */
-                  sepV20,
-                  _buildLabel('Tips'),
-                  sepV8,
-                  _buildDecoratedContainer(
-                    child: Row(
-                      children: [
-                        /* min */
-                        Expanded(
-                          child: TextInputWidget(
-                            small: true,
-                            trailing: '%',
-                            minValue: 0.0,
-                            maxValue: 100,
-                            onChange: (value) {},
-                          ),
-                        ),
-
-                        // sep
-                        sepH10,
-
-                        /* max */
-                        Expanded(
-                          child: TextInputWidget(
-                            small: true,
-                            leading: 'cap',
-                            minValue: 0.0,
-                            maxValue: 100,
-                            onChange: (value) {},
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  /* action time */
-                  sepV20,
-                  _buildLabel('Action Time (in seconds)'),
-                  sepV8,
-                  RadioListWidget(
-                    values: [15, 20, 30, 45],
-                    onSelect: (int value) {},
-                  ),
-
-                  /* game time */
-                  sepV20,
-                  _buildLabel('Game Time (in hours)'),
-                  sepV8,
-                  RadioListWidget(
-                    values: [1, 2, 5, 10, 15, 24],
-                    onSelect: (int value) {},
-                  ),
-
-                  /* sep */
-                  sepV20,
-
-                  /* buy in approval */
-                  _buildDecoratedContainer(
-                    children: [
-                      SwitchWidget(
-                        label: 'Buyin Approval',
-                        onChange: (bool value) {},
+                      /* players */
+                      _buildLabel('Players'),
+                      sepV8,
+                      RadioListWidget(
+                        defaultValue: gmp.maxPlayers,
+                        values: [2, 4, 6, 8, 9],
+                        onSelect: (int value) => gmp.maxPlayers = value,
                       ),
 
-                      // TODO: show only when approval is enabled
-                      // buy in wait time
-                      TextInputWidget(
-                        label: 'Buyin wait time',
-                        minValue: 0.0,
-                        maxValue: 100,
-                        onChange: (value) {},
-                      ),
-
-                      /* seperator */
+                      /* big blind & ante */
                       sepV20,
-                      _buildSeperator(),
+                      Row(
+                        children: [
+                          /* big blind */
+                          Expanded(
+                            child: TextInputWidget(
+                              value: gmp.blinds.bigBlind,
+                              label: 'Big Blind',
+                              minValue: 0.0,
+                              maxValue: 100,
+                              onChange: (value) {
+                                gmp.bigBlind = value.toDouble();
+                              },
+                            ),
+                          ),
+
+                          // sep
+                          sepH10,
+
+                          /* ante */
+                          Expanded(
+                            child: TextInputWidget(
+                              value: gmp.blinds.ante,
+                              label: 'Ante',
+                              minValue: 0.0,
+                              maxValue: 100,
+                              onChange: (value) {
+                                gmp.ante = value.toDouble();
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      /* buyin */
+                      sepV20,
+                      _buildLabel('Buyin'),
+                      sepV8,
+                      _buildDecoratedContainer(
+                        child: Row(
+                          children: [
+                            /* min */
+                            Expanded(
+                              child: TextInputWidget(
+                                value: gmp.buyInMin,
+                                small: true,
+                                label: 'min',
+                                trailing: 'BB',
+                                minValue: 0.0,
+                                maxValue: 100,
+                                onChange: (value) {
+                                  gmp.buyInMin = value;
+                                },
+                              ),
+                            ),
+
+                            // sep
+                            sepH10,
+
+                            /* max */
+                            Expanded(
+                              child: TextInputWidget(
+                                value: gmp.buyInMax,
+                                small: true,
+                                label: 'max',
+                                trailing: 'BB',
+                                minValue: 0.0,
+                                maxValue: 100,
+                                onChange: (value) {
+                                  gmp.buyInMax = value;
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      /* tips */
+                      sepV20,
+                      _buildLabel('Tips'),
+                      sepV8,
+                      _buildDecoratedContainer(
+                        child: Row(
+                          children: [
+                            /* min */
+                            Expanded(
+                              child: TextInputWidget(
+                                value: gmp.rakePercentage,
+                                small: true,
+                                trailing: '%',
+                                minValue: 0.0,
+                                maxValue: 100,
+                                onChange: (value) {
+                                  gmp.rakePercentage = value.toDouble();
+                                },
+                              ),
+                            ),
+
+                            // sep
+                            sepH10,
+
+                            /* max */
+                            Expanded(
+                              child: TextInputWidget(
+                                value: gmp.rakeCap,
+                                small: true,
+                                leading: 'cap',
+                                minValue: 0.0,
+                                maxValue: 100,
+                                onChange: (value) {
+                                  gmp.rakeCap = value;
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      /* action time */
+                      sepV20,
+                      _buildLabel('Action Time (in seconds)'),
+                      sepV8,
+                      RadioListWidget(
+                        defaultValue: gmp.actionTime,
+                        values: NewGameConstants.ACTION_TIMES,
+                        onSelect: (int value) {
+                          gmp.actionTime = value;
+                        },
+                      ),
+
+                      /* game time */
+                      sepV20,
+                      _buildLabel('Game Time (in hours)'),
+                      sepV8,
+                      RadioListWidget(
+                        defaultValue: gmp.gameLengthInMins ~/ 60,
+                        values: NewGameConstants.GAME_LENGTH,
+                        onSelect: (int value) {
+                          gmp.gameLengthInMins = value;
+                        },
+                      ),
 
                       /* sep */
                       sepV20,
 
-                      SwitchWidget(
-                        label: 'Break allowed',
-                        onChange: (bool value) {},
+                      /* buy in approval */
+                      _buildDecoratedContainer(
+                        children: [
+                          SwitchWidget(
+                            value: gmp.buyInApproval,
+                            label: 'Buyin Approval',
+                            onChange: (bool value) {
+                              gmp.buyInApproval = value;
+                            },
+                          ),
+
+                          // buy in wait time
+                          Consumer<NewGameModelProvider>(
+                            builder: (_, vnGmp, __) => _buildAnimatedSwitcher(
+                              child: vnGmp.buyInApproval == false
+                                  ? const SizedBox.shrink()
+                                  : TextInputWidget(
+                                      label: 'Buyin wait time',
+                                      minValue: 0.0,
+                                      maxValue: 100,
+                                      onChange: (value) {},
+                                    ),
+                            ),
+                          ),
+
+                          /* seperator */
+                          sepV20,
+                          _buildSeperator(),
+
+                          /* sep */
+                          sepV20,
+
+                          SwitchWidget(
+                            value: gmp.breakAllowed,
+                            label: 'Break allowed',
+                            onChange: (bool value) {
+                              gmp.breakAllowed = value;
+                            },
+                          ),
+
+                          // buy in wait time
+                          Consumer<NewGameModelProvider>(
+                            builder: (_, vnGmp, __) => _buildAnimatedSwitcher(
+                              child: vnGmp.breakAllowed == false
+                                  ? const SizedBox.shrink()
+                                  : TextInputWidget(
+                                      label: 'Max break time',
+                                      minValue: 0.0,
+                                      maxValue: 100,
+                                      onChange: (value) {},
+                                    ),
+                            ),
+                          ),
+                        ],
                       ),
 
-                      // TODO: show only when approval is enabled
-                      // buy in wait time
-                      TextInputWidget(
-                        label: 'Max break time',
-                        minValue: 0.0,
-                        maxValue: 100,
-                        onChange: (value) {},
+                      /* sep */
+                      sepV20,
+                      _buildDecoratedContainer(
+                        children: [
+                          /* UTG straddle */
+                          _buildRadio(
+                            label: 'UTG Straddle',
+                            value: gmp.straddleAllowed,
+                            onChange: (bool b) {
+                              gmp.straddleAllowed = b;
+                            },
+                          ),
+
+                          /* location check */
+                          _buildRadio(
+                            label: 'Location Check',
+                            value: gmp.locationCheck,
+                            onChange: (bool b) {
+                              gmp.locationCheck = b;
+                            },
+                          ),
+
+                          /* ip check */
+                          _buildRadio(
+                            label: 'IP Check',
+                            value: gmp.ipCheck,
+                            onChange: (bool b) {
+                              gmp.ipCheck = b;
+                            },
+                          ),
+
+                          /* waitlist */
+                          _buildRadio(
+                            label: 'Waitlist',
+                            value: gmp.waitList,
+                            onChange: (bool b) {
+                              gmp.waitList = b;
+                            },
+                          ),
+
+                          /* allow run it twice */
+                          _buildRadio(
+                            label: 'Allow run it twice',
+                            value: gmp.runItTwice,
+                            onChange: (bool b) {
+                              gmp.runItTwice = b;
+                            },
+                          ),
+
+                          /* shwo player buyin */
+                          _buildRadio(
+                            label: 'Show player buyin',
+                            value: gmp.showPlayerBuyin,
+                            onChange: (bool b) {
+                              gmp.showPlayerBuyin = b;
+                            },
+                          ),
+                        ],
                       ),
+
+                      /* sep */
+                      sepV20,
                     ],
                   ),
-
-                  /* sep */
-                  sepV20,
-                  _buildDecoratedContainer(
-                    children: [
-                      /* UTG straddle */
-                      _buildRadio(
-                        label: 'UTG Straddle',
-                        value: false,
-                        onChange: (bool b) {},
-                      ),
-
-                      /* location check */
-                      _buildRadio(
-                        label: 'Location Check',
-                        value: false,
-                        onChange: (bool b) {},
-                      ),
-
-                      /* ip check */
-                      _buildRadio(
-                        label: 'IP Check',
-                        value: false,
-                        onChange: (bool b) {},
-                      ),
-
-                      /* waitlist */
-                      _buildRadio(
-                        label: 'Waitlist',
-                        value: true,
-                        onChange: (bool b) {},
-                      ),
-
-                      /* allow run it twice */
-                      _buildRadio(
-                        label: 'Allow run it twice',
-                        value: false,
-                        onChange: (bool b) {},
-                      ),
-
-                      /* shwo player buyin */
-                      _buildRadio(
-                        label: 'Show player buyin',
-                        value: false,
-                        onChange: (bool b) {},
-                      ),
-                    ],
-                  ),
-
-                  /* sep */
-                  sepV20,
-                ],
+                ),
               ),
             ),
-          ),
-        ),
+          );
+        },
       );
 }

@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 class TextInputWidget extends StatelessWidget {
   static const kEmpty = const SizedBox.shrink();
 
+  final value;
   final String label;
   final String leading;
   final String trailing;
@@ -16,6 +17,7 @@ class TextInputWidget extends StatelessWidget {
   final double maxValue;
 
   TextInputWidget({
+    this.value,
     this.label,
     this.leading,
     this.trailing,
@@ -53,6 +55,7 @@ class TextInputWidget extends StatelessWidget {
 
   Widget _buildInputArea() => Container(
         margin: const EdgeInsets.symmetric(vertical: 10.0),
+        padding: const EdgeInsets.only(bottom: 2.0),
         decoration: BoxDecoration(
           border: Border(
             bottom: BorderSide(
@@ -66,12 +69,15 @@ class TextInputWidget extends StatelessWidget {
             /* leading */
             leading == null
                 ? kEmpty
-                : Text(
-                    leading,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: small ? 15.0 : 20.0,
-                      fontWeight: FontWeight.w300,
+                : Container(
+                    margin: const EdgeInsets.only(right: 5.0),
+                    child: Text(
+                      leading,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: small ? 15.0 : 20.0,
+                        fontWeight: FontWeight.w300,
+                      ),
                     ),
                   ),
 
@@ -79,7 +85,7 @@ class TextInputWidget extends StatelessWidget {
             Expanded(
               child: Consumer<ValueNotifier<double>>(
                 builder: (_, vnValue, __) => Text(
-                  vnValue.value?.toString() ?? '',
+                  vnValue.value?.toString() ?? (value?.toString() ?? ''),
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 15.0,
@@ -91,12 +97,15 @@ class TextInputWidget extends StatelessWidget {
             /* trailing */
             trailing == null
                 ? kEmpty
-                : Text(
-                    trailing,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: small ? 15.0 : 20.0,
-                      fontWeight: FontWeight.w300,
+                : Container(
+                    margin: const EdgeInsets.only(left: 5.0),
+                    child: Text(
+                      trailing,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: small ? 15.0 : 20.0,
+                        fontWeight: FontWeight.w300,
+                      ),
                     ),
                   ),
           ],
