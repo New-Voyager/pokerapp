@@ -13,12 +13,14 @@ class GameTypeItem extends StatelessWidget {
   final bool isSelected;
   final double animValue;
   final List<GameType> gamesList;
+  final Function onSettingsClick;
   GameTypeItem({
     this.type,
     this.imagePath,
     this.isSelected,
     this.animValue,
     this.gamesList,
+    this.onSettingsClick,
   });
 
   @override
@@ -51,7 +53,7 @@ class GameTypeItem extends StatelessWidget {
             },
             child: Container(
               //this heigth should match with the image height of GameImage
-              height: 64,
+              height: 80,
               child: Image.asset(
                 AppAssetsNew.pathArrowImage,
                 height: 32,
@@ -79,6 +81,7 @@ class GameTypeItem extends StatelessWidget {
           width: width - 32 - (isSelected ? (animValue * 64) : 0),
           child: Row(
             children: [
+              AppDimensionsNew.getVerticalSizedBox(80),
               Container(
                 height: 64,
                 width: 64,
@@ -93,11 +96,13 @@ class GameTypeItem extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(gameTypeStr(type),
-                        style: AppStylesNew.GameTypeTextStyle),
+                        style: AppStylesNew.GameTypeTextStyle.copyWith(
+                            fontWeight: FontWeight.w500)),
                     Visibility(
                       child: Text(
                         _buildGameTypeStrFromList(),
-                        style: AppStylesNew.OpenSeatsTextStyle,
+                        style: AppStylesNew.OpenSeatsTextStyle.copyWith(
+                            fontSize: 10),
                       ),
                       visible: (gamesList != null && gamesList.length > 0),
                     ),
@@ -106,9 +111,7 @@ class GameTypeItem extends StatelessWidget {
               ),
               Visibility(
                 child: IconButton(
-                  onPressed: () {
-                    log("settings click");
-                  },
+                  onPressed: onSettingsClick,
                   icon: Icon(Icons.settings),
                   color: AppColorsNew.newTextColor,
                 ),
