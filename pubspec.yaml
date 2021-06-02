@@ -25,6 +25,11 @@ dependencies:
       ref: master
   after_layout: ^1.1.0
   agora_rtc_engine: ^3.2.1
+
+  tuple: ^1.0.3
+
+  in_app_purchase: ^0.5.2
+
   animated_text_kit: ^4.1.1
   audioplayers: 0.17.0
   blinking_text: ^1.0.1+2
@@ -52,7 +57,6 @@ dependencies:
   get_it: ^6.1.1
   graphql_flutter: ^3.0.1
   http: ^0.12.2
-  in_app_purchase: ^0.5.2
   intl: ^0.16.1
   just_audio: ^0.6.12
   lottie: ^0.7.0
@@ -67,7 +71,6 @@ dependencies:
   sliding_up_panel: ^1.0.2
   stream_channel: ^2.1.0
   timer_count_down: ^1.0.4+1
-  tuple: ^1.0.3
   web_socket_channel: ^2.0.0
   zflutter: ^0.0.1+2
 
@@ -151,6 +154,14 @@ flutter:
       fonts:
         - asset: assets/fonts/Trocchi-Regular.ttf
           weight: 400
+    - family: Domine
+      fonts:
+        - asset: assets/fonts/Domine-VariableFont_wght.ttf
+          weight: 700
+    - family: Literata
+      fonts:
+        - asset: assets/fonts/Literata-Bold.ttf
+          weight: 700
 
     # icon packs
     - family: AppIcons

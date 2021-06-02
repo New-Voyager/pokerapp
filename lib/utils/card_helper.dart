@@ -96,6 +96,7 @@ class CardHelper {
       case AppConstants.blackSpade:
         return Colors.black;
       case AppConstants.redHeart:
+      case AppConstants.redHeart2:
         return Colors.red;
       case AppConstants.blackClub:
         return Colors.black;
@@ -111,6 +112,9 @@ class CardHelper {
   static CardObject _getCardFromCardValues(String card) {
     String label = card[0];
     String suit = card[1];
+    if (suit == AppConstants.redHeart) {
+      suit = AppConstants.redHeart2;
+    }
 
     return CardObject(
       suit: suit,

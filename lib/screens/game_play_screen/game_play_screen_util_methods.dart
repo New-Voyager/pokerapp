@@ -22,7 +22,7 @@ import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/resources/card_back_assets.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
-import 'package:pokerapp/services/agora/agora.dart';
+//import 'package:pokerapp/services/agora/agora.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
@@ -50,6 +50,35 @@ class GamePlayScreenUtilMethods {
       overlayOpacity: 0.1,
       icon: Icons.all_inclusive_rounded,
       children: [
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
+          label: 'Show holecards',
+          onTap: () => TestService.showHoleCards(),
+        ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
+          label: 'addTurnOrRiverCard',
+          onTap: () => TestService.addTurnOrRiverCard(),
+        ),
+
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
+          label: 'Flop',
+          onTap: () => TestService.addFlopCards(),
+        ),
+
         SpeedDialChild(
           child: Icon(
             Icons.adb_rounded,
@@ -191,25 +220,6 @@ class GamePlayScreenUtilMethods {
             color: Colors.white,
           ),
           backgroundColor: Colors.red,
-          label: 'addTurnOrRiverCard',
-          onTap: () => TestService.addTurnOrRiverCard(),
-        ),
-
-        SpeedDialChild(
-          child: Icon(
-            Icons.adb_rounded,
-            color: Colors.white,
-          ),
-          backgroundColor: Colors.red,
-          label: 'Flop',
-          onTap: () => TestService.addFlopCards(),
-        ),
-        SpeedDialChild(
-          child: Icon(
-            Icons.adb_rounded,
-            color: Colors.white,
-          ),
-          backgroundColor: Colors.red,
           label: 'Show Bets',
           onTap: () => TestService.showBets(),
         ),
@@ -231,15 +241,7 @@ class GamePlayScreenUtilMethods {
           label: 'Move Pot to Player',
           onTap: () => TestService.movePotToPlayer(),
         ),
-        SpeedDialChild(
-          child: Icon(
-            Icons.adb_rounded,
-            color: Colors.white,
-          ),
-          backgroundColor: Colors.red,
-          label: 'Show holecards',
-          onTap: () => TestService.showHoleCards(),
-        ),
+
         /*
         SpeedDialChild(
           child: Icon(
@@ -377,7 +379,7 @@ class GamePlayScreenUtilMethods {
     @required GameState gameState,
     @required GameInfoModel gameInfoModel,
     @required String gameCode,
-    @required Agora agora,
+    //@required Agora agora,
     @required BoardAttributesObject boardAttributes,
     @required GameContextObject gameContextObject,
   }) {
@@ -469,9 +471,9 @@ class GamePlayScreenUtilMethods {
       ),
 
       /* communication provider */
-      ListenableProvider<ValueNotifier<Agora>>(
-        create: (_) => ValueNotifier(agora),
-      ),
+      // ListenableProvider<ValueNotifier<Agora>>(
+      //   create: (_) => ValueNotifier(agora),
+      // ),
 
       /* Provider to deal with host seat change functionality */
       ListenableProvider<SeatChangeNotifier>(

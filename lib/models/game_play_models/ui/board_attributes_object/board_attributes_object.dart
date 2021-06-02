@@ -646,13 +646,26 @@ class BoardAttributesObject extends ChangeNotifier {
     @required dynamic equalTo7Inches,
     @required dynamic greaterThan7Inches,
   }) {
-    if (this._screenSize < 6) return lessThan6Inches;
+    if (this._screenSize < 6) {
+      log('Device less than 6 inches');
+      return lessThan6Inches;
+    }
 
-    if (this._screenSize == 6) return equalTo6Inches;
+    if (this._screenSize == 6) {
+      log('Device is 6 inches');
+      return equalTo6Inches;
+    }
 
-    if (this._screenSize == 7) return equalTo7Inches;
+    if (this._screenSize == 7) {
+      log('Device is equal to 7 inches ${this._screenSize}');
+      return equalTo6Inches;
+      //return equalTo7Inches;
+    }
 
-    if (this._screenSize > 7) return greaterThan7Inches;
+    if (this._screenSize > 7) {
+      log('Device greater than 7 inches');
+      return greaterThan7Inches;
+    }
   }
 
   static const holeCardViewDisplacementConstant = 60.0;

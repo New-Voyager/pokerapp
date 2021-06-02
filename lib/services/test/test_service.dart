@@ -179,7 +179,7 @@ class TestService {
 
     tableState.addTurnOrRiverCard(
       1,
-      CardHelper.getCard(148),
+      CardHelper.getCard(162),
     );
 
     tableState.notifyAll();
@@ -190,7 +190,7 @@ class TestService {
 
     tableState.addFlopCards(
       1,
-      [130, 82, 193].map<CardObject>((e) => CardHelper.getCard(e)).toList(),
+      [130, 152, 193].map<CardObject>((e) => CardHelper.getCard(e)).toList(),
     );
     tableState.notifyAll();
   }

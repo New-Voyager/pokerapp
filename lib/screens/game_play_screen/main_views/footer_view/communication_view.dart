@@ -8,7 +8,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/resources/app_colors.dart';
-import 'package:pokerapp/services/agora/agora.dart';
+//import 'package:pokerapp/services/agora/agora.dart';
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:provider/provider.dart';
 
@@ -28,36 +28,36 @@ class _CommunicationViewState extends State<CommunicationView> {
   bool _recordingCancelled;
   String _audioFile;
 
-  Widget build2(BuildContext context) {
-    var ret = Consumer<ValueNotifier<Agora>>(
-      builder: (_, agora, __) {
-        bool liveAudio = agora.value != null;
-        var children = [];
-        if (liveAudio) {
-          children.addAll(liveAudioWidgets(agora));
-        } else {
-          children.addAll(audioChatWidgets());
-        }
+  // Widget build2(BuildContext context) {
+  //   var ret = Consumer<ValueNotifier<Agora>>(
+  //     builder: (_, agora, __) {
+  //       bool liveAudio = agora.value != null;
+  //       var children = [];
+  //       if (liveAudio) {
+  //         children.addAll(liveAudioWidgets(agora));
+  //       } else {
+  //         children.addAll(audioChatWidgets());
+  //       }
 
-        children.add(GestureDetector(
-          onTap: widget.chatVisibilityChange,
-          child: Container(
-            padding: EdgeInsets.all(5),
-            child: Icon(
-              Icons.chat,
-              size: 35,
-              color: AppColors.appAccentColor,
-            ),
-          ),
-        ));
+  //       children.add(GestureDetector(
+  //         onTap: widget.chatVisibilityChange,
+  //         child: Container(
+  //           padding: EdgeInsets.all(5),
+  //           child: Icon(
+  //             Icons.chat,
+  //             size: 35,
+  //             color: AppColors.appAccentColor,
+  //           ),
+  //         ),
+  //       ));
 
-        return Column(
-          children: children,
-        );
-      },
-    );
-    return ret;
-  }
+  //       return Column(
+  //         children: children,
+  //       );
+  //     },
+  //   );
+  //   return ret;
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -126,53 +126,53 @@ class _CommunicationViewState extends State<CommunicationView> {
     ];
   }
 
-  liveAudioWidgets(ValueNotifier<Agora> agora) {
-    return [
-      Padding(
-        padding: const EdgeInsets.all(5.0),
-        child: Icon(
-          Icons.circle,
-          size: 15,
-          color: AppColors.positiveColor,
-        ),
-      ),
-      GestureDetector(
-        onTap: () {
-          agora.value.switchMicrophone();
-          setState(() {
-            agora.value.openMicrophone = !agora.value.openMicrophone;
-          });
-        },
-        child: Container(
-          padding: EdgeInsets.all(5),
-          child: Icon(
-            agora.value.openMicrophone ? Icons.mic : Icons.mic_off,
-            size: 35,
-            color: AppColors.appAccentColor,
-          ),
-        ),
-      ),
-      GestureDetector(
-        onTap: () {
-          print("speaker ${agora.value.enableSpeakerphone}");
-          agora.value.switchSpeakerphone();
-          setState(() {
-            agora.value.enableSpeakerphone = !agora.value.enableSpeakerphone;
-          });
-        },
-        child: Container(
-          padding: EdgeInsets.all(5),
-          child: Icon(
-            agora.value.enableSpeakerphone
-                ? Icons.volume_up
-                : Icons.volume_mute,
-            size: 35,
-            color: AppColors.appAccentColor,
-          ),
-        ),
-      ),
-    ];
-  }
+  // liveAudioWidgets(ValueNotifier<Agora> agora) {
+  //   return [
+  //     Padding(
+  //       padding: const EdgeInsets.all(5.0),
+  //       child: Icon(
+  //         Icons.circle,
+  //         size: 15,
+  //         color: AppColors.positiveColor,
+  //       ),
+  //     ),
+  //     GestureDetector(
+  //       onTap: () {
+  //         agora.value.switchMicrophone();
+  //         setState(() {
+  //           agora.value.openMicrophone = !agora.value.openMicrophone;
+  //         });
+  //       },
+  //       child: Container(
+  //         padding: EdgeInsets.all(5),
+  //         child: Icon(
+  //           agora.value.openMicrophone ? Icons.mic : Icons.mic_off,
+  //           size: 35,
+  //           color: AppColors.appAccentColor,
+  //         ),
+  //       ),
+  //     ),
+  //     GestureDetector(
+  //       onTap: () {
+  //         print("speaker ${agora.value.enableSpeakerphone}");
+  //         agora.value.switchSpeakerphone();
+  //         setState(() {
+  //           agora.value.enableSpeakerphone = !agora.value.enableSpeakerphone;
+  //         });
+  //       },
+  //       child: Container(
+  //         padding: EdgeInsets.all(5),
+  //         child: Icon(
+  //           agora.value.enableSpeakerphone
+  //               ? Icons.volume_up
+  //               : Icons.volume_mute,
+  //           size: 35,
+  //           color: AppColors.appAccentColor,
+  //         ),
+  //       ),
+  //     ),
+  //   ];
+  // }
 
   audioChatWidgets() {
     return [
