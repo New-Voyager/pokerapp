@@ -48,17 +48,16 @@ class StackChartView extends StatelessWidget {
             )),
         tickProviderSpec: getTickerSpec(),
       ),
-                            behaviors: [
-                              charts.SelectNearest(),
-                            ],      
+      behaviors: [
+        charts.SelectNearest(),
+      ],
       selectionModels: [
-                            charts.SelectionModelConfig(
-                                  type: charts.SelectionModelType.info,
-                                  changedListener:
-                                      (charts.SelectionModel model) {
-                                        onTap();
-                                  })
-                            ],      
+        charts.SelectionModelConfig(
+            type: charts.SelectionModelType.info,
+            changedListener: (charts.SelectionModel model) {
+              onTap();
+            })
+      ],
     );
   }
 

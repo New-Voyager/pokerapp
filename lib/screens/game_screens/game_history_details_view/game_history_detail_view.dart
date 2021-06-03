@@ -436,7 +436,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  _gameDetail.profit < 0 ? "Loss" : "Profit",
+                  _gameDetail.profit ?? 0 < 0 ? "Loss" : "Profit",
                   style: const TextStyle(
                     fontFamily: AppAssets.fontFamilyLato,
                     color: Colors.white,
@@ -674,6 +674,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
   }
 
   Widget getLowerCard() {
+    log('hands Played: ${_gameDetail.handsPlayed}');
     return Padding(
       padding: const EdgeInsets.all(0),
       child: Container(
@@ -692,7 +693,11 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
             //   ),
             // ),
             ListTile(
-              onTap: () => this.onHandHistoryPressed(context),
+              onTap: () {
+                if (_gameDetail.playedGame) {
+                  this.onHandHistoryPressed(context);
+                }
+              },
               leading: CircleAvatar(
                 radius: 18,
                 child: SvgPicture.asset('assets/images/casino.svg',
@@ -708,13 +713,24 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
                   fontWeight: FontWeight.w400,
                 ),
               ),
-              trailing: IconButton(
-                icon: Icon(
-                  Icons.arrow_forward_ios,
-                  color: AppColors.appAccentColor,
-                  size: 12,
-                ),
-              ),
+              trailing: !_gameDetail.playedGame
+                  ? Text(
+                      "Not Available",
+                      style: const TextStyle(
+                        fontFamily: AppAssets.fontFamilyLato,
+                        color: Colors.white54,
+                        fontSize: 12.0,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    )
+                  : IconButton(
+                      icon: Icon(
+                        Icons.arrow_forward_ios,
+                        color: AppColors.appAccentColor,
+                        size: 12,
+                      ),
+                      onPressed: () {},
+                    ),
             ),
             Padding(
               padding: const EdgeInsets.only(left: 70.0),

@@ -140,7 +140,7 @@ class GameHistoryDetailModel extends ChangeNotifier {
   int turnHands;
   int riverHands;
   int showdownHands;
-  int handsPlayed;
+  int handsPlayed = 0;
   bool hhTracked = true;
   String gameType;
   int gameHands;
