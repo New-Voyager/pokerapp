@@ -50,7 +50,7 @@ class GameContextObject extends ChangeNotifier {
         _currentPlayer?.role?.isManager == true ||
         _currentPlayer?.role?.isOwner == true) return true;
 
-    return true;
+    return false;
   }
 
   @override

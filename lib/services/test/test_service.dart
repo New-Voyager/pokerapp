@@ -4,11 +4,15 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
+import 'package:pokerapp/enums/game_status.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
+import 'package:pokerapp/enums/player_status.dart';
 import 'package:pokerapp/models/game_model.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
@@ -36,12 +40,14 @@ class TestService {
   static PlayerInfo _currentPlayer;
   static GameInfoModel _gameInfo;
   static dynamic _result;
+
   // static List<CardObject> _boardCards;
   static List<int> _pots;
 
   static BuildContext _context;
   static HandActionService _handActionService;
   static InAppPurchaseTest _testIap;
+
   TestService._();
 
   static set context(BuildContext context) => _context = context;
@@ -269,7 +275,9 @@ class TestService {
     var exp = DateTime.now();
     exp = exp.add(Duration(seconds: 20));
     players.me.buyInTimeExpAt = exp.toUtc();
-    log('now: ${now.toIso8601String()} exp: ${exp.toIso8601String()} utc: ${players.me.buyInTimeExpAt.toIso8601String()}');
+    log('now: ${now.toIso8601String()} exp: ${exp
+        .toIso8601String()} utc: ${players.me.buyInTimeExpAt
+        .toIso8601String()}');
     players.me.showBuyIn = true;
     players.me.stack = 0;
 
@@ -397,17 +405,7 @@ class TestService {
     players.notifyAll();
   }
 
-  static List<GameModel> fetchLiveGames() {
-    var json = jsonDecode('''{
-      "clubCode": "ABC",
-      "gameCode": "ABC",
-      "smallBlind": 1,
-      "bigBlind": 2,
-      "gameType": "HOLDEM"
-    }''');
-    final game1 = GameModel.fromJson(json);
-    return [game1];
-  }
+
 
   static Future<void> sendNewHand() async {
     final gameState = GameState.getState(_context);
@@ -455,13 +453,13 @@ class TestService {
     final gameState = GameState.getState(_context);
     final TableState tableState = gameState.getTableState(_context);
 
-    /* board 1 */
+     /* board 1 */ /*
     tableState.setBoardCards(
       1,
       [50, 50, 50, 50, 50].map((e) => CardHelper.getCard(e)).toList(),
     );
 
-    /* board 2 */
+    */ /* board 2 */ 
     tableState.setBoardCards(
       2,
       [50, 50, 50, 50, 50].map((e) => CardHelper.getCard(e)).toList(),
@@ -533,7 +531,7 @@ class TestService {
     final players = gameState.getPlayers(_context);
     players.notifyAll();
 
-    /* wait then run fold */
+    /* wait then run fold */ 
     Future.delayed(const Duration(milliseconds: 800)).then((value) => fold());
   }
 
@@ -586,7 +584,7 @@ class TestService {
       _handActionService.loop();
     }
     String message =
-        '''{"clubId": 1,"gameId": "1620287740","gameCode": "1620287740","handNum": 1,"messageId": "ACTION:1:FLOP:0:","handStatus": "FLOP","messages": [{"messageType": "PLAYER_ACTED","playerActed": {"seatNo": 8,"action": "ALLIN","amount": 50}}, {"messageType": "YOUR_ACTION","seatAction": {"seatNo": 1,"availableActions": ["RUN_IT_TWICE_PROMPT"]}}, {"messageType": "YOUR_ACTION","seatAction": {"seatNo": 8,"availableActions": ["RUN_IT_TWICE_PROMPT"]}}]}''';
+    '''{"clubId": 1,"gameId": "1620287740","gameCode": "1620287740","handNum": 1,"messageId": "ACTION:1:FLOP:0:","handStatus": "FLOP","messages": [{"messageType": "PLAYER_ACTED","playerActed": {"seatNo": 8,"action": "ALLIN","amount": 50}}, {"messageType": "YOUR_ACTION","seatAction": {"seatNo": 1,"availableActions": ["RUN_IT_TWICE_PROMPT"]}}, {"messageType": "YOUR_ACTION","seatAction": {"seatNo": 8,"availableActions": ["RUN_IT_TWICE_PROMPT"]}}]}''';
     //final handActionService = HandActionService( _context, gameState);
     _handActionService.clear();
     _handActionService.handle(message);
@@ -603,12 +601,12 @@ class TestService {
       _handActionService.loop();
     }
     String message =
-        '''{"version":"", "clubId":254, "gameId":"284", "gameCode":"CG-A2DHJIG7497MNKP", "handNum":36,
-     "seatNo":0, "playerId":"0", "messageId":"ACTION:36:RIVER:2443:40", "gameToken":"", "handStatus":"RIVER", 
+    '''{"version":"", "clubId":254, "gameId":"284", "gameCode":"CG-A2DHJIG7497MNKP", "handNum":36,
+     "seatNo":0, "playerId":"0", "messageId":"ACTION:36:RIVER:2443:40", "gameToken":"", "handStatus":"RIVER",
      "messages":[
-       {"messageType":"PLAYER_ACTED", "playerActed":{"seatNo":1, "action":"CHECK", "amount":0, "timedOut":false, "actionTime":0, "stack":28}}, 
-       {"messageType":"RIVER", "river":{"board":[97, 145, 2, 130, 66], "riverCard":66, "cardsStr":"[ 8♠  J♠  2❤  T❤  6❤ ]", "pots":[4], "seatsPots":[{"seats":[1, 2], "pot":4}], "playerBalance":{"1":28, "2":98}}}, 
-       {"messageType":"YOUR_ACTION", "seatAction":{"seatNo":2, "availableActions":["FOLD", "CHECK", "BET", "ALLIN"], "straddleAmount":0, "callAmount":0, "raiseAmount":0, "minBetAmount":0, "maxBetAmount":0, "minRaiseAmount":2, "maxRaiseAmount":98, "allInAmount":98, "betOptions":[{"text":"100%", "amount":4}, {"text":"All-In", "amount":98}]}}, 
+       {"messageType":"PLAYER_ACTED", "playerActed":{"seatNo":1, "action":"CHECK", "amount":0, "timedOut":false, "actionTime":0, "stack":28}},
+       {"messageType":"RIVER", "river":{"board":[97, 145, 2, 130, 66], "riverCard":66, "cardsStr":"[ 8♠  J♠  2❤  T❤  6❤ ]", "pots":[4], "seatsPots":[{"seats":[1, 2], "pot":4}], "playerBalance":{"1":28, "2":98}}},
+       {"messageType":"YOUR_ACTION", "seatAction":{"seatNo":2, "availableActions":["FOLD", "CHECK", "BET", "ALLIN"], "straddleAmount":0, "callAmount":0, "raiseAmount":0, "minBetAmount":0, "maxBetAmount":0, "minRaiseAmount":2, "maxRaiseAmount":98, "allInAmount":98, "betOptions":[{"text":"100%", "amount":4}, {"text":"All-In", "amount":98}]}},
        {"messageType":"NEXT_ACTION", "actionChange":{"seatNo":2, "pots":[4], "potUpdates":0, "seatsPots":[{"seats":[1, 2], "pot":4}]}}
       ]}''';
     //final handActionService = HandActionService( _context, gameState);
@@ -724,7 +722,9 @@ class TestService {
     final gameState = GameState.getState(_context);
     final players = gameState.getPlayers(_context);
 
-    _context.read<ValueNotifier<FooterStatus>>().value = FooterStatus.Result;
+    _context
+        .read<ValueNotifier<FooterStatus>>()
+        .value = FooterStatus.Result;
 
     for (int i = 1; i < 10; i++) {
       players.updateCardSilent(i, [50, 50, 50, 50, 50]);
@@ -737,7 +737,9 @@ class TestService {
     final gameState = GameState.getState(_context);
     final players = gameState.getPlayers(_context);
 
-    _context.read<ValueNotifier<FooterStatus>>().value = FooterStatus.None;
+    _context
+        .read<ValueNotifier<FooterStatus>>()
+        .value = FooterStatus.None;
 
     for (int i = 1; i < 10; i++) {
       players.updateCardSilent(i, []);
@@ -755,6 +757,73 @@ class TestService {
     await _handActionService.handle(dealerChoiceMessage());
   }
 
+  static List<GameModel> fetchLiveGames() {
+    var json = jsonDecode('''{
+      "clubCode": "ABC",
+      "gameCode": "ABC",
+      "smallBlind": 1,
+      "bigBlind": 2,
+      "gameType": "HOLDEM"
+    }''');
+    final game1 = GameModel.fromJson(json);
+    return [game1];
+  }
+
+  static setIsAdminFalse() {
+    BuildContext context = _context;
+
+    final gameContextObj =
+        Provider.of<GameContextObject>(context, listen: false);
+    gameContextObj.gameState.currentPlayer.role.isHost = false;
+    gameContextObj.gameState.currentPlayer.role.isManager = false;
+    gameContextObj.gameState.currentPlayer.role.isOwner = false;
+    gameContextObj.notifyListeners();
+
+    log('In TestService gameContextObj.isAdmin() = ${gameContextObj.isAdmin()}');
+  }
+
+  static setIsAdminTrue() {
+    BuildContext context = _context;
+
+    final gameContextObj =
+        Provider.of<GameContextObject>(context, listen: false);
+    gameContextObj.gameState.currentPlayer.role.isHost = true;
+    gameContextObj.notifyListeners();
+
+    log('In TestService gameContextObj.isAdmin() = ${gameContextObj.isAdmin()}');
+  }
+
+  static setGameStateActive() {
+    BuildContext context = _context;
+    final myState = Provider.of<MyState>(context, listen: false);
+    myState.gameStatus = GameStatus.RUNNING;
+    myState.notify();
+  }
+
+  static setGameStateInActive() {
+    BuildContext context = _context;
+
+    final myState = Provider.of<MyState>(context, listen: false);
+    myState.gameStatus = GameStatus.UNKNOWN;
+    myState.notify();
+  }
+
+  static setCurrentPlayerStatusPlaying() {
+    BuildContext context = _context;
+
+    final myState = Provider.of<MyState>(context, listen: false);
+    myState.status = PlayerStatus.PLAYING;
+    myState.notify();
+  }
+
+  static setCurrentPlayerStatusNotPlaying() {
+    BuildContext context = _context;
+
+    final myState = Provider.of<MyState>(context, listen: false);
+    myState.status = PlayerStatus.NOT_PLAYING;
+    myState.notify();
+  }
+  
   static void showSeatChangePrompt() async {
     final gameState = GameState.getState(_context);
     final seat5 = gameState.getSeat(_context, 5);

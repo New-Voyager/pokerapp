@@ -3,6 +3,7 @@ import 'package:after_layout/after_layout.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:dart_nats/dart_nats.dart' as nats;
 import 'package:flutter/material.dart';
+import 'package:pokerapp/enums/game_status.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
@@ -70,6 +71,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   bool _initiated;
   BuildContext _providerContext;
   PlayerInfo _currentPlayer;
+
   // String _audioToken = '';
   // bool liveAudio = true;
   AudioPlayer _audioPlayer;
@@ -517,17 +519,15 @@ class _GamePlayScreenState extends State<GamePlayScreen>
                               width: boardDimensions.width,
                               height: boardDimensions.height,
                               child: Transform.scale(
-                                scale: tableScale, // 10 inch: 0.85, 5inch: 1.0
+                                scale: tableScale,
+                                // 10 inch: 0.85, 5inch: 1.0
                                 child: BoardView(
                                   gameComService:
                                       _gameContextObj?.gameComService,
                                   gameInfo: _gameInfoModel,
                                   audioPlayer: _audioPlayer,
                                   onUserTap: onJoinGame,
-                                  onStartGame: () =>
-                                      GamePlayScreenUtilMethods.startGame(
-                                    widget.gameCode,
-                                  ),
+                                  onStartGame: startGame,
                                 ),
                               ),
                             ),
@@ -581,4 +581,10 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
   @override
   void afterFirstLayout(BuildContext context) {}
+
+  startGame() {
+    GamePlayScreenUtilMethods.startGame(widget.gameCode);
+    _gameState.myState.gameStatus = GameStatus.RUNNING;
+    _gameState.myState.notify();
+  }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pokerapp/enums/game_status.dart';
 import 'package:pokerapp/enums/player_status.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
@@ -287,14 +288,20 @@ class Players extends ChangeNotifier {
 class MyState extends ChangeNotifier {
   int _seatNo = 0;
   PlayerStatus _status = PlayerStatus.NOT_PLAYING;
+  GameStatus _gameStatus = GameStatus.UNKNOWN;
 
   set seatNo(int v) {
     this._seatNo = v;
   }
 
+  set gameStatus(GameStatus gameStatus) => this._gameStatus = gameStatus;
+
+  get gameStatus => this._gameStatus;
+
   int get seatNo => this._seatNo;
 
   set status(PlayerStatus status) => this._status = status;
+
   get status => this._status;
 
   void notify() {
