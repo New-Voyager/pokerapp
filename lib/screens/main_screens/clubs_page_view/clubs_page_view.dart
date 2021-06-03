@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
@@ -27,7 +28,6 @@ class _ClubsPageViewState extends State<ClubsPageView> {
   bool _showLoading = false;
 
   List<ClubModel> _clubs;
-  List<ClubModel> _filteredClubs = List<ClubModel>();
 
   void _toggleLoading() {
     if (mounted)
@@ -160,19 +160,39 @@ class _ClubsPageViewState extends State<ClubsPageView> {
       Alerts.showSnackBar(ctx, 'Something went wrong');
   }
 
-  void _fetchClubs() async {
+  Future<void> _fillClubs() async {
+    print('fetching clubs');
+    _clubs = await ClubsService.getMyClubs();
+    setState(() {});
+  }
+
+  void _fetchClubs({
+    bool withLoading = true,
+  }) async {
+    if (!withLoading) return _fillClubs();
+
     _toggleLoading();
 
-    _clubs = await ClubsService.getMyClubs();
+    await _fillClubs();
 
     _toggleLoading();
   }
+
+  Timer _refreshTimer;
 
   @override
   void initState() {
     super.initState();
 
+    /* fetch the clubs initially */
     _fetchClubs();
+
+    // TEMP SOLUTION FOR REFRESHING
+    /* set a timer to run every X second */
+    _refreshTimer = Timer.periodic(
+      const Duration(seconds: 5),
+      (_) => _fetchClubs(withLoading: false),
+    );
   }
 
   Text _getTitleTextWidget(title) {
@@ -198,162 +218,98 @@ class _ClubsPageViewState extends State<ClubsPageView> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    final separator = SizedBox(height: 14.0);
+  void dispose() {
+    _refreshTimer?.cancel();
+    super.dispose();
+  }
 
-    return ListenableProvider<ValueNotifier<String>>(
-      create: (_) => ValueNotifier<String>(''),
-      child: Builder(
-        builder: (ctx) => Scaffold(
-          backgroundColor: AppColors.screenBackgroundColor,
-          body: Padding(
-            padding: EdgeInsets.only(
-              top: MediaQuery.of(context).padding.top,
-              left: AppDimensions.kMainPaddingHorizontal,
-              right: AppDimensions.kMainPaddingHorizontal,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                /*
-                * title
-                * */
-                _getTitleTextWidget('Clubs'),
-                const SizedBox(height: 30),
-                /*
-                * create and search box
-                * */
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    CustomTextButton(
-                      text: 'Search',
-                      onTap: () async {
-                        await showModalBottomSheet(
-                          context: context,
-                          isScrollControlled: true,
-                          builder: (ctx) => SearchClubBottomSheet(),
-                        );
-                        _fetchClubs();
-                      },
-                    ),
-                    const SizedBox(width: 40),
-                    CustomTextButton(
-                      text: '+Create',
-                      onTap: () => _createClub(ctx),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 10),
-                _showLoading
-                    ? Expanded(
-                        child: Center(
-                          child: CircularProgressIndicator(),
-                        ),
-                      )
-                    : _clubs.isEmpty
-                        ? Expanded(
-                            child: Center(
-                              child: Text(
-                                'No Clubs',
-                                style: AppStyles.clubItemInfoTextStyle.copyWith(
-                                  fontSize: 30.0,
-                                ),
+  @override
+  Widget build(BuildContext context) {
+    return Builder(
+      builder: (ctx) => Scaffold(
+        backgroundColor: AppColors.screenBackgroundColor,
+        body: Padding(
+          padding: EdgeInsets.only(
+            top: MediaQuery.of(context).padding.top,
+            left: AppDimensions.kMainPaddingHorizontal,
+            right: AppDimensions.kMainPaddingHorizontal,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              /*
+              * title
+              * */
+              _getTitleTextWidget('Clubs'),
+              const SizedBox(height: 30),
+              /*
+              * create and search box
+              * */
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  CustomTextButton(
+                    text: 'Search',
+                    onTap: () async {
+                      await showModalBottomSheet(
+                        context: context,
+                        isScrollControlled: true,
+                        builder: (ctx) => SearchClubBottomSheet(),
+                      );
+                      _fetchClubs();
+                    },
+                  ),
+                  const SizedBox(width: 40),
+                  CustomTextButton(
+                    text: '+ Create',
+                    onTap: () => _createClub(ctx),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              _showLoading
+                  ? Expanded(
+                      child: Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    )
+                  : _clubs.isEmpty
+                      ? Expanded(
+                          child: Center(
+                            child: Text(
+                              'No Clubs',
+                              style: AppStyles.clubItemInfoTextStyle.copyWith(
+                                fontSize: 30.0,
                               ),
                             ),
-                          )
-                        : Expanded(
-                            child: Column(
-                              children: [
-                                Expanded(
-                                  child: Consumer<ValueNotifier<String>>(
-                                    builder: (_, valueNotifier, __) {
-                                      String query = valueNotifier.value
-                                          .trim()
-                                          .toLowerCase();
-
-                                      if (query.isNotEmpty) {
-                                        _filteredClubs.clear();
-                                        _filteredClubs = _clubs
-                                            .where((c) =>
-                                                c?.hostName
-                                                    ?.toLowerCase()
-                                                    ?.contains(query) ??
-                                                false ||
-                                                    c.clubName
-                                                        .toLowerCase()
-                                                        .contains(query))
-                                            .toList();
-                                      }
-
-                                      /*
-                                      * An animated switcher is used to smooth
-                                      * the transition between the "Nothing Found" widget
-                                      * and the ListView containing club items widget
-                                      * */
-
-                                      return AnimatedSwitcher(
-                                        duration:
-                                            const Duration(milliseconds: 200),
-                                        reverseDuration:
-                                            const Duration(milliseconds: 200),
-                                        child: query.isNotEmpty &&
-                                                _filteredClubs.isEmpty
-
-                                            /* if filtered result is empty */
-
-                                            ? Center(
-                                                child: Text(
-                                                  'Nothing Found',
-                                                  style: AppStyles
-                                                      .clubItemInfoTextStyle
-                                                      .copyWith(
-                                                    fontSize: 30.0,
-                                                  ),
-                                                ),
-                                              )
-
-                                            /* list the club items, if present */
-
-                                            : ListView.separated(
-                                                physics:
-                                                    const BouncingScrollPhysics(),
-                                                padding: const EdgeInsets.only(
-                                                  bottom: 15.0,
-                                                ),
-                                                itemBuilder: (_, index) {
-                                                  var club = query.isNotEmpty
-                                                      ? _filteredClubs[index]
-                                                      : _clubs[index];
-
-                                                  return InkWell(
-                                                    onTap: () => this.openClub(
-                                                        context, club),
-                                                    onLongPress: () =>
-                                                        _showClubOptions(
-                                                      club,
-                                                      ctx,
-                                                    ),
-                                                    child: ClubItem(
-                                                      club: club,
-                                                    ),
-                                                  );
-                                                },
-                                                separatorBuilder: (_, __) =>
-                                                    SizedBox(height: 10.0),
-                                                itemCount: query.isNotEmpty
-                                                    ? _filteredClubs.length
-                                                    : _clubs.length,
-                                              ),
-                                      );
-                                    },
-                                  ),
-                                ),
-                              ],
-                            ),
                           ),
-              ],
-            ),
+                        )
+                      : Expanded(
+                          child: ListView.separated(
+                            physics: const BouncingScrollPhysics(),
+                            padding: const EdgeInsets.only(
+                              bottom: 15.0,
+                            ),
+                            itemBuilder: (_, index) {
+                              var club = _clubs[index];
+
+                              return InkWell(
+                                onTap: () => this.openClub(context, club),
+                                onLongPress: () => _showClubOptions(
+                                  club,
+                                  ctx,
+                                ),
+                                child: ClubItem(
+                                  club: club,
+                                ),
+                              );
+                            },
+                            separatorBuilder: (_, __) =>
+                                const SizedBox(height: 10.0),
+                            itemCount: _clubs.length,
+                          ),
+                        ),
+            ],
           ),
         ),
       ),

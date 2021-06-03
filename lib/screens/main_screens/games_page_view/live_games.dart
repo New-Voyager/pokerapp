@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 
@@ -22,23 +23,35 @@ class _LiveGamesScreenState extends State<LiveGamesScreen> {
   bool _isLoading = true;
   List<GameModelNew> liveGames = [];
 
+  Timer _refreshTimer;
+
+  Future<void> _fillLiveGames() async {
+    print('fetching live games');
+    liveGames = await GameService.getLiveGamesNew();
+  }
+
   @override
   void initState() {
+    super.initState();
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       TestService.isTesting ? _loadTestLiveGames() : _fetchLiveGames();
     });
-    super.initState();
+
+    // THIS IS A TEMPORARY SOLUTION
+    _refreshTimer = Timer.periodic(const Duration(seconds: 5), (timer) async {
+      await _fillLiveGames();
+      setState(() {});
+    });
   }
 
   _fetchLiveGames() async {
-    // Load actual games from server graphql
-    liveGames.clear();
     ConnectionDialog.show(
-        context: context, loadingText: AppStringsNew.LoadingGamesText);
-    liveGames.addAll(await GameService.getLiveGamesNew());
-    setState(() {
-      _isLoading = false;
-    });
+      context: context,
+      loadingText: AppStringsNew.LoadingGamesText,
+    );
+    await _fillLiveGames();
+    setState(() => _isLoading = false);
     ConnectionDialog.dismiss(context: context);
   }
 
@@ -59,6 +72,12 @@ class _LiveGamesScreenState extends State<LiveGamesScreen> {
       _isLoading = false;
     });
     ConnectionDialog.dismiss(context: context);
+  }
+
+  @override
+  void dispose() {
+    _refreshTimer?.cancel();
+    super.dispose();
   }
 
   @override
