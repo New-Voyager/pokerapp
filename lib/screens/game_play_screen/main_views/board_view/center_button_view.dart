@@ -44,7 +44,6 @@ class CenterButtonView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: Viren, please fix this correctly
     final seatChange = Provider.of<SeatChangeNotifier>(context, listen: true);
     if (this.gameStatus == AppConstants.GAME_PAUSED &&
         !seatChange.seatChangeInProgress) {
@@ -118,51 +117,56 @@ class CenterButtonView extends StatelessWidget {
   }
 
   Widget newGameButtons(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 20.0,
-            vertical: 10.0,
+    return Consumer<GameContextObject>(builder: (context, gameContext, _) {
+      if (gameContext.isAdmin()) {
+        return Container();
+      }
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 20.0,
+              vertical: 10.0,
+            ),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20.0),
+              color: Colors.black.withOpacity(0.50),
+            ),
+            child: Wrap(
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: [
+                CustomTextButton(
+                  text: 'Start',
+                  onTap: this.onStartGame,
+                ),
+              ],
+            ),
           ),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20.0),
-            color: Colors.black.withOpacity(0.50),
+          SizedBox(
+            width: 10,
           ),
-          child: Wrap(
-            crossAxisAlignment: WrapCrossAlignment.center,
-            children: [
-              CustomTextButton(
-                text: 'Start',
-                onTap: this.onStartGame,
-              ),
-            ],
+          Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 20.0,
+              vertical: 10.0,
+            ),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20.0),
+              color: Colors.black.withOpacity(0.50),
+            ),
+            child: Wrap(
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: [
+                CustomTextButton(
+                  text: 'Terminate',
+                  onTap: _onTerminatePress,
+                ),
+              ],
+            ),
           ),
-        ),
-        SizedBox(
-          width: 10,
-        ),
-        Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 20.0,
-            vertical: 10.0,
-          ),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20.0),
-            color: Colors.black.withOpacity(0.50),
-          ),
-          child: Wrap(
-            crossAxisAlignment: WrapCrossAlignment.center,
-            children: [
-              CustomTextButton(
-                text: 'Terminate',
-                onTap: _onTerminatePress,
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
+        ],
+      );
+    });
   }
 }

@@ -65,10 +65,13 @@ class _FooterViewState extends State<FooterView>
           mainAxisSize: MainAxisSize.min,
           children: [
             /* hand analyse view */
-            HandAnalyseView(
-              widget.gameCode,
-              widget.clubCode,
-            ),
+            Consumer<GameContextObject>(builder: (context, gameContext, _) {
+              return HandAnalyseView(
+                widget.gameCode,
+                widget.clubCode,
+                gameContext,
+              );
+            }),
 
             /* hole card view & footer action view */
             !me
