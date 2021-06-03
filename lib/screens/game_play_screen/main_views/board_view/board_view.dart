@@ -18,6 +18,7 @@ import 'package:pokerapp/screens/game_play_screen/seat_view/animating_widgets/st
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/utils/numeric_keyboard.dart';
+import 'package:pokerapp/utils/numeric_keyboard2.dart';
 import 'package:pokerapp/widgets/round_raised_button.dart';
 import 'package:provider/provider.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/popup_buttons.dart';
@@ -349,7 +350,7 @@ class _BoardViewState extends State<BoardView> {
     final gameInfo = gameState.gameInfo;
 
     /* use numeric keyboard to get buyin */
-    double value = await NumericKeyboard.show(
+    double value = await NumericKeyboard2.show(
       context,
       title: 'Buy In (${gameInfo.buyInMin} - ${gameInfo.buyInMax})',
       min: gameInfo.buyInMin.toDouble(),

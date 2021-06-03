@@ -91,7 +91,7 @@ class _GameChatState extends State<GameChat> {
     Future.delayed(Duration(milliseconds: waitTime), () {
       log('new scrolling to bottom ${_scrollController.position.maxScrollExtent}');
       _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
-      
+
       // _scrollController.animateTo(_scrollController.position.maxScrollExtent,
       //     duration: Duration(milliseconds: scrollTime),
       //     curve: Curves.easeInOut);
@@ -153,7 +153,7 @@ class _GameChatState extends State<GameChat> {
       scrollToBottomOfChat(scrollTime: 100, waitTime: 200);
       log("position: ${_scrollController.position} scrolled to bottom");
     });
-      
+
     height = MediaQuery.of(context).size.height;
     return Container(
       color: AppColors.screenBackgroundColor,
