@@ -267,28 +267,27 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
           }),
           // Pending approval
           Consumer2<PendingApprovalsState, GameContextObject>(
-            builder: (context, value, gameContextObj, child) {
-              // log('gameContextObj.isAdmin() = ${gameContextObj.isAdmin()}');
-              //  log("VALUE ======== ${value.totalPending}");
-              return          !widget.gameContextObject.isAdmin()
-              ? Container()
-              : Consumer<PendingApprovalsState>(
-                  // Pending approval
-                  builder: (context, value, child) {
-                    //  log("VALUE ======== ${value.totalPending}");
-                    return IconWithBadge(
-                      child: Icon(
-                        Icons.pending_actions,
-                        size: 32,
-                        color: AppColors.appAccentColor,
-                      ),
-                      count: value.totalPending,
-                      onClickFunction: onClickPendingBuyInApprovals,
-                    );
-                },
-              );
-            }
-          ),
+              builder: (context, value, gameContextObj, child) {
+            // log('gameContextObj.isAdmin() = ${gameContextObj.isAdmin()}');
+            //  log("VALUE ======== ${value.totalPending}");
+            return !widget.gameContextObject.isAdmin()
+                ? Container()
+                : Consumer<PendingApprovalsState>(
+                    // Pending approval
+                    builder: (context, value, child) {
+                      //  log("VALUE ======== ${value.totalPending}");
+                      return IconWithBadge(
+                        child: Icon(
+                          Icons.pending_actions,
+                          size: 32,
+                          color: AppColors.appAccentColor,
+                        ),
+                        count: value.totalPending,
+                        onClickFunction: onClickPendingBuyInApprovals,
+                      );
+                    },
+                  );
+          }),
         ],
       ),
     );

@@ -74,7 +74,7 @@ class _VoiceTextWidgetState extends State<VoiceTextWidget> {
           setState(() {
             _longPressed = false;
           });
-          
+
           widget.recordStop.call(11 - _recSeconds);
         },
         child: _longPressed

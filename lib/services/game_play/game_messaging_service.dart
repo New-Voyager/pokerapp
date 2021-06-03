@@ -228,9 +228,8 @@ class ChatMessage {
         msg.text = message['text'].toString();
       } else if (msg.type == 'AUDIO') {
         if (message['audio'] != null) {
-          msg.audio = base64Decode(message['audio'].toString());    
-            msg.duration = message['duration'] ?? 0;
-
+          msg.audio = base64Decode(message['audio'].toString());
+          msg.duration = message['duration'] ?? 0;
         } else {
           return null;
         }

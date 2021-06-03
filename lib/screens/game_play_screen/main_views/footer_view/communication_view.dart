@@ -148,9 +148,9 @@ class _CommunicationViewState extends State<CommunicationView> {
       VoiceTextWidget(
         recordStart: () => record(),
         recordStop: (int dur) {
-          return stopRecording(false,dur);
+          return stopRecording(false, dur);
         },
-        recordCancel: () => stopRecording(true,0),
+        recordCancel: () => stopRecording(true, 0),
       ),
     ];
   }
@@ -242,7 +242,7 @@ class _CommunicationViewState extends State<CommunicationView> {
     }
   }
 
-  stopRecording(bool cancelled,int duration) async {
+  stopRecording(bool cancelled, int duration) async {
     if (await AudioRecorder.isRecording) {
       log('Stop recording');
       await AudioRecorder.stop();

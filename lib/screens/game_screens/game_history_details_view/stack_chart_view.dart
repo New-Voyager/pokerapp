@@ -6,8 +6,9 @@ import 'package:pokerapp/resources/app_assets.dart';
 class StackChartView extends StatelessWidget {
   final List<PlayerStack> stack;
   final bool animate;
+  final Function onTap;
 
-  StackChartView(this.stack, {this.animate});
+  StackChartView(this.stack, this.onTap, {this.animate});
 
   charts.NumericTickProviderSpec getTickerSpec() {
     final maxValue = stack.reduce(
@@ -47,6 +48,17 @@ class StackChartView extends StatelessWidget {
             )),
         tickProviderSpec: getTickerSpec(),
       ),
+                            behaviors: [
+                              charts.SelectNearest(),
+                            ],      
+      selectionModels: [
+                            charts.SelectionModelConfig(
+                                  type: charts.SelectionModelType.info,
+                                  changedListener:
+                                      (charts.SelectionModel model) {
+                                        onTap();
+                                  })
+                            ],      
     );
   }
 
@@ -54,7 +66,7 @@ class StackChartView extends StatelessWidget {
   List<charts.Series<PlayerStack, int>> data() {
     return [
       new charts.Series<PlayerStack, int>(
-        id: 'Sales',
+        id: 'Stack',
         colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
         domainFn: (PlayerStack stack, _) => stack.handNum,
         measureFn: (PlayerStack stack, _) => stack.balance,

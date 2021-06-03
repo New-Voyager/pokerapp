@@ -355,6 +355,12 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
     );
   }
 
+  openStackDetails() {
+    log('Opening points chart');
+    Navigator.pushNamed(context, Routes.pointsLineChart,
+        arguments: _gameDetail);
+  }
+
   Widget stackTile() {
     if (loadingDone) {
       // loading done
@@ -362,9 +368,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
     }
     return GestureDetector(
       onTap: () {
-        log('Opening points chart');
-        Navigator.pushNamed(context, Routes.pointsLineChart,
-            arguments: _gameDetail);
+        openStackDetails();
       },
       child: Container(
         height: 150.0,
@@ -405,7 +409,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
                             fontWeight: FontWeight.w400,
                           ),
                         )
-                      : StackChartView(_gameDetail.stack)),
+                      : StackChartView(_gameDetail.stack, openStackDetails)),
               // PointsLineChart()),
               visible: loadingDone,
             ),

@@ -65,26 +65,26 @@ class _FooterViewState extends State<FooterView>
         return Stack(
           children: [
             /* hand analyse view */
-            Consumer<GameContextObject>(builder: (context, gameContext, _) {              
+            Consumer<GameContextObject>(builder: (context, gameContext, _) {
               return Positioned(
                 left: 0,
                 top: 0,
                 child: HandAnalyseView(
                   widget.gameCode,
                   widget.clubCode,
+                  gameContext,
                 ),
-              );            
+              );
             }),
 
             /* hole card view & footer action view */
             !me
                 ? Spacer()
                 : HoleCardsViewAndFooterActionView(
-                      gameContext: widget.gameContext,
-                      playerModel: players.me,
-                      showActionWidget: actionState.show,
-                    ),
-                  
+                    gameContext: widget.gameContext,
+                    playerModel: players.me,
+                    showActionWidget: actionState.show,
+                  ),
 
             /* communication widgets */
             Positioned(
