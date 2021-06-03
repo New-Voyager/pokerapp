@@ -5,7 +5,7 @@ class AppAssets {
   //     'assets/images/table/horizontal_table.png';
   // static const String verticalTable = 'assets/images/table/vertical_table.png';
 
-  static const String horizontalTable = 'assets/images/table/bar_table.png';
+  static const String horizontalTable = 'assets/images/table/red.png';
   static const String verticalTable = 'assets/images/table/vertical_table.png';
 
   static const String cityBackground1 =
@@ -24,6 +24,8 @@ class AppAssets {
   static const String fontFamilyNoticia = 'NoticiaText';
   static const String fontFamilySourceSerif = 'SourceSerif';
   static const String fontFamilyTrocchi = 'Trocchi';
+  static const String fontFamilyDomine = 'Domine';
+  static const String fontFamilyLiterata = 'Literata';
 
   static const String fireworkGif = 'assets/images/fireworks.gif';
 

@@ -18,6 +18,7 @@ import 'package:pokerapp/screens/game_play_screen/seat_view/animating_widgets/st
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/utils/numeric_keyboard.dart';
+import 'package:pokerapp/utils/numeric_keyboard2.dart';
 import 'package:pokerapp/widgets/round_raised_button.dart';
 import 'package:provider/provider.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/popup_buttons.dart';
@@ -127,7 +128,7 @@ class _BoardViewState extends State<BoardView> {
               final flipSpeed = tableState.flipSpeed;
 
               return Transform.scale(
-                scale: boardAttributes.centerScale,
+                scale: 1 / boardAttributes.tableScale,
                 child: CenterView(
                   centerKey,
                   tableState.twoBoardsNeeded,
@@ -143,6 +144,7 @@ class _BoardViewState extends State<BoardView> {
                         ? tableState.potChipsUpdates.toString()
                         : '0.0',
                   ),
+                  tableState.gameStatus,
                   tableState.tableStatus,
                   valueNotifierFooterStatus.value == FooterStatus.Result,
                   widget.onStartGame,
@@ -231,7 +233,7 @@ class _BoardViewState extends State<BoardView> {
           }
 
           return Visibility(
-            key: boardViewKey,
+              key: boardViewKey,
               visible: showPopupButtons,
               child: Align(
                   alignment: Alignment.topLeft,
@@ -247,30 +249,31 @@ class _BoardViewState extends State<BoardView> {
     final mySeat = gameState.mySeat(providerContext);
     final myState = gameState.getMyState(context);
 
-    log('Rebuild buyin button: Status: ${myState.status.toString()}');
+    //log('Rebuild buyin button: Status: ${myState.status.toString()}');
     bool showBuyInButton = true;
     if (mySeat == null || mySeat.isOpen || mySeat.player == null) {
-      log('mySeat == null || mySeat.isOpen || mySeat.player == null');
+      //log('mySeat == null || mySeat.isOpen || mySeat.player == null');
       return SizedBox.shrink();
     }
 
     if (!(mySeat.player.showBuyIn || mySeat.player.waitForBuyInApproval)) {
-      log('!(mySeat.player.showBuyIn || mySeat.player.waitForBuyInApproval)');
+      //log('!(mySeat.player.showBuyIn || mySeat.player.waitForBuyInApproval)');
       return SizedBox.shrink();
     }
 
     if (!showBuyInButton) {
-      log('!showBuyInButton');
+      //log('!showBuyInButton');
       return SizedBox.shrink();
     }
-    log('Rebuilding buyin button');
+    //log('Rebuilding buyin button');
 
     final widget = ListenableProvider<Seat>(
       create: (_) => mySeat,
       builder: (context, _) => Consumer<Seat>(builder: (_, seat, __) {
-        if (seat.player.status == AppConstants.WAIT_FOR_BUYIN ||
+        if (seat.player != null &&
+                seat.player.status == AppConstants.WAIT_FOR_BUYIN ||
             seat.player.status == AppConstants.WAIT_FOR_BUYIN_APPROVAL) {
-          log('Rebuilding buyin button now');
+          //log('Rebuilding buyin button now');
           return Transform.translate(
               offset: Offset(0, 10),
               child: RoundRaisedButtonWithTimer(
@@ -283,7 +286,7 @@ class _BoardViewState extends State<BoardView> {
                     GamePlayScreenUtilMethods.breakBuyIntimer(context, seat),
               ));
         } else {
-          log('Cannot rebuild buyin button now ${seat.player.status}');
+          //log('Cannot rebuild buyin button now ${seat.player.status}');
           return SizedBox.shrink();
         }
       }),
@@ -297,7 +300,7 @@ class _BoardViewState extends State<BoardView> {
     final gameState = GameState.getState(providerContext);
     final mySeat = gameState.mySeat(providerContext);
     if (mySeat?.player != null) {
-      log('Rebuild sitBackButton button: Status: ${mySeat.player.status.toString()}');
+      //log('Rebuild sitBackButton button: Status: ${mySeat.player.status.toString()}');
     }
 
     if (mySeat == null || mySeat.isOpen || mySeat.player == null) {
@@ -307,7 +310,7 @@ class _BoardViewState extends State<BoardView> {
     // log('Rebuild buyin button: Status: ${myState.status.toString()}');
 
     if (!mySeat.player.inBreak) {
-      log('mySeat.player.inBreak');
+      //log('mySeat.player.inBreak');
       return SizedBox.shrink();
     }
 
@@ -317,7 +320,7 @@ class _BoardViewState extends State<BoardView> {
         if (!(seat.player.status == AppConstants.IN_BREAK ||
             seat.player.status == AppConstants.WAIT_FOR_BUYIN ||
             seat.player.status == AppConstants.WAIT_FOR_BUYIN_APPROVAL)) {
-          log('Rebuild sitBackButton seat.player.status == AppConstants.IN_BREAK');
+          //log('Rebuild sitBackButton seat.player.status == AppConstants.IN_BREAK');
           return SizedBox.shrink();
         }
         log('Rebuild sitBackButton show');
@@ -347,7 +350,7 @@ class _BoardViewState extends State<BoardView> {
     final gameInfo = gameState.gameInfo;
 
     /* use numeric keyboard to get buyin */
-    double value = await NumericKeyboard.show(
+    double value = await NumericKeyboard2.show(
       context,
       title: 'Buy In (${gameInfo.buyInMin} - ${gameInfo.buyInMax})',
       min: gameInfo.buyInMin.toDouble(),

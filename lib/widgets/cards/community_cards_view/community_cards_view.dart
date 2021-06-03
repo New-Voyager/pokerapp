@@ -14,13 +14,11 @@ class CommunityCardsView extends StatelessWidget {
   final List<CardObject> cardsOther;
   final bool twoBoardsNeeded;
   final bool horizontal;
-  final int speed;
 
   CommunityCardsView({
     @required this.cards,
     this.cardsOther,
     this.twoBoardsNeeded,
-    this.speed = 500,
     this.horizontal = true,
   });
 
@@ -32,7 +30,9 @@ class CommunityCardsView extends StatelessWidget {
       /* if empty, make dummy cards to calculate positions */
       /* why I choose 17? No reason!!! */
       for (int i = 0; i < 5; i++) {
-        reversedList.add(CardHelper.getCard(17));
+        final card = CardHelper.getCard(17);
+        card.cardType = CardType.CommunityCard;
+        reversedList.add(card);
       }
     }
 
@@ -76,14 +76,12 @@ class CommunityCardsView extends StatelessWidget {
     if (boardCards?.length == 3)
       return FlopCommunityCards(
         flopCards: getCommunityCards(boardCards),
-        speed: speed,
       );
 
     if (boardCards?.length == 4 || boardCards?.length == 5)
       return TurnOrRiverCommunityCards(
         key: ValueKey(boardCards.length),
         riverOrTurnCards: getCommunityCards(boardCards),
-        speed: speed,
       );
 
     /* default case - this is done to bake our data for animating in the future */

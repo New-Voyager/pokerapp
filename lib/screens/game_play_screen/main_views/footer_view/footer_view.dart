@@ -65,10 +65,13 @@ class _FooterViewState extends State<FooterView>
           mainAxisSize: MainAxisSize.min,
           children: [
             /* hand analyse view */
-            HandAnalyseView(
-              widget.gameCode,
-              widget.clubCode,
-            ),
+            Consumer<GameContextObject>(builder: (context, gameContext, _) {
+              return HandAnalyseView(
+                widget.gameCode,
+                widget.clubCode,
+                gameContext,
+              );
+            }),
 
             /* hole card view & footer action view */
             !me
@@ -89,7 +92,7 @@ class _FooterViewState extends State<FooterView>
 
             /* seat confirm widget */
             // FIXME: BUG INTRODUCED HERE, CHECK HOW THE SEAT CHANGE CONFIRMED WIDGET IS DISPLAYED
-            Consumer2<HostSeatChange, GameContextObject>(
+            Consumer2<SeatChangeNotifier, GameContextObject>(
               builder: (
                 context,
                 hostSeatChange,
@@ -101,7 +104,8 @@ class _FooterViewState extends State<FooterView>
                               hostSeatChange.seatChangeHost
                       ? Align(
                           alignment: Alignment.center,
-                          child: SeatChangeConfirmWidget(),
+                          child: SeatChangeConfirmWidget(
+                              gameCode: widget.gameContext.gameState.gameCode),
                         )
                       : SizedBox.shrink(),
             )

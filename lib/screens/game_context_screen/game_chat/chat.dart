@@ -14,6 +14,7 @@ import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:pokerapp/widgets/chat_text_field.dart';
 import 'package:pokerapp/widgets/emoji_picker_widget.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:flutter/scheduler.dart';
 
 import 'game_giphys.dart';
 
@@ -53,18 +54,11 @@ class _GameChatState extends State<GameChat> {
     super.initState();
 
     //chatMessages.addAll(widget.chatService.messages.reversed);
-    scrollToBottomOfChat(scrollTime: 100, waitTime: 200);
-
     widget.chatService.listen(onText: (ChatMessage message) {
-      print("text dsa ${message.text}");
-
-      setState(() {
-        //   chatMessages.add(message);
-      });
+      log("${message.text} position: ${_scrollController.position}");
+      _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+      scrollToBottomOfChat(scrollTime: 1, waitTime: 1);
     }, onGiphy: (ChatMessage giphy) {
-      setState(() {
-        //  chatMessages.add(giphy);
-      });
       scrollToBottomOfChat(scrollTime: 1, waitTime: 1);
     });
 
@@ -95,9 +89,12 @@ class _GameChatState extends State<GameChat> {
 
   scrollToBottomOfChat({int waitTime = 1, int scrollTime = 1}) {
     Future.delayed(Duration(milliseconds: waitTime), () {
-      _scrollController.animateTo(_scrollController.position.maxScrollExtent,
-          duration: Duration(milliseconds: scrollTime),
-          curve: Curves.easeInOut);
+      log('new scrolling to bottom ${_scrollController.position.maxScrollExtent}');
+      _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+
+      // _scrollController.animateTo(_scrollController.position.maxScrollExtent,
+      //     duration: Duration(milliseconds: scrollTime),
+      //     curve: Curves.easeInOut);
     });
   }
 
@@ -149,6 +146,14 @@ class _GameChatState extends State<GameChat> {
 
   @override
   Widget build(BuildContext context) {
+    debugPrint('GameChat: rebuilding');
+
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      log("position: ${_scrollController.position}");
+      scrollToBottomOfChat(scrollTime: 100, waitTime: 200);
+      log("position: ${_scrollController.position} scrolled to bottom");
+    });
+
     height = MediaQuery.of(context).size.height;
     return Container(
       color: AppColors.screenBackgroundColor,
@@ -183,6 +188,7 @@ class _GameChatState extends State<GameChat> {
               padding: const EdgeInsets.all(2.0),
               controller: _scrollController,
               itemCount: widget.chatService.messages.length,
+              scrollDirection: Axis.vertical,
               physics: BouncingScrollPhysics(),
               reverse: true,
               shrinkWrap: true,

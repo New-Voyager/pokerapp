@@ -186,6 +186,14 @@ class Players extends ChangeNotifier {
     });
   }
 
+  void addStackWithValueSilent(int seatNo, int newStack) {
+    int idx = _players.indexWhere((p) => p.seatNo == seatNo);
+    if (idx == -1) {
+      return;
+    }
+    _players[idx].stack += newStack;
+  }
+
   void updateStackWithValueSilent(int seatNo, int newStack) {
     int idx = _players.indexWhere((p) => p.seatNo == seatNo);
     if (idx == -1) {

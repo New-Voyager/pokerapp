@@ -17,19 +17,22 @@ import 'package:pokerapp/models/game_play_models/provider_models/table_state.dar
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
 import 'package:pokerapp/models/player_info.dart';
+import 'package:pokerapp/screens/game_play_screen/pop_ups/seat_change_confirmation_pop_up.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_service.dart';
 import 'package:pokerapp/services/test/hand_messages.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:pokerapp/utils/formatter.dart';
+import 'package:pokerapp/utils/numeric_keyboard2.dart';
 import 'package:provider/provider.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/main.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
 
 import 'iap_test.dart';
 
 class TestService {
-  static get isTesting {
+  static bool get isTesting {
     return false;
   }
 
@@ -120,6 +123,10 @@ class TestService {
           playerInSeats.add(player);
         }
       }
+
+      // this removes a player from middle
+      playerInSeats.removeAt(4);
+
       _gameInfo.playersInSeats = playerInSeats;
 
       final resultData =
@@ -167,7 +174,7 @@ class TestService {
     tableState.notifyAll();
   }
 
-  /*static Future<void> clearBoardCards() async {
+  static Future<void> clearBoardCards() async {
     final tableState = _getTableState();
 
     tableState.clear();
@@ -179,7 +186,7 @@ class TestService {
 
     tableState.addTurnOrRiverCard(
       1,
-      CardHelper.getCard(148),
+      CardHelper.getCard(162),
     );
 
     tableState.notifyAll();
@@ -190,7 +197,7 @@ class TestService {
 
     tableState.addFlopCards(
       1,
-      [130, 82, 193].map<CardObject>((e) => CardHelper.getCard(e)).toList(),
+      [130, 152, 193].map<CardObject>((e) => CardHelper.getCard(e)).toList(),
     );
     tableState.notifyAll();
   }
@@ -412,6 +419,25 @@ class TestService {
     //await HandActionService.handle(context: _context, message: dealStartedMessage());
   }
 
+  static void emptySeatDealer() {
+    final gameState = GameState.getState(_context);
+    final seat = gameState.getSeat(_context, 5);
+
+    seat.isDealer = true;
+  }
+
+  static void seatChange() {
+    final hostSeatChange =
+        Provider.of<SeatChangeNotifier>(_context, listen: false);
+
+    /* start animation */
+    hostSeatChange.onSeatDrop(1, 5);
+
+    /* refresh */
+    final gameState = GameState.getState(_context);
+    gameState.refresh(_context);
+  }
+
   static void runItTwiceResult() {
     final resultMessage = runItTwiceMessage();
 
@@ -427,13 +453,13 @@ class TestService {
     final gameState = GameState.getState(_context);
     final TableState tableState = gameState.getTableState(_context);
 
-    */ /* board 1 */ /*
+     /* board 1 */ /*
     tableState.setBoardCards(
       1,
       [50, 50, 50, 50, 50].map((e) => CardHelper.getCard(e)).toList(),
     );
 
-    */ /* board 2 */ /*
+    */ /* board 2 */ 
     tableState.setBoardCards(
       2,
       [50, 50, 50, 50, 50].map((e) => CardHelper.getCard(e)).toList(),
@@ -505,7 +531,7 @@ class TestService {
     final players = gameState.getPlayers(_context);
     players.notifyAll();
 
-    */ /* wait then run fold */ /*
+    /* wait then run fold */ 
     Future.delayed(const Duration(milliseconds: 800)).then((value) => fold());
   }
 
@@ -730,7 +756,6 @@ class TestService {
     }
     await _handActionService.handle(dealerChoiceMessage());
   }
-*/
 
   static List<GameModel> fetchLiveGames() {
     var json = jsonDecode('''{
@@ -797,5 +822,22 @@ class TestService {
     final myState = Provider.of<MyState>(context, listen: false);
     myState.status = PlayerStatus.NOT_PLAYING;
     myState.notify();
+  }
+  
+  static void showSeatChangePrompt() async {
+    final gameState = GameState.getState(_context);
+    final seat5 = gameState.getSeat(_context, 5);
+    seat5.player = null;
+    seat5.notify();
+    gameState.playerSeatChangeInProgress = true;
+
+    SeatChangeConfirmationPopUp.dialog(
+        context: _context, gameCode: 'test', promptSecs: 10);
+  }
+
+  static void showKeyboard() async {
+    final value = await NumericKeyboard2.show(_context,
+        title: 'Buyin amount 30-100', min: 30, max: 100, decimal: false);
+    log('typed value: $value');
   }
 }

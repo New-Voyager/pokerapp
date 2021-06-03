@@ -7,9 +7,11 @@ import 'package:pokerapp/enums/game_status.dart';
 import 'package:pokerapp/enums/player_status.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/hand_history_model.dart';
 import 'package:pokerapp/models/hand_log_model.dart';
 import 'package:pokerapp/models/pending_approvals.dart';
+import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_constants.dart';
@@ -24,8 +26,8 @@ import 'last_hand_analyse_bottomsheet.dart';
 class HandAnalyseView extends StatefulWidget {
   final String gameCode;
   final String clubCode;
-
-  HandAnalyseView(this.gameCode, this.clubCode);
+  final GameContextObject gameContextObject;
+  HandAnalyseView(this.gameCode, this.clubCode, this.gameContextObject);
 
   @override
   _HandAnalyseViewState createState() => _HandAnalyseViewState();
@@ -239,6 +241,8 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
 
   @override
   Widget build(BuildContext context) {
+    log('isAdmin: ${widget.gameContextObject.isAdmin()}');
+
     height = MediaQuery.of(context).size.height;
     bottomSheetHeight = height / 3;
     return Align(
@@ -266,10 +270,13 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
             builder: (context, value, gameContextObj, child) {
               log('gameContextObj.isAdmin() = ${gameContextObj.isAdmin()}');
               //  log("VALUE ======== ${value.totalPending}");
-              return gameContextObj.gameState.myState.gameStatus ==
-                          GameStatus.RUNNING &&
-                      gameContextObj.isAdmin()
-                  ? IconWithBadge(
+              return          !widget.gameContextObject.isAdmin()
+              ? Container()
+              : Consumer<PendingApprovalsState>(
+                  // Pending approval
+                  builder: (context, value, child) {
+                    //  log("VALUE ======== ${value.totalPending}");
+                    return IconWithBadge(
                       child: Icon(
                         Icons.pending_actions,
                         size: 32,
@@ -277,10 +284,11 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                       ),
                       count: value.totalPending,
                       onClickFunction: onClickPendingBuyInApprovals,
-                    )
-                  : SizedBox();
-            },
-          )
+                    );
+                },
+              );
+            }
+          ),
         ],
       ),
     );

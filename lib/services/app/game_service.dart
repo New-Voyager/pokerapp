@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -7,6 +8,7 @@ import 'package:pokerapp/models/game/new_game_model.dart';
 import 'package:pokerapp/models/game_history_model.dart';
 import 'package:pokerapp/models/game_model.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
+import 'package:pokerapp/models/newmodels/game_model_new.dart';
 import 'package:pokerapp/models/seat_change_model.dart';
 import 'package:pokerapp/models/table_record.dart';
 import 'package:pokerapp/models/waiting_list_model.dart';
@@ -257,6 +259,47 @@ class GameService {
       )
     }
     """;
+
+  static String liveGamesNewQuery = """
+query liveGames {
+  liveGames {
+    gameCode
+    gameType
+    clubName
+    buyInMin
+    buyInMax
+    smallBlind
+    bigBlind
+    maxPlayers
+    elapsedTime
+    waitlistCount
+    tableCount
+  }
+}
+    """;
+  static Future<List<GameModelNew>> getLiveGamesNew() async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+    List<GameModelNew> liveGames = [];
+
+    QueryResult result =
+        await _client.query(QueryOptions(documentNode: gql(liveGamesNewQuery)));
+
+    print("result.data ${result.data} ${result.hasException}");
+    if (result.hasException) {
+      log("Exception In GraphQl Response: ${result.exception}");
+    } else {
+      try {
+        result.data['liveGames'].forEach((item) {
+          liveGames.add(GameModelNew.fromJson(item));
+        });
+      } catch (e) {
+        log("Exception in converting to model: $e");
+        return liveGames;
+      }
+    }
+    log("Returning liveGames Count: ${liveGames.length}");
+    return liveGames;
+  }
 
   static Future<bool> beginHostSeatChange(
     String gameCode,
@@ -522,20 +565,45 @@ class GameService {
   }
 
   /* this method confirms the seat change */
-  static Future<bool> confirmSeatChange(String gameCode) async {
+  static Future<bool> confirmSeatChange(String gameCode, int seatNo) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
 
-    String _mutation = """mutation{
-        confirmSeatChange(gameCode: $gameCode)
+    String _mutation = """mutation (\$gameCode: String! \$seatNo: Int!){
+        confirmSeatChange(gameCode: \$gameCode, seatNo: \$seatNo)
       }""";
-
+    Map<String, dynamic> variables = {"gameCode": gameCode, "seatNo": seatNo};
     QueryResult result = await _client.mutate(
-      MutationOptions(documentNode: gql(_mutation)),
+      MutationOptions(
+        documentNode: gql(_mutation),
+        variables: variables,
+      ),
     );
 
     if (result.hasException) return null;
 
     return result.data['confirmSeatChange'];
+  }
+
+  /* this method declines the seat change */
+  static Future<bool> declineSeatChange(String gameCode) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+
+    String _mutation = """mutation (\$gameCode: String!){
+        declineSeatChange(gameCode: \$gameCode)
+      }""";
+    Map<String, dynamic> variables = {
+      "gameCode": gameCode,
+    };
+    QueryResult result = await _client.mutate(
+      MutationOptions(
+        documentNode: gql(_mutation),
+        variables: variables,
+      ),
+    );
+
+    if (result.hasException) return null;
+
+    return result.data['declineSeatChange'];
   }
 
   /* The following method returns back the Game Info Model */
@@ -616,7 +684,9 @@ class GameService {
   }
 
   static Future<String> configureClubGame(
-      String clubCode, NewGameModel input) async {
+    String clubCode,
+    NewGameModel input,
+  ) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
     String _query = """
           mutation (\$clubCode: String!, \$gameInput: GameCreateInput!){
@@ -634,7 +704,9 @@ class GameService {
       MutationOptions(documentNode: gql(_query), variables: variables),
     );
 
+    print(result.exception);
     if (result.hasException) return null;
+
     Map game = (result.data as LazyCacheMap).data['configuredGame'];
     String gameCode = game["gameCode"];
     log('Created game: $gameCode');

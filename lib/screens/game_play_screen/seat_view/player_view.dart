@@ -7,6 +7,7 @@ import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/resources/app_assets.dart';
@@ -50,6 +51,14 @@ class PlayerView extends StatelessWidget {
   }) : super(key: key);
 
   onTap(BuildContext context) async {
+    final seatChangeContext = Provider.of<SeatChangeNotifier>(
+      context,
+      listen: false,
+    );
+
+    if (seatChangeContext != null && seatChangeContext.seatChangeInProgress) {
+      return;
+    }
     log('seat ${seat.serverSeatPos} is tapped');
     if (seat.isOpen) {
       // the player tapped to sit-in
@@ -120,6 +129,8 @@ class PlayerView extends StatelessWidget {
       debugLabel: 'Seat:${seat.serverSeatPos}',
     ); //this.globalKey;
 
+    // the player tapped to see the player profile
+    final gameState = GameState.getState(context);
     bool openSeat = seat.isOpen;
     bool isMe = seat.isMe;
     FooterStatus footerStatus = Provider.of<ValueNotifier<FooterStatus>>(
@@ -134,7 +145,35 @@ class PlayerView extends StatelessWidget {
 
     // if open seat, just show open seat widget
     if (openSeat) {
-      return OpenSeat(seatPos: seat.serverSeatPos, onUserTap: this.onUserTap);
+      bool seatChangeSeat = false;
+      if (gameState.playerSeatChangeInProgress) {
+        seatChangeSeat = seat.serverSeatPos == gameState.seatChangeSeat;
+      }
+
+      final openSeatWidget = OpenSeat(
+        seatPos: seat.serverSeatPos,
+        onUserTap: this.onUserTap,
+        seatChangeInProgress: gameState.playerSeatChangeInProgress,
+        seatChangeSeat: seatChangeSeat,
+      );
+
+      if (seat.isDealer)
+        return Stack(
+          alignment: Alignment.center,
+          children: [
+            // dealer button
+            DealerButtonWidget(
+              seat.serverSeatPos,
+              isMe,
+              GameType.HOLDEM,
+            ),
+
+            // main open seat widget
+            openSeatWidget,
+          ],
+        );
+
+      return openSeatWidget;
     }
 
     final GameInfoModel gameInfo = Provider.of<ValueNotifier<GameInfoModel>>(
@@ -150,7 +189,6 @@ class PlayerView extends StatelessWidget {
       }
     }
 
-    final gameState = GameState.getState(context);
     final boardAttributes = gameState.getBoardAttributes(context);
     seat.betWidgetUIKey = GlobalKey();
 

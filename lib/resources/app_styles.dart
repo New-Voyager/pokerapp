@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/resources/app_assets.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
 
 import 'app_colors.dart';
 
@@ -56,13 +57,13 @@ class AppStyles {
     fontFamily: AppAssets.fontFamilyLato,
     fontWeight: FontWeight.w600,
   );
-  static const cardTextStyle = TextStyle(
-    fontSize: 20.0,
+  static final cardTextStyle = TextStyle(
+    fontSize: 15.0,
     fontWeight: FontWeight.w700,
     fontFamily: AppAssets.fontFamilyTrocchi,
   );
-  static const suitTextStyle = TextStyle(
-    fontSize: 15.0,
+  static final suitTextStyle = TextStyle(
+    fontSize: 40.0,
     fontWeight: FontWeight.w700,
     fontFamily: AppAssets.fontFamilyNoticia,
   );
@@ -166,8 +167,8 @@ class AppStyles {
   );
 
   static const dealerTextStyle = TextStyle(
-    color: Colors.black,
-    fontSize: 12.0,
+    color: Colors.white,
+    fontSize: 10.0,
     fontWeight: FontWeight.w800,
     fontFamily: AppAssets.fontFamilyLato,
   );

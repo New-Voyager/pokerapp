@@ -22,7 +22,7 @@ import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/resources/card_back_assets.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
-import 'package:pokerapp/services/agora/agora.dart';
+//import 'package:pokerapp/services/agora/agora.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
@@ -59,6 +59,62 @@ class GamePlayScreenUtilMethods {
           label: 'set isAdmin false',
           onTap: () => TestService.setIsAdminFalse(),
         ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
+          label: 'Bet Widget',
+          onTap: () => TestService.testBetWidget(),
+        ),        
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
+          label: 'Number Keyboard',
+          onTap: () => TestService.showKeyboard(),
+        ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
+          label: 'Show holecards',
+          onTap: () => TestService.showHoleCards(),
+        ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
+          label: 'addTurnOrRiverCard',
+          onTap: () => TestService.addTurnOrRiverCard(),
+        ),
+
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
+          label: 'Flop',
+          onTap: () => TestService.addFlopCards(),
+        ),
+
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
+          label: 'Reset & fold all players',
+          onTap: () => TestService.resetGameState(),
+        ),
         // SpeedDialChild(
         //   child: Icon(
         //     Icons.adb_rounded,
@@ -68,6 +124,15 @@ class GamePlayScreenUtilMethods {
         //   label: 'Remove showdown cards',
         //   onTap: () => TestService.removeShowDownCards(),
         // ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
+          label: 'set isAdmin true',
+          onTap: () => TestService.setIsAdminTrue(),
+        ),
         SpeedDialChild(
           child: Icon(
             Icons.adb_rounded,
@@ -176,25 +241,6 @@ class GamePlayScreenUtilMethods {
         //   label: 'Hand Message',
         //   onTap: () => TestService.handMessage(),
         // ),
-        SpeedDialChild(
-          child: Icon(
-            Icons.adb_rounded,
-            color: Colors.white,
-          ),
-          backgroundColor: Colors.red,
-          label: 'New Hand',
-          onTap: () => TestService.sendNewHand(),
-        ),
-
-        SpeedDialChild(
-          child: Icon(
-            Icons.adb_rounded,
-            color: Colors.white,
-          ),
-          backgroundColor: Colors.red,
-          label: 'Flop',
-          onTap: () => TestService.addFlopCards(),
-        ),
         SpeedDialChild(
           child: Icon(
             Icons.adb_rounded,
@@ -368,7 +414,7 @@ class GamePlayScreenUtilMethods {
     @required GameState gameState,
     @required GameInfoModel gameInfoModel,
     @required String gameCode,
-    @required Agora agora,
+    //@required Agora agora,
     @required BoardAttributesObject boardAttributes,
     @required GameContextObject gameContextObject,
   }) {
@@ -460,13 +506,13 @@ class GamePlayScreenUtilMethods {
       ),
 
       /* communication provider */
-      ListenableProvider<ValueNotifier<Agora>>(
-        create: (_) => ValueNotifier(agora),
-      ),
+      // ListenableProvider<ValueNotifier<Agora>>(
+      //   create: (_) => ValueNotifier(agora),
+      // ),
 
       /* Provider to deal with host seat change functionality */
-      ListenableProvider<HostSeatChange>(
-        create: (_) => HostSeatChange(),
+      ListenableProvider<SeatChangeNotifier>(
+        create: (_) => SeatChangeNotifier(),
       ),
     ];
 
@@ -483,7 +529,7 @@ class GamePlayScreenUtilMethods {
     if (!(seat.player.status == AppConstants.IN_BREAK ||
         seat.player.status == AppConstants.WAIT_FOR_BUYIN ||
         seat.player.status == AppConstants.WAIT_FOR_BUYIN_APPROVAL)) {
-      log('breakBuyIntimer Rebuild buyin button: seat.player.status: ${seat.player.status}');
+      //log('breakBuyIntimer Rebuild buyin button: seat.player.status: ${seat.player.status}');
       return SizedBox.shrink();
     }
 
@@ -492,7 +538,7 @@ class GamePlayScreenUtilMethods {
       final diff = seat.player.breakTimeExpAt.difference(now);
       return buyInTimer(context, seat, diff.inSeconds);
     }
-    log('breakBuyIntimer Rebuild buyin button: seat.player.action.action: ${seat.player.action.action} seat.player.stack: ${seat.player.stack} seat.player.buyInTimeExpAt: ${seat.player.buyInTimeExpAt}');
+    //log('breakBuyIntimer Rebuild buyin button: seat.player.action.action: ${seat.player.action.action} seat.player.stack: ${seat.player.stack} seat.player.buyInTimeExpAt: ${seat.player.buyInTimeExpAt}');
 
     //log('Rebuild buyin button: buyInTimeExpAt:');
     if (seat.player.action.action != HandActions.ALLIN &&
@@ -500,7 +546,7 @@ class GamePlayScreenUtilMethods {
         seat.player.buyInTimeExpAt != null) {
       final now = DateTime.now().toUtc();
       final diff = seat.player.buyInTimeExpAt.difference(now);
-      log('breakBuyIntimer Rebuild buyin button: buyInTimeExpAt: ${seat.player.buyInTimeExpAt.toIso8601String()} Remaining Diff: ${diff}');
+      //log('breakBuyIntimer Rebuild buyin button: buyInTimeExpAt: ${seat.player.buyInTimeExpAt.toIso8601String()} Remaining Diff: ${diff}');
       return buyInTimer(context, seat, diff.inSeconds);
     } else {
       //log('No buyin and no break in buttons');

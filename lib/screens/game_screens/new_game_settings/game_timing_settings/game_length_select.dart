@@ -15,13 +15,13 @@ class GameLengthSelect extends StatelessWidget {
         elevation: 0.0,
       ),
       body: Consumer<NewGameModelProvider>(builder: (context, data, child) {
-        return IOSLikeCheckList(
-          list: data.gameLengths,
-          selectedIndex: data.selectedGameLength,
-          onTap: (index) {
-            data.selectedGameLength = index;
-          },
-        );
+        // return IOSLikeCheckList(
+        //   list: data.gameLengths,
+        //   selectedIndex: data.selectedGameLength,
+        //   onTap: (index) {
+        //     data.selectedGameLength = index;
+        //   },
+        // );
       }),
     );
   }

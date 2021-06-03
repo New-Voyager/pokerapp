@@ -31,13 +31,13 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  Nats nats;
+  final Nats nats = Nats();
   // Create the initialization Future outside of `build`:
   final Future<FirebaseApp> _initialization = Firebase.initializeApp();
 
   @override
   Widget build(BuildContext context) {
-    this.nats = Nats();
+    // this.nats = Nats();
     return FutureBuilder(
       // Initialize FlutterFire:
       future: _initialization,
@@ -64,9 +64,9 @@ class MyApp extends StatelessWidget {
                 title: 'Poker App',
                 debugShowCheckedModeBanner: false,
                 navigatorKey: navigatorKey,
-                navigatorObservers: [
-                  locator<AnalyticsService>().getAnalyticsObserver()
-                ],
+                // navigatorObservers: [
+                //   locator<AnalyticsService>().getAnalyticsObserver()
+                // ],
                 theme: ThemeData(
                   primarySwatch: Colors.blue,
                   visualDensity: VisualDensity.adaptivePlatformDensity,

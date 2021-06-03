@@ -6,6 +6,7 @@ import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/pulsating_button.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/utils/numeric_keyboard.dart';
+import 'package:pokerapp/utils/numeric_keyboard2.dart';
 import 'package:provider/provider.dart';
 import 'package:sleek_circular_slider/sleek_circular_slider.dart';
 
@@ -22,7 +23,7 @@ class BetWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
-
+    log('slider $width');
     return ListenableProvider<ValueNotifier<double>>(
       create: (_) => ValueNotifier<double>(
         action.minRaiseAmount.toDouble(),
@@ -32,7 +33,6 @@ class BetWidget extends StatelessWidget {
           context,
           listen: false,
         );
-
         return Stack(
           children: [
             /* top */
@@ -43,20 +43,23 @@ class BetWidget extends StatelessWidget {
                   /* (-) button */
                   Expanded(
                     flex: 2,
-                    child: Align(
-                      alignment: Alignment.centerRight,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                        ),
-                        child: IconButton(
-                          icon: Icon(Icons.remove_circle_rounded),
-                          color: Colors.blue,
-                          onPressed: () {
-                            if (valueNotifierVal.value <= action.minRaiseAmount)
-                              return;
-                            valueNotifierVal.value--;
-                          },
+                    child: Transform.translate(
+                      offset: Offset(70, -20),
+                      child: Align(
+                        alignment: Alignment.centerRight,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                          ),
+                          child: IconButton(
+                            icon: Icon(Icons.remove_circle_rounded),
+                            color: Colors.blue,
+                            onPressed: () {
+                              if (valueNotifierVal.value <=
+                                  action.minRaiseAmount) return;
+                              valueNotifierVal.value--;
+                            },
+                          ),
                         ),
                       ),
                     ),
@@ -64,17 +67,18 @@ class BetWidget extends StatelessWidget {
 
                   /* center widget - bet amount, bet button & slider */
                   Expanded(
-                    flex: 3,
+                    flex: 20,
                     child: Stack(
                       children: [
                         /* seek slider */
-                        Align(
-                          alignment: Alignment.center,
-                          child: Container(
-                            margin: EdgeInsets.only(bottom: 16),
-                            height: height / 5,
-                            width: width / 2,
-                            child: sleekSlider(),
+                        Transform.translate(
+                          offset: Offset(0, 20),
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: Container(
+                              margin: EdgeInsets.only(bottom: 16),
+                              child: sleekSlider(),
+                            ),
                           ),
                         ),
 
@@ -90,8 +94,8 @@ class BetWidget extends StatelessWidget {
                               children: [
                                 Consumer<ValueNotifier<double>>(
                                   builder: (_, vnVal, __) => Container(
-                                    width: 70,
-                                    height: 70,
+                                    width: 60,
+                                    height: 60,
                                     child: PulsatingCircleIconButton(
                                       onTap: () =>
                                           onSubmitCallBack?.call(vnVal.value),
@@ -134,22 +138,25 @@ class BetWidget extends StatelessWidget {
                   /* (+) button */
                   Expanded(
                     flex: 2,
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                        ),
-                        child: IconButton(
-                          icon: Icon(
-                            Icons.add_circle_rounded,
+                    child: Transform.translate(
+                      offset: Offset(-80, -20),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
                           ),
-                          color: Colors.blue,
-                          onPressed: () {
-                            if (valueNotifierVal.value >= action.maxRaiseAmount)
-                              return;
-                            valueNotifierVal.value++;
-                          },
+                          child: IconButton(
+                            icon: Icon(
+                              Icons.add_circle_rounded,
+                            ),
+                            color: Colors.blue,
+                            onPressed: () {
+                              if (valueNotifierVal.value >=
+                                  action.maxRaiseAmount) return;
+                              valueNotifierVal.value++;
+                            },
+                          ),
                         ),
                       ),
                     ),
@@ -178,18 +185,21 @@ class BetWidget extends StatelessWidget {
   }
 
   Widget sleekSlider() {
-    // log('min: ${action.minRaiseAmount} max: ${action.maxRaiseAmount} val: $val');
-
     return Consumer<ValueNotifier<double>>(
       builder: (_, vnValue, __) => SleekCircularSlider(
-        onChange: (value) => vnValue.value = value,
+        onChange: (value) {
+          log('min: ${action.minRaiseAmount} max: ${action.maxRaiseAmount} val: ${vnValue.value}');
+          vnValue.value = value.round().toDouble();
+        },
         min: action.minRaiseAmount.toDouble(),
         max: action.maxRaiseAmount.toDouble(),
         initialValue: vnValue.value,
         appearance: CircularSliderAppearance(
-          size: 350,
-          startAngle: 180,
-          angleRange: 180,
+          size: 300,
+          // startAngle: 0,
+          // angleRange: 275,
+          startAngle: 215,
+          angleRange: 110,
           animationEnabled: false,
           infoProperties: InfoProperties(
             mainLabelStyle: TextStyle(
@@ -292,9 +302,10 @@ class BetWidget extends StatelessWidget {
               double min = action.minRaiseAmount.toDouble();
               double max = action.maxRaiseAmount.toDouble();
 
-              final double res = await NumericKeyboard.show(
+              final double res = await NumericKeyboard2.show(
                 context,
-                title: 'Enter your bet/raise amount ($min - $max)',
+                title:
+                    'Enter your bet/raise amount (${action.minRaiseAmount.toString()} - ${action.maxRaiseAmount.toString()})',
                 min: min,
                 max: max,
               );

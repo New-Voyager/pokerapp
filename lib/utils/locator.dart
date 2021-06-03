@@ -5,5 +5,5 @@ import 'package:pokerapp/services/firebase/analytics_service.dart';
 GetIt locator = GetIt.instance;
 
 void setupLocator() {
-  locator.registerLazySingleton(() => AnalyticsService());
+  //locator.registerLazySingleton(() => AnalyticsService());
 }

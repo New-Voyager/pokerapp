@@ -164,6 +164,30 @@ class ClubMessageModel {
     }
   }""";
 
+  static String queryClubMessages2 =
+      """query (\$clubCode: String!, \$next: Int) {
+    clubMessages(clubCode:\$clubCode, pageOptions: {next:\$next}){
+      id
+      messageType
+      clubCode
+      text
+      gameNum
+      handNum
+      giphyLink
+      sender
+      playerTags
+      messageTimeInEpoc
+      sharedHand {
+        handNum
+        gameCode
+        gameType
+        sharedByPlayerId
+        sharedByPlayerUuid
+        sharedByPlayerName
+        data
+      }
+    }
+  }""";
   @override
   String toString() {
     return this.text ?? 'Message';

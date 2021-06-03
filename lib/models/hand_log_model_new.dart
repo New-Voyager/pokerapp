@@ -243,7 +243,7 @@ class GameActions {
   int potStart;
 
   factory GameActions.fromJson(Map<String, dynamic> json) => GameActions(
-        pots: json["pots"].map<int>((e) => int.parse(e.toString())).toList(),
+        pots: json["pots"]?.map<int>((e) => int.parse(e.toString()))?.toList(),
         potStart: json["potStart"],
         actions: List<ActionElement>.from(
             json["actions"].map((x) => ActionElement.fromJson(x))),

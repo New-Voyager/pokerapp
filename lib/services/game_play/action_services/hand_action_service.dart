@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:flutter/material.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
@@ -68,7 +67,7 @@ class RetrySendingMsg {
       DateTime now = DateTime.now();
       final d = now.difference(lastSentTime);
       if (firstAttempt || d.inSeconds >= _retrySeconds) {
-        log('Sending $_messageType again');
+        // log('Sending $_messageType again');
         lastSentTime = now;
         if (_gameComService.active) {
           _gameComService.sendPlayerToHandChannel(_message);
@@ -99,7 +98,7 @@ class RetrySendingMsg {
       var msgAck = data['msgAck'];
       String messageId = msgAck['messageId'].toString();
       if (messageId == _messageId) {
-        log('Received acknowledgement');
+        // log('Received acknowledgement');
         _ackReceived = true;
         return true;
       }
@@ -233,7 +232,7 @@ class HandActionService {
   }
 
   handle(String message) async {
-    log('\n\n$message\n\n');
+    //log('\n\n$message\n\n');
     assert(_gameState != null);
     assert(_context != null);
     assert(message != null && message.isNotEmpty);
@@ -249,7 +248,7 @@ class HandActionService {
     if (closed) {
       return;
     }
-    debugPrint(jsonEncode(data));
+    // debugPrint(jsonEncode(data));
 
     String messageType = data['messageType'];
     if (_retryMsg != null) {
@@ -543,14 +542,19 @@ class HandActionService {
 
     /* marking the dealer */
     int dealerIdx = players.players.indexWhere((p) => p.seatNo == dealerPos);
-    //print('dealer index: $dealerIdx');
-    assert(dealerIdx != -1);
-    players.updatePlayerTypeSilent(
-      dealerIdx,
-      TablePosition.Dealer,
-    );
-    handInfo.notify();
-    players.notifyAll();
+
+    if (dealerIdx == -1) {
+      /* we have a open seat, set the dealer */
+      final Seat seat = _gameState.getSeat(_context, dealerPos);
+      seat.isDealer = true;
+    } else {
+      players.updatePlayerTypeSilent(
+        dealerIdx,
+        TablePosition.Dealer,
+      );
+      handInfo.notify();
+      players.notifyAll();
+    }
 
     /* get a new card back asset to be shown */
     Provider.of<ValueNotifier<String>>(
@@ -565,6 +569,8 @@ class HandActionService {
     // log('display shuffling animation');
     tableState.updateTableStatusSilent(AppConstants.NEW_HAND);
     tableState.notifyAll();
+
+    // TODO: WHY DO WE WAIT HERE?
     await Future.delayed(Duration(milliseconds: 1000));
     tableState.updateTableStatusSilent(AppConstants.CLEAR);
     tableState.notifyAll();
@@ -1098,10 +1104,10 @@ class HandActionService {
       gameState.animateSeatActions();
 
       /* wait for the animation to finish */
-      await Future.delayed(AppConstants.animationDuration);
+      await Future.delayed(AppConstants.chipMovingAnimationDuration);
 
       /* update the actual stack */
-      players.updateStackWithValueSilent(
+      players.addStackWithValueSilent(
         winner.seatNo,
         winner.amount,
       );

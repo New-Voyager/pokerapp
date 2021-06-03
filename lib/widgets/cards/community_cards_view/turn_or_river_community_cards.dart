@@ -13,11 +13,9 @@ import 'package:provider/provider.dart';
 
 class TurnOrRiverCommunityCards extends StatefulWidget {
   final List<Widget> riverOrTurnCards;
-  final int speed;
   TurnOrRiverCommunityCards({
     Key key,
     @required this.riverOrTurnCards,
-    @required this.speed,
   }) : super(key: key);
 
   @override
@@ -34,10 +32,6 @@ class _TurnOrRiverCommunityCardsState extends State<TurnOrRiverCommunityCards> {
 
   bool _isFlipDone;
 
-  Future<void> _delay() => Future.delayed(
-        AppConstants.communityCardAnimationDuration,
-      );
-
   double getDifferenceBetween(int idx1, idx2) {
     return CommunityCardAttribute.getOffsetPosition(idx1).dx -
         CommunityCardAttribute.getOffsetPosition(idx2).dx;
@@ -53,7 +47,6 @@ class _TurnOrRiverCommunityCardsState extends State<TurnOrRiverCommunityCards> {
 
     return CustomFlipCard(
       onFlipDone: onFlipDone,
-      speed: widget.speed,
       globalKey: _globalFlipKey,
       cardWidget: widget.riverOrTurnCards.last,
       cardBackAsset: cardBackAsset,

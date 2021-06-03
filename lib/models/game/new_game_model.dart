@@ -12,15 +12,17 @@ class NewGameConstants {
     GameType.DEALER_CHOICE: "Dealer Choice",
   };
 
-  static const Map<int, String> ACTION_TIMES = {
-    10: "10 Seconds",
-    20: "20 Seconds",
-    30: "30 Seconds",
-    40: "45 Seconds",
-    60: "1 minute",
-    120: "2 minutes",
-    300: "5 minutes",
-  };
+  static const List<int> ACTION_TIMES = [10, 20, 30, 40, 60, 120, 300];
+
+  // static const Map<int, String> ACTION_TIMES = {
+  //   10: "10 Seconds",
+  //   20: "20 Seconds",
+  //   30: "30 Seconds",
+  //   40: "45 Seconds",
+  //   60: "1 minute",
+  //   120: "2 minutes",
+  //   300: "5 minutes",
+  // };
 
   static const Map<GameType, int> MAX_PLAYERS = {
     GameType.HOLDEM: 9,
@@ -32,17 +34,19 @@ class NewGameConstants {
     GameType.DEALER_CHOICE: 9
   };
 
-  static const Map<int, String> GAME_LENGTH = {
-    -1: "Unlimited",
-    60: "1 Hour",
-    120: "2 Hours",
-    240: "4 Hours",
-    360: "6 Hours",
-    480: "8 Hours",
-    600: "10 Hours",
-    900: "15 Hours",
-    1440: "24 Hours",
-  };
+  static const List<int> GAME_LENGTH = [-1, 1, 2, 4, 6, 8, 10, 15, 24];
+
+  // static const Map<int, String> GAME_LENGTH = {
+  //   -1: "Unlimited",
+  //   60: "1 Hour",
+  //   120: "2 Hours",
+  //   240: "4 Hours",
+  //   360: "6 Hours",
+  //   480: "8 Hours",
+  //   600: "10 Hours",
+  //   900: "15 Hours",
+  //   1440: "24 Hours",
+  // };
 }
 
 class NewGameModel {

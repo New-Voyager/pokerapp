@@ -5,6 +5,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:provider/provider.dart';
+import 'package:tuple/tuple.dart';
 
 class DealerButtonWidget extends StatelessWidget {
   final int seatPos;
@@ -20,13 +21,14 @@ class DealerButtonWidget extends StatelessWidget {
 
     final buttonPos = attributes.buttonPos(gameState.gameInfo.maxPlayers);
 
-    final buttonColor = attributes.buttonColor(gameType);
+    //final buttonColor = attributes.buttonColor(gameType);
+    final buttonColor = Tuple2<Color, Color>(Colors.white, Colors.black);
     final textStyle =
         AppStyles.dealerTextStyle.copyWith(color: buttonColor.item2);
     return Transform.translate(
       offset: buttonPos[seatPos],
       child: Container(
-        padding: const EdgeInsets.all(3.0),
+        padding: const EdgeInsets.all(1.0),
         decoration: BoxDecoration(
           color: buttonColor.item1,
           shape: BoxShape.circle,
@@ -34,13 +36,13 @@ class DealerButtonWidget extends StatelessWidget {
             color: buttonColor.item1,
             width: 2.0,
           ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.white24,
-              blurRadius: 2.0,
-              spreadRadius: 2.0,
-            )
-          ],
+          // boxShadow: [
+          //   BoxShadow(
+          //     color: Colors.black, //Colors.white24,
+          //     blurRadius: 1.0,
+          //     spreadRadius: 1.0,
+          //   )
+          // ],
         ),
         child: Text(
           'D',

@@ -21,16 +21,16 @@ class ClubMainScreen extends StatelessWidget {
     @required this.clubCode,
   });
 
-  List<Widget> _buildActions(String clubCode, BuildContext context) => [
-        CustomTextButton(
-          onTap: () => Navigator.pushNamed(
-            context,
-            Routes.new_game_settings,
-            arguments: clubCode,
-          ),
-          text: '+ Create Game',
-        ),
-      ];
+  // List<Widget> _buildActions(String clubCode, BuildContext context) => [
+  //       CustomTextButton(
+  //         onTap: () => Navigator.pushNamed(
+  //           context,
+  //           Routes.new_game_settings,
+  //           arguments: clubCode,
+  //         ),
+  //         text: '+ Create Game',
+  //       ),
+  //     ];
 
   @override
   Widget build(BuildContext context) => FutureBuilder<ClubHomePageModel>(

@@ -37,8 +37,16 @@ class AppConstants {
     milliseconds: 100,
   );
 
+  static const Duration chipMovingAnimationDuration = const Duration(
+    milliseconds: 400,
+  );
+
   static const Duration communityCardAnimationDuration = const Duration(
-    milliseconds: 350,
+    milliseconds: 200,
+  );
+
+  static const Duration communityCardFlipAnimationDuration = const Duration(
+    milliseconds: 200,
   );
 
   static const Duration fastAnimationDuration = const Duration(
@@ -50,7 +58,7 @@ class AppConstants {
   );
 
   static const Duration seatChangeAnimationDuration = const Duration(
-    milliseconds: 1000,
+    milliseconds: 500,
   );
 
   static const Duration popUpAnimationDuration = const Duration(
@@ -77,6 +85,7 @@ class AppConstants {
   static const String redHeart = '♥';
   static const String blackClub = '♣';
   static const String redDiamond = '♦';
+  static const String redHeart2 = '❤';
 
   /* TABLE UPDATE types */
   static const String SeatChangeInProgress = 'SeatChangeInProgress';
@@ -157,4 +166,10 @@ class AppConstants {
 
   static const String ANNOUNCEMENT = 'ANNOUNCEMENT';
   static const String DEALER_CHOICE = 'DEALER_CHOICE';
+
+  /* new message types */
+  static const String PLAYER_SEAT_CHANGE_BEGIN = 'PLAYER_SEAT_CHANGE_BEGIN';
+  static const String PLAYER_SEAT_CHANGE_PROMPT = 'PLAYER_SEAT_CHANGE_PROMPT';
+  static const String PLAYER_SEAT_MOVE = 'PLAYER_SEAT_MOVE';
+  static const String PLAYER_SEAT_CHANGE_DONE = 'PLAYER_SEAT_CHANGE_DONE';
 }

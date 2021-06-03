@@ -23,3 +23,24 @@ class NoMessageWidget extends StatelessWidget {
     );
   }
 }
+
+class CircularProgressWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          'Loading messages...',
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 20.0,
+          ),
+        ),
+        CircularProgressIndicator(),
+        SizedBox(height: 15)
+      ],
+    );
+  }
+}

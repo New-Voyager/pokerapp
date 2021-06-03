@@ -16,7 +16,9 @@ class Screen {
   double height() => size().height;
   double diagonal() {
     Size s = size();
-    return sqrt((s.width * s.width) + (s.height * s.height));
+    final diag = sqrt((s.width * s.width) + (s.height * s.height));
+    debugPrint('screen size: $s, diagonal: ${diag.toString()}');
+    return diag;
   }
 
   //INCHES

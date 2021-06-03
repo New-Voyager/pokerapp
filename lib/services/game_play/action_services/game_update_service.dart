@@ -70,7 +70,7 @@ class GameUpdateService {
     assert(_context != null);
     assert(message != null && message.isNotEmpty);
 
-    debugPrint(message);
+    //debugPrint(message);
     var data = jsonDecode(message);
 //    List<dynamic> messages = data['messages'];
     _messages.addAll([data]);
@@ -83,28 +83,46 @@ class GameUpdateService {
     }
     debugPrint(jsonEncode(data));
     String messageType = data['messageType'];
-    // delegate further actions to sub services as per messageType
-    switch (messageType) {
-      case AppConstants.PLAYER_UPDATE:
-        return handlePlayerUpdate(
-          data: data,
-        );
+    String type = data['type']; // new format used by API server
+    if (messageType != null) {
+      // delegate further actions to sub services as per messageType
+      switch (messageType) {
+        case AppConstants.PLAYER_UPDATE:
+          return handlePlayerUpdate(
+            data: data,
+          );
 
-      case AppConstants.TABLE_UPDATE:
-        return handleTableUpdate(
-          data: data,
-        );
+        case AppConstants.TABLE_UPDATE:
+          return handleTableUpdate(
+            data: data,
+          );
 
-      case AppConstants.HIGH_HAND:
-        return handleHighHand(
-          data: data['highHand'],
-          showNotification: true,
-        );
+        case AppConstants.HIGH_HAND:
+          return handleHighHand(
+            data: data['highHand'],
+            showNotification: true,
+          );
 
-      case AppConstants.GAME_STATUS:
-        return handleUpdateStatus(
-          status: data['status'],
-        );
+        case AppConstants.GAME_STATUS:
+          return handleUpdateStatus(
+            status: data['status'],
+          );
+      }
+    } else if (type != null) {
+      print('\n\n\n\n type: $type \n\n\n\n');
+
+      // new type
+      switch (type) {
+        case AppConstants.PLAYER_SEAT_CHANGE_PROMPT:
+          handlePlayerSeatChangePrompt(data: data);
+          break;
+        case AppConstants.PLAYER_SEAT_MOVE:
+          handlePlayerSeatChangeMove(data: data);
+          break;
+        case AppConstants.PLAYER_SEAT_CHANGE_DONE:
+          handlePlayerSeatChangeDone(data: data);
+          break;
+      }
     }
   }
 
@@ -214,7 +232,9 @@ class GameUpdateService {
     @required var playerUpdate,
   }) {
     int seatNo = playerUpdate['seatNo'];
-    removePlayer(seatNo);
+    if (seatNo != null && seatNo != 0) {
+      removePlayer(seatNo);
+    }
   }
 
   void handlePlayerNotPlaying({
@@ -585,6 +605,7 @@ class GameUpdateService {
     if (player.isMe) {
       SeatChangeConfirmationPopUp.dialog(
         context: _context,
+        gameCode: _gameState.gameCode,
       );
     }
 
@@ -629,15 +650,15 @@ class GameUpdateService {
       listen: false,
     );
 
-    valueNotifierNotModel.value = GeneralNotificationModel(
-      titleText: 'Seat change',
-      subTitleText: 'Host is making changes to the table',
-    );
+    // valueNotifierNotModel.value = GeneralNotificationModel(
+    //   titleText: 'Seat change',
+    //   subTitleText: 'Host is making changes to the table',
+    // );
 
     final gameCode = data["gameCode"].toString();
     final seatChangeHost =
         int.parse(data["tableUpdate"]["seatChangeHost"].toString());
-    final seatChange = Provider.of<HostSeatChange>(_context, listen: false);
+    final seatChange = Provider.of<SeatChangeNotifier>(_context, listen: false);
     seatChange.updateSeatChangeInProgress(true);
     seatChange.updateSeatChangeHost(seatChangeHost);
 
@@ -662,9 +683,10 @@ class GameUpdateService {
     /* remove notification */
     valueNotifierNotModel.value = null;
 
-    final seatChange = Provider.of<HostSeatChange>(_context, listen: false);
+    final seatChange = Provider.of<SeatChangeNotifier>(_context, listen: false);
     seatChange.updateSeatChangeInProgress(false);
     seatChange.notifyAll();
+    _gameState.refresh(_context);
   }
 
   void handleHostSeatChangeMove({
@@ -673,7 +695,8 @@ class GameUpdateService {
     // {"gameId":"18", "gameCode":"CG-LBH8IW24N7XGE5", "messageType":"TABLE_UPDATE", "tableUpdate":{"type":"HostSeatChangeMove", "seatMoves":[{"playerId":"131", "playerUuid":"290bf492-9dde-448e-922d-40270e163649", "name":"rich", "oldSeatNo":6, "newSeatNo":1}, {"playerId":"122", "playerUuid":"c2dc2c3d-13da-46cc-8c66-caa0c77459de", "name":"yong", "oldSeatNo":1, "newSeatNo":6}]}}
     // player is moved, show animation of the move
 
-    final hostSeatChange = Provider.of<HostSeatChange>(_context, listen: false);
+    final hostSeatChange =
+        Provider.of<SeatChangeNotifier>(_context, listen: false);
     var seatMoves = data['tableUpdate']['seatMoves'];
     for (var move in seatMoves) {
       int from = int.parse(move['oldSeatNo'].toString());
@@ -804,6 +827,115 @@ class GameUpdateService {
     }
 
     tableState.notifyAll();
+  }
+
+  void handlePlayerSeatChangePrompt({
+    var data,
+    bool showNotification = false,
+  }) async {
+    if (data == null) return;
+    /*
+      {
+        "type": "PLAYER_SEAT_CHANGE_PROMPT",
+        "gameCode": "test",
+        "playerName": "yong",
+        "playerId": 630,
+        "openedSeat": 4,
+        "playerUuid": "c2dc2c3d-13da-46cc-8c66-caa0c77459de",
+        "expTime": "2021-05-29T22:46:13.000Z",
+        "promptSecs": 10,
+        "requestId": "SEATCHANGE:1622328363754"
+      }    
+    */
+
+    final playerId = data['playerId'];
+    final player = _gameState.getSeatByPlayer(playerId);
+    final promptSecs = int.parse(data['promptSecs'].toString());
+    final openedSeat = int.parse(data['openedSeat'].toString());
+    final gameState = GameState.getState(_context);
+    gameState.playerSeatChangeInProgress = true;
+    gameState.seatChangeSeat = openedSeat;
+    final seat = _gameState.getSeat(_context, openedSeat);
+    seat.notify();
+
+    // is it sent to me ??
+    if (player.isMe) {
+      SeatChangeConfirmationPopUp.dialog(
+          context: _context,
+          gameCode: _gameState.gameCode,
+          openedSeat: openedSeat,
+          promptSecs: promptSecs);
+    }
+    final ValueNotifier<GeneralNotificationModel> valueNotifierNotModel =
+        Provider.of<ValueNotifier<GeneralNotificationModel>>(
+      _context,
+      listen: false,
+    );
+
+    // valueNotifierNotModel.value = GeneralNotificationModel(
+    //   titleText: 'Seat change in progress',
+    //   subTitleText:
+    //       'Seat change prompted ',
+    //   trailingWidget: CountDownTimer(
+    //     remainingTime:
+    //         promptSecs, // TODO: MULTIPLE PLAYERS?
+    //   ),
+    // );
+  }
+
+  void handlePlayerSeatChangeMove({
+    var data,
+    bool showNotification = false,
+  }) async {
+    if (data == null) return;
+    final playerName = data['playerName'];
+    final playerId = data['playerId'];
+    // show animation
+    /*
+      {
+        "type": "PLAYER_SEAT_MOVE",
+        "gameCode": "test",
+        "playerName": "yong",
+        "playerId": 630,
+        "playerUuid": "c2dc2c3d-13da-46cc-8c66-caa0c77459de",
+        "oldSeatNo": 1,
+        "newSeatNo": 3,
+        "requestId": "SEATMOVE:1622328368918"
+      }    
+    */
+    final oldSeatNo = data['oldSeatNo'];
+    final newSeatNo = data['newSeatNo'];
+
+    log('Seat move: player name: $playerName id: $playerId oldSeatNo: $oldSeatNo newSeatNo: $newSeatNo');
+
+    final hostSeatChange =
+        Provider.of<SeatChangeNotifier>(_context, listen: false);
+
+    /* start animation */
+    hostSeatChange.onSeatDrop(oldSeatNo, newSeatNo);
+
+    /* wait for the animation to finish */
+    await Future.delayed(AppConstants.seatChangeAnimationDuration);
+
+    // we refresh, when we get the PLAYER_SEAT_CHANGE_DONE message
+  }
+
+  void handlePlayerSeatChangeDone({
+    var data,
+    bool showNotification = false,
+  }) async {
+    if (data == null) return;
+
+    /*
+      {
+        "type": "PLAYER_SEAT_CHANGE_DONE",
+        "gameCode": "test",
+        "requestId": "SEATMOVE:1622328379110"
+      }    
+    */
+    log('Seat change done');
+    // refresh the table
+    _gameState.refresh(_context);
   }
 
   void resetBoard() async {
