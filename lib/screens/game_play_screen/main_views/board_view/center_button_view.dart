@@ -118,7 +118,7 @@ class CenterButtonView extends StatelessWidget {
 
   Widget newGameButtons(BuildContext context) {
     return Consumer<GameContextObject>(builder: (context, gameContext, _) {
-      if (gameContext.isAdmin()) {
+      if (!gameContext.isAdmin()) {
         return Container();
       }
       return Row(
