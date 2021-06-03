@@ -241,7 +241,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
 
   @override
   Widget build(BuildContext context) {
-    log('isAdmin: ${widget.gameContextObject.isAdmin()}');
+    //log('isAdmin: ${widget.gameContextObject.isAdmin()}');
 
     height = MediaQuery.of(context).size.height;
     bottomSheetHeight = height / 3;
@@ -250,7 +250,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
       child: Column(
         children: [
           Consumer<MyState>(builder: (context, myState, child) {
-            log('myState.gameStatus = ${myState.gameStatus}, myState.status = ${myState.status}');
+            //log('myState.gameStatus = ${myState.gameStatus}, myState.status = ${myState.status}');
             return myState.gameStatus == GameStatus.RUNNING &&
                     myState.status == PlayerStatus.PLAYING
                 ? HandAnalysisCardView(
@@ -268,7 +268,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
           // Pending approval
           Consumer2<PendingApprovalsState, GameContextObject>(
             builder: (context, value, gameContextObj, child) {
-              log('gameContextObj.isAdmin() = ${gameContextObj.isAdmin()}');
+              // log('gameContextObj.isAdmin() = ${gameContextObj.isAdmin()}');
               //  log("VALUE ======== ${value.totalPending}");
               return          !widget.gameContextObject.isAdmin()
               ? Container()
