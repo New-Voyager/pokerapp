@@ -19,6 +19,7 @@ import 'package:pokerapp/services/game_play/action_services/hand_action_service.
 import 'package:pokerapp/services/test/hand_messages.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:pokerapp/utils/formatter.dart';
+import 'package:pokerapp/utils/numeric_keyboard2.dart';
 import 'package:provider/provider.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/main.dart';
@@ -28,7 +29,7 @@ import 'iap_test.dart';
 
 class TestService {
   static bool get isTesting {
-    return false;
+    return true;
   }
 
   static var _showResult = false;
@@ -763,5 +764,11 @@ class TestService {
 
     SeatChangeConfirmationPopUp.dialog(
         context: _context, gameCode: 'test', promptSecs: 10);
+  }
+
+  static void showKeyboard() async {
+    final value = await NumericKeyboard2.show(_context,
+        title: 'Buyin amount 30-100', min: 30, max: 100, decimal: false);
+    log('typed value: $value');
   }
 }

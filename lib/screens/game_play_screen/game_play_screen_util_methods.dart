@@ -56,6 +56,24 @@ class GamePlayScreenUtilMethods {
             color: Colors.white,
           ),
           backgroundColor: Colors.red,
+          label: 'Bet Widget',
+          onTap: () => TestService.testBetWidget(),
+        ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
+          label: 'Number Keyboard',
+          onTap: () => TestService.showKeyboard(),
+        ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
           label: 'Show holecards',
           onTap: () => TestService.showHoleCards(),
         ),
@@ -150,15 +168,6 @@ class GamePlayScreenUtilMethods {
           backgroundColor: Colors.red,
           label: 'Hand Log',
           onTap: () => TestService.handlogView(),
-        ),
-        SpeedDialChild(
-          child: Icon(
-            Icons.adb_rounded,
-            color: Colors.white,
-          ),
-          backgroundColor: Colors.red,
-          label: 'Bet Widget',
-          onTap: () => TestService.testBetWidget(),
         ),
         SpeedDialChild(
           child: Icon(

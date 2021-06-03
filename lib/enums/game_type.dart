@@ -22,7 +22,7 @@ String gameTypeStr(GameType type) {
     case GameType.FIVE_CARD_PLO:
       return AppStringsNew.FiveCardPLOType;
     case GameType.FIVE_CARD_PLO_HILO:
-      return  AppStringsNew.FiveCardPLOHiLoType;
+      return AppStringsNew.FiveCardPLOHiLoType;
     case GameType.ROE:
       return AppStringsNew.ROEType;
     case GameType.DEALER_CHOICE:
