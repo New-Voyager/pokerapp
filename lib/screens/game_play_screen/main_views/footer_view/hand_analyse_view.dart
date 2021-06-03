@@ -3,6 +3,10 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/enums/approval_type.dart';
+import 'package:pokerapp/enums/game_status.dart';
+import 'package:pokerapp/enums/player_status.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/hand_history_model.dart';
 import 'package:pokerapp/models/hand_log_model.dart';
@@ -10,6 +14,7 @@ import 'package:pokerapp/models/pending_approvals.dart';
 import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/icon_with_badge.dart';
 import 'package:pokerapp/services/app/player_service.dart';
@@ -233,6 +238,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
 
   double height;
   double bottomSheetHeight;
+
   @override
   Widget build(BuildContext context) {
     log('isAdmin: ${widget.gameContextObject.isAdmin()}');
@@ -243,13 +249,28 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
       alignment: Alignment.topLeft,
       child: Column(
         children: [
-          HandAnalysisCardView(
-            onClickHandler: onClickViewHand,
-          ),
-          HandAnalysisCardView(
-            onClickHandler: onClickViewHandAnalysis,
-          ),
-          !widget.gameContextObject.isAdmin()
+          Consumer<MyState>(builder: (context, myState, child) {
+            log('myState.gameStatus = ${myState.gameStatus}, myState.status = ${myState.status}');
+            return myState.gameStatus == GameStatus.RUNNING &&
+                    myState.status == PlayerStatus.PLAYING
+                ? HandAnalysisCardView(
+                    onClickHandler: onClickViewHand,
+                  )
+                : SizedBox();
+          }),
+          Consumer<MyState>(builder: (context, myState, child) {
+            return myState.gameStatus == GameStatus.RUNNING
+                ? HandAnalysisCardView(
+                    onClickHandler: onClickViewHandAnalysis,
+                  )
+                : SizedBox();
+          }),
+          // Pending approval
+          Consumer2<PendingApprovalsState, GameContextObject>(
+            builder: (context, value, gameContextObj, child) {
+              log('gameContextObj.isAdmin() = ${gameContextObj.isAdmin()}');
+              //  log("VALUE ======== ${value.totalPending}");
+              return          !widget.gameContextObject.isAdmin()
               ? Container()
               : Consumer<PendingApprovalsState>(
                   // Pending approval
@@ -264,8 +285,10 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                       count: value.totalPending,
                       onClickFunction: onClickPendingBuyInApprovals,
                     );
-                  },
-                ),
+                },
+              );
+            }
+          ),
         ],
       ),
     );

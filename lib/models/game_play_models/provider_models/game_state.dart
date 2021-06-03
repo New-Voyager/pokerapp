@@ -4,6 +4,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:pokerapp/enums/game_status.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/enums/player_status.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
@@ -161,6 +162,12 @@ class GameState {
         players: players,
       ),
     );
+
+    log('In GameState initialize(), _gameInfo.status = ${_gameInfo.status}');
+    if (_gameInfo.status == AppConstants.GAME_ACTIVE) {
+      this._myState.gameStatus = GameStatus.RUNNING;
+      this._myState.notify();
+    }
   }
 
   void setTappedSeatPos(BuildContext context, SeatPos seatPos, Seat seat,
@@ -224,6 +231,7 @@ class GameState {
   }
 
   int get currentHandNum => this._currentHandNum;
+
   set currentHandNum(int handNum) => this._currentHandNum = currentHandNum;
 
   void refresh(BuildContext context) async {
@@ -267,6 +275,7 @@ class GameState {
         player.isMe = true;
       }
     }
+
     players.updatePlayersSilent(playersInSeats);
 
     final tableState = this.getTableState(context);
@@ -276,6 +285,13 @@ class GameState {
     tableState.notifyAll();
     for (Seat seat in this._seats.values) {
       seat.notify();
+    }
+
+    log('In GameState refresh(), _gameInfo.status = ${_gameInfo.status}');
+    if (_gameInfo.status == AppConstants.GAME_ACTIVE &&
+        this._myState.gameStatus != GameStatus.RUNNING) {
+      this._myState.gameStatus = GameStatus.RUNNING;
+      this._myState.notify();
     }
   }
 
@@ -540,6 +556,7 @@ class HandInfoState extends ChangeNotifier {
   }
 
   double get smallBlind => this._smallBlind;
+
   double get bigBlind => this._bigBlind;
 
   update(
@@ -605,6 +622,7 @@ class ServerConnectionState extends ChangeNotifier {
   ConnectionStatus _status = ConnectionStatus.UNKNOWN;
 
   ConnectionStatus get status => this._status;
+
   set status(ConnectionStatus status) => this._status = status;
 
   notify() {

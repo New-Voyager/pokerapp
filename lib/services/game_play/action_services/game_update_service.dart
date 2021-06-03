@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
+import 'package:pokerapp/enums/game_status.dart';
 import 'package:pokerapp/enums/player_status.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
@@ -21,6 +22,7 @@ import 'package:pokerapp/screens/game_play_screen/widgets/overlay_notification.d
 import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/game_play/graphql/seat_change_service.dart';
+import 'package:pokerapp/services/janus/janus.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:provider/provider.dart';
 
@@ -29,6 +31,7 @@ class GameUpdateService {
   final BuildContext _context;
   final List<dynamic> _messages = [];
   bool closed = false;
+
   GameUpdateService(this._context, this._gameState);
 
   void close() {
@@ -269,6 +272,7 @@ class GameUpdateService {
     if (seat != null && seat.player != null && seat.player.isMe) {
       _gameState.myState.status = PlayerStatus.NOT_PLAYING;
       _gameState.myState.notify();
+      _gameState.janusEngine.leaveChannel();
     }
 
     _gameState.removePlayer(_context, seatNo);
@@ -459,6 +463,17 @@ class GameUpdateService {
   }) {
     var playerUpdate = data['playerUpdate'];
     String newUpdate = playerUpdate['newUpdate'];
+    String playerStatus = playerUpdate['status'];
+    String playerId = playerUpdate['playerId'];
+
+    if (playerId == _gameState.currentPlayerId.toString()) {
+      if (playerStatus == AppConstants.PLAYING &&
+          _gameState.myState.status != PlayerStatus.PLAYING) {
+        _gameState.myState.status = PlayerStatus.PLAYING;
+        _gameState.myState.notify();
+      }
+    }
+
     var jsonData = jsonEncode(newUpdate);
     log(jsonData);
     switch (newUpdate) {
