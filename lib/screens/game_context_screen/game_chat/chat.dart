@@ -383,7 +383,7 @@ class _GameChatState extends State<GameChat> {
       if (!_recordingCancelled) {
         // send the audio data in the chat channel
         var data = await outputFile.readAsBytes();
-        widget.chatService.sendAudio(data);
+        widget.chatService.sendAudio(data,3);
       }
       outputFile.deleteSync();
     }

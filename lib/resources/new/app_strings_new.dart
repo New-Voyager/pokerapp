@@ -20,4 +20,6 @@ class AppStringsNew {
   static const View = "VIEW";
   static const LiveGamesTitle = "Live Games";
   static const ChooseGameTitle = "Choose Game";
+
+  static const VoiceCancelMessage = "< Slide to cancel ";
 }

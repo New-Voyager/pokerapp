@@ -263,13 +263,26 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
   void onAudio(ChatMessage message) async {
     log('Audio message is sent ${message.messageId} from player ${message.fromPlayer}');
+    final gameState = GameState.getState(_providerContext);
+    final seat = gameState.getSeatByPlayer(message.fromPlayer);
     if (_audioPlayer != null &&
         message.audio != null &&
         message.audio.length > 0) {
-      try {
-        await _audioPlayer.playBytes(message.audio);
-      } catch (e) {
-        // ignore the exception
+      if (seat != null && seat.player != null) {
+        seat.player.talking = true;
+        seat.notify();
+        try {
+          int res = await _audioPlayer.playBytes(message.audio);
+          if (res == 1) {
+            log("Pls wait for ${message.duration} seconds");
+            await Future.delayed(Duration(seconds: message.duration ?? 0));
+          }
+
+          seat.player.talking = false;
+          seat.notify();
+        } catch (e) {
+          // ignore the exception
+        }
       }
     }
   }

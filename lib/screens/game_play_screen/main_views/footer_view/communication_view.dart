@@ -8,6 +8,8 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
+import 'package:pokerapp/screens/game_play_screen/widgets/voice_text_widget.dart';
 //import 'package:pokerapp/services/agora/agora.dart';
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:provider/provider.dart';
@@ -69,37 +71,44 @@ class _CommunicationViewState extends State<CommunicationView> {
     }
 
     var ret = ListenableProvider<Seat>(
-        create: (_) => currentPlayerSeat,
-        builder: (context, _) => Consumer<Seat>(
-              builder: (_, seat, __) {
-                var children = [];
+      create: (_) => currentPlayerSeat,
+      builder: (context, _) => Consumer<Seat>(
+        builder: (_, seat, __) {
+          List<Widget> children = [];
 
-                children = janusAudioWidgets(gameState, seat);
+          if (gameState.audioConfEnabled) {
+            children.addAll(janusAudioWidgets(gameState, seat));
+          } else {
+            children.addAll(voiceTextWidgets(widget.chatService, seat));
+          }
+          children.add(
+            GestureDetector(
+              onTap: widget.chatVisibilityChange,
+              child: Container(
+                padding: EdgeInsets.all(5),
+                child: Icon(
+                  Icons.chat,
+                  size: 35,
+                  color: AppColors.appAccentColor,
+                ),
+              ),
+            ),
+          );
 
-                children.add(GestureDetector(
-                  onTap: widget.chatVisibilityChange,
-                  child: Container(
-                    padding: EdgeInsets.all(5),
-                    child: Icon(
-                      Icons.chat,
-                      size: 35,
-                      color: AppColors.appAccentColor,
-                    ),
-                  ),
-                ));
-
-                return Column(
-                  children: children,
-                );
-              },
-            ));
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: children,
+          );
+        },
+      ),
+    );
     return ret;
   }
 
   janusAudioWidgets(GameState gameState, Seat seat) {
-    return [
+    return <Widget>[
       Padding(
-        padding: const EdgeInsets.all(5.0),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
         child: Icon(
           Icons.circle,
           size: 15,
@@ -126,6 +135,25 @@ class _CommunicationViewState extends State<CommunicationView> {
     ];
   }
 
+  voiceTextWidgets(GameMessagingService chatService, Seat seat) {
+    return <Widget>[
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
+        child: Icon(
+          Icons.circle,
+          size: 15,
+          color: Colors.grey,
+        ),
+      ),
+      VoiceTextWidget(
+        recordStart: () => record(),
+        recordStop: (int dur) {
+          return stopRecording(false,dur);
+        },
+        recordCancel: () => stopRecording(true,0),
+      ),
+    ];
+  }
   // liveAudioWidgets(ValueNotifier<Agora> agora) {
   //   return [
   //     Padding(
@@ -208,7 +236,28 @@ class _CommunicationViewState extends State<CommunicationView> {
       if (!_recordingCancelled) {
         // send the audio data in the chat channel
         var data = await outputFile.readAsBytes();
-        widget.chatService.sendAudio(data);
+        widget.chatService.sendAudio(data, 2);
+      }
+      outputFile.deleteSync();
+    }
+  }
+
+  stopRecording(bool cancelled,int duration) async {
+    if (await AudioRecorder.isRecording) {
+      log('Stop recording');
+      await AudioRecorder.stop();
+      var outputFile = File(_audioFile);
+      if (outputFile.existsSync()) {
+        var length = await outputFile.length();
+        log('File length: $length');
+      }
+
+      if (!cancelled) {
+        // send the audio data in the chat channel
+        var data = await outputFile.readAsBytes();
+        log("DURATION 1 :   :  $duration");
+
+        widget.chatService.sendAudio(data, duration);
       }
       outputFile.deleteSync();
     }
