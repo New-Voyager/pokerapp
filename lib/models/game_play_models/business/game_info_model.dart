@@ -89,7 +89,8 @@ class GameInfoModel {
     this.handToPlayerChannel = data['handToPlayerChannel'];
     this.gameChatChannel = data['gameChatChannel'];
 
-    this.audioConfEnabled = data['audioConfEnabled'];
+// TODO bug always giving true
+    this.audioConfEnabled = false; // data['audioConfEnabled'];
     this.janusUrl = data['janusUrl'];
     this.janusRoomId = data['janusRoomId'];
     this.janusRoomPin = data['janusRoomPin'];

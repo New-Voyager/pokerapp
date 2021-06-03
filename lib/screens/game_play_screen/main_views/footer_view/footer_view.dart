@@ -61,30 +61,37 @@ class _FooterViewState extends State<FooterView>
       builder: (_, players, actionState, __) {
         bool me = players.me != null;
 
-        return Row(
-          mainAxisSize: MainAxisSize.min,
+        // Need to use stack instead of Row to accomodate Voice text widget
+        return Stack(
           children: [
             /* hand analyse view */
-            HandAnalyseView(
-              widget.gameCode,
-              widget.clubCode,
+            Positioned(
+              left: 0,
+              top: 0,
+              child: HandAnalyseView(
+                widget.gameCode,
+                widget.clubCode,
+              ),
             ),
 
             /* hole card view & footer action view */
             !me
                 ? Spacer()
-                : Expanded(
-                    child: HoleCardsViewAndFooterActionView(
+                : HoleCardsViewAndFooterActionView(
                       gameContext: widget.gameContext,
                       playerModel: players.me,
                       showActionWidget: actionState.show,
                     ),
-                  ),
+                  
 
             /* communication widgets */
-            CommunicationView(
-              widget.chatVisibilityChange,
-              widget.gameContext.gameComService.gameMessaging,
+            Positioned(
+              right: 0,
+              top: 0,
+              child: CommunicationView(
+                widget.chatVisibilityChange,
+                widget.gameContext.gameComService.gameMessaging,
+              ),
             ),
 
             /* seat confirm widget */
