@@ -495,7 +495,9 @@ class _GamePlayScreenState extends State<GamePlayScreen>
                                 : SizedBox.shrink(),
 
                             // header section
-                            HeaderView(_gameState),
+                            HeaderView(
+                              gameCode: widget.gameCode,
+                            ),
                             // empty space to highlight the background view
                             SizedBox(
                               width: width,

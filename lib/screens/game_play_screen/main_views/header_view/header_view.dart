@@ -8,8 +8,11 @@ import 'package:pokerapp/screens/game_play_screen/main_views/header_view/header_
 import 'package:provider/provider.dart';
 
 class HeaderView extends StatelessWidget {
-  final GameState gameState;
-  HeaderView(this.gameState);
+  final String gameCode;
+
+  HeaderView({
+    @required this.gameCode,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -45,6 +48,9 @@ class HeaderView extends StatelessWidget {
                   Column(
                     children: [
                       /* game code */
+                      HeaderViewUtilWidgets.buildText('Game Code: $gameCode'),
+
+                      /* game title */
                       HeaderViewUtilWidgets.buildText(title),
 
                       /* hand num */
@@ -81,8 +87,8 @@ class HeaderView extends StatelessWidget {
                             await showModalBottomSheet(
                               context: context,
                               isScrollControlled: true,
-                              builder: (ctx) =>
-                                  GameOptionsBottomSheet(gameState),
+                              builder: (ctx) => GameOptionsBottomSheet(
+                                  GameState.getState(ctx)),
                             );
                           },
                           child: Container(
