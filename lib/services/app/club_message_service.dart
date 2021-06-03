@@ -28,44 +28,49 @@ class ClubMessageService {
     _timer?.cancel();
   }
 
+  static Future<int> _fetchData(
+      String clubCode, int next, List<ClubMessageModel> _messages) async {
+    String _query = ClubMessageModel.queryClubMessages(clubCode, next: next);
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+
+    /* messages query */
+    QueryResult result = await _client.query(
+      QueryOptions(
+        documentNode: gql(_query),
+      ),
+    );
+    bool newMessagesAdded = false;
+    if (!result.hasException) {
+      var jsonResponse = result.data['clubMessages'];
+      final newMessages = jsonResponse
+          .map<ClubMessageModel>(
+              (var messageItem) => ClubMessageModel.fromJson(messageItem))
+          .toList();
+      if (newMessages.length > 0) {
+        newMessagesAdded = true;
+      }
+      _messages.addAll(newMessages);
+      for (final message in _messages) {
+        if (message.id > next) {
+          next = message.id;
+        }
+      }
+    }
+    log('querying messages: next: $next newMessagesAdded: $newMessagesAdded');
+    return next;
+  }
+
   static Stream<List<ClubMessageModel>> pollMessages(String clubCode) {
     if (_stream == null || _stream.isClosed)
       _stream = StreamController<List<ClubMessageModel>>.broadcast();
 
+    int next = 0;
+    List<ClubMessageModel> _messages = [];
     if (_timer == null || !_timer.isActive) {
-      int next = 0;
-      List<ClubMessageModel> _messages = [];
       _timer = Timer.periodic(AppConstants.clubMessagePollDuration, (_) async {
-        String _query =
-            ClubMessageModel.queryClubMessages(clubCode, next: next);
-        GraphQLClient _client = graphQLConfiguration.clientToQuery();
-
-        /* messages query */
-        QueryResult result = await _client.query(
-          QueryOptions(
-            documentNode: gql(_query),
-          ),
-        );
-        bool newMessagesAdded = false;
-        if (!result.hasException) {
-          var jsonResponse = result.data['clubMessages'];
-          final newMessages = jsonResponse
-              .map<ClubMessageModel>(
-                  (var messageItem) => ClubMessageModel.fromJson(messageItem))
-              .toList();
-          if (newMessages.length > 0) {
-            newMessagesAdded = true;
-          }
-          _messages.addAll(newMessages);
-          for (final message in _messages) {
-            if (message.id > next) {
-              next = message.id;
-            }
-          }
-        }
-        log('querying messages: next: $next newMessagesAdded: $newMessagesAdded');
-
-        if (newMessagesAdded && !_stream.isClosed) {
+        int len = _messages.length;
+        next = await _fetchData(clubCode, next, _messages);
+        if (_messages.length != len && !_stream.isClosed) {
           _stream.sink.add(_messages.reversed.toList());
         }
       });

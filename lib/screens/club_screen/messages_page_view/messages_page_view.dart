@@ -117,9 +117,7 @@ class _MessagesPageViewState extends State<MessagesPageView> {
               stream: ClubMessageService.pollMessages(widget.clubCode),
               builder: (_, snapshot) {
                 if (!snapshot.hasData || _players == null)
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
+                  return CircularProgressWidget();
 
                 if (snapshot.data.isEmpty) return NoMessageWidget();
 
