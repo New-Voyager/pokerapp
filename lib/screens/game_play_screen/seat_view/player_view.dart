@@ -251,7 +251,7 @@ class PlayerView extends StatelessWidget {
                     _buildDisplayCardsWidget(seat, vnFooterStatus.value),
               ),
               Transform.translate(
-                  offset: Offset(0, 30),
+                  offset: Offset(70, 40),
                   child:
                       GamePlayScreenUtilMethods.breakBuyIntimer(context, seat)),
 

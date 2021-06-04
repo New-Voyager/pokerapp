@@ -274,17 +274,13 @@ class _BoardViewState extends State<BoardView> {
                 seat.player.status == AppConstants.WAIT_FOR_BUYIN ||
             seat.player.status == AppConstants.WAIT_FOR_BUYIN_APPROVAL) {
           //log('Rebuilding buyin button now');
-          return Transform.translate(
-              offset: Offset(0, 10),
-              child: RoundRaisedButtonWithTimer(
-                buttonText: 'Buyin',
-                color: Colors.blueGrey,
-                verticalPadding: 1,
-                fontSize: 15,
-                onButtonTap: () async => {await onBuyin(context)},
-                timerWidget:
-                    GamePlayScreenUtilMethods.breakBuyIntimer(context, seat),
-              ));
+          return RoundRaisedButtonWithTimer(
+            buttonText: 'Buyin',
+            color: Colors.blueGrey,
+            verticalPadding: 1,
+            fontSize: 15,
+            onButtonTap: () async => {await onBuyin(context)},
+          );
         } else {
           //log('Cannot rebuild buyin button now ${seat.player.status}');
           return SizedBox.shrink();
