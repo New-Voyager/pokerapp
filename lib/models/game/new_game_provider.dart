@@ -319,5 +319,5 @@ class NewGameModelProvider extends ChangeNotifier {
   set audioConference(bool value) {
     settings.audioConference = value;
     notifyListeners();
-  }  
+  }
 }
