@@ -75,6 +75,7 @@ class NewGameModel {
   bool botGame = true;
   Rewards rewards;
   bool muckLosingHand = false;
+  bool audioConference = false;
   List<GameType> roeGames = [];
   List<GameType> dealerChoiceGames = [];
 
@@ -132,6 +133,7 @@ class NewGameModel {
     runItTwice = json['runItTwiceAllowed'];
     roeGames = json['roeGames'];
     dealerChoiceGames = json['dealerChoiceGames'];
+    audioConference = json['audioConfEnabled'];
   }
 
   Map<String, dynamic> toJson() {
@@ -154,6 +156,7 @@ class NewGameModel {
     data['botGame'] = this.botGame;
     data['runItTwiceAllowed'] = this.runItTwice;
     data['muckLosingHand'] = this.muckLosingHand;
+    data['audioConfEnabled'] = this.audioConference;
 
     if (this.gameType == GameType.ROE) {
       data['roeGames'] = this
