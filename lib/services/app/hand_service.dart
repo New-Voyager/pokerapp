@@ -19,6 +19,7 @@ class HandService {
             totalPot    
             summary
             handTime
+            authorized
           }
           winningHands: myWinningHands(gameCode: \$gameCode) {
             handNum
@@ -29,6 +30,7 @@ class HandService {
             totalPot    
             summary
             handTime
+            authorized
           }          
           players: gamePlayers(gameCode: \$gameCode) {
               id
@@ -41,6 +43,7 @@ class HandService {
         query (\$gameCode: String! \$handNum: String!) {
           handResult: specificHandHistory(gameCode: \$gameCode, handNum: \$handNum) {
             data
+            authorized
             totalPot
           }  
           players: gamePlayers(gameCode: \$gameCode) {
@@ -59,6 +62,7 @@ class HandService {
       query lasthand(\$gameCode: String!) {
         hand: lastHandHistory(gameCode: \$gameCode) {
           data
+          authorized
           totalPot
         }
         players: gamePlayers(gameCode: \$gameCode) {

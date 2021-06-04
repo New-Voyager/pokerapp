@@ -41,6 +41,7 @@ class HandHistoryItem {
   List<int> community;
   List<int> community1;
   String handTime;
+  bool authorized;
 }
 
 class HandHistoryListModel extends ChangeNotifier {
@@ -61,7 +62,7 @@ class HandHistoryListModel extends ChangeNotifier {
       item.noCards = int.parse(summary['noCards'].toString());
       item.handTime =
           DataFormatter.minuteFormat(int.parse(hand['handTime'].toString()));
-
+      item.authorized = hand['authorized'];
       dynamic boardCards = summary['boardCards'];
 
       if (boardCards != null) {
@@ -128,5 +129,13 @@ class HandHistoryListModel extends ChangeNotifier {
 
   List<HandHistoryItem> getWinningHands() {
     return this.winningHands;
+  }
+
+  List<HandHistoryItem> getMyHands() {
+    // hands this player is authorized to see
+    return this
+        .allHands
+        .where((element) => element.authorized ?? false)
+        .toList();
   }
 }

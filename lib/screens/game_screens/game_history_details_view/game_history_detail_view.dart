@@ -420,6 +420,8 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
   }
 
   Widget balanceTile() {
+    double profit = _gameDetail.profit == null ? 0 : _gameDetail.profit;
+
     return Container(
       height: 140.0,
       decoration: BoxDecoration(
@@ -436,7 +438,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  _gameDetail.profit ?? 0 < 0 ? "Loss" : "Profit",
+                  profit < 0 ? "Loss" : "Profit",
                   style: const TextStyle(
                     fontFamily: AppAssets.fontFamilyLato,
                     color: Colors.white,
