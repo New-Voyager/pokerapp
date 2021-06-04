@@ -41,7 +41,7 @@ class HandLogModelNew {
     //log("HandData : \n $hand");
 
     Data handLog;
-    if (authorized) {
+    if (hand != null) {
       handLog = Data.fromJson(hand);
     }
     final handData = jsonEncode(hand);
