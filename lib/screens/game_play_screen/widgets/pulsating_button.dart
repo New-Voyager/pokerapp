@@ -8,11 +8,13 @@ class PulsatingCircleIconButton extends StatefulWidget {
     @required this.onTap,
     @required this.child,
     this.color,
+    this.radius = 5,
   }) : super(key: key);
 
   final Function onTap;
   final Widget child;
   final Color color;
+  final double radius;
 
   @override
   _PulsatingCircleIconButtonState createState() =>
@@ -75,7 +77,7 @@ class _PulsatingCircleIconButtonState extends State<PulsatingCircleIconButton>
                 // for (int i = 1; i <= 2; i++)
                 BoxShadow(
                   color: bgColor.withOpacity(_animationController.value),
-                  spreadRadius: _animation.value * 5,
+                  spreadRadius: _animation.value * widget.radius,
                 )
               ],
             ),

@@ -212,7 +212,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         if (_gameInfoModel.playersInSeats[i].playerUuid ==
             _currentPlayer.uuid) {
           // player is in the table
-          await this.joinAudio();
+          this.joinAudio();
           break;
         }
       }

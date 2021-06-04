@@ -9,9 +9,11 @@ import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
+import 'package:pokerapp/screens/game_play_screen/widgets/pulsating_button.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/voice_text_widget.dart';
 //import 'package:pokerapp/services/agora/agora.dart';
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
+import 'package:pokerapp/widgets/blinking_widget.dart';
 import 'package:provider/provider.dart';
 
 //TODO: We need to get GameChatService here and record audio and send audio
@@ -30,37 +32,6 @@ class _CommunicationViewState extends State<CommunicationView> {
   bool _recordingCancelled;
   String _audioFile;
 
-  // Widget build2(BuildContext context) {
-  //   var ret = Consumer<ValueNotifier<Agora>>(
-  //     builder: (_, agora, __) {
-  //       bool liveAudio = agora.value != null;
-  //       var children = [];
-  //       if (liveAudio) {
-  //         children.addAll(liveAudioWidgets(agora));
-  //       } else {
-  //         children.addAll(audioChatWidgets());
-  //       }
-
-  //       children.add(GestureDetector(
-  //         onTap: widget.chatVisibilityChange,
-  //         child: Container(
-  //           padding: EdgeInsets.all(5),
-  //           child: Icon(
-  //             Icons.chat,
-  //             size: 35,
-  //             color: AppColors.appAccentColor,
-  //           ),
-  //         ),
-  //       ));
-
-  //       return Column(
-  //         children: children,
-  //       );
-  //     },
-  //   );
-  //   return ret;
-  // }
-
   @override
   Widget build(BuildContext context) {
     final gameState = GameState.getState(context);
@@ -70,17 +41,23 @@ class _CommunicationViewState extends State<CommunicationView> {
       return SizedBox.shrink();
     }
 
-    var ret = ListenableProvider<Seat>(
-      create: (_) => currentPlayerSeat,
-      builder: (context, _) => Consumer<Seat>(
-        builder: (_, seat, __) {
+    // TODO: We need to refactor this code
+    // We need to use AudioConferenceState as provider
+    // Using seat provider here is incorrect
+    final audioConfState = gameState.getAudioConfState();
+    var ret = ListenableProvider<AudioConferenceState>(
+      create: (_) => audioConfState,
+      builder: (context, _) => Consumer<AudioConferenceState>(
+        builder: (_, audioConfState, __) {
           List<Widget> children = [];
-
-          if (gameState.audioConfEnabled) {
-            children.addAll(janusAudioWidgets(gameState, seat));
+          if (audioConfState != null &&
+              (!gameState.audioConfEnabled ||
+                  audioConfState.status == AudioConferenceStatus.FAILED)) {
+            children.addAll(voiceTextWidgets(widget.chatService));
           } else {
-            children.addAll(voiceTextWidgets(widget.chatService, seat));
+            children.addAll(janusAudioWidgets(gameState, audioConfState));
           }
+
           children.add(
             GestureDetector(
               onTap: widget.chatVisibilityChange,
@@ -105,37 +82,67 @@ class _CommunicationViewState extends State<CommunicationView> {
     return ret;
   }
 
-  janusAudioWidgets(GameState gameState, Seat seat) {
+  janusAudioWidgets(GameState gameState, AudioConferenceState state) {
+    Color iconColor = Colors.grey;
+    Color micColor = Colors.grey;
+    Widget mic;
+
+    if (state != null) {
+      if (state.status == AudioConferenceStatus.CONNECTING) {
+        iconColor = Colors.yellow;
+      } else if (state.status == AudioConferenceStatus.CONNECTED) {
+        iconColor = Colors.green;
+        micColor = AppColors.appAccentColor;
+      }
+
+      log('Audio status: ${state.status.toString()} iconColor: ${iconColor.toString()} muted: ${state.muted} talking: ${state.talking}');
+
+      if (state?.talking ?? false) {
+        mic = PulsatingCircleIconButton(
+          child: Icon(
+            Icons.keyboard_voice,
+            color: Colors.white,
+            size: 24,
+          ),
+          onTap: () {},
+          color: Colors.red,
+          radius: 0.5,
+        );
+      }
+    }
+
+    if (mic == null) {
+      mic = Icon(
+        state.muted ? Icons.mic_off : Icons.mic,
+        size: 35,
+        color: micColor,
+      );
+    }
+
     return <Widget>[
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
         child: Icon(
           Icons.circle,
           size: 15,
-          color: AppColors.positiveColor,
+          color: iconColor,
         ),
       ),
       GestureDetector(
         onTap: () {
-          gameState.janusEngine.muteUnmute();
+          if (state.status == AudioConferenceStatus.CONNECTED) {
+            gameState.janusEngine.muteUnmute();
+          }
         },
         child: Container(
           padding: EdgeInsets.all(5),
-          child: Icon(
-            seat.player == null
-                ? Icons.arrow_circle_down
-                : seat.player.muted
-                    ? Icons.mic_off
-                    : Icons.mic,
-            size: 35,
-            color: AppColors.appAccentColor,
-          ),
+          child: mic,
         ),
       ),
     ];
   }
 
-  voiceTextWidgets(GameMessagingService chatService, Seat seat) {
+  voiceTextWidgets(GameMessagingService chatService) {
     return <Widget>[
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
@@ -154,53 +161,6 @@ class _CommunicationViewState extends State<CommunicationView> {
       ),
     ];
   }
-  // liveAudioWidgets(ValueNotifier<Agora> agora) {
-  //   return [
-  //     Padding(
-  //       padding: const EdgeInsets.all(5.0),
-  //       child: Icon(
-  //         Icons.circle,
-  //         size: 15,
-  //         color: AppColors.positiveColor,
-  //       ),
-  //     ),
-  //     GestureDetector(
-  //       onTap: () {
-  //         agora.value.switchMicrophone();
-  //         setState(() {
-  //           agora.value.openMicrophone = !agora.value.openMicrophone;
-  //         });
-  //       },
-  //       child: Container(
-  //         padding: EdgeInsets.all(5),
-  //         child: Icon(
-  //           agora.value.openMicrophone ? Icons.mic : Icons.mic_off,
-  //           size: 35,
-  //           color: AppColors.appAccentColor,
-  //         ),
-  //       ),
-  //     ),
-  //     GestureDetector(
-  //       onTap: () {
-  //         print("speaker ${agora.value.enableSpeakerphone}");
-  //         agora.value.switchSpeakerphone();
-  //         setState(() {
-  //           agora.value.enableSpeakerphone = !agora.value.enableSpeakerphone;
-  //         });
-  //       },
-  //       child: Container(
-  //         padding: EdgeInsets.all(5),
-  //         child: Icon(
-  //           agora.value.enableSpeakerphone
-  //               ? Icons.volume_up
-  //               : Icons.volume_mute,
-  //           size: 35,
-  //           color: AppColors.appAccentColor,
-  //         ),
-  //       ),
-  //     ),
-  //   ];
-  // }
 
   audioChatWidgets() {
     return [

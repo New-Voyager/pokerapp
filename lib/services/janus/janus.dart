@@ -33,6 +33,7 @@ class JanusEngine extends ChangeNotifier {
   JanusPlugin plugin;
   JanusSession session;
   bool initialized = false;
+  bool joined = false;
   GameState gameState;
 
   JanusEngine(
@@ -49,17 +50,19 @@ class JanusEngine extends ChangeNotifier {
     if (initialized) {
       leaveChannel();
     }
+    engine = null;
   }
 
   Widget audioWidget() {
     log('audio widget is called');
-    return Container(
-        color: Colors.red,
-        height: 0,
-        width: 0,
-        child: RTCVideoView(
-          _remoteRenderer,
-        ));
+    return Container();
+    // return Container(
+    //     color: Colors.red,
+    //     height: 0,
+    //     width: 0,
+    //     child: RTCVideoView(
+    //       _remoteRenderer,
+    //     ));
   }
 
   createRoom() async {
@@ -80,13 +83,15 @@ class JanusEngine extends ChangeNotifier {
 
   joinChannel(String janusToken) async {
     initialized = false;
-    return;
-    //return false;
     if (defaultTargetPlatform == TargetPlatform.android) {
       await Permission.microphone.request();
     }
     final start = DateTime.now();
+    log('janus: Change audio status to connecting');
+    this.gameState.getAudioConfState().connecting();
+    log('janus: engine: ${engine}');
     if (engine == null) {
+      log('janus: Using websocket');
       transport = WebSocketJanusTransport(url: janusUrl);
       engine = JanusClient(
           withCredentials: true,
@@ -100,117 +105,163 @@ class JanusEngine extends ChangeNotifier {
                 credential: "")
           ]);
       initialized = true;
-      await _localRenderer.initialize();
-      await _remoteRenderer.initialize();
+    }
+    _localRenderer = new RTCVideoRenderer();
+    _remoteRenderer = new RTCVideoRenderer();
 
-      session = await engine.createSession();
+    log('janus: engine is initialized');
+    await _localRenderer.initialize();
+    await _remoteRenderer.initialize();
+    log('janus: initialized renderes');
 
-      bool audio = true;
-      if (audio) {
-        plugin = await session.attach(JanusPlugins.AUDIO_BRIDGE);
-        await plugin.initializeMediaDevices(
-            mediaConstraints: {"audio": true, "video": false});
+    log('janus: creating session');
+    session = await engine.createSession();
+    log('janus: session is created');
 
-        // create a room
-        if (gameState.currentPlayer.isAdmin()) {
-          createRoom();
-        }
+    bool audio = true;
+    if (audio) {
+      log('janus: attaching audio bridge plugin');
+      plugin = await session.attach(JanusPlugins.AUDIO_BRIDGE);
+      log('janus: attached audio bridge plugin');
+      await plugin.initializeMediaDevices(
+          mediaConstraints: {"audio": true, "video": false});
 
-        var join = {
-          'request': 'join',
-          'room': this.roomId,
-          'pin': 'abcd',
-          'id': playerId
-        };
-        try {
-          final response = await plugin.send(data: join);
-          debugPrint('Joined the room ${jsonEncode(response)}');
-        } catch (err) {
-          debugPrint('No room in that name. error: ${err.toString()}');
-        }
-      } else {
-        // echo test
-        plugin = await session.attach(JanusPlugins.ECHO_TEST);
-        await plugin.initializeMediaDevices(
-            mediaConstraints: {"audio": true, "video": false});
-        var echoAudio = {
-          'audio': true,
-        };
-        try {
-          final response = await plugin.send(data: echoAudio);
-          debugPrint('Joined the room ${jsonEncode(response)}');
-        } catch (err) {
-          debugPrint('No room in that name. error: ${err.toString()}');
-        }
+      // create a room
+      // if (gameState.currentPlayer.isAdmin()) {
+      //   createRoom();
+      // }
+
+      log('janus: joining audio room ${this.roomId}');
+      var join = {
+        'request': 'join',
+        'room': this.roomId,
+        'pin': 'abcd',
+        'id': playerId
+      };
+      try {
+        final response = await plugin.send(data: join);
+        log('janus: joined audio room ${this.roomId} ${jsonEncode(response)}');
+        this.gameState.getAudioConfState().connected();
+        joined = true;
+      } catch (err) {
+        debugPrint('No room in that name. error: ${err.toString()}');
+        log('janus: failed to join audio room ${this.roomId} ${err.toString()}');
+        this.gameState.getAudioConfState().failed();
       }
-      final end = DateTime.now();
-      final duration = end.difference(start);
-      debugPrint(
-          'session id: ${session.sessionId} plugin handle id: ${plugin.handleId}. Time take to initialize: ${duration.inSeconds}');
+    } else {
+      // echo test
+      plugin = await session.attach(JanusPlugins.ECHO_TEST);
+      await plugin.initializeMediaDevices(
+          mediaConstraints: {"audio": true, "video": false});
+      var echoAudio = {
+        'audio': true,
+      };
+      try {
+        final response = await plugin.send(data: echoAudio);
+        debugPrint('Joined the room ${jsonEncode(response)}');
+        this.gameState.getAudioConfState().connected();
+      } catch (err) {
+        debugPrint('No room in that name. error: ${err.toString()}');
+      }
+    }
+    final end = DateTime.now();
+    final duration = end.difference(start);
+    debugPrint(
+        'session id: ${session.sessionId} plugin handle id: ${plugin.handleId}. Time take to initialize: ${duration.inSeconds}');
 
-      // to play audio from the remote
-      plugin.remoteStream.listen((event) {
-        _remoteRenderer.srcObject = event;
-        notifyListeners();
-      });
+    // to play audio from the remote
+    plugin.remoteStream.listen((event) {
+      _remoteRenderer.srcObject = event;
+      notifyListeners();
+    });
 
-      plugin.messages.listen((msg) async {
-        if (msg.event['plugindata'] != null) {
-          if (msg.event['plugindata']['data'] != null) {
-            var data = msg.event['plugindata']['data'];
-            if (data['echotest'] == 'event') {
-              if (data['result'] == 'ok') {
-                RTCSessionDescription offer = await plugin.createOffer(
-                    offerToReceiveVideo: false, offerToReceiveAudio: true);
-                var publish = {"request": "configure"};
-                await plugin.send(data: publish, jsep: offer);
-              }
-            } else if (data['audiobridge'] == 'joined') {
-              // player joined
+    plugin.messages.listen((msg) async {
+      if (msg.event['plugindata'] != null) {
+        if (msg.event['plugindata']['data'] != null) {
+          var data = msg.event['plugindata']['data'];
+          if (data['echotest'] == 'event') {
+            if (data['result'] == 'ok') {
               RTCSessionDescription offer = await plugin.createOffer(
                   offerToReceiveVideo: false, offerToReceiveAudio: true);
               var publish = {"request": "configure"};
               await plugin.send(data: publish, jsep: offer);
-              listParticipants();
-            } else if (data['audiobridge'] == 'event') {
-              debugPrint('audiobridge: $data');
-              var participants = data['participants'];
-              updateParticipants(participants);
-            } else if (data['audiobridge'] == 'talking') {
-              debugPrint('audiobridge: ${data["id"]} is talking');
-              var seat = gameState.getSeatByPlayer(data['id']);
-              seat.player.talking = true;
-              debugPrint('seat info $seat');
-              seat.notify();
-            } else if (data['audiobridge'] == 'stopped-talking') {
-              debugPrint('audiobridge: ${data["id"]} stopped talking');
-              var seat = gameState.getSeatByPlayer(data['id']);
-              seat.player.talking = false;
-              debugPrint('seat info $seat');
-              seat.notify();
             }
+          } else if (data['audiobridge'] == 'joined') {
+            // player joined
+            RTCSessionDescription offer = await plugin.createOffer(
+                offerToReceiveVideo: false, offerToReceiveAudio: true);
+            var publish = {"request": "configure"};
+            await plugin.send(data: publish, jsep: offer);
+            listParticipants();
+          } else if (data['audiobridge'] == 'event') {
+            debugPrint('audiobridge: $data');
+            var participants = data['participants'];
+            updateParticipants(participants);
+          } else if (data['audiobridge'] == 'talking') {
+            var seat = gameState.getSeatByPlayer(data['id']);
+            debugPrint(
+                '${seat.player.isMe} audiobridge: ${data["id"]} is talking');
+            seat.player.talking = true;
+            debugPrint('seat info $seat');
+            if (seat.player.isMe) {
+              gameState.getAudioConfState().talking = true;
+            }
+
+            seat.notify();
+          } else if (data['audiobridge'] == 'stopped-talking') {
+            debugPrint('audiobridge: ${data["id"]} stopped talking');
+            var seat = gameState.getSeatByPlayer(data['id']);
+            seat.player.talking = false;
+            debugPrint('seat info $seat');
+            if (seat.player.isMe) {
+              gameState.getAudioConfState().talking = false;
+            }
+            seat.notify();
           }
         }
+      }
 
-        if (msg.jsep != null) {
-          print('got remote jsep');
-          await plugin.handleRemoteJsep(msg.jsep);
-        }
-      });
-    }
+      if (msg.jsep != null) {
+        print('got remote jsep');
+        await plugin.handleRemoteJsep(msg.jsep);
+      }
+    });
   }
 
   leaveChannel() async {
-    if (this.janusToken.isEmpty) {
+    if (!initialized || !joined) {
       return;
     }
-    log('player $uuid left audio channel');
-    await plugin?.send(data: {"request": "leave"});
-    await plugin?.hangup();
-    plugin?.dispose();
-    session?.dispose();
-    _localRenderer?.dispose();
-    _remoteRenderer?.dispose();
+    try {
+      log('janus: leave ${this.roomId}');
+      if (joined) {
+        log('player $uuid left audio channel');
+        await plugin?.send(data: {"request": "leave"});
+        joined = false;
+      }
+      await plugin?.hangup();
+      if (plugin != null) {
+        plugin?.dispose();
+        plugin = null;
+      }
+
+      if (session != null) {
+        session?.dispose();
+        session = null;
+      }
+      if (_localRenderer != null) {
+        _localRenderer?.dispose();
+        _localRenderer = null;
+      }
+      if (_remoteRenderer != null) {
+        _remoteRenderer?.dispose();
+        _remoteRenderer = null;
+      }
+    } catch (err) {
+      log('Leaving channel caught exception');
+    }
+    initialized = false;
+    joined = false;
     engine = null;
   }
 
@@ -221,6 +272,9 @@ class JanusEngine extends ChangeNotifier {
         if (seat != null) {
           seat.player.muted = element['muted'] ?? false;
           if (seat.player.muted) {
+            if (seat.player.isMe) {
+              gameState.getAudioConfState().muted = true;
+            }
             seat.player.showMicOff = true;
             seat.notify();
             Timer(Duration(seconds: 1), () {
@@ -228,6 +282,9 @@ class JanusEngine extends ChangeNotifier {
               seat.notify();
             });
           } else {
+            if (seat.player.isMe) {
+              gameState.getAudioConfState().muted = false;
+            }
             seat.player.showMicOn = true;
             seat.notify();
             Timer(Duration(seconds: 1), () {
@@ -237,8 +294,17 @@ class JanusEngine extends ChangeNotifier {
           }
           seat.player.talking = element['talking'] ?? false;
           if (seat.player.talking) {
-            log('${seat.player.name} is talking');
+            log('Audio ${seat.player.name} is talking');
+            if (seat.player.isMe) {
+              gameState.getAudioConfState().talking = true;
+            }
+          } else {
+            log('Audio ${seat.player.name} is not talking');
+            if (seat.player.isMe) {
+              gameState.getAudioConfState().talking = false;
+            }
           }
+
           if (seat.player.playerId == playerId) {
             seat.notify();
           }
