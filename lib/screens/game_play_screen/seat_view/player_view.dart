@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
@@ -13,6 +14,7 @@ import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/boar
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/screens/game_play_screen/game_play_screen_util_methods.dart';
+import 'package:pokerapp/widgets/blinking_widget.dart';
 import 'package:pokerapp/widgets/cards/hidden_card_view.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/displaycards.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
@@ -26,7 +28,7 @@ import 'chip_amount_widget.dart';
 import 'dealer_button.dart';
 import 'name_plate_view.dart';
 import 'open_seat.dart';
-
+import 'dart:math' as math;
 /* this contains the player positions <seat-no, position> mapping */
 // Map<int, Offset> playerPositions = Map();
 
@@ -295,19 +297,36 @@ class PlayerView extends StatelessWidget {
                     )
                   : chipAmountWidget,
               // SeatNoWidget(seat),
-              Visibility(
-                  visible: seat.player.talking,
-                  child: Positioned(
-                      top: 0,
-                      right: -20,
-                      child: Container(
-                          width: 22,
-                          height: 22,
-                          color: Colors.transparent,
-                          child: Icon(
-                            Icons.volume_up_outlined,
-                            color: Colors.white70,
-                          )))),
+              talkingAnimation(),
+              // Visibility(
+              //     visible: seat.player.talking,
+              //     child: Positioned(
+              //         bottom: 0,
+              //         left: -15,
+              //         child: Transform.rotate(
+              //           angle: talkingAngle,
+              //           child:
+              //           BlinkWidget(
+              //             children: [
+              //               SvgPicture.asset('assets/images/speak/speak-one.svg', width: 16, height: 16, color: Colors.cyan),
+              //               SvgPicture.asset('assets/images/speak/speak-two.svg', width: 16, height: 16, color: Colors.cyan),
+              //               SvgPicture.asset('assets/images/speak/speak-all.svg', width: 16, height: 16, color: Colors.cyan),
+              //               SvgPicture.asset('assets/images/speak/speak-two.svg', width: 16, height: 16, color: Colors.cyan),
+              //             ],
+              //             )))),
+              // Visibility(
+              //     visible: seat.player.talking,
+              //     child: Positioned(
+              //         top: 0,
+              //         right: -20,
+              //         child: Container(
+              //             width: 22,
+              //             height: 22,
+              //             color: Colors.transparent,
+              //             child: Icon(
+              //               Icons.volume_up_outlined,
+              //               color: Colors.white70,
+              //             )))),
               seat.player.showMicOff
                   ? Positioned(
                       top: 0,
@@ -341,6 +360,40 @@ class PlayerView extends StatelessWidget {
         );
       },
     );
+  }
+
+  Widget talkingAnimation() {
+    double left = null;
+    double right = -20;
+    double talkingAngle = 0;
+    if (seat.uiSeatPos == SeatPos.topRight ||
+        seat.uiSeatPos == SeatPos.middleRight ||
+        seat.uiSeatPos == SeatPos.bottomRight) {
+      left = -15;
+      right = null;
+      talkingAngle = -math.pi;
+    }
+
+    return Visibility(
+        visible: seat.player.talking,
+        child: Positioned(
+            bottom: 0,
+            left: left,
+            right: right,
+            child: Transform.rotate(
+                angle: talkingAngle,
+                child: BlinkWidget(
+                  children: [
+                    SvgPicture.asset('assets/images/speak/speak-one.svg',
+                        width: 16, height: 16, color: Colors.cyan),
+                    SvgPicture.asset('assets/images/speak/speak-two.svg',
+                        width: 16, height: 16, color: Colors.cyan),
+                    SvgPicture.asset('assets/images/speak/speak-all.svg',
+                        width: 16, height: 16, color: Colors.cyan),
+                    SvgPicture.asset('assets/images/speak/speak-two.svg',
+                        width: 16, height: 16, color: Colors.cyan),
+                  ],
+                ))));
   }
 }
 

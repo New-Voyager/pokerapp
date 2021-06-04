@@ -56,6 +56,25 @@ class GamePlayScreenUtilMethods {
             color: Colors.white,
           ),
           backgroundColor: Colors.red,
+          label: 'player talking',
+          onTap: () => TestService.setPlayerTalking(),
+        ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
+          label: 'player stopped talking',
+          onTap: () => TestService.setPlayerStoppedTalking(),
+        ),
+
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
           label: 'set isAdmin false',
           onTap: () => TestService.setIsAdminFalse(),
         ),

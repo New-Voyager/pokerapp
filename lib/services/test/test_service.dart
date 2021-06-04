@@ -832,4 +832,28 @@ class TestService {
         title: 'Buyin amount 30-100', min: 30, max: 100, decimal: false);
     log('typed value: $value');
   }
+
+  static setPlayerTalking() {
+    BuildContext context = _context;
+    final gameState = GameState.getState(_context);
+    for (int seatNo = 1; seatNo <= 9; seatNo++) {
+      final seat1 = gameState.getSeat(_context, seatNo);
+      if (seat1.player != null) {
+        seat1.player.talking = true;
+        seat1.notify();
+      }
+    }
+  }
+
+  static setPlayerStoppedTalking() {
+    BuildContext context = _context;
+    final gameState = GameState.getState(_context);
+    for (int seatNo = 1; seatNo <= 9; seatNo++) {
+      final seat1 = gameState.getSeat(_context, seatNo);
+      if (seat1.player != null) {
+        seat1.player.talking = false;
+        seat1.notify();
+      }
+    }
+  }
 }
