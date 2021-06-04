@@ -272,7 +272,6 @@ class GameUpdateService {
     if (seat != null && seat.player != null && seat.player.isMe) {
       _gameState.myState.status = PlayerStatus.NOT_PLAYING;
       _gameState.myState.notify();
-      _gameState.janusEngine.leaveChannel();
     }
 
     _gameState.removePlayer(_context, seatNo);
