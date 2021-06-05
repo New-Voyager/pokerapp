@@ -27,7 +27,7 @@ class AppStyles {
     fontWeight: FontWeight.w900,
   );
 
-  static const othersMessageDecoration = BoxDecoration(
+  static const myMessageDecoration = BoxDecoration(
     color: AppColors.cardBackgroundColor,
     borderRadius: BorderRadius.only(
       topLeft: Radius.circular(16),
@@ -36,7 +36,7 @@ class AppStyles {
     ),
   );
 
-  static const myMessageDecoration = BoxDecoration(
+  static const otherMessageDecoration = BoxDecoration(
     color: AppColors.cardBackgroundColor,
     borderRadius: BorderRadius.only(
       topLeft: Radius.circular(16),
@@ -44,6 +44,7 @@ class AppStyles {
       bottomRight: Radius.circular(16),
     ),
   );
+
   static final stackPopUpTextStyle = TextStyle(
     color: Colors.blue[900],
     fontSize: 12.0,

@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -50,6 +49,8 @@ class GifListWidget extends StatelessWidget {
           print('$url $previewUrl');
 
           return GestureDetector(
+            // WE SEND BACK THE PREVIEW URL AS WE DONT CARE ABOUT
+            // GOOD QUALITY OF GIFS
             onTap: () => onGifSelect(url),
             child: isLocal
                 ? Image.file(File(previewUrl))

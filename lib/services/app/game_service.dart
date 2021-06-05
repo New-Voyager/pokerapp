@@ -321,7 +321,7 @@ query liveGames {
 
   static Future<List<String>> favouriteGiphies({String gameCode}) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
-    List<String> favouriteGiphies = List<String>();
+    List<String> favouriteGiphies = [];
 
     Map<String, dynamic> variables = {
       "gameCode": gameCode,
