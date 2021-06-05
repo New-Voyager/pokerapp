@@ -193,9 +193,6 @@ class MessageItem extends StatelessWidget {
               ),
               chatWidget: true,
             ),
-            SizedBox(
-              height: 8,
-            ),
             Container(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,

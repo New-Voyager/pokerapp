@@ -46,7 +46,9 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
   @override
   void initState() {
     super.initState();
-    _fetchData();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      _fetchData();
+    });
   }
 
   @override

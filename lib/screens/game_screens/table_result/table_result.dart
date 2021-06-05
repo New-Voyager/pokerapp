@@ -380,6 +380,7 @@ class _TableResultScreenState extends State<TableResultScreen> {
                           unselectedColor: AppColors.screenBackgroundColor,
                           selectedColor: AppColors.appAccentColor,
                           children: tableWidgets,
+                          
                           borderColor: AppColors.appAccentColor,
                           onValueChanged: (int val) {
                             setState(() {

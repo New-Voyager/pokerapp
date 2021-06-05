@@ -8,6 +8,7 @@ import 'package:pokerapp/resources/app_colors.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/formatter.dart';
@@ -82,78 +83,75 @@ class _PointsLineChart extends State<PointsLineChart> {
         ? Center(child: CircularProgressIndicator())
         : Scaffold(
             backgroundColor: AppColors.screenBackgroundColor,
-            appBar: AppBar(
-                leading: IconButton(
-                  icon: Icon(
-                    Icons.arrow_back_ios,
-                    size: 14,
-                    color: AppColors.appAccentColor,
-                  ),
-                  onPressed: () => Navigator.of(context).pop(),
-                ),
-                titleSpacing: 0,
-                elevation: 0.0,
-                backgroundColor: AppColors.screenBackgroundColor,
-                title: Text(
-                  "Stack",
-                  style: AppStyles.titleBarTextStyle,
-                )),
             body: !loadingDone
                 ? Center(child: CircularProgressIndicator())
-                : Stack(
-                    children: [
-                      GestureDetector(
-                        onTapDown: (details) {
-                          setState(() {
-                            debugPrint(
-                                '=====================\n\nStack item tapped');
-                            // _tapPosition = Offset(details.localPosition.dx,
-                            //     details.localPosition.dy);
-                          });
-                        },
-                        child: GestureDetector(
-                          onTapDown: (details) {
-                            debugPrint(
-                                '=====================\n\LineChart item tapped');
-                          },
-                          child: charts.LineChart(
-                            _createSampleData(),
-                            animate: false,
-                            behaviors: [
-                              // new charts.SlidingViewport(),
-                              charts.PanAndZoomBehavior(),
-                              charts.SelectNearest(),
+                : SafeArea(
+                    child: Column(
+                      children: [
+                        BackButtonWidget(
+                          titleText: "Stack Timeline",
+                        ),
+                        Expanded(
+                          child: Stack(
+                            children: [
+                              GestureDetector(
+                                onTapDown: (details) {
+                                  setState(() {
+                                    debugPrint(
+                                        '=====================\n\nStack item tapped');
+                                    // _tapPosition = Offset(details.localPosition.dx,
+                                    //     details.localPosition.dy);
+                                  });
+                                },
+                                child: GestureDetector(
+                                  onTapDown: (details) {
+                                    debugPrint(
+                                        '=====================\n\LineChart item tapped');
+                                  },
+                                  child: charts.LineChart(
+                                    _createSampleData(),
+                                    animate: false,
+                                    behaviors: [
+                                      // new charts.SlidingViewport(),
+                                      charts.PanAndZoomBehavior(),
+                                      charts.SelectNearest(),
+                                    ],
+                                    selectionModels: [
+                                      charts.SelectionModelConfig(
+                                          type: charts.SelectionModelType.info,
+                                          changedListener:
+                                              (charts.SelectionModel model) {
+                                            if (model.hasDatumSelection) {
+                                              setState(() {
+                                                debugPrint(
+                                                    '\n circle tapped: ${model.hasDatumSelection}\n');
+                                                debugPrint(
+                                                    '=====================');
+                                                _selectionModel = model;
+                                                _popUpVisible = true;
+                                              });
+                                            }
+                                          })
+                                    ],
+                                    defaultRenderer:
+                                        new charts.LineRendererConfig(
+                                      includePoints: true,
+                                      radiusPx: 5,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Visibility(
+                                child: _selectionModel != null
+                                    ? _buildPopUp(context)
+                                    : Container(),
+                                visible: _popUpVisible,
+                              ),
                             ],
-                            selectionModels: [
-                              charts.SelectionModelConfig(
-                                  type: charts.SelectionModelType.info,
-                                  changedListener:
-                                      (charts.SelectionModel model) {
-                                    if (model.hasDatumSelection) {
-                                      setState(() {
-                                        debugPrint(
-                                            '\n circle tapped: ${model.hasDatumSelection}\n');
-                                        debugPrint('=====================');
-                                        _selectionModel = model;
-                                        _popUpVisible = true;
-                                      });
-                                    }
-                                  })
-                            ],
-                            defaultRenderer: new charts.LineRendererConfig(
-                              includePoints: true,
-                              radiusPx: 5,
-                            ),
                           ),
                         ),
-                      ),
-                      Visibility(
-                        child: _selectionModel != null
-                            ? _buildPopUp(context)
-                            : Container(),
-                        visible: _popUpVisible,
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
           );
   }
