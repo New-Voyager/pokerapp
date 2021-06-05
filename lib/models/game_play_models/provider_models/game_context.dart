@@ -9,7 +9,10 @@ import 'game_state.dart';
 class GameContextObject extends ChangeNotifier {
   String _gameCode;
   int _gameId;
+
+  PlayerInfo get currentPlayer => _currentPlayer;
   PlayerInfo _currentPlayer;
+
   bool _gameEnded = false;
   GameState gameState;
   HandActionService handActionService;

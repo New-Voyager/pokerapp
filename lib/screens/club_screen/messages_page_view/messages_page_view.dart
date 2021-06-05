@@ -116,10 +116,10 @@ class _MessagesPageViewState extends State<MessagesPageView> {
             child: StreamBuilder<List<ClubMessageModel>>(
               stream: ClubMessageService.pollMessages(widget.clubCode),
               builder: (_, snapshot) {
-                if (!snapshot.hasData || _players == null)
+                if (snapshot.hasError || _players == null)
                   return CircularProgressWidget();
 
-                if (snapshot.data.isEmpty) return NoMessageWidget();
+                if (snapshot.data?.isEmpty ?? true) return NoMessageWidget();
 
                 messages = snapshot.data;
                 var mess = _convert();
@@ -128,16 +128,13 @@ class _MessagesPageViewState extends State<MessagesPageView> {
                   reverse: true,
                   padding: const EdgeInsets.all(5),
                   itemBuilder: (_, int index) {
-                    log("MESSAGE : ${mess[index].messageTimeInEpoc}");
-                    log("currentuser : ${_authModel.name}");
-                    log("players : ${_players}");
                     return MessageItem(
                       messageModel: mess[index],
                       currentUser: _authModel,
                       players: _players,
                     );
                   },
-                  separatorBuilder: (_, __) => const SizedBox(height: 10.0),
+                  separatorBuilder: (_, __) => const SizedBox(height: 5.0),
                   itemCount: snapshot.data.length,
                 );
               },

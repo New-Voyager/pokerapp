@@ -532,9 +532,7 @@ class HandInfoState extends ChangeNotifier {
   double _smallBlind = 0;
   double _bigBlind = 0;
 
-  int get noCards {
-    return _noCards;
-  }
+  int get noCards => _noCards;
 
   String get gameType {
     String gameTypeStr = '';
@@ -560,13 +558,9 @@ class HandInfoState extends ChangeNotifier {
     return gameTypeStr;
   }
 
-  int get handNum {
-    return _handNum;
-  }
+  int get handNum => _handNum;
 
-  void clear() {
-    this._noCards = 0;
-  }
+  void clear() => this._noCards = 0;
 
   double get smallBlind => this._smallBlind;
 

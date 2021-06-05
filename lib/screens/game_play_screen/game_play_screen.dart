@@ -11,7 +11,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/resources/app_constants.dart';
-import 'package:pokerapp/screens/game_context_screen/game_chat/chat.dart';
+import 'package:pokerapp/screens/game_context_screen/game_chat/game_chat.dart';
 import 'package:pokerapp/screens/game_play_screen/game_play_screen_util_methods.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/board_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/decorative_views/background_view.dart';
@@ -335,6 +335,23 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     );
   }
 
+  Widget _buildChatWindow(BuildContext context) =>
+      Consumer<ValueNotifier<bool>>(
+        builder: (_, vnChatVisibility, __) => AnimatedSwitcher(
+          duration: const Duration(milliseconds: 200),
+          child: vnChatVisibility.value
+              ? Align(
+                  child: GameChat(
+                    chatService:
+                        this._gameContextObj.gameComService.gameMessaging,
+                    onChatVisibilityChange: () => toggleChatVisibility(context),
+                  ),
+                  alignment: Alignment.bottomCenter,
+                )
+              : const SizedBox.shrink(),
+        ),
+      );
+
   @override
   Widget build(BuildContext context) {
     if (TestService.isTesting) {
@@ -360,13 +377,14 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     var boardDimensions = BoardView.dimensions(context, isBoardHorizontal);
     return WillPopScope(
       onWillPop: () async {
-        if (GameChat.globalKey.currentState.isEmojiVisible) {
-          GameChat.globalKey.currentState.toggleEmojiKeyboard();
-          return false;
-        } else {
-          Navigator.pop(context);
-          return true;
-        }
+        // if (GameChat.globalKey.currentState.isEmojiVisible) {
+        //   GameChat.globalKey.currentState.toggleEmojiKeyboard();
+        //   return false;
+        // } else {
+        //   Navigator.pop(context);
+        //   return true;
+        // }
+        return true;
       },
       child: SafeArea(
         child: Scaffold(
@@ -508,7 +526,9 @@ class _GamePlayScreenState extends State<GamePlayScreen>
                                 : SizedBox.shrink(),
 
                             // header section
-                            HeaderView(_gameState),
+                            HeaderView(
+                              gameCode: widget.gameCode,
+                            ),
                             // empty space to highlight the background view
                             SizedBox(
                               width: width,
@@ -550,21 +570,10 @@ class _GamePlayScreenState extends State<GamePlayScreen>
                             ),
                           ],
                         ),
-                        Consumer<ValueNotifier<bool>>(
-                          builder: (_, vnChatVisibility, __) =>
-                              vnChatVisibility.value
-                                  ? Align(
-                                      child: GameChat(
-                                        this
-                                            ._gameContextObj
-                                            .gameComService
-                                            .gameMessaging,
-                                        () => toggleChatVisibility(context),
-                                      ),
-                                      alignment: Alignment.bottomCenter,
-                                    )
-                                  : const SizedBox.shrink(),
-                        ),
+
+                        /* chat window widget */
+                        _buildChatWindow(context),
+
                         /* notification view */
                         Notifications.buildNotificationWidget(),
                       ],

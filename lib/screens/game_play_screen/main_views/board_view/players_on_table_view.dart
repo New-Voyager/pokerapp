@@ -517,14 +517,17 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
       builder: (context, _) => Consumer2<Seat, BoardAttributesObject>(
         builder: (_, seat, boardAttributes, __) => Transform.scale(
           scale: boardAttributes.playerViewScale,
-          child: PlayerView(
-            gameComService: widget.gameComService,
-            seat: seat,
-            cardsAlignment: cardsAlignment,
-            onUserTap: onUserTap,
-            boardAttributes: boardAttributes,
-            seatPos: seatPos,
-            seatPosIndex: seatPosIndex,
+          child: Opacity(
+            opacity: (seat?.player?.playerFolded ?? false) ? 0.50 : 1.0,
+            child: PlayerView(
+              gameComService: widget.gameComService,
+              seat: seat,
+              cardsAlignment: cardsAlignment,
+              onUserTap: onUserTap,
+              boardAttributes: boardAttributes,
+              seatPos: seatPos,
+              seatPosIndex: seatPosIndex,
+            ),
           ),
         ),
       ),

@@ -21,6 +21,7 @@ class AppColors {
   static const Color chatOthersColor = Color(0xff313235);
 
   static const Color lightGrayColor = Color(0xffdcdcdc);
+  static const Color medLightGrayColor = Color(0xb3dcdcdc);
   static const Color veryLightGrayColor = Color(0x44D3D3D3);
 
   static const Color listViewDividerColor = Color(0xff707070);
@@ -40,7 +41,7 @@ class AppColors {
   static const Color lightGrayTextColor = Color(0xff848484);
   static const Color popUpMenuColor = Color(0xdd313235);
 
-  static const Color chatInputBgColor = Color(0xff766a6b);
+  static const Color chatInputBgColor = Color(0xffacacac);
   static const Color chatInputColor = Color(0xffc4c4c4);
 
   static const Color stickerDialogActionColor = Color(0xffF7B500);

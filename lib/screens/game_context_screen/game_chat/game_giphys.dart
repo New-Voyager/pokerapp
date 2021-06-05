@@ -1,10 +1,7 @@
 import 'dart:async';
-import 'dart:convert';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_constants.dart';
@@ -180,9 +177,9 @@ class _GameGiphiesState extends State<GameGiphies> {
                         color: AppColors.lightGrayColor,
                         size: 18.0,
                       ),
-                      hintText: '',
+                      hintText: 'Search Tenor',
                       hintStyle: TextStyle(
-                        color: AppColors.lightGrayColor,
+                        color: AppColors.medLightGrayColor,
                       ),
                       border: InputBorder.none,
                     ),

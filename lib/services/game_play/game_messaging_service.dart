@@ -73,11 +73,11 @@ class GameMessagingService {
   }
 
   void handleMessage(Message natsMsg) {
-    log('chat message received');
+    log('chat message received: $messages');
 
     // handle messages
     if (this.messages.length > MAX_CHAT_BUFSIZE) {
-      this.messages.removeLast();
+      this.messages.removeAt(0);
     }
 
     final ChatMessage message = ChatMessage.fromMessage(natsMsg.string);
@@ -85,16 +85,14 @@ class GameMessagingService {
     if (message != null) {
       if (this.messages.length > 0) {
         // check to see whether a message was already there
-        for (final element in this.messages) {
-          if (element.messageId == message.messageId) {
-            return;
-          }
+        for (final prevM in this.messages) {
+          if (prevM.messageId == message.messageId) return;
         }
       }
 
       if (message.type == 'TEXT') {
         if (this.onText != null) {
-          this.messages.insert(0, message);
+          this.messages.add(message);
           this.onText(message);
         }
       }
@@ -107,7 +105,7 @@ class GameMessagingService {
 
       if (message.type == 'GIPHY') {
         if (this.onGiphy != null) {
-          this.messages.insert(0, message);
+          this.messages.add(message);
           this.onGiphy(message);
         }
       }

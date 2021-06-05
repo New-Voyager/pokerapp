@@ -658,7 +658,8 @@ class BoardAttributesObject extends ChangeNotifier {
 
     if (this._screenSize == 7) {
       log('Device is equal to 7 inches ${this._screenSize}');
-      return equalTo6Inches;
+      return equalTo7Inches;
+      // TODO: WHY IS THIS COMMENTED?
       //return equalTo7Inches;
     }
 
@@ -730,7 +731,7 @@ class BoardAttributesObject extends ChangeNotifier {
   Offset get holeCardViewOffset => _decide(
         lessThan6Inches: const Offset(0, 50),
         equalTo6Inches: const Offset(0, 60),
-        equalTo7Inches: const Offset(0, 80),
+        equalTo7Inches: const Offset(0, 90),
         greaterThan7Inches: const Offset(0, 130),
       ) as Offset;
 

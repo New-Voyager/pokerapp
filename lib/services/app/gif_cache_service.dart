@@ -77,6 +77,9 @@ class GifCacheService {
 
       print('downloaded :$query GIF to: $downloadToFile');
 
+      // we dont care about the GOOD quality GIFs, thus we just save the preview ones
+      gif.media.gif.url = previewUrl;
+
       /* replace the URL with the local file path */
       gif.media.tinygif.url = downloadToFile;
     }
