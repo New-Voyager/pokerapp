@@ -6,16 +6,15 @@ import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/screens/game_context_screen/game_chat/game_giphys.dart';
 
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
-import 'package:pokerapp/widgets/chat_text_field.dart';
 import 'package:pokerapp/widgets/emoji_picker_widget.dart';
 
 class GameChat extends StatefulWidget {
   final GameMessagingService chatService;
-  final Function chatVisibilityChange;
+  final Function onChatVisibilityChange;
 
   GameChat({
     @required this.chatService,
-    @required this.chatVisibilityChange,
+    @required this.onChatVisibilityChange,
   });
 
   @override
@@ -23,11 +22,32 @@ class GameChat extends StatefulWidget {
 }
 
 class _GameChatState extends State<GameChat> {
+  GameMessagingService get chatService => widget.chatService;
+
   final _textEditingController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
+
+  void _onMessage() {
+    setState(() {});
+    _scrollController.animateTo(
+      0.0,
+      curve: Curves.easeOut,
+      duration: const Duration(milliseconds: 300),
+    );
+  }
+
+  void _init() {
+    chatService.listen(
+      onText: (ChatMessage _) => _onMessage(),
+      onGiphy: (ChatMessage _) => _onMessage(),
+    );
+  }
 
   @override
   void initState() {
     super.initState();
+
+    _init();
   }
 
   @override
@@ -53,7 +73,7 @@ class _GameChatState extends State<GameChat> {
     await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      builder: (_) => GameGiphies(widget.chatService),
+      builder: (_) => GameGiphies(chatService),
     );
   }
 
@@ -63,7 +83,7 @@ class _GameChatState extends State<GameChat> {
     if (text.isEmpty) return;
 
     // send the message
-    widget.chatService.sendText(text);
+    chatService.sendText(text);
 
     _textEditingController.clear();
   }
@@ -72,7 +92,7 @@ class _GameChatState extends State<GameChat> {
     return Align(
       alignment: Alignment.topRight,
       child: GestureDetector(
-        onTap: widget.chatVisibilityChange,
+        onTap: widget.onChatVisibilityChange,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10),
           child: Icon(
@@ -143,6 +163,8 @@ class _GameChatState extends State<GameChat> {
 
   Widget _buildMessageArea() => Expanded(
         child: ListView(
+          shrinkWrap: true,
+          controller: _scrollController,
           padding: const EdgeInsets.symmetric(horizontal: 10.0),
           scrollDirection: Axis.vertical,
           physics: BouncingScrollPhysics(),

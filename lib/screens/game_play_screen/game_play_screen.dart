@@ -344,7 +344,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
                   child: GameChat(
                     chatService:
                         this._gameContextObj.gameComService.gameMessaging,
-                    chatVisibilityChange: () => toggleChatVisibility(context),
+                    onChatVisibilityChange: () => toggleChatVisibility(context),
                   ),
                   alignment: Alignment.bottomCenter,
                 )
