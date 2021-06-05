@@ -264,9 +264,9 @@ class _GameChatState extends State<GameChat> {
   Widget build(BuildContext context) {
     return Container(
       color: AppColors.screenBackgroundColor,
-      padding: EdgeInsets.only(
-        bottom: MediaQuery.of(context).viewInsets.bottom,
-      ),
+      // padding: EdgeInsets.only(
+      //   bottom: MediaQuery.of(context).viewInsets.bottom,
+      // ),
       height: MediaQuery.of(context).size.height / 3,
       child: Column(
         children: [
