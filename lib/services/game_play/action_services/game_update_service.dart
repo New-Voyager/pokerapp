@@ -227,7 +227,7 @@ class GameUpdateService {
     final tableState = _gameState.getTableState(_context);
     tableState.notifyAll();
     _gameState.updatePlayers(_context);
-    if (playerUpdate['status'] == AppConstants.WAIT_FOR_BUYIN) {
+    if (newPlayerModel.isMe && playerUpdate['status'] == AppConstants.WAIT_FOR_BUYIN) {
       GamePlayScreenUtilMethods.onBuyin(_context);
     }
   }
