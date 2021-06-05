@@ -40,7 +40,6 @@ class _GameChatState extends State<GameChat> {
   bool isGiphyVisible = false;
   String tempPath;
   bool _recorderIsInit = false;
-  StreamSubscription _recordingDataSubscription;
   String _audioFile;
   bool _recordingCancelled = false;
   double height;
@@ -53,38 +52,38 @@ class _GameChatState extends State<GameChat> {
   void initState() {
     super.initState();
 
-    //chatMessages.addAll(widget.chatService.messages.reversed);
-    widget.chatService.listen(onText: (ChatMessage message) {
-      log("${message.text} position: ${_scrollController.position}");
-      _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
-      scrollToBottomOfChat(scrollTime: 1, waitTime: 1);
-    }, onGiphy: (ChatMessage giphy) {
-      scrollToBottomOfChat(scrollTime: 1, waitTime: 1);
-    });
+    // chatMessages.addAll(widget.chatService.messages.reversed);
+    // widget.chatService.listen(onText: (ChatMessage message) {
+    //   log("${message.text} position: ${_scrollController.position}");
+    //   _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+    //   scrollToBottomOfChat(scrollTime: 1, waitTime: 1);
+    // }, onGiphy: (ChatMessage giphy) {
+    //   scrollToBottomOfChat(scrollTime: 1, waitTime: 1);
+    // });
 
-    controller.addListener(() {
-      if (controller.text.trim() != '') {
-        setState(() {
-          isMicVisible = false;
-        });
-      } else {
-        setState(() {
-          isMicVisible = true;
-        });
-      }
-    });
-    KeyboardVisibility.onChange.listen((bool isKeyboardVisible) {
-      if (mounted) {
-        setState(() {
-          this.isKeyboardVisible = isKeyboardVisible;
-        });
-        if (isKeyboardVisible && isEmojiVisible) {
-          setState(() {
-            isEmojiVisible = false;
-          });
-        }
-      }
-    });
+    // controller.addListener(() {
+    //   if (controller.text.trim() != '') {
+    //     setState(() {
+    //       isMicVisible = false;
+    //     });
+    //   } else {
+    //     setState(() {
+    //       isMicVisible = true;
+    //     });
+    //   }
+    // });
+    // KeyboardVisibility.onChange.listen((bool isKeyboardVisible) {
+    //   if (mounted) {
+    //     setState(() {
+    //       this.isKeyboardVisible = isKeyboardVisible;
+    //     });
+    //     if (isKeyboardVisible && isEmojiVisible) {
+    //       setState(() {
+    //         isEmojiVisible = false;
+    //       });
+    //     }
+    //   }
+    // });
   }
 
   scrollToBottomOfChat({int waitTime = 1, int scrollTime = 1}) {
@@ -148,11 +147,11 @@ class _GameChatState extends State<GameChat> {
   Widget build(BuildContext context) {
     debugPrint('GameChat: rebuilding');
 
-    SchedulerBinding.instance.addPostFrameCallback((_) {
-      log("position: ${_scrollController.position}");
-      scrollToBottomOfChat(scrollTime: 100, waitTime: 200);
-      log("position: ${_scrollController.position} scrolled to bottom");
-    });
+    // SchedulerBinding.instance.addPostFrameCallback((_) {
+    //   log("position: ${_scrollController.position}");
+    //   scrollToBottomOfChat(scrollTime: 100, waitTime: 200);
+    //   log("position: ${_scrollController.position} scrolled to bottom");
+    // });
 
     height = MediaQuery.of(context).size.height;
     return Container(
@@ -303,11 +302,9 @@ class _GameChatState extends State<GameChat> {
                     onTap: () {
                       if (controller.text.trim() != '') {
                         widget.chatService.sendText(controller.text.trim());
-                        // Hides keyboard
+                        // Hides keyboard & clear the text field
                         FocusScope.of(context).unfocus();
-                        setState(() {
-                          controller.clear();
-                        });
+                        controller.clear();
                       }
                     },
                     child: Icon(
