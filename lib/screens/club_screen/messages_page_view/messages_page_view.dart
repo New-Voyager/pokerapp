@@ -9,9 +9,11 @@ import 'package:pokerapp/models/club_members_model.dart';
 import 'package:pokerapp/models/club_message_model.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/club_screen/messages_page_view/bottom_sheet/gif_drawer_sheet.dart';
 import 'package:pokerapp/screens/club_screen/messages_page_view/widgets/message_item.dart';
+import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/services/app/club_interior_service.dart';
 import 'package:pokerapp/services/app/club_message_service.dart';
@@ -108,7 +110,11 @@ class _MessagesPageViewState extends State<MessagesPageView> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: chatBg,
-      appBar: _buildAppBar(),
+      appBar: CustomAppBar(
+        context: context,
+        titleText: AppStringsNew.ClubChatTitle,
+        subTitleText: "${widget.clubCode}",
+      ),
       body: Column(
         children: [
           /* main view to show messages */

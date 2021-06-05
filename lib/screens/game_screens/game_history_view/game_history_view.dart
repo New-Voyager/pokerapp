@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_history_model.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/routes.dart';
+import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/club_interior_service.dart';
 
 import 'game_history_widget.dart';
@@ -71,7 +73,6 @@ class _GameHistoryViewState extends State<GameHistoryView> {
     // TODO: we need to make this dynamic list
     // build game history list
     return ListView.separated(
-      physics: BouncingScrollPhysics(),
       padding: const EdgeInsets.symmetric(
         vertical: 10.0,
         horizontal: 15.0,
@@ -85,65 +86,18 @@ class _GameHistoryViewState extends State<GameHistoryView> {
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
-      resizeToAvoidBottomInset: true,
+    return Scaffold(
       backgroundColor: AppColors.screenBackgroundColor,
-      navigationBar: CupertinoNavigationBar(
-        backgroundColor: AppColors.screenBackgroundColor,
-        leading: GestureDetector(
-          onTap: () => Navigator.of(context).pop(),
-          child: Row(
-            children: [
-              Icon(
-                Icons.arrow_back_ios,
-                size: 16,
-                color: AppColors.appAccentColor,
-              ),
-              Text(
-                "Club",
-                style: const TextStyle(
-                  fontFamily: AppAssets.fontFamilyLato,
-                  color: AppColors.appAccentColor,
-                  fontSize: 14.0,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-            ],
-          ),
-        ),
-        middle: Column(
-          children: [
-            Text(
-              "Game History",
-              style: const TextStyle(
-                fontFamily: AppAssets.fontFamilyLato,
-                color: Colors.white,
-                fontSize: 22.0,
-                fontWeight: FontWeight.w900,
-              ),
-            ),
-            Text(
-              "Club code: " + widget.clubCode,
-              style: const TextStyle(
-                fontFamily: AppAssets.fontFamilyLato,
-                color: AppColors.lightGrayTextColor,
-                fontSize: 12.0,
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-          ],
-        ),
+      appBar: CustomAppBar(
+        titleText: AppStringsNew.GameHistoryTitle,
+        subTitleText: "Club code: ${widget.clubCode}",
+        context: context,
       ),
-      child: Material(
-        type: MaterialType.transparency,
-        child: _prevGames == null
-            ? Center(
-                child: CircularProgressIndicator(),
-              )
-            : Expanded(
-                child: body(),
-              ),
-      ),
+      body: _prevGames == null
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : SafeArea(child: body()),
       // child: _prevGames == null
       //     ? Center(
       //         child: CircularProgressIndicator(),

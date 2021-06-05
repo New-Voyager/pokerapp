@@ -22,4 +22,12 @@ class AppStringsNew {
   static const ChooseGameTitle = "Choose Game";
 
   static const VoiceCancelMessage = "< Slide to cancel ";
+  static const TableRecordTitle = "Table Result";
+  static const BackText = "Back";
+
+  static const GameDetailsTitle = "Game Details";
+  static const GameHistoryTitle = "Game History";
+  static const MemberDetailTitle = "Members";
+  static const ClubChatTitle = "Club chat";
+  static const BookmarkedHandsTitle = "Bookmarked Hands";
 }

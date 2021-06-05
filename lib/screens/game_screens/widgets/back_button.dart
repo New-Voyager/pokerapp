@@ -1,33 +1,68 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
-import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
+import 'package:pokerapp/resources/new/app_strings_new.dart';
 
-class BackButtonWidget extends StatelessWidget {
+class CustomAppBar extends AppBar {
   final titleText;
-  const BackButtonWidget({Key key, this.titleText}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.only(left: 8, right: 16),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          IconButton(
-            icon: Icon(
-              Icons.arrow_back_ios,
-              color: AppColors.appAccentColor,
+  final subTitleText;
+  final context;
+  CustomAppBar({Key key, this.titleText, this.subTitleText, this.context})
+      : super(
+          key: key,
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          leadingWidth: 100,
+          leading: Padding(
+            padding: EdgeInsets.only(left: 16),
+            child: InkWell(
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.arrow_back_ios,
+                    color: AppColors.appAccentColor,
+                    size: 13,
+                  ),
+                  Text(
+                    AppStringsNew.BackText,
+                    style: AppStyles.titleBarTextStyle.copyWith(fontSize: 12),
+                  ),
+                ],
+              ),
+              borderRadius: BorderRadius.circular(8),
+              onTap: () => Navigator.of(context).pop(),
             ),
-            onPressed: () => Navigator.of(context).pop(),
           ),
-          AppDimensionsNew.getHorizontalSpace(16),
-          Text(
-            titleText ?? "",
-            style: AppStyles.titleBarTextStyle.copyWith(fontSize: 18),
-          )
-        ],
-      ),
-    );
-  }
+          title: Column(
+            children: [
+              Text(
+                titleText ?? "",
+                style: AppStyles.titleBarTextStyle
+                    .copyWith(fontSize: 18, color: AppColorsNew.newTextColor),
+                textAlign: TextAlign.center,
+              ),
+              Visibility(
+                visible: subTitleText != null,
+                child: Text(
+                  subTitleText ?? "",
+                  style: AppStyles.titleBarTextStyle
+                      .copyWith(fontSize: 10, color: Colors.grey),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ],
+          ),
+          centerTitle: true,
+        );
+
+  // @override
+  // Widget build(BuildContext context) {
+  //   return AppBar(
+  //     centerTitle: true,
+  //     backgroundColor: Colors.transparent,
+  //     leading:
+  //   );
+  // }
 }

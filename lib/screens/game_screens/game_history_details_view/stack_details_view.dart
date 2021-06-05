@@ -83,72 +83,65 @@ class _PointsLineChart extends State<PointsLineChart> {
         ? Center(child: CircularProgressIndicator())
         : Scaffold(
             backgroundColor: AppColors.screenBackgroundColor,
+            appBar: CustomAppBar(
+              context: context,
+              titleText: "Stack Timeline",
+            ),
             body: !loadingDone
                 ? Center(child: CircularProgressIndicator())
                 : SafeArea(
-                    child: Column(
+                    child: Stack(
                       children: [
-                        BackButtonWidget(
-                          titleText: "Stack Timeline",
-                        ),
-                        Expanded(
-                          child: Stack(
-                            children: [
-                              GestureDetector(
-                                onTapDown: (details) {
-                                  setState(() {
-                                    debugPrint(
-                                        '=====================\n\nStack item tapped');
-                                    // _tapPosition = Offset(details.localPosition.dx,
-                                    //     details.localPosition.dy);
-                                  });
-                                },
-                                child: GestureDetector(
-                                  onTapDown: (details) {
-                                    debugPrint(
-                                        '=====================\n\LineChart item tapped');
-                                  },
-                                  child: charts.LineChart(
-                                    _createSampleData(),
-                                    animate: false,
-                                    behaviors: [
-                                      // new charts.SlidingViewport(),
-                                      charts.PanAndZoomBehavior(),
-                                      charts.SelectNearest(),
-                                    ],
-                                    selectionModels: [
-                                      charts.SelectionModelConfig(
-                                          type: charts.SelectionModelType.info,
-                                          changedListener:
-                                              (charts.SelectionModel model) {
-                                            if (model.hasDatumSelection) {
-                                              setState(() {
-                                                debugPrint(
-                                                    '\n circle tapped: ${model.hasDatumSelection}\n');
-                                                debugPrint(
-                                                    '=====================');
-                                                _selectionModel = model;
-                                                _popUpVisible = true;
-                                              });
-                                            }
-                                          })
-                                    ],
-                                    defaultRenderer:
-                                        new charts.LineRendererConfig(
-                                      includePoints: true,
-                                      radiusPx: 5,
-                                    ),
-                                  ),
-                                ),
+                        GestureDetector(
+                          onTapDown: (details) {
+                            setState(() {
+                              debugPrint(
+                                  '=====================\n\nStack item tapped');
+                              // _tapPosition = Offset(details.localPosition.dx,
+                              //     details.localPosition.dy);
+                            });
+                          },
+                          child: GestureDetector(
+                            onTapDown: (details) {
+                              debugPrint(
+                                  '=====================\n\LineChart item tapped');
+                            },
+                            child: charts.LineChart(
+                              _createSampleData(),
+                              animate: false,
+                              behaviors: [
+                                // new charts.SlidingViewport(),
+                                charts.PanAndZoomBehavior(),
+                                charts.SelectNearest(),
+                              ],
+                              selectionModels: [
+                                charts.SelectionModelConfig(
+                                    type: charts.SelectionModelType.info,
+                                    changedListener:
+                                        (charts.SelectionModel model) {
+                                      if (model.hasDatumSelection) {
+                                        setState(() {
+                                          debugPrint(
+                                              '\n circle tapped: ${model.hasDatumSelection}\n');
+                                          debugPrint('=====================');
+                                          _selectionModel = model;
+                                          _popUpVisible = true;
+                                        });
+                                      }
+                                    })
+                              ],
+                              defaultRenderer: new charts.LineRendererConfig(
+                                includePoints: true,
+                                radiusPx: 5,
                               ),
-                              Visibility(
-                                child: _selectionModel != null
-                                    ? _buildPopUp(context)
-                                    : Container(),
-                                visible: _popUpVisible,
-                              ),
-                            ],
+                            ),
                           ),
+                        ),
+                        Visibility(
+                          child: _selectionModel != null
+                              ? _buildPopUp(context)
+                              : Container(),
+                          visible: _popUpVisible,
                         ),
                       ],
                     ),
