@@ -122,13 +122,12 @@ class _ChatListWidgetState extends State<ChatListWidget> {
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 2),
         child: Container(
-          margin: EdgeInsets.only(
-              left: isSender ? 80 : 10,
-              right: isSender ? 10 : 80,
-              top: 3,
-              bottom: 3),
+          margin: EdgeInsets.symmetric(vertical: 3.0),
           child: Stack(
-            children: [_buildTextMessage(message), triangle],
+            children: [
+              _buildTextMessage(message),
+              triangle,
+            ],
           ),
         ),
       ),
@@ -137,27 +136,36 @@ class _ChatListWidgetState extends State<ChatListWidget> {
 
   Widget _buildTextMessage(ChatModel message) {
     bool isSender = _isSender(message.messageType);
-    return Container(
-      decoration:
-          decoration.copyWith(color: isSender ? senderColor : receiverColor),
-      child: Align(
-        alignment: Alignment.centerLeft,
-        child: Column(
-          crossAxisAlignment:
-              isSender ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(7.0),
-              child: Text(
-                message.text,
-                style: TextStyle(color: Colors.white, fontSize: 17),
+    return Align(
+      alignment: isSender ? Alignment.centerRight : Alignment.centerLeft,
+      child: IntrinsicWidth(
+        child: Container(
+          constraints: BoxConstraints(
+            maxWidth: MediaQuery.of(context).size.width * 0.70,
+          ),
+          decoration: decoration.copyWith(
+            color: isSender ? senderColor : receiverColor,
+          ),
+          child: Column(
+            crossAxisAlignment:
+                isSender ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(7.0),
+                child: Text(
+                  message.text,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 17,
+                  ),
+                ),
               ),
-            ),
-            ChatTimeWidget(
-              isSender: isSender,
-              date: message.messageTime,
-            ),
-          ],
+              ChatTimeWidget(
+                isSender: isSender,
+                date: message.messageTime,
+              ),
+            ],
+          ),
         ),
       ),
     );
