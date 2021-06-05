@@ -221,60 +221,61 @@ class MessageItem extends StatelessWidget {
 
     return Align(
       alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
-      child: Container(
-        margin: EdgeInsets.only(
-          right: isMe ? 0.0 : extraPadding,
-          left: isMe ? extraPadding : 0.0,
-        ),
-        padding: EdgeInsets.all(
-            messageModel.messageType == MessageType.GIPHY ? 0 : 5.0),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(5.0),
-          color: isMe ? senderColor : receiverColor,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (messageModel.isGroupFirst)
-              Padding(
-                padding: const EdgeInsets.all(3.0),
-                child: Text(
-                  isMe ? 'You' : playerName,
-                  style: TextStyle(
-                    color: AppColors.appAccentColor,
+      child: IntrinsicWidth(
+        child: Container(
+          constraints: BoxConstraints(
+            maxWidth: MediaQuery.of(context).size.width * 0.70,
+          ),
+          padding: EdgeInsets.all(
+              messageModel.messageType == MessageType.GIPHY ? 0 : 5.0),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(5.0),
+            color: isMe ? senderColor : receiverColor,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (messageModel.isGroupFirst)
+                Padding(
+                  padding: const EdgeInsets.all(3.0),
+                  child: Text(
+                    isMe ? 'You' : playerName,
+                    style: TextStyle(
+                      color: AppColors.appAccentColor,
+                    ),
                   ),
                 ),
-              ),
-            messageModel.messageType == MessageType.GIPHY
-                ? GiphyImageWidget(
-                    imgUrl: messageModel.giphyLink,
-                    date: DateTime.fromMillisecondsSinceEpoch(
-                      messageModel.messageTimeInEpoc,
-                    ),
-                    isMe: isMe,
-                  )
-                : Container(
-                    padding: EdgeInsets.all(3),
-                    child: Text(
-                      messageModel.text,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 15.0,
+              messageModel.messageType == MessageType.GIPHY
+                  ? GiphyImageWidget(
+                      imgUrl: messageModel.giphyLink,
+                      date: DateTime.fromMillisecondsSinceEpoch(
+                        messageModel.messageTimeInEpoc,
+                      ),
+                      isMe: isMe,
+                    )
+                  : Container(
+                      padding: EdgeInsets.all(3),
+                      child: Text(
+                        messageModel.text,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 15.0,
+                        ),
                       ),
                     ),
-                  ),
 
-            /* show the message time */
-            if (messageModel.messageType != MessageType.GIPHY)
-              SizedBox(height: 3),
-            if (messageModel.messageType != MessageType.GIPHY)
-              ChatTimeWidget(
-                isSender: isMe,
-                date: DateTime.fromMillisecondsSinceEpoch(
-                  messageModel.messageTimeInEpoc,
+              /* show the message time */
+              if (messageModel.messageType != MessageType.GIPHY)
+                SizedBox(height: 3),
+              if (messageModel.messageType != MessageType.GIPHY)
+                ChatTimeWidget(
+                  isSender: isMe,
+                  date: DateTime.fromMillisecondsSinceEpoch(
+                    messageModel.messageTimeInEpoc,
+                  ),
                 ),
-              ),
-          ],
+            ],
+          ),
         ),
       ),
     );

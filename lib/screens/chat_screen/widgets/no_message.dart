@@ -38,8 +38,8 @@ class CircularProgressWidget extends StatelessWidget {
             fontSize: 20.0,
           ),
         ),
+        const SizedBox(height: 15),
         CircularProgressIndicator(),
-        SizedBox(height: 15)
       ],
     );
   }
