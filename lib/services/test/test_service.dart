@@ -275,9 +275,7 @@ class TestService {
     var exp = DateTime.now();
     exp = exp.add(Duration(seconds: 20));
     players.me.buyInTimeExpAt = exp.toUtc();
-    log('now: ${now.toIso8601String()} exp: ${exp
-        .toIso8601String()} utc: ${players.me.buyInTimeExpAt
-        .toIso8601String()}');
+    log('now: ${now.toIso8601String()} exp: ${exp.toIso8601String()} utc: ${players.me.buyInTimeExpAt.toIso8601String()}');
     players.me.showBuyIn = true;
     players.me.stack = 0;
 
@@ -405,8 +403,6 @@ class TestService {
     players.notifyAll();
   }
 
-
-
   static Future<void> sendNewHand() async {
     final gameState = GameState.getState(_context);
     if (_handActionService == null) {
@@ -453,13 +449,13 @@ class TestService {
     final gameState = GameState.getState(_context);
     final TableState tableState = gameState.getTableState(_context);
 
-     /* board 1 */ /*
+    /* board 1 */ /*
     tableState.setBoardCards(
       1,
       [50, 50, 50, 50, 50].map((e) => CardHelper.getCard(e)).toList(),
     );
 
-    */ /* board 2 */ 
+    */ /* board 2 */
     tableState.setBoardCards(
       2,
       [50, 50, 50, 50, 50].map((e) => CardHelper.getCard(e)).toList(),
@@ -531,7 +527,7 @@ class TestService {
     final players = gameState.getPlayers(_context);
     players.notifyAll();
 
-    /* wait then run fold */ 
+    /* wait then run fold */
     Future.delayed(const Duration(milliseconds: 800)).then((value) => fold());
   }
 
@@ -584,7 +580,7 @@ class TestService {
       _handActionService.loop();
     }
     String message =
-    '''{"clubId": 1,"gameId": "1620287740","gameCode": "1620287740","handNum": 1,"messageId": "ACTION:1:FLOP:0:","handStatus": "FLOP","messages": [{"messageType": "PLAYER_ACTED","playerActed": {"seatNo": 8,"action": "ALLIN","amount": 50}}, {"messageType": "YOUR_ACTION","seatAction": {"seatNo": 1,"availableActions": ["RUN_IT_TWICE_PROMPT"]}}, {"messageType": "YOUR_ACTION","seatAction": {"seatNo": 8,"availableActions": ["RUN_IT_TWICE_PROMPT"]}}]}''';
+        '''{"clubId": 1,"gameId": "1620287740","gameCode": "1620287740","handNum": 1,"messageId": "ACTION:1:FLOP:0:","handStatus": "FLOP","messages": [{"messageType": "PLAYER_ACTED","playerActed": {"seatNo": 8,"action": "ALLIN","amount": 50}}, {"messageType": "YOUR_ACTION","seatAction": {"seatNo": 1,"availableActions": ["RUN_IT_TWICE_PROMPT"]}}, {"messageType": "YOUR_ACTION","seatAction": {"seatNo": 8,"availableActions": ["RUN_IT_TWICE_PROMPT"]}}]}''';
     //final handActionService = HandActionService( _context, gameState);
     _handActionService.clear();
     _handActionService.handle(message);
@@ -601,7 +597,7 @@ class TestService {
       _handActionService.loop();
     }
     String message =
-    '''{"version":"", "clubId":254, "gameId":"284", "gameCode":"CG-A2DHJIG7497MNKP", "handNum":36,
+        '''{"version":"", "clubId":254, "gameId":"284", "gameCode":"CG-A2DHJIG7497MNKP", "handNum":36,
      "seatNo":0, "playerId":"0", "messageId":"ACTION:36:RIVER:2443:40", "gameToken":"", "handStatus":"RIVER",
      "messages":[
        {"messageType":"PLAYER_ACTED", "playerActed":{"seatNo":1, "action":"CHECK", "amount":0, "timedOut":false, "actionTime":0, "stack":28}},
@@ -722,9 +718,7 @@ class TestService {
     final gameState = GameState.getState(_context);
     final players = gameState.getPlayers(_context);
 
-    _context
-        .read<ValueNotifier<FooterStatus>>()
-        .value = FooterStatus.Result;
+    _context.read<ValueNotifier<FooterStatus>>().value = FooterStatus.Result;
 
     for (int i = 1; i < 10; i++) {
       players.updateCardSilent(i, [50, 50, 50, 50, 50]);
@@ -737,9 +731,7 @@ class TestService {
     final gameState = GameState.getState(_context);
     final players = gameState.getPlayers(_context);
 
-    _context
-        .read<ValueNotifier<FooterStatus>>()
-        .value = FooterStatus.None;
+    _context.read<ValueNotifier<FooterStatus>>().value = FooterStatus.None;
 
     for (int i = 1; i < 10; i++) {
       players.updateCardSilent(i, []);
@@ -823,7 +815,7 @@ class TestService {
     myState.status = PlayerStatus.NOT_PLAYING;
     myState.notify();
   }
-  
+
   static void showSeatChangePrompt() async {
     final gameState = GameState.getState(_context);
     final seat5 = gameState.getSeat(_context, 5);
@@ -839,5 +831,29 @@ class TestService {
     final value = await NumericKeyboard2.show(_context,
         title: 'Buyin amount 30-100', min: 30, max: 100, decimal: false);
     log('typed value: $value');
+  }
+
+  static setPlayerTalking() {
+    BuildContext context = _context;
+    final gameState = GameState.getState(_context);
+    for (int seatNo = 1; seatNo <= 9; seatNo++) {
+      final seat1 = gameState.getSeat(_context, seatNo);
+      if (seat1.player != null) {
+        seat1.player.talking = true;
+        seat1.notify();
+      }
+    }
+  }
+
+  static setPlayerStoppedTalking() {
+    BuildContext context = _context;
+    final gameState = GameState.getState(_context);
+    for (int seatNo = 1; seatNo <= 9; seatNo++) {
+      final seat1 = gameState.getSeat(_context, seatNo);
+      if (seat1.player != null) {
+        seat1.player.talking = false;
+        seat1.notify();
+      }
+    }
   }
 }

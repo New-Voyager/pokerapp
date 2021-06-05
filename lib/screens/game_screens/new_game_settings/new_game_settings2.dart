@@ -423,8 +423,10 @@ class NewGameSettings2 extends StatelessWidget {
                       /* allow audio conference */
                       _buildRadio(
                         label: 'Allow Audio Conference',
-                        value: false,
-                        onChange: (bool b) {},
+                        value: gmp.audioConference,
+                        onChange: (bool b) {
+                          gmp.audioConference = b;
+                        },
                       ),
 
                       /* bot games */

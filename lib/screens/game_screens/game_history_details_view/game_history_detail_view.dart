@@ -355,6 +355,12 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
     );
   }
 
+  openStackDetails() {
+    log('Opening points chart');
+    Navigator.pushNamed(context, Routes.pointsLineChart,
+        arguments: _gameDetail);
+  }
+
   Widget stackTile() {
     if (loadingDone) {
       // loading done
@@ -362,9 +368,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
     }
     return GestureDetector(
       onTap: () {
-        log('Opening points chart');
-        Navigator.pushNamed(context, Routes.pointsLineChart,
-            arguments: _gameDetail);
+        openStackDetails();
       },
       child: Container(
         height: 150.0,
@@ -405,7 +409,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
                             fontWeight: FontWeight.w400,
                           ),
                         )
-                      : StackChartView(_gameDetail.stack)),
+                      : StackChartView(_gameDetail.stack, openStackDetails)),
               // PointsLineChart()),
               visible: loadingDone,
             ),
@@ -416,6 +420,8 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
   }
 
   Widget balanceTile() {
+    double profit = _gameDetail.profit == null ? 0 : _gameDetail.profit;
+
     return Container(
       height: 140.0,
       decoration: BoxDecoration(
@@ -432,7 +438,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  _gameDetail.profit < 0 ? "Loss" : "Profit",
+                  profit < 0 ? "Loss" : "Profit",
                   style: const TextStyle(
                     fontFamily: AppAssets.fontFamilyLato,
                     color: Colors.white,
@@ -670,6 +676,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
   }
 
   Widget getLowerCard() {
+    log('hands Played: ${_gameDetail.handsPlayed}');
     return Padding(
       padding: const EdgeInsets.all(0),
       child: Container(
@@ -688,7 +695,11 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
             //   ),
             // ),
             ListTile(
-              onTap: () => this.onHandHistoryPressed(context),
+              onTap: () {
+                if (_gameDetail.playedGame) {
+                  this.onHandHistoryPressed(context);
+                }
+              },
               leading: CircleAvatar(
                 radius: 18,
                 child: SvgPicture.asset('assets/images/casino.svg',
@@ -704,13 +715,24 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
                   fontWeight: FontWeight.w400,
                 ),
               ),
-              trailing: IconButton(
-                icon: Icon(
-                  Icons.arrow_forward_ios,
-                  color: AppColors.appAccentColor,
-                  size: 12,
-                ),
-              ),
+              trailing: !_gameDetail.playedGame
+                  ? Text(
+                      "Not Available",
+                      style: const TextStyle(
+                        fontFamily: AppAssets.fontFamilyLato,
+                        color: Colors.white54,
+                        fontSize: 12.0,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    )
+                  : IconButton(
+                      icon: Icon(
+                        Icons.arrow_forward_ios,
+                        color: AppColors.appAccentColor,
+                        size: 12,
+                      ),
+                      onPressed: () {},
+                    ),
             ),
             Padding(
               padding: const EdgeInsets.only(left: 70.0),

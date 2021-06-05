@@ -27,6 +27,7 @@ import 'package:pokerapp/services/app/game_service.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 import 'package:timer_count_down/timer_count_down.dart';
+import 'package:pokerapp/utils/numeric_keyboard2.dart';
 
 import '../../resources/app_colors.dart';
 import '../../services/test/test_service.dart';
@@ -56,6 +57,25 @@ class GamePlayScreenUtilMethods {
             color: Colors.white,
           ),
           backgroundColor: Colors.red,
+          label: 'player talking',
+          onTap: () => TestService.setPlayerTalking(),
+        ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
+          label: 'player stopped talking',
+          onTap: () => TestService.setPlayerStoppedTalking(),
+        ),
+
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
           label: 'set isAdmin false',
           onTap: () => TestService.setIsAdminFalse(),
         ),
@@ -67,7 +87,7 @@ class GamePlayScreenUtilMethods {
           backgroundColor: Colors.red,
           label: 'Bet Widget',
           onTap: () => TestService.testBetWidget(),
-        ),        
+        ),
         SpeedDialChild(
           child: Icon(
             Icons.adb_rounded,
@@ -586,5 +606,26 @@ class GamePlayScreenUtilMethods {
             );
           }
         });
+  }
+
+  static Future<void> onBuyin(BuildContext context) async {
+    final gameState = GameState.getState(context);
+    final gameInfo = gameState.gameInfo;
+
+    /* use numeric keyboard to get buyin */
+    double value = await NumericKeyboard2.show(
+      context,
+      title: 'Buy In (${gameInfo.buyInMin} - ${gameInfo.buyInMax})',
+      min: gameInfo.buyInMin.toDouble(),
+      max: gameInfo.buyInMax.toDouble(),
+    );
+
+    if (value == null) return;
+
+    // buy chips
+    await GameService.buyIn(
+      gameInfo.gameCode,
+      value.toInt(),
+    );
   }
 }

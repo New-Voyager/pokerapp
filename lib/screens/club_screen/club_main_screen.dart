@@ -38,7 +38,11 @@ class ClubMainScreen extends StatelessWidget {
         future: ClubsService.getClubHomePageData(clubCode),
         builder: (BuildContext context, snapshot) {
           ClubHomePageModel clubModel = snapshot.data;
-
+          bool isOwnerOrManager = false;
+          if (clubModel != null) {
+            isOwnerOrManager =
+                (clubModel.isOwner || clubModel.isManager) ?? false;
+          }
           return Scaffold(
             backgroundColor: AppColors.screenBackgroundColor,
             /*  appBar: AppBar(
@@ -84,14 +88,16 @@ class ClubMainScreen extends StatelessWidget {
                                       ),
                                       onPressed: () =>
                                           Navigator.of(context).pop()),
-                                  CustomTextButton(
-                                    onTap: () => Navigator.pushNamed(
-                                      context,
-                                      Routes.new_game_settings,
-                                      arguments: clubCode,
-                                    ),
-                                    text: '+ Create Game',
-                                  ),
+                                  !isOwnerOrManager
+                                      ? Container()
+                                      : CustomTextButton(
+                                          onTap: () => Navigator.pushNamed(
+                                            context,
+                                            Routes.new_game_settings,
+                                            arguments: clubCode,
+                                          ),
+                                          text: '+ Create Game',
+                                        ),
                                 ],
                               ),
                             ),

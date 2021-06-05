@@ -45,7 +45,6 @@ class _HandHistoryState extends State<HandHistoryListView>
     log("DATA LOG IN HANDHISTORY: $_data");
     await HandService.getAllHands(_data);
     currentPlayer = await PlayerService.getMyInfo(null);
-
     loadingDone = true;
     setState(() {
       // update ui
@@ -137,7 +136,8 @@ class _HandHistoryState extends State<HandHistoryListView>
                         children: [
                           PlayedHandsScreen(
                             _data.gameCode,
-                            _data.getAllHands(),
+                            _data.getMyHands(),
+                            //_data.getAllHands(),
                             widget._clubCode,
                             currentPlayer,
                             isInBottomSheet: widget.isInBottomSheet,

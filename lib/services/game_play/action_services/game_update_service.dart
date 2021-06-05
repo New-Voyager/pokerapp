@@ -25,6 +25,7 @@ import 'package:pokerapp/services/game_play/graphql/seat_change_service.dart';
 import 'package:pokerapp/services/janus/janus.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:provider/provider.dart';
+import 'package:pokerapp/screens/game_play_screen/game_play_screen_util_methods.dart';
 
 class GameUpdateService {
   final GameState _gameState;
@@ -226,6 +227,9 @@ class GameUpdateService {
     final tableState = _gameState.getTableState(_context);
     tableState.notifyAll();
     _gameState.updatePlayers(_context);
+    if (playerUpdate['status'] == AppConstants.WAIT_FOR_BUYIN) {
+      GamePlayScreenUtilMethods.onBuyin(_context);
+    }
   }
 
   void handlePlayerLeftGame({
@@ -272,7 +276,6 @@ class GameUpdateService {
     if (seat != null && seat.player != null && seat.player.isMe) {
       _gameState.myState.status = PlayerStatus.NOT_PLAYING;
       _gameState.myState.notify();
-      _gameState.janusEngine.leaveChannel();
     }
 
     _gameState.removePlayer(_context, seatNo);

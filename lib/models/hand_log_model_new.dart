@@ -14,11 +14,13 @@ class HandLogModelNew {
     this.hand,
     this.myInfo,
     this.handData,
+    this.authorized,
   });
 
   String handData;
   Data hand;
   MyInfo myInfo;
+  bool authorized;
 
   factory HandLogModelNew.fromJson(Map<String, dynamic> json,
       {bool serviceResult = false}) {
@@ -32,13 +34,16 @@ class HandLogModelNew {
         hand = json['hand'];
       }
     }
-
+    bool authorized = hand['authorized'] ?? false;
     if (serviceResult) {
       hand = hand['data'];
     }
     //log("HandData : \n $hand");
 
-    final handLog = Data.fromJson(hand);
+    Data handLog;
+    if (hand != null) {
+      handLog = Data.fromJson(hand);
+    }
     final handData = jsonEncode(hand);
 
     dynamic myInfo;
@@ -55,6 +60,7 @@ class HandLogModelNew {
       handData: handData,
       //playerIdToName: playerIdToName,
       myInfo: myInfo,
+      authorized: authorized,
     );
   }
 

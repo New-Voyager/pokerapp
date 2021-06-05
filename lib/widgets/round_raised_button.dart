@@ -80,7 +80,7 @@ class RoundRaisedButtonWithTimer extends StatelessWidget {
             vertical: verticalPadding ?? 10.0,
           ),
           child: Container(
-            height: 50,
+            height: 30,
             child:
                 Column(mainAxisAlignment: MainAxisAlignment.center, children: [
               Text(
@@ -92,7 +92,7 @@ class RoundRaisedButtonWithTimer extends StatelessWidget {
                   fontWeight: FontWeight.w700,
                 ),
               ),
-              timerWidget,
+              //timerWidget,
             ]),
           )),
     );

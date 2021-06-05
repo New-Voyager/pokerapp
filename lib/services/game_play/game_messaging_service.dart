@@ -143,12 +143,13 @@ class GameMessagingService {
     log('message sent: $text');
   }
 
-  void sendAudio(Uint8List audio) {
+  void sendAudio(Uint8List audio, int duration) {
     dynamic body = jsonEncode({
       'id': uuid.v1(),
       'playerID': this.currentPlayer.id,
       'name': this.currentPlayer.name,
       'audio': base64Encode(audio),
+      'duration': duration,
       'type': 'AUDIO',
       'sent': DateTime.now().toUtc().toIso8601String(),
     });
@@ -204,6 +205,7 @@ class ChatMessage {
   String type;
   String giphyLink;
   Uint8List audio;
+  int duration;
   int fromPlayer;
   DateTime received;
   int smileyCount;
@@ -227,6 +229,7 @@ class ChatMessage {
       } else if (msg.type == 'AUDIO') {
         if (message['audio'] != null) {
           msg.audio = base64Decode(message['audio'].toString());
+          msg.duration = message['duration'] ?? 0;
         } else {
           return null;
         }

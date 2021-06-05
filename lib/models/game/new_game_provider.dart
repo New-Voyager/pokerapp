@@ -314,4 +314,10 @@ class NewGameModelProvider extends ChangeNotifier {
     settings.muckLosingHand = value;
     notifyListeners();
   }
+
+  get audioConference => settings.audioConference;
+  set audioConference(bool value) {
+    settings.audioConference = value;
+    notifyListeners();
+  }
 }

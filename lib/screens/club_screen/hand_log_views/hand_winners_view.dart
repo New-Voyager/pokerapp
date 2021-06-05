@@ -41,6 +41,20 @@ class HandWinnersView extends StatelessWidget {
           break;
         }
       }
+      int subCards = 0;
+      GameStages stageAtWon = handLogModel.hand.handLog.wonAt;
+
+      if (stageAtWon == GameStages.PREFLOP) {
+        subCards = 0;
+      } else if (stageAtWon == GameStages.FLOP) {
+        subCards = 3;
+      } else if (stageAtWon == GameStages.TURN) {
+        subCards = 4;
+      } else if (stageAtWon == GameStages.RIVER) {
+        subCards = 5;
+      } else if (stageAtWon == GameStages.SHOWDOWN) {
+        subCards = 6;
+      }
 
       return Container(
         margin: EdgeInsets.only(bottom: 16, left: 8, right: 8),
@@ -95,22 +109,6 @@ class HandWinnersView extends StatelessWidget {
                           itemCount: potWinnersList[index].hiWinners.length,
                           shrinkWrap: true,
                           itemBuilder: (context, winnerIndex) {
-                            int subCards = 0;
-                            GameStages stageAtWon =
-                                handLogModel.hand.handLog.wonAt;
-
-                            if (stageAtWon == GameStages.PREFLOP) {
-                              subCards = 0;
-                            } else if (stageAtWon == GameStages.FLOP) {
-                              subCards = 3;
-                            } else if (stageAtWon == GameStages.TURN) {
-                              subCards = 4;
-                            } else if (stageAtWon == GameStages.RIVER) {
-                              subCards = 5;
-                            } else if (stageAtWon == GameStages.SHOWDOWN) {
-                              subCards = 6;
-                            }
-
                             return Container(
                               padding: EdgeInsets.only(bottom: 8, left: 8),
                               alignment: Alignment.centerLeft,
@@ -306,17 +304,20 @@ class HandWinnersView extends StatelessWidget {
                                                     GameStages.SHOWDOWN,
                                               ),
                                               StackCardView01(
-                                                totalCards:
-                                                    potWinnersList[index]
+                                                totalCards: subCards >= 5
+                                                    ? handLogModel
+                                                        .hand.boardCards
+                                                    : handLogModel
+                                                        .hand.boardCards
+                                                        .sublist(0, subCards),
+                                                needToShowEmptyCards: true,
+                                                cardsToHighlight: subCards == 6
+                                                    ? potWinnersList[index]
                                                         .lowWinners[winnerIndex]
-                                                        .winningCards,
-                                                cardsToHighlight:
-                                                    potWinnersList[index]
-                                                        .lowWinners[winnerIndex]
-                                                        .winningCards,
-                                                show: handLogModel
-                                                        .hand.handLog.wonAt ==
-                                                    GameStages.SHOWDOWN,
+                                                        .winningCards
+                                                    : handLogModel
+                                                        .hand.boardCards,
+                                                show: true,
                                               ),
                                             ],
                                           ),

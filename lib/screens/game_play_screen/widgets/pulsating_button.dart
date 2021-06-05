@@ -7,10 +7,14 @@ class PulsatingCircleIconButton extends StatefulWidget {
     Key key,
     @required this.onTap,
     @required this.child,
+    this.color,
+    this.radius = 5,
   }) : super(key: key);
 
   final Function onTap;
   final Widget child;
+  final Color color;
+  final double radius;
 
   @override
   _PulsatingCircleIconButtonState createState() =>
@@ -21,9 +25,11 @@ class _PulsatingCircleIconButtonState extends State<PulsatingCircleIconButton>
     with SingleTickerProviderStateMixin {
   AnimationController _animationController;
   Animation _animation;
+  Color bgColor;
 
   @override
   void initState() {
+    bgColor = widget.color ?? Colors.red;
     _animationController =
         AnimationController(vsync: this, duration: Duration(seconds: 1));
     _animation = Tween(begin: 0.0, end: 0.9).animate(
@@ -63,18 +69,15 @@ class _PulsatingCircleIconButtonState extends State<PulsatingCircleIconButton>
             decoration: BoxDecoration(
               // color: Colors.yellow,
               gradient: RadialGradient(
-                colors: [
-                  Colors.red,
-                  Colors.redAccent.shade200,
-                ],
+                colors: [bgColor, bgColor.withAlpha(100)],
                 radius: 0.5,
               ),
               shape: BoxShape.circle,
               boxShadow: [
                 // for (int i = 1; i <= 2; i++)
                 BoxShadow(
-                  color: Colors.red.withOpacity(_animationController.value),
-                  spreadRadius: _animation.value * 5,
+                  color: bgColor.withOpacity(_animationController.value),
+                  spreadRadius: _animation.value * widget.radius,
                 )
               ],
             ),

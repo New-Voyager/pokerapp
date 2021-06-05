@@ -268,49 +268,49 @@ class NamePlateWidget extends StatelessWidget {
     );
   }
 
-  Widget buyInTimer(BuildContext context, int time) {
-    return Countdown(
-        seconds: time,
-        onFinished: () {
-          if (seat.isMe) {
-            // hide buyin button
-            final gameState = GameState.getState(context);
-            final players = gameState.getPlayers(context);
-            seat.player.showBuyIn = false;
-            players.notifyAll();
-            seat.notify();
-          }
-        },
-        build: (_, time) {
-          if (time <= 10) {
-            return BlinkText(_printDuration(Duration(seconds: time.toInt())),
-                style: AppStyles.itemInfoTextStyle.copyWith(
-                  color: Colors.white,
-                ),
-                beginColor: Colors.white,
-                endColor: Colors.orange,
-                times: time.toInt(),
-                duration: Duration(seconds: 1));
-          } else {
-            return Text(
-              _printDuration(Duration(seconds: time.toInt())),
-              style: AppStyles.itemInfoTextStyle.copyWith(
-                color: Colors.white,
-              ),
-            );
-          }
-        });
-  }
+  // Widget buyInTimer(BuildContext context, int time) {
+  //   return Countdown(
+  //       seconds: time,
+  //       onFinished: () {
+  //         if (seat.isMe) {
+  //           // hide buyin button
+  //           final gameState = GameState.getState(context);
+  //           final players = gameState.getPlayers(context);
+  //           seat.player.showBuyIn = false;
+  //           players.notifyAll();
+  //           seat.notify();
+  //         }
+  //       },
+  //       build: (_, time) {
+  //         if (time <= 10) {
+  //           return BlinkText(_printDuration(Duration(seconds: time.toInt())),
+  //               style: AppStyles.itemInfoTextStyle.copyWith(
+  //                 color: Colors.white,
+  //               ),
+  //               beginColor: Colors.white,
+  //               endColor: Colors.orange,
+  //               times: time.toInt(),
+  //               duration: Duration(seconds: 1));
+  //         } else {
+  //           return Text(
+  //             _printDuration(Duration(seconds: time.toInt())),
+  //             style: AppStyles.itemInfoTextStyle.copyWith(
+  //               color: Colors.white,
+  //             ),
+  //           );
+  //         }
+  //       });
+  // }
 
-  String _printDuration(Duration duration) {
-    String twoDigits(int n) => n.toString().padLeft(2, "0");
-    if (duration.inSeconds <= 0) {
-      return '0:00';
-    }
-    String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
-    String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
-    return "$twoDigitMinutes:$twoDigitSeconds";
-  }
+  // String _printDuration(Duration duration) {
+  //   String twoDigits(int n) => n.toString().padLeft(2, "0");
+  //   if (duration.inSeconds <= 0) {
+  //     return '0:00';
+  //   }
+  //   String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
+  //   String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
+  //   return "$twoDigitMinutes:$twoDigitSeconds";
+  // }
 }
 
 class PlayerViewDivider extends StatelessWidget {
