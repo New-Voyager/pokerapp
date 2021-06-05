@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:pokerapp/resources/app_assets.dart';
 import 'package:tenor/tenor.dart';
 
 class GifListWidget extends StatelessWidget {
@@ -48,28 +49,45 @@ class GifListWidget extends StatelessWidget {
           print('size: $gifSize');
           print('$url $previewUrl');
 
-          return GestureDetector(
-            // WE SEND BACK THE PREVIEW URL AS WE DONT CARE ABOUT
-            // GOOD QUALITY OF GIFS
-            onTap: () => onGifSelect(url),
-            child: isLocal
-                ? Image.file(File(previewUrl))
-                : CachedNetworkImage(
-                    imageUrl: previewUrl,
-                    progressIndicatorBuilder: (
-                      context,
-                      url,
-                      downloadProgress,
-                    ) =>
-                        AspectRatio(
-                      aspectRatio: gifSize.width / gifSize.height,
-                      child: Container(
-                        width: double.infinity,
-                        height: double.infinity,
-                        color: CupertinoColors.inactiveGray,
+          return Stack(
+            alignment: Alignment.bottomRight,
+            children: [
+              GestureDetector(
+                // WE SEND BACK THE PREVIEW URL AS WE DONT CARE ABOUT
+                // GOOD QUALITY GIFS
+                onTap: () => onGifSelect(isLocal ? url : previewUrl),
+                child: isLocal
+                    ? Image.file(File(previewUrl))
+                    : CachedNetworkImage(
+                        imageUrl: previewUrl,
+                        progressIndicatorBuilder: (
+                          context,
+                          url,
+                          downloadProgress,
+                        ) =>
+                            AspectRatio(
+                          aspectRatio: gifSize.width / gifSize.height,
+                          child: Container(
+                            width: double.infinity,
+                            height: double.infinity,
+                            color: CupertinoColors.inactiveGray,
+                          ),
+                        ),
                       ),
-                    ),
+              ),
+
+              /* attribution */
+              IntrinsicWidth(
+                child: Container(
+                  color: Colors.white60,
+                  padding: EdgeInsets.all(5.0),
+                  child: Image.asset(
+                    AppAssets.tenorAttributionImage,
+                    width: 50.0,
                   ),
+                ),
+              ),
+            ],
           );
         },
       );

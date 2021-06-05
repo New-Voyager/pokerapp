@@ -177,9 +177,9 @@ class _GameGiphiesState extends State<GameGiphies> {
                         color: AppColors.lightGrayColor,
                         size: 18.0,
                       ),
-                      hintText: '',
+                      hintText: 'Search Tenor',
                       hintStyle: TextStyle(
-                        color: AppColors.lightGrayColor,
+                        color: AppColors.medLightGrayColor,
                       ),
                       border: InputBorder.none,
                     ),
