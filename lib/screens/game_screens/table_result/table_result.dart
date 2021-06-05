@@ -7,9 +7,12 @@ import 'package:pokerapp/models/table_record.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/resources/new/app_strings_new.dart';
+import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/utils/hand_table_bar_chart_profit.dart';
+import 'package:pokerapp/widgets/button_widget.dart';
 import 'package:share/share.dart';
 
 class TableResultScreen extends StatefulWidget {
@@ -239,164 +242,120 @@ class _TableResultScreenState extends State<TableResultScreen> {
   @override
   Widget build(BuildContext context) {
     initializeTableWidgets();
-    return CupertinoPageScaffold(
+    return Scaffold(
       resizeToAvoidBottomInset: true,
       backgroundColor: AppColors.screenBackgroundColor,
-      navigationBar: CupertinoNavigationBar(
-        backgroundColor: AppColors.screenBackgroundColor,
-        leading: GestureDetector(
-          onTap: () => Navigator.of(context).pop(),
-          child: Row(
-            children: [
-              Icon(
-                Icons.arrow_back_ios,
-                size: 16,
-                color: AppColors.appAccentColor,
-              ),
-              Text(
-                "Game",
-                style: const TextStyle(
-                  fontFamily: AppAssets.fontFamilyLato,
-                  color: AppColors.appAccentColor,
-                  fontSize: 14.0,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-            ],
-          ),
-        ),
-        middle: Column(
-          children: [
-            Text(
-              "Table Result",
-              style: const TextStyle(
-                fontFamily: AppAssets.fontFamilyLato,
-                color: Colors.white,
-                fontSize: 22.0,
-                fontWeight: FontWeight.w900,
-              ),
-            ),
-            Text(
-              "Game code: " + widget.gameCode,
-              style: const TextStyle(
-                fontFamily: AppAssets.fontFamilyLato,
-                color: AppColors.lightGrayTextColor,
-                fontSize: 12.0,
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-          ],
-        ),
+      appBar: CustomAppBar(
+        context: context,
+        titleText: AppStringsNew.TableRecordTitle,
+        subTitleText: "Game code: ${widget.gameCode}",
       ),
-      child: Material(
-        type: MaterialType.transparency,
-        child: SingleChildScrollView(
-          child: ConstrainedBox(
-            constraints:
-                BoxConstraints(maxHeight: MediaQuery.of(context).size.height),
-            child: Column(
-              children: [
-                Container(
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                        left: 10.0, right: 15.0, top: 5, bottom: 5),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text(
-                              "Tips",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontFamily: AppAssets.fontFamilyLato,
-                                fontSize: 18.0,
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
-                            SizedBox(
-                              width: 10.0,
-                            ),
-                            Text(
-                              getTotalRake().toString(),
-                              style: TextStyle(
-                                color: Color(0xff1aff22),
-                                fontFamily: AppAssets.fontFamilyLato,
-                                fontSize: 18.0,
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
-                          ],
-                        ),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            // SvgPicture.asset(
-                            //   'assets/images/gamesettings/gambling.svg',
-                            //   color: Color(0xffef9712),
-                            // ),
-                            // SizedBox(
-                            //   width: 5.0,
-                            // ),
-                            // Text(
-                            //   "5",
-                            //   style: TextStyle(
-                            //     color: Colors.white,
-                            //     fontFamily: AppAssets.fontFamilyLato,
-                            //     fontSize: 18.0,
-                            //     fontWeight: FontWeight.w400,
-                            //   ),
-                            // ),
-                            SizedBox(
-                              width: 20.0,
-                            ),
-                            InkWell(
-                              onTap: () async {
-                                downloadTable(widget.gameCode);
-                              },
-                              child: Text(
-                                "Download",
-                                style: TextStyle(
-                                  color: Color(0xff319ffe),
-                                  fontFamily: AppAssets.fontFamilyLato,
-                                  fontSize: 18.0,
-                                  fontWeight: FontWeight.w400,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                Container(
+      body: SingleChildScrollView(
+        child: ConstrainedBox(
+          constraints:
+              BoxConstraints(maxHeight: MediaQuery.of(context).size.height),
+          child: Column(
+            children: [
+              Container(
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                      left: 10.0, right: 15.0, top: 5, bottom: 5),
                   child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Expanded(
-                        child: CupertinoSegmentedControl<int>(
-                          unselectedColor: AppColors.screenBackgroundColor,
-                          selectedColor: AppColors.appAccentColor,
-                          children: tableWidgets,
-                          borderColor: AppColors.appAccentColor,
-                          onValueChanged: (int val) {
-                            setState(() {
-                              _selectedTableWidget = val;
-                            });
-                          },
-                          groupValue: _selectedTableWidget,
-                        ),
-                      )
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            "Tips",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontFamily: AppAssets.fontFamilyLato,
+                              fontSize: 18.0,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                          SizedBox(
+                            width: 10.0,
+                          ),
+                          Text(
+                            getTotalRake().toString(),
+                            style: TextStyle(
+                              color: Color(0xff1aff22),
+                              fontFamily: AppAssets.fontFamilyLato,
+                              fontSize: 18.0,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          // SvgPicture.asset(
+                          //   'assets/images/gamesettings/gambling.svg',
+                          //   color: Color(0xffef9712),
+                          // ),
+                          // SizedBox(
+                          //   width: 5.0,
+                          // ),
+                          // Text(
+                          //   "5",
+                          //   style: TextStyle(
+                          //     color: Colors.white,
+                          //     fontFamily: AppAssets.fontFamilyLato,
+                          //     fontSize: 18.0,
+                          //     fontWeight: FontWeight.w400,
+                          //   ),
+                          // ),
+                          SizedBox(
+                            width: 20.0,
+                          ),
+                          InkWell(
+                            onTap: () async {
+                              downloadTable(widget.gameCode);
+                            },
+                            child: Text(
+                              "Download",
+                              style: TextStyle(
+                                color: Color(0xff319ffe),
+                                fontFamily: AppAssets.fontFamilyLato,
+                                fontSize: 18.0,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ],
                   ),
                 ),
-                Container(
-                  child: getTableOrGraphView(context, _selectedTableWidget),
+              ),
+              Container(
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: CupertinoSegmentedControl<int>(
+                        unselectedColor: AppColors.screenBackgroundColor,
+                        selectedColor: AppColors.appAccentColor,
+                        children: tableWidgets,
+                        borderColor: AppColors.appAccentColor,
+                        onValueChanged: (int val) {
+                          setState(() {
+                            _selectedTableWidget = val;
+                          });
+                        },
+                        groupValue: _selectedTableWidget,
+                      ),
+                    )
+                  ],
                 ),
-              ],
-            ),
+              ),
+              Container(
+                child: getTableOrGraphView(context, _selectedTableWidget),
+              ),
+            ],
           ),
         ),
       ),

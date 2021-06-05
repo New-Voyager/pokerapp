@@ -8,6 +8,7 @@ import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/screens/game_screens/hand_history/played_hands.dart';
+import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/hand_service.dart';
 import 'package:pokerapp/services/app/player_service.dart';
 
@@ -53,110 +54,62 @@ class _HandHistoryState extends State<HandHistoryListView>
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
+    return Scaffold(
       backgroundColor: AppColors.screenBackgroundColor,
-      resizeToAvoidBottomInset: true,
-      navigationBar: CupertinoNavigationBar(
-        backgroundColor: AppColors.screenBackgroundColor,
-        leading: GestureDetector(
-          onTap: () => Navigator.of(context).pop(),
-          child: widget.isLeadingBackIconShow
-              ? Row(
-                  children: [
-                    Icon(
-                      Icons.arrow_back_ios,
-                      size: 16,
-                      color: AppColors.appAccentColor,
-                    ),
-                    Text(
-                      "Game",
-                      style: const TextStyle(
+      appBar: CustomAppBar(
+        context: context,
+        titleText: "Hand History",
+      ),
+      body: !loadingDone
+          ? Center(child: CircularProgressIndicator())
+          : Container(
+              child: Column(
+                children: [
+                  Container(
+                    child: TabBar(
+                      unselectedLabelColor: AppColors.lightGrayTextColor,
+                      indicatorSize: TabBarIndicatorSize.label,
+                      indicatorColor: Colors.white,
+                      labelColor: Colors.white,
+                      labelStyle: TextStyle(
                         fontFamily: AppAssets.fontFamilyLato,
-                        color: AppColors.appAccentColor,
-                        fontSize: 14.0,
-                        fontWeight: FontWeight.w400,
                       ),
-                    ),
-                  ],
-                )
-              : Container(),
-        ),
-        middle: Column(
-          children: [
-            Text(
-              "Hand History",
-              style: const TextStyle(
-                fontFamily: AppAssets.fontFamilyLato,
-                color: Colors.white,
-                fontSize: 22.0,
-                fontWeight: FontWeight.w900,
-              ),
-            ),
-            Text(
-              "Game code: " + widget.data.gameCode,
-              style: const TextStyle(
-                fontFamily: AppAssets.fontFamilyLato,
-                color: AppColors.lightGrayTextColor,
-                fontSize: 12.0,
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-          ],
-        ),
-      ),
-      child: Material(
-        type: MaterialType.transparency,
-        child: !loadingDone
-            ? Center(child: CircularProgressIndicator())
-            : Container(
-                child: Column(
-                  children: [
-                    Container(
-                      child: TabBar(
-                        unselectedLabelColor: AppColors.lightGrayTextColor,
-                        indicatorSize: TabBarIndicatorSize.label,
-                        indicatorColor: Colors.white,
-                        labelColor: Colors.white,
-                        labelStyle: TextStyle(
-                          fontFamily: AppAssets.fontFamilyLato,
+                      tabs: [
+                        new Tab(
+                          text: "All Hands",
                         ),
-                        tabs: [
-                          new Tab(
-                            text: "All Hands",
-                          ),
-                          new Tab(
-                            text: "Winning Hands",
-                          ),
-                        ],
-                        controller: _tabController,
-                      ),
+                        new Tab(
+                          text: "Winning Hands",
+                        ),
+                      ],
+                      controller: _tabController,
                     ),
-                    Expanded(
-                      child: TabBarView(
-                        children: [
-                          PlayedHandsScreen(
-                            _data.gameCode,
-                            _data.getMyHands(),
-                            //_data.getAllHands(),
-                            widget._clubCode,
-                            currentPlayer,
-                            isInBottomSheet: widget.isInBottomSheet,
-                          ),
-                          PlayedHandsScreen(
-                            _data.gameCode,
-                            _data.getWinningHands(),
-                            widget._clubCode,
-                            currentPlayer,
-                            isInBottomSheet: widget.isInBottomSheet,
-                          ),
-                        ],
-                        controller: _tabController,
-                      ),
+                  ),
+                  Expanded(
+                    child: TabBarView(
+                      children: [
+                        PlayedHandsScreen(
+                          _data.gameCode,
+                          _data.getMyHands(),
+                          //_data.getAllHands(),
+                          widget._clubCode,
+                          currentPlayer,
+                          isInBottomSheet: widget.isInBottomSheet,
+                        ),
+                        PlayedHandsScreen(
+                          _data.gameCode,
+                          _data.getWinningHands(),
+                          widget._clubCode,
+                          currentPlayer,
+                          isInBottomSheet: widget.isInBottomSheet,
+                        ),
+                      ],
+                      controller: _tabController,
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-      ),
+            ),
     );
   }
 }

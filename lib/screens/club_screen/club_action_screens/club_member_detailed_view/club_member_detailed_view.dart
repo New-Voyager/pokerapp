@@ -6,7 +6,10 @@ import 'package:pokerapp/models/club_members_model.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_icons.dart';
+import 'package:pokerapp/resources/new/app_strings_new.dart';
+import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/routes.dart';
+import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/club_interior_service.dart';
 
 class ClubMembersDetailsView extends StatefulWidget {
@@ -69,28 +72,9 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.screenBackgroundColor,
-      appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back_ios,
-            size: 14,
-            color: AppColors.appAccentColor,
-          ),
-          onPressed: () => goBack(context),
-        ),
-        titleSpacing: 0,
-        elevation: 0.0,
-        backgroundColor: AppColors.screenBackgroundColor,
-        title: Text(
-          "Members",
-          textAlign: TextAlign.left,
-          style: TextStyle(
-            color: AppColors.appAccentColor,
-            fontSize: 14.0,
-            fontFamily: AppAssets.fontFamilyLato,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
+      appBar: CustomAppBar(
+        context: context,
+        titleText: AppStringsNew.MemberDetailTitle,
       ),
       body: !loadingDone
           ? Center(child: CircularProgressIndicator())

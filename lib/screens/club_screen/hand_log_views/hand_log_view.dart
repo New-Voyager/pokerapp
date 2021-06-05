@@ -13,6 +13,7 @@ import 'package:pokerapp/screens/club_screen/hand_log_views/hand_winners_view.da
 import 'package:pokerapp/screens/club_screen/hand_log_views/handlog_action.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/handlog_showdown.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/handlog_summary.dart';
+import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/screens/util_screens/replay_hand_dialog/replay_hand_dialog.dart';
 import 'package:pokerapp/services/app/hand_service.dart';
 import 'package:pokerapp/services/test/test_service.dart';
@@ -164,22 +165,9 @@ class _HandLogViewState extends State<HandLogView> {
 
     return Scaffold(
       backgroundColor: AppColors.screenBackgroundColor,
-      appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back_ios,
-            size: 14,
-            color: AppColors.appAccentColor,
-          ),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        titleSpacing: 0,
-        elevation: 0.0,
-        backgroundColor: AppColors.screenBackgroundColor,
-        title: Text(
-          title,
-          style: AppStyles.titleBarTextStyle,
-        ),
+      appBar: CustomAppBar(
+        context: context,
+        titleText: title,
       ),
       body: this._isLoading == true
           ? Center(

@@ -21,7 +21,7 @@ class HandTableBarChartProfit extends StatelessWidget {
       //       charts.ColorUtil.fromDartColor(Colors.blue[200]),
       // )..setAttribute(
       //     charts.measureAxisIdKey, charts.Axis.secondaryMeasureAxisId),
-      charts.Series(
+      charts.Series<TableRecordRow, String>(
         id: "Profit/Loss",
         data: _handTableRecord.rows,
         domainFn: (TableRecordRow tableRow, _) => tableRow.playerName,
@@ -29,6 +29,18 @@ class HandTableBarChartProfit extends StatelessWidget {
         colorFn: (TableRecordRow tableRow, _) => tableRow.profit > 0
             ? charts.ColorUtil.fromDartColor(Colors.green)
             : charts.ColorUtil.fromDartColor(Colors.red),
+        labelAccessorFn: (TableRecordRow tableRow, index) =>
+            '  ${ tableRow.profit.toStringAsFixed(0)}',
+        insideLabelStyleAccessorFn: (_, __) => charts.TextStyleSpec(
+          color: charts.ColorUtil.fromDartColor(Colors.white),
+          fontSize: 14,
+          fontFamily: AppAssets.fontFamilyLato,
+        ),
+        outsideLabelStyleAccessorFn: (_, __) => charts.TextStyleSpec(
+          color: charts.ColorUtil.fromDartColor(Colors.white),
+          fontSize: 14,
+          fontFamily: AppAssets.fontFamilyLato,
+        ),
       ),
     ];
 
@@ -45,6 +57,9 @@ class HandTableBarChartProfit extends StatelessWidget {
         //   ),
         // ),
       ],
+      barRendererDecorator: charts.BarLabelDecorator<String>(
+        labelPosition: charts.BarLabelPosition.auto,
+      ),
       primaryMeasureAxis: charts.NumericAxisSpec(
         tickProviderSpec: charts.BasicNumericTickProviderSpec(
           desiredTickCount: 3,

@@ -6,6 +6,7 @@ import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/club_screen/club_banner_view/club_banner_view.dart';
 import 'package:pokerapp/screens/club_screen/club_banner_view/club_graphics_view.dart';
+import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/clubs_service.dart';
 import 'package:pokerapp/widgets/custom_text_button.dart';
 import 'package:provider/provider.dart';
@@ -45,6 +46,9 @@ class ClubMainScreen extends StatelessWidget {
           }
           return Scaffold(
             backgroundColor: AppColors.screenBackgroundColor,
+            appBar: CustomAppBar(
+              context: context,
+            ),
             /*  appBar: AppBar(
               leading: IconButton(
                 icon: Icon(
@@ -77,17 +81,9 @@ class ClubMainScreen extends StatelessWidget {
                             Container(
                               padding: EdgeInsets.only(left: 8, right: 16),
                               child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment: MainAxisAlignment.end,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  IconButton(
-                                      icon: Icon(
-                                        Icons.arrow_back_ios,
-                                        color: AppColors.appAccentColor,
-                                      ),
-                                      onPressed: () =>
-                                          Navigator.of(context).pop()),
                                   !isOwnerOrManager
                                       ? Container()
                                       : CustomTextButton(

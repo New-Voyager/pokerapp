@@ -7,7 +7,9 @@ import 'package:pokerapp/models/bookmarkedHands_model.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_winners_view.dart';
+import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/screens/util_screens/replay_hand_dialog/replay_hand_dialog.dart';
 import 'package:pokerapp/services/app/hand_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
@@ -114,20 +116,9 @@ class _BookmarkedHandsState extends State<BookmarkedHands> {
     return Scaffold(
       backgroundColor: AppColors.screenBackgroundColor,
       resizeToAvoidBottomInset: true,
-      appBar: AppBar(
-        backgroundColor: AppColors.screenBackgroundColor,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back_ios,
-            color: AppColors.appAccentColor,
-          ),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        title: Text(
-          "Bookmarked hands",
-          style: AppStyles.titleBarTextStyle,
-        ),
+      appBar: CustomAppBar(
+        context: context,
+        titleText: AppStringsNew.BookmarkedHandsTitle,
       ),
       body: loading
           ? Center(child: CircularProgressIndicator())

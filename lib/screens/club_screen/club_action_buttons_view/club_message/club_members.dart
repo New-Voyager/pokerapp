@@ -4,6 +4,7 @@ import 'package:pokerapp/models/host_message_summary_model.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/routes.dart';
+import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/clubs_service.dart';
 
 import '../../../../main.dart';
@@ -24,20 +25,9 @@ class _ClubMembersState extends State<ClubMembers> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.screenBackgroundColor,
-      appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back_ios,
-            color: AppColors.appAccentColor,
-          ),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        title: Text(
-          "Messages",
-          style: AppStyles.credentialsTextStyle,
-        ),
-        centerTitle: true,
-        backgroundColor: AppColors.screenBackgroundColor,
+      appBar: CustomAppBar(
+        context: context,
+        titleText: "Messages",
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.white24,
