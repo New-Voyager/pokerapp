@@ -163,7 +163,6 @@ class _ClubsPageViewState extends State<ClubsPageView> with RouteAware {
   }
 
   Future<void> _fillClubs() async {
-    print('fetching clubs');
     _clubs = await ClubsService.getMyClubs();
     setState(() {});
   }
@@ -202,17 +201,9 @@ class _ClubsPageViewState extends State<ClubsPageView> with RouteAware {
     // );
   }
 
-  @override
-  void didPopNext() {
-    super.didPopNext();
+  void refreshClubScreen() {
     log('refresh club screen');
     context.read<ClubsUpdateState>().notify();
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    routeObserver.subscribe(this, ModalRoute.of(context));
   }
 
   Text _getTitleTextWidget(title) {
@@ -238,9 +229,22 @@ class _ClubsPageViewState extends State<ClubsPageView> with RouteAware {
   }
 
   @override
+  void didPopNext() {
+    super.didPopNext();
+    refreshClubScreen();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    routeObserver.subscribe(this, ModalRoute.of(context));
+  }
+
+  @override
   void dispose() {
     _refreshTimer?.cancel();
     super.dispose();
+    routeObserver.unsubscribe(this);
   }
 
   @override

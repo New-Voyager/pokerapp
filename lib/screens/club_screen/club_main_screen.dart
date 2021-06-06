@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/club_homepage_model.dart';
 import 'package:pokerapp/models/club_weekly_activity_model.dart';
 import 'package:pokerapp/resources/app_assets.dart';
@@ -14,29 +17,45 @@ import 'package:provider/provider.dart';
 import 'club_action_buttons_view/club_action_buttons_view.dart';
 import 'club_games_page_view.dart';
 
-class ClubMainScreen extends StatelessWidget {
+class ClubMainScreen extends StatefulWidget {
   final String clubCode;
-  ClubWeeklyActivityModel weeklyActivity;
+  // ClubWeeklyActivityModel weeklyActivity;
 
   ClubMainScreen({
     @required this.clubCode,
   });
 
-  // List<Widget> _buildActions(String clubCode, BuildContext context) => [
-  //       CustomTextButton(
-  //         onTap: () => Navigator.pushNamed(
-  //           context,
-  //           Routes.new_game_settings,
-  //           arguments: clubCode,
-  //         ),
-  //         text: '+ Create Game',
-  //       ),
-  //     ];
+  @override
+  _ClubMainScreenState createState() => _ClubMainScreenState();
+}
+
+class _ClubMainScreenState extends State<ClubMainScreen> with RouteAware {
+  void refreshClubMainScreen() {
+    log('refresh club main screen');
+  }
+
+  @override
+  void didPopNext() {
+    super.didPopNext();
+    refreshClubMainScreen();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    routeObserver.subscribe(this, ModalRoute.of(context));
+  }
+
+  @override
+  void dispose() {
+    routeObserver.unsubscribe(this);
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) => FutureBuilder<ClubHomePageModel>(
         initialData: null,
-        future: ClubsService.getClubHomePageData(clubCode),
+        future: ClubsService.getClubHomePageData(widget.clubCode),
         builder: (BuildContext context, snapshot) {
           ClubHomePageModel clubModel = snapshot.data;
           bool isOwnerOrManager = false;
@@ -90,7 +109,7 @@ class ClubMainScreen extends StatelessWidget {
                                           onTap: () => Navigator.pushNamed(
                                             context,
                                             Routes.new_game_settings,
-                                            arguments: clubCode,
+                                            arguments: widget.clubCode,
                                           ),
                                           text: '+ Create Game',
                                         ),
@@ -106,7 +125,10 @@ class ClubMainScreen extends StatelessWidget {
                                   clubModel.weeklyActivity),
                             ),
                             ClubGamesPageView(clubModel.liveGames),
-                            ClubActionButtonsView(clubModel, this.clubCode)
+                            ClubActionButtonsView(
+                              clubModel,
+                              this.widget.clubCode,
+                            )
                           ],
                         ),
                       ),
