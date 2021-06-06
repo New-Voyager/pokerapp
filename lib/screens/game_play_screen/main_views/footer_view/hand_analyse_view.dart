@@ -163,6 +163,16 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                                                           context,
                                                           listen: false)
                                                       .decreaseTotalPending();
+                                                  final List<PendingApproval>
+                                                      list = await PlayerService
+                                                          .getPendingApprovals();
+                                                  Provider.of<PendingApprovalsState>(
+                                                          context,
+                                                          listen: false)
+                                                      .setTotalPending(
+                                                          list == null
+                                                              ? 0
+                                                              : list.length);
                                                   localSetState(() {});
                                                 } else {
                                                   log("Failed to approve request");
@@ -189,6 +199,16 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                                                           context,
                                                           listen: false)
                                                       .decreaseTotalPending();
+                                                  final List<PendingApproval>
+                                                      list = await PlayerService
+                                                          .getPendingApprovals();
+                                                  Provider.of<PendingApprovalsState>(
+                                                          context,
+                                                          listen: false)
+                                                      .setTotalPending(
+                                                          list == null
+                                                              ? 0
+                                                              : list.length);
                                                   localSetState(() {});
                                                 } else {
                                                   toast(

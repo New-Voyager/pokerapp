@@ -6,6 +6,8 @@ import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/hand_history_model.dart';
 import 'package:pokerapp/models/hand_log_model.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
+import 'package:pokerapp/services/app/handlog_cache_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HandService {
   static String allHands = """
@@ -160,6 +162,14 @@ class HandService {
 
   static Future<HandLogModelNew> getHandLog(
       String gameCode, int handNum) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (!HandlogCacheService.needToFetch(gameCode, handNum, prefs)) {
+      final data = HandlogCacheService.getFromCache(gameCode, handNum,prefs);
+      final handLog =
+          HandLogModelNew.handLogModelNewFromJson(data, serviceResult: true);
+      return handLog;
+    }
+
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
     log("Trying to get GameCode: $gameCode; handNum: $handNum");
     Map<String, dynamic> variables = {
@@ -171,6 +181,7 @@ class HandService {
     } else {
       query = lastHandLogData;
     }
+    log("variables: $variables");
     QueryResult result = await _client
         .query(QueryOptions(documentNode: gql(query), variables: variables));
 
@@ -180,7 +191,8 @@ class HandService {
     // model.jsonData = result.data;
     // model.load();
     final data = jsonEncode(result.data);
-    log("DATA\n: $data");
+    HandlogCacheService.saveToCache(gameCode, handNum, data, prefs);
+    // log("DATA\n: $data");
     final handLog =
         HandLogModelNew.handLogModelNewFromJson(data, serviceResult: true);
     return handLog;

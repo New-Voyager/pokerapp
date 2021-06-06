@@ -30,4 +30,6 @@ class AppStringsNew {
   static const MemberDetailTitle = "Members";
   static const ClubChatTitle = "Club chat";
   static const BookmarkedHandsTitle = "Bookmarked Hands";
+
+  static const HighHandlogTitle = "High Handlog";
 }

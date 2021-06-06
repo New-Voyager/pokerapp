@@ -15,6 +15,7 @@ import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/boar
 import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/services/app/game_service.dart';
+import 'package:pokerapp/services/app/handlog_cache_service.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:pokerapp/services/janus/janus.dart';
@@ -62,6 +63,7 @@ class GameState {
   int _currentHandNum;
   bool _playerSeatChangeInProgress = false;
   int _seatChangeSeat = 0;
+  HandlogCacheService handlogCacheService;
 
   void initialize({
     String gameCode,

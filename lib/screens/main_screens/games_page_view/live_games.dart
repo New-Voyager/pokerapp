@@ -13,6 +13,7 @@ import 'package:pokerapp/screens/main_screens/games_page_view/widgets/live_games
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
+import 'package:pokerapp/widgets/heading_widget.dart';
 
 class LiveGamesScreen extends StatefulWidget {
   @override
@@ -26,7 +27,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen> {
   Timer _refreshTimer;
 
   Future<void> _fillLiveGames() async {
-    print('fetching live games');
+    //print('fetching live games');
     liveGames = await GameService.getLiveGamesNew();
   }
 
@@ -38,10 +39,10 @@ class _LiveGamesScreenState extends State<LiveGamesScreen> {
       TestService.isTesting ? _loadTestLiveGames() : _fetchLiveGames();
     });
 
-    // // THIS IS A TEMPORARY SOLUTION
+    // THIS IS A TEMPORARY SOLUTION
     // _refreshTimer = Timer.periodic(const Duration(seconds: 5), (timer) async {
     //   await _fillLiveGames();
-    //   setState(() {});
+    //   if(mounted) setState(() {});
     // });
   }
 
@@ -89,13 +90,8 @@ class _LiveGamesScreenState extends State<LiveGamesScreen> {
           backgroundColor: Colors.transparent,
           body: Column(
             children: [
-              Container(
-                margin: EdgeInsets.symmetric(vertical: 8),
-                alignment: Alignment.center,
-                child: Text(
-                  AppStringsNew.LiveGamesTitle.toUpperCase(),
-                  style: AppStylesNew.TitleTextStyle,
-                ),
+              HeadingWidget(
+                heading: 'Live Games',
               ),
               _isLoading
                   ? Container()

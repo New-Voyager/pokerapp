@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/enums/game_type.dart';
+import 'package:pokerapp/models/game/new_game_provider.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
+import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/game_screens/widgets/game_type_item.dart';
 import 'package:pokerapp/screens/game_screens/widgets/new_button_widget.dart';
 import 'package:pokerapp/widgets/heading_widget.dart';
+import 'package:provider/provider.dart';
 
 class ChooseGameNew extends StatefulWidget {
   final String clubCode;
@@ -55,8 +58,47 @@ class _ChooseGameNewState extends State<ChooseGameNew>
           body: Column(
             children: [
               /* BUILD HEADER */
-              HeadingWidget(
-                heading: 'choose game',
+              Row(
+                children: [
+                  AppDimensionsNew.getHorizontalSpace(8),
+                  InkWell(
+                    onTap: () {
+                      // TODO : Handle load code
+                    },
+                    child: CircleAvatar(
+                      child: Icon(Icons.open_in_browser_rounded),
+                      backgroundColor: AppColorsNew.newGreenRadialStartColor,
+                    ),
+                  ),
+                  // Container(
+                  //   decoration: BoxDecoration(
+                  //       shape: BoxShape.circle,
+                  //                           color: AppColorsNew.newGreenButtonColor,
+
+                  //       border: Border.all(
+                  //         color: AppColorsNew.newSelectedGreenColor,
+                  //       )),
+                  //   child: IconButton(
+                  //     onPressed: () => Navigator.of(context).pop(),
+                  //     icon: Icon(Icons.open_in_browser_rounded),
+                  //     tooltip: "Load Settings",
+                  //   ),
+                  // ),
+                  /* HEADING */
+                  Expanded(
+                    child: HeadingWidget(
+                      heading: 'game settings',
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () => Navigator.of(context).pop(),
+                    child: CircleAvatar(
+                      child: Icon(Icons.close),
+                      backgroundColor: AppColorsNew.newGreenRadialStartColor,
+                    ),
+                  ),
+                  AppDimensionsNew.getHorizontalSpace(8),
+                ],
               ),
               Expanded(
                 child: SingleChildScrollView(
@@ -73,6 +115,8 @@ class _ChooseGameNewState extends State<ChooseGameNew>
                           imagePath: AppAssetsNew.pathHoldemTypeImage,
                           isSelected: _selectedGameType == GameType.HOLDEM,
                           animValue: _animationController.value,
+                          onArrowClick: () =>
+                              handleArrowClick(GameType.HOLDEM, context),
                         ),
                       ),
                       InkWell(
@@ -85,6 +129,8 @@ class _ChooseGameNewState extends State<ChooseGameNew>
                           imagePath: AppAssetsNew.pathPLOTypeImage,
                           isSelected: _selectedGameType == GameType.PLO,
                           animValue: _animationController.value,
+                          onArrowClick: () =>
+                              handleArrowClick(GameType.PLO, context),
                         ),
                       ),
                       InkWell(
@@ -97,6 +143,8 @@ class _ChooseGameNewState extends State<ChooseGameNew>
                           imagePath: AppAssetsNew.pathPLOHiLoTypeImage,
                           isSelected: _selectedGameType == GameType.PLO_HILO,
                           animValue: _animationController.value,
+                          onArrowClick: () =>
+                              handleArrowClick(GameType.PLO_HILO, context),
                         ),
                       ),
                       InkWell(
@@ -110,6 +158,8 @@ class _ChooseGameNewState extends State<ChooseGameNew>
                           isSelected:
                               _selectedGameType == GameType.FIVE_CARD_PLO,
                           animValue: _animationController.value,
+                          onArrowClick: () =>
+                              handleArrowClick(GameType.FIVE_CARD_PLO, context),
                         ),
                       ),
                       InkWell(
@@ -124,6 +174,8 @@ class _ChooseGameNewState extends State<ChooseGameNew>
                           isSelected:
                               _selectedGameType == GameType.FIVE_CARD_PLO_HILO,
                           animValue: _animationController.value,
+                          onArrowClick: () => handleArrowClick(
+                              GameType.FIVE_CARD_PLO_HILO, context),
                         ),
                       ),
                       InkWell(
@@ -139,6 +191,8 @@ class _ChooseGameNewState extends State<ChooseGameNew>
                           onSettingsClick: () =>
                               handleSettingsClick(GameType.ROE, gamesRoe),
                           gamesList: gamesRoe,
+                          onArrowClick: () =>
+                              handleArrowClick(GameType.ROE, context),
                         ),
                       ),
                       InkWell(
@@ -155,6 +209,8 @@ class _ChooseGameNewState extends State<ChooseGameNew>
                           onSettingsClick: () => handleSettingsClick(
                               GameType.DEALER_CHOICE, gamesDealerChoice),
                           gamesList: gamesDealerChoice,
+                          onArrowClick: () =>
+                              handleArrowClick(GameType.DEALER_CHOICE, context),
                         ),
                       ),
                       // AppDimensionsNew.getVerticalSizedBox(64),
@@ -179,6 +235,17 @@ class _ChooseGameNewState extends State<ChooseGameNew>
     // } else if (gameType == GameType.DEALER_CHOICE) {
     //   gamesDealerChoice.addAll(await showChooseGamesDailog(gamesDealerChoice));
     // }
+  }
+
+  handleArrowClick(GameType gameType, BuildContext context) {
+    Navigator.of(context).pop({
+      'gameType': gameType,
+      'gameTypes': (gameType == GameType.ROE)
+          ? gamesRoe
+          : (gameType == GameType.DEALER_CHOICE)
+              ? gamesDealerChoice
+              : [],
+    });
   }
 
   Future<void> handleSettingsClick(

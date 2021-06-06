@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/game/new_game_model.dart';
 import 'package:pokerapp/models/game/new_game_provider.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/widgets/button_widget.dart';
 import 'package:pokerapp/widgets/custom_text_button.dart';
@@ -52,7 +53,7 @@ class NewGameSettings2 extends StatelessWidget {
     );
   }
 
-  static void show(
+  static Future<void> show(
     BuildContext context, {
     @required String clubCode,
     @required GameType mainGameType,
@@ -196,9 +197,32 @@ class NewGameSettings2 extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  /* HEADING */
-                  HeadingWidget(
-                    heading: 'game settings',
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      InkWell(
+                        onTap: () {},
+                        child: CircleAvatar(
+                          child: Icon(Icons.save),
+                          backgroundColor:
+                              AppColorsNew.newGreenRadialStartColor,
+                        ),
+                      ),
+                      /* HEADING */
+                      Expanded(
+                        child: HeadingWidget(
+                          heading: 'game settings',
+                        ),
+                      ),
+                      InkWell(
+                        onTap: () => Navigator.of(context).pop(),
+                        child: CircleAvatar(
+                          child: Icon(Icons.close),
+                          backgroundColor:
+                              AppColorsNew.newGreenRadialStartColor,
+                        ),
+                      ),
+                    ],
                   ),
 
                   /* players */
