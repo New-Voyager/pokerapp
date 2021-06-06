@@ -11,6 +11,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  emoji_picker:
+    path: ./emoji_picker
   audio_recorder:
     git:
       url: https://github.com/New-Voyager/audio_recorder.git
@@ -24,19 +26,14 @@ dependencies:
       url: https://github.com/New-Voyager/tenor.git
       ref: master
   after_layout: ^1.1.0
-
-  tuple: ^1.0.3
-
-  in_app_purchase: ^0.5.2
-
   animated_text_kit: ^4.1.1
   audioplayers: 0.17.0
+  badges: ^2.0.1
   blinking_text: ^1.0.1+2
   cached_network_image: 2.3.2+1
   charts_flutter: ^0.10.0
   cupertino_icons: ^0.1.3
   curved_bottom_navigation: ^1.0.0
-  emoji_picker: ^0.1.0
   equatable: ^1.2.5
   firebase_analytics: ^8.0.2
   firebase_core: ^1.1.0
@@ -55,7 +52,9 @@ dependencies:
   font_awesome_flutter: ^8.8.1
   get_it: ^6.1.1
   graphql_flutter: ^3.0.1
+  hive: ^2.0.4
   http: ^0.12.2
+  in_app_purchase: ^0.5.2
   intl: ^0.16.1
   just_audio: ^0.6.12
   lottie: ^0.7.0
@@ -70,6 +69,7 @@ dependencies:
   sliding_up_panel: ^1.0.2
   stream_channel: ^2.1.0
   timer_count_down: ^1.0.4+1
+  tuple: ^1.0.3
   web_socket_channel: ^2.0.0
   zflutter: ^0.0.1+2
 

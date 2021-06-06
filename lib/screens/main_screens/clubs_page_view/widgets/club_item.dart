@@ -1,5 +1,7 @@
+import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:badges/badges.dart';
 import 'package:pokerapp/models/club_model.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
@@ -16,19 +18,30 @@ class ClubItemView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var separator = SizedBox(height: 10.0);
+    Widget clubName = Text(
+      club.clubName,
+      style: const TextStyle(
+        color: Colors.white,
+        fontSize: 19.0,
+        fontFamily: AppAssets.fontFamilyLato,
+        fontWeight: FontWeight.w700,
+      ),
+    );
+
+    if (club.hostUnreadMessageCount != 0 ||
+        club.memberUnreadMessageCount != 0 ||
+        club.pendingMemberCount != 0 ||
+        club.unreadMessageCount != 0) {
+      clubName = Badge(
+          position: BadgePosition.topEnd(top: -5),
+          badgeContent: null,
+          child: clubName);
+    }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Text(
-          club.clubName,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 19.0,
-            fontFamily: AppAssets.fontFamilyLato,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
+        clubName,
         separator,
         Text(
           "Code: ${club.clubCode}",

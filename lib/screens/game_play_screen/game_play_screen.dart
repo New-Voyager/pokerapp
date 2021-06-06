@@ -341,12 +341,12 @@ class _GamePlayScreenState extends State<GamePlayScreen>
           duration: const Duration(milliseconds: 200),
           child: vnChatVisibility.value
               ? Align(
+                  alignment: Alignment.bottomCenter,
                   child: GameChat(
                     chatService:
                         this._gameContextObj.gameComService.gameMessaging,
                     onChatVisibilityChange: () => toggleChatVisibility(context),
                   ),
-                  alignment: Alignment.bottomCenter,
                 )
               : const SizedBox.shrink(),
         ),
@@ -392,7 +392,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
           floatingActionButton: GamePlayScreenUtilMethods.floatingActionButton(
             onReload: () {},
           ),
-          resizeToAvoidBottomInset: false,
+          resizeToAvoidBottomInset: true,
           backgroundColor: Colors.black,
           body: Builder(
             builder: (_) {

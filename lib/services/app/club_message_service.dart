@@ -28,6 +28,28 @@ class ClubMessageService {
     _timer?.cancel();
   }
 
+  static markMessagesAsRead(String clubCode) async {
+    String query = '''
+      mutation markMessagesRead(\$clubCode: String!) {
+        read: markMessagesRead(clubCode: \$clubCode)
+      }
+    ''';
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+    dynamic variables = {
+      "clubCode": clubCode,
+    };
+    /* messages query */
+    var result = await _client.mutate(
+        MutationOptions(
+          documentNode: gql(query),
+          variables: variables,
+        ),
+      );
+
+    if (result.hasException) return false;
+    return result.data['read'];
+  }
+
   static Future<int> _fetchData(
       String clubCode, int next, List<ClubMessageModel> _messages) async {
     String _query = ClubMessageModel.queryClubMessages(clubCode, next: next);
@@ -72,6 +94,7 @@ class ClubMessageService {
         next = await _fetchData(clubCode, next, _messages);
         if (_messages.length != len && !_stream.isClosed) {
           _stream.sink.add(_messages.reversed.toList());
+          ClubMessageService.markMessagesAsRead(clubCode);
         }
       });
     }

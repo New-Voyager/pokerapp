@@ -25,7 +25,7 @@ class _ClubMembersViewState extends State<ClubMembersView>
   final ClubHomePageModel _clubHomePageModel;
   TabController _controller;
   List<ClubMemberModel> _all = [];
-  List<ClubMemberModel> _inactive =[];
+  List<ClubMemberModel> _inactive = [];
   List<ClubMemberModel> _managers = [];
   List<ClubMemberModel> _unsettled = [];
 

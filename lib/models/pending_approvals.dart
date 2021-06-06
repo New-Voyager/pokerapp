@@ -23,6 +23,14 @@ class PendingApprovalsState extends ChangeNotifier {
   }
 }
 
+class ClubsUpdateState extends ChangeNotifier {
+  String updatedClubCode;
+
+  notify() {
+    notifyListeners();
+  }
+}
+
 class PendingApproval {
   String name;
   double amount;

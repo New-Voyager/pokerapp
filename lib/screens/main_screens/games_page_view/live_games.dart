@@ -40,10 +40,10 @@ class _LiveGamesScreenState extends State<LiveGamesScreen> {
     });
 
     // THIS IS A TEMPORARY SOLUTION
-    _refreshTimer = Timer.periodic(const Duration(seconds: 5), (timer) async {
-      await _fillLiveGames();
-      if(mounted) setState(() {});
-    });
+    // _refreshTimer = Timer.periodic(const Duration(seconds: 5), (timer) async {
+    //   await _fillLiveGames();
+    //   if(mounted) setState(() {});
+    // });
   }
 
   _fetchLiveGames() async {

@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/club_actions.dart';
 import 'package:pokerapp/models/club_homepage_model.dart';
@@ -6,21 +7,64 @@ import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:provider/provider.dart';
+import 'package:badges/badges.dart';
 
 import '../../../main.dart';
 
 class ClubActionButton extends StatelessWidget {
   final ClubActions _action;
   final String _actionName;
-  final Icon _actionIcon;
+  final Widget _actionIcon;
   final ClubHomePageModel _clubModel;
   final VoidCallback onTap;
+  final Widget badgeContent;
 
   ClubActionButton(
       this._clubModel, this._action, this._actionName, this._actionIcon,
-      {this.onTap});
+      {this.onTap, this.badgeContent = null});
   @override
   Widget build(BuildContext context) {
+    Widget card = Card(
+      margin: EdgeInsets.all(8.0),
+      color: AppColors.cardBackgroundColor,
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Padding(
+              padding: EdgeInsets.all(5.0),
+              child: Text(
+                _actionName,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 14.0,
+                  fontFamily: AppAssets.fontFamilyLato,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+            ),
+            SizedBox(
+              width: 50,
+              height: 50,
+              child: _actionIcon,
+            ),
+          ],
+        ),
+      ),
+      elevation: 5.5,
+    );
+
+    if (badgeContent != null) {
+      card = Badge(
+          position: BadgePosition.topEnd(top: 0, end: 3),
+          animationDuration: Duration(milliseconds: 300),
+          animationType: BadgeAnimationType.slide,
+          badgeContent: badgeContent,
+          child: card);
+    }
+
     return Consumer<ClubHomePageModel>(
       builder: (_, ClubHomePageModel clubModel, __) => GestureDetector(
         onTap: () {
@@ -87,37 +131,7 @@ class ClubActionButton extends StatelessWidget {
               break;
           }
         },
-        child: Card(
-          margin: EdgeInsets.all(8.0),
-          color: AppColors.cardBackgroundColor,
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: EdgeInsets.all(5.0),
-                  child: Text(
-                    _actionName,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 14.0,
-                      fontFamily: AppAssets.fontFamilyLato,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  width: 50,
-                  height: 50,
-                  child: _actionIcon,
-                ),
-              ],
-            ),
-          ),
-          elevation: 5.5,
-        ),
+        child: card,
       ),
     );
   }
