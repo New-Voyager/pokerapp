@@ -157,8 +157,7 @@ class _MainScreenState extends State<MainScreen>
     List<Widget> widgets = [];
     widgets.addAll([
       LiveGamesScreen(),
-      ChangeNotifierProvider(
-          create: (context) => ClubsUpdateState(), child: ClubsPageView()),
+      ClubsPageView(),
       ProfilePageView(),
       PurchasePageView()
     ]);

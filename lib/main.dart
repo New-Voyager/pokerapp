@@ -50,31 +50,37 @@ class MyApp extends StatelessWidget {
           //this.nats = Nats(context);
           print('Firebase initialized successfully');
           return MultiProvider(
+            /* PUT INDEPENDENT PROVIDERS HERE */
             providers: [
               ListenableProvider<PendingApprovalsState>(
                 create: (_) => PendingApprovalsState(),
               ),
-              Provider<Nats>(
-                create: (_) => Nats(context),
+              ListenableProvider<ClubsUpdateState>(
+                create: (_) => ClubsUpdateState(),
               ),
-              // ListenableProvider<ClubsUpdateState>(
-              //   create: (_) => ClubsUpdateState(),
-              // )
             ],
-            child: OverlaySupport.global(
-              child: MaterialApp(
-                title: 'Poker App',
-                debugShowCheckedModeBanner: false,
-                navigatorKey: navigatorKey,
-                // navigatorObservers: [
-                //   locator<AnalyticsService>().getAnalyticsObserver()
-                // ],
-                theme: ThemeData(
-                  primarySwatch: Colors.blue,
-                  visualDensity: VisualDensity.adaptivePlatformDensity,
+            builder: (context, _) => MultiProvider(
+              /* PUT DEPENDENT PROVIDERS HERE */
+              providers: [
+                Provider<Nats>(
+                  create: (_) => Nats(context),
                 ),
-                onGenerateRoute: Routes.generateRoute,
-                initialRoute: Routes.initial,
+              ],
+              child: OverlaySupport.global(
+                child: MaterialApp(
+                  title: 'Poker App',
+                  debugShowCheckedModeBanner: false,
+                  navigatorKey: navigatorKey,
+                  // navigatorObservers: [
+                  //   locator<AnalyticsService>().getAnalyticsObserver()
+                  // ],
+                  theme: ThemeData(
+                    primarySwatch: Colors.blue,
+                    visualDensity: VisualDensity.adaptivePlatformDensity,
+                  ),
+                  onGenerateRoute: Routes.generateRoute,
+                  initialRoute: Routes.initial,
+                ),
               ),
             ),
           );

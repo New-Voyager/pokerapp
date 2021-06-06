@@ -94,8 +94,7 @@ class Nats {
       String type = json['type'].toString();
       String changed = json['changed'];
       String clubCode = json['clubCode'];
-      final clubChangeState =
-          Provider.of<ClubsUpdateState>(_providerContext, listen: false);
+      final clubChangeState = _providerContext.read<ClubsUpdateState>();
       clubChangeState.updatedClubCode = clubCode;
       clubChangeState.notify();
       if (changed == 'CLUB_CHAT') {

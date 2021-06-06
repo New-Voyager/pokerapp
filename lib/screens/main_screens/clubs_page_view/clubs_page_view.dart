@@ -187,9 +187,9 @@ class _ClubsPageViewState extends State<ClubsPageView> {
 
     /* fetch the clubs initially */
     _fetchClubs();
-    final clubStateProvider =
-        Provider.of<ClubsUpdateState>(context, listen: false);
-    clubStateProvider.addListener(() {
+
+    /* add listener for updateing when needed */
+    context.read<ClubsUpdateState>().addListener(() {
       _fetchClubs(withLoading: false);
     });
 
