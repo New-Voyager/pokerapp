@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/club_model.dart';
 import 'package:pokerapp/models/pending_approvals.dart';
 import 'package:pokerapp/resources/app_assets.dart';
@@ -13,7 +14,6 @@ import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/main_screens/clubs_page_view/widgets/club_item.dart';
 import 'package:pokerapp/screens/main_screens/clubs_page_view/widgets/create_club_bottom_sheet.dart';
 import 'package:pokerapp/services/app/clubs_service.dart';
-import 'package:pokerapp/services/nats/nats.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/widgets/round_raised_button.dart';
 import 'package:pokerapp/widgets/custom_text_button.dart';
@@ -26,7 +26,7 @@ class ClubsPageView extends StatefulWidget {
   _ClubsPageViewState createState() => _ClubsPageViewState();
 }
 
-class _ClubsPageViewState extends State<ClubsPageView> {
+class _ClubsPageViewState extends State<ClubsPageView> with RouteAware {
   bool _showLoading = false;
 
   List<ClubModel> _clubs;
@@ -202,6 +202,19 @@ class _ClubsPageViewState extends State<ClubsPageView> {
     // );
   }
 
+  @override
+  void didPopNext() {
+    super.didPopNext();
+    log('refresh club screen');
+    context.read<ClubsUpdateState>().notify();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    routeObserver.subscribe(this, ModalRoute.of(context));
+  }
+
   Text _getTitleTextWidget(title) {
     return Text(
       title,
@@ -220,11 +233,7 @@ class _ClubsPageViewState extends State<ClubsPageView> {
         context,
         Routes.club_main,
         arguments: club.clubCode,
-      ).then((value) {
-        log('refresh club screen');
-        final state = Provider.of<ClubsUpdateState>(context, listen: false);
-        state.notify();
-      });
+      );
     }
   }
 

@@ -5,7 +5,6 @@ import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/models/pending_approvals.dart';
 import 'package:pokerapp/routes.dart';
-import 'package:pokerapp/services/firebase/analytics_service.dart';
 import 'package:pokerapp/services/graphQL/configurations/graph_ql_configuration.dart';
 import 'package:pokerapp/services/nats/nats.dart';
 import 'package:pokerapp/utils/locator.dart';
@@ -13,6 +12,8 @@ import 'package:provider/provider.dart';
 
 GraphQLConfiguration graphQLConfiguration = GraphQLConfiguration();
 final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
+
+RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();

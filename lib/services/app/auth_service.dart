@@ -22,7 +22,7 @@ class AuthService {
     createPlayer(player: {
       name: \$name
       email: \$email
-      deviceID: \$deviceID
+      deviceId: \$deviceID
       password: \$password
     })
   }""";
@@ -90,7 +90,10 @@ class AuthService {
       MutationOptions(documentNode: gql(_query), variables: variables),
     );
 
-    if (result.hasException) return false;
+    if (result.hasException) {
+      print('auth_service: register: ${result.exception}');
+      return false;
+    }
 
     authModel.uuid = (result.data as LazyCacheMap).data['createPlayer'];
     playerUuid = authModel.uuid;
