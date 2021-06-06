@@ -30,7 +30,7 @@ class HandTableBarChartProfit extends StatelessWidget {
             ? charts.ColorUtil.fromDartColor(Colors.green)
             : charts.ColorUtil.fromDartColor(Colors.red),
         labelAccessorFn: (TableRecordRow tableRow, index) =>
-            '  ${ tableRow.profit.toStringAsFixed(0)}',
+            '  ${tableRow.profit.toStringAsFixed(0)}',
         insideLabelStyleAccessorFn: (_, __) => charts.TextStyleSpec(
           color: charts.ColorUtil.fromDartColor(Colors.white),
           fontSize: 14,

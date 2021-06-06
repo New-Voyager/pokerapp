@@ -57,7 +57,10 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.screenBackgroundColor,
-      appBar: CustomAppBar(context: context,titleText: AppStringsNew.GameDetailsTitle,),
+      appBar: CustomAppBar(
+        context: context,
+        titleText: AppStringsNew.GameDetailsTitle,
+      ),
       body: !loadingDone
           ? Center(child: CircularProgressIndicator())
           : SingleChildScrollView(

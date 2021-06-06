@@ -15,6 +15,8 @@ import 'package:provider/provider.dart';
 GraphQLConfiguration graphQLConfiguration = GraphQLConfiguration();
 final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
 
+RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // Register all the models and services before the app starts
@@ -34,13 +36,11 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
-  final Nats nats = Nats();
   // Create the initialization Future outside of `build`:
   final Future<FirebaseApp> _initialization = Firebase.initializeApp();
 
   @override
   Widget build(BuildContext context) {
-    // this.nats = Nats();
     return FutureBuilder(
       // Initialize FlutterFire:
       future: _initialization,
@@ -52,30 +52,43 @@ class MyApp extends StatelessWidget {
         }
         // Once complete, show your application
         if (snapshot.connectionState == ConnectionState.done) {
+          //this.nats = Nats(context);
           print('Firebase initialized successfully');
           return MultiProvider(
+            /* PUT INDEPENDENT PROVIDERS HERE */
             providers: [
               ListenableProvider<PendingApprovalsState>(
                 create: (_) => PendingApprovalsState(),
               ),
-              Provider<Nats>(
-                create: (_) => this.nats,
+              ListenableProvider<ClubsUpdateState>(
+                create: (_) => ClubsUpdateState(),
               ),
             ],
-            child: OverlaySupport.global(
-              child: MaterialApp(
-                title: 'Poker App',
-                debugShowCheckedModeBanner: false,
-                navigatorKey: navigatorKey,
-                // navigatorObservers: [
-                //   locator<AnalyticsService>().getAnalyticsObserver()
-                // ],
-                theme: ThemeData(
-                  primarySwatch: Colors.blue,
-                  visualDensity: VisualDensity.adaptivePlatformDensity,
+            builder: (context, _) => MultiProvider(
+              /* PUT DEPENDENT PROVIDERS HERE */
+              providers: [
+                Provider<Nats>(
+                  create: (_) => Nats(context),
                 ),
-                onGenerateRoute: Routes.generateRoute,
-                initialRoute: Routes.initial,
+              ],
+              child: OverlaySupport.global(
+                child: MaterialApp(
+                  title: 'Poker App',
+                  debugShowCheckedModeBanner: false,
+                  navigatorKey: navigatorKey,
+                  // navigatorObservers: [
+                  //   locator<AnalyticsService>().getAnalyticsObserver()
+                  // ],
+                  theme: ThemeData(
+                    primarySwatch: Colors.blue,
+                    visualDensity: VisualDensity.adaptivePlatformDensity,
+                  ),
+                  onGenerateRoute: Routes.generateRoute,
+                  initialRoute: Routes.initial,
+                  navigatorObservers: [
+                    routeObserver,
+                  ],
+                ),
               ),
             ),
           );

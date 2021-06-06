@@ -15,6 +15,10 @@ class ClubHomePageModel extends ChangeNotifier {
         status
         isOwner
         isManager
+        pendingMemberCount
+        hostUnreadMessageCount
+        unreadMessageCount
+        memberUnreadMessageCount        
       }
       liveGames(clubCode: \$clubCode) {
         status
@@ -40,6 +44,10 @@ class ClubHomePageModel extends ChangeNotifier {
   bool isManager;
   bool isOwner;
   ClubWeeklyActivityModel weeklyActivity;
+  int pendingMemberCount;
+  int hostUnreadMessageCount;
+  int unreadMessageCount;
+  int memberUnreadMessageCount;
 
   ClubHomePageModel(String clubCode, String clubName) {
     this.clubCode = clubCode;
@@ -60,5 +68,9 @@ class ClubHomePageModel extends ChangeNotifier {
         .map<GameModel>((game) => GameModel.fromJson(game))
         .toList();
     this.weeklyActivity = activity;
+    this.pendingMemberCount = member['pendingMemberCount'] ?? 0;
+    this.hostUnreadMessageCount = member['hostUnreadMessageCount'] ?? 0;
+    this.unreadMessageCount = member['unreadMessageCount'] ?? 0;
+    this.memberUnreadMessageCount = member['memberUnreadMessageCount'] ?? 0;
   }
 }

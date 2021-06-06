@@ -8,8 +8,6 @@ import 'package:pokerapp/models/club_model.dart';
 import 'package:pokerapp/models/club_weekly_activity_model.dart';
 import 'package:pokerapp/models/host_message_summary_model.dart';
 import 'package:pokerapp/models/messages_from_member.dart';
-import 'package:pokerapp/services/graphQL/mutations/clubs.dart';
-import 'package:pokerapp/services/graphQL/queries/clubs.dart';
 
 import 'package:flutter/services.dart' show rootBundle;
 
@@ -84,6 +82,51 @@ class ClubsService {
   mutation markread(\$clubCode: String!) {
     markHostMsgRead(clubCode: \$clubCode)
   }
+  """;
+
+  static String myClubs = """
+  query {
+      myClubs {
+        name
+        clubCode
+        clubStatus
+        memberStatus
+        balance
+        memberCount
+        imageId
+        isOwner
+        private
+        host
+        pendingMemberCount
+        hostUnreadMessageCount
+        unreadMessageCount
+        memberUnreadMessageCount
+        liveGameCount
+      }
+    }""";
+
+  static String createClubQuery = """
+    mutation (\$name: String! \$description: String!){
+      createClub(club: {
+        name: \$name
+        description: \$description
+      })
+    }
+  """;
+
+  static String updateClubQuery = """
+    mutation (\$clubCode: String! \$description: String, \$name: String!) {
+      updateClub(clubCode: \$clubCode, club: {
+        name: \$name,
+        description: \$description,
+      })
+  }
+  """;
+
+  static String deleteClubQuery = """
+    mutation (\$clubCode: String!){
+      deleteClub(clubCode: \$clubCode)
+    }
   """;
 
   static Future<bool> markMemberRead({String player, String clubCode}) async {
@@ -208,10 +251,14 @@ class ClubsService {
 
   static Future<bool> deleteClub(String clubCode) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
-    String _query = Club.deleteClub(clubCode);
+
+    String _query = deleteClubQuery;
+    Map<String, dynamic> variables = {
+      "clubCode": clubCode,
+    };
 
     QueryResult result = await _client.mutate(
-      MutationOptions(documentNode: gql(_query)),
+      MutationOptions(documentNode: gql(_query), variables: variables),
     );
 
     if (result.hasException) return false;
@@ -225,11 +272,15 @@ class ClubsService {
     String description,
   ) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
-
-    String _query = Club.updateClub(clubCode, name, description);
+    String _query = updateClubQuery;
+    Map<String, dynamic> variables = {
+      "name": name,
+      "description": description,
+      "clubCode": clubCode,
+    };
 
     QueryResult result = await _client.mutate(
-      MutationOptions(documentNode: gql(_query)),
+      MutationOptions(documentNode: gql(_query), variables: variables),
     );
 
     if (result.hasException) return false;
@@ -240,10 +291,14 @@ class ClubsService {
   static Future<bool> createClub(String name, String description) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
 
-    String _query = Club.createClub(name, description);
+    String _query = createClubQuery;
+    Map<String, dynamic> variables = {
+      "name": name,
+      "description": description,
+    };
 
     QueryResult result = await _client.mutate(
-      MutationOptions(documentNode: gql(_query)),
+      MutationOptions(documentNode: gql(_query), variables: variables),
     );
 
     print(result.exception);
@@ -260,7 +315,7 @@ class ClubsService {
 
     QueryResult result = await _client.query(
       QueryOptions(
-        documentNode: gql(Clubs.myClubs()),
+        documentNode: gql(myClubs),
       ),
     );
 
@@ -275,7 +330,7 @@ class ClubsService {
 
   static Future<ClubHomePageModel> getClubHomePageData(String clubCode) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
-
+    log('Getting club home page data');
     Map<String, dynamic> variables = {
       'clubCode': clubCode,
     };
