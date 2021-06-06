@@ -17,6 +17,7 @@ class GameTypeItem extends StatelessWidget {
   final double animValue;
   final List<GameType> gamesList;
   final Function onSettingsClick;
+  final Function onArrowClick;
   GameTypeItem({
     @required this.clubCode,
     this.type,
@@ -25,6 +26,7 @@ class GameTypeItem extends StatelessWidget {
     this.animValue,
     this.gamesList,
     this.onSettingsClick,
+    this.onArrowClick,
   });
 
   @override
@@ -52,15 +54,7 @@ class GameTypeItem extends StatelessWidget {
           ),
           alignment: Alignment.centerRight,
           child: InkWell(
-            onTap: () {
-              /* show game settings dialog */
-              NewGameSettings2.show(
-                context,
-                clubCode: clubCode,
-                mainGameType: type,
-                subGameTypes: gamesList,
-              );
-            },
+            onTap: onArrowClick,
             child: Container(
               //this heigth should match with the image height of GameImage
               height: 80,

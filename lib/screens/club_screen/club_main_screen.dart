@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/club_homepage_model.dart';
 import 'package:pokerapp/models/club_weekly_activity_model.dart';
@@ -6,6 +8,7 @@ import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/club_screen/club_banner_view/club_banner_view.dart';
 import 'package:pokerapp/screens/club_screen/club_banner_view/club_graphics_view.dart';
+import 'package:pokerapp/screens/game_screens/new_game_settings/new_game_settings2.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/clubs_service.dart';
 import 'package:pokerapp/widgets/custom_text_button.dart';
@@ -87,11 +90,28 @@ class ClubMainScreen extends StatelessWidget {
                                   !isOwnerOrManager
                                       ? Container()
                                       : CustomTextButton(
-                                          onTap: () => Navigator.pushNamed(
-                                            context,
-                                            Routes.new_game_settings,
-                                            arguments: clubCode,
-                                          ),
+                                          onTap: () async {
+                                            final dynamic result =
+                                                await Navigator.pushNamed(
+                                              context,
+                                              Routes.new_game_settings,
+                                              arguments: clubCode,
+                                            );
+                                            log("$result");
+
+                                            if (result != null) {
+                                              /* show game settings dialog */
+                                             NewGameSettings2.show(
+                                                context,
+                                                clubCode: clubCode,
+                                                mainGameType:
+                                                    result['gameType'],
+                                                subGameTypes: List.from(
+                                                        result['gameTypes']) ??
+                                                    [],
+                                              );
+                                            }
+                                          },
                                           text: '+ Create Game',
                                         ),
                                 ],

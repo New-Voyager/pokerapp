@@ -284,7 +284,7 @@ query liveGames {
     QueryResult result =
         await _client.query(QueryOptions(documentNode: gql(liveGamesNewQuery)));
 
-    print("result.data ${result.data} ${result.hasException}");
+   // print("result.data ${result.data} ${result.hasException}");
     if (result.hasException) {
       log("Exception In GraphQl Response: ${result.exception}");
     } else {
@@ -297,7 +297,7 @@ query liveGames {
         return liveGames;
       }
     }
-    log("Returning liveGames Count: ${liveGames.length}");
+    //log("Returning liveGames Count: ${liveGames.length}");
     return liveGames;
   }
 

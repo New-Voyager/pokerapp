@@ -4,7 +4,9 @@ import 'package:flutter/rendering.dart';
 import 'package:pokerapp/models/game_history_model.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/screens/game_screens/highhand_log/high_hand_widget.dart';
+import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/screens/game_screens/widgets/highhand_widget.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 
@@ -40,56 +42,14 @@ class _HighHandLogViewState extends State<HighHandLogView> {
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
-      resizeToAvoidBottomInset: true,
+    return Scaffold(
       backgroundColor: AppColors.screenBackgroundColor,
-      navigationBar: CupertinoNavigationBar(
-        backgroundColor: AppColors.screenBackgroundColor,
-        leading: GestureDetector(
-          onTap: () => Navigator.of(context).pop(),
-          child: Row(
-            children: [
-              Icon(
-                Icons.arrow_back_ios,
-                size: 16,
-                color: AppColors.appAccentColor,
-              ),
-              Text(
-                "Game",
-                style: const TextStyle(
-                  fontFamily: AppAssets.fontFamilyLato,
-                  color: AppColors.appAccentColor,
-                  fontSize: 14.0,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-            ],
-          ),
-        ),
-        middle: Column(
-          children: [
-            Text(
-              "High Hand Log",
-              style: const TextStyle(
-                fontFamily: AppAssets.fontFamilyLato,
-                color: Colors.white,
-                fontSize: 22.0,
-                fontWeight: FontWeight.w900,
-              ),
-            ),
-            Text(
-              "Game code: " + widget.gameCode,
-              style: const TextStyle(
-                fontFamily: AppAssets.fontFamilyLato,
-                color: AppColors.lightGrayTextColor,
-                fontSize: 12.0,
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-          ],
-        ),
+      appBar: CustomAppBar(
+        titleText: AppStringsNew.HighHandlogTitle,
+        subTitleText: "Game code: ${widget.gameCode}",
+        context: context,
       ),
-      child: Material(
+      body: Material(
         type: MaterialType.transparency,
         child: !loadingDone
             ? Center(child: CircularProgressIndicator())
