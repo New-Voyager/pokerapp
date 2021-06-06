@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:badges/badges.dart';
 import 'package:pokerapp/enums/club_actions.dart';
 import 'package:pokerapp/models/club_homepage_model.dart';
 import 'package:pokerapp/resources/app_colors.dart';
@@ -11,6 +12,81 @@ class ClubActionButtonsView extends StatelessWidget {
   final String clubCode;
 
   ClubActionButtonsView(this._clubHomePageModel, this.clubCode);
+
+  ClubActionButton getChat() {
+    Widget chatBadgeContent = Container();
+    if (_clubHomePageModel.unreadMessageCount > 0) {
+      chatBadgeContent = Text(
+        _clubHomePageModel.unreadMessageCount.toString(),
+        style: TextStyle(color: Colors.white),
+      );
+    }
+    Widget chat = ClubActionButton(
+      this._clubHomePageModel,
+      ClubActions.CHAT,
+      "Chat",
+      Icon(
+        Icons.alarm,
+        color: Colors.blue,
+      ),
+      badgeContent: chatBadgeContent,
+    );
+    return chat;
+  }
+
+  ClubActionButton getMembers() {
+    Widget badgeContent;
+
+    // TODO: Only club owner can see pending members
+    if (_clubHomePageModel.isOwner &&
+        _clubHomePageModel.pendingMemberCount > 0) {
+      badgeContent = Text(
+        _clubHomePageModel.pendingMemberCount.toString(),
+        style: TextStyle(color: Colors.white),
+      );
+    }
+
+    return ClubActionButton(
+      this._clubHomePageModel,
+      ClubActions.MEMBERS,
+      "Members",
+      Icon(
+        ClubScreenIcons.membership,
+        color: AppColors.appAccentColor,
+      ),
+      badgeContent: badgeContent,
+    );
+  }
+
+  ClubActionButton getHostMemberChatWidget() {
+    Widget badgeContent;
+
+    if (_clubHomePageModel.isOwner) {
+      if (_clubHomePageModel.hostUnreadMessageCount > 0) {
+        badgeContent = Text(
+          _clubHomePageModel.hostUnreadMessageCount.toString(),
+          style: TextStyle(color: Colors.white),
+        );
+      }
+    } else {
+      if (_clubHomePageModel.memberUnreadMessageCount > 0) {
+        badgeContent = Text(
+          _clubHomePageModel.memberUnreadMessageCount.toString(),
+          style: TextStyle(color: Colors.white),
+        );
+      }
+    }
+    return ClubActionButton(
+      this._clubHomePageModel,
+      ClubActions.MESSAGE_HOST,
+      "Message Host",
+      Icon(
+        ClubScreenIcons.message,
+        color: AppColors.appAccentColor,
+      ),
+      badgeContent: badgeContent,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,27 +111,11 @@ class ClubActionButtonsView extends StatelessWidget {
                 ),
                 Expanded(
                   flex: 3,
-                  child: ClubActionButton(
-                    this._clubHomePageModel,
-                    ClubActions.MEMBERS,
-                    "Members",
-                    Icon(
-                      ClubScreenIcons.membership,
-                      color: AppColors.appAccentColor,
-                    ),
-                  ),
+                  child: getMembers(),
                 ),
                 Expanded(
                   flex: 3,
-                  child: ClubActionButton(
-                    this._clubHomePageModel,
-                    ClubActions.CHAT,
-                    "Chat",
-                    Icon(
-                      Icons.access_alarm,
-                      color: Colors.blue,
-                    ),
-                  ),
+                  child: getChat(),
                 ),
               ],
             ),
@@ -107,15 +167,7 @@ class ClubActionButtonsView extends StatelessWidget {
               children: [
                 Expanded(
                   flex: 3,
-                  child: ClubActionButton(
-                    this._clubHomePageModel,
-                    ClubActions.MESSAGE_HOST,
-                    "Message Host",
-                    Icon(
-                      ClubScreenIcons.message,
-                      color: AppColors.appAccentColor,
-                    ),
-                  ),
+                  child: getHostMemberChatWidget(),
                 ),
                 Expanded(
                   flex: 3,

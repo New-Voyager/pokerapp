@@ -171,6 +171,7 @@ class _ClubsPageViewState extends State<ClubsPageView> {
   void _fetchClubs({
     bool withLoading = true,
   }) async {
+    log('fetching clubs');
     if (!withLoading) return _fillClubs();
 
     _toggleLoading();
@@ -219,7 +220,11 @@ class _ClubsPageViewState extends State<ClubsPageView> {
         context,
         Routes.club_main,
         arguments: club.clubCode,
-      );
+      ).then((value) {
+        log('refresh club screen');
+        final state = Provider.of<ClubsUpdateState>(context, listen: false);
+        state.notify();
+      });
     }
   }
 
