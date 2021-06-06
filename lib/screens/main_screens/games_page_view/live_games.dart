@@ -38,11 +38,11 @@ class _LiveGamesScreenState extends State<LiveGamesScreen> {
       TestService.isTesting ? _loadTestLiveGames() : _fetchLiveGames();
     });
 
-    // THIS IS A TEMPORARY SOLUTION
-    _refreshTimer = Timer.periodic(const Duration(seconds: 5), (timer) async {
-      await _fillLiveGames();
-      setState(() {});
-    });
+    // // THIS IS A TEMPORARY SOLUTION
+    // _refreshTimer = Timer.periodic(const Duration(seconds: 5), (timer) async {
+    //   await _fillLiveGames();
+    //   setState(() {});
+    // });
   }
 
   _fetchLiveGames() async {

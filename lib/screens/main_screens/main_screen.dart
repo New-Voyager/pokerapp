@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:curved_bottom_navigation/curved_bottom_navigation.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/pending_approvals.dart';
 import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_constants.dart';
@@ -15,6 +16,7 @@ import 'package:pokerapp/screens/main_screens/games_page_view/games_page_view.da
 import 'package:pokerapp/screens/main_screens/games_page_view/live_games.dart';
 import 'package:pokerapp/screens/main_screens/profile_page_view/profile_page_view.dart';
 import 'package:pokerapp/screens/main_screens/purchase_page_view/purchase_page_view.dart';
+import 'package:pokerapp/services/app/clubs_service.dart';
 import 'package:pokerapp/services/app/gif_cache_service.dart';
 import 'package:pokerapp/services/app/player_service.dart';
 import 'package:pokerapp/services/firebase/push_notification_service.dart';
@@ -44,6 +46,9 @@ class _MainScreenState extends State<MainScreen>
 
     if (!TestService.isTesting) {
       _currentPlayer = await PlayerService.getMyInfo(null);
+      final natsClient = Provider.of<Nats>(context, listen: false);
+      _nats = natsClient;
+      await natsClient.init(_currentPlayer.channel);
 
       // Get the token each time the application loads
       String token = await FirebaseMessaging.instance.getToken();
@@ -52,9 +57,10 @@ class _MainScreenState extends State<MainScreen>
       FirebaseMessaging.instance.onTokenRefresh.listen(saveFirebaseToken);
       registerPushNotifications();
 
-      final natsClient = Provider.of<Nats>(context, listen: false);
-      _nats = natsClient;
-      await natsClient.init(_currentPlayer.channel);
+      final clubs = await ClubsService.getMyClubs();
+      for (final club in clubs) {
+        _nats.subscribeClubMessages(club.clubCode);
+      }
 
       // TODO: WHY DO WE NEEDED THE DELAY?
       // Future.delayed(Duration(milliseconds: 100), () async {
@@ -151,7 +157,8 @@ class _MainScreenState extends State<MainScreen>
     List<Widget> widgets = [];
     widgets.addAll([
       LiveGamesScreen(),
-      ClubsPageView(),
+      ChangeNotifierProvider(
+          create: (context) => ClubsUpdateState(), child: ClubsPageView()),
       ProfilePageView(),
       PurchasePageView()
     ]);

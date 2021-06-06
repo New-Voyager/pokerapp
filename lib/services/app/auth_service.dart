@@ -9,7 +9,6 @@ import 'package:pokerapp/enums/auth_type.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/auth_model.dart';
 import 'package:pokerapp/resources/app_constants.dart';
-import 'package:pokerapp/services/graphQL/mutations/create_player.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService {
@@ -17,6 +16,16 @@ class AuthService {
 
   static final String _prefKey = 'auth_service_pref_key';
   static String playerUuid;
+
+  static String createPlayerQuery = """
+  mutation (\$name: String!, \$email: String, \$deviceID: String, \$password: String) {
+    createPlayer(player: {
+      name: \$name
+      email: \$email
+      deviceID: \$deviceID
+      password: \$password
+    })
+  }""";
 
   /* private methods */
 
@@ -69,10 +78,16 @@ class AuthService {
       return false;
     }
 
-    String _query = CreatePlayer.createPlayer(authModel);
+    String _query = createPlayerQuery;
+    Map<String, dynamic> variables = {
+      "name": authModel.name,
+      "email": authModel.email,
+      "password": authModel.password,
+      "deviceID": authModel.deviceID,
+    };
 
     QueryResult result = await _client.mutate(
-      MutationOptions(documentNode: gql(_query)),
+      MutationOptions(documentNode: gql(_query), variables: variables),
     );
 
     if (result.hasException) return false;

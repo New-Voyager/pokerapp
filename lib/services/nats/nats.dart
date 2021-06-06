@@ -3,10 +3,12 @@ import 'dart:developer';
 
 import 'package:dart_nats/dart_nats.dart';
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/pending_approvals.dart';
 import 'package:pokerapp/services/app/util_service.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/main.dart';
+import 'package:provider/provider.dart';
 
 class Nats {
   Client _client;
@@ -14,12 +16,17 @@ class Nats {
   String _playerChannel;
   bool _initialized = false;
   Subscription _playerSub;
+  BuildContext _providerContext;
+  Map<String, Subscription> _clubSubs = Map<String, Subscription>();
+
+  Nats(this._providerContext);
 
   Future<void> init(String playerChannel) async {
     String natsUrl = await UtilService.getNatsURL();
     _client = Client();
     _clientPub = Client();
     _playerChannel = playerChannel;
+    _clubSubs = Map<String, Subscription>();
     log('Player channel: $playerChannel');
 
     // chop the scheme and port number
@@ -54,6 +61,11 @@ class Nats {
     if (_playerSub != null) {
       _playerSub.unSub();
     }
+    if (_clubSubs != null) {
+      for (final clubSub in _clubSubs.values) {
+        clubSub.unSub();
+      }
+    }
 
     if (_client != null) {
       _client.close();
@@ -66,6 +78,30 @@ class Nats {
 
   String get playerChannel {
     return this._playerChannel;
+  }
+
+  subscribeClubMessages(String clubCode) {
+    String clubChannel = 'club.$clubCode';
+    if (_clubSubs.containsKey(clubChannel)) {
+      return;
+    }
+    log('subscribing to club $clubChannel');
+    Subscription clubSub = this.subClient.sub(clubChannel);
+    _clubSubs[clubChannel] = clubSub;
+    clubSub.stream.listen((Message message) {
+      log('message in club channel: ${message.string}');
+      dynamic json = jsonDecode(message.string);
+      String type = json['type'].toString();
+      String changed = json['changed'];
+      String clubCode = json['clubCode'];
+      final clubChangeState =
+          Provider.of<ClubsUpdateState>(_providerContext, listen: false);
+      clubChangeState.updatedClubCode = clubCode;
+      clubChangeState.notify();
+      if (changed == 'CLUB_CHAT') {
+        // club chat message
+      }
+    });
   }
 
   subscribePlayerMessages() {

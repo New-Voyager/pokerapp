@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/club_model.dart';
+import 'package:pokerapp/models/pending_approvals.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
@@ -12,6 +13,7 @@ import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/main_screens/clubs_page_view/widgets/club_item.dart';
 import 'package:pokerapp/screens/main_screens/clubs_page_view/widgets/create_club_bottom_sheet.dart';
 import 'package:pokerapp/services/app/clubs_service.dart';
+import 'package:pokerapp/services/nats/nats.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/widgets/round_raised_button.dart';
 import 'package:pokerapp/widgets/custom_text_button.dart';
@@ -174,7 +176,6 @@ class _ClubsPageViewState extends State<ClubsPageView> {
     _toggleLoading();
 
     await _fillClubs();
-
     _toggleLoading();
   }
 
@@ -186,13 +187,18 @@ class _ClubsPageViewState extends State<ClubsPageView> {
 
     /* fetch the clubs initially */
     _fetchClubs();
+    final clubStateProvider =
+        Provider.of<ClubsUpdateState>(context, listen: false);
+    clubStateProvider.addListener(() {
+      _fetchClubs(withLoading: false);
+    });
 
     // TEMP SOLUTION FOR REFRESHING
     /* set a timer to run every X second */
-    _refreshTimer = Timer.periodic(
-      const Duration(seconds: 5),
-      (_) => _fetchClubs(withLoading: false),
-    );
+    // _refreshTimer = Timer.periodic(
+    //   const Duration(seconds: 5),
+    //   (_) => _fetchClubs(withLoading: false),
+    // );
   }
 
   Text _getTitleTextWidget(title) {

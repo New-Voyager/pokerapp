@@ -31,13 +31,11 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  final Nats nats = Nats();
   // Create the initialization Future outside of `build`:
   final Future<FirebaseApp> _initialization = Firebase.initializeApp();
 
   @override
   Widget build(BuildContext context) {
-    // this.nats = Nats();
     return FutureBuilder(
       // Initialize FlutterFire:
       future: _initialization,
@@ -49,6 +47,7 @@ class MyApp extends StatelessWidget {
         }
         // Once complete, show your application
         if (snapshot.connectionState == ConnectionState.done) {
+          //this.nats = Nats(context);
           print('Firebase initialized successfully');
           return MultiProvider(
             providers: [
@@ -56,8 +55,11 @@ class MyApp extends StatelessWidget {
                 create: (_) => PendingApprovalsState(),
               ),
               Provider<Nats>(
-                create: (_) => this.nats,
+                create: (_) => Nats(context),
               ),
+              // ListenableProvider<ClubsUpdateState>(
+              //   create: (_) => ClubsUpdateState(),
+              // )
             ],
             child: OverlaySupport.global(
               child: MaterialApp(

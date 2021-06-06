@@ -19,6 +19,11 @@ class ClubModel {
   bool outgoingRequest;
   String memberStatus;
 
+  int pendingMemberCount;
+  int hostUnreadMessageCount;
+  int unreadMessageCount;
+  int memberUnreadMessageCount;
+
   ClubModel({
     this.clubName,
     this.clubCode,
@@ -53,5 +58,9 @@ class ClubModel {
       jsonData['balance'] = double.parse(jsonData['balance'].toString());
     }
     this.balance = DataFormatter.chipsFormat(jsonData['balance']);
+    this.pendingMemberCount = jsonData['pendingMemberCount'];
+    this.hostUnreadMessageCount = jsonData['hostUnreadMessageCount'];
+    this.unreadMessageCount = jsonData['unreadMessageCount'];
+    this.memberUnreadMessageCount = jsonData['memberUnreadMessageCount'];
   }
 }
