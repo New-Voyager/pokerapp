@@ -14,7 +14,7 @@ class ClubActionButtonsView extends StatelessWidget {
   ClubActionButtonsView(this._clubHomePageModel, this.clubCode);
 
   ClubActionButton getChat() {
-    Widget chatBadgeContent = Container();
+    Widget chatBadgeContent;
     if (_clubHomePageModel.unreadMessageCount > 0) {
       chatBadgeContent = Text(
         _clubHomePageModel.unreadMessageCount.toString(),

@@ -32,6 +32,7 @@ class ClubMainScreen extends StatefulWidget {
 class _ClubMainScreenState extends State<ClubMainScreen> with RouteAware {
   void refreshClubMainScreen() {
     log('refresh club main screen');
+    setState(() {});
   }
 
   @override
@@ -53,7 +54,9 @@ class _ClubMainScreenState extends State<ClubMainScreen> with RouteAware {
   }
 
   @override
-  Widget build(BuildContext context) => FutureBuilder<ClubHomePageModel>(
+  Widget build(BuildContext context) {
+    log('rebuilding ClubMainScreen');
+    return FutureBuilder<ClubHomePageModel>(
         initialData: null,
         future: ClubsService.getClubHomePageData(widget.clubCode),
         builder: (BuildContext context, snapshot) {
@@ -137,4 +140,5 @@ class _ClubMainScreenState extends State<ClubMainScreen> with RouteAware {
           );
         },
       );
+  }
 }

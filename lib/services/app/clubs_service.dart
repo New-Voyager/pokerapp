@@ -329,7 +329,7 @@ class ClubsService {
 
   static Future<ClubHomePageModel> getClubHomePageData(String clubCode) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
-
+    log('Getting club home page data');
     Map<String, dynamic> variables = {
       'clubCode': clubCode,
     };
