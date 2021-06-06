@@ -314,9 +314,12 @@ class _EmojiPickerState extends State<EmojiPicker> {
   @override
   void initState() {
     super.initState();
+    print('emoji picker update states');
 
     updateEmojis().then((_) {
-      loaded = true;
+      setState(() {
+        loaded = true;
+      });
     });
   }
 

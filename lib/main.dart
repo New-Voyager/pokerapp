@@ -5,6 +5,7 @@ import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/models/pending_approvals.dart';
 import 'package:pokerapp/routes.dart';
+import 'package:pokerapp/services/data/hive_datasource_impl.dart';
 import 'package:pokerapp/services/firebase/analytics_service.dart';
 import 'package:pokerapp/services/graphQL/configurations/graph_ql_configuration.dart';
 import 'package:pokerapp/services/nats/nats.dart';
@@ -14,11 +15,13 @@ import 'package:provider/provider.dart';
 GraphQLConfiguration graphQLConfiguration = GraphQLConfiguration();
 final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // Register all the models and services before the app starts
   setupLocator();
   InAppPurchaseConnection.enablePendingPurchases();
+
+  await HiveDatasource.getInstance.init();
 
   runApp(
     GraphQLProvider(

@@ -10,10 +10,10 @@ class HiveDatasource implements IDatasource {
   static HiveDatasource _instance;
   static HiveDatasource get getInstance => _instance ??= HiveDatasource._();
 
-  Map<BoxType, Box> boxes = {};
+  Map<BoxType, Box> _boxes = {};
 
   @override
-  Box getBox(BoxType boxType) => boxes[boxType];
+  Box getBox(BoxType boxType) => _boxes[boxType];
 
   @override
   Future<void> init() async {
@@ -23,7 +23,7 @@ class HiveDatasource implements IDatasource {
     /* open boxes */
     /* open every boxes mentioned in the boxtype enum */
     for (BoxType boxType in BoxType.values) {
-      boxes[boxType] = await Hive.openBox(boxType.value());
+      _boxes[boxType] = await Hive.openBox(boxType.value());
     }
   }
 }
