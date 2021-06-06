@@ -3,7 +3,9 @@ import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/club_model.dart';
+import 'package:pokerapp/models/pending_approvals.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
@@ -24,7 +26,7 @@ class ClubsPageView extends StatefulWidget {
   _ClubsPageViewState createState() => _ClubsPageViewState();
 }
 
-class _ClubsPageViewState extends State<ClubsPageView> {
+class _ClubsPageViewState extends State<ClubsPageView> with RouteAware {
   bool _showLoading = false;
 
   List<ClubModel> _clubs;
@@ -161,7 +163,6 @@ class _ClubsPageViewState extends State<ClubsPageView> {
   }
 
   Future<void> _fillClubs() async {
-    print('fetching clubs');
     _clubs = await ClubsService.getMyClubs();
     setState(() {});
   }
@@ -169,12 +170,12 @@ class _ClubsPageViewState extends State<ClubsPageView> {
   void _fetchClubs({
     bool withLoading = true,
   }) async {
+    log('fetching clubs');
     if (!withLoading) return _fillClubs();
 
     _toggleLoading();
 
     await _fillClubs();
-
     _toggleLoading();
   }
 
@@ -187,12 +188,22 @@ class _ClubsPageViewState extends State<ClubsPageView> {
     /* fetch the clubs initially */
     _fetchClubs();
 
+    /* add listener for updateing when needed */
+    context.read<ClubsUpdateState>().addListener(() {
+      _fetchClubs(withLoading: false);
+    });
+
     // TEMP SOLUTION FOR REFRESHING
     /* set a timer to run every X second */
-    _refreshTimer = Timer.periodic(
-      const Duration(seconds: 5),
-      (_) => _fetchClubs(withLoading: false),
-    );
+    // _refreshTimer = Timer.periodic(
+    //   const Duration(seconds: 5),
+    //   (_) => _fetchClubs(withLoading: false),
+    // );
+  }
+
+  void refreshClubScreen() {
+    log('refresh club screen');
+    context.read<ClubsUpdateState>().notify();
   }
 
   Text _getTitleTextWidget(title) {
@@ -218,9 +229,22 @@ class _ClubsPageViewState extends State<ClubsPageView> {
   }
 
   @override
+  void didPopNext() {
+    super.didPopNext();
+    refreshClubScreen();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    routeObserver.subscribe(this, ModalRoute.of(context));
+  }
+
+  @override
   void dispose() {
     _refreshTimer?.cancel();
     super.dispose();
+    routeObserver.unsubscribe(this);
   }
 
   @override
