@@ -83,7 +83,7 @@ class _GifDrawerSheetState extends State<GifDrawerSheet> {
                   color: AppColors.lightGrayColor,
                   size: 18.0,
                 ),
-                hintText: 'Search GIFs',
+                hintText: 'Search Tenor Gifs',
                 hintStyle: TextStyle(
                   color: AppColors.lightGrayColor,
                 ),
