@@ -115,7 +115,7 @@ class _ClubMainScreenState extends State<ClubMainScreen> with RouteAware {
                                                 await Navigator.pushNamed(
                                               context,
                                               Routes.new_game_settings,
-                                              arguments: clubCode,
+                                              arguments: widget.clubCode,
                                             );
                                             log("$result");
 
@@ -123,7 +123,7 @@ class _ClubMainScreenState extends State<ClubMainScreen> with RouteAware {
                                               /* show game settings dialog */
                                              NewGameSettings2.show(
                                                 context,
-                                                clubCode: clubCode,
+                                                clubCode: widget.clubCode,
                                                 mainGameType:
                                                     result['gameType'],
                                                 subGameTypes: List.from(
