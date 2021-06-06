@@ -14,6 +14,7 @@ import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/clubs_service.dart';
 import 'package:pokerapp/widgets/custom_text_button.dart';
 import 'package:provider/provider.dart';
+import 'package:pokerapp/models/pending_approvals.dart';
 
 import 'club_action_buttons_view/club_action_buttons_view.dart';
 import 'club_games_page_view.dart';
@@ -52,6 +53,16 @@ class _ClubMainScreenState extends State<ClubMainScreen> with RouteAware {
   void dispose() {
     routeObserver.unsubscribe(this);
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    context.read<ClubsUpdateState>().addListener(() {
+      final state = Provider.of<ClubsUpdateState>(context, listen: false);
+      if (state.updatedClubCode == widget.clubCode) {
+        setState(() {});
+      }
+    });
   }
 
   @override

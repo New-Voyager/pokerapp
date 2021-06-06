@@ -101,6 +101,7 @@ class ClubsService {
         hostUnreadMessageCount
         unreadMessageCount
         memberUnreadMessageCount
+        liveGameCount
       }
     }""";
 
