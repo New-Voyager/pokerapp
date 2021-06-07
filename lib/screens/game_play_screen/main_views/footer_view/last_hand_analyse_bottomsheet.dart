@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pokerapp/models/hand_log_model.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_log_view.dart';
 
@@ -16,8 +16,13 @@ class _LastHandAnalyseBottomSheetState
     extends State<LastHandAnalyseBottomSheet> {
   double height;
   double ratio = 3;
+
   @override
   Widget build(BuildContext context) {
+    // get game state
+    final gameState = GameState.getState(context);
+    final handLog = gameState.getHandLog(-1);
+
     height = MediaQuery.of(context).size.height;
     return Container(
       height: height / ratio,
@@ -35,6 +40,7 @@ class _LastHandAnalyseBottomSheetState
                   -1, // for last hand we pass -1
                   isAppbarWithHandNumber: true,
                   clubCode: widget.clubCode,
+                  handLogModel: handLog,
                 ),
               ),
             ],

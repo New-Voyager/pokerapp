@@ -31,6 +31,7 @@ import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:pokerapp/widgets/run_it_twice_dialog.dart';
 import 'package:provider/provider.dart';
+import 'package:pokerapp/models/player_info.dart';
 
 import '../game_com_service.dart';
 import '../message_id.dart';
@@ -118,7 +119,8 @@ class HandActionService {
   bool closed = false;
   GameComService _gameComService;
   RetrySendingMsg _retryMsg;
-  HandActionService(this._context, this._gameState, this._gameComService);
+  PlayerInfo _currentPlayer;
+  HandActionService(this._context, this._gameState, this._gameComService, this._currentPlayer);
 
   void close() {
     closed = true;
@@ -1451,6 +1453,22 @@ class HandActionService {
 
     // get hand winners data and update results
     final handResult = data['handResult'];
+
+    Map <String, dynamic> result = {
+      "hand": {
+        "data": handResult 
+      },
+      "myInfo": {
+        "id": _currentPlayer.id,
+        "name": _currentPlayer.name,
+        "uuid": _currentPlayer.uuid
+      }
+    };
+    final jsonData = jsonEncode(result);
+    log('\n\n');
+    log(jsonData);
+    log('\n\n');
+    _gameState.setHandLog(-1, jsonData);
 
     /* showdown time, show other players cards */
     players.updateUserCardsSilent(_getCards(data));

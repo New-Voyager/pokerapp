@@ -8,7 +8,10 @@ class HandLogModelNew {
     String str, {
     bool serviceResult = false,
   }) =>
-      HandLogModelNew.fromJson(json.decode(str), serviceResult: serviceResult);
+      HandLogModelNew.fromJson(
+        json.decode(str),
+        serviceResult: serviceResult,
+      );
 
   HandLogModelNew({
     this.hand,
