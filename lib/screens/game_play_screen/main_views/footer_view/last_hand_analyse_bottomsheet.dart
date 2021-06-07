@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
-import 'package:pokerapp/models/hand_log_model.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_log_view.dart';
 
@@ -18,7 +17,6 @@ class _LastHandAnalyseBottomSheetState
   double height;
   double ratio = 3;
 
-  
   @override
   Widget build(BuildContext context) {
     // get game state

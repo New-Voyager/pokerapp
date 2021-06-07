@@ -528,9 +528,9 @@ class GameState {
   HandLogModelNew getHandLog(int handnum) {
     String key = '$handnum';
     if (_handlogs.containsKey(key)) {
-      final data = jsonEncode(_handlogs[key]);
+      final String data = jsonEncode(_handlogs[key]);
       final handLog =
-        HandLogModelNew.handLogModelNewFromJson(data, serviceResult: true);
+          HandLogModelNew.handLogModelNewFromJson(data, serviceResult: true);
 
       return handLog;
     }
