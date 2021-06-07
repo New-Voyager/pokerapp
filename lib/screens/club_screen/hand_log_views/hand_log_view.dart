@@ -44,7 +44,7 @@ class _HandLogViewState extends State<HandLogView> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _fetchBookmarksForGame(widget.gameCode);
-      if (TestService.isTesting) {
+      if (TestService.isTesting && widget.handLogModel == null) {
         loadJsonData();
       } else {
         _fetchData();

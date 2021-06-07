@@ -3,6 +3,13 @@ import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 
+class GamePlayer {
+  int id;
+  String name;
+  String uuid;
+  GamePlayer(this.id, this.name, this.uuid);
+}
+
 class GameInfoModel {
   int gameID;
   String gameCode;
@@ -39,6 +46,9 @@ class GameInfoModel {
   String janusSecret;
   int janusRoomId;
   String janusRoomPin;
+
+  // all players in the game
+  Map<int, GamePlayer> allPlayers = Map<int, GamePlayer>();
 
   /* this constructor is used in the replay hand section */
   GameInfoModel({
@@ -89,13 +99,18 @@ class GameInfoModel {
     this.handToPlayerChannel = data['handToPlayerChannel'];
     this.gameChatChannel = data['gameChatChannel'];
 
-// TODO bug always giving true
     this.audioConfEnabled = data['audioConfEnabled'];
     this.janusUrl = data['janusUrl'];
     this.janusRoomId = data['janusRoomId'];
     this.janusRoomPin = data['janusRoomPin'];
     this.janusToken = data['janusToken'];
     this.janusSecret = data['janusSecret'];
+
+    for (final playerData in data['allPlayers']) {
+      final gamePlayer =
+          GamePlayer(playerData['id'], playerData['name'], playerData['uuid']);
+      this.allPlayers[gamePlayer.id] = gamePlayer;
+    }
   }
 
   void gameEnded() {
@@ -131,6 +146,11 @@ class GameInfoModel {
           breakExpTime
           breakStartedTime
         }
+      }
+      allPlayers {
+        id
+        uuid
+        name
       }
       actionTime
       gameToken

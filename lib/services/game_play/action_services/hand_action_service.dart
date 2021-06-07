@@ -120,7 +120,8 @@ class HandActionService {
   GameComService _gameComService;
   RetrySendingMsg _retryMsg;
   PlayerInfo _currentPlayer;
-  HandActionService(this._context, this._gameState, this._gameComService, this._currentPlayer);
+  HandActionService(this._context, this._gameState, this._gameComService,
+      this._currentPlayer);
 
   void close() {
     closed = true;
@@ -619,6 +620,7 @@ class HandActionService {
       if (seatNo == mySeatNo) {
         // this is me - give me my cards one by one
         players.updateCardSilent(mySeatNo, myCards);
+        _gameState.currentCards = myCards;
       }
       //debugPrint('Setting cards for $seatNo');
       players.updateVisibleCardNumberSilent(seatNo, myCards.length);
@@ -1454,10 +1456,8 @@ class HandActionService {
     // get hand winners data and update results
     final handResult = data['handResult'];
 
-    Map <String, dynamic> result = {
-      "hand": {
-        "data": handResult 
-      },
+    Map<String, dynamic> result = {
+      "hand": {"data": handResult},
       "myInfo": {
         "id": _currentPlayer.id,
         "name": _currentPlayer.name,
@@ -1468,7 +1468,9 @@ class HandActionService {
     log('\n\n');
     log(jsonData);
     log('\n\n');
-    _gameState.setHandLog(-1, jsonData);
+    final handNum = handResult['handNum'];
+    _gameState.lastHand = jsonData;
+    _gameState.setHandLog(handNum, jsonData, _gameState.currentCards);
 
     /* showdown time, show other players cards */
     players.updateUserCardsSilent(_getCards(data));

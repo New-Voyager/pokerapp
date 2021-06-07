@@ -52,7 +52,15 @@ class GamePlayScreenUtilMethods {
       icon: Icons.all_inclusive_rounded,
       children: [
         SpeedDialChild(
-          
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
+          label: 'Hand result',
+          onTap: () => TestService.showHandResult(),
+        ),
+        SpeedDialChild(
           child: Icon(
             Icons.adb_rounded,
             color: Colors.white,
