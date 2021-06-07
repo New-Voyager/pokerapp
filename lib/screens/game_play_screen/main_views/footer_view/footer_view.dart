@@ -79,7 +79,7 @@ class _FooterViewState extends State<FooterView>
 
             /* hole card view & footer action view */
             !me
-                ? Spacer()
+                ? const SizedBox.shrink()
                 : HoleCardsViewAndFooterActionView(
                     gameContext: widget.gameContext,
                     playerModel: players.me,
