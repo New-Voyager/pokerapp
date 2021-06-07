@@ -87,8 +87,9 @@ class HeaderView extends StatelessWidget {
                             await showModalBottomSheet(
                               context: context,
                               isScrollControlled: true,
-                              builder: (ctx) => GameOptionsBottomSheet(
-                                  GameState.getState(ctx)),
+                              builder: (_) => GameOptionsBottomSheet(
+                                GameState.getState(context),
+                              ),
                             );
                           },
                           child: Container(
