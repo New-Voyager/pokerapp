@@ -162,13 +162,13 @@ class HandService {
 
   static Future<HandLogModelNew> getHandLog(
       String gameCode, int handNum) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    if (!HandlogCacheService.needToFetch(gameCode, handNum, prefs)) {
-      final data = HandlogCacheService.getFromCache(gameCode, handNum,prefs);
-      final handLog =
-          HandLogModelNew.handLogModelNewFromJson(data, serviceResult: true);
-      return handLog;
-    }
+    // SharedPreferences prefs = await SharedPreferences.getInstance();
+    // if (!HandlogCacheService.needToFetch(gameCode, handNum, prefs)) {
+    //   final data = HandlogCacheService.getFromCache(gameCode, handNum,prefs);
+    //   final handLog =
+    //       HandLogModelNew.handLogModelNewFromJson(data, serviceResult: true);
+    //   return handLog;
+    // }
 
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
     log("Trying to get GameCode: $gameCode; handNum: $handNum");
@@ -191,7 +191,8 @@ class HandService {
     // model.jsonData = result.data;
     // model.load();
     final data = jsonEncode(result.data);
-    HandlogCacheService.saveToCache(gameCode, handNum, data, prefs);
+    // HandlogCacheService.saveToCache(gameCode, handNum, data, prefs);
+
     // log("DATA\n: $data");
     final handLog =
         HandLogModelNew.handLogModelNewFromJson(data, serviceResult: true);

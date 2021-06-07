@@ -12,6 +12,7 @@ import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/marked_cards.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
+import 'package:pokerapp/models/hand_log_model_new.dart';
 import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/services/app/game_service.dart';
@@ -64,6 +65,7 @@ class GameState {
   bool _playerSeatChangeInProgress = false;
   int _seatChangeSeat = 0;
   HandlogCacheService handlogCacheService;
+  Map<String, dynamic> _handlogs = Map<String, dynamic>();
 
   void initialize({
     String gameCode,
@@ -522,6 +524,23 @@ class GameState {
       this._playerSeatChangeInProgress = v;
   int get seatChangeSeat => this._seatChangeSeat;
   set seatChangeSeat(int seat) => this._seatChangeSeat = seat;
+
+  HandLogModelNew getHandLog(int handnum) {
+    String key = '$handnum';
+    if (_handlogs.containsKey(key)) {
+      final data = jsonEncode(_handlogs[key]);
+      final handLog =
+        HandLogModelNew.handLogModelNewFromJson(data, serviceResult: true);
+
+      return handLog;
+    }
+    return null;
+  }
+
+  void setHandLog(int handnum, dynamic data) {
+    String key = '$handnum';
+    _handlogs[key] = data;
+  }
 }
 
 /*

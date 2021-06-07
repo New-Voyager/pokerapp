@@ -22,21 +22,22 @@ import 'package:pokerapp/utils/loading_utils.dart';
 
 class HandLogView extends StatefulWidget {
   final String gameCode;
-  bool isAppbarWithHandNumber;
+  final bool isAppbarWithHandNumber;
   final String clubCode;
   final int handNum;
+  final HandLogModelNew handLogModel;
   HandLogView(this.gameCode, this.handNum,
-      {this.isAppbarWithHandNumber = false, this.clubCode});
+      {this.isAppbarWithHandNumber = false, this.clubCode, this.handLogModel});
 
   @override
   State<StatefulWidget> createState() => _HandLogViewState();
 }
 
 class _HandLogViewState extends State<HandLogView> {
-  HandLogModelNew _handLogModel;
   bool _isLoading = true;
   var handLogjson;
   List<BookmarkedHand> list = [];
+  HandLogModelNew _handLogModel;
 
   @override
   void initState() {
@@ -52,8 +53,12 @@ class _HandLogViewState extends State<HandLogView> {
   }
 
   void _fetchData() async {
-    _handLogModel =
-        await HandService.getHandLog(widget.gameCode, widget.handNum);
+    if (widget.handLogModel != null) {
+      _handLogModel = widget.handLogModel;
+    } else {
+      _handLogModel =
+          await HandService.getHandLog(widget.gameCode, widget.handNum);
+    }
     _isLoading = false;
     setState(() {
       // update ui
