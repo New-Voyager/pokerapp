@@ -205,16 +205,13 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
         /* finally drive the lottie animation */
         // play the audio
         final animationSound = 'assets/animations/$animationAssetID.mp3';
-        Uint8List data = widget.gameState.cache[animationSound];
-        if (data == null) {
+        Uint8List data = await widget.gameState.getAudioBytes(animationSound);
+        if (data != null && data.length > 0) {
+          widget.audioPlayer.playBytes(data);
           log('Loading file $animationSound');
-          data = (await rootBundle.load(animationSound)).buffer.asUint8List();
-          widget.gameState.cache[animationSound] = data;
         } else {
           log('$animationSound is in cache');
         }
-
-        widget.audioPlayer.playBytes(data);
 
         setState(() {
           isLottieAnimationAnimating = true;

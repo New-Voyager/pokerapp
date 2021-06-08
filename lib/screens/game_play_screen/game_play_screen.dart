@@ -462,6 +462,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
                         _gameState,
                         _gameContextObj.gameComService,
                         _gameContextObj.currentPlayer,
+                        audioPlayer: _audioPlayer,
                       );
                       _gameContextObj.handActionService.loop();
 

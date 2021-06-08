@@ -492,8 +492,9 @@ class TestService {
     if (_handActionService == null) {
       _handActionService = HandActionService(_context, gameState, null, null);
       _handActionService.loop();
-    }    
+    }
   }
+
   static Future<void> flop() async {
     initHandSevice();
     await _handActionService.handle(flopMessage());

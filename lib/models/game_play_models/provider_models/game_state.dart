@@ -49,7 +49,7 @@ class GameState {
   ListenableProvider<AudioConferenceState> _confStateProvider;
   AudioConferenceState _audioConfState;
 
-  final Map<String, Uint8List> cache = Map<String, Uint8List>();
+  final Map<String, Uint8List> _audioCache = Map<String, Uint8List>();
   GameComService gameComService;
   Seat popupSelectedSeat;
 
@@ -540,6 +540,19 @@ class GameState {
   void setHandLog(int handnum, dynamic data) {
     String key = '$handnum';
     _handlogs[key] = data;
+  }
+
+  Future<Uint8List> getAudioBytes(String assetFile) async {
+    if (_audioCache[assetFile] == null) {
+      log('Loading file $assetFile');
+      try {
+        final data = (await rootBundle.load(assetFile)).buffer.asUint8List();
+        _audioCache[assetFile] = data;
+      } catch (err) {
+        _audioCache[assetFile] = Uint8List(0);
+      }
+    }
+    return _audioCache[assetFile];
   }
 }
 

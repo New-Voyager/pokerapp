@@ -181,7 +181,7 @@ class GameUpdateService {
     );
     seat.notify();
     if (closed) return;
-    
+
     // update my state to remove buyin button
     if (player.isMe) {
       final myState = _gameState.getMyState(_context);

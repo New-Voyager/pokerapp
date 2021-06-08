@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
@@ -120,7 +121,10 @@ class HandActionService {
   GameComService _gameComService;
   RetrySendingMsg _retryMsg;
   PlayerInfo _currentPlayer;
-  HandActionService(this._context, this._gameState, this._gameComService, this._currentPlayer);
+  AudioPlayer audioPlayer;
+  HandActionService(
+      this._context, this._gameState, this._gameComService, this._currentPlayer,
+      {this.audioPlayer});
 
   void close() {
     closed = true;
@@ -415,11 +419,9 @@ class HandActionService {
   }
 
   Future<void> handleNewHand(var data) async {
-    /* play the new hand sound effect */
-    Audio.play(
-      context: _context,
-      assetFile: AppAssets.newHandSound,
-    );
+    _gameState
+        .getAudioBytes(AppAssets.newHandSound)
+        .then((value) => audioPlayer.playBytes(value));
 
     /* data contains the dealer, small blind and big blind seat Positions
     * Update the Players object with these information */
@@ -580,10 +582,9 @@ class HandActionService {
 
   Future<void> handleDeal(var data) async {
     // play the deal sound effect
-    Audio.play(
-      context: _context,
-      assetFile: AppAssets.dealSound,
-    );
+    _gameState
+        .getAudioBytes(AppAssets.dealSound)
+        .then((value) => audioPlayer.playBytes(value));
 
     int mySeatNo = data['dealCards']['seatNo'];
     String cards = data['dealCards']['cards'];
@@ -1020,23 +1021,20 @@ class HandActionService {
     if (action.action == HandActions.BET ||
         action.action == HandActions.RAISE ||
         action.action == HandActions.CALL) {
-      Audio.play(
-        context: _context,
-        assetFile: AppAssets.betRaiseSound,
-      );
+      _gameState
+          .getAudioBytes(AppAssets.betRaiseSound)
+          .then((value) => audioPlayer.playBytes(value));
     } else if (action.action == HandActions.FOLD) {
-      Audio.play(
-        context: _context,
-        assetFile: AppAssets.foldSound,
-      );
+      _gameState
+          .getAudioBytes(AppAssets.foldSound)
+          .then((value) => audioPlayer.playBytes(value));
       seat.player.playerFolded = true;
       seat.player.animatingFold = true;
       seat.notify();
     } else if (action.action == HandActions.CHECK) {
-      Audio.play(
-        context: _context,
-        assetFile: AppAssets.checkSound,
-      );
+      _gameState
+          .getAudioBytes(AppAssets.checkSound)
+          .then((value) => audioPlayer.playBytes(value));
     }
     int stack = playerActed['stack'];
     if (stack != null) {
@@ -1454,10 +1452,8 @@ class HandActionService {
     // get hand winners data and update results
     final handResult = data['handResult'];
 
-    Map <String, dynamic> result = {
-      "hand": {
-        "data": handResult 
-      },
+    Map<String, dynamic> result = {
+      "hand": {"data": handResult},
       "myInfo": {
         "id": _currentPlayer.id,
         "name": _currentPlayer.name,
