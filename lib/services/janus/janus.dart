@@ -85,7 +85,7 @@ class JanusEngine extends ChangeNotifier {
     if (initializing) {
       log('janus: in the process of initializing. Skipping');
       return;
-    }    
+    }
     initializing = true;
     initialized = false;
     if (defaultTargetPlatform == TargetPlatform.android) {
@@ -111,7 +111,6 @@ class JanusEngine extends ChangeNotifier {
           ]);
       initialized = true;
     }
-
 
     _localRenderer = new RTCVideoRenderer();
     _remoteRenderer = new RTCVideoRenderer();

@@ -40,11 +40,11 @@ class ClubMessageService {
     };
     /* messages query */
     var result = await _client.mutate(
-        MutationOptions(
-          documentNode: gql(query),
-          variables: variables,
-        ),
-      );
+      MutationOptions(
+        documentNode: gql(query),
+        variables: variables,
+      ),
+    );
 
     if (result.hasException) return false;
     return result.data['read'];

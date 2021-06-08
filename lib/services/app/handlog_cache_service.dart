@@ -14,16 +14,15 @@ class HandlogCacheService {
     String gameCode,
     int handNum,
     SharedPreferences preferences,
-  )  {
-   
+  ) {
     return !preferences.containsKey(getSharedPrefKey(gameCode, handNum));
   }
 
   static void saveToCache(
     String gameCode,
     int handNum,
-    String data,    SharedPreferences preferences,
-
+    String data,
+    SharedPreferences preferences,
   ) async {
     log("Save to Cache: GAMECODE: $gameCode : $handNum");
 
@@ -39,7 +38,7 @@ class HandlogCacheService {
     SharedPreferences sharedPreferences,
   ) {
     log("Reading from Cache: GAMECODE: $gameCode : $handNum");
-    
+
     String cachedResponse = sharedPreferences.getString(
       getSharedPrefKey(gameCode, handNum),
     );
