@@ -57,6 +57,33 @@ class GamePlayScreenUtilMethods {
             color: Colors.white,
           ),
           backgroundColor: Colors.red,
+          label: 'Show Bets',
+          onTap: () => TestService.showBets(),
+        ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
+          label: 'Simulate Bet Movement',
+          onTap: () => TestService.simulateBetMovement(),
+        ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
+          label: 'Move Pot to Player',
+          onTap: () => TestService.movePotToPlayer(),
+        ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
           label: 'player talking',
           onTap: () => TestService.setPlayerTalking(),
         ),
@@ -144,24 +171,24 @@ class GamePlayScreenUtilMethods {
         //   label: 'Remove showdown cards',
         //   onTap: () => TestService.removeShowDownCards(),
         // ),
-        SpeedDialChild(
-          child: Icon(
-            Icons.adb_rounded,
-            color: Colors.white,
-          ),
-          backgroundColor: Colors.red,
-          label: 'set isAdmin true',
-          onTap: () => TestService.setIsAdminTrue(),
-        ),
-        SpeedDialChild(
-          child: Icon(
-            Icons.adb_rounded,
-            color: Colors.white,
-          ),
-          backgroundColor: Colors.red,
-          label: 'set isAdmin true',
-          onTap: () => TestService.setIsAdminTrue(),
-        ),
+        // SpeedDialChild(
+        //   child: Icon(
+        //     Icons.adb_rounded,
+        //     color: Colors.white,
+        //   ),
+        //   backgroundColor: Colors.red,
+        //   label: 'set isAdmin true',
+        //   onTap: () => TestService.setIsAdminTrue(),
+        // ),
+        // SpeedDialChild(
+        //   child: Icon(
+        //     Icons.adb_rounded,
+        //     color: Colors.white,
+        //   ),
+        //   backgroundColor: Colors.red,
+        //   label: 'set isAdmin true',
+        //   onTap: () => TestService.setIsAdminTrue(),
+        // ),
         // SpeedDialChild(
         //   child: Icon(
         //     Icons.adb_rounded,
@@ -180,42 +207,42 @@ class GamePlayScreenUtilMethods {
         //   label: 'Dealer Choice',
         //   onTap: () => TestService.dealerChoiceGame(),
         // ),
-        SpeedDialChild(
-          child: Icon(
-            Icons.adb_rounded,
-            color: Colors.white,
-          ),
-          backgroundColor: Colors.red,
-          label: 'set current player not playing',
-          onTap: () => TestService.setCurrentPlayerStatusNotPlaying(),
-        ),
-        SpeedDialChild(
-          child: Icon(
-            Icons.adb_rounded,
-            color: Colors.white,
-          ),
-          backgroundColor: Colors.red,
-          label: 'set current player as playing',
-          onTap: () => TestService.setCurrentPlayerStatusPlaying(),
-        ),
-        SpeedDialChild(
-          child: Icon(
-            Icons.adb_rounded,
-            color: Colors.white,
-          ),
-          backgroundColor: Colors.red,
-          label: 'set game status active',
-          onTap: () => TestService.setGameStateActive(),
-        ),
-        SpeedDialChild(
-          child: Icon(
-            Icons.adb_rounded,
-            color: Colors.white,
-          ),
-          backgroundColor: Colors.red,
-          label: 'set game status inactive',
-          onTap: () => TestService.setGameStateInActive(),
-        ),
+        // SpeedDialChild(
+        //   child: Icon(
+        //     Icons.adb_rounded,
+        //     color: Colors.white,
+        //   ),
+        //   backgroundColor: Colors.red,
+        //   label: 'set current player not playing',
+        //   onTap: () => TestService.setCurrentPlayerStatusNotPlaying(),
+        // ),
+        // SpeedDialChild(
+        //   child: Icon(
+        //     Icons.adb_rounded,
+        //     color: Colors.white,
+        //   ),
+        //   backgroundColor: Colors.red,
+        //   label: 'set current player as playing',
+        //   onTap: () => TestService.setCurrentPlayerStatusPlaying(),
+        // ),
+        // SpeedDialChild(
+        //   child: Icon(
+        //     Icons.adb_rounded,
+        //     color: Colors.white,
+        //   ),
+        //   backgroundColor: Colors.red,
+        //   label: 'set game status active',
+        //   onTap: () => TestService.setGameStateActive(),
+        // ),
+        // SpeedDialChild(
+        //   child: Icon(
+        //     Icons.adb_rounded,
+        //     color: Colors.white,
+        //   ),
+        //   backgroundColor: Colors.red,
+        //   label: 'set game status inactive',
+        //   onTap: () => TestService.setGameStateInActive(),
+        // ),
         // SpeedDialChild(
         //   child: Icon(
         //     Icons.adb_rounded,
@@ -225,33 +252,33 @@ class GamePlayScreenUtilMethods {
         //   label: 'Fill center view',
         //   onTap: () => TestService.fillCenterView(),
         // ),
-        /*SpeedDialChild(
-          child: Icon(
-            Icons.adb_rounded,
-            color: Colors.white,
-          ),
-          backgroundColor: Colors.red,
-          label: 'Waitlist',
-          onTap: () => TestService.waitlistDialog(),
-        ),
-        SpeedDialChild(
-          child: Icon(
-            Icons.adb_rounded,
-            color: Colors.white,
-          ),
-          backgroundColor: Colors.red,
-          label: 'Fold card',
-          onTap: () => TestService.fold(),
-        ),
-        SpeedDialChild(
-          child: Icon(
-            Icons.adb_rounded,
-            color: Colors.white,
-          ),
-          backgroundColor: Colors.red,
-          label: 'Run It Twice Prompt',
-          onTap: () => TestService.runItTwicePrompt(),
-        ),
+        // SpeedDialChild(
+        //   child: Icon(
+        //     Icons.adb_rounded,
+        //     color: Colors.white,
+        //   ),
+        //   backgroundColor: Colors.red,
+        //   label: 'Waitlist',
+        //   onTap: () => TestService.waitlistDialog(),
+        // ),
+        // SpeedDialChild(
+        //   child: Icon(
+        //     Icons.adb_rounded,
+        //     color: Colors.white,
+        //   ),
+        //   backgroundColor: Colors.red,
+        //   label: 'Fold card',
+        //   onTap: () => TestService.fold(),
+        // ),
+        // SpeedDialChild(
+        //   child: Icon(
+        //     Icons.adb_rounded,
+        //     color: Colors.white,
+        //   ),
+        //   backgroundColor: Colors.red,
+        //   label: 'Run It Twice Prompt',
+        //   onTap: () => TestService.runItTwicePrompt(),
+        // ),
         // SpeedDialChild(
         //   child: Icon(
         //     Icons.adb_rounded,
@@ -267,36 +294,9 @@ class GamePlayScreenUtilMethods {
             color: Colors.white,
           ),
           backgroundColor: Colors.red,
-          label: 'Show Bets',
-          onTap: () => TestService.showBets(),
-        ),
-        SpeedDialChild(
-          child: Icon(
-            Icons.adb_rounded,
-            color: Colors.white,
-          ),
-          backgroundColor: Colors.red,
-          label: 'Simulate Bet Movement',
-          onTap: () => TestService.simulateBetMovement(),
-        ),
-        SpeedDialChild(
-          child: Icon(
-            Icons.adb_rounded,
-            color: Colors.white,
-          ),
-          backgroundColor: Colors.red,
-          label: 'Move Pot to Player',
-          onTap: () => TestService.movePotToPlayer(),
-        ),
-        SpeedDialChild(
-          child: Icon(
-            Icons.adb_rounded,
-            color: Colors.white,
-          ),
-          backgroundColor: Colors.red,
           label: 'Show holecards',
           onTap: () => TestService.showHoleCards(),
-        ),*/
+        ),
         /*
         SpeedDialChild(
           child: Icon(

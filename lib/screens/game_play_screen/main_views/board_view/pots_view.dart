@@ -7,12 +7,13 @@ class PotsView extends StatelessWidget {
   final double potChip;
   final bool isBoardHorizontal;
   final GlobalKey uiKey;
-
+  final bool transparent;
   PotsView({
     this.isBoardHorizontal,
     this.potChip,
     this.uiKey,
     this.highlight,
+    this.transparent = false,
   });
 
   @override
@@ -40,7 +41,7 @@ class PotsView extends StatelessWidget {
                   color: highlight ? Colors.white : Colors.transparent,
                 ),
                 borderRadius: BorderRadius.circular(10.0),
-                color: Colors.black26,
+                color: this.transparent ? Colors.transparent : Colors.black26,
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,

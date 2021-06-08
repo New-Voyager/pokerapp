@@ -77,8 +77,7 @@ class _PointsLineChart extends State<PointsLineChart> {
 
   @override
   Widget build(BuildContext context) {
-    final screen = Screen(context);
-    _tapPosition = Offset((screen.width() - 100) / 2, screen.height() - 100);
+    _tapPosition = Offset((Screen.width - 100) / 2, Screen.height - 100);
     return !loadingDone
         ? Center(child: CircularProgressIndicator())
         : Scaffold(

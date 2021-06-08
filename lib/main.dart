@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -11,6 +13,7 @@ import 'package:pokerapp/services/graphQL/configurations/graph_ql_configuration.
 import 'package:pokerapp/services/nats/nats.dart';
 import 'package:pokerapp/utils/locator.dart';
 import 'package:provider/provider.dart';
+import 'package:pokerapp/utils/utils.dart';
 
 GraphQLConfiguration graphQLConfiguration = GraphQLConfiguration();
 final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
@@ -50,6 +53,7 @@ class MyApp extends StatelessWidget {
           print('Firebase initialization failed! ${snapshot.error.toString()}');
           return Text('Something went wrong!');
         }
+
         // Once complete, show your application
         if (snapshot.connectionState == ConnectionState.done) {
           //this.nats = Nats(context);

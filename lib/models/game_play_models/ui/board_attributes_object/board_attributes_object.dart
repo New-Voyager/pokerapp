@@ -627,9 +627,6 @@ class BoardAttributesObject extends ChangeNotifier {
   }
 
   Size get footerSize => this._footerSize;
-  Screen getScreen(BuildContext c) {
-    return Screen(c);
-  }
 
   SeatPosAttribs getSeatPosAttrib(SeatPos pos) {
     return getSeatMap(this._screenSize)[pos];
@@ -679,14 +676,14 @@ class BoardAttributesObject extends ChangeNotifier {
         lessThan6Inches: 0.85,
         equalTo6Inches: 1.0,
         equalTo7Inches: 1.20,
-        greaterThan7Inches: 1.30,
+        greaterThan7Inches: 2.0,
       ) as double;
 
   double get centerPotUpdatesScale => _decide(
         lessThan6Inches: 0.85,
         equalTo6Inches: 1.0,
         equalTo7Inches: 1.10,
-        greaterThan7Inches: 1.25,
+        greaterThan7Inches: 2.0,
       ) as double;
 
   double get centerRankStrScale => _decide(
@@ -707,7 +704,14 @@ class BoardAttributesObject extends ChangeNotifier {
         lessThan6Inches: 0.85,
         equalTo6Inches: 1.0,
         equalTo7Inches: 1.05,
-        greaterThan7Inches: 1.25,
+        greaterThan7Inches: 1.75,
+      ) as double;
+
+  double get centerGap => _decide(
+        lessThan6Inches: 0.0,
+        equalTo6Inches: 0.0,
+        equalTo7Inches: 10.0,
+        greaterThan7Inches: 25.0,
       ) as double;
 
   /* table center view offsets, scaling and sizes */
@@ -715,7 +719,7 @@ class BoardAttributesObject extends ChangeNotifier {
         lessThan6Inches: Offset(10, 40),
         equalTo6Inches: Offset(15, 60),
         equalTo7Inches: Offset(15, 85),
-        greaterThan7Inches: Offset(10, 150),
+        greaterThan7Inches: Offset(10, 40),
       ) as Offset;
 
   double get tableScale => _decide(

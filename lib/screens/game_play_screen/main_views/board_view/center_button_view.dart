@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
@@ -25,7 +27,10 @@ class CenterButtonView extends StatelessWidget {
     GameService.resumeGame(gameCode);
   }
 
-  void _onTerminatePress() {}
+  void _onTerminatePress() {
+    log('Termininating game $gameCode');
+    GameService.endGame(gameCode);
+  }
 
   void _onRearrangeSeatsPress(context) {
     GameContextObject gameContextObject = Provider.of<GameContextObject>(
