@@ -627,9 +627,6 @@ class BoardAttributesObject extends ChangeNotifier {
   }
 
   Size get footerSize => this._footerSize;
-  Screen getScreen(BuildContext c) {
-    return Screen(c);
-  }
 
   SeatPosAttribs getSeatPosAttrib(SeatPos pos) {
     return getSeatMap(this._screenSize)[pos];
@@ -711,8 +708,8 @@ class BoardAttributesObject extends ChangeNotifier {
       ) as double;
 
   double get centerGap => _decide(
-        lessThan6Inches: 5.0,
-        equalTo6Inches: 10.0,
+        lessThan6Inches: 0.0,
+        equalTo6Inches: 0.0,
         equalTo7Inches: 10.0,
         greaterThan7Inches: 25.0,
       ) as double;

@@ -57,6 +57,33 @@ class GamePlayScreenUtilMethods {
             color: Colors.white,
           ),
           backgroundColor: Colors.red,
+          label: 'Show Bets',
+          onTap: () => TestService.showBets(),
+        ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
+          label: 'Simulate Bet Movement',
+          onTap: () => TestService.simulateBetMovement(),
+        ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
+          label: 'Move Pot to Player',
+          onTap: () => TestService.movePotToPlayer(),
+        ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
           label: 'player talking',
           onTap: () => TestService.setPlayerTalking(),
         ),
@@ -261,33 +288,6 @@ class GamePlayScreenUtilMethods {
         //   label: 'Hand Message',
         //   onTap: () => TestService.handMessage(),
         // ),
-        SpeedDialChild(
-          child: Icon(
-            Icons.adb_rounded,
-            color: Colors.white,
-          ),
-          backgroundColor: Colors.red,
-          label: 'Show Bets',
-          onTap: () => TestService.showBets(),
-        ),
-        SpeedDialChild(
-          child: Icon(
-            Icons.adb_rounded,
-            color: Colors.white,
-          ),
-          backgroundColor: Colors.red,
-          label: 'Simulate Bet Movement',
-          onTap: () => TestService.simulateBetMovement(),
-        ),
-        SpeedDialChild(
-          child: Icon(
-            Icons.adb_rounded,
-            color: Colors.white,
-          ),
-          backgroundColor: Colors.red,
-          label: 'Move Pot to Player',
-          onTap: () => TestService.movePotToPlayer(),
-        ),
         SpeedDialChild(
           child: Icon(
             Icons.adb_rounded,

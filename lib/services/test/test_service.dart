@@ -33,7 +33,7 @@ import 'iap_test.dart';
 
 class TestService {
   static bool get isTesting {
-    return true;
+    return false;
   }
 
   static var _showResult = false;
@@ -230,13 +230,13 @@ class TestService {
     seat4.player.action.amount = 4;
     seat4.player.action.straddle = true;
 
-    final seat5 = gameState.getSeat(context, 5);
-    seat5.player.action.setAction(jsonDecode('''
-          {
-            "action": "CALL",
-            "amount": 4.0
-          }
-        '''));
+    // final seat5 = gameState.getSeat(context, 5);
+    // seat5.player.action.setAction(jsonDecode('''
+    //       {
+    //         "action": "CALL",
+    //         "amount": 4.0
+    //       }
+    //     '''));
 
     for (final seat in gameState.seats) {
       if (seat.serverSeatPos <= 5) {
@@ -295,7 +295,7 @@ class TestService {
 
     final players = gameState.getPlayers(context);
     final seat1 = gameState.getSeat(context, 1);
-    final seat2 = gameState.getSeat(context, 5);
+    final seat2 = gameState.getSeat(context, 3);
     final seat3 = gameState.getSeat(context, 9);
     final player1 = seat1.player;
     // player1.coinAmount = 100;

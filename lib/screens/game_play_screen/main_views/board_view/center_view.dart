@@ -71,15 +71,14 @@ class CenterView extends StatelessWidget {
 
     if (gameStatus == AppConstants.GAME_ENDED) {
       return Center(
-        child: Text(
-          'Game Ended',
-          style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 32.0,
-                    fontWeight: FontWeight.w600,
-                  ),          
-        )
-      );
+          child: Text(
+        'Game Ended',
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 32.0,
+          fontWeight: FontWeight.w600,
+        ),
+      ));
     }
 
     /* if the game is paused, show the options available during game pause */
@@ -96,15 +95,14 @@ class CenterView extends StatelessWidget {
       //     onStartGame: this.onStartGame,
       //   )),
       // );
-      return  Center(
-        child: CenterButtonView(
-          gameCode: this.gameCode,
-          isHost: this.isHost,
-          gameStatus: this.gameStatus,
-          tableStatus: this.tableStatus,
-          onStartGame: this.onStartGame,
-        )
-      );     
+      return Center(
+          child: CenterButtonView(
+        gameCode: this.gameCode,
+        isHost: this.isHost,
+        gameStatus: this.gameStatus,
+        tableStatus: this.tableStatus,
+        onStartGame: this.onStartGame,
+      ));
     }
 
     /* in case of new hand, show the deck shuffling animation */
@@ -129,13 +127,15 @@ class CenterView extends StatelessWidget {
     boardAttributes,
   ) {
     List<Widget> pots = [];
-
-    final List<int> cleanedPotChips = potChips ?? [];
+    List<int> potChips1 = [10, 20];
+    log('building multiple pots');
+//    final List<int> cleanedPotChips = potChips ?? [];
+    final List<int> cleanedPotChips = potChips ?? potChips1;
 
     for (int i = 0; i < cleanedPotChips.length; i++) {
       if (cleanedPotChips[i] == null) cleanedPotChips[i] = 0;
       GlobalKey key = GlobalKey();
-      double potChipValue = 0;
+      double potChipValue = 10;
       potChipValue = cleanedPotChips[i].toDouble();
 
       final potsView = PotsView(
@@ -153,13 +153,14 @@ class CenterView extends StatelessWidget {
     if (pots.length == 0) {
       final emptyPotsView = PotsView(
         isBoardHorizontal: this.isBoardHorizontal,
-        potChip: 10,
+        potChip: 0,
         uiKey: GlobalKey(),
         highlight: false,
+        transparent: true,
       );
 
       boardAttributes.setPotsKey(0, key);
-      pots.add(emptyPotsView);      
+      pots.add(emptyPotsView);
     }
 
     return Row(
@@ -191,7 +192,7 @@ class CenterView extends StatelessWidget {
           SizedBox(height: boardAttributes.centerGap),
 
           /* community cards view */
-           CommunityCardsView(
+          CommunityCardsView(
             cards: this.cards,
             cardsOther: this.cardsOther,
             twoBoardsNeeded: this.twoBoardsNeeded,
@@ -202,43 +203,42 @@ class CenterView extends StatelessWidget {
 
           /* potUpdates view OR the rank widget (rank widget is shown only when we have a result) */
           this.showDown
-              ? rankWidget(boardAttributes)
+              ? Container() //rankWidget(boardAttributes)
               : potUpdatesView(boardAttributes),
         ],
       ),
     );
-    return tablePotAndCardWidget;
+    return Transform.translate(
+        offset: Offset(0, -30), child: tablePotAndCardWidget);
   }
 
   Widget potUpdatesView(BoardAttributesObject boa) {
     double updates = potChipsUpdates;
-    updates = 100;;
+    log('pot updates view');
 
     return Transform.scale(
-        scale: boa.centerPotUpdatesScale,
-        child: Opacity(
-          opacity: showDown || (updates == null || updates == 0)
-              ? 0
-              : 1,
-          child: Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 10.0,
-              vertical: 5.0,
-            ),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(100.0),
-              color: Colors.black26,
-            ),
-            child: Text(
-              'Pot: ${DataFormatter.chipsFormat(potChipsUpdates)}',
-              style: AppStyles.itemInfoTextStyleHeavy.copyWith(
-                fontSize: 13,
-                fontWeight: FontWeight.w400,
-              ),
+      scale: boa.centerPotUpdatesScale,
+      child: Opacity(
+        opacity: showDown || (updates == null || updates == 0) ? 0 : 1,
+        child: Container(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 10.0,
+            vertical: 5.0,
+          ),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(100.0),
+            color: Colors.black26,
+          ),
+          child: Text(
+            'Pot: ${DataFormatter.chipsFormat(potChipsUpdates)}',
+            style: AppStyles.itemInfoTextStyleHeavy.copyWith(
+              fontSize: 13,
+              fontWeight: FontWeight.w400,
             ),
           ),
         ),
-      );
+      ),
+    );
   }
 
   /* rankStr --> needs to be shown only when footer result is not null */
