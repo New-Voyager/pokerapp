@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
@@ -97,6 +98,7 @@ class CommunityCardsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    log('community cards');
     if (twoBoardsNeeded ?? false) {
       // TODO: WE MAY NEED TO CHANGE THE SCALE FOR DIFFERENT SCREEN SIZES
       return Transform.scale(

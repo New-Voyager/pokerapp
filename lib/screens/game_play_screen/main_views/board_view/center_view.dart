@@ -69,19 +69,42 @@ class CenterView extends StatelessWidget {
     //log('gameStatus: $gameStatus tableStatus: $tableStatus');
     String _text = showDown ? null : BoardViewUtilMethods.getText(tableStatus);
 
+    if (gameStatus == AppConstants.GAME_ENDED) {
+      return Center(
+        child: Text(
+          'Game Ended',
+          style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 32.0,
+                    fontWeight: FontWeight.w600,
+                  ),          
+        )
+      );
+    }
+
     /* if the game is paused, show the options available during game pause */
     if (gameStatus == AppConstants.GAME_PAUSED ||
         tableStatus == AppConstants.WAITING_TO_BE_STARTED) {
-      return _putToCenterOnBoard(
-        scale: boardAttributes.centerViewCenterScale,
+      // return _putToCenterOnBoard(
+      //   scale: boardAttributes.centerViewCenterScale,
+      //   child: Center(
+      //   child: CenterButtonView(
+      //     gameCode: this.gameCode,
+      //     isHost: this.isHost,
+      //     gameStatus: this.gameStatus,
+      //     tableStatus: this.tableStatus,
+      //     onStartGame: this.onStartGame,
+      //   )),
+      // );
+      return  Center(
         child: CenterButtonView(
           gameCode: this.gameCode,
           isHost: this.isHost,
           gameStatus: this.gameStatus,
           tableStatus: this.tableStatus,
           onStartGame: this.onStartGame,
-        ),
-      );
+        )
+      );     
     }
 
     /* in case of new hand, show the deck shuffling animation */
@@ -126,6 +149,19 @@ class CenterView extends StatelessWidget {
       pots.add(potsView);
     }
 
+    // transparent pots to occupy the space
+    if (pots.length == 0) {
+      final emptyPotsView = PotsView(
+        isBoardHorizontal: this.isBoardHorizontal,
+        potChip: 10,
+        uiKey: GlobalKey(),
+        highlight: false,
+      );
+
+      boardAttributes.setPotsKey(0, key);
+      pots.add(emptyPotsView);      
+    }
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: pots,
@@ -135,12 +171,12 @@ class CenterView extends StatelessWidget {
   Widget centerView(BuildContext context, boardAttributes) {
     final GlobalKey potsKey = GlobalKey();
     boardAttributes.setPotsKey(0, potsKey);
-
+    log('gap: ${boardAttributes.centerGap}');
     // boardAttributes.centerPotBetKey = GlobalKey();
 
     Widget tablePotAndCardWidget = Align(
       key: ValueKey('tablePotAndCardWidget'),
-      alignment: Alignment.topCenter,
+      alignment: Alignment.center,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -152,17 +188,17 @@ class CenterView extends StatelessWidget {
           ),
 
           // divider
-          const SizedBox(height: 5.0),
+          SizedBox(height: boardAttributes.centerGap),
 
           /* community cards view */
-          CommunityCardsView(
+           CommunityCardsView(
             cards: this.cards,
             cardsOther: this.cardsOther,
             twoBoardsNeeded: this.twoBoardsNeeded,
             horizontal: true,
           ),
           // divider
-          const SizedBox(height: 5.0),
+          SizedBox(height: boardAttributes.centerGap),
 
           /* potUpdates view OR the rank widget (rank widget is shown only when we have a result) */
           this.showDown
@@ -174,10 +210,14 @@ class CenterView extends StatelessWidget {
     return tablePotAndCardWidget;
   }
 
-  Widget potUpdatesView(BoardAttributesObject boa) => Transform.scale(
+  Widget potUpdatesView(BoardAttributesObject boa) {
+    double updates = potChipsUpdates;
+    updates = 100;;
+
+    return Transform.scale(
         scale: boa.centerPotUpdatesScale,
         child: Opacity(
-          opacity: showDown || (potChipsUpdates == null || potChipsUpdates == 0)
+          opacity: showDown || (updates == null || updates == 0)
               ? 0
               : 1,
           child: Container(
@@ -199,6 +239,7 @@ class CenterView extends StatelessWidget {
           ),
         ),
       );
+  }
 
   /* rankStr --> needs to be shown only when footer result is not null */
   Widget rankWidget(BoardAttributesObject boa) {
