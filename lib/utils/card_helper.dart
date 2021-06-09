@@ -1,4 +1,5 @@
 import 'dart:typed_data';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
@@ -112,13 +113,29 @@ class CardHelper {
     return Colors.black;
   }
 
+  static String getSuitImage(String suit) {
+    switch (suit) {
+      case AppConstants.blackSpade:
+        return 'assets/images/cards/spade.png';
+      case AppConstants.redHeart:
+      case AppConstants.redHeart2:
+        return 'assets/images/cards/heart.png';
+      case AppConstants.blackClub:
+        return 'assets/images/cards/club.png';
+      case AppConstants.redDiamond:
+        return 'assets/images/cards/diamond.png';
+    }
+
+    return 'assets/images/cards/spade.png';
+  }
+
   /* methods that returns Card Objects */
 
   static CardObject _getCardFromCardValues(String card) {
     String label = card[0];
     String suit = card[1];
-    if (suit == AppConstants.redHeart) {
-      suit = AppConstants.redHeart2;
+    if (suit == AppConstants.redHeart || suit == AppConstants.redHeart2) {
+      suit = AppConstants.redHeart;
     }
 
     return CardObject(

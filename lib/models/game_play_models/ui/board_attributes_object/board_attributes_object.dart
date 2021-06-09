@@ -490,7 +490,8 @@ class BoardAttributesObject extends ChangeNotifier {
     @required double screenSize,
     BoardOrientation orientation = BoardOrientation.horizontal,
   }) {
-    this._screenSize = screenSize.round();
+    //this._screenSize = screenSize.round();
+    this._screenSize = Screen.screenSize;
     log('original screen size: $screenSize, rounded screen size: $_screenSize');
     this._boardOrientation = orientation;
     this._namePlateSize = Size(70, 55);
@@ -644,7 +645,7 @@ class BoardAttributesObject extends ChangeNotifier {
     @required dynamic greaterThan7Inches,
   }) {
     if (this._screenSize < 6) {
-      log('Device less than 6 inches');
+      //log('Device less than 6 inches');
       return lessThan6Inches;
     }
 

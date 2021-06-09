@@ -95,7 +95,7 @@ class _CommunicationViewState extends State<CommunicationView> {
         micColor = AppColors.appAccentColor;
       }
 
-      log('Audio status: ${state.status.toString()} iconColor: ${iconColor.toString()} muted: ${state.muted} talking: ${state.talking}');
+      // log('Audio status: ${state.status.toString()} iconColor: ${iconColor.toString()} muted: ${state.muted} talking: ${state.talking}');
 
       if (state?.talking ?? false) {
         mic = PulsatingCircleIconButton(

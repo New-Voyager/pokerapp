@@ -1,8 +1,11 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/widgets/cards/card_builder_widget.dart';
 import 'package:pokerapp/resources/app_assets.dart';
+import 'package:pokerapp/utils/card_helper.dart';
 
 final cardBackImage = new Image(
   image: AssetImage('assets/images/card_back/set2/Asset 6.png'),
@@ -60,26 +63,9 @@ class CardView extends StatelessWidget {
     TextStyle cardTextStyle,
     TextStyle suitTextStyle,
   ) {
-    // final aclub =
-    // Row (
-    //   children: [
-    //       Container(
-    //             // decoration: BoxDecoration(
-    //             //   shape: BoxShape.circle,
-    //             //   color: optionItemModel.backGroundColor,
-    //             // ),
-    //             padding: EdgeInsets.all(5),
-    //             child: Transform.scale(
-    //               scale: 1.2,
-    //               child: Image.asset(
-    //               'assets/images/cards/aclub.png',
-    //               // height: 40,
-    //               // width: 20,
-    //               //color: Colors.white,
-    //             )),
-    //           ),
-    //   ]);
-    // return aclub;
+    String suitImage = CardHelper.getSuitImage(card.suit);
+    // suitImage = 'assets/images/cards/heart.png';
+    // log('suit image: $suitImage');
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -108,15 +94,10 @@ class CardView extends StatelessWidget {
         Expanded(
           flex: 6,
           child: FittedBox(
-            child: Text(
-              card.suit,
-              style: TextStyle(
-                color: card.color,
-                fontSize: 24.0,
-                fontWeight: FontWeight.w800,
-                fontFamily: AppAssets.fontFamilyLiterata,
-              ),
-              textAlign: TextAlign.center,
+            child: Image.asset(
+              suitImage,
+              height: 20,
+              width: 20,
             ),
           ),
         ),
