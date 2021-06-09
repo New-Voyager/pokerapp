@@ -18,47 +18,6 @@ class CardView extends StatelessWidget {
     @required this.card,
   });
 
-  Widget _buildCardUIStack(
-    TextStyle cardTextStyle,
-    TextStyle suitTextStyle,
-  ) {
-    debugPrint('label: ${card.label} card suit: ${card.suit} ${card.color}');
-    return Stack(
-      //mainAxisSize: MainAxisSize.min,
-      //crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Align(
-            alignment: Alignment.topCenter,
-            child: Transform.translate(
-              offset: Offset(0, 0),
-              child: Text(
-                card.label == 'T' ? '10' : card.label ?? 'X',
-                style: TextStyle(
-                  color: card.color,
-                  fontSize: 28.0,
-                  fontWeight: FontWeight.w700,
-                  fontFamily: AppAssets.fontFamilyDomine,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            )),
-        Align(
-          alignment: Alignment.bottomCenter,
-          child: Text(
-            card.suit,
-            style: TextStyle(
-              color: card.color,
-              fontSize: 14.0,
-              fontWeight: FontWeight.w800,
-              fontFamily: AppAssets.fontFamilyLato,
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ),
-      ],
-    );
-  }
-
   Widget _buildCardUI(
     TextStyle cardTextStyle,
     TextStyle suitTextStyle,

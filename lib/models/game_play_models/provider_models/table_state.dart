@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/resources/app_constants.dart';
@@ -348,24 +350,19 @@ class TableState extends ChangeNotifier {
 
       /* dim all the cards, THEN highlight the NEEDED cards */
       for (final card in _board1) card.dim = true;
-
+      log('WINNER player board cards: $_board1');
       for (int i = 0; i < _board1.length; i++) {
-        String label = _board1[i].label;
-        String suit = _board1[i].suit;
-
-        int rawCardNumber = CardHelper.getRawCardNumber('$label$suit');
+        int rawCardNumber = _board1[i].cardNum;
         if (rawCards.any((rc) => rc == rawCardNumber))
           _board1[i].highlight = true;
+        log('WINNER player board cards after highlight: $_board1');
       }
     } else if (boardIndex == 2) {
       /* dim all the cards, THEN highlight the NEEDED cards */
       for (final card in _board2) card.dim = true;
 
       for (int i = 0; i < _board2.length; i++) {
-        String label = _board2[i].label;
-        String suit = _board2[i].suit;
-
-        int rawCardNumber = CardHelper.getRawCardNumber('$label$suit');
+        int rawCardNumber = _board1[i].cardNum;
         if (rawCards.any((rc) => rc == rawCardNumber))
           _board2[i].highlight = true;
       }
