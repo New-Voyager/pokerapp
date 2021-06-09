@@ -95,7 +95,7 @@ class _CommunicationViewState extends State<CommunicationView> {
         micColor = AppColors.appAccentColor;
       }
 
-      log('Audio status: ${state.status.toString()} iconColor: ${iconColor.toString()} muted: ${state.muted} talking: ${state.talking}');
+      // log('Audio status: ${state.status.toString()} iconColor: ${iconColor.toString()} muted: ${state.muted} talking: ${state.talking}');
 
       if (state?.talking ?? false) {
         mic = PulsatingCircleIconButton(
@@ -104,7 +104,11 @@ class _CommunicationViewState extends State<CommunicationView> {
             color: Colors.white,
             size: 24,
           ),
-          onTap: () {},
+          onTap: () {
+            if (state.status == AudioConferenceStatus.CONNECTED) {
+              gameState.janusEngine.muteUnmute();
+            }
+          },
           color: Colors.red,
           radius: 0.5,
         );

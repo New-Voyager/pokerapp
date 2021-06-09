@@ -403,9 +403,8 @@ class _GamePlayScreenState extends State<GamePlayScreen>
               var dividerTotalHeight = MediaQuery.of(context).size.height / 6;
 
               /* get the screen sizes, and initialize the board attributes */
-              Screen screen = Screen(context);
               BoardAttributesObject boardAttributes = BoardAttributesObject(
-                screenSize: screen.diagonalInches(),
+                screenSize: Screen.diagonalInches,
               );
 
               double tableScale = boardAttributes.tableScale;
@@ -462,6 +461,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
                         _gameState,
                         _gameContextObj.gameComService,
                         _gameContextObj.currentPlayer,
+                        audioPlayer: _audioPlayer,
                       );
                       _gameContextObj.handActionService.loop();
 

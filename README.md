@@ -66,3 +66,12 @@ On the Android Studio, your phone should now show up
 on the devices drop-down along with the emulator.
 
 Select your phone on the devices drop-down then Run main.dart.
+
+
+## To build for test releases
+flutter build  apk  --release --split-per-abi
+Upload token: qf4U9aqAL4RLK3oMJdEhAIkTWfgYT3qVAwOaxYIiEY
+https://www.diawi.com/
+
+curl https://upload.diawi.com/ -F token='qf4U9aqAL4RLK3oMJdEhAIkTWfgYT3qVAwOaxYIiEY' \
+-F file=@build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk

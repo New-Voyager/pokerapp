@@ -3,6 +3,7 @@ import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/widgets/cards/card_builder_widget.dart';
 import 'package:pokerapp/resources/app_assets.dart';
+import 'package:pokerapp/utils/card_helper.dart';
 
 class PlayerHoleCardView extends StatelessWidget {
   final CardObject card;
@@ -103,16 +104,23 @@ class PlayerHoleCardView extends StatelessWidget {
     TextStyle cardTextStyle,
     TextStyle suitTextStyle,
   ) {
+    String suitImage = CardHelper.getSuitImage(card.suit);
+
     return Stack(
       children: [
         /* center suit */
         Align(
           child: Transform.scale(
             scale: 1.8,
-            child: Text(
-              card.suit ?? AppConstants.redHeart,
-              style: suitTextStyle,
+            child: Image.asset(
+              suitImage,
+              height: 20,
+              width: 20,
             ),
+            // child: Text(
+            //   card.suit ?? AppConstants.redHeart,
+            //   style: suitTextStyle,
+            // ),
           ),
         ),
 
@@ -135,11 +143,17 @@ class PlayerHoleCardView extends StatelessWidget {
                 ),
               ),
               Transform.translate(
-                  offset: Offset(0, -10),
-                  child: Text(
-                    card.suit ?? AppConstants.redHeart,
-                    style: suitTextStyle.copyWith(fontSize: 11),
-                  )),
+                offset: Offset(0, -10),
+                child: Image.asset(
+                  suitImage,
+                  height: 16,
+                  width: 16,
+                ),
+                // Text(
+                //   card.suit ?? AppConstants.redHeart,
+                //   style: suitTextStyle.copyWith(fontSize: 11),
+                // )
+              ),
             ],
           ),
           top: 5,
@@ -165,11 +179,17 @@ class PlayerHoleCardView extends StatelessWidget {
                 ),
               ),
               Transform.translate(
-                  offset: Offset(0, 0),
-                  child: Text(
-                    card.suit ?? AppConstants.redHeart,
-                    style: suitTextStyle.copyWith(fontSize: 11),
-                  )),
+                offset: Offset(0, 0),
+                child: Image.asset(
+                  suitImage,
+                  height: 16,
+                  width: 16,
+                ),
+                // Text(
+                //   card.suit ?? AppConstants.redHeart,
+                //   style: suitTextStyle.copyWith(fontSize: 11),
+                // )
+              ),
             ],
           ),
           bottom: 5,

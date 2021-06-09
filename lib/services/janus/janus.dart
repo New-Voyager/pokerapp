@@ -35,7 +35,7 @@ class JanusEngine extends ChangeNotifier {
   bool initialized = false;
   bool joined = false;
   GameState gameState;
-
+  bool initializing = false;
   JanusEngine(
       {this.janusUrl,
       this.janusToken,
@@ -82,8 +82,12 @@ class JanusEngine extends ChangeNotifier {
   }
 
   joinChannel(String janusToken) async {
+    if (initializing) {
+      log('janus: in the process of initializing. Skipping');
+      return;
+    }
+    initializing = true;
     initialized = false;
-    return;
     if (defaultTargetPlatform == TargetPlatform.android) {
       await Permission.microphone.request();
     }
@@ -107,6 +111,7 @@ class JanusEngine extends ChangeNotifier {
           ]);
       initialized = true;
     }
+
     _localRenderer = new RTCVideoRenderer();
     _remoteRenderer = new RTCVideoRenderer();
 
@@ -188,11 +193,13 @@ class JanusEngine extends ChangeNotifier {
               await plugin.send(data: publish, jsep: offer);
             }
           } else if (data['audiobridge'] == 'joined') {
+            log('janus: creating offer for the audio conference');
             // player joined
             RTCSessionDescription offer = await plugin.createOffer(
                 offerToReceiveVideo: false, offerToReceiveAudio: true);
             var publish = {"request": "configure"};
             await plugin.send(data: publish, jsep: offer);
+            log('janus: offer is sent to plugin');
             listParticipants();
           } else if (data['audiobridge'] == 'event') {
             debugPrint('audiobridge: $data');
@@ -223,10 +230,11 @@ class JanusEngine extends ChangeNotifier {
       }
 
       if (msg.jsep != null) {
-        print('got remote jsep');
+        log('jsep: ${msg.jsep}');
         await plugin.handleRemoteJsep(msg.jsep);
       }
     });
+    initializing = false;
   }
 
   leaveChannel() async {
@@ -241,23 +249,31 @@ class JanusEngine extends ChangeNotifier {
         joined = false;
       }
       await plugin?.hangup();
+
+      if (_localRenderer != null) {
+        log('janus: local renderer ${this.roomId} disposed');
+        _localRenderer?.dispose();
+        _localRenderer = null;
+      }
+
+      if (_remoteRenderer != null) {
+        log('janus: remote renderer ${this.roomId} disposed');
+        _remoteRenderer?.dispose();
+        _remoteRenderer = null;
+      }
+
       if (plugin != null) {
+        log('janus: plugin ${this.roomId} disposed');
         plugin?.dispose();
         plugin = null;
       }
 
       if (session != null) {
+        log('janus: session ${this.roomId} disposed');
         session?.dispose();
         session = null;
       }
-      if (_localRenderer != null) {
-        _localRenderer?.dispose();
-        _localRenderer = null;
-      }
-      if (_remoteRenderer != null) {
-        _remoteRenderer?.dispose();
-        _remoteRenderer = null;
-      }
+      log('janus: engine ${this.roomId} disposed');
     } catch (err) {
       log('Leaving channel caught exception');
     }
@@ -320,9 +336,14 @@ class JanusEngine extends ChangeNotifier {
       if (currentPlayer.muted) {
         currentPlayer.muted = false;
         unmute();
+        log('janus: mic is unmuted');
+        joinChannel(this.janusToken);
       } else {
         currentPlayer.muted = true;
         mute();
+        log('janus: mic is muted');
+        // leave the channel
+        leaveChannel();
       }
     }
   }
@@ -349,7 +370,7 @@ class JanusEngine extends ChangeNotifier {
     };
     try {
       await plugin.send(data: data);
-      muted = true;
+      muted = false;
     } catch (err) {
       log('unmute operation failed. err: ${err.toString()}');
     }
