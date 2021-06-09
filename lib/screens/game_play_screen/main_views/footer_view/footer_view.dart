@@ -56,6 +56,8 @@ class _FooterViewState extends State<FooterView>
     // final width = s.width() - 100;
     // final screen = boardAttributes.getScreen(context);
     // final height = screen.height() / 3;
+    var screenWidth = MediaQuery.of(context).size.width;
+    var screenHeight = MediaQuery.of(context).size.height;
 
     return Consumer2<Players, ActionState>(
       builder: (_, players, actionState, __) {
@@ -79,7 +81,7 @@ class _FooterViewState extends State<FooterView>
 
             /* hole card view & footer action view */
             !me
-                ? const SizedBox.shrink()
+                ? Container(width:screenWidth, height:screenHeight/3)
                 : HoleCardsViewAndFooterActionView(
                     gameContext: widget.gameContext,
                     playerModel: players.me,

@@ -227,6 +227,13 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
     print('gameInfo players: ${_gameInfoModel.playersInSeats}');
 
+    // setting voiceChatEnable to true if gameComService is active
+    log('gameComService.active = ${gameComService.active}');
+    if(gameComService.active){
+      _gameState.getCommunicationState().voiceChatEnable = true;
+      _gameState.getCommunicationState().notify();
+    }
+
     return _gameInfoModel;
   }
 
@@ -333,6 +340,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         () => _gameInfoModel = gameInfoModel,
       ),
     );
+
   }
 
   Widget _buildChatWindow(BuildContext context) =>
