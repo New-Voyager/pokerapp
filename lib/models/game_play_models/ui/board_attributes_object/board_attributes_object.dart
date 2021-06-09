@@ -676,35 +676,35 @@ class BoardAttributesObject extends ChangeNotifier {
         lessThan6Inches: Offset.zero,
         equalTo6Inches: Offset.zero,
         equalTo7Inches: Offset(0.0, -50.0),
-        greaterThan7Inches: Offset.zero,
+        greaterThan7Inches: Offset(0.0, -40.0),
       ) as Offset;
 
   Offset get centerViewButtonVerticalTranslate => _decide(
         lessThan6Inches: Offset.zero,
         equalTo6Inches: Offset(0.0, -20.0),
-        equalTo7Inches: Offset.zero,
-        greaterThan7Inches: Offset.zero,
+        equalTo7Inches: Offset(0.0, -20.0),
+        greaterThan7Inches: Offset(0.0, -20.0),
       ) as Offset;
 
   Offset get centerViewVerticalTranslate => _decide(
         lessThan6Inches: Offset(0.0, 15.0),
         equalTo6Inches: Offset(0.0, 10.0),
         equalTo7Inches: Offset.zero,
-        greaterThan7Inches: Offset.zero,
+        greaterThan7Inches: Offset(0.0, 70.0),
       ) as Offset;
 
   double get centerPotScale => _decide(
         lessThan6Inches: 0.85,
         equalTo6Inches: 1.0,
         equalTo7Inches: 1.20,
-        greaterThan7Inches: 2.0,
+        greaterThan7Inches: 1.5,
       ) as double;
 
   double get centerPotUpdatesScale => _decide(
         lessThan6Inches: 0.85,
         equalTo6Inches: 1.0,
         equalTo7Inches: 1.0,
-        greaterThan7Inches: 2.0,
+        greaterThan7Inches: 1.5,
       ) as double;
 
   double get centerRankStrScale => _decide(
@@ -725,14 +725,14 @@ class BoardAttributesObject extends ChangeNotifier {
         lessThan6Inches: 0.85,
         equalTo6Inches: 1.0,
         equalTo7Inches: 1.05,
-        greaterThan7Inches: 1.75,
+        greaterThan7Inches: 1.50,
       ) as double;
 
   double get centerGap => _decide(
         lessThan6Inches: 0.0,
         equalTo6Inches: 0.0,
         equalTo7Inches: 10.0,
-        greaterThan7Inches: 25.0,
+        greaterThan7Inches: 15.0,
       ) as double;
 
   /* table center view offsets, scaling and sizes */
@@ -765,7 +765,7 @@ class BoardAttributesObject extends ChangeNotifier {
         lessThan6Inches: 1.4,
         equalTo6Inches: 1.4,
         equalTo7Inches: 1.5,
-        greaterThan7Inches: 1.6,
+        greaterThan7Inches: 1.8,
       ) as double;
 
   double get footerActionViewScale => _decide(
@@ -780,7 +780,7 @@ class BoardAttributesObject extends ChangeNotifier {
         lessThan6Inches: 0.85,
         equalTo6Inches: 1.0,
         equalTo7Inches: 1.4,
-        greaterThan7Inches: 2.0,
+        greaterThan7Inches: 1.7,
       ) as double;
 
   /* player hole card configurations */
