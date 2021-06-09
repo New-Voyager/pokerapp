@@ -204,7 +204,6 @@ class CenterView extends StatelessWidget {
 
   Widget potUpdatesView(BoardAttributesObject boa) {
     double updates = potChipsUpdates;
-    log('pot updates view');
 
     return Transform.scale(
       scale: boa.centerPotUpdatesScale,
