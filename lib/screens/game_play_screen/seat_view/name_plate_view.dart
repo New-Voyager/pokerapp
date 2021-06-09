@@ -143,7 +143,6 @@ class NamePlateWidget extends StatelessWidget {
     if (seat.player?.highlight ?? false) {
       int current = seat.actionTimer.getProgressTime();
       int total = seat.actionTimer.getTotalTime();
-      int remaining = total - current;
       final int totalMs = seat.actionTimer.getTotalTime() * 1000;
 
       //log('Rebuilding highlight remaining: ${remaining} total: ${total} current: ${current}');

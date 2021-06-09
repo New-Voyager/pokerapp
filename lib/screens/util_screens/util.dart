@@ -129,7 +129,14 @@ showWaitlistStatus(BuildContext context, String message, int duration) async {
 String getPlayerNameBySeatNo({HandLogModelNew handLogModel, int seatNo}) {
   final res = handLogModel.hand.playersInSeats
       .firstWhere((element) => element.seatNo == seatNo, orElse: () => null);
-  return res == null ? "Player" : res.name;
+  String name;
+  if (res != null) {
+    name = res.name;
+  }
+  if (name == null) {
+    name = handLogModel.getPlayerName(res.id);
+  }
+  return name == null ? "Player" : name;
 }
 
 String printDuration(Duration duration) {

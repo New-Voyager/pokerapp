@@ -6,6 +6,7 @@ import 'package:pokerapp/enums/approval_type.dart';
 import 'package:pokerapp/enums/game_status.dart';
 import 'package:pokerapp/enums/player_status.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/hand_history_model.dart';
@@ -39,9 +40,14 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (ctx) => LastHandAnalyseBottomSheet(
-        gameCode: widget.gameCode,
-        clubCode: widget.clubCode,
+      builder: (_) => Provider.value(
+        // THIS MAKES SURE, THE LAST HAND ANAYLYSE BOTTOM SHEET
+        // GETS THE GameState
+        value: context.read<GameState>(),
+        child: LastHandAnalyseBottomSheet(
+          gameCode: widget.gameCode,
+          clubCode: widget.clubCode,
+        ),
       ),
     );
   }
@@ -52,7 +58,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (ctx) {
+      builder: (_) {
         return HandHistoryAnalyseBottomSheet(
           model: model,
         );

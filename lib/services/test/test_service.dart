@@ -17,6 +17,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/table_state.dar
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
 import 'package:pokerapp/models/player_info.dart';
+import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/last_hand_analyse_bottomsheet.dart';
 import 'package:pokerapp/screens/game_play_screen/pop_ups/seat_change_confirmation_pop_up.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_service.dart';
@@ -165,10 +166,8 @@ class TestService {
     tableState.notifyAll();
 
     await Future.delayed(const Duration(seconds: 2));
-    final gameState = GameState.getState(_context);
-    HandActionService handActionService =
-        HandActionService(_context, gameState, null);
-    await handActionService.handleDealStarted();
+    initHandSevice();
+    await _handActionService.handleDealStarted();
 
     tableState.updateTableStatusSilent(null);
     tableState.notifyAll();
@@ -232,13 +231,13 @@ class TestService {
     seat4.player.action.amount = 4;
     seat4.player.action.straddle = true;
 
-    final seat5 = gameState.getSeat(context, 5);
-    seat5.player.action.setAction(jsonDecode('''
-          {
-            "action": "CALL",
-            "amount": 4.0
-          }
-        '''));
+    // final seat5 = gameState.getSeat(context, 5);
+    // seat5.player.action.setAction(jsonDecode('''
+    //       {
+    //         "action": "CALL",
+    //         "amount": 4.0
+    //       }
+    //     '''));
 
     for (final seat in gameState.seats) {
       if (seat.serverSeatPos <= 5) {
@@ -297,7 +296,7 @@ class TestService {
 
     final players = gameState.getPlayers(context);
     final seat1 = gameState.getSeat(context, 1);
-    final seat2 = gameState.getSeat(context, 5);
+    final seat2 = gameState.getSeat(context, 3);
     final seat3 = gameState.getSeat(context, 9);
     final player1 = seat1.player;
     // player1.coinAmount = 100;
@@ -406,7 +405,7 @@ class TestService {
   static Future<void> sendNewHand() async {
     final gameState = GameState.getState(_context);
     if (_handActionService == null) {
-      _handActionService = HandActionService(_context, gameState, null);
+      _handActionService = HandActionService(_context, gameState, null, null);
       _handActionService.loop();
     }
     await _handActionService.handle(newHandMessage());
@@ -436,12 +435,7 @@ class TestService {
 
   static void runItTwiceResult() {
     final resultMessage = runItTwiceMessage();
-
-    final gameState = GameState.getState(_context);
-    if (_handActionService == null) {
-      _handActionService = HandActionService(_context, gameState, null);
-      _handActionService.loop();
-    }
+    initHandSevice();
     _handActionService.handle(resultMessage);
   }
 
@@ -494,21 +488,23 @@ class TestService {
     tableState.notifyAll();
   }
 
-  static Future<void> flop() async {
+  static initHandSevice() {
     final gameState = GameState.getState(_context);
     if (_handActionService == null) {
-      _handActionService = HandActionService(_context, gameState, null);
+      _handActionService = HandActionService(_context, gameState, null, null);
       _handActionService.loop();
     }
+  }
+
+  static Future<void> flop() async {
+    initHandSevice();
     await _handActionService.handle(flopMessage());
   }
 
   static Future<void> fold() async {
     final gameState = GameState.getState(_context);
-    if (_handActionService == null) {
-      _handActionService = HandActionService(_context, gameState, null);
-      _handActionService.loop();
-    }
+    initHandSevice();
+
     await _handActionService.handle(foldMessage());
   }
 
@@ -532,11 +528,7 @@ class TestService {
   }
 
   static void sendRunItTwiceMessage() {
-    final gameState = GameState.getState(_context);
-    if (_handActionService == null) {
-      _handActionService = HandActionService(_context, gameState, null);
-      _handActionService.loop();
-    }
+    initHandSevice();
     String message = '''{
    "messageType":"RUN_IT_TWICE",
    "runItTwice":{
@@ -574,11 +566,8 @@ class TestService {
   }
 
   static void runItTwicePrompt() {
-    final gameState = GameState.getState(_context);
-    if (_handActionService == null) {
-      _handActionService = HandActionService(_context, gameState, null);
-      _handActionService.loop();
-    }
+    initHandSevice();
+
     String message =
         '''{"clubId": 1,"gameId": "1620287740","gameCode": "1620287740","handNum": 1,"messageId": "ACTION:1:FLOP:0:","handStatus": "FLOP","messages": [{"messageType": "PLAYER_ACTED","playerActed": {"seatNo": 8,"action": "ALLIN","amount": 50}}, {"messageType": "YOUR_ACTION","seatAction": {"seatNo": 1,"availableActions": ["RUN_IT_TWICE_PROMPT"]}}, {"messageType": "YOUR_ACTION","seatAction": {"seatNo": 8,"availableActions": ["RUN_IT_TWICE_PROMPT"]}}]}''';
     //final handActionService = HandActionService( _context, gameState);
@@ -587,15 +576,12 @@ class TestService {
   }
 
   static void handMessage() {
-    final gameState = GameState.getState(_context);
+    initHandSevice();
+
     // final seat = gameState.getSeat(_context, 1);
     // seat.player.highlight = true;
     // seat.setActionTimer(gameState.gameInfo.actionTime);
     // seat.notify();
-    if (_handActionService == null) {
-      _handActionService = HandActionService(_context, gameState, null);
-      _handActionService.loop();
-    }
     String message =
         '''{"version":"", "clubId":254, "gameId":"284", "gameCode":"CG-A2DHJIG7497MNKP", "handNum":36,
      "seatNo":0, "playerId":"0", "messageId":"ACTION:36:RIVER:2443:40", "gameToken":"", "handStatus":"RIVER",
@@ -690,11 +676,7 @@ class TestService {
   }
 
   static void handAnnouncement() async {
-    final gameState = GameState.getState(_context);
-    if (_handActionService == null) {
-      _handActionService = HandActionService(_context, gameState, null);
-      _handActionService.loop();
-    }
+    initHandSevice();
     await _handActionService.handle(newGameAnnouncement());
   }
 
@@ -741,11 +723,8 @@ class TestService {
   }
 
   static void dealerChoiceGame() async {
-    final gameState = GameState.getState(_context);
-    if (_handActionService == null) {
-      _handActionService = HandActionService(_context, gameState, null);
-      _handActionService.loop();
-    }
+    initHandSevice();
+
     await _handActionService.handle(dealerChoiceMessage());
   }
 
@@ -855,5 +834,22 @@ class TestService {
         seat1.notify();
       }
     }
+  }
+
+  static showHandResult() async {
+    final handLog = HandLogModelNew.handLogModelNewFromJson(lastHandResult,
+        serviceResult: true, authorizedToView: true);
+    final ids = handLog.getPlayerIdsWithoutName();
+    log('$ids');
+    await showModalBottomSheet(
+      context: _context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => LastHandAnalyseBottomSheet(
+        gameCode: 'DUMMY',
+        clubCode: 'DUMMY',
+        handLog: handLog,
+      ),
+    );
   }
 }

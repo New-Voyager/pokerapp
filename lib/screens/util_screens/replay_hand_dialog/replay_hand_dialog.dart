@@ -100,7 +100,7 @@ class _ReplayHandUtilScreenState extends State<ReplayHandUtilScreen> {
   @override
   Widget build(BuildContext context) {
     final BoardAttributesObject boardAttributesObject = BoardAttributesObject(
-      screenSize: Screen(context).diagonalInches(),
+      screenSize: Screen.diagonalInches,
     );
 
     return MultiProvider(

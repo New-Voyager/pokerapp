@@ -29,8 +29,7 @@ class FooterResultView extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: cards.map((c) {
             if (cardsToHighlight != null) {
-              int rawCardNumber =
-                  CardHelper.getRawCardNumber('${c.label}${c.suit}');
+              int rawCardNumber = c.cardNum;
 
               if (cardsToHighlight.contains(rawCardNumber)) c.highlight = true;
             }

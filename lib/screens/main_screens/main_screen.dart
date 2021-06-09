@@ -24,6 +24,7 @@ import 'package:pokerapp/services/nats/nats.dart';
 import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/widgets/tab_bar_item.dart';
 import 'package:provider/provider.dart';
+import 'package:pokerapp/utils/utils.dart';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -39,10 +40,16 @@ class _MainScreenState extends State<MainScreen>
   Future<void> _init() async {
     log('Initialize main screen');
 
+    // initialize device
+    await DeviceInfo.init();
+    Screen.init(context);
+    log('Device name: ${DeviceInfo.name} screen size: ${Screen.size} diagonal: ${Screen.diagonalInches}');
+
     /* cache all the category gifs */
     GifCacheService.cacheGifCategories(
       AppConstants.GIF_CATEGORIES,
     );
+    log('device name: ${DeviceInfo.name}');
 
     if (!TestService.isTesting) {
       _currentPlayer = await PlayerService.getMyInfo(null);

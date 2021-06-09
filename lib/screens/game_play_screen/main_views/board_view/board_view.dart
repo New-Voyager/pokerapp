@@ -181,7 +181,10 @@ class _BoardViewState extends State<BoardView> {
         /* distributing card animation widgets */
         Align(
           alignment: Alignment.center,
-          child: CardDistributionAnimatingWidget(),
+          child: Transform.translate(
+            offset: boardAttributes.centerViewCardShufflePosition,
+            child: CardDistributionAnimatingWidget(),
+          ),
         ),
 
         /* this widget is used to show animating of stacks in case user changes seats */

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
@@ -31,6 +32,7 @@ import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:pokerapp/widgets/run_it_twice_dialog.dart';
 import 'package:provider/provider.dart';
+import 'package:pokerapp/models/player_info.dart';
 
 import '../game_com_service.dart';
 import '../message_id.dart';
@@ -118,7 +120,15 @@ class HandActionService {
   bool closed = false;
   GameComService _gameComService;
   RetrySendingMsg _retryMsg;
-  HandActionService(this._context, this._gameState, this._gameComService);
+  PlayerInfo _currentPlayer;
+  AudioPlayer audioPlayer;
+  HandActionService(
+    this._context,
+    this._gameState,
+    this._gameComService,
+    this._currentPlayer, {
+    this.audioPlayer,
+  });
 
   void close() {
     closed = true;
@@ -413,11 +423,9 @@ class HandActionService {
   }
 
   Future<void> handleNewHand(var data) async {
-    /* play the new hand sound effect */
-    Audio.play(
-      context: _context,
-      assetFile: AppAssets.newHandSound,
-    );
+    _gameState
+        .getAudioBytes(AppAssets.newHandSound)
+        .then((value) => audioPlayer.playBytes(value));
 
     /* data contains the dealer, small blind and big blind seat Positions
     * Update the Players object with these information */
@@ -578,10 +586,9 @@ class HandActionService {
 
   Future<void> handleDeal(var data) async {
     // play the deal sound effect
-    Audio.play(
-      context: _context,
-      assetFile: AppAssets.dealSound,
-    );
+    _gameState
+        .getAudioBytes(AppAssets.dealSound)
+        .then((value) => audioPlayer.playBytes(value));
 
     int mySeatNo = data['dealCards']['seatNo'];
     String cards = data['dealCards']['cards'];
@@ -617,6 +624,7 @@ class HandActionService {
       if (seatNo == mySeatNo) {
         // this is me - give me my cards one by one
         players.updateCardSilent(mySeatNo, myCards);
+        _gameState.currentCards = myCards;
       }
       //debugPrint('Setting cards for $seatNo');
       players.updateVisibleCardNumberSilent(seatNo, myCards.length);
@@ -1006,10 +1014,7 @@ class HandActionService {
     var playerActed = data['playerActed'];
     int seatNo = playerActed['seatNo'];
     // show a prompt regarding last player action
-    final gameState = Provider.of<GameState>(
-      _context,
-      listen: false,
-    );
+    final gameState = _context.read<GameState>();
     final seat = gameState.getSeat(_context, seatNo);
     //log('player acted: $seatNo, player: ${seat.player.name}');
     final action = seat.player.action;
@@ -1018,23 +1023,20 @@ class HandActionService {
     if (action.action == HandActions.BET ||
         action.action == HandActions.RAISE ||
         action.action == HandActions.CALL) {
-      Audio.play(
-        context: _context,
-        assetFile: AppAssets.betRaiseSound,
-      );
+      _gameState
+          .getAudioBytes(AppAssets.betRaiseSound)
+          .then((value) => audioPlayer.playBytes(value));
     } else if (action.action == HandActions.FOLD) {
-      Audio.play(
-        context: _context,
-        assetFile: AppAssets.foldSound,
-      );
+      _gameState
+          .getAudioBytes(AppAssets.foldSound)
+          .then((value) => audioPlayer.playBytes(value));
       seat.player.playerFolded = true;
       seat.player.animatingFold = true;
       seat.notify();
     } else if (action.action == HandActions.CHECK) {
-      Audio.play(
-        context: _context,
-        assetFile: AppAssets.checkSound,
-      );
+      _gameState
+          .getAudioBytes(AppAssets.checkSound)
+          .then((value) => audioPlayer.playBytes(value));
     }
     int stack = playerActed['stack'];
     if (stack != null) {
@@ -1078,6 +1080,7 @@ class HandActionService {
       cards: winner.playerCards,
     );
 
+    log('WINNER player.cards: ${winner.playerCards} boardCards: ${winner.boardCards} setState: $setState ${winner.rankStr} ${AppConstants.chipMovingAnimationDuration}');
     /* highlight the winning cards for board 1 */
     tableState.highlightCardsSilent(
       boardIndex,
@@ -1368,6 +1371,11 @@ class HandActionService {
        *    2. delay
        *    3. show all the low pot winners
        */
+      List<CardObject> boardCardsUpdate = [];
+      for (final c in boardCards) {
+        boardCardsUpdate.add(CardHelper.getCard(c));
+      }
+      tableState.setBoardCards(1, boardCardsUpdate);
 
       // time we get for each pot is 3 seconds
 
@@ -1449,8 +1457,28 @@ class HandActionService {
     _gameState.resetSeatActions();
     players.clearForShowdown();
 
+    log('\n\n\n=================================================');
+    log(jsonEncode(data));
+    log('=================================================\n\n\n');
+
     // get hand winners data and update results
     final handResult = data['handResult'];
+
+    Map<String, dynamic> result = {
+      "hand": {"data": handResult},
+      "myInfo": {
+        "id": _currentPlayer.id,
+        "name": _currentPlayer.name,
+        "uuid": _currentPlayer.uuid
+      }
+    };
+    final jsonData = jsonEncode(result);
+    log('\n\n');
+    log(jsonData);
+    log('\n\n');
+    final handNum = handResult['handNum'];
+    _gameState.lastHand = jsonData;
+    _gameState.setHandLog(handNum, jsonData, _gameState.currentCards);
 
     /* showdown time, show other players cards */
     players.updateUserCardsSilent(_getCards(data));
@@ -1496,7 +1524,7 @@ class HandActionService {
     List<CardObject> _cardsToBeRevealed = markedCards.getCards();
     List<int> cardNumbers = [];
     for (final c in _cardsToBeRevealed) {
-      cardNumbers.add(CardHelper.getCardNumber(c));
+      cardNumbers.add(c.cardNum);
     }
 
     /* clear all the marked cards */

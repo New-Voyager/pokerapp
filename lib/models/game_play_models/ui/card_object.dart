@@ -17,6 +17,7 @@ enum CardType {
 
 class CardObject {
   // card information
+  int cardNum;
   String suit;
   String label;
   Color color;
@@ -33,6 +34,7 @@ class CardObject {
   CardFace cardFace;
 
   CardObject({
+    @required this.cardNum,
     @required this.suit,
     @required this.label,
     @required this.color,
@@ -44,7 +46,8 @@ class CardObject {
   });
 
   factory CardObject.emptyCard() {
-    CardObject card = new CardObject(suit: null, label: null, color: null);
+    CardObject card =
+        new CardObject(cardNum: 0, suit: null, label: null, color: null);
     card.empty = true;
     card.cardFace = CardFace.BACK;
     card.cardType = CardType.HandLogOrHandHistoryCard;
@@ -55,12 +58,12 @@ class CardObject {
 
   Widget get widget => CardView(card: this);
 
-  String get cardHash => '$suit:$label';
+  String get cardHash => '$cardNum';
 
   @override
   String toString() => jsonEncode({
-        'suit': suit,
-        'label': label,
+        // 'suit': suit,
+        // 'label': label,
         'highlight': highlight,
         'empty': empty,
       });
