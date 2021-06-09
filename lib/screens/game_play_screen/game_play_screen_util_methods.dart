@@ -84,8 +84,8 @@ class GamePlayScreenUtilMethods {
             color: Colors.white,
           ),
           backgroundColor: Colors.red,
-          label: 'player talking',
-          onTap: () => TestService.setPlayerTalking(),
+          label: 'fill center view',
+          onTap: () => TestService.fillCenterView(),
         ),
         SpeedDialChild(
           child: Icon(

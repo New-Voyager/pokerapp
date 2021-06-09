@@ -682,7 +682,7 @@ class BoardAttributesObject extends ChangeNotifier {
   double get centerPotUpdatesScale => _decide(
         lessThan6Inches: 0.85,
         equalTo6Inches: 1.0,
-        equalTo7Inches: 1.10,
+        equalTo7Inches: 1.0,
         greaterThan7Inches: 2.0,
       ) as double;
 
