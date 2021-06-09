@@ -51,11 +51,19 @@ class CenterView extends StatelessWidget {
     this.flipSpeed,
   ) : super(key: key);
 
-  Widget _putToCenterOnBoard({Widget child, scale}) => Align(
+  Widget _positionAnimationShuffleCardView({
+    Widget child,
+    double scale = 1.0,
+    Offset offset = Offset.zero,
+  }) =>
+      Align(
         alignment: Alignment.center,
-        child: Transform.scale(
-          scale: scale,
-          child: child,
+        child: Transform.translate(
+          offset: offset,
+          child: Transform.scale(
+            scale: scale * 1.2,
+            child: child,
+          ),
         ),
       );
 
@@ -95,12 +103,10 @@ class CenterView extends StatelessWidget {
 
     /* in case of new hand, show the deck shuffling animation */
     if (_text == AppConstants.NEW_HAND) {
-      return _putToCenterOnBoard(
+      return _positionAnimationShuffleCardView(
+        offset: boardAttributes.centerViewCardShufflePosition,
         scale: boardAttributes.centerViewCenterScale,
-        child: Transform.scale(
-          scale: 1.2,
-          child: AnimatingShuffleCardView(),
-        ),
+        child: AnimatingShuffleCardView(),
       );
     }
 
@@ -170,7 +176,7 @@ class CenterView extends StatelessWidget {
             /* main pot view */
             Transform.scale(
               scale: boardAttributes.centerPotScale,
-              alignment: Alignment.bottomCenter,
+              alignment: Alignment.topCenter,
               child: multiplePots(context, boardAttributes),
             ),
 

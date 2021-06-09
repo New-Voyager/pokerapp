@@ -123,8 +123,12 @@ class HandActionService {
   PlayerInfo _currentPlayer;
   AudioPlayer audioPlayer;
   HandActionService(
-      this._context, this._gameState, this._gameComService, this._currentPlayer,
-      {this.audioPlayer});
+    this._context,
+    this._gameState,
+    this._gameComService,
+    this._currentPlayer, {
+    this.audioPlayer,
+  });
 
   void close() {
     closed = true;
@@ -1009,10 +1013,7 @@ class HandActionService {
     var playerActed = data['playerActed'];
     int seatNo = playerActed['seatNo'];
     // show a prompt regarding last player action
-    final gameState = Provider.of<GameState>(
-      _context,
-      listen: false,
-    );
+    final gameState = _context.read<GameState>();
     final seat = gameState.getSeat(_context, seatNo);
     //log('player acted: $seatNo, player: ${seat.player.name}');
     final action = seat.player.action;

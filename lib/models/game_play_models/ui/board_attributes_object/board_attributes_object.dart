@@ -672,6 +672,13 @@ class BoardAttributesObject extends ChangeNotifier {
 
   /* center view scales for different widgets */
 
+  Offset get centerViewCardShufflePosition => _decide(
+        lessThan6Inches: Offset.zero,
+        equalTo6Inches: Offset.zero,
+        equalTo7Inches: Offset(0.0, -50.0),
+        greaterThan7Inches: Offset.zero,
+      ) as Offset;
+
   Offset get centerViewButtonVerticalTranslate => _decide(
         lessThan6Inches: Offset.zero,
         equalTo6Inches: Offset(0.0, -20.0),
