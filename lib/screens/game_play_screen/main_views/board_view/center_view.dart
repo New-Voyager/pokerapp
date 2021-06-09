@@ -84,25 +84,16 @@ class CenterView extends StatelessWidget {
     /* if the game is paused, show the options available during game pause */
     if (gameStatus == AppConstants.GAME_PAUSED ||
         tableStatus == AppConstants.WAITING_TO_BE_STARTED) {
-      // return _putToCenterOnBoard(
-      //   scale: boardAttributes.centerViewCenterScale,
-      //   child: Center(
-      //   child: CenterButtonView(
-      //     gameCode: this.gameCode,
-      //     isHost: this.isHost,
-      //     gameStatus: this.gameStatus,
-      //     tableStatus: this.tableStatus,
-      //     onStartGame: this.onStartGame,
-      //   )),
-      // );
-      return Center(
-          child: CenterButtonView(
-        gameCode: this.gameCode,
-        isHost: this.isHost,
-        gameStatus: this.gameStatus,
-        tableStatus: this.tableStatus,
-        onStartGame: this.onStartGame,
-      ));
+      return Transform.translate(
+        offset: Offset(0.0, -20.0),
+        child: CenterButtonView(
+          gameCode: this.gameCode,
+          isHost: this.isHost,
+          gameStatus: this.gameStatus,
+          tableStatus: this.tableStatus,
+          onStartGame: this.onStartGame,
+        ),
+      );
     }
 
     /* in case of new hand, show the deck shuffling animation */
@@ -175,35 +166,39 @@ class CenterView extends StatelessWidget {
     log('gap: ${boardAttributes.centerGap}');
     // boardAttributes.centerPotBetKey = GlobalKey();
 
-    return Column(
-      key: ValueKey('tablePotAndCardWidget'),
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        /* main pot view */
-        Transform.scale(
-          scale: boardAttributes.centerPotScale,
-          alignment: Alignment.topCenter,
-          child: multiplePots(context, boardAttributes),
-        ),
+    return Transform.translate(
+      offset: boardAttributes.centerViewVerticalTranslate,
+      child: Column(
+        key: ValueKey('tablePotAndCardWidget'),
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          /* main pot view */
+          Transform.scale(
+            scale: boardAttributes.centerPotScale,
+            alignment: Alignment.topCenter,
+            child: multiplePots(context, boardAttributes),
+          ),
 
-        // divider
-        SizedBox(height: boardAttributes.centerGap),
+          // divider
+          SizedBox(height: boardAttributes.centerGap),
 
-        /* community cards view */
-        CommunityCardsView(
-          cards: this.cards,
-          cardsOther: this.cardsOther,
-          twoBoardsNeeded: this.twoBoardsNeeded,
-          horizontal: true,
-        ),
-        // divider
-        SizedBox(height: boardAttributes.centerGap),
+          /* community cards view */
+          CommunityCardsView(
+            cards: this.cards,
+            cardsOther: this.cardsOther,
+            twoBoardsNeeded: this.twoBoardsNeeded,
+            horizontal: true,
+          ),
 
-        /* potUpdates view OR the rank widget (rank widget is shown only when we have a result) */
-        this.showDown
-            ? rankWidget(boardAttributes)
-            : potUpdatesView(boardAttributes),
-      ],
+          // divider
+          SizedBox(height: boardAttributes.centerGap),
+
+          /* potUpdates view OR the rank widget (rank widget is shown only when we have a result) */
+          this.showDown
+              ? rankWidget(boardAttributes)
+              : potUpdatesView(boardAttributes),
+        ],
+      ),
     );
   }
 

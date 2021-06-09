@@ -24,13 +24,20 @@ class CommunityCardsView extends StatelessWidget {
   });
 
   List<Widget> getCommunityCards(List<CardObject> cards) {
-    List<CardObject> reversedList = cards ?? [];
+    List<CardObject> reversedList = cards?.toList() ?? [];
 
     /* if we do not have an already existing entry, then only go for the dummy card */
-    if (!CommunityCardAttribute.hasEntry(0)) if (cards?.isEmpty ?? true) {
+    if (!CommunityCardAttribute.hasEntry(0) && (cards?.isEmpty ?? true)) {
       /* if empty, make dummy cards to calculate positions */
       /* why I choose 17? No reason!!! */
       for (int i = 0; i < 5; i++) {
+        final card = CardHelper.getCard(17);
+        card.cardType = CardType.CommunityCard;
+        reversedList.add(card);
+      }
+    } else {
+      if (cards.isEmpty) {
+        // if we have no cards to show, add a dummy card
         final card = CardHelper.getCard(17);
         card.cardType = CardType.CommunityCard;
         reversedList.add(card);
@@ -84,6 +91,8 @@ class CommunityCardsView extends StatelessWidget {
         key: ValueKey(boardCards.length),
         riverOrTurnCards: getCommunityCards(boardCards),
       );
+
+    print('boardCards: $boardCards');
 
     /* default case - this is done to bake our data for animating in the future */
     return Opacity(
