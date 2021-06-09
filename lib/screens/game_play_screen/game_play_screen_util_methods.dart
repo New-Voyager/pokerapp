@@ -84,8 +84,8 @@ class GamePlayScreenUtilMethods {
             color: Colors.white,
           ),
           backgroundColor: Colors.red,
-          label: 'fill center view',
-          onTap: () => TestService.fillCenterView(),
+          label: 'distribute cards',
+          onTap: () => TestService.distributeCards(),
         ),
         SpeedDialChild(
           child: Icon(

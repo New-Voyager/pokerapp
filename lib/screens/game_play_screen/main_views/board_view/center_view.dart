@@ -52,13 +52,10 @@ class CenterView extends StatelessWidget {
   ) : super(key: key);
 
   Widget _putToCenterOnBoard({Widget child, scale}) => Align(
-        alignment: Alignment.topCenter,
+        alignment: Alignment.center,
         child: Transform.scale(
           scale: scale,
-          child: Transform.translate(
-            offset: Offset(0.0, 30.0),
-            child: child,
-          ),
+          child: child,
         ),
       );
 
@@ -85,7 +82,7 @@ class CenterView extends StatelessWidget {
     if (gameStatus == AppConstants.GAME_PAUSED ||
         tableStatus == AppConstants.WAITING_TO_BE_STARTED) {
       return Transform.translate(
-        offset: Offset(0.0, -20.0),
+        offset: boardAttributes.centerViewButtonVerticalTranslate,
         child: CenterButtonView(
           gameCode: this.gameCode,
           isHost: this.isHost,
@@ -161,7 +158,10 @@ class CenterView extends StatelessWidget {
     );
   }
 
-  Widget centerView(BuildContext context, boardAttributes) =>
+  Widget centerView(
+    BuildContext context,
+    BoardAttributesObject boardAttributes,
+  ) =>
       Transform.translate(
         offset: boardAttributes.centerViewVerticalTranslate,
         child: Column(
@@ -170,7 +170,7 @@ class CenterView extends StatelessWidget {
             /* main pot view */
             Transform.scale(
               scale: boardAttributes.centerPotScale,
-              alignment: Alignment.topCenter,
+              alignment: Alignment.bottomCenter,
               child: multiplePots(context, boardAttributes),
             ),
 
@@ -202,6 +202,7 @@ class CenterView extends StatelessWidget {
 
     return Transform.scale(
       scale: boa.centerPotUpdatesScale,
+      alignment: Alignment.bottomCenter,
       child: Opacity(
         opacity: showDown || (updates == null || updates == 0) ? 0 : 1,
         child: Container(

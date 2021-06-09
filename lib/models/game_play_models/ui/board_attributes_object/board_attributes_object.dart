@@ -672,8 +672,15 @@ class BoardAttributesObject extends ChangeNotifier {
 
   /* center view scales for different widgets */
 
-  Offset get centerViewVerticalTranslate => _decide(
+  Offset get centerViewButtonVerticalTranslate => _decide(
         lessThan6Inches: Offset.zero,
+        equalTo6Inches: Offset(0.0, -20.0),
+        equalTo7Inches: Offset.zero,
+        greaterThan7Inches: Offset.zero,
+      ) as Offset;
+
+  Offset get centerViewVerticalTranslate => _decide(
+        lessThan6Inches: Offset(0.0, 15.0),
         equalTo6Inches: Offset(0.0, 10.0),
         equalTo7Inches: Offset.zero,
         greaterThan7Inches: Offset.zero,
@@ -763,7 +770,7 @@ class BoardAttributesObject extends ChangeNotifier {
 
   /* players configurations */
   double get playerViewScale => _decide(
-        lessThan6Inches: 1.0,
+        lessThan6Inches: 0.85,
         equalTo6Inches: 1.0,
         equalTo7Inches: 1.4,
         greaterThan7Inches: 2.0,
