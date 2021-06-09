@@ -68,18 +68,6 @@ const Map<int, String> _cardValues = {
 class CardHelper {
   CardHelper._();
 
-  static int getCardNumber(CardObject card) {
-    String cardValue = '${card.label}${card.suit}';
-    int _key = -1;
-
-    _cardValues.forEach((key, value) {
-      if (cardValue == value) _key = key;
-    });
-
-    assert(_key != -1);
-    return _key;
-  }
-
   /* following util methods deals with the raw card values and data */
   static String _getCardFromNumber(int number) => _cardValues[number];
 
@@ -131,7 +119,7 @@ class CardHelper {
 
   /* methods that returns Card Objects */
 
-  static CardObject _getCardFromCardValues(String card) {
+  static CardObject _getCardFromCardValues(int cardNum, String card) {
     String label = card[0];
     String suit = card[1];
     if (suit == AppConstants.redHeart || suit == AppConstants.redHeart2) {
@@ -139,8 +127,9 @@ class CardHelper {
     }
 
     return CardObject(
-      suit: suit,
+      cardNum: cardNum,
       label: label,
+      suit: suit,
       color: _getColor(suit),
     );
   }
@@ -151,22 +140,11 @@ class CardHelper {
     if (n == 0) {
       return CardObject.emptyCard();
     }
-    return _getCardFromCardValues(_getCardFromNumber(n));
+    return _getCardFromCardValues(n, _getCardFromNumber(n));
   }
 
   static List<CardObject> getCards(String s) => getRawCardNumbers(s)
-      .map<CardObject>((int c) => _getCardFromCardValues(_getCardFromNumber(c)))
+      .map<CardObject>(
+          (int c) => _getCardFromCardValues(c, _getCardFromNumber(c)))
       .toList();
-
-  /* get raw card number from "label:suit" string */
-  static int getRawCardNumber(String s) {
-    int rawCardNumber;
-
-    _cardValues.forEach((rawNo, value) {
-      if (value == s) rawCardNumber = rawNo;
-    });
-
-    assert(rawCardNumber != null);
-    return rawCardNumber;
-  }
 }

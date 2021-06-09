@@ -1080,6 +1080,7 @@ class HandActionService {
       cards: winner.playerCards,
     );
 
+    log('WINNER player.cards: ${winner.playerCards} boardCards: ${winner.boardCards} setState: $setState ${winner.rankStr} ${AppConstants.chipMovingAnimationDuration}');
     /* highlight the winning cards for board 1 */
     tableState.highlightCardsSilent(
       boardIndex,
@@ -1370,6 +1371,11 @@ class HandActionService {
        *    2. delay
        *    3. show all the low pot winners
        */
+      List<CardObject> boardCardsUpdate = [];
+      for (final c in boardCards) {
+        boardCardsUpdate.add(CardHelper.getCard(c));
+      }
+      tableState.setBoardCards(1, boardCardsUpdate);
 
       // time we get for each pot is 3 seconds
 
@@ -1451,6 +1457,10 @@ class HandActionService {
     _gameState.resetSeatActions();
     players.clearForShowdown();
 
+    log('\n\n\n=================================================');
+    log(jsonEncode(data));
+    log('=================================================\n\n\n');
+
     // get hand winners data and update results
     final handResult = data['handResult'];
 
@@ -1514,7 +1524,7 @@ class HandActionService {
     List<CardObject> _cardsToBeRevealed = markedCards.getCards();
     List<int> cardNumbers = [];
     for (final c in _cardsToBeRevealed) {
-      cardNumbers.add(CardHelper.getCardNumber(c));
+      cardNumbers.add(c.cardNum);
     }
 
     /* clear all the marked cards */
