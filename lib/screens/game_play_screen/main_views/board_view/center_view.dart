@@ -118,89 +118,83 @@ class CenterView extends StatelessWidget {
     boardAttributes,
   ) {
     List<Widget> pots = [];
-    List<int> potChips1 = [10, 20];
-    log('building multiple pots');
-//    final List<int> cleanedPotChips = potChips ?? [];
-    final List<int> cleanedPotChips = potChips ?? potChips1;
+
+    final List<int> cleanedPotChips = potChips ?? [];
 
     for (int i = 0; i < cleanedPotChips.length; i++) {
       if (cleanedPotChips[i] == null) cleanedPotChips[i] = 0;
-      GlobalKey key = GlobalKey();
       double potChipValue = 10;
       potChipValue = cleanedPotChips[i].toDouble();
+
+      final potKey = GlobalKey();
 
       final potsView = PotsView(
         isBoardHorizontal: this.isBoardHorizontal,
         potChip: potChipValue,
-        uiKey: key,
+        uiKey: potKey,
         highlight: (whichPotToHighlight ?? -1) == i,
       );
 
-      boardAttributes.setPotsKey(i, key);
+      boardAttributes.setPotsKey(i, potKey);
       pots.add(potsView);
     }
 
     // transparent pots to occupy the space
     if (pots.length == 0) {
+      final potKey = GlobalKey();
+
       final emptyPotsView = PotsView(
         isBoardHorizontal: this.isBoardHorizontal,
         potChip: 0,
-        uiKey: GlobalKey(),
+        uiKey: potKey,
         highlight: false,
         transparent: true,
       );
 
-      boardAttributes.setPotsKey(0, key);
+      boardAttributes.setPotsKey(0, potKey);
       pots.add(emptyPotsView);
     }
 
     return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
       children: pots,
     );
   }
 
-  Widget centerView(BuildContext context, boardAttributes) {
-    final GlobalKey potsKey = GlobalKey();
-    boardAttributes.setPotsKey(0, potsKey);
-    log('gap: ${boardAttributes.centerGap}');
-    // boardAttributes.centerPotBetKey = GlobalKey();
+  Widget centerView(BuildContext context, boardAttributes) =>
+      Transform.translate(
+        offset: boardAttributes.centerViewVerticalTranslate,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            /* main pot view */
+            Transform.scale(
+              scale: boardAttributes.centerPotScale,
+              alignment: Alignment.topCenter,
+              child: multiplePots(context, boardAttributes),
+            ),
 
-    return Transform.translate(
-      offset: boardAttributes.centerViewVerticalTranslate,
-      child: Column(
-        key: ValueKey('tablePotAndCardWidget'),
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          /* main pot view */
-          Transform.scale(
-            scale: boardAttributes.centerPotScale,
-            alignment: Alignment.topCenter,
-            child: multiplePots(context, boardAttributes),
-          ),
+            // divider
+            SizedBox(height: boardAttributes.centerGap),
 
-          // divider
-          SizedBox(height: boardAttributes.centerGap),
+            /* community cards view */
+            CommunityCardsView(
+              cards: this.cards,
+              cardsOther: this.cardsOther,
+              twoBoardsNeeded: this.twoBoardsNeeded,
+              horizontal: true,
+            ),
 
-          /* community cards view */
-          CommunityCardsView(
-            cards: this.cards,
-            cardsOther: this.cardsOther,
-            twoBoardsNeeded: this.twoBoardsNeeded,
-            horizontal: true,
-          ),
+            // divider
+            SizedBox(height: boardAttributes.centerGap),
 
-          // divider
-          SizedBox(height: boardAttributes.centerGap),
-
-          /* potUpdates view OR the rank widget (rank widget is shown only when we have a result) */
-          this.showDown
-              ? rankWidget(boardAttributes)
-              : potUpdatesView(boardAttributes),
-        ],
-      ),
-    );
-  }
+            /* potUpdates view OR the rank widget (rank widget is shown only when we have a result) */
+            this.showDown
+                ? rankWidget(boardAttributes)
+                : potUpdatesView(boardAttributes),
+          ],
+        ),
+      );
 
   Widget potUpdatesView(BoardAttributesObject boa) {
     double updates = potChipsUpdates;
