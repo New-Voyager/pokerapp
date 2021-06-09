@@ -91,7 +91,7 @@ class HandLogHeaderView extends StatelessWidget {
                 Container(
                   margin: EdgeInsets.only(top: 5, bottom: 5),
                   child: Visibility(
-                    visible: _getMyCards(_handLogModel).length > 0,
+                    visible: _handLogModel.getMyCards().length > 0,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.end,
@@ -109,7 +109,7 @@ class HandLogHeaderView extends StatelessWidget {
                           ),
                         ),
                         StackCardView00(
-                          cards: _getMyCards(_handLogModel),
+                          cards: _handLogModel.getMyCards(),
                           show: true,
                         ),
                       ],
@@ -122,17 +122,5 @@ class HandLogHeaderView extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  _getMyCards(HandLogModelNew handLogModel) {
-    List<int> myCards = [];
-    int myId = handLogModel.myInfo.id;
-    // Need to use 'orElse', otherwise it will crash.
-    final player = handLogModel.hand.playersInSeats
-        .firstWhere((element) => element.id == myId, orElse: () => null);
-    if (player != null) {
-      return player.cards;
-    }
-    return myCards;
   }
 }

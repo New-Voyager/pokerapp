@@ -65,7 +65,12 @@ class GameState {
   bool _playerSeatChangeInProgress = false;
   int _seatChangeSeat = 0;
   HandlogCacheService handlogCacheService;
-  Map<String, dynamic> _handlogs = Map<String, dynamic>();
+  Map<int, String> _handlogs = Map<int, String>();
+  List<int> currentCards;
+  List<int> lastCards;
+  String _lastHand;
+  Map<int, String> _playerIdsToNames = Map<int, String>();
+  Map<int, List<int>> _myCards = Map<int, List<int>>();
 
   void initialize({
     String gameCode,
@@ -143,6 +148,9 @@ class GameState {
 
     final values = PlayerStatus.values;
     for (var player in players) {
+      if (player.playerId != null) {
+        _playerIdsToNames[player.playerId] = player.name;
+      }
       if (player.playerUuid == this._currentPlayer.uuid) {
         player.isMe = true;
         if (player.status == null) {
@@ -263,6 +271,10 @@ class GameState {
     List<PlayerModel> playersInSeats = [];
     if (gameInfo.playersInSeats != null) {
       playersInSeats = gameInfo.playersInSeats;
+    }
+
+    for (final player in gameInfo.allPlayers.values) {
+      _playerIdsToNames[player.id] = player.name;
     }
 
     // show buyin button/timer if the player is in middle of buyin
@@ -435,8 +447,16 @@ class GameState {
   }
 
   void setPlayers(BuildContext ctx, List<PlayerModel> players) {
+    for (final player in players) {
+      if (player.playerId != null) {
+        _playerIdsToNames[player.playerId] = player.name;
+      }
+    }
+
     this.getPlayers(ctx).update(players);
   }
+
+  Map<int, String> get playerIdToNames => this._playerIdsToNames;
 
   List<SingleChildStatelessWidget> get providers {
     return [
@@ -472,6 +492,9 @@ class GameState {
 
   void newPlayer(BuildContext context, PlayerModel newPlayer) {
     final players = getPlayers(context);
+    if (newPlayer.playerId != null) {
+      _playerIdsToNames[newPlayer.playerId] = newPlayer.name;
+    }
     players.addNewPlayerSilent(newPlayer);
   }
 
@@ -525,22 +548,40 @@ class GameState {
   int get seatChangeSeat => this._seatChangeSeat;
   set seatChangeSeat(int seat) => this._seatChangeSeat = seat;
 
-  HandLogModelNew getHandLog(int handnum) {
-    String key = '$handnum';
-    if (_handlogs.containsKey(key)) {
-      final String data = jsonEncode(_handlogs[key]);
-      final handLog =
-          HandLogModelNew.handLogModelNewFromJson(data, serviceResult: true);
-
+  HandLogModelNew getHandLog(int handNum) {
+    if (_handlogs.containsKey(handNum)) {
+      //final String data = jsonDecode(_handlogs[handNum]);
+      final handLog = HandLogModelNew.handLogModelNewFromJson(
+          _handlogs[handNum],
+          serviceResult: true,
+          playerIdsToNames: this.playerIdToNames,
+          myCards: this._myCards);
       return handLog;
     }
     return null;
   }
 
-  void setHandLog(int handnum, dynamic data) {
-    String key = '$handnum';
-    _handlogs[key] = data;
+  void setHandLog(int handNum, String data, List<int> cards) {
+    log(data);
+    _handlogs[handNum] = data;
+    _myCards[handNum] = cards;
   }
+
+  get lastHand {
+    if (_lastHand == null) {
+      return null;
+    }
+    //final jsonData = jsonDecode(_lastHand);
+    log(_lastHand);
+    final handLog = HandLogModelNew.handLogModelNewFromJson(_lastHand,
+        serviceResult: true,
+        authorizedToView: true,
+        playerIdsToNames: this.playerIdToNames,
+        myCards: _myCards);
+    return handLog;
+  }
+
+  set lastHand(String hand) => _lastHand = hand;
 
   Future<Uint8List> getAudioBytes(String assetFile) async {
     if (_audioCache[assetFile] == null) {

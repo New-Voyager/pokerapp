@@ -7,26 +7,60 @@ class HandLogModelNew {
   static HandLogModelNew handLogModelNewFromJson(
     String str, {
     bool serviceResult = false,
+    authorizedToView = false,
+    Map<int, String> playerIdsToNames,
+    Map<int, List<int>> myCards,
   }) =>
       HandLogModelNew.fromJson(
         json.decode(str),
         serviceResult: serviceResult,
+        authorizedToView: authorizedToView,
+        playerIdsToNames: playerIdsToNames,
+        myCards: myCards,
       );
+
+  getMyCards() {
+    List<int> cards = [];
+    int myId = myInfo.id;
+    // Need to use 'orElse', otherwise it will crash.
+    final player = hand.playersInSeats
+        .firstWhere((element) => element.id == myId, orElse: () => null);
+
+    if (player != null) {
+      cards = player.cards;
+    }
+
+    if (cards == null || cards.length == 0 && myCards != null) {
+      cards = myCards[this.hand.handNum];
+    }
+
+    if (cards == null) {
+      cards = [];
+    }
+    return cards;
+  }
 
   HandLogModelNew({
     this.hand,
     this.myInfo,
     this.handData,
     this.authorized,
+    this.playerIdsToNames,
+    this.myCards,
   });
 
   String handData;
   Data hand;
   MyInfo myInfo;
   bool authorized;
+  Map<int, String> playerIdsToNames;
+  Map<int, List<int>> myCards;
 
   factory HandLogModelNew.fromJson(Map<String, dynamic> json,
-      {bool serviceResult = false}) {
+      {bool serviceResult = false,
+      authorizedToView = false,
+      Map<int, String> playerIdsToNames,
+      Map<int, List<int>> myCards}) {
     var hand = json["handResult"];
     if (hand == null) {
       if (json["hand"] == null) {
@@ -37,7 +71,7 @@ class HandLogModelNew {
         hand = json['hand'];
       }
     }
-    bool authorized = hand['authorized'] ?? false;
+    bool authorized = hand['authorized'] ?? authorizedToView;
     if (serviceResult) {
       hand = hand['data'];
     }
@@ -64,6 +98,8 @@ class HandLogModelNew {
       //playerIdToName: playerIdToName,
       myInfo: myInfo,
       authorized: authorized,
+      playerIdsToNames: playerIdsToNames,
+      myCards: myCards,
     );
   }
 
@@ -72,7 +108,31 @@ class HandLogModelNew {
         .hand
         .playersInSeats
         .firstWhere((element) => element.seatNo == seatNo);
+
+    if (player != null && player.name == null && playerIdsToNames != null) {
+      player.name = playerIdsToNames[player.id];
+    }
     return player;
+  }
+
+  String getPlayerName(int id) {
+    final player =
+        this.hand.playersInSeats.firstWhere((element) => element.id == id);
+
+    if (player != null && player.name == null && playerIdsToNames != null) {
+      player.name = playerIdsToNames[player.id];
+    }
+    return player.name;
+  }
+
+  List<int> getPlayerIdsWithoutName() {
+    List<int> ids = [];
+    for (final player in this.hand.playersInSeats) {
+      if (player.name == null) {
+        ids.add(player.id);
+      }
+    }
+    return ids;
   }
 }
 

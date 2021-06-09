@@ -17,6 +17,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/table_state.dar
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
 import 'package:pokerapp/models/player_info.dart';
+import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/last_hand_analyse_bottomsheet.dart';
 import 'package:pokerapp/screens/game_play_screen/pop_ups/seat_change_confirmation_pop_up.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_service.dart';
@@ -833,5 +834,22 @@ class TestService {
         seat1.notify();
       }
     }
+  }
+
+  static showHandResult() async {
+    final handLog = HandLogModelNew.handLogModelNewFromJson(lastHandResult,
+        serviceResult: true, authorizedToView: true);
+    final ids = handLog.getPlayerIdsWithoutName();
+    log('$ids');
+    await showModalBottomSheet(
+      context: _context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => LastHandAnalyseBottomSheet(
+        gameCode: 'DUMMY',
+        clubCode: 'DUMMY',
+        handLog: handLog,
+      ),
+    );
   }
 }

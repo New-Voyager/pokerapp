@@ -57,6 +57,15 @@ class GamePlayScreenUtilMethods {
             color: Colors.white,
           ),
           backgroundColor: Colors.red,
+          label: 'Hand result',
+          onTap: () => TestService.showHandResult(),
+        ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
           label: 'Show Bets',
           onTap: () => TestService.showBets(),
         ),

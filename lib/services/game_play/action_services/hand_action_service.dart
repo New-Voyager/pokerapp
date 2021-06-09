@@ -624,6 +624,7 @@ class HandActionService {
       if (seatNo == mySeatNo) {
         // this is me - give me my cards one by one
         players.updateCardSilent(mySeatNo, myCards);
+        _gameState.currentCards = myCards;
       }
       //debugPrint('Setting cards for $seatNo');
       players.updateVisibleCardNumberSilent(seatNo, myCards.length);
@@ -1465,7 +1466,9 @@ class HandActionService {
     log('\n\n');
     log(jsonData);
     log('\n\n');
-    _gameState.setHandLog(-1, jsonData);
+    final handNum = handResult['handNum'];
+    _gameState.lastHand = jsonData;
+    _gameState.setHandLog(handNum, jsonData, _gameState.currentCards);
 
     /* showdown time, show other players cards */
     players.updateUserCardsSilent(_getCards(data));
