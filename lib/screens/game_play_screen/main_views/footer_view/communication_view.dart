@@ -105,7 +105,7 @@ class _CommunicationViewState extends State<CommunicationView> {
             size: 24,
           ),
           onTap: () {
-            if (state.status == AudioConferenceStatus.CONNECTED) {
+            if (state.audioConferenceStatus == AudioConferenceStatus.CONNECTED) {
               gameState.janusEngine.muteUnmute();
             }
           },
