@@ -93,7 +93,7 @@ class JanusEngine extends ChangeNotifier {
     }
     final start = DateTime.now();
     log('janus: Change audio status to connecting');
-    this.gameState.getAudioConfState().connecting();
+    //this.gameState.getAudioConfState().connecting();
     log('janus: engine: ${engine}');
     if (engine == null) {
       log('janus: Using websocket');
@@ -147,12 +147,12 @@ class JanusEngine extends ChangeNotifier {
       try {
         final response = await plugin.send(data: join);
         log('janus: joined audio room ${this.roomId} ${jsonEncode(response)}');
-        this.gameState.getAudioConfState().connected();
+        this.gameState.getCommunicationState().connected();
         joined = true;
       } catch (err) {
         debugPrint('No room in that name. error: ${err.toString()}');
         log('janus: failed to join audio room ${this.roomId} ${err.toString()}');
-        this.gameState.getAudioConfState().failed();
+       this.gameState.getCommunicationState().failed();
       }
     } else {
       // echo test
@@ -165,7 +165,7 @@ class JanusEngine extends ChangeNotifier {
       try {
         final response = await plugin.send(data: echoAudio);
         debugPrint('Joined the room ${jsonEncode(response)}');
-        this.gameState.getAudioConfState().connected();
+        this.gameState.getCommunicationState().connected();
       } catch (err) {
         debugPrint('No room in that name. error: ${err.toString()}');
       }
@@ -212,7 +212,7 @@ class JanusEngine extends ChangeNotifier {
             seat.player.talking = true;
             debugPrint('seat info $seat');
             if (seat.player.isMe) {
-              gameState.getAudioConfState().talking = true;
+              gameState.getCommunicationState().talking = true;
             }
 
             seat.notify();
@@ -222,7 +222,7 @@ class JanusEngine extends ChangeNotifier {
             seat.player.talking = false;
             debugPrint('seat info $seat');
             if (seat.player.isMe) {
-              gameState.getAudioConfState().talking = false;
+              gameState.getCommunicationState().talking = false;
             }
             seat.notify();
           }
@@ -290,7 +290,7 @@ class JanusEngine extends ChangeNotifier {
           seat.player.muted = element['muted'] ?? false;
           if (seat.player.muted) {
             if (seat.player.isMe) {
-              gameState.getAudioConfState().muted = true;
+              gameState.getCommunicationState().muted = true;
             }
             seat.player.showMicOff = true;
             seat.notify();
@@ -300,7 +300,7 @@ class JanusEngine extends ChangeNotifier {
             });
           } else {
             if (seat.player.isMe) {
-              gameState.getAudioConfState().muted = false;
+              gameState.getCommunicationState().muted = false;
             }
             seat.player.showMicOn = true;
             seat.notify();
@@ -313,12 +313,12 @@ class JanusEngine extends ChangeNotifier {
           if (seat.player.talking) {
             log('Audio ${seat.player.name} is talking');
             if (seat.player.isMe) {
-              gameState.getAudioConfState().talking = true;
+              gameState.getCommunicationState().talking = true;
             }
           } else {
             log('Audio ${seat.player.name} is not talking');
             if (seat.player.isMe) {
-              gameState.getAudioConfState().talking = false;
+              gameState.getCommunicationState().talking = false;
             }
           }
 

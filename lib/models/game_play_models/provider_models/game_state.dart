@@ -46,8 +46,8 @@ class GameState {
   ListenableProvider<ServerConnectionState> _connectionState;
   ListenableProvider<JanusEngine> _janusEngine;
   ListenableProvider<PopupButtonState> _popupButtonState;
-  ListenableProvider<AudioConferenceState> _confStateProvider;
-  AudioConferenceState _audioConfState;
+  ListenableProvider<CommunicationState> _communicationStateProvider;
+  CommunicationState _communicationState;
 
   final Map<String, Uint8List> _audioCache = Map<String, Uint8List>();
   GameComService gameComService;
@@ -99,8 +99,6 @@ class GameState {
       create: (_) => gameMessagingService,
     );
 
-    _audioConfState = new AudioConferenceState();
-
     this._handInfo =
         ListenableProvider<HandInfoState>(create: (_) => HandInfoState());
     this._tableState =
@@ -122,8 +120,10 @@ class GameState {
 
     this._connectionState = ListenableProvider<ServerConnectionState>(
         create: (_) => ServerConnectionState());
-    this._confStateProvider = ListenableProvider<AudioConferenceState>(
-        create: (_) => _audioConfState);
+
+    _communicationState = CommunicationState();
+    this._communicationStateProvider = ListenableProvider<CommunicationState>(
+        create: (_) => _communicationState);
 
     this.janusEngine = JanusEngine(
         gameState: this,
@@ -388,7 +388,7 @@ class GameState {
   PopupButtonState getPopupState(BuildContext context, {bool listen = false}) =>
       Provider.of<PopupButtonState>(context, listen: listen);
 
-  AudioConferenceState getAudioConfState() => this._audioConfState;
+  CommunicationState getCommunicationState() => this._communicationState;
 
   // JanusEngine getJanusEngine(BuildContext context, {bool listen = false}) =>
   //     Provider.of<JanusEngine>(context, listen: listen);
@@ -471,7 +471,8 @@ class GameState {
       this._waitlistProvider,
       this._connectionState,
       this._janusEngine,
-      this._popupButtonState
+      this._popupButtonState,
+      this._communicationStateProvider
     ];
   }
 
@@ -543,9 +544,12 @@ class GameState {
   }
 
   bool get playerSeatChangeInProgress => this._playerSeatChangeInProgress;
+
   set playerSeatChangeInProgress(bool v) =>
       this._playerSeatChangeInProgress = v;
+
   int get seatChangeSeat => this._seatChangeSeat;
+
   set seatChangeSeat(int seat) => this._seatChangeSeat = seat;
 
   HandLogModelNew getHandLog(int handNum) {
@@ -732,35 +736,18 @@ enum AudioConferenceStatus {
   ERROR,
 }
 
-class AudioConferenceState extends ChangeNotifier {
-  String _error = '';
-  AudioConferenceStatus _status = AudioConferenceStatus.ERROR;
+class CommunicationState extends ChangeNotifier {
+  AudioConferenceStatus _audioConferenceStatus = AudioConferenceStatus.ERROR;
+  bool showTextChat = false;
+  bool audioConfEnabled = false;
+  bool voiceChatEnable = false;
   bool _muted = false;
   bool _talking = false;
 
-  AudioConferenceStatus get status => _status;
-  String get error => _error;
+  AudioConferenceStatus get audioConferenceStatus => _audioConferenceStatus;
 
-  void setError(String error) {
-    _status = AudioConferenceStatus.ERROR;
-    _error = error;
-    notifyListeners();
-  }
-
-  void connecting() {
-    _status = AudioConferenceStatus.CONNECTING;
-    notifyListeners();
-  }
-
-  void failed() {
-    _status = AudioConferenceStatus.FAILED;
-    notifyListeners();
-  }
-
-  void connected() {
-    _status = AudioConferenceStatus.CONNECTED;
-    notifyListeners();
-  }
+  set audioConferenceStatus(AudioConferenceStatus audioConferenceStatus) =>
+      this._audioConferenceStatus = audioConferenceStatus;
 
   set muted(bool v) {
     _muted = v;
@@ -775,4 +762,23 @@ class AudioConferenceState extends ChangeNotifier {
   }
 
   bool get talking => _talking ?? false;
+
+  void connecting() {
+    _audioConferenceStatus = AudioConferenceStatus.CONNECTING;
+    notifyListeners();
+  }
+
+  void failed() {
+    _audioConferenceStatus = AudioConferenceStatus.FAILED;
+    notifyListeners();
+  }
+
+  void connected() {
+    _audioConferenceStatus = AudioConferenceStatus.CONNECTED;
+    notifyListeners();
+  }
+
+  void notify() {
+    notifyListeners();
+  }
 }
