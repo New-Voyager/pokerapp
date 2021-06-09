@@ -36,7 +36,7 @@ class CommunityCardsView extends StatelessWidget {
         reversedList.add(card);
       }
     } else {
-      if (cards.isEmpty) {
+      if (cards?.isEmpty ?? true) {
         // if we have no cards to show, add a dummy card
         final card = CardHelper.getCard(17);
         card.cardType = CardType.CommunityCard;
