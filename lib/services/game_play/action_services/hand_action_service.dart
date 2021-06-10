@@ -645,15 +645,11 @@ class HandActionService {
 
     /* card distribution ends, put the value to NULL */
     if (_close) return;
+    audioPlayer.stop();
     _context.read<CardDistributionModel>().seatNo = null;
   }
 
   Future<void> handleYourAction(var data) async {
-    /* play an sound effect alerting the user */
-
-    if (_close) return;
-
-
     if (_close) return;
     final me = _gameState.me(_context);
     if (me == null) {
@@ -665,6 +661,8 @@ class HandActionService {
     if (me.seatNo != seatNo) {
       return;
     }
+
+    /* play an sound effect alerting the user */
     _gameState
         .getAudioBytes(AppAssets.playerTurnSound)
         .then((value) => audioPlayer.playBytes(value));
@@ -795,9 +793,11 @@ class HandActionService {
 
       // start the animation
       cardDistributionModel.seatNo = seatNo;
+      if (_close) return;
 
       // wait for the animation to finish
       await Future.delayed(AppConstants.cardDistributionAnimationDuration);
+      if (_close) return;
 
       players.updateVisibleCardNumberSilent(seatNo, handInfo.noCards);
       players.notifyAll();
@@ -806,11 +806,12 @@ class HandActionService {
 
     /* card distribution ends, put the value to NULL */
     cardDistributionModel.seatNo = null;
-
     tableState.updateTableStatusSilent(null);
+    if (_close) return;
     tableState.notifyAll();
     // no of cards in this game
     players.visibleCardNumbersForAllSilent(handInfo.noCards);
+    if (_close) return;
     players.notifyAll();
   }
 
@@ -827,6 +828,7 @@ class HandActionService {
         potChips: pots,
         potUpdatesChips: null,
       );
+      if (_close) return;
       tableState.notifyAll();
     } catch (e) {
       log('exception from StageUpdateService: $e');
@@ -888,9 +890,10 @@ class HandActionService {
       tableState.addTurnOrRiverCard(
           1, CardHelper.getCard(data[stage]['${stage}Card']));
     }
-
+    if (_close) return;
     tableState.notifyAll();
     await Future.delayed(Duration(seconds: 1));
+    audioPlayer.stop();
     // log('stage update end');
   }
 

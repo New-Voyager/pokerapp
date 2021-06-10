@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
@@ -293,6 +294,7 @@ class _ClubMembersListViewState extends State<ClubMembersListView> {
                         children: <Widget>[
                           GestureDetector(
                             onTap: () async {
+                              log('approve is clicked');
                               var data =
                                   await ClubInteriorService.approveClubMember(
                                       widget.clubCode, member.playerId);
@@ -315,6 +317,7 @@ class _ClubMembersListViewState extends State<ClubMembersListView> {
                           ),
                           GestureDetector(
                             onTap: () async {
+                              log('deny is clicked');
                               var data =
                                   await ClubInteriorService.denyClubMember(
                                       widget.clubCode, member.playerId);
