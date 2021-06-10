@@ -7,6 +7,8 @@ import 'package:pokerapp/models/hand_log_model_new.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
+import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_stage_header.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
 
@@ -14,63 +16,59 @@ const sbTextStyle = TextStyle(
   fontFamily: AppAssets.fontFamilyLato,
   color: Colors.blueGrey,
   fontSize: 12.0,
-  fontWeight: FontWeight.w600,
+  fontWeight: FontWeight.w500,
 );
 
 const bbTextStyle = TextStyle(
   fontFamily: AppAssets.fontFamilyLato,
   color: Colors.blue,
   fontSize: 12.0,
-  fontWeight: FontWeight.w600,
+  fontWeight: FontWeight.w500,
 );
 
 const betTextStyle = TextStyle(
   fontFamily: AppAssets.fontFamilyLato,
   color: Colors.redAccent,
   fontSize: 12.0,
-  fontWeight: FontWeight.w600,
+  fontWeight: FontWeight.w500,
 );
 
 const raiseTextStyle = TextStyle(
   fontFamily: AppAssets.fontFamilyLato,
   color: Colors.redAccent,
   fontSize: 12.0,
-  fontWeight: FontWeight.w600,
+  fontWeight: FontWeight.w500,
 );
 
 const checkTextStyle = TextStyle(
   fontFamily: AppAssets.fontFamilyLato,
   color: Colors.white,
   fontSize: 12.0,
-  fontWeight: FontWeight.w600,
+  fontWeight: FontWeight.w500,
 );
 
 const callTextStyle = TextStyle(
-  fontFamily: AppAssets.fontFamilyLato,
   color: Colors.lightGreenAccent,
   fontSize: 12.0,
-  fontWeight: FontWeight.w600,
+  fontWeight: FontWeight.w500,
 );
 
 const foldTextStyle = TextStyle(
-  fontFamily: AppAssets.fontFamilyLato,
   color: Colors.blueGrey,
   fontSize: 12.0,
-  fontWeight: FontWeight.w600,
+  fontWeight: FontWeight.w500,
 );
 
 const straddleTextStyle = TextStyle(
-  fontFamily: AppAssets.fontFamilyLato,
   color: Colors.cyan,
   fontSize: 12.0,
-  fontWeight: FontWeight.w600,
+  fontWeight: FontWeight.w500,
 );
 
 const allinTextStyle = TextStyle(
-  fontFamily: AppAssets.fontFamilyLato,
   color: Colors.yellowAccent,
   fontSize: 12.0,
-  fontWeight: FontWeight.w600,
+  fontWeight: FontWeight.w500,
 );
 
 class HandStageView extends StatelessWidget {
@@ -102,8 +100,8 @@ class HandStageView extends StatelessWidget {
                 child: Column(
                   children: [
                     Container(
-                      margin: EdgeInsets.only(left: 10, right: 10, bottom: 5),
-                      padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                      margin: EdgeInsets.only(bottom: 5),
+                      padding: EdgeInsets.symmetric(horizontal: 8),
                       child: ListView.separated(
                         physics: NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
@@ -113,7 +111,8 @@ class HandStageView extends StatelessWidget {
                         },
                         separatorBuilder: (context, index) {
                           return Divider(
-                            color: AppColors.veryLightGrayColor,
+                            color: Colors.transparent,
+                            height: 1,
                           );
                         },
                       ),
@@ -128,7 +127,6 @@ class HandStageView extends StatelessWidget {
 
   Container actionRow(int index, GameActions actions) {
     var textStyle = TextStyle(
-      fontFamily: AppAssets.fontFamilyLato,
       color: Colors.white,
       fontSize: 12.0,
       fontWeight: FontWeight.w600,
@@ -184,7 +182,11 @@ class HandStageView extends StatelessWidget {
     }
 
     return Container(
-      // margin: EdgeInsets.only(top: 5, bottom: 5),
+      decoration: BoxDecoration(
+        color: AppColorsNew.actionRowBgColor,
+        borderRadius: BorderRadius.circular(5),
+      ),
+      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -196,7 +198,7 @@ class HandStageView extends StatelessWidget {
                 handLogModel: handLogModel,
                 seatNo: actions.actions[index].seatNo,
               ),
-              style: AppStyles.playerNameTextStyle,
+              style: AppStylesNew.playerNameTextStyle,
               textAlign: TextAlign.left,
             ),
           ),
@@ -216,10 +218,9 @@ class HandStageView extends StatelessWidget {
                   ? actions.actions[index].amount.toString()
                   : "",
               style: const TextStyle(
-                fontFamily: AppAssets.fontFamilyLato,
                 color: Colors.white,
                 fontSize: 12.0,
-                fontWeight: FontWeight.w600,
+                fontWeight: FontWeight.w500,
               ),
               textAlign: TextAlign.center,
             ),
@@ -229,10 +230,9 @@ class HandStageView extends StatelessWidget {
             child: Text(
               actions.actions[index].stack.toString(),
               style: const TextStyle(
-                fontFamily: AppAssets.fontFamilyLato,
                 color: Colors.white,
                 fontSize: 12.0,
-                fontWeight: FontWeight.w600,
+                fontWeight: FontWeight.w500,
               ),
               textAlign: TextAlign.right,
             ),

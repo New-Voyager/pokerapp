@@ -3,6 +3,8 @@ import 'package:pokerapp/models/hand_log_model_new.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
+import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
 
 class HandLogActionView extends StatelessWidget {
@@ -17,17 +19,21 @@ class HandLogActionView extends StatelessWidget {
           return Container();
         }
         return Container(
-          margin: EdgeInsets.symmetric(horizontal: 16),
+          margin: EdgeInsets.symmetric(horizontal: 8),
+          padding: EdgeInsets.all(8),
+           decoration: BoxDecoration(
+                  color: AppColorsNew.actionRowBgColor,
+                  borderRadius: BorderRadius.circular(5),
+                ),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Expanded(
                 flex: 4,
                 child: Text(
                   getPlayerNameBySeatNo(
                       handLogModel: handLogModel, seatNo: player.seatNo),
-                  style: AppStyles.playerNameTextStyle,
+                  style: AppStylesNew.playerNameTextStyle,
                   textAlign: TextAlign.left,
                 ),
               ),
@@ -35,8 +41,7 @@ class HandLogActionView extends StatelessWidget {
                 flex: 2,
                 child: Text(
                   "Recieved",
-                  style: AppStyles.playerNameTextStyle
-                      .copyWith(fontWeight: FontWeight.w400),
+                  style: AppStylesNew.playerNameTextStyle,
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -44,12 +49,7 @@ class HandLogActionView extends StatelessWidget {
                 flex: 2,
                 child: Text(
                   player.received.toString(),
-                  style: const TextStyle(
-                    fontFamily: AppAssets.fontFamilyLato,
-                    color: Colors.white,
-                    fontSize: 12.0,
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: AppStylesNew.balanceTextStyle,
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -57,12 +57,7 @@ class HandLogActionView extends StatelessWidget {
                 flex: 2,
                 child: Text(
                   player.balance.after.toString(),
-                  style: const TextStyle(
-                    fontFamily: AppAssets.fontFamilyLato,
-                    color: Colors.white,
-                    fontSize: 12.0,
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: AppStylesNew.balanceTextStyle,
                   textAlign: TextAlign.right,
                 ),
               ),
@@ -78,7 +73,8 @@ class HandLogActionView extends StatelessWidget {
         return Divider(
           endIndent: 16,
           indent: 16,
-          color: AppColors.veryLightGrayColor,
+          color: Colors.transparent,
+          height: 1,
         );
       },
       itemCount: handLogModel.hand.playersInSeats.length,

@@ -4,6 +4,8 @@ import 'package:pokerapp/models/hand_log_model_new.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
+import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/widgets/cards/multiple_stack_card_views.dart';
 
@@ -18,15 +20,12 @@ class HandWinnersView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     _getPotWinnersList(handLogModel);
-    LinearGradient linearGradient = this.chatWidget ?? false
-        ? AppStyles.handlogBlueGradient
-        : AppStyles.handlogGreyGradient;
+
     if (potWinnersList == null || potWinnersList.length == 0) {
       return Center(
         child: Text(
           "No winner details found",
           style: const TextStyle(
-            fontFamily: AppAssets.fontFamilyLato,
             color: Colors.white,
             fontSize: 14.0,
             fontWeight: FontWeight.w400,
@@ -72,19 +71,16 @@ class HandWinnersView extends StatelessWidget {
                 potStr = "Main Pot:";
               }
               return Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                  gradient: linearGradient,
-                ),
+                decoration: AppStylesNew.gradientBoxDecoration,
                 padding: EdgeInsets.only(bottom: 16, top: 8, left: 4),
                 child: Column(
                   children: [
                     Container(
-                      margin: EdgeInsets.symmetric(horizontal: 16),
+                      margin: EdgeInsets.symmetric(horizontal: 8),
                       alignment: Alignment.centerRight,
                       child: Text(
                         "$potStr " + potWinnersList[index].amount.toString(),
-                        style: AppStyles.playerNameTextStyle,
+                        style: AppStylesNew.stageNameTextStyle,
                       ),
                     ),
                     Container(
@@ -93,16 +89,15 @@ class HandWinnersView extends StatelessWidget {
                       child: Text(
                         winnersTitle,
                         style: const TextStyle(
-                          fontFamily: AppAssets.fontFamilyLato,
-                          color: Colors.green,
+                          color: AppColorsNew.newTextGreenColor,
                           fontSize: 14.0,
-                          fontWeight: FontWeight.w400,
+                          fontWeight: FontWeight.w300,
                         ),
                       ),
                     ),
                     Divider(
                       color: AppColors.veryLightGrayColor,
-                      endIndent: 50,
+                      endIndent: 200,
                       indent: 8,
                     ),
                     Container(
@@ -115,7 +110,7 @@ class HandWinnersView extends StatelessWidget {
                           shrinkWrap: true,
                           itemBuilder: (context, winnerIndex) {
                             return Container(
-                              padding: EdgeInsets.only(left: 8),
+                              padding: EdgeInsets.only(left: 8, right: 8),
                               alignment: Alignment.centerLeft,
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -128,7 +123,7 @@ class HandWinnersView extends StatelessWidget {
                                           seatNo: potWinnersList[index]
                                               .hiWinners[winnerIndex]
                                               .seatNo),
-                                      style: AppStyles.playerNameTextStyle,
+                                      style: AppStylesNew.playerNameTextStyle,
                                       textAlign: TextAlign.left,
                                     ),
                                   ),

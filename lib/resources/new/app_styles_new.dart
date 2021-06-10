@@ -3,6 +3,22 @@ import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 
 class AppStylesNew {
+  static const TextStyle AppBarTitleTextStyle = TextStyle(
+    fontFamily: AppAssetsNew.fontFamilyPoppins,
+    fontSize: 18,
+    fontWeight: FontWeight.w500,
+  );
+
+  static const BoxDecoration BgGreenRadialGradient = BoxDecoration(
+    gradient: RadialGradient(
+      colors: [
+        AppColorsNew.newGreenRadialStartColor,
+        AppColorsNew.newBackgroundBlackColor,
+      ],
+      center: Alignment.topLeft,
+      radius: 1.5,
+    ),
+  );
   static const TextStyle GameActionTextStyle = TextStyle(
     color: AppColorsNew.newTextColor,
     fontSize: 11.0,
@@ -147,5 +163,50 @@ class AppStylesNew {
     color: AppColorsNew.newTextColor,
     fontSize: 18.0,
     fontFamily: AppAssetsNew.fontFamilyPoppins,
+  );
+
+  static final gradientBoxDecoration = BoxDecoration(
+    gradient: LinearGradient(
+      colors: [
+        AppColorsNew.darkGreenShadeColor,
+        AppColorsNew.newGreenRadialStopColor,
+      ],
+    ),
+    borderRadius: BorderRadius.circular(8),
+  );
+
+  static final stageNameTextStyle = TextStyle(
+    fontSize: 14,
+    fontWeight: FontWeight.w500,
+    color: AppColorsNew.newTextColor,
+  );
+
+  static final potSizeTextStyle = TextStyle(
+    fontSize: 14,
+    fontWeight: FontWeight.w500,
+    color: AppColorsNew.newTextColor,
+  );
+
+  static final playerNameTextStyle = TextStyle(
+    fontSize: 12,
+    fontWeight: FontWeight.w500,
+    color: AppColorsNew.newTextColor,
+  );
+
+  static final balanceTextStyle = TextStyle(
+    fontSize: 14,
+    fontWeight: FontWeight.w500,
+    color: AppColorsNew.newTextColor,
+  );
+
+  static final valueTextStyle = TextStyle(
+    fontSize: 14,
+    fontWeight: FontWeight.w500,
+    color: AppColorsNew.newTextColor,
+  );
+
+  static final actionRowDecoration = BoxDecoration(
+    color: AppColorsNew.actionRowBgColor,
+    borderRadius: BorderRadius.circular(5),
   );
 }

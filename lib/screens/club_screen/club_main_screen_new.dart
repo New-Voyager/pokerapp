@@ -8,6 +8,7 @@ import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
+import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/club_screen/club_banner_view/club_banner_view.dart';
 import 'package:pokerapp/screens/club_screen/club_banner_view/club_graphics_view.dart';
@@ -73,6 +74,7 @@ class _ClubMainScreenNewState extends State<ClubMainScreenNew> with RouteAware {
   @override
   Widget build(BuildContext context) {
     //log('rebuilding ClubMainScreen');
+
     return WillPopScope(
       onWillPop: () async {
         context.read<ClubsUpdateState>().removeListener(listener);

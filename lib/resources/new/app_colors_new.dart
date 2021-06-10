@@ -19,4 +19,6 @@ class AppColorsNew {
   static const Color newDialogBgColor = Color(0xFF000C04);
   static const Color newRedButtonColor = Color(0xFFFA0000);
   static const Color newGreenButtonColor = Color(0xFF00FAAD);
+  static const Color actionRowBgColor = Color(0xFF0B2324);
+  static const Color darkGreenShadeColor = Color(0xFF0C2013);
 }

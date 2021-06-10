@@ -7,12 +7,16 @@ import 'package:pokerapp/models/bookmarkedHands_model.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
+import 'package:pokerapp/resources/new/app_strings_new.dart';
+import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_log_header_view.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_stage_view.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_winners_view.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/handlog_action.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/handlog_showdown.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/handlog_summary.dart';
+import 'package:pokerapp/screens/club_screen/widgets/roud_icon_button.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/screens/util_screens/replay_hand_dialog/replay_hand_dialog.dart';
 import 'package:pokerapp/services/app/hand_service.dart';
@@ -139,10 +143,10 @@ class _HandLogViewState extends State<HandLogView> {
 
   @override
   Widget build(BuildContext context) {
-    String title = "Last Hand Log";
-    if (widget.isAppbarWithHandNumber && widget.handNum != -1) {
-      title = "Hand Log #" + widget.handNum.toString();
-    }
+    // String title = "Last Hand Log";
+    // if (widget.isAppbarWithHandNumber && widget.handNum != -1) {
+    //   title = "Hand Log #" + widget.handNum.toString();
+    // }
     List<Widget> children = [];
     if (!this._isLoading) {
       if (_handLogModel == null) {
@@ -168,21 +172,24 @@ class _HandLogViewState extends State<HandLogView> {
       }
     }
 
-    return Scaffold(
-      backgroundColor: AppColors.screenBackgroundColor,
-      appBar: CustomAppBar(
-        context: context,
-        titleText: title,
-      ),
-      body: this._isLoading == true
-          ? Center(
-              child: CircularProgressIndicator(),
-            )
-          : SingleChildScrollView(
-              child: Column(
-                children: children,
+    return Container(
+      decoration: AppStylesNew.BgGreenRadialGradient,
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: CustomAppBar(
+          context: context,
+          titleText: AppStringsNew.HandlogTitle,
+        ),
+        body: this._isLoading == true
+            ? Center(
+                child: CircularProgressIndicator(),
+              )
+            : SingleChildScrollView(
+                child: Column(
+                  children: children,
+                ),
               ),
-            ),
+      ),
     );
   }
 
@@ -194,27 +201,9 @@ class _HandLogViewState extends State<HandLogView> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            GestureDetector(
-              onTap: () async {
-                _replayHand();
-              },
-              child: Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: AppColors.cardBackgroundColor,
-                ),
-                padding: EdgeInsets.all(10),
-                child: Icon(
-                  Icons.replay,
-                  size: 20,
-                  color: AppColors.appAccentColor,
-                ),
-              ),
-            ),
-            SizedBox(
-              width: 10,
-            ),
-            GestureDetector(
+            RoundIconButton(onTap: () => _replayHand(), icon: Icons.replay),
+            AppDimensionsNew.getHorizontalSpace(8),
+            RoundIconButton(
               onTap: () async {
                 // todo : just change to shareHand and pass club code as well
                 var result = await HandService.shareHand(
@@ -229,23 +218,10 @@ class _HandLogViewState extends State<HandLogView> {
                     : "Couldn't share the hand. Please try again later";
                 Alerts.showTextNotification(text: text);
               },
-              child: Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: AppColors.cardBackgroundColor,
-                ),
-                padding: EdgeInsets.all(10),
-                child: Icon(
-                  Icons.share,
-                  size: 20,
-                  color: AppColors.appAccentColor,
-                ),
-              ),
+              icon: Icons.share,
             ),
-            SizedBox(
-              width: 10,
-            ),
-            GestureDetector(
+            AppDimensionsNew.getHorizontalSpace(8),
+            RoundIconButton(
               onTap: () async {
                 if (_isTheHandBookmarked(widget.handNum)) {
                   _removeBookmark(widget.handNum);
@@ -262,28 +238,16 @@ class _HandLogViewState extends State<HandLogView> {
                   await _fetchBookmarksForGame(widget.gameCode);
                 }
               },
-              child: Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: AppColors.cardBackgroundColor,
-                ),
-                padding: EdgeInsets.all(10),
-                child: Icon(
-                  _isTheHandBookmarked(widget.handNum)
-                      ? Icons.star
-                      : Icons.star_outline,
-                  size: 20,
-                  color: AppColors.appAccentColor,
-                ),
-              ),
-            )
+              icon: _isTheHandBookmarked(widget.handNum)
+                  ? Icons.star
+                  : Icons.star_outline,
+            ),
           ],
         ),
       ),
       HandLogHeaderView(_handLogModel),
-      SizedBox(
-        height: 8,
-      ),
+      AppDimensionsNew.getVerticalSizedBox(4),
+
       /*  Container(
                     margin:
                         EdgeInsets.only(left: 10, top: 5, bottom: 5, right: 10),
@@ -313,9 +277,9 @@ class _HandLogViewState extends State<HandLogView> {
       HandlogShowDown(
         handLogModel: _handLogModel,
       ),
-      SizedBox(height: 8),
+      AppDimensionsNew.getVerticalSizedBox(8),
       HandLogActionView(handLogModel: _handLogModel),
-      SizedBox(height: 16),
+      AppDimensionsNew.getVerticalSizedBox(8),
       HandlogSummary(handlogModel: _handLogModel),
     ];
   }

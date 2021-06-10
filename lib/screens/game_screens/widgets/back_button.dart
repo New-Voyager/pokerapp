@@ -46,8 +46,7 @@ class CustomAppBar extends AppBar {
             children: [
               Text(
                 titleText ?? "",
-                style: AppStyles.titleBarTextStyle
-                    .copyWith(fontSize: 18, color: AppColorsNew.newTextColor),
+                style: AppStylesNew.AppBarTitleTextStyle,
                 textAlign: TextAlign.center,
               ),
               Visibility(
