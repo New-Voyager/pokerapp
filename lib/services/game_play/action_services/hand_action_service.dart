@@ -1404,6 +1404,8 @@ class HandActionService {
         // UN highlight the req pot no
         tableState.updatePotToHighlightSilent(-1);
         tableState.notifyAll();
+
+        if (fromReplay) return;
       }
     }
 

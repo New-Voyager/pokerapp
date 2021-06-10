@@ -30,7 +30,7 @@ class _VoiceTextWidgetState extends State<VoiceTextWidget> {
 
   @override
   void dispose() {
-    if (_timerPeriodic.isActive) _timerPeriodic.cancel();
+    if (_timerPeriodic?.isActive ?? false) _timerPeriodic.cancel();
     super.dispose();
   }
 

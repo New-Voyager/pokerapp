@@ -55,124 +55,129 @@ class _ClubMainScreenNewState extends State<ClubMainScreenNew> with RouteAware {
     routeObserver.subscribe(this, ModalRoute.of(context));
   }
 
-  @override
-  void dispose() {
-    routeObserver.unsubscribe(this);
-    super.dispose();
+  void listener() {
+    if (!mounted) return;
+
+    final state = context.read<ClubsUpdateState>();
+    if (state.updatedClubCode == widget.clubCode) {
+      setState(() {});
+    }
   }
 
   @override
   void initState() {
-    context.read<ClubsUpdateState>().addListener(() {
-      final state = Provider.of<ClubsUpdateState>(context, listen: false);
-      if (state.updatedClubCode == widget.clubCode) {
-        setState(() {});
-      }
-    });
+    context.read<ClubsUpdateState>().addListener(listener);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     //log('rebuilding ClubMainScreen');
-    return FutureBuilder<ClubHomePageModel>(
-      initialData: null,
-      future: ClubsService.getClubHomePageData(widget.clubCode),
-      builder: (BuildContext context, snapshot) {
-        ClubHomePageModel clubModel = snapshot.data;
-        bool isOwnerOrManager = false;
-        if (clubModel != null) {
-          isOwnerOrManager =
-              (clubModel.isOwner || clubModel.isManager) ?? false;
-        }
-        return clubModel == null
-            ? Center(
-                child: CircularProgressIndicator(),
-              )
-            : ListenableProvider<ClubHomePageModel>(
-                create: (_) => clubModel,
-                child: Container(
-                  decoration: BoxDecoration(
-                    gradient: RadialGradient(
-                      colors: [
-                        AppColorsNew.newGreenRadialStartColor,
-                        AppColorsNew.newBackgroundBlackColor,
-                      ],
-                      center: Alignment.topLeft,
-                      radius: 1.5,
+    return WillPopScope(
+      onWillPop: () async {
+        context.read<ClubsUpdateState>().removeListener(listener);
+        routeObserver.unsubscribe(this);
+        return true;
+      },
+      child: FutureBuilder<ClubHomePageModel>(
+        initialData: null,
+        future: ClubsService.getClubHomePageData(widget.clubCode),
+        builder: (BuildContext context, snapshot) {
+          ClubHomePageModel clubModel = snapshot.data;
+          bool isOwnerOrManager = false;
+          if (clubModel != null) {
+            isOwnerOrManager =
+                (clubModel.isOwner || clubModel.isManager) ?? false;
+          }
+          return clubModel == null
+              ? Center(
+                  child: CircularProgressIndicator(),
+                )
+              : ListenableProvider<ClubHomePageModel>(
+                  create: (_) => clubModel,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      gradient: RadialGradient(
+                        colors: [
+                          AppColorsNew.newGreenRadialStartColor,
+                          AppColorsNew.newBackgroundBlackColor,
+                        ],
+                        center: Alignment.topLeft,
+                        radius: 1.5,
+                      ),
                     ),
-                  ),
-                  child: Scaffold(
-                    backgroundColor: Colors.transparent,
-                    appBar: CustomAppBar(
-                      context: context,
-                      actionsList: [
-                        !isOwnerOrManager
-                            ? Container()
-                            : Container(
-                                padding: EdgeInsets.only(
-                                    top: 16, right: 16, bottom: 16),
-                                child: CustomTextButton(
-                                  onTap: () async {
-                                    final dynamic result =
-                                        await Navigator.pushNamed(
-                                      context,
-                                      Routes.new_game_settings,
-                                      arguments: widget.clubCode,
-                                    );
-                                    log("$result");
-
-                                    if (result != null) {
-                                      /* show game settings dialog */
-                                      NewGameSettings2.show(
+                    child: Scaffold(
+                      backgroundColor: Colors.transparent,
+                      appBar: CustomAppBar(
+                        context: context,
+                        actionsList: [
+                          !isOwnerOrManager
+                              ? Container()
+                              : Container(
+                                  padding: EdgeInsets.only(
+                                      top: 16, right: 16, bottom: 16),
+                                  child: CustomTextButton(
+                                    onTap: () async {
+                                      final dynamic result =
+                                          await Navigator.pushNamed(
                                         context,
-                                        clubCode: widget.clubCode,
-                                        mainGameType: result['gameType'],
-                                        subGameTypes:
-                                            List.from(result['gameTypes']) ??
-                                                [],
+                                        Routes.new_game_settings,
+                                        arguments: widget.clubCode,
                                       );
-                                    }
-                                  },
-                                  text: '+ Create Game',
+                                      log("$result");
+
+                                      if (result != null) {
+                                        /* show game settings dialog */
+                                        NewGameSettings2.show(
+                                          context,
+                                          clubCode: widget.clubCode,
+                                          mainGameType: result['gameType'],
+                                          subGameTypes:
+                                              List.from(result['gameTypes']) ??
+                                                  [],
+                                        );
+                                      }
+                                    },
+                                    text: '+ Create Game',
+                                  ),
                                 ),
+                        ],
+                      ),
+                      body: Stack(
+                        children: [
+                          Container(
+                            margin: EdgeInsets.only(top: 60),
+                          ),
+                          Container(
+                            margin: EdgeInsets.only(top: 20),
+                            child: SingleChildScrollView(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  ClubBannerViewNew(
+                                    clubModel: clubModel,
+                                  ),
+                                  ClubGraphicsViewNew(
+                                      clubModel.playerBalance ?? 0.0,
+                                      clubModel.weeklyActivity),
+                                  ClubLiveGamesView(clubModel.liveGames),
+                                  AppDimensionsNew.getVerticalSizedBox(16),
+                                  ClubActionsNew(
+                                    clubModel,
+                                    this.widget.clubCode,
+                                  ),
+                                  AppDimensionsNew.getVerticalSizedBox(16),
+                                ],
                               ),
-                      ],
-                    ),
-                    body: Stack(
-                      children: [
-                        Container(
-                          margin: EdgeInsets.only(top: 60),
-                        ),
-                        Container(
-                          margin: EdgeInsets.only(top: 20),
-                          child: SingleChildScrollView(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
-                                ClubBannerViewNew(
-                                  clubModel: clubModel,
-                                ),
-                                ClubGraphicsViewNew(
-                                    clubModel.playerBalance ?? 0.0,
-                                    clubModel.weeklyActivity),
-                                ClubLiveGamesView(clubModel.liveGames),
-                                AppDimensionsNew.getVerticalSizedBox(16),
-                                ClubActionsNew(
-                                  clubModel,
-                                  this.widget.clubCode,
-                                ),
-                                AppDimensionsNew.getVerticalSizedBox(16),
-                              ],
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              );
-      },
+                );
+        },
+      ),
     );
   }
 }

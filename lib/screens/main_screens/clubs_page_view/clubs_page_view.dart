@@ -164,7 +164,8 @@ class _ClubsPageViewState extends State<ClubsPageView> with RouteAware {
 
   Future<void> _fillClubs() async {
     _clubs = await ClubsService.getMyClubs();
-    setState(() {});
+
+    if (mounted) setState(() {});
   }
 
   void _fetchClubs({
@@ -181,6 +182,10 @@ class _ClubsPageViewState extends State<ClubsPageView> with RouteAware {
 
   Timer _refreshTimer;
 
+  void listener() {
+    _fetchClubs(withLoading: false);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -189,9 +194,7 @@ class _ClubsPageViewState extends State<ClubsPageView> with RouteAware {
     _fetchClubs();
 
     /* add listener for updateing when needed */
-    context.read<ClubsUpdateState>().addListener(() {
-      _fetchClubs(withLoading: false);
-    });
+    context.read<ClubsUpdateState>().addListener(listener);
 
     // TEMP SOLUTION FOR REFRESHING
     /* set a timer to run every X second */
@@ -244,96 +247,102 @@ class _ClubsPageViewState extends State<ClubsPageView> with RouteAware {
   void dispose() {
     _refreshTimer?.cancel();
     super.dispose();
-    routeObserver.unsubscribe(this);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Builder(
-      builder: (ctx) => Scaffold(
-        backgroundColor: AppColors.screenBackgroundColor,
-        body: Padding(
-          padding: EdgeInsets.only(
-            top: MediaQuery.of(context).padding.top,
-            left: AppDimensions.kMainPaddingHorizontal,
-            right: AppDimensions.kMainPaddingHorizontal,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              /*
-              * title
-              * */
-              _getTitleTextWidget('Clubs'),
-              const SizedBox(height: 30),
-              /*
-              * create and search box
-              * */
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  CustomTextButton(
-                    text: 'Search',
-                    onTap: () async {
-                      await showModalBottomSheet(
-                        context: context,
-                        isScrollControlled: true,
-                        builder: (ctx) => SearchClubBottomSheet(),
-                      );
-                      _fetchClubs();
-                    },
-                  ),
-                  const SizedBox(width: 40),
-                  CustomTextButton(
-                    text: '+ Create',
-                    onTap: () => _createClub(ctx),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 10),
-              _showLoading
-                  ? Expanded(
-                      child: Center(
-                        child: CircularProgressIndicator(),
-                      ),
-                    )
-                  : _clubs.isEmpty
-                      ? Expanded(
-                          child: Center(
-                            child: Text(
-                              'No Clubs',
-                              style: AppStyles.clubItemInfoTextStyle.copyWith(
-                                fontSize: 30.0,
+    return WillPopScope(
+      onWillPop: () async {
+        context.read<ClubsUpdateState>().removeListener(listener);
+        routeObserver.unsubscribe(this);
+        return true;
+      },
+      child: Builder(
+        builder: (ctx) => Scaffold(
+          backgroundColor: AppColors.screenBackgroundColor,
+          body: Padding(
+            padding: EdgeInsets.only(
+              top: MediaQuery.of(context).padding.top,
+              left: AppDimensions.kMainPaddingHorizontal,
+              right: AppDimensions.kMainPaddingHorizontal,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                /*
+                * title
+                * */
+                _getTitleTextWidget('Clubs'),
+                const SizedBox(height: 30),
+                /*
+                * create and search box
+                * */
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    CustomTextButton(
+                      text: 'Search',
+                      onTap: () async {
+                        await showModalBottomSheet(
+                          context: context,
+                          isScrollControlled: true,
+                          builder: (ctx) => SearchClubBottomSheet(),
+                        );
+                        _fetchClubs();
+                      },
+                    ),
+                    const SizedBox(width: 40),
+                    CustomTextButton(
+                      text: '+ Create',
+                      onTap: () => _createClub(ctx),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                _showLoading
+                    ? Expanded(
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      )
+                    : _clubs.isEmpty
+                        ? Expanded(
+                            child: Center(
+                              child: Text(
+                                'No Clubs',
+                                style: AppStyles.clubItemInfoTextStyle.copyWith(
+                                  fontSize: 30.0,
+                                ),
                               ),
                             ),
-                          ),
-                        )
-                      : Expanded(
-                          child: ListView.separated(
-                            physics: const BouncingScrollPhysics(),
-                            padding: const EdgeInsets.only(
-                              bottom: 15.0,
-                            ),
-                            itemBuilder: (_, index) {
-                              var club = _clubs[index];
+                          )
+                        : Expanded(
+                            child: ListView.separated(
+                              physics: const BouncingScrollPhysics(),
+                              padding: const EdgeInsets.only(
+                                bottom: 15.0,
+                              ),
+                              itemBuilder: (_, index) {
+                                var club = _clubs[index];
 
-                              return InkWell(
-                                onTap: () => this.openClub(context, club),
-                                onLongPress: () => _showClubOptions(
-                                  club,
-                                  ctx,
-                                ),
-                                child: ClubItem(
-                                  club: club,
-                                ),
-                              );
-                            },
-                            separatorBuilder: (_, __) =>
-                                const SizedBox(height: 10.0),
-                            itemCount: _clubs.length,
+                                return InkWell(
+                                  onTap: () => this.openClub(context, club),
+                                  onLongPress: () => _showClubOptions(
+                                    club,
+                                    ctx,
+                                  ),
+                                  child: ClubItem(
+                                    club: club,
+                                  ),
+                                );
+                              },
+                              separatorBuilder: (_, __) =>
+                                  const SizedBox(height: 10.0),
+                              itemCount: _clubs.length,
+                            ),
                           ),
-                        ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

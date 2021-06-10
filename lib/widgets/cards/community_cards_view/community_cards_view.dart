@@ -92,8 +92,6 @@ class CommunityCardsView extends StatelessWidget {
         riverOrTurnCards: getCommunityCards(boardCards),
       );
 
-    print('boardCards: $boardCards');
-
     /* default case - this is done to bake our data for animating in the future */
     return Opacity(
       /* if there are no community cards, do not show anything */

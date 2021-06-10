@@ -100,8 +100,11 @@ class GameReplayController {
   }
 
   /* this method takes in an replay action and executes it */
-  Future<void> _takeAction(GameReplayAction action) =>
-      GameReplayActionService.takeAction(action, _context);
+  Future<void> _takeAction(GameReplayAction action) async {
+    try {
+      return GameReplayActionService.takeAction(action, _context);
+    } catch (_) {}
+  }
 
   /* this method estimates a delay for a "player_action" action type
   * and default delay is 800 ms */

@@ -67,8 +67,12 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
               child: Column(
                 children: [
                   Container(
-                    margin:
-                        EdgeInsets.only(left: 10, top: 5, bottom: 5, right: 10),
+                    margin: EdgeInsets.only(
+                      left: 10,
+                      top: 5,
+                      bottom: 5,
+                      right: 10,
+                    ),
                     alignment: Alignment.centerLeft,
                     child: Text(
                       "Game Details",
@@ -140,13 +144,12 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
                     child: Row(
                       children: [
                         Flexible(
-                          flex: 10,
                           child: highHandTile(),
                         ),
                       ],
                     ),
                   ),
-                  getLowerCard()
+                  getLowerCard(),
                 ],
               ),
             ),
@@ -618,13 +621,11 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
           Radius.circular(AppDimensions.cardRadius),
         ),
       ),
-      child: Expanded(
-        child: Visibility(
-          visible: this._gameDetail != null &&
-              this._gameDetail.hhWinners.length > 0 &&
-              this._gameDetail.hhTracked == true,
-          child: HighhandWinnersView(this._gameDetail),
-        ),
+      child: Visibility(
+        visible: this._gameDetail != null &&
+            this._gameDetail.hhWinners.length > 0 &&
+            this._gameDetail.hhTracked == true,
+        child: HighhandWinnersView(this._gameDetail),
       ),
     );
   }
