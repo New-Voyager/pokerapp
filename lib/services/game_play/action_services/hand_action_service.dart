@@ -88,7 +88,7 @@ class RetrySendingMsg {
     _cancel = true;
   }
 
-  /**
+  /*
    * 1. If the current message is acknowledgement for previously sent message, then
    * this method returns true and stops the retry loop.
    * 2. If the current message is not an acknowledgement, this method will return false.
@@ -117,7 +117,10 @@ class HandActionService {
   final GameState _gameState;
   final BuildContext _context;
   final List<dynamic> _messages = [];
+
+  bool _close = false;
   bool closed = false;
+
   GameComService _gameComService;
   RetrySendingMsg _retryMsg;
   PlayerInfo _currentPlayer;
@@ -131,6 +134,7 @@ class HandActionService {
   });
 
   void close() {
+    _close = true;
     closed = true;
     _messages.clear();
     if (_retryMsg != null) {
@@ -393,17 +397,17 @@ class HandActionService {
       return;
     }
 
+    if (_close) return;
     final TableState tableState = _gameState.getTableState(_context);
     // remove all the community cards
     tableState.clear();
     tableState.notifyAll();
 
+    if (_close) return;
     _gameState.resetPlayers(_context, notify: true);
 
-    Provider.of<ValueNotifier<FooterStatus>>(
-      _context,
-      listen: false,
-    ).value = FooterStatus.None;
+    if (_close) return;
+    _context.read<ValueNotifier<FooterStatus>>().value = FooterStatus.None;
 
     List<GameType> gameChoices = [];
     for (final type in dealerChoice['games']) {
@@ -444,6 +448,7 @@ class HandActionService {
         (element) => (element.toString() == 'GameType.' + gameTypeStr));
     _gameState.resetSeatActions();
 
+    if (_close) return;
     final handInfo = _gameState.getHandInfo(_context);
     handInfo.update(
       handNum: handNum,
@@ -454,33 +459,37 @@ class HandActionService {
     );
 
     // set small blind and big blind
+    if (_close) return;
     final sbSeat = _gameState.getSeat(_context, sbPos);
     sbSeat.player.action.sb = true;
     sbSeat.player.action.amount = _gameState.gameInfo.smallBlind.toDouble();
 
+    if (_close) return;
     final bbSeat = _gameState.getSeat(_context, bbPos);
     bbSeat.player.action.bb = true;
     bbSeat.player.action.amount = _gameState.gameInfo.bigBlind.toDouble();
 
+    if (_close) return;
     final Players players = _gameState.getPlayers(_context);
 
+    if (_close) return;
     final TableState tableState = _gameState.getTableState(_context);
     // remove all the community cards
     tableState.clear();
     tableState.notifyAll();
 
+    if (_close) return;
     _gameState.resetPlayers(_context, notify: false);
 
-    Provider.of<ValueNotifier<FooterStatus>>(
-      _context,
-      listen: false,
-    ).value = FooterStatus.None;
+    if (_close) return;
+    _context.read<ValueNotifier<FooterStatus>>().value = FooterStatus.None;
 
     // update player's state and stack
     final dynamic playersInSeats = newHand['playersInSeats'];
     bool refresh = false;
     for (final seatNoStr in playersInSeats.keys) {
       final seatNo = int.parse(seatNoStr);
+      if (_close) return;
       final seat = _gameState.getSeat(_context, seatNo);
       if (seat == null && seat.player == null) {
         refresh = true;
@@ -496,11 +505,13 @@ class HandActionService {
 
     if (refresh) {
       // the game state does not have all the players, refresh
+      if (_close) return;
       _gameState.refresh(_context);
     }
 
     for (final seatNoStr in playersInSeats.keys) {
       final seatNo = int.parse(seatNoStr);
+      if (_close) return;
       final seat = _gameState.getSeat(_context, seatNo);
       if (seat != null && seat.player != null) {
         final dynamic playerUpdate = playersInSeats[seatNoStr];
@@ -520,6 +531,7 @@ class HandActionService {
 
           // show buyin button
           if (seat.player.isMe) {
+            if (_close) return;
             _gameState.getMyState(_context).notify();
           }
         } else {
@@ -553,6 +565,7 @@ class HandActionService {
 
     if (dealerIdx == -1) {
       /* we have a open seat, set the dealer */
+      if (_close) return;
       final Seat seat = _gameState.getSeat(_context, dealerPos);
       seat.isDealer = true;
     } else {
@@ -565,10 +578,8 @@ class HandActionService {
     }
 
     /* get a new card back asset to be shown */
-    Provider.of<ValueNotifier<String>>(
-      _context,
-      listen: false,
-    ).value = CardBackAssets.getRandom();
+    if (_close) return;
+    _context.read<ValueNotifier<String>>().value = CardBackAssets.getRandom();
 
     // wait for the fastAnimationDuration completion
     // this is done to wait until the footerResult section is removed
@@ -594,6 +605,7 @@ class HandActionService {
     String cards = data['dealCards']['cards'];
 
     List<int> myCards = CardHelper.getRawCardNumbers(cards);
+    if (_close) return;
     final players = _gameState.getPlayers(_context);
 
     List<int> seatNos = players.players.map((p) => p.seatNo).toList();
@@ -606,6 +618,7 @@ class HandActionService {
     for (int seatNo in seatNos) {
       int localSeatNo =
           mySeatNo == null ? seatNo : ((seatNo - mySeatNo) % 9) + 1;
+      if (_close) return;
       final seat = _gameState.getSeat(_context, seatNo);
       if (seat.player == null ||
           seat.player.stack == 0 ||
@@ -614,10 +627,8 @@ class HandActionService {
       }
 
       // start the animation
-      Provider.of<CardDistributionModel>(
-        _context,
-        listen: false,
-      ).seatNo = localSeatNo;
+      if (_close) return;
+      _context.read<CardDistributionModel>().seatNo = localSeatNo;
       // wait for the animation to finish
       await Future.delayed(AppConstants.cardDistributionAnimationDuration);
 
@@ -633,19 +644,20 @@ class HandActionService {
     //}
 
     /* card distribution ends, put the value to NULL */
-    Provider.of<CardDistributionModel>(
-      _context,
-      listen: false,
-    ).seatNo = null;
+    if (_close) return;
+    _context.read<CardDistributionModel>().seatNo = null;
   }
 
   Future<void> handleYourAction(var data) async {
     /* play an sound effect alerting the user */
+
+    if (_close) return;
     Audio.play(
       context: _context,
       assetFile: AppAssets.playerTurnSound,
     );
 
+    if (_close) return;
     final me = _gameState.me(_context);
     if (me == null) {
       return;
@@ -661,13 +673,17 @@ class HandActionService {
         .map<String>((e) => e.toString())
         .toList();
     if (availableActions?.contains(AppConstants.RUN_IT_TWICE_PROMPT) ?? false) {
+      if (_close) return;
       return RunItTwiceDialog.promptRunItTwice(
         context: _context,
         expTime: 30, // TODO: WE GET THIS TIME FROM THE SERVER
       );
     }
 
+    if (_close) return;
     _gameState.setAction(_context, seatNo, seatAction);
+
+    if (_close) return;
     _gameState.showAction(_context, true);
   }
 
@@ -677,22 +693,27 @@ class HandActionService {
     var actionChange = data['actionChange'];
     int seatNo = actionChange['seatNo'];
 
+    if (_close) return;
     final TableState tableState = Provider.of<TableState>(
       _context,
       listen: false,
     );
 
+    if (_close) return;
     final player = _gameState.fromSeat(_context, seatNo);
-    // log('next action seat no: $seatNo');
     assert(player != null);
 
     if (!player.isMe) {
       // hide action widget
+
+      if (_close) return;
       _gameState.showAction(_context, false);
     }
     // log('next action seat: $seatNo player: ${player.name}');
     // highlight next action player
     player.highlight = true;
+
+    if (_close) return;
     final seat = _gameState.getSeat(_context, seatNo);
     seat.setActionTimer(_gameState.gameInfo.actionTime);
     seat.notify();
@@ -726,28 +747,36 @@ class HandActionService {
      Deal Start message is unnecessary */
     // if (fromGameReplay == false && me == null) return;
 
+    if (_close) return;
+
     /* show card shuffling */
     final TableState tableState = _gameState.getTableState(_context);
     /* stop showing card shuffling */
     tableState.clear();
     tableState.notifyAll();
 
+    if (_close) return;
+
     // play the deal sound effect
     Audio.play(
       context: _context,
       assetFile: AppAssets.dealSound,
     );
+
+    if (_close) return;
+
     final players = _gameState.getPlayers(_context);
     List<int> seatNos = players.players.map((p) => p.seatNo).toList();
     seatNos.sort();
 
+    if (_close) return;
+
     final handInfo = _gameState.getHandInfo(_context);
 
+    if (_close) return;
+
     CardDistributionModel cardDistributionModel =
-        Provider.of<CardDistributionModel>(
-      _context,
-      listen: false,
-    );
+        _context.read<CardDistributionModel>();
 
     if (handInfo.noCards == 0) handInfo.update(noCards: testNo);
 
@@ -756,6 +785,7 @@ class HandActionService {
     //for (int i = 0; i < handInfo.noCards; i++) {
     /* for distributing the ith card, go through all the players, and give them */
     for (int seatNo in seatNos) {
+      if (_close) return;
       final seat = _gameState.getSeat(_context, seatNo);
       if (seat.player == null ||
           seat.player.stack == 0 ||
@@ -790,6 +820,7 @@ class HandActionService {
       List<int> pots =
           data[key]['pots']?.map<int>((e) => int.parse(e.toString()))?.toList();
 
+      if (_close) return;
       final tableState = _gameState.getTableState(_context);
 
       tableState.updatePotChipsSilent(
@@ -808,7 +839,10 @@ class HandActionService {
   ) async {
     assert(stage != null);
     // log('stage update start');
+    if (_close) return;
     final TableState tableState = _gameState.getTableState(_context);
+
+    if (_close) return;
     final players = _gameState.getPlayers(_context);
 
     // show the move coin to pot animation, after that update the pot
@@ -816,6 +850,8 @@ class HandActionService {
     await Future.delayed(Duration(seconds: 1));
     _gameState.resetSeatActions();
     // update the pot
+
+    if (_close) return;
     updatePot(data, stage, _context);
 
     players.notifyAll();
@@ -854,12 +890,13 @@ class HandActionService {
     // current players cards
     String playerCards = currentHandState['playerCards'];
 
-    final Players players = Provider.of<Players>(
-      _context,
-      listen: false,
-    );
+    if (_close) return;
+    final Players players = _context.read<Players>();
 
+    if (_close) return;
     final tableState = _gameState.getTableState(_context);
+
+    if (_close) return;
     final handInfo = _gameState.getHandInfo(_context);
 
     /* store the cards of the current player */
@@ -938,11 +975,9 @@ class HandActionService {
           )
         : 0;
 
+    if (_close) return;
     // put the remaining time in the provider
-    Provider.of<RemainingTime>(
-      _context,
-      listen: false,
-    ).time = remainingActionTime;
+    _context.read<RemainingTime>().time = remainingActionTime;
 
     players.updateStackBulkSilent(
       currentHandState['playersStack'],
@@ -1013,8 +1048,12 @@ class HandActionService {
   Future<void> handlePlayerActed(var data) async {
     var playerActed = data['playerActed'];
     int seatNo = playerActed['seatNo'];
+
+    if (_close) return;
     // show a prompt regarding last player action
     final gameState = _context.read<GameState>();
+
+    if (_close) return;
     final seat = gameState.getSeat(_context, seatNo);
     //log('player acted: $seatNo, player: ${seat.player.name}');
     final action = seat.player.action;
@@ -1042,6 +1081,8 @@ class HandActionService {
     if (stack != null) {
       seat.player.stack = stack;
     }
+
+    if (_close) return;
     // before showing the prompt --> turn off the highlight on other players
     gameState.resetActionHighlight(_context, -1);
   }
@@ -1447,21 +1488,10 @@ class HandActionService {
   }
 
   Future<void> handleResult(var data) async {
+    if (_close) return;
     final Players players = _gameState.getPlayers(_context);
-
-    // if (data['handResult']['highHand'] != null) {
-    //   HighHandService.handle(
-    //     context: _context,
-    //     data: data['handResult']['highHand'],
-    //     showNotification: false,
-    //   );
-    // }
     _gameState.resetSeatActions();
     players.clearForShowdown();
-
-    log('\n\n\n=================================================');
-    log(jsonEncode(data));
-    log('=================================================\n\n\n');
 
     // get hand winners data and update results
     final handResult = data['handResult'];
@@ -1504,6 +1534,7 @@ class HandActionService {
     final runItTwiceResult = handResult['handLog']['runItTwiceResult'];
     final potWinners = handResult['handLog']['potWinners'];
 
+    if (_close) return;
     updatePotBeforeResultStatic(
       potWinners: potWinners,
       runItTwiceResult: runItTwiceResult,
@@ -1511,6 +1542,7 @@ class HandActionService {
       context: _context,
     );
 
+    if (_close) return;
     await handleResultStatic(
       isRunItTwice: isRunItTwice,
       runItTwiceResult: runItTwiceResult,
@@ -1537,7 +1569,10 @@ class HandActionService {
     /* finally send the cardNumbers to the gameChatChannel after 1500 ms */
     // todo: put the delay in the const class after finalizing the delay constant
     await Future.delayed(const Duration(milliseconds: 1500));
+
+    if (_close) return;
     final gameService = _gameState.getGameMessagingService(_context);
+
     gameService.sendCards(
       cardNumbers,
       players.me?.seatNo,
