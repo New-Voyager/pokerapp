@@ -186,6 +186,7 @@ class GameReplayService {
         GameReplayAction(
           gameReplayActionType: GameReplayActionType.pot_winner,
           potWinners: potWinners,
+          boardCards: board1Cards,
         ),
       );
 
@@ -245,7 +246,6 @@ class GameReplayService {
     );
 
     return GameReplayController(
-      // todo: if null default back to 30
       playerActionTime: handLog.hand.actionTime ?? 30,
       gameState: gameState,
       actions: actions,

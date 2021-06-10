@@ -42,6 +42,9 @@ class AppAssets {
   static const String dealSound = 'assets/sound_effects/deal.mp3';
   static const String newHandSound = 'assets/sound_effects/new_hand.mp3';
   static const String playerTurnSound = 'assets/sound_effects/player_turn.mp3';
+  static const String flopSound = 'assets/sound_effects/flop.wav';
+  static const String turnRiverSound = 'assets/sound_effects/river.wav';
+  static const String applauseSound = 'assets/sound_effects/applause.wav';
 
   static const String cardsImage = 'assets/images/cardicon.png';
   static const String cardBackImage =

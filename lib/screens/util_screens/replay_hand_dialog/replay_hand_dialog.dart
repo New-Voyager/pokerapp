@@ -79,23 +79,12 @@ class ReplayHandDialog extends StatelessWidget {
       );
 }
 
-class ReplayHandUtilScreen extends StatefulWidget {
+class ReplayHandUtilScreen extends StatelessWidget {
   ReplayHandUtilScreen({
     @required this.gameReplayController,
   });
 
   final GameReplayController gameReplayController;
-
-  @override
-  _ReplayHandUtilScreenState createState() => _ReplayHandUtilScreenState();
-}
-
-class _ReplayHandUtilScreenState extends State<ReplayHandUtilScreen> {
-  @override
-  void dispose() {
-    widget.gameReplayController.dispose(context);
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -106,12 +95,12 @@ class _ReplayHandUtilScreenState extends State<ReplayHandUtilScreen> {
     return MultiProvider(
       providers: ReplayHandScreenUtils.getProviders(
         boardAttributesObject,
-        widget.gameReplayController.gameState,
+        gameReplayController.gameState,
       ),
       builder: (BuildContext context, _) {
         /* initialize the game controller, after we have the context
            that can give access to the provider models */
-        widget.gameReplayController.initController(context);
+        gameReplayController.initController(context);
 
         return SafeArea(
           child: Column(
@@ -119,12 +108,12 @@ class _ReplayHandUtilScreenState extends State<ReplayHandUtilScreen> {
             children: [
               /* game view */
               ReplayHandGameView(
-                gameInfoModel: widget.gameReplayController.gameInfoModel,
+                gameInfoModel: gameReplayController.gameInfoModel,
               ),
 
               /* controls */
               ReplayHandControls(
-                gameReplayController: widget.gameReplayController,
+                gameReplayController: gameReplayController,
               ),
             ],
           ),

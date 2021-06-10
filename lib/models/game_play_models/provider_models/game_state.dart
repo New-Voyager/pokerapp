@@ -338,8 +338,7 @@ class GameState {
     return null;
   }
 
-  static GameState getState(BuildContext context) =>
-      Provider.of<GameState>(context, listen: false);
+  static GameState getState(BuildContext context) => context.read<GameState>();
 
   void clear(BuildContext context) {
     final tableState = this.getTableState(context);
