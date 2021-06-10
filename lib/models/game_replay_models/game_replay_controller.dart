@@ -8,11 +8,11 @@ import 'package:pokerapp/models/hand_log_model_new.dart';
 import 'package:pokerapp/services/game_replay_service/game_replay_action_service.dart';
 
 class GameReplayController {
-  BuildContext _context;
-
   int _playerActionTime;
   GameState _gameState;
   List<GameReplayAction> _actions;
+
+  GameReplayActionService _actionService;
 
   StreamController<bool> _isPlayingStreamController;
   StreamController<bool> _isEnded;
@@ -100,11 +100,8 @@ class GameReplayController {
   }
 
   /* this method takes in an replay action and executes it */
-  Future<void> _takeAction(GameReplayAction action) async {
-    try {
-      return GameReplayActionService.takeAction(action, _context);
-    } catch (_) {}
-  }
+  Future<void> _takeAction(GameReplayAction action) =>
+      _actionService.takeAction(action);
 
   /* this method estimates a delay for a "player_action" action type
   * and default delay is 800 ms */
@@ -146,7 +143,7 @@ class GameReplayController {
   /* this method initializes the controller, i.e puts data into the provider models
     & other initial setups are done here*/
   void initController(BuildContext context) {
-    this._context = context;
+    _actionService = GameReplayActionService(context);
 
     isPlaying.listen((bool _isPlaying) {
       if (_isPlaying) _load(_getNextAction());

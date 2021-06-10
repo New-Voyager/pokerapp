@@ -22,7 +22,6 @@ import 'package:pokerapp/screens/game_play_screen/widgets/overlay_notification.d
 import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/game_play/graphql/seat_change_service.dart';
-import 'package:pokerapp/services/janus/janus.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:provider/provider.dart';
 import 'package:pokerapp/screens/game_play_screen/game_play_screen_util_methods.dart';
