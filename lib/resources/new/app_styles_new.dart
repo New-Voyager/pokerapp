@@ -3,6 +3,12 @@ import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 
 class AppStylesNew {
+  static const TextStyle GameActionTextStyle = TextStyle(
+    color: AppColorsNew.newTextColor,
+    fontSize: 11.0,
+    fontFamily: AppAssetsNew.fontFamilyPoppins,
+  );
+
   static ButtonStyle cancelButtonStyle = ElevatedButton.styleFrom(
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(8),
@@ -73,6 +79,12 @@ class AppStylesNew {
     fontWeight: FontWeight.w700,
     fontSize: 12,
   );
+
+  static const TextStyle BackButtonTextStyle = TextStyle(
+    color: AppColorsNew.newGreenButtonColor,
+    fontFamily: AppAssetsNew.fontFamilyPoppins,
+    fontSize: 12,
+  );
   static const TextStyle TitleTextStyle = TextStyle(
       fontSize: 18,
       color: AppColorsNew.newTextColor,
@@ -122,5 +134,18 @@ class AppStylesNew {
     fontFamily: AppAssetsNew.fontFamilyPoppins,
     fontWeight: FontWeight.w300,
     fontSize: 12,
+  );
+
+  static const ClubShortCodeTextStyle = TextStyle(
+    color: AppColorsNew.newTextColor,
+    fontSize: 25.0,
+    fontFamily: AppAssetsNew.fontFamilyPoppins,
+    fontWeight: FontWeight.w700,
+  );
+
+  static const ClubTitleTextStyle = TextStyle(
+    color: AppColorsNew.newTextColor,
+    fontSize: 18.0,
+    fontFamily: AppAssetsNew.fontFamilyPoppins,
   );
 }

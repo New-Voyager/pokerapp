@@ -118,6 +118,7 @@ flutter:
     - assets/sample-data/weekly-data.json
     - assets/animations/
     - assets/images/cards/
+    - assets/images/club/
     - assets/images/livegames/
 
   fonts:
