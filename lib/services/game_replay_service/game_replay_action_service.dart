@@ -17,22 +17,28 @@ import 'package:provider/provider.dart';
 
 class GameReplayActionService {
   final BuildContext _context;
+  bool _close = false;
+
   GameReplayActionService(this._context);
 
+  void close() => _close = true;
+
   void _preflopStartedAction(GameReplayAction action) {
-    TableState tableState = Provider.of<TableState>(
-      _context,
-      listen: false,
-    );
+    if (_close) return;
+    TableState tableState = _context.read<TableState>();
 
     tableState.updatePotChipsSilent(potChips: [action.startPot]);
     tableState.notifyAll();
   }
 
   void _playerToAct(GameReplayAction action) {
+    if (_close) return;
     final gameState = GameState.getState(_context);
 
+    if (_close) return;
     final player = gameState.fromSeat(_context, action.action.seatNo);
+
+    if (_close) return;
     final seat = gameState.getSeat(_context, action.action.seatNo);
 
     assert(player != null && seat != null);
@@ -53,15 +59,15 @@ class GameReplayActionService {
 
     final ActionElement action = replayAction.action;
 
+    if (_close) return;
     final gameState = GameState.getState(_context);
 
+    if (_close) return;
     // reset highlight for other players
     gameState.resetActionHighlight(_context, -1);
 
-    Players players = Provider.of<Players>(
-      _context,
-      listen: false,
-    );
+    if (_close) return;
+    Players players = _context.read<Players>();
 
     int idx = players.players.indexWhere(
       (p) => p.seatNo == action.seatNo,
@@ -75,6 +81,7 @@ class GameReplayActionService {
         true,
       );
     else {
+      if (_close) return;
       final seat = gameState.getSeat(_context, action.seatNo);
       seat.player.action.setAction(action);
 
@@ -89,6 +96,7 @@ class GameReplayActionService {
       );
     }
 
+    if (_close) return;
     final tableState = gameState.getTableState(_context);
 
     tableState.updatePotChipsSilent(
@@ -103,8 +111,12 @@ class GameReplayActionService {
   Future<void> _stageUpdateUtilAction(GameReplayAction action) async {
     // show the move coin to pot animation, after that update the pot
 
+    if (_close) return;
     final gameState = GameState.getState(_context);
+    if (_close) return;
     final Players players = gameState.getPlayers(_context);
+
+    if (_close) return;
     final TableState tableState = gameState.getTableState(_context);
 
     await gameState.animateSeatActions();
@@ -124,11 +136,10 @@ class GameReplayActionService {
     /* show animation of chips moving to pots and update the pot */
     await _stageUpdateUtilAction(action);
 
+    if (_close) return;
+
     /* finally update the community cards */
-    final TableState tableState = Provider.of<TableState>(
-      _context,
-      listen: false,
-    );
+    final TableState tableState = _context.read<TableState>();
 
     tableState.addFlopCards(
       1,
@@ -142,11 +153,10 @@ class GameReplayActionService {
     /* show animation of chips moving to pots and update the pot */
     await _stageUpdateUtilAction(action);
 
+    if (_close) return;
+
     /* finally update the community cards */
-    final TableState tableState = Provider.of<TableState>(
-      _context,
-      listen: false,
-    );
+    final TableState tableState = _context.read<TableState>();
 
     tableState.addTurnOrRiverCard(
       1,
@@ -157,19 +167,21 @@ class GameReplayActionService {
   }
 
   void _showdownAction(GameReplayAction action) {
+    if (_close) return;
+
     final GameState gameState = GameState.getState(_context);
     gameState.resetSeatActions();
 
+    if (_close) return;
     final Players players = gameState.getPlayers(_context);
 
     /* clear players for showdown */
     players.clearForShowdown();
 
+    if (_close) return;
+
     /* then, change the status of the footer to show the result */
-    Provider.of<ValueNotifier<FooterStatus>>(
-      _context,
-      listen: false,
-    ).value = FooterStatus.Result;
+    _context.read<ValueNotifier<FooterStatus>>().value = FooterStatus.Result;
 
     /* remove all highlight - silently */
     players.removeAllHighlightsSilent();
@@ -237,12 +249,17 @@ class GameReplayActionService {
 
   /* this method sets no of cards & distributes the cards */
   Future<void> _distributeCards({GameReplayAction action}) async {
+    if (_close) return;
     GameState gameState = GameState.getState(_context);
 
+    if (_close) return;
     final players = gameState.getPlayers(_context);
 
+    if (_close) return;
     final handInfo = gameState.getHandInfo(_context);
     handInfo.update(noCards: action.noCards);
+
+    if (_close) return;
 
     /* set the table status to NEW_HAND and thus shows the card shuffle animation */
     final tableState = gameState.getTableState(_context);
@@ -267,6 +284,8 @@ class GameReplayActionService {
     /* for distributing the ith card, go through all the players, and give them */
     for (int seatNo in seatNos) {
       int localSeatNo = ((seatNo - mySeatNo) % 9) + 1;
+
+      if (_close) return;
 
       // start the animation
       _context.read<CardDistributionModel>().seatNo = localSeatNo;

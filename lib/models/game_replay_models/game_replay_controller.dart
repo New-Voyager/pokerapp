@@ -160,6 +160,8 @@ class GameReplayController {
 
   /* util methods */
   void dispose(BuildContext context) {
+    _actionService?.close();
+
     /* if we were playing something, stop that and dispose */
     if (_isPlaying) playOrPause();
 
