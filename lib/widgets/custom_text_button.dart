@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/resources/new/app_assets_new.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:timer_count_down/timer_count_down.dart';
 
@@ -25,9 +27,9 @@ class CustomTextButton extends StatelessWidget {
         split ? text?.replaceFirst(" ", "\n") ?? 'Text' : text ?? 'Text',
         textAlign: TextAlign.center,
         style: TextStyle(
-          fontFamily: AppAssets.fontFamilyLato,
+          fontFamily: AppAssetsNew.fontFamilyPoppins,
           fontSize: 16.0,
-          color: AppColors.appAccentColor,
+          color: AppColorsNew.newGreenButtonColor,
         ),
       ),
     );

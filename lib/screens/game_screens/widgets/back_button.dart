@@ -3,12 +3,19 @@ import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
+import 'package:pokerapp/resources/new/app_styles_new.dart';
 
 class CustomAppBar extends AppBar {
   final titleText;
   final subTitleText;
   final context;
-  CustomAppBar({Key key, this.titleText, this.subTitleText, this.context})
+  final actionsList;
+  CustomAppBar(
+      {Key key,
+      this.titleText,
+      this.subTitleText,
+      this.context,
+      this.actionsList})
       : super(
           key: key,
           backgroundColor: Colors.transparent,
@@ -22,12 +29,12 @@ class CustomAppBar extends AppBar {
                 children: [
                   Icon(
                     Icons.arrow_back_ios,
-                    color: AppColors.appAccentColor,
+                    color: AppColorsNew.newGreenButtonColor,
                     size: 13,
                   ),
                   Text(
                     AppStringsNew.BackText,
-                    style: AppStyles.titleBarTextStyle.copyWith(fontSize: 12),
+                    style: AppStylesNew.BackButtonTextStyle,
                   ),
                 ],
               ),
@@ -55,6 +62,7 @@ class CustomAppBar extends AppBar {
             ],
           ),
           centerTitle: true,
+          actions: actionsList ?? [],
         );
 
   // @override
