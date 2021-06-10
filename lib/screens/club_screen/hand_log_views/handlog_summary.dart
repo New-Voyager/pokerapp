@@ -5,6 +5,9 @@ import 'package:pokerapp/models/hand_log_model_new.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
+import 'package:pokerapp/resources/new/app_strings_new.dart';
+import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
 
 class HandlogSummary extends StatelessWidget {
@@ -13,26 +16,20 @@ class HandlogSummary extends StatelessWidget {
   HandlogSummary({this.handlogModel});
   @override
   Widget build(BuildContext context) {
-    log(handlogModel.toString());
-
     return Container(
       child: Column(
         children: [
           Container(
-            margin: EdgeInsets.symmetric(horizontal: 8),
+            margin: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             decoration: BoxDecoration(
-                color: Colors.blueGrey, borderRadius: BorderRadius.circular(7)),
+              color: AppColorsNew.newGreenRadialStartColor,
+              borderRadius: BorderRadius.circular(7),
+            ),
             padding: EdgeInsets.all(8),
             width: double.infinity,
             alignment: Alignment.center,
-            child: Text(
-              "Summary",
-              style: AppStyles.boldTitleTextStyle.copyWith(
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-                color: Colors.white,
-              ),
-            ),
+            child: Text(AppStringsNew.SummaryText,
+                style: AppStylesNew.valueTextStyle),
           ),
           Container(
             padding: EdgeInsets.only(bottom: 16),
@@ -48,7 +45,8 @@ class HandlogSummary extends StatelessWidget {
               separatorBuilder: (context, index) => Divider(
                 endIndent: 16,
                 indent: 16,
-                color: AppColors.veryLightGrayColor,
+                color: AppColorsNew.newBackgroundBlackColor,
+                height: 1,
               ),
             ),
           ),
@@ -71,7 +69,9 @@ class HandlogSummary extends StatelessWidget {
       );
     }
     return Container(
-      margin: EdgeInsets.only(top: 5, bottom: 5, left: 16, right: 16),
+      decoration: AppStylesNew.actionRowDecoration,
+      margin: EdgeInsets.symmetric(horizontal: 8),
+      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -80,7 +80,7 @@ class HandlogSummary extends StatelessWidget {
             flex: 4,
             child: Text(
               playerName,
-              style: AppStyles.playerNameTextStyle,
+              style: AppStylesNew.playerNameTextStyle,
               textAlign: TextAlign.left,
             ),
           ),
@@ -93,10 +93,9 @@ class HandlogSummary extends StatelessWidget {
             child: Text(
               diff.toString(),
               style: TextStyle(
-                fontFamily: AppAssets.fontFamilyLato,
                 color: (diff > 0) ? Colors.green : Colors.red,
                 fontSize: 12.0,
-                fontWeight: FontWeight.w600,
+                fontWeight: FontWeight.w500,
               ),
               textAlign: TextAlign.center,
             ),
@@ -105,12 +104,7 @@ class HandlogSummary extends StatelessWidget {
             flex: 2,
             child: Text(
               player.balance.after.toString(),
-              style: const TextStyle(
-                fontFamily: AppAssets.fontFamilyLato,
-                color: Colors.white,
-                fontSize: 12.0,
-                fontWeight: FontWeight.w600,
-              ),
+              style: AppStylesNew.potSizeTextStyle,
               textAlign: TextAlign.right,
             ),
           ),

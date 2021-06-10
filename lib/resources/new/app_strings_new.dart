@@ -32,4 +32,6 @@ class AppStringsNew {
   static const BookmarkedHandsTitle = "Bookmarked Hands";
 
   static const HighHandlogTitle = "High Handlog";
+  static const HandlogTitle = "Hand Log";
+  static const SummaryText = "Summary";
 }

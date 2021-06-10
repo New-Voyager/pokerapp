@@ -8,6 +8,7 @@ import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
+import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/club_screen/club_banner_view/club_banner_view.dart';
 import 'package:pokerapp/screens/club_screen/club_banner_view/club_graphics_view.dart';
@@ -92,16 +93,7 @@ class _ClubMainScreenNewState extends State<ClubMainScreenNew> with RouteAware {
             : ListenableProvider<ClubHomePageModel>(
                 create: (_) => clubModel,
                 child: Container(
-                  decoration: BoxDecoration(
-                    gradient: RadialGradient(
-                      colors: [
-                        AppColorsNew.newGreenRadialStartColor,
-                        AppColorsNew.newBackgroundBlackColor,
-                      ],
-                      center: Alignment.topLeft,
-                      radius: 1.5,
-                    ),
-                  ),
+                  decoration: AppStylesNew.BgGreenRadialGradient,
                   child: Scaffold(
                     backgroundColor: Colors.transparent,
                     appBar: CustomAppBar(

@@ -5,6 +5,8 @@ import 'package:pokerapp/enums/game_stages.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
+import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_stage_header.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/widgets/cards/multiple_stack_card_views.dart';
@@ -14,7 +16,6 @@ class HandlogShowDown extends StatelessWidget {
   HandlogShowDown({this.handLogModel});
   @override
   Widget build(BuildContext context) {
-    log("STAGEDDDDD - ${handLogModel.hand.handLog.wonAt.toString()}");
     if (handLogModel.hand.handLog.wonAt != GameStages.SHOWDOWN) {
       return Container();
     }
@@ -26,10 +27,6 @@ class HandlogShowDown extends StatelessWidget {
           stageCards: handLogModel.hand.boardCards,
         ),
         Container(
-          padding: EdgeInsets.only(
-            top: 16,
-            bottom: 16,
-          ),
           child: ListView.separated(
             shrinkWrap: true,
             physics: ClampingScrollPhysics(),
@@ -39,26 +36,26 @@ class HandlogShowDown extends StatelessWidget {
                 return Container();
               }
               return Container(
-                margin: EdgeInsets.symmetric(horizontal: 16, vertical: 2),
+                margin: EdgeInsets.symmetric(horizontal: 8),
+                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                decoration: BoxDecoration(
+                  color: AppColorsNew.actionRowBgColor,
+                  borderRadius: BorderRadius.circular(5),
+                ),
                 child: Row(
                   children: [
                     Expanded(
-                      flex: 2,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            getPlayerNameBySeatNo(
-                              handLogModel: handLogModel,
-                              seatNo: player.seatNo,
-                            ),
-                            style: AppStyles.playerNameTextStyle,
-                          ),
-                        ],
+                      flex: 3,
+                      child: Text(
+                        getPlayerNameBySeatNo(
+                          handLogModel: handLogModel,
+                          seatNo: player.seatNo,
+                        ),
+                        style: AppStylesNew.playerNameTextStyle,
                       ),
                     ),
                     Expanded(
-                      flex: 2,
+                      flex: 4,
                       child: StackCardView00(
                         cards: player.cards,
                       ),
@@ -75,7 +72,8 @@ class HandlogShowDown extends StatelessWidget {
               return Divider(
                 endIndent: 16,
                 indent: 16,
-                color: AppColors.veryLightGrayColor,
+                color: AppColorsNew.newBackgroundBlackColor,
+                height: 1,
               );
             },
             itemCount: handLogModel.hand.playersInSeats.length,

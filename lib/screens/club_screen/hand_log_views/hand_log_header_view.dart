@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_stages.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
 import 'package:pokerapp/resources/app_assets.dart';
+import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/widgets/cards/multiple_stack_card_views.dart';
 
 class HandLogHeaderView extends StatelessWidget {
@@ -20,45 +21,41 @@ class HandLogHeaderView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              Colors.grey[850],
-              Colors.grey[700],
-            ],
-          ),
-          borderRadius: BorderRadius.circular(8)),
+      padding: EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+      decoration: AppStylesNew.gradientBoxDecoration,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            margin: EdgeInsets.all(8),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  "Game: " + _handLogModel.hand.gameId,
-                  style: const TextStyle(
-                    fontFamily: AppAssets.fontFamilyLato,
-                    color: Colors.white,
-                    fontSize: 14.0,
-                    fontWeight: FontWeight.w400,
-                  ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "Game: " + _handLogModel.hand.gameId,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 12.0,
+                  fontWeight: FontWeight.w300,
                 ),
-                Text(
-                  "Hand: #" + _handLogModel.hand.handNum.toString(),
-                  style: const TextStyle(
-                    fontFamily: AppAssets.fontFamilyLato,
-                    color: Colors.white,
-                    fontSize: 14.0,
-                    fontWeight: FontWeight.w400,
-                  ),
+              ),
+              Text(
+                _handLogModel.hand.gameType,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 14.0,
+                  fontWeight: FontWeight.w500,
                 ),
-              ],
-            ),
+              ),
+              Text(
+                "Hand: #" + _handLogModel.hand.handNum.toString(),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 12.0,
+                  fontWeight: FontWeight.w300,
+                ),
+              ),
+            ],
           ),
           Container(
-            margin: EdgeInsets.only(left: 8, right: 8, bottom: 8),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -73,10 +70,9 @@ class HandLogHeaderView extends StatelessWidget {
                         child: Text(
                           "Community Cards",
                           style: const TextStyle(
-                            fontFamily: AppAssets.fontFamilyLato,
                             color: Colors.white,
-                            fontSize: 14.0,
-                            fontWeight: FontWeight.w400,
+                            fontSize: 10.0,
+                            fontWeight: FontWeight.w300,
                           ),
                         ),
                       ),
@@ -89,7 +85,9 @@ class HandLogHeaderView extends StatelessWidget {
                   ),
                 ),
                 Container(
-                  margin: EdgeInsets.only(top: 5, bottom: 5),
+                  margin: EdgeInsets.only(
+                    top: 5,
+                  ),
                   child: Visibility(
                     visible: _handLogModel.getMyCards().length > 0,
                     child: Column(
@@ -101,10 +99,9 @@ class HandLogHeaderView extends StatelessWidget {
                           child: Text(
                             "Your Cards",
                             style: const TextStyle(
-                              fontFamily: AppAssets.fontFamilyLato,
                               color: Colors.white,
-                              fontSize: 14.0,
-                              fontWeight: FontWeight.w400,
+                              fontSize: 10.0,
+                              fontWeight: FontWeight.w300,
                             ),
                           ),
                         ),
