@@ -652,21 +652,22 @@ class HandActionService {
     /* play an sound effect alerting the user */
 
     if (_close) return;
-    Audio.play(
-      context: _context,
-      assetFile: AppAssets.playerTurnSound,
-    );
+
 
     if (_close) return;
     final me = _gameState.me(_context);
     if (me == null) {
       return;
     }
+
     var seatAction = data['seatAction'];
     int seatNo = int.parse(seatAction['seatNo'].toString());
     if (me.seatNo != seatNo) {
       return;
     }
+    _gameState
+        .getAudioBytes(AppAssets.playerTurnSound)
+        .then((value) => audioPlayer.playBytes(value));
 
     /* this part handles if we receive a prompt for run it twice */
     List<String> availableActions = seatAction['availableActions']
@@ -758,11 +759,10 @@ class HandActionService {
     if (_close) return;
 
     // play the deal sound effect
-    Audio.play(
-      context: _context,
-      assetFile: AppAssets.dealSound,
-    );
-
+    _gameState
+        .getAudioBytes(AppAssets.dealSound)
+        .then((value) => audioPlayer.playBytes(value));
+    
     if (_close) return;
 
     final players = _gameState.getPlayers(_context);
@@ -858,6 +858,10 @@ class HandActionService {
 
     // update the community cards
     if (stage == 'flop') {
+      _gameState
+          .getAudioBytes(AppAssets.flopSound)
+          .then((value) => audioPlayer.playBytes(value));
+
       var board = data[stage]['board'];
       List<CardObject> cards = [];
       for (int i = 0; i < 3; i++) {
@@ -871,9 +875,16 @@ class HandActionService {
 
       tableState.addFlopCards(1, cards);
     } else if (stage == 'turn') {
+      _gameState
+          .getAudioBytes(AppAssets.turnRiverSound)
+          .then((value) => audioPlayer.playBytes(value));
+
       tableState.addTurnOrRiverCard(
           1, CardHelper.getCard(data[stage]['${stage}Card']));
     } else if (stage == 'river') {
+      _gameState
+          .getAudioBytes(AppAssets.turnRiverSound)
+          .then((value) => audioPlayer.playBytes(value));
       tableState.addTurnOrRiverCard(
           1, CardHelper.getCard(data[stage]['${stage}Card']));
     }
@@ -1222,6 +1233,9 @@ class HandActionService {
     int highWinnersTimeInMs =
         lowWinners.isEmpty ? totalWaitTimeInMs : totalWaitTimeInMs ~/ 2;
     int lowWinnersTimeInMs = totalWaitTimeInMs ~/ 2;
+    gameState
+        .getAudioBytes(AppAssets.applauseSound)
+        .then((value) => gameState.audioPlayer.playBytes(value));
 
     /** process the high pot winners: this method already takes 500ms*/
     await processWinners(
@@ -1237,6 +1251,7 @@ class HandActionService {
         highWinnersTimeInMs - AppConstants.animationDuration.inMilliseconds;
 
     await Future.delayed(Duration(milliseconds: balancedMstoWait));
+    gameState.audioPlayer.stop();
 
     /* if we dont have any low winners to show AND we are from
     replay hand, we end the function call here */
@@ -1248,6 +1263,9 @@ class HandActionService {
       players: players,
       gameState: gameState,
     );
+    gameState
+        .getAudioBytes(AppAssets.turnRiverSound)
+        .then((value) => gameState.audioPlayer.playBytes(value));
 
     // this method takes another 500 MS
     /** process the low pot winners */
@@ -1264,6 +1282,7 @@ class HandActionService {
         lowWinnersTimeInMs - AppConstants.animationDuration.inMilliseconds;
 
     await Future.delayed(Duration(milliseconds: balancedMstoWait));
+    gameState.audioPlayer.stop();
 
     /* if we are from replay, we dont need to clear the result state */
     if (fromReplay || resetState) return;
