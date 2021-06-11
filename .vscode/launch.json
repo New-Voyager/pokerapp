@@ -13,6 +13,12 @@
       "name": "pokerapp",
       "request": "launch",
       "type": "dart"
-    }
+    },
+    {
+      "name": "pokerapp-10inch",
+      "request": "launch",
+      "type": "dart",
+      "deviceId": "HA18R0HZ"
+    }    
   ]
 }
