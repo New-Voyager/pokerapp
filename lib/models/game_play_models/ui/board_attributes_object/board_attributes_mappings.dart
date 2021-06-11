@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_type.dart';
+import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:tuple/tuple.dart';
 
 /* seat changing stack offset mappings */
@@ -116,47 +117,6 @@ const Map<int, Offset> kFoldCardAnimationOffsetVerticalMapping = {
   7: Offset(-80, -30),
   8: Offset(-80, -50),
   9: Offset(-80, -80),
-};
-
-// fixme: these are not correct values
-const Map<int, Offset> kFoldCardAnimationOffsetHorizontalMapping2 = {
-  1: Offset(20, -140),
-  2: Offset(20, 20),
-};
-const Map<int, Offset> kFoldCardAnimationOffsetHorizontalMapping4 = {
-  1: Offset(20, -140),
-  2: Offset(100, -50),
-  3: Offset(20, 20),
-  4: Offset(-70, -50),
-};
-const Map<int, Offset> kFoldCardAnimationOffsetHorizontalMapping6 = {
-  1: Offset(20, -140),
-  2: Offset(100, -50),
-  3: Offset(100, 0),
-  4: Offset(20, 20),
-  5: Offset(-70, 0),
-  6: Offset(-70, -50),
-};
-const Map<int, Offset> kFoldCardAnimationOffsetHorizontalMapping8 = {
-  1: Offset(20, -140),
-  2: Offset(100, -120),
-  3: Offset(100, -50),
-  4: Offset(100, 0),
-  5: Offset(30, 20),
-  6: Offset(-70, 0),
-  7: Offset(-70, -50),
-  8: Offset(-70, -120),
-};
-const Map<int, Offset> kFoldCardAnimationOffsetHorizontalMapping9 = {
-  1: Offset(20, -140),
-  2: Offset(100, -120),
-  3: Offset(100, -50),
-  4: Offset(100, 0),
-  5: Offset(30, 20),
-  6: Offset(-10, 20),
-  7: Offset(-70, 0),
-  8: Offset(-70, -50),
-  9: Offset(-70, -120),
 };
 
 /* dealer button position */

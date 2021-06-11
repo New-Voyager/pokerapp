@@ -19,13 +19,14 @@ class FoldCardAnimatingWidget extends StatelessWidget {
     final ba = context.read<BoardAttributesObject>();
     final gameState = context.read<GameState>();
 
-    Map offsetMapping = ba.foldCardPos(gameState.gameInfo.maxPlayers);
+    Map<SeatPos, Offset> offsetMapping =
+        ba.foldCardPos(gameState.gameInfo.maxPlayers);
 
     final widget = TweenAnimationBuilder<Offset>(
       curve: Curves.linearToEaseOut,
       tween: Tween<Offset>(
-        begin: Offset(0, 0),
-        end: offsetMapping[this.seat.serverSeatPos],
+        begin: Offset.zero,
+        end: offsetMapping[this.seat.uiSeatPos],
       ),
       child: HiddenCardView(
         noOfCards: seat.player.noOfCardsVisible,
@@ -38,7 +39,7 @@ class FoldCardAnimatingWidget extends StatelessWidget {
       duration: AppConstants.animationDuration,
       builder: (_, offset, child) {
         /* percentage of animation done */
-        double pertDone = offset.dx / offsetMapping[this.seat.serverSeatPos].dx;
+        double pertDone = offset.dx / offsetMapping[this.seat.uiSeatPos].dx;
 
         /* we start fading away the card after the cards have moved 90% */
         double opacityValue = pertDone > 0.90 ? (10 - 10 * pertDone) : 1.0;

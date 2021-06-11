@@ -106,10 +106,12 @@ class GameInfoModel {
     this.janusToken = data['janusToken'];
     this.janusSecret = data['janusSecret'];
 
-    for (final playerData in data['allPlayers']) {
-      final gamePlayer =
-          GamePlayer(playerData['id'], playerData['name'], playerData['uuid']);
-      this.allPlayers[gamePlayer.id] = gamePlayer;
+    if (data['allPlayers'] != null) {
+      for (final playerData in data['allPlayers']) {
+        final gamePlayer = GamePlayer(
+            playerData['id'], playerData['name'], playerData['uuid']);
+        this.allPlayers[gamePlayer.id] = gamePlayer;
+      }
     }
   }
 

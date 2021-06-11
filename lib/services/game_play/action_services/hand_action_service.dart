@@ -760,7 +760,7 @@ class HandActionService {
     _gameState
         .getAudioBytes(AppAssets.dealSound)
         .then((value) => audioPlayer.playBytes(value));
-    
+
     if (_close) return;
 
     final players = _gameState.getPlayers(_context);

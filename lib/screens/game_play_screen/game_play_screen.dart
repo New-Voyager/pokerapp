@@ -93,8 +93,9 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         await TestService.load();
         gameInfo = TestService.gameInfo;
         this._currentPlayer = TestService.currentPlayer;
-      } catch (e) {
-        print('test data loading error: $e');
+      } catch (e, s) {
+        print('test data loading error: $s');
+        return null;
       }
     } else {
       debugPrint('fetching game data: ${widget.gameCode}');
@@ -229,7 +230,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
     // setting voiceChatEnable to true if gameComService is active
     log('gameComService.active = ${gameComService.active}');
-    if(gameComService.active){
+    if (gameComService.active) {
       _gameState.getCommunicationState().voiceChatEnable = true;
       _gameState.getCommunicationState().notify();
     }
@@ -340,7 +341,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         () => _gameInfoModel = gameInfoModel,
       ),
     );
-
   }
 
   Widget _buildChatWindow(BuildContext context) =>

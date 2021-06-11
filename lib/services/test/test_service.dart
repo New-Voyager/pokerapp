@@ -34,7 +34,7 @@ import 'iap_test.dart';
 
 class TestService {
   static bool get isTesting {
-    return false;
+    return true;
   }
 
   static var _showResult = false;
@@ -124,9 +124,6 @@ class TestService {
           playerInSeats.add(player);
         }
       }
-
-      // this removes a player from middle
-      playerInSeats.removeAt(4);
 
       _gameInfo.playersInSeats = playerInSeats;
 
@@ -502,9 +499,7 @@ class TestService {
   }
 
   static Future<void> fold() async {
-    final gameState = GameState.getState(_context);
     initHandSevice();
-
     await _handActionService.handle(foldMessage());
   }
 
