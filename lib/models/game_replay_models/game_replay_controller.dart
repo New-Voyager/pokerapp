@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
@@ -16,6 +17,7 @@ class GameReplayController {
 
   StreamController<bool> _isPlayingStreamController;
   StreamController<bool> _isEnded;
+  AudioPlayer _audioPlayer;
 
   bool _isPlaying;
   bool _goNext;
@@ -34,6 +36,7 @@ class GameReplayController {
     this._isPlayingStreamController = StreamController<bool>.broadcast();
     this._isEnded = StreamController<bool>.broadcast();
     this._isPlaying = false;
+    this._audioPlayer = AudioPlayer();
 
     this._actionCounter = -1;
   }
@@ -143,7 +146,7 @@ class GameReplayController {
   /* this method initializes the controller, i.e puts data into the provider models
     & other initial setups are done here*/
   void initController(BuildContext context) {
-    _actionService = GameReplayActionService(context);
+    _actionService = GameReplayActionService(context, this._audioPlayer);
 
     isPlaying.listen((bool _isPlaying) {
       if (_isPlaying) _load(_getNextAction());

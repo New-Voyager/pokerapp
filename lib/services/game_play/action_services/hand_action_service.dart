@@ -878,14 +878,14 @@ class HandActionService {
       tableState.addFlopCards(1, cards);
     } else if (stage == 'turn') {
       _gameState
-          .getAudioBytes(AppAssets.turnRiverSound)
+          .getAudioBytes(AppAssets.flopSound)
           .then((value) => audioPlayer.playBytes(value));
 
       tableState.addTurnOrRiverCard(
           1, CardHelper.getCard(data[stage]['${stage}Card']));
     } else if (stage == 'river') {
       _gameState
-          .getAudioBytes(AppAssets.turnRiverSound)
+          .getAudioBytes(AppAssets.flopSound)
           .then((value) => audioPlayer.playBytes(value));
       tableState.addTurnOrRiverCard(
           1, CardHelper.getCard(data[stage]['${stage}Card']));
@@ -1225,6 +1225,7 @@ class HandActionService {
     final gameState,
     final tableState,
     final players,
+    final AudioPlayer audioPlayer,
     final int boardIndex = 1,
     final bool fromReplay = false,
     final bool resetState = false,
@@ -1236,9 +1237,10 @@ class HandActionService {
     int highWinnersTimeInMs =
         lowWinners.isEmpty ? totalWaitTimeInMs : totalWaitTimeInMs ~/ 2;
     int lowWinnersTimeInMs = totalWaitTimeInMs ~/ 2;
-    gameState
-        .getAudioBytes(AppAssets.applauseSound)
-        .then((value) => gameState.audioPlayer.playBytes(value));
+    gameState.getAudioBytes(AppAssets.applauseSound).then((value) {
+      log('playing applause sound');
+      audioPlayer.playBytes(value);
+    });
 
     /** process the high pot winners: this method already takes 500ms*/
     await processWinners(
@@ -1254,7 +1256,7 @@ class HandActionService {
         highWinnersTimeInMs - AppConstants.animationDuration.inMilliseconds;
 
     await Future.delayed(Duration(milliseconds: balancedMstoWait));
-    gameState.audioPlayer.stop();
+    audioPlayer.stop();
 
     /* if we dont have any low winners to show AND we are from
     replay hand, we end the function call here */
@@ -1305,6 +1307,7 @@ class HandActionService {
     @required final List<int> boardCards,
     @required final List<int> boardCards2,
     @required final BuildContext context,
+    @required final AudioPlayer audioPlayer,
     final bool fromReplay = false,
   }) async {
     assert(context != null);
@@ -1370,6 +1373,7 @@ class HandActionService {
           players: players,
           fromReplay: fromReplay,
           resetState: true,
+          audioPlayer: audioPlayer,
         );
 
         // UN highlight the req pot no
@@ -1416,6 +1420,7 @@ class HandActionService {
           players: players,
           boardIndex: 2,
           fromReplay: fromReplay,
+          audioPlayer: audioPlayer,
         );
 
         // UN highlight the req pot no
@@ -1456,13 +1461,13 @@ class HandActionService {
 
         /* this method should complete in timePerPotInMs time */
         await processForHighWinnersDelayProcessForLowWinners(
-          highWinners: highWinners,
-          lowWinners: lowWinners,
-          players: players,
-          gameState: gameState,
-          tableState: tableState,
-          fromReplay: fromReplay,
-        );
+            highWinners: highWinners,
+            lowWinners: lowWinners,
+            players: players,
+            gameState: gameState,
+            tableState: tableState,
+            fromReplay: fromReplay,
+            audioPlayer: audioPlayer);
 
         // UN highlight the req pot no
         tableState.updatePotToHighlightSilent(-1);
@@ -1555,6 +1560,15 @@ class HandActionService {
 
     final runItTwiceResult = handResult['handLog']['runItTwiceResult'];
     final potWinners = handResult['handLog']['potWinners'];
+    final wonAt = handResult['handLog']['wonAt'];
+
+    if (wonAt == 'FLOP') {
+      boardCards = boardCards.sublist(0, 3);
+    } else if (wonAt == 'TURN') {
+      boardCards = boardCards.sublist(0, 4);
+    } else if (wonAt == 'PREFLOP') {
+      boardCards = [];
+    }
 
     if (_close) return;
     updatePotBeforeResultStatic(
@@ -1572,6 +1586,7 @@ class HandActionService {
       boardCards: boardCards,
       boardCards2: boardCards2,
       context: _context,
+      audioPlayer: audioPlayer,
     );
 
     final MarkedCards markedCards = _gameState.getMarkedCards(_context);

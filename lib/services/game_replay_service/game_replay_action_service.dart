@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
@@ -10,6 +11,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_replay_models/game_replay_action.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
+import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_service.dart';
 import 'package:pokerapp/utils/card_helper.dart';
@@ -18,8 +20,8 @@ import 'package:provider/provider.dart';
 class GameReplayActionService {
   final BuildContext _context;
   bool _close = false;
-
-  GameReplayActionService(this._context);
+  final AudioPlayer _audioPlayer;
+  GameReplayActionService(this._context, this._audioPlayer);
 
   void close() => _close = true;
 
@@ -75,12 +77,16 @@ class GameReplayActionService {
 
     assert(idx != -1);
 
-    if (action.action == HandActions.FOLD)
+    if (action.action == HandActions.FOLD) {
+      gameState
+          .getAudioBytes(AppAssets.foldSound)
+          .then((value) => _audioPlayer.playBytes(value));
+
       players.updatePlayerFoldedStatusSilent(
         idx,
         true,
       );
-    else {
+    } else {
       if (_close) return;
       final seat = gameState.getSeat(_context, action.seatNo);
       seat.player.action.setAction(action);
@@ -97,6 +103,17 @@ class GameReplayActionService {
     }
 
     if (_close) return;
+
+    if (action.action == HandActions.CHECK) {
+      gameState
+          .getAudioBytes(AppAssets.checkSound)
+          .then((value) => _audioPlayer.playBytes(value));
+    } else {
+      gameState
+          .getAudioBytes(AppAssets.betRaiseSound)
+          .then((value) => _audioPlayer.playBytes(value));
+    }
+
     final tableState = gameState.getTableState(_context);
 
     tableState.updatePotChipsSilent(
@@ -219,6 +236,7 @@ class GameReplayActionService {
       boardCards2: action.boardCards2,
       potWinners: null,
       context: _context,
+      audioPlayer: _audioPlayer,
     );
   }
 
@@ -237,20 +255,23 @@ class GameReplayActionService {
     );
 
     return HandActionService.handleResultStatic(
-      fromReplay: true,
-      isRunItTwice: false,
-      runItTwiceResult: null,
-      boardCards2: null,
-      potWinners: potWinners,
-      boardCards: action.boardCards,
-      context: _context,
-    );
+        fromReplay: true,
+        isRunItTwice: false,
+        runItTwiceResult: null,
+        boardCards2: null,
+        potWinners: potWinners,
+        boardCards: action.boardCards,
+        context: _context,
+        audioPlayer: _audioPlayer);
   }
 
   /* this method sets no of cards & distributes the cards */
   Future<void> _distributeCards({GameReplayAction action}) async {
     if (_close) return;
     GameState gameState = GameState.getState(_context);
+    gameState
+        .getAudioBytes(AppAssets.dealSound)
+        .then((value) => _audioPlayer.playBytes(value));
 
     if (_close) return;
     final players = gameState.getPlayers(_context);
