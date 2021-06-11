@@ -32,7 +32,7 @@ class ClubGraphicsViewNew extends StatelessWidget {
   Widget build(BuildContext context) {
     loadWeeklyActivityData();
     return Container(
-      height: 130.ph,
+      height: MediaQuery.of(context).size.height / 5,
       margin: EdgeInsets.all(8.0.pw),
       child: Row(
         children: [
