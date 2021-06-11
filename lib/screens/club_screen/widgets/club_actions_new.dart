@@ -104,7 +104,7 @@ class ClubActionsNew extends StatelessWidget {
             ),
           ],
         ),
-        AppDimensionsNew.getVerticalSizedBox(16.pt),
+        AppDimensionsNew.getVerticalSizedBox(16.ph),
         Row(
           children: [
             Expanded(

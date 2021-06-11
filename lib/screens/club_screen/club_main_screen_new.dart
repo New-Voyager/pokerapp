@@ -68,10 +68,10 @@ class _ClubMainScreenNewState extends State<ClubMainScreenNew> with RouteAware {
   Widget _buildMainBody(ClubHomePageModel clubModel) => Stack(
         children: [
           Container(
-            margin: EdgeInsets.only(top: 60.pt),
+            margin: EdgeInsets.only(top: 60.ph),
           ),
           Container(
-            margin: EdgeInsets.only(top: 20.pt),
+            margin: EdgeInsets.only(top: 20.ph),
             child: SingleChildScrollView(
               physics: BouncingScrollPhysics(),
               child: Column(
@@ -92,7 +92,7 @@ class _ClubMainScreenNewState extends State<ClubMainScreenNew> with RouteAware {
                   ClubLiveGamesView(clubModel.liveGames),
 
                   // seperator
-                  AppDimensionsNew.getVerticalSizedBox(16.pt),
+                  AppDimensionsNew.getVerticalSizedBox(16.ph),
 
                   // club actions
                   ClubActionsNew(
@@ -101,7 +101,7 @@ class _ClubMainScreenNewState extends State<ClubMainScreenNew> with RouteAware {
                   ),
 
                   // seperator
-                  AppDimensionsNew.getVerticalSizedBox(16.pt),
+                  AppDimensionsNew.getVerticalSizedBox(16.ph),
                 ],
               ),
             ),
@@ -140,7 +140,7 @@ class _ClubMainScreenNewState extends State<ClubMainScreenNew> with RouteAware {
                             AppColorsNew.newBackgroundBlackColor,
                           ],
                           center: Alignment.topLeft,
-                          radius: 0.80.pt,
+                          radius: 0.80.pw,
                         ),
                       ),
                       child: Scaffold(
@@ -152,8 +152,8 @@ class _ClubMainScreenNewState extends State<ClubMainScreenNew> with RouteAware {
                                 ? Container()
                                 : Container(
                                     padding: EdgeInsets.only(
-                                      top: 8.pt,
-                                      right: 16.pt,
+                                      top: 8.ph,
+                                      right: 16.pw,
                                     ),
                                     child: CustomTextButton(
                                       onTap: () async {

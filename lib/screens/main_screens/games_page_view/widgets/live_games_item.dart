@@ -19,23 +19,23 @@ class LiveGameItem extends StatelessWidget {
       children: [
         Container(
           margin: EdgeInsets.symmetric(
-            horizontal: 12.pt,
+            horizontal: 12.pw,
           ),
           padding: EdgeInsets.only(
-            left: 16.pt,
-            top: 8.pt,
-            bottom: 8.pt,
+            left: 16.pw,
+            top: 8.ph,
+            bottom: 8.ph,
           ),
           constraints: BoxConstraints(
-            minHeight: 130.pt,
+            minHeight: 100.ph,
           ),
           decoration: BoxDecoration(
             border: Border.all(
               color: AppColorsNew.newBorderColor,
-              width: 2.pt,
+              width: 2.pw,
             ),
             borderRadius: BorderRadius.circular(
-              8.pt,
+              8.pw,
             ),
             color: AppColorsNew.newBackgroundBlackColor,
             image: DecorationImage(
@@ -55,13 +55,13 @@ class LiveGameItem extends StatelessWidget {
                   children: [
                     Image.asset(
                       AppAssetsNew.pathGameTypeChipImage,
-                      height: 100.pt,
-                      width: 100.pt,
+                      height: 100.ph,
+                      width: 100.ph,
                     ),
                     Image.asset(
                       GameModelNew.getGameTypeImageAsset(game.gameType),
-                      height: 60.pt,
-                      width: 60.pt,
+                      height: 60.ph,
+                      width: 60.ph,
                       alignment: Alignment.center,
                     ),
                   ],
@@ -70,7 +70,7 @@ class LiveGameItem extends StatelessWidget {
               Expanded(
                   flex: 9,
                   child: Container(
-                    margin: EdgeInsets.only(left: 16.pt),
+                    margin: EdgeInsets.only(left: 16.pw),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -81,19 +81,19 @@ class LiveGameItem extends StatelessWidget {
                               '${AppStringsNew.BuyIn}: ${game.buyInMin}-${game.buyInMax}',
                               style: AppStylesNew.buyInTextStyle,
                             ),
-                            AppDimensionsNew.getHorizontalSpace(16.pt),
+                            AppDimensionsNew.getHorizontalSpace(16.pw),
                           ],
                         ),
                         Text(
                           "${GameModelNew.getGameTypeStr(game.gameType)} ${game.smallBlind}/${game.bigBlind}",
                           style: AppStylesNew.gameTypeTextStyle,
                         ),
-                        AppDimensionsNew.getVerticalSizedBox(4.pt),
+                        AppDimensionsNew.getVerticalSizedBox(4.ph),
                         Text(
                           "${AppStringsNew.GameId} - ${game.gameCode}",
                           style: AppStylesNew.gameIdTextStyle,
                         ),
-                        AppDimensionsNew.getVerticalSizedBox(2.pt),
+                        AppDimensionsNew.getVerticalSizedBox(2.ph),
                         Text(
                           GameModelNew.getSeatsAvailble(game) > 0
                               ? "${game.maxPlayers} ${AppStringsNew.OpenSeats}"
@@ -102,7 +102,7 @@ class LiveGameItem extends StatelessWidget {
                                   : "${AppStringsNew.TableFull}",
                           style: AppStylesNew.openSeatsTextStyle,
                         ),
-                        AppDimensionsNew.getVerticalSizedBox(8.pt),
+                        AppDimensionsNew.getVerticalSizedBox(8.ph),
                         Text(
                           "${AppStringsNew.Started} ${GameModelNew.getTimeInHHMMFormat(game)} ${AppStringsNew.Ago}.",
                           style: AppStylesNew.elapsedTimeTextStyle,
@@ -114,8 +114,8 @@ class LiveGameItem extends StatelessWidget {
           ),
         ),
         Positioned(
-          bottom: 20.pt,
-          right: 5.pt,
+          bottom: 20.ph,
+          right: 5.pw,
           child: InkWell(
             onTap: onTapFunction,
             child: Container(
@@ -126,11 +126,11 @@ class LiveGameItem extends StatelessWidget {
                 style: AppStylesNew.joinTextStyle,
               ),
               padding: EdgeInsets.symmetric(
-                horizontal: 14.pt,
-                vertical: 3.pt,
+                horizontal: 14.pw,
+                vertical: 3.ph,
               ),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16.pt),
+                borderRadius: BorderRadius.circular(16.pw),
                 image: DecorationImage(
                   image: AssetImage(
                     AppAssetsNew.pathJoinBackground,
@@ -140,8 +140,8 @@ class LiveGameItem extends StatelessWidget {
                 boxShadow: [
                   BoxShadow(
                     color: Colors.amber,
-                    offset: Offset(1.pt, 0),
-                    blurRadius: 5.pt,
+                    offset: Offset(1.pw, 0),
+                    blurRadius: 5.pw,
                   )
                 ],
               ),

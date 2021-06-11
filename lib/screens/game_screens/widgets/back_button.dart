@@ -21,9 +21,9 @@ class CustomAppBar extends AppBar {
           key: key,
           backgroundColor: Colors.transparent,
           elevation: 0,
-          leadingWidth: 100.pt,
+          leadingWidth: 100.pw,
           leading: Padding(
-            padding: EdgeInsets.only(left: 16.pt),
+            padding: EdgeInsets.only(left: 16.pw),
             child: InkWell(
               child: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -31,16 +31,16 @@ class CustomAppBar extends AppBar {
                   Icon(
                     Icons.arrow_back_ios,
                     color: AppColorsNew.newGreenButtonColor,
-                    size: 14.pt,
+                    size: 14.pw,
                   ),
-                  SizedBox(width: 1.5.pt),
+                  SizedBox(width: 1.5.ph),
                   Text(
                     AppStringsNew.BackText,
                     style: AppStylesNew.backButtonTextStyle,
                   ),
                 ],
               ),
-              borderRadius: BorderRadius.circular(8.pt),
+              borderRadius: BorderRadius.circular(8.pw),
               onTap: () => Navigator.of(context).pop(),
             ),
           ),
@@ -67,13 +67,4 @@ class CustomAppBar extends AppBar {
           centerTitle: true,
           actions: actionsList ?? [],
         );
-
-  // @override
-  // Widget build(BuildContext context) {
-  //   return AppBar(
-  //     centerTitle: true,
-  //     backgroundColor: Colors.transparent,
-  //     leading:
-  //   );
-  // }
 }

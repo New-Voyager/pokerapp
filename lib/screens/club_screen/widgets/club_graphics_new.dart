@@ -32,15 +32,15 @@ class ClubGraphicsViewNew extends StatelessWidget {
   Widget build(BuildContext context) {
     loadWeeklyActivityData();
     return Container(
-      height: 130.pt,
-      margin: EdgeInsets.all(8.0.pt),
+      height: 130.ph,
+      margin: EdgeInsets.all(8.0.pw),
       child: Row(
         children: [
           Expanded(
             flex: 3,
             child: Container(
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8.pt),
+                borderRadius: BorderRadius.circular(8.pw),
                 color: AppColorsNew.newBackgroundBlackColor,
               ),
               child: Column(
@@ -48,16 +48,16 @@ class ClubGraphicsViewNew extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Container(
-                    margin: EdgeInsets.all(5.pt),
-                    padding: EdgeInsets.all(8.pt),
+                    margin: EdgeInsets.all(5.pw),
+                    padding: EdgeInsets.all(8.pw),
                     child: Text(
                       "Unsettled",
                       style: AppStylesNew.gameActionTextStyle,
                     ),
                   ),
                   Container(
-                    margin: EdgeInsets.all(5.pt),
-                    padding: EdgeInsets.all(8.pt),
+                    margin: EdgeInsets.all(5.pw),
+                    padding: EdgeInsets.all(8.pw),
                     alignment: Alignment.centerLeft,
                     child: Text(
                       _unsettledBalance.toString(),
@@ -73,13 +73,13 @@ class ClubGraphicsViewNew extends StatelessWidget {
               ),
             ),
           ),
-          AppDimensionsNew.getHorizontalSpace(8.pt),
+          AppDimensionsNew.getHorizontalSpace(8.pw),
           Expanded(
             flex: 7,
             child: Container(
-              padding: EdgeInsets.all(8.pt),
+              padding: EdgeInsets.all(8.pw),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8.pt),
+                borderRadius: BorderRadius.circular(8.pw),
                 color: AppColorsNew.newBackgroundBlackColor,
               ),
               child: Column(
@@ -87,7 +87,7 @@ class ClubGraphicsViewNew extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Padding(
-                    padding: EdgeInsets.all(5.pt),
+                    padding: EdgeInsets.all(5.pw),
                     child: Column(
                       children: [
                         Text(

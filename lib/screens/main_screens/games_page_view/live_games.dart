@@ -107,6 +107,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen> {
                         )
                       : Expanded(
                           child: ListView.separated(
+                            physics: BouncingScrollPhysics(),
                             shrinkWrap: true,
                             itemBuilder: (context, index) {
                               return LiveGameItem(
@@ -124,14 +125,14 @@ class _LiveGamesScreenState extends State<LiveGamesScreen> {
                               );
                             },
                             padding: EdgeInsets.only(
-                              bottom: 64.pt,
-                              top: 16.pt,
+                              bottom: 64.ph,
+                              top: 16.ph,
                             ),
                             separatorBuilder: (
                               context,
                               index,
                             ) =>
-                                AppDimensionsNew.getVerticalSizedBox(16.pt),
+                                AppDimensionsNew.getVerticalSizedBox(16.ph),
                             itemCount: liveGames.length,
                           ),
                         ),

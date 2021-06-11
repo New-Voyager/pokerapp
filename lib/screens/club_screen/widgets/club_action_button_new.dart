@@ -33,12 +33,12 @@ class ClubActionButtonNew extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         SizedBox(
-          width: 60.pt,
-          height: 60.pt,
+          width: 60.pw,
+          height: 60.pw,
           child: _actionIcon,
         ),
         Padding(
-          padding: EdgeInsets.all(5.0.pt),
+          padding: EdgeInsets.all(5.0.pw),
           child: Text(
             _actionName,
             textAlign: TextAlign.center,

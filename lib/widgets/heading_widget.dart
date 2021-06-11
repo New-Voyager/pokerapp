@@ -12,8 +12,8 @@ class HeadingWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(
-        horizontal: 10.0.pt,
-        vertical: 20.0.pt,
+        horizontal: 10.0.pw,
+        vertical: 20.0.ph,
       ),
       child: Text(
         heading.toUpperCase(),
@@ -25,12 +25,12 @@ class HeadingWidget extends StatelessWidget {
             shadows: [
               Shadow(
                 color: const Color(0xff00FFB1),
-                blurRadius: 40.0.pt,
+                blurRadius: 40.0.pw,
               ),
               Shadow(
                 color: const Color(0xff00FFB1),
-                blurRadius: 30.0.pt,
-                offset: Offset(0.0, 5.0.pt),
+                blurRadius: 30.0.pw,
+                offset: Offset(0.0, 5.0.pw),
               ),
             ]),
       ),

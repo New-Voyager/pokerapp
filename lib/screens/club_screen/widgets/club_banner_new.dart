@@ -34,20 +34,20 @@ class ClubBannerViewNew extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Container(
-          height: 80.pt,
-          width: 80.pt,
+          height: 80.pw,
+          width: 80.pw,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             border: Border.all(
-              width: 3.pt,
+              width: 3.pw,
               color: AppColorsNew.newTextGreenColor,
             ),
             boxShadow: [
               BoxShadow(
                 color: AppColorsNew.newSelectedGreenColor,
-                blurRadius: 1.pt,
-                spreadRadius: 1.pt,
-                offset: Offset(1.pt, 4.pt),
+                blurRadius: 1.pw,
+                spreadRadius: 1.pw,
+                offset: Offset(1.pw, 4.pw),
               ),
             ],
           ),
@@ -58,7 +58,7 @@ class ClubBannerViewNew extends StatelessWidget {
           ),
         ),
         Padding(
-          padding: EdgeInsets.only(top: 8.0.pt),
+          padding: EdgeInsets.only(top: 8.0.pw),
           child: Text(
             clubModel.clubName,
             style: AppStylesNew.clubTitleTextStyle,
@@ -75,11 +75,11 @@ class ClubBannerViewNew extends StatelessWidget {
             ),
             GestureDetector(
               child: Padding(
-                padding: EdgeInsets.all(8.pt),
+                padding: EdgeInsets.all(8.pw),
                 child: Icon(
                   Icons.copy,
                   color: AppColorsNew.newTextGreenColor,
-                  size: 16.pt,
+                  size: 16.pw,
                 ),
               ),
               onTap: () {

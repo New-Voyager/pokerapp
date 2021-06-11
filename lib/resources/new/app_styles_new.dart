@@ -119,11 +119,11 @@ class AppStylesNew {
     color: AppColorsNew.newTextColor,
     fontFamily: AppAssetsNew.fontFamilyPoppins,
     fontWeight: FontWeight.w300,
-    fontSize: 8.0.dp,
+    fontSize: 9.0.dp,
   );
 
   static final TextStyle gameTypeTextStyle = TextStyle(
-    fontSize: 9.0.dp,
+    fontSize: 12.0.dp,
     color: AppColorsNew.newTextColor,
     fontWeight: FontWeight.w700,
     fontFamily: AppAssetsNew.fontFamilyPoppins,
