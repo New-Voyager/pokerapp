@@ -42,7 +42,7 @@ class LiveGameItem extends StatelessWidget {
               image: AssetImage(
                 AppAssetsNew.pathLiveGameItemBackground,
               ),
-              fit: BoxFit.contain,
+              fit: BoxFit.fitWidth,
             ),
           ),
           child: Row(
