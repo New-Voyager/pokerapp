@@ -288,7 +288,7 @@ class ClubsService {
     return result.data['updateClub'] ?? false;
   }
 
-  static Future<bool> createClub(String name, String description) async {
+  static Future<String> createClub(String name, String description) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
 
     String _query = createClubQuery;
@@ -303,11 +303,11 @@ class ClubsService {
 
     print(result.exception);
 
-    if (result.hasException) return false;
+    if (result.hasException) return null;
 
-    String clubID = result.data['createClub'];
+    String clubCode = result.data['createClub'];
 
-    return clubID.isNotEmpty;
+    return clubCode;
   }
 
   static Future<List<ClubModel>> getMyClubs() async {

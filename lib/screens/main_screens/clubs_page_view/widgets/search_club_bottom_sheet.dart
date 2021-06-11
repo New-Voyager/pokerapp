@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/search_club_model.dart';
+import 'package:pokerapp/services/nats/nats.dart';
 import 'package:pokerapp/widgets/card_form_text_field.dart';
-import '../../../../resources/app_colors.dart';
+import 'package:provider/provider.dart';
 import '../../../../resources/app_colors.dart';
 import '../../../../resources/app_styles.dart';
 import '../../../../services/app/club_interior_service.dart';
@@ -27,6 +28,9 @@ class _SearchClubBottomSheetState extends State<SearchClubBottomSheet> {
 
   void onJoin(BuildContext context) async {
     await ClubInteriorService.joinClub(searchClubCode);
+    final natsClient = Provider.of<Nats>(context, listen: false);
+    natsClient.subscribeClubMessages(searchClubCode);
+
     // close this popup
     Navigator.pop(context);
   }

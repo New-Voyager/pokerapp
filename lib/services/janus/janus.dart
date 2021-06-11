@@ -152,7 +152,7 @@ class JanusEngine extends ChangeNotifier {
       } catch (err) {
         debugPrint('No room in that name. error: ${err.toString()}');
         log('janus: failed to join audio room ${this.roomId} ${err.toString()}');
-       this.gameState.getCommunicationState().failed();
+        this.gameState.getCommunicationState().failed();
       }
     } else {
       // echo test

@@ -14,6 +14,7 @@ import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/main_screens/clubs_page_view/widgets/club_item.dart';
 import 'package:pokerapp/screens/main_screens/clubs_page_view/widgets/create_club_bottom_sheet.dart';
 import 'package:pokerapp/services/app/clubs_service.dart';
+import 'package:pokerapp/services/nats/nats.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/widgets/round_raised_button.dart';
 import 'package:pokerapp/widgets/custom_text_button.dart';
@@ -147,7 +148,7 @@ class _ClubsPageViewState extends State<ClubsPageView> with RouteAware {
     _toggleLoading();
 
     /* create a club using the clubDetails */
-    bool status = await ClubsService.createClub(
+    String clubCode = await ClubsService.createClub(
       clubName,
       clubDescription,
     );
@@ -155,8 +156,10 @@ class _ClubsPageViewState extends State<ClubsPageView> with RouteAware {
     _toggleLoading();
 
     /* finally, show a status message and fetch all the clubs (if required) */
-    if (status) {
+    if (clubCode != null) {
       Alerts.showSnackBar(ctx, 'Created new club');
+      final natsClient = Provider.of<Nats>(context, listen: false);
+      natsClient.subscribeClubMessages(clubCode);
       _fetchClubs();
     } else
       Alerts.showSnackBar(ctx, 'Something went wrong');
@@ -164,7 +167,9 @@ class _ClubsPageViewState extends State<ClubsPageView> with RouteAware {
 
   Future<void> _fillClubs() async {
     _clubs = await ClubsService.getMyClubs();
-
+    for (final club in _clubs) {
+      log('club: ${club.clubName} status: ${club.memberStatus}');
+    }
     if (mounted) setState(() {});
   }
 

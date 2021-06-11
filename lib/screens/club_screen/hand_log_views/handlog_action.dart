@@ -21,10 +21,10 @@ class HandLogActionView extends StatelessWidget {
         return Container(
           margin: EdgeInsets.symmetric(horizontal: 8),
           padding: EdgeInsets.all(8),
-           decoration: BoxDecoration(
-                  color: AppColorsNew.actionRowBgColor,
-                  borderRadius: BorderRadius.circular(5),
-                ),
+          decoration: BoxDecoration(
+            color: AppColorsNew.actionRowBgColor,
+            borderRadius: BorderRadius.circular(5),
+          ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
