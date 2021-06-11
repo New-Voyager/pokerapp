@@ -267,7 +267,7 @@ class _ChooseGameNewState extends State<ChooseGameNew>
               children: [
                 Text(
                   "Choose Games",
-                  style: AppStylesNew.InactiveChipTextStyle,
+                  style: AppStylesNew.inactiveChipTextStyle,
                 ),
                 Container(
                   margin: EdgeInsets.symmetric(vertical: 16),
@@ -405,8 +405,8 @@ class GameTypeChip extends StatelessWidget {
       label: Text(
         '${gameTypeShortStr(gameType)}',
         style: selected
-            ? AppStylesNew.ActiveChipTextStyle
-            : AppStylesNew.InactiveChipTextStyle,
+            ? AppStylesNew.activeChipTextStyle
+            : AppStylesNew.inactiveChipTextStyle,
       ),
       padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       selected: selected,

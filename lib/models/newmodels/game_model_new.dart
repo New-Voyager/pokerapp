@@ -123,6 +123,6 @@ class GameModelNew {
     if (mins > 0 && mins < 60) {
       return "${mins.toStringAsFixed(0)} mins";
     }
-    return "${(mins / 60).toStringAsFixed(0)}hrs.${(mins % 60).toStringAsFixed(0)}mins";
+    return "${(mins / 60).toStringAsFixed(0)} hrs ${(mins % 60).toStringAsFixed(0)} mins";
   }
 }
