@@ -81,7 +81,7 @@ class _FooterViewState extends State<FooterView>
 
             /* hole card view & footer action view */
             !me
-                ? Container(width:screenWidth, height:screenHeight/3)
+                ? Container(width: screenWidth, height: screenHeight / 3)
                 : HoleCardsViewAndFooterActionView(
                     gameContext: widget.gameContext,
                     playerModel: players.me,

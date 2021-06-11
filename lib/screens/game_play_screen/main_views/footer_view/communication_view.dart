@@ -42,43 +42,43 @@ class _CommunicationViewState extends State<CommunicationView> {
     return ListenableProvider<CommunicationState>(
         create: (_) => communicationState,
         builder: (context, _) => Consumer<CommunicationState>(
-          builder: (context, communicationState, __) {
-            List<Widget> children = [];
-            log('PlayerStatus = ${gameState.myState.status}, '
-                'audioConferenceStatus = ${communicationState.audioConferenceStatus}, '
-                'voiceChatEnable = ${communicationState.voiceChatEnable}');
+              builder: (context, communicationState, __) {
+                List<Widget> children = [];
+                log('PlayerStatus = ${gameState.myState.status}, '
+                    'audioConferenceStatus = ${communicationState.audioConferenceStatus}, '
+                    'voiceChatEnable = ${communicationState.voiceChatEnable}');
 
-            if (gameState.myState.status == PlayerStatus.PLAYING &&
-                communicationState.audioConferenceStatus ==
-                    AudioConferenceStatus.CONNECTED) {
-              log('User is playing and audio conference connected, showing janusAudioWidgets');
-              children
-                  .addAll(janusAudioWidgets(gameState, communicationState));
-            } else if (communicationState.voiceChatEnable) {
-              log('Showing voiceChatWidgets');
-              children.addAll(voiceTextWidgets(widget.chatService));
-            }
+                if (gameState.myState.status == PlayerStatus.PLAYING &&
+                    communicationState.audioConferenceStatus ==
+                        AudioConferenceStatus.CONNECTED) {
+                  log('User is playing and audio conference connected, showing janusAudioWidgets');
+                  children
+                      .addAll(janusAudioWidgets(gameState, communicationState));
+                } else if (communicationState.voiceChatEnable) {
+                  log('Showing voiceChatWidgets');
+                  children.addAll(voiceTextWidgets(widget.chatService));
+                }
 
-            children.add(
-              GestureDetector(
-                onTap: widget.chatVisibilityChange,
-                child: Container(
-                  padding: EdgeInsets.all(5),
-                  child: Icon(
-                    Icons.chat,
-                    size: 35,
-                    color: AppColors.appAccentColor,
+                children.add(
+                  GestureDetector(
+                    onTap: widget.chatVisibilityChange,
+                    child: Container(
+                      padding: EdgeInsets.all(5),
+                      child: Icon(
+                        Icons.chat,
+                        size: 35,
+                        color: AppColors.appAccentColor,
+                      ),
+                    ),
                   ),
-                ),
-              ),
-            );
+                );
 
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: children,
-            );
-          },
-        ));
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: children,
+                );
+              },
+            ));
   }
 
   janusAudioWidgets(GameState gameState, CommunicationState state) {
@@ -105,7 +105,8 @@ class _CommunicationViewState extends State<CommunicationView> {
             size: 24,
           ),
           onTap: () {
-            if (state.audioConferenceStatus == AudioConferenceStatus.CONNECTED) {
+            if (state.audioConferenceStatus ==
+                AudioConferenceStatus.CONNECTED) {
               gameState.janusEngine.muteUnmute();
             }
           },

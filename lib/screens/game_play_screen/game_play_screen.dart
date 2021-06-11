@@ -229,7 +229,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
     // setting voiceChatEnable to true if gameComService is active
     log('gameComService.active = ${gameComService.active}');
-    if(gameComService.active){
+    if (gameComService.active) {
       _gameState.getCommunicationState().voiceChatEnable = true;
       _gameState.getCommunicationState().notify();
     }
@@ -340,7 +340,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         () => _gameInfoModel = gameInfoModel,
       ),
     );
-
   }
 
   Widget _buildChatWindow(BuildContext context) =>

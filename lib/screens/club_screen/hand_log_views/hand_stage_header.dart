@@ -34,7 +34,7 @@ class HandStageHeader extends StatelessWidget {
                 alignment: Alignment.centerLeft,
                 child: Text(
                   stageName,
-                  style:AppStylesNew.stageNameTextStyle,
+                  style: AppStylesNew.stageNameTextStyle,
                 ),
               ),
               Container(
