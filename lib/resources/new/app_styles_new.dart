@@ -22,7 +22,7 @@ class AppStylesNew {
   );
   static final TextStyle gameActionTextStyle = TextStyle(
     color: AppColorsNew.newTextColor,
-    fontSize: 11.0.dp,
+    fontSize: 10.0.dp,
     fontFamily: AppAssetsNew.fontFamilyPoppins,
   );
 
@@ -155,14 +155,14 @@ class AppStylesNew {
 
   static final clubShortCodeTextStyle = TextStyle(
     color: AppColorsNew.newTextColor,
-    fontSize: 25.0.dp,
+    fontSize: 24.0.dp,
     fontFamily: AppAssetsNew.fontFamilyPoppins,
     fontWeight: FontWeight.w700,
   );
 
   static final clubTitleTextStyle = TextStyle(
     color: AppColorsNew.newTextColor,
-    fontSize: 18.0.dp,
+    fontSize: 15.0.dp,
     fontFamily: AppAssetsNew.fontFamilyPoppins,
   );
 

@@ -34,8 +34,8 @@ class ClubBannerViewNew extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Container(
-          height: 70.pt,
-          width: 70.pt,
+          height: 80.pt,
+          width: 80.pt,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             border: Border.all(
@@ -70,7 +70,7 @@ class ClubBannerViewNew extends StatelessWidget {
             Text(
               "Club Code: " + clubModel.clubCode,
               style: AppStylesNew.clubTitleTextStyle.copyWith(
-                fontSize: 12.dp,
+                fontSize: 10.dp,
               ),
             ),
             GestureDetector(

@@ -44,7 +44,7 @@ class ClubActionButtonNew extends StatelessWidget {
             textAlign: TextAlign.center,
             style: TextStyle(
               color: AppColorsNew.newTextColor,
-              fontSize: 11.0.dp,
+              fontSize: 10.0.dp,
               fontFamily: AppAssetsNew.fontFamilyPoppins,
             ),
           ),

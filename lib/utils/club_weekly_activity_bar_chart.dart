@@ -38,7 +38,7 @@ class ClubWeeklyActivityBarChart extends StatelessWidget {
           labelStyle: charts.TextStyleSpec(
             color: charts.MaterialPalette.white,
             fontFamily: AppAssets.fontFamilyLato,
-            fontSize: 10.dp.toInt(),
+            fontSize: 8.dp.toInt(),
           ),
           lineStyle: charts.LineStyleSpec(
             color: charts.ColorUtil.fromDartColor(
@@ -52,7 +52,7 @@ class ClubWeeklyActivityBarChart extends StatelessWidget {
           labelStyle: charts.TextStyleSpec(
             color: charts.MaterialPalette.white,
             fontFamily: AppAssets.fontFamilyLato,
-            fontSize: 10.dp.toInt(),
+            fontSize: 8.dp.toInt(),
           ),
           lineStyle: charts.LineStyleSpec(
             color: charts.Color.transparent,
