@@ -73,6 +73,7 @@ dependencies:
   tuple: ^1.0.3
   web_socket_channel: ^2.0.0
   zflutter: ^0.0.1+2
+  sizer: ^1.1.8
 
 dependency_overrides:
   http: ^0.12.2

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
+import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class AppStylesNew {
   static const TextStyle AppBarTitleTextStyle = TextStyle(
@@ -19,9 +20,9 @@ class AppStylesNew {
       radius: 1.5,
     ),
   );
-  static const TextStyle GameActionTextStyle = TextStyle(
+  static final TextStyle gameActionTextStyle = TextStyle(
     color: AppColorsNew.newTextColor,
-    fontSize: 11.0,
+    fontSize: 11.0.dp,
     fontFamily: AppAssetsNew.fontFamilyPoppins,
   );
 
@@ -96,10 +97,10 @@ class AppStylesNew {
     fontSize: 12,
   );
 
-  static const TextStyle BackButtonTextStyle = TextStyle(
+  static final TextStyle backButtonTextStyle = TextStyle(
     color: AppColorsNew.newGreenButtonColor,
     fontFamily: AppAssetsNew.fontFamilyPoppins,
-    fontSize: 12,
+    fontSize: 13.dp,
   );
   static const TextStyle TitleTextStyle = TextStyle(
       fontSize: 18,
@@ -152,16 +153,16 @@ class AppStylesNew {
     fontSize: 12,
   );
 
-  static const ClubShortCodeTextStyle = TextStyle(
+  static final clubShortCodeTextStyle = TextStyle(
     color: AppColorsNew.newTextColor,
-    fontSize: 25.0,
+    fontSize: 25.0.dp,
     fontFamily: AppAssetsNew.fontFamilyPoppins,
     fontWeight: FontWeight.w700,
   );
 
-  static const ClubTitleTextStyle = TextStyle(
+  static final clubTitleTextStyle = TextStyle(
     color: AppColorsNew.newTextColor,
-    fontSize: 18.0,
+    fontSize: 18.0.dp,
     fontFamily: AppAssetsNew.fontFamilyPoppins,
   );
 

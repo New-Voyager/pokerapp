@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pokerapp/models/club_homepage_model.dart';
-import 'package:pokerapp/resources/app_assets.dart';
-import 'package:pokerapp/resources/app_colors.dart';
-import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/utils/alerts.dart';
 
-import '../../../utils/color_generator.dart';
+import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class ClubBannerViewNew extends StatelessWidget {
   final ClubHomePageModel clubModel;
@@ -37,52 +34,58 @@ class ClubBannerViewNew extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Container(
-          height: 80,
-          width: 80,
+          height: 70.pt,
+          width: 70.pt,
           decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(
-                width: 3,
-                color: AppColorsNew.newTextGreenColor,
+            shape: BoxShape.circle,
+            border: Border.all(
+              width: 3.pt,
+              color: AppColorsNew.newTextGreenColor,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: AppColorsNew.newSelectedGreenColor,
+                blurRadius: 1.pt,
+                spreadRadius: 1.pt,
+                offset: Offset(1.pt, 4.pt),
               ),
-              boxShadow: [
-                BoxShadow(
-                    color: AppColorsNew.newSelectedGreenColor,
-                    blurRadius: 1,
-                    spreadRadius: 1,
-                    offset: Offset(1, 4)),
-              ]),
+            ],
+          ),
           alignment: Alignment.center,
           child: Text(
             _getClubShortName(),
-            style: AppStylesNew.ClubShortCodeTextStyle,
+            style: AppStylesNew.clubShortCodeTextStyle,
           ),
         ),
         Padding(
-          padding: EdgeInsets.only(top: 8.0),
+          padding: EdgeInsets.only(top: 8.0.pt),
           child: Text(
             clubModel.clubName,
-            style: AppStylesNew.ClubTitleTextStyle,
+            style: AppStylesNew.clubTitleTextStyle,
           ),
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              "Club code: " + clubModel.clubCode,
-              style: AppStylesNew.ClubTitleTextStyle.copyWith(fontSize: 12),
+              "Club Code: " + clubModel.clubCode,
+              style: AppStylesNew.clubTitleTextStyle.copyWith(
+                fontSize: 12.dp,
+              ),
             ),
             GestureDetector(
               child: Padding(
-                padding: EdgeInsets.all(8),
+                padding: EdgeInsets.all(8.pt),
                 child: Icon(
                   Icons.copy,
                   color: AppColorsNew.newTextGreenColor,
-                  size: 16,
+                  size: 16.pt,
                 ),
               ),
               onTap: () {
-                Clipboard.setData(new ClipboardData(text: clubModel.clubCode));
+                Clipboard.setData(
+                  new ClipboardData(text: clubModel.clubCode),
+                );
                 Alerts.showTextNotification(
                   text: "Club code copied to clipboard",
                 );

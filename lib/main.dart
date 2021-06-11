@@ -15,6 +15,7 @@ import 'package:pokerapp/services/nats/nats.dart';
 import 'package:pokerapp/utils/locator.dart';
 import 'package:provider/provider.dart';
 import 'package:pokerapp/utils/utils.dart';
+import 'package:sizer/sizer.dart';
 
 GraphQLConfiguration graphQLConfiguration = GraphQLConfiguration();
 final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
@@ -77,23 +78,30 @@ class MyApp extends StatelessWidget {
                 ),
               ],
               child: OverlaySupport.global(
-                child: MaterialApp(
-                  title: 'Poker App',
-                  debugShowCheckedModeBanner: false,
-                  navigatorKey: navigatorKey,
-                  // navigatorObservers: [
-                  //   locator<AnalyticsService>().getAnalyticsObserver()
-                  // ],
-                  theme: ThemeData(
-                    primarySwatch: Colors.blue,
-                    visualDensity: VisualDensity.adaptivePlatformDensity,
-                    fontFamily: AppAssetsNew.fontFamilyPoppins,
+                child: LayoutBuilder(
+                  builder: (context, constraints) => OrientationBuilder(
+                    builder: (context, orientation) {
+                      SizerUtil().init(constraints, orientation);
+                      return MaterialApp(
+                        title: 'Poker App',
+                        debugShowCheckedModeBanner: false,
+                        navigatorKey: navigatorKey,
+                        // navigatorObservers: [
+                        //   locator<AnalyticsService>().getAnalyticsObserver()
+                        // ],
+                        theme: ThemeData(
+                          primarySwatch: Colors.blue,
+                          visualDensity: VisualDensity.adaptivePlatformDensity,
+                          fontFamily: AppAssetsNew.fontFamilyPoppins,
+                        ),
+                        onGenerateRoute: Routes.generateRoute,
+                        initialRoute: Routes.initial,
+                        navigatorObservers: [
+                          routeObserver,
+                        ],
+                      );
+                    },
                   ),
-                  onGenerateRoute: Routes.generateRoute,
-                  initialRoute: Routes.initial,
-                  navigatorObservers: [
-                    routeObserver,
-                  ],
                 ),
               ),
             ),

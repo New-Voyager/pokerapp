@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pokerapp/enums/club_actions.dart';
 import 'package:pokerapp/models/club_homepage_model.dart';
-import 'package:pokerapp/resources/app_colors.dart';
-import 'package:pokerapp/resources/club_screen_icons_icons.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/club_screen/widgets/club_action_button_new.dart';
+
+import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class ClubActionsNew extends StatelessWidget {
   final ClubHomePageModel _clubHomePageModel;
@@ -19,7 +19,9 @@ class ClubActionsNew extends StatelessWidget {
     if (_clubHomePageModel.unreadMessageCount > 0) {
       chatBadgeContent = Text(
         _clubHomePageModel.unreadMessageCount.toString(),
-        style: TextStyle(color: Colors.white),
+        style: TextStyle(
+          color: Colors.white,
+        ),
       );
     }
     Widget chat = ClubActionButtonNew(
@@ -87,7 +89,6 @@ class ClubActionsNew extends StatelessWidget {
         Row(
           children: [
             Expanded(
-              flex: 3,
               child: ClubActionButtonNew(
                 this._clubHomePageModel,
                 ClubActions.GAME_HISTORY,
@@ -96,16 +97,14 @@ class ClubActionsNew extends StatelessWidget {
               ),
             ),
             Expanded(
-              flex: 3,
               child: getMembers(),
             ),
             Expanded(
-              flex: 3,
               child: getChat(),
             ),
           ],
         ),
-        AppDimensionsNew.getVerticalSizedBox(16),
+        AppDimensionsNew.getVerticalSizedBox(16.pt),
         Row(
           children: [
             Expanded(
