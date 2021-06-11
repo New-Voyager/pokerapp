@@ -49,6 +49,9 @@ class AppAssets {
   static const String cardsImage = 'assets/images/cardicon.png';
   static const String cardBackImage =
       'assets/images/card_back/set2/Asset 6.png';
+  static const String handHistory = 'assets/images/handhistory.svg';
+  static const String lastHand = 'assets/images/lasthand.svg';
+  static const String highHand = 'assets/images/highhand.svg';
 
   static const List<String> soundEffects = [
     betRaiseSound,
