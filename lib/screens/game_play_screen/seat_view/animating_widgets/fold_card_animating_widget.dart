@@ -15,12 +15,9 @@ class FoldCardAnimatingWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final openSeat = seat.isOpen;
-
     final ba = context.read<BoardAttributesObject>();
-    final gameState = context.read<GameState>();
 
-    Map<SeatPos, Offset> offsetMapping =
-        ba.foldCardPos(gameState.gameInfo.maxPlayers);
+    Map<SeatPos, Offset> offsetMapping = ba.foldCardPos();
 
     final widget = TweenAnimationBuilder<Offset>(
       curve: Curves.linearToEaseOut,

@@ -165,7 +165,7 @@ class PlayerView extends StatelessWidget {
           children: [
             // dealer button
             DealerButtonWidget(
-              seat.serverSeatPos,
+              seat.uiSeatPos,
               isMe,
               GameType.HOLDEM,
             ),
@@ -282,7 +282,7 @@ class PlayerView extends StatelessWidget {
               // show dealer button, if user is a dealer
               isDealer
                   ? DealerButtonWidget(
-                      seat.serverSeatPos,
+                      seat.uiSeatPos,
                       isMe,
                       GameType.HOLDEM,
                     )

@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
 class DealerButtonWidget extends StatelessWidget {
-  final int seatPos;
+  final SeatPos seatPos;
   final bool isMe;
   final GameType gameType;
 
@@ -17,14 +17,13 @@ class DealerButtonWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final attributes = context.read<BoardAttributesObject>();
-    final gameState = context.read<GameState>();
-
-    final buttonPos = attributes.buttonPos(gameState.gameInfo.maxPlayers);
+    final Map<SeatPos, Offset> buttonPos = attributes.buttonPos();
 
     //final buttonColor = attributes.buttonColor(gameType);
     final buttonColor = Tuple2<Color, Color>(Colors.white, Colors.black);
-    final textStyle =
-        AppStyles.dealerTextStyle.copyWith(color: buttonColor.item2);
+    final textStyle = AppStyles.dealerTextStyle.copyWith(
+      color: buttonColor.item2,
+    );
     return Transform.translate(
       offset: buttonPos[seatPos],
       child: Container(
@@ -36,13 +35,6 @@ class DealerButtonWidget extends StatelessWidget {
             color: buttonColor.item1,
             width: 2.0,
           ),
-          // boxShadow: [
-          //   BoxShadow(
-          //     color: Colors.black, //Colors.white24,
-          //     blurRadius: 1.0,
-          //     spreadRadius: 1.0,
-          //   )
-          // ],
         ),
         child: Text(
           'D',

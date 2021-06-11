@@ -119,47 +119,6 @@ const Map<int, Offset> kFoldCardAnimationOffsetVerticalMapping = {
   9: Offset(-80, -80),
 };
 
-/* dealer button position */
-const Map<int, Offset> kDealerButtonHorizontalOffsetMapping2 = {
-  1: Offset(20, -40),
-  2: Offset(25, 40),
-};
-const Map<int, Offset> kDealerButtonHorizontalOffsetMapping4 = {
-  1: Offset(20, -40),
-  2: Offset(50, 0),
-  3: Offset(0, 50),
-  4: Offset(-50, 0),
-};
-const Map<int, Offset> kDealerButtonHorizontalOffsetMapping6 = {
-  1: Offset(20, -40),
-  2: Offset(50, 0),
-  3: Offset(40, 30),
-  4: Offset(0, 40),
-  5: Offset(-40, 30),
-  6: Offset(-50, 0),
-};
-const Map<int, Offset> kDealerButtonHorizontalOffsetMapping8 = {
-  1: Offset(20, -40),
-  2: Offset(25, -40),
-  3: Offset(50, 0),
-  4: Offset(40, 30),
-  5: Offset(0, 40),
-  6: Offset(-40, 30),
-  7: Offset(-50, 0),
-  8: Offset(-20, -40),
-};
-const Map<int, Offset> kDealerButtonHorizontalOffsetMapping9 = {
-  1: Offset(20, -40),
-  2: Offset(25, -40),
-  3: Offset(50, 0),
-  4: Offset(40, 30),
-  5: Offset(0, 40),
-  6: Offset(0, 40),
-  7: Offset(-40, 30),
-  8: Offset(-50, 0),
-  9: Offset(-20, -40),
-};
-
 const Map<int, Offset> kDealerButtonVerticalOffsetMapping = {
   1: Offset(0, -15),
   2: Offset(0, -15),
