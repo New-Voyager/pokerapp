@@ -43,6 +43,9 @@ class CardDistributionAnimatingWidget extends StatelessWidget {
 
     final gameState = GameState.getState(context);
     final seat = gameState.getSeat(context, seatNo);
+    if (seat == null || seat.key == null) {
+      return Offset(0, 0);
+    }
 
     final RenderBox parentBox =
         this._globalKey.currentContext.findRenderObject();

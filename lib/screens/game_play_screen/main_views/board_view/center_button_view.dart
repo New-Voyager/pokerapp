@@ -113,11 +113,7 @@ class CenterButtonView extends StatelessWidget {
                 ),
               ),
             )
-          : Container(
-              height: 50,
-              width: 50,
-              color: Colors.red,
-            ),
+          : Container(),
     );
   }
 

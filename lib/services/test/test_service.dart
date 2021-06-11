@@ -810,7 +810,7 @@ class TestService {
   static setPlayerTalking() {
     BuildContext context = _context;
     final gameState = GameState.getState(_context);
-    for (int seatNo = 1; seatNo <= 9; seatNo++) {
+    for (int seatNo = 1; seatNo <= gameState.gameInfo.maxPlayers; seatNo++) {
       final seat1 = gameState.getSeat(_context, seatNo);
       if (seat1.player != null) {
         seat1.player.talking = true;
@@ -822,7 +822,7 @@ class TestService {
   static setPlayerStoppedTalking() {
     BuildContext context = _context;
     final gameState = GameState.getState(_context);
-    for (int seatNo = 1; seatNo <= 9; seatNo++) {
+    for (int seatNo = 1; seatNo <= gameState.gameInfo.maxPlayers; seatNo++) {
       final seat1 = gameState.getSeat(_context, seatNo);
       if (seat1.player != null) {
         seat1.player.talking = false;

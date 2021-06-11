@@ -610,14 +610,18 @@ class HandActionService {
 
     List<int> seatNos = players.players.map((p) => p.seatNo).toList();
     seatNos.sort();
+    players.updateCardSilent(mySeatNo, myCards);
+    _gameState.currentCards = myCards;
+    log('my cards: ${_gameState.currentCards}');
 
     /* distribute cards to the players */
     /* this for loop will distribute cards one by one to all the players */
     //for (int i = 0; i < myCards.length; i++) {
     /* for distributing the ith card, go through all the players, and give them */
     for (int seatNo in seatNos) {
-      int localSeatNo =
-          mySeatNo == null ? seatNo : ((seatNo - mySeatNo) % 9) + 1;
+      int localSeatNo = mySeatNo == null
+          ? seatNo
+          : ((seatNo - mySeatNo) % _gameState.gameInfo.maxPlayers) + 1;
       if (_close) return;
       final seat = _gameState.getSeat(_context, seatNo);
       if (seat.player == null ||
@@ -632,15 +636,11 @@ class HandActionService {
       // wait for the animation to finish
       await Future.delayed(AppConstants.cardDistributionAnimationDuration);
 
-      if (seatNo == mySeatNo) {
-        // this is me - give me my cards one by one
-        players.updateCardSilent(mySeatNo, myCards);
-        _gameState.currentCards = myCards;
-      }
       //debugPrint('Setting cards for $seatNo');
       players.updateVisibleCardNumberSilent(seatNo, myCards.length);
       players.notifyAll();
     }
+
     //}
 
     /* card distribution ends, put the value to NULL */
@@ -1238,7 +1238,6 @@ class HandActionService {
         lowWinners.isEmpty ? totalWaitTimeInMs : totalWaitTimeInMs ~/ 2;
     int lowWinnersTimeInMs = totalWaitTimeInMs ~/ 2;
     gameState.getAudioBytes(AppAssets.applauseSound).then((value) {
-      log('playing applause sound');
       audioPlayer.playBytes(value);
     });
 
@@ -1268,9 +1267,6 @@ class HandActionService {
       players: players,
       gameState: gameState,
     );
-    gameState
-        .getAudioBytes(AppAssets.turnRiverSound)
-        .then((value) => gameState.audioPlayer.playBytes(value));
 
     // this method takes another 500 MS
     /** process the low pot winners */
@@ -1287,7 +1283,7 @@ class HandActionService {
         lowWinnersTimeInMs - AppConstants.animationDuration.inMilliseconds;
 
     await Future.delayed(Duration(milliseconds: balancedMstoWait));
-    gameState.audioPlayer.stop();
+    audioPlayer.stop();
 
     /* if we are from replay, we dont need to clear the result state */
     if (fromReplay || resetState) return;
