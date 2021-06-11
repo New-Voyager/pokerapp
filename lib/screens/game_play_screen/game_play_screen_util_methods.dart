@@ -446,8 +446,13 @@ class GamePlayScreenUtilMethods {
     //@required Agora agora,
     @required BoardAttributesObject boardAttributes,
     @required GameContextObject gameContextObject,
+    List<PlayerInSeat> hostSeatChangePlayers,
+    bool seatChangeInProgress = false,
   }) {
     // initialize game state object
+    final seatChangeProvider = SeatChangeNotifier(
+        seatChangeInProgress: seatChangeInProgress,
+        players: hostSeatChangePlayers);
 
     var providers = [
       /* this is for the seat change animation values */
@@ -541,7 +546,7 @@ class GamePlayScreenUtilMethods {
 
       /* Provider to deal with host seat change functionality */
       ListenableProvider<SeatChangeNotifier>(
-        create: (_) => SeatChangeNotifier(),
+        create: (_) => seatChangeProvider,
       ),
     ];
 

@@ -108,8 +108,9 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
   // todo: this method can be optimized
   void cacheSeatPositions() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      for (int seatNo = 1; seatNo <= 9; seatNo++)
-        findPositionOfUser(seatNo: seatNo);
+      for (int seatNo = 1;
+          seatNo <= widget.gameState.gameInfo.maxPlayers;
+          seatNo++) findPositionOfUser(seatNo: seatNo);
     });
   }
 

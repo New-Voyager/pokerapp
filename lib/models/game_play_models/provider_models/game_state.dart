@@ -24,6 +24,7 @@ import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
 import 'hand_result.dart';
+import 'host_seat_change.dart';
 import 'player_action.dart';
 import 'players.dart';
 import 'table_state.dart';
@@ -72,11 +73,17 @@ class GameState {
   Map<int, String> _playerIdsToNames = Map<int, String>();
   Map<int, List<int>> _myCards = Map<int, List<int>>();
 
+  // host seat change state (only used when initialization)
+  List<PlayerInSeat> _hostSeatChangeSeats;
+  bool _hostSeatChangeInProgress;
+
   void initialize({
     String gameCode,
     @required GameInfoModel gameInfo,
     @required PlayerInfo currentPlayer,
     GameMessagingService gameMessagingService,
+    List<PlayerInSeat> hostSeatChangeSeats,
+    bool hostSeatChangeInProgress,
   }) {
     this._seats = Map<int, Seat>();
     this._gameInfo = gameInfo;
@@ -84,6 +91,9 @@ class GameState {
     this._currentPlayer = currentPlayer;
     this._currentHandNum = -1;
     this._tappedSeatPos = null;
+
+    this._hostSeatChangeSeats = hostSeatChangeSeats;
+    this._hostSeatChangeInProgress = hostSeatChangeInProgress ?? false;
 
     for (int seatNo = 1; seatNo <= gameInfo.maxPlayers; seatNo++) {
       this._seats[seatNo] = Seat(seatNo, seatNo, null);
@@ -176,11 +186,16 @@ class GameState {
       }
     }
 
-    this._players = ListenableProvider<Players>(
-      create: (_) => Players(
-        players: players,
-      ),
+    final playersState = Players(
+      players: players,
     );
+
+    if (_hostSeatChangeInProgress) {
+      log('host seat change is in progress');
+      playersState.refreshWithPlayerInSeat(_hostSeatChangeSeats, notify: false);
+    }
+
+    this._players = ListenableProvider<Players>(create: (_) => playersState);
 
     log('In GameState initialize(), _gameInfo.status = ${_gameInfo.status}');
     if (_gameInfo.status == AppConstants.GAME_ACTIVE) {
