@@ -73,7 +73,8 @@ class Players extends ChangeNotifier {
     this.removeMarkersFromAllPlayerSilent();
   }
 
-  void refreshWithPlayerInSeat(List<PlayerInSeat> playersInSeat) {
+  void refreshWithPlayerInSeat(List<PlayerInSeat> playersInSeat,
+      {bool notify = true}) {
     assert(playersInSeat != null);
 
     _players.clear();
@@ -86,7 +87,9 @@ class Players extends ChangeNotifier {
         stack: playerInSeatModel.stack.toInt(),
       ));
     });
-    notifyAll();
+    if (notify) {
+      notifyAll();
+    }
   }
 
   void updatePlayerFoldedStatusSilent(int idx, bool folded) {

@@ -50,9 +50,33 @@ class CenterButtonView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final seatChange = Provider.of<SeatChangeNotifier>(context, listen: true);
-    if (this.gameStatus == AppConstants.GAME_PAUSED &&
-        !seatChange.seatChangeInProgress) {
-      return pauseButtons(context);
+    final gameContext = Provider.of<GameContextObject>(context, listen: false);
+    if (this.gameStatus == AppConstants.GAME_PAUSED) {
+      if (!seatChange.seatChangeInProgress) {
+        if (gameContext.isAdmin()) {
+          return pauseButtons(context);
+        } else {
+          return Center(
+              child: Text(
+            'Game Paused',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 20.0,
+              fontWeight: FontWeight.normal,
+            ),
+          ));
+        }
+      } else {
+        return Center(
+            child: Text(
+          'Seat Change in Progress',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 14.0,
+            fontWeight: FontWeight.w600,
+          ),
+        ));
+      }
     } else if (this.tableStatus == AppConstants.WAITING_TO_BE_STARTED) {
       if (this.isHost) {
         return newGameButtons(context);

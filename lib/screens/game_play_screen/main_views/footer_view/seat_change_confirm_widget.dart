@@ -25,7 +25,7 @@ class SeatChangeConfirmWidget extends StatelessWidget {
     )
       ..updateSeatChangeHost(0)
       ..updateSeatChangeInProgress(false);
-    await SeatChangeService.hostSeatChangeEnd(this.gameCode, cancel: true);
+    await SeatChangeService.hostSeatChangeEnd(this.gameCode, cancel: false);
   }
 
   @override
