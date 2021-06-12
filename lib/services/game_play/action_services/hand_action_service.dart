@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:typed_data';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
@@ -53,6 +54,7 @@ class RetrySendingMsg {
   int _retrySeconds = 2;
   bool _ackReceived = false;
   bool _cancel = false;
+
   RetrySendingMsg(
     this._gameComService,
     this._message,
@@ -125,6 +127,7 @@ class HandActionService {
   RetrySendingMsg _retryMsg;
   PlayerInfo _currentPlayer;
   AudioPlayer audioPlayer;
+
   HandActionService(
     this._context,
     this._gameState,
@@ -429,7 +432,7 @@ class HandActionService {
   Future<void> handleNewHand(var data) async {
     _gameState
         .getAudioBytes(AppAssets.newHandSound)
-        .then((value) => audioPlayer.playBytes(value));
+        .then((value) => playSoundEffect(value));
 
     /* data contains the dealer, small blind and big blind seat Positions
     * Update the Players object with these information */
@@ -599,7 +602,7 @@ class HandActionService {
     // play the deal sound effect
     _gameState
         .getAudioBytes(AppAssets.dealSound)
-        .then((value) => audioPlayer.playBytes(value));
+        .then((value) => playSoundEffect(value));
 
     int mySeatNo = data['dealCards']['seatNo'];
     String cards = data['dealCards']['cards'];
@@ -665,7 +668,7 @@ class HandActionService {
     /* play an sound effect alerting the user */
     _gameState
         .getAudioBytes(AppAssets.playerTurnSound)
-        .then((value) => audioPlayer.playBytes(value));
+        .then((value) => playSoundEffect(value));
 
     /* this part handles if we receive a prompt for run it twice */
     List<String> availableActions = seatAction['availableActions']
@@ -684,6 +687,13 @@ class HandActionService {
 
     if (_close) return;
     _gameState.showAction(_context, true);
+  }
+
+  playSoundEffect(Uint8List value) {
+    log('In playSoundEffect(), gameSounds = ${_gameState.gameSounds}');
+    if (_gameState.gameSounds) {
+      audioPlayer.playBytes(value);
+    }
   }
 
   Future<void> handleNextAction(var data) async {
@@ -759,7 +769,7 @@ class HandActionService {
     // play the deal sound effect
     _gameState
         .getAudioBytes(AppAssets.dealSound)
-        .then((value) => audioPlayer.playBytes(value));
+        .then((value) => playSoundEffect(value));
 
     if (_close) return;
 
@@ -862,7 +872,7 @@ class HandActionService {
     if (stage == 'flop') {
       _gameState
           .getAudioBytes(AppAssets.flopSound)
-          .then((value) => audioPlayer.playBytes(value));
+          .then((value) => playSoundEffect(value));
 
       var board = data[stage]['board'];
       List<CardObject> cards = [];
@@ -879,14 +889,14 @@ class HandActionService {
     } else if (stage == 'turn') {
       _gameState
           .getAudioBytes(AppAssets.flopSound)
-          .then((value) => audioPlayer.playBytes(value));
+          .then((value) => playSoundEffect(value));
 
       tableState.addTurnOrRiverCard(
           1, CardHelper.getCard(data[stage]['${stage}Card']));
     } else if (stage == 'river') {
       _gameState
           .getAudioBytes(AppAssets.flopSound)
-          .then((value) => audioPlayer.playBytes(value));
+          .then((value) => playSoundEffect(value));
       tableState.addTurnOrRiverCard(
           1, CardHelper.getCard(data[stage]['${stage}Card']));
     }
@@ -1078,18 +1088,18 @@ class HandActionService {
         action.action == HandActions.CALL) {
       _gameState
           .getAudioBytes(AppAssets.betRaiseSound)
-          .then((value) => audioPlayer.playBytes(value));
+          .then((value) => playSoundEffect(value));
     } else if (action.action == HandActions.FOLD) {
       _gameState
           .getAudioBytes(AppAssets.foldSound)
-          .then((value) => audioPlayer.playBytes(value));
+          .then((value) => playSoundEffect(value));
       seat.player.playerFolded = true;
       seat.player.animatingFold = true;
       seat.notify();
     } else if (action.action == HandActions.CHECK) {
       _gameState
           .getAudioBytes(AppAssets.checkSound)
-          .then((value) => audioPlayer.playBytes(value));
+          .then((value) => playSoundEffect(value));
     }
     int stack = playerActed['stack'];
     if (stack != null) {
@@ -1237,9 +1247,11 @@ class HandActionService {
     int highWinnersTimeInMs =
         lowWinners.isEmpty ? totalWaitTimeInMs : totalWaitTimeInMs ~/ 2;
     int lowWinnersTimeInMs = totalWaitTimeInMs ~/ 2;
-    gameState.getAudioBytes(AppAssets.applauseSound).then((value) {
-      audioPlayer.playBytes(value);
-    });
+    if (gameState.gameSounds) {
+      gameState.getAudioBytes(AppAssets.applauseSound).then((value) {
+        audioPlayer.playBytes(value);
+      });
+    }
 
     /** process the high pot winners: this method already takes 500ms*/
     await processWinners(
