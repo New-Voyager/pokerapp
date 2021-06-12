@@ -2,10 +2,8 @@ import 'dart:developer';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lottie/lottie.dart';
-import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
@@ -59,10 +57,6 @@ class PlayersOnTableView extends StatefulWidget {
 
 class _PlayersOnTableViewState extends State<PlayersOnTableView>
     with TickerProviderStateMixin {
-  /* map for holding player positions */
-  /* map<"MAX_PLAYER-SEAT", POSITION> */
-  final Map<String, Offset> seatPositionsMap = {};
-
   // for animation
   Animation<Offset> animation;
   AnimationController animationController;
@@ -299,9 +293,14 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
     final String cacheCode = '$maxPlayers-$seatNo';
 
     /* if available in cache, get from there */
-    if (seatPositionsMap[cacheCode] != null) return seatPositionsMap[cacheCode];
-
     final seat = gameState.getSeat(context, seatNo);
+    if (seat == null) {
+      return Offset(0, 0);
+    }
+    if (seat.parentRelativePos != null) {
+      return seat.parentRelativePos;
+    }
+
 
     final relativeSeatPos = getPositionOffsetFromKey(seat?.key);
     if (relativeSeatPos == null) return null;
@@ -311,7 +310,8 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
     final Offset seatPos = parentBox.globalToLocal(relativeSeatPos);
 
     /* we have the seatPos now, put in the cache */
-    return seatPositionsMap[cacheCode] = seatPos;
+    seat.parentRelativePos = seatPos;
+    return seatPos;
   }
 
   List<Offset> findPositionOfFromAndToUser({
@@ -393,8 +393,6 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
   }
 
   List<Widget> getPlayers(BuildContext context) {
-    // todo: THIS MAY INTRODUCE A BUG?
-    // PlayerModel me = this.widget.players.me;
     PlayerModel me;
     final gameState = GameState.getState(context);
 

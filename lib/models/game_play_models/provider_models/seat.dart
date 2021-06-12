@@ -36,6 +36,10 @@ class Seat extends ChangeNotifier {
   Offset _screenPos;
   Size _size;
 
+  // this offset is used for fun animation and seat change animation
+  // this offset is postion of the seat on the PlayerOnTableView widget
+  Offset _parentRelativePos;
+
   // action timer
   ActionTimer _actionTimer;
   int actionCount = 0;
@@ -126,6 +130,10 @@ class Seat extends ChangeNotifier {
 
   get screenPos => this._screenPos;
   set screenPos(Offset pos) => this._screenPos = pos;
+
+  get parentRelativePos => this._parentRelativePos;
+  set parentRelativePos(Offset pos) => this._parentRelativePos = pos;
+
 
   get size => this._size;
   set size(Size size) => this._size = size;
