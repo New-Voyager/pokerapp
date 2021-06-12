@@ -130,8 +130,10 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
     hostSeatChange.addListener(() {
       final int fromSeatNo = hostSeatChange.fromSeatNo;
       final int toSeatNo = hostSeatChange.toSeatNo;
+      final fromSeat = widget.gameState.getSeat(context, fromSeatNo);
+      final toSeat = widget.gameState.getSeat(context, toSeatNo);
 
-      print('seat change data: $fromSeatNo and $toSeatNo');
+      log('Seat Change data: $fromSeatNo (${fromSeat.player.name}, ${fromSeat.uiSeatPos.toString()}) and $toSeatNo (${toSeat.player.name} ${toSeat.uiSeatPos.toString()})');
 
       if (fromSeatNo == null || toSeatNo == null) return;
       if (fromSeatNo == 0 || toSeatNo == 0) return;
@@ -288,7 +290,6 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
 
   Offset findPositionOfUser({int seatNo}) {
     final gameState = GameState.getState(context);
-
     /* if available in cache, get from there */
     final seat = gameState.getSeat(context, seatNo);
     if (seat == null) {

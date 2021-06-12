@@ -56,6 +56,13 @@ class GameContextObject extends ChangeNotifier {
     return false;
   }
 
+  bool isHost() {
+    if (_currentPlayer?.role?.isHost == true) {
+      return true;
+    }
+    return false;
+  }
+
   @override
   void dispose() {
     handActionService?.close();

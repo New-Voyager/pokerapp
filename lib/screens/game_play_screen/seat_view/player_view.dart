@@ -304,35 +304,6 @@ class PlayerView extends StatelessWidget {
               ),
 
               talkingAnimation(),
-              // Visibility(
-              //     visible: seat.player.talking,
-              //     child: Positioned(
-              //         bottom: 0,
-              //         left: -15,
-              //         child: Transform.rotate(
-              //           angle: talkingAngle,
-              //           child:
-              //           BlinkWidget(
-              //             children: [
-              //               SvgPicture.asset('assets/images/speak/speak-one.svg', width: 16, height: 16, color: Colors.cyan),
-              //               SvgPicture.asset('assets/images/speak/speak-two.svg', width: 16, height: 16, color: Colors.cyan),
-              //               SvgPicture.asset('assets/images/speak/speak-all.svg', width: 16, height: 16, color: Colors.cyan),
-              //               SvgPicture.asset('assets/images/speak/speak-two.svg', width: 16, height: 16, color: Colors.cyan),
-              //             ],
-              //             )))),
-              // Visibility(
-              //     visible: seat.player.talking,
-              //     child: Positioned(
-              //         top: 0,
-              //         right: -20,
-              //         child: Container(
-              //             width: 22,
-              //             height: 22,
-              //             color: Colors.transparent,
-              //             child: Icon(
-              //               Icons.volume_up_outlined,
-              //               color: Colors.white70,
-              //             )))),
               seat.player.showMicOff
                   ? Positioned(
                       top: 0,

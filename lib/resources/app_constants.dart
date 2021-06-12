@@ -58,7 +58,7 @@ class AppConstants {
   );
 
   static const Duration seatChangeAnimationDuration = const Duration(
-    milliseconds: 500,
+    milliseconds: 1000,
   );
 
   static const Duration popUpAnimationDuration = const Duration(

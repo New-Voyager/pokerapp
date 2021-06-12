@@ -39,8 +39,8 @@ class NamePlateWidget extends StatelessWidget {
         _,
       ) {
         Widget displayWidget;
-        if (gameContextObject.isAdmin() &&
-            hostSeatChange.seatChangeInProgress) {
+        if (gameContextObject.isHost() && hostSeatChange.seatChangeInProgress) {
+          log('SeatChange: Seat change in progress: building seat [${seat.serverSeatPos}]');
           displayWidget = Draggable(
             data: seat.serverSeatPos,
             onDragEnd: (_) {
@@ -48,6 +48,9 @@ class NamePlateWidget extends StatelessWidget {
             },
             onDragStarted: () {
               hostSeatChange.onSeatDragStart(seat.serverSeatPos);
+            },
+            onDraggableCanceled: (_, __) {
+              hostSeatChange.onSeatDragEnd();
             },
             feedback: buildSeat(
               context,
@@ -98,6 +101,7 @@ class NamePlateWidget extends StatelessWidget {
       );
     } else {
       if (hostSeatChange?.seatChangeInProgress ?? false) {
+        //log('SeatChange: [${seat.serverSeatPos}] Seat change in progress');
         SeatChangeStatus seatChangeStatus;
         // are we dragging?
         if (seat.serverSeatPos != null) {
@@ -106,12 +110,14 @@ class NamePlateWidget extends StatelessWidget {
         }
         if (seatChangeStatus != null) {
           if (seatChangeStatus.isDragging || isFeedback) {
+            log('SeatChange: [${seat.serverSeatPos}] seatChangeStatus.isDragging: ${seatChangeStatus.isDragging} isFeedback: $isFeedback');
             shadow = BoxShadow(
               color: Colors.green,
               blurRadius: 20.0,
               spreadRadius: 8.0,
             );
           } else if (seatChangeStatus.isDropAble) {
+            log('SeatChange: [${seat.serverSeatPos}] seatChangeStatus.isDropAble: ${seatChangeStatus.isDropAble} isFeedback: $isFeedback');
             shadow = BoxShadow(
               color: Colors.blue,
               blurRadius: 20.0,

@@ -134,7 +134,6 @@ class Seat extends ChangeNotifier {
   get parentRelativePos => this._parentRelativePos;
   set parentRelativePos(Offset pos) => this._parentRelativePos = pos;
 
-
   get size => this._size;
   set size(Size size) => this._size = size;
 

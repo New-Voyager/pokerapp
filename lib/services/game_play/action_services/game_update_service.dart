@@ -949,7 +949,7 @@ class GameUpdateService {
     final oldSeatNo = data['oldSeatNo'];
     final newSeatNo = data['newSeatNo'];
 
-    log('Seat move: player name: $playerName id: $playerId oldSeatNo: $oldSeatNo newSeatNo: $newSeatNo');
+    log('SeatChange: player name: $playerName id: $playerId oldSeatNo: $oldSeatNo newSeatNo: $newSeatNo');
 
     final hostSeatChange =
         Provider.of<SeatChangeNotifier>(_context, listen: false);
