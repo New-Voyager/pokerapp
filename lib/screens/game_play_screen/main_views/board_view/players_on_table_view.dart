@@ -431,7 +431,7 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
               u.key,
               maxPlayers,
               me != null,
-              me?.localSeatNo,
+              me?.seatNo,
               seatChangeInProgress: scn.seatChangeInProgress,
             ),
             isPresent: me != null,
@@ -479,7 +479,7 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
     * */
     final gameState = Provider.of<GameState>(context, listen: false);
     for (PlayerModel model in users) {
-      gameState.seatPlayer(model.localSeatNo, model);
+      gameState.seatPlayer(model.seatNo, model);
     }
 
     return gameState.seats;

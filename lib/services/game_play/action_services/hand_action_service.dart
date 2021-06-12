@@ -545,8 +545,7 @@ class HandActionService {
     }
 
     /* marking the small blind */
-    int smallBlindIdx =
-        players.players.indexWhere((p) => p.localSeatNo == sbPos);
+    int smallBlindIdx = players.players.indexWhere((p) => p.seatNo == sbPos);
     assert(smallBlindIdx != -1);
 
     players.updatePlayerTypeSilent(
@@ -556,7 +555,7 @@ class HandActionService {
     );
 
     /* marking the big blind */
-    int bigBlindIdx = players.players.indexWhere((p) => p.localSeatNo == bbPos);
+    int bigBlindIdx = players.players.indexWhere((p) => p.seatNo == bbPos);
     assert(bigBlindIdx != -1);
     players.updatePlayerTypeSilent(
       bigBlindIdx,
@@ -565,8 +564,7 @@ class HandActionService {
     );
 
     /* marking the dealer */
-    int dealerIdx =
-        players.players.indexWhere((p) => p.localSeatNo == dealerPos);
+    int dealerIdx = players.players.indexWhere((p) => p.seatNo == dealerPos);
 
     if (dealerIdx == -1) {
       /* we have a open seat, set the dealer */
@@ -613,7 +611,7 @@ class HandActionService {
     if (_close) return;
     final players = _gameState.getPlayers(_context);
 
-    List<int> seatNos = players.players.map((p) => p.localSeatNo).toList();
+    List<int> seatNos = players.players.map((p) => p.seatNo).toList();
     seatNos.sort();
     players.updateCardSilent(mySeatNo, myCards);
     _gameState.currentCards = myCards;
@@ -663,7 +661,7 @@ class HandActionService {
 
     var seatAction = data['seatAction'];
     int seatNo = int.parse(seatAction['seatNo'].toString());
-    if (me.localSeatNo != seatNo) {
+    if (me.seatNo != seatNo) {
       return;
     }
 
@@ -776,7 +774,7 @@ class HandActionService {
     if (_close) return;
 
     final players = _gameState.getPlayers(_context);
-    List<int> seatNos = players.players.map((p) => p.localSeatNo).toList();
+    List<int> seatNos = players.players.map((p) => p.seatNo).toList();
     seatNos.sort();
 
     if (_close) return;
@@ -929,7 +927,7 @@ class HandActionService {
     int idxOfMe = players.players.indexWhere((p) => p.isMe);
     if (idxOfMe != -1)
       players.updateCardSilent(
-        players.players[idxOfMe].localSeatNo,
+        players.players[idxOfMe].seatNo,
         CardHelper.getRawCardNumbers(playerCards),
       );
 
@@ -1020,7 +1018,7 @@ class HandActionService {
 
     if (nextSeatToAct == -1) return;
 
-    int idx = players.players.indexWhere((p) => p.localSeatNo == nextSeatToAct);
+    int idx = players.players.indexWhere((p) => p.seatNo == nextSeatToAct);
 
     if (players.players[idx].isMe) {
       handleNextAction(
@@ -1622,7 +1620,7 @@ class HandActionService {
 
     gameService.sendCards(
       cardNumbers,
-      players.me?.localSeatNo,
+      players.me?.seatNo,
     );
   }
 }

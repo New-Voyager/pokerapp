@@ -307,8 +307,8 @@ class GameState {
         player.breakTimeExpAt = player.breakTimeExpAt.toLocal();
       }
 
-      if (player.localSeatNo != 0) {
-        final seat = this._seats[player.localSeatNo];
+      if (player.seatNo != 0) {
+        final seat = this._seats[player.seatNo];
         seat.player = player;
       }
 
@@ -431,7 +431,7 @@ class GameState {
     if (me == null) {
       return null;
     }
-    final seat = getSeat(context, me.localSeatNo);
+    final seat = getSeat(context, me.seatNo);
     return seat;
   }
 
@@ -546,7 +546,7 @@ class GameState {
       if (seat.player == null) {
         continue;
       }
-      // if newHand is true, we pass 'false' flag to say don't stick any action to player. 
+      // if newHand is true, we pass 'false' flag to say don't stick any action to player.
       // otherwise stick last player action to nameplate
       seat.player.reset(
           stickAction: newHand ?? false

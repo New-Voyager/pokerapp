@@ -199,7 +199,7 @@ class GameUpdateService {
     assert(_gameInfoModel != null);
     List<PlayerModel> playerModels = _gameInfoModel.playersInSeats;
     PlayerModel newPlayerModel = playerModels.firstWhere(
-      (pm) => pm.localSeatNo == seatNo,
+      (pm) => pm.seatNo == seatNo,
       orElse: () => null,
     ); // this must return a PLayerModel object
 
@@ -309,7 +309,7 @@ class GameUpdateService {
     if (player1 == null) return;
     if (player1Seat == null) return;
 
-    player1.localSeatNo = newSeatNo;
+    player1.seatNo = newSeatNo;
 
     if (gameInfo.status == 'CONFIGURED' &&
         gameInfo.tableStatus == 'WAITING_TO_BE_STARTED') {
@@ -362,7 +362,7 @@ class GameUpdateService {
           .replaceAll('PlayerStatus.', '');
       // get break exp time
       for (final player in _gameInfoModel.playersInSeats) {
-        if (player.localSeatNo == seat.serverSeatPos) {
+        if (player.seatNo == seat.serverSeatPos) {
           seat.player.buyInTimeExpAt = player.buyInTimeExpAt.toLocal();
           DateTime now = DateTime.now();
           if (seat.player.buyInTimeExpAt != null) {
@@ -431,7 +431,7 @@ class GameUpdateService {
       seat.player.inBreak = true;
       // get break exp time
       for (final player in _gameInfoModel.playersInSeats) {
-        if (player.localSeatNo == seat.serverSeatPos) {
+        if (player.seatNo == seat.serverSeatPos) {
           seat.player.status = player.status;
           seat.player.breakTimeExpAt = player.breakTimeExpAt.toLocal();
           DateTime now = DateTime.now();
@@ -467,7 +467,7 @@ class GameUpdateService {
     if (seat != null && seat.player != null) {
       // get break exp time
       for (final player in _gameInfoModel.playersInSeats) {
-        if (player.localSeatNo == seat.serverSeatPos) {
+        if (player.seatNo == seat.serverSeatPos) {
           seat.player.status = player.status;
           if (player.status != 'IN_BREAK') {
             seat.player.inBreak = false;
@@ -654,7 +654,7 @@ class GameUpdateService {
     valueNotifierNotModel.value = GeneralNotificationModel(
       titleText: 'Seat change in progress',
       subTitleText:
-          'Seat change requested by ${player.name} at seat no ${player.localSeatNo}',
+          'Seat change requested by ${player.name} at seat no ${player.seatNo}',
       trailingWidget: CountDownTimer(
         remainingTime:
             seatChangeTime * seatChangeSeatNo.length, // TODO: MULTIPLE PLAYERS?
@@ -680,11 +680,11 @@ class GameUpdateService {
 
     // for other players, show the banner sticky (stay at the top)
     // Seat arrangement in progress
-    final ValueNotifier<GeneralNotificationModel> valueNotifierNotModel =
-        Provider.of<ValueNotifier<GeneralNotificationModel>>(
-      _context,
-      listen: false,
-    );
+    // final ValueNotifier<GeneralNotificationModel> valueNotifierNotModel =
+    //     Provider.of<ValueNotifier<GeneralNotificationModel>>(
+    //   _context,
+    //   listen: false,
+    // );
 
     // valueNotifierNotModel.value = GeneralNotificationModel(
     //   titleText: 'Seat change',
