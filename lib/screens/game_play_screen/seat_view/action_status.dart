@@ -42,9 +42,27 @@ class ActionStatusWidget extends StatelessWidget {
         ? shrinkedSizedBox
         : ClipRRect(
             borderRadius: BorderRadius.circular(5.0),
-            child: Text(
-              '  ' + actionStr + '  ',
-              style: getStatusTextStyle(actionStr),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  '  ' + actionStr + '  ',
+                  style: getStatusTextStyle(actionStr),
+                ),
+                Visibility(
+                  visible: seat.player.action.action == HandActions.ALLIN,
+                  child: Container(
+                    width: 20,
+                    height: 20,
+                    child: Image.asset(
+                      'assets/images/game/flame.png',
+                      height: 20,
+                      width: 20,
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                )
+              ],
             ),
           );
   }

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pokerapp/enums/game_status.dart';
 import 'package:pokerapp/enums/game_type.dart';
+import 'package:pokerapp/enums/hand_actions.dart';
 import 'package:pokerapp/enums/player_status.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
@@ -24,6 +25,7 @@ import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
 import 'hand_result.dart';
+import 'host_seat_change.dart';
 import 'player_action.dart';
 import 'players.dart';
 import 'table_state.dart';
@@ -72,11 +74,19 @@ class GameState {
   Map<int, String> _playerIdsToNames = Map<int, String>();
   Map<int, List<int>> _myCards = Map<int, List<int>>();
 
+  // host seat change state (only used when initialization)
+  List<PlayerInSeat> _hostSeatChangeSeats;
+  bool _hostSeatChangeInProgress;
+
+  bool gameSounds = false;
+
   void initialize({
     String gameCode,
     @required GameInfoModel gameInfo,
     @required PlayerInfo currentPlayer,
     GameMessagingService gameMessagingService,
+    List<PlayerInSeat> hostSeatChangeSeats,
+    bool hostSeatChangeInProgress,
   }) {
     this._seats = Map<int, Seat>();
     this._gameInfo = gameInfo;
@@ -84,6 +94,9 @@ class GameState {
     this._currentPlayer = currentPlayer;
     this._currentHandNum = -1;
     this._tappedSeatPos = null;
+
+    this._hostSeatChangeSeats = hostSeatChangeSeats;
+    this._hostSeatChangeInProgress = hostSeatChangeInProgress ?? false;
 
     for (int seatNo = 1; seatNo <= gameInfo.maxPlayers; seatNo++) {
       this._seats[seatNo] = Seat(seatNo, seatNo, null);
@@ -176,11 +189,16 @@ class GameState {
       }
     }
 
-    this._players = ListenableProvider<Players>(
-      create: (_) => Players(
-        players: players,
-      ),
+    final playersState = Players(
+      players: players,
     );
+
+    if (_hostSeatChangeInProgress) {
+      log('host seat change is in progress');
+      playersState.refreshWithPlayerInSeat(_hostSeatChangeSeats, notify: false);
+    }
+
+    this._players = ListenableProvider<Players>(create: (_) => playersState);
 
     log('In GameState initialize(), _gameInfo.status = ${_gameInfo.status}');
     if (_gameInfo.status == AppConstants.GAME_ACTIVE) {
@@ -522,12 +540,18 @@ class GameState {
     actionState.setAction(seatNo, seatAction);
   }
 
-  void resetSeatActions() {
+  //
+  void resetSeatActions({bool newHand}) {
     for (final seat in this._seats.values) {
       if (seat.player == null) {
         continue;
       }
-      seat.player.reset();
+      // if newHand is true, we pass 'false' flag to say don't stick any action to player. 
+      // otherwise stick last player action to nameplate
+      seat.player.reset(
+          stickAction: newHand ?? false
+              ? false
+              : (seat.player.action.action == HandActions.ALLIN));
       seat.notify();
     }
   }

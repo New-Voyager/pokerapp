@@ -130,6 +130,9 @@ class AppConstants {
   static const String WAITING_TO_BE_STARTED = 'WAITING_TO_BE_STARTED';
   static const String TABLE_STATUS_NOT_ENOUGH_PLAYERS = 'NOT_ENOUGH_PLAYERS';
   static const String TABLE_STATUS_GAME_RUNNING = 'TABLE_STATUS_GAME_RUNNING';
+  static const String TABLE_STATUS_HOST_SEATCHANGE_IN_PROGRESS =
+      'HOST_SEATCHANGE_IN_PROGRESS';
+
   static const String GAME_ACTIVE = 'ACTIVE';
   static const String GAME_RUNNING = 'GAME_RUNNING';
   static const String GAME_ENDED = 'ENDED';

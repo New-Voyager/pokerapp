@@ -41,6 +41,11 @@ class SeatChangeNotifier extends ChangeNotifier {
       List.generate(10, (_) => SeatChangeStatus());
   void notifyAll() => notifyListeners();
 
+  SeatChangeNotifier({bool seatChangeInProgress, List<PlayerInSeat> players}) {
+    this._seatChangeInProgress = seatChangeInProgress ?? false;
+    this.playersInSeats = players;
+  }
+
   void updateSeatChangeInProgress(bool seatChangeInProgress) {
     if (this._seatChangeInProgress == seatChangeInProgress) return;
     this._seatChangeInProgress = seatChangeInProgress;

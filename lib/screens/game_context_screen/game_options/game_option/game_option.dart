@@ -22,6 +22,7 @@ class GameOption extends StatefulWidget {
   final String playerUuid;
   final bool isAdmin;
   final GameState gameState;
+
   GameOption(this.gameState, this.gameCode, this.playerUuid, this.isAdmin);
 
   @override
@@ -86,6 +87,7 @@ class _GameOptionState extends State<GameOption> {
   }
 
   List<OptionItemModel> gameSecondaryOptions;
+
   @override
   void initState() {
     super.initState();
@@ -243,9 +245,26 @@ class _GameOptionState extends State<GameOption> {
                 setState(() {});
               },
             ),
+            _buildCheckBox(
+              text: 'Game Sounds',
+              value: widget.gameState.gameSounds,
+              onChange: (bool v) {
+                widget.gameState.gameSounds = v;
+                log('gameSounds = ${widget.gameState.gameSounds}');
+                setState(() {});
+              },
+            ),
+            widget.gameState.gameInfo.audioConfEnabled ? _buildCheckBox(
+              text: 'Audio Conference',
+              value: false,
+              onChange: (bool v)  {
+                setState(() {});
+              },
+            ): SizedBox(),
           ],
         ),
       );
+
   @override
   Widget build(BuildContext context) {
     height = MediaQuery.of(context).size.height;

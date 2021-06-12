@@ -585,6 +585,7 @@ class GameUpdateService {
     String type = tableUpdate['type'];
     String jsonData = jsonEncode(data);
     log(jsonData);
+    // {"gameId":"494","gameCode":"cgnmxhehyy","messageType":"TABLE_UPDATE","tableUpdate":{"type":"HostSeatChangeInProcessStart","seatChangeHost":"1927"}}
 
     // TODO: HOW TO HANDLE MULTIPLE PLAYER'S SEAT CHANGE?
     if (type == AppConstants.SeatChangeInProgress) {
@@ -838,6 +839,10 @@ class GameUpdateService {
     /*
       {"gameId":"90","gameCode":"CG-Z44IXIK44KWKBQW","messageType":"GAME_STATUS","status":{"status":"ACTIVE","tableStatus":"WAITING_TO_BE_STARTED"}}
       {"gameId":"90","gameCode":"CG-Z44IXIK44KWKBQW","messageType":"GAME_STATUS","status":{"status":"PAUSED","tableStatus":"GAME_RUNNING"}}
+      else if (type == AppConstants.GAME_PAUSED) {
+      // {"gameId":"494","gameCode":"cgnmxhehyy","messageType":"GAME_STATUS","status":{"status":"PAUSED","tableStatus":"GAME_RUNNING"}}
+
+    }
     */
 
     final GameContextObject gameContext =

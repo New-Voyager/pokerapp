@@ -7,6 +7,7 @@ import 'package:pokerapp/enums/game_status.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/player_info.dart';
@@ -27,6 +28,7 @@ import 'package:pokerapp/services/game_play/action_services/game_update_service.
 import 'package:pokerapp/services/game_play/action_services/hand_action_service.dart';
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
+import 'package:pokerapp/services/game_play/graphql/seat_change_service.dart';
 import 'package:pokerapp/services/game_play/utils/audio_buffer.dart';
 import 'package:pokerapp/services/janus/janus.dart';
 import 'package:pokerapp/services/nats/nats.dart';
@@ -79,6 +81,8 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   GameInfoModel _gameInfoModel;
   GameContextObject _gameContextObj;
   GameState _gameState;
+  List<PlayerInSeat> _hostSeatChangeSeats;
+  bool _hostSeatChangeInProgress;
 
   /* _init function is run only for the very first time,
   * and only once, the initial game screen is populated from here
@@ -138,6 +142,16 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
   Future<GameInfoModel> _init() async {
     GameInfoModel _gameInfoModel = await _fetchGameInfo();
+    _hostSeatChangeInProgress = false;
+    if (_gameInfoModel.status == AppConstants.GAME_PAUSED &&
+        _gameInfoModel.tableStatus ==
+            AppConstants.TABLE_STATUS_HOST_SEATCHANGE_IN_PROGRESS) {
+      _hostSeatChangeSeats =
+          await SeatChangeService.hostSeatChangeSeatPositions(
+              _gameInfoModel.gameCode);
+      log('host seat change: $_hostSeatChangeSeats');
+      _hostSeatChangeInProgress = true;
+    }
 
     if (_initiated == true) return _gameInfoModel;
 
@@ -164,6 +178,8 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       gameInfo: _gameInfoModel,
       currentPlayer: _currentPlayer,
       gameMessagingService: gameComService.gameMessaging,
+      hostSeatChangeInProgress: _hostSeatChangeInProgress,
+      hostSeatChangeSeats: _hostSeatChangeSeats,
     );
 
     if (_gameInfoModel?.audioConfEnabled ?? false) {
@@ -426,6 +442,8 @@ class _GamePlayScreenState extends State<GamePlayScreen>
                 //agora: agora,
                 boardAttributes: boardAttributes,
                 gameContextObject: _gameContextObj,
+                hostSeatChangePlayers: _hostSeatChangeSeats,
+                seatChangeInProgress: _hostSeatChangeInProgress,
               );
               return MultiProvider(
                 providers: providers,
