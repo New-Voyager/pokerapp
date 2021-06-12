@@ -95,18 +95,18 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
     widget.gameComService?.gameMessaging?.listen(onAnimation: this.onAnimation);
     animationHandlers();
     _seatChangeAnimationHandler();
-    cacheSeatPositions();
+    // cacheSeatPositions();
     super.initState();
   }
 
-  // todo: this method can be optimized
-  void cacheSeatPositions() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      for (int seatNo = 1;
-          seatNo <= widget.gameState.gameInfo.maxPlayers;
-          seatNo++) findPositionOfUser(seatNo: seatNo);
-    });
-  }
+  // // todo: this method can be optimized
+  // void cacheSeatPositions() {
+  //   WidgetsBinding.instance.addPostFrameCallback((_) {
+  //     for (int seatNo = 1;
+  //         seatNo <= widget.gameState.gameInfo.maxPlayers;
+  //         seatNo++) findPositionOfUser(seatNo: seatNo);
+  //   });
+  // }
 
   void _seatChangeAnimationHandler() {
     final SeatChangeNotifier hostSeatChange = Provider.of<SeatChangeNotifier>(
@@ -289,9 +289,6 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
   Offset findPositionOfUser({int seatNo}) {
     final gameState = GameState.getState(context);
 
-    final maxPlayers = gameState.gameInfo.maxPlayers;
-    final String cacheCode = '$maxPlayers-$seatNo';
-
     /* if available in cache, get from there */
     final seat = gameState.getSeat(context, seatNo);
     if (seat == null) {
@@ -324,7 +321,7 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
 
   @override
   Widget build(BuildContext context) {
-    cacheSeatPositions();
+    // cacheSeatPositions();
 
     // am I on this table?
     return Transform.translate(

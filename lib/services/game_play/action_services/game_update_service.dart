@@ -300,6 +300,9 @@ class GameUpdateService {
   }) async {
     int newSeatNo = playerUpdate['seatNo'] as int;
     int oldSeatNo = playerUpdate['oldSeat'] as int;
+
+    print('\n\n newSeat: $newSeatNo : oldSeat: $oldSeatNo \n\n');
+
     int stack = playerUpdate['stack'] as int;
 
     final gameInfo = _gameState.gameInfo;
@@ -738,7 +741,7 @@ class GameUpdateService {
       int from = int.parse(move['oldSeatNo'].toString());
       int to = int.parse(move['newSeatNo'].toString());
       String name = move['name'].toString();
-      double stack = double.parse(move['stack'].toString());
+      // double stack = double.parse(move['stack'].toString());
       debugPrint('Seatchange: Player $name from seat $from to $to');
 
       /* start animation */
