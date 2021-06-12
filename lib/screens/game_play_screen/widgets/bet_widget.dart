@@ -86,7 +86,7 @@ class BetWidget extends StatelessWidget {
                         Align(
                           alignment: Alignment.center,
                           child: Transform.translate(
-                            offset: const Offset(0.0, -20.0),
+                            offset: const Offset(0.0, -30.0),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               mainAxisAlignment: MainAxisAlignment.start,
@@ -95,7 +95,7 @@ class BetWidget extends StatelessWidget {
                                 Consumer<ValueNotifier<double>>(
                                   builder: (_, vnVal, __) => Container(
                                     width: 60,
-                                    height: 60,
+                                    height: 70,
                                     child: PulsatingCircleIconButton(
                                       onTap: () =>
                                           onSubmitCallBack?.call(vnVal.value),
@@ -114,7 +114,7 @@ class BetWidget extends StatelessWidget {
                                               color: Colors.white,
                                             ),
                                           ),
-                                          SizedBox(height: 5),
+                                          //  SizedBox(height: 5),
                                           Text(
                                             "BET",
                                             style: TextStyle(
@@ -173,7 +173,7 @@ class BetWidget extends StatelessWidget {
                 child: Container(
                   alignment: Alignment.center,
                   width: width / 1.5,
-                  height: 64,
+                  height: 65,
                   child: betAmountList(valueNotifierVal),
                 ),
               ),
