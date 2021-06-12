@@ -300,13 +300,17 @@ class GameUpdateService {
   }) async {
     int newSeatNo = playerUpdate['seatNo'] as int;
     int oldSeatNo = playerUpdate['oldSeat'] as int;
+
+    print('\n\n newSeat: $newSeatNo : oldSeat: $oldSeatNo \n\n');
+
     int stack = playerUpdate['stack'] as int;
 
     final gameInfo = _gameState.gameInfo;
     final player1 = _gameState.fromSeat(_context, oldSeatNo);
-    if (player1 == null) {
-      return;
-    }
+    final player1Seat = _gameState.getSeat(_context, oldSeatNo);
+
+    if (player1 == null) return;
+    if (player1Seat == null) return;
 
     player1.seatNo = newSeatNo;
 
@@ -324,10 +328,7 @@ class GameUpdateService {
     } else {
       if (closed) return;
       final ValueNotifier<SeatChangeModel> vnSeatChangeModel =
-          Provider.of<ValueNotifier<SeatChangeModel>>(
-        _context,
-        listen: false,
-      );
+          _context.read<ValueNotifier<SeatChangeModel>>();
 
       /* animate the stack */
       vnSeatChangeModel.value = SeatChangeModel(
@@ -682,11 +683,11 @@ class GameUpdateService {
 
     // for other players, show the banner sticky (stay at the top)
     // Seat arrangement in progress
-    final ValueNotifier<GeneralNotificationModel> valueNotifierNotModel =
-        Provider.of<ValueNotifier<GeneralNotificationModel>>(
-      _context,
-      listen: false,
-    );
+    // final ValueNotifier<GeneralNotificationModel> valueNotifierNotModel =
+    //     Provider.of<ValueNotifier<GeneralNotificationModel>>(
+    //   _context,
+    //   listen: false,
+    // );
 
     // valueNotifierNotModel.value = GeneralNotificationModel(
     //   titleText: 'Seat change',
@@ -740,7 +741,7 @@ class GameUpdateService {
       int from = int.parse(move['oldSeatNo'].toString());
       int to = int.parse(move['newSeatNo'].toString());
       String name = move['name'].toString();
-      double stack = double.parse(move['stack'].toString());
+      // double stack = double.parse(move['stack'].toString());
       debugPrint('Seatchange: Player $name from seat $from to $to');
 
       /* start animation */
@@ -948,7 +949,7 @@ class GameUpdateService {
     final oldSeatNo = data['oldSeatNo'];
     final newSeatNo = data['newSeatNo'];
 
-    log('Seat move: player name: $playerName id: $playerId oldSeatNo: $oldSeatNo newSeatNo: $newSeatNo');
+    log('SeatChange: player name: $playerName id: $playerId oldSeatNo: $oldSeatNo newSeatNo: $newSeatNo');
 
     final hostSeatChange =
         Provider.of<SeatChangeNotifier>(_context, listen: false);

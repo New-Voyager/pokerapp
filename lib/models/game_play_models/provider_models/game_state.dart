@@ -76,7 +76,7 @@ class GameState {
 
   // host seat change state (only used when initialization)
   List<PlayerInSeat> _hostSeatChangeSeats;
-  bool _hostSeatChangeInProgress;
+  bool hostSeatChangeInProgress;
 
   bool gameSounds = false;
 
@@ -96,7 +96,7 @@ class GameState {
     this._tappedSeatPos = null;
 
     this._hostSeatChangeSeats = hostSeatChangeSeats;
-    this._hostSeatChangeInProgress = hostSeatChangeInProgress ?? false;
+    this.hostSeatChangeInProgress = hostSeatChangeInProgress ?? false;
 
     for (int seatNo = 1; seatNo <= gameInfo.maxPlayers; seatNo++) {
       this._seats[seatNo] = Seat(seatNo, seatNo, null);
@@ -193,7 +193,7 @@ class GameState {
       players: players,
     );
 
-    if (_hostSeatChangeInProgress) {
+    if (hostSeatChangeInProgress) {
       log('host seat change is in progress');
       playersState.refreshWithPlayerInSeat(_hostSeatChangeSeats, notify: false);
     }
@@ -546,7 +546,7 @@ class GameState {
       if (seat.player == null) {
         continue;
       }
-      // if newHand is true, we pass 'false' flag to say don't stick any action to player. 
+      // if newHand is true, we pass 'false' flag to say don't stick any action to player.
       // otherwise stick last player action to nameplate
       seat.player.reset(
           stickAction: newHand ?? false

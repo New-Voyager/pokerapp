@@ -31,29 +31,26 @@ const sizedBox2 = const SizedBox(
 class NumericKeyboard2 extends StatelessWidget {
   final double min;
   final double max;
-  final bool decimal;
+  // final bool decimal;
   final String title;
-  final double currValue;
+  final int currValue;
 
-  NumericKeyboard2(
-      {Key key,
-      this.title,
-      this.min,
-      this.max,
-      this.currValue,
-      this.decimal = false})
-      : super(key: key);
+  NumericKeyboard2({
+    Key key,
+    this.title,
+    this.min,
+    this.max,
+    this.currValue,
+    // this.decimal = false,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    double value = this.currValue;
-    if (value <= this.min) {
-      value = this.min;
-    }
-    String valueStr = value.toString();
-    if (!decimal) {
-      valueStr = value.round().toString();
-    }
+    int value = this.currValue;
+
+    if (value <= this.min) value = this.min.round();
+
+    String valueStr = value.round().toString();
 
     return Container(
       decoration: const BoxDecoration(
@@ -67,7 +64,7 @@ class NumericKeyboard2 extends StatelessWidget {
       height: MediaQuery.of(context).size.height * 0.45,
       child: MultiProvider(
         providers: [
-          /* this provider holds the double value */
+          /* this provider holds the input value as string */
           ListenableProvider<ValueNotifier<String>>(
             create: (_) => ValueNotifier<String>(valueStr),
           ),
@@ -98,7 +95,7 @@ class NumericKeyboard2 extends StatelessWidget {
                   /* amount */
                   Consumer2<ValueNotifier<String>, ValueNotifier<bool>>(
                     builder: (_, vnValue, vnError, __) => _buildAmountWidget(
-                      value: vnValue.value,
+                      vnValue: vnValue,
                       error: vnError.value,
                       onCloseTab: () => Navigator.pop(context),
                       onDoneTab: () => _onDone(
@@ -157,7 +154,7 @@ class NumericKeyboard2 extends StatelessWidget {
   }
 
   Widget _buildAmountWidget({
-    String value,
+    ValueNotifier<String> vnValue,
     bool error,
     Function onDoneTab,
     Function onCloseTab,
@@ -167,7 +164,7 @@ class NumericKeyboard2 extends StatelessWidget {
         /* bet amount */
         Expanded(
           child: Container(
-            padding: const EdgeInsets.only(bottom: 10.0),
+            padding: const EdgeInsets.only(bottom: 5.0),
             decoration: BoxDecoration(
               border: Border(
                 bottom: BorderSide(
@@ -176,12 +173,31 @@ class NumericKeyboard2 extends StatelessWidget {
                 ),
               ),
             ),
-            child: Text(
-              value.toString(),
-              style: TextStyle(
-                color: AppColors.appAccentColor,
-                fontSize: 18.0,
-              ),
+            child: Row(
+              children: [
+                /* main bet amount area */
+                Expanded(
+                  child: Text(
+                    vnValue.value.toString(),
+                    style: TextStyle(
+                      color: AppColors.appAccentColor,
+                      fontSize: 18.0,
+                    ),
+                  ),
+                ),
+
+                /* clear text button */
+                InkWell(
+                  onTap: () {
+                    vnValue.value = '';
+                  },
+                  child: Icon(
+                    Icons.highlight_off_rounded,
+                    color: Colors.red,
+                    size: 30.0,
+                  ),
+                ),
+              ],
             ),
           ),
         ),
@@ -261,13 +277,13 @@ class NumericKeyboard2 extends StatelessWidget {
       return;
     }
 
-    /* if we already have a decimal, do not allow anymore */
-    if (buttonValue == '.') {
-      if (!decimal) {
-        return;
-      }
-      if (value.contains('.')) return;
-    }
+    // /* if we already have a decimal, do not allow anymore */
+    // if (buttonValue == '.') {
+    //   if (!decimal) {
+    //     return;
+    //   }
+    //   if (value.contains('.')) return;
+    // }
 
     /* numbers and decimal part */
     String newValue = '';
@@ -279,49 +295,50 @@ class NumericKeyboard2 extends StatelessWidget {
     vnValue.value = newValue;
   }
 
-  Widget _buildButton1({
-    String value,
-    int flex = 1,
-  }) {
-    Color color = Colors.blue;
-    Color splashColor = Colors.blue[800];
-    IconData icon;
-    if (value == BACKSPACE_BTN) {
-      color = Colors.lightBlue;
-      splashColor = Colors.blue[800];
-      icon = Icons.backspace_rounded;
-    }
+  // Widget _buildButton1({
+  //   String value,
+  //   int flex = 1,
+  // }) {
+  //   // Color color = Colors.blue;
+  //   // Color splashColor = Colors.blue[800];
+  //   IconData icon;
+  //   if (value == BACKSPACE_BTN) {
+  //     // color = Colors.lightBlue;
+  //     // splashColor = Colors.blue[800];
+  //     icon = Icons.backspace_rounded;
+  //   }
 
-    if (value == '.' && !decimal) {
-      color = Colors.grey;
-      splashColor = Colors.white70;
-    }
+  //   // if (value == '.' && !decimal) {
+  //   //   color = Colors.grey;
+  //   //   splashColor = Colors.white70;
+  //   // }
 
-    return Expanded(
-        flex: flex,
-        child: Material(
-          color: Colors.blue, // button color
-          child: InkWell(
-            splashColor: Colors.red, // inkwell color
-            //child: SizedBox(width: 56, height: 56, child: Icon(Icons.menu)),
-            child: Center(
-              child: icon != null
-                  ? Icon(
-                      icon,
-                      color: Colors.white,
-                    )
-                  : Text(
-                      value,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18.0,
-                      ),
-                    ),
-            ),
-            onTap: () {},
-          ),
-        ));
-  }
+  //   return Expanded(
+  //     flex: flex,
+  //     child: Material(
+  //       color: Colors.blue, // button color
+  //       child: InkWell(
+  //         splashColor: Colors.red, // inkwell color
+  //         //child: SizedBox(width: 56, height: 56, child: Icon(Icons.menu)),
+  //         child: Center(
+  //           child: icon != null
+  //               ? Icon(
+  //                   icon,
+  //                   color: Colors.white,
+  //                 )
+  //               : Text(
+  //                   value,
+  //                   style: TextStyle(
+  //                     color: Colors.white,
+  //                     fontSize: 18.0,
+  //                   ),
+  //                 ),
+  //         ),
+  //         onTap: () {},
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Widget _buildButton({
     String value,
@@ -336,10 +353,10 @@ class NumericKeyboard2 extends StatelessWidget {
       icon = Icons.backspace_rounded;
     }
 
-    if (value == '.' && !decimal) {
-      color = Colors.grey;
-      splashColor = Colors.white70;
-    }
+    // if (value == '.' && !decimal) {
+    //   color = Colors.grey;
+    //   splashColor = Colors.white70;
+    // }
     return Expanded(
       flex: flex,
       child: Builder(
@@ -460,7 +477,7 @@ class NumericKeyboard2 extends StatelessWidget {
             child: Row(
               children: [
                 _buildButton(
-                  value: '.',
+                  value: '',
                 ),
                 _buildButton(
                   value: '0',
@@ -494,8 +511,8 @@ class NumericKeyboard2 extends StatelessWidget {
           title: title,
           min: min,
           max: max,
-          currValue: min,
-          decimal: decimal,
+          currValue: min.round(),
+          // decimal: decimal,
         ),
       ),
       transitionBuilder: (context, anim1, _, child) => SlideTransition(

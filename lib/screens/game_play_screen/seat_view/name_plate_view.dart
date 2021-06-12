@@ -39,8 +39,8 @@ class NamePlateWidget extends StatelessWidget {
         _,
       ) {
         Widget displayWidget;
-        if (gameContextObject.isAdmin() &&
-            hostSeatChange.seatChangeInProgress) {
+        if (gameContextObject.isHost() && hostSeatChange.seatChangeInProgress) {
+          log('SeatChange: Seat change in progress: building seat [${seat.serverSeatPos}]');
           displayWidget = Draggable(
             data: seat.serverSeatPos,
             onDragEnd: (_) {
@@ -48,6 +48,9 @@ class NamePlateWidget extends StatelessWidget {
             },
             onDragStarted: () {
               hostSeatChange.onSeatDragStart(seat.serverSeatPos);
+            },
+            onDraggableCanceled: (_, __) {
+              hostSeatChange.onSeatDragEnd();
             },
             feedback: buildSeat(
               context,
@@ -78,7 +81,9 @@ class NamePlateWidget extends StatelessWidget {
    * blue: shows when a moving seat can be dropped
    */
   List<BoxShadow> getShadow(
-      SeatChangeNotifier hostSeatChange, bool isFeedback) {
+    SeatChangeNotifier hostSeatChange,
+    bool isFeedback,
+  ) {
     BoxShadow shadow;
     bool winner = seat.player?.winner ?? false;
     bool highlight = seat.player?.highlight ?? false;
@@ -95,25 +100,30 @@ class NamePlateWidget extends StatelessWidget {
         spreadRadius: 20.0,
       );
     } else {
-      SeatChangeStatus seatChangeStatus;
-      // are we dragging?
-      if (seat.serverSeatPos != null) {
-        seatChangeStatus =
-            hostSeatChange.allSeatChangeStatus[seat.serverSeatPos];
-      }
-      if (seatChangeStatus != null) {
-        if (seatChangeStatus.isDragging || isFeedback) {
-          shadow = BoxShadow(
-            color: Colors.green,
-            blurRadius: 20.0,
-            spreadRadius: 20.0,
-          );
-        } else if (seatChangeStatus.isDropAble) {
-          shadow = BoxShadow(
-            color: Colors.blue,
-            blurRadius: 20.0,
-            spreadRadius: 20.0,
-          );
+      if (hostSeatChange?.seatChangeInProgress ?? false) {
+        //log('SeatChange: [${seat.serverSeatPos}] Seat change in progress');
+        SeatChangeStatus seatChangeStatus;
+        // are we dragging?
+        if (seat.serverSeatPos != null) {
+          seatChangeStatus =
+              hostSeatChange.allSeatChangeStatus[seat.serverSeatPos];
+        }
+        if (seatChangeStatus != null) {
+          if (seatChangeStatus.isDragging || isFeedback) {
+            log('SeatChange: [${seat.serverSeatPos}] seatChangeStatus.isDragging: ${seatChangeStatus.isDragging} isFeedback: $isFeedback');
+            shadow = BoxShadow(
+              color: Colors.green,
+              blurRadius: 20.0,
+              spreadRadius: 8.0,
+            );
+          } else if (seatChangeStatus.isDropAble) {
+            log('SeatChange: [${seat.serverSeatPos}] seatChangeStatus.isDropAble: ${seatChangeStatus.isDropAble} isFeedback: $isFeedback');
+            shadow = BoxShadow(
+              color: Colors.blue,
+              blurRadius: 20.0,
+              spreadRadius: 8.0,
+            );
+          }
         }
       }
     }

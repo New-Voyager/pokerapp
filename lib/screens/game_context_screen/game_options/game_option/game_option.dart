@@ -254,13 +254,15 @@ class _GameOptionState extends State<GameOption> {
                 setState(() {});
               },
             ),
-            widget.gameState.gameInfo.audioConfEnabled ? _buildCheckBox(
-              text: 'Audio Conference',
-              value: false,
-              onChange: (bool v)  {
-                setState(() {});
-              },
-            ): SizedBox(),
+            widget.gameState.gameInfo.audioConfEnabled
+                ? _buildCheckBox(
+                    text: 'Audio Conference',
+                    value: false,
+                    onChange: (bool v) {
+                      setState(() {});
+                    },
+                  )
+                : SizedBox(),
           ],
         ),
       );

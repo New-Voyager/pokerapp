@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'package:flutter/material.dart';
 
 class SeatChangeStatus {
@@ -93,6 +94,7 @@ class SeatChangeNotifier extends ChangeNotifier {
 
   onSeatDragStart(int seatNo) {
     // print("seatNo $seatNo");
+    log('SeatChange: Drag started');
     allSeatChangeStatus[seatNo].isDragging = true;
     for (int i = 0; i < allSeatChangeStatus.length; i++) {
       if (i != seatNo) {
@@ -103,6 +105,7 @@ class SeatChangeNotifier extends ChangeNotifier {
   }
 
   onSeatDragEnd() {
+    log('SeatChange: Drag ended');
     for (int i = 0; i < allSeatChangeStatus.length; i++) {
       allSeatChangeStatus[i].isDropAble = false;
       allSeatChangeStatus[i].isDragging = false;
@@ -116,5 +119,10 @@ class SeatChangeNotifier extends ChangeNotifier {
     notifyAll();
     fromSeatNo = null;
     toSeatNo = null;
+    for (int i = 0; i < allSeatChangeStatus.length; i++) {
+      allSeatChangeStatus[i].isDropAble = false;
+      allSeatChangeStatus[i].isDragging = false;
+    }
+    notifyAll();
   }
 }

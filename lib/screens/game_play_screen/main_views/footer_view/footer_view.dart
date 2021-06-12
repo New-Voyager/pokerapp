@@ -58,6 +58,7 @@ class _FooterViewState extends State<FooterView>
     // final height = screen.height() / 3;
     var screenWidth = MediaQuery.of(context).size.width;
     var screenHeight = MediaQuery.of(context).size.height;
+    final gameState = GameState.getState(context);
 
     return Consumer2<Players, ActionState>(
       builder: (_, players, actionState, __) {
@@ -107,9 +108,9 @@ class _FooterViewState extends State<FooterView>
                 gameContextObject,
                 _,
               ) =>
-                  hostSeatChange.seatChangeInProgress &&
-                          gameContextObject.playerId ==
-                              hostSeatChange.seatChangeHost
+                  (hostSeatChange.seatChangeInProgress ||
+                              gameState.hostSeatChangeInProgress) &&
+                          gameContextObject.isHost()
                       ? Align(
                           alignment: Alignment.center,
                           child: SeatChangeConfirmWidget(

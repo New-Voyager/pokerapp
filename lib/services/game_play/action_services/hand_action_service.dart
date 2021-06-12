@@ -920,6 +920,11 @@ class HandActionService {
     if (_close) return;
     final tableState = _gameState.getTableState(_context);
 
+    // if game is paused, we don't update cards
+    if (_gameState.gameInfo.status == AppConstants.GAME_PAUSED) {
+      return;
+    }
+
     if (_close) return;
     final handInfo = _gameState.getHandInfo(_context);
 

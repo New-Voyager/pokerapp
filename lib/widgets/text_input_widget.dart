@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pokerapp/utils/numeric_keyboard.dart';
+import 'package:pokerapp/utils/numeric_keyboard2.dart';
 import 'package:provider/provider.dart';
 
 class TextInputWidget extends StatelessWidget {
@@ -118,7 +118,7 @@ class TextInputWidget extends StatelessWidget {
         builder: (BuildContext context, _) => InkWell(
           onTap: () async {
             /* open the numeric keyboard */
-            final double value = await NumericKeyboard.show(
+            final double value = await NumericKeyboard2.show(
               context,
               title: label ?? 'Enter value',
               min: minValue,

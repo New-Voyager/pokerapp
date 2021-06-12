@@ -13,8 +13,10 @@ class CustomTextButton extends StatelessWidget {
     @required this.text,
     @required this.onTap,
     this.split = false,
+    this.adaptive = true,
   });
 
+  final bool adaptive;
   final String text;
   final Function onTap;
   final bool split;
@@ -28,7 +30,7 @@ class CustomTextButton extends StatelessWidget {
         textAlign: TextAlign.center,
         style: TextStyle(
           fontFamily: AppAssetsNew.fontFamilyPoppins,
-          fontSize: 13.0.dp,
+          fontSize: adaptive ? 13.0.dp : 13.0,
           color: AppColorsNew.newGreenButtonColor,
         ),
       ),

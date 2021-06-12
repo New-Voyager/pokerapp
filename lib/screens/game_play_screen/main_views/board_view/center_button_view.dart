@@ -54,6 +54,7 @@ class CenterButtonView extends StatelessWidget {
     if (this.gameStatus == AppConstants.GAME_PAUSED) {
       if (!seatChange.seatChangeInProgress) {
         if (gameContext.isAdmin()) {
+          log('is admin: ${gameContext.isAdmin()} isHost: ${gameContext.isHost()}');
           return pauseButtons(context);
         } else {
           return Center(
@@ -100,6 +101,9 @@ class CenterButtonView extends StatelessWidget {
   }
 
   Widget pauseButtons(BuildContext context) {
+    final gameContext = Provider.of<GameContextObject>(context, listen: false);
+    log('is admin: ${gameContext.isAdmin()} isHost: ${gameContext.isHost()}');
+
     return Consumer<GameContextObject>(
       builder: (context, gameContext, _) => gameContext.isAdmin()
           ? Center(
@@ -116,6 +120,7 @@ class CenterButtonView extends StatelessWidget {
                   crossAxisAlignment: WrapCrossAlignment.center,
                   children: [
                     CustomTextButton(
+                      adaptive: false,
                       text: 'Resume',
                       onTap: _onResumePress,
                     ),
@@ -124,11 +129,13 @@ class CenterButtonView extends StatelessWidget {
                         horizontal: 10.0,
                       ),
                       child: CustomTextButton(
+                        adaptive: false,
                         text: 'Terminate',
                         onTap: _onTerminatePress,
                       ),
                     ),
                     CustomTextButton(
+                      adaptive: false,
                       split: true,
                       text: 'Rearrange Seats',
                       onTap: () => _onRearrangeSeatsPress(context),

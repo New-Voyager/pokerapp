@@ -95,18 +95,18 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
     widget.gameComService?.gameMessaging?.listen(onAnimation: this.onAnimation);
     animationHandlers();
     _seatChangeAnimationHandler();
-    cacheSeatPositions();
+    // cacheSeatPositions();
     super.initState();
   }
 
-  // todo: this method can be optimized
-  void cacheSeatPositions() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      for (int seatNo = 1;
-          seatNo <= widget.gameState.gameInfo.maxPlayers;
-          seatNo++) findPositionOfUser(seatNo: seatNo);
-    });
-  }
+  // // todo: this method can be optimized
+  // void cacheSeatPositions() {
+  //   WidgetsBinding.instance.addPostFrameCallback((_) {
+  //     for (int seatNo = 1;
+  //         seatNo <= widget.gameState.gameInfo.maxPlayers;
+  //         seatNo++) findPositionOfUser(seatNo: seatNo);
+  //   });
+  // }
 
   void _seatChangeAnimationHandler() {
     final SeatChangeNotifier hostSeatChange = Provider.of<SeatChangeNotifier>(
@@ -130,8 +130,10 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
     hostSeatChange.addListener(() {
       final int fromSeatNo = hostSeatChange.fromSeatNo;
       final int toSeatNo = hostSeatChange.toSeatNo;
+      final fromSeat = widget.gameState.getSeat(context, fromSeatNo);
+      final toSeat = widget.gameState.getSeat(context, toSeatNo);
 
-      print('seat change data: $fromSeatNo and $toSeatNo');
+      log('Seat Change data: $fromSeatNo (${fromSeat.player.name}, ${fromSeat.uiSeatPos.toString()}) and $toSeatNo (${toSeat.player.name} ${toSeat.uiSeatPos.toString()})');
 
       if (fromSeatNo == null || toSeatNo == null) return;
       if (fromSeatNo == 0 || toSeatNo == 0) return;
@@ -288,10 +290,6 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
 
   Offset findPositionOfUser({int seatNo}) {
     final gameState = GameState.getState(context);
-
-    final maxPlayers = gameState.gameInfo.maxPlayers;
-    final String cacheCode = '$maxPlayers-$seatNo';
-
     /* if available in cache, get from there */
     final seat = gameState.getSeat(context, seatNo);
     if (seat == null) {
@@ -300,7 +298,6 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
     if (seat.parentRelativePos != null) {
       return seat.parentRelativePos;
     }
-
 
     final relativeSeatPos = getPositionOffsetFromKey(seat?.key);
     if (relativeSeatPos == null) return null;
@@ -325,7 +322,7 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
 
   @override
   Widget build(BuildContext context) {
-    cacheSeatPositions();
+    // cacheSeatPositions();
 
     // am I on this table?
     return Transform.translate(
@@ -421,20 +418,23 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
     final seats = seatsState.asMap().entries.map(
       (var u) {
         index++;
-        return this._positionedForUsers(
-          boardAttribs: boardAttribs,
-          isBoardHorizontal: widget.isBoardHorizontal,
-          seat: u.value,
-          heightOfBoard: widget.heightOfBoard,
-          widthOfBoard: widget.widthOfBoard,
-          seatPos: getAdjustedSeatPosition(
-            u.key,
-            maxPlayers,
-            me != null,
-            me?.seatNo,
+        return Consumer<SeatChangeNotifier>(
+          builder: (_, scn, __) => _positionedForUsers(
+            boardAttribs: boardAttribs,
+            isBoardHorizontal: widget.isBoardHorizontal,
+            seat: u.value,
+            heightOfBoard: widget.heightOfBoard,
+            widthOfBoard: widget.widthOfBoard,
+            seatPos: getAdjustedSeatPosition(
+              u.key,
+              maxPlayers,
+              me != null,
+              me?.seatNo,
+              seatChangeInProgress: scn.seatChangeInProgress,
+            ),
+            isPresent: me != null,
+            onUserTap: widget.onUserTap,
           ),
-          isPresent: me != null,
-          onUserTap: widget.onUserTap,
         );
       },
     ).toList();
@@ -443,7 +443,16 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
   }
 
   int getAdjustedSeatPosition(
-      int pos, int maxPlayers, bool isPresent, int currentUserSeatNo) {
+    int pos,
+    int maxPlayers,
+    bool isPresent,
+    int currentUserSeatNo, {
+    bool seatChangeInProgress,
+  }) {
+    /* if seat change is in progress, we show the actual seat nos */
+    if (seatChangeInProgress == true) return pos;
+    // else we do the following calculation
+
     /*
     * if the current user is present, then the localSeatNo would be different from that of server seat number
     * This is done, so that the current user can stay at the bottom center of the table
