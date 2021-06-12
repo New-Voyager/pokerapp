@@ -133,17 +133,17 @@ class Players extends ChangeNotifier {
   // }
 
   void fireworkWinnerSilent(int seatNo) {
-    int idx = _players.indexWhere((p) => p.seatNo == seatNo);
+    int idx = _players.indexWhere((p) => p.localSeatNo == seatNo);
     if (idx != -1) _players[idx].showFirework = true;
   }
 
   void removeFireworkSilent(int seatNo) {
-    int idx = _players.indexWhere((p) => p.seatNo == seatNo);
+    int idx = _players.indexWhere((p) => p.localSeatNo == seatNo);
     if (idx != -1) _players[idx].showFirework = null;
   }
 
   void highlightWinnerSilent(int seatNo) {
-    int idx = _players.indexWhere((p) => p.seatNo == seatNo);
+    int idx = _players.indexWhere((p) => p.localSeatNo == seatNo);
     if (idx != -1) _players[idx].winner = true;
   }
 
@@ -166,7 +166,7 @@ class Players extends ChangeNotifier {
   }
 
   void highlightCardsSilent({int seatNo, List<int> cards}) {
-    int idx = _players.indexWhere((p) => p.seatNo == seatNo);
+    int idx = _players.indexWhere((p) => p.localSeatNo == seatNo);
     _players[idx].highlightCards = cards;
   }
 
@@ -183,14 +183,14 @@ class Players extends ChangeNotifier {
 
     // stacks contains, <seatNo, stack> mapping
     stacks.forEach((seatNo, stack) {
-      int idx = _players.indexWhere((p) => p.seatNo == seatNo);
+      int idx = _players.indexWhere((p) => p.localSeatNo == seatNo);
       // log('player seat no: $seatNo index: $idx');
       _players[idx].stack = stack;
     });
   }
 
   void addStackWithValueSilent(int seatNo, int newStack) {
-    int idx = _players.indexWhere((p) => p.seatNo == seatNo);
+    int idx = _players.indexWhere((p) => p.localSeatNo == seatNo);
     if (idx == -1) {
       return;
     }
@@ -198,7 +198,7 @@ class Players extends ChangeNotifier {
   }
 
   void updateStackWithValueSilent(int seatNo, int newStack) {
-    int idx = _players.indexWhere((p) => p.seatNo == seatNo);
+    int idx = _players.indexWhere((p) => p.localSeatNo == seatNo);
     if (idx == -1) {
       return;
     }
@@ -208,13 +208,13 @@ class Players extends ChangeNotifier {
   void updateUserCardsSilent(Map<int, List<int>> data) {
     /* seat-no, list of cards */
     data.forEach((seatNo, cards) {
-      int idx = _players.indexWhere((p) => p.seatNo == seatNo);
+      int idx = _players.indexWhere((p) => p.localSeatNo == seatNo);
       if (idx != -1) _players[idx].cards = cards;
     });
   }
 
   void updateCardSilent(int seatNo, List<int> cards) {
-    int idx = _players.indexWhere((p) => p.seatNo == seatNo);
+    int idx = _players.indexWhere((p) => p.localSeatNo == seatNo);
     if (idx == -1) {
       return;
     }
@@ -222,7 +222,7 @@ class Players extends ChangeNotifier {
   }
 
   void updateVisibleCardNumberSilent(int seatNo, int n) {
-    int idx = _players.indexWhere((p) => p.seatNo == seatNo);
+    int idx = _players.indexWhere((p) => p.localSeatNo == seatNo);
     if (idx == -1) {
       return;
     }
@@ -240,7 +240,7 @@ class Players extends ChangeNotifier {
   }
 
   PlayerModel getPlayerBySeat(int seatNo) => _players.firstWhere(
-        (p) => p.seatNo == seatNo,
+        (p) => p.localSeatNo == seatNo,
         orElse: null,
       );
 
@@ -250,7 +250,7 @@ class Players extends ChangeNotifier {
   }
 
   void removePlayerSilent(int seatNo) {
-    int idx = _players.indexWhere((p) => p.seatNo == seatNo);
+    int idx = _players.indexWhere((p) => p.localSeatNo == seatNo);
     if (idx != -1) {
       _players.removeAt(idx);
     }
@@ -272,7 +272,7 @@ class Players extends ChangeNotifier {
   // }
 
   PlayerModel fromSeat(int seatNo) {
-    int idx = _players.indexWhere((p) => p.seatNo == seatNo);
+    int idx = _players.indexWhere((p) => p.localSeatNo == seatNo);
     if (idx == -1) {
       return null;
     }

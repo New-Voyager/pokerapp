@@ -307,8 +307,8 @@ class GameState {
         player.breakTimeExpAt = player.breakTimeExpAt.toLocal();
       }
 
-      if (player.seatNo != 0) {
-        final seat = this._seats[player.seatNo];
+      if (player.localSeatNo != 0) {
+        final seat = this._seats[player.localSeatNo];
         seat.player = player;
       }
 
@@ -431,7 +431,7 @@ class GameState {
     if (me == null) {
       return null;
     }
-    final seat = getSeat(context, me.seatNo);
+    final seat = getSeat(context, me.localSeatNo);
     return seat;
   }
 

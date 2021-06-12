@@ -72,7 +72,7 @@ class GameReplayActionService {
     Players players = _context.read<Players>();
 
     int idx = players.players.indexWhere(
-      (p) => p.seatNo == action.seatNo,
+      (p) => p.localSeatNo == action.seatNo,
     );
 
     assert(idx != -1);

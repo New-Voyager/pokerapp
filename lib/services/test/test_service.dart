@@ -120,7 +120,7 @@ class TestService {
 
       List<PlayerModel> playerInSeats = [];
       for (final player in _gameInfo.playersInSeats) {
-        if (player.seatNo <= maxPlayers) {
+        if (player.localSeatNo <= maxPlayers) {
           playerInSeats.add(player);
         }
       }
@@ -281,7 +281,7 @@ class TestService {
     seat4.player.stack = 0;
     seat4.player.buyInTimeExpAt = exp.toUtc();
     // redraw seat
-    final seat = gameState.getSeat(_context, players.me.seatNo);
+    final seat = gameState.getSeat(_context, players.me.localSeatNo);
     players.notifyAll();
     seat.notify();
   }

@@ -198,7 +198,7 @@ class GameReplayService {
     final HandLogModelNew handLog = HandLogModelNew.fromJson(data);
 
     final List<PlayerModel> players = _getPlayers(handLog.hand.playersInSeats);
-    final List<int> seatNos = players.map((p) => p.seatNo).toList();
+    final List<int> seatNos = players.map((p) => p.localSeatNo).toList();
 
     final GameInfoModel gameInfoModel = GameInfoModel(
       maxPlayers: handLog.hand.maxPlayers,
@@ -218,7 +218,7 @@ class GameReplayService {
         players.firstWhere((p) => p.playerId == playerID);
 
     final List<GameReplayAction> actions = _getActions(
-      myCards: playerCards[currPlayer.seatNo],
+      myCards: playerCards[currPlayer.localSeatNo],
       handLog: handLog.hand.handLog,
       noCards: handLog.hand.noCards,
       flopCards: handLog.hand.flop,

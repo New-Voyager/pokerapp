@@ -199,7 +199,7 @@ class GameUpdateService {
     assert(_gameInfoModel != null);
     List<PlayerModel> playerModels = _gameInfoModel.playersInSeats;
     PlayerModel newPlayerModel = playerModels.firstWhere(
-      (pm) => pm.seatNo == seatNo,
+      (pm) => pm.localSeatNo == seatNo,
       orElse: () => null,
     ); // this must return a PLayerModel object
 
@@ -304,11 +304,12 @@ class GameUpdateService {
 
     final gameInfo = _gameState.gameInfo;
     final player1 = _gameState.fromSeat(_context, oldSeatNo);
-    if (player1 == null) {
-      return;
-    }
+    final player1Seat = _gameState.getSeat(_context, oldSeatNo);
 
-    player1.seatNo = newSeatNo;
+    if (player1 == null) return;
+    if (player1Seat == null) return;
+
+    player1.localSeatNo = newSeatNo;
 
     if (gameInfo.status == 'CONFIGURED' &&
         gameInfo.tableStatus == 'WAITING_TO_BE_STARTED') {
@@ -324,10 +325,7 @@ class GameUpdateService {
     } else {
       if (closed) return;
       final ValueNotifier<SeatChangeModel> vnSeatChangeModel =
-          Provider.of<ValueNotifier<SeatChangeModel>>(
-        _context,
-        listen: false,
-      );
+          _context.read<ValueNotifier<SeatChangeModel>>();
 
       /* animate the stack */
       vnSeatChangeModel.value = SeatChangeModel(
@@ -364,7 +362,7 @@ class GameUpdateService {
           .replaceAll('PlayerStatus.', '');
       // get break exp time
       for (final player in _gameInfoModel.playersInSeats) {
-        if (player.seatNo == seat.serverSeatPos) {
+        if (player.localSeatNo == seat.serverSeatPos) {
           seat.player.buyInTimeExpAt = player.buyInTimeExpAt.toLocal();
           DateTime now = DateTime.now();
           if (seat.player.buyInTimeExpAt != null) {
@@ -433,7 +431,7 @@ class GameUpdateService {
       seat.player.inBreak = true;
       // get break exp time
       for (final player in _gameInfoModel.playersInSeats) {
-        if (player.seatNo == seat.serverSeatPos) {
+        if (player.localSeatNo == seat.serverSeatPos) {
           seat.player.status = player.status;
           seat.player.breakTimeExpAt = player.breakTimeExpAt.toLocal();
           DateTime now = DateTime.now();
@@ -469,7 +467,7 @@ class GameUpdateService {
     if (seat != null && seat.player != null) {
       // get break exp time
       for (final player in _gameInfoModel.playersInSeats) {
-        if (player.seatNo == seat.serverSeatPos) {
+        if (player.localSeatNo == seat.serverSeatPos) {
           seat.player.status = player.status;
           if (player.status != 'IN_BREAK') {
             seat.player.inBreak = false;
@@ -656,7 +654,7 @@ class GameUpdateService {
     valueNotifierNotModel.value = GeneralNotificationModel(
       titleText: 'Seat change in progress',
       subTitleText:
-          'Seat change requested by ${player.name} at seat no ${player.seatNo}',
+          'Seat change requested by ${player.name} at seat no ${player.localSeatNo}',
       trailingWidget: CountDownTimer(
         remainingTime:
             seatChangeTime * seatChangeSeatNo.length, // TODO: MULTIPLE PLAYERS?

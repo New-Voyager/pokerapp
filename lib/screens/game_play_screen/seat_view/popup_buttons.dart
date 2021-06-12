@@ -231,7 +231,7 @@ class _PopupWidget extends State<PopupWidget> with TickerProviderStateMixin {
                 // log("SEAT TO:: ${widget.gameState.popupSelectedSeat.serverSeatPos}");
 
                 widget.gameState.gameComService.gameMessaging.sendAnimation(
-                  widget.gameState.me(context).seatNo,
+                  widget.gameState.me(context).localSeatNo,
                   widget.gameState.popupSelectedSeat.serverSeatPos,
                   data['animationID'],
                 );

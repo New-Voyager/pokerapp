@@ -329,7 +329,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     final gameState = GameState.getState(_providerContext);
     final me = gameState.me(_providerContext);
 
-    if (me != null && me.seatNo != null && me.seatNo != 0) {
+    if (me != null && me.localSeatNo != null && me.localSeatNo != 0) {
       log('Player ${me.name} switches seat to $seatPos');
       await GameService.switchSeat(widget.gameCode, seatPos);
     } else {

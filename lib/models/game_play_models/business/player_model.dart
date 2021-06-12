@@ -11,7 +11,7 @@ import 'package:pokerapp/utils/card_helper.dart';
 class PlayerModel {
   bool isMe = false;
   String name = '';
-  int seatNo = -1;
+  int localSeatNo = -1;
   int playerId = 0;
   String playerUuid = '';
   int buyIn = 0;
@@ -60,7 +60,7 @@ class PlayerModel {
     String status,
   }) {
     this.name = name;
-    this.seatNo = seatNo;
+    this.localSeatNo = seatNo;
     this.playerId = playerId;
     this.playerUuid = playerUuid;
     this.buyIn = buyIn;
@@ -83,7 +83,7 @@ class PlayerModel {
 
   PlayerModel.fromJson(var data) {
     this.name = data['name'];
-    this.seatNo = data['seatNo'];
+    this.localSeatNo = data['seatNo'];
     this.playerUuid = data['playerUuid'];
     this.buyIn = data['buyIn'];
     this.stack = data['stack'];
@@ -138,7 +138,7 @@ class PlayerModel {
     bool showBuyIn,
     TablePosition playerType,
   }) {
-    this.seatNo = seatNo ?? this.seatNo;
+    this.localSeatNo = seatNo ?? this.localSeatNo;
     this.buyIn = buyIn ?? this.buyIn;
     this.stack = stack ?? this.stack;
     this.status = status;
