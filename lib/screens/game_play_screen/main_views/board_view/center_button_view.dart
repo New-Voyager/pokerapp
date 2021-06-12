@@ -116,6 +116,7 @@ class CenterButtonView extends StatelessWidget {
                   crossAxisAlignment: WrapCrossAlignment.center,
                   children: [
                     CustomTextButton(
+                      adaptive: false,
                       text: 'Resume',
                       onTap: _onResumePress,
                     ),
@@ -124,11 +125,13 @@ class CenterButtonView extends StatelessWidget {
                         horizontal: 10.0,
                       ),
                       child: CustomTextButton(
+                        adaptive: false,
                         text: 'Terminate',
                         onTap: _onTerminatePress,
                       ),
                     ),
                     CustomTextButton(
+                      adaptive: false,
                       split: true,
                       text: 'Rearrange Seats',
                       onTap: () => _onRearrangeSeatsPress(context),

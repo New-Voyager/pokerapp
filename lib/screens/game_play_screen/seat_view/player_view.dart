@@ -296,7 +296,13 @@ class PlayerView extends StatelessWidget {
                       reverse: seat.player.action.winner,
                     )
                   : chipAmountWidget,
-              // SeatNoWidget(seat),
+
+              Consumer<SeatChangeNotifier>(
+                builder: (_, scn, __) => scn.seatChangeInProgress
+                    ? SeatNoWidget(seat)
+                    : const SizedBox.shrink(),
+              ),
+
               talkingAnimation(),
               // Visibility(
               //     visible: seat.player.talking,
@@ -405,10 +411,10 @@ class SeatNoWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      bottom: 0,
+      top: 0,
       left: 0,
       child: Transform.translate(
-        offset: const Offset(0.0, -15.0),
+        offset: const Offset(-10.0, -10.0),
         child: Container(
           padding: const EdgeInsets.all(8.0),
           decoration: BoxDecoration(

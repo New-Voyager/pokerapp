@@ -301,7 +301,6 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
       return seat.parentRelativePos;
     }
 
-
     final relativeSeatPos = getPositionOffsetFromKey(seat?.key);
     if (relativeSeatPos == null) return null;
 
@@ -421,20 +420,23 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
     final seats = seatsState.asMap().entries.map(
       (var u) {
         index++;
-        return this._positionedForUsers(
-          boardAttribs: boardAttribs,
-          isBoardHorizontal: widget.isBoardHorizontal,
-          seat: u.value,
-          heightOfBoard: widget.heightOfBoard,
-          widthOfBoard: widget.widthOfBoard,
-          seatPos: getAdjustedSeatPosition(
-            u.key,
-            maxPlayers,
-            me != null,
-            me?.localSeatNo,
+        return Consumer<SeatChangeNotifier>(
+          builder: (_, scn, __) => _positionedForUsers(
+            boardAttribs: boardAttribs,
+            isBoardHorizontal: widget.isBoardHorizontal,
+            seat: u.value,
+            heightOfBoard: widget.heightOfBoard,
+            widthOfBoard: widget.widthOfBoard,
+            seatPos: getAdjustedSeatPosition(
+              u.key,
+              maxPlayers,
+              me != null,
+              me?.localSeatNo,
+              seatChangeInProgress: scn.seatChangeInProgress,
+            ),
+            isPresent: me != null,
+            onUserTap: widget.onUserTap,
           ),
-          isPresent: me != null,
-          onUserTap: widget.onUserTap,
         );
       },
     ).toList();
@@ -443,7 +445,16 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
   }
 
   int getAdjustedSeatPosition(
-      int pos, int maxPlayers, bool isPresent, int currentUserSeatNo) {
+    int pos,
+    int maxPlayers,
+    bool isPresent,
+    int currentUserSeatNo, {
+    bool seatChangeInProgress,
+  }) {
+    /* if seat change is in progress, we show the actual seat nos */
+    if (seatChangeInProgress == true) return pos;
+    // else we do the following calculation
+
     /*
     * if the current user is present, then the localSeatNo would be different from that of server seat number
     * This is done, so that the current user can stay at the bottom center of the table
