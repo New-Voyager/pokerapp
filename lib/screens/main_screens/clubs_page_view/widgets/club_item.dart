@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:badges/badges.dart';
@@ -194,7 +193,6 @@ class ClubItem extends StatelessWidget {
           * */
 
           Container(
-            width: 120.0,
             decoration: const BoxDecoration(
               color: AppColors.cardBackgroundColor,
               borderRadius: BorderRadius.horizontal(

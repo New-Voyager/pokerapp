@@ -1,13 +1,11 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
-import 'package:pokerapp/screens/game_screens/new_game_settings/new_game_settings.dart';
-import 'package:pokerapp/screens/game_screens/new_game_settings/new_game_settings2.dart';
+
+import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class GameTypeItem extends StatelessWidget {
   final String clubCode;
@@ -100,13 +98,15 @@ class GameTypeItem extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(gameTypeStr(type),
-                        style: AppStylesNew.GameTypeTextStyle.copyWith(
-                            fontWeight: FontWeight.w500)),
+                        style: AppStylesNew.gameTypeTextStyle.copyWith(
+                          fontWeight: FontWeight.w500,
+                        )),
                     Visibility(
                       child: Text(
                         _buildGameTypeStrFromList(),
-                        style: AppStylesNew.OpenSeatsTextStyle.copyWith(
-                            fontSize: 10),
+                        style: AppStylesNew.openSeatsTextStyle.copyWith(
+                          fontSize: 10.dp,
+                        ),
                       ),
                       visible: (gamesList != null && gamesList.length > 0),
                     ),

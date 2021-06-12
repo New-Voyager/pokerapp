@@ -1,12 +1,12 @@
 import 'package:blinking_text/blinking_text.dart';
 import 'package:flutter/material.dart';
-import 'package:pokerapp/resources/app_assets.dart';
-import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:timer_count_down/timer_count_down.dart';
+
+import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class CustomTextButton extends StatelessWidget {
   CustomTextButton({
@@ -28,7 +28,7 @@ class CustomTextButton extends StatelessWidget {
         textAlign: TextAlign.center,
         style: TextStyle(
           fontFamily: AppAssetsNew.fontFamilyPoppins,
-          fontSize: 16.0,
+          fontSize: 13.0.dp,
           color: AppColorsNew.newGreenButtonColor,
         ),
       ),

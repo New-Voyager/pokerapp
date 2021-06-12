@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
+
+import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class CustomAppBar extends AppBar {
   final titleText;
@@ -20,9 +21,9 @@ class CustomAppBar extends AppBar {
           key: key,
           backgroundColor: Colors.transparent,
           elevation: 0,
-          leadingWidth: 100,
+          leadingWidth: 100.pw,
           leading: Padding(
-            padding: EdgeInsets.only(left: 16),
+            padding: EdgeInsets.only(left: 16.pw),
             child: InkWell(
               child: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -30,15 +31,16 @@ class CustomAppBar extends AppBar {
                   Icon(
                     Icons.arrow_back_ios,
                     color: AppColorsNew.newGreenButtonColor,
-                    size: 13,
+                    size: 14.pw,
                   ),
+                  SizedBox(width: 1.5.ph),
                   Text(
                     AppStringsNew.BackText,
-                    style: AppStylesNew.BackButtonTextStyle,
+                    style: AppStylesNew.backButtonTextStyle,
                   ),
                 ],
               ),
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(8.pw),
               onTap: () => Navigator.of(context).pop(),
             ),
           ),
@@ -53,8 +55,10 @@ class CustomAppBar extends AppBar {
                 visible: subTitleText != null,
                 child: Text(
                   subTitleText ?? "",
-                  style: AppStyles.titleBarTextStyle
-                      .copyWith(fontSize: 10, color: Colors.grey),
+                  style: AppStyles.titleBarTextStyle.copyWith(
+                    fontSize: 10.dp,
+                    color: Colors.grey,
+                  ),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -63,13 +67,4 @@ class CustomAppBar extends AppBar {
           centerTitle: true,
           actions: actionsList ?? [],
         );
-
-  // @override
-  // Widget build(BuildContext context) {
-  //   return AppBar(
-  //     centerTitle: true,
-  //     backgroundColor: Colors.transparent,
-  //     leading:
-  //   );
-  // }
 }

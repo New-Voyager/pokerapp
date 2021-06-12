@@ -1,15 +1,12 @@
-import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/club_actions.dart';
 import 'package:pokerapp/models/club_homepage_model.dart';
-import 'package:pokerapp/models/club_members_model.dart';
-import 'package:pokerapp/resources/app_assets.dart';
-import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:provider/provider.dart';
 import 'package:badges/badges.dart';
+import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 import '../../../main.dart';
 
@@ -22,28 +19,32 @@ class ClubActionButtonNew extends StatelessWidget {
   final Widget badgeContent;
 
   ClubActionButtonNew(
-      this._clubModel, this._action, this._actionName, this._actionIcon,
-      {this.onTap, this.badgeContent});
+    this._clubModel,
+    this._action,
+    this._actionName,
+    this._actionIcon, {
+    this.onTap,
+    this.badgeContent,
+  });
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
     Widget card = Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         SizedBox(
-          width: width / 6,
-          height: width / 6,
+          width: 60.pw,
+          height: 60.pw,
           child: _actionIcon,
         ),
         Padding(
-          padding: EdgeInsets.all(5.0),
+          padding: EdgeInsets.all(5.0.pw),
           child: Text(
             _actionName,
             textAlign: TextAlign.center,
             style: TextStyle(
               color: AppColorsNew.newTextColor,
-              fontSize: 11.0,
+              fontSize: 10.0.dp,
               fontFamily: AppAssetsNew.fontFamilyPoppins,
             ),
           ),
@@ -53,7 +54,7 @@ class ClubActionButtonNew extends StatelessWidget {
 
     if (badgeContent != null) {
       card = Badge(
-        position: BadgePosition.topEnd(top: 0, end: 3),
+        position: BadgePosition.topEnd(top: 0, end: 3.dp),
         animationDuration: Duration(milliseconds: 300),
         animationType: BadgeAnimationType.slide,
         badgeContent: badgeContent,

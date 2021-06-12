@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
+import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class AppStylesNew {
   static const TextStyle AppBarTitleTextStyle = TextStyle(
@@ -19,9 +20,9 @@ class AppStylesNew {
       radius: 1.5,
     ),
   );
-  static const TextStyle GameActionTextStyle = TextStyle(
+  static final TextStyle gameActionTextStyle = TextStyle(
     color: AppColorsNew.newTextColor,
-    fontSize: 11.0,
+    fontSize: 10.0.dp,
     fontFamily: AppAssetsNew.fontFamilyPoppins,
   );
 
@@ -90,19 +91,19 @@ class AppStylesNew {
     ),
   );
 
-  static const TextStyle JoinTextStyle = TextStyle(
+  static final TextStyle joinTextStyle = TextStyle(
     color: AppColorsNew.newBackgroundBlackColor,
     fontWeight: FontWeight.w700,
-    fontSize: 12,
+    fontSize: 11.dp,
   );
 
-  static const TextStyle BackButtonTextStyle = TextStyle(
+  static final TextStyle backButtonTextStyle = TextStyle(
     color: AppColorsNew.newGreenButtonColor,
     fontFamily: AppAssetsNew.fontFamilyPoppins,
-    fontSize: 12,
+    fontSize: 13.dp,
   );
-  static const TextStyle TitleTextStyle = TextStyle(
-      fontSize: 18,
+  static TextStyle titleTextStyle = TextStyle(
+      fontSize: 18.dp,
       color: AppColorsNew.newTextColor,
       fontFamily: AppAssetsNew.fontFamilyRockwell,
       fontWeight: FontWeight.w700,
@@ -114,54 +115,63 @@ class AppStylesNew {
             offset: Offset(0, 3)),
       ]);
 
-  static const TextStyle BuyInTextStyle = TextStyle(
+  static final TextStyle buyInTextStyle = TextStyle(
     color: AppColorsNew.newTextColor,
     fontFamily: AppAssetsNew.fontFamilyPoppins,
     fontWeight: FontWeight.w300,
-    fontSize: 10,
+    fontSize: 9.0.dp,
   );
-  static const TextStyle GameTypeTextStyle = TextStyle(
-      color: AppColorsNew.newTextColor,
-      fontWeight: FontWeight.w700,
-      fontFamily: AppAssetsNew.fontFamilyPoppins);
-  static const TextStyle GameIdTextStyle = TextStyle(
-      color: AppColorsNew.newTextGreenColor,
-      fontWeight: FontWeight.w300,
-      fontSize: 12,
-      fontFamily: AppAssetsNew.fontFamilyPoppins);
-  static const TextStyle OpenSeatsTextStyle = TextStyle(
-      color: AppColorsNew.newTextColor,
-      fontSize: 12,
-      fontFamily: AppAssetsNew.fontFamilyPoppins);
-  static const TextStyle ElapsedTimeTextStyle = TextStyle(
-      color: AppColorsNew.newTextColor,
-      fontSize: 10,
-      fontFamily: AppAssetsNew.fontFamilyPoppins);
 
-  static const TextStyle ActiveChipTextStyle = TextStyle(
+  static final TextStyle gameTypeTextStyle = TextStyle(
+    fontSize: 12.0.dp,
+    color: AppColorsNew.newTextColor,
+    fontWeight: FontWeight.w700,
+    fontFamily: AppAssetsNew.fontFamilyPoppins,
+  );
+
+  static final TextStyle gameIdTextStyle = TextStyle(
+    color: AppColorsNew.newTextGreenColor,
+    fontWeight: FontWeight.w300,
+    fontSize: 10.dp,
+    fontFamily: AppAssetsNew.fontFamilyPoppins,
+  );
+
+  static final TextStyle openSeatsTextStyle = TextStyle(
+    color: AppColorsNew.newTextColor,
+    fontSize: 10.dp,
+    fontFamily: AppAssetsNew.fontFamilyPoppins,
+  );
+
+  static final TextStyle elapsedTimeTextStyle = TextStyle(
+    color: AppColorsNew.newTextColor,
+    fontSize: 8.dp,
+    fontFamily: AppAssetsNew.fontFamilyPoppins,
+  );
+
+  static final TextStyle activeChipTextStyle = TextStyle(
     color: AppColorsNew.newBackgroundBlackColor,
     fontFamily: AppAssetsNew.fontFamilyPoppins,
     fontWeight: FontWeight.w500,
-    fontSize: 12,
+    fontSize: 12.dp,
   );
 
-  static const TextStyle InactiveChipTextStyle = TextStyle(
+  static final TextStyle inactiveChipTextStyle = TextStyle(
     color: AppColorsNew.newTextColor,
     fontFamily: AppAssetsNew.fontFamilyPoppins,
     fontWeight: FontWeight.w300,
-    fontSize: 12,
+    fontSize: 12.dp,
   );
 
-  static const ClubShortCodeTextStyle = TextStyle(
+  static final clubShortCodeTextStyle = TextStyle(
     color: AppColorsNew.newTextColor,
-    fontSize: 25.0,
+    fontSize: 24.0.dp,
     fontFamily: AppAssetsNew.fontFamilyPoppins,
     fontWeight: FontWeight.w700,
   );
 
-  static const ClubTitleTextStyle = TextStyle(
+  static final clubTitleTextStyle = TextStyle(
     color: AppColorsNew.newTextColor,
-    fontSize: 18.0,
+    fontSize: 15.0.dp,
     fontFamily: AppAssetsNew.fontFamilyPoppins,
   );
 

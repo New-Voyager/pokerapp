@@ -3,16 +3,12 @@ import 'dart:developer';
 import 'package:curved_bottom_navigation/curved_bottom_navigation.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:pokerapp/models/pending_approvals.dart';
 import 'package:pokerapp/models/player_info.dart';
-import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_icons.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/voice_text_widget.dart';
-import 'package:pokerapp/screens/game_screens/new_game_settings/choose_game_new.dart';
 import 'package:pokerapp/screens/main_screens/clubs_page_view/clubs_page_view.dart';
-import 'package:pokerapp/screens/main_screens/games_page_view/games_page_view.dart';
 import 'package:pokerapp/screens/main_screens/games_page_view/live_games.dart';
 import 'package:pokerapp/screens/main_screens/profile_page_view/profile_page_view.dart';
 import 'package:pokerapp/screens/main_screens/purchase_page_view/purchase_page_view.dart';
@@ -22,9 +18,10 @@ import 'package:pokerapp/services/app/player_service.dart';
 import 'package:pokerapp/services/firebase/push_notification_service.dart';
 import 'package:pokerapp/services/nats/nats.dart';
 import 'package:pokerapp/services/test/test_service.dart';
-import 'package:pokerapp/widgets/tab_bar_item.dart';
 import 'package:provider/provider.dart';
 import 'package:pokerapp/utils/utils.dart';
+
+import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -182,15 +179,12 @@ class _MainScreenState extends State<MainScreen>
             alignment: Alignment.bottomCenter,
             child: CurvedBottomNavigation(
               selected: _navPos,
-              fabSize: 48,
-              navHeight: 56,
+              fabSize: 35.pw,
+              navHeight: 50.ph,
               bgColor: AppColorsNew.newNavBarColor,
               fabBgColor: AppColorsNew.newNavBarColor,
-              iconSize: 24,
               onItemClick: (i) {
-                setState(() {
-                  _navPos = i;
-                });
+                setState(() => _navPos = i);
               },
               items: [
                 CurvedNavItem(
@@ -229,8 +223,11 @@ class _MainScreenState extends State<MainScreen>
 }
 
 class CurvedNavItem extends StatelessWidget {
-  CurvedNavItem(
-      {@required this.title, @required this.iconData, @required this.selected});
+  CurvedNavItem({
+    @required this.title,
+    @required this.iconData,
+    @required this.selected,
+  });
 
   final String title;
   final IconData iconData;
@@ -244,28 +241,25 @@ class CurvedNavItem extends StatelessWidget {
       children: <Widget>[
         Icon(
           iconData,
+          size: 15.0.pw,
           color: selected
               ? AppColorsNew.newTextGreenColor
               : AppColorsNew.newNavBarInactiveItemColor,
         ),
         selected
             ? Container()
-            : Column(
-                children: [
-                  SizedBox(
-                    height: 4,
+            : Container(
+                margin: EdgeInsets.only(top: 4.ph),
+                child: Text(
+                  title.toUpperCase() ?? 'Title'.toUpperCase(),
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: AppColorsNew.newTextColor,
+                    fontSize: 10.dp,
+                    letterSpacing: 0.7.dp,
+                    fontWeight: FontWeight.w300,
                   ),
-                  Text(
-                    title.toUpperCase() ?? 'Title'.toUpperCase(),
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: AppColorsNew.newTextColor,
-                      fontSize: 10,
-                      letterSpacing: 0.7,
-                      fontWeight: FontWeight.w300,
-                    ),
-                  )
-                ],
+                ),
               ),
       ],
     );
