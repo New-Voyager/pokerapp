@@ -159,9 +159,9 @@ class PlayerModel {
 
   PlayerActedState get action => this._action;
 
-  void reset() {
+  void reset({bool stickAction}) {
     this.highlight = false;
-    this._action.reset();
+    this._action.reset(stickAction: stickAction);
   }
 }
 
@@ -242,7 +242,7 @@ class PlayerActedState {
     }
   }
 
-  void reset() {
+  void reset({bool stickAction}) {
     amount = 0.0;
     _animate = false;
     winner = false;
@@ -250,6 +250,6 @@ class PlayerActedState {
     _bb = false;
     _button = false;
     _straddle = false;
-    _playerAction = HandActions.NONE;
+    if (!(stickAction ?? false)) _playerAction = HandActions.NONE;
   }
 }

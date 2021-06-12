@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pokerapp/enums/game_status.dart';
 import 'package:pokerapp/enums/game_type.dart';
+import 'package:pokerapp/enums/hand_actions.dart';
 import 'package:pokerapp/enums/player_status.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
@@ -537,12 +538,18 @@ class GameState {
     actionState.setAction(seatNo, seatAction);
   }
 
-  void resetSeatActions() {
+  //
+  void resetSeatActions({bool newHand}) {
     for (final seat in this._seats.values) {
       if (seat.player == null) {
         continue;
       }
-      seat.player.reset();
+      // if newHand is true, we pass 'false' flag to say don't stick any action to player. 
+      // otherwise stick last player action to nameplate
+      seat.player.reset(
+          stickAction: newHand ?? false
+              ? false
+              : (seat.player.action.action == HandActions.ALLIN));
       seat.notify();
     }
   }

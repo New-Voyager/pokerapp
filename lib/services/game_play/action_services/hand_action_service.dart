@@ -446,7 +446,7 @@ class HandActionService {
     String gameTypeStr = newHand['gameType'].toString();
     final gameType = GameType.values.firstWhere(
         (element) => (element.toString() == 'GameType.' + gameTypeStr));
-    _gameState.resetSeatActions();
+    _gameState.resetSeatActions(newHand: true);
 
     if (_close) return;
     final handInfo = _gameState.getHandInfo(_context);
@@ -1213,7 +1213,7 @@ class HandActionService {
 
     tableState.updateRankStrSilent(null);
 
-    gameState.resetSeatActions();
+    gameState.resetSeatActions(newHand: true);
 
     players.notifyAll();
     tableState.notifyAll();
