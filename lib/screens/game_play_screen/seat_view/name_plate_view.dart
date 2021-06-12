@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:blinking_text/blinking_text.dart';
 import 'package:flutter/material.dart';
+import 'package:pokerapp/enums/hand_actions.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
@@ -9,6 +10,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/screens/game_play_screen/game_play_screen_util_methods.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/milliseconds_counter.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/plate_border.dart';
 import 'package:provider/provider.dart';
@@ -217,7 +219,7 @@ class NamePlateWidget extends StatelessWidget {
                     ),
                     PlayerViewDivider(),
                     Align(
-                      alignment: Alignment.centerRight,
+                      alignment: Alignment.topRight,
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 5),
                         child: FittedBox(
@@ -236,25 +238,26 @@ class NamePlateWidget extends StatelessWidget {
   }
 
   Widget bottomWidget(BuildContext context) {
-    // if (seat.player.inBreak && seat.player.breakTimeExpAt != null) {
-    //   final now = DateTime.now().toUtc();
-    //   final diff = seat.player.breakTimeExpAt.difference(now);
-    //   return buyInTimer(context, diff.inSeconds);
-    // }
-
-    // if (seat.player.action.action != HandActions.ALLIN &&
-    //     seat.player.stack == 0 &&
-    //     seat.player.buyInTimeExpAt != null) {
-    //   final now = DateTime.now().toUtc();
-    //   final diff = seat.player.buyInTimeExpAt.difference(now);
-    //   return buyInTimer(context, diff.inSeconds);
-    // } else {
-    if (seat.player != null) {
-      return stack(context);
-    } else {
-      return Container();
+    if (seat.player.inBreak && seat.player.breakTimeExpAt != null) {
+      final now = DateTime.now().toUtc();
+      return GamePlayScreenUtilMethods.breakBuyIntimer(
+        context,
+        seat,
+      );
     }
-    //}
+
+    if (seat.player.action.action != HandActions.ALLIN &&
+        seat.player.stack == 0 &&
+        seat.player.buyInTimeExpAt != null) {
+      final now = DateTime.now().toUtc();
+      return GamePlayScreenUtilMethods.breakBuyIntimer(context, seat);
+    } else {
+      if (seat.player != null) {
+        return stack(context);
+      } else {
+        return Container();
+      }
+    }
   }
 
   Widget stack(BuildContext context) {

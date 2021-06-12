@@ -221,6 +221,7 @@ class PlayerView extends StatelessWidget {
         return InkWell(
           onTap: () => this.onTap(context),
           child: Stack(
+            overflow: Overflow.visible,
             clipBehavior: Clip.none,
             alignment: Alignment.center,
             children: [
@@ -250,14 +251,14 @@ class PlayerView extends StatelessWidget {
                 builder: (_, vnFooterStatus, __) =>
                     _buildDisplayCardsWidget(seat, vnFooterStatus.value),
               ),
-              Transform.translate(
-                  offset: Offset(70, 40),
-                  child:
-                      GamePlayScreenUtilMethods.breakBuyIntimer(context, seat)),
+              // Transform.translate(
+              //     offset: Offset(70, 40),
+              //     child:
+              //         GamePlayScreenUtilMethods.breakBuyIntimer(context, seat)),
 
               // player action text
               Positioned(
-                top: 0,
+                top: -6,
                 left: 0,
                 child: ActionStatusWidget(seat, cardsAlignment),
               ),

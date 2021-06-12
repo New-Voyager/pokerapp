@@ -331,8 +331,8 @@ class _BoardViewState extends State<BoardView> {
               verticalPadding: 1,
               fontSize: 14,
               onButtonTap: () async => {await onSitBack(context)},
-              timerWidget:
-                  GamePlayScreenUtilMethods.breakBuyIntimer(context, seat),
+              // timerWidget:
+              //     GamePlayScreenUtilMethods.breakBuyIntimer(context, seat),
             ));
       }),
     );
