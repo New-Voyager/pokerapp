@@ -37,7 +37,7 @@ class ClubGraphicsViewNew extends StatelessWidget {
       child: Row(
         children: [
           Expanded(
-            flex: 3,
+            flex: 4,
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8.pw),
@@ -60,13 +60,14 @@ class ClubGraphicsViewNew extends StatelessWidget {
                     padding: EdgeInsets.all(8.pw),
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      _unsettledBalance.toString(),
+                      getBalanceFormatted(_unsettledBalance),
                       style: TextStyle(
                         color: getBalanceColor(_unsettledBalance),
-                        fontSize: 25.0.dp,
+                        fontSize: 24.0.pw,
                         fontFamily: AppAssetsNew.fontFamilyPoppins,
                         fontWeight: FontWeight.w500,
                       ),
+                      //maxLines: 1,
                     ),
                   ),
                 ],
@@ -107,5 +108,21 @@ class ClubGraphicsViewNew extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  String getBalanceFormatted(double bal) {
+    if (bal.abs() > 999999999) {
+      double val = bal / 1000000000;
+      return "${val.toStringAsFixed(1)}B";
+    }
+    if (bal.abs() > 999999) {
+      double val = bal / 1000000;
+      return "${val.toStringAsFixed(1)}M";
+    }
+    if (bal.abs() > 999) {
+      double val = bal / 1000;
+      return "${val.toStringAsFixed(1)}K";
+    }
+    return "${bal.toStringAsFixed(1)}";
   }
 }

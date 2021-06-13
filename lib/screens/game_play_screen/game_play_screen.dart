@@ -35,6 +35,7 @@ import 'package:pokerapp/services/nats/nats.dart';
 import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:provider/provider.dart';
+import 'package:wakelock/wakelock.dart';
 
 import '../../services/test/test_service.dart';
 import 'game_play_screen_util_methods.dart';
@@ -258,6 +259,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   @override
   void dispose() {
     // TestService.isTesting = false;
+    Wakelock.disable();
     try {
       _gameContextObj?.dispose();
       // agora?.disposeObject();
@@ -352,6 +354,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     super.initState();
     log('game screen initState');
     /* the init method is invoked only once */
+    Wakelock.enable();
     _init().then(
       (gameInfoModel) => setState(
         () => _gameInfoModel = gameInfoModel,

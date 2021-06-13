@@ -1,375 +1,76 @@
-<!DOCTYPE html>
-<html class="client-nojs" lang="en" dir="ltr">
-<head>
-<meta charset="UTF-8"/>
-<title>File:Back Arrow.svg - Wikimedia Commons</title>
-<script>document.documentElement.className="client-js";RLCONF={"wgBreakFrames":!0,"wgSeparatorTransformTable":["",""],"wgDigitTransformTable":["",""],"wgDefaultDateFormat":"dmy","wgMonthNames":["","January","February","March","April","May","June","July","August","September","October","November","December"],"wgRequestId":"fd88ec1b-eb50-45a7-8469-9a9cebf472de","wgCSPNonce":!1,"wgCanonicalNamespace":"File","wgCanonicalSpecialPageName":!1,"wgNamespaceNumber":6,"wgPageName":"File:Back_Arrow.svg","wgTitle":"Back Arrow.svg","wgCurRevisionId":477585514,"wgRevisionId":477585514,"wgArticleId":30113059,"wgIsArticle":!0,"wgIsRedirect":!1,"wgAction":"view","wgUserName":null,"wgUserGroups":["*"],"wgCategories":["Invalid SVG created with Inkscape","Created with Inkscape-undef","PD shape","SVG encircled arrow icons"],"wgPageContentLanguage":"en","wgPageContentModel":"wikitext","wgRelevantPageName":"File:Back_Arrow.svg","wgRelevantArticleId":30113059,"wgIsProbablyEditable":!0,
-"wgRelevantPageIsProbablyEditable":!0,"wgRestrictionEdit":[],"wgRestrictionMove":[],"wgRestrictionUpload":[],"wgMediaViewerOnClick":!0,"wgMediaViewerEnabledByDefault":!1,"wgVisualEditor":{"pageLanguageCode":"en","pageLanguageDir":"ltr","pageVariantFallbacks":"en"},"wgMFDisplayWikibaseDescriptions":{"search":!0,"nearby":!0,"watchlist":!0,"tagline":!0},"wgWMESchemaEditAttemptStepOversample":!1,"wgULSCurrentAutonym":"English","wgNoticeProject":"commons","wbCopyright":{"version":"wikibase-1","messageHtml":"By clicking \"publish\", you agree to the \u003Ca href=\"/wiki/Commons:Copyrights\" class=\"mw-redirect\" title=\"Commons:Copyrights\"\u003Eterms of use\u003C/a\u003E, and you irrevocably agree to release your contribution under the \u003Ca rel=\"nofollow\" class=\"external text\" href=\"https://creativecommons.org/publicdomain/zero/1.0/\"\u003ECreative Commons CC0 License\u003C/a\u003E."},"wbBadgeItems":[],"wbMultiLingualStringLimit":250,"wbTaintedReferencesEnabled":
-!1,"wbEntityId":"M30113059","wgEditSubmitButtonLabelPublish":!0,"wbUserSpecifiedLanguages":["en"],"wgCentralAuthMobileDomain":!1,"wgULSPosition":"personal","wbmiDefaultProperties":["P180"],"wbmiPropertyTitles":{"P180":"Items portrayed in this file"},"wbmiPropertyTypes":{"P180":"wikibase-item","P571":"time","P7482":"wikibase-item","P170":"wikibase-item","P2093":"string","P4174":"external-id","P2699":"url"},"wbmiHelpUrls":{"P180":"https://commons.wikimedia.org/wiki/Special:MyLanguage/Commons:Depicts"},"wbmiExternalEntitySearchBaseUri":"https://www.wikidata.org/w/api.php","wbmiRepoApiUrl":"/w/api.php","wbmiSupportedDataTypes":["wikibase-item","string","quantity","time","monolingualtext","external-id","globe-coordinate","url"],"wbCurrentRevision":477585514,"wbEntity":{"type":"mediainfo","id":"M30113059","labels":[],"descriptions":[],"statements":{"P571":[{"mainsnak":{"snaktype":"value","property":"P571","hash":"c4d8f0ef4bbd4f7af6869c50a9d27be0437132ee","datavalue":{"value":{"time":
-"+2013-12-11T00:00:00Z","timezone":0,"before":0,"after":0,"precision":11,"calendarmodel":"http://www.wikidata.org/entity/Q1985727"},"type":"time"}},"type":"statement","id":"M30113059$D848D9DC-B537-4CA5-A115-738B4AE72CF9","rank":"normal"}],"P7482":[{"mainsnak":{"snaktype":"value","property":"P7482","hash":"83568a288a8b8b4714a68e7239d8406833762864","datavalue":{"value":{"entity-type":"item","numeric-id":66458942,"id":"Q66458942"},"type":"wikibase-entityid"}},"type":"statement","id":"M30113059$9B3B8803-653E-45A6-BAF0-132695638B05","rank":"normal"}],"P170":[{"mainsnak":{"snaktype":"somevalue","property":"P170","hash":"d3550e860f988c6675fff913440993f58f5c40c5"},"type":"statement","qualifiers":{"P2093":[{"snaktype":"value","property":"P2093","hash":"1bd935e897a512f59b3892275041bec011dac63b","datavalue":{"value":"House","type":"string"}}],"P4174":[{"snaktype":"value","property":"P4174","hash":"e367314a32f81eefae97915f8afcfc8593488edd","datavalue":{"value":"House","type":"string"}}],"P2699":[{
-"snaktype":"value","property":"P2699","hash":"b2f41d91b56e04ab634ce63cece737cf6a14d395","datavalue":{"value":"http://commons.wikimedia.org/wiki/User:House","type":"string"}}]},"qualifiers-order":["P2093","P4174","P2699"],"id":"M30113059$2678E689-2C6B-41FD-9B53-F509F7BA35DB","rank":"normal"}]}},"wbmiMinCaptionLength":5,"wbmiMaxCaptionLength":250,"wbmiParsedMessageAnonEditWarning":
-"\u003Cp\u003EYou are not logged in and your \u003Ca href=\"https://en.wikipedia.org/wiki/IP_address\" class=\"extiw\" title=\"w:IP address\"\u003EIP address\u003C/a\u003E will be publicly visible if you make any edits. \u003Ca href=\"/wiki/Special:UserLogin\" title=\"Special:UserLogin\"\u003ELogging in\u003C/a\u003E or \u003Ca href=\"/wiki/Special:CreateAccount\" title=\"Special:CreateAccount\"\u003Ecreating an account\u003C/a\u003E will conceal your IP address and provide you with many other \u003Ca href=\"https://en.wikipedia.org/wiki/Wikipedia:Why_create_an_account%3F\" class=\"extiw\" title=\"w:Wikipedia:Why create an account?\"\u003Ebenefits\u003C/a\u003E. Please do not save test edits. If you want to experiment, please use the \u003Ca href=\"/wiki/Commons:Sandbox\" title=\"Commons:Sandbox\"\u003ESandbox\u003C/a\u003E.\n\u003C/p\u003E","wbmiProtectionMsg":null,"wbmiUserCanEdit":!0};RLSTATE={"ext.gadget.Long-Image-Names-in-Categories":"ready","ext.globalCssJs.user.styles":
-"ready","site.styles":"ready","noscript":"ready","user.styles":"ready","ext.globalCssJs.user":"ready","user":"ready","user.options":"loading","wikibase.common":"ready","jquery.wikibase.toolbar.styles":"ready","filepage":"ready","mediawiki.action.view.filepage":"ready","skins.vector.styles.legacy":"ready","ext.visualEditor.desktopArticleTarget.noscript":"ready","ext.uls.pt":"ready","wikibase.mediainfo.filepage.styles":"ready","wikibase.mediainfo.statements.styles":"ready","ext.wikimediaBadges":"ready"};RLPAGEMODULES=["wikibase.entityPage.entityLoaded","wikibase.ui.entityViewInit","mediawiki.action.view.metadata","site","mediawiki.page.ready","skins.vector.legacy.js","ext.gadget.Slideshow","ext.gadget.ZoomViewer","ext.gadget.CollapsibleTemplates","ext.gadget.fastcci","ext.gadget.Stockphoto","ext.gadget.WatchlistNotice","ext.gadget.AjaxQuickDelete","ext.gadget.WikiMiniAtlas","ext.gadget.LanguageSelect","ext.centralauth.centralautologin","mmv.head","mmv.bootstrap.autostart",
-"ext.visualEditor.desktopArticleTarget.init","ext.visualEditor.targetLoader","ext.eventLogging","ext.wikimediaEvents","ext.wikimediaEvents.wikibase","ext.navigationTiming","ext.uls.compactlinks","ext.uls.interface","wikibase.mediainfo.filePageDisplay","ext.centralNotice.geoIP","ext.centralNotice.startUp"];</script>
-<script>(RLQ=window.RLQ||[]).push(function(){mw.loader.implement("user.options@1hzgi",function($,jQuery,require,module){/*@nomin*/mw.user.tokens.set({"patrolToken":"+\\","watchToken":"+\\","csrfToken":"+\\"});
-});});</script>
-<link rel="stylesheet" href="/w/load.php?lang=en&amp;modules=ext.uls.pt%7Cext.visualEditor.desktopArticleTarget.noscript%7Cext.wikimediaBadges%7Cfilepage%7Cjquery.wikibase.toolbar.styles%7Cmediawiki.action.view.filepage%7Cskins.vector.styles.legacy%7Cwikibase.common%7Cwikibase.mediainfo.filepage.styles%7Cwikibase.mediainfo.statements.styles&amp;only=styles&amp;skin=vector"/>
-<script async="" src="/w/load.php?lang=en&amp;modules=startup&amp;only=scripts&amp;raw=1&amp;skin=vector"></script>
-<meta name="ResourceLoaderDynamicStyles" content=""/>
-<link rel="stylesheet" href="/w/load.php?lang=en&amp;modules=ext.gadget.Long-Image-Names-in-Categories&amp;only=styles&amp;skin=vector"/>
-<link rel="stylesheet" href="/w/load.php?lang=en&amp;modules=site.styles&amp;only=styles&amp;skin=vector"/>
-<meta name="generator" content="MediaWiki 1.37.0-wmf.9"/>
-<meta name="referrer" content="origin"/>
-<meta name="referrer" content="origin-when-crossorigin"/>
-<meta name="referrer" content="origin-when-cross-origin"/>
-<meta property="og:image" content="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Back_Arrow.svg/1200px-Back_Arrow.svg.png"/>
-<meta property="og:title" content="File:Back Arrow.svg - Wikimedia Commons"/>
-<meta property="og:type" content="website"/>
-<link rel="preconnect" href="//upload.wikimedia.org"/>
-<link rel="preconnect" href="//upload.wikimedia.org"/>
-<link rel="alternate" href="https://commons.wikimedia.org/wiki/Special:EntityData/M30113059.json" type="application/json"/>
-<link rel="alternate" href="https://commons.wikimedia.org/wiki/Special:EntityData/M30113059.php" type="application/vnd.php.serialized"/>
-<link rel="alternate" href="https://commons.wikimedia.org/wiki/Special:EntityData/M30113059.n3" type="text/n3"/>
-<link rel="alternate" href="https://commons.wikimedia.org/wiki/Special:EntityData/M30113059.ttl" type="text/turtle"/>
-<link rel="alternate" href="https://commons.wikimedia.org/wiki/Special:EntityData/M30113059.nt" type="application/n-triples"/>
-<link rel="alternate" href="https://commons.wikimedia.org/wiki/Special:EntityData/M30113059.rdf" type="application/rdf+xml"/>
-<link rel="alternate" href="https://commons.wikimedia.org/wiki/Special:EntityData/M30113059.jsonld" type="application/ld+json"/>
-<link rel="alternate" media="only screen and (max-width: 720px)" href="//commons.m.wikimedia.org/wiki/File:Back_Arrow.svg"/>
-<link rel="alternate" type="application/x-wiki" title="Edit" href="/w/index.php?title=File:Back_Arrow.svg&amp;action=edit"/>
-<link rel="edit" title="Edit" href="/w/index.php?title=File:Back_Arrow.svg&amp;action=edit"/>
-<link rel="apple-touch-icon" href="/static/apple-touch/commons.png"/>
-<link rel="shortcut icon" href="/static/favicon/commons.ico"/>
-<link rel="search" type="application/opensearchdescription+xml" href="/w/opensearch_desc.php" title="Wikimedia Commons"/>
-<link rel="EditURI" type="application/rsd+xml" href="//commons.wikimedia.org/w/api.php?action=rsd"/>
-<link rel="license" href="//creativecommons.org/licenses/by-sa/3.0/"/>
-<link rel="canonical" href="https://commons.wikimedia.org/wiki/File:Back_Arrow.svg"/>
-<link rel="dns-prefetch" href="//login.wikimedia.org"/>
-<link rel="dns-prefetch" href="//meta.wikimedia.org" />
-</head>
-<body class="mediawiki ltr sitedir-ltr mw-hide-empty-elt ns-6 ns-subject mw-editable page-File_Back_Arrow_svg rootpage-File_Back_Arrow_svg skin-vector action-view skin-vector-legacy wb-entitypage wb-mediainfopage wb-mediainfopage-M30113059"><div id="mw-page-base" class="noprint"></div>
-<div id="mw-head-base" class="noprint"></div>
-<div id="content" class="mw-body" role="main">
-	<a id="top"></a>
-	<div id="siteNotice"><!-- CentralNotice --></div>
-	<div class="mw-indicators">
-	</div>
-	<h1 id="firstHeading" class="firstHeading" >File:Back Arrow.svg</h1>
-	<div id="bodyContent" class="vector-body">
-		<div id="siteSub" class="noprint">From Wikimedia Commons, the free media repository</div>
-		<div id="contentSub"></div>
-		<div id="contentSub2"></div>
-		
-		<div id="jump-to-nav"></div>
-		<a class="mw-jump-link" href="#mw-head">Jump to navigation</a>
-		<a class="mw-jump-link" href="#searchInput">Jump to search</a>
-		<div id="mw-content-text" class="mw-body-content"><ul id="filetoc"><li><a href="#file">File</a></li>
-<li><a href="#filehistory">File history</a></li>
-<li><a href="#filelinks">File usage on Commons</a></li>
-<li><a href="#globalusage">File usage on other wikis</a></li>
-<li><a href="#metadata">Metadata</a></li></ul><div class="fullImageLink" id="file"><a href="https://upload.wikimedia.org/wikipedia/commons/b/b1/Back_Arrow.svg"><img alt="File:Back Arrow.svg" src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Back_Arrow.svg/20px-Back_Arrow.svg.png" decoding="async" width="20" height="20" srcset="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Back_Arrow.svg/30px-Back_Arrow.svg.png 1.5x, https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Back_Arrow.svg/40px-Back_Arrow.svg.png 2x" data-file-width="20" data-file-height="20" /></a><div class="mw-filepage-resolutioninfo">Size of this PNG preview of this SVG file: <a href="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Back_Arrow.svg/20px-Back_Arrow.svg.png" class="mw-thumbnail-link">20 × 20 pixels</a>. <span class="mw-filepage-other-resolutions">Other resolutions: <a href="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Back_Arrow.svg/240px-Back_Arrow.svg.png" class="mw-thumbnail-link">240 × 240 pixels</a> | <a href="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Back_Arrow.svg/480px-Back_Arrow.svg.png" class="mw-thumbnail-link">480 × 480 pixels</a> | <a href="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Back_Arrow.svg/600px-Back_Arrow.svg.png" class="mw-thumbnail-link">600 × 600 pixels</a> | <a href="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Back_Arrow.svg/768px-Back_Arrow.svg.png" class="mw-thumbnail-link">768 × 768 pixels</a> | <a href="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Back_Arrow.svg/1024px-Back_Arrow.svg.png" class="mw-thumbnail-link">1,024 × 1,024 pixels</a> | <a href="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Back_Arrow.svg/2048px-Back_Arrow.svg.png" class="mw-thumbnail-link">2,048 × 2,048 pixels</a>.</span></div></div>
-<div class="fullMedia"><p><a href="https://upload.wikimedia.org/wikipedia/commons/b/b1/Back_Arrow.svg" class="internal" title="Back Arrow.svg">Original file</a> &#8206;<span class="fileInfo">(SVG file, nominally 20 × 20 pixels, file size: 5 KB)</span>
-</p></div><div class='wbmi-tabs-container oo-ui-layout oo-ui-panelLayout'><div id='ooui-php-1' class='wbmi-tabs oo-ui-layout oo-ui-menuLayout oo-ui-menuLayout-static oo-ui-menuLayout-top oo-ui-menuLayout-showMenu oo-ui-indexLayout' data-ooui='{"_":"OO.ui.IndexLayout","classes":["wbmi-tabs"],"expanded":false,"menuPanel":{"tag":"ooui-php-2"},"contentPanel":{"tag":"ooui-php-3"},"autoFocus":false,"tabPanels":{"wikiTextPlusCaptions":{"tag":"ooui-php-4"},"statements":{"tag":"ooui-php-5"}},"tabSelectWidget":{"tag":"ooui-php-6"}}'><div aria-hidden='false' class='oo-ui-menuLayout-menu'><div id='ooui-php-2' class='oo-ui-layout oo-ui-panelLayout oo-ui-indexLayout-tabPanel' data-ooui='{"_":"OO.ui.PanelLayout","preserveContent":false,"expanded":false}'><div role='tablist' aria-disabled='false' tabindex='0' id='ooui-php-6' class='oo-ui-selectWidget oo-ui-selectWidget-unpressed oo-ui-widget oo-ui-widget-enabled oo-ui-tabSelectWidget oo-ui-tabSelectWidget-frameless' data-ooui='{"_":"OO.ui.TabSelectWidget","framed":false,"items":[{"tag":"ooui-php-7"},{"tag":"ooui-php-8"}]}'><div aria-disabled='false' aria-selected='true' role='tab' id='ooui-php-7' class='oo-ui-widget oo-ui-widget-enabled oo-ui-optionWidget oo-ui-tabOptionWidget oo-ui-labelElement oo-ui-optionWidget-selected' data-ooui='{"_":"OO.ui.TabOptionWidget","selected":true,"label":"File information","data":"wikiTextPlusCaptions"}'><span class='oo-ui-labelElement-label'>File information</span></div><div aria-disabled='false' aria-selected='false' role='tab' id='ooui-php-8' class='oo-ui-widget oo-ui-widget-enabled oo-ui-optionWidget oo-ui-tabOptionWidget oo-ui-labelElement' data-ooui='{"_":"OO.ui.TabOptionWidget","label":"Structured data","data":"statements"}'><span class='oo-ui-labelElement-label'>Structured data</span></div></div></div></div><div class='oo-ui-menuLayout-content'><div id='ooui-php-3' class='oo-ui-layout oo-ui-panelLayout oo-ui-stackLayout oo-ui-indexLayout-stackLayout' data-ooui='{"_":"OO.ui.StackLayout","preserveContent":false,"expanded":false,"items":[{"tag":"ooui-php-4"},{"tag":"ooui-php-5"}]}'><div role='tabpanel' id='ooui-php-4' class='wbmi-tab oo-ui-layout oo-ui-panelLayout oo-ui-panelLayout-scrollable oo-ui-tabPanelLayout' data-ooui='{"_":"OO.ui.TabPanelLayout","name":"wikiTextPlusCaptions","label":"File information","scrollable":true,"expanded":false,"classes":["wbmi-tab"]}'><div class='wbmi-entityview-captionsPanel oo-ui-layout oo-ui-panelLayout oo-ui-panelLayout-framed'><h3 class='wbmi-entityview-captions-header'>Captions</h3><div class='wbmi-entityview-caption oo-ui-layout oo-ui-horizontalLayout'><label aria-disabled='false' class='wbmi-language-label oo-ui-widget oo-ui-widget-enabled oo-ui-labelElement-label oo-ui-labelElement oo-ui-labelWidget'>English</label><div lang='en' dir='ltr' class='wbmi-caption-value wbmi-entityview-emptyCaption'>Add a one-line explanation of what this file represents</div></div></div><h2 class="wbmi-captions-header">Captions</h2><div id="mw-imagepage-content" lang="en" dir="ltr" class="mw-content-ltr"><div class="mw-parser-output"><h2><span class="mw-headline" id="Summary">Summary</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=File:Back_Arrow.svg&amp;action=edit&amp;section=1" title="Edit section: Summary">edit</a><span class="mw-editsection-bracket">]</span></span></h2>
-<div class="hproduct commons-file-information-table">
-<table class="fileinfotpl-type-information toccolours vevent mw-content-ltr" style="width: 100%; direction: ltr;" cellpadding="4">
-
-<tbody><tr style="vertical-align: top">
-<td id="fileinfotpl_desc" class="fileinfo-paramfield" lang="en">Description<span class="summary fn" style="display:none">Back Arrow.svg</span></td>
-<td class="description">
-<div class="description mw-content-ltr en" dir="ltr" lang="en"><span class="language en" title="English"><b>English&#58; </b></span> Left arrow symbol.</div></td>
-</tr>
-
-<tr style="vertical-align: top">
-<td id="fileinfotpl_date" class="fileinfo-paramfield" lang="en">Date</td>
-<td lang="en">
-<span style="white-space:nowrap"><time class="dtstart" datetime="2013-12-11 14:42:47">11 December 2013, 14:42:47</time></span></td>
-</tr>
-
-<tr style="vertical-align: top">
-<td id="fileinfotpl_src" class="fileinfo-paramfield" lang="en">Source</td>
-<td>
-<span class="int-own-work" lang="en">Own work</span></td>
-</tr>
-
-<tr style="vertical-align: top">
-<td id="fileinfotpl_aut" class="fileinfo-paramfield" lang="en">Author</td>
-<td>
-<a href="/wiki/User:House" title="User:House">House</a></td>
-</tr>
-
-<tr style="vertical-align: top"><td style="" class="fileinfo-paramfield">SVG&#160;development</td><td style=""><span style="vertical-align:middle"><div class="mw-content-ltr plainlinks"><span style="display:inline-block;width:auto;white-space:nowrap;vertical-align:middle;float:ltr;direction:ltr;line-height:22px;height:24px;font-size:.96em;margin:0px;padding:2px 4px 2px 6px;color:#000;background:#F8F9FA;border:1px solid #BAB;padding:2px 4px 2px 0px;fl"><a href="/wiki/File:W3C_red.svg" class="image"><img alt="W3C red.svg" src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/W3C_red.svg/40px-W3C_red.svg.png" decoding="async" width="40" height="24" srcset="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/W3C_red.svg/60px-W3C_red.svg.png 1.5x, https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/W3C_red.svg/80px-W3C_red.svg.png 2x" data-file-width="288" data-file-height="174" /></a>&#160;The source code of this  <a href="/wiki/Help:SVG" title="Help:SVG">SVG</a> is <span class="plainlinks" style="background:#FDC"><b><a rel="nofollow" class="external text" href="//validator.w3.org/check?uri=https%3A%2F%2Fcommons.wikimedia.org%2Fwiki%2FSpecial%3AFilepath%2FBack_Arrow.svg&amp;doctype=Inline&amp;ss=1">invalid</a></b></span> due to an error.</span><span style="display:inline-block;width:auto;white-space:nowrap;vertical-align:middle;float:ltr;direction:ltr;line-height:22px;height:24px;font-size:.96em;margin:0px;padding:2px 4px 2px 6px;color:#000;background:#F8F9FA;border:1px solid #BAB;"><a href="/wiki/File:Inkscape-no.svg" class="image"><img alt="Inkscape-no.svg" src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/Inkscape-no.svg/20px-Inkscape-no.svg.png" decoding="async" width="20" height="20" srcset="https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/Inkscape-no.svg/30px-Inkscape-no.svg.png 1.5x, https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/Inkscape-no.svg/40px-Inkscape-no.svg.png 2x" data-file-width="390" data-file-height="390" /></a>&#160;This W3C-<i>invalid</i>&#32;<a href="https://en.wikipedia.org/wiki/Vector_images" class="extiw" title="w:Vector images">vector image</a>&#32;was created with <a href="https://en.wikipedia.org/wiki/Inkscape" class="extiw" title="w:Inkscape">Inkscape</a><i>, or with something else</i>.</span></div></span></td>
-</tr>
-</tbody></table>
-</div>
-<h2><span class="mw-headline" id="Licensing">Licensing</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=File:Back_Arrow.svg&amp;action=edit&amp;section=2" title="Edit section: Licensing">edit</a><span class="mw-editsection-bracket">]</span></span></h2>
-<table class="licensetpl" style="display:none">
-<tbody><tr>
-<td><span class="licensetpl_short">Public domain</span><span class="licensetpl_long">Public domain</span><span class="licensetpl_link_req">false</span><span class="licensetpl_attr_req">false</span>
-</td></tr></tbody></table>
-<table style="width:100%; clear:both; margin:0.5em auto; background-color:#f7f8ff; border:2px solid #8888aa; direction: ltr; border-spacing: 8px; padding: 0px;" class="layouttemplate mw-content-ltr" lang="en">
-<tbody><tr>
-<td><img alt="Public domain" src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/PD-icon.svg/48px-PD-icon.svg.png" decoding="async" title="Public domain" width="48" height="48" srcset="https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/PD-icon.svg/72px-PD-icon.svg.png 1.5x, https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/PD-icon.svg/96px-PD-icon.svg.png 2x" data-file-width="196" data-file-height="196" />
-</td>
-<td><i>This image of <b><a href="https://en.wikipedia.org/wiki/geometry" class="extiw" title="w:geometry">simple geometry</a></b> is <b>ineligible for <a href="https://en.wikipedia.org/wiki/copyrights" class="extiw" title="w:copyrights">copyright</a></b> and therefore in the <b><a href="https://en.wikipedia.org/wiki/public_domain" class="extiw" title="w:public domain">public domain</a></b>, because it consists entirely of information that is common property and contains no original authorship.</i>
-</td>
-<td><div class="floatright"><img alt="Heptagon" src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Heptagon.svg/48px-Heptagon.svg.png" decoding="async" title="Heptagon" width="48" height="47" srcset="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Heptagon.svg/72px-Heptagon.svg.png 1.5x, https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Heptagon.svg/96px-Heptagon.svg.png 2x" data-file-width="512" data-file-height="500" /></div>
-</td></tr></tbody></table>
-<!-- 
-NewPP limit report
-Parsed by mw1269
-Cached time: 20210602172657
-Cache expiry: 1814400
-Reduced expiry: false
-Complications: []
-CPU time usage: 0.265 seconds
-Real time usage: 0.369 seconds
-Preprocessor visited node count: 3191/1000000
-Post‐expand include size: 30317/2097152 bytes
-Template argument size: 3673/2097152 bytes
-Highest expansion depth: 33/40
-Expensive parser function count: 4/500
-Unstrip recursion depth: 0/20
-Unstrip post‐expand size: 0/5000000 bytes
-Lua time usage: 0.077/10.000 seconds
-Lua memory usage: 1663837/52428800 bytes
-Number of Wikibase entities loaded: 1/400
--->
-<!--
-Transclusion expansion time report (%,ms,calls,template)
-100.00%  338.989      1 -total
- 90.72%  307.514      1 Template:Information
- 63.13%  213.995      1 Template:Igen
- 51.95%  176.111      1 Template:InFi
- 31.25%  105.930      1 Template:Created_with_Inkscape-undef
- 21.99%   74.559      3 Template:Autotranslate
- 17.59%   59.614      1 Template:SVGvalid
- 14.76%   50.047      1 Template:InvalidSVG
- 13.49%   45.717      2 Template:Created_with/layout
- 13.35%   45.271      1 Template:Invalid_SVG
--->
-
-<!-- Saved in parser cache with key commonswiki:pcache:idhash:30113059-0!wb=3 and timestamp 20210602172657 and revision id 477585514. Serialized with JSON.
- -->
-</div></div><h2 id="filehistory">File history</h2>
-<div id="mw-imagepage-section-filehistory">
-<p>Click on a date/time to view the file as it appeared at that time.
-</p>
-<table class="wikitable filehistory">
-<tr><th></th><th>Date/Time</th><th>Thumbnail</th><th>Dimensions</th><th>User</th><th>Comment</th></tr>
-<tr><td>current</td><td class='filehistory-selected' style='white-space: nowrap;'><a href="https://upload.wikimedia.org/wikipedia/commons/b/b1/Back_Arrow.svg">21:55, 11 December 2013</a></td><td><a href="https://upload.wikimedia.org/wikipedia/commons/b/b1/Back_Arrow.svg"><img alt="Thumbnail for version as of 21:55, 11 December 2013" src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Back_Arrow.svg/120px-Back_Arrow.svg.png" decoding="async" width="120" height="120" data-file-width="20" data-file-height="20" /></a></td><td>20 × 20 <span style="white-space: nowrap;">(5 KB)</span></td><td><a href="/wiki/User:House" class="mw-userlink" title="User:House"><bdi>House</bdi></a><span style="white-space: nowrap;"> <span class="mw-usertoollinks">(<a href="/wiki/User_talk:House" class="mw-usertoollinks-talk" title="User talk:House">talk</a> | <a href="/wiki/Special:Contributions/House" class="mw-usertoollinks-contribs" title="Special:Contributions/House">contribs</a>)</span></span></td><td dir="ltr">User created page with UploadWizard</td></tr>
-</table>
-
-</div>
-<div class="mw-imagepage-upload-links"><p id="mw-imagepage-upload-disallowed">You cannot overwrite this file.</p></div><h2 id="filelinks">File usage on Commons</h2>
-<div id='mw-imagepage-section-linkstoimage'>
-<p>The following page uses this file:
-</p><ul class="mw-imagepage-linkstoimage">
-<li class="mw-imagepage-linkstoimage-ns2"><a href="/wiki/User:House" title="User:House">User:House</a></li>
-</ul>
-</div>
-<h2 id="globalusage">File usage on other wikis</h2>
-<div id="mw-imagepage-section-globalusage"><p>The following other wikis use this file:
-</p><ul>
-<li class='mw-gu-onwiki-de_wikipedia_org'>Usage on de.wikipedia.org
-<ul>	<li><a class="external" href="https://de.wikipedia.org/wiki/Benutzer_Diskussion:PerfektesChaos/js/WikiSyntaxTextMod/Archiv4">Benutzer Diskussion:PerfektesChaos/js/WikiSyntaxTextMod/Archiv4</a></li>
-	<li><a class="external" href="https://de.wikipedia.org/wiki/Hilfe:Medienbetrachter">Hilfe:Medienbetrachter</a></li>
-	<li><a class="external" href="https://de.wikipedia.org/wiki/Benutzer_Diskussion:Brodkey65/Archiv/2015">Benutzer Diskussion:Brodkey65/Archiv/2015</a></li>
-</ul></li>
-<li class='mw-gu-onwiki-de_wikivoyage_org'>Usage on de.wikivoyage.org
-<ul>	<li><a class="external" href="https://de.wikivoyage.org/wiki/Hilfe:Medienbetrachter">Hilfe:Medienbetrachter</a></li>
-</ul></li>
-<li class='mw-gu-onwiki-en_wikipedia_org'>Usage on en.wikipedia.org
-<ul>	<li><a class="external" href="https://en.wikipedia.org/wiki/Wikipedia:Village_pump_(technical)/Archive_130">Wikipedia:Village pump (technical)/Archive 130</a></li>
-	<li><a class="external" href="https://en.wikipedia.org/wiki/User:Drewmutt/ACTRIAL-Mockup-Idea">User:Drewmutt/ACTRIAL-Mockup-Idea</a></li>
-</ul></li>
-<li class='mw-gu-onwiki-es_wikipedia_org'>Usage on es.wikipedia.org
-<ul>	<li><a class="external" href="https://es.wikipedia.org/wiki/Usuario:House">Usuario:House</a></li>
-</ul></li>
-<li class='mw-gu-onwiki-ja_wikipedia_org'>Usage on ja.wikipedia.org
-<ul>	<li><a class="external" href="https://ja.wikipedia.org/wiki/Wikipedia:%E4%BA%95%E6%88%B8%E7%AB%AF/subj/Template:Main%E3%81%AA%E3%81%A9%E3%81%AE%E6%96%9C%E4%BD%93%E3%81%8C%E5%BB%83%E6%AD%A2%E3%81%95%E3%82%8C%E3%81%A6%E3%81%84%E3%81%9F%E3%81%93%E3%81%A8%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6">Wikipedia:井戸端/subj/Template:Mainなどの斜体が廃止されていたことについて</a></li>
-</ul></li>
-<li class='mw-gu-onwiki-meta_wikimedia_org'>Usage on meta.wikimedia.org
-<ul>	<li><a class="external" href="https://meta.wikimedia.org/wiki/Wikimedia_user_groups/fa">Wikimedia user groups/fa</a></li>
-	<li><a class="external" href="https://meta.wikimedia.org/wiki/Wikimedia_thematic_organizations/fa">Wikimedia thematic organizations/fa</a></li>
-	<li><a class="external" href="https://meta.wikimedia.org/wiki/Wikimedia_thematic_organizations/ar">Wikimedia thematic organizations/ar</a></li>
-	<li><a class="external" href="https://meta.wikimedia.org/wiki/Wikimedia_user_groups/he">Wikimedia user groups/he</a></li>
-	<li><a class="external" href="https://meta.wikimedia.org/wiki/Wikimedia_user_groups/ps">Wikimedia user groups/ps</a></li>
-	<li><a class="external" href="https://meta.wikimedia.org/wiki/Wikimedia_user_groups/ar">Wikimedia user groups/ar</a></li>
-	<li><a class="external" href="https://meta.wikimedia.org/wiki/Wikimedia_thematic_organizations/ps">Wikimedia thematic organizations/ps</a></li>
-	<li><a class="external" href="https://meta.wikimedia.org/wiki/Wikimedia_user_groups/arz">Wikimedia user groups/arz</a></li>
-	<li><a class="external" href="https://meta.wikimedia.org/wiki/Wikimedia_thematic_organizations/yi">Wikimedia thematic organizations/yi</a></li>
-	<li><a class="external" href="https://meta.wikimedia.org/wiki/Wikimedia_user_groups/yi">Wikimedia user groups/yi</a></li>
-	<li><a class="external" href="https://meta.wikimedia.org/wiki/Wikimedia_thematic_organizations/sd">Wikimedia thematic organizations/sd</a></li>
-	<li><a class="external" href="https://meta.wikimedia.org/wiki/Wikimedia_thematic_organizations/ur">Wikimedia thematic organizations/ur</a></li>
-	<li><a class="external" href="https://meta.wikimedia.org/wiki/Wikimedia_user_groups/sd">Wikimedia user groups/sd</a></li>
-</ul></li>
-</ul>
-</div><h2 id="metadata">Metadata</h2>
-<div class="mw-imagepage-section-metadata"><p>This file contains additional information such as Exif metadata which may have been added by the digital camera, scanner, or software program used to create or digitize it. If the file has been modified from its original state, some details such as the timestamp may not fully reflect those of the original file. The timestamp is only as accurate as the clock in the camera, and it may be completely wrong.</p><table id="mw_metadata" class="mw_metadata collapsed">
-<tbody><tr class="exif-imagewidth mw-metadata-collapsible"><th>Width</th><td>20</td></tr><tr class="exif-imagelength mw-metadata-collapsible"><th>Height</th><td>20</td></tr></tbody></table>
-</div><noscript><img src="//commons.wikimedia.org/wiki/Special:CentralAutoLogin/start?type=1x1" alt="" title="" width="1" height="1" style="border: none; position: absolute;" /></noscript></div><div role='tabpanel' id='ooui-php-5' class='wbmi-tab oo-ui-layout oo-ui-panelLayout oo-ui-panelLayout-scrollable oo-ui-tabPanelLayout' data-ooui='{"_":"OO.ui.TabPanelLayout","name":"statements","label":"Structured data","scrollable":true,"expanded":false,"classes":["wbmi-tab"]}'><h2 class="wbmi-structured-data-header">Structured data</h2><div id='P180' data-property='P180' data-statements='[]' data-formatvalue='[]' class='wbmi-entityview-statementsGroup wbmi-entityview-statementsGroup-P180 oo-ui-layout oo-ui-panelLayout oo-ui-panelLayout-framed'><div class='wbmi-statements-widget'><div class='wbmi-statement-header'><div class='wbmi-entity-data'><div class='wbmi-entity-title'><h3 class='wbmi-statements-title'>Items portrayed in this file</h3><h4 class='wbmi-entity-label'><bdi><a target="_blank" title="d:Special:EntityPage/P180" href="https://www.wikidata.org/wiki/Special:EntityPage/P180">depicts</a></bdi></h4></div></div></div><div class='wbmi-content-items-group'></div></div></div><div id='P170' data-property='P170' data-statements='[{"mainsnak":{"snaktype":"somevalue","property":"P170"},"type":"statement","qualifiers":{"P2093":[{"snaktype":"value","property":"P2093","hash":"1bd935e897a512f59b3892275041bec011dac63b","datavalue":{"value":"House","type":"string"}}],"P4174":[{"snaktype":"value","property":"P4174","hash":"e367314a32f81eefae97915f8afcfc8593488edd","datavalue":{"value":"House","type":"string"}}],"P2699":[{"snaktype":"value","property":"P2699","hash":"b2f41d91b56e04ab634ce63cece737cf6a14d395","datavalue":{"value":"http:\/\/commons.wikimedia.org\/wiki\/User:House","type":"string"}}]},"qualifiers-order":["P2093","P4174","P2699"],"id":"M30113059$2678E689-2C6B-41FD-9B53-F509F7BA35DB","rank":"normal"}]' data-formatvalue='{"{\"value\":{\"entity-type\":\"property\",\"numeric-id\":170,\"id\":\"P170\"},\"type\":\"wikibase-entityid\"}":{"text\/html":{"en":{"":"&lt;a target=\"_blank\" title=\"d:Special:EntityPage\/P170\" href=\"https:\/\/www.wikidata.org\/wiki\/Special:EntityPage\/P170\"&gt;creator&lt;\/a&gt;"}},"text\/plain":{"en":{"":"creator"}}},"{\"value\":{\"entity-type\":\"property\",\"numeric-id\":2093,\"id\":\"P2093\"},\"type\":\"wikibase-entityid\"}":{"text\/html":{"en":{"":"&lt;a target=\"_blank\" title=\"d:Special:EntityPage\/P2093\" href=\"https:\/\/www.wikidata.org\/wiki\/Special:EntityPage\/P2093\"&gt;author name string&lt;\/a&gt;"}},"text\/plain":{"en":{"":"author name string"}}},"{\"value\":\"House\",\"type\":\"string\"}":{"text\/html":{"en":{"P2093":"House","P4174":"&lt;a target=\"_blank\" class=\"wb-external-id external\" href=\"https:\/\/www.wikidata.org\/wiki\/Special:CentralAuth?target=House\" rel=\"nofollow\"&gt;House&lt;\/a&gt;"}},"text\/plain":{"en":{"P2093":"House","P4174":"House"}}},"{\"value\":{\"entity-type\":\"property\",\"numeric-id\":4174,\"id\":\"P4174\"},\"type\":\"wikibase-entityid\"}":{"text\/html":{"en":{"":"&lt;a target=\"_blank\" title=\"d:Special:EntityPage\/P4174\" href=\"https:\/\/www.wikidata.org\/wiki\/Special:EntityPage\/P4174\"&gt;Wikimedia username&lt;\/a&gt;"}},"text\/plain":{"en":{"":"Wikimedia username"}}},"{\"value\":{\"entity-type\":\"property\",\"numeric-id\":2699,\"id\":\"P2699\"},\"type\":\"wikibase-entityid\"}":{"text\/html":{"en":{"":"&lt;a target=\"_blank\" title=\"d:Special:EntityPage\/P2699\" href=\"https:\/\/www.wikidata.org\/wiki\/Special:EntityPage\/P2699\"&gt;URL&lt;\/a&gt;"}},"text\/plain":{"en":{"":"URL"}}},"{\"value\":\"http:\\\/\\\/commons.wikimedia.org\\\/wiki\\\/User:House\",\"type\":\"string\"}":{"text\/html":{"en":{"P2699":"&lt;a target=\"_blank\" rel=\"nofollow\" class=\"external free\" href=\"http:\/\/commons.wikimedia.org\/wiki\/User:House\"&gt;http:\/\/commons.wikimedia.org\/wiki\/User:House&lt;\/a&gt;"}},"text\/plain":{"en":{"P2699":"http:\/\/commons.wikimedia.org\/wiki\/User:House"}}}}' class='wbmi-entityview-statementsGroup wbmi-entityview-statementsGroup-P170 oo-ui-layout oo-ui-panelLayout oo-ui-panelLayout-framed'><div class='wbmi-statements-widget'><div class='wbmi-statement-header'><div class='wbmi-entity-data'><div class='wbmi-entity-title'><h4 class='wbmi-entity-label'><bdi><a target="_blank" title="d:Special:EntityPage/P170" href="https://www.wikidata.org/wiki/Special:EntityPage/P170">creator</a></bdi></h4></div></div></div><div class='wbmi-content-items-group'><div class='wbmi-item wbmi-item-read'><div data-guid='M30113059$2678E689-2C6B-41FD-9B53-F509F7BA35DB' class='wbmi-item-container'><div class='wbmi-entity-header'><div class='wbmi-entity-data'><div class='wbmi-entity-title'><h4 class='wbmi-entity-label'><bdi>some value</bdi></h4></div></div></div><div class='wbmi-item-content'><div class='wbmi-item-content-group'><div class='wbmi-qualifier'><div class='wbmi-qualifier-value'><a target="_blank" title="d:Special:EntityPage/P2093" href="https://www.wikidata.org/wiki/Special:EntityPage/P2093">author name string</a><span class='wbmi-qualifier-value-separator'>: </span><span class='wbmi-qualifier-value--value'>House</span></div></div><div class='wbmi-qualifier'><div class='wbmi-qualifier-value'><a target="_blank" title="d:Special:EntityPage/P4174" href="https://www.wikidata.org/wiki/Special:EntityPage/P4174">Wikimedia username</a><span class='wbmi-qualifier-value-separator'>: </span><span class='wbmi-qualifier-value--value'><a target="_blank" class="wb-external-id external" href="https://www.wikidata.org/wiki/Special:CentralAuth?target=House" rel="nofollow">House</a></span></div></div><div class='wbmi-qualifier'><div class='wbmi-qualifier-value'><a target="_blank" title="d:Special:EntityPage/P2699" href="https://www.wikidata.org/wiki/Special:EntityPage/P2699">URL</a><span class='wbmi-qualifier-value-separator'>: </span><span class='wbmi-qualifier-value--value'><a target="_blank" rel="nofollow" class="external free" href="http://commons.wikimedia.org/wiki/User:House">http://commons.wikimedia.org/wiki/User:House</a></span></div></div></div></div></div></div></div></div></div><div id='P571' data-property='P571' data-statements='[{"mainsnak":{"snaktype":"value","property":"P571","datavalue":{"value":{"time":"+2013-12-11T00:00:00Z","timezone":0,"before":0,"after":0,"precision":11,"calendarmodel":"http:\/\/www.wikidata.org\/entity\/Q1985727"},"type":"time"}},"type":"statement","id":"M30113059$D848D9DC-B537-4CA5-A115-738B4AE72CF9","rank":"normal"}]' data-formatvalue='{"{\"value\":{\"entity-type\":\"property\",\"numeric-id\":571,\"id\":\"P571\"},\"type\":\"wikibase-entityid\"}":{"text\/html":{"en":{"":"&lt;a target=\"_blank\" title=\"d:Special:EntityPage\/P571\" href=\"https:\/\/www.wikidata.org\/wiki\/Special:EntityPage\/P571\"&gt;inception&lt;\/a&gt;"}},"text\/plain":{"en":{"":"inception"}}},"{\"value\":{\"time\":\"+2013-12-11T00:00:00Z\",\"timezone\":0,\"before\":0,\"after\":0,\"precision\":11,\"calendarmodel\":\"http:\\\/\\\/www.wikidata.org\\\/entity\\\/Q1985727\"},\"type\":\"time\"}":{"text\/html":{"en":{"P571":"11 December 2013"}},"text\/plain":{"en":{"P571":"11 December 2013"}}}}' class='wbmi-entityview-statementsGroup wbmi-entityview-statementsGroup-P571 oo-ui-layout oo-ui-panelLayout oo-ui-panelLayout-framed'><div class='wbmi-statements-widget'><div class='wbmi-statement-header'><div class='wbmi-entity-data'><div class='wbmi-entity-title'><h4 class='wbmi-entity-label'><bdi><a target="_blank" title="d:Special:EntityPage/P571" href="https://www.wikidata.org/wiki/Special:EntityPage/P571">inception</a></bdi></h4></div></div></div><div class='wbmi-content-items-group'><div class='wbmi-item wbmi-item-read'><div data-guid='M30113059$D848D9DC-B537-4CA5-A115-738B4AE72CF9' class='wbmi-item-container'><div class='wbmi-entity-header'><div class='wbmi-entity-data'><div class='wbmi-entity-title'><h4 class='wbmi-entity-label'><bdi>11 December 2013</bdi></h4></div></div></div></div></div></div></div></div><div id='P7482' data-property='P7482' data-statements='[{"mainsnak":{"snaktype":"value","property":"P7482","datavalue":{"value":{"entity-type":"item","numeric-id":66458942,"id":"Q66458942"},"type":"wikibase-entityid"}},"type":"statement","id":"M30113059$9B3B8803-653E-45A6-BAF0-132695638B05","rank":"normal"}]' data-formatvalue='{"{\"value\":{\"entity-type\":\"property\",\"numeric-id\":7482,\"id\":\"P7482\"},\"type\":\"wikibase-entityid\"}":{"text\/html":{"en":{"":"&lt;a target=\"_blank\" title=\"d:Special:EntityPage\/P7482\" href=\"https:\/\/www.wikidata.org\/wiki\/Special:EntityPage\/P7482\"&gt;source of file&lt;\/a&gt;"}},"text\/plain":{"en":{"":"source of file"}}},"{\"value\":{\"entity-type\":\"item\",\"numeric-id\":66458942,\"id\":\"Q66458942\"},\"type\":\"wikibase-entityid\"}":{"text\/html":{"en":{"P7482":"&lt;a target=\"_blank\" title=\"d:Special:EntityPage\/Q66458942\" href=\"https:\/\/www.wikidata.org\/wiki\/Special:EntityPage\/Q66458942\"&gt;original creation by uploader&lt;\/a&gt;"}},"text\/plain":{"en":{"P7482":"original creation by uploader"}}}}' class='wbmi-entityview-statementsGroup wbmi-entityview-statementsGroup-P7482 oo-ui-layout oo-ui-panelLayout oo-ui-panelLayout-framed'><div class='wbmi-statements-widget'><div class='wbmi-statement-header'><div class='wbmi-entity-data'><div class='wbmi-entity-title'><h4 class='wbmi-entity-label'><bdi><a target="_blank" title="d:Special:EntityPage/P7482" href="https://www.wikidata.org/wiki/Special:EntityPage/P7482">source of file</a></bdi></h4></div></div></div><div class='wbmi-content-items-group'><div class='wbmi-item wbmi-item-read'><div data-guid='M30113059$9B3B8803-653E-45A6-BAF0-132695638B05' class='wbmi-item-container'><div class='wbmi-entity-header'><div class='wbmi-entity-data'><div class='wbmi-entity-title'><h4 class='wbmi-entity-label'><bdi><a target="_blank" title="d:Special:EntityPage/Q66458942" href="https://www.wikidata.org/wiki/Special:EntityPage/Q66458942">original creation by uploader</a></bdi></h4></div></div></div></div></div></div></div></div></div></div></div></div></div>
-<div class="printfooter">Retrieved from "<a dir="ltr" href="https://commons.wikimedia.org/w/index.php?title=File:Back_Arrow.svg&amp;oldid=477585514">https://commons.wikimedia.org/w/index.php?title=File:Back_Arrow.svg&amp;oldid=477585514</a>"</div></div>
-		<div id="catlinks" class="catlinks" data-mw="interface"><div id="mw-normal-catlinks" class="mw-normal-catlinks"><a href="/wiki/Special:Categories" title="Special:Categories">Category</a>: <ul><li><a href="/wiki/Category:SVG_encircled_arrow_icons" title="Category:SVG encircled arrow icons">SVG encircled arrow icons</a></li></ul></div><div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-user-shown">Hidden categories: <ul><li><a href="/wiki/Category:Invalid_SVG_created_with_Inkscape" title="Category:Invalid SVG created with Inkscape">Invalid SVG created with Inkscape</a></li><li><a href="/wiki/Category:Created_with_Inkscape-undef" title="Category:Created with Inkscape-undef">Created with Inkscape-undef</a></li><li><a href="/wiki/Category:PD_shape" title="Category:PD shape">PD shape</a></li></ul></div></div>
-	</div>
-</div>
-
-<div id="mw-navigation">
-	<h2>Navigation menu</h2>
-	<div id="mw-head">
-		<nav id="p-personal" class="mw-portlet mw-portlet-personal vector-user-menu-legacy vector-menu" aria-labelledby="p-personal-label" role="navigation" 
-	 >
-	<h3 id="p-personal-label" class="vector-menu-heading">
-		<span>Personal tools</span>
-	</h3>
-	<div class="vector-menu-content">
-		<ul class="vector-menu-content-list"><li id="pt-uls" class="active"><a href="#" class="uls-trigger">English</a></li><li id="pt-anonuserpage">Not logged in</li><li id="pt-anontalk"><a href="/wiki/Special:MyTalk" title="Discussion about edits from this IP address [n]" accesskey="n">Talk</a></li><li id="pt-anoncontribs"><a href="/wiki/Special:MyContributions" title="A list of edits made from this IP address [y]" accesskey="y">Contributions</a></li><li id="pt-createaccount"><a href="/w/index.php?title=Special:CreateAccount&amp;returnto=File%3ABack+Arrow.svg" title="You are encouraged to create an account and log in; however, it is not mandatory">Create account</a></li><li id="pt-login"><a href="/w/index.php?title=Special:UserLogin&amp;returnto=File%3ABack+Arrow.svg" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li></ul>
-		
-	</div>
-</nav>
-
-		<div id="left-navigation">
-			<nav id="p-namespaces" class="mw-portlet mw-portlet-namespaces vector-menu vector-menu-tabs" aria-labelledby="p-namespaces-label" role="navigation" 
-	 >
-	<h3 id="p-namespaces-label" class="vector-menu-heading">
-		<span>Namespaces</span>
-	</h3>
-	<div class="vector-menu-content">
-		<ul class="vector-menu-content-list"><li id="ca-nstab-image" class="selected"><a href="/wiki/File:Back_Arrow.svg" title="View the file page [c]" accesskey="c">File</a></li><li id="ca-talk" class="new"><a href="/w/index.php?title=File_talk:Back_Arrow.svg&amp;action=edit&amp;redlink=1" rel="discussion" title="Discussion about the content page (page does not exist) [t]" accesskey="t">Discussion</a></li></ul>
-		
-	</div>
-</nav>
-
-			<nav id="p-variants" class="mw-portlet mw-portlet-variants emptyPortlet vector-menu vector-menu-dropdown" aria-labelledby="p-variants-label" role="navigation" 
-	 >
-	<input type="checkbox" class="vector-menu-checkbox" aria-labelledby="p-variants-label" />
-	<h3 id="p-variants-label" class="vector-menu-heading">
-		<span>Variants</span>
-	</h3>
-	<div class="vector-menu-content">
-		<ul class="vector-menu-content-list"></ul>
-		
-	</div>
-</nav>
-
-		</div>
-		<div id="right-navigation">
-			<nav id="p-views" class="mw-portlet mw-portlet-views vector-menu vector-menu-tabs" aria-labelledby="p-views-label" role="navigation" 
-	 >
-	<h3 id="p-views-label" class="vector-menu-heading">
-		<span>Views</span>
-	</h3>
-	<div class="vector-menu-content">
-		<ul class="vector-menu-content-list"><li id="ca-view" class="selected"><a href="/wiki/File:Back_Arrow.svg">View</a></li><li id="ca-edit"><a href="/w/index.php?title=File:Back_Arrow.svg&amp;action=edit" title="Edit this page [e]" accesskey="e">Edit</a></li><li id="ca-history"><a href="/w/index.php?title=File:Back_Arrow.svg&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li></ul>
-		
-	</div>
-</nav>
-
-			<nav id="p-cactions" class="mw-portlet mw-portlet-cactions emptyPortlet vector-menu vector-menu-dropdown" aria-labelledby="p-cactions-label" role="navigation" 
-	 >
-	<input type="checkbox" class="vector-menu-checkbox" aria-labelledby="p-cactions-label" />
-	<h3 id="p-cactions-label" class="vector-menu-heading">
-		<span>More</span>
-	</h3>
-	<div class="vector-menu-content">
-		<ul class="vector-menu-content-list"></ul>
-		
-	</div>
-</nav>
-
-			<div id="p-search" role="search" >
-	<h3 >
-		<label for="searchInput">Search</label>
-	</h3>
-	<form action="/w/index.php" id="searchform">
-		<div id="simpleSearch" data-search-loc="header-navigation">
-			<input type="search" name="search" placeholder="Search Wikimedia Commons" autocapitalize="sentences" title="Search Wikimedia Commons [f]" accesskey="f" id="searchInput"/>
-			<input type="hidden" name="title" value="Special:Search"/>
-			<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton mw-fallbackSearchButton"/>
-			<input type="submit" name="go" value="Go" title="Go to a page with this exact name if it exists" id="searchButton" class="searchButton"/>
-		</div>
-	</form>
-</div>
-
-		</div>
-	</div>
-	
-<div id="mw-panel">
-	<div id="p-logo" role="banner">
-		<a class="mw-wiki-logo" href="/wiki/Main_Page"
-			title="Visit the main page"></a>
-	</div>
-	<nav id="p-navigation" class="mw-portlet mw-portlet-navigation vector-menu vector-menu-portal portal" aria-labelledby="p-navigation-label" role="navigation" 
-	 >
-	<h3 id="p-navigation-label" class="vector-menu-heading">
-		<span>Navigate</span>
-	</h3>
-	<div class="vector-menu-content">
-		<ul class="vector-menu-content-list"><li id="n-mainpage-description"><a href="/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li><li id="n-welcome"><a href="/wiki/Commons:Welcome">Welcome</a></li><li id="n-portal"><a href="/wiki/Commons:Community_portal" title="About the project, what you can do, where to find things">Community portal</a></li><li id="n-village-pump"><a href="/wiki/Commons:Village_pump">Village pump</a></li><li id="n-help"><a href="/wiki/Special:MyLanguage/Help:Contents" title="The place to find out">Help center</a></li></ul>
-		
-	</div>
-</nav>
-
-	<nav id="p-participate" class="mw-portlet mw-portlet-participate vector-menu vector-menu-portal portal" aria-labelledby="p-participate-label" role="navigation" 
-	 >
-	<h3 id="p-participate-label" class="vector-menu-heading">
-		<span>Participate</span>
-	</h3>
-	<div class="vector-menu-content">
-		<ul class="vector-menu-content-list"><li id="n-uploadbtn"><a href="/wiki/Special:UploadWizard">Upload file</a></li><li id="n-recentchanges"><a href="/wiki/Special:RecentChanges" title="A list of recent changes in the wiki [r]" accesskey="r">Recent changes</a></li><li id="n-latestfiles"><a href="/wiki/Special:NewFiles">Latest files</a></li><li id="n-randomimage"><a href="/wiki/Special:Random/File" title="Load a random file [x]" accesskey="x">Random file</a></li><li id="n-contact"><a href="/wiki/Commons:Contact_us">Contact us</a></li></ul>
-		
-	</div>
-</nav>
-<nav id="p-tb" class="mw-portlet mw-portlet-tb vector-menu vector-menu-portal portal" aria-labelledby="p-tb-label" role="navigation" 
-	 >
-	<h3 id="p-tb-label" class="vector-menu-heading">
-		<span>Tools</span>
-	</h3>
-	<div class="vector-menu-content">
-		<ul class="vector-menu-content-list"><li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/File:Back_Arrow.svg" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li><li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/File:Back_Arrow.svg" rel="nofollow" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li><li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li><li id="t-permalink"><a href="/w/index.php?title=File:Back_Arrow.svg&amp;oldid=477585514" title="Permanent link to this revision of the page">Permanent link</a></li><li id="t-info"><a href="/w/index.php?title=File:Back_Arrow.svg&amp;action=info" title="More information about this page">Page information</a></li><li id="t-wb-concept-uri"><a href="https://commons.wikimedia.org/entity/M30113059" title="URI that identifies the concept described by this Item">Concept URI</a></li><li id="t-cite"><a href="/w/index.php?title=Special:CiteThisPage&amp;page=File%3ABack_Arrow.svg&amp;id=477585514&amp;wpFormIdentifier=titleform" title="Information on how to cite this page">Cite this page</a></li></ul>
-		
-	</div>
-</nav>
-<nav id="p-electronpdfservice-sidebar-portlet-heading" class="mw-portlet mw-portlet-electronpdfservice-sidebar-portlet-heading vector-menu vector-menu-portal portal" aria-labelledby="p-electronpdfservice-sidebar-portlet-heading-label" role="navigation" 
-	 >
-	<h3 id="p-electronpdfservice-sidebar-portlet-heading-label" class="vector-menu-heading">
-		<span>Print/export</span>
-	</h3>
-	<div class="vector-menu-content">
-		<ul class="vector-menu-content-list"><li id="electron-print_pdf"><a href="/w/index.php?title=Special:DownloadAsPdf&amp;page=File%3ABack_Arrow.svg&amp;action=show-download-screen">Download as PDF</a></li><li id="t-print"><a href="javascript:print();" rel="alternate" title="Printable version of this page [p]" accesskey="p">Printable version</a></li></ul>
-		
-	</div>
-</nav>
-
-	
-</div>
-
-</div>
-<footer id="footer" class="mw-footer" role="contentinfo" >
-	<ul id="footer-info" >
-	<li id="footer-info-lastmod"> This page was last edited on 1 October 2020, at 18:47.</li>
-	<li id="footer-info-copyright">Files are available under licenses specified on their description page. All structured data from the file and property namespaces is available under the <a href="https://creativecommons.org/publicdomain/zero/1.0/" title="Definition of the Creative Commons CC0 License">Creative Commons CC0 License</a>; all unstructured text is available under the <a href="https://creativecommons.org/licenses/by-sa/3.0/" title="Definition of the Creative Commons Attribution/Share-Alike License">Creative Commons Attribution-ShareAlike License</a>;
-additional terms may apply.
-By using this site, you agree to the <a href="//foundation.wikimedia.org/wiki/Terms_of_Use" title="Wikimedia Foundation Terms of Use">Terms of Use</a> and the <a href="//foundation.wikimedia.org/wiki/Privacy_policy" title="Wikimedia Foundation Privacy Policy">Privacy Policy</a>.</li>
-</ul>
-
-	<ul id="footer-places" >
-	<li id="footer-places-privacy"><a href="https://foundation.wikimedia.org/wiki/Privacy_policy" class="extiw" title="wmf:Privacy policy">Privacy policy</a></li>
-	<li id="footer-places-about"><a href="/wiki/Commons:Welcome" title="Commons:Welcome">About Wikimedia Commons</a></li>
-	<li id="footer-places-disclaimer"><a href="/wiki/Commons:General_disclaimer" title="Commons:General disclaimer">Disclaimers</a></li>
-	<li id="footer-places-mobileview"><a href="//commons.m.wikimedia.org/w/index.php?title=File:Back_Arrow.svg&amp;mobileaction=toggle_view_mobile" class="noprint stopMobileRedirectToggle">Mobile view</a></li>
-	<li id="footer-places-developers"><a href="https://www.mediawiki.org/wiki/Special:MyLanguage/How_to_contribute">Developers</a></li>
-	<li id="footer-places-statslink"><a href="https://stats.wikimedia.org/#/commons.wikimedia.org">Statistics</a></li>
-	<li id="footer-places-cookiestatement"><a href="https://foundation.wikimedia.org/wiki/Cookie_statement">Cookie statement</a></li>
-</ul>
-
-	<ul id="footer-icons" class="noprint">
-	<li id="footer-copyrightico"><a href="https://wikimediafoundation.org/"><img src="/static/images/footer/wikimedia-button.png" srcset="/static/images/footer/wikimedia-button-1.5x.png 1.5x, /static/images/footer/wikimedia-button-2x.png 2x" width="88" height="31" alt="Wikimedia Foundation" loading="lazy" /></a></li>
-	<li id="footer-poweredbyico"><a href="https://www.mediawiki.org/"><img src="/static/images/footer/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" srcset="/static/images/footer/poweredby_mediawiki_132x47.png 1.5x, /static/images/footer/poweredby_mediawiki_176x62.png 2x" width="88" height="31" loading="lazy"/></a></li>
-</ul>
-
-</footer>
-
-
-<script>(RLQ=window.RLQ||[]).push(function(){mw.config.set({"wgPageParseReport":{"limitreport":{"cputime":"0.265","walltime":"0.369","ppvisitednodes":{"value":3191,"limit":1000000},"postexpandincludesize":{"value":30317,"limit":2097152},"templateargumentsize":{"value":3673,"limit":2097152},"expansiondepth":{"value":33,"limit":40},"expensivefunctioncount":{"value":4,"limit":500},"unstrip-depth":{"value":0,"limit":20},"unstrip-size":{"value":0,"limit":5000000},"entityaccesscount":{"value":1,"limit":400},"timingprofile":["100.00%  338.989      1 -total"," 90.72%  307.514      1 Template:Information"," 63.13%  213.995      1 Template:Igen"," 51.95%  176.111      1 Template:InFi"," 31.25%  105.930      1 Template:Created_with_Inkscape-undef"," 21.99%   74.559      3 Template:Autotranslate"," 17.59%   59.614      1 Template:SVGvalid"," 14.76%   50.047      1 Template:InvalidSVG"," 13.49%   45.717      2 Template:Created_with/layout"," 13.35%   45.271      1 Template:Invalid_SVG"]},"scribunto":{"limitreport-timeusage":{"value":"0.077","limit":"10.000"},"limitreport-memusage":{"value":1663837,"limit":52428800}},"cachereport":{"origin":"mw1269","timestamp":"20210602172657","ttl":1814400,"transientcontent":false}}});});</script>
-<script type="application/ld+json">{"@context":"https:\/\/schema.org","@type":"ImageObject","contentUrl":"https:\/\/upload.wikimedia.org\/wikipedia\/commons\/b\/b1\/Back_Arrow.svg","license":"https:\/\/commons.wikimedia.org\/wiki\/Help:Public_domain","acquireLicensePage":"\/\/commons.wikimedia.org\/wiki\/File:Back_Arrow.svg","uploadDate":"2013-12-11 21:55:11"}</script>
-<script>(RLQ=window.RLQ||[]).push(function(){mw.config.set({"wgBackendResponseTime":207,"wgHostname":"mw1262"});});</script>
-</body></html>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="20"
+   height="20"
+   id="svg3026"
+   version="1.1"
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="Neutral.svg">
+  <metadata
+     id="metadata3038">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs3036">
+    <linearGradient
+       id="linearGradient4006">
+      <stop
+         style="stop-color:#252525;stop-opacity:1;"
+         offset="0"
+         id="stop4008" />
+      <stop
+         style="stop-color:#4a4a4a;stop-opacity:1;"
+         offset="1"
+         id="stop4010" />
+    </linearGradient>
+  </defs>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1280"
+     inkscape:window-height="961"
+     id="namedview3034"
+     showgrid="true"
+     inkscape:zoom="26.304372"
+     inkscape:cx="11.841239"
+     inkscape:cy="6.8249439"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="g3028">
+    <inkscape:grid
+       type="xygrid"
+       id="grid3040" />
+  </sodipodi:namedview>
+  <g
+     id="g3028"
+     stroke-width="2.23"
+     stroke="#d40000">
+    <path
+       inkscape:connector-curvature="0"
+       id="path4003"
+       style="font-size:11.38508987000000000px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#1a1a1a;fill-opacity:1;stroke:none;font-family:Segoe UI Symbol;-inkscape-font-specification:Segoe UI Symbol"
+       d="m 1.731867,9.9956035 c 2e-5,0.7560365 0.09966,1.4842425 0.298902,2.1846165 0.199287,0.700357 0.477675,1.358232 0.835165,1.973627 0.357528,0.615372 0.786831,1.175079 1.287912,1.67912 0.501116,0.504017 1.057891,0.936251 1.67033,1.296703 0.612469,0.360426 1.270344,0.640279 1.973627,0.839561 0.703309,0.199253 1.432978,0.298886 2.18901,0.298901 0.756055,-1.5e-5 1.484259,-0.09965 2.184616,-0.298901 0.700375,-0.199282 1.355319,-0.479135 1.964834,-0.839561 0.609531,-0.360452 1.167773,-0.792686 1.674726,-1.296703 0.506965,-0.504041 0.940664,-1.063748 1.301099,-1.67912 0.360444,-0.615395 0.641762,-1.27327 0.843956,-1.973627 0.202201,-0.700374 0.3033,-1.42858 0.303296,-2.1846165 4e-6,-0.756049 -0.09963,-1.484254 -0.298901,-2.184615 -0.199263,-0.70037 -0.479116,-1.356779 -0.83956,-1.969231 -0.360435,-0.612454 -0.792669,-1.169231 -1.296704,-1.67033 -0.504022,-0.501098 -1.063729,-0.931867 -1.67912,-1.292307 -0.615377,-0.360439 -1.273251,-0.640292 -1.973626,-0.839561 -0.700357,-0.199264 -1.428561,-0.298899 -2.184616,-0.2989 -0.756032,10e-7 -1.485701,0.09964 -2.18901,0.2989 -0.703283,0.199269 -1.361158,0.477658 -1.973627,0.835165 -0.612439,0.357511 -1.169214,0.786814 -1.67033,1.287912 -0.501081,0.501099 -0.930384,1.05934 -1.287912,1.674726 -0.35749,0.615382 -0.635878,1.273256 -0.835165,1.973626 -0.199247,0.700361 -0.298882,1.428566 -0.298902,2.184615 z m 2.769231,0.035172 0,-0.035172 4.026374,-4.210988 2.918682,0 -3.068132,3.138462 6.672527,0 0,2.1802195 -6.672527,0 3.068132,3.138461 -2.918682,0 z M 0,9.9868115 c 2.0999981e-5,-0.90843 0.120171,-1.784619 0.360439,-2.628572 0.240315,-0.843958 0.58024,-1.636632 1.01978,-2.378021 0.43958,-0.741393 0.964123,-1.416851 1.573627,-2.026375 C 3.563387,2.3443225 4.238845,1.8197795 4.980218,1.3802185 5.721627,0.94065953 6.515765,0.60073453 7.362637,0.36043753 8.209538,0.12014953 9.087192,2.5255985e-6 9.995604,-4.7440151e-7 10.90404,2.5255985e-6 11.781694,0.12015453 12.628571,0.36043853 c 0.846895,0.240297 1.641033,0.577292 2.382418,1.01098997 0.741398,0.433701 1.41832,0.955312 2.030769,1.564835 0.612458,0.609524 1.138465,1.284982 1.578022,2.026374 0.439563,0.74139 0.77949,1.535528 1.01978,2.382416 0.240295,0.846883 0.360442,1.727468 0.36044,2.641759 2e-6,0.9084175 -0.120145,1.7860735 -0.36044,2.6329675 -0.24029,0.846877 -0.580217,1.641015 -1.01978,2.382417 -0.439557,0.74138 -0.965564,1.418303 -1.578022,2.03077 -0.612449,0.61244 -1.289371,1.138447 -2.030769,1.578022 -0.741385,0.439545 -1.535523,0.780937 -2.382418,1.024176 C 11.781694,19.878372 10.90404,19.999984 9.995604,20 9.087192,19.999984 8.209538,19.879837 7.362637,19.63956 6.515765,19.399252 5.721627,19.06079 4.980218,18.624176 4.238845,18.187531 3.563387,17.66299 2.953846,17.050549 2.344342,16.438082 1.819799,15.761159 1.380219,15.019779 0.940679,14.278377 0.600754,13.482774 0.360439,12.632967 0.120168,11.783143 2.0999981e-5,10.901091 0,9.9868125 z" />
+  </g>
+</svg>
