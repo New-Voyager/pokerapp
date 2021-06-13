@@ -268,7 +268,7 @@ class _GameOptionState extends State<GameOption> {
                       final gameSettingsBox = HiveDatasource.getInstance
                           .getBox(BoxType.GAME_SETTINGS);
                       gameSettingsBox.putAt(0, widget.gameState.gameSettings);
-                      log('In toggle button widget, gameSounds = ${widget.gameState.gameSettings.audioConf}');
+                      log('In toggle button widget, audioConf = ${widget.gameState.gameSettings.audioConf}');
                       setState(() {});
                     },
                   )
