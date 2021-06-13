@@ -265,6 +265,7 @@ class _GameOptionState extends State<GameOption> {
                     value: widget.gameState.gameSettings.audioConf,
                     onChange: (bool v) {
                       widget.gameState.gameSettings.audioConf = v;
+                      widget.gameState.janusEngine.joinLeaveAudioConference();
                       final gameSettingsBox = HiveDatasource.getInstance
                           .getBox(BoxType.GAME_SETTINGS);
                       gameSettingsBox.putAt(0, widget.gameState.gameSettings);
