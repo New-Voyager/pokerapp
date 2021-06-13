@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/pulsating_button.dart';
@@ -116,7 +117,7 @@ class _VoiceTextWidgetState extends State<VoiceTextWidget> {
                 child: Icon(
                   Icons.keyboard_voice,
                   size: 32,
-                  color: AppColors.appAccentColor,
+                  color: AppColorsNew.newGreenButtonColor,
                 ),
               ),
       ),

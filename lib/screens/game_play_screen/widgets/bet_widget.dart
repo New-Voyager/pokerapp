@@ -3,12 +3,14 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/player_action.dart';
 import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/pulsating_button.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/utils/numeric_keyboard.dart';
 import 'package:pokerapp/utils/numeric_keyboard2.dart';
 import 'package:provider/provider.dart';
 import 'package:sleek_circular_slider/sleek_circular_slider.dart';
+import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class BetWidget extends StatelessWidget {
   final Function onSubmitCallBack;
@@ -52,8 +54,10 @@ class BetWidget extends StatelessWidget {
                             shape: BoxShape.circle,
                           ),
                           child: IconButton(
-                            icon: Icon(Icons.remove_circle_rounded),
-                            color: Colors.blue,
+                            icon: Icon(
+                              Icons.remove_circle_rounded,
+                              color: AppColorsNew.newGreenButtonColor,
+                            ),
                             onPressed: () {
                               if (valueNotifierVal.value <=
                                   action.minRaiseAmount) return;
@@ -94,8 +98,8 @@ class BetWidget extends StatelessWidget {
                               children: [
                                 Consumer<ValueNotifier<double>>(
                                   builder: (_, vnVal, __) => Container(
-                                    width: 60,
-                                    height: 70,
+                                    width: 60.pw,
+                                    height: 74.ph,
                                     child: PulsatingCircleIconButton(
                                       onTap: () =>
                                           onSubmitCallBack?.call(vnVal.value),
@@ -110,7 +114,7 @@ class BetWidget extends StatelessWidget {
                                               vnVal.value,
                                             ),
                                             style: TextStyle(
-                                              fontSize: 12,
+                                              fontSize: 10.dp,
                                               color: Colors.white,
                                             ),
                                           ),
@@ -118,7 +122,7 @@ class BetWidget extends StatelessWidget {
                                           Text(
                                             "BET",
                                             style: TextStyle(
-                                              fontSize: 12,
+                                              fontSize: 10.dp,
                                               color: Colors.white,
                                             ),
                                           )
@@ -149,8 +153,8 @@ class BetWidget extends StatelessWidget {
                           child: IconButton(
                             icon: Icon(
                               Icons.add_circle_rounded,
+                              color: AppColorsNew.newGreenButtonColor,
                             ),
-                            color: Colors.blue,
                             onPressed: () {
                               if (valueNotifierVal.value >=
                                   action.maxRaiseAmount) return;
@@ -173,7 +177,7 @@ class BetWidget extends StatelessWidget {
                 child: Container(
                   alignment: Alignment.center,
                   width: width / 1.5,
-                  height: 65,
+                  height: 65.ph,
                   child: betAmountList(valueNotifierVal),
                 ),
               ),
@@ -195,7 +199,7 @@ class BetWidget extends StatelessWidget {
         max: action.maxRaiseAmount.toDouble(),
         initialValue: vnValue.value,
         appearance: CircularSliderAppearance(
-          size: 300,
+          size: 300.pw,
           // startAngle: 0,
           // angleRange: 275,
           startAngle: 215,
@@ -211,7 +215,7 @@ class BetWidget extends StatelessWidget {
           customColors: CustomSliderColors(
             hideShadow: false,
             trackColor: AppColors.lightGrayColor,
-            dotColor: AppColors.buttonBorderColor,
+            dotColor: AppColorsNew.newBorderColor,
             progressBarColors: [
               Colors.red,
               Colors.yellow,
@@ -250,18 +254,29 @@ class BetWidget extends StatelessWidget {
                       ? const EdgeInsets.fromLTRB(0, 4, 0, 0)
                       : const EdgeInsets.symmetric(vertical: 4),
                   decoration: BoxDecoration(
-                    //color: Colors.red,
-                    border: Border.all(color: Colors.white, width: 1.0),
-                    shape: BoxShape.circle,
-                    gradient: LinearGradient(
-                      // begin: Alignment.topRight,
-                      // end: Alignment.bottomLeft,
-                      colors: [
-                        Colors.indigo,
-                        Colors.cyan,
-                      ],
-                    ),
-                  ),
+                      //color: Colors.red,
+                      //  border: Border.all(color: Colors.white, width: 1.0),
+                      shape: BoxShape.circle,
+                      gradient: RadialGradient(
+                        // begin: Alignment.topRight,
+                        // end: Alignment.bottomLeft,
+                        colors: [
+                          AppColorsNew.newGreenRadialStartColor,
+                          AppColorsNew.newGreenRadialStopColor,
+                        ],
+                        stops: [
+                          0.2,
+                          0.8,
+                        ],
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColorsNew.newGreenButtonColor,
+                          offset: Offset(0, 1),
+                          blurRadius: 0.5,
+                          spreadRadius: 0.5,
+                        )
+                      ]),
                   child: isKeyboard
                       ? Icon(
                           Icons.keyboard,

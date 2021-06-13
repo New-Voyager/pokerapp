@@ -9,9 +9,11 @@ import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/boar
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/bet_widget.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_service.dart';
 import 'package:provider/provider.dart';
+import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 const shrinkedBox = const SizedBox.shrink(
   key: ValueKey('none'),
@@ -60,7 +62,7 @@ class _FooterActionViewState extends State<FooterActionView> {
       fontSize: 10.5,
       color: isSelected ? Colors.white : null,
     );
-    Color btnColor = AppColors.buttonBorderColor;
+    Color btnColor = AppColorsNew.newGreenButtonColor;
     if (disable) {
       btnColor = Colors.grey;
       btnTextStyle = AppStyles.disabledButtonTextStyle.copyWith(
@@ -71,25 +73,31 @@ class _FooterActionViewState extends State<FooterActionView> {
     final button = AnimatedContainer(
       duration: AppConstants.fastAnimationDuration,
       curve: Curves.bounceInOut,
-      height: 32.0,
-      width: 80.0,
+      height: 32.ph,
+      width: 80.pw,
       margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
       padding: const EdgeInsets.all(2.0),
       decoration: BoxDecoration(
-        color: isSelected ? AppColors.appAccentColor : Colors.transparent,
+        color: isSelected ? AppColorsNew.newActiveBoxColor : Colors.transparent,
         shape: BoxShape.rectangle,
         border: Border.all(
-          color: isSelected ? AppColors.appAccentColor : btnColor,
-          width: 2.0,
+          color: isSelected ? AppColorsNew.newActiveBoxColor : btnColor,
+          width: 1.0,
         ),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Center(
-        child: Text(
-          text.toUpperCase(),
-          textAlign: TextAlign.center,
-          style: btnTextStyle.copyWith(
-              color: isSelected ? Colors.white : AppColors.appAccentColor),
+        child: FittedBox(
+          fit: BoxFit.fitHeight,
+          child: Text(
+            text.toUpperCase(),
+            textAlign: TextAlign.center,
+            style: btnTextStyle.copyWith(
+                fontSize: 10.dp,
+                color: isSelected
+                    ? AppColorsNew.darkGreenShadeColor
+                    : AppColorsNew.newGreenButtonColor),
+          ),
         ),
       ),
     );
@@ -250,7 +258,7 @@ class _FooterActionViewState extends State<FooterActionView> {
           case CALL:
             return _buildRoundButton(
               text: playerAction.actionName +
-                  '\n' +
+                  ' ' +
                   playerAction.actionValue.toString(),
               onTap: () => _call(
                 playerAction.actionValue,
@@ -277,7 +285,7 @@ class _FooterActionViewState extends State<FooterActionView> {
 
     if ((!bet) && (!raise) && (allin != null)) {
       actionButtons.add(_buildRoundButton(
-        text: allin.actionName + '\n' + allin.actionValue.toString(),
+        text: allin.actionName + ' ' + allin.actionValue.toString(),
         onTap: () => _allIn(
           amount: allin.actionValue,
           context: context,

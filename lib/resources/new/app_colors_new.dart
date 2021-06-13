@@ -21,4 +21,5 @@ class AppColorsNew {
   static const Color newGreenButtonColor = Color(0xFF00FAAD);
   static const Color actionRowBgColor = Color(0xFF0B2324);
   static const Color darkGreenShadeColor = Color(0xFF0C2013);
+  static const Color yellowAccentColor = Color(0xFFD89E40);
 }
