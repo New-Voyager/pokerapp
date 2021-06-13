@@ -7,7 +7,9 @@ class AppColors {
 
   static const Color screenBackgroundColor = Color(0xff1c1c1c);
   static const Color widgetBackgroundColor = Color(0xff262626);
+  static const Color dividerColor = Color(0xffCD853F);
 
+  static const Color gameButtonBorderColor = Color(0xffFFA500);
   static const Color unselectedColor = Color(0xff878787);
 
   static const Color cardBackgroundColor = Color(0xff313235);

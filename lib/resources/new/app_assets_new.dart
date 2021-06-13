@@ -26,5 +26,5 @@ class AppAssetsNew {
 
   static var handHistoryPath = "assets/images/handhistory.svg";
 
-  static var lastHandPath="assets/images/lasthand.svg";
+  static var lastHandPath = "assets/images/lasthand.svg";
 }

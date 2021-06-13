@@ -20,6 +20,7 @@ import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
+import 'package:pokerapp/screens/game_play_screen/widgets/game_circle_button.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/icon_with_badge.dart';
 import 'package:pokerapp/services/app/player_service.dart';
 import 'package:pokerapp/services/firebase/push_notification_service.dart';
@@ -283,7 +284,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
             //log('myState.gameStatus = ${myState.gameStatus}, myState.status = ${myState.status}');
             return myState.gameStatus == GameStatus.RUNNING &&
                     myState.status == PlayerStatus.PLAYING
-                ? HandAnalysisCardView(
+                ? GameCircleButton(
                     onClickHandler: onClickViewHand,
                     imagePath: AppAssetsNew.lastHandPath,
                   )
@@ -291,7 +292,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
           }),
           Consumer<MyState>(builder: (context, myState, child) {
             return myState.gameStatus == GameStatus.RUNNING
-                ? HandAnalysisCardView(
+                ? GameCircleButton(
                     onClickHandler: onClickViewHandAnalysis,
                     imagePath: AppAssetsNew.handHistoryPath,
                   )
@@ -309,48 +310,15 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                     builder: (context, value, child) {
                       //  log("VALUE ======== ${value.totalPending}");
                       return IconWithBadge(
-                        child: Icon(
-                          Icons.pending_actions,
-                          size: 32.pw,
-                          color: AppColorsNew.newGreenButtonColor,
-                        ),
-                        count: value.totalPending,
-                        onClickFunction: onClickPendingBuyInApprovals,
-                      );
+                          count: value.totalPending,
+                          onClickFunction: onClickPendingBuyInApprovals,
+                          child: GameCircleButton(
+                            iconData: Icons.pending_actions,
+                          ));
                     },
                   );
           }),
         ],
-      ),
-    );
-  }
-}
-
-class HandAnalysisCardView extends StatelessWidget {
-  final VoidCallback onClickHandler;
-  final String imagePath;
-
-  const HandAnalysisCardView({
-    Key key,
-    @required this.onClickHandler,
-    @required this.imagePath,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onClickHandler,
-      child: Container(
-        margin: EdgeInsets.symmetric(
-          horizontal: 12,
-          vertical: 8,
-        ),
-        child: SvgPicture.asset(
-          imagePath,
-          height: 32.pw,
-          width: 32.pw,
-          // color: AppColorsNew.newGreenButtonColor,
-        ),
       ),
     );
   }

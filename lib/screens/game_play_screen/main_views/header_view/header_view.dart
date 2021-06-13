@@ -50,23 +50,23 @@ class HeaderView extends StatelessWidget {
                   /* main content view */
                   Column(
                     children: [
-                      RichText(
-                        text: TextSpan(
-                          text: "Game code ",
-                          style: TextStyle(
-                            color: AppColorsNew.newTextColor,
-                          ),
-                          children: [
-                            TextSpan(
-                                text: "$gameCode",
-                                style: TextStyle(
-                                  color: AppColorsNew.yellowAccentColor,
-                                  fontSize: 14.dp,
-                                  fontWeight: FontWeight.w500,
-                                ))
-                          ],
-                        ),
-                      ),
+                      // RichText(
+                      //   text: TextSpan(
+                      //     text: "Game code ",
+                      //     style: TextStyle(
+                      //       color: AppColorsNew.newTextColor,
+                      //     ),
+                      //     children: [
+                      //       TextSpan(
+                      //           text: "$gameCode",
+                      //           style: TextStyle(
+                      //             color: AppColorsNew.yellowAccentColor,
+                      //             fontSize: 12.dp,
+                      //             fontWeight: FontWeight.w500,
+                      //           ))
+                      //     ],
+                      //   ),
+                      // ),
                       RichText(
                         text: TextSpan(
                           text: "$title",
@@ -86,7 +86,7 @@ class HeaderView extends StatelessWidget {
                                 text: "#${obj.handNum}",
                                 style: TextStyle(
                                   color: AppColorsNew.yellowAccentColor,
-                                  fontSize: 14.dp,
+                                  fontSize: 8.dp,
                                   fontWeight: FontWeight.w500,
                                 ))
                           ],
