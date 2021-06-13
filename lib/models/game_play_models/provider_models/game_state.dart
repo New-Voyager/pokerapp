@@ -18,6 +18,9 @@ import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/app/handlog_cache_service.dart';
+import 'package:pokerapp/services/data/box_type.dart';
+import 'package:pokerapp/services/data/hive_datasource_impl.dart';
+import 'package:pokerapp/services/data/hive_models/game_settings.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:pokerapp/services/janus/janus.dart';
@@ -78,16 +81,16 @@ class GameState {
   List<PlayerInSeat> _hostSeatChangeSeats;
   bool hostSeatChangeInProgress;
 
-  bool gameSounds = false;
+  GameSettings gameSettings;
 
-  void initialize({
+  Future<void> initialize({
     String gameCode,
     @required GameInfoModel gameInfo,
     @required PlayerInfo currentPlayer,
     GameMessagingService gameMessagingService,
     List<PlayerInSeat> hostSeatChangeSeats,
     bool hostSeatChangeInProgress,
-  }) {
+  }) async {
     this._seats = Map<int, Seat>();
     this._gameInfo = gameInfo;
     this._gameCode = gameCode;
@@ -205,6 +208,19 @@ class GameState {
       this._myState.gameStatus = GameStatus.RUNNING;
       this._myState.notify();
     }
+
+    final gameSettingsBox =
+        HiveDatasource.getInstance.getBox(BoxType.GAME_SETTINGS);
+    if (gameSettingsBox.isEmpty) {
+      log('In GameState initialize(), gameSettingsBox is empty');
+      gameSettings =
+          GameSettings(gameCode, _gameInfo.playerMuckLosingHand, true, true);
+      await gameSettingsBox.add(gameSettings);
+    } else {
+      log('In GameState initialize(), getting gameSettings from gameSettingsBox');
+      gameSettings = gameSettingsBox.getAt(0);
+    }
+    log('In GameState initialize(), gameSettings = $gameSettings');
   }
 
   void setTappedSeatPos(BuildContext context, SeatPos seatPos, Seat seat,

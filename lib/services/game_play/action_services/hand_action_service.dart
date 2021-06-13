@@ -690,8 +690,8 @@ class HandActionService {
   }
 
   playSoundEffect(Uint8List value) {
-    log('In playSoundEffect(), gameSounds = ${_gameState.gameSounds}');
-    if (_gameState.gameSounds) {
+    log('In playSoundEffect(), gameSounds = ${_gameState..gameSettings.gameSound}');
+    if (_gameState.gameSettings.gameSound) {
       audioPlayer.playBytes(value);
     }
   }
@@ -1252,7 +1252,7 @@ class HandActionService {
     int highWinnersTimeInMs =
         lowWinners.isEmpty ? totalWaitTimeInMs : totalWaitTimeInMs ~/ 2;
     int lowWinnersTimeInMs = totalWaitTimeInMs ~/ 2;
-    if (gameState.gameSounds) {
+    if (gameState.gameSettings.gameSound) {
       gameState.getAudioBytes(AppAssets.applauseSound).then((value) {
         audioPlayer.playBytes(value);
       });

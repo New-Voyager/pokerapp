@@ -54,6 +54,7 @@ dependencies:
   get_it: ^6.1.1
   graphql_flutter: ^3.0.1
   hive: ^2.0.4
+  hive_flutter: ^1.0.0
   http: ^0.12.2
   in_app_purchase: ^0.5.2
   intl: ^0.16.1
@@ -77,17 +78,23 @@ dependencies:
 
 dependency_overrides:
   http: ^0.12.2
-  http_parser: ^3.1.1
+  http_parser: ^4.0.0
   plugin_platform_interface: ^1.0.1
   json_annotation: ^4.0.1
   uuid: ^3.0.4
   path_provider: ^1.6.24
   crypto: ^3.0.0
   mime: ^1.0.0
+  logging: ^1.0.1
+  file: ^6.1.1
+  convert: ^3.0.0
+  args: ^2.1.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  hive_generator: ^1.1.0
+  build_runner: ^2.0.4
 
 flutter:
   uses-material-design: true

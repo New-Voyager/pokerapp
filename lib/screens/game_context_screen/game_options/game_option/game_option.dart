@@ -13,6 +13,8 @@ import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_log_view.dart';
 import 'package:pokerapp/screens/game_screens/hand_history/hand_history.dart';
 import 'package:pokerapp/services/app/game_service.dart';
+import 'package:pokerapp/services/data/box_type.dart';
+import 'package:pokerapp/services/data/hive_datasource_impl.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'seat_change_bottom_sheet.dart';
 import 'waiting_list.dart';
@@ -247,18 +249,26 @@ class _GameOptionState extends State<GameOption> {
             ),
             _buildCheckBox(
               text: 'Game Sounds',
-              value: widget.gameState.gameSounds,
-              onChange: (bool v) {
-                widget.gameState.gameSounds = v;
-                log('gameSounds = ${widget.gameState.gameSounds}');
+              value: widget.gameState.gameSettings.gameSound,
+              onChange: (bool v) async {
+                widget.gameState.gameSettings.gameSound = v;
+                final gameSettingsBox =
+                    HiveDatasource.getInstance.getBox(BoxType.GAME_SETTINGS);
+                gameSettingsBox.putAt(0, widget.gameState.gameSettings);
+                log('In toggle button widget, gameSounds = ${widget.gameState.gameSettings.gameSound}');
                 setState(() {});
               },
             ),
             widget.gameState.gameInfo.audioConfEnabled
                 ? _buildCheckBox(
                     text: 'Audio Conference',
-                    value: false,
+                    value: widget.gameState.gameSettings.audioConf,
                     onChange: (bool v) {
+                      widget.gameState.gameSettings.audioConf = v;
+                      final gameSettingsBox = HiveDatasource.getInstance
+                          .getBox(BoxType.GAME_SETTINGS);
+                      gameSettingsBox.putAt(0, widget.gameState.gameSettings);
+                      log('In toggle button widget, gameSounds = ${widget.gameState.gameSettings.audioConf}');
                       setState(() {});
                     },
                   )
