@@ -6,12 +6,19 @@ class SwitchWidget extends StatelessWidget {
   final String label;
   final bool value;
   final void Function(bool b) onChange;
+  final bool disabled;
+
+  /* ui variables */
+  final bool useSpacer;
 
   SwitchWidget({
+    Key key,
     @required this.label,
     @required this.onChange,
     this.value = false,
-  });
+    this.useSpacer = true,
+    this.disabled = false,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) => ListenableProvider<ValueNotifier<bool>>(
@@ -19,21 +26,24 @@ class SwitchWidget extends StatelessWidget {
         child: Container(
           margin: const EdgeInsets.symmetric(vertical: 10.0),
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               /* label */
-              Expanded(
-                child: Text(
-                  label,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18.0,
-                  ),
+              Text(
+                label,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18.0,
                 ),
               ),
+
+              /* spacer */
+              useSpacer ? const Spacer() : const SizedBox(width: 20.0),
 
               /* switch */
               Consumer<ValueNotifier<bool>>(
                 builder: (_, vnValue, __) => FlutterSwitch(
+                  disabled: disabled,
                   activeTextColor: Colors.white,
                   inactiveTextColor: Colors.white,
                   activeSwitchBorder: Border.all(

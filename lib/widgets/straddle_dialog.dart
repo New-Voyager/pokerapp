@@ -1,24 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/resources/app_colors.dart';
-import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/widgets/switch_widget.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
-class StraddleDialog extends StatelessWidget {
-  /* returns [OPTION, VALUE] */
+class StraddleDialog extends StatefulWidget {
+  /* returns [OPTION, AUTO, VALUE] */
   static Future<List<bool>> show(BuildContext context) =>
       showDialog<List<bool>>(
         context: context,
         builder: (_) => StraddleDialog(),
       );
 
-  final List<bool> optionValue = [true, null];
+  @override
+  _StraddleDialogState createState() => _StraddleDialogState();
+}
+
+class _StraddleDialogState extends State<StraddleDialog> {
+  bool _option = true;
+  bool _auto = false;
+  bool _value;
 
   void _onValuePress(bool value, BuildContext context) {
-    optionValue[1] = value;
-    Navigator.pop(context, optionValue);
+    _value = value;
+    Navigator.pop(context, [_option, _auto, _value]);
   }
 
   Widget _buildButton({
@@ -75,10 +81,12 @@ class StraddleDialog extends StatelessWidget {
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               /* title */
               Text(
                 'Straddle?',
+                textAlign: TextAlign.left,
                 style: TextStyle(fontSize: 20.0),
               ),
 
@@ -87,9 +95,23 @@ class StraddleDialog extends StatelessWidget {
 
               /* option */
               SwitchWidget(
-                value: true,
+                value: _option,
                 label: 'Option:',
-                onChange: (bool newValue) => optionValue[0] = newValue,
+                onChange: (bool newValue) => setState(() {
+                  _option = newValue;
+                  if (_option == false) _auto = false;
+                }),
+                useSpacer: false,
+              ),
+
+              /* auto value */
+              SwitchWidget(
+                key: UniqueKey(),
+                disabled: !_option,
+                value: _auto,
+                label: 'Auto:',
+                onChange: (bool newValue) => _auto = newValue,
+                useSpacer: false,
               ),
 
               // sep
