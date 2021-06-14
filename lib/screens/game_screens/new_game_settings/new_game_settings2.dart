@@ -244,7 +244,7 @@ class NewGameSettings2 extends StatelessWidget {
                           value: gmp.blinds.bigBlind,
                           label: 'Big Blind',
                           minValue: 0.0,
-                          maxValue: 100,
+                          maxValue: 1000,
                           onChange: (value) {
                             gmp.bigBlind = value.toDouble();
                           },
@@ -260,7 +260,7 @@ class NewGameSettings2 extends StatelessWidget {
                           value: gmp.blinds.ante,
                           label: 'Ante',
                           minValue: 0.0,
-                          maxValue: 100,
+                          maxValue: 1000,
                           onChange: (value) {
                             gmp.ante = value.toDouble();
                           },
@@ -284,7 +284,7 @@ class NewGameSettings2 extends StatelessWidget {
                             label: 'min',
                             trailing: 'BB',
                             minValue: 0.0,
-                            maxValue: 100,
+                            maxValue: 1000,
                             onChange: (value) {
                               gmp.buyInMin = value;
                             },
@@ -302,7 +302,7 @@ class NewGameSettings2 extends StatelessWidget {
                             label: 'max',
                             trailing: 'BB',
                             minValue: 0.0,
-                            maxValue: 100,
+                            maxValue: 1000,
                             onChange: (value) {
                               gmp.buyInMax = value;
                             },
@@ -326,7 +326,7 @@ class NewGameSettings2 extends StatelessWidget {
                             small: true,
                             trailing: '%',
                             minValue: 0.0,
-                            maxValue: 100,
+                            maxValue: 1000,
                             onChange: (value) {
                               gmp.rakePercentage = value.toDouble();
                             },
@@ -343,7 +343,7 @@ class NewGameSettings2 extends StatelessWidget {
                             small: true,
                             leading: 'cap',
                             minValue: 0.0,
-                            maxValue: 100,
+                            maxValue: 1000,
                             onChange: (value) {
                               gmp.rakeCap = value;
                             },
