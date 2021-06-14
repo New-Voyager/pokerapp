@@ -83,11 +83,14 @@ class _FooterViewState extends State<FooterView>
             /* hole card view & footer action view */
             !me
                 ? Container(width: screenWidth, height: screenHeight / 3)
-                : HoleCardsViewAndFooterActionView(
-                    gameContext: widget.gameContext,
-                    playerModel: players.me,
-                    showActionWidget: actionState.show,
-                  ),
+                : Consumer<StraddlePromptState>(// rebuild based straddle prompt
+                    builder: (context, _, __) {
+                    return HoleCardsViewAndFooterActionView(
+                      gameContext: widget.gameContext,
+                      playerModel: players.me,
+                      showActionWidget: actionState.show,
+                    );
+                  }),
 
             /* communication widgets */
             Positioned(

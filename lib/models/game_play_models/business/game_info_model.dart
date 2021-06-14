@@ -31,6 +31,7 @@ class GameInfoModel {
   bool isHost;
   bool playerMuckLosingHand;
   bool playerRunItTwice;
+  bool utgStraddleAllowed;
 
   // nats channels
   String gameToPlayerChannel;
@@ -75,6 +76,7 @@ class GameInfoModel {
     this.bigBlind = data['bigBlind'];
     this.status = data['status'];
     this.tableStatus = data['tableStatus'];
+    this.utgStraddleAllowed = data['utgStraddleAllowed'] ?? true;
     this.availableSeats = data['seatInfo']['availableSeats']
         .map<int>((e) => int.parse(e.toString()))
         .toList();
@@ -132,6 +134,7 @@ class GameInfoModel {
       buyInMin
       smallBlind
       bigBlind
+      utgStraddleAllowed
       status
       tableStatus
       seatInfo {

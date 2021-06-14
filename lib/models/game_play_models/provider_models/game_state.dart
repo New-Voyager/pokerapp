@@ -49,6 +49,8 @@ class GameState {
   ListenableProvider<JanusEngine> _janusEngine;
   ListenableProvider<PopupButtonState> _popupButtonState;
   ListenableProvider<CommunicationState> _communicationStateProvider;
+  ListenableProvider<StraddlePromptState> _straddlePromptState;
+
   CommunicationState _communicationState;
 
   final Map<String, Uint8List> _audioCache = Map<String, Uint8List>();
@@ -73,10 +75,13 @@ class GameState {
   String _lastHand;
   Map<int, String> _playerIdsToNames = Map<int, String>();
   Map<int, List<int>> _myCards = Map<int, List<int>>();
+  bool straddlePrompt = false;
+
+  GameSettings settings = GameSettings();
 
   // host seat change state (only used when initialization)
-  List<PlayerInSeat> _hostSeatChangeSeats;
-  bool hostSeatChangeInProgress;
+  List<PlayerInSeat> _hostSeatChangeSeats = [];
+  bool hostSeatChangeInProgress = false;
 
   bool gameSounds = false;
 
@@ -137,6 +142,8 @@ class GameState {
     _communicationState = CommunicationState();
     this._communicationStateProvider = ListenableProvider<CommunicationState>(
         create: (_) => _communicationState);
+    this._straddlePromptState = ListenableProvider<StraddlePromptState>(
+        create: (_) => StraddlePromptState());
 
     this.janusEngine = JanusEngine(
         gameState: this,
@@ -193,7 +200,7 @@ class GameState {
       players: players,
     );
 
-    if (hostSeatChangeInProgress) {
+    if (hostSeatChangeInProgress ?? false) {
       log('host seat change is in progress');
       playersState.refreshWithPlayerInSeat(_hostSeatChangeSeats, notify: false);
     }
@@ -489,7 +496,8 @@ class GameState {
       this._connectionState,
       this._janusEngine,
       this._popupButtonState,
-      this._communicationStateProvider
+      this._communicationStateProvider,
+      this._straddlePromptState,
     ];
   }
 
@@ -621,6 +629,12 @@ class GameState {
       }
     }
     return _audioCache[assetFile];
+  }
+
+  StraddlePromptState straddlePromptState(BuildContext context) {
+    StraddlePromptState prompt =
+        Provider.of<StraddlePromptState>(context, listen: false);
+    return prompt;
   }
 }
 
@@ -804,4 +818,20 @@ class CommunicationState extends ChangeNotifier {
   void notify() {
     notifyListeners();
   }
+}
+
+class StraddlePromptState extends ChangeNotifier {
+  void notify() {
+    notifyListeners();
+  }
+}
+
+/**
+ * Stores the user change settings which is local to the player
+ */
+class GameSettings {
+  bool muckLosingHand = true;
+  bool straddleOption = true;
+  bool autoStraddle = false;
+  bool gameSounds = true;
 }

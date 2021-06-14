@@ -1,10 +1,14 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/resources/app_constants.dart';
+import 'package:pokerapp/services/game_play/action_services/hand_action_service.dart';
 import 'package:pokerapp/widgets/cards/hole_stack_card_view.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:pokerapp/widgets/straddle_dialog.dart';
@@ -37,7 +41,9 @@ class _HoleCardsViewAndFooterActionViewState
     extends State<HoleCardsViewAndFooterActionView> {
   bool _isCardVisible = false;
 
-  Widget _buildholeCardViewAndStraddleDialog(boardAttributes) => Builder(
+  Widget _buildholeCardViewAndStraddleDialog(GameState gameState,
+          BoardAttributesObject boardAttributes, bool straddlePrompt) =>
+      Builder(
         builder: (context) => Stack(
           alignment: Alignment.topCenter,
           children: [
@@ -54,13 +60,34 @@ class _HoleCardsViewAndFooterActionViewState
               child: Transform.scale(
                 scale: 0.80,
                 child: StraddleDialog(
-                  // TODO: ALL YOU WOULD CARE ABOUT IS THIS VALUE TO HIDE / SHOW THIS WIDGET
-                  straddlePrompt: true,
+                  straddlePrompt: straddlePrompt,
 
-                  // TODO: THIS CALLBACK WILL CONTAIN A LIST OF 3 ITEMS
                   onSelect: (List<bool> optionAutoValue) {
                     print(optionAutoValue);
 
+                    final straddleOption = optionAutoValue[0];
+                    final autoStraddle = optionAutoValue[1];
+                    final straddleChoice = optionAutoValue[2];
+                    if (straddleChoice != null) {
+                      gameState.straddlePrompt = false;
+                      final straddlePromptState =
+                          gameState.straddlePromptState(context);
+                      straddlePromptState.notify();
+
+                      if (straddleChoice == true) {
+                        // act now
+                        log('Player wants to straddle');
+                        HandActionService.takeAction(
+                          context: context,
+                          action: AppConstants.STRADDLE,
+                          amount: 2 * gameState.gameInfo.bigBlind,
+                        );
+                      } else {
+                        log('Player does not want to straddle');
+                        // show action buttons
+                        gameState.showAction(context, true);
+                      }
+                    }
                     // TODO: here you can change the value of straddlePrompt to hide this widget
                   },
                 ),
@@ -72,6 +99,8 @@ class _HoleCardsViewAndFooterActionViewState
 
   @override
   Widget build(BuildContext context) {
+    final gameState = GameState.getState(context);
+
     final boardAttributes = Provider.of<BoardAttributesObject>(
       context,
       listen: false,
@@ -83,7 +112,8 @@ class _HoleCardsViewAndFooterActionViewState
         children: [
           Align(
             alignment: Alignment.topCenter,
-            child: _buildholeCardViewAndStraddleDialog(boardAttributes),
+            child: _buildholeCardViewAndStraddleDialog(
+                gameState, boardAttributes, gameState.straddlePrompt),
           ),
 
           /* dark overlay to show in-front of cards, when the bet widget is displayed */
@@ -120,25 +150,37 @@ class _HoleCardsViewAndFooterActionViewState
     );
   }
 
-  Widget holeCardView(BuildContext context) => GestureDetector(
-        onTap: () {
-          setState(() => _isCardVisible = !_isCardVisible);
-        },
-        onLongPress: () {
-          setState(() => _isCardVisible = true);
-        },
-        onLongPressEnd: (_) {
-          setState(() => _isCardVisible = false);
-        },
-        child: cards(
-          playerFolded: widget.playerModel.playerFolded,
-          cardsInt: widget.playerModel?.cards,
-        ),
-      );
+  Widget holeCardView(BuildContext context) {
+    final gameState = GameState.getState(context);
+
+    Widget cardsWidget = cards(
+      playerFolded: widget.playerModel.playerFolded,
+      cardsInt: widget.playerModel?.cards,
+      straddlePrompt: gameState.straddlePrompt,
+    );
+    if (gameState.straddlePrompt) {
+      return cardsWidget;
+    }
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _isCardVisible = !_isCardVisible;
+        });
+      },
+      onLongPress: () {
+        setState(() => _isCardVisible = true);
+      },
+      onLongPressEnd: (_) {
+        setState(() => _isCardVisible = false);
+      },
+      child: cardsWidget,
+    );
+  }
 
   Widget cards({
     List<int> cardsInt,
     @required playerFolded,
+    bool straddlePrompt,
   }) {
     final List<CardObject> cards = cardsInt?.map(
           (int c) {
@@ -150,10 +192,14 @@ class _HoleCardsViewAndFooterActionViewState
         )?.toList() ??
         [];
 
+    bool cardVisible = _isCardVisible;
+    if (straddlePrompt) {
+      cardVisible = false;
+    }
     return HoleStackCardView(
       cards: cards,
       deactivated: playerFolded ?? false,
-      isCardVisible: _isCardVisible,
+      isCardVisible: cardVisible,
     );
   }
 }
