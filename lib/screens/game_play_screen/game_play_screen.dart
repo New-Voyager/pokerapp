@@ -3,6 +3,7 @@ import 'package:after_layout/after_layout.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:dart_nats/dart_nats.dart' as nats;
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:pokerapp/enums/game_status.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
@@ -11,6 +12,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/host_seat_chang
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/player_info.dart';
+import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/game_context_screen/game_chat/game_chat.dart';
@@ -592,18 +594,26 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
                               /* divider that divides the board view and the footer */
                               Divider(
-                                color: Colors.amberAccent,
+                                color: AppColors.dividerColor,
                                 thickness: 3,
                               ),
 
                               // footer section
                               Expanded(
-                                child: FooterView(
-                                  this._gameContextObj,
-                                  widget.gameCode,
-                                  _currentPlayer.uuid,
-                                  () => toggleChatVisibility(context),
-                                  _gameInfoModel.clubCode,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                      image: AssetImage("assets/images/bottom_pattern.png"),
+                                      fit: BoxFit.fill,
+                                    ),
+                                  ),
+                                  child: FooterView(
+                                    this._gameContextObj,
+                                    widget.gameCode,
+                                    _currentPlayer.uuid,
+                                    () => toggleChatVisibility(context),
+                                    _gameInfoModel.clubCode,
+                                  ),
                                 ),
                               ),
                             ],

@@ -10,6 +10,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
+import 'package:pokerapp/screens/game_play_screen/widgets/game_circle_button.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/pulsating_button.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/voice_text_widget.dart';
 
@@ -61,20 +62,10 @@ class _CommunicationViewState extends State<CommunicationView> {
                 }
 
                 children.add(
-                  GestureDetector(
-                    onTap: widget.chatVisibilityChange,
-                    child: Container(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                      child: Icon(
-                        Icons.chat,
-                        size: 30.pw,
-                        color: AppColorsNew.newGreenButtonColor,
-                      ),
-                    ),
-                  ),
+                  GameCircleButton(
+                      onClickHandler: widget.chatVisibilityChange,
+                      iconData: Icons.chat),
                 );
-
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: children,

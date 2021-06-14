@@ -69,7 +69,7 @@ class HeaderView extends StatelessWidget {
                                 text: "#${obj.handNum}",
                                 style: TextStyle(
                                   color: AppColorsNew.yellowAccentColor,
-                                  fontSize: 14.dp,
+                                  fontSize: 8.dp,
                                   fontWeight: FontWeight.w500,
                                 ))
                           ],
