@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/game_play_models/business/game_chat_notfi_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/resources/app_colors.dart';
@@ -11,13 +12,18 @@ import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:pokerapp/widgets/emoji_picker_widget.dart';
 import 'package:provider/provider.dart';
 
+// FIXME: THIS NEEDS TO BE CHANGED AS PER DEVICE CONFIG
+const kScrollOffsetPosition = 40.0;
+
 class GameChat extends StatefulWidget {
+  final BuildContext parentContext;
   final GameMessagingService chatService;
   final Function onChatVisibilityChange;
 
   GameChat({
     @required this.chatService,
     @required this.onChatVisibilityChange,
+    @required this.parentContext,
   });
 
   @override
@@ -33,12 +39,18 @@ class _GameChatState extends State<GameChat> {
   int myID = -1;
 
   void _onMessage() {
-    setState(() {});
-    _scrollController.animateTo(
-      0.0,
-      curve: Curves.easeOut,
-      duration: const Duration(milliseconds: 300),
-    );
+    if (mounted) {
+      // refresh state
+      setState(() {});
+
+      /* if user is scrolled away, we need to notify */
+      if (_scrollController.offset > kScrollOffsetPosition) {
+        print('scroll offset: ${_scrollController.offset}');
+        context.read<GameChatNotifState>().addUnread();
+      }
+    } else {
+      widget.parentContext?.read<GameChatNotifState>()?.addUnread();
+    }
   }
 
   void _init() {
@@ -48,11 +60,22 @@ class _GameChatState extends State<GameChat> {
       onText: (ChatMessage _) => _onMessage(),
       onGiphy: (ChatMessage _) => _onMessage(),
     );
+
+    _scrollController.addListener(() {
+      if (_scrollController.offset < kScrollOffsetPosition) {
+        context.read<GameChatNotifState>().readAll();
+      }
+    });
   }
 
   @override
   void initState() {
     super.initState();
+
+    // mark all the messages as read pot frame building
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      context.read<GameChatNotifState>().readAll();
+    });
 
     _init();
   }
@@ -76,12 +99,23 @@ class _GameChatState extends State<GameChat> {
     );
   }
 
+  void _scrollToBottom() {
+    if (_scrollController.hasClients)
+      _scrollController.animateTo(
+        0.0,
+        curve: Curves.easeOut,
+        duration: const Duration(milliseconds: 300),
+      );
+  }
+
   void _onGifClick() async {
     await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       builder: (_) => GameGiphies(chatService),
     );
+
+    _scrollToBottom();
   }
 
   void _onSendClick() {
@@ -93,6 +127,9 @@ class _GameChatState extends State<GameChat> {
     chatService.sendText(text);
 
     _textEditingController.clear();
+
+    /* when current user sends any message, scroll to the bottom */
+    _scrollToBottom();
   }
 
   Widget _buildCloseButton() {
@@ -260,6 +297,39 @@ class _GameChatState extends State<GameChat> {
     );
   }
 
+  Widget _buildNewMessageNotifier() => Consumer<GameChatNotifState>(
+        builder: (_, gcns, __) => gcns.hasUnreadMessages
+            ? InkWell(
+                onTap: _scrollToBottom,
+                child: Align(
+                  alignment: Alignment.topCenter,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.arrow_downward_rounded,
+                        color: Colors.red,
+                        size: 20.0,
+                      ),
+
+                      // sep
+                      const SizedBox(width: 5.0),
+
+                      Text(
+                        '${gcns.count} new message',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.red,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              )
+            : const SizedBox.shrink(),
+      );
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -273,8 +343,16 @@ class _GameChatState extends State<GameChat> {
           /* sep */
           const SizedBox(height: 5.0),
 
-          /* close button */
-          _buildCloseButton(),
+          /* top widgets, new message notifier & close button */
+          Stack(
+            children: [
+              /* new message notifier */
+              _buildNewMessageNotifier(),
+
+              /* close button */
+              _buildCloseButton(),
+            ],
+          ),
 
           /* main message area */
           _buildMessageArea(),

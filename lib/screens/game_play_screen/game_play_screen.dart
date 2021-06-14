@@ -368,14 +368,14 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
   Widget _buildChatWindow(BuildContext context) =>
       Consumer<ValueNotifier<bool>>(
-        builder: (_, vnChatVisibility, __) => AnimatedSwitcher(
+        builder: (context, vnChatVisibility, __) => AnimatedSwitcher(
           duration: const Duration(milliseconds: 200),
           child: vnChatVisibility.value
               ? Align(
                   alignment: Alignment.bottomCenter,
                   child: GameChat(
-                    chatService:
-                        this._gameContextObj.gameComService.gameMessaging,
+                    parentContext: context,
+                    chatService: _gameContextObj.gameComService.gameMessaging,
                     onChatVisibilityChange: () => toggleChatVisibility(context),
                   ),
                 )
@@ -604,7 +604,8 @@ class _GamePlayScreenState extends State<GamePlayScreen>
                                   decoration: BoxDecoration(
                                     image: DecorationImage(
                                       image: AssetImage(
-                                          "assets/images/bottom_pattern.png"),
+                                        "assets/images/bottom_pattern.png",
+                                      ),
                                       fit: BoxFit.fill,
                                     ),
                                   ),
