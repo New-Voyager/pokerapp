@@ -1,16 +1,21 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/services/app/game_service.dart';
+import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/widgets/custom_text_button.dart';
+import 'package:pokerapp/widgets/radio_list_widget.dart';
+import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class SeatChangeConfirmationPopUp {
   static void dialog(
           {BuildContext context,
           String gameCode,
           int promptSecs,
-          int openedSeat}) =>
+          int openedSeat,
+          List<int> openSeats}) =>
       showGeneralDialog(
         barrierLabel: "Label",
         barrierDismissible: false,
@@ -21,18 +26,19 @@ class SeatChangeConfirmationPopUp {
           return Align(
             alignment: Alignment.bottomCenter,
             child: Container(
-              height: 150,
+              height: 300.pw,
+              width: 350.pw,
               margin: EdgeInsets.only(bottom: 50, left: 12, right: 12),
               decoration: BoxDecoration(
                 color: Colors.black,
                 borderRadius: BorderRadius.circular(40),
-                border: Border.all(color: Colors.white),
+                border: Border.all(color: AppColors.dialogBorderColor),
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(40),
                 child: Scaffold(
                   body: _SeatChangeConfirmationPopUpWidget(
-                      gameCode, promptSecs, openedSeat, () {
+                      gameCode, promptSecs, openedSeat, openSeats, () {
                     Navigator.pop(context);
                   }),
                   backgroundColor: Colors.black,
@@ -56,13 +62,14 @@ class _SeatChangeConfirmationPopUpWidget extends StatelessWidget {
   final int promptSecs;
   final Function onTimerExpired;
   final int openedSeat;
-  _SeatChangeConfirmationPopUpWidget(
-      this.gameCode, this.promptSecs, this.openedSeat, this.onTimerExpired);
+  final List<int> openSeats;
+  _SeatChangeConfirmationPopUpWidget(this.gameCode, this.promptSecs,
+      this.openedSeat, this.openSeats, this.onTimerExpired);
 
-  void _confirm(BuildContext context) async {
+  void _confirm(BuildContext context, int selectedSeat) async {
     /* call confirmSeatChange mutation */
     log('Player confirmed to make seat change');
-    await GameService.confirmSeatChange(gameCode, openedSeat);
+    await GameService.confirmSeatChange(gameCode, selectedSeat);
     Navigator.pop(context);
   }
 
@@ -74,6 +81,14 @@ class _SeatChangeConfirmationPopUpWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    log('Seat Change: open seats: $openSeats');
+    String title = 'A seat is open. Select a seat to switch.';
+    if (this.openSeats.length > 1) {
+      title =
+          '${this.openSeats.length} seats are open. Select a seat to switch.';
+    }
+    int selectedSeat = this.openSeats[0];
+
     return Container(
       padding: EdgeInsets.symmetric(
         horizontal: 10.0,
@@ -81,24 +96,36 @@ class _SeatChangeConfirmationPopUpWidget extends StatelessWidget {
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+        //crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            'A seat is open. Do you want to change?',
+            title,
             textAlign: TextAlign.center,
             style: AppStyles.titleTextStyle.copyWith(
-              fontSize: 20.0,
+              fontSize: 16.dp,
             ),
           ),
           const SizedBox(
             height: 10.0,
           ),
+          Center(
+              child: RadioListWidget(
+            defaultValue: selectedSeat,
+            values: this.openSeats,
+            onSelect: (int value) {
+              selectedSeat = value;
+            },
+          )),
           Row(
             children: [
               Expanded(
                 child: CountDownTextButton(
                   text: 'Confirm',
-                  onTap: () => _confirm(context),
+                  onTap: () {
+                    log('Seat change: Selected seat: $selectedSeat');
+                    _confirm(context, selectedSeat);
+                  },
                   time: promptSecs,
                   onTimerExpired: onTimerExpired,
                 ),

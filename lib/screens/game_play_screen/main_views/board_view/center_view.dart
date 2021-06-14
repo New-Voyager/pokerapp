@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
@@ -91,12 +92,14 @@ class CenterView extends StatelessWidget {
         tableStatus == AppConstants.WAITING_TO_BE_STARTED) {
       return Transform.translate(
         offset: boardAttributes.centerViewButtonVerticalTranslate,
-        child: CenterButtonView(
-          gameCode: this.gameCode,
-          isHost: this.isHost,
-          gameStatus: this.gameStatus,
-          tableStatus: this.tableStatus,
-          onStartGame: this.onStartGame,
+        child: Consumer<SeatChangeNotifier>(
+          builder: (_, SeatChangeNotifier seatChange, __) => CenterButtonView(
+            gameCode: this.gameCode,
+            isHost: this.isHost,
+            gameStatus: this.gameStatus,
+            tableStatus: this.tableStatus,
+            onStartGame: this.onStartGame,
+          ),
         ),
       );
     }

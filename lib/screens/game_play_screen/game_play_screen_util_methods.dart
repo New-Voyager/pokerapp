@@ -57,6 +57,16 @@ class GamePlayScreenUtilMethods {
             color: Colors.white,
           ),
           backgroundColor: Colors.red,
+          label: 'Seat Change Prompt',
+          onTap: () => TestService.showSeatChangePrompt(),
+        ),
+
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
           label: 'Buyin Test',
           onTap: () => TestService.buyInTest(),
         ),

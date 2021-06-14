@@ -113,7 +113,8 @@ class _FooterViewState extends State<FooterView>
               ) =>
                   (hostSeatChange.seatChangeInProgress ||
                               gameState.hostSeatChangeInProgress) &&
-                          gameContextObject.isHost()
+                          gameContextObject.isHost() &&
+                          !gameState.playerSeatChangeInProgress
                       ? Align(
                           alignment: Alignment.center,
                           child: SeatChangeConfirmWidget(
