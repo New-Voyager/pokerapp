@@ -22,7 +22,11 @@ class Alerts {
     ));
   }
 
-  static void showTextNotification({@required String text}) {
+  static void showTextNotification(
+      {@required String text, duration: Duration}) {
+    if (duration == null) {
+      duration = Duration(milliseconds: 1500);
+    }
     showSimpleNotification(
       Text(
         text,
@@ -34,6 +38,7 @@ class Alerts {
       ),
       background: AppColorsNew.darkGreenShadeColor,
       position: NotificationPosition.top,
+      duration: duration,
     );
   }
 }

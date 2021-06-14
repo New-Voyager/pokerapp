@@ -792,13 +792,16 @@ class TestService {
 
   static void showSeatChangePrompt() async {
     final gameState = GameState.getState(_context);
-    final seat5 = gameState.getSeat(_context, 5);
-    seat5.player = null;
-    seat5.notify();
+    final seat1 = gameState.getSeat(_context, 1);
+    seat1.player = null;
+    seat1.notify();
     gameState.playerSeatChangeInProgress = true;
 
     SeatChangeConfirmationPopUp.dialog(
-        context: _context, gameCode: 'test', promptSecs: 10);
+        context: _context,
+        gameCode: 'test',
+        promptSecs: 300,
+        openSeats: [3, 4]);
   }
 
   static void showKeyboard() async {

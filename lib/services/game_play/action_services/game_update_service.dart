@@ -22,6 +22,7 @@ import 'package:pokerapp/screens/game_play_screen/widgets/overlay_notification.d
 import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/game_play/graphql/seat_change_service.dart';
+import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:provider/provider.dart';
 import 'package:pokerapp/screens/game_play_screen/game_play_screen_util_methods.dart';
@@ -884,29 +885,45 @@ class GameUpdateService {
         "playerName": "yong",
         "playerId": 630,
         "openedSeat": 4,
-        "playerUuid": "c2dc2c3d-13da-46cc-8c66-caa0c77459de",
+        "playerUuid": " ",
         "expTime": "2021-05-29T22:46:13.000Z",
         "promptSecs": 10,
         "requestId": "SEATCHANGE:1622328363754"
       }    
     */
+    _gameState.playerSeatChangeInProgress = true;
+    // we are in seat change
+    Provider.of<SeatChangeNotifier>(
+      _context,
+      listen: false,
+    )..updateSeatChangeInProgress(true);
+    _gameState.refresh(_context);
 
     final playerId = data['playerId'];
     final player = _gameState.getSeatByPlayer(playerId);
+    log('Seat Change: Prompt player ${player.player.name}');
     final promptSecs = int.parse(data['promptSecs'].toString());
     final openedSeat = int.parse(data['openedSeat'].toString());
-    final gameState = GameState.getState(_context);
-    gameState.playerSeatChangeInProgress = true;
-    gameState.seatChangeSeat = openedSeat;
-    final seat = _gameState.getSeat(_context, openedSeat);
-    seat.notify();
+    final openSeats = await GameService.getOpenSeats(_gameState.gameCode);
+    for (final seatNo in openSeats) {
+      final seat = _gameState.getSeat(_context, seatNo);
+      if (seat != null) {
+        seat.notify();
+      }
+    }
 
+    if (!player.isMe && player != null && player.player != null) {
+      Alerts.showTextNotification(
+          duration: Duration(milliseconds: 5000),
+          text: '${player.player.name} is prompted to switch to an open seat');
+    }
     // is it sent to me ??
     if (player.isMe) {
       SeatChangeConfirmationPopUp.dialog(
           context: _context,
           gameCode: _gameState.gameCode,
           openedSeat: openedSeat,
+          openSeats: openSeats,
           promptSecs: promptSecs);
     }
     final ValueNotifier<GeneralNotificationModel> valueNotifierNotModel =
@@ -959,6 +976,7 @@ class GameUpdateService {
 
     /* wait for the animation to finish */
     await Future.delayed(AppConstants.seatChangeAnimationDuration);
+    _gameState.refresh(_context);
 
     // we refresh, when we get the PLAYER_SEAT_CHANGE_DONE message
   }
@@ -976,6 +994,12 @@ class GameUpdateService {
         "requestId": "SEATMOVE:1622328379110"
       }    
     */
+    // we are in seat change
+    Provider.of<SeatChangeNotifier>(
+      _context,
+      listen: false,
+    )..updateSeatChangeInProgress(false);
+
     log('Seat change done');
     // refresh the table
     _gameState.refresh(_context);
