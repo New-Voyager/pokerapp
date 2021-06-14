@@ -7,6 +7,8 @@ import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart
 import 'package:pokerapp/models/option_item_model.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/resources/new/app_strings_new.dart';
+import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/club_screen/club_games_page_view.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 
@@ -40,24 +42,33 @@ class _GameOptionsState extends State<GameOptionsBottomSheet> {
     width = MediaQuery.of(context).size.width;
     final currentPlayer = widget.gameState.currentPlayer;
     return Container(
-      color: Colors.black,
+      decoration: AppStylesNew.BgGreenRadialGradient,
       height: height / 2,
       child: Column(
         mainAxisSize: MainAxisSize.max,
         children: [
+          // Container(
+          //   padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          //   height: 105,
+          //   child: ListView.builder(
+          //     scrollDirection: Axis.horizontal,
+          //     itemCount: items.length,
+          //     itemBuilder: (context, index) {
+          //       return optionItem(items[index], index);
+          //     },
+          //   ),
+          // ),
+
           Container(
-            height: 105,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: items.length,
-              itemBuilder: (context, index) {
-                return optionItem(items[index], index);
-              },
+            padding: EdgeInsets.symmetric(vertical: 16),
+            child: Text(
+              AppStringsNew.gameOptionsText,
+              style: AppStylesNew.appBarTitleTextStyle,
             ),
           ),
 
-          /* divider */
-          const SizedBox(height: 15.0),
+          // /* divider */
+          // const SizedBox(height: 15.0),
 
           /* build other options */
           Expanded(

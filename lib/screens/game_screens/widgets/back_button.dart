@@ -42,7 +42,7 @@ class CustomAppBar extends AppBar {
             children: [
               Text(
                 titleText ?? "",
-                style: AppStylesNew.AppBarTitleTextStyle,
+                style: AppStylesNew.appBarTitleTextStyle,
                 textAlign: TextAlign.center,
               ),
               Visibility(

@@ -4,9 +4,18 @@ import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class AppStylesNew {
-  static const TextStyle AppBarTitleTextStyle = TextStyle(
+  static final labelTextStyle = TextStyle(
+    color: Color(0xff848484),
+    fontSize: 10.dp,
+  );
+  static final valueTextStyle = TextStyle(
+    color: AppColorsNew.newTextColor,
+    fontSize: 12.dp,
+    fontWeight: FontWeight.w600,
+  );
+  static final TextStyle appBarTitleTextStyle = TextStyle(
     fontFamily: AppAssetsNew.fontFamilyPoppins,
-    fontSize: 18,
+    fontSize: 12.dp,
     fontWeight: FontWeight.w500,
   );
 
@@ -209,11 +218,11 @@ class AppStylesNew {
     color: AppColorsNew.newTextColor,
   );
 
-  static final valueTextStyle = TextStyle(
-    fontSize: 14,
-    fontWeight: FontWeight.w500,
-    color: AppColorsNew.newTextColor,
-  );
+  // static final valueTextStyle = TextStyle(
+  //   fontSize: 14,
+  //   fontWeight: FontWeight.w500,
+  //   color: AppColorsNew.newTextColor,
+  // );
 
   static final actionRowDecoration = BoxDecoration(
     color: AppColorsNew.actionRowBgColor,

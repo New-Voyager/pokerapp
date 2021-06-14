@@ -128,6 +128,12 @@ class HeaderView extends StatelessWidget {
                         await showModalBottomSheet(
                           context: context,
                           isScrollControlled: true,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(32),
+                              topRight: Radius.circular(32),
+                            ),
+                          ),
                           builder: (_) => GameOptionsBottomSheet(
                             GameState.getState(context),
                           ),

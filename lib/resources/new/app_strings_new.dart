@@ -34,4 +34,12 @@ class AppStringsNew {
   static const HighHandlogTitle = "High Handlog";
   static const HandlogTitle = "Hand Log";
   static const SummaryText = "Summary";
+
+  static const String gameOptionsText = "Game Options";
+
+  static const String gameEndNotificationText = "The game will end after this hand";
+  static const String leaveGameNotificationText = "You will standup after this hand";
+    static const String breakGameNotificationText = "Take break after this hand";
+  static const String pauseGameNotificationText = "The game will pause after this hand";
+
 }
