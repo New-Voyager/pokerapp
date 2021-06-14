@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/resources/app_constants.dart';
@@ -27,9 +28,11 @@ class CenterButtonView extends StatelessWidget {
     GameService.resumeGame(gameCode);
   }
 
-  void _onTerminatePress() {
+  Future<void> _onTerminatePress() async {
     log('Termininating game $gameCode');
     GameService.endGame(gameCode);
+    final gameBox = await Hive.openBox(gameCode);
+    gameBox.deleteFromDisk();
   }
 
   void _onRearrangeSeatsPress(context) {

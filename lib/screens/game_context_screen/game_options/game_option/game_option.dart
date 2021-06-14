@@ -1,7 +1,9 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/hand_history_model.dart';
@@ -14,6 +16,7 @@ import 'package:pokerapp/screens/club_screen/hand_log_views/hand_log_view.dart';
 import 'package:pokerapp/screens/game_screens/hand_history/hand_history.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/data/box_type.dart';
+import 'package:pokerapp/services/data/game_box_keys.dart';
 import 'package:pokerapp/services/data/hive_datasource_impl.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'seat_change_bottom_sheet.dart';
@@ -252,9 +255,9 @@ class _GameOptionState extends State<GameOption> {
               value: widget.gameState.gameSettings.gameSound,
               onChange: (bool v) async {
                 widget.gameState.gameSettings.gameSound = v;
-                final gameSettingsBox =
-                    HiveDatasource.getInstance.getBox(BoxType.GAME_SETTINGS);
-                gameSettingsBox.putAt(0, widget.gameState.gameSettings);
+                final gameBox = await Hive.openBox(gameCode);
+                gameBox.put(GameBoxKeys.GAME_SETTINGS.value(),
+                    jsonEncode(widget.gameState.gameSettings));
                 log('In toggle button widget, gameSounds = ${widget.gameState.gameSettings.gameSound}');
                 setState(() {});
               },
@@ -263,12 +266,12 @@ class _GameOptionState extends State<GameOption> {
                 ? _buildCheckBox(
                     text: 'Audio Conference',
                     value: widget.gameState.gameSettings.audioConf,
-                    onChange: (bool v) {
+                    onChange: (bool v) async {
                       widget.gameState.gameSettings.audioConf = v;
                       widget.gameState.janusEngine.joinLeaveAudioConference();
-                      final gameSettingsBox = HiveDatasource.getInstance
-                          .getBox(BoxType.GAME_SETTINGS);
-                      gameSettingsBox.putAt(0, widget.gameState.gameSettings);
+                      final gameBox = await Hive.openBox(gameCode);
+                      gameBox.put(GameBoxKeys.GAME_SETTINGS.value(),
+                          jsonEncode(widget.gameState.gameSettings));
                       log('In toggle button widget, audioConf = ${widget.gameState.gameSettings.audioConf}');
                       setState(() {});
                     },

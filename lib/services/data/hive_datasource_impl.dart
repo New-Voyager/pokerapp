@@ -24,7 +24,6 @@ class HiveDatasource implements IDatasource {
   Future<void> init() async {
     Directory dir = await getApplicationDocumentsDirectory();
     await Hive.initFlutter(dir.path);
-    Hive.registerAdapter(GameSettingsAdapter());
 
     /* open boxes */
     /* open every boxes mentioned in the boxtype enum */

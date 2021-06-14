@@ -1,25 +1,27 @@
-import 'package:hive/hive.dart';
+import 'dart:convert';
 
-part 'game_settings.g.dart';
-
-// typeId should be unique for each model class
-@HiveType(typeId: 0)
-class GameSettings extends HiveObject {
-  @HiveField(0)
-  final String gameCode;
-  @HiveField(1)
+class GameSettings {
   bool muckLosingHand = false;
-  @HiveField(2)
   bool gameSound = true;
-  @HiveField(3)
   bool audioConf = true;
 
-  GameSettings(
-      this.gameCode, this.muckLosingHand, this.gameSound, this.audioConf);
+  GameSettings(this.muckLosingHand, this.gameSound, this.audioConf);
 
   @override
   String toString() {
-    return "gameCode = ${this.gameCode}, muckLosingHand = ${this.muckLosingHand},"
+    return "muckLosingHand = ${this.muckLosingHand},"
         " gameSound = ${this.gameSound}, audioConf = ${this.audioConf}";
   }
+
+  Map<String, dynamic> toJson() => {
+        'muckLosingHand': this.muckLosingHand,
+        'gameSound': this.gameSound,
+        'audioConf': this.audioConf
+      };
+
+  GameSettings.fromJson(Map<String, dynamic> json) :
+    this.muckLosingHand = json['muckLosingHand'],
+    this.gameSound = json['gameSound'],
+    this.audioConf = json['audioConf'];
+
 }
