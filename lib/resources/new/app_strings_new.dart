@@ -34,4 +34,28 @@ class AppStringsNew {
   static const HighHandlogTitle = "High Handlog";
   static const HandlogTitle = "Hand Log";
   static const SummaryText = "Summary";
+
+  static const String gameOptionsText = "Game Options";
+
+  static const String gameEndNotificationText =
+      "The game will end after this hand";
+  static const String leaveGameNotificationText =
+      "You will standup after this hand";
+  static const String breakGameNotificationText = "Take break after this hand";
+  static const String pauseGameNotificationText =
+      "The game will pause after this hand";
+
+  static const waitingListTitle = "Waiting List";
+
+  static String playersInWaitingListText = "Players in the List";
+
+  static String noWaitingListText = "Waiting list is empty.";
+
+  static String addMeToWaitingListText = "Add me to waiting list";
+
+  static String seatChangeTitle = "Seat Change";
+
+  static String noSeatChangeRequestsText = "No Seat change requests.";
+
+  static String gameCodeText = "Game Code";
 }

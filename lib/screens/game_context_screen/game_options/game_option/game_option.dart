@@ -10,12 +10,18 @@ import 'package:pokerapp/models/option_item_model.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
+import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
+import 'package:pokerapp/resources/new/app_strings_new.dart';
+import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_log_view.dart';
 import 'package:pokerapp/screens/game_screens/hand_history/hand_history.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
+import 'package:pokerapp/widgets/switch_widget.dart';
 import 'seat_change_bottom_sheet.dart';
 import 'waiting_list.dart';
+import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class GameOption extends StatefulWidget {
   final String gameCode;
@@ -37,39 +43,36 @@ class _GameOptionState extends State<GameOption> {
   _GameOptionState(this.gameCode);
 
   void onLeave() {
-    showSimpleNotification(
-      Text('You will standup after this hand'),
-      position: NotificationPosition.top,
-      duration: Duration(seconds: 10),
-    );
+    Alerts.showTextNotification(text: AppStringsNew.leaveGameNotificationText);
+    // Dismisses bottomsheet
+    Navigator.of(context).pop();
     GameService.leaveGame(this.gameCode);
   }
 
   void onEndGame() {
-    showSimpleNotification(
-      Text('The game will end after this hand'),
-      position: NotificationPosition.top,
-      duration: Duration(seconds: 10),
-    );
+    Alerts.showTextNotification(text: AppStringsNew.gameEndNotificationText);
+    // showSimpleNotification(
+    //   Text(''),
+    //   position: NotificationPosition.top,
+    //   duration: Duration(seconds: 10),
+    // );
     // We need to broadcast to all the players
+    Navigator.of(context).pop();
+
     GameService.endGame(this.gameCode);
   }
 
   void onPause() {
-    showSimpleNotification(
-      Text('Game will be paused after this hand'),
-      position: NotificationPosition.top,
-      duration: Duration(seconds: 10),
-    );
+    Alerts.showTextNotification(text: AppStringsNew.pauseGameNotificationText);
+    Navigator.of(context).pop();
+
     GameService.pauseGame(this.gameCode);
   }
 
   void onBreak() {
-    showSimpleNotification(
-      Text('Your break will start after this hand'),
-      position: NotificationPosition.top,
-      duration: Duration(seconds: 10),
-    );
+    Alerts.showTextNotification(text: AppStringsNew.breakGameNotificationText);
+    Navigator.of(context).pop();
+
     //Alerts.showTextNotification(text: 'Your break will start after this hand');
 
     GameService.takeBreak(this.gameCode);
@@ -132,6 +135,7 @@ class _GameOptionState extends State<GameOption> {
       OptionItemModel(
         title: "Seat Change",
         image: "assets/images/casino.png",
+        name: "Request seat change",
         backGroundColor: AppColors.gameOption2,
         onTap: (context) async {
           await showModalBottomSheet(
@@ -146,6 +150,7 @@ class _GameOptionState extends State<GameOption> {
       OptionItemModel(
           title: "Waiting List",
           image: "assets/images/casino.png",
+          name: "Add to waiting list",
           backGroundColor: AppColors.gameOption3,
           onTap: (context) async {
             await showModalBottomSheet(
@@ -201,28 +206,19 @@ class _GameOptionState extends State<GameOption> {
     @required bool value,
     @required void onChange(bool _),
   }) {
-    return ListTile(
-      title: Text(
-        text,
-        style: TextStyle(color: Colors.white),
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 10),
+      child: SwitchWidget(
+        label: text,
+        onChange: (value) {
+          onChange(value);
+        },
       ),
-      trailing: CupertinoSwitch(
-          value: value,
-          onChanged: (value) {
-            onChange(value);
-          }),
     );
   }
 
   Widget _buildOtherGameOptions() => Container(
-        margin: const EdgeInsets.symmetric(
-          horizontal: 5.0,
-        ),
         padding: const EdgeInsets.all(5.0),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          color: AppColors.gameOptionBackGroundColor,
-        ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -270,67 +266,81 @@ class _GameOptionState extends State<GameOption> {
   @override
   Widget build(BuildContext context) {
     height = MediaQuery.of(context).size.height;
-    final separator5 = SizedBox(height: 5.0);
 
     return SingleChildScrollView(
       child: Container(
-        padding: EdgeInsets.all(15),
+        padding: EdgeInsets.symmetric(horizontal: 16),
         child: Column(
           children: [
             Container(
-              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: AppColors.gameOptionBackGroundColor,
+              margin: EdgeInsets.only(bottom: 10),
+              padding: EdgeInsets.only(top: 16),
+              width: double.infinity,
+              decoration: AppStylesNew.actionRowDecoration,
+              child: Wrap(
+                alignment: WrapAlignment.center,
+                //mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ...gameActions.map((e) => gameActionItem(e)).toList(),
+                ],
               ),
+            ),
+            Container(
+              padding: EdgeInsets.all(16),
+              decoration: AppStylesNew.actionRowDecoration,
               child: Column(
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text("Elapsed: 3:20",
-                          style: AppStyles.itemInfoSecondaryTextStyle),
-                      Text("Hands: 50",
-                          style: AppStyles.itemInfoSecondaryTextStyle)
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("Elapsed", style: AppStylesNew.labelTextStyle),
+                          Text("3:20", style: AppStylesNew.valueTextStyle),
+                        ],
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text("Hands", style: AppStylesNew.labelTextStyle),
+                          Text("50", style: AppStylesNew.valueTextStyle),
+                        ],
+                      )
                     ],
                   ),
-                  separator5,
+                  AppDimensionsNew.getVerticalSizedBox(4),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text("Session: 00:35",
-                          style: AppStyles.itemInfoSecondaryTextStyle),
-                      Text("Won: 10",
-                          style: AppStyles.itemInfoSecondaryTextStyle),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("Session", style: AppStylesNew.labelTextStyle),
+                          Text("00:35", style: AppStylesNew.valueTextStyle),
+                        ],
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text("Won", style: AppStylesNew.labelTextStyle),
+                          Text("10", style: AppStylesNew.valueTextStyle),
+                        ],
+                      )
                     ],
                   ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Wrap(
-                    alignment: WrapAlignment.center,
-                    //mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      ...gameActions.map((e) => gameActionItem(e)).toList(),
-                    ],
-                  )
                 ],
               ),
             ),
-            SizedBox(height: 10),
+            AppDimensionsNew.getVerticalSizedBox(10),
             Container(
-              padding: EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                  color: AppColors.gameOptionBackGroundColor,
-                  borderRadius: BorderRadius.circular(10)),
+              decoration: AppStylesNew.actionRowDecoration,
               child: _buildOtherGameOptions(),
             ),
-            SizedBox(height: 10),
+            AppDimensionsNew.getVerticalSizedBox(10),
             Container(
               padding: EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                  color: AppColors.gameOptionBackGroundColor,
-                  borderRadius: BorderRadius.circular(10)),
+              decoration: AppStylesNew.actionRowDecoration,
               child: ListView.separated(
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
@@ -342,21 +352,11 @@ class _GameOptionState extends State<GameOption> {
                   );
                 },
                 separatorBuilder: (context, index) {
-                  return Row(
-                    children: [
-                      SizedBox(
-                        width: 24,
-                      ),
-                      Expanded(
-                        child: Divider(
-                          height: 2,
-                          color: Colors.grey,
-                        ),
-                      ),
-                      SizedBox(
-                        width: 24,
-                      ),
-                    ],
+                  return Divider(
+                    height: 2,
+                    color: AppColorsNew.newBackgroundBlackColor,
+                    endIndent: 24,
+                    indent: 24,
                   );
                 },
               ),
@@ -373,7 +373,6 @@ class _GameOptionState extends State<GameOption> {
       onTap: () => optionItemModel.onTap(context),
       title: Text(
         optionItemModel.title,
-        style: AppStyles.credentialsTextStyle,
       ),
       leading: Container(
         decoration: BoxDecoration(
@@ -383,19 +382,19 @@ class _GameOptionState extends State<GameOption> {
         padding: EdgeInsets.all(5),
         child: Image.asset(
           optionItemModel.image,
-          height: 40,
-          width: 40,
+          height: 32.ph,
+          width: 32.pw,
           color: Colors.white,
         ),
       ),
       trailing: Icon(
         Icons.arrow_forward_ios,
-        color: Colors.white,
+        color: AppColorsNew.newGreenButtonColor,
       ),
       subtitle: optionItemModel.name != null
           ? Text(
               optionItemModel.name,
-              style: AppStyles.itemInfoSecondaryTextStyle,
+              style: AppStylesNew.labelTextStyle,
             )
           : Container(),
     );
@@ -415,25 +414,20 @@ class _GameOptionState extends State<GameOption> {
             Container(
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.black,
+                color: AppColorsNew.newGreenButtonColor,
               ),
               padding: EdgeInsets.all(10),
               child: Icon(
                 optionItemModel.iconData ?? Icons.message,
-                size: 20,
-                color: AppColors.appAccentColor,
+                size: 20.pw,
+                color: AppColorsNew.darkGreenShadeColor,
               ),
             ),
             Container(
               padding: EdgeInsets.all(5),
               child: Text(
                 optionItemModel.title,
-                style: TextStyle(
-                  fontFamily: AppAssets.fontFamilyLato,
-                  color: AppColors.appAccentColor,
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: AppStylesNew.labelTextStyle,
               ),
             ),
           ],
