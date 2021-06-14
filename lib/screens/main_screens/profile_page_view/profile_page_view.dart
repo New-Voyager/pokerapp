@@ -69,8 +69,8 @@ class _ProfilePageViewState extends State<ProfilePageView> {
             // }
             child: Text('Straddle Dialog'),
             onPressed: () async {
-              final output = await StraddleDialog.show(context);
-              print('straddle output value: $output');
+              // final output = await StraddleDialog.show(context);
+              // print('straddle output value: $output');
             },
           ),
           Spacer(),

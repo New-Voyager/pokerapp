@@ -6,12 +6,13 @@ import 'package:pokerapp/widgets/switch_widget.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class StraddleDialog extends StatefulWidget {
-  /* returns [OPTION, AUTO, VALUE] */
-  static Future<List<bool>> show(BuildContext context) =>
-      showDialog<List<bool>>(
-        context: context,
-        builder: (_) => StraddleDialog(),
-      );
+  final bool straddlePrompt;
+  final Function(List<bool>) onSelect;
+
+  StraddleDialog({
+    @required this.straddlePrompt,
+    @required this.onSelect,
+  });
 
   @override
   _StraddleDialogState createState() => _StraddleDialogState();
@@ -24,7 +25,7 @@ class _StraddleDialogState extends State<StraddleDialog> {
 
   void _onValuePress(bool value, BuildContext context) {
     _value = value;
-    Navigator.pop(context, [_option, _auto, _value]);
+    widget.onSelect?.call([_option, _auto, _value]);
   }
 
   Widget _buildButton({
@@ -64,9 +65,9 @@ class _StraddleDialogState extends State<StraddleDialog> {
       );
 
   @override
-  Widget build(BuildContext context) => Dialog(
-        backgroundColor: Colors.black,
-        child: Container(
+  Widget build(BuildContext context) => widget.straddlePrompt == false
+      ? const SizedBox()
+      : Container(
           padding: const EdgeInsets.symmetric(
             horizontal: 20.0,
             vertical: 10.0,
@@ -136,6 +137,5 @@ class _StraddleDialogState extends State<StraddleDialog> {
               ),
             ],
           ),
-        ),
-      );
+        );
 }

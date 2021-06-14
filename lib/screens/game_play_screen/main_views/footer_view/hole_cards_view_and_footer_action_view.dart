@@ -7,6 +7,7 @@ import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/widgets/cards/hole_stack_card_view.dart';
 import 'package:pokerapp/utils/card_helper.dart';
+import 'package:pokerapp/widgets/straddle_dialog.dart';
 import 'package:provider/provider.dart';
 
 import 'footer_action_view.dart';
@@ -36,6 +37,39 @@ class _HoleCardsViewAndFooterActionViewState
     extends State<HoleCardsViewAndFooterActionView> {
   bool _isCardVisible = false;
 
+  Widget _buildholeCardViewAndStraddleDialog(boardAttributes) => Builder(
+        builder: (context) => Stack(
+          alignment: Alignment.topCenter,
+          children: [
+            // hole card view
+            Transform.translate(
+              offset: boardAttributes.holeCardViewOffset,
+              child: Transform.scale(
+                scale: boardAttributes.holeCardViewScale,
+                child: holeCardView(context),
+              ),
+            ),
+
+            Align(
+              child: Transform.scale(
+                scale: 0.80,
+                child: StraddleDialog(
+                  // TODO: ALL YOU WOULD CARE ABOUT IS THIS VALUE TO HIDE / SHOW THIS WIDGET
+                  straddlePrompt: true,
+
+                  // TODO: THIS CALLBACK WILL CONTAIN A LIST OF 3 ITEMS
+                  onSelect: (List<bool> optionAutoValue) {
+                    print(optionAutoValue);
+
+                    // TODO: here you can change the value of straddlePrompt to hide this widget
+                  },
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+
   @override
   Widget build(BuildContext context) {
     final boardAttributes = Provider.of<BoardAttributesObject>(
@@ -49,13 +83,7 @@ class _HoleCardsViewAndFooterActionViewState
         children: [
           Align(
             alignment: Alignment.topCenter,
-            child: Transform.translate(
-              offset: boardAttributes.holeCardViewOffset,
-              child: Transform.scale(
-                scale: boardAttributes.holeCardViewScale,
-                child: holeCardView(context),
-              ),
-            ),
+            child: _buildholeCardViewAndStraddleDialog(boardAttributes),
           ),
 
           /* dark overlay to show in-front of cards, when the bet widget is displayed */
