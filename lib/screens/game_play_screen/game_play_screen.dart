@@ -603,7 +603,8 @@ class _GamePlayScreenState extends State<GamePlayScreen>
                                 child: Container(
                                   decoration: BoxDecoration(
                                     image: DecorationImage(
-                                      image: AssetImage("assets/images/bottom_pattern.png"),
+                                      image: AssetImage(
+                                          "assets/images/bottom_pattern.png"),
                                       fit: BoxFit.fill,
                                     ),
                                   ),

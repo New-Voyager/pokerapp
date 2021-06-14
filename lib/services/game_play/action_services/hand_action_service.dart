@@ -433,7 +433,7 @@ class HandActionService {
     _gameState
         .getAudioBytes(AppAssets.newHandSound)
         .then((value) => playSoundEffect(value));
-
+    //log(jsonEncode(data));
     /* data contains the dealer, small blind and big blind seat Positions
     * Update the Players object with these information */
     var newHand = data['newHand'];
@@ -544,6 +544,20 @@ class HandActionService {
       }
     }
 
+    // next action seat is me
+    final nextActionSeat =
+        _gameState.getSeat(_context, newHand['nextActionSeat']);
+    if (nextActionSeat != null && nextActionSeat.isMe) {
+      // if straddle is allowed, my stack size > straddle value, and I haven't turned off straddle option
+      if (_gameState.gameInfo.utgStraddleAllowed &&
+          nextActionSeat.player.stack >= 2 * _gameState.gameInfo.bigBlind) {
+        // set straddlePrompt true
+        if (_gameState.settings.straddleOption) {
+          _gameState.straddlePrompt = true;
+        }
+      }
+    }
+
     /* marking the small blind */
     int smallBlindIdx = players.players.indexWhere((p) => p.seatNo == sbPos);
     assert(smallBlindIdx != -1);
@@ -643,8 +657,11 @@ class HandActionService {
       players.updateVisibleCardNumberSilent(seatNo, myCards.length);
       players.notifyAll();
     }
-
-    //}
+    // if straddle prompt is true, trigger straddle state to show the dialog
+    if (_gameState.straddlePrompt) {
+      final straddlePromptState = _gameState.straddlePromptState(_context);
+      straddlePromptState.notify();
+    }
 
     /* card distribution ends, put the value to NULL */
     if (_close) return;
@@ -680,13 +697,22 @@ class HandActionService {
         context: _context,
         expTime: 30, // TODO: WE GET THIS TIME FROM THE SERVER
       );
+    } else {
+      if (availableActions?.contains(AppConstants.STRADDLE) ?? false) {
+        if (_close) return;
+      }
     }
 
     if (_close) return;
     _gameState.setAction(_context, seatNo, seatAction);
 
     if (_close) return;
-    _gameState.showAction(_context, true);
+    if (_gameState.straddlePrompt) {
+      // we are showing the straddle prompt
+    } else {
+      // don't show
+      _gameState.showAction(_context, true);
+    }
   }
 
   playSoundEffect(Uint8List value) {
@@ -1084,6 +1110,11 @@ class HandActionService {
 
     if (_close) return;
     final seat = gameState.getSeat(_context, seatNo);
+    // hide straddle dialog
+    if (gameState.straddlePrompt && seat.isMe) {
+      gameState.straddlePrompt = false;
+      gameState.straddlePromptState(_context).notify();
+    }
     //log('player acted: $seatNo, player: ${seat.player.name}');
     final action = seat.player.action;
     action.setAction(playerActed);
