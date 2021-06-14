@@ -2,9 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:pokerapp/resources/app_colors.dart';
-import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/services/app/game_service.dart';
-import 'package:pokerapp/utils/utils.dart';
 import 'package:pokerapp/widgets/custom_text_button.dart';
 import 'package:pokerapp/widgets/radio_list_widget.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
@@ -26,16 +24,16 @@ class SeatChangeConfirmationPopUp {
           return Align(
             alignment: Alignment.bottomCenter,
             child: Container(
-              height: 300.pw,
+              height: 200.ph,
               width: 350.pw,
-              margin: EdgeInsets.only(bottom: 50, left: 12, right: 12),
+              margin: EdgeInsets.only(bottom: 50.ph, left: 12.pw, right: 12.pw),
               decoration: BoxDecoration(
                 color: Colors.black,
-                borderRadius: BorderRadius.circular(40),
+                borderRadius: BorderRadius.circular(40.pw),
                 border: Border.all(color: AppColors.dialogBorderColor),
               ),
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(40),
+                borderRadius: BorderRadius.circular(40.pw),
                 child: Scaffold(
                   body: _SeatChangeConfirmationPopUpWidget(
                       gameCode, promptSecs, openedSeat, openSeats, () {
@@ -88,7 +86,12 @@ class _SeatChangeConfirmationPopUpWidget extends StatelessWidget {
           '${this.openSeats.length} seats are open. Select a seat to switch.';
     }
     int selectedSeat = this.openSeats[0];
-
+    final textStyle = TextStyle(
+    color: Colors.white,
+    fontSize: 10.dp,
+    fontWeight: FontWeight.normal,
+  );
+ 
     return Container(
       padding: EdgeInsets.symmetric(
         horizontal: 10.0,
@@ -102,9 +105,7 @@ class _SeatChangeConfirmationPopUpWidget extends StatelessWidget {
           Text(
             title,
             textAlign: TextAlign.center,
-            style: AppStyles.titleTextStyle.copyWith(
-              fontSize: 16.dp,
-            ),
+            style: textStyle, //AppStylesNew.dialogTextStyle,
           ),
           const SizedBox(
             height: 10.0,

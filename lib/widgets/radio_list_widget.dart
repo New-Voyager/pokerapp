@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class RadioListWidget extends StatelessWidget {
-  static const Size itemSize = Size(40.0, 40.0);
 
   final List<int> values;
   final int defaultValue;
@@ -31,13 +31,13 @@ class RadioListWidget extends StatelessWidget {
                   : Color(0x3340D876),
               borderRadius: BorderRadius.circular(5.0),
             ),
-            height: itemSize.height,
-            width: itemSize.width,
+            height: 32.ph,
+            width: 32.pw,
             alignment: Alignment.center,
             child: Text(
               v == -1 ? '∞' : v.toString(),
               style: TextStyle(
-                fontSize: 18.0,
+                fontSize: 12.dp,
                 color: Colors.white,
                 shadows: [
                   Shadow(
