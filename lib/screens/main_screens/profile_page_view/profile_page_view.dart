@@ -11,6 +11,7 @@ import 'package:pokerapp/screens/game_play_screen/widgets/plate_border.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:pokerapp/utils/numeric_keyboard2.dart';
+import 'package:pokerapp/widgets/straddle_dialog.dart';
 
 class ProfilePageView extends StatefulWidget {
   @override
@@ -66,14 +67,10 @@ class _ProfilePageViewState extends State<ProfilePageView> {
             //   log("Selected Game Type: ${gameTypeStr(type)}");
             //   // plateWidget.animate()
             // }
-            child: Text('Numeric Keyboard'),
+            child: Text('Straddle Dialog'),
             onPressed: () async {
-              final double value = await NumericKeyboard2.show(
-                context,
-                title: 'Please enter your BET amount',
-                min: 45,
-              );
-              print('numeric value: $value');
+              final output = await StraddleDialog.show(context);
+              print('straddle output value: $output');
             },
           ),
           Spacer(),
