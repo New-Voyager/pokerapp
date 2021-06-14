@@ -33,15 +33,15 @@ class _ProfilePageViewState extends State<ProfilePageView> {
           ),
 
           Spacer(),
-          ElevatedButton(
-            child: Text('Replay Hand'),
-            onPressed: () {
-              ReplayHandDialog.show(
-                playerID: 337, // yong's ID
-                context: context,
-              );
-            },
-          ),
+          // ElevatedButton(
+          //   child: Text('Replay Hand'),
+          //   onPressed: () {
+          //     ReplayHandDialog.show(
+          //       playerID: 337, // yong's ID
+          //       context: context,
+          //     );
+          //   },
+          // ),
           Spacer(),
 
           Container(width: 150, height: 100, child: plateWidget),
