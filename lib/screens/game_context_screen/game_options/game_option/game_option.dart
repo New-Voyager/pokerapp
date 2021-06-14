@@ -18,6 +18,7 @@ import 'package:pokerapp/screens/club_screen/hand_log_views/hand_log_view.dart';
 import 'package:pokerapp/screens/game_screens/hand_history/hand_history.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
+import 'package:pokerapp/widgets/switch_widget.dart';
 import 'seat_change_bottom_sheet.dart';
 import 'waiting_list.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
@@ -205,15 +206,11 @@ class _GameOptionState extends State<GameOption> {
     @required bool value,
     @required void onChange(bool _),
   }) {
-    return ListTile(
-      title: Text(
-        text,
-        style: TextStyle(color: AppColorsNew.newTextColor),
-      ),
-      trailing: CupertinoSwitch(
-        activeColor: AppColorsNew.newGreenButtonColor,
-        value: value,
-        onChanged: (value) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 10),
+      child: SwitchWidget(
+        label: text,
+        onChange: (value) {
           onChange(value);
         },
       ),
@@ -269,7 +266,6 @@ class _GameOptionState extends State<GameOption> {
   @override
   Widget build(BuildContext context) {
     height = MediaQuery.of(context).size.height;
-    final separator5 = SizedBox(height: 5.0);
 
     return SingleChildScrollView(
       child: Container(
@@ -277,7 +273,10 @@ class _GameOptionState extends State<GameOption> {
         child: Column(
           children: [
             Container(
-              margin: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+              margin: EdgeInsets.only(bottom: 10),
+              padding: EdgeInsets.only(top: 16),
+              width: double.infinity,
+              decoration: AppStylesNew.actionRowDecoration,
               child: Wrap(
                 alignment: WrapAlignment.center,
                 //mainAxisAlignment: MainAxisAlignment.center,
@@ -390,7 +389,7 @@ class _GameOptionState extends State<GameOption> {
       ),
       trailing: Icon(
         Icons.arrow_forward_ios,
-        color: Colors.white,
+        color: AppColorsNew.newGreenButtonColor,
       ),
       subtitle: optionItemModel.name != null
           ? Text(

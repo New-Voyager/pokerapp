@@ -7,6 +7,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart
 import 'package:pokerapp/models/option_item_model.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/club_screen/club_games_page_view.dart';
@@ -14,6 +15,7 @@ import 'package:pokerapp/services/app/game_service.dart';
 
 import 'game_option/game_option.dart';
 import 'pending_approvals_option.dart';
+import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class GameOptionsBottomSheet extends StatefulWidget {
   final GameState gameState;
@@ -42,7 +44,19 @@ class _GameOptionsState extends State<GameOptionsBottomSheet> {
     width = MediaQuery.of(context).size.width;
     final currentPlayer = widget.gameState.currentPlayer;
     return Container(
-      decoration: AppStylesNew.BgGreenRadialGradient,
+      decoration: AppStylesNew.BgGreenRadialGradient.copyWith(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(32),
+            topRight: Radius.circular(32),
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: AppColorsNew.newGreenButtonColor,
+              offset: Offset(1, 1),
+              blurRadius: 1,
+              spreadRadius: 1,
+            )
+          ]),
       height: height / 2,
       child: Column(
         mainAxisSize: MainAxisSize.max,
@@ -61,9 +75,17 @@ class _GameOptionsState extends State<GameOptionsBottomSheet> {
 
           Container(
             padding: EdgeInsets.symmetric(vertical: 16),
-            child: Text(
-              AppStringsNew.gameOptionsText,
-              style: AppStylesNew.appBarTitleTextStyle,
+            child: Column(
+              children: [
+                Text(
+                  AppStringsNew.gameCodeText,
+                  style: AppStylesNew.labelTextStyle,
+                ),
+                Text(
+                  "${widget.gameState.gameCode}",
+                  style: AppStylesNew.valueTextStyle,
+                ),
+              ],
             ),
           ),
 

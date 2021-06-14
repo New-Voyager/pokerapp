@@ -52,23 +52,6 @@ class HeaderView extends StatelessWidget {
                     children: [
                       RichText(
                         text: TextSpan(
-                          text: "Game code ",
-                          style: TextStyle(
-                            color: AppColorsNew.newTextColor,
-                          ),
-                          children: [
-                            TextSpan(
-                                text: "$gameCode",
-                                style: TextStyle(
-                                  color: AppColorsNew.yellowAccentColor,
-                                  fontSize: 14.dp,
-                                  fontWeight: FontWeight.w500,
-                                ))
-                          ],
-                        ),
-                      ),
-                      RichText(
-                        text: TextSpan(
                           text: "$title",
                           style: TextStyle(
                             color: AppColorsNew.newTextColor,
@@ -128,6 +111,7 @@ class HeaderView extends StatelessWidget {
                         await showModalBottomSheet(
                           context: context,
                           isScrollControlled: true,
+                          backgroundColor: Colors.transparent,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.only(
                               topLeft: Radius.circular(32),

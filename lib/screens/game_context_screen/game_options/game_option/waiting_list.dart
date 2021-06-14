@@ -1,10 +1,18 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/waiting_list_model.dart';
 import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
+import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
+import 'package:pokerapp/resources/new/app_strings_new.dart';
+import 'package:pokerapp/resources/new/app_styles_new.dart';
+import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/game_service.dart';
+import 'package:pokerapp/widgets/switch_widget.dart';
 import 'package:provider/provider.dart';
 
 class WaitingListBottomSheet extends StatefulWidget {
@@ -66,11 +74,18 @@ class _WaitingListBottomSheetState extends State<WaitingListBottomSheet> {
     height = MediaQuery.of(context).size.height;
     width = MediaQuery.of(context).size.width;
     return Container(
-      color: Colors.black,
+      decoration: AppStylesNew.BgGreenRadialGradient,
       height: height / 2,
-      child: Column(
-        mainAxisSize: MainAxisSize.max,
-        children: [header, addRemoveWaitingListButton(), playersInList()],
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: CustomAppBar(
+          context: context,
+          titleText: AppStringsNew.waitingListTitle,
+        ),
+        body: Column(
+          mainAxisSize: MainAxisSize.max,
+          children: [addRemoveWaitingListButton(), playersInList()],
+        ),
       ),
     );
   }
@@ -78,29 +93,30 @@ class _WaitingListBottomSheetState extends State<WaitingListBottomSheet> {
   playersInList() {
     return Expanded(
         child: Container(
-      margin: EdgeInsets.all(10.0),
+      margin: EdgeInsets.symmetric(horizontal: 16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "Players in the List",
-            style: AppStyles.clubCodeStyle,
+            AppStringsNew.playersInWaitingListText,
+            style: AppStylesNew.labelTextStyle,
           ),
-          const SizedBox(
-            height: 10.0,
-          ),
+          AppDimensionsNew.getVerticalSizedBox(10),
           Expanded(
-              child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(5),
-                    color: AppColors.gameOptionBackGroundColor,
-                  ),
-                  child: ListView.builder(
-                    itemCount: allWaitingListPlayers.length,
-                    shrinkWrap: true,
-                    itemBuilder: (_, index) =>
-                        playerItem(allWaitingListPlayers[index], index),
-                  ))),
+            child: Container(
+              decoration: AppStylesNew.actionRowDecoration,
+              child: allWaitingListPlayers.length > 0
+                  ? ListView.builder(
+                      itemCount: allWaitingListPlayers.length,
+                      shrinkWrap: true,
+                      itemBuilder: (_, index) =>
+                          playerItem(allWaitingListPlayers[index], index),
+                    )
+                  : Center(
+                      child: Text(AppStringsNew.noWaitingListText),
+                    ),
+            ),
+          ),
         ],
       ),
     ));
@@ -177,60 +193,27 @@ class _WaitingListBottomSheetState extends State<WaitingListBottomSheet> {
 
   addRemoveWaitingListButton() {
     return Container(
-      margin: EdgeInsets.all(5),
-      padding: EdgeInsets.symmetric(horizontal: 15, vertical: 8),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(5),
-        color: AppColors.gameOptionBackGroundColor,
-      ),
-      child: Row(
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: AppColors.gameOption2,
-            ),
-            padding: EdgeInsets.all(5),
-            child: Image.asset(
-              "assets/images/casino.png",
-              height: 30,
-              width: 30,
-              color: Colors.white,
-            ),
-          ),
-          SizedBox(
-            width: 10,
-          ),
-          Text(
-            "Add me to waiting list",
-            style: AppStyles.clubCodeStyle,
-          ),
-          Spacer(),
-          isSwitchShow
-              ? Switch(
-                  value: isInWaitingList,
-                  activeTrackColor: AppColors.positiveColor,
-                  activeColor: Colors.white,
-                  onChanged: (bool value) async {
-                    setState(() {
-                      isInWaitingList = value;
-                    });
-                    if (isInWaitingList) {
-                      bool result =
-                          await GameService.addToWaitList(widget.gameCode);
-                      print("result dasda $result");
-                    } else {
-                      bool result =
-                          await GameService.removeFromWaitlist(widget.gameCode);
-                      print("result check $result");
-                    }
-                    getAllWaitingPlayers();
-                  },
-                )
-              : Container(),
-        ],
-      ),
-    );
+        margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        padding: EdgeInsets.all(8),
+        decoration: AppStylesNew.actionRowDecoration,
+        child: SwitchWidget(
+          label: AppStringsNew.addMeToWaitingListText,
+          value: isInWaitingList,
+          onChange: (bool value) async {
+            setState(() {
+              isInWaitingList = value;
+            });
+            if (isInWaitingList) {
+              bool result = await GameService.addToWaitList(widget.gameCode);
+              print("result dasda $result");
+            } else {
+              bool result =
+                  await GameService.removeFromWaitlist(widget.gameCode);
+              print("result check $result");
+            }
+            getAllWaitingPlayers();
+          },
+        ));
   }
 
   get header => Container(
