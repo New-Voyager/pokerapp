@@ -55,8 +55,9 @@ class _CommunicationViewState extends State<CommunicationView> {
                     communicationState.audioConferenceStatus ==
                         AudioConferenceStatus.CONNECTED) {
                   log('User is playing and audio conference connected, showing janusAudioWidgets');
-                  children
-                      .addAll(janusAudioWidgets(gameState, communicationState));
+                  children.addAll(
+                    janusAudioWidgets(gameState, communicationState),
+                  );
                 } else if (communicationState.voiceChatEnable) {
                   log('Showing voiceChatWidgets');
                   children.addAll(voiceTextWidgets(widget.chatService));
@@ -64,8 +65,9 @@ class _CommunicationViewState extends State<CommunicationView> {
 
                 children.add(
                   GameCircleButton(
-                      onClickHandler: widget.chatVisibilityChange,
-                      iconData: Icons.chat),
+                    onClickHandler: widget.chatVisibilityChange,
+                    iconData: Icons.chat,
+                  ),
                 );
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
@@ -75,25 +77,20 @@ class _CommunicationViewState extends State<CommunicationView> {
             ));
   }
 
-
   Widget talkingAnimation(Function onTap) {
-
-    Widget child =  BlinkWidget(
-                  children: [
-                    SvgPicture.asset('assets/images/game/mic-step1.svg',
-                        width: 16, height: 16, color: Colors.black),
-                    SvgPicture.asset('assets/images/game/mic-step2.svg',
-                        width: 16, height: 16, color: Colors.black),
-                    SvgPicture.asset('assets/images/game/mic-step3.svg',
-                        width: 16, height: 16, color: Colors.black),
-                    SvgPicture.asset('assets/images/game/mic-step1.svg',
-                        width: 16, height: 16, color: Colors.black),
-                  ],
-                );
-    return 
-                      GameCircleButton(
-                      onClickHandler: onTap,
-                      child: child);
+    Widget child = BlinkWidget(
+      children: [
+        SvgPicture.asset('assets/images/game/mic-step1.svg',
+            width: 16, height: 16, color: Colors.black),
+        SvgPicture.asset('assets/images/game/mic-step2.svg',
+            width: 16, height: 16, color: Colors.black),
+        SvgPicture.asset('assets/images/game/mic-step3.svg',
+            width: 16, height: 16, color: Colors.black),
+        SvgPicture.asset('assets/images/game/mic-step1.svg',
+            width: 16, height: 16, color: Colors.black),
+      ],
+    );
+    return GameCircleButton(onClickHandler: onTap, child: child);
     /*
     GameCircleButton(
       child: 
@@ -121,10 +118,9 @@ class _CommunicationViewState extends State<CommunicationView> {
       if (state?.talking ?? false) {
         mic = talkingAnimation(() {
           log('mic is tapped');
-            if (state.audioConferenceStatus ==
-                AudioConferenceStatus.CONNECTED) {
-              gameState.janusEngine.muteUnmute();
-            }
+          if (state.audioConferenceStatus == AudioConferenceStatus.CONNECTED) {
+            gameState.janusEngine.muteUnmute();
+          }
         });
       }
     }
@@ -153,7 +149,7 @@ class _CommunicationViewState extends State<CommunicationView> {
           }
         },
         child: Container(
-          padding: EdgeInsets.symmetric(vertical: 4, horizontal: 12),
+          padding: EdgeInsets.symmetric(vertical: 4),
           child: mic,
         ),
       ),
