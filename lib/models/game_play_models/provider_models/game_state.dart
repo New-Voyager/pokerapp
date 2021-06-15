@@ -212,7 +212,8 @@ class GameState {
       this._myState.notify();
     }
 
-    GameHiveStore.getInstance.openBox(gameCode);
+    await GameHiveStore.getInstance.openBox(gameCode);
+
     if (GameHiveStore.getInstance.isBoxEmpty()) {
       log('In GameState initialize(), gameBox is empty');
       gameSettings =
