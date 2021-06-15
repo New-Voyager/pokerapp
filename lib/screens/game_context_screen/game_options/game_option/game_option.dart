@@ -15,6 +15,7 @@ import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_log_view.dart';
 import 'package:pokerapp/screens/game_screens/hand_history/hand_history.dart';
 import 'package:pokerapp/services/app/game_service.dart';
+import 'package:pokerapp/services/data/GameHiveStore.dart';
 import 'package:pokerapp/services/data/box_type.dart';
 import 'package:pokerapp/services/data/game_box_keys.dart';
 import 'package:pokerapp/services/data/hive_datasource_impl.dart';
@@ -255,9 +256,7 @@ class _GameOptionState extends State<GameOption> {
               value: widget.gameState.gameSettings.gameSound,
               onChange: (bool v) async {
                 widget.gameState.gameSettings.gameSound = v;
-                final gameBox = await Hive.openBox(gameCode);
-                gameBox.put(GameBoxKeys.GAME_SETTINGS.value(),
-                    jsonEncode(widget.gameState.gameSettings));
+                GameHiveStore.getInstance.putGameSettings(widget.gameState.gameSettings);
                 log('In toggle button widget, gameSounds = ${widget.gameState.gameSettings.gameSound}');
                 setState(() {});
               },
@@ -269,9 +268,7 @@ class _GameOptionState extends State<GameOption> {
                     onChange: (bool v) async {
                       widget.gameState.gameSettings.audioConf = v;
                       widget.gameState.janusEngine.joinLeaveAudioConference();
-                      final gameBox = await Hive.openBox(gameCode);
-                      gameBox.put(GameBoxKeys.GAME_SETTINGS.value(),
-                          jsonEncode(widget.gameState.gameSettings));
+                      GameHiveStore.getInstance.putGameSettings(widget.gameState.gameSettings);
                       log('In toggle button widget, audioConf = ${widget.gameState.gameSettings.audioConf}');
                       setState(() {});
                     },

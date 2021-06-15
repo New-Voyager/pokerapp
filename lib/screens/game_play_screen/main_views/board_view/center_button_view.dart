@@ -31,8 +31,6 @@ class CenterButtonView extends StatelessWidget {
   Future<void> _onTerminatePress() async {
     log('Termininating game $gameCode');
     GameService.endGame(gameCode);
-    final gameBox = await Hive.openBox(gameCode);
-    gameBox.deleteFromDisk();
   }
 
   void _onRearrangeSeatsPress(context) {

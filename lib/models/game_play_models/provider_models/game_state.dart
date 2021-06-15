@@ -19,6 +19,7 @@ import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/app/handlog_cache_service.dart';
+import 'package:pokerapp/services/data/GameHiveStore.dart';
 import 'package:pokerapp/services/data/box_type.dart';
 import 'package:pokerapp/services/data/game_box_keys.dart';
 import 'package:pokerapp/services/data/hive_datasource_impl.dart';
@@ -211,16 +212,15 @@ class GameState {
       this._myState.notify();
     }
 
-    final gameBox = await Hive.openBox(gameCode);
-    if (gameBox.isEmpty) {
+    GameHiveStore.getInstance.openBox(gameCode);
+    if (GameHiveStore.getInstance.isBoxEmpty()) {
       log('In GameState initialize(), gameBox is empty');
-      gameSettings = GameSettings(_gameInfo.playerMuckLosingHand, true, true);
-      await gameBox.put(
-          GameBoxKeys.GAME_SETTINGS.value(), jsonEncode(gameSettings));
+      gameSettings =
+          GameSettings(gameCode, _gameInfo.playerMuckLosingHand, true, true);
+      GameHiveStore.getInstance.putGameSettings(gameSettings);
     } else {
       log('In GameState initialize(), getting gameSettings from gameBox');
-      gameSettings = GameSettings.fromJson(
-          jsonDecode(gameBox.get(GameBoxKeys.GAME_SETTINGS.value())));
+      gameSettings = GameHiveStore.getInstance.getGameSettings();
     }
     log('In GameState initialize(), gameSettings = $gameSettings');
   }
