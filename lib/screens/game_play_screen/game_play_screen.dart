@@ -258,8 +258,9 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       _gameState.getCommunicationState().voiceChatEnable = true;
       _gameState.getCommunicationState().notify();
     }
-
-    _initChatListeners(gameComService.gameMessaging);
+    if (!TestService.isTesting) {
+      _initChatListeners(gameComService.gameMessaging);
+    }
 
     return _gameInfoModel;
   }
