@@ -13,6 +13,7 @@ import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/game_circle_button.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/pulsating_button.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/voice_text_widget.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 //import 'package:pokerapp/services/agora/agora.dart';
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
@@ -74,6 +75,23 @@ class _CommunicationViewState extends State<CommunicationView> {
             ));
   }
 
+
+  Widget talkingAnimation() {
+
+    return BlinkWidget(
+                  children: [
+                    SvgPicture.asset('assets/images/game/mic-step0.svg',
+                        width: 32.pw, height: 32.ph),
+                    SvgPicture.asset('assets/images/game/mic-step1.svg',
+                        width: 32.pw, height: 32.ph),
+                    SvgPicture.asset('assets/images/game/mic-step2.svg',
+                        width: 32.pw, height: 32.ph),
+                    SvgPicture.asset('assets/images/game/mic-step3.svg',
+                        width: 32.pw, height: 32.ph),
+                  ],
+                );
+  }
+
   janusAudioWidgets(GameState gameState, CommunicationState state) {
     Color iconColor = Colors.grey;
     Color micColor = Colors.grey;
@@ -91,6 +109,17 @@ class _CommunicationViewState extends State<CommunicationView> {
       log('Audio status: ${state.audioConferenceStatus.toString()} iconColor: ${iconColor.toString()} muted: ${state.muted} talking: ${state.talking}');
 
       if (state?.talking ?? false) {
+
+        mic = InkWell(
+          onTap: () {
+            if (state.audioConferenceStatus ==
+                AudioConferenceStatus.CONNECTED) {
+              gameState.janusEngine.muteUnmute();
+            }
+          },
+          child: talkingAnimation(),
+        );
+        /*
         mic = PulsatingCircleIconButton(
           child: Icon(
             Icons.keyboard_voice,
@@ -98,14 +127,11 @@ class _CommunicationViewState extends State<CommunicationView> {
             size: 24.pw,
           ),
           onTap: () {
-            if (state.audioConferenceStatus ==
-                AudioConferenceStatus.CONNECTED) {
-              gameState.janusEngine.muteUnmute();
-            }
           },
           color: Colors.red,
           radius: 0.5,
         );
+      */
       }
     }
 
