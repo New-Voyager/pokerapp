@@ -58,6 +58,15 @@ class GamePlayScreenUtilMethods {
             color: Colors.white,
           ),
           backgroundColor: Colors.red,
+          label: 'Mic Animation',
+          onTap: () => TestService.showMicAnimation(),
+        ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
           label: 'Seat Change Prompt',
           onTap: () => TestService.showSeatChangePrompt(),
         ),

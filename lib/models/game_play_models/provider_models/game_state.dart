@@ -88,6 +88,7 @@ class GameState {
   List<PlayerInSeat> _hostSeatChangeSeats = [];
   bool hostSeatChangeInProgress = false;
 
+  bool gameSounds = true;
   GameSettings gameSettings;
 
   Future<void> initialize({
