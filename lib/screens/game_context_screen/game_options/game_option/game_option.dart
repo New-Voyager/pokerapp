@@ -142,7 +142,8 @@ class _GameOptionState extends State<GameOption> {
             context: context,
             isScrollControlled: true,
             builder: (ctx) {
-              return SeatChangeBottomSheet(widget.gameCode, widget.playerUuid);
+              return SeatChangeBottomSheet(
+                  widget.gameState, widget.gameCode, widget.playerUuid);
             },
           );
         },

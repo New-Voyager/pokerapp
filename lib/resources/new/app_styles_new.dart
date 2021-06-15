@@ -218,6 +218,16 @@ class AppStylesNew {
     color: AppColorsNew.newTextColor,
   );
 
+  static final dialogTextStyle = TextStyle(
+    color: Colors.green,
+    fontSize: 10.dp,
+    fontWeight: FontWeight.normal,
+  );
+  static final textButtonStyle = TextStyle(
+    color: AppColorsNew.newGreenButtonColor,
+    fontSize: 10.dp,
+    fontWeight: FontWeight.normal,
+  );
   // static final valueTextStyle = TextStyle(
   //   fontSize: 14,
   //   fontWeight: FontWeight.w500,

@@ -61,7 +61,6 @@ class _HoleCardsViewAndFooterActionViewState
                 scale: 0.80,
                 child: StraddleDialog(
                   straddlePrompt: straddlePrompt,
-
                   onSelect: (List<bool> optionAutoValue) {
                     print(optionAutoValue);
 

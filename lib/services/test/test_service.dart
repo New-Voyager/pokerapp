@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/enums/game_status.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
@@ -19,6 +20,7 @@ import 'package:pokerapp/models/hand_log_model_new.dart';
 import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/last_hand_analyse_bottomsheet.dart';
 import 'package:pokerapp/screens/game_play_screen/pop_ups/seat_change_confirmation_pop_up.dart';
+import 'package:pokerapp/screens/game_play_screen/widgets/overlay_notification.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_service.dart';
 import 'package:pokerapp/services/test/hand_messages.dart';
@@ -52,6 +54,19 @@ class TestService {
   TestService._();
 
   static set context(BuildContext context) => _context = context;
+
+  static showTextNotification() {
+    String title = 'Seat Change Progress';
+    String subTitle = 'Player bob is requested to switch seat';
+    showOverlayNotification(
+      (context) => OverlayNotificationWidget(
+        title: title,
+        subTitle: subTitle,
+        svgPath: 'assets/images/seatchange.svg',
+      ),
+      duration: Duration(seconds: 10),
+    );
+  }
 
   static PlayerInfo get currentPlayer {
     final data = jsonDecode('''  {
@@ -792,13 +807,16 @@ class TestService {
 
   static void showSeatChangePrompt() async {
     final gameState = GameState.getState(_context);
-    final seat5 = gameState.getSeat(_context, 5);
-    seat5.player = null;
-    seat5.notify();
+    final seat1 = gameState.getSeat(_context, 1);
+    seat1.player = null;
+    seat1.notify();
     gameState.playerSeatChangeInProgress = true;
 
     SeatChangeConfirmationPopUp.dialog(
-        context: _context, gameCode: 'test', promptSecs: 10);
+        context: _context,
+        gameCode: 'test',
+        promptSecs: 300,
+        openSeats: [3, 4]);
   }
 
   static void showKeyboard() async {

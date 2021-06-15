@@ -183,8 +183,8 @@ class GameService {
   }
   """;
   static String requestForSeatChangeQuery = """
-    mutation (\$gameCode: String!) {
-    confirmed: requestSeatChange(gameCode: \$gameCode)
+    mutation (\$gameCode: String!, \$cancel: Boolean) {
+    confirmed: requestSeatChange(gameCode: \$gameCode, cancel: \$cancel)
     }
   """;
 
@@ -261,22 +261,29 @@ class GameService {
     """;
 
   static String liveGamesNewQuery = """
-query liveGames {
-  liveGames {
-    gameCode
-    gameType
-    clubName
-    buyInMin
-    buyInMax
-    smallBlind
-    bigBlind
-    maxPlayers
-    elapsedTime
-    waitlistCount
-    tableCount
-  }
-}
+      query liveGames {
+        liveGames {
+          gameCode
+          gameType
+          clubName
+          buyInMin
+          buyInMax
+          smallBlind
+          bigBlind
+          maxPlayers
+          elapsedTime
+          waitlistCount
+          tableCount
+        }
+      }
     """;
+
+  static String openSeatsQuery = """
+      query openSeats(\$gameCode: String!) {
+        seats: openSeats(gameCode: \$gameCode)
+      }
+    """;
+
   static Future<List<GameModelNew>> getLiveGamesNew() async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
     List<GameModelNew> liveGames = [];
@@ -299,6 +306,30 @@ query liveGames {
     }
     //log("Returning liveGames Count: ${liveGames.length}");
     return liveGames;
+  }
+
+  static Future<List<int>> getOpenSeats(String gameCode) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+    List<int> openSeats = [];
+    Map<String, dynamic> variables = {
+      "gameCode": gameCode,
+    };
+    QueryResult result = await _client.query(
+        QueryOptions(documentNode: gql(openSeatsQuery), variables: variables));
+
+    // print("result.data ${result.data} ${result.hasException}");
+    if (result.hasException) {
+      log("Exception In GraphQl Response: ${result.exception}");
+    } else {
+      try {
+        for (final seat in result.data['seats']) {
+          openSeats.add(int.parse(seat.toString()));
+        }
+      } catch (e) {
+        log("Exception in converting to model: $e");
+      }
+    }
+    return openSeats;
   }
 
   static Future<bool> beginHostSeatChange(
@@ -435,11 +466,17 @@ query liveGames {
     return waitingListPlayers;
   }
 
-  static Future<String> requestForSeatChange(String gameCode) async {
+  static Future<String> requestForSeatChange(String gameCode,
+      {bool cancel = false}) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
     Map<String, dynamic> variables = {
       "gameCode": gameCode,
+      "cancel": false,
     };
+
+    if (cancel ?? false) {
+      variables['cancel'] = cancel;
+    }
     QueryResult result = await _client.mutate(
       MutationOptions(
         documentNode: gql(requestForSeatChangeQuery),
@@ -454,7 +491,7 @@ query liveGames {
 
   static Future<List<SeatChangeModel>> listOfSeatChange(String gameCode) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
-    List<SeatChangeModel> seatChangePlayers = new List<SeatChangeModel>();
+    List<SeatChangeModel> seatChangePlayers = [];
     Map<String, dynamic> variables = {
       "gameCode": gameCode,
     };
@@ -514,7 +551,7 @@ query liveGames {
   }
 
   static Future<List<HighHandWinner>> getHighHandLog(String gameCode) async {
-    List<HighHandWinner> log = new List<HighHandWinner>();
+    List<HighHandWinner> log = [];
 
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
     Map<String, dynamic> variables = {
