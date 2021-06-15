@@ -72,6 +72,7 @@ class TestService {
     final gameState = GameState.getState(_context);
     final commState = gameState.getCommunicationState();
     commState.talking = true;
+    //commState.muted = true;
     gameState.myState.status = PlayerStatus.PLAYING;
     commState.audioConferenceStatus = AudioConferenceStatus.CONNECTED;
     commState.notify();

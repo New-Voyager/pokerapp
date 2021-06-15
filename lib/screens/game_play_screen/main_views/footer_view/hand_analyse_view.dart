@@ -303,20 +303,27 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
               builder: (context, value, gameContextObj, child) {
             // log('gameContextObj.isAdmin() = ${gameContextObj.isAdmin()}');
             //  log("VALUE ======== ${value.totalPending}");
-            return !widget.gameContextObject.isAdmin()
-                ? Container()
-                : Consumer<PendingApprovalsState>(
-                    // Pending approval
-                    builder: (context, value, child) {
-                      //  log("VALUE ======== ${value.totalPending}");
-                      return IconWithBadge(
-                          count: value.totalPending,
-                          onClickFunction: onClickPendingBuyInApprovals,
-                          child: GameCircleButton(
-                            iconData: Icons.pending_actions,
-                          ));
-                    },
-                  );
+            if (!widget.gameContextObject.isAdmin()) {
+              return Container();
+            }
+
+            return Consumer<PendingApprovalsState>(
+              // Pending approval
+              builder: (context, value, child) {
+                //  log("VALUE ======== ${value.totalPending}");
+                final approval = SvgPicture.asset(
+                    'assets/images/game/clipboard.svg',
+                    width: 16,
+                    height: 16,
+                    color: Colors.black);
+                return IconWithBadge(
+                    count: value.totalPending,
+                    onClickFunction: onClickPendingBuyInApprovals,
+                    child: GameCircleButton(
+                      child: approval,
+                    ));
+              },
+            );
           }),
         ],
       ),

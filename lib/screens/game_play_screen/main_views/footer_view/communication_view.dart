@@ -43,6 +43,8 @@ class _CommunicationViewState extends State<CommunicationView> {
   Widget build(BuildContext context) {
     final gameState = GameState.getState(context);
     final communicationState = gameState.getCommunicationState();
+    final chat = SvgPicture.asset('assets/images/game/chat.svg',
+        width: 16, height: 16, color: Colors.black);
 
     return ListenableProvider<CommunicationState>(
         create: (_) => communicationState,
@@ -74,7 +76,7 @@ class _CommunicationViewState extends State<CommunicationView> {
                       badgeContent: Text(gcns.count.toString()),
                       child: GameCircleButton(
                         onClickHandler: widget.chatVisibilityChange,
-                        iconData: Icons.chat,
+                        child: chat,
                       ),
                     ),
                   ),
@@ -101,12 +103,6 @@ class _CommunicationViewState extends State<CommunicationView> {
       ],
     );
     return GameCircleButton(onClickHandler: onTap, child: child);
-    /*
-    GameCircleButton(
-      child: 
-   
-    );
-    */
   }
 
   janusAudioWidgets(GameState gameState, CommunicationState state) {
@@ -136,11 +132,24 @@ class _CommunicationViewState extends State<CommunicationView> {
     }
 
     if (mic == null) {
-      mic = Icon(
-        state.muted ? Icons.mic_off : Icons.mic,
-        size: 35.pw,
-        color: micColor,
-      );
+      Widget child;
+      if (state.muted) {
+        child = SvgPicture.asset('assets/images/game/mic-mute.svg',
+            width: 16, height: 16, color: Colors.black);
+      } else {
+        child = SvgPicture.asset('assets/images/game/mic.svg',
+            width: 16, height: 16, color: Colors.black);
+      }
+      mic = GameCircleButton(
+          onClickHandler: () {
+            log('mic is tapped');
+            if (state.audioConferenceStatus ==
+                AudioConferenceStatus.CONNECTED) {
+              gameState.janusEngine.muteUnmute();
+            }
+          },
+          child: child);
+      log('audio is muted: $mic');
     }
 
     return <Widget>[
