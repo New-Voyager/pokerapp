@@ -17,7 +17,7 @@ class Screen {
   static double get _ppi => (Platform.isAndroid || Platform.isIOS) ? 150 : 96;
 
   static int get screenSize {
-    int diagonalSize = diagonalInches.round();
+    int diagonalSize = diagonalInches.floor();
     if (Platform.isIOS) {
       diagonalSize = diagonalInches.floor();
     }
