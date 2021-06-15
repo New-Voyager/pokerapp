@@ -91,7 +91,7 @@ class _GameChatState extends State<GameChat> {
     await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      builder: (_) => GameGiphies(chatService),
+      builder: (_) => GameChatBottomSheet(chatService),
     );
   }
 
