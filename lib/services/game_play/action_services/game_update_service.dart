@@ -616,8 +616,8 @@ class GameUpdateService {
 
     showOverlayNotification(
       (context) => OverlayNotificationWidget(
-        title: message,
-        subTitle: '',
+        title: 'Waitlist',
+        subTitle: message,
       ),
       duration: Duration(seconds: 10),
     );
@@ -646,7 +646,7 @@ class GameUpdateService {
         context: _context,
         gameCode: _gameState.gameCode,
       );
-    }
+    } else {}
 
     if (closed) return;
     final ValueNotifier<GeneralNotificationModel> valueNotifierNotModel =
@@ -912,35 +912,33 @@ class GameUpdateService {
       }
     }
 
-    if (!player.isMe && player != null && player.player != null) {
-      Alerts.showTextNotification(
-          duration: Duration(milliseconds: 5000),
-          text: '${player.player.name} is prompted to switch to an open seat');
-    }
     // is it sent to me ??
-    if (player.isMe) {
-      SeatChangeConfirmationPopUp.dialog(
-          context: _context,
-          gameCode: _gameState.gameCode,
-          openedSeat: openedSeat,
-          openSeats: openSeats,
-          promptSecs: promptSecs);
-    }
-    final ValueNotifier<GeneralNotificationModel> valueNotifierNotModel =
-        Provider.of<ValueNotifier<GeneralNotificationModel>>(
-      _context,
-      listen: false,
-    );
+    if (player != null) {
+      if (player.isMe) {
+        SeatChangeConfirmationPopUp.dialog(
+            context: _context,
+            gameCode: _gameState.gameCode,
+            openedSeat: openedSeat,
+            openSeats: openSeats,
+            promptSecs: promptSecs);
+      } else {
+        String title = 'Seat change in progress';
+        String playerName = 'Player';
+        if (player != null && player.player != null) {
+          playerName = player.player.name;
+        }
+        String subTitle = '$playerName is prompted to switch to an open seat';
 
-    // valueNotifierNotModel.value = GeneralNotificationModel(
-    //   titleText: 'Seat change in progress',
-    //   subTitleText:
-    //       'Seat change prompted ',
-    //   trailingWidget: CountDownTimer(
-    //     remainingTime:
-    //         promptSecs, // TODO: MULTIPLE PLAYERS?
-    //   ),
-    // );
+        showOverlayNotification(
+          (context) => OverlayNotificationWidget(
+            title: title,
+            subTitle: subTitle,
+            svgPath: 'assets/images/seatchange.svg',
+          ),
+          duration: Duration(seconds: promptSecs - 1),
+        );
+      }
+    }
   }
 
   void handlePlayerSeatChangeMove({
@@ -1002,7 +1000,7 @@ class GameUpdateService {
 
     log('Seat change done');
     // refresh the table
-    _gameState.refresh(_context);
+    resetBoard();
   }
 
   void resetBoard() async {

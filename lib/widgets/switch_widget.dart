@@ -18,7 +18,7 @@ class SwitchWidget extends StatelessWidget {
     this.value = false,
     this.useSpacer = true,
     this.disabled = false,
-  }) : super(key: key);
+  }) : super(key: key == null ? UniqueKey() : key);
 
   @override
   Widget build(BuildContext context) => ListenableProvider<ValueNotifier<bool>>(

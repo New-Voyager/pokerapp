@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
@@ -11,11 +13,14 @@ import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/widgets/switch_widget.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 
 class SeatChangeBottomSheet extends StatefulWidget {
   final String gameCode;
   final String playerUuid;
-  SeatChangeBottomSheet(this.gameCode, this.playerUuid);
+  final GameState gameState;
+
+  SeatChangeBottomSheet(this.gameState, this.gameCode, this.playerUuid);
   @override
   _SeatChangeBottomSheetState createState() => _SeatChangeBottomSheetState();
 }
@@ -29,35 +34,28 @@ class _SeatChangeBottomSheetState extends State<SeatChangeBottomSheet> {
   void initState() {
     super.initState();
     getAllSeatChangePlayers();
-    getAllCurretlyPlayingPlayer();
-  }
-
-  getAllCurretlyPlayingPlayer() async {
-    GameInfoModel _gameInfoModel =
-        await GameService.getGameInfo(widget.gameCode);
-    if (_gameInfoModel == null) {
-      return false;
-    }
-    _gameInfoModel.playersInSeats.forEach((element) {
-      if (element.playerUuid == widget.playerUuid) {
-        setState(() {
-          isSwitchShow = true;
-        });
+    for (final player in widget.gameState.gameInfo.playersInSeats) {
+      if (player.playerUuid == widget.playerUuid) {
+        isSwitchShow = true;
+        break;
       }
-    });
+      setState(() {});
+    }
   }
 
   getAllSeatChangePlayers() async {
     final result = await GameService.listOfSeatChange(widget.gameCode);
+    log('seat change players: $result');
     if (result != null) {
-      setState(() {
-        allPlayersWantToChange = result;
-        allPlayersWantToChange.forEach((player) {
-          if (player.playerUuid == widget.playerUuid) {
-            isSeatChange = true;
-          }
-        });
-      });
+      allPlayersWantToChange = result;
+      for (final player in allPlayersWantToChange) {
+        if (player.playerUuid == widget.playerUuid) {
+          log('seat change is on');
+          isSeatChange = true;
+          break;
+        }
+      }
+      setState(() {});
     }
   }
 
@@ -138,6 +136,7 @@ class _SeatChangeBottomSheetState extends State<SeatChangeBottomSheet> {
   }
 
   seatChangeButton() {
+    log('seat change: on/off: $isSeatChange');
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
@@ -156,54 +155,14 @@ class _SeatChangeBottomSheetState extends State<SeatChangeBottomSheet> {
             // print("result $result");
           } else {
             // do not want to seat change
-            String result =
-                await GameService.requestForSeatChange(widget.gameCode);
+            String result = await GameService.requestForSeatChange(
+                widget.gameCode,
+                cancel: true);
             // print("result $result");
           }
           getAllSeatChangePlayers();
         },
       ),
-      // child: ListTile(
-      //   // leading: Container(
-      //   //   decoration: BoxDecoration(
-      //   //     shape: BoxShape.circle,
-      //   //     color: AppColors.gameOption2,
-      //   //   ),
-      //   //   padding: EdgeInsets.all(5),
-      //   //   child: Image.asset(
-      //   //     "assets/images/casino.png",
-      //   //     height: 30,
-      //   //     width: 30,
-      //   //     color: Colors.white,
-      //   //   ),
-      //   // ),
-      //   title: Text(
-      //     "Seat Change Button",
-      //   ),
-      //   trailing: isSwitchShow
-      //       ? CupertinoSwitch(
-      //           value: isSeatChange,
-      //           activeColor: AppColorsNew.newGreenButtonColor,
-      //           onChanged: (bool value) async {
-      //             setState(() {
-      //               isSeatChange = value;
-      //             });
-      //             if (isSeatChange) {
-      //               // want to seat change
-      //               String result =
-      //                   await GameService.requestForSeatChange(widget.gameCode);
-      //               // print("result $result");
-      //             } else {
-      //               // do not want to seat change
-      //               String result =
-      //                   await GameService.requestForSeatChange(widget.gameCode);
-      //               // print("result $result");
-      //             }
-      //             getAllSeatChangePlayers();
-      //           },
-      //         )
-      //       : SizedBox.shrink(),
-      // ),
     );
   }
 

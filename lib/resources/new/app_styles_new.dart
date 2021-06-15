@@ -217,7 +217,7 @@ class AppStylesNew {
     fontWeight: FontWeight.w500,
     color: AppColorsNew.newTextColor,
   );
-  
+
   static final dialogTextStyle = TextStyle(
     color: Colors.green,
     fontSize: 10.dp,

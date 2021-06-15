@@ -22,4 +22,8 @@ class AppColorsNew {
   static const Color actionRowBgColor = Color(0xFF0B2324);
   static const Color darkGreenShadeColor = Color(0xFF0C2013);
   static const Color yellowAccentColor = Color(0xFFD89E40);
+  static const Color notificationIconColor = Color(0xFFA7C4BC);
+  static const Color notificationBackgroundColor = Color(0xFF2F5D62);
+  static const Color notificationTitleColor = Color(0xFFDFEEEA);
+  static const Color notificationTextColor = Color(0xFFDFEEEA);
 }

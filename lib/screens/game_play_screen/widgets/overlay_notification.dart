@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:overlay_support/overlay_support.dart';
-import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
+import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class OverlayNotificationWidget extends StatelessWidget {
   final String amount;
@@ -9,13 +11,19 @@ class OverlayNotificationWidget extends StatelessWidget {
   final int pendingCount;
   final String title;
   final String subTitle;
+  final Image image;
+  final IconData icon;
+  final String svgPath;
 
   OverlayNotificationWidget(
       {this.amount,
       this.playerName,
       this.pendingCount,
       this.title,
-      this.subTitle});
+      this.subTitle,
+      this.image,
+      this.icon,
+      this.svgPath});
   @override
   Widget build(BuildContext context) {
     String title = this.title;
@@ -27,6 +35,40 @@ class OverlayNotificationWidget extends StatelessWidget {
       }
     }
 
+    Widget leadingImage;
+    if (image != null) {
+      leadingImage = image;
+    } else if (icon != null) {
+      leadingImage = Icon(
+        icon,
+        size: 20.pw,
+        color: Colors.black,
+      );
+    } else if (svg != null) {
+      leadingImage = SvgPicture.asset(
+        svgPath,
+        height: 24.pw,
+        width: 24.pw,
+      );
+    }
+    if (leadingImage != null) {
+      leadingImage = Container(
+        height: 32.pw,
+        width: 32.pw,
+        decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: Colors.black,
+            border: Border.all(color: AppColorsNew.notificationIconColor)),
+        padding: EdgeInsets.all(5.pw),
+        margin: EdgeInsets.symmetric(
+          horizontal: 5.pw,
+          vertical: 5.pw,
+        ),
+        child: leadingImage,
+      );
+    } else {
+      leadingImage = Container();
+    }
     return SlideDismissible(
       key: ValueKey("overlayNotification"),
       direction: DismissDirection.horizontal,
@@ -34,43 +76,40 @@ class OverlayNotificationWidget extends StatelessWidget {
         child: Card(
           child: Container(
             decoration: BoxDecoration(
-              gradient:
-                  LinearGradient(colors: [Colors.grey.shade200, Colors.white]),
-              borderRadius: BorderRadius.circular(8),
+              color: AppColorsNew.notificationBackgroundColor,
+              borderRadius: BorderRadius.circular(8.pw),
             ),
             child: ListTile(
-              contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-              tileColor: Colors.transparent,
-              title: Text(
-                title,
-                style: TextStyle(
-                  color: AppColors.appAccentColor,
-                  fontWeight: FontWeight.w600,
-                  fontSize: 14,
-                ),
-              ),
-              subtitle: subTitle == null
-                  ? SizedBox.shrink()
-                  : Text(
-                      subTitle,
-                      style: TextStyle(
-                        color: AppColors.lightGrayTextColor,
-                        fontWeight: FontWeight.w400,
-                        fontSize: 12,
-                      ),
-                    ),
-              trailing: IconButton(
-                  icon: Icon(
-                    Icons.cancel_rounded,
-                    color: AppColors.appAccentColor,
+                contentPadding:
+                    EdgeInsets.symmetric(horizontal: 8.pw, vertical: 8.ph),
+                tileColor: Colors.transparent,
+                title: Text(
+                  title,
+                  style: TextStyle(
+                    color: AppColorsNew.notificationTitleColor,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 10.dp,
                   ),
-                  onPressed: () {
-                    OverlaySupportEntry.of(context).dismiss();
-                  }),
-              leading: Image.asset(
-                AppAssets.cardsImage,
-              ),
-            ),
+                ),
+                subtitle: subTitle == null
+                    ? SizedBox.shrink()
+                    : Text(
+                        subTitle,
+                        style: TextStyle(
+                          color: AppColorsNew.notificationTextColor,
+                          fontWeight: FontWeight.w400,
+                          fontSize: 8.dp,
+                        ),
+                      ),
+                trailing: IconButton(
+                    icon: Icon(
+                      Icons.cancel_rounded,
+                      color: AppColors.appAccentColor,
+                    ),
+                    onPressed: () {
+                      OverlaySupportEntry.of(context).dismiss();
+                    }),
+                leading: leadingImage),
           ),
         ),
       ),
