@@ -22,6 +22,7 @@ import 'package:pokerapp/screens/game_play_screen/widgets/overlay_notification.d
 import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/game_play/graphql/seat_change_service.dart';
+import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:provider/provider.dart';
 import 'package:pokerapp/screens/game_play_screen/game_play_screen_util_methods.dart';
@@ -615,8 +616,8 @@ class GameUpdateService {
 
     showOverlayNotification(
       (context) => OverlayNotificationWidget(
-        title: message,
-        subTitle: '',
+        title: 'Waitlist',
+        subTitle: message,
       ),
       duration: Duration(seconds: 10),
     );
@@ -645,7 +646,7 @@ class GameUpdateService {
         context: _context,
         gameCode: _gameState.gameCode,
       );
-    }
+    } else {}
 
     if (closed) return;
     final ValueNotifier<GeneralNotificationModel> valueNotifierNotModel =
@@ -854,16 +855,23 @@ class GameUpdateService {
     tableState.updateTableStatusSilent(tableStatus);
     tableState.updateGameStatusSilent(gameStatus);
 
-    if (tableStatus == AppConstants.TABLE_STATUS_GAME_RUNNING) {
+    if (tableStatus == AppConstants.TABLE_STATUS_GAME_RUNNING ||
+        tableStatus == AppConstants.TABLE_STATUS_GAME_RUNNING_1) {
+      log('Game is running. Update the state');
+      _gameState.refresh(_context);
       /* QUERY_CURRENT_HAND is done here, only after making sure,
       * that the game is running.
       * This is done to get update of the game */
       gameContext.handActionService.queryCurrentHand();
     } else if (gameStatus == AppConstants.GAME_ENDED) {
       // end the game
+      log('Game has ended. Update the state');
+      _gameState.refresh(_context);
       tableState.updateTableStatusSilent(AppConstants.GAME_ENDED);
       resetBoard();
     } else if (gameStatus == AppConstants.GAME_PAUSED) {
+      log('Game has ended. Update the state');
+      _gameState.refresh(_context);
       // paused the game
       tableState.updateTableStatusSilent(AppConstants.GAME_PAUSED);
       resetBoard();
@@ -884,46 +892,60 @@ class GameUpdateService {
         "playerName": "yong",
         "playerId": 630,
         "openedSeat": 4,
-        "playerUuid": "c2dc2c3d-13da-46cc-8c66-caa0c77459de",
+        "playerUuid": " ",
         "expTime": "2021-05-29T22:46:13.000Z",
         "promptSecs": 10,
         "requestId": "SEATCHANGE:1622328363754"
       }    
     */
+    _gameState.playerSeatChangeInProgress = true;
+    // we are in seat change
+    Provider.of<SeatChangeNotifier>(
+      _context,
+      listen: false,
+    )..updateSeatChangeInProgress(true);
+    _gameState.refresh(_context);
 
     final playerId = data['playerId'];
     final player = _gameState.getSeatByPlayer(playerId);
+    log('Seat Change: Prompt player ${player.player.name}');
     final promptSecs = int.parse(data['promptSecs'].toString());
     final openedSeat = int.parse(data['openedSeat'].toString());
-    final gameState = GameState.getState(_context);
-    gameState.playerSeatChangeInProgress = true;
-    gameState.seatChangeSeat = openedSeat;
-    final seat = _gameState.getSeat(_context, openedSeat);
-    seat.notify();
+    final openSeats = await GameService.getOpenSeats(_gameState.gameCode);
+    for (final seatNo in openSeats) {
+      final seat = _gameState.getSeat(_context, seatNo);
+      if (seat != null) {
+        seat.notify();
+      }
+    }
 
     // is it sent to me ??
-    if (player.isMe) {
-      SeatChangeConfirmationPopUp.dialog(
-          context: _context,
-          gameCode: _gameState.gameCode,
-          openedSeat: openedSeat,
-          promptSecs: promptSecs);
-    }
-    final ValueNotifier<GeneralNotificationModel> valueNotifierNotModel =
-        Provider.of<ValueNotifier<GeneralNotificationModel>>(
-      _context,
-      listen: false,
-    );
+    if (player != null) {
+      if (player.isMe) {
+        SeatChangeConfirmationPopUp.dialog(
+            context: _context,
+            gameCode: _gameState.gameCode,
+            openedSeat: openedSeat,
+            openSeats: openSeats,
+            promptSecs: promptSecs);
+      } else {
+        String title = 'Seat change in progress';
+        String playerName = 'Player';
+        if (player != null && player.player != null) {
+          playerName = player.player.name;
+        }
+        String subTitle = '$playerName is prompted to switch to an open seat';
 
-    // valueNotifierNotModel.value = GeneralNotificationModel(
-    //   titleText: 'Seat change in progress',
-    //   subTitleText:
-    //       'Seat change prompted ',
-    //   trailingWidget: CountDownTimer(
-    //     remainingTime:
-    //         promptSecs, // TODO: MULTIPLE PLAYERS?
-    //   ),
-    // );
+        showOverlayNotification(
+          (context) => OverlayNotificationWidget(
+            title: title,
+            subTitle: subTitle,
+            svgPath: 'assets/images/seatchange.svg',
+          ),
+          duration: Duration(seconds: promptSecs - 1),
+        );
+      }
+    }
   }
 
   void handlePlayerSeatChangeMove({
@@ -959,6 +981,7 @@ class GameUpdateService {
 
     /* wait for the animation to finish */
     await Future.delayed(AppConstants.seatChangeAnimationDuration);
+    _gameState.refresh(_context);
 
     // we refresh, when we get the PLAYER_SEAT_CHANGE_DONE message
   }
@@ -976,9 +999,15 @@ class GameUpdateService {
         "requestId": "SEATMOVE:1622328379110"
       }    
     */
+    // we are in seat change
+    Provider.of<SeatChangeNotifier>(
+      _context,
+      listen: false,
+    )..updateSeatChangeInProgress(false);
+
     log('Seat change done');
     // refresh the table
-    _gameState.refresh(_context);
+    resetBoard();
   }
 
   void resetBoard() async {

@@ -2,14 +2,17 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:audio_recorder/audio_recorder.dart';
+import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:pokerapp/enums/player_status.dart';
+import 'package:pokerapp/models/game_play_models/business/game_chat_notfi_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
+import 'package:pokerapp/screens/game_play_screen/widgets/game_circle_button.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/pulsating_button.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/voice_text_widget.dart';
 
@@ -17,6 +20,7 @@ import 'package:pokerapp/screens/game_play_screen/widgets/voice_text_widget.dart
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:pokerapp/widgets/blinking_widget.dart';
 import 'package:provider/provider.dart';
+import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 //TODO: We need to get GameChatService here and record audio and send audio
 // via game chat channel for the games that don't use live audio.
@@ -60,19 +64,19 @@ class _CommunicationViewState extends State<CommunicationView> {
                 }
 
                 children.add(
-                  GestureDetector(
-                    onTap: widget.chatVisibilityChange,
-                    child: Container(
-                      padding: EdgeInsets.all(5),
-                      child: Icon(
-                        Icons.chat,
-                        size: 35,
-                        color: AppColors.appAccentColor,
+                  Consumer<GameChatNotifState>(
+                    builder: (_, gcns, __) => Badge(
+                      animationType: BadgeAnimationType.scale,
+                      showBadge: gcns.hasUnreadMessages,
+                      position: BadgePosition.topEnd(top: 0, end: 0),
+                      badgeContent: Text(gcns.count.toString()),
+                      child: GameCircleButton(
+                        onClickHandler: widget.chatVisibilityChange,
+                        iconData: Icons.chat,
                       ),
                     ),
                   ),
                 );
-
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: children,
@@ -92,7 +96,7 @@ class _CommunicationViewState extends State<CommunicationView> {
       } else if (state.audioConferenceStatus ==
           AudioConferenceStatus.CONNECTED) {
         iconColor = Colors.green;
-        micColor = AppColors.appAccentColor;
+        micColor = AppColorsNew.newGreenButtonColor;
       }
 
       log('Audio status: ${state.audioConferenceStatus.toString()} iconColor: ${iconColor.toString()} muted: ${state.muted} talking: ${state.talking}');
@@ -102,7 +106,7 @@ class _CommunicationViewState extends State<CommunicationView> {
           child: Icon(
             Icons.keyboard_voice,
             color: Colors.white,
-            size: 24,
+            size: 24.pw,
           ),
           onTap: () {
             if (state.audioConferenceStatus ==
@@ -119,7 +123,7 @@ class _CommunicationViewState extends State<CommunicationView> {
     if (mic == null) {
       mic = Icon(
         state.muted ? Icons.mic_off : Icons.mic,
-        size: 35,
+        size: 35.pw,
         color: micColor,
       );
     }
@@ -129,7 +133,7 @@ class _CommunicationViewState extends State<CommunicationView> {
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
         child: Icon(
           Icons.circle,
-          size: 15,
+          size: 15.pw,
           color: iconColor,
         ),
       ),
@@ -140,7 +144,7 @@ class _CommunicationViewState extends State<CommunicationView> {
           }
         },
         child: Container(
-          padding: EdgeInsets.all(5),
+          padding: EdgeInsets.symmetric(vertical: 4, horizontal: 12),
           child: mic,
         ),
       ),
@@ -175,8 +179,8 @@ class _CommunicationViewState extends State<CommunicationView> {
             onMicPressEnd(context, details),
         child: Icon(
           Icons.mic,
-          color: AppColors.appAccentColor,
-          size: 40,
+          color: AppColorsNew.newGreenButtonColor,
+          size: 34.pw,
         ),
       ),
       SizedBox(height: 15),

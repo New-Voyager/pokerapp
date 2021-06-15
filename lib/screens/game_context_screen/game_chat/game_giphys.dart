@@ -6,6 +6,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/gif_list_widget.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/app/tenor_service.dart';
@@ -14,14 +15,16 @@ import 'package:tenor/tenor.dart';
 
 import 'add_favourite_giphy.dart';
 
-class GameGiphies extends StatefulWidget {
+import 'package:pokerapp/utils/adaptive_sizer.dart';
+
+class GameChatBottomSheet extends StatefulWidget {
   final GameMessagingService chatService;
-  GameGiphies(this.chatService);
+  GameChatBottomSheet(this.chatService);
   @override
-  _GameGiphiesState createState() => _GameGiphiesState();
+  _GameChatBottomSheetState createState() => _GameChatBottomSheetState();
 }
 
-class _GameGiphiesState extends State<GameGiphies> {
+class _GameChatBottomSheetState extends State<GameChatBottomSheet> {
   List<TenorResult> _gifs;
   Timer _timer;
   bool isFavourite = true;
@@ -66,23 +69,52 @@ class _GameGiphiesState extends State<GameGiphies> {
     );
   }
 
+  Widget _buildButton(context, text) => InkWell(
+        onTap: () {
+          widget.chatService.sendText(text);
+          Navigator.pop(context);
+        },
+        child: Container(
+          // height: 32.ph,
+          // width: 80.pw,
+          margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+          padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+          decoration: BoxDecoration(
+            shape: BoxShape.rectangle,
+            border: Border.all(
+              color: AppColorsNew.newGreenButtonColor,
+              width: 1.0,
+            ),
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Text(
+            text,
+            textAlign: TextAlign.center,
+            style: AppStyles.clubItemInfoTextStyle.copyWith(
+              fontSize: 15.0,
+              color: AppColorsNew.newGreenButtonColor,
+            ),
+          ),
+        ),
+      );
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: AppColors.cardBackgroundColor,
+      color: AppColorsNew.darkGreenShadeColor,
       height: MediaQuery.of(context).size.height / 2,
       padding: const EdgeInsets.all(10.0),
       child: Column(
         children: [
           /* tab bar */
-
           Stack(
             children: [
               Row(
                 children: [
-                  SizedBox(
-                    width: 10,
-                  ),
+                  // sep
+                  SizedBox(width: 10),
+
+                  // tab
                   GestureDetector(
                     onTap: () {
                       setState(() {
@@ -93,14 +125,17 @@ class _GameGiphiesState extends State<GameGiphies> {
                     },
                     child: Icon(
                       isFavourite ? Icons.star : Icons.star_border,
-                      color:
-                          isFavourite ? AppColors.appAccentColor : Colors.grey,
-                      size: 30,
+                      color: isFavourite
+                          ? AppColorsNew.yellowAccentColor
+                          : Colors.grey,
+                      size: 25,
                     ),
                   ),
-                  SizedBox(
-                    width: 10,
-                  ),
+
+                  // sep
+                  SizedBox(width: 10),
+
+                  // gifs
                   ...AppConstants.GIF_CATEGORIES
                       .map(
                         (e) => GestureDetector(
@@ -117,21 +152,22 @@ class _GameGiphiesState extends State<GameGiphies> {
                               e,
                               style: currentSelectedTab == e
                                   ? AppStyles.footerResultTextStyle2.copyWith(
+                                      fontSize: 15.0,
                                       fontWeight: FontWeight.bold,
-                                      color: AppColors.appAccentColor,
+                                      color: AppColorsNew.yellowAccentColor,
                                     )
                                   : AppStyles.footerResultTextStyle2.copyWith(
-                                      fontWeight: FontWeight.w300,
-                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 15.0,
                                     ),
                             ),
                           ),
                         ),
                       )
                       .toList(),
-                  SizedBox(
-                    width: 10,
-                  ),
+
+                  // sep
+                  SizedBox(width: 10),
                 ],
               ),
               Positioned(
@@ -191,17 +227,22 @@ class _GameGiphiesState extends State<GameGiphies> {
               ),
             ],
           ),
-          Divider(
-            color: Colors.grey,
-            height: 8,
+
+          /* divider */
+          Container(
+            margin: EdgeInsets.symmetric(vertical: 8.0),
+            child: Divider(color: Colors.grey),
           ),
-          /* GIFs */
+
+          /* Favourites OR GIFs */
           isFavourite
               ? Expanded(
                   child: SingleChildScrollView(
+                    physics: BouncingScrollPhysics(),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
+                        // add button
                         Align(
                           child: GestureDetector(
                             onTap: () async {
@@ -217,45 +258,27 @@ class _GameGiphiesState extends State<GameGiphies> {
                             },
                             child: Icon(
                               Icons.add_circle_outline,
-                              size: 30,
-                              color: AppColors.appAccentColor,
+                              size: 25,
+                              color: AppColorsNew.yellowAccentColor,
                             ),
                           ),
                           alignment: Alignment.topRight,
                         ),
+
+                        // favourite lists
                         favouriteGiphies != null
                             ? Wrap(
                                 children: [
                                   ...favouriteGiphies
-                                      .map(
-                                        (e) => GestureDetector(
-                                          onTap: () {
-                                            setState(() {
-                                              widget.chatService.sendText(e);
-                                              Navigator.pop(context, e);
-                                            });
-                                          },
-                                          child: Container(
-                                            decoration: BoxDecoration(
-                                              color: AppColors.contentColor,
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                            ),
-                                            margin: const EdgeInsets.all(10.0),
-                                            padding: const EdgeInsets.all(10.0),
-                                            child: Text(
-                                              e,
-                                              style: AppStyles
-                                                  .footerResultTextStyle2,
-                                            ),
-                                          ),
-                                        ),
-                                      )
+                                      .map((text) => _buildButton(
+                                            context,
+                                            text,
+                                          ))
                                       .toList(),
                                 ],
                               )
                             : Center(
-                                child: CircularProgressIndicator(),
+                                child: Text('Empty'),
                               )
                       ],
                     ),

@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/resources/app_constants.dart';
@@ -50,8 +51,22 @@ class CenterButtonView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final seatChange = Provider.of<SeatChangeNotifier>(context, listen: true);
+    final seatChange = Provider.of<SeatChangeNotifier>(context, listen: false);
     final gameContext = Provider.of<GameContextObject>(context, listen: false);
+    final gameState = GameState.getState(context);
+    log('Seat Change: seat change in progress: ${gameState.playerSeatChangeInProgress}');
+    if (gameState.playerSeatChangeInProgress) {
+      return Center(
+          child: Text(
+        'Seat Change in Progress',
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 14.0,
+          fontWeight: FontWeight.w600,
+        ),
+      ));
+    }
+
     if (this.gameStatus == AppConstants.GAME_PAUSED) {
       if (!seatChange.seatChangeInProgress) {
         if (gameContext.isAdmin()) {

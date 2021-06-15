@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
 
 class Alerts {
   static void showSnackBar(BuildContext context, String text,
@@ -21,19 +22,23 @@ class Alerts {
     ));
   }
 
-  static void showTextNotification({@required String text}) {
+  static void showTextNotification(
+      {@required String text, duration: Duration}) {
+    if (duration == null) {
+      duration = Duration(milliseconds: 1500);
+    }
     showSimpleNotification(
       Text(
         text,
         style: TextStyle(
-          color: Colors.white,
+          color: AppColorsNew.newTextColor,
           fontSize: 16.0,
-          fontFamily: AppAssets.fontFamilyLato,
           fontWeight: FontWeight.w400,
         ),
       ),
-      background: AppColors.cardBackgroundColor,
+      background: AppColorsNew.darkGreenShadeColor,
       position: NotificationPosition.top,
+      duration: duration,
     );
   }
 }

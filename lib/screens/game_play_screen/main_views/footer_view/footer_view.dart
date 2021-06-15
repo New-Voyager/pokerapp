@@ -83,10 +83,15 @@ class _FooterViewState extends State<FooterView>
             /* hole card view & footer action view */
             !me
                 ? Container(width: screenWidth, height: screenHeight / 3)
-                : HoleCardsViewAndFooterActionView(
-                    gameContext: widget.gameContext,
-                    playerModel: players.me,
-                    showActionWidget: actionState.show,
+                : Consumer<StraddlePromptState>(
+                    // rebuild based straddle prompt
+                    builder: (context, _, __) {
+                      return HoleCardsViewAndFooterActionView(
+                        gameContext: widget.gameContext,
+                        playerModel: players.me,
+                        showActionWidget: actionState.show,
+                      );
+                    },
                   ),
 
             /* communication widgets */
@@ -100,7 +105,6 @@ class _FooterViewState extends State<FooterView>
             ),
 
             /* seat confirm widget */
-            // FIXME: BUG INTRODUCED HERE, CHECK HOW THE SEAT CHANGE CONFIRMED WIDGET IS DISPLAYED
             Consumer2<SeatChangeNotifier, GameContextObject>(
               builder: (
                 context,
@@ -110,11 +114,13 @@ class _FooterViewState extends State<FooterView>
               ) =>
                   (hostSeatChange.seatChangeInProgress ||
                               gameState.hostSeatChangeInProgress) &&
-                          gameContextObject.isHost()
+                          gameContextObject.isHost() &&
+                          !gameState.playerSeatChangeInProgress
                       ? Align(
                           alignment: Alignment.center,
                           child: SeatChangeConfirmWidget(
-                              gameCode: widget.gameContext.gameState.gameCode),
+                            gameCode: widget.gameContext.gameState.gameCode,
+                          ),
                         )
                       : SizedBox.shrink(),
             )

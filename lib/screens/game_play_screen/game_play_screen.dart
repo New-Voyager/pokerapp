@@ -3,7 +3,9 @@ import 'package:after_layout/after_layout.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:dart_nats/dart_nats.dart' as nats;
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:pokerapp/enums/game_status.dart';
+import 'package:pokerapp/models/game_play_models/business/game_chat_notfi_state.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
@@ -11,7 +13,9 @@ import 'package:pokerapp/models/game_play_models/provider_models/host_seat_chang
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/player_info.dart';
+import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_constants.dart';
+import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/game_context_screen/game_chat/game_chat.dart';
 import 'package:pokerapp/screens/game_play_screen/game_play_screen_util_methods.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/board_view.dart';
@@ -35,9 +39,13 @@ import 'package:pokerapp/services/nats/nats.dart';
 import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:provider/provider.dart';
+import 'package:wakelock/wakelock.dart';
 
 import '../../services/test/test_service.dart';
 import 'game_play_screen_util_methods.dart';
+
+// FIXME: THIS NEEDS TO BE CHANGED AS PER DEVICE CONFIG
+const kScrollOffsetPosition = 40.0;
 
 /*
 7 inch tablet
@@ -251,6 +259,8 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       _gameState.getCommunicationState().notify();
     }
 
+    _initChatListeners(gameComService.gameMessaging);
+
     return _gameInfoModel;
   }
 
@@ -258,6 +268,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   @override
   void dispose() {
     // TestService.isTesting = false;
+    Wakelock.disable();
     try {
       _gameContextObj?.dispose();
       // agora?.disposeObject();
@@ -352,6 +363,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     super.initState();
     log('game screen initState');
     /* the init method is invoked only once */
+    Wakelock.enable();
     _init().then(
       (gameInfoModel) => setState(
         () => _gameInfoModel = gameInfoModel,
@@ -359,21 +371,57 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     );
   }
 
+  final ScrollController _gcsController = ScrollController();
+
+  bool _isChatScreenVisible = false;
+
+  void _onChatMessage() {
+    if (_isChatScreenVisible) {
+      // notify of new messages & rebuild the game message list
+      _providerContext.read<GameChatNotifState>().notifyNewMessage();
+
+      /* if user is scrolled away, we need to notify */
+      if (_gcsController.hasClients &&
+          (_gcsController.offset > kScrollOffsetPosition)) {
+        _providerContext.read<GameChatNotifState>().addUnread();
+      }
+    } else {
+      _providerContext.read<GameChatNotifState>()?.addUnread();
+    }
+  }
+
+  void _initChatListeners(GameMessagingService gms) {
+    gms.listen(
+      onText: (ChatMessage _) => _onChatMessage(),
+      onGiphy: (ChatMessage _) => _onChatMessage(),
+    );
+
+    _gcsController.addListener(() {
+      if (_gcsController.offset < kScrollOffsetPosition) {
+        _providerContext.read<GameChatNotifState>().readAll();
+      }
+    });
+  }
+
   Widget _buildChatWindow(BuildContext context) =>
       Consumer<ValueNotifier<bool>>(
-        builder: (_, vnChatVisibility, __) => AnimatedSwitcher(
-          duration: const Duration(milliseconds: 200),
-          child: vnChatVisibility.value
-              ? Align(
-                  alignment: Alignment.bottomCenter,
-                  child: GameChat(
-                    chatService:
-                        this._gameContextObj.gameComService.gameMessaging,
-                    onChatVisibilityChange: () => toggleChatVisibility(context),
-                  ),
-                )
-              : const SizedBox.shrink(),
-        ),
+        builder: (context, vnChatVisibility, __) {
+          _isChatScreenVisible = vnChatVisibility.value;
+          return AnimatedSwitcher(
+            duration: const Duration(milliseconds: 200),
+            child: vnChatVisibility.value
+                ? Align(
+                    alignment: Alignment.bottomCenter,
+                    child: GameChat(
+                      scrollController: _gcsController,
+                      chatService: _gameContextObj.gameComService.gameMessaging,
+                      onChatVisibilityChange: () =>
+                          toggleChatVisibility(context),
+                    ),
+                  )
+                : const SizedBox.shrink(),
+          );
+        },
       );
 
   @override
@@ -410,205 +458,222 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         // }
         return true;
       },
-      child: SafeArea(
-        child: Scaffold(
-          /* FIXME: THIS FLOATING ACTION BUTTON IS FOR SHOWING THE TESTS */
-          floatingActionButton: GamePlayScreenUtilMethods.floatingActionButton(
-            onReload: () {},
-          ),
-          resizeToAvoidBottomInset: true,
-          backgroundColor: Colors.black,
-          body: Builder(
-            builder: (_) {
-              // show a progress indicator if the game info object is null
-              if (_gameInfoModel == null)
-                return Center(child: CircularProgressIndicator());
+      child: Container(
+        decoration: AppStylesNew.BgGreenRadialGradient,
+        child: SafeArea(
+          child: Scaffold(
+            /* FIXME: THIS FLOATING ACTION BUTTON IS FOR SHOWING THE TESTS */
+            floatingActionButton:
+                GamePlayScreenUtilMethods.floatingActionButton(
+              onReload: () {},
+            ),
+            resizeToAvoidBottomInset: true,
+            backgroundColor: Colors.transparent,
+            body: Builder(
+              builder: (_) {
+                // show a progress indicator if the game info object is null
+                if (_gameInfoModel == null)
+                  return Center(child: CircularProgressIndicator());
 
-              var dividerTotalHeight = MediaQuery.of(context).size.height / 6;
+                var dividerTotalHeight = MediaQuery.of(context).size.height / 6;
 
-              /* get the screen sizes, and initialize the board attributes */
-              BoardAttributesObject boardAttributes = BoardAttributesObject(
-                screenSize: Screen.diagonalInches,
-              );
+                /* get the screen sizes, and initialize the board attributes */
+                BoardAttributesObject boardAttributes = BoardAttributesObject(
+                  screenSize: Screen.diagonalInches,
+                );
 
-              double tableScale = boardAttributes.tableScale;
-              double divider1 =
-                  boardAttributes.tableDividerHeightScale * dividerTotalHeight;
-              final providers = GamePlayScreenUtilMethods.getProviders(
-                context: context,
-                gameInfoModel: _gameInfoModel,
-                gameCode: widget.gameCode,
-                gameState: _gameState,
-                //agora: agora,
-                boardAttributes: boardAttributes,
-                gameContextObject: _gameContextObj,
-                hostSeatChangePlayers: _hostSeatChangeSeats,
-                seatChangeInProgress: _hostSeatChangeInProgress,
-              );
-              return MultiProvider(
-                providers: providers,
-                builder: (BuildContext context, _) {
-                  this._providerContext = context;
+                double tableScale = boardAttributes.tableScale;
+                double divider1 = boardAttributes.tableDividerHeightScale *
+                    dividerTotalHeight;
+                final providers = GamePlayScreenUtilMethods.getProviders(
+                  context: context,
+                  gameInfoModel: _gameInfoModel,
+                  gameCode: widget.gameCode,
+                  gameState: _gameState,
+                  //agora: agora,
+                  boardAttributes: boardAttributes,
+                  gameContextObject: _gameContextObj,
+                  hostSeatChangePlayers: _hostSeatChangeSeats,
+                  seatChangeInProgress: _hostSeatChangeInProgress,
+                );
+                return MultiProvider(
+                  providers: providers,
+                  builder: (BuildContext context, _) {
+                    this._providerContext = context;
 
-                  if (_gameContextObj != null) {
-                    if (_gameContextObj.gameUpdateService == null) {
-                      /* setup the listeners to the channels
-                        * Any messages received from these channel updates,
-                        * will be taken care of by the respective class
-                        * and actions will be taken in the UI
-                        * as there will be Listeners implemented down this hierarchy level */
+                    if (_gameContextObj != null) {
+                      if (_gameContextObj.gameUpdateService == null) {
+                        /* setup the listeners to the channels
+                          * Any messages received from these channel updates,
+                          * will be taken care of by the respective class
+                          * and actions will be taken in the UI
+                          * as there will be Listeners implemented down this hierarchy level */
 
-                      _gameContextObj.gameUpdateService = GameUpdateService(
-                        _providerContext,
-                        _gameState,
-                      );
-                      _gameContextObj.gameUpdateService.loop();
+                        _gameContextObj.gameUpdateService = GameUpdateService(
+                          _providerContext,
+                          _gameState,
+                        );
+                        _gameContextObj.gameUpdateService.loop();
 
-                      _gameContextObj.gameComService.gameToPlayerChannelStream
-                          ?.listen((nats.Message message) {
-                        if (!_gameContextObj.gameComService.active) return;
-
-                        // log('gameToPlayerChannel(${message.subject}): ${message.string}');
-
-                        /* This stream will receive game related messages
-                          * e.g.
-                          * 1. Player Actions - Sitting on table, getting more chips, leaving game, taking break,
-                          * 2. Game Actions - New hand, informing about Next actions, PLayer Acted
-                          *  */
-
-                        _gameContextObj.gameUpdateService
-                            .handle(message.string);
-                      });
-                    }
-
-                    if (_gameContextObj.handActionService == null) {
-                      _gameContextObj.handActionService = HandActionService(
-                        _providerContext,
-                        _gameState,
-                        _gameContextObj.gameComService,
-                        _gameContextObj.currentPlayer,
-                        audioPlayer: _audioPlayer,
-                      );
-                      _gameContextObj.handActionService.loop();
-
-                      if (!TestService.isTesting) {
-                        _gameContextObj.gameComService.handToAllChannelStream
-                            .listen((nats.Message message) {
+                        _gameContextObj.gameComService.gameToPlayerChannelStream
+                            ?.listen((nats.Message message) {
                           if (!_gameContextObj.gameComService.active) return;
-                          if (_gameContextObj.handActionService == null) return;
-                          /* This stream receives hand related messages that is common to all players
-                          * e.g
-                          * New Hand - contains hand status, dealerPos, sbPos, bbPos, nextActionSeat
-                          * Next Action - contains the seat No which is to act next
-                          *
-                          * This stream also contains the output for the query of current hand*/
-                          _gameContextObj.handActionService
-                              .handle(message.string);
-                        });
 
-                        _gameContextObj.gameComService.handToPlayerChannelStream
-                            .listen((nats.Message message) {
-                          if (!_gameContextObj.gameComService.active) return;
-                          if (_gameContextObj.handActionService == null) return;
-                          /* This stream receives hand related messages that is specific to THIS player only
-                          * e.g
-                          * Deal - contains seat No and cards
-                          * Your Action - seat No, available actions & amounts */
-                          _gameContextObj.handActionService
+                          // log('gameToPlayerChannel(${message.subject}): ${message.string}');
+
+                          /* This stream will receive game related messages
+                            * e.g.
+                            * 1. Player Actions - Sitting on table, getting more chips, leaving game, taking break,
+                            * 2. Game Actions - New hand, informing about Next actions, PLayer Acted
+                            *  */
+
+                          _gameContextObj.gameUpdateService
                               .handle(message.string);
                         });
                       }
+
+                      if (_gameContextObj.handActionService == null) {
+                        _gameContextObj.handActionService = HandActionService(
+                          _providerContext,
+                          _gameState,
+                          _gameContextObj.gameComService,
+                          _gameContextObj.currentPlayer,
+                          audioPlayer: _audioPlayer,
+                        );
+                        _gameContextObj.handActionService.loop();
+
+                        if (!TestService.isTesting) {
+                          _gameContextObj.gameComService.handToAllChannelStream
+                              .listen((nats.Message message) {
+                            if (!_gameContextObj.gameComService.active) return;
+                            if (_gameContextObj.handActionService == null)
+                              return;
+                            /* This stream receives hand related messages that is common to all players
+                            * e.g
+                            * New Hand - contains hand status, dealerPos, sbPos, bbPos, nextActionSeat
+                            * Next Action - contains the seat No which is to act next
+                            *
+                            * This stream also contains the output for the query of current hand*/
+                            _gameContextObj.handActionService
+                                .handle(message.string);
+                          });
+
+                          _gameContextObj
+                              .gameComService.handToPlayerChannelStream
+                              .listen((nats.Message message) {
+                            if (!_gameContextObj.gameComService.active) return;
+                            if (_gameContextObj.handActionService == null)
+                              return;
+                            /* This stream receives hand related messages that is specific to THIS player only
+                            * e.g
+                            * Deal - contains seat No and cards
+                            * Your Action - seat No, available actions & amounts */
+                            _gameContextObj.handActionService
+                                .handle(message.string);
+                          });
+                        }
+                      }
                     }
-                  }
 
-                  /* set proper context for test service */
-                  TestService.context = context;
+                    /* set proper context for test service */
+                    TestService.context = context;
 
-                  AudioBufferService.create().then(
-                    (Map<String, String> tmpAudioFiles) =>
-                        Provider.of<ValueNotifier<Map<String, String>>>(
-                      context,
-                      listen: false,
-                    ).value = tmpAudioFiles,
-                  );
+                    AudioBufferService.create().then(
+                      (Map<String, String> tmpAudioFiles) =>
+                          Provider.of<ValueNotifier<Map<String, String>>>(
+                        context,
+                        listen: false,
+                      ).value = tmpAudioFiles,
+                    );
 
-                  /* This listenable provider takes care of showing or hiding the chat widget */
-                  return ListenableProvider<ValueNotifier<bool>>(
-                    create: (_) => ValueNotifier<bool>(false),
-                    builder: (context, _) => Stack(
-                      alignment: Alignment.topCenter,
-                      children: [
-                        BackgroundView(),
+                    /* This listenable provider takes care of showing or hiding the chat widget */
+                    return ListenableProvider<ValueNotifier<bool>>(
+                      create: (_) => ValueNotifier<bool>(false),
+                      builder: (context, _) => Stack(
+                        alignment: Alignment.topCenter,
+                        children: [
+                          BackgroundView(),
 
-                        /* main view */
-                        Column(
-                          children: [
-                            _gameState?.audioConfEnabled ?? false
-                                ? Consumer<JanusEngine>(
-                                    builder: (_, __, ___) {
-                                      return _gameState.janusEngine
-                                          .audioWidget();
-                                    },
-                                  )
-                                : SizedBox.shrink(),
+                          /* main view */
+                          Column(
+                            children: [
+                              _gameState?.audioConfEnabled ?? false
+                                  ? Consumer<JanusEngine>(
+                                      builder: (_, __, ___) {
+                                        return _gameState.janusEngine
+                                            .audioWidget();
+                                      },
+                                    )
+                                  : SizedBox.shrink(),
 
-                            // header section
-                            HeaderView(
-                              gameCode: widget.gameCode,
-                            ),
-                            // empty space to highlight the background view
-                            SizedBox(
-                              width: width,
-                              height: divider1,
-                            ),
-                            // main board view
-                            Container(
-                              width: boardDimensions.width,
-                              height: boardDimensions.height,
-                              child: Transform.scale(
-                                scale: tableScale,
-                                // 10 inch: 0.85, 5inch: 1.0
-                                child: BoardView(
-                                  gameComService:
-                                      _gameContextObj?.gameComService,
-                                  gameInfo: _gameInfoModel,
-                                  audioPlayer: _audioPlayer,
-                                  onUserTap: onJoinGame,
-                                  onStartGame: startGame,
+                              // header section
+                              HeaderView(
+                                gameCode: widget.gameCode,
+                              ),
+                              // empty space to highlight the background view
+                              SizedBox(
+                                width: width,
+                                height: divider1,
+                              ),
+                              // main board view
+                              Container(
+                                width: boardDimensions.width,
+                                height: boardDimensions.height,
+                                child: Transform.scale(
+                                  scale: tableScale,
+                                  // 10 inch: 0.85, 5inch: 1.0
+                                  child: BoardView(
+                                    gameComService:
+                                        _gameContextObj?.gameComService,
+                                    gameInfo: _gameInfoModel,
+                                    audioPlayer: _audioPlayer,
+                                    onUserTap: onJoinGame,
+                                    onStartGame: startGame,
+                                  ),
                                 ),
                               ),
-                            ),
 
-                            /* divider that divides the board view and the footer */
-                            Divider(
-                              color: Colors.amberAccent,
-                              thickness: 3,
-                            ),
-
-                            // footer section
-                            Expanded(
-                              child: FooterView(
-                                this._gameContextObj,
-                                widget.gameCode,
-                                _currentPlayer.uuid,
-                                () => toggleChatVisibility(context),
-                                _gameInfoModel.clubCode,
+                              /* divider that divides the board view and the footer */
+                              Divider(
+                                color: AppColors.dividerColor,
+                                thickness: 3,
                               ),
-                            ),
-                          ],
-                        ),
 
-                        /* chat window widget */
-                        _buildChatWindow(context),
+                              // footer section
+                              Expanded(
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                      image: AssetImage(
+                                        "assets/images/bottom_pattern.png",
+                                      ),
+                                      fit: BoxFit.fill,
+                                    ),
+                                  ),
+                                  child: FooterView(
+                                    this._gameContextObj,
+                                    widget.gameCode,
+                                    _currentPlayer.uuid,
+                                    () => toggleChatVisibility(context),
+                                    _gameInfoModel.clubCode,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
 
-                        /* notification view */
-                        Notifications.buildNotificationWidget(),
-                      ],
-                    ),
-                  );
-                },
-              );
-            },
+                          /* chat window widget */
+                          _buildChatWindow(context),
+
+                          /* notification view */
+                          Notifications.buildNotificationWidget(),
+                        ],
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
           ),
         ),
       ),

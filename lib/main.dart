@@ -7,6 +7,7 @@ import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/models/pending_approvals.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/services/data/hive_datasource_impl.dart';
 import 'package:pokerapp/services/firebase/analytics_service.dart';
@@ -90,7 +91,7 @@ class MyApp extends StatelessWidget {
                         //   locator<AnalyticsService>().getAnalyticsObserver()
                         // ],
                         theme: ThemeData(
-                          primarySwatch: Colors.blue,
+                          colorScheme: ColorScheme.dark(),
                           visualDensity: VisualDensity.adaptivePlatformDensity,
                           fontFamily: AppAssetsNew.fontFamilyPoppins,
                         ),

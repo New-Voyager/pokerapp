@@ -127,10 +127,7 @@ class TextInputWidget extends StatelessWidget {
 
             if (value == null) return;
 
-            Provider.of<ValueNotifier<double>>(
-              context,
-              listen: false,
-            ).value = value;
+            context.read<ValueNotifier<double>>().value = value;
           },
           child: Container(
             padding: const EdgeInsets.symmetric(

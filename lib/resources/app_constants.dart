@@ -104,6 +104,8 @@ class AppConstants {
   static const String RUN_IT_TWICE_YES = 'RUN_IT_TWICE_YES';
   static const String RUN_IT_TWICE_NO = 'RUN_IT_TWICE_NO';
 
+  static const String STRADDLE = 'STRADDLE';
+
   /* NEW UPDATE player statuses */
   static const String NEW_PLAYER = 'NEW_PLAYER';
   static const String RELOAD_CHIPS = 'RELOAD_CHIPS';
@@ -130,6 +132,7 @@ class AppConstants {
   static const String WAITING_TO_BE_STARTED = 'WAITING_TO_BE_STARTED';
   static const String TABLE_STATUS_NOT_ENOUGH_PLAYERS = 'NOT_ENOUGH_PLAYERS';
   static const String TABLE_STATUS_GAME_RUNNING = 'TABLE_STATUS_GAME_RUNNING';
+  static const String TABLE_STATUS_GAME_RUNNING_1 = 'GAME_RUNNING';
   static const String TABLE_STATUS_HOST_SEATCHANGE_IN_PROGRESS =
       'HOST_SEATCHANGE_IN_PROGRESS';
 

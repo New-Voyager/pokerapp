@@ -183,7 +183,7 @@ class AppStyles {
   // club item info text styles
   static const clubCodeStyle = TextStyle(
     color: Colors.white,
-    fontSize: 16.0,
+    fontSize: 15.0,
     fontFamily: AppAssets.fontFamilyLato,
   );
 

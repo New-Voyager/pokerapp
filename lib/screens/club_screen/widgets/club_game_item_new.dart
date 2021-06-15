@@ -5,6 +5,8 @@ import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
+import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/widgets/custom_text_button.dart';
 
@@ -19,18 +21,14 @@ class ClubGameItemNew extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.fromLTRB(0, 5.0, 0, 5.0),
-      decoration: BoxDecoration(
-          color: AppColors.cardBackgroundColor,
-          boxShadow: AppStyles.cardBoxShadow,
-          borderRadius:
-              BorderRadius.all(Radius.circular(AppDimensions.cardRadius))),
+      decoration: AppStylesNew.actionRowDecoration,
       child: Row(
         children: <Widget>[
           /*
           * color
           * */
           Expanded(
-            flex: 2,
+            flex: 1,
             child: Container(),
           ),
           Expanded(
@@ -47,7 +45,6 @@ class ClubGameItemNew extends StatelessWidget {
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 19.0,
-                        fontFamily: AppAssets.fontFamilyLato,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
@@ -66,7 +63,6 @@ class ClubGameItemNew extends StatelessWidget {
                             style: TextStyle(
                               color: AppColors.contentColor,
                               fontSize: 12.0,
-                              fontFamily: AppAssets.fontFamilyLato,
                               fontWeight: FontWeight.w400,
                             ),
                           ),
@@ -82,7 +78,6 @@ class ClubGameItemNew extends StatelessWidget {
                             style: TextStyle(
                               color: AppColors.contentColor,
                               fontSize: 12.0,
-                              fontFamily: AppAssets.fontFamilyLato,
                               fontWeight: FontWeight.w400,
                             ),
                           ),
@@ -105,7 +100,6 @@ class ClubGameItemNew extends StatelessWidget {
                             style: TextStyle(
                               color: AppColors.contentColor,
                               fontSize: 12.0,
-                              fontFamily: AppAssets.fontFamilyLato,
                               fontWeight: FontWeight.w400,
                             ),
                           ),
@@ -121,7 +115,6 @@ class ClubGameItemNew extends StatelessWidget {
                             style: TextStyle(
                               color: AppColors.contentColor,
                               fontSize: 12.0,
-                              fontFamily: AppAssets.fontFamilyLato,
                               fontWeight: FontWeight.w400,
                             ),
                           ),

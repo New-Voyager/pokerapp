@@ -14,6 +14,7 @@ import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/boar
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/screens/game_play_screen/game_play_screen_util_methods.dart';
+import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/widgets/blinking_widget.dart';
 import 'package:pokerapp/widgets/cards/hidden_card_view.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/displaycards.dart';
@@ -124,6 +125,11 @@ class PlayerView extends StatelessWidget {
           ),
         ),
       );
+
+  bool _showHoleCard(GameState gameState, Seat seat) {
+    return gameState.currentPlayerId == seat.player.playerId &&
+        gameState.currentPlayerUuid == '';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -268,8 +274,7 @@ class PlayerView extends StatelessWidget {
                 offset: boardAttributes.playerHoleCardOffset,
                 child: Transform.scale(
                   scale: boardAttributes.playerHoleCardScale,
-                  child: gameState.currentPlayerId == seat.player.playerId &&
-                          gameState.currentPlayerUuid == ''
+                  child: _showHoleCard(gameState, seat)
                       ? _buildDisplayCardsWidget(seat, FooterStatus.Result)
                       : PlayerCardsWidget(
                           seat,
@@ -341,7 +346,7 @@ class PlayerView extends StatelessWidget {
   }
 
   Widget talkingAnimation() {
-    double left = null;
+    double left;
     double right = -20;
     double talkingAngle = 0;
     if (seat.uiSeatPos == SeatPos.topRight ||

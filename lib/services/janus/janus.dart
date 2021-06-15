@@ -20,7 +20,8 @@ class JanusEngine extends ChangeNotifier {
 
   String uuid;
   int playerId;
-  String janusUrl = 'ws://139.59.57.29:8188/';
+  String janusUrlWs = 'ws://139.59.57.29:8188/';
+  String janusUrl;
   String janusToken;
   String janusSecret;
   String roomPin;
@@ -98,7 +99,7 @@ class JanusEngine extends ChangeNotifier {
     log('janus: engine: ${engine}');
     if (engine == null) {
       log('janus: Using websocket');
-      transport = WebSocketJanusTransport(url: janusUrl);
+      transport = WebSocketJanusTransport(url: janusUrlWs);
       engine = JanusClient(
           withCredentials: true,
           //apiSecret: janusSecret,

@@ -8,6 +8,7 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
 import 'package:pokerapp/models/game_play_models/business/card_distribution_model.dart';
+import 'package:pokerapp/models/game_play_models/business/game_chat_notfi_state.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
@@ -57,8 +58,8 @@ class GamePlayScreenUtilMethods {
             color: Colors.white,
           ),
           backgroundColor: Colors.red,
-          label: 'Buyin Test',
-          onTap: () => TestService.buyInTest(),
+          label: 'Seat Change Prompt',
+          onTap: () => TestService.showSeatChangePrompt(),
         ),
         SpeedDialChild(
           child: Icon(
@@ -66,120 +67,139 @@ class GamePlayScreenUtilMethods {
             color: Colors.white,
           ),
           backgroundColor: Colors.red,
-          label: 'Hand result',
-          onTap: () => TestService.showHandResult(),
-        ),
-        SpeedDialChild(
-          child: Icon(
-            Icons.adb_rounded,
-            color: Colors.white,
-          ),
-          backgroundColor: Colors.red,
-          label: 'Show Bets',
-          onTap: () => TestService.showBets(),
-        ),
-        SpeedDialChild(
-          child: Icon(
-            Icons.adb_rounded,
-            color: Colors.white,
-          ),
-          backgroundColor: Colors.red,
-          label: 'Simulate Bet Movement',
-          onTap: () => TestService.simulateBetMovement(),
-        ),
-        SpeedDialChild(
-          child: Icon(
-            Icons.adb_rounded,
-            color: Colors.white,
-          ),
-          backgroundColor: Colors.red,
-          label: 'Move Pot to Player',
-          onTap: () => TestService.movePotToPlayer(),
-        ),
-        SpeedDialChild(
-          child: Icon(
-            Icons.adb_rounded,
-            color: Colors.white,
-          ),
-          backgroundColor: Colors.red,
-          label: 'distribute cards',
-          onTap: () => TestService.distributeCards(),
-        ),
-        SpeedDialChild(
-          child: Icon(
-            Icons.adb_rounded,
-            color: Colors.white,
-          ),
-          backgroundColor: Colors.red,
-          label: 'player stopped talking',
-          onTap: () => TestService.setPlayerStoppedTalking(),
+          label: 'Notification',
+          onTap: () => TestService.showTextNotification(),
         ),
 
-        SpeedDialChild(
-          child: Icon(
-            Icons.adb_rounded,
-            color: Colors.white,
-          ),
-          backgroundColor: Colors.red,
-          label: 'set isAdmin false',
-          onTap: () => TestService.setIsAdminFalse(),
-        ),
-        SpeedDialChild(
-          child: Icon(
-            Icons.adb_rounded,
-            color: Colors.white,
-          ),
-          backgroundColor: Colors.red,
-          label: 'Bet Widget',
-          onTap: () => TestService.testBetWidget(),
-        ),
-        SpeedDialChild(
-          child: Icon(
-            Icons.adb_rounded,
-            color: Colors.white,
-          ),
-          backgroundColor: Colors.red,
-          label: 'Number Keyboard',
-          onTap: () => TestService.showKeyboard(),
-        ),
-        SpeedDialChild(
-          child: Icon(
-            Icons.adb_rounded,
-            color: Colors.white,
-          ),
-          backgroundColor: Colors.red,
-          label: 'Show holecards',
-          onTap: () => TestService.showHoleCards(),
-        ),
-        SpeedDialChild(
-          child: Icon(
-            Icons.adb_rounded,
-            color: Colors.white,
-          ),
-          backgroundColor: Colors.red,
-          label: 'addTurnOrRiverCard',
-          onTap: () => TestService.addTurnOrRiverCard(),
-        ),
+        // SpeedDialChild(
+        //   child: Icon(
+        //     Icons.adb_rounded,
+        //     color: Colors.white,
+        //   ),
+        //   backgroundColor: Colors.red,
+        //   label: 'Buyin Test',
+        //   onTap: () => TestService.buyInTest(),
+        // ),
+        // SpeedDialChild(
+        //   child: Icon(
+        //     Icons.adb_rounded,
+        //     color: Colors.white,
+        //   ),
+        //   backgroundColor: Colors.red,
+        //   label: 'Hand result',
+        //   onTap: () => TestService.showHandResult(),
+        // ),
+        // SpeedDialChild(
+        //   child: Icon(
+        //     Icons.adb_rounded,
+        //     color: Colors.white,
+        //   ),
+        //   backgroundColor: Colors.red,
+        //   label: 'Show Bets',
+        //   onTap: () => TestService.showBets(),
+        // ),
+        // SpeedDialChild(
+        //   child: Icon(
+        //     Icons.adb_rounded,
+        //     color: Colors.white,
+        //   ),
+        //   backgroundColor: Colors.red,
+        //   label: 'Simulate Bet Movement',
+        //   onTap: () => TestService.simulateBetMovement(),
+        // ),
+        // SpeedDialChild(
+        //   child: Icon(
+        //     Icons.adb_rounded,
+        //     color: Colors.white,
+        //   ),
+        //   backgroundColor: Colors.red,
+        //   label: 'Move Pot to Player',
+        //   onTap: () => TestService.movePotToPlayer(),
+        // ),
+        // SpeedDialChild(
+        //   child: Icon(
+        //     Icons.adb_rounded,
+        //     color: Colors.white,
+        //   ),
+        //   backgroundColor: Colors.red,
+        //   label: 'distribute cards',
+        //   onTap: () => TestService.distributeCards(),
+        // ),
+        // SpeedDialChild(
+        //   child: Icon(
+        //     Icons.adb_rounded,
+        //     color: Colors.white,
+        //   ),
+        //   backgroundColor: Colors.red,
+        //   label: 'player stopped talking',
+        //   onTap: () => TestService.setPlayerStoppedTalking(),
+        // ),
 
-        SpeedDialChild(
-          child: Icon(
-            Icons.adb_rounded,
-            color: Colors.white,
-          ),
-          backgroundColor: Colors.red,
-          label: 'Flop',
-          onTap: () => TestService.addFlopCards(),
-        ),
+        // SpeedDialChild(
+        //   child: Icon(
+        //     Icons.adb_rounded,
+        //     color: Colors.white,
+        //   ),
+        //   backgroundColor: Colors.red,
+        //   label: 'set isAdmin false',
+        //   onTap: () => TestService.setIsAdminFalse(),
+        // ),
+        // SpeedDialChild(
+        //   child: Icon(
+        //     Icons.adb_rounded,
+        //     color: Colors.white,
+        //   ),
+        //   backgroundColor: Colors.red,
+        //   label: 'Bet Widget',
+        //   onTap: () => TestService.testBetWidget(),
+        // ),
+        // SpeedDialChild(
+        //   child: Icon(
+        //     Icons.adb_rounded,
+        //     color: Colors.white,
+        //   ),
+        //   backgroundColor: Colors.red,
+        //   label: 'Number Keyboard',
+        //   onTap: () => TestService.showKeyboard(),
+        // ),
+        // SpeedDialChild(
+        //   child: Icon(
+        //     Icons.adb_rounded,
+        //     color: Colors.white,
+        //   ),
+        //   backgroundColor: Colors.red,
+        //   label: 'Show holecards',
+        //   onTap: () => TestService.showHoleCards(),
+        // ),
+        // SpeedDialChild(
+        //   child: Icon(
+        //     Icons.adb_rounded,
+        //     color: Colors.white,
+        //   ),
+        //   backgroundColor: Colors.red,
+        //   label: 'addTurnOrRiverCard',
+        //   onTap: () => TestService.addTurnOrRiverCard(),
+        // ),
 
-        SpeedDialChild(
-          child: Icon(
-            Icons.adb_rounded,
-            color: Colors.white,
-          ),
-          backgroundColor: Colors.red,
-          label: 'Reset & fold all players',
-          onTap: () => TestService.resetGameState(),
-        ),
+        // SpeedDialChild(
+        //   child: Icon(
+        //     Icons.adb_rounded,
+        //     color: Colors.white,
+        //   ),
+        //   backgroundColor: Colors.red,
+        //   label: 'Flop',
+        //   onTap: () => TestService.addFlopCards(),
+        // ),
+
+        // SpeedDialChild(
+        //   child: Icon(
+        //     Icons.adb_rounded,
+        //     color: Colors.white,
+        //   ),
+        //   backgroundColor: Colors.red,
+        //   label: 'Reset & fold all players',
+        //   onTap: () => TestService.resetGameState(),
+        // ),
         // SpeedDialChild(
         //   child: Icon(
         //     Icons.adb_rounded,
@@ -556,6 +576,11 @@ class GamePlayScreenUtilMethods {
       /* Provider to deal with host seat change functionality */
       ListenableProvider<SeatChangeNotifier>(
         create: (_) => seatChangeProvider,
+      ),
+
+      /* for game chat notifications - unread messages, counts */
+      ListenableProvider<GameChatNotifState>(
+        create: (_) => GameChatNotifState(),
       ),
     ];
 

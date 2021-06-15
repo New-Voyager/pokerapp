@@ -1,14 +1,26 @@
+import 'dart:developer';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/seat_change_model.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
+import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
+import 'package:pokerapp/resources/new/app_strings_new.dart';
+import 'package:pokerapp/resources/new/app_styles_new.dart';
+import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/game_service.dart';
+import 'package:pokerapp/widgets/switch_widget.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 
 class SeatChangeBottomSheet extends StatefulWidget {
   final String gameCode;
   final String playerUuid;
-  SeatChangeBottomSheet(this.gameCode, this.playerUuid);
+  final GameState gameState;
+
+  SeatChangeBottomSheet(this.gameState, this.gameCode, this.playerUuid);
   @override
   _SeatChangeBottomSheetState createState() => _SeatChangeBottomSheetState();
 }
@@ -22,35 +34,28 @@ class _SeatChangeBottomSheetState extends State<SeatChangeBottomSheet> {
   void initState() {
     super.initState();
     getAllSeatChangePlayers();
-    getAllCurretlyPlayingPlayer();
-  }
-
-  getAllCurretlyPlayingPlayer() async {
-    GameInfoModel _gameInfoModel =
-        await GameService.getGameInfo(widget.gameCode);
-    if (_gameInfoModel == null) {
-      return false;
-    }
-    _gameInfoModel.playersInSeats.forEach((element) {
-      if (element.playerUuid == widget.playerUuid) {
-        setState(() {
-          isSwitchShow = true;
-        });
+    for (final player in widget.gameState.gameInfo.playersInSeats) {
+      if (player.playerUuid == widget.playerUuid) {
+        isSwitchShow = true;
+        break;
       }
-    });
+      setState(() {});
+    }
   }
 
   getAllSeatChangePlayers() async {
     final result = await GameService.listOfSeatChange(widget.gameCode);
+    log('seat change players: $result');
     if (result != null) {
-      setState(() {
-        allPlayersWantToChange = result;
-        allPlayersWantToChange.forEach((player) {
-          if (player.playerUuid == widget.playerUuid) {
-            isSeatChange = true;
-          }
-        });
-      });
+      allPlayersWantToChange = result;
+      for (final player in allPlayersWantToChange) {
+        if (player.playerUuid == widget.playerUuid) {
+          log('seat change is on');
+          isSeatChange = true;
+          break;
+        }
+      }
+      setState(() {});
     }
   }
 
@@ -58,14 +63,21 @@ class _SeatChangeBottomSheetState extends State<SeatChangeBottomSheet> {
   Widget build(BuildContext context) {
     height = MediaQuery.of(context).size.height;
     width = MediaQuery.of(context).size.width;
-    print("playerUuid ${widget.playerUuid}");
-    print("gameCode ${widget.gameCode}");
+    // print("playerUuid ${widget.playerUuid}");
+    // print("gameCode ${widget.gameCode}");
     return Container(
-      color: Colors.black,
+      decoration: AppStylesNew.BgGreenRadialGradient,
       height: height / 2,
-      child: Column(
-        mainAxisSize: MainAxisSize.max,
-        children: [header, seatChangeButton(), playersInList()],
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: CustomAppBar(
+          context: context,
+          titleText: AppStringsNew.seatChangeTitle,
+        ),
+        body: Column(
+          mainAxisSize: MainAxisSize.max,
+          children: [seatChangeButton(), playersInList()],
+        ),
       ),
     );
   }
@@ -73,29 +85,29 @@ class _SeatChangeBottomSheetState extends State<SeatChangeBottomSheet> {
   playersInList() {
     return Expanded(
         child: Container(
-      margin: EdgeInsets.all(10.0),
+      margin: EdgeInsets.symmetric(horizontal: 16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "Players in the List",
-            style: AppStyles.clubCodeStyle,
+            AppStringsNew.playersInWaitingListText,
+            style: AppStylesNew.labelTextStyle,
           ),
-          const SizedBox(
-            height: 10.0,
-          ),
+          AppDimensionsNew.getVerticalSizedBox(10),
           Expanded(
             child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(5),
-                  color: AppColors.gameOptionBackGroundColor,
-                ),
-                child: ListView.builder(
-                  itemCount: allPlayersWantToChange.length,
-                  shrinkWrap: true,
-                  itemBuilder: (_, index) =>
-                      playerItem(allPlayersWantToChange[index]),
-                )),
+              decoration: AppStylesNew.actionRowDecoration,
+              child: allPlayersWantToChange.length > 0
+                  ? ListView.builder(
+                      itemCount: allPlayersWantToChange.length,
+                      shrinkWrap: true,
+                      itemBuilder: (_, index) =>
+                          playerItem(allPlayersWantToChange[index]),
+                    )
+                  : Center(
+                      child: Text(AppStringsNew.noSeatChangeRequestsText),
+                    ),
+            ),
           ),
         ],
       ),
@@ -124,61 +136,32 @@ class _SeatChangeBottomSheetState extends State<SeatChangeBottomSheet> {
   }
 
   seatChangeButton() {
+    log('seat change: on/off: $isSeatChange');
     return Container(
-      margin: EdgeInsets.all(5),
-      padding: EdgeInsets.symmetric(horizontal: 15, vertical: 8),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(5),
-        color: AppColors.gameOptionBackGroundColor,
-      ),
-      child: Row(
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: AppColors.gameOption2,
-            ),
-            padding: EdgeInsets.all(5),
-            child: Image.asset(
-              "assets/images/casino.png",
-              height: 30,
-              width: 30,
-              color: Colors.white,
-            ),
-          ),
-          SizedBox(
-            width: 10,
-          ),
-          Text(
-            "Seat Change Button",
-            style: AppStyles.clubCodeStyle,
-          ),
-          Spacer(),
-          isSwitchShow
-              ? Switch(
-                  value: isSeatChange,
-                  activeTrackColor: AppColors.positiveColor,
-                  activeColor: Colors.white,
-                  onChanged: (bool value) async {
-                    setState(() {
-                      isSeatChange = value;
-                    });
-                    if (isSeatChange) {
-                      // want to seat change
-                      String result = await GameService.requestForSeatChange(
-                          widget.gameCode);
-                      // print("result $result");
-                    } else {
-                      // do not want to seat change
-                      String result = await GameService.requestForSeatChange(
-                          widget.gameCode);
-                      // print("result $result");
-                    }
-                    getAllSeatChangePlayers();
-                  },
-                )
-              : Container(),
-        ],
+      margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+      decoration: AppStylesNew.actionRowDecoration,
+      child: SwitchWidget(
+        label: AppStringsNew.seatChangeTitle,
+        value: isSeatChange,
+        onChange: (bool value) async {
+          setState(() {
+            isSeatChange = value;
+          });
+          if (isSeatChange) {
+            // want to seat change
+            String result =
+                await GameService.requestForSeatChange(widget.gameCode);
+            // print("result $result");
+          } else {
+            // do not want to seat change
+            String result = await GameService.requestForSeatChange(
+                widget.gameCode,
+                cancel: true);
+            // print("result $result");
+          }
+          getAllSeatChangePlayers();
+        },
       ),
     );
   }

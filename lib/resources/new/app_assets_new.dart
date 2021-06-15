@@ -23,4 +23,8 @@ class AppAssetsNew {
   static String pathJoinBackground = 'assets/images/livegames/join.png';
 
   static String pathArrowImage = "assets/images/game-settings/next_arrow.png";
+
+  static var handHistoryPath = "assets/images/handhistory.svg";
+
+  static var lastHandPath = "assets/images/lasthand.svg";
 }
