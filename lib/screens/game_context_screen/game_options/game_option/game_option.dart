@@ -17,7 +17,6 @@ import 'package:pokerapp/screens/game_screens/hand_history/hand_history.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/data/GameHiveStore.dart';
 import 'package:pokerapp/services/data/box_type.dart';
-import 'package:pokerapp/services/data/game_box_keys.dart';
 import 'package:pokerapp/services/data/hive_datasource_impl.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'seat_change_bottom_sheet.dart';
