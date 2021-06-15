@@ -273,7 +273,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
   @override
   Widget build(BuildContext context) {
     //log('isAdmin: ${widget.gameContextObject.isAdmin()}');
-
+    final gameState = GameState.getState(context);
     height = MediaQuery.of(context).size.height;
     bottomSheetHeight = height / 3;
     return Align(
@@ -281,7 +281,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
       child: Column(
         children: [
           Consumer<MyState>(builder: (context, myState, child) {
-            //log('myState.gameStatus = ${myState.gameStatus}, myState.status = ${myState.status}');
+            log('myState.gameStatus = ${myState.gameStatus}, myState.status = ${myState.status}');
             return myState.gameStatus == GameStatus.RUNNING &&
                     myState.status == PlayerStatus.PLAYING
                 ? GameCircleButton(
