@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/business/game_chat_notfi_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
-import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_styles.dart';
@@ -12,12 +11,8 @@ import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:pokerapp/widgets/emoji_picker_widget.dart';
 import 'package:provider/provider.dart';
 
-// FIXME: THIS NEEDS TO BE CHANGED AS PER DEVICE CONFIG
-const kScrollOffsetPosition = 40.0;
-
 class GameChat extends StatefulWidget {
   final ScrollController scrollController;
-  // final BuildContext parentContext;
   final GameMessagingService chatService;
   final Function onChatVisibilityChange;
 
@@ -25,7 +20,6 @@ class GameChat extends StatefulWidget {
     @required this.chatService,
     @required this.onChatVisibilityChange,
     @required this.scrollController,
-    // @required this.parentContext,
   });
 
   @override
@@ -40,41 +34,15 @@ class _GameChatState extends State<GameChat> {
 
   int myID = -1;
 
-  // void _onMessage() {
-  //   if (mounted) {
-  //     // refresh state
-  //     setState(() {});
-
-  //     /* if user is scrolled away, we need to notify */
-  //     if (_scrollController.offset > kScrollOffsetPosition) {
-  //       print('scroll offset: ${_scrollController.offset}');
-  //       context.read<GameChatNotifState>().addUnread();
-  //     }
-  //   } else {
-  //     widget.parentContext?.read<GameChatNotifState>()?.addUnread();
-  //   }
-  // }
-
   void _init() {
     this.myID = context.read<GameContextObject>().currentPlayer.id;
-
-    // chatService.listen(
-    //   onText: (ChatMessage _) => _onMessage(),
-    //   onGiphy: (ChatMessage _) => _onMessage(),
-    // );
-
-    // _scrollController.addListener(() {
-    //   if (_scrollController.offset < kScrollOffsetPosition) {
-    //     context.read<GameChatNotifState>().readAll();
-    //   }
-    // });
   }
 
   @override
   void initState() {
     super.initState();
 
-    // mark all the messages as read pot frame building
+    // mark all the messages as read post frame building
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       context.read<GameChatNotifState>().readAll();
     });
@@ -111,16 +79,20 @@ class _GameChatState extends State<GameChat> {
   }
 
   void _onGifClick() async {
+    /* when current user sends any message, scroll to the bottom */
+    _scrollToBottom();
+
     await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       builder: (_) => GameGiphies(chatService),
     );
-
-    _scrollToBottom();
   }
 
   void _onSendClick() {
+    /* when current user sends any message, scroll to the bottom */
+    _scrollToBottom();
+
     // validates the text message
     final String text = _textEditingController.text.trim();
     if (text.isEmpty) return;
@@ -129,9 +101,6 @@ class _GameChatState extends State<GameChat> {
     chatService.sendText(text);
 
     _textEditingController.clear();
-
-    /* when current user sends any message, scroll to the bottom */
-    _scrollToBottom();
   }
 
   Widget _buildCloseButton() {

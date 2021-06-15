@@ -23,7 +23,6 @@ import 'package:pokerapp/screens/game_play_screen/main_views/board_view/decorati
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/footer_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/header_view/header_view.dart';
 import 'package:pokerapp/screens/game_play_screen/notifications/notifications.dart';
-import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
 //import 'package:pokerapp/services/agora/agora.dart';
 import 'package:pokerapp/services/app/game_service.dart';
@@ -44,6 +43,9 @@ import 'package:wakelock/wakelock.dart';
 
 import '../../services/test/test_service.dart';
 import 'game_play_screen_util_methods.dart';
+
+// FIXME: THIS NEEDS TO BE CHANGED AS PER DEVICE CONFIG
+const kScrollOffsetPosition = 40.0;
 
 /*
 7 inch tablet
