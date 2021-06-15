@@ -5,6 +5,7 @@ import 'package:dart_nats/dart_nats.dart' as nats;
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:pokerapp/enums/game_status.dart';
+import 'package:pokerapp/models/game_play_models/business/game_chat_notfi_state.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
@@ -256,6 +257,8 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       _gameState.getCommunicationState().notify();
     }
 
+    _initChatListeners(gameComService.gameMessaging);
+
     return _gameInfoModel;
   }
 
@@ -366,21 +369,57 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     );
   }
 
+  final ScrollController _gcsController = ScrollController();
+
+  bool _isChatScreenVisible = false;
+
+  void _onChatMessage() {
+    if (_isChatScreenVisible) {
+      // notify of new messages & rebuild the game message list
+      _providerContext.read<GameChatNotifState>().notifyNewMessage();
+
+      /* if user is scrolled away, we need to notify */
+      if (_gcsController.hasClients &&
+          (_gcsController.offset > kScrollOffsetPosition)) {
+        _providerContext.read<GameChatNotifState>().addUnread();
+      }
+    } else {
+      _providerContext.read<GameChatNotifState>()?.addUnread();
+    }
+  }
+
+  void _initChatListeners(GameMessagingService gms) {
+    gms.listen(
+      onText: (ChatMessage _) => _onChatMessage(),
+      onGiphy: (ChatMessage _) => _onChatMessage(),
+    );
+
+    _gcsController.addListener(() {
+      if (_gcsController.offset < kScrollOffsetPosition) {
+        _providerContext.read<GameChatNotifState>().readAll();
+      }
+    });
+  }
+
   Widget _buildChatWindow(BuildContext context) =>
       Consumer<ValueNotifier<bool>>(
-        builder: (context, vnChatVisibility, __) => AnimatedSwitcher(
-          duration: const Duration(milliseconds: 200),
-          child: vnChatVisibility.value
-              ? Align(
-                  alignment: Alignment.bottomCenter,
-                  child: GameChat(
-                    parentContext: context,
-                    chatService: _gameContextObj.gameComService.gameMessaging,
-                    onChatVisibilityChange: () => toggleChatVisibility(context),
-                  ),
-                )
-              : const SizedBox.shrink(),
-        ),
+        builder: (context, vnChatVisibility, __) {
+          _isChatScreenVisible = vnChatVisibility.value;
+          return AnimatedSwitcher(
+            duration: const Duration(milliseconds: 200),
+            child: vnChatVisibility.value
+                ? Align(
+                    alignment: Alignment.bottomCenter,
+                    child: GameChat(
+                      scrollController: _gcsController,
+                      chatService: _gameContextObj.gameComService.gameMessaging,
+                      onChatVisibilityChange: () =>
+                          toggleChatVisibility(context),
+                    ),
+                  )
+                : const SizedBox.shrink(),
+          );
+        },
       );
 
   @override

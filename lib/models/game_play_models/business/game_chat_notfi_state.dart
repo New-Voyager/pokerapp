@@ -15,4 +15,8 @@ class GameChatNotifState extends ChangeNotifier {
     _count += 1;
     notifyListeners();
   }
+
+  void notifyNewMessage() {
+    notifyListeners();
+  }
 }

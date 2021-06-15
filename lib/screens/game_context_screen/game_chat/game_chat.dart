@@ -16,14 +16,16 @@ import 'package:provider/provider.dart';
 const kScrollOffsetPosition = 40.0;
 
 class GameChat extends StatefulWidget {
-  final BuildContext parentContext;
+  final ScrollController scrollController;
+  // final BuildContext parentContext;
   final GameMessagingService chatService;
   final Function onChatVisibilityChange;
 
   GameChat({
     @required this.chatService,
     @required this.onChatVisibilityChange,
-    @required this.parentContext,
+    @required this.scrollController,
+    // @required this.parentContext,
   });
 
   @override
@@ -32,40 +34,40 @@ class GameChat extends StatefulWidget {
 
 class _GameChatState extends State<GameChat> {
   GameMessagingService get chatService => widget.chatService;
+  ScrollController get _scrollController => widget.scrollController;
 
   final _textEditingController = TextEditingController();
-  final ScrollController _scrollController = ScrollController();
 
   int myID = -1;
 
-  void _onMessage() {
-    if (mounted) {
-      // refresh state
-      setState(() {});
+  // void _onMessage() {
+  //   if (mounted) {
+  //     // refresh state
+  //     setState(() {});
 
-      /* if user is scrolled away, we need to notify */
-      if (_scrollController.offset > kScrollOffsetPosition) {
-        print('scroll offset: ${_scrollController.offset}');
-        context.read<GameChatNotifState>().addUnread();
-      }
-    } else {
-      widget.parentContext?.read<GameChatNotifState>()?.addUnread();
-    }
-  }
+  //     /* if user is scrolled away, we need to notify */
+  //     if (_scrollController.offset > kScrollOffsetPosition) {
+  //       print('scroll offset: ${_scrollController.offset}');
+  //       context.read<GameChatNotifState>().addUnread();
+  //     }
+  //   } else {
+  //     widget.parentContext?.read<GameChatNotifState>()?.addUnread();
+  //   }
+  // }
 
   void _init() {
     this.myID = context.read<GameContextObject>().currentPlayer.id;
 
-    chatService.listen(
-      onText: (ChatMessage _) => _onMessage(),
-      onGiphy: (ChatMessage _) => _onMessage(),
-    );
+    // chatService.listen(
+    //   onText: (ChatMessage _) => _onMessage(),
+    //   onGiphy: (ChatMessage _) => _onMessage(),
+    // );
 
-    _scrollController.addListener(() {
-      if (_scrollController.offset < kScrollOffsetPosition) {
-        context.read<GameChatNotifState>().readAll();
-      }
-    });
+    // _scrollController.addListener(() {
+    //   if (_scrollController.offset < kScrollOffsetPosition) {
+    //     context.read<GameChatNotifState>().readAll();
+    //   }
+    // });
   }
 
   @override
@@ -212,16 +214,18 @@ class _GameChatState extends State<GameChat> {
   }
 
   Widget _buildMessageArea() => Expanded(
-        child: ListView(
-          shrinkWrap: true,
-          controller: _scrollController,
-          padding: const EdgeInsets.symmetric(horizontal: 10.0),
-          scrollDirection: Axis.vertical,
-          physics: BouncingScrollPhysics(),
-          reverse: true,
-          children: widget.chatService.messages.reversed
-              .map((c) => _buildChatBubble(c))
-              .toList(),
+        child: Consumer<GameChatNotifState>(
+          builder: (_, gcns, __) => ListView(
+            shrinkWrap: true,
+            controller: _scrollController,
+            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+            scrollDirection: Axis.vertical,
+            physics: BouncingScrollPhysics(),
+            reverse: true,
+            children: widget.chatService.messages.reversed
+                .map((c) => _buildChatBubble(c))
+                .toList(),
+          ),
         ),
       );
 
