@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class RadioListWidget extends StatelessWidget {
-
   final List<int> values;
   final int defaultValue;
   final void Function(int value) onSelect;

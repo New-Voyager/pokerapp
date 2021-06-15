@@ -87,11 +87,11 @@ class _SeatChangeConfirmationPopUpWidget extends StatelessWidget {
     }
     int selectedSeat = this.openSeats[0];
     final textStyle = TextStyle(
-    color: Colors.white,
-    fontSize: 10.dp,
-    fontWeight: FontWeight.normal,
-  );
- 
+      color: Colors.white,
+      fontSize: 10.dp,
+      fontWeight: FontWeight.normal,
+    );
+
     return Container(
       padding: EdgeInsets.symmetric(
         horizontal: 10.0,

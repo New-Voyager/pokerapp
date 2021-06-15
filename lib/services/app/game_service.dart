@@ -183,8 +183,8 @@ class GameService {
   }
   """;
   static String requestForSeatChangeQuery = """
-    mutation (\$gameCode: String!) {
-    confirmed: requestSeatChange(gameCode: \$gameCode)
+    mutation (\$gameCode: String!, \$cancel: Boolean) {
+    confirmed: requestSeatChange(gameCode: \$gameCode, cancel: \$cancel)
     }
   """;
 
@@ -466,11 +466,17 @@ class GameService {
     return waitingListPlayers;
   }
 
-  static Future<String> requestForSeatChange(String gameCode) async {
+  static Future<String> requestForSeatChange(String gameCode,
+      {bool cancel = false}) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
     Map<String, dynamic> variables = {
       "gameCode": gameCode,
+      "cancel": false,
     };
+
+    if (cancel ?? false) {
+      variables['cancel'] = cancel;
+    }
     QueryResult result = await _client.mutate(
       MutationOptions(
         documentNode: gql(requestForSeatChangeQuery),
@@ -485,7 +491,7 @@ class GameService {
 
   static Future<List<SeatChangeModel>> listOfSeatChange(String gameCode) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
-    List<SeatChangeModel> seatChangePlayers = new List<SeatChangeModel>();
+    List<SeatChangeModel> seatChangePlayers = [];
     Map<String, dynamic> variables = {
       "gameCode": gameCode,
     };
@@ -545,7 +551,7 @@ class GameService {
   }
 
   static Future<List<HighHandWinner>> getHighHandLog(String gameCode) async {
-    List<HighHandWinner> log = new List<HighHandWinner>();
+    List<HighHandWinner> log = [];
 
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
     Map<String, dynamic> variables = {

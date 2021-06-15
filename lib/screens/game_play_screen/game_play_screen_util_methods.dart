@@ -60,6 +60,15 @@ class GamePlayScreenUtilMethods {
           label: 'Seat Change Prompt',
           onTap: () => TestService.showSeatChangePrompt(),
         ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
+          label: 'Notification',
+          onTap: () => TestService.showTextNotification(),
+        ),
 
         // SpeedDialChild(
         //   child: Icon(
