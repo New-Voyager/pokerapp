@@ -1,23 +1,31 @@
+import 'dart:math';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:pokerapp/models/game_play_models/business/game_chat_notfi_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
-import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/screens/game_context_screen/game_chat/game_giphys.dart';
 
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:pokerapp/widgets/emoji_picker_widget.dart';
 import 'package:provider/provider.dart';
 
+import 'package:pokerapp/utils/adaptive_sizer.dart';
+
 class GameChat extends StatefulWidget {
+  final ScrollController scrollController;
   final GameMessagingService chatService;
   final Function onChatVisibilityChange;
 
   GameChat({
     @required this.chatService,
     @required this.onChatVisibilityChange,
+    @required this.scrollController,
   });
 
   @override
@@ -26,33 +34,24 @@ class GameChat extends StatefulWidget {
 
 class _GameChatState extends State<GameChat> {
   GameMessagingService get chatService => widget.chatService;
+  ScrollController get _scrollController => widget.scrollController;
 
   final _textEditingController = TextEditingController();
-  final ScrollController _scrollController = ScrollController();
 
   int myID = -1;
 
-  void _onMessage() {
-    setState(() {});
-    _scrollController.animateTo(
-      0.0,
-      curve: Curves.easeOut,
-      duration: const Duration(milliseconds: 300),
-    );
-  }
-
   void _init() {
     this.myID = context.read<GameContextObject>().currentPlayer.id;
-
-    chatService.listen(
-      onText: (ChatMessage _) => _onMessage(),
-      onGiphy: (ChatMessage _) => _onMessage(),
-    );
   }
 
   @override
   void initState() {
     super.initState();
+
+    // mark all the messages as read post frame building
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      context.read<GameChatNotifState>().readAll();
+    });
 
     _init();
   }
@@ -76,15 +75,30 @@ class _GameChatState extends State<GameChat> {
     );
   }
 
+  void _scrollToBottom() {
+    if (_scrollController.hasClients)
+      _scrollController.animateTo(
+        0.0,
+        curve: Curves.easeOut,
+        duration: const Duration(milliseconds: 300),
+      );
+  }
+
   void _onGifClick() async {
+    /* when current user sends any message, scroll to the bottom */
+    _scrollToBottom();
+
     await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      builder: (_) => GameGiphies(chatService),
+      builder: (_) => GameChatBottomSheet(chatService),
     );
   }
 
   void _onSendClick() {
+    /* when current user sends any message, scroll to the bottom */
+    _scrollToBottom();
+
     // validates the text message
     final String text = _textEditingController.text.trim();
     if (text.isEmpty) return;
@@ -95,21 +109,26 @@ class _GameChatState extends State<GameChat> {
     _textEditingController.clear();
   }
 
-  Widget _buildCloseButton() {
-    return Align(
-      alignment: Alignment.topRight,
-      child: GestureDetector(
-        onTap: widget.onChatVisibilityChange,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          child: Icon(
-            Icons.arrow_downward_rounded,
-            color: AppColors.appAccentColor,
+  Widget _buildCloseButton() => Align(
+        alignment: Alignment.topRight,
+        child: InkWell(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+            child: Transform.rotate(
+              angle: -pi / 2,
+              child: SvgPicture.asset(
+                'assets/images/backarrow.svg',
+                color: AppColorsNew.newGreenButtonColor,
+                width: 20.pw,
+                height: 20.ph,
+                fit: BoxFit.cover,
+              ),
+            ),
           ),
+          borderRadius: BorderRadius.circular(24.pw),
+          onTap: widget.onChatVisibilityChange,
         ),
-      ),
-    );
-  }
+      );
 
   Widget _buildChatBubble(ChatMessage message) {
     bool isMe = myID == message.fromPlayer;
@@ -118,25 +137,52 @@ class _GameChatState extends State<GameChat> {
       alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
       child: IntrinsicWidth(
         child: Container(
-          margin: EdgeInsets.symmetric(vertical: 2.5),
+          margin: EdgeInsets.symmetric(vertical: 2.0),
           constraints: BoxConstraints(
             maxWidth: MediaQuery.of(context).size.width * 0.80,
           ),
-          padding: EdgeInsets.all(8),
+          padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
           decoration: isMe
               ? AppStyles.myMessageDecoration
               : AppStyles.otherMessageDecoration,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text(
-                message.fromName.toString(),
-                style: AppStyles.clubItemInfoTextStyle.copyWith(
-                  fontSize: 12,
-                ),
-                softWrap: true,
+              /* name of player & time */
+              Row(
+                children: [
+                  // name
+                  Text(
+                    message.fromName.toString(),
+                    style: AppStyles.clubItemInfoTextStyle.copyWith(
+                      fontSize: 12,
+                      color: AppColorsNew.newGreenButtonColor,
+                    ),
+                    softWrap: true,
+                  ),
+
+                  // sep
+                  Container(
+                    margin: EdgeInsets.symmetric(horizontal: 5.0),
+                    color: const Color(0xff848484),
+                    height: 10.0,
+                    width: 1.0,
+                  ),
+
+                  // time
+                  Text(
+                    "${AppConstants.CHAT_DATE_TIME_FORMAT.format(message.received.toLocal())}",
+                    style: AppStyles.itemInfoSecondaryTextStyle.copyWith(
+                      fontSize: 10,
+                    ),
+                  ),
+                ],
               ),
-              SizedBox(height: 5),
+
+              // sep
+              SizedBox(height: 2),
+
+              // message / gif
               message.text != null
                   ? Text(
                       message.text,
@@ -156,17 +202,6 @@ class _GameChatState extends State<GameChat> {
                           fit: BoxFit.cover,
                         )
                       : Container(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Text(
-                    "${AppConstants.CHAT_DATE_TIME_FORMAT.format(message.received.toLocal())}",
-                    style: AppStyles.itemInfoSecondaryTextStyle.copyWith(
-                      fontSize: 10,
-                    ),
-                  )
-                ],
-              ),
             ],
           ),
         ),
@@ -175,56 +210,56 @@ class _GameChatState extends State<GameChat> {
   }
 
   Widget _buildMessageArea() => Expanded(
-        child: ListView(
-          shrinkWrap: true,
-          controller: _scrollController,
-          padding: const EdgeInsets.symmetric(horizontal: 10.0),
-          scrollDirection: Axis.vertical,
-          physics: BouncingScrollPhysics(),
-          reverse: true,
-          children: widget.chatService.messages.reversed
-              .map((c) => _buildChatBubble(c))
-              .toList(),
+        child: Consumer<GameChatNotifState>(
+          builder: (_, gcns, __) => ListView(
+            shrinkWrap: true,
+            controller: _scrollController,
+            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+            scrollDirection: Axis.vertical,
+            physics: BouncingScrollPhysics(),
+            reverse: true,
+            children: widget.chatService.messages.reversed
+                .map((c) => _buildChatBubble(c))
+                .toList(),
+          ),
         ),
       );
 
   Widget _buildTextField() => Container(
         decoration: BoxDecoration(
-          color: AppColors.chatInputBgColor,
-          borderRadius: BorderRadius.all(
-            Radius.circular(5.0),
-          ),
+          color: Colors.black,
+          borderRadius: BorderRadius.circular(10.0),
         ),
-        padding: const EdgeInsets.only(left: 15),
+        margin: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+        padding: EdgeInsets.only(left: 15),
         child: TextField(
           controller: _textEditingController,
           style: TextStyle(
-            color: Colors.black,
+            color: Colors.white,
             fontSize: 15.0,
           ),
           textAlign: TextAlign.start,
           textAlignVertical: TextAlignVertical.center,
           decoration: InputDecoration(
-              border: InputBorder.none,
-              hintText: "Enter text here",
-              suffixIcon: GestureDetector(
-                onTap: _onEmojiClick,
-                child: Container(
-                  padding: EdgeInsets.all(5),
-                  child: Icon(
-                    Icons.emoji_emotions_outlined,
-                    size: 25,
-                    color: Colors.black,
-                  ),
-                ),
-              )),
+            contentPadding: EdgeInsets.zero,
+            isDense: true,
+            border: InputBorder.none,
+            hintText: 'Enter text here...',
+            suffixIcon: GestureDetector(
+              onTap: _onEmojiClick,
+              child: Icon(
+                Icons.emoji_emotions_outlined,
+                size: 25,
+                color: AppColorsNew.yellowAccentColor,
+              ),
+            ),
+          ),
         ),
       );
 
   Widget _buildUserInputWidget() {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10.0),
-      color: AppColors.screenBackgroundColor,
       child: Row(
         children: [
           /* gif drawer button */
@@ -233,17 +268,13 @@ class _GameChatState extends State<GameChat> {
             child: Icon(
               Icons.add_circle_outline,
               size: 25,
-              color: Colors.white,
+              color: AppColorsNew.yellowAccentColor,
             ),
           ),
 
           /* main text field */
           Expanded(
-            child: Container(
-              height: 35,
-              margin: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-              child: _buildTextField(),
-            ),
+            child: _buildTextField(),
           ),
 
           /* send button */
@@ -251,7 +282,7 @@ class _GameChatState extends State<GameChat> {
             onTap: _onSendClick,
             child: Icon(
               Icons.send_outlined,
-              color: Colors.white,
+              color: AppColorsNew.yellowAccentColor,
               size: 25,
             ),
           ),
@@ -260,21 +291,59 @@ class _GameChatState extends State<GameChat> {
     );
   }
 
+  Widget _buildNewMessageNotifier() => Consumer<GameChatNotifState>(
+        builder: (_, gcns, __) => gcns.hasUnreadMessages
+            ? InkWell(
+                onTap: _scrollToBottom,
+                child: Align(
+                  alignment: Alignment.topCenter,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.arrow_downward_rounded,
+                        color: Colors.red,
+                        size: 20.0,
+                      ),
+
+                      // sep
+                      const SizedBox(width: 5.0),
+
+                      Text(
+                        '${gcns.count} new message',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.red,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              )
+            : const SizedBox.shrink(),
+      );
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: AppColors.screenBackgroundColor,
+      color: AppColorsNew.darkGreenShadeColor,
       // padding: EdgeInsets.only(
       //   bottom: MediaQuery.of(context).viewInsets.bottom,
       // ),
       height: MediaQuery.of(context).size.height / 3,
       child: Column(
         children: [
-          /* sep */
-          const SizedBox(height: 5.0),
+          /* top widgets, new message notifier & close button */
+          Stack(
+            children: [
+              /* new message notifier */
+              _buildNewMessageNotifier(),
 
-          /* close button */
-          _buildCloseButton(),
+              /* close button */
+              _buildCloseButton(),
+            ],
+          ),
 
           /* main message area */
           _buildMessageArea(),

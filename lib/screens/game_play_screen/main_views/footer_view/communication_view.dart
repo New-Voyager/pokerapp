@@ -2,10 +2,12 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:audio_recorder/audio_recorder.dart';
+import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:pokerapp/enums/player_status.dart';
+import 'package:pokerapp/models/game_play_models/business/game_chat_notfi_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/resources/app_colors.dart';
@@ -64,9 +66,17 @@ class _CommunicationViewState extends State<CommunicationView> {
                 }
 
                 children.add(
-                  GameCircleButton(
-                    onClickHandler: widget.chatVisibilityChange,
-                    iconData: Icons.chat,
+                  Consumer<GameChatNotifState>(
+                    builder: (_, gcns, __) => Badge(
+                      animationType: BadgeAnimationType.scale,
+                      showBadge: gcns.hasUnreadMessages,
+                      position: BadgePosition.topEnd(top: 0, end: 0),
+                      badgeContent: Text(gcns.count.toString()),
+                      child: GameCircleButton(
+                        onClickHandler: widget.chatVisibilityChange,
+                        iconData: Icons.chat,
+                      ),
+                    ),
                   ),
                 );
                 return Column(

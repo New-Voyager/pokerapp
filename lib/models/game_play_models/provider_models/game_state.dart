@@ -4,6 +4,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:hive/hive.dart';
 import 'package:pokerapp/enums/game_status.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
@@ -18,6 +19,10 @@ import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/app/handlog_cache_service.dart';
+import 'package:pokerapp/services/data/GameHiveStore.dart';
+import 'package:pokerapp/services/data/box_type.dart';
+import 'package:pokerapp/services/data/hive_datasource_impl.dart';
+import 'package:pokerapp/services/data/hive_models/game_settings.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:pokerapp/services/janus/janus.dart';
@@ -84,15 +89,16 @@ class GameState {
   bool hostSeatChangeInProgress = false;
 
   bool gameSounds = true;
+  GameSettings gameSettings;
 
-  void initialize({
+  Future<void> initialize({
     String gameCode,
     @required GameInfoModel gameInfo,
     @required PlayerInfo currentPlayer,
     GameMessagingService gameMessagingService,
     List<PlayerInSeat> hostSeatChangeSeats,
     bool hostSeatChangeInProgress,
-  }) {
+  }) async {
     this._seats = Map<int, Seat>();
     this._gameInfo = gameInfo;
     this._gameCode = gameCode;
@@ -212,6 +218,19 @@ class GameState {
       this._myState.gameStatus = GameStatus.RUNNING;
       this._myState.notify();
     }
+
+    await GameHiveStore.getInstance.openBox(gameCode);
+
+    if (GameHiveStore.getInstance.isBoxEmpty()) {
+      log('In GameState initialize(), gameBox is empty');
+      gameSettings =
+          GameSettings(gameCode, _gameInfo.playerMuckLosingHand, true, true);
+      GameHiveStore.getInstance.putGameSettings(gameSettings);
+    } else {
+      log('In GameState initialize(), getting gameSettings from gameBox');
+      gameSettings = GameHiveStore.getInstance.getGameSettings();
+    }
+    log('In GameState initialize(), gameSettings = $gameSettings');
   }
 
   void setTappedSeatPos(BuildContext context, SeatPos seatPos, Seat seat,

@@ -5,6 +5,7 @@ import 'package:dart_nats/dart_nats.dart' as nats;
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:pokerapp/enums/game_status.dart';
+import 'package:pokerapp/models/game_play_models/business/game_chat_notfi_state.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
@@ -22,7 +23,6 @@ import 'package:pokerapp/screens/game_play_screen/main_views/board_view/decorati
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/footer_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/header_view/header_view.dart';
 import 'package:pokerapp/screens/game_play_screen/notifications/notifications.dart';
-import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
 //import 'package:pokerapp/services/agora/agora.dart';
 import 'package:pokerapp/services/app/game_service.dart';
@@ -43,6 +43,9 @@ import 'package:wakelock/wakelock.dart';
 
 import '../../services/test/test_service.dart';
 import 'game_play_screen_util_methods.dart';
+
+// FIXME: THIS NEEDS TO BE CHANGED AS PER DEVICE CONFIG
+const kScrollOffsetPosition = 40.0;
 
 /*
 7 inch tablet
@@ -256,6 +259,8 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       _gameState.getCommunicationState().notify();
     }
 
+    _initChatListeners(gameComService.gameMessaging);
+
     return _gameInfoModel;
   }
 
@@ -366,21 +371,57 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     );
   }
 
+  final ScrollController _gcsController = ScrollController();
+
+  bool _isChatScreenVisible = false;
+
+  void _onChatMessage() {
+    if (_isChatScreenVisible) {
+      // notify of new messages & rebuild the game message list
+      _providerContext.read<GameChatNotifState>().notifyNewMessage();
+
+      /* if user is scrolled away, we need to notify */
+      if (_gcsController.hasClients &&
+          (_gcsController.offset > kScrollOffsetPosition)) {
+        _providerContext.read<GameChatNotifState>().addUnread();
+      }
+    } else {
+      _providerContext.read<GameChatNotifState>()?.addUnread();
+    }
+  }
+
+  void _initChatListeners(GameMessagingService gms) {
+    gms.listen(
+      onText: (ChatMessage _) => _onChatMessage(),
+      onGiphy: (ChatMessage _) => _onChatMessage(),
+    );
+
+    _gcsController.addListener(() {
+      if (_gcsController.offset < kScrollOffsetPosition) {
+        _providerContext.read<GameChatNotifState>().readAll();
+      }
+    });
+  }
+
   Widget _buildChatWindow(BuildContext context) =>
       Consumer<ValueNotifier<bool>>(
-        builder: (_, vnChatVisibility, __) => AnimatedSwitcher(
-          duration: const Duration(milliseconds: 200),
-          child: vnChatVisibility.value
-              ? Align(
-                  alignment: Alignment.bottomCenter,
-                  child: GameChat(
-                    chatService:
-                        this._gameContextObj.gameComService.gameMessaging,
-                    onChatVisibilityChange: () => toggleChatVisibility(context),
-                  ),
-                )
-              : const SizedBox.shrink(),
-        ),
+        builder: (context, vnChatVisibility, __) {
+          _isChatScreenVisible = vnChatVisibility.value;
+          return AnimatedSwitcher(
+            duration: const Duration(milliseconds: 200),
+            child: vnChatVisibility.value
+                ? Align(
+                    alignment: Alignment.bottomCenter,
+                    child: GameChat(
+                      scrollController: _gcsController,
+                      chatService: _gameContextObj.gameComService.gameMessaging,
+                      onChatVisibilityChange: () =>
+                          toggleChatVisibility(context),
+                    ),
+                  )
+                : const SizedBox.shrink(),
+          );
+        },
       );
 
   @override
@@ -604,7 +645,8 @@ class _GamePlayScreenState extends State<GamePlayScreen>
                                   decoration: BoxDecoration(
                                     image: DecorationImage(
                                       image: AssetImage(
-                                          "assets/images/bottom_pattern.png"),
+                                        "assets/images/bottom_pattern.png",
+                                      ),
                                       fit: BoxFit.fill,
                                     ),
                                   ),

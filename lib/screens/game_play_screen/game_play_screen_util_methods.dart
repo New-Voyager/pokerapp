@@ -8,6 +8,7 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
 import 'package:pokerapp/models/game_play_models/business/card_distribution_model.dart';
+import 'package:pokerapp/models/game_play_models/business/game_chat_notfi_state.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
@@ -584,6 +585,11 @@ class GamePlayScreenUtilMethods {
       /* Provider to deal with host seat change functionality */
       ListenableProvider<SeatChangeNotifier>(
         create: (_) => seatChangeProvider,
+      ),
+
+      /* for game chat notifications - unread messages, counts */
+      ListenableProvider<GameChatNotifState>(
+        create: (_) => GameChatNotifState(),
       ),
     ];
 

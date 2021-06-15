@@ -83,14 +83,16 @@ class _FooterViewState extends State<FooterView>
             /* hole card view & footer action view */
             !me
                 ? Container(width: screenWidth, height: screenHeight / 3)
-                : Consumer<StraddlePromptState>(// rebuild based straddle prompt
+                : Consumer<StraddlePromptState>(
+                    // rebuild based straddle prompt
                     builder: (context, _, __) {
-                    return HoleCardsViewAndFooterActionView(
-                      gameContext: widget.gameContext,
-                      playerModel: players.me,
-                      showActionWidget: actionState.show,
-                    );
-                  }),
+                      return HoleCardsViewAndFooterActionView(
+                        gameContext: widget.gameContext,
+                        playerModel: players.me,
+                        showActionWidget: actionState.show,
+                      );
+                    },
+                  ),
 
             /* communication widgets */
             Positioned(
@@ -103,7 +105,6 @@ class _FooterViewState extends State<FooterView>
             ),
 
             /* seat confirm widget */
-            // FIXME: BUG INTRODUCED HERE, CHECK HOW THE SEAT CHANGE CONFIRMED WIDGET IS DISPLAYED
             Consumer2<SeatChangeNotifier, GameContextObject>(
               builder: (
                 context,
@@ -118,7 +119,8 @@ class _FooterViewState extends State<FooterView>
                       ? Align(
                           alignment: Alignment.center,
                           child: SeatChangeConfirmWidget(
-                              gameCode: widget.gameContext.gameState.gameCode),
+                            gameCode: widget.gameContext.gameState.gameCode,
+                          ),
                         )
                       : SizedBox.shrink(),
             )
