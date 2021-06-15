@@ -36,7 +36,7 @@ import 'iap_test.dart';
 
 class TestService {
   static bool get isTesting {
-    return true;
+    return false;
   }
 
   static var _showResult = false;
@@ -67,7 +67,7 @@ class TestService {
       duration: Duration(seconds: 10),
     );
   }
-  
+
   static showMicAnimation() {
     final gameState = GameState.getState(_context);
     final commState = gameState.getCommunicationState();
@@ -75,7 +75,6 @@ class TestService {
     gameState.myState.status = PlayerStatus.PLAYING;
     commState.audioConferenceStatus = AudioConferenceStatus.CONNECTED;
     commState.notify();
-
   }
 
   static PlayerInfo get currentPlayer {

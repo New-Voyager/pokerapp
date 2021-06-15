@@ -274,6 +274,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       // agora?.disposeObject();
       // Audio.dispose(context: _providerContext);
       _gameState?.janusEngine?.disposeObject();
+      _gameState?.close();
 
       if (_audioPlayer != null) {
         _audioPlayer.dispose();

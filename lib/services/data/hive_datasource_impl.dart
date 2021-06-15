@@ -6,7 +6,6 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pokerapp/services/data/box_type.dart';
 import 'package:pokerapp/services/data/datasource_contract.dart';
-import 'package:pokerapp/services/data/hive_models/game_settings.dart';
 
 class HiveDatasource implements IDatasource {
   HiveDatasource._();

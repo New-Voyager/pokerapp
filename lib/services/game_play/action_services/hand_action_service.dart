@@ -716,8 +716,8 @@ class HandActionService {
   }
 
   playSoundEffect(Uint8List value) {
-    log('In playSoundEffect(), gameSounds = ${_gameState..gameSettings.gameSound}');
-    if (_gameState.gameSettings.gameSound) {
+    log('In playSoundEffect(), gameSounds = ${_gameState.settings.gameSound}');
+    if (_gameState.settings.gameSound) {
       audioPlayer.playBytes(value);
     }
   }

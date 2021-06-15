@@ -33,7 +33,7 @@ class GameCircleButton extends StatelessWidget {
               iconData,
               size: 20.pw,
               color: Colors.black, //AppColorsNew.newGreenButtonColor,
-            ));     
+            ));
     }
     final button = Container(
       height: 32.pw,

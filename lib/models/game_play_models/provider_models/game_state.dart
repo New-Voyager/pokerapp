@@ -19,7 +19,7 @@ import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/app/handlog_cache_service.dart';
-import 'package:pokerapp/services/data/GameHiveStore.dart';
+import 'package:pokerapp/services/data/game_hive_store.dart';
 import 'package:pokerapp/services/data/box_type.dart';
 import 'package:pokerapp/services/data/hive_datasource_impl.dart';
 import 'package:pokerapp/services/data/hive_models/game_settings.dart';
@@ -81,15 +81,13 @@ class GameState {
   Map<int, String> _playerIdsToNames = Map<int, String>();
   Map<int, List<int>> _myCards = Map<int, List<int>>();
   bool straddlePrompt = false;
-
-  GameSettings settings = GameSettings();
-
   // host seat change state (only used when initialization)
   List<PlayerInSeat> _hostSeatChangeSeats = [];
   bool hostSeatChangeInProgress = false;
 
   bool gameSounds = true;
-  GameSettings gameSettings;
+  GameSettings settings;
+  GameHiveStore gameHiveStore;
 
   Future<void> initialize({
     String gameCode,
@@ -219,18 +217,23 @@ class GameState {
       this._myState.notify();
     }
 
-    await GameHiveStore.getInstance.openBox(gameCode);
+    gameHiveStore = GameHiveStore();
+    await gameHiveStore.open(_gameCode);
 
-    if (GameHiveStore.getInstance.isBoxEmpty()) {
+    if (!gameHiveStore.isInitialized()) {
       log('In GameState initialize(), gameBox is empty');
-      gameSettings =
+      settings =
           GameSettings(gameCode, _gameInfo.playerMuckLosingHand, true, true);
-      GameHiveStore.getInstance.putGameSettings(gameSettings);
+      gameHiveStore.putGameSettings(settings);
     } else {
       log('In GameState initialize(), getting gameSettings from gameBox');
-      gameSettings = GameHiveStore.getInstance.getGameSettings();
+      settings = gameHiveStore.getGameSettings();
     }
-    log('In GameState initialize(), gameSettings = $gameSettings');
+    log('In GameState initialize(), gameSettings = $settings');
+  }
+
+  void close() {
+    gameHiveStore.close();
   }
 
   void setTappedSeatPos(BuildContext context, SeatPos seatPos, Seat seat,
@@ -843,14 +846,4 @@ class StraddlePromptState extends ChangeNotifier {
   void notify() {
     notifyListeners();
   }
-}
-
-/**
- * Stores the user change settings which is local to the player
- */
-class GameSettings {
-  bool muckLosingHand = true;
-  bool straddleOption = true;
-  bool autoStraddle = false;
-  bool gameSounds = true;
 }

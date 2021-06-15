@@ -4,12 +4,9 @@ import 'package:hive/hive.dart';
 import 'hive_models/game_settings.dart';
 
 class GameHiveStore {
-  static GameHiveStore _instance;
-
-  GameHiveStore._();
-
-  static GameHiveStore get getInstance => _instance ??= GameHiveStore._();
   Box _gameBox;
+
+  GameHiveStore();
 
   GameSettings getGameSettings() {
     return GameSettings.fromJson(jsonDecode(_gameBox.get("gameSettings")));
@@ -19,9 +16,17 @@ class GameHiveStore {
     _gameBox.put("gameSettings", jsonEncode(gameSettings));
   }
 
-  Future<Box> openBox(String gameCode) async {
+  Future<Box> open(String gameCode) async {
     _gameBox = await Hive.openBox(gameCode);
     return _gameBox;
+  }
+
+  bool isInitialized() {
+    return _gameBox.isNotEmpty;
+  }
+
+  void close() {
+    _gameBox?.close();
   }
 
   void deleteBox() {
