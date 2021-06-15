@@ -107,7 +107,6 @@ class _CommunicationViewState extends State<CommunicationView> {
 
   janusAudioWidgets(GameState gameState, CommunicationState state) {
     Color iconColor = Colors.grey;
-    Color micColor = Colors.grey;
     Widget mic;
 
     if (state != null) {
@@ -116,7 +115,6 @@ class _CommunicationViewState extends State<CommunicationView> {
       } else if (state.audioConferenceStatus ==
           AudioConferenceStatus.CONNECTED) {
         iconColor = Colors.green;
-        micColor = AppColorsNew.newGreenButtonColor;
       }
 
       log('Audio status: ${state.audioConferenceStatus.toString()} iconColor: ${iconColor.toString()} muted: ${state.muted} talking: ${state.talking}');
