@@ -83,7 +83,7 @@ class GameState {
   List<PlayerInSeat> _hostSeatChangeSeats = [];
   bool hostSeatChangeInProgress = false;
 
-  bool gameSounds = false;
+  bool gameSounds = true;
 
   void initialize({
     String gameCode,

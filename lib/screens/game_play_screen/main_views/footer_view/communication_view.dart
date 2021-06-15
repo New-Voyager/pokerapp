@@ -76,20 +76,30 @@ class _CommunicationViewState extends State<CommunicationView> {
   }
 
 
-  Widget talkingAnimation() {
+  Widget talkingAnimation(Function onTap) {
 
-    return BlinkWidget(
+    Widget child =  BlinkWidget(
                   children: [
-                    SvgPicture.asset('assets/images/game/mic-step0.svg',
-                        width: 32.pw, height: 32.ph),
                     SvgPicture.asset('assets/images/game/mic-step1.svg',
-                        width: 32.pw, height: 32.ph),
+                        width: 16, height: 16, color: Colors.black),
                     SvgPicture.asset('assets/images/game/mic-step2.svg',
-                        width: 32.pw, height: 32.ph),
+                        width: 16, height: 16, color: Colors.black),
                     SvgPicture.asset('assets/images/game/mic-step3.svg',
-                        width: 32.pw, height: 32.ph),
+                        width: 16, height: 16, color: Colors.black),
+                    SvgPicture.asset('assets/images/game/mic-step1.svg',
+                        width: 16, height: 16, color: Colors.black),
                   ],
                 );
+    return 
+                      GameCircleButton(
+                      onClickHandler: onTap,
+                      child: child);
+    /*
+    GameCircleButton(
+      child: 
+   
+    );
+    */
   }
 
   janusAudioWidgets(GameState gameState, CommunicationState state) {
@@ -109,29 +119,13 @@ class _CommunicationViewState extends State<CommunicationView> {
       log('Audio status: ${state.audioConferenceStatus.toString()} iconColor: ${iconColor.toString()} muted: ${state.muted} talking: ${state.talking}');
 
       if (state?.talking ?? false) {
-
-        mic = InkWell(
-          onTap: () {
+        mic = talkingAnimation(() {
+          log('mic is tapped');
             if (state.audioConferenceStatus ==
                 AudioConferenceStatus.CONNECTED) {
               gameState.janusEngine.muteUnmute();
             }
-          },
-          child: talkingAnimation(),
-        );
-        /*
-        mic = PulsatingCircleIconButton(
-          child: Icon(
-            Icons.keyboard_voice,
-            color: Colors.white,
-            size: 24.pw,
-          ),
-          onTap: () {
-          },
-          color: Colors.red,
-          radius: 0.5,
-        );
-      */
+        });
       }
     }
 
