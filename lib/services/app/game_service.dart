@@ -12,6 +12,8 @@ import 'package:pokerapp/models/newmodels/game_model_new.dart';
 import 'package:pokerapp/models/seat_change_model.dart';
 import 'package:pokerapp/models/table_record.dart';
 import 'package:pokerapp/models/waiting_list_model.dart';
+import 'package:pokerapp/services/data/box_type.dart';
+import 'package:pokerapp/services/data/hive_datasource_impl.dart';
 import 'package:pokerapp/services/gql_errors.dart';
 
 class GameService {
@@ -350,49 +352,76 @@ class GameService {
     return result.data['addClubChatText'] ?? false;
   }
 
-  static Future<List<String>> favouriteGiphies({String gameCode}) async {
+  static Future<List<String>> _getPresetTextsFromServer() async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
     List<String> favouriteGiphies = [];
 
-    Map<String, dynamic> variables = {
-      "gameCode": gameCode,
-    };
     QueryResult result;
-    if (gameCode != null) {
-      result = await _client.query(QueryOptions(
-          documentNode: gql(favouriteGiphiesWithClubCodeQuery),
-          variables: variables));
-    } else {
-      result = await _client.query(QueryOptions(
-        documentNode: gql(favouriteGiphiesQuery),
-      ));
-    }
 
-    print("result.data ${result.data} ${result.hasException}");
+    result = await _client.query(QueryOptions(
+      documentNode: gql(favouriteGiphiesQuery),
+    ));
+
     if (result.hasException) return [];
-    for (int i = 0; i < result.data['chatTexts'].length; i++) {
+
+    for (int i = 0; i < result.data['chatTexts'].length; i++)
       favouriteGiphies.add((result.data['chatTexts'][i] as String));
-    }
+
     return favouriteGiphies;
   }
 
-  static Future<bool> addFavoutireGiphy(
-    String name,
-  ) async {
-    GraphQLClient _client = graphQLConfiguration.clientToQuery();
-    Map<String, dynamic> variables = {
-      "text": name,
-    };
-    QueryResult result = await _client.mutate(
-      MutationOptions(
-        documentNode: gql(addfavouriteGiphieQuery),
-        variables: variables,
-      ),
-    );
-    if (result.hasException) return false;
+  static const FAVOURITE_TEXTS = 'FAVOURITE_TEXTS';
+  static const LOCAL_KEY = 'LOCAL:';
 
-    return result.data['addClubChatText'] ?? false;
+  static List<String> _getPresetTextsFromLocal() {
+    final usBox = HiveDatasource.getInstance.getBox(BoxType.USER_SETTINGS_BOX);
+
+    final rawData = usBox.get(FAVOURITE_TEXTS);
+
+    if (rawData == null) return [];
+
+    final data = jsonDecode(rawData);
+
+    List<String> o = [];
+    for (final d in data) o.add(d.toString());
+
+    return o;
   }
+
+  static Future<void> _addPresetTextLocal(String text) async {
+    final usBox = HiveDatasource.getInstance.getBox(BoxType.USER_SETTINGS_BOX);
+
+    text = LOCAL_KEY + text;
+
+    return usBox.put(
+      FAVOURITE_TEXTS,
+      jsonEncode(_getPresetTextsFromLocal()..add(text)),
+    );
+  }
+
+  static Future<void> _removePresetTextLocal(String toBeRemovedText) async {
+    final usBox = HiveDatasource.getInstance.getBox(BoxType.USER_SETTINGS_BOX);
+
+    List<String> existing = _getPresetTextsFromLocal();
+
+    existing.remove(toBeRemovedText);
+
+    return usBox.put(FAVOURITE_TEXTS, jsonEncode(existing));
+  }
+
+  static Future<List<String>> getPresetTexts() async {
+    /* fetch initial presets from server */
+
+    List<String> presetTextsFromServer = await _getPresetTextsFromServer();
+    List<String> presetTextsFromLocal = _getPresetTextsFromLocal();
+
+    return presetTextsFromServer + presetTextsFromLocal;
+  }
+
+  static Future<void> addPresetText(String text) => _addPresetTextLocal(text);
+
+  static Future<void> removePresetText(String text) =>
+      _removePresetTextLocal(text);
 
   static Future<bool> changeWaitListOrderList(
       String gameCode, List<String> uuids) async {

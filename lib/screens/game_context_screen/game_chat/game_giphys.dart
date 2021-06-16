@@ -15,8 +15,6 @@ import 'package:tenor/tenor.dart';
 
 import 'add_favourite_giphy.dart';
 
-import 'package:pokerapp/utils/adaptive_sizer.dart';
-
 class GameChatBottomSheet extends StatefulWidget {
   final GameMessagingService chatService;
   GameChatBottomSheet(this.chatService);
@@ -43,7 +41,7 @@ class _GameChatBottomSheetState extends State<GameChatBottomSheet> {
 
   @override
   void initState() {
-    getFavouriteGiphy();
+    _fetchFavouriteTexts();
     _fetchGifs().then(
       (value) => setState(() {
         _gifs = value;
@@ -52,13 +50,9 @@ class _GameChatBottomSheetState extends State<GameChatBottomSheet> {
     super.initState();
   }
 
-  getFavouriteGiphy() {
-    GameService.favouriteGiphies().then((value) {
-      setState(() {
-        favouriteGiphies = value;
-        _expandSearchBar = false;
-      });
-    });
+  _fetchFavouriteTexts() async {
+    final value = await GameService.getPresetTexts();
+    setState(() => favouriteGiphies = value);
   }
 
   getGiphies(String text) {
@@ -70,34 +64,83 @@ class _GameChatBottomSheetState extends State<GameChatBottomSheet> {
     );
   }
 
-  Widget _buildButton(context, text) => InkWell(
-        onTap: () {
-          widget.chatService.sendText(text);
-          Navigator.pop(context);
-        },
-        child: Container(
-          // height: 32.ph,
-          // width: 80.pw,
-          margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-          padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
-          decoration: BoxDecoration(
-            shape: BoxShape.rectangle,
-            border: Border.all(
-              color: AppColorsNew.newGreenButtonColor,
-              width: 1.0,
+  // bool, string <isLocal, cleaned text>
+  List _cleanTextIfLocal(String text) {
+    final List<String> tmp = text.split(GameService.LOCAL_KEY);
+
+    if (tmp.length == 1 || tmp.first.isNotEmpty) {
+      return [false, text];
+    }
+
+    tmp.removeAt(0);
+
+    return [true, tmp.join('')];
+  }
+
+  Widget _buildButton(context, text) {
+    final ct = _cleanTextIfLocal(text);
+
+    final bool isLocal = ct[0];
+    final String cleanedText = ct[1];
+
+    return InkWell(
+      onTap: () {
+        widget.chatService.sendText(text);
+        Navigator.pop(context);
+      },
+      child: Stack(
+        children: [
+          /* main body */
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+            padding:
+                const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+            decoration: BoxDecoration(
+              shape: BoxShape.rectangle,
+              border: Border.all(
+                color: AppColorsNew.newGreenButtonColor,
+                width: 1.0,
+              ),
+              borderRadius: BorderRadius.circular(16),
             ),
-            borderRadius: BorderRadius.circular(16),
-          ),
-          child: Text(
-            text,
-            textAlign: TextAlign.center,
-            style: AppStyles.clubItemInfoTextStyle.copyWith(
-              fontSize: 15.0,
-              color: AppColorsNew.newGreenButtonColor,
+            child: Text(
+              cleanedText,
+              textAlign: TextAlign.center,
+              style: AppStyles.clubItemInfoTextStyle.copyWith(
+                fontSize: 15.0,
+                color: AppColorsNew.newGreenButtonColor,
+              ),
             ),
           ),
-        ),
-      );
+
+          /* cross button, in case of local */
+          isLocal
+              ? Positioned(
+                  left: 0,
+                  top: 0,
+                  child: Container(
+                    padding: const EdgeInsets.all(1.0),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.red,
+                    ),
+                    child: InkWell(
+                      onTap: () async {
+                        await GameService.removePresetText(text);
+                        _fetchFavouriteTexts();
+                      },
+                      child: Icon(
+                        Icons.close_rounded,
+                        size: 17.0,
+                      ),
+                    ),
+                  ),
+                )
+              : const SizedBox.shrink(),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -255,11 +298,11 @@ class _GameChatBottomSheetState extends State<GameChatBottomSheet> {
                                 context: context,
                                 builder: (ctx) => AlertDialog(
                                   backgroundColor:
-                                      AppColors.screenBackgroundColor,
+                                      AppColorsNew.darkGreenShadeColor,
                                   content: AddFavouriteGiphy(),
                                 ),
                               );
-                              getFavouriteGiphy();
+                              _fetchFavouriteTexts();
                             },
                             child: Icon(
                               Icons.add_circle_outline,
