@@ -4,6 +4,7 @@ import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
+import 'package:pokerapp/screens/game_play_screen/widgets/overlay_notification.dart';
 
 class Alerts {
   static void showSnackBar(BuildContext context, String text,
@@ -22,21 +23,21 @@ class Alerts {
     ));
   }
 
-  static void showTextNotification(
-      {@required String text, duration: Duration}) {
+  static void showNotification({
+    @required String titleText,
+    String subTitleText,
+    IconData leadingIcon,
+    Duration duration,
+  }) {
     if (duration == null) {
       duration = Duration(milliseconds: 1500);
     }
-    showSimpleNotification(
-      Text(
-        text,
-        style: TextStyle(
-          color: AppColorsNew.newTextColor,
-          fontSize: 16.0,
-          fontWeight: FontWeight.w400,
-        ),
+    showOverlayNotification(
+      (context) => OverlayNotificationWidget(
+        title: titleText,
+        subTitle: subTitleText,
+        icon: leadingIcon,
       ),
-      background: AppColorsNew.darkGreenShadeColor,
       position: NotificationPosition.top,
       duration: duration,
     );

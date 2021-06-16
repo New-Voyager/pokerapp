@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
 import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_log_view.dart';
 
 class LastHandAnalyseBottomSheet extends StatefulWidget {
@@ -48,6 +49,7 @@ class _LastHandAnalyseBottomSheetState
                   isAppbarWithHandNumber: true,
                   clubCode: widget.clubCode,
                   handLogModel: handLog,
+                  isBottomSheet: true,
                 ),
               ),
             ],
@@ -68,13 +70,13 @@ class _LastHandAnalyseBottomSheetState
                 child: Container(
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: Colors.black,
+                    color: AppColorsNew.newGreenButtonColor,
                   ),
                   padding: EdgeInsets.all(6),
                   child: Icon(
                     ratio == 3 ? Icons.arrow_upward : Icons.arrow_downward,
                     size: 20,
-                    color: AppColors.appAccentColor,
+                    color: AppColorsNew.darkGreenShadeColor,
                   ),
                 ),
               ),
@@ -90,13 +92,13 @@ class _LastHandAnalyseBottomSheetState
                 child: Container(
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: Colors.black,
+                    color: AppColorsNew.newGreenButtonColor,
                   ),
                   padding: EdgeInsets.all(6),
                   child: Icon(
                     Icons.close,
                     size: 20,
-                    color: AppColors.appAccentColor,
+                    color: AppColorsNew.darkGreenShadeColor,
                   ),
                 ),
               ),

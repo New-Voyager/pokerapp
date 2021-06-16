@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/hand_history_model.dart';
 import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/screens/game_screens/hand_history/hand_history.dart';
 
 class HandHistoryAnalyseBottomSheet extends StatefulWidget {
   final HandHistoryListModel model;
-  HandHistoryAnalyseBottomSheet({this.model});
+  final String clubCode;
+  HandHistoryAnalyseBottomSheet({this.model, this.clubCode});
   @override
   _HandHistoryAnalyseBottomSheetState createState() =>
       _HandHistoryAnalyseBottomSheetState();
@@ -31,8 +33,7 @@ class _HandHistoryAnalyseBottomSheetState
               Expanded(
                 child: HandHistoryListView(
                   widget.model,
-                  // todo: club code need to get
-                  null,
+                  widget.clubCode,
                   isInBottomSheet: true,
                   isLeadingBackIconShow: false,
                 ),
@@ -55,13 +56,13 @@ class _HandHistoryAnalyseBottomSheetState
                 child: Container(
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: Colors.black,
+                    color: AppColorsNew.newGreenButtonColor,
                   ),
                   padding: EdgeInsets.all(6),
                   child: Icon(
                     ratio == 3 ? Icons.arrow_upward : Icons.arrow_downward,
                     size: 20,
-                    color: AppColors.appAccentColor,
+                    color: AppColorsNew.darkGreenShadeColor,
                   ),
                 ),
               ),
@@ -77,13 +78,13 @@ class _HandHistoryAnalyseBottomSheetState
                 child: Container(
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: Colors.black,
+                    color: AppColorsNew.newGreenButtonColor,
                   ),
                   padding: EdgeInsets.all(6),
                   child: Icon(
                     Icons.close,
                     size: 20,
-                    color: AppColors.appAccentColor,
+                    color: AppColorsNew.darkGreenShadeColor,
                   ),
                 ),
               ),

@@ -86,8 +86,8 @@ class ClubBannerViewNew extends StatelessWidget {
                 Clipboard.setData(
                   new ClipboardData(text: clubModel.clubCode),
                 );
-                Alerts.showTextNotification(
-                  text: "Club code copied to clipboard",
+                Alerts.showNotification(
+                  titleText: "Club code copied to clipboard",
                 );
               },
             ),
