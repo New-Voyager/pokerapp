@@ -17,6 +17,7 @@ import 'package:pokerapp/screens/chat_screen/widgets/replay_button.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_winners_view.dart';
 import 'package:pokerapp/screens/game_screens/hand_history/played_hands.dart';
 import 'package:pokerapp/screens/util_screens/replay_hand_dialog/replay_hand_dialog.dart';
+import 'package:pokerapp/widgets/attributed_gif_widget.dart';
 
 import '../../../../resources/app_colors.dart';
 import '../../../chat_screen/utils.dart';
@@ -297,12 +298,7 @@ class GiphyImageWidget extends StatelessWidget {
       padding: EdgeInsets.all(8),
       child: Stack(
         children: [
-          CachedNetworkImage(
-            imageUrl: imgUrl,
-            placeholder: (_, __) => Center(
-              child: CircularProgressIndicator(),
-            ),
-          ),
+          AttributedGifWidget(url: imgUrl),
           Positioned(
             right: 0,
             bottom: 0,

@@ -12,6 +12,7 @@ import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/screens/game_context_screen/game_chat/game_giphys.dart';
 
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
+import 'package:pokerapp/widgets/attributed_gif_widget.dart';
 import 'package:pokerapp/widgets/emoji_picker_widget.dart';
 import 'package:provider/provider.dart';
 
@@ -188,20 +189,7 @@ class _GameChatState extends State<GameChat> {
                       message.text,
                       style: AppStyles.clubCodeStyle,
                     )
-                  : message.giphyLink != null
-                      ? CachedNetworkImage(
-                          imageUrl: message.giphyLink,
-                          placeholder: (_, __) => Center(
-                            child: Container(
-                              padding: EdgeInsets.all(5.0),
-                              height: 10,
-                              width: 10,
-                              child: CircularProgressIndicator(),
-                            ),
-                          ),
-                          fit: BoxFit.cover,
-                        )
-                      : Container(),
+                  : AttributedGifWidget(url: message.giphyLink),
             ],
           ),
         ),
