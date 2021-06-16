@@ -1,6 +1,7 @@
 enum BoxType {
   EMOJI_BOX,
   USER_SETTINGS_BOX,
+  FAV_GIF_BOX,
 }
 
 extension BoxTypeParsing on BoxType {

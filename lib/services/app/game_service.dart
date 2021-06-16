@@ -15,6 +15,7 @@ import 'package:pokerapp/models/waiting_list_model.dart';
 import 'package:pokerapp/services/data/box_type.dart';
 import 'package:pokerapp/services/data/hive_datasource_impl.dart';
 import 'package:pokerapp/services/gql_errors.dart';
+import 'package:tenor/tenor.dart';
 
 class GameService {
   static String gameDetailQuery = """
@@ -407,6 +408,31 @@ class GameService {
     existing.remove(toBeRemovedText);
 
     return usBox.put(FAVOURITE_TEXTS, jsonEncode(existing));
+  }
+
+  static List<TenorResult> fetchFavouriteGifs() {
+    final fgBox = HiveDatasource.getInstance.getBox(BoxType.FAV_GIF_BOX);
+
+    List<TenorResult> trs = [];
+
+    fgBox.values.forEach((data) => trs.add(TenorResult.fromJson(data)));
+
+    return trs;
+  }
+
+  static Future<void> addFavouriteGif(TenorResult r) async {
+    final fgBox = HiveDatasource.getInstance.getBox(BoxType.FAV_GIF_BOX);
+    return fgBox.put(r.id, r.toJson());
+  }
+
+  static Future<void> removeFavouriteGif(TenorResult r) async {
+    final fgBox = HiveDatasource.getInstance.getBox(BoxType.FAV_GIF_BOX);
+    return fgBox.delete(r.id);
+  }
+
+  static bool isGifFavourite(TenorResult r) {
+    final fgBox = HiveDatasource.getInstance.getBox(BoxType.FAV_GIF_BOX);
+    return fgBox.containsKey(r.id);
   }
 
   static Future<List<String>> getPresetTexts() async {

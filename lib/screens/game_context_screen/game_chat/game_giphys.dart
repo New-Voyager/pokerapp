@@ -25,9 +25,10 @@ class GameChatBottomSheet extends StatefulWidget {
 class _GameChatBottomSheetState extends State<GameChatBottomSheet> {
   List<TenorResult> _gifs;
   Timer _timer;
-  bool isFavourite = true;
+  bool isFavouriteText = true;
+  bool isFavouriteGif = false;
   String currentSelectedTab = '';
-  List<String> favouriteGiphies;
+  List<String> _favouriteTexts;
   bool _expandSearchBar = false;
 
   Future<List<TenorResult>> _fetchGifs({String query}) async {
@@ -52,7 +53,7 @@ class _GameChatBottomSheetState extends State<GameChatBottomSheet> {
 
   _fetchFavouriteTexts() async {
     final value = await GameService.getPresetTexts();
-    setState(() => favouriteGiphies = value);
+    setState(() => _favouriteTexts = value);
   }
 
   getGiphies(String text) {
@@ -154,27 +155,69 @@ class _GameChatBottomSheetState extends State<GameChatBottomSheet> {
           Stack(
             alignment: Alignment.center,
             children: [
-              // main row,
+              // main row - TAB,
               Row(
                 children: [
                   // sep
                   SizedBox(width: 10),
 
-                  // tab
+                  // favourite texts
                   GestureDetector(
                     onTap: () {
                       setState(() {
                         currentSelectedTab = '';
-                        isFavourite = true;
+                        isFavouriteGif = false;
+                        isFavouriteText = true;
                         _expandSearchBar = false;
                       });
                     },
                     child: Icon(
-                      isFavourite ? Icons.star : Icons.star_border,
-                      color: isFavourite
+                      isFavouriteText ? Icons.star : Icons.star_border,
+                      color: isFavouriteText
                           ? AppColorsNew.yellowAccentColor
                           : Colors.grey,
                       size: 25,
+                    ),
+                  ),
+
+                  // sep
+                  SizedBox(width: 10),
+
+                  // fav gifs
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        currentSelectedTab = 'fav-gif';
+                        isFavouriteGif = true;
+                        isFavouriteText = false;
+                        _expandSearchBar = false;
+                      });
+                    },
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          isFavouriteGif ? Icons.star : Icons.star_border,
+                          color: isFavouriteGif
+                              ? AppColorsNew.yellowAccentColor
+                              : Colors.grey,
+                          size: 20,
+                        ),
+                        const SizedBox(width: 1.0),
+                        Text(
+                          'GIF',
+                          style: isFavouriteGif
+                              ? AppStyles.footerResultTextStyle2.copyWith(
+                                  fontSize: 15.0,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppColorsNew.yellowAccentColor,
+                                )
+                              : AppStyles.footerResultTextStyle2.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15.0,
+                                ),
+                        ),
+                      ],
                     ),
                   ),
 
@@ -188,7 +231,8 @@ class _GameChatBottomSheetState extends State<GameChatBottomSheet> {
                           onTap: () {
                             setState(() {
                               currentSelectedTab = e;
-                              isFavourite = false;
+                              isFavouriteText = false;
+                              isFavouriteGif = false;
                               getGiphies(e);
                             });
                           },
@@ -242,7 +286,8 @@ class _GameChatBottomSheetState extends State<GameChatBottomSheet> {
                       _timer = Timer(const Duration(milliseconds: 500), () {
                         setState(() {
                           currentSelectedTab = '';
-                          isFavourite = false;
+                          isFavouriteText = false;
+                          isFavouriteGif = false;
                         });
 
                         _fetchGifs(query: text.trim()).then(
@@ -283,7 +328,7 @@ class _GameChatBottomSheetState extends State<GameChatBottomSheet> {
           ),
 
           /* Favourites OR GIFs */
-          isFavourite
+          isFavouriteText
               ? Expanded(
                   child: SingleChildScrollView(
                     physics: BouncingScrollPhysics(),
@@ -314,10 +359,10 @@ class _GameChatBottomSheetState extends State<GameChatBottomSheet> {
                         ),
 
                         // favourite lists
-                        favouriteGiphies != null
+                        _favouriteTexts != null
                             ? Wrap(
                                 children: [
-                                  ...favouriteGiphies
+                                  ..._favouriteTexts
                                       .map((text) => _buildButton(
                                             context,
                                             text,
@@ -332,26 +377,47 @@ class _GameChatBottomSheetState extends State<GameChatBottomSheet> {
                     ),
                   ),
                 )
-              : Expanded(
-                  child: _gifs == null
-                      ? Center(
-                          child: CircularProgressIndicator(),
-                        )
-                      : _gifs.isEmpty
+              : isFavouriteGif
+                  ? Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 10.0),
+                        child: GifListWidget(
+                          onRemoveBookMark: (TenorResult r) async {
+                            await GameService.removeFavouriteGif(r);
+                            setState(() {});
+                          },
+                          gifs: GameService.fetchFavouriteGifs(),
+                          onGifSelect: (String url) {
+                            widget.chatService.sendGiphy(url);
+                            Navigator.pop(context, url);
+                          },
+                        ),
+                      ),
+                    )
+                  : Expanded(
+                      child: _gifs == null
                           ? Center(
-                              child: Text('Nothing Found'),
+                              child: CircularProgressIndicator(),
                             )
-                          : Padding(
-                              padding: const EdgeInsets.only(top: 10.0),
-                              child: GifListWidget(
-                                gifs: _gifs,
-                                onGifSelect: (String url) {
-                                  widget.chatService.sendGiphy(url);
-                                  Navigator.pop(context, url);
-                                },
-                              ),
-                            ),
-                ),
+                          : _gifs.isEmpty
+                              ? Center(
+                                  child: Text('Nothing Found'),
+                                )
+                              : Padding(
+                                  padding: const EdgeInsets.only(top: 10.0),
+                                  child: GifListWidget(
+                                    onBookMark: (TenorResult r) async {
+                                      await GameService.addFavouriteGif(r);
+                                      setState(() {});
+                                    },
+                                    gifs: _gifs,
+                                    onGifSelect: (String url) {
+                                      widget.chatService.sendGiphy(url);
+                                      Navigator.pop(context, url);
+                                    },
+                                  ),
+                                ),
+                    ),
         ],
       ),
     );
