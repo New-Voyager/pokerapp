@@ -3,6 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
+import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class OverlayNotificationWidget extends StatelessWidget {
@@ -42,9 +43,9 @@ class OverlayNotificationWidget extends StatelessWidget {
       leadingImage = Icon(
         icon,
         size: 20.pw,
-        color: Colors.black,
+        color: Colors.white60,
       );
-    } else if (svg != null) {
+    } else if (svgPath != null) {
       leadingImage = SvgPicture.asset(
         svgPath,
         height: 24.pw,
@@ -57,7 +58,7 @@ class OverlayNotificationWidget extends StatelessWidget {
         width: 32.pw,
         decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: Colors.black,
+            //color: Colors.black,
             border: Border.all(color: AppColorsNew.notificationIconColor)),
         padding: EdgeInsets.all(5.pw),
         margin: EdgeInsets.symmetric(
@@ -67,7 +68,9 @@ class OverlayNotificationWidget extends StatelessWidget {
         child: leadingImage,
       );
     } else {
-      leadingImage = Container();
+      leadingImage = Icon(
+        Icons.info_outline,
+      );
     }
     return SlideDismissible(
       key: ValueKey("overlayNotification"),
@@ -75,41 +78,51 @@ class OverlayNotificationWidget extends StatelessWidget {
       child: SafeArea(
         child: Card(
           child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 16.pw, vertical: 8.ph),
             decoration: BoxDecoration(
               color: AppColorsNew.notificationBackgroundColor,
               borderRadius: BorderRadius.circular(8.pw),
             ),
-            child: ListTile(
-                contentPadding:
-                    EdgeInsets.symmetric(horizontal: 8.pw, vertical: 8.ph),
-                tileColor: Colors.transparent,
-                title: Text(
-                  title,
-                  style: TextStyle(
-                    color: AppColorsNew.notificationTitleColor,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 10.dp,
-                  ),
-                ),
-                subtitle: subTitle == null
-                    ? SizedBox.shrink()
-                    : Text(
-                        subTitle,
+            child: Row(
+              children: [
+                leadingImage,
+                AppDimensionsNew.getHorizontalSpace(8),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
                         style: TextStyle(
-                          color: AppColorsNew.notificationTextColor,
-                          fontWeight: FontWeight.w400,
-                          fontSize: 8.dp,
+                          color: AppColorsNew.notificationTitleColor,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 10.dp,
                         ),
                       ),
-                trailing: IconButton(
+                      subTitle == null
+                          ? SizedBox.shrink()
+                          : Text(
+                              subTitle,
+                              style: TextStyle(
+                                color: AppColorsNew.notificationTextColor,
+                                fontWeight: FontWeight.w400,
+                                fontSize: 8.dp,
+                              ),
+                            ),
+                    ],
+                  ),
+                ),
+                AppDimensionsNew.getHorizontalSpace(8),
+                IconButton(
                     icon: Icon(
                       Icons.cancel_rounded,
-                      color: AppColors.appAccentColor,
+                      color: AppColorsNew.darkGreenShadeColor,
                     ),
                     onPressed: () {
                       OverlaySupportEntry.of(context).dismiss();
                     }),
-                leading: leadingImage),
+              ],
+            ),
           ),
         ),
       ),

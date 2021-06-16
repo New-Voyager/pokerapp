@@ -8,6 +8,7 @@ import 'package:pokerapp/models/option_item_model.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
+import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/club_screen/club_games_page_view.dart';
@@ -44,19 +45,7 @@ class _GameOptionsState extends State<GameOptionsBottomSheet> {
     width = MediaQuery.of(context).size.width;
     final currentPlayer = widget.gameState.currentPlayer;
     return Container(
-      decoration: AppStylesNew.BgGreenRadialGradient.copyWith(
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(32),
-            topRight: Radius.circular(32),
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: AppColorsNew.newGreenButtonColor,
-              offset: Offset(1, 1),
-              blurRadius: 1,
-              spreadRadius: 1,
-            )
-          ]),
+      decoration: AppStylesNew.bgCurvedGreenRadialGradient,
       height: height / 2,
       child: Column(
         mainAxisSize: MainAxisSize.max,

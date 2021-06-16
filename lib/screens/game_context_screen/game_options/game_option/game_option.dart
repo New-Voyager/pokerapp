@@ -48,14 +48,20 @@ class _GameOptionState extends State<GameOption> {
   _GameOptionState(this.gameCode);
 
   void onLeave() {
-    Alerts.showTextNotification(text: AppStringsNew.leaveGameNotificationText);
+    Alerts.showNotification(
+        titleText: "LEAVE",
+        leadingIcon: Icons.time_to_leave,
+        subTitleText: AppStringsNew.leaveGameNotificationText);
     // Dismisses bottomsheet
     Navigator.of(context).pop();
     GameService.leaveGame(this.gameCode);
   }
 
   void onEndGame() {
-    Alerts.showTextNotification(text: AppStringsNew.gameEndNotificationText);
+    Alerts.showNotification(
+        titleText: "ENDED",
+        leadingIcon: Icons.close,
+        subTitleText: AppStringsNew.gameEndNotificationText);
     // showSimpleNotification(
     //   Text(''),
     //   position: NotificationPosition.top,
@@ -68,17 +74,20 @@ class _GameOptionState extends State<GameOption> {
   }
 
   void onPause() {
-    Alerts.showTextNotification(text: AppStringsNew.pauseGameNotificationText);
+    Alerts.showNotification(
+        titleText: "PAUSE",
+        leadingIcon: Icons.pause_circle,
+        subTitleText: AppStringsNew.pauseGameNotificationText);
     Navigator.of(context).pop();
 
     GameService.pauseGame(this.gameCode);
   }
 
   void onBreak() {
-    Alerts.showTextNotification(text: AppStringsNew.breakGameNotificationText);
+    Alerts.showNotification(titleText:"BREAK",leadingIcon: Icons.time_to_leave, subTitleText:  AppStringsNew.breakGameNotificationText);
     Navigator.of(context).pop();
 
-    //Alerts.showTextNotification(text: 'Your break will start after this hand');
+    //Alerts.showNotification(text: 'Your break will start after this hand');
 
     GameService.takeBreak(this.gameCode);
   }
