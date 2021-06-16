@@ -163,6 +163,7 @@ class GameReplayController {
 
   /* util methods */
   void dispose(BuildContext context) {
+    _audioPlayer?.dispose();
     _actionService?.close();
 
     /* if we were playing something, stop that and dispose */
