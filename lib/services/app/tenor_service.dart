@@ -8,15 +8,16 @@ class TenorService {
   static Tenor tenor = Tenor(apiKey: _token);
 
   static Future<List<TenorResult>> getTrendingGifs() async {
-    TenorResponse res = await tenor.requestTrendingGIF(limit: 20);
+    TenorResponse res = await tenor.requestTrendingGIF();
+
     final List<TenorResult> list = [];
+
     res?.results?.forEach((TenorResult tenorResult) {
       list.add(tenorResult);
       /*  var title = tenorResult.title;
       var media = tenorResult.media;
       print('$title: gif : ${media?.gif?.previewUrl?.toString()}'); */
     });
-    log("Fetching GIFs from Tenor");
     return list;
   }
 

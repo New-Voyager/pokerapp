@@ -15,8 +15,6 @@ import 'package:tenor/tenor.dart';
 
 import 'add_favourite_giphy.dart';
 
-import 'package:pokerapp/utils/adaptive_sizer.dart';
-
 class GameChatBottomSheet extends StatefulWidget {
   final GameMessagingService chatService;
   GameChatBottomSheet(this.chatService);
@@ -27,10 +25,12 @@ class GameChatBottomSheet extends StatefulWidget {
 class _GameChatBottomSheetState extends State<GameChatBottomSheet> {
   List<TenorResult> _gifs;
   Timer _timer;
-  bool isFavourite = true;
+  bool isFavouriteText = true;
+  bool isFavouriteGif = false;
   String currentSelectedTab = '';
-  List<String> favouriteGiphies;
+  List<String> _favouriteTexts;
   bool _expandSearchBar = false;
+
   Future<List<TenorResult>> _fetchGifs({String query}) async {
     setState(() => _gifs = null);
 
@@ -42,7 +42,7 @@ class _GameChatBottomSheetState extends State<GameChatBottomSheet> {
 
   @override
   void initState() {
-    getFavouriteGiphy();
+    _fetchFavouriteTexts();
     _fetchGifs().then(
       (value) => setState(() {
         _gifs = value;
@@ -51,13 +51,9 @@ class _GameChatBottomSheetState extends State<GameChatBottomSheet> {
     super.initState();
   }
 
-  getFavouriteGiphy() {
-    GameService.favouriteGiphies().then((value) {
-      setState(() {
-        favouriteGiphies = value;
-        _expandSearchBar = false;
-      });
-    });
+  _fetchFavouriteTexts() async {
+    final value = await GameService.getPresetTexts();
+    setState(() => _favouriteTexts = value);
   }
 
   getGiphies(String text) {
@@ -69,34 +65,83 @@ class _GameChatBottomSheetState extends State<GameChatBottomSheet> {
     );
   }
 
-  Widget _buildButton(context, text) => InkWell(
-        onTap: () {
-          widget.chatService.sendText(text);
-          Navigator.pop(context);
-        },
-        child: Container(
-          // height: 32.ph,
-          // width: 80.pw,
-          margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-          padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
-          decoration: BoxDecoration(
-            shape: BoxShape.rectangle,
-            border: Border.all(
-              color: AppColorsNew.newGreenButtonColor,
-              width: 1.0,
+  // bool, string <isLocal, cleaned text>
+  List _cleanTextIfLocal(String text) {
+    final List<String> tmp = text.split(GameService.LOCAL_KEY);
+
+    if (tmp.length == 1 || tmp.first.isNotEmpty) {
+      return [false, text];
+    }
+
+    tmp.removeAt(0);
+
+    return [true, tmp.join('')];
+  }
+
+  Widget _buildButton(context, text) {
+    final ct = _cleanTextIfLocal(text);
+
+    final bool isLocal = ct[0];
+    final String cleanedText = ct[1];
+
+    return InkWell(
+      onTap: () {
+        widget.chatService.sendText(text);
+        Navigator.pop(context);
+      },
+      child: Stack(
+        children: [
+          /* main body */
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+            padding:
+                const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+            decoration: BoxDecoration(
+              shape: BoxShape.rectangle,
+              border: Border.all(
+                color: AppColorsNew.newGreenButtonColor,
+                width: 1.0,
+              ),
+              borderRadius: BorderRadius.circular(16),
             ),
-            borderRadius: BorderRadius.circular(16),
-          ),
-          child: Text(
-            text,
-            textAlign: TextAlign.center,
-            style: AppStyles.clubItemInfoTextStyle.copyWith(
-              fontSize: 15.0,
-              color: AppColorsNew.newGreenButtonColor,
+            child: Text(
+              cleanedText,
+              textAlign: TextAlign.center,
+              style: AppStyles.clubItemInfoTextStyle.copyWith(
+                fontSize: 15.0,
+                color: AppColorsNew.newGreenButtonColor,
+              ),
             ),
           ),
-        ),
-      );
+
+          /* cross button, in case of local */
+          isLocal
+              ? Positioned(
+                  left: 0,
+                  top: 0,
+                  child: Container(
+                    padding: const EdgeInsets.all(1.0),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.red,
+                    ),
+                    child: InkWell(
+                      onTap: () async {
+                        await GameService.removePresetText(text);
+                        _fetchFavouriteTexts();
+                      },
+                      child: Icon(
+                        Icons.close_rounded,
+                        size: 17.0,
+                      ),
+                    ),
+                  ),
+                )
+              : const SizedBox.shrink(),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -108,27 +153,71 @@ class _GameChatBottomSheetState extends State<GameChatBottomSheet> {
         children: [
           /* tab bar */
           Stack(
+            alignment: Alignment.center,
             children: [
+              // main row - TAB,
               Row(
                 children: [
                   // sep
                   SizedBox(width: 10),
 
-                  // tab
+                  // favourite texts
                   GestureDetector(
                     onTap: () {
                       setState(() {
                         currentSelectedTab = '';
-                        isFavourite = true;
+                        isFavouriteGif = false;
+                        isFavouriteText = true;
                         _expandSearchBar = false;
                       });
                     },
                     child: Icon(
-                      isFavourite ? Icons.star : Icons.star_border,
-                      color: isFavourite
+                      isFavouriteText ? Icons.star : Icons.star_border,
+                      color: isFavouriteText
                           ? AppColorsNew.yellowAccentColor
                           : Colors.grey,
                       size: 25,
+                    ),
+                  ),
+
+                  // sep
+                  SizedBox(width: 10),
+
+                  // fav gifs
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        currentSelectedTab = 'fav-gif';
+                        isFavouriteGif = true;
+                        isFavouriteText = false;
+                        _expandSearchBar = false;
+                      });
+                    },
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          isFavouriteGif ? Icons.star : Icons.star_border,
+                          color: isFavouriteGif
+                              ? AppColorsNew.yellowAccentColor
+                              : Colors.grey,
+                          size: 20,
+                        ),
+                        const SizedBox(width: 1.0),
+                        Text(
+                          'GIF',
+                          style: isFavouriteGif
+                              ? AppStyles.footerResultTextStyle2.copyWith(
+                                  fontSize: 15.0,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppColorsNew.yellowAccentColor,
+                                )
+                              : AppStyles.footerResultTextStyle2.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15.0,
+                                ),
+                        ),
+                      ],
                     ),
                   ),
 
@@ -142,7 +231,8 @@ class _GameChatBottomSheetState extends State<GameChatBottomSheet> {
                           onTap: () {
                             setState(() {
                               currentSelectedTab = e;
-                              isFavourite = false;
+                              isFavouriteText = false;
+                              isFavouriteGif = false;
                               getGiphies(e);
                             });
                           },
@@ -170,26 +260,25 @@ class _GameChatBottomSheetState extends State<GameChatBottomSheet> {
                   SizedBox(width: 10),
                 ],
               ),
-              Positioned(
-                child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 8),
+
+              // right centered - for searching GIFs
+              Align(
+                alignment: Alignment.centerRight,
+                child: AnimatedContainer(
+                  alignment: Alignment.center,
+                  duration: const Duration(milliseconds: 100),
+                  padding: EdgeInsets.symmetric(horizontal: 8.0),
                   width: _expandSearchBar
                       ? MediaQuery.of(context).size.width / 2
                       : 40,
-                  // height: 40,
                   decoration: BoxDecoration(
-                    color: AppColors.contentColor,
+                    color: Colors.black,
                     borderRadius: BorderRadius.circular(10.0),
                   ),
                   child: TextField(
-                    style: TextStyle(
-                      color: AppColors.lightGrayColor,
-                    ),
-                    onTap: () {
-                      setState(() => _expandSearchBar = !_expandSearchBar);
-                    },
+                    style: TextStyle(color: Colors.white),
                     onChanged: (String text) {
-                      if (text.trim().isEmpty) return;
+                      if (text.trim().isEmpty) text = 'Poker';
 
                       if (_timer?.isActive ?? false) _timer.cancel();
 
@@ -197,8 +286,10 @@ class _GameChatBottomSheetState extends State<GameChatBottomSheet> {
                       _timer = Timer(const Duration(milliseconds: 500), () {
                         setState(() {
                           currentSelectedTab = '';
-                          isFavourite = false;
+                          isFavouriteText = false;
+                          isFavouriteGif = false;
                         });
+
                         _fetchGifs(query: text.trim()).then(
                           (value) => setState(() {
                             _gifs = value;
@@ -206,24 +297,26 @@ class _GameChatBottomSheetState extends State<GameChatBottomSheet> {
                         );
                       });
                     },
-                    textAlignVertical: TextAlignVertical.center,
+                    // textAlignVertical: TextAlignVertical.center,
                     decoration: InputDecoration(
-                      suffixIcon: Icon(
-                        FontAwesomeIcons.search,
-                        color: AppColors.lightGrayColor,
-                        size: 18.0,
+                      suffixIcon: InkWell(
+                        onTap: () {
+                          setState(() => _expandSearchBar = !_expandSearchBar);
+                        },
+                        child: Icon(
+                          FontAwesomeIcons.search,
+                          color: _expandSearchBar
+                              ? AppColorsNew.yellowAccentColor
+                              : Colors.white,
+                          size: 18.0,
+                        ),
                       ),
                       hintText: 'Search Tenor',
-                      hintStyle: TextStyle(
-                        color: AppColors.medLightGrayColor,
-                      ),
+                      hintStyle: TextStyle(color: AppColors.medLightGrayColor),
                       border: InputBorder.none,
                     ),
                   ),
                 ),
-                right: 8,
-                top: 0,
-                bottom: 0,
               ),
             ],
           ),
@@ -235,7 +328,7 @@ class _GameChatBottomSheetState extends State<GameChatBottomSheet> {
           ),
 
           /* Favourites OR GIFs */
-          isFavourite
+          isFavouriteText
               ? Expanded(
                   child: SingleChildScrollView(
                     physics: BouncingScrollPhysics(),
@@ -244,17 +337,17 @@ class _GameChatBottomSheetState extends State<GameChatBottomSheet> {
                       children: [
                         // add button
                         Align(
-                          child: GestureDetector(
+                          child: InkWell(
                             onTap: () async {
                               await showDialog(
                                 context: context,
                                 builder: (ctx) => AlertDialog(
                                   backgroundColor:
-                                      AppColors.screenBackgroundColor,
+                                      AppColorsNew.darkGreenShadeColor,
                                   content: AddFavouriteGiphy(),
                                 ),
                               );
-                              getFavouriteGiphy();
+                              _fetchFavouriteTexts();
                             },
                             child: Icon(
                               Icons.add_circle_outline,
@@ -266,10 +359,10 @@ class _GameChatBottomSheetState extends State<GameChatBottomSheet> {
                         ),
 
                         // favourite lists
-                        favouriteGiphies != null
+                        _favouriteTexts != null
                             ? Wrap(
                                 children: [
-                                  ...favouriteGiphies
+                                  ..._favouriteTexts
                                       .map((text) => _buildButton(
                                             context,
                                             text,
@@ -284,26 +377,47 @@ class _GameChatBottomSheetState extends State<GameChatBottomSheet> {
                     ),
                   ),
                 )
-              : Expanded(
-                  child: _gifs == null
-                      ? Center(
-                          child: CircularProgressIndicator(),
-                        )
-                      : _gifs.isEmpty
+              : isFavouriteGif
+                  ? Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 10.0),
+                        child: GifListWidget(
+                          onRemoveBookMark: (TenorResult r) async {
+                            await GameService.removeFavouriteGif(r);
+                            setState(() {});
+                          },
+                          gifs: GameService.fetchFavouriteGifs(),
+                          onGifSelect: (String url) {
+                            widget.chatService.sendGiphy(url);
+                            Navigator.pop(context, url);
+                          },
+                        ),
+                      ),
+                    )
+                  : Expanded(
+                      child: _gifs == null
                           ? Center(
-                              child: Text('Nothing Found'),
+                              child: CircularProgressIndicator(),
                             )
-                          : Padding(
-                              padding: const EdgeInsets.only(top: 10.0),
-                              child: GifListWidget(
-                                gifs: _gifs,
-                                onGifSelect: (String url) {
-                                  widget.chatService.sendGiphy(url);
-                                  Navigator.pop(context, url);
-                                },
-                              ),
-                            ),
-                ),
+                          : _gifs.isEmpty
+                              ? Center(
+                                  child: Text('Nothing Found'),
+                                )
+                              : Padding(
+                                  padding: const EdgeInsets.only(top: 10.0),
+                                  child: GifListWidget(
+                                    onBookMark: (TenorResult r) async {
+                                      await GameService.addFavouriteGif(r);
+                                      setState(() {});
+                                    },
+                                    gifs: _gifs,
+                                    onGifSelect: (String url) {
+                                      widget.chatService.sendGiphy(url);
+                                      Navigator.pop(context, url);
+                                    },
+                                  ),
+                                ),
+                    ),
         ],
       ),
     );
