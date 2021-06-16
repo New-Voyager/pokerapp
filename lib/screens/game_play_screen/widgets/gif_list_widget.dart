@@ -117,3 +117,17 @@ class GifListWidget extends StatelessWidget {
           },
         );
 }
+
+/*
+ /* attribution */
+                IntrinsicWidth(
+                  child: Container(
+                    color: Colors.white60,
+                    padding: EdgeInsets.all(5.0),
+                    child: Image.asset(
+                      AppAssets.tenorAttributionImage,
+                      width: 50.0,
+                    ),
+                  ),
+                ),
+*/
