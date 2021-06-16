@@ -273,7 +273,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
   @override
   Widget build(BuildContext context) {
     //log('isAdmin: ${widget.gameContextObject.isAdmin()}');
-
+    final gameState = GameState.getState(context);
     height = MediaQuery.of(context).size.height;
     bottomSheetHeight = height / 3;
     return Align(
@@ -281,7 +281,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
       child: Column(
         children: [
           Consumer<MyState>(builder: (context, myState, child) {
-            //log('myState.gameStatus = ${myState.gameStatus}, myState.status = ${myState.status}');
+            log('myState.gameStatus = ${myState.gameStatus}, myState.status = ${myState.status}');
             return myState.gameStatus == GameStatus.RUNNING &&
                     myState.status == PlayerStatus.PLAYING
                 ? GameCircleButton(
@@ -303,20 +303,27 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
               builder: (context, value, gameContextObj, child) {
             // log('gameContextObj.isAdmin() = ${gameContextObj.isAdmin()}');
             //  log("VALUE ======== ${value.totalPending}");
-            return !widget.gameContextObject.isAdmin()
-                ? Container()
-                : Consumer<PendingApprovalsState>(
-                    // Pending approval
-                    builder: (context, value, child) {
-                      //  log("VALUE ======== ${value.totalPending}");
-                      return IconWithBadge(
-                          count: value.totalPending,
-                          onClickFunction: onClickPendingBuyInApprovals,
-                          child: GameCircleButton(
-                            iconData: Icons.pending_actions,
-                          ));
-                    },
-                  );
+            if (!widget.gameContextObject.isAdmin()) {
+              return Container();
+            }
+
+            return Consumer<PendingApprovalsState>(
+              // Pending approval
+              builder: (context, value, child) {
+                //  log("VALUE ======== ${value.totalPending}");
+                final approval = SvgPicture.asset(
+                    'assets/images/game/clipboard.svg',
+                    width: 16,
+                    height: 16,
+                    color: Colors.black);
+                return IconWithBadge(
+                    count: value.totalPending,
+                    onClickFunction: onClickPendingBuyInApprovals,
+                    child: GameCircleButton(
+                      child: approval,
+                    ));
+              },
+            );
           }),
         ],
       ),

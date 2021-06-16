@@ -855,16 +855,23 @@ class GameUpdateService {
     tableState.updateTableStatusSilent(tableStatus);
     tableState.updateGameStatusSilent(gameStatus);
 
-    if (tableStatus == AppConstants.TABLE_STATUS_GAME_RUNNING) {
+    if (tableStatus == AppConstants.TABLE_STATUS_GAME_RUNNING ||
+        tableStatus == AppConstants.TABLE_STATUS_GAME_RUNNING_1) {
+      log('Game is running. Update the state');
+      _gameState.refresh(_context);
       /* QUERY_CURRENT_HAND is done here, only after making sure,
       * that the game is running.
       * This is done to get update of the game */
       gameContext.handActionService.queryCurrentHand();
     } else if (gameStatus == AppConstants.GAME_ENDED) {
       // end the game
+      log('Game has ended. Update the state');
+      _gameState.refresh(_context);
       tableState.updateTableStatusSilent(AppConstants.GAME_ENDED);
       resetBoard();
     } else if (gameStatus == AppConstants.GAME_PAUSED) {
+      log('Game has ended. Update the state');
+      _gameState.refresh(_context);
       // paused the game
       tableState.updateTableStatusSilent(AppConstants.GAME_PAUSED);
       resetBoard();

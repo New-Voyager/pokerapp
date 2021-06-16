@@ -15,6 +15,7 @@ import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/game_circle_button.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/pulsating_button.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/voice_text_widget.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 //import 'package:pokerapp/services/agora/agora.dart';
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
@@ -42,6 +43,8 @@ class _CommunicationViewState extends State<CommunicationView> {
   Widget build(BuildContext context) {
     final gameState = GameState.getState(context);
     final communicationState = gameState.getCommunicationState();
+    final chat = SvgPicture.asset('assets/images/game/chat.svg',
+        width: 16, height: 16, color: Colors.black);
 
     return ListenableProvider<CommunicationState>(
         create: (_) => communicationState,
@@ -56,8 +59,9 @@ class _CommunicationViewState extends State<CommunicationView> {
                     communicationState.audioConferenceStatus ==
                         AudioConferenceStatus.CONNECTED) {
                   log('User is playing and audio conference connected, showing janusAudioWidgets');
-                  children
-                      .addAll(janusAudioWidgets(gameState, communicationState));
+                  children.addAll(
+                    janusAudioWidgets(gameState, communicationState),
+                  );
                 } else if (communicationState.voiceChatEnable) {
                   log('Showing voiceChatWidgets');
                   children.addAll(voiceTextWidgets(widget.chatService));
@@ -72,7 +76,7 @@ class _CommunicationViewState extends State<CommunicationView> {
                       badgeContent: Text(gcns.count.toString()),
                       child: GameCircleButton(
                         onClickHandler: widget.chatVisibilityChange,
-                        iconData: Icons.chat,
+                        child: chat,
                       ),
                     ),
                   ),
@@ -85,9 +89,24 @@ class _CommunicationViewState extends State<CommunicationView> {
             ));
   }
 
+  Widget talkingAnimation(Function onTap) {
+    Widget child = BlinkWidget(
+      children: [
+        SvgPicture.asset('assets/images/game/mic-step1.svg',
+            width: 16, height: 16, color: Colors.black),
+        SvgPicture.asset('assets/images/game/mic-step2.svg',
+            width: 16, height: 16, color: Colors.black),
+        SvgPicture.asset('assets/images/game/mic-step3.svg',
+            width: 16, height: 16, color: Colors.black),
+        SvgPicture.asset('assets/images/game/mic-step1.svg',
+            width: 16, height: 16, color: Colors.black),
+      ],
+    );
+    return GameCircleButton(onClickHandler: onTap, child: child);
+  }
+
   janusAudioWidgets(GameState gameState, CommunicationState state) {
     Color iconColor = Colors.grey;
-    Color micColor = Colors.grey;
     Widget mic;
 
     if (state != null) {
@@ -96,36 +115,39 @@ class _CommunicationViewState extends State<CommunicationView> {
       } else if (state.audioConferenceStatus ==
           AudioConferenceStatus.CONNECTED) {
         iconColor = Colors.green;
-        micColor = AppColorsNew.newGreenButtonColor;
       }
 
       log('Audio status: ${state.audioConferenceStatus.toString()} iconColor: ${iconColor.toString()} muted: ${state.muted} talking: ${state.talking}');
 
       if (state?.talking ?? false) {
-        mic = PulsatingCircleIconButton(
-          child: Icon(
-            Icons.keyboard_voice,
-            color: Colors.white,
-            size: 24.pw,
-          ),
-          onTap: () {
+        mic = talkingAnimation(() {
+          log('mic is tapped');
+          if (state.audioConferenceStatus == AudioConferenceStatus.CONNECTED) {
+            gameState.janusEngine.muteUnmute();
+          }
+        });
+      }
+    }
+
+    if (mic == null) {
+      Widget child;
+      if (state.muted) {
+        child = SvgPicture.asset('assets/images/game/mic-mute.svg',
+            width: 16, height: 16, color: Colors.black);
+      } else {
+        child = SvgPicture.asset('assets/images/game/mic.svg',
+            width: 16, height: 16, color: Colors.black);
+      }
+      mic = GameCircleButton(
+          onClickHandler: () {
+            log('mic is tapped');
             if (state.audioConferenceStatus ==
                 AudioConferenceStatus.CONNECTED) {
               gameState.janusEngine.muteUnmute();
             }
           },
-          color: Colors.red,
-          radius: 0.5,
-        );
-      }
-    }
-
-    if (mic == null) {
-      mic = Icon(
-        state.muted ? Icons.mic_off : Icons.mic,
-        size: 35.pw,
-        color: micColor,
-      );
+          child: child);
+      log('audio is muted: $mic');
     }
 
     return <Widget>[
@@ -144,7 +166,7 @@ class _CommunicationViewState extends State<CommunicationView> {
           }
         },
         child: Container(
-          padding: EdgeInsets.symmetric(vertical: 4, horizontal: 12),
+          padding: EdgeInsets.symmetric(vertical: 4),
           child: mic,
         ),
       ),

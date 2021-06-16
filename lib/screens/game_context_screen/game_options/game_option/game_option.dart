@@ -1,7 +1,9 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/hand_history_model.dart';
@@ -17,6 +19,9 @@ import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_log_view.dart';
 import 'package:pokerapp/screens/game_screens/hand_history/hand_history.dart';
 import 'package:pokerapp/services/app/game_service.dart';
+import 'package:pokerapp/services/data/game_hive_store.dart';
+import 'package:pokerapp/services/data/box_type.dart';
+import 'package:pokerapp/services/data/hive_datasource_impl.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/widgets/switch_widget.dart';
 import 'seat_change_bottom_sheet.dart';
@@ -244,18 +249,25 @@ class _GameOptionState extends State<GameOption> {
             ),
             _buildCheckBox(
               text: 'Game Sounds',
-              value: widget.gameState.gameSounds,
-              onChange: (bool v) {
-                widget.gameState.gameSounds = v;
-                log('gameSounds = ${widget.gameState.gameSounds}');
+              value: widget.gameState.settings.gameSound,
+              onChange: (bool v) async {
+                widget.gameState.settings.gameSound = v;
+                widget.gameState.gameHiveStore
+                    .putGameSettings(widget.gameState.settings);
+                log('In toggle button widget, gameSounds = ${widget.gameState.settings.gameSound}');
                 setState(() {});
               },
             ),
             widget.gameState.gameInfo.audioConfEnabled
                 ? _buildCheckBox(
                     text: 'Audio Conference',
-                    value: false,
-                    onChange: (bool v) {
+                    value: widget.gameState.settings.audioConf,
+                    onChange: (bool v) async {
+                      widget.gameState.settings.audioConf = v;
+                      widget.gameState.janusEngine.joinLeaveAudioConference();
+                      widget.gameState.gameHiveStore
+                          .putGameSettings(widget.gameState.settings);
+                      log('In toggle button widget, audioConf = ${widget.gameState.settings.audioConf}');
                       setState(() {});
                     },
                   )

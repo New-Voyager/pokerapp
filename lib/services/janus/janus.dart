@@ -37,6 +37,7 @@ class JanusEngine extends ChangeNotifier {
   bool joined = false;
   GameState gameState;
   bool initializing = false;
+
   JanusEngine(
       {this.janusUrl,
       this.janusToken,
@@ -346,6 +347,16 @@ class JanusEngine extends ChangeNotifier {
         // leave the channel
         leaveChannel();
       }
+    }
+  }
+
+  void joinLeaveAudioConference() {
+    if (gameState.settings.audioConf) {
+      log('joining audio conference');
+      joinChannel(this.janusToken);
+    } else {
+      log('leaving audio conference');
+      leaveChannel();
     }
   }
 
