@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
+import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class AppStylesNew {
@@ -28,6 +29,28 @@ class AppStylesNew {
       center: Alignment.topLeft,
       radius: 1.5,
     ),
+  );
+  static final BoxDecoration bgCurvedGreenRadialGradient = BoxDecoration(
+    gradient: RadialGradient(
+      colors: [
+        AppColorsNew.newGreenRadialStartColor,
+        AppColorsNew.newBackgroundBlackColor,
+      ],
+      center: Alignment.topLeft,
+      radius: 1.5,
+    ),
+    borderRadius: BorderRadius.only(
+      topLeft: Radius.circular(AppDimensionsNew.bottomSheetRadius),
+      topRight: Radius.circular(AppDimensionsNew.bottomSheetRadius),
+    ),
+    boxShadow: [
+      BoxShadow(
+        color: AppColorsNew.newGreenButtonColor,
+        offset: Offset(1, 1),
+        blurRadius: 1,
+        spreadRadius: 1,
+      )
+    ],
   );
   static final TextStyle gameActionTextStyle = TextStyle(
     color: AppColorsNew.newTextColor,

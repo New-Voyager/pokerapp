@@ -30,8 +30,12 @@ class HandLogView extends StatefulWidget {
   final String clubCode;
   final int handNum;
   final HandLogModelNew handLogModel;
+  final bool isBottomSheet;
   HandLogView(this.gameCode, this.handNum,
-      {this.isAppbarWithHandNumber = false, this.clubCode, this.handLogModel});
+      {this.isAppbarWithHandNumber = false,
+      this.clubCode,
+      this.handLogModel,
+      this.isBottomSheet = false});
 
   @override
   State<StatefulWidget> createState() => _HandLogViewState();
@@ -97,17 +101,20 @@ class _HandLogViewState extends State<HandLogView> {
         list.firstWhere((element) => element.handNum == handnum, orElse: null);
     if (hand != null) {
       var result = await HandService.removeBookmark(hand.id);
-      Alerts.showTextNotification(
-        text: result
-            ? "Hand " + widget.handNum.toString() + " removed from bookmarks"
-            : "Couldn't remove bookmark. Please try again later",
+      Alerts.showNotification(
+        titleText: result ? "SUCCESS" : "FAILED",
+        subTitleText: result
+            ? "Hand " + handnum.toString() + " removed from bookmarks"
+            : "Couldn't remove bookmark",
       );
+
       if (result) {
         await _fetchBookmarksForGame(widget.gameCode);
       }
     } else {
-      Alerts.showTextNotification(
-        text: "Couldn't remove bookmark. Please try again later",
+      Alerts.showNotification(
+        titleText: "FAILED",
+        subTitleText: "Couldn't remove bookmark",
       );
     }
   }
@@ -173,12 +180,15 @@ class _HandLogViewState extends State<HandLogView> {
     }
 
     return Container(
-      decoration: AppStylesNew.BgGreenRadialGradient,
+      decoration: (widget.isBottomSheet ?? false)
+          ? AppStylesNew.bgCurvedGreenRadialGradient
+          : AppStylesNew.BgGreenRadialGradient,
       child: Scaffold(
         backgroundColor: Colors.transparent,
         appBar: CustomAppBar(
           context: context,
           titleText: AppStringsNew.HandlogTitle,
+          showBackButton: !(widget.isBottomSheet ?? false),
         ),
         body: this._isLoading == true
             ? Center(
@@ -205,18 +215,20 @@ class _HandLogViewState extends State<HandLogView> {
             AppDimensionsNew.getHorizontalSpace(8),
             RoundIconButton(
               onTap: () async {
-                // todo : just change to shareHand and pass club code as well
+                log("SHARE12: ${_handLogModel.hand.gameCode} : ${_handLogModel.hand.handNum} : ${widget.clubCode}");
                 var result = await HandService.shareHand(
                   _handLogModel.hand.gameCode,
                   _handLogModel.hand.handNum,
                   widget.clubCode,
                 );
-                String text = result
-                    ? "Hand " +
-                        _handLogModel.hand.handNum.toString() +
-                        " has been shared with the club"
-                    : "Couldn't share the hand. Please try again later";
-                Alerts.showTextNotification(text: text);
+                Alerts.showNotification(
+                  titleText: result ? "SUCCESS" : "FAILED",
+                  subTitleText: result
+                      ? "Hand " +
+                          _handLogModel.hand.handNum.toString() +
+                          " has been shared with the club"
+                      : "Couldn't share the hand. Please try again later",
+                );
               },
               icon: Icons.share,
             ),
@@ -226,12 +238,13 @@ class _HandLogViewState extends State<HandLogView> {
                 if (_isTheHandBookmarked(widget.handNum)) {
                   _removeBookmark(widget.handNum);
                 } else {
-                  final results = await HandService.bookMarkHand(
+                  final result = await HandService.bookMarkHand(
                     _handLogModel.hand.gameCode,
                     _handLogModel.hand.handNum,
                   );
-                  Alerts.showTextNotification(
-                    text: results
+                  Alerts.showNotification(
+                    titleText: result ? "SUCCESS" : "FAILED",
+                    subTitleText: result
                         ? "Hand ${_handLogModel.hand.handNum} has been bookmarked."
                         : "Couldn't bookmark this hand! Please try again.",
                   );

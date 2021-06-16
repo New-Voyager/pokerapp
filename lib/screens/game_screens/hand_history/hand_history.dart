@@ -16,9 +16,9 @@ class HandHistoryListView extends StatefulWidget {
   final HandHistoryListModel data;
   final bool isInBottomSheet;
   final bool isLeadingBackIconShow;
-  HandHistoryListView(this.data, this._clubCode,
+  HandHistoryListView(this.data, this.clubCode,
       {this.isInBottomSheet = false, this.isLeadingBackIconShow = true});
-  final String _clubCode;
+  final String clubCode;
 
   @override
   _HandHistoryState createState() => _HandHistoryState();
@@ -57,6 +57,7 @@ class _HandHistoryState extends State<HandHistoryListView>
     return Scaffold(
       backgroundColor: AppColors.screenBackgroundColor,
       appBar: CustomAppBar(
+        showBackButton: !widget.isInBottomSheet,
         context: context,
         titleText: "Hand History",
       ),
@@ -92,14 +93,14 @@ class _HandHistoryState extends State<HandHistoryListView>
                           _data.gameCode,
                           _data.getMyHands(),
                           //_data.getAllHands(),
-                          widget._clubCode,
+                          widget.clubCode,
                           currentPlayer,
                           isInBottomSheet: widget.isInBottomSheet,
                         ),
                         PlayedHandsScreen(
                           _data.gameCode,
                           _data.getWinningHands(),
-                          widget._clubCode,
+                          widget.clubCode,
                           currentPlayer,
                           isInBottomSheet: widget.isInBottomSheet,
                         ),

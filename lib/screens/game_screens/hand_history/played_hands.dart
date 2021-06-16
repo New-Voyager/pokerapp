@@ -11,6 +11,8 @@ import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
+import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_log_view.dart';
 import 'package:pokerapp/screens/util_screens/replay_hand_dialog/replay_hand_dialog.dart';
@@ -160,12 +162,20 @@ class _PlayedHandsScreenState extends State<PlayedHandsScreen> {
       await showModalBottomSheet(
         context: context,
         isScrollControlled: true,
+        backgroundColor: Colors.transparent,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(AppDimensionsNew.bottomSheetRadius),
+            topRight: Radius.circular(AppDimensionsNew.bottomSheetRadius),
+          ),
+        ),
         builder: (ctx) => Container(
           height: MediaQuery.of(context).size.height / 2,
           child: HandLogView(
             this.widget.gameCode,
             widget.history[index].handNum,
             clubCode: widget.clubCode,
+            isBottomSheet: true,
           ),
         ),
       );
@@ -189,8 +199,9 @@ class _PlayedHandsScreenState extends State<PlayedHandsScreen> {
   _bookmarkdHand(int index) async {
     var result = await HandService.bookMarkHand(
         widget.gameCode, widget.history[index].handNum);
-    Alerts.showTextNotification(
-      text: result
+    Alerts.showNotification(
+      titleText: result ? "SUCCESS" : "FAILED",
+      subTitleText: result
           ? "Hand " +
               widget.history[index].handNum.toString() +
               " has been bookmarked"
@@ -207,8 +218,9 @@ class _PlayedHandsScreenState extends State<PlayedHandsScreen> {
         orElse: null);
     if (hand != null) {
       var result = await HandService.removeBookmark(hand.id);
-      Alerts.showTextNotification(
-        text: result
+      Alerts.showNotification(
+        titleText: result ? "SUCCESS" : "FAILED",
+        subTitleText: result
             ? "Hand " +
                 widget.history[index].handNum.toString() +
                 " removed from bookmarks"
@@ -218,8 +230,8 @@ class _PlayedHandsScreenState extends State<PlayedHandsScreen> {
         await _fetchBookmarksForGame(widget.gameCode);
       }
     } else {
-      Alerts.showTextNotification(
-        text: "Couldn't remove bookmark. Please try again later",
+      Alerts.showNotification(
+        titleText: "Couldn't remove bookmark. Please try again later",
       );
     }
   }
@@ -227,8 +239,10 @@ class _PlayedHandsScreenState extends State<PlayedHandsScreen> {
   _shareHandWithClub(int index) async {
     var result = await HandService.shareHand(
         widget.gameCode, widget.history[index].handNum, widget.clubCode);
-    Alerts.showTextNotification(
-      text: result
+
+    Alerts.showNotification(
+      titleText: result ? "SUCCESS" : "FAILED",
+      subTitleText: result
           ? "Hand " +
               widget.history[index].handNum.toString() +
               " has been shared with the club"

@@ -60,8 +60,9 @@ class _BookmarkedHandsState extends State<BookmarkedHands> {
 
   _removeBookMark(BookmarkedHand model) async {
     var result = await HandService.removeBookmark(model.id);
-    Alerts.showTextNotification(
-      text: result
+    Alerts.showNotification(
+      titleText: result ? "SUCCESS" : "FAILED",
+      subTitleText: result
           ? "Hand " +
               model.handlogData.hand.handNum.toString() +
               " removed from bookmarks"
@@ -80,12 +81,14 @@ class _BookmarkedHandsState extends State<BookmarkedHands> {
     log("IN SHARED HAND : ${widget.clubCode}");
     var result = await HandService.shareHand(
         model.hand.gameCode, model.hand.handNum, widget.clubCode);
-    Alerts.showTextNotification(
-      text: result
+    Alerts.showNotification(
+      titleText: result ? "SUCCESS" : "FAILED",
+      subTitleText: result
           ? "Hand " +
               model.hand.handNum.toString() +
               " has been shared with the club"
           : "Couldn't share the hand. Please try again later",
+      leadingIcon: Icons.share_rounded,
     );
   }
 
