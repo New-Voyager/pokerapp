@@ -31,6 +31,7 @@ class _GameChatBottomSheetState extends State<GameChatBottomSheet> {
   String currentSelectedTab = '';
   List<String> favouriteGiphies;
   bool _expandSearchBar = false;
+
   Future<List<TenorResult>> _fetchGifs({String query}) async {
     setState(() => _gifs = null);
 
@@ -108,7 +109,9 @@ class _GameChatBottomSheetState extends State<GameChatBottomSheet> {
         children: [
           /* tab bar */
           Stack(
+            alignment: Alignment.center,
             children: [
+              // main row,
               Row(
                 children: [
                   // sep
@@ -170,26 +173,25 @@ class _GameChatBottomSheetState extends State<GameChatBottomSheet> {
                   SizedBox(width: 10),
                 ],
               ),
-              Positioned(
-                child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 8),
+
+              // right centered - for searching GIFs
+              Align(
+                alignment: Alignment.centerRight,
+                child: AnimatedContainer(
+                  alignment: Alignment.center,
+                  duration: const Duration(milliseconds: 100),
+                  padding: EdgeInsets.symmetric(horizontal: 8.0),
                   width: _expandSearchBar
                       ? MediaQuery.of(context).size.width / 2
                       : 40,
-                  // height: 40,
                   decoration: BoxDecoration(
-                    color: AppColors.contentColor,
+                    color: Colors.black,
                     borderRadius: BorderRadius.circular(10.0),
                   ),
                   child: TextField(
-                    style: TextStyle(
-                      color: AppColors.lightGrayColor,
-                    ),
-                    onTap: () {
-                      setState(() => _expandSearchBar = !_expandSearchBar);
-                    },
+                    style: TextStyle(color: Colors.white),
                     onChanged: (String text) {
-                      if (text.trim().isEmpty) return;
+                      if (text.trim().isEmpty) text = 'Poker';
 
                       if (_timer?.isActive ?? false) _timer.cancel();
 
@@ -199,6 +201,7 @@ class _GameChatBottomSheetState extends State<GameChatBottomSheet> {
                           currentSelectedTab = '';
                           isFavourite = false;
                         });
+
                         _fetchGifs(query: text.trim()).then(
                           (value) => setState(() {
                             _gifs = value;
@@ -206,24 +209,26 @@ class _GameChatBottomSheetState extends State<GameChatBottomSheet> {
                         );
                       });
                     },
-                    textAlignVertical: TextAlignVertical.center,
+                    // textAlignVertical: TextAlignVertical.center,
                     decoration: InputDecoration(
-                      suffixIcon: Icon(
-                        FontAwesomeIcons.search,
-                        color: AppColors.lightGrayColor,
-                        size: 18.0,
+                      suffixIcon: InkWell(
+                        onTap: () {
+                          setState(() => _expandSearchBar = !_expandSearchBar);
+                        },
+                        child: Icon(
+                          FontAwesomeIcons.search,
+                          color: _expandSearchBar
+                              ? AppColorsNew.yellowAccentColor
+                              : Colors.white,
+                          size: 18.0,
+                        ),
                       ),
                       hintText: 'Search Tenor',
-                      hintStyle: TextStyle(
-                        color: AppColors.medLightGrayColor,
-                      ),
+                      hintStyle: TextStyle(color: AppColors.medLightGrayColor),
                       border: InputBorder.none,
                     ),
                   ),
                 ),
-                right: 8,
-                top: 0,
-                bottom: 0,
               ),
             ],
           ),
@@ -244,7 +249,7 @@ class _GameChatBottomSheetState extends State<GameChatBottomSheet> {
                       children: [
                         // add button
                         Align(
-                          child: GestureDetector(
+                          child: InkWell(
                             onTap: () async {
                               await showDialog(
                                 context: context,
