@@ -180,6 +180,7 @@ class GameMessagingService {
   }
 
   void sendCards(
+    int currentHandNum,
     List<int> cards,
     int seatNo,
   ) {
@@ -191,6 +192,7 @@ class GameMessagingService {
       'cards': cards,
       'type': 'CARDS',
       'sent': DateTime.now().toUtc().toIso8601String(),
+      'text': currentHandNum,
     });
 
     this.client.pubString(this.chatChannel, body);
@@ -236,6 +238,7 @@ class ChatMessage {
       } else if (msg.type == 'ANIMATION') {
         msg.animationID = message['animation'];
       } else if (msg.type == 'CARDS') {
+        msg.text = message['text'].toString();
         msg.seatNo = message['seatNo'] == null
             ? -1
             : int.parse(message['seatNo'].toString());

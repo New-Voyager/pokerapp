@@ -166,44 +166,6 @@ class _GameOptionState extends State<GameOption> {
           );
         },
       ),
-
-      // OptionItemModel(
-      //   title: "Last Hand",
-      //   image: "assets/images/casino.png",
-      //   backGroundColor: AppColors.gameOption4,
-      //   onTap: (context) async {
-      //     await showModalBottomSheet(
-      //       context: context,
-      //       isScrollControlled: true,
-      //       builder: (ctx) => Container(
-      //         height: height / 2,
-      //         child: HandLogView(widget.gameCode, -1),
-      //       ),
-      //     );
-      //   },
-      // ),
-      // OptionItemModel(
-      //   title: "Hand History",
-      //   image: "assets/images/casino.png",
-      //   backGroundColor: AppColors.gameOption5,
-      //   onTap: (context) async {
-      //     // todo: true need to change with isOwner actual value
-      //     final model = HandHistoryListModel(widget.gameCode, true);
-      //     await showModalBottomSheet(
-      //         context: context,
-      //         isScrollControlled: true,
-      //         builder: (ctx) {
-      //           return Container(
-      //               height: height / 2,
-      //               child: HandHistoryListView(
-      //                 model,
-      //                 // todo: club code need to get
-      //                 null,
-      //                 isInBottomSheet: true,
-      //               ));
-      //         });
-      //   },
-      // ),
     ];
 
     if (widget.gameState.getSeatByPlayer(widget.gameState.currentPlayerId) == null) {
@@ -233,6 +195,7 @@ class _GameOptionState extends State<GameOption> {
       padding: EdgeInsets.symmetric(horizontal: 10),
       child: SwitchWidget(
         label: text,
+        value: value,
         onChange: (value) {
           onChange(value);
         },
@@ -289,6 +252,49 @@ class _GameOptionState extends State<GameOption> {
                     },
                   )
                 : SizedBox(),
+            _buildCheckBox(
+              text: 'Animations',
+              value: widget.gameState.settings.animations,
+              onChange: (bool v) async {
+                widget.gameState.settings.animations = v;
+                widget.gameState.gameHiveStore
+                    .putGameSettings(widget.gameState.settings);
+                log('In toggle button widget, animations = ${widget.gameState.settings.animations}');
+                setState(() {});
+              },
+            ),
+            _buildCheckBox(
+              text: 'Show Chat',
+              value: widget.gameState.settings.showChat,
+              onChange: (bool v) async {
+                widget.gameState.settings.showChat = v;
+                widget.gameState.gameHiveStore
+                    .putGameSettings(widget.gameState.settings);
+                log('In toggle button widget, showChat = ${widget.gameState.settings.showChat}');
+                setState(() {});
+              },
+            ),
+            _buildCheckBox(
+              text: 'Straddle Off',
+              value: widget.gameState.settings.straddleOption,
+              onChange: (bool v) async {
+                widget.gameState.settings.straddleOption = v;
+                widget.gameState.gameHiveStore
+                    .putGameSettings(widget.gameState.settings);
+                log('In toggle button widget, straddleOption = ${widget.gameState.settings.straddleOption}');
+                setState(() {});
+              },
+            ),
+            _buildCheckBox(
+              text: 'Auto Straddle',
+              value: widget.gameState.settings.autoStraddle,
+              onChange: (bool v) async {
+                widget.gameState.settings.autoStraddle = v;
+                widget.gameState.gameHiveStore
+                    .putGameSettings(widget.gameState.settings);
+                log('In toggle button widget, autoStraddle = ${widget.gameState.settings.autoStraddle}');
+              },
+            ),
           ],
         ),
       );

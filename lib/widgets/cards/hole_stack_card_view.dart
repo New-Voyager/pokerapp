@@ -4,6 +4,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart
 import 'package:pokerapp/models/game_play_models/provider_models/marked_cards.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
+import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/footer_result_view.dart';
 import 'package:pokerapp/widgets/cards/player_hole_card_view.dart';
 import 'package:provider/provider.dart';
 
@@ -22,12 +23,12 @@ class HoleStackCardView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final footerStatus = Provider.of<ValueNotifier<FooterStatus>>(
-      context,
-      listen: false,
-    ).value;
+    // final footerStatus = Provider.of<ValueNotifier<FooterStatus>>(
+    //   context,
+    //   listen: false,
+    // ).value;
 
-    if (footerStatus == FooterStatus.Result) return SizedBox.shrink();
+    // // if (footerStatus == FooterStatus.Result) return SizedBox.shrink();
     final GameState gameState = GameState.getState(context);
 
     final MarkedCards markedCards = gameState.getMarkedCards(
@@ -69,20 +70,17 @@ class HoleStackCardView extends StatelessWidget {
                 child: Transform.rotate(
                   alignment: Alignment.bottomCenter,
                   angle: (i - mid) * kAngleConstant,
-                  child: deactivated
-                      ? PlayerHoleCardView(
-                          marked: markedCards.isMarked(cards[i]),
-                          onMarkTapCallback: () => markedCards.mark(cards[i]),
-                          card: cards[i],
-                          dim: true,
-                          isCardVisible: isCardVisible,
-                        )
-                      : PlayerHoleCardView(
-                          marked: markedCards.isMarked(cards[i]),
-                          onMarkTapCallback: () => markedCards.mark(cards[i]),
-                          card: cards[i],
-                          isCardVisible: isCardVisible,
-                        ),
+                  child: PlayerHoleCardView(
+                    marked: markedCards.isMarked(cards[i]),
+                    onMarkTapCallback: () => markedCards.mark(
+                      cards[i],
+                      context.read<ValueNotifier<FooterStatus>>().value ==
+                          FooterStatus.Result,
+                    ),
+                    card: cards[i],
+                    dim: deactivated,
+                    isCardVisible: isCardVisible,
+                  ),
                 ),
               );
             },

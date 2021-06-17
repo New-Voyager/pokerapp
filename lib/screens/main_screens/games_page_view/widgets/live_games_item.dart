@@ -7,6 +7,7 @@ import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 
 import 'package:pokerapp/utils/adaptive_sizer.dart';
+import 'package:pokerapp/utils/formatter.dart';
 
 class LiveGameItem extends StatelessWidget {
   final GameModelNew game;
@@ -104,7 +105,7 @@ class LiveGameItem extends StatelessWidget {
                         ),
                         AppDimensionsNew.getVerticalSizedBox(8.ph),
                         Text(
-                          "${AppStringsNew.Started} ${GameModelNew.getTimeInHHMMFormat(game)} ${AppStringsNew.Ago}.",
+                          "${AppStringsNew.Started} ${DataFormatter.getTimeInHHMMFormat(game.elapsedTime)} ${AppStringsNew.Ago}.",
                           style: AppStylesNew.elapsedTimeTextStyle,
                         ),
                       ],
