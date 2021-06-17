@@ -7,8 +7,10 @@ class GameSettings {
   bool audioConf = true;
   bool straddleOption = true;
   bool autoStraddle = false;
-  GameSettings(
-      this.gameCode, this.muckLosingHand, this.gameSound, this.audioConf);
+  bool animations = true;
+  bool showChat = true;
+
+  GameSettings(this.gameCode);
 
   @override
   String toString() {
@@ -22,6 +24,8 @@ class GameSettings {
         'audioConf': this.audioConf,
         'straddleOption': this.straddleOption,
         'autoStraddle': this.autoStraddle,
+        'animations': this.animations,
+        'showChat': this.showChat,
       };
 
   GameSettings.fromJson(Map<String, dynamic> json)
@@ -30,5 +34,7 @@ class GameSettings {
         this.gameSound = json['gameSound'],
         this.audioConf = json['audioConf'],
         this.autoStraddle = json['autoStraddle'],
-        this.straddleOption = json['straddleOption'];
+        this.straddleOption = json['straddleOption'],
+        this.animations = json['animations'],
+        this.showChat = json['showChat'];
 }

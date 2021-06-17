@@ -76,7 +76,7 @@ class _GameOptionState extends State<GameOption> {
   void onPause() {
     Alerts.showNotification(
         titleText: "PAUSE",
-        leadingIcon: Icons.pause_circle,
+        leadingIcon: Icons.pause_circle_filled_sharp,
         subTitleText: AppStringsNew.pauseGameNotificationText);
     Navigator.of(context).pop();
 
@@ -84,7 +84,10 @@ class _GameOptionState extends State<GameOption> {
   }
 
   void onBreak() {
-    Alerts.showNotification(titleText:"BREAK",leadingIcon: Icons.time_to_leave, subTitleText:  AppStringsNew.breakGameNotificationText);
+    Alerts.showNotification(
+        titleText: "BREAK",
+        leadingIcon: Icons.time_to_leave,
+        subTitleText: AppStringsNew.breakGameNotificationText);
     Navigator.of(context).pop();
 
     //Alerts.showNotification(text: 'Your break will start after this hand');
@@ -225,6 +228,7 @@ class _GameOptionState extends State<GameOption> {
       padding: EdgeInsets.symmetric(horizontal: 10),
       child: SwitchWidget(
         label: text,
+        value: value,
         onChange: (value) {
           onChange(value);
         },
@@ -281,6 +285,49 @@ class _GameOptionState extends State<GameOption> {
                     },
                   )
                 : SizedBox(),
+            _buildCheckBox(
+              text: 'Animations',
+              value: widget.gameState.settings.animations,
+              onChange: (bool v) async {
+                widget.gameState.settings.animations = v;
+                widget.gameState.gameHiveStore
+                    .putGameSettings(widget.gameState.settings);
+                log('In toggle button widget, animations = ${widget.gameState.settings.animations}');
+                setState(() {});
+              },
+            ),
+            _buildCheckBox(
+              text: 'Show Chat',
+              value: widget.gameState.settings.showChat,
+              onChange: (bool v) async {
+                widget.gameState.settings.showChat = v;
+                widget.gameState.gameHiveStore
+                    .putGameSettings(widget.gameState.settings);
+                log('In toggle button widget, showChat = ${widget.gameState.settings.showChat}');
+                setState(() {});
+              },
+            ),
+            _buildCheckBox(
+              text: 'Straddle Off',
+              value: widget.gameState.settings.straddleOption,
+              onChange: (bool v) async {
+                widget.gameState.settings.straddleOption = v;
+                widget.gameState.gameHiveStore
+                    .putGameSettings(widget.gameState.settings);
+                log('In toggle button widget, straddleOption = ${widget.gameState.settings.straddleOption}');
+                setState(() {});
+              },
+            ),
+            _buildCheckBox(
+              text: 'Auto Straddle',
+              value: widget.gameState.settings.autoStraddle,
+              onChange: (bool v) async {
+                widget.gameState.settings.autoStraddle = v;
+                widget.gameState.gameHiveStore
+                    .putGameSettings(widget.gameState.settings);
+                log('In toggle button widget, autoStraddle = ${widget.gameState.settings.autoStraddle}');
+              },
+            ),
           ],
         ),
       );
