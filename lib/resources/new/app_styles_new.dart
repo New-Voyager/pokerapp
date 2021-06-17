@@ -267,4 +267,10 @@ class AppStylesNew {
     color: AppColorsNew.newBackgroundBlackColor,
     borderRadius: BorderRadius.circular(8),
   );
+
+  static final greenContainerDecoration = BoxDecoration(
+    border: Border.all(color: AppColorsNew.borderColor, width: 1),
+    color: AppColorsNew.tileGreenColor,
+    borderRadius: BorderRadius.circular(8),
+  );
 }
