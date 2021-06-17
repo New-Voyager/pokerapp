@@ -41,8 +41,11 @@ class _HoleCardsViewAndFooterActionViewState
     extends State<HoleCardsViewAndFooterActionView> {
   bool _isCardVisible = false;
 
-  Widget _buildholeCardViewAndStraddleDialog(GameState gameState,
-          BoardAttributesObject boardAttributes, bool straddlePrompt) =>
+  Widget _buildholeCardViewAndStraddleDialog(
+    GameState gameState,
+    BoardAttributesObject boardAttributes,
+    bool straddlePrompt,
+  ) =>
       Builder(
         builder: (context) => Stack(
           alignment: Alignment.topCenter,

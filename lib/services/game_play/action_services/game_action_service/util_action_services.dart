@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
+import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:provider/provider.dart';
 
@@ -10,7 +11,12 @@ class UtilActionServices {
   static void showCardsOfFoldedPlayers(
     BuildContext context,
     ChatMessage chatMessage,
-  ) {
+  ) async {
+    String fromPlayerID = chatMessage.fromPlayer.toString();
+    String myPlayerID = await AuthService.getPlayerID();
+
+    if (fromPlayerID == myPlayerID) return;
+
     // print('this is here');
     final Players players = Provider.of<Players>(
       context,

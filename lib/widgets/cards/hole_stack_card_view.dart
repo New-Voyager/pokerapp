@@ -22,12 +22,12 @@ class HoleStackCardView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final footerStatus = Provider.of<ValueNotifier<FooterStatus>>(
-      context,
-      listen: false,
-    ).value;
+    // final footerStatus = Provider.of<ValueNotifier<FooterStatus>>(
+    //   context,
+    //   listen: false,
+    // ).value;
 
-    if (footerStatus == FooterStatus.Result) return SizedBox.shrink();
+    // // if (footerStatus == FooterStatus.Result) return SizedBox.shrink();
     final GameState gameState = GameState.getState(context);
 
     final MarkedCards markedCards = gameState.getMarkedCards(
