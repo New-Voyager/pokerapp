@@ -260,6 +260,7 @@ class _GameOptionState extends State<GameOption> {
                 widget.gameState.gameHiveStore
                     .putGameSettings(widget.gameState.settings);
                 log('In toggle button widget, animations = ${widget.gameState.settings.animations}');
+                widget.gameState.gameComService.chat.muteAnimations = v;
                 setState(() {});
               },
             ),

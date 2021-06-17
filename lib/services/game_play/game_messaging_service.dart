@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:typed_data';
+import 'package:flutter/cupertino.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:dart_nats/dart_nats.dart';
@@ -17,6 +18,7 @@ class GameMessagingService {
   bool active;
   PlayerInfo currentPlayer;
   List<ChatMessage> messages = [];
+  bool muteAnimations = false;
 
   GameMessagingService(
     this.currentPlayer,
@@ -24,6 +26,7 @@ class GameMessagingService {
     this.client,
     this.stream,
     this.active,
+    this.muteAnimations,
   );
 
   Function onText;
@@ -33,6 +36,7 @@ class GameMessagingService {
   Function onCards;
 
   Uuid uuid;
+
   void listen({
     void onText(ChatMessage _),
     void onAudio(ChatMessage _),
@@ -89,6 +93,7 @@ class GameMessagingService {
           if (prevM.messageId == message.messageId) return;
         }
       }
+      log('message.type = ${message.type}');
 
       if (message.type == 'TEXT') {
         if (this.onText != null) {
@@ -105,14 +110,20 @@ class GameMessagingService {
 
       if (message.type == 'GIPHY') {
         if (this.onGiphy != null) {
-          this.messages.add(message);
-          this.onGiphy(message);
+          log('In GameMessagingService::onGiphy, muteAnimations = $muteAnimations');
+          if (!muteAnimations) {
+            this.messages.add(message);
+            this.onGiphy(message);
+          }
         }
       }
 
       if (message.type == 'ANIMATION') {
         if (this.onAnimation != null) {
-          this.onAnimation(message);
+          log('In GameMessagingService::onAnimation, muteAnimations = $muteAnimations');
+          if (!muteAnimations) {
+            this.onAnimation(message);
+          }
         }
       }
 

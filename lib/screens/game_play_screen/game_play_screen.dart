@@ -27,6 +27,7 @@ import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/footer_
 import 'package:pokerapp/screens/game_play_screen/main_views/header_view/header_view.dart';
 import 'package:pokerapp/screens/game_play_screen/notifications/notifications.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
+
 //import 'package:pokerapp/services/agora/agora.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/app/player_service.dart';
@@ -88,6 +89,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   // String _audioToken = '';
   // bool liveAudio = true;
   AudioPlayer _audioPlayer;
+
   //Agora agora;
   GameInfoModel _gameInfoModel;
   GameContextObject _gameContextObj;
@@ -184,6 +186,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     }
 
     _gameState = GameState();
+    _gameState.gameComService = gameComService;
     _gameState.initialize(
       gameCode: _gameInfoModel.gameCode,
       gameInfo: _gameInfoModel,
