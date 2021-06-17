@@ -18,10 +18,12 @@ class MarkedCards extends ChangeNotifier {
     return _cards;
   }
 
-  void mark(CardObject cardObject) {
-    if (isMarked(cardObject))
+  void mark(CardObject cardObject, bool isResultOut) {
+    if (isMarked(cardObject)) {
+      // if we have got result, you cannot remove a card
+      if (isResultOut) return;
       _cardHash.remove(cardObject.cardHash);
-    else
+    } else
       _cardHash[cardObject.cardHash] = cardObject;
 
     notifyListeners();

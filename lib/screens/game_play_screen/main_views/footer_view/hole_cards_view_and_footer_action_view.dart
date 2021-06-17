@@ -90,7 +90,6 @@ class _HoleCardsViewAndFooterActionViewState
                         gameState.showAction(context, true);
                       }
                     }
-                    // TODO: here you can change the value of straddlePrompt to hide this widget
                   },
                 ),
               ),
@@ -103,10 +102,7 @@ class _HoleCardsViewAndFooterActionViewState
   Widget build(BuildContext context) {
     final gameState = GameState.getState(context);
 
-    final boardAttributes = Provider.of<BoardAttributesObject>(
-      context,
-      listen: false,
-    );
+    final boardAttributes = context.read<BoardAttributesObject>();
 
     return ListenableProvider(
       create: (_) => ValueNotifier<bool>(false),
