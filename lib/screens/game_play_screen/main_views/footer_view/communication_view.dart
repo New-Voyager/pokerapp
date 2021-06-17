@@ -58,29 +58,38 @@ class _CommunicationViewState extends State<CommunicationView> {
                 if (gameState.myState.status == PlayerStatus.PLAYING &&
                     communicationState.audioConferenceStatus ==
                         AudioConferenceStatus.CONNECTED) {
-                  log('User is playing and audio conference connected, showing janusAudioWidgets');
-                  children.addAll(
-                    janusAudioWidgets(gameState, communicationState),
-                  );
+                  if (gameState.settings.audioConf) {
+                    log('User is playing and audio conference connected, showing janusAudioWidgets');
+                    children.addAll(
+                        janusAudioWidgets(gameState, communicationState));
+                  } else {
+                    // when the user turns off audio conf
+                    log('User turned off audio conf, showing audioChatWidgets');
+                    children.addAll(audioChatWidgets());
+                  }
                 } else if (communicationState.voiceChatEnable) {
                   log('Showing voiceChatWidgets');
                   children.addAll(voiceTextWidgets(widget.chatService));
                 }
 
-                children.add(
-                  Consumer<GameChatNotifState>(
-                    builder: (_, gcns, __) => Badge(
-                      animationType: BadgeAnimationType.scale,
-                      showBadge: gcns.hasUnreadMessages,
-                      position: BadgePosition.topEnd(top: 0, end: 0),
-                      badgeContent: Text(gcns.count.toString()),
-                      child: GameCircleButton(
-                        onClickHandler: widget.chatVisibilityChange,
-                        child: chat,
-                      ),
+                if(gameState.settings.showChat) {
+                  children.add(
+                    Consumer<GameChatNotifState>(
+                      builder: (_, gcns, __) =>
+                          Badge(
+                            animationType: BadgeAnimationType.scale,
+                            showBadge: gcns.hasUnreadMessages,
+                            position: BadgePosition.topEnd(top: 0, end: 0),
+                            badgeContent: Text(gcns.count.toString()),
+                            child: GameCircleButton(
+                              onClickHandler: widget.chatVisibilityChange,
+                              child: chat,
+                            ),
+                          ),
                     ),
-                  ),
-                );
+                  );
+                }
+
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: children,

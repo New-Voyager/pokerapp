@@ -81,6 +81,7 @@ class GameState {
   Map<int, String> _playerIdsToNames = Map<int, String>();
   Map<int, List<int>> _myCards = Map<int, List<int>>();
   bool straddlePrompt = false;
+
   // host seat change state (only used when initialization)
   List<PlayerInSeat> _hostSeatChangeSeats = [];
   bool hostSeatChangeInProgress = false;
@@ -222,8 +223,7 @@ class GameState {
 
     if (!gameHiveStore.isInitialized()) {
       log('In GameState initialize(), gameBox is empty');
-      settings =
-          GameSettings(gameCode, _gameInfo.playerMuckLosingHand, true, true);
+      settings = GameSettings(gameCode);
       gameHiveStore.putGameSettings(settings);
     } else {
       log('In GameState initialize(), getting gameSettings from gameBox');

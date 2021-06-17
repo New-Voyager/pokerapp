@@ -658,7 +658,7 @@ class HandActionService {
       players.notifyAll();
     }
     // if straddle prompt is true, trigger straddle state to show the dialog
-    if (_gameState.straddlePrompt) {
+    if (_gameState.straddlePrompt && _gameState.settings.straddleOption) {
       final straddlePromptState = _gameState.straddlePromptState(_context);
       straddlePromptState.notify();
     }
