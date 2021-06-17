@@ -452,6 +452,10 @@ class HandActionService {
         (element) => (element.toString() == 'GameType.' + gameTypeStr));
     _gameState.resetSeatActions(newHand: true);
 
+    // clear marked cards here
+    if (_close) return;
+    _context.read<MarkedCards>().clear();
+
     if (_close) return;
     final handInfo = _gameState.getHandInfo(_context);
     handInfo.update(
