@@ -228,6 +228,7 @@ class _GameOptionState extends State<GameOption> {
       padding: EdgeInsets.symmetric(horizontal: 10),
       child: SwitchWidget(
         label: text,
+        value: value,
         onChange: (value) {
           onChange(value);
         },
