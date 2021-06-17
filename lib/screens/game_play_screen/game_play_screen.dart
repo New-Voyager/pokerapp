@@ -310,6 +310,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     final Players players = _gameState.getPlayers(context);
 
     gameService.sendCards(
+      context.read<HandInfoState>().handNum,
       cardNumbers,
       players.me?.seatNo,
     );
