@@ -227,7 +227,6 @@ class PlayerView extends StatelessWidget {
         return InkWell(
           onTap: () => this.onTap(context),
           child: Stack(
-            overflow: Overflow.visible,
             clipBehavior: Clip.none,
             alignment: Alignment.center,
             children: [
@@ -254,8 +253,10 @@ class PlayerView extends StatelessWidget {
 
               // result cards and show selected cards by a user
               Consumer<ValueNotifier<FooterStatus>>(
-                builder: (_, vnFooterStatus, __) =>
-                    _buildDisplayCardsWidget(seat, vnFooterStatus.value),
+                builder: (_, vnFooterStatus, __) => _buildDisplayCardsWidget(
+                  seat,
+                  vnFooterStatus.value,
+                ),
               ),
               // Transform.translate(
               //     offset: Offset(70, 40),

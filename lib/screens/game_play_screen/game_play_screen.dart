@@ -4,14 +4,17 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:dart_nats/dart_nats.dart' as nats;
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/enums/game_status.dart';
 import 'package:pokerapp/models/game_play_models/business/game_chat_notfi_state.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/marked_cards.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
+import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_constants.dart';
@@ -288,6 +291,54 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     super.dispose();
   }
 
+  void _sendMarkedCards(BuildContext context) {
+    if (TestService.isTesting) return;
+
+    final MarkedCards markedCards = _gameState.getMarkedCards(context);
+
+    /* collect the cards needs to be revealed */
+    List<CardObject> _cardsToBeRevealed = markedCards.getCards();
+    List<int> cardNumbers = [];
+    for (final c in _cardsToBeRevealed) {
+      cardNumbers.add(c.cardNum);
+    }
+
+    /* clear all the marked cards */
+    // FIXME: markedCards.clear();
+
+    final gameService = _gameState.getGameMessagingService(context);
+    final Players players = _gameState.getPlayers(context);
+
+    gameService.sendCards(
+      context.read<HandInfoState>().handNum,
+      cardNumbers,
+      players.me?.seatNo,
+    );
+  }
+
+  void _initSendCardAfterFold(BuildContext context) {
+    final vnFooterStatus = context.read<ValueNotifier<FooterStatus>>();
+    final MarkedCards markedCards = context.read<MarkedCards>();
+
+    void onMarkingCards() {
+      // if new cards are marked, send them back
+      _sendMarkedCards(context);
+    }
+
+    vnFooterStatus.addListener(() {
+      if (vnFooterStatus.value == FooterStatus.Result) {
+        // send the marked cards for the first time
+        _sendMarkedCards(context);
+
+        // start listening for changes in markedCards value
+        markedCards.addListener(onMarkingCards);
+      } else {
+        markedCards.clear();
+        markedCards.removeListener(onMarkingCards);
+      }
+    });
+  }
+
   void onCards(ChatMessage message) =>
       UtilActionServices.showCardsOfFoldedPlayers(
         _providerContext,
@@ -502,6 +553,10 @@ class _GamePlayScreenState extends State<GamePlayScreen>
                   providers: providers,
                   builder: (BuildContext context, _) {
                     this._providerContext = context;
+
+                    /* this function listens for marked cards in the result
+                    and sends as necessary */
+                    _initSendCardAfterFold(_providerContext);
 
                     if (_gameContextObj != null) {
                       if (_gameContextObj.gameUpdateService == null) {

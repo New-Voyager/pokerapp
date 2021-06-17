@@ -2,9 +2,11 @@ import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/marked_cards.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/resources/app_constants.dart';
@@ -41,8 +43,34 @@ class _HoleCardsViewAndFooterActionViewState
     extends State<HoleCardsViewAndFooterActionView> {
   bool _isCardVisible = false;
 
-  Widget _buildholeCardViewAndStraddleDialog(GameState gameState,
-          BoardAttributesObject boardAttributes, bool straddlePrompt) =>
+  bool _showAllCardSelectionButton(var vnfs) {
+    final bool isInResult = vnfs.value == FooterStatus.Result;
+    return isInResult && (widget.playerModel?.playerFolded ?? false);
+  }
+
+  void _markAllCardsAsSelected() {
+    // flip all the cards to front, if not already
+    setState(() => _isCardVisible = true);
+
+    // mark all the cards for revealing
+    context.read<MarkedCards>().markAll(widget.playerModel.cardObjects);
+  }
+
+  Widget _buildAllHoleCardSelectionButton() =>
+      Consumer<ValueNotifier<FooterStatus>>(
+        builder: (_, vnfs, __) => _showAllCardSelectionButton(vnfs)
+            ? InkWell(
+                onTap: _markAllCardsAsSelected,
+                child: Icon(Icons.visibility_rounded),
+              )
+            : const SizedBox.shrink(),
+      );
+
+  Widget _buildholeCardViewAndStraddleDialog(
+    GameState gameState,
+    BoardAttributesObject boardAttributes,
+    bool straddlePrompt,
+  ) =>
       Builder(
         builder: (context) => Stack(
           alignment: Alignment.topCenter,
@@ -52,7 +80,16 @@ class _HoleCardsViewAndFooterActionViewState
               offset: boardAttributes.holeCardViewOffset,
               child: Transform.scale(
                 scale: boardAttributes.holeCardViewScale,
-                child: holeCardView(context),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // main hole card view
+                    holeCardView(context),
+
+                    // all hole card selection button
+                    _buildAllHoleCardSelectionButton(),
+                  ],
+                ),
               ),
             ),
 
@@ -87,7 +124,6 @@ class _HoleCardsViewAndFooterActionViewState
                         gameState.showAction(context, true);
                       }
                     }
-                    // TODO: here you can change the value of straddlePrompt to hide this widget
                   },
                 ),
               ),
@@ -100,10 +136,7 @@ class _HoleCardsViewAndFooterActionViewState
   Widget build(BuildContext context) {
     final gameState = GameState.getState(context);
 
-    final boardAttributes = Provider.of<BoardAttributesObject>(
-      context,
-      listen: false,
-    );
+    final boardAttributes = context.read<BoardAttributesObject>();
 
     return ListenableProvider(
       create: (_) => ValueNotifier<bool>(false),
