@@ -71,21 +71,22 @@ class _CommunicationViewState extends State<CommunicationView> {
                   log('Showing voiceChatWidgets');
                   children.addAll(voiceTextWidgets(widget.chatService));
                 }
-
-                if(gameState.settings.showChat) {
+                log('gameSettings = ${gameState.settings}');
+                if (gameState.settings != null &&
+                    !gameState.settings.showChat) {
+                } else {
                   children.add(
                     Consumer<GameChatNotifState>(
-                      builder: (_, gcns, __) =>
-                          Badge(
-                            animationType: BadgeAnimationType.scale,
-                            showBadge: gcns.hasUnreadMessages,
-                            position: BadgePosition.topEnd(top: 0, end: 0),
-                            badgeContent: Text(gcns.count.toString()),
-                            child: GameCircleButton(
-                              onClickHandler: widget.chatVisibilityChange,
-                              child: chat,
-                            ),
-                          ),
+                      builder: (_, gcns, __) => Badge(
+                        animationType: BadgeAnimationType.scale,
+                        showBadge: gcns.hasUnreadMessages,
+                        position: BadgePosition.topEnd(top: 0, end: 0),
+                        badgeContent: Text(gcns.count.toString()),
+                        child: GameCircleButton(
+                          onClickHandler: widget.chatVisibilityChange,
+                          child: chat,
+                        ),
+                      ),
                     ),
                   );
                 }
