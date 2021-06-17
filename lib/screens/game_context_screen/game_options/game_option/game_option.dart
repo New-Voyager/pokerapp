@@ -76,7 +76,7 @@ class _GameOptionState extends State<GameOption> {
   void onPause() {
     Alerts.showNotification(
         titleText: "PAUSE",
-        leadingIcon: Icons.pause_circle,
+        leadingIcon: Icons.pause_circle_outline,
         subTitleText: AppStringsNew.pauseGameNotificationText);
     Navigator.of(context).pop();
 
@@ -84,7 +84,10 @@ class _GameOptionState extends State<GameOption> {
   }
 
   void onBreak() {
-    Alerts.showNotification(titleText:"BREAK",leadingIcon: Icons.time_to_leave, subTitleText:  AppStringsNew.breakGameNotificationText);
+    Alerts.showNotification(
+        titleText: "BREAK",
+        leadingIcon: Icons.time_to_leave,
+        subTitleText: AppStringsNew.breakGameNotificationText);
     Navigator.of(context).pop();
 
     //Alerts.showNotification(text: 'Your break will start after this hand');
@@ -139,6 +142,7 @@ class _GameOptionState extends State<GameOption> {
             this.onEndGame();
           }));
     }
+
     gameSecondaryOptions = [
       OptionItemModel(
           title: "Game Stats",
@@ -162,20 +166,7 @@ class _GameOptionState extends State<GameOption> {
           );
         },
       ),
-      OptionItemModel(
-          title: "Waiting List",
-          image: "assets/images/casino.png",
-          name: "Add to waiting list",
-          backGroundColor: AppColors.gameOption3,
-          onTap: (context) async {
-            await showModalBottomSheet(
-                context: context,
-                isScrollControlled: true,
-                builder: (ctx) {
-                  return WaitingListBottomSheet(
-                      widget.gameCode, widget.playerUuid);
-                });
-          }),
+
       // OptionItemModel(
       //   title: "Last Hand",
       //   image: "assets/images/casino.png",
@@ -214,6 +205,23 @@ class _GameOptionState extends State<GameOption> {
       //   },
       // ),
     ];
+
+    if (widget.gameState.getSeatByPlayer(widget.gameState.currentPlayerId) == null) {
+      gameSecondaryOptions.add(OptionItemModel(
+          title: "Waiting List",
+          image: "assets/images/casino.png",
+          name: "Add to waiting list",
+          backGroundColor: AppColors.gameOption3,
+          onTap: (context) async {
+            await showModalBottomSheet(
+                context: context,
+                isScrollControlled: true,
+                builder: (ctx) {
+                  return WaitingListBottomSheet(
+                      widget.gameCode, widget.playerUuid);
+                });
+          }));
+    }
   }
 
   Widget _buildCheckBox({
