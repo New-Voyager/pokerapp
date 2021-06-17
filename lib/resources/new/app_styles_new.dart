@@ -7,7 +7,7 @@ import 'package:pokerapp/utils/adaptive_sizer.dart';
 class AppStylesNew {
   static final labelTextStyle = TextStyle(
     color: Color(0xff848484),
-    fontSize: 10.dp,
+    fontSize: 8.dp,
   );
   static final valueTextStyle = TextStyle(
     color: AppColorsNew.newTextColor,
@@ -260,5 +260,17 @@ class AppStylesNew {
   static final actionRowDecoration = BoxDecoration(
     color: AppColorsNew.actionRowBgColor,
     borderRadius: BorderRadius.circular(5),
+  );
+
+  static final blackContainerDecoration = BoxDecoration(
+    border: Border.all(color: AppColorsNew.borderColor, width: 1),
+    color: AppColorsNew.newBackgroundBlackColor,
+    borderRadius: BorderRadius.circular(8),
+  );
+
+  static final greenContainerDecoration = BoxDecoration(
+    border: Border.all(color: AppColorsNew.borderColor, width: 1),
+    color: AppColorsNew.tileGreenColor,
+    borderRadius: BorderRadius.circular(8),
   );
 }

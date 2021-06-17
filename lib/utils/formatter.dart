@@ -66,4 +66,18 @@ class DataFormatter {
     }
     return ret;
   }
+
+  static String getTimeInHHMMFormat(int timeInSec) {
+    if (timeInSec == null) {
+      return "0 Sec";
+    }
+    if (timeInSec <= 60) {
+      return "seconds";
+    }
+    double mins = timeInSec / 60;
+    if (mins > 0 && mins < 60) {
+      return "${mins.toStringAsFixed(0)} mins";
+    }
+    return "${(mins / 60).toStringAsFixed(0)} hrs ${(mins % 60).toStringAsFixed(0)} mins";
+  }
 }
