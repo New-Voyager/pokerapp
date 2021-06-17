@@ -271,6 +271,8 @@ class _GameOptionState extends State<GameOption> {
                 widget.gameState.gameHiveStore
                     .putGameSettings(widget.gameState.settings);
                 log('In toggle button widget, showChat = ${widget.gameState.settings.showChat}');
+                widget.gameState.getCommunicationState().showTextChat = v;
+                widget.gameState.getCommunicationState().notify();
                 setState(() {});
               },
             ),
