@@ -1633,30 +1633,30 @@ class HandActionService {
       audioPlayer: audioPlayer,
     );
 
-    final MarkedCards markedCards = _gameState.getMarkedCards(_context);
+    // final MarkedCards markedCards = _gameState.getMarkedCards(_context);
 
-    /* collect the cards needs to be revealed */
-    List<CardObject> _cardsToBeRevealed = markedCards.getCards();
-    List<int> cardNumbers = [];
-    for (final c in _cardsToBeRevealed) {
-      cardNumbers.add(c.cardNum);
-    }
+    // /* collect the cards needs to be revealed */
+    // List<CardObject> _cardsToBeRevealed = markedCards.getCards();
+    // List<int> cardNumbers = [];
+    // for (final c in _cardsToBeRevealed) {
+    //   cardNumbers.add(c.cardNum);
+    // }
 
-    /* clear all the marked cards */
-    markedCards.clear();
+    // /* clear all the marked cards */
+    // markedCards.clear();
 
-    if (TestService.isTesting) return;
+    // if (TestService.isTesting) return;
 
-    /* finally send the cardNumbers to the gameChatChannel after 1500 ms */
-    // todo: put the delay in the const class after finalizing the delay constant
-    await Future.delayed(const Duration(milliseconds: 1500));
+    // /* finally send the cardNumbers to the gameChatChannel after 1500 ms */
+    // // todo: put the delay in the const class after finalizing the delay constant
+    // await Future.delayed(const Duration(milliseconds: 1500));
 
-    if (_close) return;
-    final gameService = _gameState.getGameMessagingService(_context);
+    // if (_close) return;
+    // final gameService = _gameState.getGameMessagingService(_context);
 
-    gameService.sendCards(
-      cardNumbers,
-      players.me?.seatNo,
-    );
+    // gameService.sendCards(
+    //   cardNumbers,
+    //   players.me?.seatNo,
+    // );
   }
 }
