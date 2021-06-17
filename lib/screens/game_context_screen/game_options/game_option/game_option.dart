@@ -76,7 +76,7 @@ class _GameOptionState extends State<GameOption> {
   void onPause() {
     Alerts.showNotification(
         titleText: "PAUSE",
-        leadingIcon: Icons.pause_circle_filled_sharp,
+        leadingIcon: Icons.pause_circle_outline,
         subTitleText: AppStringsNew.pauseGameNotificationText);
     Navigator.of(context).pop();
 
@@ -142,6 +142,7 @@ class _GameOptionState extends State<GameOption> {
             this.onEndGame();
           }));
     }
+
     gameSecondaryOptions = [
       OptionItemModel(
           title: "Game Stats",
@@ -165,7 +166,10 @@ class _GameOptionState extends State<GameOption> {
           );
         },
       ),
-      OptionItemModel(
+    ];
+
+    if (widget.gameState.getSeatByPlayer(widget.gameState.currentPlayerId) == null) {
+      gameSecondaryOptions.add(OptionItemModel(
           title: "Waiting List",
           image: "assets/images/casino.png",
           name: "Add to waiting list",
@@ -178,45 +182,8 @@ class _GameOptionState extends State<GameOption> {
                   return WaitingListBottomSheet(
                       widget.gameCode, widget.playerUuid);
                 });
-          }),
-      // OptionItemModel(
-      //   title: "Last Hand",
-      //   image: "assets/images/casino.png",
-      //   backGroundColor: AppColors.gameOption4,
-      //   onTap: (context) async {
-      //     await showModalBottomSheet(
-      //       context: context,
-      //       isScrollControlled: true,
-      //       builder: (ctx) => Container(
-      //         height: height / 2,
-      //         child: HandLogView(widget.gameCode, -1),
-      //       ),
-      //     );
-      //   },
-      // ),
-      // OptionItemModel(
-      //   title: "Hand History",
-      //   image: "assets/images/casino.png",
-      //   backGroundColor: AppColors.gameOption5,
-      //   onTap: (context) async {
-      //     // todo: true need to change with isOwner actual value
-      //     final model = HandHistoryListModel(widget.gameCode, true);
-      //     await showModalBottomSheet(
-      //         context: context,
-      //         isScrollControlled: true,
-      //         builder: (ctx) {
-      //           return Container(
-      //               height: height / 2,
-      //               child: HandHistoryListView(
-      //                 model,
-      //                 // todo: club code need to get
-      //                 null,
-      //                 isInBottomSheet: true,
-      //               ));
-      //         });
-      //   },
-      // ),
-    ];
+          }));
+    }
   }
 
   Widget _buildCheckBox({
