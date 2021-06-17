@@ -92,6 +92,7 @@ class GameModelNew {
   static String getGameTypeImageAsset(String str) {
     switch (str) {
       case 'HOLDEM':
+      case 'NLH':
         return AppAssetsNew.pathHoldemTypeImage;
         break;
       case 'PLO':
@@ -115,14 +116,5 @@ class GameModelNew {
     return model.maxPlayers - model.tableCount;
   }
 
-  static String getTimeInHHMMFormat(GameModelNew model) {
-    if (model.elapsedTime <= 60) {
-      return "seconds";
-    }
-    double mins = model.elapsedTime / 60;
-    if (mins > 0 && mins < 60) {
-      return "${mins.toStringAsFixed(0)} mins";
-    }
-    return "${(mins / 60).toStringAsFixed(0)} hrs ${(mins % 60).toStringAsFixed(0)} mins";
-  }
+ 
 }

@@ -3,8 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_history_model.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
+import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/routes.dart';
+import 'package:pokerapp/screens/game_screens/game_history_view/game_history_item_new.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/club_interior_service.dart';
 
@@ -54,7 +57,7 @@ class _GameHistoryViewState extends State<GameHistoryView> {
             arguments: {'model': model, 'clubCode': clubCode},
           );
         },
-        child: GameHistoryItem(item: _prevGames[index]));
+        child: GameHistoryItemNew(game: _prevGames[index]));
   }
 
   Widget body() {
@@ -86,25 +89,28 @@ class _GameHistoryViewState extends State<GameHistoryView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.screenBackgroundColor,
-      appBar: CustomAppBar(
-        titleText: AppStringsNew.GameHistoryTitle,
-        subTitleText: "Club code: ${widget.clubCode}",
-        context: context,
+    return Container(
+      decoration: AppStylesNew.BgGreenRadialGradient,
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: CustomAppBar(
+          titleText: AppStringsNew.GameHistoryTitle,
+          subTitleText: "Club code: ${widget.clubCode}",
+          context: context,
+        ),
+        body: _prevGames == null
+            ? Center(
+                child: CircularProgressIndicator(),
+              )
+            : SafeArea(child: body()),
+        // child: _prevGames == null
+        //     ? Center(
+        //         child: CircularProgressIndicator(),
+        //       )
+        //     : Expanded(
+        //         child: body(),
+        //       ),
       ),
-      body: _prevGames == null
-          ? Center(
-              child: CircularProgressIndicator(),
-            )
-          : SafeArea(child: body()),
-      // child: _prevGames == null
-      //     ? Center(
-      //         child: CircularProgressIndicator(),
-      //       )
-      //     : Expanded(
-      //         child: body(),
-      //       ),
     );
   }
 }

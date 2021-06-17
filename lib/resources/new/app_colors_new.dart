@@ -28,4 +28,6 @@ class AppColorsNew {
   static const Color notificationBackgroundColor = Color(0xFF2F5D62);
   static const Color notificationTitleColor = Color(0xFFDFEEEA);
   static const Color notificationTextColor = Color(0xFFDFEEEA);
+  static const Color borderColor = Color(0xFF025955);
+  static const Color badgeColor = Color(0xFFEBA83A);
 }
