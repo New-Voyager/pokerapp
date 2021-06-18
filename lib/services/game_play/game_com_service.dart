@@ -29,6 +29,8 @@ class GameComService {
   // game chat object
   GameMessagingService _chat;
 
+  GameMessagingService get chat => _chat;
+
   Nats _nats;
 
   GameComService({
@@ -67,6 +69,7 @@ class GameComService {
       nats.pubClient,
       _gameChatChannelSubs.stream,
       true,
+      false,
     );
     this._chat.start();
     this._nats = nats;

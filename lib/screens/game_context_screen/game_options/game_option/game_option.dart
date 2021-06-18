@@ -76,7 +76,7 @@ class _GameOptionState extends State<GameOption> {
   void onPause() {
     Alerts.showNotification(
         titleText: "PAUSE",
-        leadingIcon: Icons.pause_circle,
+        leadingIcon: Icons.pause_circle_outline,
         subTitleText: AppStringsNew.pauseGameNotificationText);
     Navigator.of(context).pop();
 
@@ -84,7 +84,10 @@ class _GameOptionState extends State<GameOption> {
   }
 
   void onBreak() {
-    Alerts.showNotification(titleText:"BREAK",leadingIcon: Icons.time_to_leave, subTitleText:  AppStringsNew.breakGameNotificationText);
+    Alerts.showNotification(
+        titleText: "BREAK",
+        leadingIcon: Icons.time_to_leave,
+        subTitleText: AppStringsNew.breakGameNotificationText);
     Navigator.of(context).pop();
 
     //Alerts.showNotification(text: 'Your break will start after this hand');
@@ -139,6 +142,7 @@ class _GameOptionState extends State<GameOption> {
             this.onEndGame();
           }));
     }
+
     gameSecondaryOptions = [
       OptionItemModel(
           title: "Game Stats",
@@ -162,7 +166,10 @@ class _GameOptionState extends State<GameOption> {
           );
         },
       ),
-      OptionItemModel(
+    ];
+
+    if (widget.gameState.getSeatByPlayer(widget.gameState.currentPlayerId) == null) {
+      gameSecondaryOptions.add(OptionItemModel(
           title: "Waiting List",
           image: "assets/images/casino.png",
           name: "Add to waiting list",
@@ -175,45 +182,8 @@ class _GameOptionState extends State<GameOption> {
                   return WaitingListBottomSheet(
                       widget.gameCode, widget.playerUuid);
                 });
-          }),
-      // OptionItemModel(
-      //   title: "Last Hand",
-      //   image: "assets/images/casino.png",
-      //   backGroundColor: AppColors.gameOption4,
-      //   onTap: (context) async {
-      //     await showModalBottomSheet(
-      //       context: context,
-      //       isScrollControlled: true,
-      //       builder: (ctx) => Container(
-      //         height: height / 2,
-      //         child: HandLogView(widget.gameCode, -1),
-      //       ),
-      //     );
-      //   },
-      // ),
-      // OptionItemModel(
-      //   title: "Hand History",
-      //   image: "assets/images/casino.png",
-      //   backGroundColor: AppColors.gameOption5,
-      //   onTap: (context) async {
-      //     // todo: true need to change with isOwner actual value
-      //     final model = HandHistoryListModel(widget.gameCode, true);
-      //     await showModalBottomSheet(
-      //         context: context,
-      //         isScrollControlled: true,
-      //         builder: (ctx) {
-      //           return Container(
-      //               height: height / 2,
-      //               child: HandHistoryListView(
-      //                 model,
-      //                 // todo: club code need to get
-      //                 null,
-      //                 isInBottomSheet: true,
-      //               ));
-      //         });
-      //   },
-      // ),
-    ];
+          }));
+    }
   }
 
   Widget _buildCheckBox({
@@ -225,6 +195,7 @@ class _GameOptionState extends State<GameOption> {
       padding: EdgeInsets.symmetric(horizontal: 10),
       child: SwitchWidget(
         label: text,
+        value: value,
         onChange: (value) {
           onChange(value);
         },
@@ -281,6 +252,52 @@ class _GameOptionState extends State<GameOption> {
                     },
                   )
                 : SizedBox(),
+            _buildCheckBox(
+              text: 'Animations',
+              value: widget.gameState.settings.animations,
+              onChange: (bool v) async {
+                widget.gameState.settings.animations = v;
+                widget.gameState.gameHiveStore
+                    .putGameSettings(widget.gameState.settings);
+                log('In toggle button widget, animations = ${widget.gameState.settings.animations}');
+                widget.gameState.gameComService.chat.muteAnimations = v;
+                setState(() {});
+              },
+            ),
+            _buildCheckBox(
+              text: 'Show Chat',
+              value: widget.gameState.settings.showChat,
+              onChange: (bool v) async {
+                widget.gameState.settings.showChat = v;
+                widget.gameState.gameHiveStore
+                    .putGameSettings(widget.gameState.settings);
+                log('In toggle button widget, showChat = ${widget.gameState.settings.showChat}');
+                widget.gameState.getCommunicationState().showTextChat = v;
+                widget.gameState.getCommunicationState().notify();
+                setState(() {});
+              },
+            ),
+            _buildCheckBox(
+              text: 'Straddle Off',
+              value: widget.gameState.settings.straddleOption,
+              onChange: (bool v) async {
+                widget.gameState.settings.straddleOption = v;
+                widget.gameState.gameHiveStore
+                    .putGameSettings(widget.gameState.settings);
+                log('In toggle button widget, straddleOption = ${widget.gameState.settings.straddleOption}');
+                setState(() {});
+              },
+            ),
+            _buildCheckBox(
+              text: 'Auto Straddle',
+              value: widget.gameState.settings.autoStraddle,
+              onChange: (bool v) async {
+                widget.gameState.settings.autoStraddle = v;
+                widget.gameState.gameHiveStore
+                    .putGameSettings(widget.gameState.settings);
+                log('In toggle button widget, autoStraddle = ${widget.gameState.settings.autoStraddle}');
+              },
+            ),
           ],
         ),
       );

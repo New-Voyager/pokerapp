@@ -61,3 +61,35 @@ for cardRow in cardRows:
     output += number + ':' + "'" + card + "'," + '\n'
 
 print(output)
+
+'''
+Map<String, List<int>> rankCards = {
+  'straightAFlush': [129, 146, 161, 177, 193],
+  'straightKFlush': [113, 129, 146, 161, 177],
+  'straightQFlush': [97, 113, 129, 146, 161],
+  'straightJFlush': [81, 97, 113, 129, 146],
+  'straightTFlush': [65, 81, 97, 113, 129],
+  'straight9Flush': [49, 65, 81, 97, 113],
+  'straight8Flush': [33, 49, 65, 81, 97],
+  'straight7Flush': [17, 33, 49, 65, 81],
+  'straight6Flush': [1, 17, 33, 49, 65],
+  'straight5Flush': [193, 1, 17, 33, 49],
+  
+  // spade, club, hear, diamond
+  'fourAAAA': [193, 200, 194, 196],
+  'fourKKKK': [177, 184, 178, 180],
+  'fourQQQQ': [161, 168, 162, 164],
+  'fourJJJJ': [145, 152, 146, 148],
+  'fourTTTT': [129, 136, 130, 132],
+  'four9999': [113, 120, 114, 116],
+  'four8888': [97, 104, 98, 100],
+  'four7777': [81, 88, 82, 84],
+  'four6666': [65, 72, 66, 68],
+  'four5555': [49, 56, 50, 52],
+  'four4444': [33, 40, 34, 36],
+  'four3333': [17, 24, 18, 20],
+  'four2222': [1, 8, 2, 4],
+}
+
+
+'''

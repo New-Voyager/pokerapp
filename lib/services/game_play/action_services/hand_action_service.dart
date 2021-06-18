@@ -27,6 +27,7 @@ import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/card_back_assets.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/overlay_notification.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
+import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/game_play/utils/audio.dart';
 import 'package:pokerapp/services/test/test_service.dart';
@@ -451,6 +452,10 @@ class HandActionService {
         (element) => (element.toString() == 'GameType.' + gameTypeStr));
     _gameState.resetSeatActions(newHand: true);
 
+    // clear marked cards here
+    if (_close) return;
+    _context.read<MarkedCards>().clear();
+
     if (_close) return;
     final handInfo = _gameState.getHandInfo(_context);
     handInfo.update(
@@ -658,7 +663,7 @@ class HandActionService {
       players.notifyAll();
     }
     // if straddle prompt is true, trigger straddle state to show the dialog
-    if (_gameState.straddlePrompt) {
+    if (_gameState.straddlePrompt && _gameState.settings.straddleOption) {
       final straddlePromptState = _gameState.straddlePromptState(_context);
       straddlePromptState.notify();
     }
@@ -1148,7 +1153,7 @@ class HandActionService {
   }
 
   /* seat-no, list of cards mapping */
-  static Map<int, List<int>> _getCards(final data) {
+  static Map<int, List<int>> _getCards(final data, String myID) {
     final Map players = data['handResult']['players'];
 
     final String kShowDown = 'SHOW_DOWN';
@@ -1156,9 +1161,19 @@ class HandActionService {
     Map<int, List<int>> seatNoCardsMap = Map<int, List<int>>();
     players.forEach((seatNo, d) {
       /* WE ONLY SHOW CARDS FOR PLAYERS, WHO PLAYED TILL THE SHOWDOWN */
-      if (d['playedUntil'] == kShowDown)
-        seatNoCardsMap[int.parse(seatNo.toString())] =
-            d['cards']?.map<int>((e) => int.parse(e.toString()))?.toList();
+      final int sn = int.parse(seatNo.toString());
+      final String playerID = d['id'] as String;
+
+      // if it's me do not update my cards
+      if (playerID != myID) {
+        // if the player has survived till show down
+        if (d['playedUntil'] == kShowDown)
+          seatNoCardsMap[sn] = d['cards']
+              ?.map<int>(
+                (e) => int.parse(e.toString()),
+              )
+              ?.toList();
+      }
     });
 
     return seatNoCardsMap;
@@ -1505,13 +1520,14 @@ class HandActionService {
 
         /* this method should complete in timePerPotInMs time */
         await processForHighWinnersDelayProcessForLowWinners(
-            highWinners: highWinners,
-            lowWinners: lowWinners,
-            players: players,
-            gameState: gameState,
-            tableState: tableState,
-            fromReplay: fromReplay,
-            audioPlayer: audioPlayer);
+          highWinners: highWinners,
+          lowWinners: lowWinners,
+          players: players,
+          gameState: gameState,
+          tableState: tableState,
+          fromReplay: fromReplay,
+          audioPlayer: audioPlayer,
+        );
 
         // UN highlight the req pot no
         tableState.updatePotToHighlightSilent(-1);
@@ -1525,7 +1541,7 @@ class HandActionService {
     tableState.clear();
     tableState.notifyAll();
 
-    gameState.resetPlayers(context, notify: false);
+    gameState.resetPlayers(context);
   }
 
   static void updatePotBeforeResultStatic({
@@ -1584,7 +1600,9 @@ class HandActionService {
     _gameState.setHandLog(handNum, jsonData, _gameState.currentCards);
 
     /* showdown time, show other players cards */
-    players.updateUserCardsSilent(_getCards(data));
+    players.updateUserCardsSilent(
+      _getCards(data, await AuthService.getPlayerID()),
+    );
 
     /* check if the result is a run it twice result */
     final bool isRunItTwice = handResult['runItTwice'] as bool;
@@ -1631,32 +1649,6 @@ class HandActionService {
       boardCards2: boardCards2,
       context: _context,
       audioPlayer: audioPlayer,
-    );
-
-    final MarkedCards markedCards = _gameState.getMarkedCards(_context);
-
-    /* collect the cards needs to be revealed */
-    List<CardObject> _cardsToBeRevealed = markedCards.getCards();
-    List<int> cardNumbers = [];
-    for (final c in _cardsToBeRevealed) {
-      cardNumbers.add(c.cardNum);
-    }
-
-    /* clear all the marked cards */
-    markedCards.clear();
-
-    if (TestService.isTesting) return;
-
-    /* finally send the cardNumbers to the gameChatChannel after 1500 ms */
-    // todo: put the delay in the const class after finalizing the delay constant
-    await Future.delayed(const Duration(milliseconds: 1500));
-
-    if (_close) return;
-    final gameService = _gameState.getGameMessagingService(_context);
-
-    gameService.sendCards(
-      cardNumbers,
-      players.me?.seatNo,
     );
   }
 }

@@ -81,6 +81,7 @@ class GameState {
   Map<int, String> _playerIdsToNames = Map<int, String>();
   Map<int, List<int>> _myCards = Map<int, List<int>>();
   bool straddlePrompt = false;
+
   // host seat change state (only used when initialization)
   List<PlayerInSeat> _hostSeatChangeSeats = [];
   bool hostSeatChangeInProgress = false;
@@ -88,6 +89,7 @@ class GameState {
   bool gameSounds = true;
   GameSettings settings;
   GameHiveStore gameHiveStore;
+  bool replayMode = false;
 
   Future<void> initialize({
     String gameCode,
@@ -96,6 +98,7 @@ class GameState {
     GameMessagingService gameMessagingService,
     List<PlayerInSeat> hostSeatChangeSeats,
     bool hostSeatChangeInProgress,
+    bool replayMode,
   }) async {
     this._seats = Map<int, Seat>();
     this._gameInfo = gameInfo;
@@ -103,6 +106,7 @@ class GameState {
     this._currentPlayer = currentPlayer;
     this._currentHandNum = -1;
     this._tappedSeatPos = null;
+    this.replayMode = replayMode;
 
     this._hostSeatChangeSeats = hostSeatChangeSeats;
     this.hostSeatChangeInProgress = hostSeatChangeInProgress ?? false;
@@ -217,23 +221,28 @@ class GameState {
       this._myState.notify();
     }
 
-    gameHiveStore = GameHiveStore();
-    await gameHiveStore.open(_gameCode);
+    if (!this.replayMode) {
+      gameHiveStore = GameHiveStore();
+      await gameHiveStore.open(_gameCode);
 
-    if (!gameHiveStore.isInitialized()) {
-      log('In GameState initialize(), gameBox is empty');
-      settings =
-          GameSettings(gameCode, _gameInfo.playerMuckLosingHand, true, true);
-      gameHiveStore.putGameSettings(settings);
-    } else {
-      log('In GameState initialize(), getting gameSettings from gameBox');
-      settings = gameHiveStore.getGameSettings();
+      if (!gameHiveStore.isInitialized()) {
+        log('In GameState initialize(), gameBox is empty');
+        settings = GameSettings(gameCode);
+        gameHiveStore.putGameSettings(settings);
+      } else {
+        log('In GameState initialize(), getting gameSettings from gameBox');
+        settings = gameHiveStore.getGameSettings();
+      }
+      log('In GameState initialize(), gameSettings = $settings');
+      _communicationState.showTextChat = settings.showChat;
+      gameComService.chat.muteAnimations = settings.animations;
     }
-    log('In GameState initialize(), gameSettings = $settings');
   }
 
   void close() {
-    gameHiveStore.close();
+    if (!this.replayMode) {
+      gameHiveStore.close();
+    }
   }
 
   void setTappedSeatPos(BuildContext context, SeatPos seatPos, Seat seat,
