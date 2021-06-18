@@ -235,8 +235,8 @@ class _HandLogViewState extends State<HandLogView> {
             AppDimensionsNew.getHorizontalSpace(8),
             RoundIconButton(
               onTap: () async {
-                if (_isTheHandBookmarked(widget.handNum)) {
-                  _removeBookmark(widget.handNum);
+                if (_isTheHandBookmarked(_handLogModel.hand.handNum)) {
+                  _removeBookmark(_handLogModel.hand.handNum);
                 } else {
                   final result = await HandService.bookMarkHand(
                     _handLogModel.hand.gameCode,
@@ -251,7 +251,7 @@ class _HandLogViewState extends State<HandLogView> {
                   await _fetchBookmarksForGame(widget.gameCode);
                 }
               },
-              icon: _isTheHandBookmarked(widget.handNum)
+              icon: _isTheHandBookmarked(_handLogModel.hand.handNum)
                   ? Icons.star
                   : Icons.star_outline,
             ),
