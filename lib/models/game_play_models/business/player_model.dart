@@ -16,6 +16,7 @@ class PlayerModel {
   String playerUuid = '';
   int buyIn = 0;
   int stack = 0;
+  int startingStack = 0;
   String avatarUrl = '';
   String status = '';
   List<int> cards = [];

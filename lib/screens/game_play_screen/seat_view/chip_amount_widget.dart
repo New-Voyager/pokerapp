@@ -56,7 +56,8 @@ class _ChipAmountWidgetState extends State<ChipAmountWidget>
     }
 
     if (widget.seat.player.action.amount != null &&
-        widget.seat.player.action.amount != 0) {
+        widget.seat.player.action.amount != 0 &&
+        widget.seat.player.startingStack > 0) {
       showBet = true;
     }
 

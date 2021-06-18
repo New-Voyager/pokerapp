@@ -525,6 +525,7 @@ class HandActionService {
         final dynamic playerUpdate = playersInSeats[seatNoStr];
         final double stack = double.parse(playerUpdate['stack'].toString());
         seat.player.stack = stack.toInt();
+        seat.player.startingStack = stack.toInt();
 
         final String statusStr = playerUpdate['status'].toString();
         final status = PlayerStatus.values.firstWhere(
