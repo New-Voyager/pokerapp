@@ -1,9 +1,9 @@
 {
     "thisGame": {
-      "inPreflop": 1,
-      "inFlop": 1,
-      "inTurn": 1,
-      "inRiver": 1,
+      "inPreflop": 0,
+      "inFlop": 0,
+      "inTurn": 0,
+      "inRiver": 0,
       "wentToShowDown": 1,
       "wonAtShowDown": 0,
       "headsupHands": 1,
@@ -24,10 +24,10 @@
       "totalHands": 1
     },
     "alltime": {
-      "inPreflop": 1,
-      "inFlop": 1,
-      "inTurn": 1,
-      "inRiver": 1,
+      "inPreflop": 0,
+      "inFlop": 0,
+      "inTurn": 0,
+      "inRiver": 0,
       "wentToShowDown": 1,
       "wonAtShowDown": 0,
       "headsupHands": 1,
