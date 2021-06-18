@@ -235,7 +235,6 @@ class GameState {
       }
       log('In GameState initialize(), gameSettings = $settings');
       _communicationState.showTextChat = settings.showChat;
-      gameComService.chat.muteAnimations = settings.animations;
     }
   }
 

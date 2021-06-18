@@ -69,7 +69,6 @@ class GameComService {
       nats.pubClient,
       _gameChatChannelSubs.stream,
       true,
-      false,
     );
     this._chat.start();
     this._nats = nats;

@@ -18,7 +18,6 @@ class GameMessagingService {
   bool active;
   PlayerInfo currentPlayer;
   List<ChatMessage> messages = [];
-  bool muteAnimations = false;
 
   GameMessagingService(
     this.currentPlayer,
@@ -26,7 +25,6 @@ class GameMessagingService {
     this.client,
     this.stream,
     this.active,
-    this.muteAnimations,
   );
 
   Function onText;
@@ -110,20 +108,14 @@ class GameMessagingService {
 
       if (message.type == 'GIPHY') {
         if (this.onGiphy != null) {
-          log('In GameMessagingService::onGiphy, muteAnimations = $muteAnimations');
-          if (!muteAnimations) {
-            this.messages.add(message);
-            this.onGiphy(message);
-          }
+          this.messages.add(message);
+          this.onGiphy(message);
         }
       }
 
       if (message.type == 'ANIMATION') {
         if (this.onAnimation != null) {
-          log('In GameMessagingService::onAnimation, muteAnimations = $muteAnimations');
-          if (!muteAnimations) {
-            this.onAnimation(message);
-          }
+          this.onAnimation(message);
         }
       }
 

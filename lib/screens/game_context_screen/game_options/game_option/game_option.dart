@@ -3,25 +3,14 @@ import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
-import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
-import 'package:pokerapp/models/hand_history_model.dart';
-import 'package:pokerapp/models/hand_log_model.dart';
 import 'package:pokerapp/models/option_item_model.dart';
-import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
-import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
-import 'package:pokerapp/screens/club_screen/hand_log_views/hand_log_view.dart';
-import 'package:pokerapp/screens/game_screens/hand_history/hand_history.dart';
 import 'package:pokerapp/services/app/game_service.dart';
-import 'package:pokerapp/services/data/game_hive_store.dart';
-import 'package:pokerapp/services/data/box_type.dart';
-import 'package:pokerapp/services/data/hive_datasource_impl.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/widgets/switch_widget.dart';
 import 'seat_change_bottom_sheet.dart';
@@ -260,7 +249,6 @@ class _GameOptionState extends State<GameOption> {
                 widget.gameState.gameHiveStore
                     .putGameSettings(widget.gameState.settings);
                 log('In toggle button widget, animations = ${widget.gameState.settings.animations}');
-                widget.gameState.gameComService.chat.muteAnimations = v;
                 setState(() {});
               },
             ),
