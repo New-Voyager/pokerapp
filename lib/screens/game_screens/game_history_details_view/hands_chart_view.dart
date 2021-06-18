@@ -33,12 +33,11 @@ class HandsPieChart extends StatelessWidget {
             // rows before adding a new column.
             desiredMaxRows: 5,
             // This defines the padding around each legend entry.
-            cellPadding: new EdgeInsets.only(right: 4.0, bottom: 4.0),
+            cellPadding: new EdgeInsets.only(right: 4.0, top: 4.0),
             // Render the legend entry text with custom styles.
             entryTextStyle: charts.TextStyleSpec(
-              fontFamily: AppAssets.fontFamilyLato,
               color: charts.Color.white,
-              fontSize: 10,
+              fontSize: 8,
             ),
           )
         ],
@@ -46,7 +45,8 @@ class HandsPieChart extends StatelessWidget {
         // Configure the width of the pie slices to 60px. The remaining space in
         // the chart will be left as a hole in the center.
         defaultRenderer: new charts.ArcRendererConfig(
-          arcWidth: 20,
+          arcWidth: 40,
+          
         ));
   }
 

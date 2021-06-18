@@ -15,6 +15,8 @@ import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/game_screens/game_history_details_view/stack_chart_view.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/game_service.dart';
+import 'package:pokerapp/utils/adaptive_sizer.dart';
+import 'package:pokerapp/utils/formatter.dart';
 
 import 'hands_chart_view.dart';
 import 'highhand_winners_view.dart';
@@ -70,18 +72,18 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
             : SingleChildScrollView(
                 child: Column(
                   children: [
-                    Container(
-                      margin: EdgeInsets.only(
-                        left: 10,
-                        top: 5,
-                        bottom: 5,
-                        right: 10,
-                      ),
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        "Club code: ${widget.clubCode}",
-                      ),
-                    ),
+                    // Container(
+                    //   margin: EdgeInsets.only(
+                    //     left: 16,
+                    //     top: 5,
+                    //     bottom: 5,
+                    //     right: 10,
+                    //   ),
+                    //   alignment: Alignment.centerLeft,
+                    //   child: Text(
+                    //     "Club code: ${widget.clubCode}",
+                    //   ),
+                    // ),
                     // Container(
                     //   margin: EdgeInsets.only(left: 10, bottom: 5, right: 10),
                     //   alignment: Alignment.centerLeft,
@@ -104,9 +106,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
                             flex: 7,
                             child: gameTypeTile(),
                           ),
-                          SizedBox(
-                            width: 5.0,
-                          ),
+                          AppDimensionsNew.getHorizontalSpace(8),
                           Flexible(
                             flex: 3,
                             child: balanceTile(),
@@ -128,7 +128,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
                           //   flex: 3,
                           //   child: resultTile(),
                           // ),
-                          SizedBox(width: 5),
+                          AppDimensionsNew.getHorizontalSpace(8),
                           Flexible(
                             flex: 3,
                             child: actionTile(),
@@ -286,7 +286,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
 
   Widget actionTile() {
     return Container(
-      height: 150.0,
+      height: 150.ph,
       decoration: AppStylesNew.greenContainerDecoration,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -297,29 +297,16 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
               children: [
                 Text(
                   "Hands",
-                  style: TextStyle(
-                    fontFamily: AppAssets.fontFamilyLato,
-                    color: AppColors.lightGrayTextColor,
-                    fontSize: 14.0,
-                    fontWeight: FontWeight.w400,
-                  ),
                 ),
-                SizedBox(
-                  width: 10.0,
-                ),
+                AppDimensionsNew.getHorizontalSpace(16),
                 Text(
                   _gameDetail.playedGame
                       ? _gameDetail.handsPlayedStr ?? ''
                       : '0',
-                  style: TextStyle(
-                    fontFamily: AppAssets.fontFamilyLato,
-                    color: Colors.white,
-                    fontSize: 14.0,
-                    fontWeight: FontWeight.w400,
-                  ),
                 ),
               ],
             ),
+            AppDimensionsNew.getVerticalSizedBox(8),
             Expanded(
               child: Visibility(
                 child: !_gameDetail.playedGame
@@ -355,7 +342,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
         openStackDetails();
       },
       child: Container(
-        height: 150.0,
+        height: 150.ph,
         decoration: AppStylesNew.greenContainerDecoration,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -389,88 +376,59 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
     double profit = _gameDetail.profit == null ? 0 : _gameDetail.profit;
 
     return Container(
-      height: 140.0,
+      height: 150.ph,
+      width: double.maxFinite,
       decoration: AppStylesNew.greenContainerDecoration,
-      child: Row(
+      padding: EdgeInsets.all(8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  profit < 0 ? "Loss" : "Profit",
-                  style: const TextStyle(
-                    fontFamily: AppAssets.fontFamilyLato,
-                    color: Colors.white,
-                    fontSize: 14.0,
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-                SizedBox(
-                  height: 16,
-                ),
-                _gameDetail.playedGame
-                    ? Text(
-                        _gameDetail.profitText ?? _gameDetail.profitText,
-                        style: _gameDetail.profit != null ||
-                                _gameDetail.profit == 0
-                            ? _gameDetail.profit < 0
-                                ? TextStyle(
-                                    fontFamily: AppAssets.fontFamilyLato,
-                                    color: Colors.red,
-                                    fontSize: 20.0,
-                                    fontWeight: FontWeight.w400,
-                                  )
-                                : TextStyle(
-                                    fontFamily: AppAssets.fontFamilyLato,
-                                    color: Colors.lightGreenAccent,
-                                    fontSize: 20.0,
-                                    fontWeight: FontWeight.w400,
-                                  )
-                            : TextStyle(
-                                fontFamily: AppAssets.fontFamilyLato,
-                                color: Colors.white,
-                                fontSize: 20.0,
-                                fontWeight: FontWeight.w400,
-                              ),
-                      )
-                    : Text(
-                        'No data',
-                        style: TextStyle(
-                          fontFamily: AppAssets.fontFamilyLato,
-                          color: Colors.white38,
-                          fontSize: 12.0,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                SizedBox(
-                  height: 10,
-                ),
-                Visibility(
-                  visible: _gameDetail.playedGame,
+          Text(
+            profit < 0 ? "Loss" : "Profit",
+            style: AppStylesNew.labelTextStyle,
+          ),
+          _gameDetail.playedGame
+              ? FittedBox(
+                  fit: BoxFit.fitWidth,
                   child: Text(
-                    "Buy-in",
-                    style: TextStyle(
-                      fontFamily: AppAssets.fontFamilyLato,
-                      color: Colors.blueGrey,
-                      fontSize: 14.0,
-                      fontWeight: FontWeight.w400,
-                    ),
+                    "${DataFormatter.chipsFormat(profit)}",
+                    style: profit != 0
+                        ? profit < 0
+                            ? TextStyle(
+                                color: AppColorsNew.newRedButtonColor,
+                                fontSize: 20.dp,
+                                fontWeight: FontWeight.w400,
+                              )
+                            : TextStyle(
+                                color: AppColorsNew.newGreenButtonColor,
+                                fontSize: 20.dp,
+                                fontWeight: FontWeight.w400,
+                              )
+                        : TextStyle(
+                            color: AppColorsNew.newTextColor,
+                            fontSize: 20.dp,
+                            fontWeight: FontWeight.w400,
+                          ),
                   ),
-                ),
-                seprator,
-                Text(
-                  _gameDetail.buyInText ?? _gameDetail.buyInText,
+                )
+              : Text(
+                  'No data',
                   style: TextStyle(
-                    fontFamily: AppAssets.fontFamilyLato,
-                    color: Colors.white,
-                    fontSize: 12.0,
+                    color: Colors.white38,
+                    fontSize: 10.dp,
                     fontWeight: FontWeight.w400,
                   ),
                 ),
-              ],
+          Visibility(
+            visible: _gameDetail.playedGame,
+            child: Text(
+              "Buy-in",
+              style: AppStylesNew.labelTextStyle,
             ),
+          ),
+          seprator,
+          Text(
+            _gameDetail.buyInText ?? _gameDetail.buyInText,
           ),
         ],
       ),
@@ -479,96 +437,77 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
 
   Widget gameTypeTile() {
     return Container(
-      height: 140.0,
+      height: 150.ph,
       decoration: AppStylesNew.greenContainerDecoration,
       child: Row(
         children: [
+          // Container(
+          //   width: 20.0,
+          //   // color: Color(0xffef9712),
+          //   decoration: BoxDecoration(
+          //     color: Color(0xffef9712),
+          //     borderRadius: const BorderRadius.horizontal(
+          //       left: Radius.circular(AppDimensions.cardRadius),
+          //     ),
+          //   ),
+          // ),
+          // SizedBox(
+          //   width: 5.0,
+          // ),
           Container(
-            width: 20.0,
-            // color: Color(0xffef9712),
-            decoration: BoxDecoration(
-              color: Color(0xffef9712),
-              borderRadius: const BorderRadius.horizontal(
-                left: Radius.circular(AppDimensions.cardRadius),
-              ),
-            ),
-          ),
-          SizedBox(
-            width: 5.0,
-          ),
-          Container(
-            child: Padding(
-              padding: const EdgeInsets.only(top: 12.0, bottom: 12.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Visibility(
-                          visible:
-                              loadingDone && _gameDetail.gameTypeStr != null,
-                          child: Text(
-                            _gameDetail.gameTypeStr ?? '',
-                            style: const TextStyle(
-                              fontFamily: AppAssets.fontFamilyLato,
-                              color: Colors.white,
-                              fontSize: 18.0,
-                              fontWeight: FontWeight.w800,
-                            ),
-                          )),
-                      seprator,
-                      Visibility(
-                          visible:
-                              loadingDone && _gameDetail.gameHandsText != null,
-                          child: Text(
-                            _gameDetail.gameHandsText ?? '',
-                            style: const TextStyle(
-                              fontFamily: AppAssets.fontFamilyLato,
-                              color: AppColors.lightGrayTextColor,
-                              fontSize: 14.0,
-                              fontWeight: FontWeight.w800,
-                            ),
-                          )),
-                      seprator,
-                      Visibility(
-                          visible: loadingDone &&
-                              _gameDetail.playerHandsText != null,
-                          child: Text(
-                            _gameDetail.playerHandsText ?? '',
-                            style: const TextStyle(
-                              fontFamily: AppAssets.fontFamilyLato,
-                              color: AppColors.lightGrayTextColor,
-                              fontSize: 14.0,
-                              fontWeight: FontWeight.w800,
-                            ),
-                          )),
-                      seprator
-                    ],
-                  ),
-                  /*  SizedBox(
-                    height: 15,
-                  ), */
-                  Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
+            padding: EdgeInsets.all(8),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
                     Visibility(
-                      visible: loadingDone && _gameDetail.endedAt != null,
-                      child: Text(
-                        _gameDetail.endedAtStr != null
-                            ? 'Ended at ${_gameDetail.endedAtStr}'
-                            : '',
-                        style: const TextStyle(
-                          fontFamily: AppAssets.fontFamilyLato,
-                          color: AppColors.lightGrayTextColor,
-                          fontSize: 10.0,
-                          fontWeight: FontWeight.w800,
-                        ),
-                      ),
-                    )
-                  ]),
-                ],
-              ),
+                        visible: loadingDone && _gameDetail.gameTypeStr != null,
+                        child: Text(
+                          _gameDetail.gameTypeStr ?? '',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 14.dp,
+                          ),
+                        )),
+                    seprator,
+                    Visibility(
+                        visible:
+                            loadingDone && _gameDetail.gameHandsText != null,
+                        child: Text(
+                          _gameDetail.gameHandsText ?? '',
+                          style: AppStylesNew.labelTextStyle,
+                        )),
+                    seprator,
+                    Visibility(
+                        visible:
+                            loadingDone && _gameDetail.playerHandsText != null,
+                        child: Text(
+                          _gameDetail.playerHandsText ?? '',
+                          style: AppStylesNew.labelTextStyle,
+                        )),
+                    seprator
+                  ],
+                ),
+                /*  SizedBox(
+                  height: 15,
+                ), */
+                Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
+                  Visibility(
+                    visible: loadingDone && _gameDetail.endedAt != null,
+                    child: Text(
+                      _gameDetail.endedAtStr != null
+                          ? 'Ended at ${_gameDetail.endedAtStr}'
+                          : '',
+                      style:
+                          AppStylesNew.labelTextStyle.copyWith(fontSize: 6.dp),
+                    ),
+                  )
+                ]),
+              ],
             ),
           ),
         ],
@@ -637,7 +576,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
           //   ),
           // ),
           ListTile(
-            tileColor: AppColorsNew.tileColor,
+            tileColor: AppColorsNew.actionRowBgColor,
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
             onTap: () {
@@ -645,56 +584,55 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
                 this.onHandHistoryPressed(context);
               }
             },
-            leading: CircleAvatar(
-              radius: 18,
-              child: SvgPicture.asset('assets/images/casino.svg',
-                  color: Colors.white),
-              backgroundColor: Color(0xff319ffe),
+            leading: Container(
+              width: 36.ph,
+              height: 36.ph,
+              padding: EdgeInsets.all(8),
+              decoration:
+                  BoxDecoration(color: Colors.green, shape: BoxShape.circle),
+              child: SvgPicture.asset(
+                'assets/images/handhistory.svg',
+                color: AppColorsNew.newTextColor,
+                width: 24.ph,
+                height: 24.ph,
+                fit: BoxFit.cover,
+              ),
             ),
             title: Text(
               "Hand History",
-              style: const TextStyle(
-                fontFamily: AppAssets.fontFamilyLato,
-                color: Colors.white,
-                fontSize: 14.0,
-                fontWeight: FontWeight.w400,
-              ),
             ),
             trailing: !_gameDetail.playedGame
                 ? Text(
                     "Not Available",
-                    style: const TextStyle(
-                      fontFamily: AppAssets.fontFamilyLato,
-                      color: Colors.white54,
-                      fontSize: 12.0,
-                      fontWeight: FontWeight.w400,
-                    ),
                   )
                 : Icon(
                     Icons.arrow_forward_ios,
                     color: AppColorsNew.newGreenButtonColor,
-                    size: 12,
+                    size: 12.dp,
                   ),
           ),
           AppDimensionsNew.getVerticalSizedBox(16),
           ListTile(
-            tileColor: AppColorsNew.tileColor,
+            tileColor: AppColorsNew.actionRowBgColor,
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-            leading: CircleAvatar(
-              radius: 18,
-              child: SvgPicture.asset('assets/images/casino.svg',
-                  color: Colors.white),
-              backgroundColor: Color(0xffef9712),
+            leading: Container(
+              width: 36.ph,
+              height: 36.ph,
+              padding: EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                  color: AppColorsNew.newBlueShadeColor,
+                  shape: BoxShape.circle),
+              child: SvgPicture.asset(
+                'assets/images/casino.svg',
+                color: AppColorsNew.newTextColor,
+                width: 24.ph,
+                height: 24.ph,
+                fit: BoxFit.contain,
+              ),
             ),
             title: Text(
               "Table Record",
-              style: const TextStyle(
-                fontFamily: AppAssets.fontFamilyLato,
-                color: Colors.white,
-                fontSize: 14.0,
-                fontWeight: FontWeight.w400,
-              ),
             ),
             onTap: () {
               Navigator.pushNamed(
@@ -709,34 +647,36 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
             trailing: Icon(
               Icons.arrow_forward_ios,
               color: AppColorsNew.newGreenButtonColor,
-              size: 12,
+              size: 12.dp,
             ),
           ),
           AppDimensionsNew.getVerticalSizedBox(16),
           ListTile(
-            tileColor: AppColorsNew.tileColor,
+            tileColor: AppColorsNew.actionRowBgColor,
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
             onTap: () => this.onHighHandLogPressed(context),
-            leading: CircleAvatar(
-              radius: 18,
-              child: SvgPicture.asset('assets/images/casino.svg',
-                  color: Colors.white),
-              backgroundColor: Color(0xff0fc915),
+            leading: Container(
+              width: 36.ph,
+              height: 36.ph,
+              padding: EdgeInsets.all(8),
+              decoration:
+                  BoxDecoration(color: Colors.yellow, shape: BoxShape.circle),
+              child: SvgPicture.asset(
+                'assets/images/highhand.svg',
+                color: AppColorsNew.darkGreenShadeColor,
+                width: 24.ph,
+                height: 24.ph,
+                fit: BoxFit.cover,
+              ),
             ),
             title: Text(
               "High Hand Log",
-              style: const TextStyle(
-                fontFamily: AppAssets.fontFamilyLato,
-                color: Colors.white,
-                fontSize: 14.0,
-                fontWeight: FontWeight.w400,
-              ),
             ),
             trailing: Icon(
               Icons.arrow_forward_ios,
               color: AppColorsNew.newGreenButtonColor,
-              size: 12,
+              size: 12.dp,
             ),
           ),
         ],

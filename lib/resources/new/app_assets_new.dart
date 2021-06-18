@@ -27,4 +27,6 @@ class AppAssetsNew {
   static var handHistoryPath = "assets/images/handhistory.svg";
 
   static var lastHandPath = "assets/images/lasthand.svg";
+
+  static String cardBackImagePath = "assets/images/card_back/set2/Asset 8.png";
 }

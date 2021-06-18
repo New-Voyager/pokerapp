@@ -11,6 +11,7 @@ import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/routes.dart';
@@ -21,6 +22,7 @@ import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
 import 'package:pokerapp/widgets/cards/multiple_stack_card_views.dart';
+import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 final _separator = SizedBox(
   height: 5.0,
@@ -65,31 +67,28 @@ class _PlayedHandsScreenState extends State<PlayedHandsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        backgroundColor: AppColors.screenBackgroundColor,
-        body: Column(
-          children: [
-            SizedBox(
-              height: 16,
-            ),
-            //   getHeader(),
-            Expanded(
-              child: ListView.separated(
-                itemBuilder: (context, index) {
-                  return getListItem(
-                    context,
-                    index,
-                    _isTheHandBookmarked(widget.history[index].handNum),
-                  );
-                },
-                itemCount: widget.history.length,
-                separatorBuilder: (context, index) {
-                  return Divider();
-                },
-              ),
-            ),
-          ],
-        ));
+    return Column(
+      children: [
+        SizedBox(
+          height: 16,
+        ),
+        //   getHeader(),
+        Expanded(
+          child: ListView.separated(
+            itemBuilder: (context, index) {
+              return getListItem(
+                context,
+                index,
+                _isTheHandBookmarked(widget.history[index].handNum),
+              );
+            },
+            itemCount: widget.history.length,
+            separatorBuilder: (context, index) =>
+                AppDimensionsNew.getVerticalSizedBox(8),
+          ),
+        ),
+      ],
+    );
   }
 
   getHeader() {
@@ -355,148 +354,125 @@ class _PlayedHandsScreenState extends State<PlayedHandsScreen> {
   }
 
   getListItem(BuildContext context, int index, bool isTheHandBookmarked) {
-    WinnerWidget winnerWidget = new WinnerWidget(widget.history[index]);
-    return Theme(
-      data: Theme.of(context).copyWith(
-        cardColor: AppColors.popUpMenuColor,
-        textTheme: Theme.of(context).textTheme.apply(bodyColor: Colors.white),
-      ),
-      child: Builder(
-        builder: (context) {
-          return GestureDetector(
-            onTapDown: _storeTapPosition,
-            //onLongPress: () => {showCustomMenu(context, index)},
-            onTap: () => onHistoryItemTapped(context, index),
+    WinnerWidget winnerWidget = new WinnerWidget(item: widget.history[index]);
+    return Builder(
+      builder: (context) {
+        return GestureDetector(
+          onTapDown: _storeTapPosition,
+          //onLongPress: () => {showCustomMenu(context, index)},
+          onTap: () => onHistoryItemTapped(context, index),
+          child: Container(
+            margin: EdgeInsets.symmetric(horizontal: 8),
+            decoration: AppStylesNew.actionRowDecoration,
             child: Padding(
-              padding: const EdgeInsets.only(
-                left: 8.0,
-                right: 8.0,
-              ),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Color(0xff313235),
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(AppDimensions.cardRadius),
-                  ),
-                  gradient: LinearGradient(
-                    colors: [Colors.grey[850], Colors.grey[700]],
-                  ),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(6.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
+              padding: const EdgeInsets.all(6.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          //handNumWidget(history[index].handNum),
-                          SizedBox(
-                            width: 16,
+                      //handNumWidget(history[index].handNum),
+                      SizedBox(
+                        width: 8,
+                      ),
+                      winnerWidget,
+                    ],
+                  ),
+                  Divider(
+                    color: AppColorsNew.newBackgroundBlackColor,
+                    indent: 8,
+                    endIndent: 8,
+                  ),
+                  Container(
+                    margin: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Hand #${widget.history[index].handNum}",
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 12,
                           ),
-                          winnerWidget,
-                        ],
-                      ),
-                      Divider(
-                        color: AppColors.veryLightGrayColor,
-                        indent: 8,
-                        endIndent: 8,
-                      ),
-                      Container(
-                        margin:
-                            EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            Text(
-                              "Hand #${widget.history[index].handNum}",
-                              style: TextStyle(
-                                color: Colors.grey,
-                                fontSize: 12,
+                            InkWell(
+                              onTap: () async {
+                                if (isTheHandBookmarked) {
+                                  await _removeBookmark(index);
+                                } else {
+                                  await _bookmarkdHand(index);
+                                }
+                              },
+                              child: Container(
+                                alignment: Alignment.bottomRight,
+                                child: Icon(
+                                  isTheHandBookmarked
+                                      ? Icons.star
+                                      : Icons.star_outline,
+                                  color: Colors.white,
+                                  size: 20,
+                                ),
                               ),
                             ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                InkWell(
-                                  onTap: () async {
-                                    if (isTheHandBookmarked) {
-                                      await _removeBookmark(index);
-                                    } else {
-                                      await _bookmarkdHand(index);
-                                    }
-                                  },
-                                  child: Container(
-                                    alignment: Alignment.bottomRight,
-                                    child: Icon(
-                                      isTheHandBookmarked
-                                          ? Icons.star
-                                          : Icons.star_outline,
-                                      color: Colors.white,
-                                      size: 20,
-                                    ),
-                                  ),
+                            SizedBox(width: 20),
+                            InkWell(
+                              onTap: () async {
+                                await _shareHandWithClub(index);
+                              },
+                              child: Container(
+                                alignment: Alignment.bottomRight,
+                                child: Icon(
+                                  Icons.share,
+                                  color: Colors.white,
+                                  size: 20,
                                 ),
-                                SizedBox(width: 20),
-                                InkWell(
-                                  onTap: () async {
-                                    await _shareHandWithClub(index);
-                                  },
-                                  child: Container(
-                                    alignment: Alignment.bottomRight,
-                                    child: Icon(
-                                      Icons.share,
-                                      color: Colors.white,
-                                      size: 20,
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(width: 20),
-                                InkWell(
-                                  onTap: () {
-                                    _replayHand(index);
-                                  },
-                                  child: Container(
-                                    alignment: Alignment.bottomRight,
-                                    child: Icon(
-                                      Icons.replay,
-                                      color: Colors.white,
-                                      size: 20,
-                                    ),
-                                  ),
-                                ),
-                              ],
+                              ),
+                            ),
+                            SizedBox(width: 20),
+                            InkWell(
+                              onTap: () {
+                                _replayHand(index);
+                              },
+                              
+                              child: Icon(
+                                Icons.replay,
+                                color: Colors.white,
+                                size: 20,
+                              ),
                             ),
                           ],
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
+                ],
               ),
             ),
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 
-  Widget handNumWidget(int handNum) {
-    return Padding(
-        padding: const EdgeInsets.only(left: 4.0, top: 10.0, right: 6.0),
-        child: Container(
-          width: 30,
-          child: Text(
-            handNum.toString(),
-            style: const TextStyle(
-              fontFamily: AppAssets.fontFamilyLato,
-              color: Colors.white,
-              fontSize: 14.0,
-              fontWeight: FontWeight.w400,
-            ),
-          ),
-        ));
-  }
+  // Widget handNumWidget(int handNum) {
+  //   return Padding(
+  //       padding: const EdgeInsets.only(left: 4.0, top: 10.0, right: 6.0),
+  //       child: Container(
+  //         width: 30,
+  //         child: Text(
+  //           handNum.toString(),
+  //           style: const TextStyle(
+  //             color: Colors.white,
+  //             fontSize: 14.0,
+  //             fontWeight: FontWeight.w400,
+  //           ),
+  //         ),
+  //       ));
+  // }
 
   bool _isTheHandBookmarked(int handNum) {
     // log("HAND UNDER TEST : $handNum");
@@ -507,11 +483,9 @@ class _PlayedHandsScreenState extends State<PlayedHandsScreen> {
 }
 
 class WinnerWidget extends StatelessWidget {
-  HandHistoryItem item;
+  final HandHistoryItem item;
 
-  WinnerWidget(HandHistoryItem item) {
-    this.item = item;
-  }
+  WinnerWidget({this.item});
 
   List<Widget> getCommunityCards() {
     List<Widget> communityCards = [
@@ -575,10 +549,9 @@ class WinnerWidget extends StatelessWidget {
                         Container(
                           child: Text(
                             this.item.handTime,
-                            style: const TextStyle(
-                              fontFamily: AppAssets.fontFamilyLato,
+                            style: TextStyle(
                               color: AppColors.lightGrayTextColor,
-                              fontSize: 12.0,
+                              fontSize: 8.dp,
                               fontWeight: FontWeight.w400,
                             ),
                           ),
@@ -590,21 +563,13 @@ class WinnerWidget extends StatelessWidget {
               ],
             ),
           ),
-          SizedBox(
-            width: 5.0,
+          Container(
+            child: Icon(
+              Icons.arrow_forward_ios,
+              color: AppColorsNew.newGreenButtonColor,
+              size: 12.ph,
+            ),
           ),
-          Column(
-            children: [
-              Icon(
-                Icons.arrow_forward_ios,
-                color: Colors.white,
-                size: 12,
-              ),
-            ],
-          ),
-          SizedBox(
-            width: 8,
-          )
         ],
       ),
     );
@@ -625,7 +590,7 @@ class WinnerWidget extends StatelessWidget {
       itemCount: this.item.winners.length,
       separatorBuilder: (context, index) {
         return Divider(
-          color: AppColors.veryLightGrayColor,
+          color: AppColorsNew.newBackgroundBlackColor,
         );
       },
     );
@@ -646,10 +611,9 @@ class WinnerWidget extends StatelessWidget {
             children: [
               Text(
                 name,
-                style: const TextStyle(
-                  fontFamily: AppAssets.fontFamilyLato,
+                style: TextStyle(
                   color: Colors.orangeAccent,
-                  fontSize: 14.0,
+                  fontSize: 10.dp,
                   fontWeight: FontWeight.w400,
                 ),
               ),
@@ -662,21 +626,17 @@ class WinnerWidget extends StatelessWidget {
               Row(children: [
                 Text(
                   'Received: ',
-                  style: const TextStyle(
-                    fontFamily: AppAssets.fontFamilyLato,
+                  style: TextStyle(
                     color: AppColors.lightGrayTextColor,
-                    fontSize: 12.0,
-                    fontWeight: FontWeight.w600,
+                    fontSize: 8.dp,
                   ),
                 ),
                 _separator,
                 Text(
                   DataFormatter.chipsFormat(pot),
-                  style: const TextStyle(
-                    fontFamily: AppAssets.fontFamilyLato,
-                    color: Colors.lightGreenAccent,
-                    fontSize: 12.0,
-                    fontWeight: FontWeight.w400,
+                  style: TextStyle(
+                    color: AppColorsNew.newGreenButtonColor,
+                    fontSize: 8.dp,
                   ),
                 ),
               ]),

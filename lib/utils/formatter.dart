@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:intl/intl.dart';
 
 final DateFormat _dateFormatter =
@@ -72,12 +74,14 @@ class DataFormatter {
       return "0 Sec";
     }
     if (timeInSec <= 60) {
-      return "seconds";
+      return "$timeInSec seconds";
     }
     double mins = timeInSec / 60;
+    int secs = timeInSec % 60;
+    log("78787878 $mins $secs");
     if (mins > 0 && mins < 60) {
-      return "${mins.toStringAsFixed(0)} mins";
+      return "${mins.toStringAsFixed(0)}mins ${secs}seconds";
     }
-    return "${(mins / 60).toStringAsFixed(0)} hrs ${(mins % 60).toStringAsFixed(0)} mins";
+    return "${(mins / 60).toStringAsFixed(0)}hrs ${(mins % 60).toStringAsFixed(0)}mins";
   }
 }
