@@ -71,10 +71,8 @@ class _CommunicationViewState extends State<CommunicationView> {
                   log('Showing voiceChatWidgets');
                   children.addAll(voiceTextWidgets(widget.chatService));
                 }
-                log('gameSettings = ${gameState.settings}');
-                if (gameState.settings != null &&
-                    !gameState.settings.showChat) {
-                } else {
+
+                if (communicationState.showTextChat) {
                   children.add(
                     Consumer<GameChatNotifState>(
                       builder: (_, gcns, __) => Badge(

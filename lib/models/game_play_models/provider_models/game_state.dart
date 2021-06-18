@@ -234,11 +234,13 @@ class GameState {
         settings = gameHiveStore.getGameSettings();
       }
       log('In GameState initialize(), gameSettings = $settings');
+      _communicationState.showTextChat = settings.showChat;
+      gameComService.chat.muteAnimations = settings.animations;
     }
   }
 
   void close() {
-    if(!this.replayMode) {
+    if (!this.replayMode) {
       gameHiveStore.close();
     }
   }
