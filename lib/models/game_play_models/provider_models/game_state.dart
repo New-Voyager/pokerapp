@@ -36,6 +36,20 @@ import 'players.dart';
 import 'table_state.dart';
 import 'waitlist_state.dart';
 
+enum HandState {
+  UNKNOWN,
+  STARTED,
+  NEW_HAND,
+  DEAL,
+  PREFLOP,
+  FLOP,
+  TURN,
+  RIVER,
+  SHOWDOWN,
+  RESULT,
+  ENDED,
+}
+
 /*
  * This class maintains game state. This game state is used by game play screen.
  * All the other states in the game play screen are managed by this game state object.
@@ -64,6 +78,7 @@ class GameState {
 
   MyState _myState;
   SeatPos _tappedSeatPos;
+  HandState handState = HandState.UNKNOWN;
 
   String _gameCode;
   GameInfoModel _gameInfo;
@@ -87,7 +102,7 @@ class GameState {
   bool hostSeatChangeInProgress = false;
 
   bool gameSounds = true;
-  GameSettings settings;
+  GameSettings settings = GameSettings('');
   GameHiveStore gameHiveStore;
   bool replayMode = false;
 
@@ -107,6 +122,7 @@ class GameState {
     this._currentHandNum = -1;
     this._tappedSeatPos = null;
     this.replayMode = replayMode ?? false;
+    this.settings = GameSettings(gameCode);
 
     this._hostSeatChangeSeats = hostSeatChangeSeats;
     this.hostSeatChangeInProgress = hostSeatChangeInProgress ?? false;
@@ -308,7 +324,7 @@ class GameState {
 
   set currentHandNum(int handNum) => this._currentHandNum = currentHandNum;
 
-  void refresh(BuildContext context) async {
+  Future<void> refresh(BuildContext context) async {
     log('************ Refreshing game state');
     // fetch new player using GameInfo API and add to the game
     GameInfoModel gameInfo = await GameService.getGameInfo(this._gameCode);
@@ -334,6 +350,7 @@ class GameState {
 
     // show buyin button/timer if the player is in middle of buyin
     for (var player in playersInSeats) {
+      player.startingStack = player.stack;
       if (player.buyInTimeExpAt != null && player.stack == 0) {
         player.showBuyIn = true;
         player.buyInTimeExpAt = player.buyInTimeExpAt.toLocal();

@@ -47,6 +47,24 @@ class GameUpdateService {
   loop() async {
     while (!closed) {
       if (_messages.length > 0) {
+        // don't process table message in the middle of the hand
+        dynamic message = _messages[0];
+
+        String messageType = message['messageType'];
+        log(':GameUpdateService: message type: $messageType handState: ${_gameState.handState.toString()}');
+        if (_gameState.handState != HandState.UNKNOWN &&
+            _gameState.handState != HandState.ENDED) {
+          if (messageType == AppConstants.GAME_STATUS ||
+              messageType == AppConstants.TABLE_UPDATE) {
+            log(':GameUpdateService: message type: $messageType handState: ${_gameState.handState.toString()} Process this message later');
+            // we are in the middle of the hand
+            _messages.removeAt(0);
+            _messages.add(message);
+            await Future.delayed(Duration(milliseconds: 50));
+            continue;
+          }
+        }
+
         dynamic m = _messages.removeAt(0);
         bool done = false;
         //String messageType = m['messageType'];
