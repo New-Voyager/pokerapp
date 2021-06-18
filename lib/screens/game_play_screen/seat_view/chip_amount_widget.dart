@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -98,6 +100,8 @@ class _ChipAmountWidgetState extends State<ChipAmountWidget>
         width: 15.0,
       );
     }
+
+    log('Rebuilding ChipAmountWidget');
 
     /* show the coin amount */
     final amount = Text(
