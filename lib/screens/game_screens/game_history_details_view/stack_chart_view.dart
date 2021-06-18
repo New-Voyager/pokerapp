@@ -38,7 +38,6 @@ class StackChartView extends StatelessWidget {
             labelOffsetFromAxisPx: -20,
             labelAnchor: charts.TickLabelAnchor.after,
             labelStyle: charts.TextStyleSpec(
-              fontFamily: AppAssets.fontFamilyLato,
               color: charts.MaterialPalette.gray.shade500,
               fontSize: 12,
             ),
