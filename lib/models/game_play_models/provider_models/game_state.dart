@@ -36,6 +36,20 @@ import 'players.dart';
 import 'table_state.dart';
 import 'waitlist_state.dart';
 
+enum HandState {
+  UNKNOWN,
+  STARTED,
+  NEW_HAND,
+  DEAL,
+  PREFLOP,
+  FLOP,
+  TURN,
+  RIVER,
+  SHOWDOWN,
+  RESULT,
+  ENDED,
+}
+
 /*
  * This class maintains game state. This game state is used by game play screen.
  * All the other states in the game play screen are managed by this game state object.
@@ -64,6 +78,7 @@ class GameState {
 
   MyState _myState;
   SeatPos _tappedSeatPos;
+  HandState handState = HandState.UNKNOWN;
 
   String _gameCode;
   GameInfoModel _gameInfo;

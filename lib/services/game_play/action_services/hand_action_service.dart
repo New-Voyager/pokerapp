@@ -341,7 +341,6 @@ class HandActionService {
     } finally {
       log('Hand Message: ::handleMessage:: END messageType: $messageType');
     }
-
   }
 
   static Future<void> handleRunItTwiceStatic({
@@ -435,6 +434,7 @@ class HandActionService {
   }
 
   Future<void> handleNewHand(var data) async {
+    _gameState.handState = HandState.STARTED;
     log('Hand Message: ::handleNewHand:: START');
     playSoundEffect(AppAssets.newHandSound);
 
@@ -473,13 +473,13 @@ class HandActionService {
     // set small blind and big blind
     if (_close) return;
     final noOfPlayers = newHand['playersInSeats'].length;
-    
+
     if (_gameState.gameInfo.playersInSeats.length != noOfPlayers) {
       log('gameState seats does not match with new hand. * Refreshing *');
       await _gameState.refresh(_context);
       log('gameState seats does not match with new hand. * Refreshing Done *');
     }
-    
+
     final sbSeat = _gameState.getSeat(_context, sbPos);
     sbSeat.player.action.sb = true;
     sbSeat.player.action.amount = _gameState.gameInfo.smallBlind.toDouble();
@@ -628,6 +628,7 @@ class HandActionService {
     // tableState.updateTableStatusSilent(AppConstants.CLEAR);
     tableState.notifyAll();
     log('Hand Message: ::handleNewHand:: END');
+    _gameState.handState = HandState.NEW_HAND;
   }
 
   Future<void> handleDeal(var data) async {
@@ -685,6 +686,8 @@ class HandActionService {
     if (_close) return;
     audioPlayer.stop();
     _context.read<CardDistributionModel>().seatNo = null;
+    _gameState.handState = HandState.DEAL;
+
     log('Hand Message: ::handleDeal:: END');
   }
 
@@ -710,7 +713,8 @@ class HandActionService {
       List<String> availableActions = seatAction['availableActions']
           .map<String>((e) => e.toString())
           .toList();
-      if (availableActions?.contains(AppConstants.RUN_IT_TWICE_PROMPT) ?? false) {
+      if (availableActions?.contains(AppConstants.RUN_IT_TWICE_PROMPT) ??
+          false) {
         if (_close) return;
         return RunItTwiceDialog.promptRunItTwice(
           context: _context,
@@ -815,7 +819,6 @@ class HandActionService {
 
     if (_close) return;
     try {
-
       /* show card shuffling */
       final TableState tableState = _gameState.getTableState(_context);
       /* stop showing card shuffling */
@@ -931,6 +934,7 @@ class HandActionService {
 
     // update the community cards
     if (stage == 'flop') {
+      _gameState.handState = HandState.FLOP;
       playSoundEffect(AppAssets.flopSound);
 
       var board = data[stage]['board'];
@@ -946,12 +950,13 @@ class HandActionService {
 
       tableState.addFlopCards(1, cards);
     } else if (stage == 'turn') {
+      _gameState.handState = HandState.TURN;
       playSoundEffect(AppAssets.flopSound);
-     
 
       tableState.addTurnOrRiverCard(
           1, CardHelper.getCard(data[stage]['${stage}Card']));
     } else if (stage == 'river') {
+      _gameState.handState = HandState.RIVER;
       playSoundEffect(AppAssets.flopSound);
 
       tableState.addTurnOrRiverCard(
@@ -1609,6 +1614,8 @@ class HandActionService {
   }
 
   Future<void> handleResult(var data) async {
+    _gameState.handState = HandState.RESULT;
+
     if (_close) return;
     final Players players = _gameState.getPlayers(_context);
     _gameState.resetSeatActions();
@@ -1628,7 +1635,7 @@ class HandActionService {
     };
     final jsonData = jsonEncode(result);
     log('\nResult: \n');
-    log('Result: ' +jsonData);
+    log('Result: ' + jsonData);
     log('\n\n');
     final handNum = handResult['handNum'];
     _gameState.lastHand = jsonData;
@@ -1685,6 +1692,7 @@ class HandActionService {
       context: _context,
       audioPlayer: audioPlayer,
     );
+    _gameState.handState = HandState.ENDED;
     log('Hand Message: ::handleResult:: END');
   }
 }
