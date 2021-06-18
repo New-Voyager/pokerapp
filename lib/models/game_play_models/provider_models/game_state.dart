@@ -106,7 +106,7 @@ class GameState {
     this._currentPlayer = currentPlayer;
     this._currentHandNum = -1;
     this._tappedSeatPos = null;
-    this.replayMode = replayMode;
+    this.replayMode = replayMode ?? false;
 
     this._hostSeatChangeSeats = hostSeatChangeSeats;
     this.hostSeatChangeInProgress = hostSeatChangeInProgress ?? false;

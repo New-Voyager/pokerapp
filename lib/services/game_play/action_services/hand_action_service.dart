@@ -1299,11 +1299,12 @@ class HandActionService {
     int highWinnersTimeInMs =
         lowWinners.isEmpty ? totalWaitTimeInMs : totalWaitTimeInMs ~/ 2;
     int lowWinnersTimeInMs = totalWaitTimeInMs ~/ 2;
-    if (gameState.gameSettings.gameSound) {
+    if (gameState.settings.gameSound) {
       gameState.getAudioBytes(AppAssets.applauseSound).then((value) {
         audioPlayer.playBytes(value);
       });
     }
+    log('Result: Animating winner');
 
     /** process the high pot winners: this method already takes 500ms*/
     await processWinners(
@@ -1320,6 +1321,7 @@ class HandActionService {
 
     await Future.delayed(Duration(milliseconds: balancedMstoWait));
     audioPlayer.stop();
+    log('Result: Animation done');
 
     /* if we dont have any low winners to show AND we are from
     replay hand, we end the function call here */
@@ -1581,6 +1583,7 @@ class HandActionService {
     _gameState.resetSeatActions();
     players.clearForShowdown();
 
+    log('Result: Received result message');
     // get hand winners data and update results
     final handResult = data['handResult'];
 
@@ -1593,8 +1596,8 @@ class HandActionService {
       }
     };
     final jsonData = jsonEncode(result);
-    log('\n\n');
-    log(jsonData);
+    log('\nResult: \n');
+    log('Result: ' +jsonData);
     log('\n\n');
     final handNum = handResult['handNum'];
     _gameState.lastHand = jsonData;
