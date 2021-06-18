@@ -78,7 +78,6 @@ class DataFormatter {
     }
     double mins = timeInSec / 60;
     int secs = timeInSec % 60;
-    log("78787878 $mins $secs");
     if (mins > 0 && mins < 60) {
       return "${mins.toStringAsFixed(0)}mins ${secs}seconds";
     }

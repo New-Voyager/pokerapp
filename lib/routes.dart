@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/screens/club_screen/bookmarked_hands.dart';
 import 'package:pokerapp/screens/club_screen/botscripts.dart';
 import 'package:pokerapp/screens/club_screen/club_main_screen_new.dart';
+import 'package:pokerapp/screens/game_screens/game_history_details_view/hand_stats_view.dart';
 import 'package:pokerapp/screens/game_screens/game_history_details_view/stack_details_view.dart';
 import 'package:pokerapp/screens/game_screens/new_game_settings/choose_game_new.dart';
 import 'package:pokerapp/screens/game_screens/new_game_settings/new_game_settings2.dart';
@@ -85,6 +86,8 @@ class Routes {
   static const String bookmarked_hands = '/bookmarked_hands';
   // BotScripts screen
   static const String bot_scripts = '/bot_scripts';
+  // Hand Statistics screen
+  static const String hand_statistics = "/hand_statistics";
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -359,6 +362,15 @@ class Routes {
           routeName: settings.name,
           viewToShow: PointsLineChart(
             gameDetail: args,
+          ),
+        );
+
+      case hand_statistics:
+        var args = settings.arguments as GameHistoryDetailModel;
+        return _getPageRoute(
+          routeName: settings.name,
+          viewToShow: HandStatsView(
+            gameHistoryModel: args,
           ),
         );
 

@@ -285,42 +285,49 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
   }
 
   Widget actionTile() {
-    return Container(
-      height: 150.ph,
-      decoration: AppStylesNew.greenContainerDecoration,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Text(
-                  "Hands",
-                ),
-                AppDimensionsNew.getHorizontalSpace(16),
-                Text(
-                  _gameDetail.playedGame
-                      ? _gameDetail.handsPlayedStr ?? ''
-                      : '0',
-                ),
-              ],
-            ),
-            AppDimensionsNew.getVerticalSizedBox(8),
-            Expanded(
-              child: Visibility(
-                child: !_gameDetail.playedGame
-                    ? Center(
-                        child: Text(
-                          "No Data",
-                          style: AppStylesNew.labelTextStyle,
-                        ),
-                      )
-                    : HandsPieChart(this._gameDetail.handsData),
-                visible: loadingDone,
+    return InkWell(
+      onTap: () {
+        if (_gameDetail.playedGame) {
+          openHandStatistics();
+        }
+      },
+      child: Container(
+        height: 150.ph,
+        decoration: AppStylesNew.greenContainerDecoration,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Text(
+                    "Hands",
+                  ),
+                  AppDimensionsNew.getHorizontalSpace(16),
+                  Text(
+                    _gameDetail.playedGame
+                        ? _gameDetail.handsPlayedStr ?? ''
+                        : '0',
+                  ),
+                ],
               ),
-            )
-          ],
+              AppDimensionsNew.getVerticalSizedBox(8),
+              Expanded(
+                child: Visibility(
+                  child: !_gameDetail.playedGame
+                      ? Center(
+                          child: Text(
+                            "No Data",
+                            style: AppStylesNew.labelTextStyle,
+                          ),
+                        )
+                      : HandsPieChart(this._gameDetail.handsData),
+                  visible: loadingDone,
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );
@@ -329,6 +336,11 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
   openStackDetails() {
     log('Opening points chart');
     Navigator.pushNamed(context, Routes.pointsLineChart,
+        arguments: _gameDetail);
+  }
+
+  openHandStatistics() {
+    Navigator.pushNamed(context, Routes.hand_statistics,
         arguments: _gameDetail);
   }
 

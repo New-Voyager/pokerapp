@@ -43,6 +43,7 @@ class CustomAppBar extends AppBar {
                 )
               : SizedBox.shrink(),
           title: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
                 titleText ?? "",
@@ -53,10 +54,7 @@ class CustomAppBar extends AppBar {
                 visible: subTitleText != null,
                 child: Text(
                   subTitleText ?? "",
-                  style: AppStyles.titleBarTextStyle.copyWith(
-                    fontSize: 10.dp,
-                    color: Colors.grey,
-                  ),
+                  style:AppStylesNew.appBarSubTitleTextStyle,
                   textAlign: TextAlign.center,
                 ),
               ),

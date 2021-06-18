@@ -16,7 +16,6 @@ class GameHistoryItemNew extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    log("-=-= ${game.ShortGameType}");
     return Container(
       decoration: AppStylesNew.blackContainerDecoration,
       child: Stack(
