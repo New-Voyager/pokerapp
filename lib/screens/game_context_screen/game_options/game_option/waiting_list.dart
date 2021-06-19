@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/waiting_list_model.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
@@ -18,7 +19,10 @@ import 'package:provider/provider.dart';
 class WaitingListBottomSheet extends StatefulWidget {
   final String gameCode;
   final String playerUuid;
-  WaitingListBottomSheet(this.gameCode, this.playerUuid);
+  final GameState gameState;
+
+  WaitingListBottomSheet(this.gameState, this.gameCode, this.playerUuid);
+
   @override
   _WaitingListBottomSheetState createState() => _WaitingListBottomSheetState();
 }
@@ -29,6 +33,7 @@ class _WaitingListBottomSheetState extends State<WaitingListBottomSheet> {
   List<WaitingListModel> allWaitingListPlayers = [];
   bool ischanged = false;
   bool isSwitchShow = true;
+
   @override
   void initState() {
     super.initState();
@@ -192,28 +197,33 @@ class _WaitingListBottomSheetState extends State<WaitingListBottomSheet> {
   }
 
   addRemoveWaitingListButton() {
-    return Container(
-        margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        padding: EdgeInsets.all(8),
-        decoration: AppStylesNew.actionRowDecoration,
-        child: SwitchWidget(
-          label: AppStringsNew.addMeToWaitingListText,
-          value: isInWaitingList,
-          onChange: (bool value) async {
-            setState(() {
-              isInWaitingList = value;
-            });
-            if (isInWaitingList) {
-              bool result = await GameService.addToWaitList(widget.gameCode);
-              print("result dasda $result");
-            } else {
-              bool result =
-                  await GameService.removeFromWaitlist(widget.gameCode);
-              print("result check $result");
-            }
-            getAllWaitingPlayers();
-          },
-        ));
+    if (widget.gameState.getSeatByPlayer(widget.gameState.currentPlayerId) ==
+        null) {
+      return Container(
+          margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          padding: EdgeInsets.all(8),
+          decoration: AppStylesNew.actionRowDecoration,
+          child: SwitchWidget(
+            label: AppStringsNew.addMeToWaitingListText,
+            value: isInWaitingList,
+            onChange: (bool value) async {
+              setState(() {
+                isInWaitingList = value;
+              });
+              if (isInWaitingList) {
+                bool result = await GameService.addToWaitList(widget.gameCode);
+                print("result = $result");
+              } else {
+                bool result =
+                    await GameService.removeFromWaitlist(widget.gameCode);
+                print("result check $result");
+              }
+              getAllWaitingPlayers();
+            },
+          ));
+    } else {
+      return SizedBox();
+    }
   }
 
   get header => Container(
