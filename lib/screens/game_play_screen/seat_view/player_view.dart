@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
+import 'package:pokerapp/enums/game_status.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/enums/player_status.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
@@ -68,8 +69,9 @@ class PlayerView extends StatelessWidget {
     }
     log('seat ${seat.serverSeatPos} is tapped');
     if (seat.isOpen) {
-      if (gameState.myState.status == PlayerStatus.PLAYING) {
-        log('Ignoring the open seat tap as the player is sitting');
+      if (gameState.myState.status == PlayerStatus.PLAYING &&
+          gameState.myState.gameStatus == GameStatus.RUNNING) {
+        log('Ignoring the open seat tap as the player is sitting and game is running');
         return;
       }
       // the player tapped to sit-in
