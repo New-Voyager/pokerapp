@@ -473,6 +473,20 @@ class HandActionService {
     // set small blind and big blind
     if (_close) return;
     final noOfPlayers = newHand['playersInSeats'].length;
+    if (_gameState.gameInfo.playersInSeats.length != noOfPlayers) {
+      log('gameState seats does not match with new hand. * Refreshing *');
+      await _gameState.refresh(_context);
+      log('gameState seats does not match with new hand. * Refreshing Done *');
+    }
+
+    final sbSeat = _gameState.getSeat(_context, sbPos);
+    sbSeat.player.action.sb = true;
+    sbSeat.player.action.amount = _gameState.gameInfo.smallBlind.toDouble();
+
+    if (_close) return;
+    final bbSeat = _gameState.getSeat(_context, bbPos);
+    bbSeat.player.action.bb = true;
+    bbSeat.player.action.amount = _gameState.gameInfo.bigBlind.toDouble();
 
     if (_close) return;
     final Players players = _gameState.getPlayers(_context);

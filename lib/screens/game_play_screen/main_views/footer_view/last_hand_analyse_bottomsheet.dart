@@ -18,7 +18,7 @@ class LastHandAnalyseBottomSheet extends StatefulWidget {
 class _LastHandAnalyseBottomSheetState
     extends State<LastHandAnalyseBottomSheet> {
   double height;
-  double ratio = 3;
+  double ratio = 2;
 
   @override
   Widget build(BuildContext context) {
@@ -61,9 +61,9 @@ class _LastHandAnalyseBottomSheetState
                 onTap: () {
                   setState(() {
                     if (ratio == 2) {
-                      ratio = 3;
-                    } else {
                       ratio = 1.5;
+                    } else {
+                      ratio = 2;
                     }
                   });
                 },
@@ -74,7 +74,7 @@ class _LastHandAnalyseBottomSheetState
                   ),
                   padding: EdgeInsets.all(6),
                   child: Icon(
-                    ratio == 3 ? Icons.arrow_upward : Icons.arrow_downward,
+                    ratio == 2 ? Icons.arrow_upward : Icons.arrow_downward,
                     size: 20,
                     color: AppColorsNew.darkGreenShadeColor,
                   ),

@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
 
 class AppColorsNew {
-  AppColorsNew._();
+  static const Color preflopColor = Colors.grey;
+  static const Color flopColor = Colors.orange;
+  static const Color turnColor = Colors.lightGreen;
+  static const Color riverColor = Colors.red;
+  static const Color showDownColor = Colors.cyan;
 
+  AppColorsNew._();
+  static const Color labelColor = Color(0xff848484);
   static const Color newBorderColor = Color(0xFFE0961A);
   static const Color newBackgroundBlackColor = Color(0xFF000104);
   static const Color newTextColor = Color(0xFFF4F4F4);

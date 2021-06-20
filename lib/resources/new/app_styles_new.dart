@@ -5,8 +5,23 @@ import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class AppStylesNew {
+  static final cardHeaderTextStyle = TextStyle(
+    color: AppColorsNew.newTextColor,
+    fontSize: 12.dp,
+    fontWeight: FontWeight.w500,
+  );
+  static final statValTextStyle = TextStyle(
+    color: AppColorsNew.newTextColor,
+    fontSize: 10.dp,
+    fontWeight: FontWeight.w300,
+  );
+  static final statTitleTextStyle = TextStyle(
+    color: AppColorsNew.newTextColor,
+    fontSize: 12.dp,
+    fontWeight: FontWeight.w300,
+  );
   static final labelTextStyle = TextStyle(
-    color: Color(0xff848484),
+    color: AppColorsNew.labelColor,
     fontSize: 8.dp,
   );
   static final valueTextStyle = TextStyle(
@@ -18,6 +33,14 @@ class AppStylesNew {
     fontFamily: AppAssetsNew.fontFamilyPoppins,
     fontSize: 12.dp,
     fontWeight: FontWeight.w500,
+    color: AppColorsNew.yellowAccentColor,
+  );
+
+  static final TextStyle appBarSubTitleTextStyle = TextStyle(
+    fontFamily: AppAssetsNew.fontFamilyPoppins,
+    fontSize: 8.dp,
+    fontWeight: FontWeight.w400,
+    color: Colors.grey,
   );
 
   static const BoxDecoration BgGreenRadialGradient = BoxDecoration(
