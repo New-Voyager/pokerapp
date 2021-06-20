@@ -168,7 +168,7 @@ class ClubMemberModel extends ChangeNotifier {
       } else if (diff.inDays == 1) {
         this.lastPlayedDate = 'Yesterday';
       } else if (diff.inDays < 7) {
-        this.lastPlayedDate = '${diff.inDays} ago';
+        this.lastPlayedDate = '${diff.inDays} days ago';
       } else if (diff.inDays < 30) {
         int weeks = diff.inDays ~/ 7;
         if (diff.inDays % 7 > 0) {
