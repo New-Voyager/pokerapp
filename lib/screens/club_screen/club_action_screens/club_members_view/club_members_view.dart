@@ -7,6 +7,10 @@ import 'package:pokerapp/models/club_members_model.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_icons.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
+import 'package:pokerapp/resources/new/app_strings_new.dart';
+import 'package:pokerapp/resources/new/app_styles_new.dart';
+import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/club_interior_service.dart';
 
@@ -29,13 +33,11 @@ class _ClubMembersViewState extends State<ClubMembersView>
   List<ClubMemberModel> _managers = [];
   List<ClubMemberModel> _unsettled = [];
 
-  bool _isLoading = false;
-  void _toggleLoading() => setState(() => _isLoading = !_isLoading);
+  bool _isLoading = true;
 
   _ClubMembersViewState(this._clubHomePageModel);
 
-  void _fetchData() async {
-    _toggleLoading();
+  _fetchData() async {
     _all = await ClubInteriorService.getClubMembers(
         _clubHomePageModel.clubCode, MemberListOptions.ALL);
     _inactive = await ClubInteriorService.getClubMembers(
@@ -44,151 +46,177 @@ class _ClubMembersViewState extends State<ClubMembersView>
         _clubHomePageModel.clubCode, MemberListOptions.MANAGERS);
     _unsettled = await ClubInteriorService.getClubMembers(
         _clubHomePageModel.clubCode, MemberListOptions.UNSETTLED);
-    _toggleLoading();
+    if (mounted)
+      setState(() {
+        _isLoading = false;
+      });
   }
 
   @override
   void initState() {
-    super.initState();
-    _fetchData();
     _controller = new TabController(length: 4, vsync: this);
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      _fetchData();
+    });
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_isLoading) {
-      return Center(
-        child: CircularProgressIndicator(),
-      );
-    }
-
-    // data loaded
-    return Scaffold(
-      backgroundColor: AppColors.screenBackgroundColor,
-      appBar: CustomAppBar(
-        context: context,
-        titleText: _clubHomePageModel.clubName,
-      ),
-      body: _clubHomePageModel.isOwner
-          ? Column(
-              children: [
-                Container(
-                  margin:
-                      EdgeInsets.only(left: 15, top: 5, bottom: 5, right: 15),
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    "Members",
-                    style: const TextStyle(
-                      fontFamily: AppAssets.fontFamilyLato,
-                      color: Colors.white,
-                      fontSize: 30.0,
-                      fontWeight: FontWeight.w900,
-                    ),
-                  ),
-                ),
-                Container(
-                  alignment: Alignment.topCenter,
-                  child: TabBar(
-                    controller: _controller,
-                    labelColor: AppColors.appAccentColor,
-                    unselectedLabelColor: Colors.white,
-                    isScrollable: true,
-                    tabs: [
-                      Tab(
-                        text: 'All',
-                      ),
-                      Tab(
-                        text: 'Unsettled',
-                      ),
-                      Tab(
-                        text: 'Managers',
-                      ),
-                      Tab(
-                        text: 'Inactive',
-                      ),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: TabBarView(
-                    controller: _controller,
-                    children: <Widget>[
-                      ClubMembersListView(
-                          this._clubHomePageModel.clubCode, _all, _fetchData),
-                      ClubMembersListView(this._clubHomePageModel.clubCode,
-                          _unsettled, _fetchData),
-                      ClubMembersListView(this._clubHomePageModel.clubCode,
-                          _managers, _fetchData),
-                      ClubMembersListView(this._clubHomePageModel.clubCode,
-                          _inactive, _fetchData),
-                    ],
-                  ),
-                ),
-              ],
-            )
-          : Container(
-              color: AppColors.screenBackgroundColor,
-              child: Container(
-                margin: EdgeInsets.all(15),
-                child: ListView.separated(
-                  itemCount: _all.length,
-                  itemBuilder: (context, index) {
-                    return Container(
-                      margin: EdgeInsets.all(10),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Expanded(
-                            flex: 2,
-                            child: CircleAvatar(
-                              radius: 30,
-                              backgroundColor: Color(
-                                      (math.Random().nextDouble() * 0xFFFFFF)
-                                          .toInt())
-                                  .withOpacity(1.0),
-                              child: ClipOval(
-                                child: _all[index].imageUrl == null
-                                    ? Icon(AppIcons.user)
-                                    : Image.network(
-                                        _all[index].imageUrl,
-                                      ),
-                              ),
+    return Container(
+      decoration: AppStylesNew.BgGreenRadialGradient,
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: CustomAppBar(
+          context: context,
+          titleText: AppStringsNew.clubMembersTitle,
+          subTitleText: _clubHomePageModel.clubName,
+        ),
+        body: _isLoading
+            ? CircularProgressWidget(
+                text: "Loadig members",
+              )
+            : _clubHomePageModel.isOwner
+                ? Column(
+                    children: [
+                      // Container(
+                      //   margin:
+                      //       EdgeInsets.only(left: 15, top: 5, bottom: 5, right: 15),
+                      //   alignment: Alignment.centerLeft,
+                      //   child: Text(
+                      //     "Members",
+                      //     style: const TextStyle(
+                      //       fontFamily: AppAssets.fontFamilyLato,
+                      //       color: Colors.white,
+                      //       fontSize: 30.0,
+                      //       fontWeight: FontWeight.w900,
+                      //     ),
+                      //   ),
+                      // ),
+                      Container(
+                        alignment: Alignment.topCenter,
+                        child: TabBar(
+                          controller: _controller,
+                          labelColor: AppColorsNew.newGreenButtonColor,
+                          indicatorColor: AppColorsNew.yellowAccentColor,
+                          indicatorSize: TabBarIndicatorSize.label,
+                          unselectedLabelColor: AppColorsNew.newTextColor,
+                          isScrollable: true,
+                          tabs: [
+                            Tab(
+                              text: 'All',
                             ),
-                          ),
-                          Expanded(
-                            flex: 8,
-                            child: Container(
-                              margin: EdgeInsets.all(5),
-                              child: Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                children: [
-                                  Text(
-                                    _all[index].name,
-                                    textAlign: TextAlign.left,
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 17,
-                                      fontWeight: FontWeight.w600,
+                            Tab(
+                              text: 'Unsettled',
+                            ),
+                            Tab(
+                              text: 'Managers',
+                            ),
+                            Tab(
+                              text: 'Inactive',
+                            ),
+                          ],
+                        ),
+                      ),
+                      Expanded(
+                        child: TabBarView(
+                          controller: _controller,
+                          children: <Widget>[
+                            ClubMembersListView(
+                              this._clubHomePageModel.clubCode,
+                              _all,
+                              () => _fetchData,
+                              _clubHomePageModel.isOwner,
+                            ),
+                            ClubMembersListView(
+                              this._clubHomePageModel.clubCode,
+                              _unsettled,
+                              () => _fetchData,
+                              _clubHomePageModel.isOwner,
+                            ),
+                            ClubMembersListView(
+                              this._clubHomePageModel.clubCode,
+                              _managers,
+                              () => _fetchData,
+                              _clubHomePageModel.isOwner,
+                            ),
+                            ClubMembersListView(
+                              this._clubHomePageModel.clubCode,
+                              _inactive,
+                              () => _fetchData,
+                              _clubHomePageModel.isOwner,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  )
+                : Container(
+                    color: AppColors.screenBackgroundColor,
+                    child: Container(
+                      margin: EdgeInsets.all(15),
+                      child: ListView.separated(
+                        itemCount: _all.length,
+                        itemBuilder: (context, index) {
+                          return Container(
+                            margin: EdgeInsets.all(10),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Expanded(
+                                  flex: 2,
+                                  child: CircleAvatar(
+                                    radius: 30,
+                                    backgroundColor: Color(
+                                            (math.Random().nextDouble() *
+                                                    0xFFFFFF)
+                                                .toInt())
+                                        .withOpacity(1.0),
+                                    child: ClipOval(
+                                      child: _all[index].imageUrl == null
+                                          ? Icon(AppIcons.user)
+                                          : Image.network(
+                                              _all[index].imageUrl,
+                                            ),
                                     ),
                                   ),
-                                ],
-                              ),
+                                ),
+                                Expanded(
+                                  flex: 8,
+                                  child: Container(
+                                    margin: EdgeInsets.all(5),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.stretch,
+                                      children: [
+                                        Text(
+                                          _all[index].name,
+                                          textAlign: TextAlign.left,
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 17,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
-                          ),
-                        ],
+                          );
+                        },
+                        separatorBuilder: (context, index) {
+                          return Divider(
+                            color: AppColors.listViewDividerColor,
+                          );
+                        },
                       ),
-                    );
-                  },
-                  separatorBuilder: (context, index) {
-                    return Divider(
-                      color: AppColors.listViewDividerColor,
-                    );
-                  },
-                ),
-              ),
-            ),
+                    ),
+                  ),
+      ),
     );
   }
 }

@@ -6,11 +6,14 @@ import 'package:pokerapp/models/club_members_model.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_icons.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/routes.dart';
+import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/club_interior_service.dart';
+import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class ClubMembersDetailsView extends StatefulWidget {
   String clubCode;
@@ -70,282 +73,176 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.screenBackgroundColor,
-      appBar: CustomAppBar(
-        context: context,
-        titleText: AppStringsNew.MemberDetailTitle,
-      ),
-      body: !loadingDone
-          ? Center(child: CircularProgressIndicator())
-          : SingleChildScrollView(
-              child: Container(
-                margin: EdgeInsets.only(left: 15, right: 15, top: 5, bottom: 5),
-                child: Column(
-                  children: [
-                    //banner view
-                    Container(
-                      child: Column(
-                        children: [
-                          CircleAvatar(
-                            radius: 40,
-                            backgroundColor: Color(
-                                    (math.Random().nextDouble() * 0xFFFFFF)
-                                        .toInt())
-                                .withOpacity(1.0),
-                            child: ClipOval(
-                              child: Icon(AppIcons.user),
-                            ),
-                          ),
-                          Container(
-                            padding: EdgeInsets.all(5),
-                            child: Text(
-                              _data.name,
-                              style: TextStyle(
-                                fontFamily: AppAssets.fontFamilyLato,
-                                color: Colors.white,
-                                fontSize: 24,
-                                fontWeight: FontWeight.bold,
+    return Container(
+      decoration: AppStylesNew.BgGreenRadialGradient,
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: CustomAppBar(
+          context: context,
+          titleText: AppStringsNew.MemberDetailTitle,
+        ),
+        body: !loadingDone
+            ? CircularProgressWidget()
+            : SingleChildScrollView(
+                child: Container(
+                  margin:
+                      EdgeInsets.only(left: 15, right: 15, top: 5, bottom: 5),
+                  child: Column(
+                    children: [
+                      //banner view
+                      Container(
+                        child: Column(
+                          children: [
+                            CircleAvatar(
+                              radius: 40,
+                              backgroundColor: Color(
+                                      (math.Random().nextDouble() * 0xFFFFFF)
+                                          .toInt())
+                                  .withOpacity(1.0),
+                              child: ClipOval(
+                                child: Icon(
+                                  AppIcons.user,
+                                ),
                               ),
                             ),
-                          ),
-                          Container(
-                            padding: EdgeInsets.only(bottom: 5),
-                            child: Text(
-                              "Last active: " + _data.lastPlayedDate,
-                              style: TextStyle(
-                                fontFamily: AppAssets.fontFamilyLato,
-                                color: Colors.white,
-                                fontSize: 14,
+                            Container(
+                              padding: EdgeInsets.all(5),
+                              child: Text(
+                                _data.name,
+                                style: AppStylesNew.clubTitleTextStyle,
                               ),
                             ),
-                          ),
-                          Container(
-                            padding: EdgeInsets.only(bottom: 5, top: 20),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                //message
-                                Column(
-                                  children: [
-                                    MaterialButton(
-                                      onPressed: () {
-                                        Navigator.pushNamed(
-                                          context,
-                                          Routes.chatScreen,
-                                          arguments: {
-                                            'clubCode': widget.clubCode,
-                                            'player': widget.playerId,
-                                          },
-                                        );
-                                      },
-                                      color: Colors.blue,
-                                      textColor: Colors.white,
-                                      child: Icon(
-                                        AppIcons.message,
-                                        size: 20,
-                                      ),
-                                      padding: EdgeInsets.all(16),
-                                      shape: CircleBorder(),
-                                    ),
-                                    GestureDetector(
-                                      onTap: () {
-                                        Navigator.pushNamed(
-                                          context,
-                                          Routes.chatScreen,
-                                          arguments: {
-                                            'clubCode': widget.clubCode,
-                                            'player': widget.playerId,
-                                          },
-                                        );
-                                      },
-                                      child: Container(
-                                        padding: EdgeInsets.all(5),
-                                        child: Column(
-                                          children: [
-                                            Text(
-                                              "Message",
-                                              style: TextStyle(
-                                                fontFamily:
-                                                    AppAssets.fontFamilyLato,
-                                                color: AppColors.appAccentColor,
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                //boot
-                                Column(
-                                  children: [
-                                    MaterialButton(
-                                      onPressed: () {},
-                                      color: Colors.blue,
-                                      textColor: Colors.white,
-                                      child: Column(
-                                        children: [
-                                          Icon(
-                                            Icons.eject,
-                                            size: 20,
-                                          ),
-                                        ],
-                                      ),
-                                      padding: EdgeInsets.all(16),
-                                      shape: CircleBorder(),
-                                    ),
-                                    Container(
-                                      padding: EdgeInsets.all(5),
-                                      child: Column(
-                                        children: [
-                                          Text(
-                                            "Boot",
-                                            style: TextStyle(
-                                              fontFamily:
-                                                  AppAssets.fontFamilyLato,
-                                              color: AppColors.appAccentColor,
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                //settle
-                                Column(
-                                  children: [
-                                    MaterialButton(
-                                      onPressed: () {},
-                                      color: Colors.blue,
-                                      textColor: Colors.white,
-                                      child: Column(
-                                        children: [
-                                          Icon(
-                                            Icons.account_balance,
-                                            size: 20,
-                                          ),
-                                        ],
-                                      ),
-                                      padding: EdgeInsets.all(16),
-                                      shape: CircleBorder(),
-                                    ),
-                                    Container(
-                                      padding: EdgeInsets.all(5),
-                                      child: Column(
-                                        children: [
-                                          Text(
-                                            "Settle",
-                                            style: TextStyle(
-                                              fontFamily:
-                                                  AppAssets.fontFamilyLato,
-                                              color: AppColors.appAccentColor,
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
+                            Container(
+                              padding: EdgeInsets.only(bottom: 5),
+                              child: Text(
+                                AppStringsNew.lastActiveText +
+                                    _data.lastPlayedDate,
+                                style: AppStylesNew.labelTextStyle,
+                              ),
                             ),
-                          ),
-                        ],
+                            Container(
+                              padding: EdgeInsets.only(bottom: 5, top: 20),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  //message
+                                  IconAndTitleWidget(
+                                    icon: Icons.message,
+                                    text: "Message",
+                                    onTap: () {
+                                      Navigator.pushNamed(
+                                        context,
+                                        Routes.chatScreen,
+                                        arguments: {
+                                          'clubCode': widget.clubCode,
+                                          'player': widget.playerId,
+                                        },
+                                      );
+                                    },
+                                  ),
+
+                                  //boot
+                                  IconAndTitleWidget(
+                                    icon: Icons.message,
+                                    text: "Boot",
+                                    onTap: () {},
+                                  ),
+
+                                  //settle
+                                  IconAndTitleWidget(
+                                    icon: Icons.message,
+                                    text: "Settle",
+                                    onTap: () {},
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    Divider(
-                      color: AppColors.listViewDividerColor,
-                    ),
-                    detailTile(),
-                    Divider(
-                      color: AppColors.listViewDividerColor,
-                    ),
-                    // contact info
-                    Container(
-                      padding: EdgeInsets.all(5),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            flex: 1,
-                            child: Icon(
-                              Icons.phone,
-                              color: Colors.blue,
-                            ),
-                          ),
-                          Expanded(
-                            flex: 8,
-                            child: Padding(
-                              padding: EdgeInsets.only(left: 5),
-                              child: CupertinoTextField(
-                                controller: _contactEditingController,
-                                style: TextStyle(
-                                  fontFamily: AppAssets.fontFamilyLato,
-                                  color: Colors.white,
-                                  fontSize: 18,
-                                ),
-                                decoration:
-                                    BoxDecoration(color: Colors.transparent),
+                      Divider(
+                        color: AppColors.listViewDividerColor,
+                      ),
+                      detailTile(),
+                      Divider(
+                        color: AppColors.listViewDividerColor,
+                      ),
+                      // contact info
+                      Container(
+                        padding: EdgeInsets.all(5),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              flex: 1,
+                              child: Icon(
+                                Icons.phone,
+                                color: AppColorsNew.newGreenButtonColor,
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Divider(
-                      color: AppColors.listViewDividerColor,
-                    ),
-                    // notes view
-                    Container(
-                      padding: EdgeInsets.all(5),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Expanded(
-                            flex: 1,
-                            child: Icon(
-                              Icons.note,
-                              color: Colors.blue,
-                            ),
-                          ),
-                          Expanded(
-                            flex: 8,
-                            child: Padding(
-                              padding: EdgeInsets.only(left: 5),
-                              child: CupertinoTextField(
-                                textAlignVertical: TextAlignVertical.center,
-                                controller: _notesEditingController,
-                                placeholder: 'insert notes here',
-                                placeholderStyle: TextStyle(
-                                  color: AppColors.listViewDividerColor,
-                                  fontFamily: AppAssets.fontFamilyLato,
-                                  fontSize: 18,
+                            Expanded(
+                              flex: 8,
+                              child: Padding(
+                                padding: EdgeInsets.only(left: 5),
+                                child: CupertinoTextField(
+                                  controller: _contactEditingController,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 12.dp,
+                                  ),
+                                  decoration:
+                                      BoxDecoration(color: Colors.transparent),
                                 ),
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontFamily: AppAssets.fontFamilyLato,
-                                  fontSize: 18,
-                                ),
-                                decoration:
-                                    BoxDecoration(color: Colors.transparent),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                      Divider(
+                        color: AppColors.listViewDividerColor,
+                      ),
+                      // notes view
+                      Container(
+                        padding: EdgeInsets.all(5),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Expanded(
+                              flex: 1,
+                              child: Icon(
+                                Icons.note,
+                                color: AppColorsNew.newGreenButtonColor,
+                              ),
+                            ),
+                            Expanded(
+                              flex: 8,
+                              child: Padding(
+                                padding: EdgeInsets.only(left: 5),
+                                child: CupertinoTextField(
+                                  textAlignVertical: TextAlignVertical.center,
+                                  controller: _notesEditingController,
+                                  placeholder: 'insert notes here',
+                                  placeholderStyle: AppStylesNew.labelTextStyle,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 14.dp,
+                                  ),
+                                  decoration:
+                                      BoxDecoration(color: Colors.transparent),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
+      ),
     );
   }
 
@@ -486,11 +383,6 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView> {
                     child: Text(
                       "Balance",
                       textAlign: TextAlign.left,
-                      style: TextStyle(
-                        fontFamily: AppAssets.fontFamilyLato,
-                        color: Colors.white,
-                        fontSize: 20,
-                      ),
                     ),
                   ),
                 ),
@@ -502,9 +394,8 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView> {
                       _data.balanceStr,
                       textAlign: TextAlign.left,
                       style: TextStyle(
-                        fontFamily: AppAssets.fontFamilyLato,
                         color: getBalanceColor(_data.balance),
-                        fontSize: 20,
+                        fontSize: 12.dp,
                       ),
                     ),
                   ),
@@ -534,11 +425,6 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView> {
                     child: Text(
                       "Credit Limit",
                       textAlign: TextAlign.left,
-                      style: TextStyle(
-                        fontFamily: AppAssets.fontFamilyLato,
-                        color: Colors.white,
-                        fontSize: 20,
-                      ),
                     ),
                   ),
                 ),
@@ -555,9 +441,8 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView> {
                               _data.creditLimit.toString(),
                               textAlign: TextAlign.left,
                               style: TextStyle(
-                                fontFamily: AppAssets.fontFamilyLato,
                                 color: Colors.white,
-                                fontSize: 20,
+                                fontSize: 12.dp,
                               ),
                             ),
                             SizedBox(
@@ -566,7 +451,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView> {
                             Icon(
                               Icons.edit,
                               size: 16,
-                              color: Colors.blue,
+                              color: AppColorsNew.newGreenButtonColor,
                             )
                           ]),
                     ),
@@ -596,11 +481,6 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView> {
                     child: Text(
                       "Games Played",
                       textAlign: TextAlign.left,
-                      style: TextStyle(
-                        fontFamily: AppAssets.fontFamilyLato,
-                        color: Colors.white,
-                        fontSize: 20,
-                      ),
                     ),
                   ),
                 ),
@@ -612,9 +492,8 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView> {
                       _data.totalGames.toString(),
                       textAlign: TextAlign.left,
                       style: TextStyle(
-                        fontFamily: AppAssets.fontFamilyLato,
                         color: Colors.white,
-                        fontSize: 20,
+                        fontSize: 12.dp,
                       ),
                     ),
                   ),
@@ -643,11 +522,6 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView> {
                     child: Text(
                       "Total Buy-in",
                       textAlign: TextAlign.left,
-                      style: TextStyle(
-                        fontFamily: AppAssets.fontFamilyLato,
-                        color: Colors.white,
-                        fontSize: 20,
-                      ),
                     ),
                   ),
                 ),
@@ -659,9 +533,8 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView> {
                       _data.totalBuyinStr,
                       textAlign: TextAlign.left,
                       style: TextStyle(
-                        fontFamily: AppAssets.fontFamilyLato,
                         color: Colors.white,
-                        fontSize: 20,
+                        fontSize: 12.dp,
                       ),
                     ),
                   ),
@@ -690,11 +563,6 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView> {
                     child: Text(
                       "Total Winnings",
                       textAlign: TextAlign.left,
-                      style: TextStyle(
-                        fontFamily: AppAssets.fontFamilyLato,
-                        color: Colors.white,
-                        fontSize: 20,
-                      ),
                     ),
                   ),
                 ),
@@ -706,9 +574,8 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView> {
                       _data.totalWinningsStr,
                       textAlign: TextAlign.left,
                       style: TextStyle(
-                        fontFamily: AppAssets.fontFamilyLato,
                         color: Colors.white,
-                        fontSize: 20,
+                        fontSize: 12.dp,
                       ),
                     ),
                   ),
@@ -737,11 +604,6 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView> {
                     child: Text(
                       "Rake Paid",
                       textAlign: TextAlign.left,
-                      style: TextStyle(
-                        fontFamily: AppAssets.fontFamilyLato,
-                        color: Colors.white,
-                        fontSize: 20,
-                      ),
                     ),
                   ),
                 ),
@@ -753,11 +615,51 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView> {
                       _data.rakeStr,
                       textAlign: TextAlign.left,
                       style: TextStyle(
-                        fontFamily: AppAssets.fontFamilyLato,
                         color: Colors.white,
-                        fontSize: 20,
+                        fontSize: 12.dp,
                       ),
                     ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class IconAndTitleWidget extends StatelessWidget {
+  final IconData icon;
+  final String text;
+  final Function onTap;
+  IconAndTitleWidget({this.icon, this.text, this.onTap});
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      child: Column(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: AppColorsNew.yellowAccentColor,
+            ),
+            child: Icon(
+              AppIcons.message,
+              size: 20,
+            ),
+            padding: EdgeInsets.all(16),
+          ),
+          Container(
+            padding: EdgeInsets.all(5),
+            child: Column(
+              children: [
+                Text(
+                  text,
+                  style: TextStyle(
+                    fontSize: 10.dp,
                   ),
                 ),
               ],
