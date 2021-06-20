@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/enums/game_status.dart';
+import 'package:pokerapp/enums/player_status.dart';
 import 'package:pokerapp/models/game_play_models/business/game_chat_notfi_state.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
@@ -395,6 +396,12 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   Future onJoinGame(int seatPos) async {
     final gameState = GameState.getState(_providerContext);
     final me = gameState.me(_providerContext);
+
+    if (gameState.myState.status == PlayerStatus.PLAYING &&
+        gameState.myState.gameStatus == GameStatus.RUNNING) {
+      log('Ignoring the open seat tap as the player is sitting and game is running');
+      return;
+    }
 
     if (me != null && me.seatNo != null && me.seatNo != 0) {
       log('Player ${me.name} switches seat to $seatPos');
