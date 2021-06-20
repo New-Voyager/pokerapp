@@ -101,7 +101,7 @@ class _ChipAmountWidgetState extends State<ChipAmountWidget>
       );
     }
 
-    log('Rebuilding ChipAmountWidget');
+    // log('Rebuilding ChipAmountWidget');
 
     /* show the coin amount */
     final amount = Text(

@@ -437,7 +437,6 @@ class _PlayedHandsScreenState extends State<PlayedHandsScreen> {
                               onTap: () {
                                 _replayHand(index);
                               },
-                              
                               child: Icon(
                                 Icons.replay,
                                 color: Colors.white,

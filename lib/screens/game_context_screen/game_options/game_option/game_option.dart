@@ -157,7 +157,8 @@ class _GameOptionState extends State<GameOption> {
       ),
     ];
 
-    if (widget.gameState.getSeatByPlayer(widget.gameState.currentPlayerId) == null) {
+    if (widget.gameState.getSeatByPlayer(widget.gameState.currentPlayerId) ==
+        null) {
       gameSecondaryOptions.add(OptionItemModel(
           title: "Waiting List",
           image: "assets/images/casino.png",

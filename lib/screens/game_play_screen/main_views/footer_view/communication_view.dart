@@ -41,6 +41,8 @@ class _CommunicationViewState extends State<CommunicationView> {
 
   @override
   Widget build(BuildContext context) {
+    log('CommunicationView:  ::build::');
+
     final gameState = GameState.getState(context);
     final communicationState = gameState.getCommunicationState();
     final chat = SvgPicture.asset('assets/images/game/chat.svg',

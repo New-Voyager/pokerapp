@@ -46,7 +46,6 @@ class HandsPieChart extends StatelessWidget {
         // the chart will be left as a hole in the center.
         defaultRenderer: new charts.ArcRendererConfig(
           arcWidth: 40,
-          
         ));
   }
 

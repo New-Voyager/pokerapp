@@ -115,6 +115,4 @@ class GameModelNew {
   static int getSeatsAvailble(GameModelNew model) {
     return model.maxPlayers - model.tableCount;
   }
-
- 
 }

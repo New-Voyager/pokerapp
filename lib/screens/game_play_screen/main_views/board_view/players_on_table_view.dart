@@ -327,6 +327,7 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
   @override
   Widget build(BuildContext context) {
     // cacheSeatPositions();
+    log('PlayersOnTableView:  ::build::');
 
     // am I on this table?
     return Transform.translate(
