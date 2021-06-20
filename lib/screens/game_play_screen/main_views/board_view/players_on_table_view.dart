@@ -530,6 +530,7 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
           child: Opacity(
             opacity: (seat?.player?.playerFolded ?? false) ? 0.50 : 1.0,
             child: PlayerView(
+              gameState: widget.gameState,
               gameComService: widget.gameComService,
               seat: seat,
               cardsAlignment: cardsAlignment,

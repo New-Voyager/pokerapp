@@ -6,6 +6,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/enums/game_type.dart';
+import 'package:pokerapp/enums/player_status.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
@@ -30,6 +31,7 @@ import 'dealer_button.dart';
 import 'name_plate_view.dart';
 import 'open_seat.dart';
 import 'dart:math' as math;
+
 /* this contains the player positions <seat-no, position> mapping */
 // Map<int, Offset> playerPositions = Map();
 
@@ -41,17 +43,19 @@ class PlayerView extends StatelessWidget {
   final BoardAttributesObject boardAttributes;
   final int seatPosIndex;
   final SeatPos seatPos;
+  final GameState gameState;
 
-  PlayerView({
-    Key key,
-    @required this.seat,
-    @required this.onUserTap,
-    @required this.gameComService,
-    @required this.boardAttributes,
-    @required this.seatPosIndex,
-    @required this.seatPos,
-    this.cardsAlignment = Alignment.centerRight,
-  }) : super(key: key);
+  PlayerView(
+      {Key key,
+      @required this.seat,
+      @required this.onUserTap,
+      @required this.gameComService,
+      @required this.boardAttributes,
+      @required this.seatPosIndex,
+      @required this.seatPos,
+      this.cardsAlignment = Alignment.centerRight,
+      this.gameState})
+      : super(key: key);
 
   onTap(BuildContext context) async {
     final seatChangeContext = Provider.of<SeatChangeNotifier>(
@@ -64,6 +68,10 @@ class PlayerView extends StatelessWidget {
     }
     log('seat ${seat.serverSeatPos} is tapped');
     if (seat.isOpen) {
+      if (gameState.myState.status == PlayerStatus.PLAYING) {
+        log('Ignoring the open seat tap as the player is sitting');
+        return;
+      }
       // the player tapped to sit-in
       onUserTap(seat.serverSeatPos);
     } else {
