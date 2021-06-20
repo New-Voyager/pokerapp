@@ -58,4 +58,8 @@ class AppStringsNew {
   static String noSeatChangeRequestsText = "No Seat change requests.";
 
   static String gameCodeText = "Game Code";
+
+  static String updatingText = "Updating..";
+  static String clubMembersTitle = "Club Members";
+  static String lastActiveText = "Last active";
 }
