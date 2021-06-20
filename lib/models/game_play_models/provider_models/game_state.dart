@@ -4,7 +4,6 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:hive/hive.dart';
 import 'package:pokerapp/enums/game_status.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
@@ -20,8 +19,6 @@ import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/app/handlog_cache_service.dart';
 import 'package:pokerapp/services/data/game_hive_store.dart';
-import 'package:pokerapp/services/data/box_type.dart';
-import 'package:pokerapp/services/data/hive_datasource_impl.dart';
 import 'package:pokerapp/services/data/hive_models/game_settings.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
@@ -128,7 +125,7 @@ class GameState {
     this.hostSeatChangeInProgress = hostSeatChangeInProgress ?? false;
 
     for (int seatNo = 1; seatNo <= gameInfo.maxPlayers; seatNo++) {
-      this._seats[seatNo] = Seat(seatNo, seatNo, null);
+      this._seats[seatNo] = Seat(seatNo, null);
     }
 
     final tableState = TableState();

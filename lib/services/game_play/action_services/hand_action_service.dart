@@ -473,7 +473,6 @@ class HandActionService {
     // set small blind and big blind
     if (_close) return;
     final noOfPlayers = newHand['playersInSeats'].length;
-
     if (_gameState.gameInfo.playersInSeats.length != noOfPlayers) {
       log('gameState seats does not match with new hand. * Refreshing *');
       await _gameState.refresh(_context);
@@ -491,18 +490,6 @@ class HandActionService {
 
     if (_close) return;
     final Players players = _gameState.getPlayers(_context);
-
-    if (_close) return;
-    final TableState tableState = _gameState.getTableState(_context);
-    // remove all the community cards
-    tableState.clear();
-    tableState.notifyAll();
-
-    if (_close) return;
-    _gameState.resetPlayers(_context, notify: false);
-
-    if (_close) return;
-    _context.read<ValueNotifier<FooterStatus>>().value = FooterStatus.None;
 
     // update player's state and stack
     final dynamic playersInSeats = newHand['playersInSeats'];
@@ -526,8 +513,32 @@ class HandActionService {
     if (refresh) {
       // the game state does not have all the players, refresh
       if (_close) return;
-      _gameState.refresh(_context);
+      log('gameState seats does not match with new hand. * Refreshing *');
+      await _gameState.refresh(_context);
+      log('gameState seats does not match with new hand. * Refreshing Done *');
     }
+
+    final sbSeat = _gameState.getSeat(_context, sbPos);
+    sbSeat.player.action.sb = true;
+    sbSeat.player.action.amount = _gameState.gameInfo.smallBlind.toDouble();
+
+    if (_close) return;
+    final bbSeat = _gameState.getSeat(_context, bbPos);
+    bbSeat.player.action.bb = true;
+    bbSeat.player.action.amount = _gameState.gameInfo.bigBlind.toDouble();
+
+    if (_close) return;
+    final TableState tableState = _gameState.getTableState(_context);
+    // remove all the community cards
+    tableState.clear();
+    tableState.notifyAll();
+
+    if (_close) return;
+    _gameState.resetPlayers(_context, notify: false);
+
+    if (_close) return;
+    _context.read<ValueNotifier<FooterStatus>>().value = FooterStatus.None;
+
 
     for (final seatNoStr in playersInSeats.keys) {
       final seatNo = int.parse(seatNoStr);

@@ -669,14 +669,12 @@ class BoardAttributesObject extends ChangeNotifier {
     }
 
     if (this._screenSize == 7) {
-      log('Device is equal to 7 inches ${this._screenSize}');
+      ///log('Device is equal to 7 inches ${this._screenSize}');
       return equalTo7Inches;
-      // TODO: WHY IS THIS COMMENTED?
-      //return equalTo7Inches;
     }
 
     if (this._screenSize > 7) {
-      log('Device greater than 7 inches');
+      //log('Device greater than 7 inches');
       return greaterThan7Inches;
     }
   }

@@ -66,7 +66,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
       builder: (_) {
         return HandHistoryAnalyseBottomSheet(
           model: model,
-          clubCode:widget.clubCode,
+          clubCode: widget.clubCode,
         );
       },
     );

@@ -137,6 +137,8 @@ class PlayerView extends StatelessWidget {
       debugLabel: 'Seat:${seat.serverSeatPos}',
     ); //this.globalKey;
 
+    log('Rebuilding Seat: ${seat.serverSeatPos}');
+
     // the player tapped to see the player profile
     final gameState = GameState.getState(context);
     bool openSeat = seat.isOpen;

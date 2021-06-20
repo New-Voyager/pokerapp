@@ -33,8 +33,7 @@ class _GameHistoryViewState extends State<GameHistoryView> {
   _fetchData() async {
     _prevGames = await ClubInteriorService.getGameHistory(clubCode);
     _loadingData = false;
-    if(mounted)
-    setState(() {});
+    if (mounted) setState(() {});
   }
 
   @override

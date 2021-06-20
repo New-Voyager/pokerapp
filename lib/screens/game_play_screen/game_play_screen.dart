@@ -482,6 +482,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
   @override
   Widget build(BuildContext context) {
+    log('GamePlayScreen:  ::build::');
     if (TestService.isTesting) {
       try {
         this._currentPlayer = TestService.currentPlayer;

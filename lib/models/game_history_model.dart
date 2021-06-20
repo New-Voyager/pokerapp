@@ -98,9 +98,9 @@ class HighHandWinner {
   int handNum;
   int rank;
   String player;
-  List<int> playerCards = new List<int>();
-  List<int> boardCards = new List<int>();
-  List<int> hhCards = new List<int>();
+  List<int> playerCards = [];
+  List<int> boardCards = [];
+  List<int> hhCards = [];
   DateTime handTime;
   String highHandCards;
   bool winner;

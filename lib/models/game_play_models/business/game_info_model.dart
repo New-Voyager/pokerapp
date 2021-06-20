@@ -32,6 +32,11 @@ class GameInfoModel {
   bool playerMuckLosingHand;
   bool playerRunItTwice;
   bool utgStraddleAllowed;
+  int sessionTime = 0;
+  int runningTime = 0;
+  int noHandsWon = 0;
+  int noHandsPlayed = 0;
+
 
   // nats channels
   String gameToPlayerChannel;
@@ -89,6 +94,11 @@ class GameInfoModel {
     this.playerRunItTwice = data['playerRunItTwiceConfig'] ?? false;
     this.playerMuckLosingHand = data['playerMuckLosingHandConfig'] ?? false;
 
+    this.sessionTime = data['sessionTime'] ?? 0;
+    this.runningTime = data['runningTime'] ?? 0;  
+    this.noHandsWon = data['noHandsWon'] ?? 0;
+    this.noHandsPlayed = data['noHandsPlayed'] ?? 0;
+
     this.isHost = true;
     if (data['isHost'] != null) {
       this.isHost = data['isHost'];
@@ -137,6 +147,12 @@ class GameInfoModel {
       utgStraddleAllowed
       status
       tableStatus
+
+      sessionTime
+      runningTime
+      noHandsWon
+      noHandsPlayed
+
       seatInfo {
         availableSeats
         playersInSeats {

@@ -39,23 +39,7 @@ class _FooterViewState extends State<FooterView>
     with AfterLayoutMixin<FooterView> {
   @override
   Widget build(BuildContext context) {
-    // final boardAttributes = Provider.of<BoardAttributesObject>(
-    //   context,
-    //   listen: false,
-    // );
-    /*  final Size footerSize = boardAttributes.footerSize;
-    final height = footerSize.height / 2;
-    final width = footerSize.width * 2 / 3;
-    final screen = boardAttributes.getScreen(context);
-    final left = (footerSize.width - width) / 2;
-    log('footer size: $footerSize width: $width, height: $height diagonal: ${screen.diagonalInches()}');
-     */
-    //
-    // Screen s = boardAttributes.getScreen(context);
-    //
-    // final width = s.width() - 100;
-    // final screen = boardAttributes.getScreen(context);
-    // final height = screen.height() / 3;
+    log('FooterView:  ::build::');
     var screenWidth = MediaQuery.of(context).size.width;
     var screenHeight = MediaQuery.of(context).size.height;
     final gameState = GameState.getState(context);

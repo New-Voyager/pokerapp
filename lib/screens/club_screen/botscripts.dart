@@ -103,7 +103,8 @@ class _BotScriptsScreenState extends State<BotScriptsScreen> {
       "http://${botRunnerHost}:8081/start-app-game",
       body: jsonEncode(<String, dynamic>{
         "clubCode": widget.clubModel.clubCode,
-        "name": script.appGame
+        "name": script.appGame,
+        //"moveHandConfirm": true,
       }),
       headers: {HttpHeaders.contentTypeHeader: "application/json"},
     );

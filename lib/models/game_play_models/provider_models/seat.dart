@@ -25,7 +25,6 @@ enum TablePosition {
  * e.g. folding, betting, showing cards, highlighting winner, show highhand animation (fireworks) 
  */
 class Seat extends ChangeNotifier {
-  int localSeatPos;
   int serverSeatPos;
   bool _openSeat;
   PlayerModel _player;
@@ -58,8 +57,7 @@ class Seat extends ChangeNotifier {
     notify();
   }
 
-  Seat(int localSeatPos, int serverSeatPos, PlayerModel player) {
-    this.localSeatPos = localSeatPos;
+  Seat(int serverSeatPos, PlayerModel player) {
     this._openSeat = false;
     if (player == null) {
       this._openSeat = true;
