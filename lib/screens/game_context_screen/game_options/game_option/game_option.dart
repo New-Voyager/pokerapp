@@ -157,22 +157,20 @@ class _GameOptionState extends State<GameOption> {
       ),
     ];
 
-    if (widget.gameState.getSeatByPlayer(widget.gameState.currentPlayerId) == null) {
-      gameSecondaryOptions.add(OptionItemModel(
-          title: "Waiting List",
-          image: "assets/images/casino.png",
-          name: "Add to waiting list",
-          backGroundColor: AppColors.gameOption3,
-          onTap: (context) async {
-            await showModalBottomSheet(
-                context: context,
-                isScrollControlled: true,
-                builder: (ctx) {
-                  return WaitingListBottomSheet(
-                      widget.gameCode, widget.playerUuid);
-                });
-          }));
-    }
+    gameSecondaryOptions.add(OptionItemModel(
+        title: "Waiting List",
+        image: "assets/images/casino.png",
+        name: "Add to waiting list",
+        backGroundColor: AppColors.gameOption3,
+        onTap: (context) async {
+          await showModalBottomSheet(
+              context: context,
+              isScrollControlled: true,
+              builder: (ctx) {
+                return WaitingListBottomSheet(
+                    widget.gameState, widget.gameCode, widget.playerUuid);
+              });
+        }));
   }
 
   Widget _buildCheckBox({
