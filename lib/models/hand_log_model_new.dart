@@ -157,7 +157,7 @@ class Data {
     this.playersInSeats,
     this.rakeCollected,
     this.highHand,
-    this.playerStats,
+    //this.playerStats,
     this.handStats,
     this.runItTwice,
   });
@@ -181,7 +181,7 @@ class Data {
   List<Player> playersInSeats;
   int rakeCollected;
   dynamic highHand;
-  Map<String, PlayerStat> playerStats;
+  //Map<String, PlayerStat> playerStats;
   HandStats handStats;
   bool runItTwice;
 
@@ -212,8 +212,8 @@ class Data {
             .toList(),
         rakeCollected: json["rakeCollected"],
         highHand: json["highHand"],
-        playerStats: Map.from(json["playerStats"]).map(
-            (k, v) => MapEntry<String, PlayerStat>(k, PlayerStat.fromJson(v))),
+        // playerStats: Map.from(json["playerStats"]).map(
+        //     (k, v) => MapEntry<String, PlayerStat>(k, PlayerStat.fromJson(v))),
         handStats: HandStats.fromJson(json["handStats"]),
         runItTwice: json["runItTwice"],
       );
@@ -235,8 +235,8 @@ class Data {
         "players": playersInSeats,
         "rakeCollected": rakeCollected,
         "highHand": highHand,
-        "playerStats": Map.from(playerStats)
-            .map((k, v) => MapEntry<String, dynamic>(k, v.toJson())),
+        //"playerStats": Map.from(playerStats)
+        //    .map((k, v) => MapEntry<String, dynamic>(k, v.toJson())),
         "handStats": handStats.toJson(),
         "runItTwice": runItTwice,
       };

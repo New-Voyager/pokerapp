@@ -509,14 +509,15 @@ class HandActionService {
       log('gameState seats does not match with new hand. * Refreshing Done *');
     }
 
-    // sbSeat = _gameState.getSeat(_context, sbPos);
-    // sbSeat.player.action.sb = true;
-    // sbSeat.player.action.amount = _gameState.gameInfo.smallBlind.toDouble();
 
-    // if (_close) return;
-    // bbSeat = _gameState.getSeat(_context, bbPos);
-    // bbSeat.player.action.bb = true;
-    // bbSeat.player.action.amount = _gameState.gameInfo.bigBlind.toDouble();
+    final sbSeat = _gameState.getSeat(_context, sbPos);
+    sbSeat.player.action.sb = true;
+    sbSeat.player.action.amount = _gameState.gameInfo.smallBlind.toDouble();
+
+    if (_close) return;
+    final bbSeat = _gameState.getSeat(_context, bbPos);
+    bbSeat.player.action.bb = true;
+    bbSeat.player.action.amount = _gameState.gameInfo.bigBlind.toDouble();
 
     if (_close) return;
     final TableState tableState = _gameState.getTableState(_context);
