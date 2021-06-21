@@ -27,7 +27,6 @@ class RabbitState extends ChangeNotifier {
   }
 
   void _clear() {
-    return;
     _show = false;
     _wonAt = null;
     _communityCards = null;
