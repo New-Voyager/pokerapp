@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:flutter/cupertino.dart';
+import 'package:pokerapp/models/rabbit_state.dart';
+import 'package:pokerapp/screens/game_play_screen/seat_view/player_view.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:dart_nats/dart_nats.dart';
@@ -32,6 +34,7 @@ class GameMessagingService {
   Function onGiphy;
   Function onAnimation;
   Function onCards;
+  Function onRabbitHunt;
 
   Uuid uuid;
 
@@ -41,6 +44,7 @@ class GameMessagingService {
     void onGiphy(ChatMessage _),
     void onAnimation(ChatMessage _),
     void onCards(ChatMessage _),
+    void onRabbitHunt(ChatMessage _),
   }) {
     if (onAudio != null) {
       this.onAudio = onAudio;
@@ -60,6 +64,10 @@ class GameMessagingService {
 
     if (onCards != null) {
       this.onCards = onCards;
+    }
+
+    if (onRabbitHunt != null) {
+      this.onRabbitHunt = onRabbitHunt;
     }
   }
 
@@ -124,6 +132,12 @@ class GameMessagingService {
           this.onCards(message);
         }
       }
+
+      if (message.type == 'RABBIT') {
+        if (this.onRabbitHunt != null) {
+          this.onRabbitHunt(message);
+        }
+      }
     }
   }
 
@@ -142,6 +156,20 @@ class GameMessagingService {
     });
     this.client.pubString(this.chatChannel, body);
     log('message sent: $text');
+  }
+
+  void sendRabbitHunt(RabbitState rs) {
+    dynamic body = jsonEncode({
+      'id': uuid.v1(),
+      'playerID': this.currentPlayer.id,
+      'name': this.currentPlayer.name,
+      'playerCards': rs.myCards,
+      'boardCards': rs.communityCards,
+      'revealedCards': rs.revealedCards,
+      'type': 'RABBIT',
+      'sent': DateTime.now().toUtc().toIso8601String(),
+    });
+    this.client.pubString(this.chatChannel, body);
   }
 
   void sendAudio(Uint8List audio, int duration) {
@@ -221,12 +249,21 @@ class ChatMessage {
   List<int> cards;
   String fromName;
 
+  List<int> playerCards;
+  List<int> boardCards;
+  List<int> revealedCards;
+
   static ChatMessage fromMessage(String data) {
+    List<int> _getCardsFrom(var cards) =>
+        cards.map<int>((e) => int.parse(e.toString())).toList();
+
     try {
       var message = jsonDecode(data);
       ChatMessage msg = new ChatMessage();
+
       msg.type = message['type'].toString();
       msg.fromName = message['name'].toString();
+
       if (msg.type == 'TEXT') {
         msg.text = message['text'].toString();
       } else if (msg.type == 'AUDIO') {
@@ -245,8 +282,11 @@ class ChatMessage {
         msg.seatNo = message['seatNo'] == null
             ? -1
             : int.parse(message['seatNo'].toString());
-        msg.cards =
-            message['cards'].map<int>((e) => int.parse(e.toString())).toList();
+        msg.cards = _getCardsFrom(message['cards']);
+      } else if (msg.type == 'RABBIT') {
+        msg.playerCards = _getCardsFrom(message['playerCards']);
+        msg.boardCards = _getCardsFrom(message['boardCards']);
+        msg.revealedCards = _getCardsFrom(message['revealedCards']);
       }
 
       if (msg.type == 'ANIMATION') {
@@ -258,6 +298,7 @@ class ChatMessage {
         msg.fromPlayer = int.parse(
             message['playerID'] == null ? '0' : message['playerID'].toString());
       }
+
       msg.received = DateTime.parse(message['sent'].toString());
       msg.messageId = message['id'].toString();
 

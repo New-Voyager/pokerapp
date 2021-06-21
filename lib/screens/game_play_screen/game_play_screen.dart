@@ -255,6 +255,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       _gameContextObj.gameComService.gameMessaging.listen(
         onCards: this.onCards,
         onAudio: this.onAudio,
+        onRabbitHunt: this.onRabbitHunt,
       );
     }
 
@@ -359,6 +360,8 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       }
     });
   }
+
+  void onRabbitHunt(ChatMessage message) {}
 
   void onCards(ChatMessage message) =>
       UtilActionServices.showCardsOfFoldedPlayers(
