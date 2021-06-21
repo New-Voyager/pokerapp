@@ -11,6 +11,7 @@ class RabbitState extends ChangeNotifier {
   List<int> _communityCards;
   int _handNo;
   List<int> _myCards;
+  List<int> _revealedCards;
 
   RabbitState() {
     _show = false;
@@ -22,6 +23,7 @@ class RabbitState extends ChangeNotifier {
     _communityCards = null;
     _handNo = null;
     _myCards = null;
+    _revealedCards = null;
     notifyListeners();
   }
 
@@ -56,6 +58,15 @@ class RabbitState extends ChangeNotifier {
     _communityCards =
         result['boardCards'].map<int>((e) => int.parse(e.toString())).toList();
     _myCards = myCards;
+
+    // fill revealed cards
+    if (wonAt == AppConstants.FLOP) {
+      // we already have 3 cards at table
+      _revealedCards = _communityCards.sublist(3);
+    } else if (wonAt == AppConstants.TURN) {
+      // we already have 4 cards at table
+      _revealedCards = _communityCards.sublist(4);
+    }
 
     notifyListeners();
   }
