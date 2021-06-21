@@ -91,7 +91,7 @@ class StackCardView00 extends StatelessWidget {
         );
       }
     }
-    return Row(children: cardViews);
+    return Row(mainAxisSize: MainAxisSize.min, children: cardViews);
   }
 }
 

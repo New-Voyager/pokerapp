@@ -7,10 +7,19 @@ class RabbitState extends ChangeNotifier {
   bool get show => _show;
   bool _show;
 
+  String get wonAt => _wonAt;
   String _wonAt;
+
+  List<int> get communityCards => _communityCards;
   List<int> _communityCards;
+
+  int get handNo => _handNo;
   int _handNo;
+
+  List<int> get myCards => _myCards;
   List<int> _myCards;
+
+  List<int> get revealedCards => _revealedCards;
   List<int> _revealedCards;
 
   RabbitState() {
@@ -18,6 +27,7 @@ class RabbitState extends ChangeNotifier {
   }
 
   void _clear() {
+    return;
     _show = false;
     _wonAt = null;
     _communityCards = null;
@@ -45,8 +55,6 @@ class RabbitState extends ChangeNotifier {
     if (isRunItTwice) return;
 
     final String wonAt = handLog['wonAt'];
-
-    print('WONAT: $wonAt');
 
     // if wonAt is not FLOP or TURN, we dont proceed
     if (wonAt != AppConstants.FLOP && wonAt != AppConstants.TURN) return;

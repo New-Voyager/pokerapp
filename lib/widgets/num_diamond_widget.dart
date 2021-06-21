@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 class NumDiamondWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
           Consumer<GameState>(
             builder: (_, gs, __) =>
