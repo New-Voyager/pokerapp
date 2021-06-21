@@ -207,17 +207,13 @@ class _HandLogViewState extends State<HandLogView> {
 
   List<Widget> getHandLog() {
     return [
+      // main top header
       Container(
         padding: EdgeInsets.symmetric(vertical: 5),
         margin: EdgeInsets.symmetric(horizontal: 16),
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            /* number of diamond widget */
-            NumDiamondWidget(),
-
-            /* spacer */
-            Spacer(),
-
             // replay, share, bookmark buttons
             RoundIconButton(onTap: () => _replayHand(), icon: Icons.replay),
             AppDimensionsNew.getHorizontalSpace(8),
@@ -269,15 +265,6 @@ class _HandLogViewState extends State<HandLogView> {
       HandLogHeaderView(_handLogModel),
       AppDimensionsNew.getVerticalSizedBox(4),
 
-      /*  Container(
-                    margin:
-                        EdgeInsets.only(left: 10, top: 5, bottom: 5, right: 10),
-                    alignment: Alignment.centerLeft,
-                    // child: Text(
-                    //   "Winners",
-                    //   style: AppStyles.boldTitleTextStyle,
-                    // ),
-                  ), */
       HandWinnersView(handLogModel: _handLogModel),
       HandStageView(
         handLogModel: _handLogModel,

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_stages.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
-import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/widgets/cards/multiple_stack_card_views.dart';
 
@@ -9,13 +8,6 @@ class HandLogHeaderView extends StatelessWidget {
   final HandLogModelNew _handLogModel;
 
   HandLogHeaderView(this._handLogModel);
-
-  // String _printDuration(Duration duration) {
-  //   String twoDigits(int n) => n.toString().padLeft(2, "0");
-  //   String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
-  //   String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
-  //   return "${twoDigits(duration.inHours)}:$twoDigitMinutes:$twoDigitSeconds";
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -26,6 +18,7 @@ class HandLogHeaderView extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // game, game type, hand number row
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -55,6 +48,8 @@ class HandLogHeaderView extends StatelessWidget {
               ),
             ],
           ),
+
+          // community cards, and your cards row
           Container(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

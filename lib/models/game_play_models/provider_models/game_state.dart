@@ -257,8 +257,12 @@ class GameState {
     }
   }
 
-  void setTappedSeatPos(BuildContext context, SeatPos seatPos, Seat seat,
-      GameComService gameComService) {
+  void setTappedSeatPos(
+    BuildContext context,
+    SeatPos seatPos,
+    Seat seat,
+    GameComService gameComService,
+  ) {
     bool showPopup = true;
     this.gameComService = gameComService;
     this.popupSelectedSeat = seat;

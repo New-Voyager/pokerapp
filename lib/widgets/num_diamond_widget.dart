@@ -16,7 +16,11 @@ class NumDiamondWidget extends StatelessWidget {
           // sep
           SizedBox(width: 5.0),
 
-          SvgPicture.asset(AppAssets.diamond, width: 25.0),
+          SvgPicture.asset(
+            AppAssets.diamond,
+            width: 22.0,
+            color: Colors.cyan,
+          ),
         ],
       );
 }
