@@ -354,6 +354,9 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
     void _onShareButtonTap() {
       // collect all the necessary data and send in the game chat channel
       context.read<GameState>().gameComService.chat.sendRabbitHunt(rs);
+
+      // pop out the dialog
+      Navigator.pop(context);
     }
 
     Widget _buildDiamond() => SvgPicture.asset(

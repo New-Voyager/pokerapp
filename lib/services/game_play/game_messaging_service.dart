@@ -166,6 +166,7 @@ class GameMessagingService {
       'playerCards': rs.myCards,
       'boardCards': rs.communityCards,
       'revealedCards': rs.revealedCards,
+      'handNo': rs.handNo,
       'type': 'RABBIT',
       'sent': DateTime.now().toUtc().toIso8601String(),
     });
@@ -249,6 +250,7 @@ class ChatMessage {
   List<int> cards;
   String fromName;
 
+  int handNo;
   List<int> playerCards;
   List<int> boardCards;
   List<int> revealedCards;
@@ -287,6 +289,7 @@ class ChatMessage {
         msg.playerCards = _getCardsFrom(message['playerCards']);
         msg.boardCards = _getCardsFrom(message['boardCards']);
         msg.revealedCards = _getCardsFrom(message['revealedCards']);
+        msg.handNo = int.parse(message['handNo'].toString());
       }
 
       if (msg.type == 'ANIMATION') {

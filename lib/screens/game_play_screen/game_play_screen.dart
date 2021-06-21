@@ -45,6 +45,7 @@ import 'package:pokerapp/services/game_play/utils/audio_buffer.dart';
 import 'package:pokerapp/services/janus/janus.dart';
 import 'package:pokerapp/services/nats/nats.dart';
 import 'package:pokerapp/services/test/test_service.dart';
+import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:provider/provider.dart';
 import 'package:wakelock/wakelock.dart';
@@ -361,7 +362,9 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     });
   }
 
-  void onRabbitHunt(ChatMessage message) {}
+  void onRabbitHunt(ChatMessage message) {
+    Alerts.showRabbitHuntNotification(chatMessage: message);
+  }
 
   void onCards(ChatMessage message) =>
       UtilActionServices.showCardsOfFoldedPlayers(
