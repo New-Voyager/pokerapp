@@ -21,14 +21,14 @@ class HandStatsModel {
       Map<int /*playerId*/, HeadsupStat>();
   factory HandStatsModel.fromJson(Map<String, dynamic> json) {
     return HandStatsModel(
-      thisGame: StatModel.fromJson(json["thisGame"]),
-      alltime: StatModel.fromJson(json["alltime"]),
+      thisGame: StatModel.fromJson(json["playerGameStats"]),
+      alltime: StatModel.fromJson(json["playerHandStats"]),
     );
   }
 
   Map<String, dynamic> toJson() => {
-        "thisGame": thisGame.toJson(),
-        "alltime": alltime.toJson(),
+        "playerGameStats": thisGame.toJson(),
+        "playerHandStats": alltime.toJson(),
       };
 
   loadData() {
