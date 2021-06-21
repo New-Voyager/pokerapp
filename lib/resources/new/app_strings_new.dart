@@ -64,4 +64,8 @@ class AppStringsNew {
   static String lastActiveText = "Last active";
 
   static String tapToSendAnimText = "Tap to send Animation";
+
+  static String clubStatisticsTitle = "Club Statistics";
+
+  static String oddsSoFarText = "Odds so far";
 }
