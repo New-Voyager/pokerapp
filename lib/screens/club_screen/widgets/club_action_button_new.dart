@@ -93,6 +93,11 @@ class ClubActionButtonNew extends StatelessWidget {
               );
               break;
             case ClubActions.ANALYSIS:
+              Navigator.pushNamed(
+                context,
+                Routes.club_statistics,
+                arguments: clubModel.clubCode,
+              );
               break;
             case ClubActions.ANNOUNCEMETS:
               break;
