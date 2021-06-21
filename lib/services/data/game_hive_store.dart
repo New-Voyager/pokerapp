@@ -76,7 +76,12 @@ class GameHiveStore {
 
   Future<void> clearDiamonds() => _gameBox.put(_DIAMONDS, 0);
 
-  Future<void> deductDiamonds({int num = 2}) => _addDiamonds(-num);
+  Future<bool> deductDiamonds({int num = 2}) async {
+    if (getDiamonds() < num) return false;
+
+    await _addDiamonds(-num);
+    return true;
+  }
 
   Future<Box> open(String gameCode) async {
     _gameBox = await Hive.openBox(gameCode);

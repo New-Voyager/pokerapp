@@ -344,10 +344,11 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
     // reveal button tap
     void _onRevealButtonTap(ValueNotifier<bool> vnIsRevealed) async {
       // deduct two diamonds
-      await context.read<GameState>().gameHiveStore.deductDiamonds();
+      final bool deducted =
+          await context.read<GameState>().gameHiveStore.deductDiamonds();
 
-      // show community cards
-      vnIsRevealed.value = true;
+      // show community cards - only if deduction was possible
+      if (deducted) vnIsRevealed.value = true;
     }
 
     // share button tap
