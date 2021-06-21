@@ -509,12 +509,12 @@ class HandActionService {
       log('gameState seats does not match with new hand. * Refreshing Done *');
     }
 
-    sbSeat = _gameState.getSeat(_context, sbPos);
+    final sbSeat = _gameState.getSeat(_context, sbPos);
     sbSeat.player.action.sb = true;
     sbSeat.player.action.amount = _gameState.gameInfo.smallBlind.toDouble();
 
     if (_close) return;
-    bbSeat = _gameState.getSeat(_context, bbPos);
+    final bbSeat = _gameState.getSeat(_context, bbPos);
     bbSeat.player.action.bb = true;
     bbSeat.player.action.amount = _gameState.gameInfo.bigBlind.toDouble();
 
