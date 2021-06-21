@@ -322,7 +322,8 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView> {
                             style: AppStylesNew.labelTextStyle,
                           ),
                         )
-                      : HandsPieChart(this._gameDetail.handsData),
+                      : AbsorbPointer(
+                          child: HandsPieChart(this._gameDetail.handsData)),
                   visible: loadingDone,
                 ),
               )

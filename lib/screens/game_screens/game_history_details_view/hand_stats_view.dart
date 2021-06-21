@@ -11,6 +11,7 @@ import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/game_screens/game_history_details_view/hand_stat_chart.dart';
 import 'package:pokerapp/screens/game_screens/game_history_details_view/hands_chart_view.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
+import 'package:pokerapp/services/app/stats_service.dart';
 import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
@@ -31,11 +32,12 @@ class _HandStatsViewState extends State<HandStatsView> {
     model = widget.gameHistoryModel;
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       fetchStats();
+      // testStats();
     });
     super.initState();
   }
 
-  fetchStats() async {
+  testStats() async {
     String data = await DefaultAssetBundle.of(context)
         .loadString("assets/sample-data/stats.json");
 
@@ -44,6 +46,15 @@ class _HandStatsViewState extends State<HandStatsView> {
     stats.loadData();
 
     setState(() {});
+  }
+
+  fetchStats() async {
+    stats = await StatsService.getStatsForAGame(model.gameCode);
+    if (stats != null) {
+      stats.loadData();
+
+      setState(() {});
+    }
   }
 
   @override
@@ -607,6 +618,16 @@ class _HandStatsViewState extends State<HandStatsView> {
         allWon: value.won,
       ));
     });
+    if (list.isEmpty) {
+      list.add(Container(
+        height: 100,
+        child: Center(
+            child: Text(
+          "No headsup data",
+          style: AppStylesNew.labelTextStyle,
+        )),
+      ));
+    }
     return list;
   }
 
