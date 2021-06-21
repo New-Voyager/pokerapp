@@ -3,31 +3,24 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:overlay_support/overlay_support.dart';
-import 'package:pokerapp/enums/approval_type.dart';
 import 'package:pokerapp/enums/game_status.dart';
 import 'package:pokerapp/enums/player_status.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
-import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/hand_history_model.dart';
-import 'package:pokerapp/models/hand_log_model.dart';
 import 'package:pokerapp/models/pending_approvals.dart';
-import 'package:pokerapp/models/player_info.dart';
+import 'package:pokerapp/models/rabbit_state.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
-import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
-import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/game_circle_button.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/icon_with_badge.dart';
 import 'package:pokerapp/services/app/player_service.dart';
-import 'package:pokerapp/services/firebase/push_notification_service.dart';
 import 'package:provider/provider.dart';
 import 'hand_history_bottomsheet.dart';
 import 'last_hand_analyse_bottomsheet.dart';
-import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class HandAnalyseView extends StatefulWidget {
   final String gameCode;
@@ -273,14 +266,13 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
 
   @override
   Widget build(BuildContext context) {
-    //log('isAdmin: ${widget.gameContextObject.isAdmin()}');
-    final gameState = GameState.getState(context);
     height = MediaQuery.of(context).size.height;
     bottomSheetHeight = height / 3;
     return Align(
       alignment: Alignment.topLeft,
       child: Column(
         children: [
+          // first
           Consumer<MyState>(builder: (context, myState, child) {
             log('myState.gameStatus = ${myState.gameStatus}, myState.status = ${myState.status}');
             return myState.gameStatus == GameStatus.RUNNING &&
@@ -291,6 +283,8 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                   )
                 : SizedBox();
           }),
+
+          // second
           Consumer<MyState>(builder: (context, myState, child) {
             return myState.gameStatus == GameStatus.RUNNING
                 ? GameCircleButton(
@@ -299,7 +293,8 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                   )
                 : SizedBox();
           }),
-          // Pending approval
+
+          // Pending approval button
           Consumer2<PendingApprovalsState, GameContextObject>(
               builder: (context, value, gameContextObj, child) {
             // log('gameContextObj.isAdmin() = ${gameContextObj.isAdmin()}');
@@ -326,8 +321,22 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
               },
             );
           }),
+
+          // rabbit button
+          Consumer<RabbitState>(
+            builder: (_, rb, __) => rb.show
+                ? GameCircleButton(
+                    onClickHandler: () => onRabbitTap(rb),
+                    imagePath: AppAssets.rabbit,
+                  )
+                : const SizedBox.shrink(),
+          ),
         ],
       ),
     );
+  }
+
+  void onRabbitTap(RabbitState rs) {
+    // show a popup
   }
 }

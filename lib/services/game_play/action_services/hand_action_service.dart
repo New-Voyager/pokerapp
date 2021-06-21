@@ -22,6 +22,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
+import 'package:pokerapp/models/rabbit_state.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/card_back_assets.dart';
@@ -1615,6 +1616,13 @@ class HandActionService {
   }
 
   Future<void> handleResult(var data) async {
+    /* invoke rabbit state */
+    if (_close) return;
+    _context.read<RabbitState>().putResult(
+          data,
+          myCards: _gameState.getPlayers(_context).me.cards,
+        );
+
     _gameState.handState = HandState.RESULT;
 
     if (_close) return;
@@ -1693,6 +1701,11 @@ class HandActionService {
       context: _context,
       audioPlayer: audioPlayer,
     );
+
+    // clear rabbit state
+    if (_close) return;
+    _context.read<RabbitState>().putResult(null);
+
     _gameState.handState = HandState.ENDED;
     log('Hand Message: ::handleResult:: END');
   }

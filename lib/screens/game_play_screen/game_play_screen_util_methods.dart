@@ -19,6 +19,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat_change_model.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
+import 'package:pokerapp/models/rabbit_state.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/resources/card_back_assets.dart';
@@ -509,6 +510,9 @@ class GamePlayScreenUtilMethods {
         players: hostSeatChangePlayers);
 
     var providers = [
+      /* rabbit state */
+      ListenableProvider<RabbitState>(create: (_) => RabbitState()),
+
       /* this is for the seat change animation values */
       ListenableProvider<ValueNotifier<SeatChangeModel>>(
         create: (_) => ValueNotifier<SeatChangeModel>(null),
