@@ -55,6 +55,9 @@ class AppAssets {
   static const String lastHand = 'assets/images/lasthand.svg';
   static const String highHand = 'assets/images/highhand.svg';
 
+  static const String rabbit = 'assets/images/rabbit.svg';
+  static const String diamond = 'assets/images/diamond.svg';
+
   static const List<String> soundEffects = [
     betRaiseSound,
     allInSound,

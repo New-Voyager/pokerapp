@@ -25,6 +25,7 @@ import 'package:pokerapp/resources/card_back_assets.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
 //import 'package:pokerapp/services/agora/agora.dart';
 import 'package:pokerapp/services/app/game_service.dart';
+import 'package:pokerapp/services/data/game_hive_store.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 import 'package:timer_count_down/timer_count_down.dart';
@@ -460,6 +461,7 @@ class GamePlayScreenUtilMethods {
   static Future joinGame({
     @required int seatPos,
     @required String gameCode,
+    @required GameState gameState,
   }) async {
     assert(seatPos != null);
 
@@ -473,6 +475,20 @@ class GamePlayScreenUtilMethods {
       gameCode,
       seatNumber,
     );
+
+    GameHiveStore ghs = gameState.gameHiveStore;
+
+    // we can offer user inital reward here, as well as reset timers here
+    if (ghs.isFirstJoin()) {
+      // on first join, we give 10 diamonds
+      ghs.addDiamonds(num: 10);
+
+      // MARK first join is done
+      ghs.setIsFirstJoinDone();
+    } else {
+      // for any subsequent joins, reset the timer
+      ghs.updateLastDiamondUpdateTime();
+    }
   }
 
   /* provider method, returns list of all the providers used in the below hierarchy */

@@ -23,6 +23,7 @@ import 'package:pokerapp/services/app/hand_service.dart';
 import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
+import 'package:pokerapp/widgets/num_diamond_widget.dart';
 
 class HandLogView extends StatefulWidget {
   final String gameCode;
@@ -195,6 +196,7 @@ class _HandLogViewState extends State<HandLogView> {
                 child: CircularProgressIndicator(),
               )
             : SingleChildScrollView(
+                physics: BouncingScrollPhysics(),
                 child: Column(
                   children: children,
                 ),
@@ -209,8 +211,14 @@ class _HandLogViewState extends State<HandLogView> {
         padding: EdgeInsets.symmetric(vertical: 5),
         margin: EdgeInsets.symmetric(horizontal: 16),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
           children: [
+            /* number of diamond widget */
+            NumDiamondWidget(),
+
+            /* spacer */
+            Spacer(),
+
+            // replay, share, bookmark buttons
             RoundIconButton(onTap: () => _replayHand(), icon: Icons.replay),
             AppDimensionsNew.getHorizontalSpace(8),
             RoundIconButton(

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 import 'package:after_layout/after_layout.dart';
 import 'package:audioplayers/audioplayers.dart';
@@ -9,6 +10,7 @@ import 'package:pokerapp/enums/game_status.dart';
 import 'package:pokerapp/enums/player_status.dart';
 import 'package:pokerapp/models/game_play_models/business/game_chat_notfi_state.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
+import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
@@ -28,6 +30,7 @@ import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/footer_
 import 'package:pokerapp/screens/game_play_screen/main_views/header_view/header_view.dart';
 import 'package:pokerapp/screens/game_play_screen/notifications/notifications.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
+import 'package:pokerapp/services/app/auth_service.dart';
 
 //import 'package:pokerapp/services/agora/agora.dart';
 import 'package:pokerapp/services/app/game_service.dart';
@@ -269,14 +272,28 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       _initChatListeners(gameComService.gameMessaging);
     }
 
+    // diamonds timer, which invokes every 30 seconds
+    // but adds diamonds ONLY after the duration of AppConstants.diamondUpdateDuration
+    _timer = Timer.periodic(const Duration(seconds: 30), (_) {
+      PlayerModel me;
+      try {
+        me = _gameState.getPlayers(_providerContext).me;
+      } catch (e) {}
+
+      if (me != null) _gameState.gameHiveStore.addDiamonds();
+    });
+
     return _gameInfoModel;
   }
+
+  Timer _timer;
 
   /* dispose method for closing connections and un subscribing to channels */
   @override
   void dispose() {
     // TestService.isTesting = false;
     Wakelock.disable();
+    _timer?.cancel();
     try {
       _gameContextObj?.dispose();
       // agora?.disposeObject();
@@ -411,6 +428,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         await GamePlayScreenUtilMethods.joinGame(
           seatPos: seatPos,
           gameCode: widget.gameCode,
+          gameState: gameState,
         );
       } catch (e) {
         showError(context, error: e);

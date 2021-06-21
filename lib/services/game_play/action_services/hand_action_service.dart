@@ -509,7 +509,6 @@ class HandActionService {
       log('gameState seats does not match with new hand. * Refreshing Done *');
     }
 
-
     final sbSeat = _gameState.getSeat(_context, sbPos);
     sbSeat.player.action.sb = true;
     sbSeat.player.action.amount = _gameState.gameInfo.smallBlind.toDouble();
@@ -530,7 +529,6 @@ class HandActionService {
 
     if (_close) return;
     _context.read<ValueNotifier<FooterStatus>>().value = FooterStatus.None;
-
 
     for (final seatNoStr in playersInSeats.keys) {
       final seatNo = int.parse(seatNoStr);
