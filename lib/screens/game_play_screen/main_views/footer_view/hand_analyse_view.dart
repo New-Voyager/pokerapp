@@ -330,7 +330,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
           Consumer<RabbitState>(
             builder: (_, rb, __) => rb.show
                 ? GameCircleButton(
-                    onClickHandler: () => onRabbitTap(rb),
+                    onClickHandler: () => onRabbitTap(rb.copy()),
                     imagePath: AppAssets.rabbit,
                   )
                 : const SizedBox.shrink(),
@@ -340,7 +340,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
     );
   }
 
-  void onRabbitTap(RabbitState rs) {
+  void onRabbitTap(RabbitState rs) async {
     // reveal button tap
     void _onRevealButtonTap(ValueNotifier<bool> vnIsRevealed) async {
       // deduct two diamonds
@@ -421,7 +421,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
           );
 
     // show a popup
-    showDialog(
+    await showDialog(
       context: context,
       builder: (_) => ListenableProvider(
         create: (_) => ValueNotifier<bool>(false),
@@ -495,5 +495,8 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
         ),
       ),
     );
+
+    // as soon as the dialog is closed, nullify the result
+    context.read<RabbitState>().putResult(null);
   }
 }

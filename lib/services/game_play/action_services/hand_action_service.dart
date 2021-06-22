@@ -1704,7 +1704,7 @@ class HandActionService {
 
     // clear rabbit state
     if (_close) return;
-    _context.read<RabbitState>().putResult(null);
+    _context.read<RabbitState>().resultDone();
 
     _gameState.handState = HandState.ENDED;
     log('Hand Message: ::handleResult:: END');

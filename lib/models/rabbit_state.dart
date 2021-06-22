@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/widgets.dart';
+
 import 'package:pokerapp/resources/app_constants.dart';
 
 class RabbitState extends ChangeNotifier {
@@ -41,6 +42,11 @@ class RabbitState extends ChangeNotifier {
     pattern.allMatches(text).forEach((match) => print(match.group(0)));
   }
 
+  void resultDone() {
+    _show = false;
+    notifyListeners();
+  }
+
   void putResult(var result, {List<int> myCards = const []}) {
     if (result == null) _clear();
 
@@ -76,5 +82,17 @@ class RabbitState extends ChangeNotifier {
     }
 
     notifyListeners();
+  }
+
+  RabbitState copy() {
+    final newRs = RabbitState();
+    newRs._show = this._show;
+    newRs._wonAt = this._wonAt;
+    newRs._communityCards = this._communityCards;
+    newRs._handNo = this._handNo;
+    newRs._myCards = this._myCards;
+    newRs._revealedCards = this._revealedCards;
+
+    return newRs;
   }
 }
