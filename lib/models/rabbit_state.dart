@@ -28,7 +28,7 @@ class RabbitState extends ChangeNotifier {
     _show = false;
   }
 
-  void clear() {
+  void _clear() {
     _show = false;
     _wonAt = null;
     _communityCards = null;
@@ -49,9 +49,7 @@ class RabbitState extends ChangeNotifier {
   }
 
   void putResult(var result, {List<int> myCards = const []}) {
-    if (result == null) {
-      return;
-    }
+    if (result == null) return _clear();
 
     result = result['handResult'];
 
