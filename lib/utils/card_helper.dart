@@ -151,10 +151,10 @@ class CardHelper {
 // This map gives card ranking used in club stats screen
 
   static Map<String, List<int>> rankCards = {
-    'straightAFlush': [129, 146, 161, 177, 193],
-    'straightKFlush': [113, 129, 146, 161, 177],
-    'straightQFlush': [97, 113, 129, 146, 161],
-    'straightJFlush': [81, 97, 113, 129, 146],
+    'straightAFlush': [129, 145, 161, 177, 193],
+    'straightKFlush': [113, 129, 145, 161, 177],
+    'straightQFlush': [97, 113, 129, 145, 161],
+    'straightJFlush': [81, 97, 113, 129, 145],
     'straightTFlush': [65, 81, 97, 113, 129],
     'straight9Flush': [49, 65, 81, 97, 113],
     'straight8Flush': [33, 49, 65, 81, 97],
