@@ -30,12 +30,9 @@ query (\$gameCode: String!) {
     headsupHands
     wonHeadsupHands
     headsupHandSummary
-    
-    
   }
   
   playerGameStats(gameCode:\$gameCode) {
-    
     totalHands
     inPreflop
     inFlop
@@ -55,6 +52,13 @@ query (\$gameCode: String!) {
     wonHeadsupHands
     headsupHandDetails
   }
+
+  gamePlayers(gameCode: \$gameCode) {
+    id
+    uuid
+    name
+  }
+
 }
   """;
 

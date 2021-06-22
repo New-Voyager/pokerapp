@@ -10,19 +10,24 @@ HandStatsModel handStatsModelFromJson(String str) =>
 String handStatsModelToJson(HandStatsModel data) => json.encode(data.toJson());
 
 class HandStatsModel {
-  HandStatsModel({
-    this.thisGame,
-    this.alltime,
-  });
+  HandStatsModel({this.thisGame, this.alltime, this.playerIdToName});
 
   StatModel thisGame;
   StatModel alltime;
+  Map<int, String> playerIdToName = Map<int, String>();
+
   Map<int /*playerId*/, HeadsupStat> headsupThisGame =
       Map<int /*playerId*/, HeadsupStat>();
   factory HandStatsModel.fromJson(Map<String, dynamic> json) {
+    final playerIdToName = Map<int, String>();
+    for (final player in json['gamePlayers']) {
+      playerIdToName[player['id']] = player['name'];
+    }
+
     return HandStatsModel(
       thisGame: StatModel.fromJson(json["playerGameStats"]),
       alltime: StatModel.fromJson(json["playerHandStats"]),
+      playerIdToName: playerIdToName,
     );
   }
 

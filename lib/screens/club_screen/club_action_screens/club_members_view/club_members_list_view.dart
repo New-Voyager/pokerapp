@@ -30,27 +30,23 @@ class ClubMembersListView extends StatefulWidget {
     if (this.option == MemberListOptions.ALL) {
       _membersList = await ClubInteriorService.getClubMembers(
           clubCode, MemberListOptions.ALL);
-    }
-    else if (this.option == MemberListOptions.INACTIVE) {
+    } else if (this.option == MemberListOptions.INACTIVE) {
       _membersList = await ClubInteriorService.getClubMembers(
           clubCode, MemberListOptions.INACTIVE);
-    }
-    else if (this.option == MemberListOptions.MANAGERS) {
+    } else if (this.option == MemberListOptions.MANAGERS) {
       _membersList = await ClubInteriorService.getClubMembers(
           clubCode, MemberListOptions.MANAGERS);
-    }
-    else if (this.option == MemberListOptions.UNSETTLED) {
+    } else if (this.option == MemberListOptions.UNSETTLED) {
       _membersList = await ClubInteriorService.getClubMembers(
           clubCode, MemberListOptions.UNSETTLED);
     }
-    for(final member in _membersList) {
+    for (final member in _membersList) {
       log('_fetchData in ClubMemberListView member: ${member.name} status: ${member.status.toString()}');
     }
   }
 }
 
 class _ClubMembersListViewState extends State<ClubMembersListView> {
-
   Color getBalanceColor(double number) {
     if (number == null) {
       return Colors.white;
@@ -67,7 +63,7 @@ class _ClubMembersListViewState extends State<ClubMembersListView> {
   Widget build(BuildContext context) {
     log('rebuilding club member list. ${widget.option.toString()}');
 
-    for(final member in widget._membersList) {
+    for (final member in widget._membersList) {
       log('member: ${member.name} status: ${member.status.toString()}');
     }
     List<ClubMemberModel> _filteredList;
@@ -169,7 +165,6 @@ class _ClubMembersListViewState extends State<ClubMembersListView> {
                               ),
                             ],
                           ),
-
                           Visibility(
                             visible: data.status != ClubMemberStatus.PENDING,
                             child: Padding(

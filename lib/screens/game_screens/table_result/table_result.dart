@@ -33,7 +33,7 @@ class TableResultScreen extends StatefulWidget {
   TableResultScreen({
     this.gameCode,
     this.showDownload = true,
-    this.showBackButton = false,
+    this.showBackButton = true,
     this.showTips = false,
   });
 

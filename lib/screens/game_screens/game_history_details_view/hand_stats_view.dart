@@ -609,9 +609,10 @@ class _HandStatsViewState extends State<HandStatsView> {
     List<Widget> list = [];
     stats.alltime.headsupHandSummary.forEach((key, value) {
       log("${key.runtimeType} ${stats.headsupThisGame.keys}");
-
+      int playerId = int.parse(key);
+      final playerName = stats.playerIdToName[playerId];
       list.add(_buildOnePlayerHeadsupRow(
-        player: key.toString(),
+        player: playerName,
         thisHands: stats.headsupThisGame[int.parse(key)].count ?? 0,
         thisWon: stats.headsupThisGame[int.parse(key)].won ?? 0,
         allHands: value.total,

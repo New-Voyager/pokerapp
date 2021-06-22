@@ -51,12 +51,12 @@ class GameUpdateService {
         dynamic message = _messages[0];
 
         String messageType = message['messageType'];
-        log(':GameUpdateService: message type: $messageType handState: ${_gameState.handState.toString()}');
+        //log(':GameUpdateService: message type: $messageType handState: ${_gameState.handState.toString()}');
         if (_gameState.handState != HandState.UNKNOWN &&
             _gameState.handState != HandState.ENDED) {
           if (messageType == AppConstants.GAME_STATUS ||
               messageType == AppConstants.TABLE_UPDATE) {
-            log(':GameUpdateService: message type: $messageType handState: ${_gameState.handState.toString()} Process this message later');
+            //log(':GameUpdateService: message type: $messageType handState: ${_gameState.handState.toString()} Process this message later');
             // we are in the middle of the hand
             _messages.removeAt(0);
             _messages.add(message);
