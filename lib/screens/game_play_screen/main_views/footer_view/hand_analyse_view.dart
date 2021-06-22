@@ -17,6 +17,7 @@ import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/player_stats_bottomsheet.dart';
+import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/table_result_bottomsheet.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/game_circle_button.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/icon_with_badge.dart';
 import 'package:pokerapp/screens/game_screens/table_result/table_result.dart';
@@ -79,6 +80,18 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
       backgroundColor: Colors.transparent,
       builder: (_) {
         return PlayerStatsBottomSheet(gameCode: widget.gameCode);
+      },
+    );
+  }
+
+  Future<void> onTableBottomSheet(GameState gameState) async {
+    await showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) {
+        return TableResultBottomSheet(
+            gameCode: widget.gameCode, gameState: gameState);
       },
     );
   }
@@ -302,17 +315,6 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                   )
                 : SizedBox();
           }),
-          // Pending approval
-
-          // second
-          Consumer<MyState>(builder: (context, myState, child) {
-            return myState.gameStatus == GameStatus.RUNNING
-                ? GameCircleButton(
-                    onClickHandler: onClickViewHandAnalysis,
-                    imagePath: AppAssetsNew.handHistoryPath,
-                  )
-                : SizedBox();
-          }),
 
           // Pending approval button
           Consumer2<PendingApprovalsState, GameContextObject>(
@@ -341,9 +343,9 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
               },
             );
           }),
-          IconButton(
-              icon: Icon(Icons.menu),
-              onPressed: () => onMoreOptionsPress(context)),
+          GameCircleButton(
+              iconData: Icons.menu,
+              onClickHandler: () => onMoreOptionsPress(context)),
 
           // rabbit button
           Consumer<RabbitState>(
@@ -367,6 +369,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
   void showMoreOptions(context) {
     final RenderBox button = context.findRenderObject();
     final RenderBox overlay = Overlay.of(context).context.findRenderObject();
+    final gameState = GameState.getState(context);
 
     final RelativeRect position = RelativeRect.fromRect(
       Rect.fromPoints(
@@ -383,24 +386,54 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
       items: <PopupMenuEntry>[
         PopupMenuItem(
             value: 0,
-            child: GameCircleButton(
-              onClickHandler: onClickViewHandAnalysis,
-              imagePath: AppAssetsNew.handHistoryPath,
+            child: InkWell(
+              onTap: onClickViewHandAnalysis,
+              child: Row(
+                children: [
+                  GameCircleButton(
+                    onClickHandler: onClickViewHandAnalysis,
+                    imagePath: AppAssetsNew.handHistoryPath,
+                  ),
+                  SizedBox(width: 5),
+                  Text('Hand History'),
+                ],
+              ),
             )),
         PopupMenuItem(
-          value: 1,
-          child: GameCircleButton(
-            onClickHandler: onClickViewHandAnalysis,
-            imagePath: AppAssetsNew.tableResultPath,
-          ),
-        ),
+            value: 1,
+            child: InkWell(
+              onTap: () {
+                onTableBottomSheet(gameState);
+              },
+              child: Row(
+                children: [
+                  GameCircleButton(
+                    onClickHandler: () {
+                      onTableBottomSheet(gameState);
+                    },
+                    imagePath: AppAssetsNew.tableResultPath,
+                    color: Colors.black,
+                  ),
+                  SizedBox(width: 5),
+                  Text('Table'),
+                ],
+              ),
+            )),
         PopupMenuItem(
-          value: 2,
-          child: GameCircleButton(
-            onClickHandler: onPlayerStatsBottomSheet,
-            imagePath: AppAssetsNew.playerStatsPath,
-          ),
-        )
+            value: 2,
+            child: InkWell(
+              onTap: onPlayerStatsBottomSheet,
+              child: Row(
+                children: [
+                  GameCircleButton(
+                    onClickHandler: onPlayerStatsBottomSheet,
+                    imagePath: AppAssetsNew.playerStatsPath,
+                  ),
+                  SizedBox(width: 5),
+                  Text('Stack Stats'),
+                ],
+              ),
+            )),
       ],
     ).then<void>((delta) {
       // delta would be null if user taps on outside the popup menu
