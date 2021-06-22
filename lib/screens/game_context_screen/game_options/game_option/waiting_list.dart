@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
@@ -13,6 +15,7 @@ import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/game_service.dart';
+import 'package:pokerapp/widgets/custom_text_button.dart';
 import 'package:pokerapp/widgets/switch_widget.dart';
 import 'package:provider/provider.dart';
 
@@ -76,6 +79,8 @@ class _WaitingListBottomSheetState extends State<WaitingListBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
+    log('waiting list: build');
+
     height = MediaQuery.of(context).size.height;
     width = MediaQuery.of(context).size.width;
     return Container(
@@ -89,7 +94,11 @@ class _WaitingListBottomSheetState extends State<WaitingListBottomSheet> {
         ),
         body: Column(
           mainAxisSize: MainAxisSize.max,
-          children: [addRemoveWaitingListButton(), playersInList()],
+          children: [
+            addRemoveWaitingListButton(),
+            this.header,
+            playersInList()
+          ],
         ),
       ),
     );
@@ -128,6 +137,8 @@ class _WaitingListBottomSheetState extends State<WaitingListBottomSheet> {
   }
 
   playerItem(WaitingListModel seatChangeModel, int index) {
+    bool isAdmin = widget.gameState.currentPlayer.isAdmin();
+
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 15),
       child: Column(
@@ -155,10 +166,12 @@ class _WaitingListBottomSheetState extends State<WaitingListBottomSheet> {
                           allWaitingListPlayers[index - 1] = temp;
                         });
                       },
-                      child: Icon(
-                        Icons.arrow_upward,
-                        color: Colors.white,
-                      ),
+                      child: isAdmin
+                          ? Icon(
+                              Icons.arrow_upward,
+                              color: Colors.white,
+                            )
+                          : Container(),
                     )
                   : Container(),
               index != 0
@@ -178,10 +191,12 @@ class _WaitingListBottomSheetState extends State<WaitingListBottomSheet> {
                           allWaitingListPlayers[index + 1] = temp;
                         });
                       },
-                      child: Icon(
-                        Icons.arrow_downward,
-                        color: Colors.white,
-                      ),
+                      child: isAdmin
+                          ? Icon(
+                              Icons.arrow_downward,
+                              color: Colors.white,
+                            )
+                          : Container(),
                     )
                   : SizedBox(
                       width: 25,
@@ -226,80 +241,59 @@ class _WaitingListBottomSheetState extends State<WaitingListBottomSheet> {
     }
   }
 
-  get header => Container(
-        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-        child: Stack(
-          children: [
-            Center(
-              child: GestureDetector(
-                onTap: () => Navigator.pop(context),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.arrow_back_ios,
-                      color: AppColors.appAccentColor,
-                      size: 20,
+  get header {
+    log('waiting list: header');
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      child: Stack(
+        children: [
+          ischanged
+              ? Align(
+                  alignment: Alignment.centerRight,
+                  child: Container(
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        RoundRectButton(
+                          text: 'Apply',
+                          onTap: () {
+                            List<String> uuids = [];
+                            allWaitingListPlayers.forEach((element) {
+                              uuids.add(element.playerUuid);
+                            });
+                            setState(() {
+                              ischanged = false;
+                            });
+                            GameService.changeWaitListOrderList(
+                                widget.gameCode, uuids);
+                          },
+                        ),
+
+                        // Text(
+                        //   "Apply",
+                        //   style: AppStyles.subTitleTextStyle,
+                        // ),
+                        //),
+                        SizedBox(
+                          width: 15,
+                        ),
+
+                        RoundRectButton(
+                          text: 'Cancel',
+                          onTap: () {
+                            setState(() {
+                              ischanged = false;
+                            });
+                            getAllWaitingPlayers();
+                          },
+                        ),
+                      ],
                     ),
-                    Text(
-                      "Game",
-                      style: AppStyles.optionTitle,
-                    )
-                  ],
-                ),
-              ),
-            ),
-            Align(
-              alignment: Alignment.center,
-              child: Text(
-                "Waiting List",
-                style: AppStyles.optionTitleText,
-              ),
-            ),
-            ischanged
-                ? Align(
-                    alignment: Alignment.centerRight,
-                    child: Container(
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              List<String> uuids = [];
-                              allWaitingListPlayers.forEach((element) {
-                                uuids.add(element.playerUuid);
-                              });
-                              setState(() {
-                                ischanged = false;
-                              });
-                              GameService.changeWaitListOrderList(
-                                  widget.gameCode, uuids);
-                            },
-                            child: Text(
-                              "Apply",
-                              style: AppStyles.subTitleTextStyle,
-                            ),
-                          ),
-                          SizedBox(
-                            width: 5,
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                ischanged = false;
-                              });
-                              getAllWaitingPlayers();
-                            },
-                            child: Text(
-                              "Cancel",
-                              style: AppStyles.subTitleTextStyle,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  )
-                : Container()
-          ],
-        ),
-      );
+                  ),
+                )
+              : Container()
+        ],
+      ),
+    );
+  }
 }
