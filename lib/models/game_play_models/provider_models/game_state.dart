@@ -317,6 +317,16 @@ class GameState {
     return this._currentPlayer;
   }
 
+  bool get isPlaying {
+    for (final seat in this.seats) {
+      if (seat.player != null &&
+          seat.player.playerId == this.currentPlayer.id) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   bool get audioConfEnabled {
     return this._gameInfo?.audioConfEnabled;
   }

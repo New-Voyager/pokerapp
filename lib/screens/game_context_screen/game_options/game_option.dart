@@ -15,11 +15,6 @@ class GameOptionOld extends StatelessWidget {
 
   final List<OptionItemModel> gameSecondaryOptions = [
     OptionItemModel(
-        title: "Game Stats",
-        name: "Analyze your performance",
-        image: "assets/images/casino.png",
-        backGroundColor: AppColors.gameOption1),
-    OptionItemModel(
       title: "Seat Change",
       image: "assets/images/casino.png",
       backGroundColor: AppColors.gameOption2,
