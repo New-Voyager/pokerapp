@@ -22,6 +22,7 @@ import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/game_circle_button.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/icon_with_badge.dart';
+import 'package:pokerapp/screens/game_screens/table_result/table_result.dart';
 import 'package:pokerapp/services/app/player_service.dart';
 import 'package:pokerapp/services/firebase/push_notification_service.dart';
 import 'package:provider/provider.dart';
@@ -33,6 +34,7 @@ class HandAnalyseView extends StatefulWidget {
   final String gameCode;
   final String clubCode;
   final GameContextObject gameContextObject;
+
   HandAnalyseView(this.gameCode, this.clubCode, this.gameContextObject);
 
   @override
@@ -277,6 +279,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
     final gameState = GameState.getState(context);
     height = MediaQuery.of(context).size.height;
     bottomSheetHeight = height / 3;
+
     return Align(
       alignment: Alignment.topLeft,
       child: Column(
@@ -288,14 +291,6 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                 ? GameCircleButton(
                     onClickHandler: onClickViewHand,
                     imagePath: AppAssetsNew.lastHandPath,
-                  )
-                : SizedBox();
-          }),
-          Consumer<MyState>(builder: (context, myState, child) {
-            return myState.gameStatus == GameStatus.RUNNING
-                ? GameCircleButton(
-                    onClickHandler: onClickViewHandAnalysis,
-                    imagePath: AppAssetsNew.handHistoryPath,
                   )
                 : SizedBox();
           }),
@@ -326,8 +321,83 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
               },
             );
           }),
+          IconButton(
+              icon: Icon(Icons.menu),
+              onPressed: () => onMoreOptionsPress(context)),
         ],
       ),
     );
+  }
+
+  void onMoreOptionsPress(BuildContext context) {
+    log('onMoreOptionsPress');
+    showMoreOptions(context);
+  }
+
+  void showMoreOptions(context) {
+    final RenderBox button = context.findRenderObject();
+    final RenderBox overlay = Overlay.of(context).context.findRenderObject();
+
+    final RelativeRect position = RelativeRect.fromRect(
+      Rect.fromPoints(
+        button.localToGlobal(Offset(40, 70), ancestor: overlay),
+        button.localToGlobal(button.size.bottomRight(Offset.zero),
+            ancestor: overlay),
+      ),
+      Offset.zero & overlay.size,
+    );
+
+    showMenu(
+      context: context,
+      position: position,
+      items: <PopupMenuEntry>[
+        PopupMenuItem(
+            value: 0,
+            child: GameCircleButton(
+              onClickHandler: onClickViewHandAnalysis,
+              imagePath: AppAssetsNew.handHistoryPath,
+            )),
+        PopupMenuItem(
+          value: 1,
+          child: GameCircleButton(
+            onClickHandler: onClickViewHandAnalysis,
+            imagePath: AppAssetsNew.tableResultPath,
+          ),
+        ),
+        PopupMenuItem(
+          value: 2,
+          child: GameCircleButton(
+            onClickHandler: onClickViewHandAnalysis,
+            imagePath: AppAssetsNew.playerStatsPath,
+          ),
+        )
+      ],
+    ).then<void>((delta) {
+      // delta would be null if user taps on outside the popup menu
+      // (causing it to close without making selection)
+      if (delta == null) {
+        return;
+      } else {
+        switch (delta) {
+          case 0:
+            log('selected hand history');
+            break;
+          case 1:
+            log('selected table result');
+            break;
+          case 2:
+            log('selected stack stats');
+            break;
+        }
+      }
+    });
+  }
+
+  Offset getOffset(context) {
+    RenderBox globalRenderBox = context.findRenderObject();
+    Offset globalOffset = globalRenderBox.localToGlobal(Offset(0, 0));
+    RenderBox localRenderBox = context.findRenderObject();
+    Offset localOffset = localRenderBox.globalToLocal(globalOffset);
+    return localOffset;
   }
 }

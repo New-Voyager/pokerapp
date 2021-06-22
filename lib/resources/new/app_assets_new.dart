@@ -29,4 +29,8 @@ class AppAssetsNew {
   static var lastHandPath = "assets/images/lasthand.svg";
 
   static String cardBackImagePath = "assets/images/card_back/set2/Asset 8.png";
+
+  static var tableResultPath = "assets/images/gamesettings/casino.svg";
+
+  static var playerStatsPath = "assets/images/player-stats.svg";
 }
