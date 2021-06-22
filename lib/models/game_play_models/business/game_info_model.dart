@@ -37,7 +37,6 @@ class GameInfoModel {
   int noHandsWon = 0;
   int noHandsPlayed = 0;
 
-
   // nats channels
   String gameToPlayerChannel;
   String playerToHandChannel;
@@ -95,7 +94,7 @@ class GameInfoModel {
     this.playerMuckLosingHand = data['playerMuckLosingHandConfig'] ?? false;
 
     this.sessionTime = data['sessionTime'] ?? 0;
-    this.runningTime = data['runningTime'] ?? 0;  
+    this.runningTime = data['runningTime'] ?? 0;
     this.noHandsWon = data['noHandsWon'] ?? 0;
     this.noHandsPlayed = data['noHandsPlayed'] ?? 0;
 

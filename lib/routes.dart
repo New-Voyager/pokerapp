@@ -365,7 +365,7 @@ class Routes {
         return _getPageRoute(
           routeName: settings.name,
           viewToShow: PointsLineChart(
-            gameDetail: args,
+            gameCode: args.gameCode,
           ),
         );
 

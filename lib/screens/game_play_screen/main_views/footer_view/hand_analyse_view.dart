@@ -16,6 +16,7 @@ import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
+import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/player_stats_bottomsheet.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/game_circle_button.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/icon_with_badge.dart';
 import 'package:pokerapp/screens/game_screens/table_result/table_result.dart';
@@ -67,6 +68,17 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
           model: model,
           clubCode: widget.clubCode,
         );
+      },
+    );
+  }
+
+  Future<void> onPlayerStatsBottomSheet() async {
+    await showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) {
+        return PlayerStatsBottomSheet(gameCode: widget.gameCode);
       },
     );
   }
@@ -385,7 +397,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
         PopupMenuItem(
           value: 2,
           child: GameCircleButton(
-            onClickHandler: onClickViewHandAnalysis,
+            onClickHandler: onPlayerStatsBottomSheet,
             imagePath: AppAssetsNew.playerStatsPath,
           ),
         )
@@ -418,7 +430,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
     Offset localOffset = localRenderBox.globalToLocal(globalOffset);
     return localOffset;
   }
-  
+
   void onRabbitTap(RabbitState rs) async {
     // reveal button tap
     void _onRevealButtonTap(ValueNotifier<bool> vnIsRevealed) async {

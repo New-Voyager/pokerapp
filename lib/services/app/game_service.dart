@@ -85,6 +85,16 @@ class GameService {
       }  
   """;
 
+  static String liveStackStat = """
+      query stackStat (\$gameCode:String!){
+        stackStat: playerStackStat(gameCode:\$gameCode) {
+          handNum
+          before
+          after
+        }
+      } 
+  """;
+
   static Future<GameHistoryDetailModel> getGameHistoryDetail(
       GameHistoryDetailModel model) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
@@ -113,6 +123,20 @@ class GameService {
 
     // return stack stat
     return result.data['ret']['stackStat'];
+  }
+
+  static Future<dynamic> getLiveStackStat(String gameCode) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+    Map<String, dynamic> variables = {
+      "gameCode": gameCode,
+    };
+    QueryResult result = await _client.query(
+        QueryOptions(documentNode: gql(liveStackStat), variables: variables));
+
+    if (result.hasException) return null;
+
+    // return stack stat
+    return result.data['stackStat'];
   }
 
   static String gameResultTableQuery = """
