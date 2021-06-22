@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/widgets.dart';
 
@@ -27,7 +28,7 @@ class RabbitState extends ChangeNotifier {
     _show = false;
   }
 
-  void _clear() {
+  void clear() {
     _show = false;
     _wonAt = null;
     _communityCards = null;
@@ -48,7 +49,9 @@ class RabbitState extends ChangeNotifier {
   }
 
   void putResult(var result, {List<int> myCards = const []}) {
-    if (result == null) _clear();
+    if (result == null) {
+      return;
+    }
 
     result = result['handResult'];
 
