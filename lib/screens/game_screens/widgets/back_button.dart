@@ -54,7 +54,7 @@ class CustomAppBar extends AppBar {
                 visible: subTitleText != null,
                 child: Text(
                   subTitleText ?? "",
-                  style:AppStylesNew.appBarSubTitleTextStyle,
+                  style: AppStylesNew.appBarSubTitleTextStyle,
                   textAlign: TextAlign.center,
                 ),
               ),

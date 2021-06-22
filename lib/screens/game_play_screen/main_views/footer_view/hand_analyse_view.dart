@@ -16,8 +16,11 @@ import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
+import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/player_stats_bottomsheet.dart';
+import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/table_result_bottomsheet.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/game_circle_button.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/icon_with_badge.dart';
+import 'package:pokerapp/screens/game_screens/table_result/table_result.dart';
 import 'package:pokerapp/services/app/player_service.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:pokerapp/widgets/cards/multiple_stack_card_views.dart';
@@ -30,6 +33,7 @@ class HandAnalyseView extends StatefulWidget {
   final String gameCode;
   final String clubCode;
   final GameContextObject gameContextObject;
+
   HandAnalyseView(this.gameCode, this.clubCode, this.gameContextObject);
 
   @override
@@ -65,6 +69,29 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
           model: model,
           clubCode: widget.clubCode,
         );
+      },
+    );
+  }
+
+  Future<void> onPlayerStatsBottomSheet() async {
+    await showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) {
+        return PlayerStatsBottomSheet(gameCode: widget.gameCode);
+      },
+    );
+  }
+
+  Future<void> onTableBottomSheet(GameState gameState) async {
+    await showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) {
+        return TableResultBottomSheet(
+            gameCode: widget.gameCode, gameState: gameState);
       },
     );
   }
@@ -272,6 +299,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
   Widget build(BuildContext context) {
     height = MediaQuery.of(context).size.height;
     bottomSheetHeight = height / 3;
+
     return Align(
       alignment: Alignment.topLeft,
       child: Column(
@@ -284,16 +312,6 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                 ? GameCircleButton(
                     onClickHandler: onClickViewHand,
                     imagePath: AppAssetsNew.lastHandPath,
-                  )
-                : SizedBox();
-          }),
-
-          // second
-          Consumer<MyState>(builder: (context, myState, child) {
-            return myState.gameStatus == GameStatus.RUNNING
-                ? GameCircleButton(
-                    onClickHandler: onClickViewHandAnalysis,
-                    imagePath: AppAssetsNew.handHistoryPath,
                   )
                 : SizedBox();
           }),
@@ -325,6 +343,9 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
               },
             );
           }),
+          GameCircleButton(
+              iconData: Icons.menu,
+              onClickHandler: () => onMoreOptionsPress(context)),
 
           // rabbit button
           Consumer<RabbitState>(
@@ -338,6 +359,109 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
         ],
       ),
     );
+  }
+
+  void onMoreOptionsPress(BuildContext context) {
+    log('onMoreOptionsPress');
+    showMoreOptions(context);
+  }
+
+  void showMoreOptions(context) {
+    final RenderBox button = context.findRenderObject();
+    final RenderBox overlay = Overlay.of(context).context.findRenderObject();
+    final gameState = GameState.getState(context);
+
+    final RelativeRect position = RelativeRect.fromRect(
+      Rect.fromPoints(
+        button.localToGlobal(Offset(40, 70), ancestor: overlay),
+        button.localToGlobal(button.size.bottomRight(Offset.zero),
+            ancestor: overlay),
+      ),
+      Offset.zero & overlay.size,
+    );
+
+    showMenu(
+      context: context,
+      position: position,
+      items: <PopupMenuEntry>[
+        PopupMenuItem(
+            value: 0,
+            child: InkWell(
+              onTap: onClickViewHandAnalysis,
+              child: Row(
+                children: [
+                  GameCircleButton(
+                    onClickHandler: onClickViewHandAnalysis,
+                    imagePath: AppAssetsNew.handHistoryPath,
+                  ),
+                  SizedBox(width: 5),
+                  Text('Hand History'),
+                ],
+              ),
+            )),
+        PopupMenuItem(
+            value: 1,
+            child: InkWell(
+              onTap: () {
+                onTableBottomSheet(gameState);
+              },
+              child: Row(
+                children: [
+                  GameCircleButton(
+                    onClickHandler: () {
+                      onTableBottomSheet(gameState);
+                    },
+                    imagePath: AppAssetsNew.tableResultPath,
+                    color: Colors.black,
+                  ),
+                  SizedBox(width: 5),
+                  Text('Table'),
+                ],
+              ),
+            )),
+        PopupMenuItem(
+            value: 2,
+            child: InkWell(
+              onTap: onPlayerStatsBottomSheet,
+              child: Row(
+                children: [
+                  GameCircleButton(
+                    onClickHandler: onPlayerStatsBottomSheet,
+                    imagePath: AppAssetsNew.playerStatsPath,
+                  ),
+                  SizedBox(width: 5),
+                  Text('Stack Stats'),
+                ],
+              ),
+            )),
+      ],
+    ).then<void>((delta) {
+      // delta would be null if user taps on outside the popup menu
+      // (causing it to close without making selection)
+      if (delta == null) {
+        return;
+      } else {
+        switch (delta) {
+          case 0:
+            log('selected hand history');
+            break;
+          case 1:
+            log('selected table result');
+            break;
+          case 2:
+            log('selected stack stats');
+            break;
+        }
+      }
+    });
+  }
+
+  Offset getOffset(context) {
+    RenderBox globalRenderBox = context.findRenderObject();
+    Offset globalOffset = globalRenderBox.localToGlobal(Offset(0, 0));
+    RenderBox localRenderBox = context.findRenderObject();
+    Offset localOffset = localRenderBox.globalToLocal(globalOffset);
+    return localOffset;
   }
 
   void onRabbitTap(RabbitState rs) async {

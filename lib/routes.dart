@@ -228,10 +228,9 @@ class Routes {
       case table_result:
         var args = settings.arguments as dynamic;
         var gameCode = args["gameCode"];
-        var clubCode = args["clubCode"];
         return _getPageRoute(
           routeName: settings.name,
-          viewToShow: TableResultScreen(gameCode, clubCode),
+          viewToShow: TableResultScreen(gameCode: gameCode),
         );
 
       case game_history_detail_view:
@@ -365,7 +364,7 @@ class Routes {
         return _getPageRoute(
           routeName: settings.name,
           viewToShow: PointsLineChart(
-            gameDetail: args,
+            gameCode: args.gameCode,
           ),
         );
 

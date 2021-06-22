@@ -20,9 +20,16 @@ import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/utils/utils.dart';
 
 class PointsLineChart extends StatefulWidget {
-  final GameHistoryDetailModel gameDetail;
-
-  PointsLineChart({Key key, this.gameDetail}) : super(key: key);
+  //final GameHistoryDetailModel gameDetail;
+  final String gameCode;
+  final bool showBackButton;
+  final bool liveGame;
+  PointsLineChart(
+      {Key key,
+      this.gameCode,
+      this.showBackButton = true,
+      this.liveGame = false})
+      : super(key: key);
   @override
   _PointsLineChart createState() => _PointsLineChart();
 }
@@ -39,7 +46,15 @@ class _PointsLineChart extends State<PointsLineChart> {
   @override
   void initState() {
     super.initState();
-    TestService.isTesting ? _fetchData() : _loadStackData();
+    log('PointsLineChart: Loading line chart');
+    //TestService.isTesting ? _fetchData() : _loadStackData();
+    if (TestService.isTesting) {
+      _fetchData();
+    } else if (widget.liveGame) {
+      _loadStackLiveData();
+    } else {
+      _loadStackData();
+    }
   }
 
   _fetchData() async {
@@ -48,9 +63,9 @@ class _PointsLineChart extends State<PointsLineChart> {
         .then((data) {
       jsonData = json.decode(data);
       final List playerStack = jsonData['stackStat'];
-      playerStack.sort((a, b) => a['handNum'] < b['handNum']);
       debugPrint(data);
       stackList = playerStack.map((e) => new PlayerStackChartModel(e)).toList();
+      stackList.sort((a, b) => a.handNum.compareTo(b.handNum));
       setState(() {
         loadingDone = true;
       });
@@ -59,7 +74,25 @@ class _PointsLineChart extends State<PointsLineChart> {
 
   _loadStackData() async {
     stackList.clear();
-    final data = await GameService.getStackStat(widget.gameDetail.gameCode);
+    final data = await GameService.getStackStat(widget.gameCode);
+    if (data.length >= 1) {
+      // set handnum 0 with starting stack
+      dynamic item0 = data[0];
+      stackList.add(new PlayerStackChartModel(item0, first: true));
+
+      for (dynamic item in data) {
+        stackList.add(new PlayerStackChartModel(item));
+      }
+      stackList.sort((a, b) => a.handNum.compareTo(b.handNum));
+    }
+    setState(() {
+      loadingDone = true;
+    });
+  }
+
+  _loadStackLiveData() async {
+    stackList.clear();
+    final data = await GameService.getLiveStackStat(widget.gameCode);
     if (data.length >= 1) {
       // set handnum 0 with starting stack
       dynamic item0 = data[0];
@@ -85,6 +118,7 @@ class _PointsLineChart extends State<PointsLineChart> {
             appBar: CustomAppBar(
               context: context,
               titleText: "Stack Timeline",
+              showBackButton: widget.showBackButton,
             ),
             body: !loadingDone
                 ? Center(child: CircularProgressIndicator())
@@ -179,6 +213,10 @@ class _PointsLineChart extends State<PointsLineChart> {
       y = _tapPosition.dy - 80.0;
     }
 
+    if (widget.liveGame) {
+      y = 50;
+    }
+
     if (currentStack.neutral) {
       debugPrint("Netural item selected");
       return Container();
@@ -212,7 +250,7 @@ class _PointsLineChart extends State<PointsLineChart> {
         onTap: () {
           //HandLogModel handLogModel = HandLogModel("CG-7OF3IOXKBWJLDD", 1);
           Navigator.pushNamed(context, Routes.hand_log_view, arguments: {
-            "gameCode": widget.gameDetail.gameCode,
+            "gameCode": widget.gameCode,
             "handNum": currentStack.handNum
           });
         },

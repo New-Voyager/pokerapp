@@ -361,10 +361,8 @@ class _ClubMembersListViewState extends State<ClubMembersListView> {
                                 await ClubInteriorService.approveClubMember(
                                     widget.clubCode, member.playerId);
                             if (data == "ACTIVE") {
-                               widget.fetchData();
-                             setState(() {
-                               
-                             });
+                              widget.fetchData();
+                              setState(() {});
                             }
                           },
                         ),

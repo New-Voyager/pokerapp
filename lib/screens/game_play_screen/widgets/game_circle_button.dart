@@ -9,25 +9,40 @@ class GameCircleButton extends StatelessWidget {
   final String imagePath;
   final IconData iconData;
   final Widget child;
+  final Color color;
   const GameCircleButton({
     Key key,
     this.onClickHandler,
     this.imagePath,
     this.iconData,
     this.child,
+    this.color,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     Widget child = this.child;
-    if (child == null) {
-      child = imagePath != null
-          ? SvgPicture.asset(
+    Widget svg = null;
+    if(imagePath != null) {
+      if (color != null) {
+          svg = SvgPicture.asset(
               imagePath,
               height: 24.pw,
               width: 24.pw,
-              // color: AppColorsNew.newGreenButtonColor,
-            )
+              color: color,
+            );
+      } else {
+          svg = SvgPicture.asset(
+              imagePath,
+              height: 24.pw,
+              width: 24.pw,
+            );
+      }
+
+    }
+    if (child == null) {
+      child = svg != null
+          ? svg
           : Center(
               child: Icon(
               iconData,

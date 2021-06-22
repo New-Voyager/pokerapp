@@ -12,19 +12,21 @@ import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/utils/hand_table_bar_chart_profit.dart';
-import 'package:pokerapp/widgets/button_widget.dart';
 import 'package:share/share.dart';
 
 class TableResultScreen extends StatefulWidget {
   final String gameCode;
-  final String clubCode;
+  final bool showBackButton;
   final int playerWidth = 15;
   final int sessionWidth = 20;
   final int numHandsWidth = 15;
   final int buyInWidth = 15;
   final int profitWidth = 15;
   final int rakeWidth = 15;
-  TableResultScreen(this.gameCode, this.clubCode);
+  final bool showDownload;
+  final bool showTips;
+  TableResultScreen(
+      {this.gameCode, this.showDownload = true, this.showBackButton = false, this.showTips = false});
 
   @override
   State<StatefulWidget> createState() {
@@ -127,13 +129,14 @@ class _TableResultScreenState extends State<TableResultScreen> {
                                 "Profit",
                                 style: TextStyle(color: Color(0xffef9712)),
                               ))),
-                          Expanded(
+                          widget.showTips ? Expanded(
                               flex: widget.rakeWidth,
                               child: Center(
                                   child: Text(
                                 "Tips",
                                 style: TextStyle(color: Color(0xffef9712)),
-                              ))),
+                              )))
+                              : Container(),
                         ],
                       ),
                     );
@@ -192,7 +195,7 @@ class _TableResultScreenState extends State<TableResultScreen> {
                                   : AppStyles.lossStyle,
                             )),
                           ),
-                          Expanded(
+                          widget.showTips ? Expanded(
                             flex: widget.rakeWidth,
                             child: Center(
                                 child: Text(
@@ -200,7 +203,7 @@ class _TableResultScreenState extends State<TableResultScreen> {
                                   this.data.rows[dataIdx].rakePaid),
                               style: TextStyle(color: Color(0xffef9712)),
                             )),
-                          ),
+                          ) : Container(),
                         ],
                       ),
                     );
@@ -249,6 +252,7 @@ class _TableResultScreenState extends State<TableResultScreen> {
         context: context,
         titleText: AppStringsNew.TableRecordTitle,
         subTitleText: "Game code: ${widget.gameCode}",
+        showBackButton: widget.showBackButton,
       ),
       body: SingleChildScrollView(
         child: ConstrainedBox(
@@ -267,7 +271,7 @@ class _TableResultScreenState extends State<TableResultScreen> {
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Text(
+                          widget.showTips ? Text(
                             "Tips",
                             style: TextStyle(
                               color: Colors.white,
@@ -275,11 +279,11 @@ class _TableResultScreenState extends State<TableResultScreen> {
                               fontSize: 18.0,
                               fontWeight: FontWeight.w400,
                             ),
-                          ),
+                          ): Container(),
                           SizedBox(
                             width: 10.0,
                           ),
-                          Text(
+                          widget.showTips ? Text(
                             getTotalRake().toString(),
                             style: TextStyle(
                               color: Color(0xff1aff22),
@@ -287,45 +291,31 @@ class _TableResultScreenState extends State<TableResultScreen> {
                               fontSize: 18.0,
                               fontWeight: FontWeight.w400,
                             ),
-                          ),
+                          ): Container(),
                         ],
                       ),
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          // SvgPicture.asset(
-                          //   'assets/images/gamesettings/gambling.svg',
-                          //   color: Color(0xffef9712),
-                          // ),
-                          // SizedBox(
-                          //   width: 5.0,
-                          // ),
-                          // Text(
-                          //   "5",
-                          //   style: TextStyle(
-                          //     color: Colors.white,
-                          //     fontFamily: AppAssets.fontFamilyLato,
-                          //     fontSize: 18.0,
-                          //     fontWeight: FontWeight.w400,
-                          //   ),
-                          // ),
                           SizedBox(
                             width: 20.0,
                           ),
-                          InkWell(
-                            onTap: () async {
-                              downloadTable(widget.gameCode);
-                            },
-                            child: Text(
-                              "Download",
-                              style: TextStyle(
-                                color: Color(0xff319ffe),
-                                fontFamily: AppAssets.fontFamilyLato,
-                                fontSize: 18.0,
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
-                          ),
+                          widget.showDownload
+                              ? InkWell(
+                                  onTap: () async {
+                                    downloadTable(widget.gameCode);
+                                  },
+                                  child: Text(
+                                    "Download",
+                                    style: TextStyle(
+                                      color: Color(0xff319ffe),
+                                      fontFamily: AppAssets.fontFamilyLato,
+                                      fontSize: 18.0,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                )
+                              : Container(),
                         ],
                       ),
                     ],
@@ -369,9 +359,6 @@ class _TableResultScreenState extends State<TableResultScreen> {
       try {
         final result = await GameService.downloadResult(gameCode);
         String subject = 'Table result Game: $gameCode';
-        if (widget.clubCode != null && widget.clubCode.isNotEmpty) {
-          subject = subject + ' Club: ${widget.clubCode}';
-        }
         Share.share(result, subject: subject);
       } catch (err) {
         log('Error: ${err.toString()}');
