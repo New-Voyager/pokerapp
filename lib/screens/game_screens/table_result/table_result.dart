@@ -25,8 +25,12 @@ class TableResultScreen extends StatefulWidget {
   final int rakeWidth = 15;
   final bool showDownload;
   final bool showTips;
-  TableResultScreen(
-      {this.gameCode, this.showDownload = true, this.showBackButton = false, this.showTips = false});
+  TableResultScreen({
+    this.gameCode,
+    this.showDownload = true,
+    this.showBackButton = false,
+    this.showTips = false,
+  });
 
   @override
   State<StatefulWidget> createState() {
@@ -48,7 +52,6 @@ class _TableResultScreenState extends State<TableResultScreen> {
 
   void _fetchData() async {
     this.data = await GameService.getGameTableRecord(widget.gameCode);
-    print(this.data);
     setState(() {});
   }
 
@@ -59,11 +62,12 @@ class _TableResultScreenState extends State<TableResultScreen> {
   }
 
   double getTotalRake() {
-    if (this.data == null || this.data.rows == null) {
-      return 0.0;
-    }
+    if (this.data == null || this.data.rows == null) return 0.0;
+
     return this.data.rows.fold(
-        0.0, (previousValue, element) => previousValue + element.rakePaid);
+          0.0,
+          (previousValue, element) => previousValue + element.rakePaid,
+        );
   }
 
   initializeTableWidgets() {
@@ -73,154 +77,126 @@ class _TableResultScreenState extends State<TableResultScreen> {
     };
   }
 
-  Widget getTableOrGraphView(context, int index) {
-    Map<int, Widget> segmentedViews = <int, Widget>{
-      0: Expanded(
+  Widget _buildHeaderChild({int flex = 1, String text = 'Player'}) => Expanded(
+        flex: flex,
+        child: Center(
+          child: Text(
+            text,
+            style: TextStyle(color: Color(0xffef9712)),
+          ),
+        ),
+      );
+
+  Widget _buildTableHeader() => Container(
+        height: 70.0,
+        margin: EdgeInsets.all(10),
+        color: Color(0xff313235),
+        child: Row(
+          children: [
+            _buildHeaderChild(
+              flex: widget.playerWidth,
+              text: 'Player',
+            ),
+            _buildHeaderChild(
+              flex: widget.sessionWidth,
+              text: 'Session',
+            ),
+            _buildHeaderChild(
+              flex: widget.numHandsWidth,
+              text: '#Hands',
+            ),
+            _buildHeaderChild(
+              flex: widget.buyInWidth,
+              text: 'Buyin',
+            ),
+            _buildHeaderChild(
+              flex: widget.profitWidth,
+              text: 'Profit',
+            ),
+            widget.showTips
+                ? _buildHeaderChild(
+                    flex: widget.rakeWidth,
+                    text: 'Tips',
+                  )
+                : Container(),
+          ],
+        ),
+      );
+
+  Widget _buildTableContentChild({int flex = 1, var data}) => Expanded(
+        flex: flex,
+        child: Center(
+          child: Text(
+            data is double ? DataFormatter.chipsFormat(data) : data,
+            style: TextStyle(
+              color: data is double
+                  ? data > 0
+                      ? AppStyles.profitStyle.color
+                      : AppStyles.lossStyle.color
+                  : Color(0xffa09f9e),
+            ),
+          ),
+        ),
+      );
+
+  Widget _buildTableView() => Expanded(
         child: this.data == null
             ? Center(child: CircularProgressIndicator())
             : ListView.separated(
                 physics: NeverScrollableScrollPhysics(),
                 itemCount: this.data.rows.length + 1,
                 itemBuilder: (context, index) {
-                  if (index == 0) {
-                    return Container(
-                      height: 70.0,
-                      margin: EdgeInsets.all(10),
-                      color: Color(0xff313235),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          SizedBox(
-                            width: 15,
-                          ),
-                          Expanded(
-                              flex: widget.playerWidth,
-                              child: Container(
-                                  alignment: Alignment.centerLeft,
-                                  child: Text(
-                                    "Player",
-                                    style: TextStyle(color: Color(0xffef9712)),
-                                  ))),
-                          Expanded(
-                              flex: widget.sessionWidth,
-                              child: Center(
-                                  child: Text(
-                                "Session",
-                                style: TextStyle(color: Color(0xffef9712)),
-                              ))),
-                          Expanded(
-                              flex: widget.numHandsWidth,
-                              child: Center(
-                                  child: Text(
-                                "#Hands",
-                                style: TextStyle(color: Color(0xffef9712)),
-                              ))),
-                          Expanded(
-                              flex: widget.buyInWidth,
-                              child: Center(
-                                  child: Text(
-                                "Buyin",
-                                style: TextStyle(color: Color(0xffef9712)),
-                              ))),
-                          Expanded(
-                              flex: widget.profitWidth,
-                              child: Center(
-                                  child: Text(
-                                "Profit",
-                                style: TextStyle(color: Color(0xffef9712)),
-                              ))),
-                          widget.showTips ? Expanded(
-                              flex: widget.rakeWidth,
-                              child: Center(
-                                  child: Text(
-                                "Tips",
-                                style: TextStyle(color: Color(0xffef9712)),
-                              )))
-                              : Container(),
-                        ],
-                      ),
-                    );
-                  } else {
-                    int dataIdx = index - 1;
-                    return Container(
-                      height: 50.0,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          SizedBox(
-                            width: 15,
-                          ),
-                          Expanded(
-                            flex: widget.playerWidth,
-                            child: Container(
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                  this.data.rows[dataIdx].playerName,
-                                  style: TextStyle(color: Color(0xffa09f9e)),
-                                )),
-                          ),
-                          Expanded(
-                            flex: widget.sessionWidth,
-                            child: Center(
-                                child: Text(
-                              this.data.rows[dataIdx].sessionTimeStr,
-                              style: TextStyle(color: Color(0xffa09f9e)),
-                            )),
-                          ),
-                          Expanded(
-                            flex: widget.numHandsWidth,
-                            child: Center(
-                                child: Text(
-                              this.data.rows[dataIdx].handsPlayed.toString(),
-                              style: TextStyle(color: Color(0xffa09f9e)),
-                            )),
-                          ),
-                          Expanded(
-                            flex: widget.buyInWidth,
-                            child: Center(
-                                child: Text(
-                              DataFormatter.chipsFormat(
-                                  this.data.rows[dataIdx].buyIn),
-                              style: TextStyle(color: Color(0xffa09f9e)),
-                            )),
-                          ),
-                          Expanded(
-                            flex: widget.profitWidth,
-                            child: Center(
-                                child: Text(
-                              DataFormatter.chipsFormat(
-                                  this.data.rows[dataIdx].profit),
-                              style: this.data.rows[dataIdx].profit >= 0
-                                  ? AppStyles.profitStyle
-                                  : AppStyles.lossStyle,
-                            )),
-                          ),
-                          widget.showTips ? Expanded(
-                            flex: widget.rakeWidth,
-                            child: Center(
-                                child: Text(
-                              DataFormatter.chipsFormat(
-                                  this.data.rows[dataIdx].rakePaid),
-                              style: TextStyle(color: Color(0xffef9712)),
-                            )),
-                          ) : Container(),
-                        ],
-                      ),
-                    );
-                  }
+                  // index 0 draws the header
+                  if (index == 0) return _buildTableHeader();
+
+                  final tableRowRecord = this.data.rows[index - 1];
+
+                  return Container(
+                    height: 50.0,
+                    child: Row(
+                      children: [
+                        _buildTableContentChild(
+                          flex: widget.playerWidth,
+                          data: tableRowRecord.playerName,
+                        ),
+                        _buildTableContentChild(
+                          flex: widget.sessionWidth,
+                          data: tableRowRecord.sessionTimeStr,
+                        ),
+                        _buildTableContentChild(
+                          flex: widget.numHandsWidth,
+                          data: tableRowRecord.handsPlayed.toString(),
+                        ),
+                        _buildTableContentChild(
+                          flex: widget.buyInWidth,
+                          data: DataFormatter.chipsFormat(tableRowRecord.buyIn),
+                        ),
+                        _buildTableContentChild(
+                          flex: widget.profitWidth,
+                          data: tableRowRecord.profit,
+                        ),
+                        widget.showTips
+                            ? _buildTableContentChild(
+                                flex: widget.rakeWidth,
+                                data: DataFormatter.chipsFormat(
+                                  tableRowRecord.rakePaid,
+                                ),
+                              )
+                            : Container(),
+                      ],
+                    ),
+                  );
                 },
                 separatorBuilder: (context, index) {
-                  if (index == 0) {
+                  if (index == 0)
                     return Container();
-                  } else {
-                    return Divider(
-                      color: Color(0xff707070),
-                    );
-                  }
+                  else
+                    return Divider(color: Color(0xff707070));
                 },
               ),
-      ),
-      1: Expanded(
+      );
+
+  Widget _buildGraphView() => Expanded(
         child: Padding(
           padding: EdgeInsets.all(15),
           child: Column(
@@ -236,11 +212,10 @@ class _TableResultScreenState extends State<TableResultScreen> {
             ],
           ),
         ),
-      ),
-    };
+      );
 
-    return segmentedViews[index];
-  }
+  Widget _buildMainView(int index) =>
+      index == 0 ? _buildTableView() : _buildGraphView();
 
   @override
   Widget build(BuildContext context) {
@@ -255,15 +230,22 @@ class _TableResultScreenState extends State<TableResultScreen> {
         showBackButton: widget.showBackButton,
       ),
       body: SingleChildScrollView(
+        physics: BouncingScrollPhysics(),
         child: ConstrainedBox(
-          constraints:
-              BoxConstraints(maxHeight: MediaQuery.of(context).size.height),
+          constraints: BoxConstraints(
+            maxHeight: MediaQuery.of(context).size.height,
+          ),
           child: Column(
             children: [
+              // table result heading widget
               Container(
                 child: Padding(
                   padding: const EdgeInsets.only(
-                      left: 10.0, right: 15.0, top: 5, bottom: 5),
+                    left: 10.0,
+                    right: 15.0,
+                    top: 5,
+                    bottom: 5,
+                  ),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -271,35 +253,38 @@ class _TableResultScreenState extends State<TableResultScreen> {
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          widget.showTips ? Text(
-                            "Tips",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontFamily: AppAssets.fontFamilyLato,
-                              fontSize: 18.0,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ): Container(),
-                          SizedBox(
-                            width: 10.0,
-                          ),
-                          widget.showTips ? Text(
-                            getTotalRake().toString(),
-                            style: TextStyle(
-                              color: Color(0xff1aff22),
-                              fontFamily: AppAssets.fontFamilyLato,
-                              fontSize: 18.0,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ): Container(),
+                          widget.showTips
+                              ? Text(
+                                  "Tips",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontFamily: AppAssets.fontFamilyLato,
+                                    fontSize: 18.0,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                )
+                              : Container(),
+
+                          // sep
+                          SizedBox(width: 10.0),
+
+                          widget.showTips
+                              ? Text(
+                                  getTotalRake().toString(),
+                                  style: TextStyle(
+                                    color: Color(0xff1aff22),
+                                    fontFamily: AppAssets.fontFamilyLato,
+                                    fontSize: 18.0,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                )
+                              : Container(),
                         ],
                       ),
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          SizedBox(
-                            width: 20.0,
-                          ),
+                          SizedBox(width: 20.0),
                           widget.showDownload
                               ? InkWell(
                                   onTap: () async {
@@ -322,29 +307,27 @@ class _TableResultScreenState extends State<TableResultScreen> {
                   ),
                 ),
               ),
-              Container(
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: CupertinoSegmentedControl<int>(
-                        unselectedColor: AppColors.screenBackgroundColor,
-                        selectedColor: AppColors.appAccentColor,
-                        children: tableWidgets,
-                        borderColor: AppColors.appAccentColor,
-                        onValueChanged: (int val) {
-                          setState(() {
-                            _selectedTableWidget = val;
-                          });
-                        },
-                        groupValue: _selectedTableWidget,
-                      ),
-                    )
-                  ],
-                ),
+
+              // table - graph row
+              Row(
+                children: [
+                  Expanded(
+                    child: CupertinoSegmentedControl<int>(
+                      unselectedColor: AppColors.screenBackgroundColor,
+                      selectedColor: AppColors.appAccentColor,
+                      children: tableWidgets,
+                      borderColor: AppColors.appAccentColor,
+                      onValueChanged: (int val) {
+                        setState(() => _selectedTableWidget = val);
+                      },
+                      groupValue: _selectedTableWidget,
+                    ),
+                  )
+                ],
               ),
-              Container(
-                child: getTableOrGraphView(context, _selectedTableWidget),
-              ),
+
+              // main body
+              _buildMainView(_selectedTableWidget),
             ],
           ),
         ),
@@ -353,8 +336,6 @@ class _TableResultScreenState extends State<TableResultScreen> {
   }
 
   downloadTable(String gameCode) async {
-    log('table is downloaded');
-
     Future.delayed(Duration(seconds: 1), () async {
       try {
         final result = await GameService.downloadResult(gameCode);
