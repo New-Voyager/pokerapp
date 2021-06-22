@@ -15,6 +15,7 @@ import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/utils/hand_table_bar_chart_profit.dart';
 import 'package:share/share.dart';
+import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class TableResultScreen extends StatefulWidget {
   final String gameCode;
@@ -28,6 +29,7 @@ class TableResultScreen extends StatefulWidget {
   final int rakeWidth = 15;
   final bool showDownload;
   final bool showTips;
+
   TableResultScreen({
     this.gameCode,
     this.showDownload = true,
@@ -44,14 +46,8 @@ class TableResultScreen extends StatefulWidget {
 class _TableResultScreenState extends State<TableResultScreen> {
   TableRecord data;
 
-  final SizedBox seprator = SizedBox(
-    height: 20.0,
-  );
-
   Map<int, Widget> tableWidgets;
   int _selectedTableWidget = 0;
-
-  _TableResultScreenState();
 
   void _fetchData() async {
     data = await GameService.getGameTableRecord(widget.gameCode);
@@ -97,8 +93,8 @@ class _TableResultScreenState extends State<TableResultScreen> {
       );
 
   Widget _buildTableHeader() => Container(
-        height: 70.0,
-        margin: EdgeInsets.all(10),
+        height: 70.0.ph,
+        margin: EdgeInsets.all(10.pw),
         color: Color(0xff313235),
         child: Row(
           children: [
@@ -176,8 +172,8 @@ class _TableResultScreenState extends State<TableResultScreen> {
                 : SvgPicture.asset(
                     icon,
                     color: iconColor,
-                    width: 25.0,
-                    height: 25.0,
+                    width: 25.0.pw,
+                    height: 25.0.pw,
                   )
             : Center(
                 child: FittedBox(
@@ -209,8 +205,8 @@ class _TableResultScreenState extends State<TableResultScreen> {
                   final tableRowRecord = this.data.rows[index - 1];
 
                   return Container(
-                    margin: EdgeInsets.symmetric(horizontal: 10.0),
-                    height: 50.0,
+                    margin: EdgeInsets.symmetric(horizontal: 10.0.pw),
+                    height: 50.0.ph,
                     child: Row(
                       children: [
                         _buildTableContentChild(
@@ -261,7 +257,7 @@ class _TableResultScreenState extends State<TableResultScreen> {
 
   Widget _buildGraphView() => Expanded(
         child: Padding(
-          padding: EdgeInsets.all(15),
+          padding: EdgeInsets.all(15.pw),
           child: Column(
             children: [
               Container(
@@ -303,11 +299,9 @@ class _TableResultScreenState extends State<TableResultScreen> {
               // table result heading widget
               Container(
                 child: Padding(
-                  padding: const EdgeInsets.only(
-                    left: 10.0,
-                    right: 15.0,
-                    top: 5,
-                    bottom: 5,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 15.0.pw,
+                    vertical: 5.0.pw,
                   ),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -322,14 +316,14 @@ class _TableResultScreenState extends State<TableResultScreen> {
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontFamily: AppAssets.fontFamilyLato,
-                                    fontSize: 18.0,
+                                    fontSize: 12.0.dp,
                                     fontWeight: FontWeight.w400,
                                   ),
                                 )
                               : Container(),
 
                           // sep
-                          SizedBox(width: 10.0),
+                          SizedBox(width: 10.0.pw),
 
                           widget.showTips
                               ? Text(
@@ -337,7 +331,7 @@ class _TableResultScreenState extends State<TableResultScreen> {
                                   style: TextStyle(
                                     color: Color(0xff1aff22),
                                     fontFamily: AppAssets.fontFamilyLato,
-                                    fontSize: 18.0,
+                                    fontSize: 12.0.dp,
                                     fontWeight: FontWeight.w400,
                                   ),
                                 )
@@ -347,7 +341,7 @@ class _TableResultScreenState extends State<TableResultScreen> {
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          SizedBox(width: 20.0),
+                          SizedBox(width: 20.0.pw),
                           widget.showDownload
                               ? InkWell(
                                   onTap: () async {
@@ -358,7 +352,7 @@ class _TableResultScreenState extends State<TableResultScreen> {
                                     style: TextStyle(
                                       color: Color(0xff319ffe),
                                       fontFamily: AppAssets.fontFamilyLato,
-                                      fontSize: 18.0,
+                                      fontSize: 12.0.dp,
                                       fontWeight: FontWeight.w400,
                                     ),
                                   ),
