@@ -80,9 +80,12 @@ class _TableResultScreenState extends State<TableResultScreen> {
   Widget _buildHeaderChild({int flex = 1, String text = 'Player'}) => Expanded(
         flex: flex,
         child: Center(
-          child: Text(
-            text,
-            style: TextStyle(color: Color(0xffef9712)),
+          child: FittedBox(
+            fit: BoxFit.fitWidth,
+            child: Text(
+              text,
+              style: TextStyle(color: Color(0xffef9712)),
+            ),
           ),
         ),
       );
@@ -126,14 +129,17 @@ class _TableResultScreenState extends State<TableResultScreen> {
   Widget _buildTableContentChild({int flex = 1, var data}) => Expanded(
         flex: flex,
         child: Center(
-          child: Text(
-            data is double ? DataFormatter.chipsFormat(data) : data,
-            style: TextStyle(
-              color: data is double
-                  ? data > 0
-                      ? AppStyles.profitStyle.color
-                      : AppStyles.lossStyle.color
-                  : Color(0xffa09f9e),
+          child: FittedBox(
+            fit: BoxFit.fitWidth,
+            child: Text(
+              data is double ? DataFormatter.chipsFormat(data) : data,
+              style: TextStyle(
+                color: data is double
+                    ? data > 0
+                        ? AppStyles.profitStyle.color
+                        : AppStyles.lossStyle.color
+                    : Color(0xffa09f9e),
+              ),
             ),
           ),
         ),
@@ -150,8 +156,8 @@ class _TableResultScreenState extends State<TableResultScreen> {
                   if (index == 0) return _buildTableHeader();
 
                   final tableRowRecord = this.data.rows[index - 1];
-
                   return Container(
+                    margin: EdgeInsets.symmetric(horizontal: 10.0),
                     height: 50.0,
                     child: Row(
                       children: [
