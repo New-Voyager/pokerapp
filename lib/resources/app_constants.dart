@@ -21,6 +21,10 @@ class AppConstants {
 
   static const int buyInTimeOutSeconds = 100;
 
+  static const int maxDiamondNumber = 20;
+
+  static const Duration diamondUpdateDuration = const Duration(minutes: 1);
+
   static const Duration cardShufflingWaitDuration = const Duration(
     milliseconds: 200,
   );

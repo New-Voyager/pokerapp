@@ -23,6 +23,7 @@ import 'package:pokerapp/services/app/hand_service.dart';
 import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
+import 'package:pokerapp/widgets/num_diamond_widget.dart';
 
 class HandLogView extends StatefulWidget {
   final String gameCode;
@@ -195,6 +196,7 @@ class _HandLogViewState extends State<HandLogView> {
                 child: CircularProgressIndicator(),
               )
             : SingleChildScrollView(
+                physics: BouncingScrollPhysics(),
                 child: Column(
                   children: children,
                 ),
@@ -205,12 +207,14 @@ class _HandLogViewState extends State<HandLogView> {
 
   List<Widget> getHandLog() {
     return [
+      // main top header
       Container(
         padding: EdgeInsets.symmetric(vertical: 5),
         margin: EdgeInsets.symmetric(horizontal: 16),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
+            // replay, share, bookmark buttons
             RoundIconButton(onTap: () => _replayHand(), icon: Icons.replay),
             AppDimensionsNew.getHorizontalSpace(8),
             RoundIconButton(
@@ -261,15 +265,6 @@ class _HandLogViewState extends State<HandLogView> {
       HandLogHeaderView(_handLogModel),
       AppDimensionsNew.getVerticalSizedBox(4),
 
-      /*  Container(
-                    margin:
-                        EdgeInsets.only(left: 10, top: 5, bottom: 5, right: 10),
-                    alignment: Alignment.centerLeft,
-                    // child: Text(
-                    //   "Winners",
-                    //   style: AppStyles.boldTitleTextStyle,
-                    // ),
-                  ), */
       HandWinnersView(handLogModel: _handLogModel),
       HandStageView(
         handLogModel: _handLogModel,

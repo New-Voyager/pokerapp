@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/option_item_model.dart';
 import 'package:pokerapp/resources/app_colors.dart';
@@ -10,8 +11,10 @@ import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
+import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
+import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/widgets/switch_widget.dart';
 import 'seat_change_bottom_sheet.dart';
 import 'waiting_list.dart';
@@ -26,15 +29,15 @@ class GameOption extends StatefulWidget {
   GameOption(this.gameState, this.gameCode, this.playerUuid, this.isAdmin);
 
   @override
-  _GameOptionState createState() => _GameOptionState(gameCode);
+  _GameOptionState createState() => _GameOptionState();
 }
 
 class _GameOptionState extends State<GameOption> {
-  final String gameCode;
+  String gameCode;
+  bool isFetching = true;
   List<OptionItemModel> gameActions;
   double height;
-
-  _GameOptionState(this.gameCode);
+  GameInfoModel gameInfo;
 
   void onLeave() {
     Alerts.showNotification(
@@ -97,9 +100,26 @@ class _GameOptionState extends State<GameOption> {
 
   List<OptionItemModel> gameSecondaryOptions;
 
+  _fetchGameInfo() async {
+    gameInfo = await GameService.getGameInfo(gameCode);
+    if (gameInfo != null) {
+      setState(() {
+        isFetching = false;
+      });
+    }
+    log("-=-= ${gameInfo.sessionTime}");
+    log("-=-= ${gameInfo.runningTime}");
+    log("-=-= ${gameInfo.noHandsPlayed}");
+    log("-=-= ${gameInfo.noHandsWon}");
+  }
+
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      _fetchGameInfo();
+    });
+    gameCode = widget.gameCode;
     gameActions = [
       OptionItemModel(
           title: "Standup",
@@ -225,7 +245,7 @@ class _GameOptionState extends State<GameOption> {
                 setState(() {});
               },
             ),
-            widget.gameState.gameInfo.audioConfEnabled
+            widget.gameState.gameInfo.audioConfEnabled ?? false
                 ? _buildCheckBox(
                     text: 'Audio Conference',
                     value: widget.gameState.settings.audioConf,
@@ -322,14 +342,27 @@ class _GameOptionState extends State<GameOption> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text("Elapsed", style: AppStylesNew.labelTextStyle),
-                          Text("3:20", style: AppStylesNew.valueTextStyle),
+                          isFetching
+                              ? CircularProgressWidget(
+                                  showText: false,
+                                  height: 24,
+                                )
+                              : Text(
+                                  "${DataFormatter.timeFormat(gameInfo.runningTime)}",
+                                  style: AppStylesNew.valueTextStyle),
                         ],
                       ),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Text("Hands", style: AppStylesNew.labelTextStyle),
-                          Text("50", style: AppStylesNew.valueTextStyle),
+                          isFetching
+                              ? CircularProgressWidget(
+                                  showText: false,
+                                  height: 24,
+                                )
+                              : Text("${gameInfo.noHandsPlayed}",
+                                  style: AppStylesNew.valueTextStyle),
                         ],
                       )
                     ],
@@ -342,14 +375,27 @@ class _GameOptionState extends State<GameOption> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text("Session", style: AppStylesNew.labelTextStyle),
-                          Text("00:35", style: AppStylesNew.valueTextStyle),
+                          isFetching
+                              ? CircularProgressWidget(
+                                  showText: false,
+                                  height: 24,
+                                )
+                              : Text(
+                                  "${DataFormatter.timeFormat(gameInfo.sessionTime)}",
+                                  style: AppStylesNew.valueTextStyle),
                         ],
                       ),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Text("Won", style: AppStylesNew.labelTextStyle),
-                          Text("10", style: AppStylesNew.valueTextStyle),
+                          isFetching
+                              ? CircularProgressWidget(
+                                  showText: false,
+                                  height: 24,
+                                )
+                              : Text("${gameInfo.noHandsWon}",
+                                  style: AppStylesNew.valueTextStyle),
                         ],
                       )
                     ],

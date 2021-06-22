@@ -4,6 +4,10 @@ import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/resources/animation_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
+import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
+import 'package:pokerapp/resources/new/app_strings_new.dart';
+import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class ProfilePopup extends StatefulWidget {
   final Seat seat;
@@ -28,6 +32,8 @@ class _ProfilePopupState extends State<ProfilePopup> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
+        Text(AppStringsNew.tapToSendAnimText),
+        AppDimensionsNew.getVerticalSizedBox(8),
         getStickers(),
       ],
 
@@ -101,51 +107,50 @@ class _ProfilePopupState extends State<ProfilePopup> {
         ),
       );
 
-  Widget getStickers() => SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Row(
-          children: [
-            ...AnimationAssets.animationObjects
-                .map(
-                  (animationObject) => GestureDetector(
-                    onTap: () {
-                      Navigator.pop(
-                        context,
-                        {
-                          "isMicOn": _isMicOn,
-                          "isChatOn": _isChatOn,
-                          "animationID": animationObject.id,
-                        },
-                      );
-                      // setState(
-                      //   () => _animationID = animationObject.id,
-                      // );
-                    },
-                    child: Container(
-                      height: 50,
-                      width: 50,
-                      decoration:
-                          BoxDecoration(color: Colors.transparent, boxShadow: [
+  Widget getStickers() => Wrap(
+        alignment: WrapAlignment.center,
+        children: [
+          ...AnimationAssets.animationObjects
+              .map(
+                (animationObject) => GestureDetector(
+                  onTap: () {
+                    Navigator.pop(
+                      context,
+                      {
+                        "isMicOn": _isMicOn,
+                        "isChatOn": _isChatOn,
+                        "animationID": animationObject.id,
+                      },
+                    );
+                    // setState(
+                    //   () => _animationID = animationObject.id,
+                    // );
+                  },
+                  child: Container(
+                    height: 56.ph,
+                    width: 56.pw,
+                    decoration: BoxDecoration(
+                      color: Colors.transparent,
+                      boxShadow: [
                         BoxShadow(
-                          color: AppColors.appAccentColor,
+                          color: AppColorsNew.newSelectedGreenColor,
                           spreadRadius: 0.1,
                           blurRadius: 0.1,
                         ),
-                      ]),
-                      padding: const EdgeInsets.all(5),
-                      margin: const EdgeInsets.all(5),
-                      child: SvgPicture.asset(
-                        animationObject.assetSvg,
-                        height: 50,
-                        width: 50,
-                        fit: BoxFit.contain,
-                      ),
+                      ],
+                      shape: BoxShape.circle,
+                    ),
+                    padding: const EdgeInsets.all(8),
+                    margin: const EdgeInsets.all(5),
+                    child: SvgPicture.asset(
+                      animationObject.assetSvg,
+                      fit: BoxFit.contain,
                     ),
                   ),
-                )
-                .toList(),
-          ],
-        ),
+                ),
+              )
+              .toList(),
+        ],
       );
 
   Widget communication() => Column(

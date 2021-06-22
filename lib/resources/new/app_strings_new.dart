@@ -58,4 +58,14 @@ class AppStringsNew {
   static String noSeatChangeRequestsText = "No Seat change requests.";
 
   static String gameCodeText = "Game Code";
+
+  static String updatingText = "Updating..";
+  static String clubMembersTitle = "Club Members";
+  static String lastActiveText = "Last active";
+
+  static String tapToSendAnimText = "Tap to send Animation";
+
+  static String clubStatisticsTitle = "Club Statistics";
+
+  static String oddsSoFarText = "Odds so far";
 }

@@ -5,6 +5,11 @@ import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class AppStylesNew {
+  static final accentTextStyle = TextStyle(
+    color: AppColorsNew.yellowAccentColor,
+    fontSize: 10.dp,
+    fontWeight: FontWeight.w400,
+  );
   static final cardHeaderTextStyle = TextStyle(
     color: AppColorsNew.newTextColor,
     fontSize: 12.dp,
@@ -238,6 +243,20 @@ class AppStylesNew {
       ],
     ),
     borderRadius: BorderRadius.circular(8),
+  );
+
+  static final gradientBorderBoxDecoration = BoxDecoration(
+    gradient: LinearGradient(
+      colors: [
+        AppColorsNew.darkGreenShadeColor,
+        AppColorsNew.newGreenRadialStopColor,
+      ],
+    ),
+    border: Border.all(
+      color: AppColorsNew.newBorderColor,
+      width: 0.5,
+    ),
+    borderRadius: BorderRadius.circular(5),
   );
 
   static final stageNameTextStyle = TextStyle(

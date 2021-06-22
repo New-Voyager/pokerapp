@@ -26,9 +26,10 @@ class NoMessageWidget extends StatelessWidget {
 }
 
 class CircularProgressWidget extends StatelessWidget {
-  CircularProgressWidget({this.text, this.showText});
+  CircularProgressWidget({this.text, this.showText, this.height});
   final String text;
   final bool showText;
+  final double height;
   @override
   Widget build(BuildContext context) {
     return showText ?? true
@@ -46,19 +47,28 @@ class CircularProgressWidget extends StatelessWidget {
               ),
               const SizedBox(height: 15),
               Center(
-                child: CircularProgressIndicator(
-                  backgroundColor: AppColorsNew.newGreenButtonColor,
-                  valueColor: new AlwaysStoppedAnimation<Color>(
-                      AppColorsNew.actionRowBgColor),
+                child: Container(
+                  height: height ?? 32,
+                  width: height ?? 32,
+                  child: CircularProgressIndicator(
+                    backgroundColor: AppColorsNew.newGreenButtonColor,
+                    valueColor: new AlwaysStoppedAnimation<Color>(
+                        AppColorsNew.actionRowBgColor),
+                  ),
                 ),
               ),
             ],
           )
         : Center(
-            child: CircularProgressIndicator(
-              backgroundColor: AppColorsNew.newGreenButtonColor,
-              valueColor: new AlwaysStoppedAnimation<Color>(
-                  AppColorsNew.actionRowBgColor),
+            child: Container(
+              height: height ?? 32,
+              width: height ?? 32,
+              child: CircularProgressIndicator(
+                strokeWidth: 1.0,
+                backgroundColor: AppColorsNew.newGreenButtonColor,
+                valueColor: new AlwaysStoppedAnimation<Color>(
+                    AppColorsNew.actionRowBgColor),
+              ),
             ),
           );
   }

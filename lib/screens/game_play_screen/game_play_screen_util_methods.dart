@@ -19,12 +19,14 @@ import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat_change_model.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
+import 'package:pokerapp/models/rabbit_state.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/resources/card_back_assets.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
 //import 'package:pokerapp/services/agora/agora.dart';
 import 'package:pokerapp/services/app/game_service.dart';
+import 'package:pokerapp/services/data/game_hive_store.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 import 'package:timer_count_down/timer_count_down.dart';
@@ -460,6 +462,7 @@ class GamePlayScreenUtilMethods {
   static Future joinGame({
     @required int seatPos,
     @required String gameCode,
+    @required GameState gameState,
   }) async {
     assert(seatPos != null);
 
@@ -473,6 +476,20 @@ class GamePlayScreenUtilMethods {
       gameCode,
       seatNumber,
     );
+
+    GameHiveStore ghs = gameState.gameHiveStore;
+
+    // we can offer user inital reward here, as well as reset timers here
+    if (ghs.isFirstJoin()) {
+      // on first join, we give 10 diamonds
+      ghs.addDiamonds(num: 10);
+
+      // MARK first join is done
+      ghs.setIsFirstJoinDone();
+    } else {
+      // for any subsequent joins, reset the timer
+      ghs.updateLastDiamondUpdateTime();
+    }
   }
 
   /* provider method, returns list of all the providers used in the below hierarchy */
@@ -493,6 +510,9 @@ class GamePlayScreenUtilMethods {
         players: hostSeatChangePlayers);
 
     var providers = [
+      /* rabbit state */
+      ListenableProvider<RabbitState>(create: (_) => RabbitState()),
+
       /* this is for the seat change animation values */
       ListenableProvider<ValueNotifier<SeatChangeModel>>(
         create: (_) => ValueNotifier<SeatChangeModel>(null),

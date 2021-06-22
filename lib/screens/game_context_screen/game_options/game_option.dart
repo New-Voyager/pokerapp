@@ -3,8 +3,9 @@ import 'package:pokerapp/models/option_item_model.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 
-class GameOption extends StatelessWidget {
-  GameOption({Key key}) : super(key: key);
+// TODO : Can be deleted. Not used anywhere
+class GameOptionOld extends StatelessWidget {
+  GameOptionOld({Key key}) : super(key: key);
 
   final List<OptionItemModel> gameActions = [
     OptionItemModel(title: "LEAVE"),

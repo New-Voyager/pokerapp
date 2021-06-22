@@ -6,3 +6,4 @@ https://totalnonsense.com/open-source-vector-playing-cards/
 Copyright 2011,2020 – Chris Aguilar – conjurenation @gmail.com
 Licensed under: LGPL 3.0 – https://www.gnu.org/licenses/lgpl-3.0.html
 
+Gwilz, CC BY-SA 4.0 <https://creativecommons.org/licenses/by-sa/4.0>, via Wikimedia Commons

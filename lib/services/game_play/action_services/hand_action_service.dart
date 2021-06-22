@@ -22,6 +22,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
+import 'package:pokerapp/models/rabbit_state.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/card_back_assets.dart';
@@ -479,15 +480,6 @@ class HandActionService {
       log('gameState seats does not match with new hand. * Refreshing Done *');
     }
 
-    var sbSeat = _gameState.getSeat(_context, sbPos);
-    sbSeat.player.action.sb = true;
-    sbSeat.player.action.amount = _gameState.gameInfo.smallBlind.toDouble();
-
-    if (_close) return;
-    var bbSeat = _gameState.getSeat(_context, bbPos);
-    bbSeat.player.action.bb = true;
-    bbSeat.player.action.amount = _gameState.gameInfo.bigBlind.toDouble();
-
     if (_close) return;
     final Players players = _gameState.getPlayers(_context);
 
@@ -518,12 +510,12 @@ class HandActionService {
       log('gameState seats does not match with new hand. * Refreshing Done *');
     }
 
-    sbSeat = _gameState.getSeat(_context, sbPos);
+    final sbSeat = _gameState.getSeat(_context, sbPos);
     sbSeat.player.action.sb = true;
     sbSeat.player.action.amount = _gameState.gameInfo.smallBlind.toDouble();
 
     if (_close) return;
-    bbSeat = _gameState.getSeat(_context, bbPos);
+    final bbSeat = _gameState.getSeat(_context, bbPos);
     bbSeat.player.action.bb = true;
     bbSeat.player.action.amount = _gameState.gameInfo.bigBlind.toDouble();
 
@@ -538,7 +530,6 @@ class HandActionService {
 
     if (_close) return;
     _context.read<ValueNotifier<FooterStatus>>().value = FooterStatus.None;
-
 
     for (final seatNoStr in playersInSeats.keys) {
       final seatNo = int.parse(seatNoStr);
@@ -1625,6 +1616,13 @@ class HandActionService {
   }
 
   Future<void> handleResult(var data) async {
+    /* invoke rabbit state */
+    if (_close) return;
+    _context.read<RabbitState>().putResult(
+          data,
+          myCards: _gameState.getPlayers(_context).me.cards,
+        );
+
     _gameState.handState = HandState.RESULT;
 
     if (_close) return;
@@ -1703,6 +1701,11 @@ class HandActionService {
       context: _context,
       audioPlayer: audioPlayer,
     );
+
+    // clear rabbit state
+    if (_close) return;
+    _context.read<RabbitState>().resultDone();
+
     _gameState.handState = HandState.ENDED;
     log('Hand Message: ::handleResult:: END');
   }
