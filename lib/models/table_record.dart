@@ -2,12 +2,18 @@ class TableRecord {
   List<TableRecordRow> rows;
 
   TableRecord() {
-    rows = new List<TableRecordRow>();
+    rows = [];
+  }
+
+  // this sort the rows list in descending order of profit
+  void sort() {
+    rows.sort((a, b) => b.profit.compareTo(a.profit));
   }
 
   TableRecord.fromJson(List<dynamic> data) {
     rows = List<TableRecordRow>.from(
-        data.map((record) => TableRecordRow.fromJson(record)));
+      data.map((record) => TableRecordRow.fromJson(record)),
+    );
   }
 
   String toString() {

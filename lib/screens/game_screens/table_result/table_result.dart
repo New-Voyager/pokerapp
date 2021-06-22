@@ -3,10 +3,12 @@ import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:pokerapp/models/table_record.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/game_service.dart';
@@ -17,6 +19,7 @@ import 'package:share/share.dart';
 class TableResultScreen extends StatefulWidget {
   final String gameCode;
   final bool showBackButton;
+  final int rankWidth = 10;
   final int playerWidth = 15;
   final int sessionWidth = 20;
   final int numHandsWidth = 15;
@@ -51,7 +54,8 @@ class _TableResultScreenState extends State<TableResultScreen> {
   _TableResultScreenState();
 
   void _fetchData() async {
-    this.data = await GameService.getGameTableRecord(widget.gameCode);
+    data = await GameService.getGameTableRecord(widget.gameCode);
+    data.sort();
     setState(() {});
   }
 
@@ -80,13 +84,15 @@ class _TableResultScreenState extends State<TableResultScreen> {
   Widget _buildHeaderChild({int flex = 1, String text = 'Player'}) => Expanded(
         flex: flex,
         child: Center(
-          child: FittedBox(
-            fit: BoxFit.fitWidth,
-            child: Text(
-              text,
-              style: TextStyle(color: Color(0xffef9712)),
-            ),
-          ),
+          child: text.isEmpty
+              ? Container()
+              : FittedBox(
+                  fit: BoxFit.fitWidth,
+                  child: Text(
+                    text,
+                    style: TextStyle(color: Color(0xffef9712)),
+                  ),
+                ),
         ),
       );
 
@@ -96,6 +102,10 @@ class _TableResultScreenState extends State<TableResultScreen> {
         color: Color(0xff313235),
         child: Row(
           children: [
+            _buildHeaderChild(
+              flex: widget.rankWidth,
+              text: '',
+            ),
             _buildHeaderChild(
               flex: widget.playerWidth,
               text: 'Player',
@@ -126,23 +136,64 @@ class _TableResultScreenState extends State<TableResultScreen> {
         ),
       );
 
-  Widget _buildTableContentChild({int flex = 1, var data}) => Expanded(
+  String _getIconByRank(int rank) {
+    switch (rank) {
+      case 1:
+        return AppAssetsNew.standing1;
+      case 2:
+        return AppAssetsNew.standing2;
+      case 3:
+        return AppAssetsNew.standing3;
+      default:
+        return '';
+    }
+  }
+
+  Color _getColorByRank(int rank) {
+    switch (rank) {
+      case 1:
+        return Colors.yellowAccent;
+      case 2:
+        return Colors.grey;
+      case 3:
+        return Colors.brown;
+      default:
+        return Colors.transparent;
+    }
+  }
+
+  Widget _buildTableContentChild({
+    int flex = 1,
+    var data,
+    String icon,
+    Color iconColor = Colors.transparent,
+  }) =>
+      Expanded(
         flex: flex,
-        child: Center(
-          child: FittedBox(
-            fit: BoxFit.fitWidth,
-            child: Text(
-              data is double ? DataFormatter.chipsFormat(data) : data,
-              style: TextStyle(
-                color: data is double
-                    ? data > 0
-                        ? AppStyles.profitStyle.color
-                        : AppStyles.lossStyle.color
-                    : Color(0xffa09f9e),
+        child: icon != null
+            ? icon.isEmpty
+                ? Container()
+                : SvgPicture.asset(
+                    icon,
+                    color: iconColor,
+                    width: 25.0,
+                    height: 25.0,
+                  )
+            : Center(
+                child: FittedBox(
+                  fit: BoxFit.fitWidth,
+                  child: Text(
+                    data is double ? DataFormatter.chipsFormat(data) : data,
+                    style: TextStyle(
+                      color: data is double
+                          ? data > 0
+                              ? AppStyles.profitStyle.color
+                              : AppStyles.lossStyle.color
+                          : Color(0xffa09f9e),
+                    ),
+                  ),
+                ),
               ),
-            ),
-          ),
-        ),
       );
 
   Widget _buildTableView() => Expanded(
@@ -156,11 +207,17 @@ class _TableResultScreenState extends State<TableResultScreen> {
                   if (index == 0) return _buildTableHeader();
 
                   final tableRowRecord = this.data.rows[index - 1];
+
                   return Container(
                     margin: EdgeInsets.symmetric(horizontal: 10.0),
                     height: 50.0,
                     child: Row(
                       children: [
+                        _buildTableContentChild(
+                          flex: widget.rankWidth,
+                          icon: _getIconByRank(index),
+                          iconColor: _getColorByRank(index),
+                        ),
                         _buildTableContentChild(
                           flex: widget.playerWidth,
                           data: tableRowRecord.playerName,
