@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:overlay_support/overlay_support.dart';
+import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
+import 'package:pokerapp/utils/card_helper.dart';
 import 'package:pokerapp/widgets/cards/multiple_stack_card_views.dart';
 
 class OverlayNotificationWidget extends StatelessWidget {
@@ -147,6 +149,21 @@ class OverlayRabbitHuntNotificationWidget extends StatelessWidget {
     @required this.revealedCards,
   });
 
+  List<CardObject> _getCards() {
+    List<CardObject> cards = [];
+
+    for (int c in boardCards) {
+      final CardObject co = CardHelper.getCard(c);
+      co.cardType = CardType.HandLogOrHandHistoryCard;
+
+      if (revealedCards.contains(c)) co.highlight = true;
+
+      cards.add(co);
+    }
+
+    return cards;
+  }
+
   @override
   Widget build(BuildContext context) {
     return SlideDismissible(
@@ -210,9 +227,8 @@ class OverlayRabbitHuntNotificationWidget extends StatelessWidget {
                             Column(
                               children: [
                                 Text('Community'),
-                                StackCardView01(
-                                  totalCards: boardCards,
-                                  cardsToHighlight: revealedCards,
+                                StackCardView(
+                                  cards: _getCards(),
                                 ),
                               ],
                             ),
