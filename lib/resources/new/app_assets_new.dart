@@ -30,7 +30,7 @@ class AppAssetsNew {
 
   static String cardBackImagePath = "assets/images/card_back/set2/Asset 8.png";
 
-  static var tableResultPath = "assets/images/gamesettings/casino.svg";
+  static String tableResultPath = "assets/images/gamesettings/casino.svg";
 
-  static var playerStatsPath = "assets/images/player-stats.svg";
+  static String playerStatsPath = "assets/images/player-stats.svg";
 }

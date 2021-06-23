@@ -73,6 +73,25 @@ class _ProfilePageViewState extends State<ProfilePageView> {
               // print('straddle output value: $output');
             },
           ),
+          ElevatedButton(
+            onPressed: () async {
+              log('show svg border');
+              GameType type = await showGameSelectorDialog(
+                listOfGameTypes: [
+                  GameType.HOLDEM,
+                  GameType.PLO,
+                  GameType.PLO_HILO,
+                  GameType.FIVE_CARD_PLO_HILO,
+                  GameType.FIVE_CARD_PLO,
+                ],
+                timeLimit: Duration(seconds: 500),
+              );
+
+              log("Selected Game Type: ${gameTypeStr(type)}");
+              // plateWidget.animate()
+            },
+            child: Text('New Game Selector Dialog'),
+          ),
           Spacer(),
           ElevatedButton(
             child: Text('Logout'),

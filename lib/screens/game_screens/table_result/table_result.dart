@@ -26,7 +26,10 @@ class TableResultScreen extends StatefulWidget {
   final bool showDownload;
   final bool showTips;
   TableResultScreen(
-      {this.gameCode, this.showDownload = true, this.showBackButton = false, this.showTips = false});
+      {this.gameCode,
+      this.showDownload = true,
+      this.showBackButton = true,
+      this.showTips = false});
 
   @override
   State<StatefulWidget> createState() {
@@ -129,13 +132,14 @@ class _TableResultScreenState extends State<TableResultScreen> {
                                 "Profit",
                                 style: TextStyle(color: Color(0xffef9712)),
                               ))),
-                          widget.showTips ? Expanded(
-                              flex: widget.rakeWidth,
-                              child: Center(
-                                  child: Text(
-                                "Tips",
-                                style: TextStyle(color: Color(0xffef9712)),
-                              )))
+                          widget.showTips
+                              ? Expanded(
+                                  flex: widget.rakeWidth,
+                                  child: Center(
+                                      child: Text(
+                                    "Tips",
+                                    style: TextStyle(color: Color(0xffef9712)),
+                                  )))
                               : Container(),
                         ],
                       ),
@@ -195,15 +199,17 @@ class _TableResultScreenState extends State<TableResultScreen> {
                                   : AppStyles.lossStyle,
                             )),
                           ),
-                          widget.showTips ? Expanded(
-                            flex: widget.rakeWidth,
-                            child: Center(
-                                child: Text(
-                              DataFormatter.chipsFormat(
-                                  this.data.rows[dataIdx].rakePaid),
-                              style: TextStyle(color: Color(0xffef9712)),
-                            )),
-                          ) : Container(),
+                          widget.showTips
+                              ? Expanded(
+                                  flex: widget.rakeWidth,
+                                  child: Center(
+                                      child: Text(
+                                    DataFormatter.chipsFormat(
+                                        this.data.rows[dataIdx].rakePaid),
+                                    style: TextStyle(color: Color(0xffef9712)),
+                                  )),
+                                )
+                              : Container(),
                         ],
                       ),
                     );
@@ -271,27 +277,31 @@ class _TableResultScreenState extends State<TableResultScreen> {
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          widget.showTips ? Text(
-                            "Tips",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontFamily: AppAssets.fontFamilyLato,
-                              fontSize: 18.0,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ): Container(),
+                          widget.showTips
+                              ? Text(
+                                  "Tips",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontFamily: AppAssets.fontFamilyLato,
+                                    fontSize: 18.0,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                )
+                              : Container(),
                           SizedBox(
                             width: 10.0,
                           ),
-                          widget.showTips ? Text(
-                            getTotalRake().toString(),
-                            style: TextStyle(
-                              color: Color(0xff1aff22),
-                              fontFamily: AppAssets.fontFamilyLato,
-                              fontSize: 18.0,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ): Container(),
+                          widget.showTips
+                              ? Text(
+                                  getTotalRake().toString(),
+                                  style: TextStyle(
+                                    color: Color(0xff1aff22),
+                                    fontFamily: AppAssets.fontFamilyLato,
+                                    fontSize: 18.0,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                )
+                              : Container(),
                         ],
                       ),
                       Row(
