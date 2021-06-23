@@ -32,6 +32,10 @@ class _HandStatPieChartState extends State<HandStatPieChart> {
 
   calculatePercentage() {
     int handsPlayed = widget.stat.totalHands;
+    if (handsPlayed == 0) {
+      // setting to 1 to avoid 0 in denominator. if total hands 0 means widget.stat.{each stage} will be also 0
+      handsPlayed = 1;
+    }
     handsData.add(new HandData(
         'Pre-flop', (widget.stat.inPreflop / handsPlayed) * 100.0));
     handsData

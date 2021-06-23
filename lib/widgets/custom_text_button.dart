@@ -31,6 +31,46 @@ class CustomTextButton extends StatelessWidget {
   }
 }
 
+class RoundRectButton extends StatelessWidget {
+  RoundRectButton({
+    @required this.text,
+    @required this.onTap,
+    this.split = false,
+    this.adaptive = true,
+  });
+
+  final bool adaptive;
+  final String text;
+  final Function onTap;
+  final bool split;
+
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: this.onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 20.0,
+          vertical: 10.0,
+        ),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20.0),
+          color: Colors.black.withOpacity(0.50),
+        ),
+        child: Wrap(
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: [
+            Text(
+              split ? text?.replaceFirst(" ", "\n") ?? 'Text' : text ?? 'Text',
+              textAlign: TextAlign.center,
+              style: AppStylesNew.textButtonStyle,
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class CountDownTextButton extends StatelessWidget {
   final int time;
   final String text;

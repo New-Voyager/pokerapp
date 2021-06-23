@@ -154,12 +154,6 @@ class _GameOptionState extends State<GameOption> {
 
     gameSecondaryOptions = [
       OptionItemModel(
-          title: "Game Stats",
-          name: "Analyze your performance",
-          image: "assets/images/casino.png",
-          backGroundColor: AppColors.gameOption1,
-          onTap: (context) {}),
-      OptionItemModel(
         title: "Seat Change",
         image: "assets/images/casino.png",
         name: "Request seat change",
@@ -311,25 +305,28 @@ class _GameOptionState extends State<GameOption> {
   @override
   Widget build(BuildContext context) {
     height = MediaQuery.of(context).size.height;
+    bool isPlaying = widget.gameState.isPlaying;
 
     return SingleChildScrollView(
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 16),
         child: Column(
           children: [
-            Container(
-              margin: EdgeInsets.only(bottom: 10),
-              padding: EdgeInsets.only(top: 16),
-              width: double.infinity,
-              decoration: AppStylesNew.actionRowDecoration,
-              child: Wrap(
-                alignment: WrapAlignment.center,
-                //mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ...gameActions.map((e) => gameActionItem(e)).toList(),
-                ],
-              ),
-            ),
+            !isPlaying
+                ? Container()
+                : Container(
+                    margin: EdgeInsets.only(bottom: 10),
+                    padding: EdgeInsets.only(top: 16),
+                    width: double.infinity,
+                    decoration: AppStylesNew.actionRowDecoration,
+                    child: Wrap(
+                      alignment: WrapAlignment.center,
+                      //mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        ...gameActions.map((e) => gameActionItem(e)).toList(),
+                      ],
+                    ),
+                  ),
             Container(
               padding: EdgeInsets.all(16),
               decoration: AppStylesNew.actionRowDecoration,
@@ -371,33 +368,38 @@ class _GameOptionState extends State<GameOption> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text("Session", style: AppStylesNew.labelTextStyle),
-                          isFetching
-                              ? CircularProgressWidget(
-                                  showText: false,
-                                  height: 24,
-                                )
-                              : Text(
-                                  "${DataFormatter.timeFormat(gameInfo.sessionTime)}",
-                                  style: AppStylesNew.valueTextStyle),
-                        ],
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Text("Won", style: AppStylesNew.labelTextStyle),
-                          isFetching
-                              ? CircularProgressWidget(
-                                  showText: false,
-                                  height: 24,
-                                )
-                              : Text("${gameInfo.noHandsWon}",
-                                  style: AppStylesNew.valueTextStyle),
-                        ],
-                      )
+                      !isPlaying
+                          ? Container()
+                          : Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text("Session",
+                                    style: AppStylesNew.labelTextStyle),
+                                isFetching
+                                    ? CircularProgressWidget(
+                                        showText: false,
+                                        height: 24,
+                                      )
+                                    : Text(
+                                        "${DataFormatter.timeFormat(gameInfo.sessionTime)}",
+                                        style: AppStylesNew.valueTextStyle),
+                              ],
+                            ),
+                      !isPlaying
+                          ? Container()
+                          : Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Text("Won", style: AppStylesNew.labelTextStyle),
+                                isFetching
+                                    ? CircularProgressWidget(
+                                        showText: false,
+                                        height: 24,
+                                      )
+                                    : Text("${gameInfo.noHandsWon}",
+                                        style: AppStylesNew.valueTextStyle),
+                              ],
+                            )
                     ],
                   ),
                 ],

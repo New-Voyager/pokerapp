@@ -398,6 +398,17 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         } catch (e) {
           // ignore the exception
         }
+      } else {
+        // Play voice text from observer.
+        try {
+          int res = await _audioPlayer.playBytes(message.audio);
+          if (res == 1) {
+            log("Playing observer sound");
+            await Future.delayed(Duration(seconds: message.duration ?? 0));
+          }
+        } catch (e) {
+          // ignore the exception
+        }
       }
     }
   }

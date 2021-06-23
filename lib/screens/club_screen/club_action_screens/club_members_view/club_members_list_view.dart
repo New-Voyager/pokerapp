@@ -14,15 +14,36 @@ import 'package:pokerapp/widgets/custom_icon_button.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class ClubMembersListView extends StatefulWidget {
-  final List<ClubMemberModel> _membersList;
+  List<ClubMemberModel> _membersList;
   final String clubCode;
-  final Function fetchData;
+  //final Function fetchData;
   final bool viewAsOwner;
+  final MemberListOptions option;
   ClubMembersListView(
-      this.clubCode, this._membersList, this.fetchData, this.viewAsOwner);
+      this.clubCode, this._membersList, this.option, this.viewAsOwner);
 
   @override
   _ClubMembersListViewState createState() => _ClubMembersListViewState();
+
+  Future<void> _fetchData() async {
+    log('Club member list');
+    if (this.option == MemberListOptions.ALL) {
+      _membersList = await ClubInteriorService.getClubMembers(
+          clubCode, MemberListOptions.ALL);
+    } else if (this.option == MemberListOptions.INACTIVE) {
+      _membersList = await ClubInteriorService.getClubMembers(
+          clubCode, MemberListOptions.INACTIVE);
+    } else if (this.option == MemberListOptions.MANAGERS) {
+      _membersList = await ClubInteriorService.getClubMembers(
+          clubCode, MemberListOptions.MANAGERS);
+    } else if (this.option == MemberListOptions.UNSETTLED) {
+      _membersList = await ClubInteriorService.getClubMembers(
+          clubCode, MemberListOptions.UNSETTLED);
+    }
+    for (final member in _membersList) {
+      log('_fetchData in ClubMemberListView member: ${member.name} status: ${member.status.toString()}');
+    }
+  }
 }
 
 class _ClubMembersListViewState extends State<ClubMembersListView> {
@@ -40,6 +61,11 @@ class _ClubMembersListViewState extends State<ClubMembersListView> {
 
   @override
   Widget build(BuildContext context) {
+    log('rebuilding club member list. ${widget.option.toString()}');
+
+    for (final member in widget._membersList) {
+      log('member: ${member.name} status: ${member.status.toString()}');
+    }
     List<ClubMemberModel> _filteredList;
     _filteredList = widget._membersList;
     _filteredList.sort((a, b) {
@@ -139,104 +165,6 @@ class _ClubMembersListViewState extends State<ClubMembersListView> {
                               ),
                             ],
                           ),
-                          // Visibility(
-                          //   visible: _filteredList[index].status !=
-                          //       ClubMemberStatus.PENDING,
-                          //   child: Padding(
-                          //     padding: EdgeInsets.only(top: 5, bottom: 5),
-                          //     child: Row(
-                          //       children: <Widget>[
-                          //         Expanded(
-                          //           flex: 3,
-                          //           child: Column(
-                          //             children: [
-                          //               Text(
-                          //                 "Buy In : ",
-                          //                 textAlign: TextAlign.left,
-                          //                 style: TextStyle(
-                          //                   fontFamily: AppAssets.fontFamilyLato,
-                          //                   color: Colors.white,
-                          //                   fontSize: 12,
-                          //                   fontWeight: FontWeight.w400,
-                          //                 ),
-                          //               ),
-                          //               Text(
-                          //                 _filteredList[index].buyIn ?? "",
-                          //                 textAlign: TextAlign.left,
-                          //                 style: TextStyle(
-                          //                   fontFamily: AppAssets.fontFamilyLato,
-                          //                   color: getTextColor(
-                          //                     _filteredList[index].buyIn,
-                          //                   ),
-                          //                   fontSize: 12,
-                          //                   fontWeight: FontWeight.w400,
-                          //                 ),
-                          //               ),
-                          //             ],
-                          //           ),
-                          //         ),
-                          //         Expanded(
-                          //           flex: 4,
-                          //           child: Column(
-                          //             children: [
-                          //               Text(
-                          //                 "Profit : ",
-                          //                 textAlign: TextAlign.left,
-                          //                 style: TextStyle(
-                          //                   fontFamily: AppAssets.fontFamilyLato,
-                          //                   color: Colors.white,
-                          //                   fontSize: 12,
-                          //                   fontWeight: FontWeight.w400,
-                          //                 ),
-                          //               ),
-                          //               Text(
-                          //                 _filteredList[index].profit ?? "",
-                          //                 textAlign: TextAlign.left,
-                          //                 style: TextStyle(
-                          //                   fontFamily: AppAssets.fontFamilyLato,
-                          //                   color: getTextColor(
-                          //                     _filteredList[index].profit,
-                          //                   ),
-                          //                   fontSize: 12,
-                          //                   fontWeight: FontWeight.w400,
-                          //                 ),
-                          //               ),
-                          //             ],
-                          //           ),
-                          //         ),
-                          //         Expanded(
-                          //           flex: 3,
-                          //           child: Column(
-                          //             children: [
-                          //               Text(
-                          //                 "Rake : ",
-                          //                 textAlign: TextAlign.left,
-                          //                 style: TextStyle(
-                          //                   fontFamily: AppAssets.fontFamilyLato,
-                          //                   color: Colors.white,
-                          //                   fontSize: 12,
-                          //                   fontWeight: FontWeight.w400,
-                          //                 ),
-                          //               ),
-                          //               Text(
-                          //                 _filteredList[index].rake ?? "",
-                          //                 textAlign: TextAlign.left,
-                          //                 style: TextStyle(
-                          //                   fontFamily: AppAssets.fontFamilyLato,
-                          //                   color: getTextColor(
-                          //                     _filteredList[index].rake,
-                          //                   ),
-                          //                   fontSize: 12,
-                          //                   fontWeight: FontWeight.w400,
-                          //                 ),
-                          //               ),
-                          //             ],
-                          //           ),
-                          //         ),
-                          //       ],
-                          //     ),
-                          //   ),
-                          // ),
                           Visibility(
                             visible: data.status != ClubMemberStatus.PENDING,
                             child: Padding(
@@ -270,56 +198,6 @@ class _ClubMembersListViewState extends State<ClubMembersListView> {
                         ],
                       ),
                     ),
-                    /*   Visibility(
-                      visible: data.status != ClubMemberStatus.PENDING,
-                      child: (data.isManager || data.isOwner)
-                          ? Text(
-                              data.isManager
-                                  ? "Manager"
-                                  : data.isOwner
-                                      ? "Owner"
-                                      : "",
-                            )
-                          : Column(
-                              children: [
-                                Text(
-                                  data.balanceStr,
-                                  style: TextStyle(
-                                    color: getBalanceColor(
-                                      data.balance,
-                                    ),
-                                    fontSize: 12.dp,
-                                  ),
-                                ),
-                                Visibility(
-                                  visible:
-                                      data.rake != null && data.rake != 0,
-                                  child: Padding(
-                                    padding: EdgeInsets.only(top: 10),
-                                    child: Container(
-                                      padding: EdgeInsets.all(3),
-                                      child: Text(
-                                        data.rakeStr,
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          backgroundColor:
-                                              Colors.transparent,
-                                          fontSize: 10.dp,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      decoration: BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.circular(3),
-                                        color: AppColors.veryLightGrayColor,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                    ),
-                   */
                     Visibility(
                       visible: ((data.status != ClubMemberStatus.PENDING) &&
                           (widget.viewAsOwner ?? false)),
@@ -361,7 +239,7 @@ class _ClubMembersListViewState extends State<ClubMembersListView> {
                                 await ClubInteriorService.approveClubMember(
                                     widget.clubCode, member.playerId);
                             if (data == "ACTIVE") {
-                              widget.fetchData();
+                              member.status = ClubMemberStatus.ACTIVE;
                               setState(() {});
                             }
                           },
@@ -376,57 +254,11 @@ class _ClubMembersListViewState extends State<ClubMembersListView> {
                             var data = await ClubInteriorService.denyClubMember(
                                 widget.clubCode, member.playerId);
                             if (data == "DENIED") {
-                              widget.fetchData();
+                              widget._fetchData();
                             }
                           },
                         ),
                         AppDimensionsNew.getHorizontalSpace(8),
-                        /*   GestureDetector(
-                          onTap: () async {
-                            log('approve is clicked');
-                            var data = await ClubInteriorService
-                                .approveClubMember(
-                                    widget.clubCode, member.playerId);
-                            if (data == "ACTIVE") {
-                              widget.fetchData();
-                            }
-                          },
-                          child: Padding(
-                            padding: EdgeInsets.only(top: 8, bottom: 8),
-                            child: Text(
-                              "Approve",
-                              style: TextStyle(
-                                fontFamily: AppAssets.fontFamilyLato,
-                                fontSize: 17,
-                                fontWeight: FontWeight.w400,
-                                color: AppColors.appAccentColor,
-                              ),
-                            ),
-                          ),
-                        ),
-                       */ /* GestureDetector(
-                          onTap: () async {
-                            log('deny is clicked');
-                            var data = await ClubInteriorService
-                                .denyClubMember(
-                                    widget.clubCode, member.playerId);
-                            if (data == "DENIED") {
-                              widget.fetchData();
-                            }
-                          },
-                          child: Padding(
-                            padding: EdgeInsets.only(top: 8, bottom: 8),
-                            child: Text(
-                              "Deny",
-                              style: TextStyle(
-                                fontFamily: AppAssets.fontFamilyLato,
-                                fontSize: 17,
-                                fontWeight: FontWeight.w400,
-                                color: AppColors.appAccentColor,
-                              ),
-                            ),
-                          ),
-                        ), */
                       ],
                     ),
                   ),

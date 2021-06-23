@@ -1,5 +1,5 @@
 import 'dart:math' as math;
-
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/club_member_status.dart';
 import 'package:pokerapp/models/club_homepage_model.dart';
@@ -38,8 +38,10 @@ class _ClubMembersViewState extends State<ClubMembersView>
   _ClubMembersViewState(this._clubHomePageModel);
 
   _fetchData() async {
+    log('Club member list');
     _all = await ClubInteriorService.getClubMembers(
         _clubHomePageModel.clubCode, MemberListOptions.ALL);
+    log('Club member list: $_all');
     _inactive = await ClubInteriorService.getClubMembers(
         _clubHomePageModel.clubCode, MemberListOptions.INACTIVE);
     _managers = await ClubInteriorService.getClubMembers(
@@ -79,20 +81,6 @@ class _ClubMembersViewState extends State<ClubMembersView>
             : _clubHomePageModel.isOwner
                 ? Column(
                     children: [
-                      // Container(
-                      //   margin:
-                      //       EdgeInsets.only(left: 15, top: 5, bottom: 5, right: 15),
-                      //   alignment: Alignment.centerLeft,
-                      //   child: Text(
-                      //     "Members",
-                      //     style: const TextStyle(
-                      //       fontFamily: AppAssets.fontFamilyLato,
-                      //       color: Colors.white,
-                      //       fontSize: 30.0,
-                      //       fontWeight: FontWeight.w900,
-                      //     ),
-                      //   ),
-                      // ),
                       Container(
                         alignment: Alignment.topCenter,
                         child: TabBar(
@@ -125,25 +113,25 @@ class _ClubMembersViewState extends State<ClubMembersView>
                             ClubMembersListView(
                               this._clubHomePageModel.clubCode,
                               _all,
-                              () => _fetchData,
+                              MemberListOptions.ALL,
                               _clubHomePageModel.isOwner,
                             ),
                             ClubMembersListView(
                               this._clubHomePageModel.clubCode,
                               _unsettled,
-                              () => _fetchData,
+                              MemberListOptions.UNSETTLED,
                               _clubHomePageModel.isOwner,
                             ),
                             ClubMembersListView(
                               this._clubHomePageModel.clubCode,
                               _managers,
-                              () => _fetchData,
+                              MemberListOptions.MANAGERS,
                               _clubHomePageModel.isOwner,
                             ),
                             ClubMembersListView(
                               this._clubHomePageModel.clubCode,
                               _inactive,
-                              () => _fetchData,
+                              MemberListOptions.INACTIVE,
                               _clubHomePageModel.isOwner,
                             ),
                           ],

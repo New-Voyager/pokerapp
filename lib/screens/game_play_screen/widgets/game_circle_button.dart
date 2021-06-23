@@ -23,22 +23,21 @@ class GameCircleButton extends StatelessWidget {
   Widget build(BuildContext context) {
     Widget child = this.child;
     Widget svg = null;
-    if(imagePath != null) {
+    if (imagePath != null) {
       if (color != null) {
-          svg = SvgPicture.asset(
-              imagePath,
-              height: 24.pw,
-              width: 24.pw,
-              color: color,
-            );
+        svg = SvgPicture.asset(
+          imagePath,
+          height: 24.pw,
+          width: 24.pw,
+          color: color,
+        );
       } else {
-          svg = SvgPicture.asset(
-              imagePath,
-              height: 24.pw,
-              width: 24.pw,
-            );
+        svg = SvgPicture.asset(
+          imagePath,
+          height: 24.pw,
+          width: 24.pw,
+        );
       }
-
     }
     if (child == null) {
       child = svg != null

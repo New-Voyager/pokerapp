@@ -437,7 +437,9 @@ class _HandStatsViewState extends State<HandStatsView> {
                 ),
                 Expanded(
                   child: Text(
-                    "${((thisVal / stats.thisGame.totalHands) * 100).floor()}%",
+                    stats.thisGame.totalHands == 0
+                        ? 0
+                        : "${((thisVal / stats.thisGame.totalHands) * 100).floor()}%",
                     textAlign: TextAlign.right,
                     style: AppStylesNew.statValTextStyle,
                   ),
@@ -458,7 +460,9 @@ class _HandStatsViewState extends State<HandStatsView> {
                 ),
                 Expanded(
                   child: Text(
-                    "${((allVal / stats.alltime.totalHands) * 100).floor()}%",
+                    stats.alltime.totalHands == 0
+                        ? 0
+                        : "${((allVal / stats.alltime.totalHands) * 100).floor()}%",
                     textAlign: TextAlign.right,
                     style: AppStylesNew.statValTextStyle,
                   ),
@@ -497,7 +501,9 @@ class _HandStatsViewState extends State<HandStatsView> {
                 ),
                 Expanded(
                   child: Text(
-                    "${((thisVal / stats.thisGame.totalHands) * 100).floor()}%",
+                    stats.thisGame.totalHands == 0
+                        ? 0
+                        : "${((thisVal / stats.thisGame.totalHands) * 100).floor()}%",
                     textAlign: TextAlign.right,
                     style: AppStylesNew.statValTextStyle,
                   ),
@@ -518,7 +524,9 @@ class _HandStatsViewState extends State<HandStatsView> {
                 ),
                 Expanded(
                   child: Text(
-                    "${((allVal / stats.alltime.totalHands) * 100).floor()}%",
+                    stats.alltime.totalHands == 0
+                        ? 0
+                        : "${((allVal / stats.alltime.totalHands) * 100).floor()}%",
                     textAlign: TextAlign.right,
                     style: AppStylesNew.statValTextStyle,
                   ),
@@ -564,7 +572,9 @@ class _HandStatsViewState extends State<HandStatsView> {
                 ),
                 Expanded(
                   child: Text(
-                    "${((thisWon / thisHands) * 100).floor()}%",
+                    thisHands == 0
+                        ? 0
+                        : "${((thisWon / thisHands) * 100).floor()}%",
                     textAlign: TextAlign.center,
                     style: AppStylesNew.statValTextStyle,
                   ),
@@ -592,7 +602,9 @@ class _HandStatsViewState extends State<HandStatsView> {
                 ),
                 Expanded(
                   child: Text(
-                    "${((allWon / allHands) * 100).floor()}%",
+                    allHands == 0
+                        ? 0
+                        : "${((allWon / allHands) * 100).floor()}%",
                     textAlign: TextAlign.center,
                     style: AppStylesNew.statValTextStyle,
                   ),
@@ -609,11 +621,13 @@ class _HandStatsViewState extends State<HandStatsView> {
     List<Widget> list = [];
     stats.alltime.headsupHandSummary.forEach((key, value) {
       log("${key.runtimeType} ${stats.headsupThisGame.keys}");
-
+      int playerId = int.parse(key);
+      final playerName = stats.playerIdToName[playerId];
+      final verses = stats.headsupThisGame[int.parse(key)];
       list.add(_buildOnePlayerHeadsupRow(
-        player: key.toString(),
-        thisHands: stats.headsupThisGame[int.parse(key)].count ?? 0,
-        thisWon: stats.headsupThisGame[int.parse(key)].won ?? 0,
+        player: playerName,
+        thisHands: verses == null ? 0 : verses.count,
+        thisWon: verses == null ? 0 : verses.won,
         allHands: value.total,
         allWon: value.won,
       ));
