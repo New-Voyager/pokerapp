@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 
 class NewButton extends StatelessWidget {
@@ -12,7 +13,10 @@ class NewButton extends StatelessWidget {
       onPressed: onTapFunc,
       style: style,
       child: Container(
-        child: Text(text),
+        child: Text(
+          text,
+          style: TextStyle(color: AppColorsNew.newTextColor),
+        ),
       ),
     );
   }

@@ -1,3 +1,4 @@
+import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
 
@@ -106,6 +107,40 @@ class GameModelNew {
         break;
       case 'FIVE_CARD_PLO_HILO':
         return AppAssetsNew.pathFiveCardPLOHiLoTypeImage;
+        break;
+      case 'ROE':
+        return AppAssetsNew.pathROETypeImage;
+        break;
+      case 'DEALER_CHOICE':
+        return AppAssetsNew.pathDealerChoiceTypeImage;
+        break;
+      default:
+        return AppAssetsNew.pathDefaultTypeImage;
+    }
+  }
+
+  static String getGameTypeImageAssetFromEnum(GameType type) {
+    switch (type) {
+      case GameType.HOLDEM:
+        return AppAssetsNew.pathHoldemTypeImage;
+        break;
+      case GameType.PLO:
+        return AppAssetsNew.pathPLOTypeImage;
+        break;
+      case GameType.PLO_HILO:
+        return AppAssetsNew.pathPLOHiLoTypeImage;
+        break;
+      case GameType.FIVE_CARD_PLO:
+        return AppAssetsNew.pathFiveCardPLOTypeImage;
+        break;
+      case GameType.FIVE_CARD_PLO_HILO:
+        return AppAssetsNew.pathFiveCardPLOHiLoTypeImage;
+        break;
+      case GameType.ROE:
+        return AppAssetsNew.pathROETypeImage;
+        break;
+      case GameType.DEALER_CHOICE:
+        return AppAssetsNew.pathDealerChoiceTypeImage;
         break;
       default:
         return AppAssetsNew.pathDefaultTypeImage;

@@ -27,8 +27,14 @@ class _ChooseGameNewState extends State<ChooseGameNew>
     with SingleTickerProviderStateMixin {
   GameType _selectedGameType;
   AnimationController _animationController;
-  List<GameType> gamesRoe = [];
-  List<GameType> gamesDealerChoice = [];
+  List<GameType> gamesRoe = [GameType.HOLDEM, GameType.PLO];
+  List<GameType> gamesDealerChoice = [
+    GameType.HOLDEM,
+    GameType.PLO,
+    GameType.PLO_HILO,
+    GameType.FIVE_CARD_PLO,
+    GameType.FIVE_CARD_PLO_HILO
+  ];
 
   @override
   void initState() {

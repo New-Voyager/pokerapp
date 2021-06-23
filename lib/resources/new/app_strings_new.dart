@@ -68,4 +68,7 @@ class AppStringsNew {
   static String clubStatisticsTitle = "Club Statistics";
 
   static String oddsSoFarText = "Odds so far";
+
+  static String chooseGameTitleNextHand =
+      "Choose a game type for the next hand";
 }

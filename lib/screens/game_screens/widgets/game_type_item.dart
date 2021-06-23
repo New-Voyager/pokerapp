@@ -105,7 +105,7 @@ class GameTypeItem extends StatelessWidget {
                       child: Text(
                         _buildGameTypeStrFromList(),
                         style: AppStylesNew.openSeatsTextStyle.copyWith(
-                          fontSize: 10.dp,
+                          fontSize: 8.dp,
                         ),
                       ),
                       visible: (gamesList != null && gamesList.length > 0),
