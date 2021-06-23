@@ -155,6 +155,7 @@ class AppConstants {
 
   /* message types */
   static const String PLAYER_UPDATE = 'PLAYER_UPDATE';
+  static const String STACK_RELOADED = 'STACK_RELOADED';
   static const String TABLE_UPDATE = 'TABLE_UPDATE';
   static const String HIGH_HAND = 'HIGH_HAND';
   static const String GAME_STATUS = 'GAME_STATUS';

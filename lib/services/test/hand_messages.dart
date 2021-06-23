@@ -402,6 +402,11 @@ String foldMessage() => '''
 }
 ''';
 
+String get reloadStackMessage => '''
+ {"gameCode":"cgkmtdhya","messageType":"STACK_RELOADED",
+    "playerId":"3","oldStack":200,"newStack":250,"reloadAmount":50,"status":"PLAYING"}
+''';
+
 String runItTwiceMessage() => '''
 {
 	"clubId": 1,

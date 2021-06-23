@@ -132,6 +132,11 @@ class Players extends ChangeNotifier {
   //     _players[i].coinAmount = coinAmount;
   // }
 
+  void updateStackReloadStateSilent(int playerID, StackReloadState sts) {
+    int idx = _players.indexWhere((p) => p.playerId == playerID);
+    if (idx != -1) _players[idx].stackReloadState = sts;
+  }
+
   void fireworkWinnerSilent(int seatNo) {
     int idx = _players.indexWhere((p) => p.seatNo == seatNo);
     if (idx != -1) _players[idx].showFirework = true;
