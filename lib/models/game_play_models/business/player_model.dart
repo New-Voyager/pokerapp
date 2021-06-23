@@ -105,7 +105,7 @@ class PlayerModel {
     this.buyIn = data['buyIn'];
     this.stack = data['stack'];
     this.status = data['status'];
-    this.playerId = data['playerId'];
+    this.playerId = int.parse(data['playerId'].toString());
     this._action = PlayerActedState();
 
     DateTime now = DateTime.now();

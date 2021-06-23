@@ -134,7 +134,10 @@ class Players extends ChangeNotifier {
 
   void updateStackReloadStateSilent(int playerID, StackReloadState sts) {
     int idx = _players.indexWhere((p) => p.playerId == playerID);
-    if (idx != -1) _players[idx].stackReloadState = sts;
+    if (idx != -1) {
+      _players[idx].stackReloadState = sts;
+      if (sts != null) _players[idx].stack = sts.newStack;
+    }
   }
 
   void fireworkWinnerSilent(int seatNo) {

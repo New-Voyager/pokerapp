@@ -529,7 +529,7 @@ class GameUpdateService {
     _players.notifyAll();
 
     // wait for the animation to end
-    await Future.delayed(const Duration(milliseconds: 600));
+    await Future.delayed(const Duration(milliseconds: 3000));
 
     // finally end animation
     _players.updateStackReloadStateSilent(playerId, null);

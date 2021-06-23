@@ -458,7 +458,6 @@ class TestService {
 
   static void reloadStack() {
     initHandSevice();
-
     _context
         .read<GameContextObject>()
         .gameUpdateService
