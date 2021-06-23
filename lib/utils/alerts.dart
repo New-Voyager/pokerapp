@@ -27,7 +27,7 @@ class Alerts {
 
   static void showRabbitHuntNotification({
     ChatMessage chatMessage,
-    Duration duration = const Duration(milliseconds: 3000),
+    Duration duration = const Duration(milliseconds: 10000),
   }) {
     showOverlayNotification(
       (context) => OverlayRabbitHuntNotificationWidget(
