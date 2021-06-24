@@ -61,6 +61,7 @@ class GamePlayScreenUtilMethods {
           ),
           backgroundColor: Colors.red,
           label: 'Mic Animation',
+          labelBackgroundColor: Colors.black,
           onTap: () => TestService.showMicAnimation(),
         ),
         SpeedDialChild(
@@ -69,6 +70,7 @@ class GamePlayScreenUtilMethods {
             color: Colors.white,
           ),
           backgroundColor: Colors.red,
+          labelBackgroundColor: Colors.black,
           label: 'Seat Change Prompt',
           onTap: () => TestService.showSeatChangePrompt(),
         ),
@@ -78,19 +80,20 @@ class GamePlayScreenUtilMethods {
             color: Colors.white,
           ),
           backgroundColor: Colors.red,
+          labelBackgroundColor: Colors.black,
           label: 'Notification',
           onTap: () => TestService.showTextNotification(),
         ),
 
-        // SpeedDialChild(
-        //   child: Icon(
-        //     Icons.adb_rounded,
-        //     color: Colors.white,
-        //   ),
-        //   backgroundColor: Colors.red,
-        //   label: 'Buyin Test',
-        //   onTap: () => TestService.buyInTest(),
-        // ),
+        SpeedDialChild(
+            child: Icon(
+              Icons.adb_rounded,
+              color: Colors.white,
+            ),
+            backgroundColor: Colors.red,
+            labelBackgroundColor: Colors.black,
+            label: 'reload stack',
+            onTap: () => TestService.reloadStack()),
         // SpeedDialChild(
         //   child: Icon(
         //     Icons.adb_rounded,
@@ -343,6 +346,7 @@ class GamePlayScreenUtilMethods {
             color: Colors.white,
           ),
           backgroundColor: Colors.red,
+          labelBackgroundColor: Colors.black,
           label: 'Show holecards',
           onTap: () => TestService.showHoleCards(),
         ),

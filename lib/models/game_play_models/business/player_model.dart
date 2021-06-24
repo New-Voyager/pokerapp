@@ -1,12 +1,24 @@
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
-import 'package:pokerapp/enums/player_status.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/utils/card_helper.dart';
+
+class StackReloadState {
+  int oldStack;
+  int newStack;
+  int reloadAmount;
+
+  StackReloadState({
+    @required this.oldStack,
+    @required this.newStack,
+    @required this.reloadAmount,
+  });
+}
 
 class PlayerModel {
   bool isMe = false;
@@ -39,6 +51,10 @@ class PlayerModel {
   bool animatingFold = false;
   bool highlight = false;
   bool playerFolded = false;
+
+  // reload stack related data - whenever stack reload state is
+  bool get reloadAnimation => stackReloadState != null;
+  StackReloadState stackReloadState;
 
   // break time
   bool inBreak = false;
@@ -89,7 +105,7 @@ class PlayerModel {
     this.buyIn = data['buyIn'];
     this.stack = data['stack'];
     this.status = data['status'];
-    this.playerId = data['playerId'];
+    this.playerId = int.parse(data['playerId'].toString());
     this._action = PlayerActedState();
 
     DateTime now = DateTime.now();

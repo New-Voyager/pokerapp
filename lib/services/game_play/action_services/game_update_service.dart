@@ -4,7 +4,6 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
-import 'package:pokerapp/enums/game_status.dart';
 import 'package:pokerapp/enums/player_status.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
@@ -13,6 +12,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/notification_models/general_notification_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/notification_models/hh_notification_model.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat_change_model.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/resources/app_constants.dart';
@@ -22,7 +22,6 @@ import 'package:pokerapp/screens/game_play_screen/widgets/overlay_notification.d
 import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/game_play/graphql/seat_change_service.dart';
-import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:provider/provider.dart';
 import 'package:pokerapp/screens/game_play_screen/game_play_screen_util_methods.dart';
@@ -37,7 +36,7 @@ class GameUpdateService {
 
   void close() {
     closed = true;
-    _messages.clear();
+    clear();
   }
 
   void clear() {
@@ -51,17 +50,14 @@ class GameUpdateService {
         dynamic message = _messages[0];
 
         String messageType = message['messageType'];
-        //log(':GameUpdateService: message type: $messageType handState: ${_gameState.handState.toString()}');
+        log(':GameUpdateService: message type: $messageType handState: ${_gameState.handState.toString()}');
         if (_gameState.handState != HandState.UNKNOWN &&
             _gameState.handState != HandState.ENDED) {
           if (messageType == AppConstants.GAME_STATUS ||
               messageType == AppConstants.TABLE_UPDATE) {
-            //log(':GameUpdateService: message type: $messageType handState: ${_gameState.handState.toString()} Process this message later');
-            // we are in the middle of the hand
             _messages.removeAt(0);
             _messages.add(message);
             await Future.delayed(Duration(milliseconds: 50));
-            continue;
           }
         }
 
@@ -89,17 +85,14 @@ class GameUpdateService {
     assert(_context != null);
     assert(message != null && message.isNotEmpty);
 
-    //debugPrint(message);
     var data = jsonDecode(message);
-//    List<dynamic> messages = data['messages'];
-    _messages.addAll([data]);
+    _messages.add(data);
   }
 
   Future<void> handleMessage(dynamic data) async {
     // if the service is closed, don't process incoming messages
-    if (closed) {
-      return;
-    }
+    if (closed) return;
+
     debugPrint(jsonEncode(data));
     String messageType = data['messageType'];
     String type = data['type']; // new format used by API server
@@ -108,6 +101,11 @@ class GameUpdateService {
       switch (messageType) {
         case AppConstants.PLAYER_UPDATE:
           return handlePlayerUpdate(
+            data: data,
+          );
+
+        case AppConstants.STACK_RELOADED:
+          return handleStackReloaded(
             data: data,
           );
 
@@ -128,8 +126,6 @@ class GameUpdateService {
           );
       }
     } else if (type != null) {
-      print('\n\n\n\n type: $type \n\n\n\n');
-
       // new type
       switch (type) {
         case AppConstants.PLAYER_SEAT_CHANGE_PROMPT:
@@ -507,9 +503,43 @@ class GameUpdateService {
     }
   }
 
+  void handleStackReloaded({
+    var data,
+  }) async {
+    /*
+    * {"gameCode":"cgkmtdhya","messageType":"STACK_RELOADED", "playerId":"3",
+    * "oldStack":200,"newStack":250,"reloadAmount":50,"status":"PLAYING"}
+    */
+
+    int playerId = int.parse(data['playerId'].toString());
+    int oldStack = int.parse(data['oldStack'].toString());
+    int newStack = int.parse(data['newStack'].toString());
+    int reloadAmount = int.parse(data['reloadAmount'].toString());
+
+    final _players = _context.read<Players>();
+
+    _players.updateStackReloadStateSilent(
+        playerId,
+        StackReloadState(
+          oldStack: oldStack,
+          newStack: newStack,
+          reloadAmount: reloadAmount,
+        ));
+
+    _players.notifyAll();
+
+    // wait for the animation to end
+    await Future.delayed(const Duration(milliseconds: 3000));
+
+    // finally end animation
+    _players.updateStackReloadStateSilent(playerId, null);
+    _players.notifyAll();
+  }
+
   void handlePlayerUpdate({
     var data,
   }) {
+    print('playerUpdate: $data');
     var playerUpdate = data['playerUpdate'];
     String newUpdate = playerUpdate['newUpdate'];
     String playerStatus = playerUpdate['status'];

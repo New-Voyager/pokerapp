@@ -11,8 +11,10 @@ import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/boar
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/screens/game_play_screen/game_play_screen_util_methods.dart';
+import 'package:pokerapp/screens/game_play_screen/seat_view/animating_widgets/stack_reload_animating_widget.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/milliseconds_counter.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/plate_border.dart';
+import 'package:pokerapp/widgets/cards/pulsating_card_container.dart';
 import 'package:provider/provider.dart';
 import 'package:timer_count_down/timer_count_down.dart';
 
@@ -271,13 +273,20 @@ class NamePlateWidget extends StatelessWidget {
   }
 
   Widget stack(BuildContext context) {
-    return Text(
-      seat.player.stack?.toString() ?? 'XX',
-      style: AppStyles.gamePlayScreenPlayerChips.copyWith(
-        // FIXME: may be this is permanant?
-        color: Colors.white,
-      ),
-    );
+    Widget _buildStackTextWidget(int stack) => Text(
+          stack?.toString() ?? 'XX',
+          style: AppStyles.gamePlayScreenPlayerChips.copyWith(
+            color: Colors.white,
+          ),
+        );
+
+    if (seat.player.reloadAnimation == true)
+      return StackReloadAnimatingWidget(
+        stackReloadState: seat.player.stackReloadState,
+        stackTextBuilder: _buildStackTextWidget,
+      );
+
+    return _buildStackTextWidget(seat.player.stack);
   }
 
   // Widget buyInTimer(BuildContext context, int time) {

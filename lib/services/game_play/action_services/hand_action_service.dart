@@ -264,12 +264,12 @@ class HandActionService {
 
   Future<void> handleMessage(dynamic data) async {
     // if the service is closed, don't process incoming messages
-    if (closed) {
-      return;
-    }
+    if (closed) return;
+
     // debugPrint(jsonEncode(data));
 
     String messageType = data['messageType'];
+
     if (_retryMsg != null) {
       bool handled = _retryMsg.handleMsg(data);
       // cancel retry now
@@ -285,6 +285,7 @@ class HandActionService {
     }
 
     log('Hand Message: ::handleMessage:: START messageType: $messageType');
+
     try {
       // delegate further actions to sub services as per messageType
       switch (messageType) {
