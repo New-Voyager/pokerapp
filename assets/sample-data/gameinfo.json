@@ -117,6 +117,8 @@
 		"playerToHandChannel": "player.CG-8QI4TZBWJRQAXN.hand",
 		"handToAllChannel": "hand.CG-8QI4TZBWJRQAXN.player.all",
 		"handToPlayerChannel": "hand.CG-8QI4TZBWJRQAXN.player.1",
-		"gameChatChannel": "game.CG-8QI4TZBWJRQAXN.chat"
+		"gameChatChannel": "game.CG-8QI4TZBWJRQAXN.chat",
+		"pingChannel": "ping.CG-8QI4TZBWJRQAXN",
+		"pongChannel": "pong.CG-8QI4TZBWJRQAXN"
 	}
 }
