@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/models/club_members_model.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
+import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/services/app/club_interior_service.dart';
 import 'package:pokerapp/utils/color_generator.dart';
@@ -18,7 +20,7 @@ class ListOfClubMemberBottomSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: AppColors.screenBackgroundColor,
+      decoration: AppStylesNew.BgGreenRadialGradient,
       height: 3 * MediaQuery.of(context).size.height / 4,
       child: Column(
         children: [
@@ -26,7 +28,6 @@ class ListOfClubMemberBottomSheet extends StatelessWidget {
             padding: EdgeInsets.symmetric(vertical: 10),
             child: Text(
               "Choose a Member",
-              style: AppStyles.optionTitleText,
             ),
           ),
           Expanded(
@@ -42,6 +43,9 @@ class ListOfClubMemberBottomSheet extends StatelessWidget {
                   return ListView.builder(
                     itemCount: snapshot.data.length,
                     itemBuilder: (context, index) {
+                      if (snapshot.data[index].isOwner) {
+                        return SizedBox.shrink();
+                      }
                       return GestureDetector(
                         onTap: () async {
                           await navigatorKey.currentState.pushNamed(
@@ -55,38 +59,28 @@ class ListOfClubMemberBottomSheet extends StatelessWidget {
                           Navigator.pop(context);
                         },
                         child: Container(
-                          padding:
-                              EdgeInsets.only(bottom: 5, top: 10, left: 10),
-                          child: Column(
+                          decoration: AppStylesNew.actionRowDecoration,
+                          margin:
+                              EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                          padding: EdgeInsets.symmetric(vertical: 16),
+                          child: Row(
                             children: [
-                              Row(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 8),
-                                    child: CircleAvatar(
-                                      backgroundColor: generateColorFor(
-                                          snapshot.data[index].playerId),
-                                      radius: 25,
-                                      child: Text(
-                                        snapshot.data[index].name[0]
-                                            .toUpperCase(),
-                                        style: AppStyles.titleTextStyle,
-                                      ),
-                                    ),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 16),
+                                child: CircleAvatar(
+                                  backgroundColor: generateColorFor(
+                                      snapshot.data[index].playerId),
+                                  radius: 20,
+                                  child: Text(
+                                    snapshot.data[index].name[0].toUpperCase(),
                                   ),
-                                  Text(
-                                    snapshot.data[index].name,
-                                    style: AppStyles.notificationTitleTextStyle,
-                                  ),
-                                ],
+                                ),
                               ),
-                              SizedBox(
-                                height: 5,
+                              Text(
+                                snapshot.data[index].name,
+                                style: AppStyles.notificationTitleTextStyle,
                               ),
-                              Divider(
-                                color: AppColors.contentColor,
-                              )
                             ],
                           ),
                         ),
