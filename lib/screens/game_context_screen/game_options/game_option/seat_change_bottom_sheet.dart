@@ -61,6 +61,8 @@ class _SeatChangeBottomSheetState extends State<SeatChangeBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
+    bool isPlaying = widget.gameState.isPlaying;
+
     height = MediaQuery.of(context).size.height;
     width = MediaQuery.of(context).size.width;
     // print("playerUuid ${widget.playerUuid}");
@@ -76,7 +78,10 @@ class _SeatChangeBottomSheetState extends State<SeatChangeBottomSheet> {
         ),
         body: Column(
           mainAxisSize: MainAxisSize.max,
-          children: [seatChangeButton(), playersInList()],
+          children: [
+            isPlaying ? seatChangeButton() : Container(),
+            playersInList()
+          ],
         ),
       ),
     );

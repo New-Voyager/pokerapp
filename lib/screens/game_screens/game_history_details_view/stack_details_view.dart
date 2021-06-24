@@ -93,7 +93,7 @@ class _PointsLineChart extends State<PointsLineChart> {
   _loadStackLiveData() async {
     stackList.clear();
     final data = await GameService.getLiveStackStat(widget.gameCode);
-    if (data.length >= 1) {
+    if (data != null && data.length >= 1) {
       // set handnum 0 with starting stack
       dynamic item0 = data[0];
       stackList.add(new PlayerStackChartModel(item0, first: true));
