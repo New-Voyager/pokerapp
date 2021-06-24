@@ -92,6 +92,7 @@ query clubStats(\$clubCode: String!) {
     four2222
 
     totalHands
+    totalGames
   }
   plo: clubStats(gameType: PLO, clubCode: \$clubCode) {
     straightAFlush
@@ -120,6 +121,7 @@ query clubStats(\$clubCode: String!) {
     four2222
 
     totalHands
+    totalGames
 
   }
     fivecard_plo: clubStats(gameType: FIVE_CARD_PLO, clubCode: \$clubCode) {
@@ -149,6 +151,7 @@ query clubStats(\$clubCode: String!) {
     four2222
 
     totalHands
+    totalGames
   }
 }
 

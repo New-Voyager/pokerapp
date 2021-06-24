@@ -57,7 +57,7 @@ class Alerts {
         title: titleText,
         subTitle: subTitleText,
         icon: leadingIcon,
-        image:imagePath,
+        image: imagePath,
       ),
       position: NotificationPosition.top,
       duration: duration,

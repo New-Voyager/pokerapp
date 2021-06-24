@@ -573,7 +573,7 @@ class _HandStatsViewState extends State<HandStatsView> {
                 Expanded(
                   child: Text(
                     thisHands == 0
-                        ? 0
+                        ? "$thisHands"
                         : "${((thisWon / thisHands) * 100).floor()}%",
                     textAlign: TextAlign.center,
                     style: AppStylesNew.statValTextStyle,

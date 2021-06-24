@@ -30,8 +30,8 @@ class _ClubStatsScreenState extends State<ClubStatsScreen>
   void initState() {
     _tabController = TabController(length: 3, vsync: this, initialIndex: 0);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      //_fetchClubStats();
-      _fetchTestClubStats();
+      _fetchClubStats();
+      //_fetchTestClubStats();
     });
     super.initState();
   }
@@ -146,7 +146,7 @@ class StatsDetailForGame extends StatelessWidget {
                             style: AppStylesNew.labelTextStyle,
                           ),
                           Text(
-                            "${action['totalHands']}",
+                            "${action['totalGames']}",
                             style: AppStylesNew.valueTextStyle,
                           ),
                         ],
