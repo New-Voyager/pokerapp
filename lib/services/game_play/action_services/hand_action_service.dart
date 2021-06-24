@@ -22,6 +22,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
+import 'package:pokerapp/models/newmodels/game_model_new.dart';
 import 'package:pokerapp/models/rabbit_state.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
@@ -32,6 +33,7 @@ import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/game_play/utils/audio.dart';
 import 'package:pokerapp/services/test/test_service.dart';
+import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:pokerapp/widgets/run_it_twice_dialog.dart';
 import 'package:provider/provider.dart';
@@ -1133,14 +1135,20 @@ class HandActionService {
     if (type == 'NewGameType') {
       String game = announcement['params'][0].toString();
       GameType gameType = gameTypeFromStr(game);
-      String title = gameTypeStr(gameType);
-      showOverlayNotification(
-        (context) => OverlayNotificationWidget(
-          title: title,
-          subTitle: '',
-        ),
+      // String title = gameTypeStr(gameType);
+      log("-=-= $gameType");
+      Alerts.showNotification(
+        titleText: gameTypeStr(gameType),
         duration: Duration(seconds: 5),
+        imagePath: GameModelNew.getGameTypeImageAssetFromEnum(gameType),
       );
+      // showOverlayNotification(
+      //   (context) => OverlayNotificationWidget(
+      //     title: title,
+      //     subTitle: '',
+      //   ),
+      //   duration: Duration(seconds: 5),
+      // );
     }
     log('Hand Message: ::handleAnnouncement:: END');
   }

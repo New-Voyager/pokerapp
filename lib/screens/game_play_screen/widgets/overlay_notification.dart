@@ -16,7 +16,7 @@ class OverlayNotificationWidget extends StatelessWidget {
   final int pendingCount;
   final String title;
   final String subTitle;
-  final Image image;
+  final String image;
   final IconData icon;
   final String svgPath;
 
@@ -42,7 +42,7 @@ class OverlayNotificationWidget extends StatelessWidget {
 
     Widget leadingImage;
     if (image != null) {
-      leadingImage = image;
+      leadingImage = Image.asset(image);
     } else if (icon != null) {
       leadingImage = Icon(
         icon,
