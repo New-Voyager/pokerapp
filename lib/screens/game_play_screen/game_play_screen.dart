@@ -181,6 +181,8 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       handToPlayerChannel: _gameInfoModel.handToPlayerChannel,
       playerToHandChannel: _gameInfoModel.playerToHandChannel,
       gameChatChannel: _gameInfoModel.gameChatChannel,
+      pingChannel: _gameInfoModel.pingChannel,
+      pongChannel: _gameInfoModel.pongChannel,
     );
 
     if (!TestService.isTesting) {

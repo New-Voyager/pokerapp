@@ -21,7 +21,7 @@ services:
       POSTGRES_USER: 'game'
       POSTGRES_PASSWORD: 'game'
       POSTGRES_DB: 'game'
-
+      DEBUG_CONNECTIVITY_CHECK: 1
     volumes:
       - '${PROJECT_ROOT}/dev/gameserver:/app/mounted'
     command:

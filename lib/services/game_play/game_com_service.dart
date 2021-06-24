@@ -4,6 +4,7 @@ import 'package:dart_nats/dart_nats.dart';
 import 'package:flutter/foundation.dart';
 import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
+import 'package:pokerapp/services/connectivity_check/ping_responder.dart';
 import 'package:pokerapp/services/nats/nats.dart';
 import 'package:pokerapp/services/test/test_service.dart';
 
@@ -17,17 +18,23 @@ class GameComService {
   String handToPlayerChannel;
   String playerToHandChannel;
   String gameChatChannel;
+  String pingChannel;
+  String pongChannel;
 
   Subscription _gameToPlayerChannelSubs;
   Subscription _handToAllChannelSubs;
   Subscription _handToPlayerChannelSubs;
   Subscription _gameChatChannelSubs;
+  Subscription _pingChannelSubs;
 
   // current player info
   PlayerInfo currentPlayer;
 
   // game chat object
   GameMessagingService _chat;
+
+  // responds to server ping
+  PingResponder _pingPong;
 
   GameMessagingService get chat => _chat;
 
@@ -40,6 +47,8 @@ class GameComService {
     @required this.handToPlayerChannel,
     @required this.playerToHandChannel,
     @required this.gameChatChannel,
+    @required this.pingChannel,
+    @required this.pongChannel,
   }) {
     // _client = Client();
     // _clientPub = Client();
@@ -63,6 +72,9 @@ class GameComService {
     log('subscribing to ${this.gameChatChannel}');
     _gameChatChannelSubs = nats.subClient.sub(this.gameChatChannel);
 
+    log('subscribing to ${this.pingChannel}');
+    _pingChannelSubs = nats.subClient.sub(this.pingChannel);
+
     this._chat = GameMessagingService(
       this.currentPlayer,
       this.gameChatChannel,
@@ -71,6 +83,16 @@ class GameComService {
       true,
     );
     this._chat.start();
+
+    this._pingPong = PingResponder(
+      this.currentPlayer.id,
+      this.pongChannel,
+      nats.pubClient,
+      _pingChannelSubs.stream,
+      true,
+    );
+    this._pingPong.start();
+
     this._nats = nats;
     this.active = true;
   }
@@ -94,6 +116,10 @@ class GameComService {
     _gameChatChannelSubs?.unSub();
     _gameChatChannelSubs?.close();
     gameMessaging.close();
+
+    _pingChannelSubs?.unSub();
+    _pingChannelSubs?.close();
+    _pingPong.close();
 
     active = false;
     // _client?.close();
