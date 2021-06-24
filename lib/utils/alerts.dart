@@ -47,6 +47,7 @@ class Alerts {
     String subTitleText,
     IconData leadingIcon,
     Duration duration,
+    String imagePath,
   }) {
     if (duration == null) {
       duration = Duration(milliseconds: 1500);
@@ -56,6 +57,7 @@ class Alerts {
         title: titleText,
         subTitle: subTitleText,
         icon: leadingIcon,
+        image:imagePath,
       ),
       position: NotificationPosition.top,
       duration: duration,
