@@ -12,9 +12,11 @@ import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
+import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/formatter.dart';
+import 'package:pokerapp/utils/numeric_keyboard2.dart';
 import 'package:pokerapp/widgets/switch_widget.dart';
 import 'seat_change_bottom_sheet.dart';
 import 'waiting_list.dart';
@@ -38,6 +40,12 @@ class _GameOptionState extends State<GameOption> {
   List<OptionItemModel> gameActions;
   double height;
   GameInfoModel gameInfo;
+  bool closed = false;
+  @override
+  void dispose() {
+    closed = true;
+    super.dispose();
+  }
 
   void onLeave() {
     Alerts.showNotification(
@@ -81,10 +89,35 @@ class _GameOptionState extends State<GameOption> {
         leadingIcon: Icons.time_to_leave,
         subTitleText: AppStringsNew.breakGameNotificationText);
     Navigator.of(context).pop();
-
-    //Alerts.showNotification(text: 'Your break will start after this hand');
-
     GameService.takeBreak(this.gameCode);
+  }
+
+  void onReload() async {
+    Navigator.of(context).pop();
+
+    // get current player's stack
+    final me = widget.gameState.me(context);
+
+    if (me != null) {
+      if (me.stack >= widget.gameState.gameInfo.buyInMax) {
+        showAlertDialog(context, "Reload",
+            "Stack is greater than max buyin. Cannot reload!");
+        return;
+      }
+      int reloadMax = widget.gameState.gameInfo.buyInMax - me.stack;
+      int reloadMin = 1;
+      /* use numeric keyboard to get reload value */
+      double value = await NumericKeyboard2.show(
+        context,
+        title: 'Reload ($reloadMin - $reloadMax)',
+        min: reloadMin.toDouble(),
+        max: reloadMax.toDouble(),
+      );
+
+      if (value == null) return;
+
+      GameService.reload(gameCode, value.toInt());
+    }
   }
 
   void onResume() {
@@ -103,6 +136,7 @@ class _GameOptionState extends State<GameOption> {
   _fetchGameInfo() async {
     gameInfo = await GameService.getGameInfo(gameCode);
     if (gameInfo != null) {
+      if (closed) return;
       setState(() {
         isFetching = false;
       });
@@ -133,7 +167,12 @@ class _GameOptionState extends State<GameOption> {
           onTap: (context) {
             this.onBreak();
           }),
-      OptionItemModel(title: "Reload"),
+      OptionItemModel(
+          title: "Reload",
+          iconData: Icons.shop,
+          onTap: (context) {
+            this.onReload();
+          }),
     ];
 
     if (widget.isAdmin) {
@@ -216,6 +255,7 @@ class _GameOptionState extends State<GameOption> {
                   await GameService.updateGameConfig(widget.gameState.gameCode,
                       muckLosingHand: v);
                   widget.gameState.gameInfo.playerMuckLosingHand = v;
+                  if (closed) return;
                   setState(() {});
                 }),
             _buildCheckBox(
@@ -225,6 +265,7 @@ class _GameOptionState extends State<GameOption> {
                 await GameService.updateGameConfig(widget.gameState.gameCode,
                     runItTwicePrompt: v);
                 widget.gameState.gameInfo.playerRunItTwice = v;
+                if (closed) return;
                 setState(() {});
               },
             ),
@@ -236,6 +277,7 @@ class _GameOptionState extends State<GameOption> {
                 widget.gameState.gameHiveStore
                     .putGameSettings(widget.gameState.settings);
                 log('In toggle button widget, gameSounds = ${widget.gameState.settings.gameSound}');
+                if (closed) return;
                 setState(() {});
               },
             ),
@@ -249,6 +291,7 @@ class _GameOptionState extends State<GameOption> {
                       widget.gameState.gameHiveStore
                           .putGameSettings(widget.gameState.settings);
                       log('In toggle button widget, audioConf = ${widget.gameState.settings.audioConf}');
+                      if (closed) return;
                       setState(() {});
                     },
                   )
@@ -285,6 +328,7 @@ class _GameOptionState extends State<GameOption> {
                 widget.gameState.gameHiveStore
                     .putGameSettings(widget.gameState.settings);
                 log('In toggle button widget, straddleOption = ${widget.gameState.settings.straddleOption}');
+                if (closed) return;
                 setState(() {});
               },
             ),
