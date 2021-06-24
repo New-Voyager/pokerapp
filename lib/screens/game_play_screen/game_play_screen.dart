@@ -94,6 +94,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   // String _audioToken = '';
   // bool liveAudio = true;
   AudioPlayer _audioPlayer;
+  AudioPlayer _voiceTextPlayer;
 
   //Agora agora;
   GameInfoModel _gameInfoModel;
@@ -380,14 +381,14 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     log('Audio message is sent ${message.messageId} from player ${message.fromPlayer}');
     final gameState = GameState.getState(_providerContext);
     final seat = gameState.getSeatByPlayer(message.fromPlayer);
-    if (_audioPlayer != null &&
+    if (_voiceTextPlayer != null &&
         message.audio != null &&
         message.audio.length > 0) {
       if (seat != null && seat.player != null) {
         seat.player.talking = true;
         seat.notify();
         try {
-          int res = await _audioPlayer.playBytes(message.audio);
+          int res = await _voiceTextPlayer.playBytes(message.audio);
           if (res == 1) {
             log("Pls wait for ${message.duration} seconds");
             await Future.delayed(Duration(seconds: message.duration ?? 0));
@@ -401,7 +402,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       } else {
         // Play voice text from observer.
         try {
-          int res = await _audioPlayer.playBytes(message.audio);
+          int res = await _voiceTextPlayer.playBytes(message.audio);
           if (res == 1) {
             log("Playing observer sound");
             await Future.delayed(Duration(seconds: message.duration ?? 0));
@@ -461,6 +462,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     super.initState();
     log('game screen initState');
     /* the init method is invoked only once */
+    _voiceTextPlayer = AudioPlayer();
     Wakelock.enable();
     _init().then(
       (gameInfoModel) => setState(
