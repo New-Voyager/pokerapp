@@ -56,7 +56,7 @@ class GameState {
   Provider<GameMessagingService> _gameMessagingService;
   ListenableProvider<HandInfoState> _handInfo;
   ListenableProvider<TableState> _tableState;
-  ListenableProvider<Players> _players;
+  ListenableProvider<Players> _playersProvider;
   ListenableProvider<ActionState> _playerAction;
   ListenableProvider<HandResultState> _handResult;
   ListenableProvider<MyState> _myStateProvider;
@@ -68,6 +68,7 @@ class GameState {
   ListenableProvider<StraddlePromptState> _straddlePromptState;
 
   CommunicationState _communicationState;
+  Players _players;
 
   final Map<String, Uint8List> _audioCache = Map<String, Uint8List>();
   GameComService gameComService;
@@ -225,8 +226,9 @@ class GameState {
       log('host seat change is in progress');
       playersState.refreshWithPlayerInSeat(_hostSeatChangeSeats, notify: false);
     }
-
-    this._players = ListenableProvider<Players>(create: (_) => playersState);
+    _players = playersState;
+    this._playersProvider =
+        ListenableProvider<Players>(create: (_) => _players);
 
     log('In GameState initialize(), _gameInfo.status = ${_gameInfo.status}');
     if (_gameInfo.status == AppConstants.GAME_ACTIVE) {
@@ -544,7 +546,7 @@ class GameState {
     return [
       this._handInfo,
       this._tableState,
-      this._players,
+      this._playersProvider,
       this._playerAction,
       this._handResult,
       this._myStateProvider,
@@ -560,8 +562,7 @@ class GameState {
   }
 
   PlayerModel me(BuildContext context) {
-    Players players = getPlayers(context);
-    return players.me;
+    return _players.me;
   }
 
   PlayerModel fromSeat(BuildContext context, int seatNo) {

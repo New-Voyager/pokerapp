@@ -799,6 +799,30 @@ class GameService {
     return result.data['approved'];
   }
 
+  /* the following method facilitates buying chips */
+  static Future<String> reload(String gameCode, int amount) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+
+    String _mutation = """mutation (\$gameCode: String!, \$amount: Float!)  {
+      reload(gameCode:\$gameCode, amount: \$amount){
+        approved
+      }
+    }
+    """;
+    Map<String, dynamic> variables = {
+      "gameCode": gameCode,
+      "amount": amount,
+    };
+
+    QueryResult result = await _client.mutate(
+      MutationOptions(documentNode: gql(_mutation), variables: variables),
+    );
+
+    if (result.hasException) return null;
+
+    return result.data['approved'];
+  }
+
   static Future<String> configureClubGame(
     String clubCode,
     NewGameModel input,

@@ -137,6 +137,10 @@ class GameUpdateService {
         case AppConstants.PLAYER_SEAT_CHANGE_DONE:
           handlePlayerSeatChangeDone(data: data);
           break;
+        case AppConstants.STACK_RELOADED:
+          return handleStackReloaded(
+            data: data,
+          );
       }
     }
   }
@@ -529,7 +533,7 @@ class GameUpdateService {
     _players.notifyAll();
 
     // wait for the animation to end
-    await Future.delayed(const Duration(milliseconds: 3000));
+    await Future.delayed(const Duration(milliseconds: 2000));
 
     // finally end animation
     _players.updateStackReloadStateSilent(playerId, null);
