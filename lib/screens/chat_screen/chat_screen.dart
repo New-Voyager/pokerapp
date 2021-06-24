@@ -38,7 +38,7 @@ class _ChatScreenState extends State<ChatScreen> {
       backgroundColor: chatBg,
       appBar: CustomAppBar(
         context: context,
-        titleText: widget.name ?? 'Host',
+        titleText: widget.name ?? 'Message',
       ),
       body: _buildBody(),
     );

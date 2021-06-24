@@ -79,7 +79,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView> {
         backgroundColor: Colors.transparent,
         appBar: CustomAppBar(
           context: context,
-          titleText: AppStringsNew.MemberDetailTitle,
+          titleText: "",
         ),
         body: !loadingDone
             ? CircularProgressWidget()
@@ -138,6 +138,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView> {
                                         arguments: {
                                           'clubCode': widget.clubCode,
                                           'player': widget.playerId,
+                                          'name': _data.name,
                                         },
                                       );
                                     },
@@ -145,17 +146,17 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView> {
 
                                   //boot
                                   IconAndTitleWidget(
-                                    icon: Icons.message,
+                                    icon: Icons.eject_rounded,
                                     text: "Boot",
                                     onTap: () {},
                                   ),
 
                                   //settle
-                                  IconAndTitleWidget(
-                                    icon: Icons.message,
-                                    text: "Settle",
-                                    onTap: () {},
-                                  ),
+                                  // IconAndTitleWidget(
+                                  //   icon: Icons.message,
+                                  //   text: "Settle",
+                                  //   onTap: () {},
+                                  // ),
                                 ],
                               ),
                             ),
@@ -362,47 +363,47 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView> {
     return Container(
       child: Column(
         children: [
-          Container(
-            padding: EdgeInsets.only(
-              left: 5,
-              bottom: 10,
-            ),
-            child: Row(
-              children: [
-                Expanded(
-                  flex: 1,
-                  child: Icon(
-                    AppIcons.poker_chip,
-                    color: Colors.orange,
-                  ),
-                ),
-                Expanded(
-                  flex: 6,
-                  child: Padding(
-                    padding: EdgeInsets.only(left: 5),
-                    child: Text(
-                      "Balance",
-                      textAlign: TextAlign.left,
-                    ),
-                  ),
-                ),
-                Expanded(
-                  flex: 3,
-                  child: Padding(
-                    padding: EdgeInsets.only(left: 5),
-                    child: Text(
-                      _data.balanceStr,
-                      textAlign: TextAlign.left,
-                      style: TextStyle(
-                        color: getBalanceColor(_data.balance),
-                        fontSize: 12.dp,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
+          // Container(
+          //   padding: EdgeInsets.only(
+          //     left: 5,
+          //     bottom: 10,
+          //   ),
+          //   child: Row(
+          //     children: [
+          //       Expanded(
+          //         flex: 1,
+          //         child: Icon(
+          //           AppIcons.poker_chip,
+          //           color: Colors.orange,
+          //         ),
+          //       ),
+          //       Expanded(
+          //         flex: 6,
+          //         child: Padding(
+          //           padding: EdgeInsets.only(left: 5),
+          //           child: Text(
+          //             "Balance",
+          //             textAlign: TextAlign.left,
+          //           ),
+          //         ),
+          //       ),
+          //       Expanded(
+          //         flex: 3,
+          //         child: Padding(
+          //           padding: EdgeInsets.only(left: 5),
+          //           child: Text(
+          //             _data.balanceStr,
+          //             textAlign: TextAlign.left,
+          //             style: TextStyle(
+          //               color: getBalanceColor(_data.balance),
+          //               fontSize: 12.dp,
+          //             ),
+          //           ),
+          //         ),
+          //       ),
+          //     ],
+          //   ),
+          // ),
           Container(
             padding: EdgeInsets.only(
               left: 5,
@@ -639,15 +640,23 @@ class IconAndTitleWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
+      borderRadius: BorderRadius.circular(32),
       child: Column(
         children: [
           Container(
             decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: AppColorsNew.yellowAccentColor,
-            ),
+                shape: BoxShape.circle,
+                color: AppColorsNew.darkGreenShadeColor,
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColorsNew.newGreenButtonColor,
+                    spreadRadius: 2,
+                    blurRadius: 2,
+                    offset: Offset(1, 0),
+                  ),
+                ]),
             child: Icon(
-              AppIcons.message,
+              icon,
               size: 20,
             ),
             padding: EdgeInsets.all(16),
@@ -659,8 +668,7 @@ class IconAndTitleWidget extends StatelessWidget {
                 Text(
                   text,
                   style: TextStyle(
-                    fontSize: 10.dp,
-                  ),
+                      fontSize: 10.dp, color: AppColorsNew.newGreenButtonColor),
                 ),
               ],
             ),
