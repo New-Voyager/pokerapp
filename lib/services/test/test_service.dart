@@ -18,6 +18,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/table_state.dar
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
 import 'package:pokerapp/models/player_info.dart';
+import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/last_hand_analyse_bottomsheet.dart';
 import 'package:pokerapp/screens/game_play_screen/pop_ups/seat_change_confirmation_pop_up.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/overlay_notification.dart';
@@ -77,6 +78,17 @@ class TestService {
     gameState.myState.status = PlayerStatus.PLAYING;
     commState.audioConferenceStatus = AudioConferenceStatus.CONNECTED;
     commState.notify();
+  }
+
+  static showFireworks() async {
+    final gameState = GameState.getState(_context);
+    final seat = gameState.getSeat(_context, 1);
+    seat.player.showFirework = true;
+    seat.notify();
+    await Future.delayed(AppConstants.notificationDuration);
+    // turn off firework
+    seat.player.showFirework = false;
+    seat.notify();
   }
 
   static PlayerInfo get currentPlayer {

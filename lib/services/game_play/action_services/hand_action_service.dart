@@ -439,6 +439,7 @@ class HandActionService {
 
   Future<void> handleNewHand(var data) async {
     _gameState.handState = HandState.STARTED;
+    _gameState.highHand = null;
     log('Hand Message: ::handleNewHand:: START');
     playSoundEffect(AppAssets.newHandSound);
 
@@ -1155,9 +1156,10 @@ class HandActionService {
   }
 
   Future<void> handlePlayerActed(var data) async {
-    log('Hand Message: ::handlePlayerActed:: START');
     var playerActed = data['playerActed'];
     int seatNo = playerActed['seatNo'];
+    log('Hand Message: ::handlePlayerActed:: START seatNo: $seatNo');
+    log(jsonEncode(data));
 
     if (_close) return;
     // show a prompt regarding last player action
@@ -1629,10 +1631,13 @@ class HandActionService {
   Future<void> handleResult(var data) async {
     /* invoke rabbit state */
     if (_close) return;
-    _context.read<RabbitState>().putResult(
-          data,
-          myCards: _gameState.getPlayers(_context).me.cards,
-        );
+
+    if (_gameState.isPlaying) {
+      _context.read<RabbitState>().putResult(
+            data,
+            myCards: _gameState.getPlayers(_context).me.cards,
+          );
+    }
 
     _gameState.handState = HandState.RESULT;
 
@@ -1717,7 +1722,43 @@ class HandActionService {
     if (_close) return;
     _context.read<RabbitState>().resultDone();
 
+    if (_close) return;
+    if (_gameState.highHand != null) {
+      // animate high hand
+      log('highhand');
+      await showHighHands();
+    }
+
     _gameState.handState = HandState.ENDED;
     log('Hand Message: ::handleResult:: END');
+  }
+
+  Future<void> showHighHands() async {
+    log('show highhands');
+    var winner = _gameState.highHand['winners'][0];
+    int playerId = int.parse(winner['playerId']);
+    final tableState = _gameState.getTableState(_context);
+    List<CardObject> boardCards = [];
+    for (int c in winner['boardCards']) {
+      boardCards.add(CardHelper.getCard(c));
+    }
+
+    List<int> playerCards = [];
+    for (int c in winner['playerCards']) {
+      playerCards.add(c);
+    }
+
+    tableState.setBoardCards(1, boardCards);
+    tableState.notifyAll();
+
+    final seat = _gameState.getSeatByPlayer(playerId);
+    seat.player.showFirework = true;
+    seat.player.cards = playerCards;
+    seat.notify();
+    await Future.delayed(AppConstants.notificationDuration);
+    // turn off firework
+    seat.player.showFirework = false;
+    seat.notify();
+    log('show highhands done');
   }
 }

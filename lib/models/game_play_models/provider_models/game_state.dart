@@ -104,6 +104,9 @@ class GameState {
   GameHiveStore gameHiveStore;
   bool replayMode = false;
 
+  // high-hand state
+  dynamic highHand; // high-hand state
+
   Future<void> initialize({
     String gameCode,
     @required GameInfoModel gameInfo,

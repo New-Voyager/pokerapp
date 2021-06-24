@@ -60,6 +60,16 @@ class GamePlayScreenUtilMethods {
             color: Colors.white,
           ),
           backgroundColor: Colors.red,
+          label: 'Fireworks',
+          labelBackgroundColor: Colors.black,
+          onTap: () => TestService.showFireworks(),
+        ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
           label: 'Mic Animation',
           labelBackgroundColor: Colors.black,
           onTap: () => TestService.showMicAnimation(),

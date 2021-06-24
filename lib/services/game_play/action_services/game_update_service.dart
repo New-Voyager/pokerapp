@@ -57,7 +57,8 @@ class GameUpdateService {
               messageType == AppConstants.TABLE_UPDATE) {
             _messages.removeAt(0);
             _messages.add(message);
-            await Future.delayed(Duration(milliseconds: 50));
+            await Future.delayed(Duration(milliseconds: 500));
+            continue;
           }
         }
 
@@ -139,6 +140,10 @@ class GameUpdateService {
           break;
         case AppConstants.STACK_RELOADED:
           return handleStackReloaded(
+            data: data,
+          );
+        case AppConstants.NEW_HIGHHAND_WINNER:
+          return handleNewHighhandWinner(
             data: data,
           );
       }
@@ -538,6 +543,32 @@ class GameUpdateService {
     // finally end animation
     _players.updateStackReloadStateSilent(playerId, null);
     _players.notifyAll();
+  }
+
+  void handleNewHighhandWinner({
+    var data,
+  }) async {
+    log(jsonEncode(data));
+
+    /*
+        {
+          "type": "NEW_HIGHHAND_WINNER",
+          "gameCode": "cgorysdcm",
+          "handNum": 1,
+          "boardCards": [52, 49, 50, 17, 4],
+          "winners": [{
+            "gameCode": "cgorysdcm",
+            "playerId": "223",
+            "playerUuid": "4b93e2be-7992-45c3-a2dd-593c2f708cb7",
+            "playerName": "brian",
+            "boardCards": [52, 49, 50, 17, 4],
+            "playerCards": [56, 72],
+            "hhCards": [56, 72, 52, 49, 50]
+          }],
+          "requestId": "a32c44c3-640c-4fcc-9483-2f6db49fc4f7"
+        }
+    */
+    _gameState.highHand = data;
   }
 
   void handlePlayerUpdate({
