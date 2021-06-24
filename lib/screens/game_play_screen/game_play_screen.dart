@@ -308,6 +308,10 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         _audioPlayer.dispose();
         _audioPlayer = null;
       }
+      if (_voiceTextPlayer != null) {
+        _voiceTextPlayer.dispose();
+        _voiceTextPlayer = null;
+      }
     } catch (e) {
       log('Caught exception: ${e.toString()}');
     }
