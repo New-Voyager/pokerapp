@@ -23,7 +23,6 @@ import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/last_ha
 import 'package:pokerapp/screens/game_play_screen/pop_ups/seat_change_confirmation_pop_up.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/overlay_notification.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
-import 'package:pokerapp/services/game_play/action_services/game_update_service.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_service.dart';
 import 'package:pokerapp/services/test/hand_messages.dart';
 import 'package:pokerapp/utils/card_helper.dart';
@@ -38,7 +37,7 @@ import 'iap_test.dart';
 
 class TestService {
   static bool get isTesting {
-    return true;
+    return false;
   }
 
   static var _showResult = false;
