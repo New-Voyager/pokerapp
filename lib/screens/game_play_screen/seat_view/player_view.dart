@@ -224,6 +224,13 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
       showFirework = true;
       log('showing firework');
     }
+    Size fireworksContainer = Size(100, 80);
+    if (widget.seat.key != null && widget.seat.key.currentContext != null) {
+      RenderBox seatBox =
+        widget.seat.key.currentContext.findRenderObject();
+      fireworksContainer = Size(seatBox.size.width, seatBox.size.height*2);
+    }
+
     final boardAttributes = gameState.getBoardAttributes(context);
     widget.seat.betWidgetUIKey = GlobalKey();
 
@@ -257,33 +264,6 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
             clipBehavior: Clip.none,
             alignment: Alignment.center,
             children: [
-              showFirework
-                  ? Transform.translate(
-                      offset: Offset(
-                        0.0,
-                        -20.0,
-                      ),
-                      child: Transform.translate(
-                          offset: Offset(
-                            0.0,
-                            -20.0,
-                          ),
-                          child: Image.asset(
-                            //AppAssets.fireworkGif,
-                            'assets/animations/fireworks2.gif',
-                            height: 100,
-                            width: 100,
-                          )),
-                      /*                      
-                      child: Container(
-                          height: 40,
-                          width: 40,
-                          child: Lottie.asset(
-                            'assets/animations/fireworks.json',
-                            controller: _lottieController,
-                          )),*/
-                    )
-                  : shrinkedSizedBox,
 
               // // main user body
               NamePlateWidget(
@@ -381,6 +361,35 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
                       ),
                     )
                   : SizedBox(),
+
+              showFirework
+                  ? Transform.translate(
+                      offset: Offset(
+                        0.0,
+                        -20.0,
+                      ),
+                      child: Transform.translate(
+                          offset: Offset(
+                            0.0,
+                            -20.0,
+                          ),
+                          child: Image.asset(
+                            //AppAssets.fireworkGif,
+                            'assets/animations/fireworks2.gif',
+                            height: fireworksContainer.height,
+                            width: fireworksContainer.width,
+                          )),
+                      /*                      
+                      child: Container(
+                          height: 40,
+                          width: 40,
+                          child: Lottie.asset(
+                            'assets/animations/fireworks.json',
+                            controller: _lottieController,
+                          )),*/
+                    )
+                  : shrinkedSizedBox,
+
             ],
           ),
         );
