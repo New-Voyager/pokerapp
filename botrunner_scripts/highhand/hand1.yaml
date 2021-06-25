@@ -45,7 +45,7 @@ bot-config:
 hands:
   - setup:
       button-pos: 1
-      board: ["5d", "5s", "5h", "3s", "Ad"]
+      board: ["5d", "5s", "5h", "3s", "2d"]
       seat-cards:
         - seat: 2
           cards: ["5c", "6c"]
