@@ -82,13 +82,21 @@ class TestService {
 
   static showFireworks() async {
     final gameState = GameState.getState(_context);
-    final seat = gameState.getSeat(_context, 1);
-    seat.player.showFirework = true;
-    seat.notify();
+    for(int seatNo = 1; seatNo <= 9; seatNo++) {
+      final seat = gameState.getSeat(_context, seatNo);
+      seat.player.showFirework = true;
+      seat.notify();
+    }
+    
+    
     await Future.delayed(AppConstants.notificationDuration);
+
     // turn off firework
-    seat.player.showFirework = false;
-    seat.notify();
+    for(int seatNo = 1; seatNo <= 9; seatNo++) {
+      final seat = gameState.getSeat(_context, seatNo);
+      seat.player.showFirework = false;
+      seat.notify();
+    }
   }
 
   static PlayerInfo get currentPlayer {
