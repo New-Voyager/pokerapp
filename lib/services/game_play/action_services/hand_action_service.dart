@@ -1734,6 +1734,8 @@ class HandActionService {
   }
 
   Future<void> showHighHands(final highHand) async {
+    final int handNum = int.parse(highHand['handNum'].toString());
+
     // board Cards
     List<CardObject> boardCards = [];
     for (int c in highHand['boardCards']) boardCards.add(CardHelper.getCard(c));
@@ -1744,6 +1746,7 @@ class HandActionService {
     // process the winners - also mark cards for highlighting
     final winners = highHand['winners'];
     for (final winner in winners) {
+      final String name = winner['playerName'].toString();
       final int playerID = int.parse(winner['playerId'].toString());
 
       // get the player cards
@@ -1771,6 +1774,15 @@ class HandActionService {
       seat.player.highlightCards =
           rawHighHandCards; // this will highlight all the player cards that matches elements from this list
       playerSeats.add(seat);
+
+      // show notification for winner
+      Alerts.showHighHandWinner(
+        playerCards: playerCards,
+        boardCards: boardCards,
+        highHandCards: rawHighHandCards,
+        name: name,
+        handNo: handNum,
+      );
     }
 
     // notify to build the table (community cards)

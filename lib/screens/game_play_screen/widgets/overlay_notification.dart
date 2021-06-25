@@ -259,3 +259,136 @@ class OverlayRabbitHuntNotificationWidget extends StatelessWidget {
     );
   }
 }
+
+class OverlayHighHandNotificationWidget extends StatelessWidget {
+  final List<int> playerCards;
+  final List<CardObject> boardCards;
+  final List<int> highHandCards;
+  final String name;
+  final int handNo;
+
+  OverlayHighHandNotificationWidget({
+    @required this.playerCards,
+    @required this.boardCards,
+    @required this.highHandCards,
+    @required this.name,
+    @required this.handNo,
+  });
+
+  List<CardObject> _getCards() {
+    List<CardObject> cards = [];
+
+    for (final card in boardCards) {
+      final CardObject co = CardHelper.getCard(card.cardNum);
+      co.cardType = CardType.HandLogOrHandHistoryCard;
+      if (highHandCards.contains(card.cardNum)) co.highlight = true;
+      cards.add(co);
+    }
+
+    return cards;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SlideDismissible(
+      key: ValueKey("overlayNotification"),
+      direction: DismissDirection.horizontal,
+      child: SafeArea(
+        child: Card(
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 16.pw, vertical: 8.ph),
+            decoration: BoxDecoration(
+              color: AppColorsNew.notificationBackgroundColor,
+              borderRadius: BorderRadius.circular(8.pw),
+            ),
+            child: Row(
+              children: [
+                // icon
+                SvgPicture.asset(
+                  AppAssets.highHand,
+                  height: 24.pw,
+                  width: 24.pw,
+                  color: Colors.white,
+                ),
+
+                // sep
+                AppDimensionsNew.getHorizontalSpace(8),
+
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // hand number
+                      Text(
+                        'Hand #$handNo',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: AppColorsNew.notificationTextColor,
+                          fontWeight: FontWeight.w400,
+                          fontSize: 8.dp,
+                        ),
+                      ),
+
+                      // cards
+                      Container(
+                        margin: EdgeInsets.symmetric(horizontal: 15.0),
+                        child: Row(
+                          children: [
+                            // player cards
+                            Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(name),
+                                StackCardView00(cards: playerCards),
+                              ],
+                            ),
+
+                            // spacer
+                            Spacer(),
+
+                            // community cards
+                            Column(
+                              children: [
+                                Text('Community'),
+                                StackCardView(cards: _getCards()),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      // sep
+                      AppDimensionsNew.getVerticalSizedBox(5.0),
+
+                      // high hand cards
+                      Column(
+                        children: [
+                          Text('High Hand Cards'),
+                          StackCardView00(cards: highHandCards),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+
+                // sep
+                AppDimensionsNew.getHorizontalSpace(8),
+
+                // cancel button
+                IconButton(
+                    icon: Icon(
+                      Icons.cancel_rounded,
+                      color: AppColorsNew.darkGreenShadeColor,
+                    ),
+                    onPressed: () {
+                      OverlaySupportEntry.of(context).dismiss();
+                    }),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

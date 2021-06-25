@@ -574,7 +574,6 @@ class GameUpdateService {
   void handlePlayerUpdate({
     var data,
   }) {
-    print('playerUpdate: $data');
     var playerUpdate = data['playerUpdate'];
     String newUpdate = playerUpdate['newUpdate'];
     String playerStatus = playerUpdate['status'];

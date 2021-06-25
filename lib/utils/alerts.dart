@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:overlay_support/overlay_support.dart';
+import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_constants.dart';
@@ -23,6 +24,27 @@ class Alerts {
       ),
       duration: duration,
     ));
+  }
+
+  static void showHighHandWinner({
+    @required List<int> playerCards,
+    @required List<CardObject> boardCards,
+    @required List<int> highHandCards,
+    @required String name,
+    @required int handNo,
+    Duration duration = const Duration(milliseconds: 6000),
+  }) {
+    showOverlayNotification(
+      (context) => OverlayHighHandNotificationWidget(
+        handNo: handNo,
+        name: name,
+        highHandCards: highHandCards,
+        boardCards: boardCards,
+        playerCards: playerCards,
+      ),
+      position: NotificationPosition.top,
+      duration: duration,
+    );
   }
 
   static void showRabbitHuntNotification({
