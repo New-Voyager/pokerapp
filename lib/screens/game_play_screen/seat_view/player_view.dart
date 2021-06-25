@@ -1,8 +1,7 @@
-import 'dart:async';
 import 'dart:developer';
-import 'package:lottie/lottie.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_gifimage/flutter_gifimage.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/enums/game_status.dart';
@@ -13,7 +12,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
-import 'package:pokerapp/resources/app_assets.dart';
+import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/widgets/blinking_widget.dart';
 import 'package:pokerapp/widgets/cards/hidden_card_view.dart';
@@ -21,7 +20,6 @@ import 'package:pokerapp/screens/game_play_screen/seat_view/displaycards.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/services/game_play/graphql/seat_change_service.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_gifimage/flutter_gifimage.dart';
 
 import 'action_status.dart';
 import 'animating_widgets/fold_card_animating_widget.dart';
@@ -64,6 +62,7 @@ class PlayerView extends StatefulWidget {
 
 class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
   AnimationController _lottieController;
+  AssetImage _gifAssetImage;
 
   @override
   void initState() {
@@ -222,14 +221,18 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
     bool showFirework = false;
     if (!openSeat ? widget.seat.player?.showFirework ?? false : false) {
       showFirework = true;
-      log('showing firework');
+      print('showing firework');
     }
-    Size fireworksContainer = Size(100, 80);
-    if (widget.seat.key != null && widget.seat.key.currentContext != null) {
-      RenderBox seatBox =
-        widget.seat.key.currentContext.findRenderObject();
-      fireworksContainer = Size(seatBox.size.width, seatBox.size.height*2);
-    }
+
+    // we constrain the size to NOT shift the players widgets
+    // and for large size fireworks, we use a scaling factor
+    Size fireworksContainer = Size(50, 50);
+    double fireworksScale = 1.5;
+
+    // if (widget.seat.key != null && widget.seat.key.currentContext != null) {
+    //   RenderBox seatBox = widget.seat.key.currentContext.findRenderObject();
+    //   fireworksContainer = Size(seatBox.size.width, seatBox.size.height * 2);
+    // }
 
     final boardAttributes = gameState.getBoardAttributes(context);
     widget.seat.betWidgetUIKey = GlobalKey();
@@ -264,7 +267,6 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
             clipBehavior: Clip.none,
             alignment: Alignment.center,
             children: [
-
               // // main user body
               NamePlateWidget(
                 widget.seat,
@@ -363,33 +365,32 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
                   : SizedBox(),
 
               showFirework
-                  ? Transform.translate(
-                      offset: Offset(
-                        0.0,
-                        -20.0,
-                      ),
-                      child: Transform.translate(
-                          offset: Offset(
-                            0.0,
-                            -20.0,
+                  ? Builder(
+                      builder: (_) {
+                        _gifAssetImage =
+                            AssetImage('assets/animations/fireworks2.gif');
+                        return Transform.scale(
+                          scale: fireworksScale,
+                          child: Transform.translate(
+                            offset: Offset(
+                              0.0,
+                              -20.0,
+                            ),
+                            child: Image(
+                              image: _gifAssetImage,
+                              height: fireworksContainer.height,
+                              width: fireworksContainer.width,
+                            ),
                           ),
-                          child: Image.asset(
-                            //AppAssets.fireworkGif,
-                            'assets/animations/fireworks2.gif',
-                            height: fireworksContainer.height,
-                            width: fireworksContainer.width,
-                          )),
-                      /*                      
-                      child: Container(
-                          height: 40,
-                          width: 40,
-                          child: Lottie.asset(
-                            'assets/animations/fireworks.json',
-                            controller: _lottieController,
-                          )),*/
+                        );
+                      },
                     )
-                  : shrinkedSizedBox,
-
+                  : Builder(
+                      builder: (_) {
+                        _gifAssetImage?.evict();
+                        return shrinkedSizedBox;
+                      },
+                    ),
             ],
           ),
         );
@@ -410,25 +411,44 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
     }
 
     return Visibility(
-        visible: widget.seat.player.talking,
-        child: Positioned(
-            bottom: 0,
-            left: left,
-            right: right,
-            child: Transform.rotate(
-                angle: talkingAngle,
-                child: BlinkWidget(
-                  children: [
-                    SvgPicture.asset('assets/images/speak/speak-one.svg',
-                        width: 16, height: 16, color: Colors.cyan),
-                    SvgPicture.asset('assets/images/speak/speak-two.svg',
-                        width: 16, height: 16, color: Colors.cyan),
-                    SvgPicture.asset('assets/images/speak/speak-all.svg',
-                        width: 16, height: 16, color: Colors.cyan),
-                    SvgPicture.asset('assets/images/speak/speak-two.svg',
-                        width: 16, height: 16, color: Colors.cyan),
-                  ],
-                ))));
+      visible: widget.seat.player.talking,
+      child: Positioned(
+        bottom: 0,
+        left: left,
+        right: right,
+        child: Transform.rotate(
+          angle: talkingAngle,
+          child: BlinkWidget(
+            children: [
+              SvgPicture.asset(
+                'assets/images/speak/speak-one.svg',
+                width: 16,
+                height: 16,
+                color: Colors.cyan,
+              ),
+              SvgPicture.asset(
+                'assets/images/speak/speak-two.svg',
+                width: 16,
+                height: 16,
+                color: Colors.cyan,
+              ),
+              SvgPicture.asset(
+                'assets/images/speak/speak-all.svg',
+                width: 16,
+                height: 16,
+                color: Colors.cyan,
+              ),
+              SvgPicture.asset(
+                'assets/images/speak/speak-two.svg',
+                width: 16,
+                height: 16,
+                color: Colors.cyan,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
 

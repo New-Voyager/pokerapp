@@ -38,7 +38,7 @@ import 'iap_test.dart';
 
 class TestService {
   static bool get isTesting {
-    return false;
+    return true;
   }
 
   static var _showResult = false;
@@ -82,17 +82,16 @@ class TestService {
 
   static showFireworks() async {
     final gameState = GameState.getState(_context);
-    for(int seatNo = 1; seatNo <= 9; seatNo++) {
+    for (int seatNo = 1; seatNo <= 9; seatNo++) {
       final seat = gameState.getSeat(_context, seatNo);
       seat.player.showFirework = true;
       seat.notify();
     }
-    
-    
-    await Future.delayed(AppConstants.notificationDuration);
+
+    await Future.delayed(AppConstants.highHandFireworkAnimationDuration);
 
     // turn off firework
-    for(int seatNo = 1; seatNo <= 9; seatNo++) {
+    for (int seatNo = 1; seatNo <= 9; seatNo++) {
       final seat = gameState.getSeat(_context, seatNo);
       seat.player.showFirework = false;
       seat.notify();

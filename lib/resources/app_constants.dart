@@ -85,6 +85,10 @@ class AppConstants {
     seconds: 5,
   );
 
+  static const Duration highHandFireworkAnimationDuration = const Duration(
+    milliseconds: 5210, // THIS IS CALCULATED FROM THE GIF ITSELF
+  );
+
   static const String blackSpade = '♠';
   static const String redHeart = '♥';
   static const String blackClub = '♣';
