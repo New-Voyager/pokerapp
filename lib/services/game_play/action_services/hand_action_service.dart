@@ -1726,39 +1726,87 @@ class HandActionService {
     if (_gameState.highHand != null) {
       // animate high hand
       log('highhand');
-      await showHighHands();
+      await showHighHands(_gameState.highHand);
     }
 
     _gameState.handState = HandState.ENDED;
     log('Hand Message: ::handleResult:: END');
   }
 
-  Future<void> showHighHands() async {
-    log('show highhands');
-    var winner = _gameState.highHand['winners'][0];
-    int playerId = int.parse(winner['playerId']);
-    final tableState = _gameState.getTableState(_context);
+  Future<void> showHighHands(final highHand) async {
+    final int handNum = int.parse(highHand['handNum'].toString());
+
+    // board Cards
     List<CardObject> boardCards = [];
-    for (int c in winner['boardCards']) {
-      boardCards.add(CardHelper.getCard(c));
+    for (int c in highHand['boardCards']) boardCards.add(CardHelper.getCard(c));
+    final tableState = _context.read<TableState>();
+
+    List<Seat> playerSeats = [];
+
+    // process the winners - also mark cards for highlighting
+    final winners = highHand['winners'];
+    for (final winner in winners) {
+      final String name = winner['playerName'].toString();
+      final int playerID = int.parse(winner['playerId'].toString());
+
+      // get the player cards
+      final List<int> playerCards = [];
+      for (final v in winner['playerCards'])
+        playerCards.add(int.parse(v.toString()));
+
+      // get the board cards
+      final List<int> rawHighHandCards = [];
+      final List<CardObject> highHandCards = [];
+      for (final v in winner['hhCards']) {
+        final int value = int.parse(v.toString());
+        rawHighHandCards.add(value);
+        highHandCards.add(CardHelper.getCard(value));
+      }
+
+      // mark the board cards, that are part of high hands
+      for (CardObject co in boardCards)
+        if (rawHighHandCards.contains(co.cardNum)) co.highlight = true;
+
+      // prepare the player for animations and cards
+      final Seat seat = _gameState.getSeatByPlayer(playerID);
+      seat.player.showFirework = true;
+      seat.player.cards = playerCards;
+      seat.player.highlightCards =
+          rawHighHandCards; // this will highlight all the player cards that matches elements from this list
+      playerSeats.add(seat);
+
+      // show notification for winner
+      Alerts.showHighHandWinner(
+        playerCards: playerCards,
+        boardCards: boardCards,
+        highHandCards: rawHighHandCards,
+        name: name,
+        handNo: handNum,
+      );
     }
 
-    List<int> playerCards = [];
-    for (int c in winner['playerCards']) {
-      playerCards.add(c);
-    }
-
+    // notify to build the table (community cards)
     tableState.setBoardCards(1, boardCards);
     tableState.notifyAll();
 
-    final seat = _gameState.getSeatByPlayer(playerId);
-    seat.player.showFirework = true;
-    seat.player.cards = playerCards;
-    seat.notify();
-    await Future.delayed(AppConstants.notificationDuration);
-    // turn off firework
-    seat.player.showFirework = false;
-    seat.notify();
-    log('show highhands done');
+    // notify to build the players
+    for (final s in playerSeats) s.notify();
+
+    /* wait for the animation to finish */
+    await Future.delayed(AppConstants.highHandFireworkAnimationDuration);
+
+    // finally clear players values and board values
+
+    // clear players
+    for (final s in playerSeats) {
+      s.player.showFirework = false;
+      s.player.cards = [];
+      s.player.highlightCards = [];
+      s.notify();
+    }
+
+    // clear the board
+    tableState.clear();
+    tableState.notifyAll();
   }
 }

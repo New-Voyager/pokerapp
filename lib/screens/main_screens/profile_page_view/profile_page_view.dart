@@ -1,9 +1,11 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gifimage/flutter_gifimage.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/screens/util_screens/replay_hand_dialog/replay_hand_dialog.dart';
@@ -18,9 +20,24 @@ class ProfilePageView extends StatefulWidget {
   _ProfilePageViewState createState() => _ProfilePageViewState();
 }
 
-class _ProfilePageViewState extends State<ProfilePageView> {
+class _ProfilePageViewState extends State<ProfilePageView>
+    with SingleTickerProviderStateMixin {
+  // GifController _gifController;
+  bool _showGif = false;
+  AssetImage _gifImage;
+
   List<CardObject> cards =
       [200, 196].map((e) => CardHelper.getCard(e)).toList();
+
+  @override
+  void initState() {
+    super.initState();
+
+    // _gifController = GifController(
+    //   vsync: this,
+    //   duration: AppConstants.highHandFireworkAnimationDuration,
+    // );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +62,30 @@ class _ProfilePageViewState extends State<ProfilePageView> {
           // ),
           Spacer(),
 
-          Container(width: 150, height: 100, child: plateWidget),
+          // GifImage(
+          //   image: AssetImage('assets/animations/fireworks2.gif'),
+          //   controller: _gifController,
+          //   height: 100,
+          //   width: 100,
+          // ),
+
+          _showGif
+              ? Builder(
+                  builder: (_) {
+                    _gifImage = AssetImage('assets/animations/fireworks2.gif');
+                    return Image(
+                      image: _gifImage,
+                      height: 100,
+                      width: 100,
+                    );
+                  },
+                )
+              : Builder(
+                  builder: (_) {
+                    _gifImage?.evict();
+                    return Text('Gif here');
+                  },
+                ),
 
           //SvgWidget(),
           Spacer(),
@@ -67,10 +107,21 @@ class _ProfilePageViewState extends State<ProfilePageView> {
             //   log("Selected Game Type: ${gameTypeStr(type)}");
             //   // plateWidget.animate()
             // }
-            child: Text('Straddle Dialog'),
+            child: Text('Gif Fireworks'),
             onPressed: () async {
-              // final output = await StraddleDialog.show(context);
-              // print('straddle output value: $output');
+              setState(() {
+                _showGif = !_showGif;
+              });
+              // final l = await fetchGif(
+              //     AssetImage('assets/animations/fireworks2.gif'));
+
+              // print('1 and ${l.length}');
+
+              // _gifController.repeat(
+              //   min: 1,
+              //   max: l.length.toDouble(),
+              //   period: AppConstants.highHandFireworkAnimationDuration,
+              // );
             },
           ),
           ElevatedButton(

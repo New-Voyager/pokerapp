@@ -23,7 +23,6 @@ import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/last_ha
 import 'package:pokerapp/screens/game_play_screen/pop_ups/seat_change_confirmation_pop_up.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/overlay_notification.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
-import 'package:pokerapp/services/game_play/action_services/game_update_service.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_service.dart';
 import 'package:pokerapp/services/test/hand_messages.dart';
 import 'package:pokerapp/utils/card_helper.dart';
@@ -82,17 +81,16 @@ class TestService {
 
   static showFireworks() async {
     final gameState = GameState.getState(_context);
-    for(int seatNo = 1; seatNo <= 9; seatNo++) {
+    for (int seatNo = 1; seatNo <= 9; seatNo++) {
       final seat = gameState.getSeat(_context, seatNo);
       seat.player.showFirework = true;
       seat.notify();
     }
-    
-    
-    await Future.delayed(AppConstants.notificationDuration);
+
+    await Future.delayed(AppConstants.highHandFireworkAnimationDuration);
 
     // turn off firework
-    for(int seatNo = 1; seatNo <= 9; seatNo++) {
+    for (int seatNo = 1; seatNo <= 9; seatNo++) {
       final seat = gameState.getSeat(_context, seatNo);
       seat.player.showFirework = false;
       seat.notify();
