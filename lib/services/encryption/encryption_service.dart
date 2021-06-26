@@ -7,6 +7,7 @@ import 'package:pokerapp/main.dart';
 class EncryptionService {
   AesGcm gcm = AesGcm.with128bits();
   SecretKey key;
+  bool initialized = false;
 
   EncryptionService();
 
@@ -27,9 +28,14 @@ class EncryptionService {
 
     List<int> bytes = Uuid.parse(result.data['encryptionKey']);
     this.key = SecretKey(bytes);
+    this.initialized = true;
   }
 
   Future<List<int>> decrypt(List<int> data) async {
+    if (!this.initialized) {
+      await init();
+    }
+
     // SecretBox sb = SecretBox.fromConcatenation(data,
     //     nonceLength: gcm.nonceLength, macLength: gcm.macAlgorithm.macLength);
     //
