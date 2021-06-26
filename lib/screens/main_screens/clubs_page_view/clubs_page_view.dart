@@ -27,7 +27,10 @@ class ClubsPageView extends StatefulWidget {
   _ClubsPageViewState createState() => _ClubsPageViewState();
 }
 
-class _ClubsPageViewState extends State<ClubsPageView> with RouteAware {
+class _ClubsPageViewState extends State<ClubsPageView>
+    with RouteAware, RouteAwareAnalytics {
+  @override
+  String get routeName => Routes.club_pages;
   bool _showLoading = false;
 
   List<ClubModel> _clubs;

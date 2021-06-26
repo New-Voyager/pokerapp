@@ -50,6 +50,8 @@ import 'package:pokerapp/utils/utils.dart';
 import 'package:provider/provider.dart';
 import 'package:wakelock/wakelock.dart';
 
+import '../../main.dart';
+import '../../routes.dart';
 import '../../services/test/test_service.dart';
 import 'game_play_screen_util_methods.dart';
 
@@ -86,7 +88,10 @@ class GamePlayScreen extends StatefulWidget {
 }
 
 class _GamePlayScreenState extends State<GamePlayScreen>
-    with AfterLayoutMixin<GamePlayScreen> {
+    with AfterLayoutMixin<GamePlayScreen>, RouteAwareAnalytics {
+  @override
+  String get routeName => Routes.game_play;
+
   bool _initiated;
   BuildContext _providerContext;
   PlayerInfo _currentPlayer;

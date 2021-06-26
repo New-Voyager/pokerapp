@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/game_history_model.dart';
 import 'package:pokerapp/models/hand_stats_model.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
@@ -16,17 +17,24 @@ import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
+import '../../../routes.dart';
+
 class HandStatsView extends StatefulWidget {
   final GameHistoryDetailModel gameHistoryModel;
+
   const HandStatsView({Key key, this.gameHistoryModel}) : super(key: key);
 
   @override
   _HandStatsViewState createState() => _HandStatsViewState();
 }
 
-class _HandStatsViewState extends State<HandStatsView> {
+class _HandStatsViewState extends State<HandStatsView>
+    with RouteAwareAnalytics {
+  @override
+  String get routeName => Routes.hand_statistics;
   GameHistoryDetailModel model;
   HandStatsModel stats;
+
   @override
   void initState() {
     model = widget.gameHistoryModel;

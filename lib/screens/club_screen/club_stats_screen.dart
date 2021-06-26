@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_type.dart';
+import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/club_stats_model.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
@@ -14,6 +15,8 @@ import 'package:pokerapp/services/app/stats_service.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:pokerapp/widgets/cards/multiple_stack_card_views.dart';
 
+import '../../routes.dart';
+
 class ClubStatsScreen extends StatefulWidget {
   final String clubCode;
   const ClubStatsScreen({Key key, this.clubCode}) : super(key: key);
@@ -23,7 +26,9 @@ class ClubStatsScreen extends StatefulWidget {
 }
 
 class _ClubStatsScreenState extends State<ClubStatsScreen>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, RouteAwareAnalytics {
+  @override
+  String get routeName => Routes.club_statistics;
   TabController _tabController;
   ClubStatsModel _clubStats;
   @override

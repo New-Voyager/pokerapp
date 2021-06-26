@@ -16,11 +16,15 @@ class ClubMembers extends StatefulWidget {
   });
 
   final String clubCode;
+
   @override
   _ClubMembersState createState() => _ClubMembersState();
 }
 
-class _ClubMembersState extends State<ClubMembers> {
+class _ClubMembersState extends State<ClubMembers> with RouteAwareAnalytics {
+  @override
+  String get routeName => Routes.club_members;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

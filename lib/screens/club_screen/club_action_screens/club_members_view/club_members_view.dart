@@ -14,18 +14,25 @@ import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/club_interior_service.dart';
 
+import '../../../../main.dart';
+import '../../../../routes.dart';
 import 'club_members_list_view.dart';
 
 class ClubMembersView extends StatefulWidget {
   final ClubHomePageModel _clubHomePageModel;
+
   ClubMembersView(this._clubHomePageModel);
+
   @override
   _ClubMembersViewState createState() =>
       _ClubMembersViewState(this._clubHomePageModel);
 }
 
 class _ClubMembersViewState extends State<ClubMembersView>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, RouteAwareAnalytics {
+  @override
+  String get routeName => Routes.club_members_view;
+
   final ClubHomePageModel _clubHomePageModel;
   TabController _controller;
   List<ClubMemberModel> _all = [];

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/messages_from_member.dart';
 import 'package:pokerapp/screens/chat_screen/chat_model.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/chat_list_widget.dart';
@@ -6,6 +7,7 @@ import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/clubs_service.dart';
 import 'package:pokerapp/utils/color_generator.dart';
 
+import '../../routes.dart';
 import 'utils.dart';
 import 'widgets/chat_text_field.dart';
 import 'widgets/no_message.dart';
@@ -26,7 +28,9 @@ class ChatScreen extends StatefulWidget {
   _ChatScreenState createState() => _ChatScreenState();
 }
 
-class _ChatScreenState extends State<ChatScreen> {
+class _ChatScreenState extends State<ChatScreen> with RouteAwareAnalytics {
+  @override
+  String get routeName => Routes.chatScreen;
   TextEditingController _textController = TextEditingController();
   List<MessagesFromMember> messages = [];
   bool isHostView;

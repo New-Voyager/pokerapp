@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/enums/game_type.dart';
+import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/game/new_game_provider.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
@@ -11,6 +12,8 @@ import 'package:pokerapp/screens/game_screens/widgets/game_type_item.dart';
 import 'package:pokerapp/screens/game_screens/widgets/new_button_widget.dart';
 import 'package:pokerapp/widgets/heading_widget.dart';
 import 'package:provider/provider.dart';
+
+import '../../../routes.dart';
 
 class ChooseGameNew extends StatefulWidget {
   final String clubCode;
@@ -24,7 +27,10 @@ class ChooseGameNew extends StatefulWidget {
 }
 
 class _ChooseGameNewState extends State<ChooseGameNew>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, RouteAwareAnalytics {
+  @override
+  String get routeName => Routes.new_game_settings;
+
   GameType _selectedGameType;
   AnimationController _animationController;
   List<GameType> gamesRoe = [];
@@ -398,7 +404,9 @@ class GameTypeChip extends StatelessWidget {
   final bool selected;
   final GameType gameType;
   final Function onTapFunc;
+
   GameTypeChip({this.selected, this.gameType, this.onTapFunc});
+
   @override
   Widget build(BuildContext context) {
     return RawChip(
