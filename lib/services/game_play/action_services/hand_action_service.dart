@@ -621,7 +621,6 @@ class HandActionService {
     /* get a new card back asset to be shown */
     if (_close) return;
     _context.read<ValueNotifier<String>>().value = CardBackAssets.getRandom();
-
     // // wait for the fastAnimationDuration completion
     // // this is done to wait until the footerResult section is removed
 
@@ -921,6 +920,7 @@ class HandActionService {
     assert(stage != null);
     // log('stage update start');
     log('Hand Message: ::handleStageChange:: START');
+    log(jsonEncode(data));
 
     if (_close) return;
     final TableState tableState = _gameState.getTableState(_context);
@@ -970,10 +970,33 @@ class HandActionService {
           1, CardHelper.getCard(data[stage]['${stage}Card']));
     }
     if (_close) return;
+    updateRank(data[stage]);
+
     tableState.notifyAll();
     await Future.delayed(Duration(seconds: 1));
     audioPlayer.stop();
     // log('stage update end');
+  }
+
+  void updateRank(var data, {String rankText}) {
+    if (_gameState.isPlaying) {
+      final me = _gameState.me(_context);
+      final playerCardRank = data['playerCardRank'];
+      final myState = _gameState.getMyState(_context);
+      if (rankText != null) {
+        me.rankText = rankText;
+        myState.notify();
+      } else {
+        for (final seatNoStr in playerCardRank.keys) {
+          final seatNo = int.parse(seatNoStr);
+          if (seatNo == me.seatNo) {
+            me.rankText = playerCardRank[seatNoStr];
+            myState.notify();
+            break;
+          }
+        }
+      }
+    }
   }
 
   Future<void> handleQueryCurrentHand(var data) async {
@@ -1717,6 +1740,13 @@ class HandActionService {
       context: _context,
       audioPlayer: audioPlayer,
     );
+
+    if (_gameState.isPlaying) {
+      final me = _gameState.me(_context);
+      final myState = _gameState.getMyState(_context);
+      me.rankText = '';
+      myState.notify();
+    }
 
     // clear rabbit state
     if (_close) return;

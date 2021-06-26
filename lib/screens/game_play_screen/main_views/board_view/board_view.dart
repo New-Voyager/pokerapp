@@ -215,6 +215,19 @@ class _BoardViewState extends State<BoardView> {
                   child: sitBackButton(context)),
         ),
 
+        !gameState.gameInfo.showHandRank
+            ? Container()
+            : Consumer<MyState>(
+                builder: (
+                  BuildContext _,
+                  MyState myState,
+                  Widget __,
+                ) =>
+                    Align(
+                        alignment: Alignment.bottomCenter,
+                        child: rankText(context)),
+              ),
+
         Align(
           alignment: Alignment.center,
           child: SizedBox(
@@ -292,6 +305,28 @@ class _BoardViewState extends State<BoardView> {
     );
 
     return widget;
+  }
+
+  Widget rankText(BuildContext context) {
+    // show buyin button only for if the current player is in a seat
+    final gameState = GameState.getState(providerContext);
+    final mySeat = gameState.mySeat(providerContext);
+    if (mySeat?.player != null) {
+      //log('Rebuild sitBackButton button: Status: ${mySeat.player.status.toString()}');
+    }
+
+    if (mySeat == null || mySeat.isOpen || mySeat.player == null) {
+      log('Rebuild (mySeat == null || mySeat.isOpen || mySeat.player == null');
+      return SizedBox.shrink();
+    }
+    // log('Rebuild buyin button: Status: ${myState.status.toString()}');
+
+    if (mySeat.player.rankText != null && mySeat.player.rankText.isNotEmpty) {
+      //log('mySeat.player.inBreak');
+      return Text(mySeat.player.rankText);
+    } else {
+      return SizedBox.shrink();
+    }
   }
 
   Widget sitBackButton(BuildContext context) {

@@ -97,6 +97,20 @@ class TestService {
     }
   }
 
+  static showRank() async {
+    final gameState = GameState.getState(_context);
+    final seat = gameState.getSeat(_context, 1);
+    final myState = gameState.getMyState(_context);
+    //seat.player.showFirework = true;
+    seat.player.rankText = 'Two Pair';
+    myState.notify();
+
+    await Future.delayed(AppConstants.highHandFireworkAnimationDuration);
+
+    seat.player.rankText = '';
+    myState.notify();
+  }
+
   static PlayerInfo get currentPlayer {
     final data = jsonDecode('''  {
                   "myInfo": {
@@ -160,6 +174,7 @@ class TestService {
           jsonData["gameInfo"],
           maxPlayers: maxPlayers,
         );
+        _gameInfo.showHandRank = true;
       }
 
       List<PlayerModel> playerInSeats = [];

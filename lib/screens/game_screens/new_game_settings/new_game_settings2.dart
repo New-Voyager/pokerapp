@@ -529,6 +529,24 @@ class NewGameSettings2 extends StatelessWidget {
                           gmp.showPlayerBuyin = b;
                         },
                       ),
+
+                      /* allow rabbit hunt */
+                      _buildRadio(
+                        label: 'Allow Rabbit Hunt',
+                        value: gmp.allowRabbitHunt,
+                        onChange: (bool b) {
+                          gmp.allowRabbitHunt = b;
+                        },
+                      ),
+
+                      /* show hand rank */
+                      _buildRadio(
+                        label: 'Show Hand Rank',
+                        value: gmp.showHandRank,
+                        onChange: (bool b) {
+                          gmp.showHandRank = b;
+                        },
+                      ),
                     ],
                   ),
 

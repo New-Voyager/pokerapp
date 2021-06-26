@@ -30,11 +30,11 @@ import 'hand_history_bottomsheet.dart';
 import 'last_hand_analyse_bottomsheet.dart';
 
 class HandAnalyseView extends StatefulWidget {
-  final String gameCode;
   final String clubCode;
   final GameContextObject gameContextObject;
+  final GameState gameState;
 
-  HandAnalyseView(this.gameCode, this.clubCode, this.gameContextObject);
+  HandAnalyseView(this.gameState, this.clubCode, this.gameContextObject);
 
   @override
   _HandAnalyseViewState createState() => _HandAnalyseViewState();
@@ -51,7 +51,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
         // GETS THE GameState
         value: context.read<GameState>(),
         child: LastHandAnalyseBottomSheet(
-          gameCode: widget.gameCode,
+          gameCode: widget.gameState.gameCode,
           clubCode: widget.clubCode,
         ),
       ),
@@ -59,7 +59,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
   }
 
   Future<void> onClickViewHandAnalysis() async {
-    final model = HandHistoryListModel(widget.gameCode, true);
+    final model = HandHistoryListModel(widget.gameState.gameCode, true);
     await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -79,7 +79,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (_) {
-        return PlayerStatsBottomSheet(gameCode: widget.gameCode);
+        return PlayerStatsBottomSheet(gameCode: widget.gameState.gameCode);
       },
     );
   }
@@ -91,7 +91,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
       backgroundColor: Colors.transparent,
       builder: (_) {
         return TableResultBottomSheet(
-            gameCode: widget.gameCode, gameState: gameState);
+            gameCode: widget.gameState.gameCode, gameState: gameState);
       },
     );
   }
@@ -349,12 +349,13 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
 
           // rabbit button
           Consumer<RabbitState>(
-            builder: (_, rb, __) => rb.show
-                ? GameCircleButton(
-                    onClickHandler: () => onRabbitTap(rb.copy()),
-                    imagePath: AppAssets.rabbit,
-                  )
-                : const SizedBox.shrink(),
+            builder: (_, rb, __) =>
+                rb.show && widget.gameState.gameInfo.allowRabbitHunt
+                    ? GameCircleButton(
+                        onClickHandler: () => onRabbitTap(rb.copy()),
+                        imagePath: AppAssets.rabbit,
+                      )
+                    : const SizedBox.shrink(),
           ),
         ],
       ),

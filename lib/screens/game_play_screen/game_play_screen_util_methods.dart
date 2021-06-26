@@ -60,6 +60,16 @@ class GamePlayScreenUtilMethods {
             color: Colors.white,
           ),
           backgroundColor: Colors.red,
+          label: 'Show Rank',
+          labelBackgroundColor: Colors.black,
+          onTap: () => TestService.showRank(),
+        ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
           label: 'Fireworks',
           labelBackgroundColor: Colors.black,
           onTap: () => TestService.showFireworks(),

@@ -36,6 +36,8 @@ class GameInfoModel {
   int runningTime = 0;
   int noHandsWon = 0;
   int noHandsPlayed = 0;
+  bool allowRabbitHunt = false;
+  bool showHandRank = false;
 
   // nats channels
   String gameToPlayerChannel;
@@ -99,6 +101,8 @@ class GameInfoModel {
     this.runningTime = data['runningTime'] ?? 0;
     this.noHandsWon = data['noHandsWon'] ?? 0;
     this.noHandsPlayed = data['noHandsPlayed'] ?? 0;
+    this.allowRabbitHunt = data['allowRabbitHunt'] ?? true;
+    this.showHandRank = data['showHandRank'] ?? false;
 
     this.isHost = true;
     if (data['isHost'] != null) {
@@ -150,6 +154,8 @@ class GameInfoModel {
       utgStraddleAllowed
       status
       tableStatus
+      allowRabbitHunt
+      showHandRank
 
       sessionTime
       runningTime
