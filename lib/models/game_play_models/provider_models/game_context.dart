@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/player_info.dart';
+import 'package:pokerapp/services/encryption/encryption_service.dart';
 import 'package:pokerapp/services/game_play/action_services/game_update_service.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_service.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
@@ -18,6 +19,7 @@ class GameContextObject extends ChangeNotifier {
   HandActionService handActionService;
   GameUpdateService gameUpdateService;
   GameComService gameComService;
+  EncryptionService encryptionService;
 
   GameContextObject({
     @required String gameCode,
@@ -26,11 +28,13 @@ class GameContextObject extends ChangeNotifier {
     GameUpdateService gameUpdateService,
     HandActionService handActionService,
     GameComService gameComService,
+    EncryptionService encryptionService,
   }) {
     this._gameCode = gameCode;
     this._currentPlayer = player;
     this._gameId = 0;
     this.gameComService = gameComService;
+    this.encryptionService = encryptionService;
     this.gameState = gameState;
     this.gameUpdateService = gameUpdateService;
     this.handActionService = handActionService;
@@ -68,6 +72,7 @@ class GameContextObject extends ChangeNotifier {
     handActionService?.close();
     gameUpdateService?.close();
     gameComService?.dispose();
+    encryptionService?.dispose();
     super.dispose();
   }
 }
