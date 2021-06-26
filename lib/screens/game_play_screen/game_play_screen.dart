@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:developer';
 import 'package:after_layout/after_layout.dart';
 import 'package:audioplayers/audioplayers.dart';
@@ -35,6 +36,7 @@ import 'package:pokerapp/services/app/auth_service.dart';
 //import 'package:pokerapp/services/agora/agora.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/app/player_service.dart';
+import 'package:pokerapp/services/encryption/encryption_service.dart';
 import 'package:pokerapp/services/game_play/action_services/game_action_service/util_action_services.dart';
 import 'package:pokerapp/services/game_play/action_services/game_update_service.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_service.dart';
@@ -185,12 +187,15 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       pongChannel: _gameInfoModel.pongChannel,
     );
 
+    final encryptionService = EncryptionService();
+
     if (!TestService.isTesting) {
       // subscribe the NATs channels
       final natsClient = Provider.of<Nats>(context, listen: false);
 
       log('natsClient: $natsClient');
       await gameComService.init(natsClient);
+      await encryptionService.init();
     }
 
     _gameState = GameState();
@@ -230,6 +235,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         gameCode: widget.gameCode,
         player: this._currentPlayer,
         gameComService: gameComService,
+        encryptionService: encryptionService,
         gameState: _gameState,
       );
     } else {
@@ -243,6 +249,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         gameCode: widget.gameCode,
         player: this._currentPlayer,
         gameComService: gameComService,
+        encryptionService: encryptionService,
         gameState: _gameState,
       );
 
@@ -679,8 +686,18 @@ class _GamePlayScreenState extends State<GamePlayScreen>
                             * e.g
                             * Deal - contains seat No and cards
                             * Your Action - seat No, available actions & amounts */
-                            _gameContextObj.handActionService
-                                .handle(message.string);
+
+                            if (TestService.isTesting) {
+                              _gameContextObj.handActionService
+                                  .handle(message.string);
+                            } else {
+                              Future<List<int>> decryptedMessage =
+                                  _gameContextObj.encryptionService
+                                      .decrypt(message.data);
+                              decryptedMessage.then((decryptedBytes) =>
+                                  _gameContextObj.handActionService
+                                      .handle(utf8.decode(decryptedBytes)));
+                            }
                           });
                         }
                       }
