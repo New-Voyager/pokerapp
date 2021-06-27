@@ -29,11 +29,14 @@ class SwitchWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               /* label */
-              Text(
-                label,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 18.0,
+              Expanded(
+                flex: 6,
+                child: Text(
+                  label,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18.0,
+                  ),
                 ),
               ),
 
@@ -42,30 +45,33 @@ class SwitchWidget extends StatelessWidget {
 
               /* switch */
               Consumer<ValueNotifier<bool>>(
-                builder: (_, vnValue, __) => FlutterSwitch(
-                  disabled: disabled,
-                  activeTextColor: Colors.white,
-                  inactiveTextColor: Colors.white,
-                  activeSwitchBorder: Border.all(
-                    color: Color(0xff40D876),
-                    width: 2.0,
+                builder: (_, vnValue, __) => Expanded(
+                  flex: 2,
+                  child: FlutterSwitch(
+                    disabled: disabled,
+                    activeTextColor: Colors.white,
+                    inactiveTextColor: Colors.white,
+                    activeSwitchBorder: Border.all(
+                      color: Color(0xff40D876),
+                      width: 2.0,
+                    ),
+                    inactiveSwitchBorder: Border.all(
+                      color: Color(0xff4D4D4D),
+                      width: 2.0,
+                    ),
+                    activeColor: Color(0xff092913),
+                    activeToggleColor: Color(0xff40D876),
+                    inactiveColor: Color(0xff1C1C1C),
+                    inactiveToggleColor: Color(0xff4D4D4D),
+                    showOnOff: true,
+                    activeText: 'On',
+                    inactiveText: 'Off',
+                    value: vnValue.value,
+                    onToggle: (bool newValue) {
+                      vnValue.value = newValue;
+                      onChange(newValue);
+                    },
                   ),
-                  inactiveSwitchBorder: Border.all(
-                    color: Color(0xff4D4D4D),
-                    width: 2.0,
-                  ),
-                  activeColor: Color(0xff092913),
-                  activeToggleColor: Color(0xff40D876),
-                  inactiveColor: Color(0xff1C1C1C),
-                  inactiveToggleColor: Color(0xff4D4D4D),
-                  showOnOff: true,
-                  activeText: 'On',
-                  inactiveText: 'Off',
-                  value: vnValue.value,
-                  onToggle: (bool newValue) {
-                    vnValue.value = newValue;
-                    onChange(newValue);
-                  },
                 ),
               )
             ],
