@@ -320,4 +320,16 @@ class NewGameModelProvider extends ChangeNotifier {
     settings.audioConference = value;
     notifyListeners();
   }
+
+  get showHandRank => settings.showHandRank;
+  set showHandRank(bool value) {
+    settings.showHandRank = value;
+    notifyListeners();
+  }
+
+  get allowRabbitHunt => settings.allowRabbitHunt;
+  set allowRabbitHunt(bool value) {
+    settings.allowRabbitHunt = value;
+    notifyListeners();
+  }
 }

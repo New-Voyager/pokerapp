@@ -76,6 +76,9 @@ class NewGameModel {
   Rewards rewards;
   bool muckLosingHand = false;
   bool audioConference = false;
+  bool allowRabbitHunt = true;
+  bool showHandRank = false;
+
   List<GameType> roeGames = [];
   List<GameType> dealerChoiceGames = [];
 
@@ -104,7 +107,10 @@ class NewGameModel {
       this.botGame,
       this.muckLosingHand,
       this.roeGames,
-      this.dealerChoiceGames});
+      this.dealerChoiceGames,
+      this.allowRabbitHunt,
+      this.showHandRank,
+      this.audioConference});
 
   NewGameModel.withDefault(String clubCode) {
     this.clubCode = clubCode;
@@ -134,6 +140,8 @@ class NewGameModel {
     roeGames = json['roeGames'];
     dealerChoiceGames = json['dealerChoiceGames'];
     audioConference = json['audioConfEnabled'];
+    allowRabbitHunt = json['allowRabbitHunt'];
+    showHandRank = json['showHandRank'];
   }
 
   Map<String, dynamic> toJson() {
@@ -157,6 +165,8 @@ class NewGameModel {
     data['runItTwiceAllowed'] = this.runItTwice;
     data['muckLosingHand'] = this.muckLosingHand;
     data['audioConfEnabled'] = this.audioConference;
+    data['allowRabbitHunt'] = this.allowRabbitHunt;
+    data['showHandRank'] = this.showHandRank;
 
     if (this.gameType == GameType.ROE) {
       data['roeGames'] = this

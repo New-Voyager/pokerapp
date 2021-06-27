@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/hand_history_model.dart';
 import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/resources/app_assets.dart';
@@ -14,12 +15,16 @@ import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/hand_service.dart';
 import 'package:pokerapp/services/app/player_service.dart';
 
+import '../../../routes.dart';
+
 class HandHistoryListView extends StatefulWidget {
   final HandHistoryListModel data;
   final bool isInBottomSheet;
   final bool isLeadingBackIconShow;
+
   HandHistoryListView(this.data, this.clubCode,
       {this.isInBottomSheet = false, this.isLeadingBackIconShow = true});
+
   final String clubCode;
 
   @override
@@ -27,7 +32,9 @@ class HandHistoryListView extends StatefulWidget {
 }
 
 class _HandHistoryState extends State<HandHistoryListView>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, RouteAwareAnalytics {
+  @override
+  String get routeName => Routes.hand_history_list;
   bool loadingDone = false;
   HandHistoryListModel _data;
   PlayerInfo currentPlayer;

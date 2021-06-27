@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/table_record.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
@@ -16,6 +17,8 @@ import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/utils/hand_table_bar_chart_profit.dart';
 import 'package:share/share.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
+
+import '../../../routes.dart';
 
 class TableResultScreen extends StatefulWidget {
   final String gameCode;
@@ -43,7 +46,10 @@ class TableResultScreen extends StatefulWidget {
   }
 }
 
-class _TableResultScreenState extends State<TableResultScreen> {
+class _TableResultScreenState extends State<TableResultScreen>
+    with RouteAwareAnalytics {
+  @override
+  String get routeName => Routes.table_result;
   TableRecord data;
 
   Map<int, Widget> tableWidgets;

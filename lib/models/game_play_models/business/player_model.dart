@@ -38,7 +38,7 @@ class PlayerModel {
   TablePosition playerType;
   bool winner = false;
   bool showFirework = false;
-
+  String rankText = '';
   int noOfCardsVisible = 0;
 
   // buyin status/timer

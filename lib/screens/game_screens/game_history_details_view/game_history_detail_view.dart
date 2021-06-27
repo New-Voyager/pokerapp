@@ -18,6 +18,7 @@ import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/formatter.dart';
 
+import '../../../main.dart';
 import 'hands_chart_view.dart';
 import 'highhand_winners_view.dart';
 
@@ -31,7 +32,9 @@ class GameHistoryDetailView extends StatefulWidget {
   _GameHistoryDetailView createState() => _GameHistoryDetailView();
 }
 
-class _GameHistoryDetailView extends State<GameHistoryDetailView> {
+class _GameHistoryDetailView extends State<GameHistoryDetailView> with RouteAwareAnalytics{
+  @override
+  String get routeName => Routes.game_history_detail_view;
   final seprator = SizedBox(
     height: 1.0,
   );

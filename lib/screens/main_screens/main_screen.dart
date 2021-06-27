@@ -24,17 +24,24 @@ import 'package:pokerapp/utils/utils.dart';
 
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
+import '../../main.dart';
+import '../../routes.dart';
+
 class MainScreen extends StatefulWidget {
   @override
   _MainScreenState createState() => _MainScreenState();
 }
 
 class _MainScreenState extends State<MainScreen>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, RouteAwareAnalytics {
+  @override
+  String get routeName => Routes.main;
+
   TabController _controller;
   PlayerInfo _currentPlayer;
   int _navPos = 0;
   Nats _nats;
+
   Future<void> _init() async {
     log('Initialize main screen');
 
@@ -94,7 +101,8 @@ class _MainScreenState extends State<MainScreen>
       _nats.close();
     }
   }
-/* 
+
+/*
   @override
   Widget build(BuildContext context) {
     return Scaffold(

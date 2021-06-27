@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:developer';
 import 'package:after_layout/after_layout.dart';
 import 'package:audioplayers/audioplayers.dart';
@@ -35,6 +36,7 @@ import 'package:pokerapp/services/app/auth_service.dart';
 //import 'package:pokerapp/services/agora/agora.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/app/player_service.dart';
+import 'package:pokerapp/services/encryption/encryption_service.dart';
 import 'package:pokerapp/services/game_play/action_services/game_action_service/util_action_services.dart';
 import 'package:pokerapp/services/game_play/action_services/game_update_service.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_service.dart';
@@ -50,6 +52,8 @@ import 'package:pokerapp/utils/utils.dart';
 import 'package:provider/provider.dart';
 import 'package:wakelock/wakelock.dart';
 
+import '../../main.dart';
+import '../../routes.dart';
 import '../../services/test/test_service.dart';
 import 'game_play_screen_util_methods.dart';
 
@@ -86,7 +90,10 @@ class GamePlayScreen extends StatefulWidget {
 }
 
 class _GamePlayScreenState extends State<GamePlayScreen>
-    with AfterLayoutMixin<GamePlayScreen>, WidgetsBindingObserver {
+    with AfterLayoutMixin<GamePlayScreen>, RouteAwareAnalytics {
+  @override
+  String get routeName => Routes.game_play;
+
   bool _initiated;
   BuildContext _providerContext;
   PlayerInfo _currentPlayer;
@@ -139,13 +146,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       return;
     }
 
-    if (_audioPlayer != null) {
-      _audioPlayer.resume();
-    }
-    if (_voiceTextPlayer != null) {
-      _voiceTextPlayer.resume();
-    }
-
     //final janusEngine = _gameState.getJanusEngine(_providerContext);
     _gameState.janusEngine.joinChannel('test');
     return;
@@ -192,17 +192,20 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       pongChannel: _gameInfoModel.pongChannel,
     );
 
+    final encryptionService = EncryptionService();
+
     if (!TestService.isTesting) {
       // subscribe the NATs channels
       final natsClient = Provider.of<Nats>(context, listen: false);
 
       log('natsClient: $natsClient');
       await gameComService.init(natsClient);
+      await encryptionService.init();
     }
 
     _gameState = GameState();
     _gameState.gameComService = gameComService;
-    await _gameState.initialize(
+    _gameState.initialize(
       gameCode: _gameInfoModel.gameCode,
       gameInfo: _gameInfoModel,
       currentPlayer: _currentPlayer,
@@ -229,7 +232,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       }
     } else {}
 
-    //_audioPlayer = AudioPlayer();
+    _audioPlayer = AudioPlayer();
 
     if (TestService.isTesting) {
       // testing code goes here
@@ -237,6 +240,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         gameCode: widget.gameCode,
         player: this._currentPlayer,
         gameComService: gameComService,
+        encryptionService: encryptionService,
         gameState: _gameState,
       );
     } else {
@@ -250,6 +254,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         gameCode: widget.gameCode,
         player: this._currentPlayer,
         gameComService: gameComService,
+        encryptionService: encryptionService,
         gameState: _gameState,
       );
 
@@ -310,7 +315,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       _gameContextObj?.dispose();
       // agora?.disposeObject();
       // Audio.dispose(context: _providerContext);
-      log("janus in disposing $_gameState ${_gameState.janusEngine}");
       _gameState?.janusEngine?.disposeObject();
       _gameState?.close();
 
@@ -323,7 +327,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         _voiceTextPlayer = null;
       }
     } catch (e) {
-      log('janus Caught exception: ${e.toString()}');
+      log('Caught exception: ${e.toString()}');
     }
 
     super.dispose();
@@ -474,12 +478,8 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   @override
   void initState() {
     super.initState();
-    // Register listener for lifecycle methods
-    WidgetsBinding.instance.addObserver(this);
-
     log('game screen initState');
     /* the init method is invoked only once */
-    _audioPlayer = AudioPlayer();
     _voiceTextPlayer = AudioPlayer();
     Wakelock.enable();
     _init().then(
@@ -691,8 +691,18 @@ class _GamePlayScreenState extends State<GamePlayScreen>
                             * e.g
                             * Deal - contains seat No and cards
                             * Your Action - seat No, available actions & amounts */
-                            _gameContextObj.handActionService
-                                .handle(message.string);
+
+                            if (TestService.isTesting) {
+                              _gameContextObj.handActionService
+                                  .handle(message.string);
+                            } else {
+                              Future<List<int>> decryptedMessage =
+                                  _gameContextObj.encryptionService
+                                      .decrypt(message.data);
+                              decryptedMessage.then((decryptedBytes) =>
+                                  _gameContextObj.handActionService
+                                      .handle(utf8.decode(decryptedBytes)));
+                            }
                           });
                         }
                       }
@@ -810,32 +820,5 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     GamePlayScreenUtilMethods.startGame(widget.gameCode);
     _gameState.myState.gameStatus = GameStatus.RUNNING;
     _gameState.myState.notify();
-  }
-
-  // Lifeccyle Methods
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    log("AppLifeCycleState : $state");
-    switch (state) {
-      case AppLifecycleState.paused:
-      case AppLifecycleState.detached:
-      case AppLifecycleState.inactive:
-        log("Leaving AudioConference from Lifecycle");
-        leaveAudioConference();
-        break;
-      case AppLifecycleState.resumed:
-        log("Joining AudioConference from Lifecycle");
-        joinAudio();
-        break;
-    }
-    super.didChangeAppLifecycleState(state);
-  }
-
-  leaveAudioConference() {
-    if (_gameState != null) {
-      _audioPlayer?.pause();
-      _voiceTextPlayer?.pause();
-      _gameState.janusEngine?.leaveChannel();
-    }
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/game_history_model.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
@@ -9,6 +10,8 @@ import 'package:pokerapp/screens/game_screens/highhand_log/high_hand_widget.dart
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/screens/game_screens/widgets/highhand_widget.dart';
 import 'package:pokerapp/services/app/game_service.dart';
+
+import '../../../routes.dart';
 
 class HighHandLogView extends StatefulWidget {
   final String gameCode;
@@ -20,7 +23,10 @@ class HighHandLogView extends StatefulWidget {
   }
 }
 
-class _HighHandLogViewState extends State<HighHandLogView> {
+class _HighHandLogViewState extends State<HighHandLogView> with RouteAwareAnalytics{
+  @override
+  String get routeName => Routes.high_hand_log;
+
   List<HighHandWinner> hhWinners;
   final SizedBox seprator = SizedBox(
     height: 20.0,

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
@@ -336,6 +337,11 @@ class _GameOptionState extends State<GameOption> {
               text: 'Auto Straddle',
               value: widget.gameState.settings.autoStraddle,
               onChange: (bool v) async {
+                if (v) {
+                  await FirebaseAnalytics().logEvent(
+                      name: "Auto_Straddle",
+                      parameters: {"name": "Auto Straddle is turned ON"});
+                }
                 widget.gameState.settings.autoStraddle = v;
                 widget.gameState.gameHiveStore
                     .putGameSettings(widget.gameState.settings);

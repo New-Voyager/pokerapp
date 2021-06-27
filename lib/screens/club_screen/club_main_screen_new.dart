@@ -32,7 +32,9 @@ class ClubMainScreenNew extends StatefulWidget {
   _ClubMainScreenNewState createState() => _ClubMainScreenNewState();
 }
 
-class _ClubMainScreenNewState extends State<ClubMainScreenNew> with RouteAware {
+class _ClubMainScreenNewState extends State<ClubMainScreenNew> with RouteAware, RouteAwareAnalytics {
+  @override
+  String get routeName => Routes.club_main;
   void refreshClubMainScreen() {
     //  log('refresh club main screen');
     setState(() {});

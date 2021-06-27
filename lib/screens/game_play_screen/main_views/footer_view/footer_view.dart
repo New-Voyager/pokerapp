@@ -57,7 +57,7 @@ class _FooterViewState extends State<FooterView>
                 left: 0,
                 top: 0,
                 child: HandAnalyseView(
-                  widget.gameCode,
+                  gameState,
                   widget.clubCode,
                   gameContext,
                 ),

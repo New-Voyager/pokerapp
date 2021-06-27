@@ -18,6 +18,7 @@ import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/services/app/club_interior_service.dart';
 import 'package:pokerapp/services/app/club_message_service.dart';
 
+import '../../../routes.dart';
 import '../../chat_screen/utils.dart';
 import '../../chat_screen/widgets/chat_text_field.dart';
 import 'club_chat_model.dart';
@@ -33,7 +34,10 @@ class MessagesPageView extends StatefulWidget {
   _MessagesPageViewState createState() => _MessagesPageViewState();
 }
 
-class _MessagesPageViewState extends State<MessagesPageView> {
+class _MessagesPageViewState extends State<MessagesPageView>
+    with RouteAwareAnalytics {
+  @override
+  String get routeName => Routes.message_page;
   TextEditingController _textController = TextEditingController();
 
   List<ClubMessageModel> messages = [];

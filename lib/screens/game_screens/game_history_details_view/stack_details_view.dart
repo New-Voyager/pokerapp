@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/game_history_model.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 
@@ -24,17 +25,21 @@ class PointsLineChart extends StatefulWidget {
   final String gameCode;
   final bool showBackButton;
   final bool liveGame;
+
   PointsLineChart(
       {Key key,
       this.gameCode,
       this.showBackButton = true,
       this.liveGame = false})
       : super(key: key);
+
   @override
   _PointsLineChart createState() => _PointsLineChart();
 }
 
-class _PointsLineChart extends State<PointsLineChart> {
+class _PointsLineChart extends State<PointsLineChart> with RouteAwareAnalytics {
+  @override
+  String get routeName => Routes.pointsLineChart;
   static dynamic jsonData;
   bool loadingDone = false;
   Offset _tapPosition = Offset(100, 100);
