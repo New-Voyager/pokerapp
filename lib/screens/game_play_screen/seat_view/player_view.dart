@@ -334,7 +334,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
                     : const SizedBox.shrink(),
               ),
 
-              talkingAnimation(),
+              playerStatusIcons(),
               widget.seat.player.showMicOff
                   ? Positioned(
                       top: 0,
@@ -398,55 +398,89 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
     );
   }
 
-  Widget talkingAnimation() {
+  Widget playerStatusIcons() {
     double left;
     double right = -20;
-    double talkingAngle = 0;
     if (widget.seat.uiSeatPos == SeatPos.topRight ||
         widget.seat.uiSeatPos == SeatPos.middleRight ||
         widget.seat.uiSeatPos == SeatPos.bottomRight) {
       left = -15;
       right = null;
+    }
+    return Positioned(
+        bottom: 0,
+        left: left,
+        right: right,
+        child: Column(
+          children: [
+            networkConnectivityLostIcon(),
+            talkingAnimation(),
+          ],
+        ));
+  }
+
+  Widget talkingAnimation() {
+    double talkingAngle = 0;
+    if (widget.seat.uiSeatPos == SeatPos.topRight ||
+        widget.seat.uiSeatPos == SeatPos.middleRight ||
+        widget.seat.uiSeatPos == SeatPos.bottomRight) {
       talkingAngle = -math.pi;
     }
 
     return Visibility(
       visible: widget.seat.player.talking,
-      child: Positioned(
-        bottom: 0,
-        left: left,
-        right: right,
-        child: Transform.rotate(
-          angle: talkingAngle,
-          child: BlinkWidget(
-            children: [
-              SvgPicture.asset(
-                'assets/images/speak/speak-one.svg',
-                width: 16,
-                height: 16,
-                color: Colors.cyan,
-              ),
-              SvgPicture.asset(
-                'assets/images/speak/speak-two.svg',
-                width: 16,
-                height: 16,
-                color: Colors.cyan,
-              ),
-              SvgPicture.asset(
-                'assets/images/speak/speak-all.svg',
-                width: 16,
-                height: 16,
-                color: Colors.cyan,
-              ),
-              SvgPicture.asset(
-                'assets/images/speak/speak-two.svg',
-                width: 16,
-                height: 16,
-                color: Colors.cyan,
-              ),
-            ],
-          ),
+      maintainState: true,
+      maintainAnimation: true,
+      maintainSize: true,
+      child: Transform.rotate(
+        angle: talkingAngle,
+        child: BlinkWidget(
+          children: [
+            SvgPicture.asset(
+              'assets/images/speak/speak-one.svg',
+              width: 16,
+              height: 16,
+              color: Colors.cyan,
+            ),
+            SvgPicture.asset(
+              'assets/images/speak/speak-two.svg',
+              width: 16,
+              height: 16,
+              color: Colors.cyan,
+            ),
+            SvgPicture.asset(
+              'assets/images/speak/speak-all.svg',
+              width: 16,
+              height: 16,
+              color: Colors.cyan,
+            ),
+            SvgPicture.asset(
+              'assets/images/speak/speak-two.svg',
+              width: 16,
+              height: 16,
+              color: Colors.cyan,
+            ),
+          ],
         ),
+      ),
+    );
+  }
+
+  Widget networkConnectivityLostIcon() {
+    bool isVisible() {
+      return widget.seat.player.highlight &&
+          widget.seat.player.connectivity.connectivityLost;
+    }
+
+    return Visibility(
+      visible: isVisible(),
+      maintainState: true,
+      maintainAnimation: true,
+      maintainSize: true,
+      child: Image.asset(
+        'assets/images/network_connectivity/network_disconnected.png',
+        width: 14,
+        color: Colors.cyan,
       ),
     );
   }

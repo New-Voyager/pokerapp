@@ -13,6 +13,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/host_seat_chang
 import 'package:pokerapp/models/game_play_models/provider_models/notification_models/general_notification_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/notification_models/hh_notification_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat_change_model.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/resources/app_constants.dart';
@@ -124,6 +125,24 @@ class GameUpdateService {
         case AppConstants.GAME_STATUS:
           return handleUpdateStatus(
             status: data['status'],
+          );
+
+        case AppConstants.PLAYER_CONNECTIVITY_LOST:
+          List<int> playerIds =
+              List<String>.from(data['networkConnectivity']['playerIds'])
+                  .map((s) => int.parse(s))
+                  .toList();
+          return handlePlayerConnectivityLost(
+            playerIds: playerIds,
+          );
+
+        case AppConstants.PLAYER_CONNECTIVITY_RESTORED:
+          List<int> playerIds =
+              List<String>.from(data['networkConnectivity']['playerIds'])
+                  .map((s) => int.parse(s))
+                  .toList();
+          return handlePlayerConnectivityRestored(
+            playerIds: playerIds,
           );
       }
     } else if (type != null) {
@@ -683,6 +702,48 @@ class GameUpdateService {
     } else if (type == AppConstants.TableWaitlistSeating) {
       // show a flush bar at the top
       handleWaitlistSeating(data: data);
+    }
+  }
+
+  void handlePlayerConnectivityLost({
+    List<int> playerIds,
+  }) async {
+    // log("HANDLING PLAYER CONNECTIVITY LOST: " + playerIds.toString());
+    for (int playerId in playerIds) {
+      // log(playerId.toString());
+      Seat seat = _gameState.getSeatByPlayer(playerId);
+      if (seat == null) {
+        continue;
+      }
+      // log(seat.toString());
+      PlayerModel player = seat.player;
+      assert(player.playerId == playerId);
+      // log(player.toString());
+      if (!player.connectivity.connectivityLost) {
+        player.connectivity.connectivityLost = true;
+        seat.notify();
+      }
+    }
+  }
+
+  void handlePlayerConnectivityRestored({
+    List<int> playerIds,
+  }) async {
+    // log("HANDLING PLAYER CONNECTIVITY RESTORED: " + playerIds.toString());
+    for (int playerId in playerIds) {
+      // log(playerId.toString());
+      Seat seat = _gameState.getSeatByPlayer(playerId);
+      if (seat == null) {
+        continue;
+      }
+      // log(seat.toString());
+      PlayerModel player = seat.player;
+      assert(player.playerId == playerId);
+      // log(player.toString());
+      if (player.connectivity.connectivityLost) {
+        player.connectivity.connectivityLost = false;
+        seat.notify();
+      }
     }
   }
 

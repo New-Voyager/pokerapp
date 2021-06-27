@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:dart_nats/dart_nats.dart';
 
@@ -9,6 +10,10 @@ class PingResponder {
   String pongChannel;
   bool active;
   List<PingPongMessage> messages = [];
+
+  // For debugging
+  bool debug = true;
+  Random rng = new Random();
 
   PingResponder(
     this.playerId,
@@ -30,7 +35,16 @@ class PingResponder {
 
   void handleMessage(Message natsMsg) {
     final PingPongMessage message = PingPongMessage.fromMessage(natsMsg.string);
-    this.sendResponse(message);
+
+    if (debug) {
+      // Don't respond to the network check sometimes, so that we can see the
+      // view change.
+      if (rng.nextInt(10) < 3) {
+        this.sendResponse(message);
+      }
+    } else {
+      this.sendResponse(message);
+    }
   }
 
   void close() {
