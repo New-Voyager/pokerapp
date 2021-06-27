@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/game_history_model.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
@@ -21,7 +22,11 @@ class GameHistoryView extends StatefulWidget {
   _GameHistoryViewState createState() => _GameHistoryViewState(clubCode);
 }
 
-class _GameHistoryViewState extends State<GameHistoryView> {
+class _GameHistoryViewState extends State<GameHistoryView> with RouteAwareAnalytics{
+
+  @override
+  String get routeName => Routes.game_history;
+
   final String clubCode;
   _GameHistoryViewState(this.clubCode);
 

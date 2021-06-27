@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_stages.dart';
+import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/bookmarkedHands_model.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
 import 'package:pokerapp/resources/app_colors.dart';
@@ -25,6 +26,8 @@ import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
 import 'package:pokerapp/widgets/num_diamond_widget.dart';
 
+import '../../../routes.dart';
+
 class HandLogView extends StatefulWidget {
   final String gameCode;
   final bool isAppbarWithHandNumber;
@@ -32,6 +35,7 @@ class HandLogView extends StatefulWidget {
   final int handNum;
   final HandLogModelNew handLogModel;
   final bool isBottomSheet;
+
   HandLogView(this.gameCode, this.handNum,
       {this.isAppbarWithHandNumber = false,
       this.clubCode,
@@ -42,7 +46,9 @@ class HandLogView extends StatefulWidget {
   State<StatefulWidget> createState() => _HandLogViewState();
 }
 
-class _HandLogViewState extends State<HandLogView> {
+class _HandLogViewState extends State<HandLogView> with RouteAwareAnalytics {
+  @override
+  String get routeName => Routes.hand_log_view;
   bool _isLoading = true;
   var handLogjson;
   List<BookmarkedHand> list = [];

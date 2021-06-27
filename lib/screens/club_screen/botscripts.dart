@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:overlay_support/overlay_support.dart';
+import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/club_homepage_model.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_constants.dart';
@@ -23,7 +24,9 @@ class BotScriptsScreen extends StatefulWidget {
   _BotScriptsScreenState createState() => _BotScriptsScreenState();
 }
 
-class _BotScriptsScreenState extends State<BotScriptsScreen> {
+class _BotScriptsScreenState extends State<BotScriptsScreen> with RouteAwareAnalytics{
+  @override
+  String get routeName => Routes.bot_scripts;
   ScriptsModel scripts;
   List<String> oldLiveGames = [];
   List<String> newLiveGames = [];

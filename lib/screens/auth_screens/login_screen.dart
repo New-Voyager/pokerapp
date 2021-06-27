@@ -22,8 +22,11 @@ class LoginScreen extends StatefulWidget {
   _LoginScreenState createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginScreenState extends State<LoginScreen> with RouteAwareAnalytics {
   String apiServer;
+
+  @override
+  String get routeName => Routes.login;
 
   void setUrls(BuildContext ctx) async {
     if ((apiServer == null || apiServer.isEmpty))

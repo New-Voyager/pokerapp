@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/club_members_model.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
@@ -29,7 +30,9 @@ class ClubMembersDetailsView extends StatefulWidget {
       _ClubMembersDetailsView(this.clubCode, this.playerId);
 }
 
-class _ClubMembersDetailsView extends State<ClubMembersDetailsView> {
+class _ClubMembersDetailsView extends State<ClubMembersDetailsView> with RouteAwareAnalytics{
+  @override
+  String get routeName => Routes.club_member_detail_view;
   bool loadingDone = false;
   ClubMemberModel _data;
   final String clubCode;

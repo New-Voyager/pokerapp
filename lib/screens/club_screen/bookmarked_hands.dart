@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/bookmarkedHands_model.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
 import 'package:pokerapp/resources/app_colors.dart';
@@ -15,6 +16,8 @@ import 'package:pokerapp/services/app/hand_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
 
+import '../../routes.dart';
+
 class BookmarkedHands extends StatefulWidget {
   final String clubCode;
 
@@ -23,7 +26,9 @@ class BookmarkedHands extends StatefulWidget {
   _BookmarkedHandsState createState() => _BookmarkedHandsState();
 }
 
-class _BookmarkedHandsState extends State<BookmarkedHands> {
+class _BookmarkedHandsState extends State<BookmarkedHands> with RouteAwareAnalytics {
+  @override
+  String get routeName => Routes.bookmarked_hands;
   bool loading = true;
   List<BookmarkedHand> list = [];
 

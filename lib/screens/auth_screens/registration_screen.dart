@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:pokerapp/enums/auth_type.dart';
+import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/auth_model.dart';
 import 'package:pokerapp/resources/app_strings.dart';
 import 'package:pokerapp/resources/app_styles.dart';
@@ -15,7 +16,11 @@ class RegistrationScreen extends StatefulWidget {
   _RegistrationScreenState createState() => _RegistrationScreenState();
 }
 
-class _RegistrationScreenState extends State<RegistrationScreen> {
+class _RegistrationScreenState extends State<RegistrationScreen> with RouteAwareAnalytics{
+
+  @override
+  String get routeName => Routes.registration;
+
   final GlobalKey<FormState> _formKey = GlobalKey();
   final AuthModel _authModel = AuthModel();
 

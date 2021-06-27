@@ -1,19 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/messages_from_member.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/services/app/clubs_service.dart';
 
+import '../../../../routes.dart';
+
 class ClubHostMessaging extends StatefulWidget {
   ClubHostMessaging({@required this.clubCode, this.player, this.name});
+
   final String clubCode;
   final String player;
   final String name;
+
   @override
   _ClubChatState createState() => _ClubChatState();
 }
 
-class _ClubChatState extends State<ClubHostMessaging> {
+class _ClubChatState extends State<ClubHostMessaging> with RouteAwareAnalytics {
+  @override
+  String get routeName => Routes.club_host_messagng;
   TextEditingController controller = TextEditingController();
   double width, height;
   List<String> messages = [];
