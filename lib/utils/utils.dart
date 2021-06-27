@@ -53,7 +53,7 @@ class DeviceInfo {
   Map<String, dynamic> _deviceData = <String, dynamic>{};
   static DeviceInfo _deviceInfo;
 
-  static void init() async {
+  static Future<void> init() async {
     _deviceInfo = new DeviceInfo();
     await _deviceInfo.initPlateformData();
   }

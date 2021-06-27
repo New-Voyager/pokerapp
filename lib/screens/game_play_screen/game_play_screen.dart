@@ -86,7 +86,7 @@ class GamePlayScreen extends StatefulWidget {
 }
 
 class _GamePlayScreenState extends State<GamePlayScreen>
-    with AfterLayoutMixin<GamePlayScreen> {
+    with AfterLayoutMixin<GamePlayScreen>, WidgetsBindingObserver {
   bool _initiated;
   BuildContext _providerContext;
   PlayerInfo _currentPlayer;
@@ -137,6 +137,13 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   Future joinAudio() async {
     if (!_gameState.audioConfEnabled) {
       return;
+    }
+
+    if (_audioPlayer != null) {
+      _audioPlayer.resume();
+    }
+    if (_voiceTextPlayer != null) {
+      _voiceTextPlayer.resume();
     }
 
     //final janusEngine = _gameState.getJanusEngine(_providerContext);
@@ -195,7 +202,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
     _gameState = GameState();
     _gameState.gameComService = gameComService;
-    _gameState.initialize(
+    await _gameState.initialize(
       gameCode: _gameInfoModel.gameCode,
       gameInfo: _gameInfoModel,
       currentPlayer: _currentPlayer,
@@ -222,7 +229,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       }
     } else {}
 
-    _audioPlayer = AudioPlayer();
+    //_audioPlayer = AudioPlayer();
 
     if (TestService.isTesting) {
       // testing code goes here
@@ -303,6 +310,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       _gameContextObj?.dispose();
       // agora?.disposeObject();
       // Audio.dispose(context: _providerContext);
+      log("janus in disposing $_gameState ${_gameState.janusEngine}");
       _gameState?.janusEngine?.disposeObject();
       _gameState?.close();
 
@@ -315,7 +323,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         _voiceTextPlayer = null;
       }
     } catch (e) {
-      log('Caught exception: ${e.toString()}');
+      log('janus Caught exception: ${e.toString()}');
     }
 
     super.dispose();
@@ -466,8 +474,12 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   @override
   void initState() {
     super.initState();
+    // Register listener for lifecycle methods
+    WidgetsBinding.instance.addObserver(this);
+
     log('game screen initState');
     /* the init method is invoked only once */
+    _audioPlayer = AudioPlayer();
     _voiceTextPlayer = AudioPlayer();
     Wakelock.enable();
     _init().then(
@@ -798,5 +810,32 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     GamePlayScreenUtilMethods.startGame(widget.gameCode);
     _gameState.myState.gameStatus = GameStatus.RUNNING;
     _gameState.myState.notify();
+  }
+
+  // Lifeccyle Methods
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    log("AppLifeCycleState : $state");
+    switch (state) {
+      case AppLifecycleState.paused:
+      case AppLifecycleState.detached:
+      case AppLifecycleState.inactive:
+        log("Leaving AudioConference from Lifecycle");
+        leaveAudioConference();
+        break;
+      case AppLifecycleState.resumed:
+        log("Joining AudioConference from Lifecycle");
+        joinAudio();
+        break;
+    }
+    super.didChangeAppLifecycleState(state);
+  }
+
+  leaveAudioConference() {
+    if (_gameState != null) {
+      _audioPlayer?.pause();
+      _voiceTextPlayer?.pause();
+      _gameState.janusEngine?.leaveChannel();
+    }
   }
 }

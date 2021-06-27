@@ -345,7 +345,8 @@ class JanusEngine extends ChangeNotifier {
         mute();
         log('janus: mic is muted');
         // leave the channel
-        leaveChannel();
+        // don't need to leave channel if he mute himself
+        // leaveChannel();
       }
     }
   }

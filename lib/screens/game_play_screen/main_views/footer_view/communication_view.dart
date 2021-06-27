@@ -9,11 +9,8 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:pokerapp/enums/player_status.dart';
 import 'package:pokerapp/models/game_play_models/business/game_chat_notfi_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
-import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
-import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/game_circle_button.dart';
-import 'package:pokerapp/screens/game_play_screen/widgets/pulsating_button.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/voice_text_widget.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -130,10 +127,11 @@ class _CommunicationViewState extends State<CommunicationView> {
       log('Audio status: ${state.audioConferenceStatus.toString()} iconColor: ${iconColor.toString()} muted: ${state.muted} talking: ${state.talking}');
 
       if (state?.talking ?? false) {
-        mic = talkingAnimation(() {
+        mic = talkingAnimation(() async {
           log('mic is tapped');
           if (state.audioConferenceStatus == AudioConferenceStatus.CONNECTED) {
             gameState.janusEngine.muteUnmute();
+            //Alerts.showNotification(titleText: "AudioConfigChanged from anim");
           }
         });
       }
@@ -149,11 +147,12 @@ class _CommunicationViewState extends State<CommunicationView> {
             width: 16, height: 16, color: Colors.black);
       }
       mic = GameCircleButton(
-          onClickHandler: () {
+          onClickHandler: () async {
             log('mic is tapped');
             if (state.audioConferenceStatus ==
                 AudioConferenceStatus.CONNECTED) {
               gameState.janusEngine.muteUnmute();
+              
             }
           },
           child: child);
@@ -162,7 +161,7 @@ class _CommunicationViewState extends State<CommunicationView> {
 
     return <Widget>[
       Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8),
         child: Icon(
           Icons.circle,
           size: 15.pw,
@@ -170,7 +169,7 @@ class _CommunicationViewState extends State<CommunicationView> {
         ),
       ),
       GestureDetector(
-        onTap: () {
+        onTap: () async {
           if (state.audioConferenceStatus == AudioConferenceStatus.CONNECTED) {
             gameState.janusEngine.muteUnmute();
           }
