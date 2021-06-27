@@ -34,6 +34,7 @@ class PlayerModel {
   List<int> cards = [];
   List<int> highlightCards = [];
   PlayerActedState _action;
+  PlayerConnectivityState _connectivity;
 
   TablePosition playerType;
   bool winner = false;
@@ -84,6 +85,7 @@ class PlayerModel {
     this.stack = stack;
     this.status = status;
     this._action = PlayerActedState();
+    this._connectivity = PlayerConnectivityState();
 
     // default values
     this.isMe = false;
@@ -107,6 +109,7 @@ class PlayerModel {
     this.status = data['status'];
     this.playerId = int.parse(data['playerId'].toString());
     this._action = PlayerActedState();
+    this._connectivity = PlayerConnectivityState();
 
     DateTime now = DateTime.now();
     if (data['buyInExpTime'] != null) {
@@ -175,10 +178,12 @@ class PlayerModel {
   String toString() => this.name;
 
   PlayerActedState get action => this._action;
+  PlayerConnectivityState get connectivity => this._connectivity;
 
   void reset({bool stickAction}) {
     this.highlight = false;
     this._action.reset(stickAction: stickAction);
+    this._connectivity.reset();
   }
 }
 
@@ -268,5 +273,22 @@ class PlayerActedState {
     _button = false;
     _straddle = false;
     if (!(stickAction ?? false)) _playerAction = HandActions.NONE;
+  }
+}
+
+class PlayerConnectivityState {
+  // the player is not responding to the connectivity check
+  bool _connectivityLost = false;
+
+  PlayerConnectivityState() {
+    reset();
+  }
+
+  bool get connectivityLost => this._connectivityLost;
+
+  set connectivityLost(bool v) => this._connectivityLost = v;
+
+  void reset({bool stickAction}) {
+    _connectivityLost = false;
   }
 }
