@@ -71,4 +71,12 @@ class AppStringsNew {
 
   static String chooseGameTitleNextHand =
       "Choose a game type for the next hand";
+
+  static String clubsTitle = "Clubs";
+
+  static String memberCountLabel = "Strength";
+
+  static String hostedBy = "Hosted by";
+
+  static String clubCodeLabel = "Club code";
 }
