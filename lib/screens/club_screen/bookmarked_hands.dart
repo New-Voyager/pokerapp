@@ -26,7 +26,8 @@ class BookmarkedHands extends StatefulWidget {
   _BookmarkedHandsState createState() => _BookmarkedHandsState();
 }
 
-class _BookmarkedHandsState extends State<BookmarkedHands> with RouteAwareAnalytics {
+class _BookmarkedHandsState extends State<BookmarkedHands>
+    with RouteAwareAnalytics {
   @override
   String get routeName => Routes.bookmarked_hands;
   bool loading = true;

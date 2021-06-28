@@ -243,6 +243,7 @@ class GameReplayService {
         uuid: '', // THIS IS MADE EMPTY TO KNOW WE ARE IN REPLAY MODE
         name: currPlayer.name,
       ),
+      replayMode: true,
     );
 
     return GameReplayController(

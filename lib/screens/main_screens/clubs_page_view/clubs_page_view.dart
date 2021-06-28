@@ -277,8 +277,8 @@ class _ClubsPageViewState extends State<ClubsPageView>
           decoration: BoxDecoration(
             image: DecorationImage(
               image:
-                  AssetImage("assets/images/backgrounds/city_background_2.png"),
-              fit: BoxFit.fill,
+                  AssetImage("assets/images/backgrounds/chat-background.png"),
+              repeat: ImageRepeat.repeat,
             ),
           ),
           child: Scaffold(
@@ -298,8 +298,9 @@ class _ClubsPageViewState extends State<ClubsPageView>
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      IconButton(
-                        onPressed: () async {
+                      RoundedAccentButton(
+                        text: 'Search',
+                        onTapFunction: () async {
                           await showModalBottomSheet(
                             context: context,
                             backgroundColor: Colors.transparent,
@@ -308,9 +309,6 @@ class _ClubsPageViewState extends State<ClubsPageView>
                           );
                           _fetchClubs();
                         },
-                        icon: Icon(
-                          Icons.search,
-                        ),
                       ),
                       HeadingWidget(heading: AppStringsNew.clubsTitle),
                       RoundedAccentButton(

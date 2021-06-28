@@ -30,7 +30,8 @@ class ClubMembersDetailsView extends StatefulWidget {
       _ClubMembersDetailsView(this.clubCode, this.playerId);
 }
 
-class _ClubMembersDetailsView extends State<ClubMembersDetailsView> with RouteAwareAnalytics{
+class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
+    with RouteAwareAnalytics {
   @override
   String get routeName => Routes.club_member_detail_view;
   bool loadingDone = false;

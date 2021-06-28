@@ -23,7 +23,8 @@ class HighHandLogView extends StatefulWidget {
   }
 }
 
-class _HighHandLogViewState extends State<HighHandLogView> with RouteAwareAnalytics{
+class _HighHandLogViewState extends State<HighHandLogView>
+    with RouteAwareAnalytics {
   @override
   String get routeName => Routes.high_hand_log;
 

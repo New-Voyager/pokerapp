@@ -24,7 +24,8 @@ class BotScriptsScreen extends StatefulWidget {
   _BotScriptsScreenState createState() => _BotScriptsScreenState();
 }
 
-class _BotScriptsScreenState extends State<BotScriptsScreen> with RouteAwareAnalytics{
+class _BotScriptsScreenState extends State<BotScriptsScreen>
+    with RouteAwareAnalytics {
   @override
   String get routeName => Routes.bot_scripts;
   ScriptsModel scripts;

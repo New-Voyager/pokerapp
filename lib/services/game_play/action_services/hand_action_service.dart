@@ -747,7 +747,6 @@ class HandActionService {
   }
 
   playSoundEffect(String soundFile) {
-    return;
     if (_gameState.settings.gameSound) {
       _gameState
           .getAudioBytes(soundFile)

@@ -38,14 +38,21 @@ class _ChatScreenState extends State<ChatScreen> with RouteAwareAnalytics {
   @override
   Widget build(BuildContext context) {
     isHostView = widget.player != null;
-    return Scaffold(
-      backgroundColor: chatBg,
-      appBar: CustomAppBar(
-        context: context,
-        titleText: widget.name ?? 'Message',
-      ),
-      body: _buildBody(),
-    );
+    return Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage("assets/images/backgrounds/chat-background.png"),
+            repeat: ImageRepeat.repeat,
+          ),
+        ),
+        child: Scaffold(
+          backgroundColor: chatBg,
+          appBar: CustomAppBar(
+            context: context,
+            titleText: widget.name ?? 'Message',
+          ),
+          body: _buildBody(),
+        ));
   }
 
   // Widget _buildAppBar() {

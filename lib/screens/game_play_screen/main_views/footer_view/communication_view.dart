@@ -152,7 +152,6 @@ class _CommunicationViewState extends State<CommunicationView> {
             if (state.audioConferenceStatus ==
                 AudioConferenceStatus.CONNECTED) {
               gameState.janusEngine.muteUnmute();
-              
             }
           },
           child: child);

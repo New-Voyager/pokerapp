@@ -22,8 +22,8 @@ class GameHistoryView extends StatefulWidget {
   _GameHistoryViewState createState() => _GameHistoryViewState(clubCode);
 }
 
-class _GameHistoryViewState extends State<GameHistoryView> with RouteAwareAnalytics{
-
+class _GameHistoryViewState extends State<GameHistoryView>
+    with RouteAwareAnalytics {
   @override
   String get routeName => Routes.game_history;
 

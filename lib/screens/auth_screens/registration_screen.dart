@@ -16,8 +16,8 @@ class RegistrationScreen extends StatefulWidget {
   _RegistrationScreenState createState() => _RegistrationScreenState();
 }
 
-class _RegistrationScreenState extends State<RegistrationScreen> with RouteAwareAnalytics{
-
+class _RegistrationScreenState extends State<RegistrationScreen>
+    with RouteAwareAnalytics {
   @override
   String get routeName => Routes.registration;
 

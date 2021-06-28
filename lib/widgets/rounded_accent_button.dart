@@ -2,17 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
+
 class RoundedAccentButton extends StatelessWidget {
   final Function onTapFunction;
   final String text;
-  RoundedAccentButton({Key key, this.onTapFunction,this.text}) : super(key: key);
+  RoundedAccentButton({Key key, this.onTapFunction, this.text})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTapFunction,
       child: Container(
-        child: Text(text,
+        child: Text(
+          text,
           style: AppStylesNew.joinTextStyle,
         ),
         padding: EdgeInsets.symmetric(
