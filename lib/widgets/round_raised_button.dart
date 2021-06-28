@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/resources/app_assets.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
+import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class RoundRaisedButton extends StatelessWidget {
-  const RoundRaisedButton({
+  RoundRaisedButton({
     @required this.onButtonTap,
     @required this.buttonText,
     this.color,
     this.radius,
     this.verticalPadding,
-    this.fontSize = 18.0,
+    this.fontSize,
+    this.textColor,
   });
 
   final double fontSize;
@@ -17,6 +20,7 @@ class RoundRaisedButton extends StatelessWidget {
   final Color color;
   final double radius;
   final double verticalPadding;
+  final Color textColor;
 
   @override
   Widget build(BuildContext context) {
@@ -35,9 +39,8 @@ class RoundRaisedButton extends StatelessWidget {
         child: Text(
           buttonText ?? 'Button Text Goes Here',
           style: TextStyle(
-            color: Colors.white,
-            fontFamily: AppAssets.fontFamilyLato,
-            fontSize: fontSize,
+            color: textColor ?? AppColorsNew.darkGreenShadeColor,
+            fontSize: fontSize ?? 12.dp,
             fontWeight: FontWeight.w700,
           ),
         ),

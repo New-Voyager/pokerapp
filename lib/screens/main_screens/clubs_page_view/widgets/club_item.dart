@@ -6,9 +6,16 @@ import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
+import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
+import 'package:pokerapp/resources/new/app_strings_new.dart';
+import 'package:pokerapp/resources/new/app_styles_new.dart';
+import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/widgets/custom_text_button.dart';
+import 'package:pokerapp/widgets/round_color_button.dart';
 
 import '../../../../utils/color_generator.dart';
+import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class ClubItemView extends StatelessWidget {
   final ClubModel club;
@@ -19,11 +26,9 @@ class ClubItemView extends StatelessWidget {
     var separator = SizedBox(height: 10.0);
     Widget clubName = Text(
       club.clubName,
-      style: const TextStyle(
-        color: Colors.white,
-        fontSize: 19.0,
-        fontFamily: AppAssets.fontFamilyLato,
-        fontWeight: FontWeight.w700,
+      style: AppStylesNew.cardHeaderTextStyle.copyWith(
+        fontSize: 14.dp,
+        color: AppColorsNew.yellowAccentColor,
       ),
     );
 
@@ -40,21 +45,90 @@ class ClubItemView extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        clubName,
+        Row(
+          children: [
+            Expanded(flex: 6, child: clubName),
+            Expanded(
+              flex: 2,
+              child: Container(
+                margin: EdgeInsets.only(right: 16, left: 8),
+                child: Text(
+                  club.balance == '0' ? '' : club.balance,
+                  textAlign: TextAlign.end,
+                  style: AppStylesNew.valueTextStyle.copyWith(
+                    color: double.parse(club.balance) > 0
+                        ? AppColors.positiveColor
+                        : AppColors.negativeColor,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
         separator,
-        Text(
-          "Code: ${club.clubCode}",
-          style: AppStyles.clubCodeStyle,
+        Padding(
+          padding: EdgeInsets.only(right: 16),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    AppStringsNew.clubCodeLabel,
+                    style: AppStylesNew.labelTextStyle,
+                  ),
+                  Text(
+                    "${club.clubCode}",
+                  ),
+                ],
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    AppStringsNew.hostedBy,
+                    style: AppStylesNew.labelTextStyle,
+                  ),
+                  Text(
+                    club.isOwner ? "You" : "${club.hostName}",
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
-        Text(
-          club.isOwner ? "Host: You" : "Host: ${club.hostName}",
-          style: AppStyles.clubItemInfoTextStyle,
+        separator,
+        Divider(
+          height: 8,
+          endIndent: 16,
+          color: AppColorsNew.newBackgroundBlackColor,
         ),
-        Spacer(),
-        Text(
-          '${club.memberCount} Member${club.memberCount == 0 || club.memberCount == 1 ? '' : 's'}',
-          style: AppStyles.itemInfoTextStyle,
+        Padding(
+          padding: EdgeInsets.only(right: 16, top: 8),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Text(
+                  //   AppStringsNew.memberCountLabel,
+                  //   style: AppStylesNew.labelTextStyle,
+                  // ),
+                  Text(
+                    '${club.memberCount} Member${club.memberCount == 0 || club.memberCount == 1 ? '' : 's'}',
+                    style: AppStylesNew.appBarSubTitleTextStyle,
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
+        // Text(
+        //   '${club.memberCount} Member${club.memberCount == 0 || club.memberCount == 1 ? '' : 's'}',
+        //   style: AppStyles.itemInfoTextStyle,
+        // ),
 
         /* separator */
         club.outgoingRequest || club.incomingRequest
@@ -85,7 +159,7 @@ class ClubItem extends StatelessWidget {
 
   Widget _buildSideAction(ClubModel club) {
     List<Widget> children = [];
-    if (club.memberStatus == 'ACTIVE') {
+    /* if (club.memberStatus == 'ACTIVE') {
       children = [
         club.balance == '0'
             ? SizedBox(
@@ -100,30 +174,42 @@ class ClubItem extends StatelessWidget {
                 ),
               ),
       ];
-    } else if (club.memberStatus == 'INVITED') {
+    } else */
+    /*  if (club.memberStatus == 'INVITED') {
       children = [
-        CustomTextButton(
+        RoundedColorButton(
           text: 'Join',
-          onTap: () {},
+          onTapFunction: () {},
+          backgroundColor: AppColorsNew.newGreenButtonColor,
+          textColor: AppColorsNew.darkGreenShadeColor,
         ),
-        CustomTextButton(
+        AppDimensionsNew.getHorizontalSpace(32),
+        RoundedColorButton(
           text: 'Decline',
-          onTap: () {},
+          onTapFunction: () {},
+          backgroundColor: AppColorsNew.newRedButtonColor,
         ),
       ];
-    } else if (club.memberStatus == 'PENDING') {
+    } else  */
+    if (club.memberStatus == 'PENDING') {
       children = [
+        CircularProgressWidget(
+          showText: false,
+          height: 16,
+        ),
+        AppDimensionsNew.getHorizontalSpace(8),
         Text(
           'Waiting For Approval',
           textAlign: TextAlign.center,
-          style: AppStyles.itemInfoTextStyle.copyWith(
-            fontSize: 16.0,
-          ),
         ),
       ];
     }
 
-    return Column(
+    if (children.length == 0) {
+      return SizedBox.shrink();
+    }
+    return Row(
+      mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: club.isActive
           ? MainAxisAlignment.center
           : MainAxisAlignment.spaceEvenly,
@@ -133,77 +219,77 @@ class ClubItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 140.0,
-      decoration: const BoxDecoration(
-        color: AppColors.cardBackgroundColor,
-        borderRadius: BorderRadius.all(
-          Radius.circular(AppDimensions.cardRadius),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Row(
+          children: <Widget>[
+            /*
+            * color
+            * */
+
+            // Container(
+            //   width: 16.0,
+            //   constraints: BoxConstraints(minHeight: 100),
+            //   decoration: BoxDecoration(
+            //     color: generateColorFor(club.clubCode),
+            //     borderRadius: BorderRadius.horizontal(
+            //       left: Radius.circular(AppDimensions.cardRadius),
+            //     ),
+            //   ),
+            // ),
+
+            /*
+            * main content
+            * */
+
+            Expanded(
+              child: Container(
+                padding: EdgeInsets.only(left: 12, top: 8.0, bottom: 16),
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.7),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Column(
+                  children: <Widget>[
+                    ClubItemView(club),
+                    // Positioned(
+                    //   bottom: 0,
+                    //   right: 0,
+                    //   child: Text(
+                    //     club.isActive
+                    //         ? 'Active'
+                    //         : club.incomingRequest
+                    //             ? 'Invited on ${club.invitationDate}'
+                    //             : '',
+                    //   ),
+                    // ),
+                  ],
+                ),
+              ),
+            ),
+
+            /*
+            * action button or status
+            * */
+          ],
         ),
-        boxShadow: AppStyles.cardBoxShadow,
-      ),
-      child: Row(
-        children: <Widget>[
-          /*
-          * color
-          * */
-
-          Container(
-            width: 16.0,
-            height: double.infinity,
-            decoration: BoxDecoration(
-              color: generateColorFor(club.clubCode),
-              borderRadius: BorderRadius.horizontal(
-                left: Radius.circular(AppDimensions.cardRadius),
-              ),
-            ),
-          ),
-
-          /*
-          * main content
-          * */
-
-          Expanded(
-            child: Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 20.0,
-                vertical: 5.0,
-              ),
-              child: Stack(
-                children: <Widget>[
-                  ClubItemView(club),
-                  Align(
-                    alignment: Alignment.bottomRight,
-                    child: Text(
-                      club.isActive
-                          ? 'Active'
-                          : club.incomingRequest
-                              ? 'Invited on ${club.invitationDate}'
-                              : '',
-                      style: AppStyles.itemInfoTextStyle,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-
-          /*
-          * action button or status
-          * */
-
-          Container(
+        Visibility(
+          visible: (club.memberStatus == 'PENDING'),
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            margin: EdgeInsets.only(bottom: 8),
             decoration: const BoxDecoration(
-              color: AppColors.cardBackgroundColor,
-              borderRadius: BorderRadius.horizontal(
-                right: Radius.circular(AppDimensions.cardRadius),
+              color: AppColorsNew.actionRowBgColor,
+              borderRadius: BorderRadius.all(
+                Radius.circular(AppDimensions.cardRadius),
               ),
               boxShadow: AppStyles.cardBoxShadowMedium,
             ),
             child: _buildSideAction(club),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
