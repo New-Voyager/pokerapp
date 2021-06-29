@@ -22,7 +22,7 @@ services:
       POSTGRES_PASSWORD: 'game'
       POSTGRES_DB: 'game'
       DEBUG_CONNECTIVITY_CHECK: 1
-      ENABLE_PLAYER_MSG_ENCRYPTION: 1
+      ENABLE_ENCRYPTION: 1
     volumes:
       - '${PROJECT_ROOT}/dev/gameserver:/app/mounted'
     command:
@@ -102,7 +102,7 @@ services:
       POSTGRES_USER: game
       POSTGRES_PASSWORD: game
       POSTGRES_DB: game
-      ENABLE_PLAYER_MSG_ENCRYPTION: 1
+      ENABLE_ENCRYPTION: 1
     volumes:
       - ../botrunner_scripts:/app/botrunner_scripts
 

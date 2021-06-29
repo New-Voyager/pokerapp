@@ -31,6 +31,7 @@ import 'package:pokerapp/screens/game_play_screen/widgets/overlay_notification.d
 import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/services/app/game_service.dart';
+import 'package:pokerapp/services/encryption/encryption_service.dart';
 import 'package:pokerapp/services/game_play/utils/audio.dart';
 import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
@@ -128,6 +129,7 @@ class HandActionService {
   bool closed = false;
 
   GameComService _gameComService;
+  EncryptionService _encryptionService;
   RetrySendingMsg _retryMsg;
   PlayerInfo _currentPlayer;
   AudioPlayer audioPlayer;
@@ -136,6 +138,7 @@ class HandActionService {
     this._context,
     this._gameState,
     this._gameComService,
+    this._encryptionService,
     this._currentPlayer, {
     this.audioPlayer,
   });
@@ -980,17 +983,20 @@ class HandActionService {
   void updateRank(var data, {String rankText}) {
     if (_gameState.isPlaying) {
       final me = _gameState.me(_context);
-      final playerCardRank = data['playerCardRank'];
+      final playerCardRanks = data['playerCardRanks'];
       final myState = _gameState.getMyState(_context);
       if (rankText != null) {
         me.rankText = rankText;
         myState.notify();
       } else {
-        for (final seatNoStr in playerCardRank.keys) {
+        for (final seatNoStr in playerCardRanks.keys) {
           final seatNo = int.parse(seatNoStr);
           if (seatNo == me.seatNo) {
-            me.rankText = playerCardRank[seatNoStr];
-            myState.notify();
+            _encryptionService
+                .decodeAndDecrypt(playerCardRanks[seatNoStr])
+                .then((decryptedBytes) => utf8.decode(decryptedBytes))
+                .then((rankStr) => {me.rankText = rankStr})
+                .then((value) => myState.notify());
             break;
           }
         }
