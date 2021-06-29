@@ -74,7 +74,7 @@ class _HandStatsViewState extends State<HandStatsView>
         appBar: CustomAppBar(
           context: context,
           titleText: 'Hand Statistics',
-          subTitleText: 'Game: ',
+          subTitleText: 'Game: ${model?.gameCode} ',
         ),
         body: stats == null
             ? CircularProgressWidget(

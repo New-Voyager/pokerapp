@@ -1,3 +1,5 @@
+import 'package:flutter/src/widgets/framework.dart';
+
 class AppStringsNew {
   static const GameId = "GameID";
   static const BuyIn = "BuyIn";
@@ -79,4 +81,22 @@ class AppStringsNew {
   static String hostedBy = "Hosted by";
 
   static String clubCodeLabel = "Club code";
+
+  static String statistics = "Statistics";
+
+  static String customize = "Customize";
+
+  static String helpText = "Help";
+
+  static String tellAFriendText = "Tell a Friend";
+
+  static String nameChangeTitleText = "Change display name";
+
+  static String hintTextForTextField = "Enter text";
+
+  static String saveButtonText = "Save";
+
+  static String errorDisplayNameEmpty = "Display name can't be empty";
+
+  static String keyProfileName = "DISPLAY_NAME";
 }

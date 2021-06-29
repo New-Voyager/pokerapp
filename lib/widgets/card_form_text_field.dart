@@ -58,15 +58,12 @@ class CardFormTextField extends StatelessWidget {
           obscureText: obscureText ?? false,
           keyboardType: keyboardType,
           style: const TextStyle(
-            fontFamily: AppAssets.fontFamilyLato,
             color: Colors.white,
             fontSize: 20.0,
           ),
           decoration: InputDecoration(
             hintText: hintText,
             hintStyle: TextStyle(
-              fontFamily: AppAssets.fontFamilyLato,
-              fontWeight: FontWeight.w400,
               color: hintColor ?? Colors.white.withOpacity(0.21),
             ),
             border: InputBorder.none,
