@@ -16,6 +16,8 @@ import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_log_view.dart';
+import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/handlog_bottomsheet.dart';
+import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/last_hand_analyse_bottomsheet.dart';
 import 'package:pokerapp/screens/util_screens/replay_hand_dialog/replay_hand_dialog.dart';
 import 'package:pokerapp/services/app/hand_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
@@ -158,24 +160,35 @@ class _PlayedHandsScreenState extends State<PlayedHandsScreen> {
 
   void onHistoryItemTapped(context, int index) async {
     if (widget.isInBottomSheet) {
-      await showModalBottomSheet(
+      // showBottomSheet(
+      //   context: context,
+      // //  isScrollControlled: true,
+      //   backgroundColor: Colors.transparent,
+      //   shape: RoundedRectangleBorder(
+      //     borderRadius: BorderRadius.only(
+      //       topLeft: Radius.circular(AppDimensionsNew.bottomSheetRadius),
+      //       topRight: Radius.circular(AppDimensionsNew.bottomSheetRadius),
+      //     ),
+      //   ),
+      //   builder: (ctx) => Container(
+      //     height: MediaQuery.of(context).size.height / 2,
+      //     child: HandLogView(
+      //       this.widget.gameCode,
+      //       widget.history[index].handNum,
+      //       clubCode: widget.clubCode,
+      //       isBottomSheet: true,
+      //     ),
+      //   ),
+      // );
+      showBottomSheet(
         context: context,
-        isScrollControlled: true,
+
+        //isScrollControlled: true,
         backgroundColor: Colors.transparent,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(AppDimensionsNew.bottomSheetRadius),
-            topRight: Radius.circular(AppDimensionsNew.bottomSheetRadius),
-          ),
-        ),
-        builder: (ctx) => Container(
-          height: MediaQuery.of(context).size.height / 2,
-          child: HandLogView(
-            this.widget.gameCode,
-            widget.history[index].handNum,
-            clubCode: widget.clubCode,
-            isBottomSheet: true,
-          ),
+        builder: (_) => HandlogBottomSheet(
+          gameCode: this.widget.gameCode,
+          handNum: widget.history[index].handNum, 
+          clubCode: widget.clubCode,
         ),
       );
     } else {

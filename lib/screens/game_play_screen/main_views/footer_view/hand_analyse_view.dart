@@ -16,6 +16,8 @@ import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
+import 'package:pokerapp/resources/new/app_styles_new.dart';
+import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/player_stats_bottomsheet.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/table_result_bottomsheet.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/game_circle_button.dart';
@@ -28,6 +30,7 @@ import 'package:pokerapp/widgets/num_diamond_widget.dart';
 import 'package:provider/provider.dart';
 import 'hand_history_bottomsheet.dart';
 import 'last_hand_analyse_bottomsheet.dart';
+import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class HandAnalyseView extends StatefulWidget {
   final String clubCode;
@@ -42,9 +45,10 @@ class HandAnalyseView extends StatefulWidget {
 
 class _HandAnalyseViewState extends State<HandAnalyseView> {
   Future<void> onClickViewHand() async {
-    await showModalBottomSheet(
+    showBottomSheet(
       context: context,
-      isScrollControlled: true,
+
+      //isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (_) => Provider.value(
         // THIS MAKES SURE, THE LAST HAND ANAYLYSE BOTTOM SHEET
@@ -60,9 +64,9 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
 
   Future<void> onClickViewHandAnalysis() async {
     final model = HandHistoryListModel(widget.gameState.gameCode, true);
-    await showModalBottomSheet(
+    showBottomSheet(
       context: context,
-      isScrollControlled: true,
+      //isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (_) {
         return HandHistoryAnalyseBottomSheet(
@@ -74,9 +78,9 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
   }
 
   Future<void> onPlayerStatsBottomSheet() async {
-    await showModalBottomSheet(
+    showBottomSheet(
       context: context,
-      isScrollControlled: true,
+      //isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (_) {
         return PlayerStatsBottomSheet(gameCode: widget.gameState.gameCode);
@@ -85,9 +89,9 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
   }
 
   Future<void> onTableBottomSheet(GameState gameState) async {
-    await showModalBottomSheet(
+    showBottomSheet(
       context: context,
-      isScrollControlled: true,
+      //  isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (_) {
         return TableResultBottomSheet(
@@ -384,19 +388,32 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
     showMenu(
       context: context,
       position: position,
+      color: AppColorsNew.darkGreenShadeColor,
       items: <PopupMenuEntry>[
         PopupMenuItem(
             value: 0,
             child: InkWell(
-              onTap: onClickViewHandAnalysis,
+              onTap: () {
+                Navigator.of(context).pop();
+
+                onClickViewHandAnalysis();
+              },
               child: Row(
                 children: [
                   GameCircleButton(
-                    onClickHandler: onClickViewHandAnalysis,
+                    onClickHandler: () {
+                      Navigator.of(context).pop();
+
+                      onClickViewHandAnalysis();
+                    },
                     imagePath: AppAssetsNew.handHistoryPath,
                   ),
                   SizedBox(width: 5),
-                  Text('Hand History'),
+                  Text(
+                    'Hand History',
+                    style:
+                        AppStylesNew.labelTextStyle.copyWith(fontSize: 12.dp),
+                  ),
                 ],
               ),
             )),
@@ -404,34 +421,50 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
             value: 1,
             child: InkWell(
               onTap: () {
+                Navigator.of(context).pop();
                 onTableBottomSheet(gameState);
               },
               child: Row(
                 children: [
                   GameCircleButton(
                     onClickHandler: () {
+                      Navigator.of(context).pop();
                       onTableBottomSheet(gameState);
                     },
                     imagePath: AppAssetsNew.tableResultPath,
                     color: Colors.black,
                   ),
                   SizedBox(width: 5),
-                  Text('Table'),
+                  Text(
+                    'Table',
+                    style:
+                        AppStylesNew.labelTextStyle.copyWith(fontSize: 12.dp),
+                  ),
                 ],
               ),
             )),
         PopupMenuItem(
             value: 2,
             child: InkWell(
-              onTap: onPlayerStatsBottomSheet,
+              onTap: () {
+                Navigator.of(context).pop();
+                onPlayerStatsBottomSheet();
+              },
               child: Row(
                 children: [
                   GameCircleButton(
-                    onClickHandler: onPlayerStatsBottomSheet,
+                    onClickHandler: () {
+                      Navigator.of(context).pop();
+                      onPlayerStatsBottomSheet();
+                    },
                     imagePath: AppAssetsNew.playerStatsPath,
                   ),
                   SizedBox(width: 5),
-                  Text('Stack Stats'),
+                  Text(
+                    'Stack Stats',
+                    style:
+                        AppStylesNew.labelTextStyle.copyWith(fontSize: 12.dp),
+                  ),
                 ],
               ),
             )),
