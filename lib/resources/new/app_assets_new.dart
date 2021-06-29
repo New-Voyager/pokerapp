@@ -37,4 +37,12 @@ class AppAssetsNew {
   static String standing1 = 'assets/images/standing1.svg';
   static String standing2 = 'assets/images/standing2.svg';
   static String standing3 = 'assets/images/standing3.svg';
+
+  static String bookmarkedHandsImagePath = "assets/images/club/bookmarks.svg";
+
+  static String statisticsImagePath = "assets/images/club/analysis.svg";
+
+  static String customizeImagePath = "assets/images/club/analysis.svg";
+
+  static String announcementImagePath = "assets/images/club/announcements.svg";
 }
