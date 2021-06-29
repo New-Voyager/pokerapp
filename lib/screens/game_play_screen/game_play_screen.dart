@@ -670,6 +670,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
                           _providerContext,
                           _gameState,
                           _gameContextObj.gameComService,
+                          _gameContextObj.encryptionService,
                           _gameContextObj.currentPlayer,
                           audioPlayer: _audioPlayer,
                         );

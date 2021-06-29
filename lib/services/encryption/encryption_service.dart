@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 import 'package:cryptography/cryptography.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -29,6 +30,13 @@ class EncryptionService {
     List<int> bytes = Uuid.parse(result.data['encryptionKey']);
     this.key = SecretKey(bytes);
     this.initialized = true;
+  }
+
+  List<int> b64decodeString(String s) => base64.decode(s);
+
+  Future<List<int>> decodeAndDecrypt(String s) async {
+    final decoded = b64decodeString(s);
+    return decrypt(decoded);
   }
 
   Future<List<int>> decrypt(List<int> data) async {
