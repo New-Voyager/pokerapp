@@ -190,9 +190,11 @@ class _HoleCardsViewAndFooterActionViewState
       cardsInt: widget.playerModel?.cards,
       straddlePrompt: gameState.straddlePrompt,
     );
+
     if (gameState.straddlePrompt) {
       return cardsWidget;
     }
+
     return GestureDetector(
       onTap: () {
         setState(() {

@@ -145,6 +145,7 @@ class PlayerHoleCardView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CardBuilderWidget(
+      highlight: false,
       card: card,
       dim: dim,
       shadow: true,
