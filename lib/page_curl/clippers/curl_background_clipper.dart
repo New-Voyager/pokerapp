@@ -1,6 +1,6 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
-import 'package:page_curl/models/vector_2d.dart';
+import 'package:pokerapp/page_curl/models/vector_2d.dart';
 
 class CurlBackgroundClipper extends CustomClipper<Path> {
   final Vector2D mA, mD, mE, mF, mM, mN, mP;

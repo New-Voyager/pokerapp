@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:page_curl/clippers/curl_background_clipper.dart';
-import 'package:page_curl/clippers/curl_backside_clipper.dart';
-import 'package:page_curl/models/touch_event.dart';
+import 'package:pokerapp/page_curl/clippers/curl_background_clipper.dart';
+import 'package:pokerapp/page_curl/clippers/curl_backside_clipper.dart';
+import 'package:pokerapp/page_curl/models/touch_event.dart';
 import 'dart:math' as math;
 
-import 'package:page_curl/models/vector_2d.dart';
-import 'package:page_curl/painters/curl_shadow_painter.dart';
+import 'package:pokerapp/page_curl/models/vector_2d.dart';
+import 'package:pokerapp/page_curl/painters/curl_shadow_painter.dart';
+
 
 class CurlWidget extends StatefulWidget {
   final Widget frontWidget;
