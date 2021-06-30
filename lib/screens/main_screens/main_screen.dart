@@ -24,6 +24,8 @@ import 'package:pokerapp/utils/utils.dart';
 
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
+import '../../flavor_banner.dart';
+import '../../flavor_config.dart';
 import '../../main.dart';
 import '../../routes.dart';
 
@@ -176,8 +178,7 @@ class _MainScreenState extends State<MainScreen>
     ]);
 
     if (TestService.isTesting) widgets.add(HandStatsView());
-
-    return Scaffold(
+    var scaffold = Scaffold(
       body: Stack(
         children: [
           IndexedStack(
@@ -228,6 +229,13 @@ class _MainScreenState extends State<MainScreen>
         ],
       ),
     );
+    if (FlavorConfig.of(context).flavorName == Flavor.PROD.toString()) {
+      return scaffold;
+    } else {
+      return FlavorBanner(
+          child: scaffold,
+          bannerConfig: BannerConfig(Flavor.DEV.value(), Colors.deepOrange));
+    }
   }
 }
 

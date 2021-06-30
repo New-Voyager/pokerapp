@@ -1,6 +1,10 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 enum Flavor { DEV, TEST, PROD }
+
+extension FlavorTypeParsing on Flavor {
+  String value() => this.toString().split('.').last;
+}
 
 class FlavorConfig extends InheritedWidget {
   FlavorConfig({
