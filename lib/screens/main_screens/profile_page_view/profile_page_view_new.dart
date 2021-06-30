@@ -240,8 +240,8 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                         text: AppStringsNew.logout,
                         imagePath: AppAssetsNew.announcementImagePath,
                         index: 5,
-                        onTapFunction: ()async {
-                         await AuthService.logout();
+                        onTapFunction: () async {
+                          await AuthService.logout();
                           Navigator.pushNamedAndRemoveUntil(
                             context,
                             Routes.login,
