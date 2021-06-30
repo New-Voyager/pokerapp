@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:pokerapp/page_curl/widgets/curl_widget.dart';
 
-
 class PageCurl extends StatefulWidget {
   final Widget back;
   final Widget front;

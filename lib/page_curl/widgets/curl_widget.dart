@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:pokerapp/page_curl/clippers/curl_background_clipper.dart';
 import 'package:pokerapp/page_curl/clippers/curl_backside_clipper.dart';
@@ -6,7 +8,6 @@ import 'dart:math' as math;
 
 import 'package:pokerapp/page_curl/models/vector_2d.dart';
 import 'package:pokerapp/page_curl/painters/curl_shadow_painter.dart';
-
 
 class CurlWidget extends StatefulWidget {
   final Widget frontWidget;
@@ -150,6 +151,7 @@ class _CurlWidgetState extends State<CurlWidget> {
 
       mE.y = -math.sqrt(abs(math.pow(l, 2) - math.pow((newmD.x - mE.x), 2)));
     }
+    log('::Curl:: mA: $mA mB: $mB mC: $mC mD: $mD mE: $mE mF: $mF width: $width height: $height mOldF: $mOldF');
   }
 
   double getWidth() => widget.size.width;
@@ -334,46 +336,136 @@ class _CurlWidgetState extends State<CurlWidget> {
       onHorizontalDragUpdate: isVertical ? null : onDragCallback,
       child: Stack(
         alignment: Alignment.center,
+        clipBehavior: Clip.none,
         children: [
           // foreground image + custom painter for shadow
-          boundingBox(
-            child: ClipPath(
-              clipper: CurlBackgroundClipper(
-                mA: mA,
-                mD: mD,
-                mE: mE,
-                mF: mF,
-                mM: mM,
-                mN: mN,
-                mP: mP,
-              ),
-              clipBehavior: Clip.antiAlias,
-              child: Stack(
-                children: [
-                  widget.frontWidget,
-                  CustomPaint(
-                    painter: CurlShadowPainter(mA: mA, mD: mD, mE: mE, mF: mF),
-                  ),
-                ],
-              ),
-            ),
-          ),
+          // boundingBox(
+          //   child: ClipPath(
+          //     clipper: CurlBackgroundClipper(
+          //       mA: mA,
+          //       mD: mD,
+          //       mE: mE,
+          //       mF: mF,
+          //       mM: mM,
+          //       mN: mN,
+          //       mP: mP,
+          //     ),
+          //     clipBehavior: Clip.antiAlias,
+          //     child: Stack(
+          //       children: [
+          //         widget.frontWidget,
+          //         CustomPaint(
+          //           painter: CurlShadowPainter(mA: mA, mD: mD, mE: mE, mF: mF),
+          //         ),
+          //       ],
+          //     ),
+          //   ),
+          // ),
 
           // back side - widget
-          boundingBox(
-            child: ClipPath(
-              clipper: CurlBackSideClipper(mA: mA, mD: mD, mE: mE, mF: mF),
-              clipBehavior: Clip.antiAlias,
-              child: Transform.translate(
-                offset: getOffset(),
-                child: Transform.rotate(
-                  alignment: Alignment.bottomLeft,
-                  angle: getAngle(),
-                  child: widget.backWidget,
-                ),
-              ),
-            ),
-          ),
+
+          // boundingBox(
+          //   child: ClipPath(
+          //     clipper: CurlBackSideClipper(mA: mA, mD: mD, mE: mE, mF: mF),
+          //     clipBehavior: Clip.antiAlias,
+          //     child: Transform.translate(
+          //       offset: getOffset(),
+          //       child: Transform.rotate(
+          //         alignment: Alignment.bottomLeft,
+          //         angle: getAngle(),
+          //         child: widget.backWidget,
+          //       ),
+          //     ),
+          //   ),
+          // ),
+
+          Positioned(
+              top: mA.y,
+              left: mA.x,
+              child: Container(
+                width: 10,
+                height: 10,
+                margin: EdgeInsets.all(10.0),
+                decoration:
+                    BoxDecoration(color: Colors.red, shape: BoxShape.circle),
+              )),
+          Positioned(
+              top: mB.y,
+              left: mB.x,
+              child: Container(
+                width: 10,
+                height: 10,
+                margin: EdgeInsets.all(10.0),
+                decoration:
+                    BoxDecoration(color: Colors.green, shape: BoxShape.circle),
+              )),
+          Positioned(
+              top: mC.y,
+              left: mC.x,
+              child: Container(
+                width: 10,
+                height: 10,
+                margin: EdgeInsets.all(10.0),
+                decoration:
+                    BoxDecoration(color: Colors.cyan, shape: BoxShape.circle),
+              )),
+          Positioned(
+              top: mD.y,
+              left: mD.x,
+              child: Container(
+                width: 15,
+                height: 15,
+                margin: EdgeInsets.all(10.0),
+                decoration:
+                    BoxDecoration(color: Colors.indigo, shape: BoxShape.circle),
+              )),
+          Positioned(
+              top: mE.y,
+              left: mE.x,
+              child: Container(
+                width: 10,
+                height: 10,
+                margin: EdgeInsets.all(10.0),
+                decoration:
+                    BoxDecoration(color: Colors.pink, shape: BoxShape.circle),
+              )),
+          Positioned(
+              top: mF.y,
+              left: mF.x,
+              child: Container(
+                width: 10,
+                height: 10,
+                margin: EdgeInsets.all(10.0),
+                decoration:
+                    BoxDecoration(color: Colors.white, shape: BoxShape.circle),
+              )),
+
+          // Positioned(
+          //     top: mA.y,
+          //     left: mA.x,
+          //     child: Container(
+          //       margin: EdgeInsets.all(10.0),
+          //       decoration:
+          //           BoxDecoration(color: Colors.orange, shape: BoxShape.circle),
+          //     )),
+
+          // Positioned(
+          //     top: mB.y,
+          //     left: mB.x,
+          //     child: Container(
+          //       margin: EdgeInsets.all(10.0),
+          //       decoration:
+          //           BoxDecoration(color: Colors.green, shape: BoxShape.circle),
+          //     )),
+
+          // Positioned(
+          //     top: mC.y,
+          //     left: mC.x,
+          //     child: Container(
+          //       margin: EdgeInsets.all(10.0),
+          //       decoration:
+          //           BoxDecoration(color: Colors.indigo, shape: BoxShape.circle),
+          //     )),
         ],
       ),
     );

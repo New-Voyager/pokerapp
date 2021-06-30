@@ -448,12 +448,8 @@ class TestService {
     final player = gameState.me(_context);
     player.cards = [
       194,
-      196,
-      200,
-      50,
-      56,
     ];
-    player.noOfCardsVisible = 2;
+    player.noOfCardsVisible = 1;
     final players = gameState.getPlayers(_context);
     players.notifyAll();
   }

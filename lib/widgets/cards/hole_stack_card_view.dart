@@ -158,7 +158,7 @@ class _HoleStackCardViewState extends State<HoleStackCardView> {
         vertical: true,
         back: Transform.rotate(angle: pi, child: frontCardsView),
         front: backCardsView,
-        size: Size(totalWidth - 225, size.height),
+        size: Size(totalWidth, size.height),
       ),
     );
 
