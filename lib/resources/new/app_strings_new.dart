@@ -37,6 +37,8 @@ class AppStringsNew {
   static const HandlogTitle = "Hand Log";
   static const SummaryText = "Summary";
 
+  static const PerformanceTitle = "Performance";
+
   static const String gameOptionsText = "Game Options";
 
   static const String gameEndNotificationText =

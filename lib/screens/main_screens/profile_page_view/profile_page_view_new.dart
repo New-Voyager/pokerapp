@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pokerapp/main.dart';
+import 'package:pokerapp/models/auth_model.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
@@ -10,6 +11,7 @@ import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/club_screen/widgets/roud_icon_button.dart';
+import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/services/data/box_type.dart';
 import 'package:pokerapp/services/data/hive_datasource_impl.dart';
 import 'package:pokerapp/utils/color_generator.dart';
@@ -27,6 +29,8 @@ class ProfilePageNew extends StatefulWidget {
 class _ProfilePageNewState extends State<ProfilePageNew> {
   String _displayName = "Bob John";
   TextEditingController _controller;
+  AuthModel _currentUser;
+
   @override
   void initState() {
     super.initState();
@@ -37,10 +41,12 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
   }
 
   _fetchMyProfile() async {
-    _displayName = await HiveDatasource.getInstance
-            .getBox(BoxType.PROFILE_BOX)
-            .get(AppStringsNew.keyProfileName) ??
-        "";
+    _currentUser = await AuthService.get();
+    _displayName = _currentUser.name;
+    //  await HiveDatasource.getInstance
+    //         .getBox(BoxType.PROFILE_BOX)
+    //         .get(AppStringsNew.keyProfileName) ??
+    //     "";
     setState(() {});
   }
 
@@ -202,14 +208,15 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                         ),
                       ),
                       ListTileItem(
-                        text: AppStringsNew.statistics,
-                        imagePath: AppAssetsNew.statisticsImagePath,
-                        index: 1,
-                        onTapFunction: () =>
+                          text: AppStringsNew.statistics,
+                          imagePath: AppAssetsNew.statisticsImagePath,
+                          index: 1,
+                          onTapFunction: () {
                             navigatorKey.currentState.pushNamed(
-                          Routes.hand_statistics,
-                        ),
-                      ),
+                              Routes.player_statistics,
+                              arguments: _currentUser.uuid,
+                            );
+                          }),
                       ListTileItem(
                         text: AppStringsNew.customize,
                         imagePath: AppAssetsNew.customizeImagePath,

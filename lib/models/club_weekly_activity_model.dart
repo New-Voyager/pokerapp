@@ -2,8 +2,7 @@ import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/material.dart';
 
 class ClubWeeklyActivityModel {
-  List<ClubDailyActivityModel> _activityList =
-      new List<ClubDailyActivityModel>();
+  List<ClubDailyActivityModel> _activityList = [];
 
   ClubWeeklyActivityModel.fromJson(var jsonData) {
     var activityListJson =
