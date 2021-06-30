@@ -101,4 +101,6 @@ class AppStringsNew {
   static String errorDisplayNameEmpty = "Display name can't be empty";
 
   static String keyProfileName = "DISPLAY_NAME";
+
+  static String logout = "Logout";
 }

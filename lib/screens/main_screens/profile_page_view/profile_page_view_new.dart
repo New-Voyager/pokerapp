@@ -235,6 +235,20 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                         index: 4,
                         onTapFunction: () {},
                       ),
+                      AppDimensionsNew.getVerticalSizedBox(16),
+                      ListTileItem(
+                        text: AppStringsNew.logout,
+                        imagePath: AppAssetsNew.announcementImagePath,
+                        index: 5,
+                        onTapFunction: ()async {
+                         await AuthService.logout();
+                          Navigator.pushNamedAndRemoveUntil(
+                            context,
+                            Routes.login,
+                            (route) => false,
+                          );
+                        },
+                      ),
                     ],
                   ),
                 ),
@@ -261,7 +275,7 @@ class ListTileItem extends StatelessWidget {
     Colors.deepPurple.shade700,
     Colors.blueAccent.shade700,
     Colors.tealAccent.shade700,
-    Colors.green.shade700,
+    Colors.redAccent.shade700,
   ];
 
   @override
