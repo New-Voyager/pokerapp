@@ -48,7 +48,7 @@ class CardBuilderWidget extends StatelessWidget {
         return 1.2 * bao.communityCardSizeScales;
 
       case CardType.HoleCard:
-        return 4;
+        return 5;
 
       case CardType.PlayerCard:
         return 0.90;

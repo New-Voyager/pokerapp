@@ -5,6 +5,11 @@ class Vector2D {
 
   Vector2D(this.x, this.y);
 
+  Vector2D.fromVector(Vector2D v) {
+    this.x = v.x;
+    this.y = v.y;
+  }
+
   Vector2D sum(Vector2D b) {
     return Vector2D(x + b.x, y + b.y);
   }
@@ -35,6 +40,11 @@ class Vector2D {
 
   Vector2D mult(double scalar) {
     return Vector2D(x * scalar, y * scalar);
+  }
+
+  round() {
+    x = x.roundToDouble();
+    y = y.roundToDouble();
   }
 
   @override

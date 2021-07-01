@@ -43,11 +43,14 @@ class _CurlWidgetState extends State<CurlWidget> {
   /* pointer used to move */
   Vector2D mMovement;
 
+  /* starting point */
+  Vector2D mStart;
+
   /* finger position */
   Vector2D mFinger;
 
   /* movement pointer from the last frame */
-  Vector2D mOldMovement;
+  //Vector2D mOldMovement;
 
   /* paint curl edge */
   Paint curlEdgePaint;
@@ -112,6 +115,10 @@ class _CurlWidgetState extends State<CurlWidget> {
       mF.y = math.max(mF.y, mOldF.y);
     }
 
+    // A->E: Hypotenuse
+    // A->F: Adjacent
+    // E->F: Opposite
+
     // Get diffs
     double deltaX = width - mF.x;
     double deltaY = height - mF.y;
@@ -151,7 +158,7 @@ class _CurlWidgetState extends State<CurlWidget> {
 
       mE.y = -math.sqrt(abs(math.pow(l, 2) - math.pow((newmD.x - mE.x), 2)));
     }
-    log('::Curl:: mA: $mA mB: $mB mC: $mC mD: $mD mE: $mE mF: $mF width: $width height: $height mOldF: $mOldF');
+    //log('::Curl:: mA: $mA mE: $mE mF: $mF mMovement: $mMovement mOldMovement: $mOldMovement width: $width height: $height mOldF: $mOldF');
   }
 
   double getWidth() => widget.size.width;
@@ -162,8 +169,9 @@ class _CurlWidgetState extends State<CurlWidget> {
     // set base movement
     mMovement.x = mInitialEdgeOffset.toDouble();
     mMovement.y = mInitialEdgeOffset.toDouble();
-    mOldMovement.x = 0;
-    mOldMovement.y = 0;
+    // mOldMovement.x = 0;
+    // mOldMovement.y = 0;
+    mStart = Vector2D(0, 0);
 
     mA = Vector2D(0, 0);
     mB = Vector2D(getWidth(), getHeight());
@@ -217,25 +225,37 @@ class _CurlWidgetState extends State<CurlWidget> {
         break;
 
       case TouchEventType.START:
-        mOldMovement.x = mFinger.x;
-        mOldMovement.y = mFinger.y;
+        //mFinger.round();
+        mStart.x = mFinger.x;
+        mStart.y = mFinger.y;
+        // mOldMovement.x = mFinger.x;
+        // mOldMovement.y = mFinger.y;
         break;
 
       case TouchEventType.MOVE:
         bUserMoves = true;
 
         // get movement
-        mMovement.x -= mFinger.x - mOldMovement.x;
-        mMovement.y -= mFinger.y - mOldMovement.y;
+        // mMovement.x -= mFinger.x - mOldMovement.x;
+        // mMovement.y -= mFinger.y - mOldMovement.y;
+
+        Vector2D offset = Vector2D(0, 0);
+        offset.x = mStart.x - mFinger.x;
+        offset.y = mStart.y - mFinger.y;
+        mMovement = Vector2D.fromVector(offset);
+
         mMovement = capMovement(mMovement, true);
+        //mMovement.round();
 
         // make sure the y value get's locked at a nice level
         if (mMovement.y <= 1) mMovement.y = 1;
 
         // save old movement values
-        mOldMovement.x = mFinger.x;
-        mOldMovement.y = mFinger.y;
+        // mOldMovement.x = mFinger.x;
+        // mOldMovement.y = mFinger.y;
+        log('::Curl:: mMovement: $mMovement offset: $offset mFinger: $mFinger mStart: $mStart');
 
+        //log('::Curl:: mMovement: $mMovement offset: $offset mOldMovement: $mOldMovement mFinger: $mFinger mStart: $mStart');
         doPageCurl();
 
         setState(() {});
@@ -252,7 +272,7 @@ class _CurlWidgetState extends State<CurlWidget> {
 
     mMovement = Vector2D(0, 0);
     mFinger = Vector2D(0, 0);
-    mOldMovement = Vector2D(0, 0);
+    //mOldMovement = Vector2D(0, 0);
 
     // create the edge paint
     curlEdgePaint = Paint();
@@ -336,7 +356,6 @@ class _CurlWidgetState extends State<CurlWidget> {
       /* drag update */
       onVerticalDragUpdate: isVertical ? onDragCallback : null,
       onHorizontalDragUpdate: isVertical ? null : onDragCallback,
-
       child: Stack(
         alignment: Alignment.center,
         clipBehavior: Clip.none,
@@ -346,7 +365,7 @@ class _CurlWidgetState extends State<CurlWidget> {
             child: ClipPath(
               clipper: CurlBackgroundClipper(
                 mA: mA,
-                mD: mD,
+                //mD: mD,
                 mE: mE,
                 mF: mF,
                 mM: mM,
@@ -367,121 +386,131 @@ class _CurlWidgetState extends State<CurlWidget> {
 
           // back side - widget
 
-          // boundingBox(
-          //   child: ClipPath(
-          //     clipper: CurlBackSideClipper(mA: mA, mD: mD, mE: mE, mF: mF),
-          //     clipBehavior: Clip.antiAlias,
-          //     child: Transform.translate(
-          //       offset: getOffset(),
-          //       child: Transform.rotate(
-          //         alignment: Alignment.bottomLeft,
-          //         angle: getAngle(),
-          //         child: widget.backWidget,
-          //       ),
-          //     ),
-          //   ),
-          // ),
+          boundingBox(
+            child: ClipPath(
+              clipper: CurlBackSideClipper(mA: mA, /*mD: mD,*/ mE: mE, mF: mF),
+              clipBehavior: Clip.antiAlias,
+              child: Transform.translate(
+                offset: getOffset(),
+                child: Transform.rotate(
+                  alignment: Alignment.bottomLeft,
+                  angle: getAngle(),
+                  child: widget.backWidget,
+                ),
+              ),
+            ),
+          ),
 
           Positioned(
               top: mA.y,
               left: mA.x,
               child: Container(
-                width: width,
-                height: width,
-                margin: EdgeInsets.all(10.0),
-                decoration:
-                    BoxDecoration(color: Colors.red, shape: BoxShape.circle),
-                child: Center(child: Text('A', style: TextStyle(fontSize: fontSize)))
-              )),
-          Positioned(
-              top: mB.y,
-              left: mB.x,
-              child: Container(
-                width: width,
-                height: width,
-                margin: EdgeInsets.all(10.0),
-                decoration:
-                    BoxDecoration(color: Colors.green, shape: BoxShape.circle),
-                    child: Center(child: Text('B', style: TextStyle(fontSize: fontSize)))
-              )),
-          Positioned(
-              top: mC.y,
-              left: mC.x,
-              child: Container(
-                width: width,
-                height: width,
-                margin: EdgeInsets.all(10.0),
-                decoration:
-                    BoxDecoration(color: Colors.cyan, shape: BoxShape.circle),
-                    child: Center(child: Text('C', style: TextStyle(fontSize: fontSize)))
-              )),
-          Positioned(
-              top: mD.y,
-              left: mD.x,
-              child: Container(
-                width: width*2,
-                height: width*2,
-                margin: EdgeInsets.all(10.0),
-                decoration:
-                    BoxDecoration(color: Colors.indigo, shape: BoxShape.circle),
-                    child: Center(child: Text('D', style: TextStyle(fontSize: fontSize)))
-              )),
+                  width: width,
+                  height: width,
+                  decoration:
+                      BoxDecoration(color: Colors.red, shape: BoxShape.circle),
+                  child: Center(
+                      child: Text('A', style: TextStyle(fontSize: fontSize))))),
+          // Positioned(
+          //     top: mB.y,
+          //     left: mB.x,
+          //     child: Container(
+          //       width: width,
+          //       height: width,
+          //       decoration:
+          //           BoxDecoration(color: Colors.green, shape: BoxShape.circle),
+          //           child: Center(child: Text('B', style: TextStyle(fontSize: fontSize)))
+          //     )),
+          // Positioned(
+          //     top: mC.y,
+          //     left: mC.x,
+          //     child: Container(
+          //       width: width,
+          //       height: width,
+          //       decoration:
+          //           BoxDecoration(color: Colors.cyan, shape: BoxShape.circle),
+          //           child: Center(child: Text('C', style: TextStyle(fontSize: fontSize)))
+          //     )),
+          // Positioned(
+          //     top: mD.y,
+          //     left: mD.x,
+          //     child: Container(
+          //       width: width*2,
+          //       height: width*2,
+          //       decoration:
+          //           BoxDecoration(color: Colors.indigo, shape: BoxShape.circle),
+          //           child: Center(child: Text('D', style: TextStyle(fontSize: fontSize)))
+          //     )),
           Positioned(
               top: mE.y,
               left: mE.x,
               child: Container(
-                width: width,
-                height: width,
-                margin: EdgeInsets.all(10.0),
-                decoration:
-                    BoxDecoration(color: Colors.pink, shape: BoxShape.circle),
-                    child: Center(child: Text('E', style: TextStyle(fontSize: fontSize)))
-              )),
+                  width: width,
+                  height: width,
+                  decoration:
+                      BoxDecoration(color: Colors.pink, shape: BoxShape.circle),
+                  child: Center(
+                      child: Text('E', style: TextStyle(fontSize: fontSize))))),
           Positioned(
               top: mF.y,
               left: mF.x,
               child: Container(
-                width: width,
-                height: width,
-                margin: EdgeInsets.all(10.0),
-                decoration:
-                    BoxDecoration(color: Colors.white, shape: BoxShape.circle),
-                    child: Center(child: Text('F', style: TextStyle(fontSize: fontSize, color: Colors.black)))
-              )),
+                  width: width,
+                  height: width,
+                  decoration: BoxDecoration(
+                      color: Colors.white, shape: BoxShape.circle),
+                  child: Center(
+                      child: Text('F',
+                          style: TextStyle(
+                              fontSize: fontSize, color: Colors.black))))),
           Positioned(
               top: mM.y,
               left: mM.x,
               child: Container(
-                width: width,
-                height: width,
-                margin: EdgeInsets.all(10.0),
-                decoration:
-                    BoxDecoration(color: Colors.yellow, shape: BoxShape.circle),
-                    child: Center(child: Text('M', style: TextStyle(fontSize: fontSize, color: Colors.black)))
-              )),              
+                  width: width,
+                  height: width,
+                  decoration: BoxDecoration(
+                      color: Colors.yellow, shape: BoxShape.circle),
+                  child: Center(
+                      child: Text('M',
+                          style: TextStyle(
+                              fontSize: fontSize, color: Colors.black))))),
           Positioned(
               top: mN.y,
               left: mN.x,
               child: Container(
-                width: width,
-                height: width,
-                margin: EdgeInsets.all(10.0),
-                decoration:
-                    BoxDecoration(color: Colors.green[900], shape: BoxShape.circle),
-                    child: Center(child: Text('N', style: TextStyle(fontSize: fontSize, color: Colors.black)))
-              )),              
+                  width: width,
+                  height: width,
+                  decoration: BoxDecoration(
+                      color: Colors.green[900], shape: BoxShape.circle),
+                  child: Center(
+                      child: Text('N',
+                          style: TextStyle(
+                              fontSize: fontSize, color: Colors.black))))),
           Positioned(
               top: mP.y,
               left: mP.x,
               child: Container(
-                width: width,
-                height: width,
-                margin: EdgeInsets.all(10.0),
-                decoration:
-                    BoxDecoration(color: Colors.yellow[900], shape: BoxShape.circle),
-                    child: Center(child: Text('P', style: TextStyle(fontSize: fontSize, color: Colors.black)))
-              )),              
-
+                  width: width,
+                  height: width,
+                  decoration: BoxDecoration(
+                      color: Colors.yellow[900], shape: BoxShape.circle),
+                  child: Center(
+                      child: Text('P',
+                          style: TextStyle(
+                              fontSize: fontSize, color: Colors.black))))),
+          Positioned(
+              top: mOrigin.y,
+              left: mOrigin.x,
+              child: Container(
+                  width: width * 2,
+                  height: width * 2,
+                  decoration: BoxDecoration(
+                      color: Colors.white30, shape: BoxShape.circle),
+                  child: Center(
+                      child: Text('O',
+                          style: TextStyle(
+                              fontSize: fontSize, color: Colors.black))))),
         ],
       ),
     );
