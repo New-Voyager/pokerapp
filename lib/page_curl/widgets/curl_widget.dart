@@ -53,7 +53,7 @@ class _CurlWidgetState extends State<CurlWidget> {
   Paint curlEdgePaint;
 
   /* vector points used to define current clipping paths */
-  Vector2D mA, mB, mC, mD, mE, mF, mOldF, mOrigin;
+  Vector2D mA, mB, mC, mD, mE, mF, mOldF, mOrigin, mEnd;
 
   Vector2D mG;
 
@@ -99,7 +99,7 @@ class _CurlWidgetState extends State<CurlWidget> {
     return point;
   }
 
-  void doPageCurl() {
+  bool doPageCurl() {
     int width = getWidth().toInt();
     int height = getHeight().toInt();
 
@@ -124,6 +124,10 @@ class _CurlWidgetState extends State<CurlWidget> {
 
     mA.x = 0;
     mA.y = height - (bh / _sin);
+
+    if (mA.y < getHeight()/2) {
+      return false;
+    }
 
     mD.x = math.min((bh / _cos), getWidth());
     // bound mD.y
@@ -158,8 +162,11 @@ class _CurlWidgetState extends State<CurlWidget> {
     mG.y = mF.y + (mF.y - mA.y) / lenAB * getWidth();
     mG.x = math.min(mG.x, getWidth());
     mG.y = math.min(mG.y, getHeight());
+    if (mA.y < getHeight()/2) {
+      log('::Curl:: bh: $bh alpha: $alpha sin: $_sin cos: $_cos mA: $mA mE: $mE mF: $mF mG: $mG mMovement: $mMovement width: $width height: $height');
+    }
 
-    log('::Curl:: bh: $bh alpha: $alpha sin: $_sin cos: $_cos mA: $mA mE: $mE mF: $mF mG: $mG mMovement: $mMovement width: $width height: $height mOldF: $mOldF');
+    return true;
   }
 
   double getWidth() => widget.size.width;
@@ -183,6 +190,7 @@ class _CurlWidgetState extends State<CurlWidget> {
 
     // The movement origin point
     mOrigin = Vector2D(getWidth(), 0);
+    mEnd = Vector2D(getWidth(), getHeight());
   }
 
   void resetMovement() {
@@ -245,14 +253,14 @@ class _CurlWidgetState extends State<CurlWidget> {
 
         // if this is a problem, don't round it
         mMovement.round();
-        doPageCurl();
+        if (doPageCurl()) {
+          mA.round();
+          mE.round();
+          mF.round();
+          //log('::Curl:: mFinger: $mFinger mStart: $mStart mMovement: $mMovement offset: $offset mA: $mA mE: $mE mF: $mF');
 
-        mA.round();
-        mE.round();
-        mF.round();
-        log('::Curl:: mFinger: $mFinger mStart: $mStart mMovement: $mMovement offset: $offset mA: $mA mE: $mE mF: $mF');
-
-        setState(() {});
+          setState(() {});
+        }
         break;
     }
   }
@@ -529,6 +537,19 @@ class _CurlWidgetState extends State<CurlWidget> {
                       color: Colors.white30, shape: BoxShape.circle),
                   child: Center(
                       child: Text('O',
+                          style: TextStyle(
+                              fontSize: fontSize, color: Colors.black))))),
+
+          Positioned(
+              top: mEnd.y,
+              left: mEnd.x,
+              child: Container(
+                  width: width,
+                  height: width,
+                  decoration: BoxDecoration(
+                      color: Colors.red[400], shape: BoxShape.circle),
+                  child: Center(
+                      child: Text('X',
                           style: TextStyle(
                               fontSize: fontSize, color: Colors.black))))),
         ],
