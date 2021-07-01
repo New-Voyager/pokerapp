@@ -125,7 +125,7 @@ class _CurlWidgetState extends State<CurlWidget> {
     mA.x = 0;
     mA.y = height - (bh / _sin);
 
-    if (mA.y < getHeight()/3) {
+    if (mA.y < getHeight() / 3) {
       return false;
     }
 
@@ -160,22 +160,22 @@ class _CurlWidgetState extends State<CurlWidget> {
         math.sqrt(math.pow(mF.x - mA.x, 2.0) + math.pow(mF.y - mA.y, 2.0));
     double distance = mMovement.y;
     bool done = false;
-    while (!done) {    
+    while (!done) {
       mG.x = mF.x + (mF.x - mA.x) / lenAB * distance; //getWidth();
       mG.y = mF.y + (mF.y - mA.y) / lenAB * distance; //getWidth();
-      log('::Curl:: mG: $mG mA: $mA mE: $mE mF: $mF');
+      //log('::Curl:: mG: $mG mA: $mA mE: $mE mF: $mF');
 
       if (mG.x < getWidth() && mG.y > getHeight()) {
         done = true;
       }
-      if (mG.x > getWidth() ) {
+      if (mG.x > getWidth()) {
         done = true;
       }
-      distance = distance*2;
+      distance = distance * 2;
     }
     mG.x = math.min(mG.x, getWidth());
     mG.y = math.min(mG.y, getHeight());
-    if (mA.y < getHeight()/2) {
+    if (mA.y < getHeight() / 2) {
       //log('::Curl:: bh: $bh alpha: $alpha sin: $_sin cos: $_cos mA: $mA mE: $mE mF: $mF mG: $mG mMovement: $mMovement width: $width height: $height');
     }
 
@@ -362,6 +362,51 @@ class _CurlWidgetState extends State<CurlWidget> {
   Widget build(BuildContext context) {
     final fontSize = 12.0;
     final width = 15.0;
+    Widget backWidgetRotated =
+        Transform.rotate(angle: -math.pi, child: widget.backWidget);
+    Widget frontWidget = !this.bUserMoves
+        ? widget.frontWidget
+        : boundingBox(
+            child: ClipPath(
+              clipper: CurlBackgroundClipper(
+                mA: mA,
+                //mD: mD,
+                mE: mE,
+                mF: mF,
+                mM: mM,
+                mN: mN,
+                mP: mP,
+                mG: mG,
+                mEnd: mEnd,
+                shouldClip: this.bUserMoves,
+              ),
+              clipBehavior: Clip.antiAlias,
+              child: Stack(
+                children: [
+                  widget.frontWidget,
+                  // CustomPaint(
+                  //   painter: CurlShadowPainter(mA: mA, mD: mD, mE: mE, mF: mF),
+                  // ),
+                ],
+              ),
+            ),
+          );
+
+    Widget backWidget = !this.bUserMoves
+        ? Container()
+        : boundingBox(
+            child: ClipPath(
+              clipper: CurlBackSideClipper(
+                  mA: mA,
+                  /*mD: mD,*/ mE: mE,
+                  mF: mF,
+                  mG: mG,
+                  mN: mN,
+                  mEnd: mEnd),
+              clipBehavior: Clip.antiAlias,
+              child: backWidgetRotated,
+            ),
+          );
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
 
@@ -381,33 +426,7 @@ class _CurlWidgetState extends State<CurlWidget> {
         clipBehavior: Clip.none,
         children: [
           // foreground image + custom painter for shadow
-          !this.bUserMoves
-              ? widget.frontWidget
-              : boundingBox(
-                  child: ClipPath(
-                    clipper: CurlBackgroundClipper(
-                      mA: mA,
-                      //mD: mD,
-                      mE: mE,
-                      mF: mF,
-                      mM: mM,
-                      mN: mN,
-                      mP: mP,
-                      mG: mG,
-                      mEnd: mEnd,
-                      shouldClip: this.bUserMoves,
-                    ),
-                    clipBehavior: Clip.antiAlias,
-                    child: Stack(
-                      children: [
-                        widget.frontWidget,
-                        // CustomPaint(
-                        //   painter: CurlShadowPainter(mA: mA, mD: mD, mE: mE, mF: mF),
-                        // ),
-                      ],
-                    ),
-                  ),
-                ),
+          frontWidget,
 
           // // back side - widget
 
@@ -426,14 +445,7 @@ class _CurlWidgetState extends State<CurlWidget> {
           //   ),
           // ),
 
-          // boundingBox(
-          //   child: ClipPath(
-          //     clipper: CurlBackSideClipper(
-          //         mA: mA, /*mD: mD,*/ mE: mE, mF: mF, mG: mG),
-          //     clipBehavior: Clip.antiAlias,
-          //     child: widget.backWidget,
-          //   ),
-          // ),
+          backWidget,
 
           Positioned(
               top: mA.y,
