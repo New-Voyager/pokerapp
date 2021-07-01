@@ -65,7 +65,7 @@ class _CurlWidgetState extends State<CurlWidget> {
   bool bFlipping;
 
   /* tRUE if the user moves the pages */
-  bool bUserMoves;
+  bool bUserMoves = false;
 
   /* used to control touch input blocking */
   bool bBlockTouchInput = false;
@@ -103,21 +103,15 @@ class _CurlWidgetState extends State<CurlWidget> {
 
     // F will follow the finger, we add a small displacement
     // So that we can see the edge
-    mF.x = width - mMovement.x + 0.1;
+    mF.x = mMovement.x + 0.1;
     mF.y = height - mMovement.y + 0.1;
-
-    // Set min points
-    if (mA.x == 0) {
-      mF.x = math.min(mF.x, mOldF.x);
-      mF.y = math.max(mF.y, mOldF.y);
-    }
 
     // A->E: Hypotenuse
     // A->F: Adjacent
     // E->F: Opposite
 
     // Get diffs
-    double deltaX = width - mF.x;
+    double deltaX = mF.x;
     double deltaY = height - mF.y;
 
     double bh = math.sqrt(deltaX * deltaX + deltaY * deltaY) / 2;
@@ -126,15 +120,15 @@ class _CurlWidgetState extends State<CurlWidget> {
     double _cos = math.cos(alpha);
     double _sin = math.sin(alpha);
 
-    mA.x = width - (bh / _cos);
-    mA.y = height.toDouble();
+    mA.x = 0;
+    mA.y = height - (bh / _sin);
 
-    mD.x = width.toDouble();
+    mD.x = math.min((bh / _cos), getWidth());
     // bound mD.y
-    mD.y = math.min(height - (bh / _sin), getHeight());
+    mD.y = height.toDouble();
 
-    mA.x = math.max(0, mA.x);
-    if (mA.x == 0) {
+    mA.y = math.min(mA.y, getHeight());
+    if (mA.y == getHeight()) {
       mOldF.x = mF.x;
       mOldF.y = mF.y;
     }
@@ -144,18 +138,17 @@ class _CurlWidgetState extends State<CurlWidget> {
     mE.y = mD.y;
 
     // bouding corrections
-    if (mD.y < 0) {
-      mD.x = width + tangAlpha * mD.y;
-
-      mE.x = width + math.tan(2 * alpha) * mD.y;
+    if (mD.x > width) {
+      mD.y = height + tangAlpha * mD.x;
+      mE.x = 0;
+      mE.y = height + math.tan(2 * alpha) * mD.x;
 
       // modify mD to create newmD by cleaning y value
-      Vector2D newmD = Vector2D(mD.x, 0);
-      double l = width - newmD.x;
-
-      mE.y = -math.sqrt(abs(math.pow(l, 2) - math.pow((newmD.x - mE.x), 2)));
+      // Vector2D newmD = Vector2D(0, mD.y);
+      // double l = height - newmD.y;
+      // mE.x = -math.sqrt(abs(math.pow(l, 2) - math.pow((newmD.y - mE.y), 2)));
     }
-    //log('::Curl:: mA: $mA mE: $mE mF: $mF mMovement: $mMovement mOldMovement: $mOldMovement width: $width height: $height mOldF: $mOldF');
+    log('::Curl:: bh: $bh alpha: $alpha sin: $_sin cos: $_cos mA: $mA mE: $mE mF: $mF mMovement: $mMovement width: $width height: $height mOldF: $mOldF');
   }
 
   double getWidth() => widget.size.width;
@@ -195,7 +188,7 @@ class _CurlWidgetState extends State<CurlWidget> {
     resetClipEdge();
     doPageCurl();
 
-    bUserMoves = true;
+    bUserMoves = false;
     bBlockTouchInput = false;
     bFlipping = false;
     bEnableInputAfterDraw = true;
@@ -229,8 +222,8 @@ class _CurlWidgetState extends State<CurlWidget> {
         bUserMoves = true;
 
         Vector2D offset = Vector2D(0, 0);
-        offset.x = mStart.x - mFinger.x;
-        offset.y = mStart.y - mFinger.y;
+        offset.x = (mStart.x - mFinger.x).abs();
+        offset.y = (mStart.y - mFinger.y).abs();
         mMovement = Vector2D.fromVector(offset);
 
         mMovement = capMovement(mMovement, true);
@@ -245,7 +238,7 @@ class _CurlWidgetState extends State<CurlWidget> {
         mA.round();
         mE.round();
         mF.round();
-        log('::Curl:: mMovement: $mMovement mA: $mA mE: $mE mF: $mF mFinger: $mFinger mStart: $mStart');
+        log('::Curl:: mFinger: $mFinger mStart: $mStart mMovement: $mMovement offset: $offset mA: $mA mE: $mE mF: $mF');
 
         setState(() {});
         break;
@@ -277,6 +270,9 @@ class _CurlWidgetState extends State<CurlWidget> {
 
     resetClipEdge();
     doPageCurl();
+    setState(() {
+      
+    });
   }
 
   @override
@@ -351,6 +347,9 @@ class _CurlWidgetState extends State<CurlWidget> {
         clipBehavior: Clip.none,
         children: [
           // foreground image + custom painter for shadow
+          !this.bUserMoves ?
+          widget.frontWidget
+          :
           boundingBox(
             child: ClipPath(
               clipper: CurlBackgroundClipper(
@@ -361,6 +360,7 @@ class _CurlWidgetState extends State<CurlWidget> {
                 mM: mM,
                 mN: mN,
                 mP: mP,
+                shouldClip: this.bUserMoves,
               ),
               clipBehavior: Clip.antiAlias,
               child: Stack(
@@ -374,22 +374,22 @@ class _CurlWidgetState extends State<CurlWidget> {
             ),
           ),
 
-          // back side - widget
+          // // back side - widget
 
-          boundingBox(
-            child: ClipPath(
-              clipper: CurlBackSideClipper(mA: mA, /*mD: mD,*/ mE: mE, mF: mF),
-              clipBehavior: Clip.antiAlias,
-              child: Transform.translate(
-                offset: getOffset(),
-                child: Transform.rotate(
-                  alignment: Alignment.bottomLeft,
-                  angle: getAngle(),
-                  child: widget.backWidget,
-                ),
-              ),
-            ),
-          ),
+          // boundingBox(
+          //   child: ClipPath(
+          //     clipper: CurlBackSideClipper(mA: mA, /*mD: mD,*/ mE: mE, mF: mF),
+          //     clipBehavior: Clip.antiAlias,
+          //     child: Transform.translate(
+          //       offset: getOffset(),
+          //       child: Transform.rotate(
+          //         alignment: Alignment.bottomLeft,
+          //         angle: getAngle(),
+          //         child: widget.backWidget,
+          //       ),
+          //     ),
+          //   ),
+          // ),
 
           Positioned(
               top: mA.y,
@@ -421,16 +421,16 @@ class _CurlWidgetState extends State<CurlWidget> {
           //           BoxDecoration(color: Colors.cyan, shape: BoxShape.circle),
           //           child: Center(child: Text('C', style: TextStyle(fontSize: fontSize)))
           //     )),
-          // Positioned(
-          //     top: mD.y,
-          //     left: mD.x,
-          //     child: Container(
-          //       width: width*2,
-          //       height: width*2,
-          //       decoration:
-          //           BoxDecoration(color: Colors.indigo, shape: BoxShape.circle),
-          //           child: Center(child: Text('D', style: TextStyle(fontSize: fontSize)))
-          //     )),
+          Positioned(
+              top: mD.y,
+              left: mD.x,
+              child: Container(
+                width: width*2,
+                height: width*2,
+                decoration:
+                    BoxDecoration(color: Colors.indigo, shape: BoxShape.circle),
+                    child: Center(child: Text('D', style: TextStyle(fontSize: fontSize)))
+              )),
           Positioned(
               top: mE.y,
               left: mE.x,

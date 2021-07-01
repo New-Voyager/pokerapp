@@ -1,10 +1,11 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:pokerapp/page_curl/models/vector_2d.dart';
+// Clip path: N F A E
 
 class CurlBackgroundClipper extends CustomClipper<Path> {
   final Vector2D mA, /*mD,*/ mE, mF, mM, mN, mP;
-
+  final bool shouldClip;
   CurlBackgroundClipper({
     @required this.mA,
     //@required this.mD,
@@ -13,9 +14,10 @@ class CurlBackgroundClipper extends CustomClipper<Path> {
     @required this.mM,
     @required this.mN,
     @required this.mP,
+    @required this.shouldClip
   });
 
-  Path createBackgroundPath() {
+  Path createBackgroundPath2() {
     Path path = Path();
 
     path.moveTo(mM.x, mM.y);
@@ -30,6 +32,22 @@ class CurlBackgroundClipper extends CustomClipper<Path> {
     return path;
   }
 
+  Path createBackgroundPath() {
+    Path path = Path();
+
+    // Clip path: M A F P M
+    // Clip path: N A F E N
+    path.moveTo(mM.x, mM.y);
+    path.lineTo(mA.x, mA.y);
+    path.lineTo(mF.x, mF.y);
+    path.lineTo(mP.x, mP.y); //math.max(0, mE.y));
+    path.lineTo(mM.x, mM.y);
+    // if (mF.x < 0) path.lineTo(mF.x, mF.y);
+    // path.lineTo(mM.x, mM.y);
+
+    return path;
+  }  
+
   @override
   Path getClip(Size size) {
     return createBackgroundPath();
@@ -37,6 +55,6 @@ class CurlBackgroundClipper extends CustomClipper<Path> {
 
   @override
   bool shouldReclip(covariant CustomClipper oldClipper) {
-    return true;
+    return this.shouldClip;
   }
 }
