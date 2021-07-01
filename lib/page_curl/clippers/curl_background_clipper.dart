@@ -4,18 +4,18 @@ import 'package:pokerapp/page_curl/models/vector_2d.dart';
 // Clip path: N F A E
 
 class CurlBackgroundClipper extends CustomClipper<Path> {
-  final Vector2D mA, /*mD,*/ mE, mF, mM, mN, mP;
+  final Vector2D mA, /*mD,*/ mE, mF, mM, mN, mP, mG;
   final bool shouldClip;
-  CurlBackgroundClipper({
-    @required this.mA,
-    //@required this.mD,
-    @required this.mE,
-    @required this.mF,
-    @required this.mM,
-    @required this.mN,
-    @required this.mP,
-    @required this.shouldClip
-  });
+  CurlBackgroundClipper(
+      {@required this.mA,
+      //@required this.mD,
+      @required this.mE,
+      @required this.mF,
+      @required this.mM,
+      @required this.mN,
+      @required this.mP,
+      @required this.mG,
+      @required this.shouldClip});
 
   Path createBackgroundPath2() {
     Path path = Path();
@@ -35,18 +35,15 @@ class CurlBackgroundClipper extends CustomClipper<Path> {
   Path createBackgroundPath() {
     Path path = Path();
 
-    // Clip path: M A F P M
-    // Clip path: N A F E N
+    // Clip path: M A G P M
     path.moveTo(mM.x, mM.y);
     path.lineTo(mA.x, mA.y);
-    path.lineTo(mF.x, mF.y);
-    path.lineTo(mP.x, mP.y); //math.max(0, mE.y));
+    path.lineTo(mG.x, mG.y);
+    path.lineTo(mP.x, mP.y);
     path.lineTo(mM.x, mM.y);
-    // if (mF.x < 0) path.lineTo(mF.x, mF.y);
-    // path.lineTo(mM.x, mM.y);
 
     return path;
-  }  
+  }
 
   @override
   Path getClip(Size size) {
