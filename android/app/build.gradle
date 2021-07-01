@@ -70,6 +70,21 @@ android {
         }
     }
 
+    flavorDimensions "default"
+    productFlavors {
+        dev{
+            dimension "default"
+        }
+
+        flavorTest{
+            dimension "default"
+        }
+
+        prod{
+            dimension "default"
+        }
+    }
+
 }
 
 flutter {
