@@ -35,6 +35,40 @@ class _HoleStackCardViewState extends State<HoleStackCardView> {
   Size size;
   double totalOffsetValue = 0.0;
 
+  List<Widget> _getChildren({
+    @required int mid,
+    @required MarkedCards markedCards,
+    @required double displacementValue,
+    bool isCardVisible = false,
+  }) {
+    List<Widget> children = List.generate(
+      widget.cards.length,
+      (i) {
+        final offsetInX = -(i - mid) * displacementValue;
+        totalOffsetValue += offsetInX;
+
+        return Transform.translate(
+          offset: Offset(offsetInX, 0),
+          child: Builder(
+            builder: (context) => PlayerHoleCardView(
+              marked: markedCards.isMarked(widget.cards[i]),
+              onMarkTapCallback: () => markedCards.mark(
+                widget.cards[i],
+                context.read<ValueNotifier<FooterStatus>>().value ==
+                    FooterStatus.Result,
+              ),
+              card: widget.cards[i],
+              dim: widget.deactivated,
+              isCardVisible: isCardVisible,
+            ),
+          ),
+        );
+      },
+    );
+
+    return children.reversed.toList();
+  }
+
   Widget _buildCardWidget({
     @required double xOffset,
     @required int mid,
@@ -49,29 +83,11 @@ class _HoleStackCardViewState extends State<HoleStackCardView> {
             alignment: Alignment.center,
             // mainAxisAlignment: MainAxisAlignment.center,
             // mainAxisSize: MainAxisSize.min,
-            children: List.generate(
-              widget.cards.length,
-              (i) {
-                final offsetInX = -(i - mid) * displacementValue;
-                totalOffsetValue += offsetInX;
-
-                return Transform.translate(
-                  offset: Offset(offsetInX, 0),
-                  child: Builder(
-                    builder: (context) => PlayerHoleCardView(
-                      marked: markedCards.isMarked(widget.cards[i]),
-                      onMarkTapCallback: () => markedCards.mark(
-                        widget.cards[i],
-                        context.read<ValueNotifier<FooterStatus>>().value ==
-                            FooterStatus.Result,
-                      ),
-                      card: widget.cards[i],
-                      dim: widget.deactivated,
-                      isCardVisible: isCardVisible,
-                    ),
-                  ),
-                );
-              },
+            children: _getChildren(
+              mid: mid,
+              markedCards: markedCards,
+              displacementValue: displacementValue,
+              isCardVisible: isCardVisible,
             ),
           ),
         ),
@@ -154,7 +170,7 @@ class _HoleStackCardViewState extends State<HoleStackCardView> {
       color: Colors.white12,
       child: PageCurl(
         key: UniqueKey(),
-        debugging: true,
+        // debugging: true,
         vertical: true,
         back: Transform.rotate(angle: pi, child: frontCardsView),
         front: backCardsView,
