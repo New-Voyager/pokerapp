@@ -342,28 +342,28 @@ class _CurlWidgetState extends State<CurlWidget> {
         clipBehavior: Clip.none,
         children: [
           // foreground image + custom painter for shadow
-          // boundingBox(
-          //   child: ClipPath(
-          //     clipper: CurlBackgroundClipper(
-          //       mA: mA,
-          //       mD: mD,
-          //       mE: mE,
-          //       mF: mF,
-          //       mM: mM,
-          //       mN: mN,
-          //       mP: mP,
-          //     ),
-          //     clipBehavior: Clip.antiAlias,
-          //     child: Stack(
-          //       children: [
-          //         widget.frontWidget,
-          //         CustomPaint(
-          //           painter: CurlShadowPainter(mA: mA, mD: mD, mE: mE, mF: mF),
-          //         ),
-          //       ],
-          //     ),
-          //   ),
-          // ),
+          boundingBox(
+            child: ClipPath(
+              clipper: CurlBackgroundClipper(
+                mA: mA,
+                mD: mD,
+                mE: mE,
+                mF: mF,
+                mM: mM,
+                mN: mN,
+                mP: mP,
+              ),
+              clipBehavior: Clip.antiAlias,
+              child: Stack(
+                children: [
+                  widget.frontWidget,
+                  // CustomPaint(
+                  //   painter: CurlShadowPainter(mA: mA, mD: mD, mE: mE, mF: mF),
+                  // ),
+                ],
+              ),
+            ),
+          ),
 
           // back side - widget
 
@@ -448,6 +448,40 @@ class _CurlWidgetState extends State<CurlWidget> {
                     BoxDecoration(color: Colors.white, shape: BoxShape.circle),
                     child: Center(child: Text('F', style: TextStyle(fontSize: fontSize, color: Colors.black)))
               )),
+          Positioned(
+              top: mM.y,
+              left: mM.x,
+              child: Container(
+                width: width,
+                height: width,
+                margin: EdgeInsets.all(10.0),
+                decoration:
+                    BoxDecoration(color: Colors.yellow, shape: BoxShape.circle),
+                    child: Center(child: Text('M', style: TextStyle(fontSize: fontSize, color: Colors.black)))
+              )),              
+          Positioned(
+              top: mN.y,
+              left: mN.x,
+              child: Container(
+                width: width,
+                height: width,
+                margin: EdgeInsets.all(10.0),
+                decoration:
+                    BoxDecoration(color: Colors.green[900], shape: BoxShape.circle),
+                    child: Center(child: Text('N', style: TextStyle(fontSize: fontSize, color: Colors.black)))
+              )),              
+          Positioned(
+              top: mP.y,
+              left: mP.x,
+              child: Container(
+                width: width,
+                height: width,
+                margin: EdgeInsets.all(10.0),
+                decoration:
+                    BoxDecoration(color: Colors.yellow[900], shape: BoxShape.circle),
+                    child: Center(child: Text('P', style: TextStyle(fontSize: fontSize, color: Colors.black)))
+              )),              
+
         ],
       ),
     );
