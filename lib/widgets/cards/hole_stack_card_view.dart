@@ -152,53 +152,14 @@ class _HoleStackCardViewState extends State<HoleStackCardView> {
 
     return Container(
       color: Colors.white12,
-      // child: backCardsView,
       child: PageCurl(
         key: UniqueKey(),
+        debugging: true,
         vertical: true,
         back: Transform.rotate(angle: pi, child: frontCardsView),
         front: backCardsView,
         size: Size(totalWidth - 225, size.height),
       ),
     );
-
-    // return FittedBox(
-    //   child: Transform.translate(
-    //     offset: Offset(
-    //       getEvenNoDisplacement(),
-    //       0.0,
-    //     ),
-    //     child: Row(
-    //       mainAxisAlignment: MainAxisAlignment.center,
-    //       mainAxisSize: MainAxisSize.min,
-    //       children: List.generate(
-    //         cards.length,
-    //         (i) {
-    //           return Transform.translate(
-    //             offset: Offset(
-    //               -(i - mid) * displacementValue,
-    //               0,
-    //             ),
-    //             child: Transform.rotate(
-    //               alignment: Alignment.bottomCenter,
-    //               angle: (i - mid) * kAngleConstant,
-    //               child: PlayerHoleCardView(
-    //                 marked: markedCards.isMarked(cards[i]),
-    //                 onMarkTapCallback: () => markedCards.mark(
-    //                   cards[i],
-    //                   context.read<ValueNotifier<FooterStatus>>().value ==
-    //                       FooterStatus.Result,
-    //                 ),
-    //                 card: cards[i],
-    //                 dim: deactivated,
-    //                 isCardVisible: true,
-    //               ),
-    //             ),
-    //           );
-    //         },
-    //       ),
-    //     ),
-    //   ),
-    // );
   }
 }
