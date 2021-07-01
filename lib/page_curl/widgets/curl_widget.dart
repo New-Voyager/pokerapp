@@ -320,6 +320,8 @@ class _CurlWidgetState extends State<CurlWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final fontSize = 12.0;
+    final width = 15.0;
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
 
@@ -334,6 +336,7 @@ class _CurlWidgetState extends State<CurlWidget> {
       /* drag update */
       onVerticalDragUpdate: isVertical ? onDragCallback : null,
       onHorizontalDragUpdate: isVertical ? null : onDragCallback,
+
       child: Stack(
         alignment: Alignment.center,
         clipBehavior: Clip.none,
@@ -383,89 +386,68 @@ class _CurlWidgetState extends State<CurlWidget> {
               top: mA.y,
               left: mA.x,
               child: Container(
-                width: 10,
-                height: 10,
+                width: width,
+                height: width,
                 margin: EdgeInsets.all(10.0),
                 decoration:
                     BoxDecoration(color: Colors.red, shape: BoxShape.circle),
+                child: Center(child: Text('A', style: TextStyle(fontSize: fontSize)))
               )),
           Positioned(
               top: mB.y,
               left: mB.x,
               child: Container(
-                width: 10,
-                height: 10,
+                width: width,
+                height: width,
                 margin: EdgeInsets.all(10.0),
                 decoration:
                     BoxDecoration(color: Colors.green, shape: BoxShape.circle),
+                    child: Center(child: Text('B', style: TextStyle(fontSize: fontSize)))
               )),
           Positioned(
               top: mC.y,
               left: mC.x,
               child: Container(
-                width: 10,
-                height: 10,
+                width: width,
+                height: width,
                 margin: EdgeInsets.all(10.0),
                 decoration:
                     BoxDecoration(color: Colors.cyan, shape: BoxShape.circle),
+                    child: Center(child: Text('C', style: TextStyle(fontSize: fontSize)))
               )),
           Positioned(
               top: mD.y,
               left: mD.x,
               child: Container(
-                width: 15,
-                height: 15,
+                width: width*2,
+                height: width*2,
                 margin: EdgeInsets.all(10.0),
                 decoration:
                     BoxDecoration(color: Colors.indigo, shape: BoxShape.circle),
+                    child: Center(child: Text('D', style: TextStyle(fontSize: fontSize)))
               )),
           Positioned(
               top: mE.y,
               left: mE.x,
               child: Container(
-                width: 10,
-                height: 10,
+                width: width,
+                height: width,
                 margin: EdgeInsets.all(10.0),
                 decoration:
                     BoxDecoration(color: Colors.pink, shape: BoxShape.circle),
+                    child: Center(child: Text('E', style: TextStyle(fontSize: fontSize)))
               )),
           Positioned(
               top: mF.y,
               left: mF.x,
               child: Container(
-                width: 10,
-                height: 10,
+                width: width,
+                height: width,
                 margin: EdgeInsets.all(10.0),
                 decoration:
                     BoxDecoration(color: Colors.white, shape: BoxShape.circle),
+                    child: Center(child: Text('F', style: TextStyle(fontSize: fontSize, color: Colors.black)))
               )),
-
-          // Positioned(
-          //     top: mA.y,
-          //     left: mA.x,
-          //     child: Container(
-          //       margin: EdgeInsets.all(10.0),
-          //       decoration:
-          //           BoxDecoration(color: Colors.orange, shape: BoxShape.circle),
-          //     )),
-
-          // Positioned(
-          //     top: mB.y,
-          //     left: mB.x,
-          //     child: Container(
-          //       margin: EdgeInsets.all(10.0),
-          //       decoration:
-          //           BoxDecoration(color: Colors.green, shape: BoxShape.circle),
-          //     )),
-
-          // Positioned(
-          //     top: mC.y,
-          //     left: mC.x,
-          //     child: Container(
-          //       margin: EdgeInsets.all(10.0),
-          //       decoration:
-          //           BoxDecoration(color: Colors.indigo, shape: BoxShape.circle),
-          //     )),
         ],
       ),
     );

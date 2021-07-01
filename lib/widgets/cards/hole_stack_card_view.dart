@@ -149,7 +149,7 @@ class _HoleStackCardViewState extends State<HoleStackCardView> {
     print('total offset value: $totalOffsetValue');
 
     print('\n\nbuilding PAGE CURL\n\n');
-
+    final height = size.height - 30;
     return Container(
       color: Colors.white12,
       // child: backCardsView,
@@ -158,7 +158,7 @@ class _HoleStackCardViewState extends State<HoleStackCardView> {
         vertical: true,
         back: Transform.rotate(angle: pi, child: frontCardsView),
         front: backCardsView,
-        size: Size(totalWidth, size.height),
+        size: Size(totalWidth, height),
       ),
     );
 
