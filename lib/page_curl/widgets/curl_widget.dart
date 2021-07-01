@@ -179,6 +179,10 @@ class _CurlWidgetState extends State<CurlWidget> {
       //log('::Curl:: bh: $bh alpha: $alpha sin: $_sin cos: $_cos mA: $mA mE: $mE mF: $mF mG: $mG mMovement: $mMovement width: $width height: $height');
     }
 
+    if (mA.y > mF.y) {
+      return false;
+    }
+
     return true;
   }
 
