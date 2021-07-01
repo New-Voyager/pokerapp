@@ -4,7 +4,7 @@ import 'package:pokerapp/page_curl/models/vector_2d.dart';
 // Clip path: N F A E
 
 class CurlBackgroundClipper extends CustomClipper<Path> {
-  final Vector2D mA, /*mD,*/ mE, mF, mM, mN, mP, mG;
+  final Vector2D mA, /*mD,*/ mE, mF, mM, mN, mP, mG, mEnd;
   final bool shouldClip;
   CurlBackgroundClipper(
       {@required this.mA,
@@ -15,6 +15,7 @@ class CurlBackgroundClipper extends CustomClipper<Path> {
       @required this.mN,
       @required this.mP,
       @required this.mG,
+      @required this.mEnd,
       @required this.shouldClip});
 
   Path createBackgroundPath2() {
@@ -39,6 +40,7 @@ class CurlBackgroundClipper extends CustomClipper<Path> {
     path.moveTo(mM.x, mM.y);
     path.lineTo(mA.x, mA.y);
     path.lineTo(mG.x, mG.y);
+    path.lineTo(mEnd.x, mEnd.y);
     path.lineTo(mP.x, mP.y);
     path.lineTo(mM.x, mM.y);
 

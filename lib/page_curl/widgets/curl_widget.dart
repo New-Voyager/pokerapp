@@ -125,7 +125,7 @@ class _CurlWidgetState extends State<CurlWidget> {
     mA.x = 0;
     mA.y = height - (bh / _sin);
 
-    if (mA.y < getHeight()/2) {
+    if (mA.y < getHeight()/3) {
       return false;
     }
 
@@ -158,12 +158,25 @@ class _CurlWidgetState extends State<CurlWidget> {
     // extend A->F line for clipping point
     final lenAB =
         math.sqrt(math.pow(mF.x - mA.x, 2.0) + math.pow(mF.y - mA.y, 2.0));
-    mG.x = mF.x + (mF.x - mA.x) / lenAB * getWidth();
-    mG.y = mF.y + (mF.y - mA.y) / lenAB * getWidth();
+    double distance = mMovement.y;
+    bool done = false;
+    while (!done) {    
+      mG.x = mF.x + (mF.x - mA.x) / lenAB * distance; //getWidth();
+      mG.y = mF.y + (mF.y - mA.y) / lenAB * distance; //getWidth();
+      log('::Curl:: mG: $mG mA: $mA mE: $mE mF: $mF');
+
+      if (mG.x < getWidth() && mG.y > getHeight()) {
+        done = true;
+      }
+      if (mG.x > getWidth() ) {
+        done = true;
+      }
+      distance = distance*2;
+    }
     mG.x = math.min(mG.x, getWidth());
     mG.y = math.min(mG.y, getHeight());
     if (mA.y < getHeight()/2) {
-      log('::Curl:: bh: $bh alpha: $alpha sin: $_sin cos: $_cos mA: $mA mE: $mE mF: $mF mG: $mG mMovement: $mMovement width: $width height: $height');
+      //log('::Curl:: bh: $bh alpha: $alpha sin: $_sin cos: $_cos mA: $mA mE: $mE mF: $mF mG: $mG mMovement: $mMovement width: $width height: $height');
     }
 
     return true;
@@ -377,6 +390,7 @@ class _CurlWidgetState extends State<CurlWidget> {
                       mN: mN,
                       mP: mP,
                       mG: mG,
+                      mEnd: mEnd,
                       shouldClip: this.bUserMoves,
                     ),
                     clipBehavior: Clip.antiAlias,
@@ -408,14 +422,14 @@ class _CurlWidgetState extends State<CurlWidget> {
           //   ),
           // ),
 
-          boundingBox(
-            child: ClipPath(
-              clipper: CurlBackSideClipper(
-                  mA: mA, /*mD: mD,*/ mE: mE, mF: mF, mG: mG),
-              clipBehavior: Clip.antiAlias,
-              child: widget.backWidget,
-            ),
-          ),
+          // boundingBox(
+          //   child: ClipPath(
+          //     clipper: CurlBackSideClipper(
+          //         mA: mA, /*mD: mD,*/ mE: mE, mF: mF, mG: mG),
+          //     clipBehavior: Clip.antiAlias,
+          //     child: widget.backWidget,
+          //   ),
+          // ),
 
           Positioned(
               top: mA.y,
@@ -540,18 +554,18 @@ class _CurlWidgetState extends State<CurlWidget> {
                           style: TextStyle(
                               fontSize: fontSize, color: Colors.black))))),
 
-          Positioned(
-              top: mEnd.y,
-              left: mEnd.x,
-              child: Container(
-                  width: width,
-                  height: width,
-                  decoration: BoxDecoration(
-                      color: Colors.red[400], shape: BoxShape.circle),
-                  child: Center(
-                      child: Text('X',
-                          style: TextStyle(
-                              fontSize: fontSize, color: Colors.black))))),
+          // Positioned(
+          //     top: mEnd.y,
+          //     left: mEnd.x,
+          //     child: Container(
+          //         width: width,
+          //         height: width,
+          //         decoration: BoxDecoration(
+          //             color: Colors.red[400], shape: BoxShape.circle),
+          //         child: Center(
+          //             child: Text('X',
+          //                 style: TextStyle(
+          //                     fontSize: fontSize, color: Colors.black))))),
         ],
       ),
     );
