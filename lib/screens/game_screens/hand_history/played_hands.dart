@@ -187,7 +187,7 @@ class _PlayedHandsScreenState extends State<PlayedHandsScreen> {
         backgroundColor: Colors.transparent,
         builder: (_) => HandlogBottomSheet(
           gameCode: this.widget.gameCode,
-          handNum: widget.history[index].handNum, 
+          handNum: widget.history[index].handNum,
           clubCode: widget.clubCode,
         ),
       );

@@ -61,6 +61,32 @@ query (\$gameCode: String!) {
 
 }
   """;
+  static final String getAllTimeStatsOnlyQuery = """
+
+query () {
+  playerHandStats {
+    totalHands
+    inPreflop
+    inFlop
+    inTurn
+    inRiver
+    wonAtShowDown
+    wentToShowDown
+
+		vpipCount
+    preflopRaise
+    postflopRaise
+    threeBet
+    contBet
+    allInCount
+    
+    headsupHands
+    wonHeadsupHands
+    headsupHandSummary
+  }
+
+}
+  """;
 
   static final String clubStatsQuery = """
 
@@ -169,6 +195,19 @@ query clubStats(\$clubCode: String!) {
 
     final handStats = HandStatsModel.fromJson(result.data.data);
     return handStats;
+  }
+
+  static Future<HandStatsModel> getAlltimeStatsOnly() async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+    QueryResult result = await _client
+        .query(QueryOptions(documentNode: gql(getAllTimeStatsOnlyQuery)));
+
+    if (result.hasException) return null;
+
+    final handStats = StatModel.fromJson(result.data.data['playerHandStats']);
+    return HandStatsModel(
+      alltime: handStats,
+    );
   }
 
   static Future<ClubStatsModel> getClubStats(String clubCode) async {

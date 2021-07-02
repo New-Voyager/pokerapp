@@ -461,7 +461,8 @@ class TestService {
   static Future<void> sendNewHand() async {
     final gameState = GameState.getState(_context);
     if (_handActionService == null) {
-      _handActionService = HandActionService(_context, gameState, null, null);
+      _handActionService =
+          HandActionService(_context, gameState, null, null, null);
       _handActionService.loop();
     }
     await _handActionService.handle(newHandMessage());
@@ -555,7 +556,8 @@ class TestService {
   static initHandSevice() {
     final gameState = GameState.getState(_context);
     if (_handActionService == null) {
-      _handActionService = HandActionService(_context, gameState, null, null);
+      _handActionService =
+          HandActionService(_context, gameState, null, null, null);
       _handActionService.loop();
     }
   }

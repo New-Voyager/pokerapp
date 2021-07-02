@@ -38,7 +38,10 @@ class RoundedColorButton extends StatelessWidget {
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16.pw),
             color: backgroundColor ?? AppColorsNew.darkGreenShadeColor,
-            border: Border.all(color: borderColor ?? backgroundColor)),
+            border: Border.all(
+                color: borderColor ??
+                    backgroundColor ??
+                    AppColorsNew.yellowAccentColor)),
       ),
     );
   }

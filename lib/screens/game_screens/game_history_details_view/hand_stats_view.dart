@@ -21,8 +21,11 @@ import '../../../routes.dart';
 
 class HandStatsView extends StatefulWidget {
   final GameHistoryDetailModel gameHistoryModel;
+  final bool isAlltimeOnly;
 
-  const HandStatsView({Key key, this.gameHistoryModel}) : super(key: key);
+  const HandStatsView(
+      {Key key, this.gameHistoryModel, this.isAlltimeOnly = false})
+      : super(key: key);
 
   @override
   _HandStatsViewState createState() => _HandStatsViewState();
@@ -34,23 +37,36 @@ class _HandStatsViewState extends State<HandStatsView>
   String get routeName => Routes.hand_statistics;
   GameHistoryDetailModel model;
   HandStatsModel stats;
+  bool showThisGame = false;
 
   @override
   void initState() {
     model = widget.gameHistoryModel;
+    showThisGame = !(widget.isAlltimeOnly ?? false);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      fetchStats();
-      // testStats();
+      // fetchStats();
+      showThisGame ? fetchStats() : fetchAllTimeStatsOnly();
+      //testStats();
     });
     super.initState();
   }
 
+  fetchAllTimeStatsOnly() async {
+    log("Fetching alltimeStats only");
+    stats = await StatsService.getAlltimeStatsOnly();
+    if (stats != null) {
+      // stats.loadData();
+
+      setState(() {});
+    }
+  }
+
   testStats() async {
     String data = await DefaultAssetBundle.of(context)
-        .loadString("assets/sample-data/stats.json");
+        .loadString("assets/sample-data/stats_new.json");
 
     final jsonResult = json.decode(data);
-    stats = HandStatsModel.fromJson(jsonResult);
+    stats = HandStatsModel.fromJson(jsonResult['data']);
     stats.loadData();
 
     setState(() {});
@@ -71,11 +87,15 @@ class _HandStatsViewState extends State<HandStatsView>
       decoration: AppStylesNew.BgGreenRadialGradient,
       child: Scaffold(
         backgroundColor: Colors.transparent,
-        appBar: CustomAppBar(
-          context: context,
-          titleText: 'Hand Statistics',
-          subTitleText: 'Game: ',
-        ),
+        appBar: showThisGame
+            ? CustomAppBar(
+                context: context,
+                titleText: 'Hand Statistics',
+                subTitleText: 'Game: ${model?.gameCode} ',
+              )
+            : AppBar(
+                toolbarHeight: 0,
+              ),
         body: stats == null
             ? CircularProgressWidget(
                 text: "Loading Statistics..",
@@ -96,18 +116,22 @@ class _HandStatsViewState extends State<HandStatsView>
                         children: [
                           Row(
                             children: [
-                              Expanded(
-                                flex: 1,
-                                child: Column(
-                                  children: [
-                                    Text("This Game"),
-                                    Text(
-                                        "Hands : ${stats.thisGame.totalHands}"),
-                                    Container(
-                                        height: 150,
-                                        child:
-                                            HandStatPieChart(stats.thisGame)),
-                                  ],
+                              Visibility(
+                                maintainState: false,
+                                visible: showThisGame,
+                                child: Expanded(
+                                  flex: 1,
+                                  child: Column(
+                                    children: [
+                                      Text("This Game"),
+                                      Text(
+                                          "Hands : ${stats.thisGame.totalHands}"),
+                                      Container(
+                                          height: 150,
+                                          child:
+                                              HandStatPieChart(stats.thisGame)),
+                                    ],
+                                  ),
                                 ),
                               ),
                               Expanded(
@@ -165,12 +189,15 @@ class _HandStatsViewState extends State<HandStatsView>
                                 flex: 3,
                                 child: SizedBox.shrink(),
                               ),
-                              Expanded(
-                                flex: 2,
-                                child: Text(
-                                  "This Game",
-                                  textAlign: TextAlign.center,
-                                  style: AppStylesNew.labelTextStyle,
+                              Visibility(
+                                visible: showThisGame,
+                                child: Expanded(
+                                  flex: 2,
+                                  child: Text(
+                                    "This Game",
+                                    textAlign: TextAlign.center,
+                                    style: AppStylesNew.labelTextStyle,
+                                  ),
                                 ),
                               ),
                               Expanded(
@@ -241,12 +268,15 @@ class _HandStatsViewState extends State<HandStatsView>
                                 flex: 3,
                                 child: SizedBox.shrink(),
                               ),
-                              Expanded(
-                                flex: 2,
-                                child: Text(
-                                  "This Game",
-                                  textAlign: TextAlign.center,
-                                  style: AppStylesNew.labelTextStyle,
+                              Visibility(
+                                visible: showThisGame,
+                                child: Expanded(
+                                  flex: 2,
+                                  child: Text(
+                                    "This Game",
+                                    textAlign: TextAlign.center,
+                                    style: AppStylesNew.labelTextStyle,
+                                  ),
                                 ),
                               ),
                               Expanded(
@@ -329,12 +359,15 @@ class _HandStatsViewState extends State<HandStatsView>
                                 flex: 4,
                                 child: SizedBox.shrink(),
                               ),
-                              Expanded(
-                                flex: 6,
-                                child: Text(
-                                  "This Game",
-                                  textAlign: TextAlign.center,
-                                  style: AppStylesNew.labelTextStyle,
+                              Visibility(
+                                visible: showThisGame,
+                                child: Expanded(
+                                  flex: 6,
+                                  child: Text(
+                                    "This Game",
+                                    textAlign: TextAlign.center,
+                                    style: AppStylesNew.labelTextStyle,
+                                  ),
                                 ),
                               ),
                               Expanded(
@@ -353,32 +386,35 @@ class _HandStatsViewState extends State<HandStatsView>
                                 flex: 3,
                                 child: SizedBox.shrink(),
                               ),
-                              Expanded(
-                                flex: 6,
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                      child: Text(
-                                        "Hands",
-                                        textAlign: TextAlign.center,
-                                        style: AppStylesNew.labelTextStyle,
+                              Visibility(
+                                visible: showThisGame,
+                                child: Expanded(
+                                  flex: 6,
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          "Hands",
+                                          textAlign: TextAlign.center,
+                                          style: AppStylesNew.labelTextStyle,
+                                        ),
                                       ),
-                                    ),
-                                    Expanded(
-                                      child: Text(
-                                        "Won",
-                                        textAlign: TextAlign.center,
-                                        style: AppStylesNew.labelTextStyle,
+                                      Expanded(
+                                        child: Text(
+                                          "Won",
+                                          textAlign: TextAlign.center,
+                                          style: AppStylesNew.labelTextStyle,
+                                        ),
                                       ),
-                                    ),
-                                    Expanded(
-                                      child: Text(
-                                        "%",
-                                        textAlign: TextAlign.center,
-                                        style: AppStylesNew.labelTextStyle,
+                                      Expanded(
+                                        child: Text(
+                                          "%",
+                                          textAlign: TextAlign.center,
+                                          style: AppStylesNew.labelTextStyle,
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               ),
                               Expanded(
@@ -432,31 +468,34 @@ class _HandStatsViewState extends State<HandStatsView>
             flex: 3,
             child: title,
           ),
-          Expanded(
-            flex: 2,
-            child: Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    thisVal.toString(),
-                    textAlign: TextAlign.center,
-                    style: AppStylesNew.statValTextStyle,
+          Visibility(
+            visible: showThisGame,
+            child: Expanded(
+              flex: 2,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      thisVal.toString(),
+                      textAlign: TextAlign.center,
+                      style: AppStylesNew.statValTextStyle,
+                    ),
                   ),
-                ),
-                Expanded(
-                  child: Text(
-                    stats.thisGame.totalHands == 0
-                        ? 0
-                        : "${((thisVal / stats.thisGame.totalHands) * 100).floor()}%",
-                    textAlign: TextAlign.right,
-                    style: AppStylesNew.statValTextStyle,
+                  Expanded(
+                    child: Text(
+                      stats.thisGame.totalHands == 0
+                          ? 0
+                          : "${((thisVal / stats.thisGame.totalHands) * 100).floor()}%",
+                      textAlign: TextAlign.right,
+                      style: AppStylesNew.statValTextStyle,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
           Expanded(
-            flex: 2,
+            flex: showThisGame ? 2 : 5,
             child: Row(
               children: [
                 Expanded(
@@ -496,31 +535,34 @@ class _HandStatsViewState extends State<HandStatsView>
               style: AppStylesNew.labelTextStyle,
             ),
           ),
-          Expanded(
-            flex: 2,
-            child: Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    thisVal.toString(),
-                    textAlign: TextAlign.center,
-                    style: AppStylesNew.statValTextStyle,
+          Visibility(
+            visible: showThisGame,
+            child: Expanded(
+              flex: 2,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      thisVal.toString(),
+                      textAlign: TextAlign.center,
+                      style: AppStylesNew.statValTextStyle,
+                    ),
                   ),
-                ),
-                Expanded(
-                  child: Text(
-                    stats.thisGame.totalHands == 0
-                        ? 0
-                        : "${((thisVal / stats.thisGame.totalHands) * 100).floor()}%",
-                    textAlign: TextAlign.right,
-                    style: AppStylesNew.statValTextStyle,
+                  Expanded(
+                    child: Text(
+                      stats.thisGame.totalHands == 0
+                          ? 0
+                          : "${((thisVal / stats.thisGame.totalHands) * 100).floor()}%",
+                      textAlign: TextAlign.right,
+                      style: AppStylesNew.statValTextStyle,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
           Expanded(
-            flex: 2,
+            flex: showThisGame ? 2 : 3,
             child: Row(
               children: [
                 Expanded(
@@ -560,34 +602,37 @@ class _HandStatsViewState extends State<HandStatsView>
               style: AppStylesNew.labelTextStyle,
             ),
           ),
-          Expanded(
-            flex: 6,
-            child: Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    "$thisHands",
-                    textAlign: TextAlign.center,
-                    style: AppStylesNew.statValTextStyle,
+          Visibility(
+            visible: showThisGame,
+            child: Expanded(
+              flex: 6,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      "$thisHands",
+                      textAlign: TextAlign.center,
+                      style: AppStylesNew.statValTextStyle,
+                    ),
                   ),
-                ),
-                Expanded(
-                  child: Text(
-                    "$thisWon",
-                    textAlign: TextAlign.center,
-                    style: AppStylesNew.statValTextStyle,
+                  Expanded(
+                    child: Text(
+                      "$thisWon",
+                      textAlign: TextAlign.center,
+                      style: AppStylesNew.statValTextStyle,
+                    ),
                   ),
-                ),
-                Expanded(
-                  child: Text(
-                    thisHands == 0
-                        ? "$thisHands"
-                        : "${((thisWon / thisHands) * 100).floor()}%",
-                    textAlign: TextAlign.center,
-                    style: AppStylesNew.statValTextStyle,
+                  Expanded(
+                    child: Text(
+                      thisHands == 0
+                          ? "$thisHands"
+                          : "${((thisWon / thisHands) * 100).floor()}%",
+                      textAlign: TextAlign.center,
+                      style: AppStylesNew.statValTextStyle,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
           Expanded(
