@@ -645,9 +645,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
                           * as there will be Listeners implemented down this hierarchy level */
 
                         _gameContextObj.gameUpdateService = GameUpdateService(
-                          _providerContext,
-                          _gameState,
-                        );
+                            _providerContext, _gameState, this._audioPlayer);
                         _gameContextObj.gameUpdateService.loop();
 
                         _gameContextObj.gameComService.gameToPlayerChannelStream
@@ -672,6 +670,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
                           _providerContext,
                           _gameState,
                           _gameContextObj.gameComService,
+                          _gameContextObj.encryptionService,
                           _gameContextObj.currentPlayer,
                           audioPlayer: _audioPlayer,
                         );

@@ -32,7 +32,8 @@ class GameHistoryDetailView extends StatefulWidget {
   _GameHistoryDetailView createState() => _GameHistoryDetailView();
 }
 
-class _GameHistoryDetailView extends State<GameHistoryDetailView> with RouteAwareAnalytics{
+class _GameHistoryDetailView extends State<GameHistoryDetailView>
+    with RouteAwareAnalytics {
   @override
   String get routeName => Routes.game_history_detail_view;
   final seprator = SizedBox(

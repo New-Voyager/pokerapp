@@ -3,12 +3,13 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/screens/club_screen/bookmarked_hands.dart';
 import 'package:pokerapp/screens/club_screen/botscripts.dart';
-import 'package:pokerapp/screens/club_screen/club_main_screen_new.dart';
+import 'package:pokerapp/screens/club_screen/club_main_screen.dart';
 import 'package:pokerapp/screens/club_screen/club_stats_screen.dart';
 import 'package:pokerapp/screens/game_screens/game_history_details_view/hand_stats_view.dart';
 import 'package:pokerapp/screens/game_screens/game_history_details_view/stack_details_view.dart';
 import 'package:pokerapp/screens/game_screens/new_game_settings/choose_game_new.dart';
 import 'package:pokerapp/screens/game_screens/new_game_settings/new_game_settings2.dart';
+import 'package:pokerapp/screens/profile_screens/performance_view.dart';
 import 'package:provider/provider.dart';
 
 import 'package:pokerapp/screens/screens.dart';
@@ -92,6 +93,9 @@ class Routes {
 
   // Club Statistics screen
   static const String club_statistics = "/club_statistics";
+
+  // player profile statistics
+  static const String player_statistics = "/player_statistics";
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -414,6 +418,15 @@ class Routes {
           routeName: settings.name,
           viewToShow: BotScriptsScreen(
             clubModel: args,
+          ),
+        );
+
+      case player_statistics:
+        var playerUuid = settings.arguments as String;
+        return _getPageRoute(
+          routeName: settings.name,
+          viewToShow: PerformanceView(
+            playerUuid: playerUuid,
           ),
         );
 

@@ -8,6 +8,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
+import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/screens/game_play_screen/game_play_screen_util_methods.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/animating_widgets/card_distribution_animating_widget.dart';
@@ -23,6 +24,7 @@ import 'package:pokerapp/widgets/round_raised_button.dart';
 import 'package:provider/provider.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/popup_buttons.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class BoardView extends StatefulWidget {
   BoardView({
@@ -205,28 +207,29 @@ class _BoardViewState extends State<BoardView> {
         ),
 
         Consumer<MyState>(
-          builder: (
-            BuildContext _,
-            MyState myState,
-            Widget __,
-          ) =>
-              Align(
-                  alignment: Alignment.bottomCenter,
-                  child: sitBackButton(context)),
-        ),
+            builder: (
+          BuildContext _,
+          MyState myState,
+          Widget __,
+        ) =>
+                Align(
+                    alignment: Alignment.bottomCenter,
+                    child: sitBackButton(context))),
 
         !gameState.gameInfo.showHandRank
             ? Container()
             : Consumer<MyState>(
                 builder: (
-                  BuildContext _,
-                  MyState myState,
-                  Widget __,
-                ) =>
-                    Align(
-                        alignment: Alignment.bottomCenter,
-                        child: rankText(context)),
-              ),
+                BuildContext _,
+                MyState myState,
+                Widget __,
+              ) =>
+                    Transform.translate(
+                      offset: Offset(0, 20.ph),
+                      child: Align(
+                          alignment: Alignment.bottomCenter,
+                          child: rankText(context)),
+                    )),
 
         Align(
           alignment: Alignment.center,
@@ -323,7 +326,27 @@ class _BoardViewState extends State<BoardView> {
 
     if (mySeat.player.rankText != null && mySeat.player.rankText.isNotEmpty) {
       //log('mySeat.player.inBreak');
-      return Text(mySeat.player.rankText);
+
+      return Container(
+        padding: EdgeInsets.symmetric(
+          horizontal: 14.pw,
+          vertical: 3.ph,
+        ),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(6.pw),
+          border: Border.all(color: Colors.redAccent),
+          color: Colors.black,
+        ),
+        child: Text(
+          mySeat.player.rankText,
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 18.dp,
+            fontFamily: AppAssets.fontFamilyLato,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+      );
     } else {
       return SizedBox.shrink();
     }

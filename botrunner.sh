@@ -36,7 +36,7 @@ docker run -t --rm \
     -e POSTGRES_USER=${POSTGRES_USER} \
     -e POSTGRES_PASSWORD=${POSTGRES_PASSWORD} \
     -e POSTGRES_DB=${POSTGRES_DB} \
-    -e ENABLE_PLAYER_MSG_ENCRYPTION=1 \
+    -e ENABLE_ENCRYPTION=1 \
     -v ${PWD}/botrunner_scripts:/app/botrunner_scripts \
     ${BOTRUNNER_IMAGE} \
     sh -c "\

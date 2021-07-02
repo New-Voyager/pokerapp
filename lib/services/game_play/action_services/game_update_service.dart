@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
@@ -16,6 +17,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat_change_model.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
+import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/screens/game_play_screen/pop_ups/seat_change_confirmation_pop_up.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/count_down_timer.dart';
@@ -32,8 +34,9 @@ class GameUpdateService {
   final BuildContext _context;
   final List<dynamic> _messages = [];
   bool closed = false;
+  AudioPlayer audioPlayer;
 
-  GameUpdateService(this._context, this._gameState);
+  GameUpdateService(this._context, this._gameState, this.audioPlayer);
 
   void close() {
     closed = true;
@@ -42,6 +45,7 @@ class GameUpdateService {
 
   void clear() {
     _messages.clear();
+    this.audioPlayer?.stop();
   }
 
   loop() async {
@@ -965,8 +969,8 @@ class GameUpdateService {
       final player = gameState.fromSeat(_context, seatNo);
       player.showFirework = true;
       final seat = gameState.getSeat(_context, seatNo);
+      playSoundEffect(AppAssets.fireworksSound);
       seat.notify();
-
       await Future.delayed(AppConstants.notificationDuration);
 
       // turn off firework
@@ -1163,5 +1167,14 @@ class GameUpdateService {
       _context,
       listen: false,
     ).value = FooterStatus.None;
+  }
+
+  playSoundEffect(String soundFile) {
+    if (_gameState.settings.gameSound) {
+      _gameState
+          .getAudioBytes(soundFile)
+          .then((value) => audioPlayer.playBytes(value));
+      // log('In playSoundEffect(), gameSounds = ${_gameState.settings.gameSound}');
+    }
   }
 }
