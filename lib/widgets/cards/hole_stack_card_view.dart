@@ -16,17 +16,29 @@ import 'package:provider/provider.dart';
 class HoleStackCardView extends StatelessWidget {
   final List<CardObject> cards;
   final bool deactivated;
-  final bool horizontal;
   final bool isCardVisible;
 
   HoleStackCardView({
     @required this.cards,
     this.deactivated = false,
-    this.horizontal = true,
     this.isCardVisible = false,
   });
 
+  Size _getTotalCardsSize(BuildContext context, double displacementValue) {
+    double holeCardRatio = CardBuilderWidget.getCardRatioFromCardType(
+      CardType.HoleCard,
+      context,
+    );
+
+    final double sch = AppDimensions.cardHeight * holeCardRatio;
+    final double scw = AppDimensions.cardWidth * holeCardRatio;
+    final double tw = scw + displacementValue * (cards.length - 1);
+
+    return Size(tw, sch);
+  }
+
   List<Widget> _getChildren({
+    @required BuildContext context,
     @required int mid,
     @required MarkedCards markedCards,
     @required double displacementValue,
@@ -55,10 +67,21 @@ class HoleStackCardView extends StatelessWidget {
       },
     );
 
+    final totalCardSize = _getTotalCardsSize(context, displacementValue);
+
+    // this empty container makes sure that HIT TEST (tappings) works
+    // this container is used to expand the width of the stack
+    children.add(Container(
+      color: Colors.transparent,
+      width: totalCardSize.width,
+      height: totalCardSize.height,
+    ));
+
     return children.reversed.toList();
   }
 
   Widget _buildCardWidget({
+    @required BuildContext context,
     @required double xOffset,
     @required int mid,
     @required MarkedCards markedCards,
@@ -71,6 +94,7 @@ class HoleStackCardView extends StatelessWidget {
           child: Stack(
             alignment: Alignment.center,
             children: _getChildren(
+              context: context,
               mid: mid,
               markedCards: markedCards,
               displacementValue: displacementValue,
@@ -87,6 +111,8 @@ class HoleStackCardView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print('isCardVisible: $isCardVisible');
+
     final GameState gameState = GameState.getState(context);
 
     final MarkedCards markedCards = gameState.getMarkedCards(
@@ -103,6 +129,7 @@ class HoleStackCardView extends StatelessWidget {
     final double evenNoDisplacement = getEvenNoDisplacement(displacementValue);
 
     final Widget frontCardsView = _buildCardWidget(
+      context: context,
       xOffset: evenNoDisplacement,
       mid: mid,
       markedCards: markedCards,
@@ -111,6 +138,7 @@ class HoleStackCardView extends StatelessWidget {
     );
 
     final Widget backCardsView = _buildCardWidget(
+      context: context,
       xOffset: evenNoDisplacement,
       mid: mid,
       markedCards: markedCards,
@@ -118,22 +146,16 @@ class HoleStackCardView extends StatelessWidget {
       isCardVisible: false,
     );
 
-    double holeCardRatio = CardBuilderWidget.getCardRatioFromCardType(
-      CardType.HoleCard,
-      context,
-    );
+    // if need to show front card, do not procced to build the page curling effect
+    if (isCardVisible) return frontCardsView;
 
-    final double sch = AppDimensions.cardHeight * holeCardRatio;
-    final double scw = AppDimensions.cardWidth * holeCardRatio;
-    final double tw = scw + displacementValue * (cards.length - 1);
-
-    print('\n\nbuilding PAGE CURL\n\n');
+    final tcs = _getTotalCardsSize(context, displacementValue);
 
     return PageCurl(
       key: UniqueKey(),
       back: Transform.rotate(angle: pi, child: frontCardsView),
       front: backCardsView,
-      size: Size(tw, sch),
+      size: tcs,
     );
   }
 }
