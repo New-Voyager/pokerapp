@@ -12,13 +12,23 @@
     {
       "name": "pokerapp",
       "request": "launch",
-      "type": "dart"
+      "type": "dart",
+      "program": "lib/main_dev.dart",
+      "args": [
+        "--flavor",
+        "dev"
+      ]
     },
     {
-      "name": "pokerapp-10inch",
+      "name": "pokerapp-10inch-dev",
       "request": "launch",
       "type": "dart",
-      "deviceId": "HA18R0HZ"
+      "deviceId": "HA18R0HZ",
+      "program": "lib/main_dev.dart",
+      "args": [
+        "--flavor",
+        "dev"
+      ]
     }    
   ]
 }
