@@ -8,6 +8,9 @@ import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
+import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
+import 'package:pokerapp/screens/game_screens/game_history_details_view/hand_alltime_stats_view.dart';
+import 'package:pokerapp/screens/game_screens/game_history_details_view/hand_stats_view.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
@@ -19,15 +22,20 @@ class PerformanceView extends StatefulWidget {
   _PerformanceViewState createState() => _PerformanceViewState();
 }
 
-class _PerformanceViewState extends State<PerformanceView> {
+class _PerformanceViewState extends State<PerformanceView>
+    with SingleTickerProviderStateMixin {
   bool loading = true;
   PlayerPerformanceList performance;
+  TabController _tabController;
+
   @override
   void initState() {
-    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _fetch();
     });
+    super.initState();
   }
 
   Future<void> _fetch() async {
@@ -59,56 +67,81 @@ class _PerformanceViewState extends State<PerformanceView> {
     return Container(
         decoration: AppStylesNew.BgGreenRadialGradient,
         child: Scaffold(
-            backgroundColor: Colors.transparent,
-            resizeToAvoidBottomInset: true,
-            appBar: CustomAppBar(
-              context: context,
-              titleText: AppStringsNew.PerformanceTitle,
-            ),
-            body: loading
-                ? Center(child: CircularProgressIndicator())
-                : Container(
-                    child: Column(
-                    children: [
-                      Expanded(
-                        child: performance.performanceList.length == 0
-                            ? Center(
-                                child: Text(
-                                  "No data available!",
-                                  style: AppStyles.disabledButtonTextStyle,
-                                ),
-                              )
-                            : Container(
-                                padding: EdgeInsets.all(8.pw),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(8.pw),
-                                  color: AppColorsNew.newBackgroundBlackColor,
-                                ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Padding(
-                                      padding: EdgeInsets.all(5.pw),
-                                      child: Column(
-                                        children: [
-                                          Text(
-                                            "Recent Games",
-                                            style: AppStylesNew
-                                                .gameActionTextStyle,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    Expanded(
-                                      child: PerformanceBarChart(performance),
-                                    ),
-                                  ],
+          backgroundColor: Colors.transparent,
+          resizeToAvoidBottomInset: true,
+          appBar: CustomAppBar(
+            context: context,
+            titleText: AppStringsNew.PerformanceTitle,
+          ),
+          body: loading
+              ? Center(child: CircularProgressWidget())
+              : performance.performanceList.length == 0
+                  ? Center(
+                      child: Text(
+                        AppStringsNew.noDataAvailable,
+                        style: AppStyles.disabledButtonTextStyle,
+                      ),
+                    )
+                  : Column(
+                      children: [
+                        TabBar(
+                          controller: _tabController,
+                          tabs: [
+                            Tab(text: AppStringsNew.PerformanceTab1),
+                            Tab(text: AppStringsNew.PerformanceTab2),
+                          ],
+                          labelColor: AppColorsNew.newTextColor,
+                          unselectedLabelColor: Colors.grey,
+                          indicatorSize: TabBarIndicatorSize.label,
+                          indicatorColor: AppColorsNew.yellowAccentColor,
+                        ),
+                        Expanded(
+                          child: TabBarView(
+                            controller: _tabController,
+                            children: [
+                              // Hand statistics
+                              Padding(
+                                padding: const EdgeInsets.only(top: 8.0),
+                                child: HandAlltimeStatsView(
+                                  showToolbar: false,
                                 ),
                               ),
-                      )
-                    ],
-                  ))));
+
+                              // Performance
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.all(16.pw),
+                                    child: Column(
+                                      children: [
+                                        Text(
+                                          AppStringsNew.recentGamesText,
+                                          style: AppStylesNew.labelTextStyle,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Container(
+                                      padding: EdgeInsets.all(8),
+                                      decoration: BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.circular(8.pw),
+                                        color: AppColorsNew.actionRowBgColor,
+                                      ),
+                                      child: PerformanceBarChart(performance),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+        ));
   }
 
   String getBalanceFormatted(double bal) {

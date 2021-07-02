@@ -37,7 +37,11 @@ class AppStringsNew {
   static const HandlogTitle = "Hand Log";
   static const SummaryText = "Summary";
 
-  static const PerformanceTitle = "Performance";
+  static const PerformanceTitle = "Statistics";
+    static const PerformanceTab1 = "Hand Stats";
+
+  static const PerformanceTab2 = "Performance";
+
 
   static const String gameOptionsText = "Game Options";
 
@@ -103,4 +107,8 @@ class AppStringsNew {
   static String keyProfileName = "DISPLAY_NAME";
 
   static String logout = "Logout";
+
+  static String noDataAvailable = "No data available!";
+
+  static String recentGamesText =  "Recent Games";
 }
