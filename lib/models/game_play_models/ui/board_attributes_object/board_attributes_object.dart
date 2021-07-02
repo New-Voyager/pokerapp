@@ -679,9 +679,7 @@ class BoardAttributesObject extends ChangeNotifier {
     }
   }
 
-  static const holeCardViewDisplacementConstant = 60.0;
-
-  static const holeCardViewAngleConstant = 0.05;
+  static const holeCardViewDisplacementConstant = 30.0;
 
   /* center view scales for different widgets */
 

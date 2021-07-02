@@ -190,21 +190,24 @@ class _HoleCardsViewAndFooterActionViewState
       cardsInt: widget.playerModel?.cards,
       straddlePrompt: gameState.straddlePrompt,
     );
+
     if (gameState.straddlePrompt) {
       return cardsWidget;
     }
+
     return GestureDetector(
       onTap: () {
         setState(() {
           _isCardVisible = !_isCardVisible;
+          print('i am here');
         });
       },
-      onLongPress: () {
-        setState(() => _isCardVisible = true);
-      },
-      onLongPressEnd: (_) {
-        setState(() => _isCardVisible = false);
-      },
+      // onLongPress: () {
+      //   setState(() => _isCardVisible = true);
+      // },
+      // onLongPressEnd: (_) {
+      //   setState(() => _isCardVisible = false);
+      // },
       child: cardsWidget,
     );
   }
@@ -225,9 +228,11 @@ class _HoleCardsViewAndFooterActionViewState
         [];
 
     bool cardVisible = _isCardVisible;
+
     if (straddlePrompt) {
       cardVisible = false;
     }
+
     return HoleStackCardView(
       cards: cards,
       deactivated: playerFolded ?? false,
