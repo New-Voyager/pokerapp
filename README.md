@@ -75,3 +75,14 @@ https://www.diawi.com/
 
 curl https://upload.diawi.com/ -F token='qf4U9aqAL4RLK3oMJdEhAIkTWfgYT3qVAwOaxYIiEY' \
 -F file=@build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk
+
+## To run from command line
+
+# dev
+flutter run --flavor dev -t lib/main_dev.dart
+
+# test
+flutter run --flavor testFlavor -t lib/main_test.dart
+
+# prod
+flutter run --flavor prod -t lib/main_prod1.dart

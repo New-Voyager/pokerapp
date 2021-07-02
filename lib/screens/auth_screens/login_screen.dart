@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:pokerapp/enums/auth_type.dart';
+import 'package:pokerapp/flavor_banner.dart';
 import 'package:pokerapp/models/auth_model.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_host_urls.dart';
@@ -15,6 +16,7 @@ import 'package:pokerapp/widgets/round_raised_button.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../flavor_config.dart';
 import '../../main.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -120,8 +122,7 @@ class _LoginScreenState extends State<LoginScreen> with RouteAwareAnalytics {
     final separator30 = SizedBox(height: 30.0);
     final separator20 = SizedBox(height: 20.0);
     final separator5 = SizedBox(height: 5.0);
-
-    return Scaffold(
+    var scaffold = Scaffold(
       backgroundColor: Colors.black,
       body: Builder(
         builder: (ctx) => SafeArea(
@@ -215,6 +216,13 @@ class _LoginScreenState extends State<LoginScreen> with RouteAwareAnalytics {
         ),
       ),
     );
+    if (FlavorConfig.of(context).flavorName == Flavor.PROD.toString()) {
+      return scaffold;
+    } else {
+      return FlavorBanner(
+          child: scaffold,
+          bannerConfig: BannerConfig(Flavor.DEV.value(), Colors.deepOrange));
+    }
   }
 
   _loginWithUsername(BuildContext context) {
