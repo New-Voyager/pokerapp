@@ -13,7 +13,7 @@ import 'package:pokerapp/widgets/cards/player_hole_card_view.dart';
 import 'package:pokerapp/widgets/page_curl/page_curl.dart';
 import 'package:provider/provider.dart';
 
-class HoleStackCardView extends StatefulWidget {
+class HoleStackCardView extends StatelessWidget {
   final List<CardObject> cards;
   final bool deactivated;
   final bool horizontal;
@@ -26,15 +26,6 @@ class HoleStackCardView extends StatefulWidget {
     this.isCardVisible = false,
   });
 
-  @override
-  _HoleStackCardViewState createState() => _HoleStackCardViewState();
-}
-
-class _HoleStackCardViewState extends State<HoleStackCardView> {
-  GlobalKey _cardsGlobalKey = GlobalKey();
-  Size size;
-  double totalOffsetValue = 0.0;
-
   List<Widget> _getChildren({
     @required int mid,
     @required MarkedCards markedCards,
@@ -42,23 +33,21 @@ class _HoleStackCardViewState extends State<HoleStackCardView> {
     bool isCardVisible = false,
   }) {
     List<Widget> children = List.generate(
-      widget.cards.length,
+      cards.length,
       (i) {
         final offsetInX = -(i - mid) * displacementValue;
-        totalOffsetValue += offsetInX;
-
         return Transform.translate(
           offset: Offset(offsetInX, 0),
           child: Builder(
             builder: (context) => PlayerHoleCardView(
-              marked: markedCards.isMarked(widget.cards[i]),
+              marked: markedCards.isMarked(cards[i]),
               onMarkTapCallback: () => markedCards.mark(
-                widget.cards[i],
+                cards[i],
                 context.read<ValueNotifier<FooterStatus>>().value ==
                     FooterStatus.Result,
               ),
-              card: widget.cards[i],
-              dim: widget.deactivated,
+              card: cards[i],
+              dim: deactivated,
               isCardVisible: isCardVisible,
             ),
           ),
@@ -81,8 +70,6 @@ class _HoleStackCardViewState extends State<HoleStackCardView> {
           offset: Offset(xOffset, 0.0),
           child: Stack(
             alignment: Alignment.center,
-            // mainAxisAlignment: MainAxisAlignment.center,
-            // mainAxisSize: MainAxisSize.min,
             children: _getChildren(
               mid: mid,
               markedCards: markedCards,
@@ -93,22 +80,9 @@ class _HoleStackCardViewState extends State<HoleStackCardView> {
         ),
       );
 
-  double getEvenNoDisplacement(double kDisplacementConstant) {
-    if (widget.cards.length % 2 == 0) return -kDisplacementConstant / 2;
+  double getEvenNoDisplacement(double displacementValue) {
+    if (cards.length % 2 == 0) return -displacementValue / 2;
     return 0.0;
-  }
-
-  void _captureSize(Duration _) async {
-    final RenderRepaintBoundary boundary = _cardsGlobalKey.currentContext
-        .findRenderObject() as RenderRepaintBoundary;
-    if (boundary.debugNeedsPaint || !boundary.hasSize) {
-      await Future.delayed(const Duration(milliseconds: 20));
-      return _captureSize(_);
-    }
-
-    setState(() => size = boundary.size);
-
-    print("we got the size: $size");
   }
 
   @override
@@ -120,15 +94,16 @@ class _HoleStackCardViewState extends State<HoleStackCardView> {
       listen: true,
     );
 
-    if (widget.cards == null || widget.cards.isEmpty)
-      return const SizedBox.shrink();
-    int mid = (widget.cards.length ~/ 2);
+    if (cards == null || cards.isEmpty) return const SizedBox.shrink();
+    int mid = (cards.length ~/ 2);
 
     final double displacementValue =
         BoardAttributesObject.holeCardViewDisplacementConstant;
 
+    final double evenNoDisplacement = getEvenNoDisplacement(displacementValue);
+
     final Widget frontCardsView = _buildCardWidget(
-      xOffset: getEvenNoDisplacement(displacementValue),
+      xOffset: evenNoDisplacement,
       mid: mid,
       markedCards: markedCards,
       displacementValue: displacementValue,
@@ -136,33 +111,21 @@ class _HoleStackCardViewState extends State<HoleStackCardView> {
     );
 
     final Widget backCardsView = _buildCardWidget(
-      xOffset: getEvenNoDisplacement(displacementValue),
+      xOffset: evenNoDisplacement,
       mid: mid,
       markedCards: markedCards,
       displacementValue: displacementValue,
       isCardVisible: false,
     );
 
-    if (size == null) {
-      WidgetsBinding.instance.addPostFrameCallback(_captureSize);
+    double holeCardRatio = CardBuilderWidget.getCardRatioFromCardType(
+      CardType.HoleCard,
+      context,
+    );
 
-      return RepaintBoundary(
-        key: _cardsGlobalKey,
-        child: backCardsView,
-      );
-    }
-
-    final double singleCardWidth = AppDimensions.cardWidth *
-        CardBuilderWidget.getCardRatioFromCardType(
-          CardType.HoleCard,
-          context,
-        );
-
-    final double totalWidth = singleCardWidth * widget.cards.length;
-
-    print('single card width: $singleCardWidth');
-    print('total Length: $totalWidth');
-    print('total offset value: $totalOffsetValue');
+    final double sch = AppDimensions.cardHeight * holeCardRatio;
+    final double scw = AppDimensions.cardWidth * holeCardRatio;
+    final double tw = scw + displacementValue * (cards.length - 1);
 
     print('\n\nbuilding PAGE CURL\n\n');
 
@@ -170,7 +133,7 @@ class _HoleStackCardViewState extends State<HoleStackCardView> {
       key: UniqueKey(),
       back: Transform.rotate(angle: pi, child: frontCardsView),
       front: backCardsView,
-      size: Size(totalWidth - 225, size.height),
+      size: Size(tw, sch),
     );
   }
 }
