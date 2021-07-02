@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:page_curl/page_curl.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/marked_cards.dart';
@@ -11,6 +10,7 @@ import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/widgets/cards/card_builder_widget.dart';
 import 'package:pokerapp/widgets/cards/player_hole_card_view.dart';
+import 'package:pokerapp/widgets/page_curl/page_curl.dart';
 import 'package:provider/provider.dart';
 
 class HoleStackCardView extends StatefulWidget {
@@ -166,16 +166,13 @@ class _HoleStackCardViewState extends State<HoleStackCardView> {
 
     print('\n\nbuilding PAGE CURL\n\n');
 
-    return Container(
-      color: Colors.white12,
-      child: PageCurl(
-        key: UniqueKey(),
-        // debugging: true,
-        vertical: true,
-        back: Transform.rotate(angle: pi, child: frontCardsView),
-        front: backCardsView,
-        size: Size(totalWidth - 225, size.height),
-      ),
+    return PageCurl(
+      key: UniqueKey(),
+      // debugging: true,
+      vertical: true,
+      back: Transform.rotate(angle: pi, child: frontCardsView),
+      front: backCardsView,
+      size: Size(totalWidth - 225, size.height),
     );
   }
 }
