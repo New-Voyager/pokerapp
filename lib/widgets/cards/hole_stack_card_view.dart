@@ -168,8 +168,6 @@ class _HoleStackCardViewState extends State<HoleStackCardView> {
 
     return PageCurl(
       key: UniqueKey(),
-      // debugging: true,
-      vertical: true,
       back: Transform.rotate(angle: pi, child: frontCardsView),
       front: backCardsView,
       size: Size(totalWidth - 225, size.height),

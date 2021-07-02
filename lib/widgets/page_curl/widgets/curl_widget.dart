@@ -11,14 +11,12 @@ class CurlWidget extends StatefulWidget {
   final Widget frontWidget;
   final Widget backWidget;
   final Size size;
-  final bool vertical;
   final bool debugging;
 
   CurlWidget({
     @required this.frontWidget,
     @required this.backWidget,
     @required this.size,
-    @required this.vertical,
     this.debugging = false,
   });
 
@@ -28,8 +26,6 @@ class CurlWidget extends StatefulWidget {
 
 class _CurlWidgetState extends State<CurlWidget> {
   bool get debugging => widget.debugging;
-  bool get isVertical => false;
-
   /* variables that controls drag and updates */
 
   /* px / draw call */
@@ -98,9 +94,23 @@ class _CurlWidgetState extends State<CurlWidget> {
     return point;
   }
 
+  double getYRestriction(double x) {
+    // this restricts y to (0.23 to 0.10) times height
+
+    if (x > width / 2) return height * 0.10;
+
+    // linear progress from 0.23 times height to 0.10 times height
+    return (0.23 - (0.26 / width) * x) * height;
+  }
+
   void doPageCurl() {
-    int w = width.toInt();
-    int h = height.toInt();
+    double w = width;
+    double h = height;
+
+    // LIMIT MOVEMENTS
+    if (mMovement.x > w) mMovement.x = w;
+    double yRestriction = getYRestriction(mMovement.x);
+    if (mMovement.y > yRestriction) mMovement.y = yRestriction;
 
     // F will follow the finger, we add a small displacement
     // So that we can see the edge
@@ -124,9 +134,9 @@ class _CurlWidgetState extends State<CurlWidget> {
     double _sin = math.sin(alpha);
 
     mA.x = w - (bh / _cos);
-    mA.y = h.toDouble();
+    mA.y = h;
 
-    mD.x = w.toDouble();
+    mD.x = w;
     // bound mD.y
     mD.y = math.min(h - (bh / _sin), height);
 
@@ -345,6 +355,7 @@ class _CurlWidgetState extends State<CurlWidget> {
   double getRatio(double a, double x) => a * x + 1;
 
   Matrix4 getScaleMatrix() {
+    // TODO: FIX THE WEIRD SCALING IN HORIZONTAL AXIS
     // double dy = abs(height - mF.y);
     // double pertDy = dy / height;
 
@@ -380,16 +391,16 @@ class _CurlWidgetState extends State<CurlWidget> {
       behavior: HitTestBehavior.opaque,
 
       /* drag start */
-      onVerticalDragStart: isVertical ? onDragCallback : null,
-      onHorizontalDragStart: isVertical ? null : onDragCallback,
+      // onVerticalDragStart: isVertical ? onDragCallback : null,
+      onHorizontalDragStart: onDragCallback,
 
       /* drag end */
-      onVerticalDragEnd: isVertical ? onDragCallback : null,
-      onHorizontalDragEnd: isVertical ? null : onDragCallback,
+      // onVerticalDragEnd: isVertical ? onDragCallback : null,
+      onHorizontalDragEnd: onDragCallback,
 
       /* drag update */
-      onVerticalDragUpdate: isVertical ? onDragCallback : null,
-      onHorizontalDragUpdate: isVertical ? null : onDragCallback,
+      // onVerticalDragUpdate: isVertical ? onDragCallback : null,
+      onHorizontalDragUpdate: onDragCallback,
       child: Stack(
         children: [
           // foreground image + custom painter for shadow
