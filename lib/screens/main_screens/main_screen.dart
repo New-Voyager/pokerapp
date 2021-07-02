@@ -14,6 +14,7 @@ import 'package:pokerapp/screens/main_screens/games_page_view/live_games.dart';
 import 'package:pokerapp/screens/main_screens/profile_page_view/profile_page_view.dart';
 import 'package:pokerapp/screens/main_screens/profile_page_view/profile_page_view_new.dart';
 import 'package:pokerapp/screens/main_screens/purchase_page_view/purchase_page_view.dart';
+import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/services/app/clubs_service.dart';
 import 'package:pokerapp/services/app/gif_cache_service.dart';
 import 'package:pokerapp/services/app/player_service.dart';
@@ -51,6 +52,7 @@ class _MainScreenState extends State<MainScreen>
     // initialize device
     await DeviceInfo.init();
     Screen.init(context);
+
     log('Device name: ${DeviceInfo.name} screen size: ${Screen.size} diagonal: ${Screen.diagonalInches}');
 
     /* cache all the category gifs */
@@ -64,6 +66,7 @@ class _MainScreenState extends State<MainScreen>
       final natsClient = Provider.of<Nats>(context, listen: false);
       _nats = natsClient;
       await natsClient.init(_currentPlayer.channel);
+      log('\n\n*********** Player UUID: ${_currentPlayer.uuid} ***********\n\n');
 
       // Get the token each time the application loads
       String token = await FirebaseMessaging.instance.getToken();
