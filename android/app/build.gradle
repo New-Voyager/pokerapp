@@ -45,7 +45,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "com.voyagerent.pokerclubtest"
+        applicationId "com.voyagerent.pokerclub"
         minSdkVersion 23
         targetSdkVersion 29
         versionCode flutterVersionCode.toInteger()
@@ -66,9 +66,26 @@ android {
             signingConfig signingConfigs.release
         }
         debug {
-            
+
         }
     }
+
+    flavorDimensions "default"
+    productFlavors {
+        dev{
+            dimension "default"
+            applicationIdSuffix ".dev"
+        }
+
+        flavorTest{
+            dimension "default"
+        }
+
+        prod{
+            dimension "default"
+        }
+    }
+
 }
 
 flutter {
