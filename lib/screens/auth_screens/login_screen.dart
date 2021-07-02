@@ -221,8 +221,7 @@ class _LoginScreenState extends State<LoginScreen> with RouteAwareAnalytics {
     } else {
       return FlavorBanner(
           child: scaffold,
-          bannerConfig:
-              BannerConfig(Flavor.DEV.value(), Colors.deepOrange));
+          bannerConfig: BannerConfig(Flavor.DEV.value(), Colors.deepOrange));
     }
   }
 

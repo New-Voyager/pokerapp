@@ -86,7 +86,7 @@ class MyApp extends StatelessWidget {
                 ),
               ],
               child: OverlaySupport.global(
-                 child: LayoutBuilder(
+                child: LayoutBuilder(
                   builder: (context, constraints) => OrientationBuilder(
                     builder: (context, orientation) {
                       SizerUtil().init(constraints, orientation);
@@ -101,9 +101,7 @@ class MyApp extends StatelessWidget {
                         ),
                         onGenerateRoute: Routes.generateRoute,
                         initialRoute: Routes.initial,
-                        navigatorObservers: [
-                          routeObserver
-                        ],
+                        navigatorObservers: [routeObserver],
                       );
                     },
                   ),

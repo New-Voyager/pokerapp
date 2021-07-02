@@ -101,9 +101,7 @@ class MyApp extends StatelessWidget {
                         ),
                         onGenerateRoute: Routes.generateRoute,
                         initialRoute: Routes.initial,
-                        navigatorObservers: [
-                          routeObserver
-                        ],
+                        navigatorObservers: [routeObserver],
                       );
                     },
                   ),

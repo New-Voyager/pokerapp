@@ -3,9 +3,8 @@ import 'package:flutter/material.dart';
 
 import 'main.dart';
 
-
 mixin RouteAwareAnalytics<T extends StatefulWidget> on State<T>
-implements RouteAware {
+    implements RouteAware {
   String get routeName => null;
 
   @override

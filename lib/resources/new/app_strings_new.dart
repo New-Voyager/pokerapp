@@ -38,10 +38,9 @@ class AppStringsNew {
   static const SummaryText = "Summary";
 
   static const PerformanceTitle = "Statistics";
-    static const PerformanceTab1 = "Hand Stats";
+  static const PerformanceTab1 = "Hand Stats";
 
   static const PerformanceTab2 = "Performance";
-
 
   static const String gameOptionsText = "Game Options";
 
@@ -110,5 +109,5 @@ class AppStringsNew {
 
   static String noDataAvailable = "No data available!";
 
-  static String recentGamesText =  "Recent Games";
+  static String recentGamesText = "Recent Games";
 }
