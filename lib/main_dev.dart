@@ -18,11 +18,7 @@ import 'package:pokerapp/services/nats/nats.dart';
 import 'package:provider/provider.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:sizer/sizer.dart';
-
-GraphQLConfiguration graphQLConfiguration = GraphQLConfiguration();
-final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
-
-RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
+import 'main.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

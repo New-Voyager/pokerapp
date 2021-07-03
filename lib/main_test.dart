@@ -9,21 +9,14 @@ import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/models/pending_approvals.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
-import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/services/data/hive_datasource_impl.dart';
-import 'package:pokerapp/services/graphQL/configurations/graph_ql_configuration.dart';
 import 'package:pokerapp/services/nats/nats.dart';
 import 'package:provider/provider.dart';
-import 'package:pokerapp/utils/utils.dart';
 import 'package:sizer/sizer.dart';
+import 'main.dart';
 
 import 'flavor_config.dart';
-
-GraphQLConfiguration graphQLConfiguration = GraphQLConfiguration();
-final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
-
-RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

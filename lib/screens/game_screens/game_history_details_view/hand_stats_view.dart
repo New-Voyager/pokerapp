@@ -10,11 +10,8 @@ import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/game_screens/game_history_details_view/hand_stat_chart.dart';
-import 'package:pokerapp/screens/game_screens/game_history_details_view/hands_chart_view.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/stats_service.dart';
-import 'package:pokerapp/services/test/test_service.dart';
-import 'package:pokerapp/utils/loading_utils.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 import '../../../routes.dart';
