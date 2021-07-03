@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
-import 'package:intl/intl.dart';
 import 'package:pokerapp/models/player_performance_model.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
@@ -10,8 +9,8 @@ import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/game_screens/game_history_details_view/hand_alltime_stats_view.dart';
-import 'package:pokerapp/screens/game_screens/game_history_details_view/hand_stats_view.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
+import 'package:pokerapp/services/app/stats_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class PerformanceView extends StatefulWidget {
@@ -39,15 +38,14 @@ class _PerformanceViewState extends State<PerformanceView>
   }
 
   Future<void> _fetch() async {
-    // TODO: get from the service
-
-    performance = await PlayerPerformanceList.fromSampleData();
-    if (performance != null) {
-      setState(() {
-        loading = false;
-      });
-      return;
-    }
+    try {
+      performance = await StatsService.getPlayerRecentPerformance();
+    } catch (err) {}
+    //performance = await PlayerPerformanceList.fromSampleData();
+    setState(() {
+      loading = false;
+    });
+    return;
   }
 
   Color getBalanceColor(double number) {
@@ -75,7 +73,8 @@ class _PerformanceViewState extends State<PerformanceView>
           ),
           body: loading
               ? Center(child: CircularProgressWidget())
-              : performance.performanceList.length == 0
+              : performance.performanceList == null ||
+                      performance.performanceList.length == 0
                   ? Center(
                       child: Text(
                         AppStringsNew.noDataAvailable,

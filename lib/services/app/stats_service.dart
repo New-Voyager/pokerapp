@@ -1,10 +1,8 @@
-import 'dart:convert';
-import 'dart:developer';
-
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/club_stats_model.dart';
 import 'package:pokerapp/models/hand_stats_model.dart';
+import 'package:pokerapp/models/player_performance_model.dart';
 
 class StatsService {
   StatsService._();
@@ -183,6 +181,12 @@ query clubStats(\$clubCode: String!) {
 
   """;
 
+  static final String playerRecentPerformanceQuery = """
+    query recentPerformance{
+      perf: playerRecentPerformance
+    }  
+  """;
+
   static Future<HandStatsModel> getStatsForAGame(String gameCode) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
     Map<String, dynamic> variables = {
@@ -222,5 +226,17 @@ query clubStats(\$clubCode: String!) {
 
     final clubStats = ClubStatsModel.fromJson(result.data.data);
     return clubStats;
+  }
+
+  static Future<PlayerPerformanceList> getPlayerRecentPerformance() async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+    QueryResult result = await _client
+        .query(QueryOptions(documentNode: gql(playerRecentPerformanceQuery)));
+
+    if (result.hasException) return null;
+
+    final performance =
+        PlayerPerformanceList.fromJson(result.data.data['perf']);
+    return performance;
   }
 }
