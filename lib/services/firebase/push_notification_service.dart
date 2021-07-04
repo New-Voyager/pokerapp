@@ -94,6 +94,8 @@ void registerPushNotifications() {
     print('Got a message whilst in the foreground!');
     print('Message data: ${message.data}');
 
+    _showNotification(message);
+
     if (message.notification != null) {
       print('Message also contained a notification: ${message.notification}');
     }
