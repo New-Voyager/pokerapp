@@ -18,6 +18,12 @@ import 'package:provider/provider.dart';
 //   }
 // }
 
+enum NotificationType { NEW_GAME, NEW_CLUB, FREE_CHIPS }
+
+extension NotifyTypeParsing on NotificationType {
+  String value() => this.toString().split('.').last;
+}
+
 Future<void> saveFirebaseToken(String token) async {
   // call graphql to save the token
   String playerId = await AuthService.fetchUUID();
@@ -54,9 +60,24 @@ Future _onTapNotification(String payload) async {
 }
 
 Future _showNotification(RemoteMessage message) async {
-  var androidDetails = AndroidNotificationDetails(
-      "com.voyagerent.pokerapp.channelId", "pokerapp", "Poker App Channel");
-  var iosDetails = IOSNotificationDetails();
+  AndroidNotificationDetails androidDetails;
+  IOSNotificationDetails iosDetails;
+  var notificationType = message.data['type'];
+  print('notificationType = $notificationType');
+  print(
+      'NotificationType.NEW_GAME.value() = ${NotificationType.NEW_GAME.value()}');
+  if (notificationType == NotificationType.NEW_GAME.value()) {
+    androidDetails = AndroidNotificationDetails(
+        "com.voyagerent.pokerapp.channel", "pokerapp", "Poker App Channel",
+        sound: RawResourceAndroidNotificationSound('check'),  playSound: true);
+    iosDetails = IOSNotificationDetails();
+  } else if (notificationType == NotificationType.NEW_CLUB.value()) {
+    androidDetails = AndroidNotificationDetails(
+        "com.voyagerent.pokerapp.channel", "pokerapp", "Poker App Channel",
+        sound: RawResourceAndroidNotificationSound('player_turn'), playSound: true);
+    iosDetails = IOSNotificationDetails();
+  }
+
   var notificationDetails =
       NotificationDetails(android: androidDetails, iOS: iosDetails);
   var flutterLocalNotificationsPlugin = _initLocalNotifications();
