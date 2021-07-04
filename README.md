@@ -86,3 +86,6 @@ flutter run --flavor testFlavor -t lib/main_test.dart
 
 # prod
 flutter run --flavor prod -t lib/main_prod1.dart
+
+fastlane password
+xayb-jwdh-ixxh-yijp
