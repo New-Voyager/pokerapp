@@ -18,39 +18,32 @@ import 'package:provider/provider.dart';
 
 import 'footer_action_view.dart';
 
-class HoleCardsViewAndFooterActionView extends StatefulWidget {
+class HoleCardsViewAndFooterActionView extends StatelessWidget {
   final PlayerModel playerModel;
 
-  const HoleCardsViewAndFooterActionView({this.playerModel});
+  HoleCardsViewAndFooterActionView({this.playerModel});
 
-  @override
-  _HoleCardsViewAndFooterActionViewState createState() =>
-      _HoleCardsViewAndFooterActionViewState();
-}
-
-class _HoleCardsViewAndFooterActionViewState
-    extends State<HoleCardsViewAndFooterActionView> {
   final ValueNotifier<bool> _showDarkBackgroundVn = ValueNotifier(false);
-  bool _isCardVisible = false;
+  final ValueNotifier<bool> _isCardVisibleVn = ValueNotifier(false);
 
   bool _showAllCardSelectionButton(var vnfs) {
     final bool isInResult = vnfs.value == FooterStatus.Result;
-    return isInResult && (widget.playerModel?.playerFolded ?? false);
+    return isInResult && (playerModel?.playerFolded ?? false);
   }
 
-  void _markAllCardsAsSelected() {
+  void _markAllCardsAsSelected(BuildContext context) {
     // flip all the cards to front, if not already
-    setState(() => _isCardVisible = true);
+    _isCardVisibleVn.value = true;
 
     // mark all the cards for revealing
-    context.read<MarkedCards>().markAll(widget.playerModel.cardObjects);
+    context.read<MarkedCards>().markAll(playerModel.cardObjects);
   }
 
   Widget _buildAllHoleCardSelectionButton() =>
       Consumer<ValueNotifier<FooterStatus>>(
-        builder: (_, vnfs, __) => _showAllCardSelectionButton(vnfs)
+        builder: (context, vnfs, __) => _showAllCardSelectionButton(vnfs)
             ? InkWell(
-                onTap: _markAllCardsAsSelected,
+                onTap: () => _markAllCardsAsSelected(context),
                 child: Icon(Icons.visibility_rounded),
               )
             : const SizedBox.shrink(),
@@ -137,7 +130,7 @@ class _HoleCardsViewAndFooterActionViewState
         ),
       );
 
-  Widget _buildFooterActionView() => FooterActionView(
+  Widget _buildFooterActionView(BuildContext context) => FooterActionView(
         gameContext: context.read<GameContextObject>(),
         isBetWidgetVisible: (bool isBetWidgetVisible) =>
             _showDarkBackgroundVn.value = isBetWidgetVisible,
@@ -168,7 +161,7 @@ class _HoleCardsViewAndFooterActionViewState
           alignment: Alignment.bottomCenter,
           child: Consumer<ActionState>(
             builder: (context, actionState, __) => actionState.show
-                ? _buildFooterActionView()
+                ? _buildFooterActionView(context)
                 : const SizedBox.shrink(),
           ),
         ),
@@ -180,26 +173,15 @@ class _HoleCardsViewAndFooterActionViewState
     final gameState = GameState.getState(context);
 
     Widget cardsWidget = cards(
-      playerFolded: widget.playerModel.playerFolded,
-      cardsInt: widget.playerModel?.cards,
+      playerFolded: playerModel.playerFolded,
+      cardsInt: playerModel?.cards,
       straddlePrompt: gameState.straddlePrompt,
     );
 
     if (gameState.straddlePrompt) return cardsWidget;
 
     return GestureDetector(
-      onTap: () {
-        setState(() {
-          _isCardVisible = !_isCardVisible;
-          print('i am here');
-        });
-      },
-      // onLongPress: () {
-      //   setState(() => _isCardVisible = true);
-      // },
-      // onLongPressEnd: (_) {
-      //   setState(() => _isCardVisible = false);
-      // },
+      onTap: () => _isCardVisibleVn.value = !_isCardVisibleVn.value,
       child: cardsWidget,
     );
   }
@@ -219,16 +201,13 @@ class _HoleCardsViewAndFooterActionViewState
         )?.toList() ??
         [];
 
-    bool cardVisible = _isCardVisible;
-
-    if (straddlePrompt) {
-      cardVisible = false;
-    }
-
-    return HoleStackCardView(
-      cards: cards,
-      deactivated: playerFolded ?? false,
-      isCardVisible: cardVisible,
+    return ValueListenableBuilder<bool>(
+      valueListenable: _isCardVisibleVn,
+      builder: (_, isCardVisible, __) => HoleStackCardView(
+        cards: cards,
+        deactivated: playerFolded ?? false,
+        isCardVisible: straddlePrompt ? false : isCardVisible,
+      ),
     );
   }
 }
