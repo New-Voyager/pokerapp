@@ -152,7 +152,6 @@ class HoleStackCardView extends StatelessWidget {
     final tcs = _getTotalCardsSize(context, displacementValue);
 
     return PageCurl(
-      key: UniqueKey(),
       back: Transform.rotate(angle: pi, child: frontCardsView),
       front: backCardsView,
       size: tcs,
