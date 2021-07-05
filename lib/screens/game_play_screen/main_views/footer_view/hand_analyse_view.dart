@@ -322,31 +322,33 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
 
           // Pending approval button
           Consumer2<PendingApprovalsState, GameContextObject>(
-              builder: (context, value, gameContextObj, child) {
-            // log('gameContextObj.isAdmin() = ${gameContextObj.isAdmin()}');
-            //  log("VALUE ======== ${value.totalPending}");
-            if (!widget.gameContextObject.isAdmin()) {
-              return Container();
-            }
+            builder: (context, value, gameContextObj, child) {
+              // log('gameContextObj.isAdmin() = ${gameContextObj.isAdmin()}');
+              //  log("VALUE ======== ${value.totalPending}");
+              if (!widget.gameContextObject.isAdmin()) {
+                return Container();
+              }
 
-            return Consumer<PendingApprovalsState>(
-              // Pending approval
-              builder: (context, value, child) {
-                //  log("VALUE ======== ${value.totalPending}");
-                final approval = SvgPicture.asset(
-                    'assets/images/game/clipboard.svg',
-                    width: 16,
-                    height: 16,
-                    color: Colors.black);
-                return IconWithBadge(
-                    count: value.totalPending,
-                    onClickFunction: onClickPendingBuyInApprovals,
-                    child: GameCircleButton(
-                      child: approval,
-                    ));
-              },
-            );
-          }),
+              return Consumer<PendingApprovalsState>(
+                // Pending approval
+                builder: (context, value, child) {
+                  //  log("VALUE ======== ${value.totalPending}");
+                  final approval = SvgPicture.asset(
+                      'assets/images/game/clipboard.svg',
+                      width: 16,
+                      height: 16,
+                      color: Colors.black);
+                  return IconWithBadge(
+                      count: value.totalPending,
+                      onClickFunction: onClickPendingBuyInApprovals,
+                      child: GameCircleButton(
+                        child: approval,
+                      ));
+                },
+              );
+            },
+          ),
+
           GameCircleButton(
               iconData: Icons.menu,
               onClickHandler: () => onMoreOptionsPress(context)),

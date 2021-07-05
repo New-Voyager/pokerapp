@@ -145,7 +145,10 @@ class _HoleCardsViewAndFooterActionViewState
           Align(
             alignment: Alignment.topCenter,
             child: _buildholeCardViewAndStraddleDialog(
-                gameState, boardAttributes, gameState.straddlePrompt),
+              gameState,
+              boardAttributes,
+              gameState.straddlePrompt,
+            ),
           ),
 
           /* dark overlay to show in-front of cards, when the bet widget is displayed */
