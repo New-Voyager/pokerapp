@@ -84,7 +84,6 @@ class _FooterViewState extends State<FooterView>
                   HoleCardsViewAndFooterActionView(
                 gameContext: widget.gameContext,
                 playerModel: me,
-                showActionWidget: actionState.show,
               ),
             ),
     );

@@ -23,15 +23,12 @@ import 'footer_action_view.dart';
 //
 class HoleCardsViewAndFooterActionView extends StatefulWidget {
   final PlayerModel playerModel;
-  //final FooterStatus footerStatus;
-  final bool showActionWidget;
   final GameContextObject gameContext;
 
   const HoleCardsViewAndFooterActionView({
     Key key,
     this.playerModel,
     this.gameContext,
-    this.showActionWidget,
   }) : super(key: key);
 
   @override
@@ -41,6 +38,7 @@ class HoleCardsViewAndFooterActionView extends StatefulWidget {
 
 class _HoleCardsViewAndFooterActionViewState
     extends State<HoleCardsViewAndFooterActionView> {
+  final ValueNotifier<bool> _showDarkBackgroundVn = ValueNotifier(false);
   bool _isCardVisible = false;
 
   bool _showAllCardSelectionButton(var vnfs) {
@@ -132,56 +130,57 @@ class _HoleCardsViewAndFooterActionViewState
         ),
       );
 
+  Widget _buildDarkBackground() => ValueListenableBuilder<bool>(
+        valueListenable: _showDarkBackgroundVn,
+        builder: (_, showDarkBg, __) => AnimatedSwitcher(
+          duration: AppConstants.fastAnimationDuration,
+          reverseDuration: AppConstants.fastAnimationDuration,
+          child: showDarkBg
+              ? Container(
+                  width: double.infinity,
+                  height: double.infinity,
+                  color: Colors.black.withOpacity(0.80),
+                )
+              : const SizedBox.shrink(),
+        ),
+      );
+
+  Widget _buildFooterActionView() => FooterActionView(
+        gameContext: widget.gameContext,
+        isBetWidgetVisible: (bool isBetWidgetVisible) =>
+            _showDarkBackgroundVn.value = isBetWidgetVisible,
+      );
+
   @override
   Widget build(BuildContext context) {
     final gameState = GameState.getState(context);
 
     final boardAttributes = context.read<BoardAttributesObject>();
 
-    return ListenableProvider(
-      create: (_) => ValueNotifier<bool>(false),
-      builder: (BuildContext context, __) => Stack(
-        children: [
-          Align(
-            alignment: Alignment.topCenter,
-            child: _buildholeCardViewAndStraddleDialog(
-              gameState,
-              boardAttributes,
-              gameState.straddlePrompt,
-            ),
+    return Stack(
+      children: [
+        Align(
+          alignment: Alignment.topCenter,
+          child: _buildholeCardViewAndStraddleDialog(
+            gameState,
+            boardAttributes,
+            gameState.straddlePrompt,
           ),
+        ),
 
-          /* dark overlay to show in-front of cards, when the bet widget is displayed */
-          Consumer<ValueNotifier<bool>>(
-            builder: (_, vnIsBetWidgetVisible, __) => AnimatedSwitcher(
-              duration: AppConstants.fastAnimationDuration,
-              reverseDuration: AppConstants.fastAnimationDuration,
-              child: vnIsBetWidgetVisible.value
-                  ? Container(
-                      width: double.infinity,
-                      height: double.infinity,
-                      color: Colors.black.withOpacity(0.80),
-                    )
-                  : const SizedBox.shrink(),
-            ),
-          ),
+        /* dark overlay to show in-front of cards, when the bet widget is displayed */
+        _buildDarkBackground(),
 
-          // action view (show when it is time for this user to act)
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: widget.showActionWidget ?? false
-                ? FooterActionView(
-                    gameContext: widget.gameContext,
-                    isBetWidgetVisible: (bool isBetWidgetVisible) =>
-                        Provider.of<ValueNotifier<bool>>(
-                      context,
-                      listen: false,
-                    ).value = isBetWidgetVisible,
-                  )
+        // action view (show when it is time for this user to act)
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: Consumer<ActionState>(
+            builder: (context, actionState, __) => actionState.show
+                ? _buildFooterActionView()
                 : const SizedBox.shrink(),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
@@ -194,9 +193,7 @@ class _HoleCardsViewAndFooterActionViewState
       straddlePrompt: gameState.straddlePrompt,
     );
 
-    if (gameState.straddlePrompt) {
-      return cardsWidget;
-    }
+    if (gameState.straddlePrompt) return cardsWidget;
 
     return GestureDetector(
       onTap: () {
