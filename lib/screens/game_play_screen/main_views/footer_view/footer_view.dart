@@ -93,10 +93,7 @@ class _FooterViewState extends State<FooterView>
       valueListenable: mePlayerModelVn,
       builder: (_, me, __) => me == null
           ? SizedBox(width: width)
-          : Consumer<StraddlePromptState>(
-              builder: (context, _, __) =>
-                  HoleCardsViewAndFooterActionView(playerModel: me),
-            ),
+          : HoleCardsViewAndFooterActionView(playerModel: me),
     );
   }
 

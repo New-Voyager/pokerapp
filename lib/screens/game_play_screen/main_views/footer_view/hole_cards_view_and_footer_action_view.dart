@@ -71,7 +71,7 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     // main hole card view
-                    holeCardView(context),
+                    _buildHoleCardView(context),
 
                     // all hole card selection button
                     _buildAllHoleCardSelectionButton(),
@@ -80,38 +80,40 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
               ),
             ),
 
-            Align(
-              child: Transform.scale(
-                scale: 0.80,
-                child: StraddleDialog(
-                  straddlePrompt: straddlePrompt,
-                  onSelect: (List<bool> optionAutoValue) {
-                    print(optionAutoValue);
+            Consumer<StraddlePromptState>(
+              builder: (_, __, ___) => Align(
+                child: Transform.scale(
+                  scale: 0.80,
+                  child: StraddleDialog(
+                    straddlePrompt: straddlePrompt,
+                    onSelect: (List<bool> optionAutoValue) {
+                      print(optionAutoValue);
 
-                    final straddleOption = optionAutoValue[0];
-                    final autoStraddle = optionAutoValue[1];
-                    final straddleChoice = optionAutoValue[2];
-                    if (straddleChoice != null) {
-                      gameState.straddlePrompt = false;
-                      final straddlePromptState =
-                          gameState.straddlePromptState(context);
-                      straddlePromptState.notify();
+                      final straddleOption = optionAutoValue[0];
+                      final autoStraddle = optionAutoValue[1];
+                      final straddleChoice = optionAutoValue[2];
+                      if (straddleChoice != null) {
+                        gameState.straddlePrompt = false;
+                        final straddlePromptState =
+                            gameState.straddlePromptState(context);
+                        straddlePromptState.notify();
 
-                      if (straddleChoice == true) {
-                        // act now
-                        log('Player wants to straddle');
-                        HandActionService.takeAction(
-                          context: context,
-                          action: AppConstants.STRADDLE,
-                          amount: 2 * gameState.gameInfo.bigBlind,
-                        );
-                      } else {
-                        log('Player does not want to straddle');
-                        // show action buttons
-                        gameState.showAction(context, true);
+                        if (straddleChoice == true) {
+                          // act now
+                          log('Player wants to straddle');
+                          HandActionService.takeAction(
+                            context: context,
+                            action: AppConstants.STRADDLE,
+                            amount: 2 * gameState.gameInfo.bigBlind,
+                          );
+                        } else {
+                          log('Player does not want to straddle');
+                          // show action buttons
+                          gameState.showAction(context, true);
+                        }
                       }
-                    }
-                  },
+                    },
+                  ),
                 ),
               ),
             ),
@@ -173,7 +175,7 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
     );
   }
 
-  Widget holeCardView(BuildContext context) {
+  Widget _buildHoleCardView(BuildContext context) {
     final gameState = GameState.getState(context);
 
     Widget cardsWidget = cards(
