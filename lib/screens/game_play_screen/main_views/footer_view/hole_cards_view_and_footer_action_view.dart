@@ -18,18 +18,10 @@ import 'package:provider/provider.dart';
 
 import 'footer_action_view.dart';
 
-// MyCardView represent the player who has hole cards
-// The cards may be active or dead/folded
-//
 class HoleCardsViewAndFooterActionView extends StatefulWidget {
   final PlayerModel playerModel;
-  final GameContextObject gameContext;
 
-  const HoleCardsViewAndFooterActionView({
-    Key key,
-    this.playerModel,
-    this.gameContext,
-  }) : super(key: key);
+  const HoleCardsViewAndFooterActionView({this.playerModel});
 
   @override
   _HoleCardsViewAndFooterActionViewState createState() =>
@@ -146,7 +138,7 @@ class _HoleCardsViewAndFooterActionViewState
       );
 
   Widget _buildFooterActionView() => FooterActionView(
-        gameContext: widget.gameContext,
+        gameContext: context.read<GameContextObject>(),
         isBetWidgetVisible: (bool isBetWidgetVisible) =>
             _showDarkBackgroundVn.value = isBetWidgetVisible,
       );

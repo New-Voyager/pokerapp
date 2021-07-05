@@ -81,10 +81,7 @@ class _FooterViewState extends State<FooterView>
           ? SizedBox(width: width)
           : Consumer2<StraddlePromptState, ActionState>(
               builder: (context, _, ActionState actionState, __) =>
-                  HoleCardsViewAndFooterActionView(
-                gameContext: widget.gameContext,
-                playerModel: me,
-              ),
+                  HoleCardsViewAndFooterActionView(playerModel: me),
             ),
     );
   }
