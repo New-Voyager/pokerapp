@@ -41,12 +41,16 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
 
   Widget _buildAllHoleCardSelectionButton() =>
       Consumer<ValueNotifier<FooterStatus>>(
-        builder: (context, vnfs, __) => _showAllCardSelectionButton(vnfs)
-            ? InkWell(
-                onTap: () => _markAllCardsAsSelected(context),
-                child: Icon(Icons.visibility_rounded),
-              )
-            : const SizedBox.shrink(),
+        builder: (context, vnfs, __) {
+          bool _showEye = _showAllCardSelectionButton(vnfs);
+          return Opacity(
+            opacity: _showEye ? 1.0 : 0.0,
+            child: InkWell(
+              onTap: _showEye ? () => _markAllCardsAsSelected(context) : null,
+              child: Icon(Icons.visibility_rounded),
+            ),
+          );
+        },
       );
 
   Widget _buildholeCardViewAndStraddleDialog(

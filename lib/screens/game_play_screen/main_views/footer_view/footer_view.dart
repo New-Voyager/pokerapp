@@ -14,6 +14,7 @@ import 'communication_view.dart';
 import 'hand_analyse_view.dart';
 import 'hole_cards_view_and_footer_action_view.dart';
 import 'seat_change_confirm_widget.dart';
+import 'package:collection/collection.dart';
 
 class FooterView extends StatefulWidget {
   final String gameCode;
@@ -38,23 +39,36 @@ class _FooterViewState extends State<FooterView>
     with AfterLayoutMixin<FooterView> {
   final ValueNotifier<PlayerModel> mePlayerModelVn = ValueNotifier(null);
 
+  final Function eq = const ListEquality().equals;
+
   Players _players;
 
   void onPlayersChanges() {
     final PlayerModel me = _players?.me;
-    mePlayerModelVn.value = me;
+
+    if (mePlayerModelVn.value == null) {
+      // if me is null, fill value of me
+      mePlayerModelVn.value = me.copyWith();
+    } else {
+      // if the cards in players object and local me object is not same, rebuild the hole card widget
+      if (!eq(mePlayerModelVn.value.cards, me.cards)) {
+        mePlayerModelVn.value = me.copyWith();
+      }
+    }
   }
 
   /* init */
   void _init() {
     _players = context.read<Players>();
-    mePlayerModelVn.value = _players?.me;
+    mePlayerModelVn.value = _players?.me?.copyWith();
 
     // listen for changes in my PlayerModel state
     _players?.addListener(onPlayersChanges);
   }
 
-  void _dispose() => _players?.removeListener(onPlayersChanges);
+  void _dispose() {
+    _players?.removeListener(onPlayersChanges);
+  }
 
   /* hand analyse view builder */
   Widget _buildHandAnalyseView(GameState gameState) =>
@@ -79,8 +93,8 @@ class _FooterViewState extends State<FooterView>
       valueListenable: mePlayerModelVn,
       builder: (_, me, __) => me == null
           ? SizedBox(width: width)
-          : Consumer2<StraddlePromptState, ActionState>(
-              builder: (context, _, ActionState actionState, __) =>
+          : Consumer<StraddlePromptState>(
+              builder: (context, _, __) =>
                   HoleCardsViewAndFooterActionView(playerModel: me),
             ),
     );
