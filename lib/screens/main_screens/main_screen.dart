@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:curved_bottom_navigation/curved_bottom_navigation.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_icons.dart';
@@ -230,13 +231,10 @@ class _MainScreenState extends State<MainScreen>
         ],
       ),
     );
-    if (FlavorConfig.of(context).flavorName == Flavor.PROD.toString()) {
-      return scaffold;
-    } else {
-      return FlavorBanner(
-          child: scaffold,
-          bannerConfig: BannerConfig(Flavor.DEV.value(), Colors.deepOrange));
-    }
+
+    return FlavorBanner(
+        child: scaffold,
+        bannerConfig: BannerConfig(Flavor.DEV.value(), Colors.deepOrange));
   }
 }
 
