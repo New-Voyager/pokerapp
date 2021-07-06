@@ -598,14 +598,15 @@ class BoardAttributesObject extends ChangeNotifier {
   }
 
   get tableSize => this._tableSize;
-  get centerKey => this._centerKey;
-  get emptyCenterKey => this._emptyCenterKey;
 
-  set centerKey(Key key) => this._centerKey = key;
-  set emptyCenterKey(Key key) => this._emptyCenterKey = key;
+  // get emptyCenterKey => this._emptyCenterKey;
+  // set emptyCenterKey(Key key) => this._emptyCenterKey = key;
 
-  get dummyKey => this._dummyViewKey;
-  set dummyKey(Key key) => this._dummyViewKey = key;
+  // get centerKey => this._centerKey;
+  // set centerKey(Key key) => this._centerKey = key;
+
+  // get dummyKey => this._dummyViewKey;
+  // set dummyKey(Key key) => this._dummyViewKey = key;
 
   GlobalKey getPotsKey(int i) {
     if (this._pots.length == 0 || i >= _pots.length) {

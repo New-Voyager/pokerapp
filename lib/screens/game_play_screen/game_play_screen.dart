@@ -144,7 +144,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     return gameInfo;
   }
 
-  Future joinAudio() async {
+  Future _joinAudio() async {
     if (!_gameState.audioConfEnabled) {
       return;
     }
@@ -174,7 +174,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
   /* The init method returns a Future of all the initial game constants
   * This method is also responsible for subscribing to the NATS channels */
-
   Future<GameInfoModel> _init() async {
     GameInfoModel _gameInfoModel = await _fetchGameInfo();
     _hostSeatChangeInProgress = false;
@@ -235,7 +234,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         if (_gameInfoModel.playersInSeats[i].playerUuid ==
             _currentPlayer.uuid) {
           // player is in the table
-          await this.joinAudio();
+          await this._joinAudio();
           break;
         }
       }
@@ -272,15 +271,15 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         if (_gameInfoModel.playersInSeats[i].playerUuid ==
             _currentPlayer.uuid) {
           // player is in the table
-          this.joinAudio();
+          this._joinAudio();
           break;
         }
       }
 
       _gameContextObj.gameComService.gameMessaging.listen(
-        onCards: this.onCards,
-        onAudio: this.onAudio,
-        onRabbitHunt: this.onRabbitHunt,
+        onCards: this._onCards,
+        onAudio: this._onAudio,
+        onRabbitHunt: this._onRabbitHunt,
       );
     }
 
@@ -317,24 +316,15 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   /* dispose method for closing connections and un subscribing to channels */
   @override
   void dispose() {
-    // TestService.isTesting = false;
     Wakelock.disable();
     _timer?.cancel();
+
     try {
       _gameContextObj?.dispose();
-      // agora?.disposeObject();
-      // Audio.dispose(context: _providerContext);
       _gameState?.janusEngine?.disposeObject();
       _gameState?.close();
-
-      if (_audioPlayer != null) {
-        _audioPlayer.dispose();
-        _audioPlayer = null;
-      }
-      if (_voiceTextPlayer != null) {
-        _voiceTextPlayer.dispose();
-        _voiceTextPlayer = null;
-      }
+      _audioPlayer?.dispose();
+      _voiceTextPlayer?.dispose();
     } catch (e) {
       log('Caught exception: ${e.toString()}');
     }
@@ -390,21 +380,17 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     });
   }
 
-  void onRabbitHunt(ChatMessage message) {
+  void _onRabbitHunt(ChatMessage message) {
     Alerts.showRabbitHuntNotification(chatMessage: message);
   }
 
-  void onCards(ChatMessage message) =>
+  void _onCards(ChatMessage message) =>
       UtilActionServices.showCardsOfFoldedPlayers(
         _providerContext,
         message,
       );
 
-  void onText(ChatMessage message) {
-    log(message.text);
-  }
-
-  void onAudio(ChatMessage message) async {
+  void _onAudio(ChatMessage message) async {
     log('Audio message is sent ${message.messageId} from player ${message.fromPlayer}');
     final gameState = GameState.getState(_providerContext);
     final seat = gameState.getSeatByPlayer(message.fromPlayer);
@@ -441,18 +427,13 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     }
   }
 
-  // void onAnimation(ChatMessage message) async {
-  //   log('Animation message is sent ${message.messageId} from player ${message.fromSeat} to ${message.toSeat}. Animation id: ${message.animationID}');
-  //   // todo initiate animation
-  // }
-
-  void toggleChatVisibility(BuildContext context) {
+  void _toggleChatVisibility(BuildContext context) {
     ValueNotifier<bool> chatVisibilityNotifier =
         context.read<ValueNotifier<bool>>();
     chatVisibilityNotifier.value = !chatVisibilityNotifier.value;
   }
 
-  Future onJoinGame(int seatPos) async {
+  Future _onJoinGame(int seatPos) async {
     final gameState = GameState.getState(_providerContext);
     final me = gameState.me(_providerContext);
 
@@ -478,28 +459,30 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         return;
       }
       // join audio
-      await joinAudio();
+      await _joinAudio();
     }
+  }
+
+  void _initGameInfoModel() async {
+    final GameInfoModel gameInfoModel = await _init();
+    setState(() => _gameInfoModel = gameInfoModel);
+    _queryCurrentHandIfNeeded();
   }
 
   @override
   void initState() {
     super.initState();
+
+    Wakelock.enable();
+
     // Register listener for lifecycle methods
     WidgetsBinding.instance.addObserver(this);
     log('game screen initState');
-    /* the init method is invoked only once */
+
     _audioPlayer = AudioPlayer();
     _voiceTextPlayer = AudioPlayer();
-    Wakelock.enable();
-    _init().then(
-      (gameInfoModel) => setState(
-        () {
-          _gameInfoModel = gameInfoModel;
-          _queryCurrentHand();
-        },
-      ),
-    );
+
+    _initGameInfoModel();
   }
 
   final ScrollController _gcsController = ScrollController();
@@ -547,7 +530,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
                       scrollController: _gcsController,
                       chatService: _gameContextObj.gameComService.gameMessaging,
                       onChatVisibilityChange: () =>
-                          toggleChatVisibility(context),
+                          _toggleChatVisibility(context),
                     ),
                   )
                 : const SizedBox.shrink(),
@@ -568,12 +551,11 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         height: boardDimensions.height,
         child: Transform.scale(
           scale: tableScale,
-          // 10 inch: 0.85, 5inch: 1.0
           child: BoardView(
             gameComService: _gameContextObj?.gameComService,
             gameInfo: _gameInfoModel,
             audioPlayer: _audioPlayer,
-            onUserTap: onJoinGame,
+            onUserTap: _onJoinGame,
             onStartGame: startGame,
           ),
         ),
@@ -591,7 +573,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
             gameContext: _gameContextObj,
             gameCode: widget.gameCode,
             playerUuid: _currentPlayer.uuid,
-            chatVisibilityChange: () => toggleChatVisibility(context),
+            chatVisibilityChange: () => _toggleChatVisibility(context),
             clubCode: _gameInfoModel.clubCode,
           ),
         ),
@@ -680,18 +662,18 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     }
   }
 
-  void _setupAudioBufferService() {
-    // TODO: DO WE NEED THIS?
-    AudioBufferService.create().then(
-      (Map<String, String> tmpAudioFiles) =>
-          Provider.of<ValueNotifier<Map<String, String>>>(
-        context,
-        listen: false,
-      ).value = tmpAudioFiles,
-    );
-  }
+  // void _setupAudioBufferService() {
+  //   // TODO: DO WE NEED THIS?
+  //   AudioBufferService.create().then(
+  //     (Map<String, String> tmpAudioFiles) =>
+  //         Provider.of<ValueNotifier<Map<String, String>>>(
+  //       context,
+  //       listen: false,
+  //     ).value = tmpAudioFiles,
+  //   );
+  // }
 
-  void _queryCurrentHand() {
+  void _queryCurrentHandIfNeeded() {
     /* THIS METHOD QUERIES THE CURRENT HAND AND POPULATE THE
        GAME SCREEN, IF AND ONLY IF THE GAME IS ALREADY PLAYING */
 
@@ -849,7 +831,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         break;
       case AppLifecycleState.resumed:
         log("Joining AudioConference from Lifecycle");
-        joinAudio();
+        _joinAudio();
         break;
     }
     super.didChangeAppLifecycleState(state);

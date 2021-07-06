@@ -10,7 +10,6 @@ import 'package:pokerapp/models/game_play_models/provider_models/table_state.dar
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
-import 'package:pokerapp/screens/game_play_screen/game_play_screen_util_methods.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/animating_widgets/card_distribution_animating_widget.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/center_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/decorative_views/table_view.dart';
@@ -18,7 +17,6 @@ import 'package:pokerapp/screens/game_play_screen/main_views/board_view/players_
 import 'package:pokerapp/screens/game_play_screen/seat_view/animating_widgets/stack_switch_seat_animating_widget.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
-import 'package:pokerapp/utils/numeric_keyboard.dart';
 import 'package:pokerapp/utils/numeric_keyboard2.dart';
 import 'package:pokerapp/widgets/round_raised_button.dart';
 import 'package:provider/provider.dart';
@@ -26,7 +24,13 @@ import 'package:pokerapp/screens/game_play_screen/seat_view/popup_buttons.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
-class BoardView extends StatefulWidget {
+class BoardView extends StatelessWidget {
+  final GameComService gameComService;
+  final GameInfoModel gameInfo;
+  final Function(int index) onUserTap;
+  final Function() onStartGame;
+  final AudioPlayer audioPlayer;
+
   BoardView({
     @required this.gameInfo,
     @required this.onUserTap,
@@ -35,81 +39,66 @@ class BoardView extends StatefulWidget {
     @required this.audioPlayer,
   });
 
-  final GameComService gameComService;
-  final GameInfoModel gameInfo;
-  final Function(int index) onUserTap;
-  final Function() onStartGame;
-  final AudioPlayer audioPlayer;
+  final GlobalKey boardViewKey = GlobalKey();
 
   static Size dimensions(BuildContext context, bool isHorizontal) {
     var _widthMultiplier = 0.78;
     var _heightMultiplier = 2.0;
+
     double width = MediaQuery.of(context).size.width;
     double heightOfBoard = width * _widthMultiplier * _heightMultiplier;
     double widthOfBoard = width * _widthMultiplier;
 
-    bool isBoardHorizontal = isHorizontal;
-
-    if (isBoardHorizontal) {
+    if (isHorizontal) {
       widthOfBoard = MediaQuery.of(context).size.width;
       heightOfBoard = MediaQuery.of(context).size.height / 2.5;
     }
+
     return Size(widthOfBoard, heightOfBoard);
   }
 
   @override
-  _BoardViewState createState() => _BoardViewState();
-}
-
-class _BoardViewState extends State<BoardView> {
-  BuildContext providerContext;
-  GlobalKey boardViewKey = GlobalKey();
-
-  @override
   Widget build(BuildContext context) {
-    providerContext = context;
     final gameState = GameState.getState(context);
     final boardAttributes = gameState.getBoardAttributes(context);
     final isBoardHorizontal =
         boardAttributes.orientation == BoardOrientation.horizontal;
     var dimensions = boardAttributes.dimensions(context);
 
-    final centerKey = GlobalKey();
-    final emptyCenterKey = GlobalKey();
-    boardAttributes.centerKey = centerKey;
-    boardAttributes.emptyCenterKey = emptyCenterKey;
-    boardAttributes.dummyKey = GlobalKey();
+    // final centerKey = GlobalKey();
+    // final emptyCenterKey = GlobalKey();
+
+    // boardAttributes.centerKey = centerKey;
+    // boardAttributes.emptyCenterKey = emptyCenterKey;
+    // boardAttributes.dummyKey = GlobalKey();
 
     /* finally the view */
     return Stack(
       clipBehavior: Clip.none,
       alignment: Alignment.center,
       children: [
-        // Container(width: 800, height: 900, color: Colors.red),
-        // game board view
+        // table view - board image
         Align(
           alignment: Alignment.center,
-          child: TableView(
-            dimensions.height,
-            dimensions.width,
-          ),
+          child: TableView(width: dimensions.width, height: dimensions.height),
         ),
 
-        Positioned(
-          top: boardAttributes.centerOffset.dy,
-          width: boardAttributes.centerSize.width,
-          height: boardAttributes.centerSize.height,
-          child: Opacity(
-            opacity: 1.0,
-            child: Container(
-              key: boardAttributes.dummyKey,
-              width: boardAttributes.centerSize.width,
-              height: boardAttributes.centerSize.height,
-              color: Colors.transparent,
-            ),
-          ),
-        ),
+        // Positioned(
+        //   top: boardAttributes.centerOffset.dy,
+        //   width: boardAttributes.centerSize.width,
+        //   height: boardAttributes.centerSize.height,
+        //   child: Opacity(
+        //     opacity: 1.0,
+        //     child: Container(
+        //       key: boardAttributes.dummyKey,
+        //       width: boardAttributes.centerSize.width,
+        //       height: boardAttributes.centerSize.height,
+        //       color: Colors.transparent,
+        //     ),
+        //   ),
+        // ),
 
+        /* center view */
         Positioned(
           top: boardAttributes.centerOffset.dy,
           left: boardAttributes.centerOffset.dx,
@@ -132,10 +121,10 @@ class _BoardViewState extends State<BoardView> {
               return Transform.scale(
                 scale: 1 / boardAttributes.tableScale,
                 child: CenterView(
-                  centerKey,
+                  null,
                   tableState.twoBoardsNeeded,
-                  widget.gameInfo.gameCode,
-                  widget.gameInfo.isHost,
+                  gameInfo.gameCode,
+                  gameInfo.isHost,
                   isBoardHorizontal,
                   cards,
                   cardsOther,
@@ -149,7 +138,7 @@ class _BoardViewState extends State<BoardView> {
                   tableState.gameStatus,
                   tableState.tableStatus,
                   valueNotifierFooterStatus.value == FooterStatus.Result,
-                  widget.onStartGame,
+                  onStartGame,
                   flipSpeed,
                 ),
               );
@@ -157,6 +146,7 @@ class _BoardViewState extends State<BoardView> {
           ),
         ),
 
+        /* players */
         Consumer<Players>(
           builder: (
             BuildContext _,
@@ -167,14 +157,14 @@ class _BoardViewState extends State<BoardView> {
             offset: boardAttributes.playerOnTableOffset,
             child: PlayersOnTableView(
               players: players,
-              gameComService: widget.gameComService,
+              gameComService: gameComService,
               isBoardHorizontal:
                   boardAttributes.orientation == BoardOrientation.horizontal,
               widthOfBoard: dimensions.width,
               heightOfBoard: dimensions.height,
-              onUserTap: widget.onUserTap,
-              maxPlayers: widget.gameInfo.maxPlayers,
-              audioPlayer: widget.audioPlayer,
+              onUserTap: onUserTap,
+              maxPlayers: gameInfo.maxPlayers,
+              audioPlayer: audioPlayer,
               gameState: gameState,
             ),
           ),
@@ -207,66 +197,76 @@ class _BoardViewState extends State<BoardView> {
         ),
 
         Consumer<MyState>(
-            builder: (
-          BuildContext _,
-          MyState myState,
-          Widget __,
-        ) =>
-                Align(
-                    alignment: Alignment.bottomCenter,
-                    child: sitBackButton(context))),
+          builder: (
+            BuildContext _,
+            MyState myState,
+            Widget __,
+          ) =>
+              Align(
+            alignment: Alignment.bottomCenter,
+            child: sitBackButton(context),
+          ),
+        ),
 
         !gameState.gameInfo.showHandRank
             ? Container()
             : Consumer<MyState>(
                 builder: (
-                BuildContext _,
-                MyState myState,
-                Widget __,
-              ) =>
+                  BuildContext _,
+                  MyState myState,
+                  Widget __,
+                ) =>
                     Transform.translate(
-                      offset: Offset(0, 20.ph),
-                      child: Align(
-                          alignment: Alignment.bottomCenter,
-                          child: rankText(context)),
-                    )),
+                  offset: Offset(0, 20.ph),
+                  child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: rankText(context)),
+                ),
+              ),
 
-        Align(
-          alignment: Alignment.center,
-          child: SizedBox(
-            key: emptyCenterKey,
-          ),
-        ),
+        // Align(
+        //   alignment: Alignment.center,
+        //   child: SizedBox(
+        //     key: emptyCenterKey,
+        //   ),
+        // ),
 
-        Consumer<PopupButtonState>(builder: (
-          BuildContext _,
-          PopupButtonState popupState,
-          Widget __,
-        ) {
-          final seatPos = gameState?.getTappedSeatPos;
-          final Seat seat = gameState?.popupSelectedSeat;
-          final GameComService gameComService = gameState?.gameComService;
-          bool showPopupButtons = false;
-          if (seatPos != null) {
-            showPopupButtons = true;
-          }
+        Consumer<PopupButtonState>(
+          builder: (
+            BuildContext _,
+            PopupButtonState popupState,
+            Widget __,
+          ) {
+            final seatPos = gameState?.getTappedSeatPos;
+            final Seat seat = gameState?.popupSelectedSeat;
 
-          return Visibility(
+            bool showPopupButtons = false;
+            if (seatPos != null) {
+              showPopupButtons = true;
+            }
+
+            return Visibility(
               key: boardViewKey,
               visible: showPopupButtons,
               child: Align(
-                  alignment: Alignment.topLeft,
-                  child: PopupWidget(gameState, seat, boardViewKey)));
-        }),
+                alignment: Alignment.topLeft,
+                child: PopupWidget(
+                  gameState,
+                  seat,
+                  boardViewKey,
+                ),
+              ),
+            );
+          },
+        ),
       ],
     );
   }
 
   Widget buyInButton(BuildContext context) {
     // show buyin button only for if the current player is in a seat
-    final gameState = GameState.getState(providerContext);
-    final mySeat = gameState.mySeat(providerContext);
-    final myState = gameState.getMyState(context);
+    final gameState = GameState.getState(context);
+    final mySeat = gameState.mySeat(context);
 
     //log('Rebuild buyin button: Status: ${myState.status.toString()}');
     bool showBuyInButton = true;
@@ -312,8 +312,8 @@ class _BoardViewState extends State<BoardView> {
 
   Widget rankText(BuildContext context) {
     // show buyin button only for if the current player is in a seat
-    final gameState = GameState.getState(providerContext);
-    final mySeat = gameState.mySeat(providerContext);
+    final gameState = GameState.getState(context);
+    final mySeat = gameState.mySeat(context);
     if (mySeat?.player != null) {
       //log('Rebuild sitBackButton button: Status: ${mySeat.player.status.toString()}');
     }
@@ -354,8 +354,8 @@ class _BoardViewState extends State<BoardView> {
 
   Widget sitBackButton(BuildContext context) {
     // show buyin button only for if the current player is in a seat
-    final gameState = GameState.getState(providerContext);
-    final mySeat = gameState.mySeat(providerContext);
+    final gameState = GameState.getState(context);
+    final mySeat = gameState.mySeat(context);
     if (mySeat?.player != null) {
       //log('Rebuild sitBackButton button: Status: ${mySeat.player.status.toString()}');
     }
