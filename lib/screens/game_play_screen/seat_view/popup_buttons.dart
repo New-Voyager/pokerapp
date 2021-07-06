@@ -6,6 +6,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/screens/game_play_screen/game_play_screen_util_methods.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:lottie/lottie.dart';
@@ -127,8 +128,30 @@ class _PopupWidget extends State<PopupWidget> with TickerProviderStateMixin {
 
     return Stack(
       children: [
-        //Container(color: Colors.blue),
         Transform.translate(
+            offset: offset,
+            child: FloatingMenuItem(
+              child: Container(
+                  padding: EdgeInsets.all(3.0),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.green[200]),
+                    color: Colors.green[200],
+                  ),
+                  child: Icon(
+                    Icons.more_horiz_outlined,
+                    color: Colors.black,
+                  )),
+              //  controller: _animationController,
+              seatPosition: widget.gameState.getTappedSeatPos,
+              itemNo: 1,
+              onTapFunc: () {
+                log("TAPPED 1");
+                showMainMenu(context);
+              },
+            )),
+        //Container(color: Colors.blue),
+        /*  Transform.translate(
             offset: offset,
             child: FloatingMenuItem(
               child: Container(
@@ -142,7 +165,7 @@ class _PopupWidget extends State<PopupWidget> with TickerProviderStateMixin {
                     Icons.note_outlined,
                     color: Colors.black,
                   )),
-              controller: _animationController,
+            //  controller: _animationController,
               seatPosition: widget.gameState.getTappedSeatPos,
               itemNo: 1,
               onTapFunc: () {
@@ -165,7 +188,7 @@ class _PopupWidget extends State<PopupWidget> with TickerProviderStateMixin {
                       color: Colors.black,
                     ),
                   ),
-                  controller: _animationController,
+                  //controller: _animationController,
                   seatPosition: widget.gameState.getTappedSeatPos,
                   itemNo: 2,
                   onTapFunc: () {
@@ -174,7 +197,7 @@ class _PopupWidget extends State<PopupWidget> with TickerProviderStateMixin {
                     showCustomMenu(context, 0);
                   },
                 ))
-            : SizedBox(),
+            : SizedBox.shrink(),
         Transform.translate(
             offset: offset,
             child: FloatingMenuItem(
@@ -193,7 +216,7 @@ class _PopupWidget extends State<PopupWidget> with TickerProviderStateMixin {
                   },
                 ),
               ),
-              controller: _animationController,
+             // controller: _animationController,
               seatPosition: widget.gameState.getTappedSeatPos,
               itemNo: 3,
               onTapFunc: () async {
@@ -238,6 +261,7 @@ class _PopupWidget extends State<PopupWidget> with TickerProviderStateMixin {
                 widget.gameState.dismissPopup(context);
               },
             )),
+       */
       ],
     );
   }
@@ -250,6 +274,156 @@ class _PopupWidget extends State<PopupWidget> with TickerProviderStateMixin {
         widget.boardViewKey.currentContext.findRenderObject();
     Offset localOffset = localRenderBox.globalToLocal(globalOffset);
     return localOffset;
+  }
+
+  showMainMenu(context) {
+    final RenderBox overlay = Overlay.of(context).context.findRenderObject();
+    double menuItemHeight = 40;
+    showMenu(
+      context: context,
+      color: AppColorsNew.actionRowBgColor,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: BorderSide(
+          color: AppColorsNew.newBorderColor,
+        ),
+      ),
+      position: RelativeRect.fromRect(
+          getOffset() & const Size(40, 40),
+          // smaller rect, the touch area
+          Offset.zero & overlay.size // Bigger rect, the entire screen
+          ),
+      items: <PopupMenuEntry>[
+        PopupMenuItem(
+          height: menuItemHeight,
+          value: 0,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Text(
+                "Note",
+              ),
+              Icon(
+                Icons.note,
+                color: AppColorsNew.yellowAccentColor,
+              ),
+            ],
+          ),
+        ),
+        PopupMenuItem(
+          value: 1,
+          height: menuItemHeight,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text("Animation"),
+              Lottie.asset(
+                'assets/animations/chicken.json',
+                height: 32,
+                width: 32,
+                controller: _controller,
+                onLoaded: (composition) {
+                  // Configure the AnimationController with the duration of the
+                  // Lottie file and start the animation.
+                  _controller
+                    ..duration = composition.duration
+                    ..forward();
+                },
+              ),
+            ],
+          ),
+        ),
+        (widget.gameState.currentPlayer.isAdmin())
+            ? PopupMenuItem(
+                value: 2,
+                height: menuItemHeight,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text(
+                      "Mute",
+                    ),
+                    Icon(
+                      Icons.volume_off,
+                      color: AppColorsNew.yellowAccentColor,
+                    ),
+                  ],
+                ),
+              )
+            : SizedBox.shrink(),
+        (widget.gameState.currentPlayer.isAdmin())
+            ? PopupMenuItem(
+                value: 3,
+                height: menuItemHeight,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text(
+                      "Kick",
+                    ),
+                    Icon(
+                      Icons.ios_share,
+                      color: AppColorsNew.yellowAccentColor,
+                    ),
+                  ],
+                ),
+              )
+            : SizedBox.shrink(),
+      ],
+    ).then<void>((delta) async {
+      // delta would be null if user taps on outside the popup menu
+      // (causing it to close without making selection)
+
+      if (delta != null) {
+        switch (delta) {
+          case 0:
+            log('user selected NOTE option');
+            break;
+          case 1:
+            final data = await showDialog(
+              context: context,
+              builder: (context) {
+                return AlertDialog(
+                  backgroundColor: Colors.transparent,
+                  elevation: 10,
+                  contentPadding: EdgeInsets.zero,
+                  content: ProfilePopup(
+                    seat: widget.gameState.popupSelectedSeat,
+                  ),
+                );
+              },
+            );
+
+            if (data == null) return;
+            // log("SEATNO1:: ${widget.gameState.myState.seatNo}");
+            // log("SEATNO2:: ${widget.gameState.getMyState(context).seatNo}");
+            // log("SEAT FROM:: ${widget.gameState.me(context).seatNo}");
+            // log("SEAT TO:: ${widget.gameState.popupSelectedSeat.serverSeatPos}");
+
+            widget.gameState.gameComService.gameMessaging.sendAnimation(
+              widget.gameState.me(context).seatNo,
+              widget.gameState.popupSelectedSeat.serverSeatPos,
+              data['animationID'],
+            );
+            break;
+
+          case 2:
+            log('user selected mute option');
+            break;
+          case 3:
+            log('calling kickPlayer with ${widget.gameState.gameCode} and ${widget.seat.player.playerUuid}');
+            PlayerService.kickPlayer(
+                widget.gameState.gameCode, widget.seat.player.playerUuid);
+            showSimpleNotification(
+              Text('Player will be removed after this hand'),
+              position: NotificationPosition.top,
+              duration: Duration(seconds: 10),
+            );
+            break;
+        }
+      }
+      widget.gameState.dismissPopup(context);
+    });
   }
 
   showCustomMenu(context, int index) {
@@ -271,14 +445,10 @@ class _PopupWidget extends State<PopupWidget> with TickerProviderStateMixin {
                 children: <Widget>[
                   Text(
                     "Mute",
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 15.0,
-                    ),
                   ),
                   Icon(
                     Icons.star_border_outlined,
-                    color: Colors.white,
+                    color: AppColorsNew.yellowAccentColor,
                   ),
                 ],
               ),
@@ -297,14 +467,10 @@ class _PopupWidget extends State<PopupWidget> with TickerProviderStateMixin {
                 children: <Widget>[
                   Text(
                     "Kick",
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 15.0,
-                    ),
                   ),
                   Icon(
                     Icons.ios_share,
-                    color: Colors.white,
+                    color: AppColorsNew.yellowAccentColor,
                   ),
                 ],
               ),
@@ -343,14 +509,14 @@ class _PopupWidget extends State<PopupWidget> with TickerProviderStateMixin {
 
 class FloatingMenuItem extends StatelessWidget {
   final Widget child;
-  final AnimationController controller;
+  //final AnimationController controller;
   final SeatPos seatPosition;
   final int itemNo;
   final Function onTapFunc;
 
   FloatingMenuItem(
       {this.child,
-      this.controller,
+      //  this.controller,
       this.seatPosition,
       this.itemNo,
       this.onTapFunc});
@@ -391,9 +557,11 @@ class FloatingMenuItem extends StatelessWidget {
 
     return Transform.translate(
       offset: Offset.fromDirection(
-          GamePlayScreenUtilMethods.getRadiansFromDegree(
-              angleInDegrees + (itemNo * 45)),
-          controller.value * offsetDistance),
+        GamePlayScreenUtilMethods.getRadiansFromDegree(
+            angleInDegrees + (itemNo * 45)),
+        //controller.value * offsetDistance,
+        0,
+      ),
       child: GestureDetector(onTap: onTapFunc, child: child),
     );
   }
