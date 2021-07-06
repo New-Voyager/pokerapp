@@ -107,6 +107,9 @@ class GameState {
   // high-hand state
   dynamic highHand; // high-hand state
 
+  // central board key
+  GlobalKey boardKey;
+
   Future<void> initialize({
     String gameCode,
     @required GameInfoModel gameInfo,

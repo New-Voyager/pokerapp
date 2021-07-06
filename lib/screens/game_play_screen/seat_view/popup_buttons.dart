@@ -147,7 +147,6 @@ class _PopupWidget extends State<PopupWidget> with TickerProviderStateMixin {
               itemNo: 1,
               onTapFunc: () {
                 log("TAPPED 1");
-                showMainMenu(context);
               },
             )),
         //Container(color: Colors.blue),
@@ -276,7 +275,15 @@ class _PopupWidget extends State<PopupWidget> with TickerProviderStateMixin {
     return localOffset;
   }
 
-  showMainMenu(context) {
+  Offset getMenuOffset(GlobalKey seatKey, GlobalKey boardKey) {
+    RenderBox globalRenderBox = seatKey.currentContext.findRenderObject();
+    Offset globalOffset = globalRenderBox.localToGlobal(Offset(0, 0));
+    RenderBox localRenderBox = boardKey.currentContext.findRenderObject();
+    Offset localOffset = localRenderBox.globalToLocal(globalOffset);
+    return localOffset;
+  }
+
+  showMainMenu(context, GlobalKey seatKey, GlobalKey boardKey) {
     final RenderBox overlay = Overlay.of(context).context.findRenderObject();
     double menuItemHeight = 40;
     showMenu(
