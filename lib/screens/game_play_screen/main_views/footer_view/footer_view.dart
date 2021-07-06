@@ -79,18 +79,21 @@ class _FooterViewState extends State<FooterView>
   }
 
   /* hand analyse view builder */
-  Widget _buildHandAnalyseView(GameState gameState) =>
-      Consumer<GameContextObject>(
-        builder: (context, gameContext, _) => Positioned(
-          left: 0,
-          top: 0,
-          child: HandAnalyseView(
-            gameState,
-            widget.clubCode,
-            gameContext,
-          ),
+  Widget _buildHandAnalyseView(BuildContext context) {
+    final gameState = context.read<GameState>();
+
+    return Consumer<GameContextObject>(
+      builder: (context, gameContextObject, _) => Positioned(
+        left: 0,
+        top: 0,
+        child: HandAnalyseView(
+          gameState: gameState,
+          clubCode: widget.clubCode,
+          gameContextObject: gameContextObject,
         ),
-      );
+      ),
+    );
+  }
 
   /* straddle prompt builder / footer action view builder / hole card view builder */
   Widget _buildMainView() {
@@ -114,21 +117,33 @@ class _FooterViewState extends State<FooterView>
         ),
       );
 
-  Widget _buildSeatConfirmWidget(GameState gameState) =>
-      Consumer2<SeatChangeNotifier, GameContextObject>(
-        builder: (context, hostSeatChange, gameContextObject, _) =>
-            (hostSeatChange.seatChangeInProgress ||
-                        gameState.hostSeatChangeInProgress) &&
-                    gameContextObject.isHost() &&
-                    !gameState.playerSeatChangeInProgress
-                ? Align(
-                    alignment: Alignment.center,
-                    child: SeatChangeConfirmWidget(
-                      gameCode: widget.gameContext.gameState.gameCode,
-                    ),
-                  )
-                : SizedBox.shrink(),
-      );
+  Widget _buildSeatConfirmWidget(BuildContext context) {
+    final gameContextObject = context.read<GameContextObject>();
+    final gameState = context.read<GameState>();
+
+    final bool isHost = gameContextObject.isHost();
+
+    // FIXME: REBUILD-FIX: need to check if seat change prompts are rebuilding as expected
+    return Consumer<SeatChangeNotifier>(
+      builder: (_, hostSeatChange, __) {
+        final bool seatChangeInProgress = hostSeatChange.seatChangeInProgress ||
+            gameState.hostSeatChangeInProgress;
+
+        final bool showSeatChangeConfirmWidget = seatChangeInProgress &&
+            isHost &&
+            !gameState.playerSeatChangeInProgress;
+
+        return showSeatChangeConfirmWidget
+            ? Align(
+                alignment: Alignment.center,
+                child: SeatChangeConfirmWidget(
+                  gameCode: widget.gameContext.gameState.gameCode,
+                ),
+              )
+            : SizedBox.shrink();
+      },
+    );
+  }
 
   @override
   void initState() {
@@ -143,26 +158,21 @@ class _FooterViewState extends State<FooterView>
   }
 
   @override
-  Widget build(BuildContext context) {
-    log('FooterView:  ::build::');
-    final gameState = GameState.getState(context);
+  Widget build(BuildContext context) => Stack(
+        children: [
+          /* hand analyse view */
+          _buildHandAnalyseView(context),
 
-    return Stack(
-      children: [
-        /* hand analyse view */
-        _buildHandAnalyseView(gameState),
+          /* build main view - straddle prompt, hole cards, action view*/
+          _buildMainView(),
 
-        /* build main view - straddle prompt, hole cards, action view*/
-        _buildMainView(),
+          /* communication widgets */
+          _buildCommunicationWidget(),
 
-        /* communication widgets */
-        _buildCommunicationWidget(),
-
-        /* seat confirm widget */
-        _buildSeatConfirmWidget(gameState),
-      ],
-    );
-  }
+          /* seat confirm widget */
+          _buildSeatConfirmWidget(context),
+        ],
+      );
 
   @override
   void afterFirstLayout(BuildContext context) {
