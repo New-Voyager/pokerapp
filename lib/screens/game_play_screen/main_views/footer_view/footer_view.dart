@@ -43,6 +43,13 @@ class _FooterViewState extends State<FooterView>
 
   Players _players;
 
+  bool _needsRebuilding(PlayerModel me) {
+    final bool cardsChanged = !eq(mePlayerModelVn.value.cards, me.cards);
+    final bool playerStateChanged =
+        (mePlayerModelVn.value.playerFolded != me.playerFolded);
+    return cardsChanged || playerStateChanged;
+  }
+
   void onPlayersChanges() {
     final PlayerModel me = _players?.me;
 
@@ -51,7 +58,8 @@ class _FooterViewState extends State<FooterView>
       mePlayerModelVn.value = me.copyWith();
     } else {
       // if the cards in players object and local me object is not same, rebuild the hole card widget
-      if (!eq(mePlayerModelVn.value.cards, me.cards)) {
+      // also, if folded, rebuild the widget
+      if (_needsRebuilding(me)) {
         mePlayerModelVn.value = me.copyWith();
       }
     }
