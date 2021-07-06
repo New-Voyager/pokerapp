@@ -3,9 +3,13 @@ import 'dart:math' as math;
 
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
+import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/game_model.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
 import 'package:pokerapp/models/newmodels/game_model_new.dart';
 import 'package:pokerapp/resources/app_assets.dart';
@@ -15,7 +19,9 @@ import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
+import 'package:pokerapp/screens/game_play_screen/seat_view/profile_popup.dart';
 import 'package:pokerapp/screens/game_screens/new_game_settings/ingame_settings/game_type_select.dart';
+import 'package:pokerapp/services/app/player_service.dart';
 import 'package:pokerapp/services/gql_errors.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
@@ -340,4 +346,165 @@ Future<GameType> showGameSelectorDialog({
   );
 
   return result ?? GameType.HOLDEM;
+}
+
+showPlayerPopup(context, GlobalKey seatKey, GameState gameState, Seat seat) {
+  final RenderBox overlay = Overlay.of(context).context.findRenderObject();
+  final RenderBox button = seatKey.currentContext.findRenderObject();
+  final gameState = GameState.getState(context);
+
+  final RelativeRect position = RelativeRect.fromRect(
+    Rect.fromPoints(
+      button.localToGlobal(Offset(40, 70), ancestor: overlay),
+      button.localToGlobal(button.size.bottomRight(Offset.zero),
+          ancestor: overlay),
+    ),
+    Offset.zero & overlay.size,
+  );
+
+  double menuItemHeight = 40;
+  showMenu(
+    context: context,
+    color: AppColorsNew.actionRowBgColor,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(16),
+      side: BorderSide(
+        color: AppColorsNew.newBorderColor,
+      ),
+    ),
+    position: position,
+    items: <PopupMenuEntry>[
+      PopupMenuItem(
+        height: menuItemHeight,
+        value: 0,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Text(
+              "Note",
+            ),
+            Icon(
+              Icons.note,
+              color: AppColorsNew.yellowAccentColor,
+            ),
+          ],
+        ),
+      ),
+      PopupMenuItem(
+        value: 1,
+        height: menuItemHeight,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text("Animation"),
+            Icon(
+              Icons.note,
+              color: AppColorsNew.yellowAccentColor,
+            ),
+            // Lottie.asset(
+            //   'assets/animations/chicken.json',
+            //   height: 32,
+            //   width: 32,
+            //   controller: _controller,
+            //   onLoaded: (composition) {
+            //     // Configure the AnimationController with the duration of the
+            //     // Lottie file and start the animation.
+            //     _controller
+            //       ..duration = composition.duration
+            //       ..forward();
+            //   },
+            // ),
+          ],
+        ),
+      ),
+      (gameState.currentPlayer.isAdmin())
+          ? PopupMenuItem(
+              value: 2,
+              height: menuItemHeight,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text(
+                    "Mute",
+                  ),
+                  Icon(
+                    Icons.volume_off,
+                    color: AppColorsNew.yellowAccentColor,
+                  ),
+                ],
+              ),
+            )
+          : SizedBox.shrink(),
+      (gameState.currentPlayer.isAdmin())
+          ? PopupMenuItem(
+              value: 3,
+              height: menuItemHeight,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text(
+                    "Kick",
+                  ),
+                  Icon(
+                    Icons.ios_share,
+                    color: AppColorsNew.yellowAccentColor,
+                  ),
+                ],
+              ),
+            )
+          : SizedBox.shrink(),
+    ],
+  ).then<void>((delta) async {
+    // delta would be null if user taps on outside the popup menu
+    // (causing it to close without making selection)
+
+    if (delta != null) {
+      switch (delta) {
+        case 0:
+          log('user selected NOTE option');
+          break;
+        case 1:
+          final data = await showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                backgroundColor: Colors.transparent,
+                elevation: 10,
+                contentPadding: EdgeInsets.zero,
+                content: ProfilePopup(
+                  seat: gameState.popupSelectedSeat,
+                ),
+              );
+            },
+          );
+
+          if (data == null) return;
+          // log("SEATNO1:: ${widget.gameState.myState.seatNo}");
+          // log("SEATNO2:: ${widget.gameState.getMyState(context).seatNo}");
+          // log("SEAT FROM:: ${widget.gameState.me(context).seatNo}");
+          // log("SEAT TO:: ${widget.gameState.popupSelectedSeat.serverSeatPos}");
+
+          gameState.gameComService.gameMessaging.sendAnimation(
+            gameState.me(context).seatNo,
+            gameState.popupSelectedSeat.serverSeatPos,
+            data['animationID'],
+          );
+          break;
+
+        case 2:
+          log('user selected mute option');
+          break;
+        case 3:
+          log('calling kickPlayer with ${gameState.gameCode} and ${seat.player.playerUuid}');
+          PlayerService.kickPlayer(gameState.gameCode, seat.player.playerUuid);
+          showSimpleNotification(
+            Text('Player will be removed after this hand'),
+            position: NotificationPosition.top,
+            duration: Duration(seconds: 10),
+          );
+          break;
+      }
+    }
+    gameState.dismissPopup(context);
+  });
 }

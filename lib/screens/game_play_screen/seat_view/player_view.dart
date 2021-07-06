@@ -14,6 +14,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/widgets/blinking_widget.dart';
 import 'package:pokerapp/widgets/cards/hidden_card_view.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/displaycards.dart';
@@ -123,9 +124,13 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
         return;
       }
 
+      // show popup menu
+      showPlayerPopup(context, widget.seat.key,
+          widget.gameState, widget.seat);
+
       // Enable this for popup buttons
-      gameState.setTappedSeatPos(
-          context, widget.seatPos, widget.seat, widget.gameComService);
+      // gameState.setTappedSeatPos(
+      //     context, widget.seatPos, widget.seat, widget.gameComService);
     }
   }
 

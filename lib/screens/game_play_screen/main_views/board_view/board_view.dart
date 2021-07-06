@@ -69,6 +69,7 @@ class _BoardViewState extends State<BoardView> {
   Widget build(BuildContext context) {
     providerContext = context;
     final gameState = GameState.getState(context);
+    gameState.boardKey = boardViewKey;
     final boardAttributes = gameState.getBoardAttributes(context);
     final isBoardHorizontal =
         boardAttributes.orientation == BoardOrientation.horizontal;
@@ -238,26 +239,26 @@ class _BoardViewState extends State<BoardView> {
           ),
         ),
 
-        Consumer<PopupButtonState>(builder: (
-          BuildContext _,
-          PopupButtonState popupState,
-          Widget __,
-        ) {
-          final seatPos = gameState?.getTappedSeatPos;
-          final Seat seat = gameState?.popupSelectedSeat;
-          final GameComService gameComService = gameState?.gameComService;
-          bool showPopupButtons = false;
-          if (seatPos != null) {
-            showPopupButtons = true;
-          }
+        // Consumer<PopupButtonState>(builder: (
+        //   BuildContext _,
+        //   PopupButtonState popupState,
+        //   Widget __,
+        // ) {
+        //   final seatPos = gameState?.getTappedSeatPos;
+        //   final Seat seat = gameState?.popupSelectedSeat;
+        //   final GameComService gameComService = gameState?.gameComService;
+        //   bool showPopupButtons = false;
+        //   if (seatPos != null) {
+        //     showPopupButtons = true;
+        //   }
 
-          return Visibility(
-              key: boardViewKey,
-              visible: showPopupButtons,
-              child: Align(
-                  alignment: Alignment.topLeft,
-                  child: PopupWidget(gameState, seat, boardViewKey)));
-        }),
+        //   return Visibility(
+        //       key: boardViewKey,
+        //       visible: showPopupButtons,
+        //       child: Align(
+        //           alignment: Alignment.topLeft,
+        //           child: PopupWidget(gameState, seat, boardViewKey)));
+        // }),
       ],
     );
   }
