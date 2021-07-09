@@ -315,4 +315,21 @@ class AppStylesNew {
     color: AppColorsNew.tileGreenColor,
     borderRadius: BorderRadius.circular(8),
   );
+
+  static final resumeBgDecoration = BoxDecoration(
+      borderRadius: BorderRadius.circular(20.0),
+      // color: Colors.black.withOpacity(0.50),
+      image: DecorationImage(
+        image: AssetImage(
+          AppAssetsNew.pauseBgPath,
+        ),
+        fit: BoxFit.fill,
+      ),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.white54,
+          spreadRadius: 10,
+          blurRadius: 20,
+        ),
+      ]);
 }

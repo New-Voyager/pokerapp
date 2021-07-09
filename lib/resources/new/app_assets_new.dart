@@ -45,4 +45,12 @@ class AppAssetsNew {
   static String customizeImagePath = "assets/images/club/analysis.svg";
 
   static String announcementImagePath = "assets/images/club/announcements.svg";
+
+  static String terminateImagePath = "assets/images/game-screen/terminate.svg";
+  static String resumeImagePath = "assets/images/game-screen/resume.svg";
+
+  static String seatChangeImagePath = "assets/images/game-screen/rearrange.svg";
+  static String pauseBgPath = "assets/images/game-screen/pause_bg.png";
+
+  static String doneImagePath = "assets/images/game-screen/done.svg";
 }
