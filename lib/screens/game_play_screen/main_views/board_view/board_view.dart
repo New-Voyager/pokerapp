@@ -111,53 +111,6 @@ class _BoardViewState extends State<BoardView> {
           ),
         ),
 
-        Positioned(
-          top: boardAttributes.centerOffset.dy,
-          left: boardAttributes.centerOffset.dx,
-          width: boardAttributes.centerSize.width,
-          height: boardAttributes.centerSize.height,
-          child: Consumer3<TableState, ValueNotifier<FooterStatus>,
-              ServerConnectionState>(
-            builder: (
-              _,
-              TableState tableState,
-              ValueNotifier<FooterStatus> valueNotifierFooterStatus,
-              ServerConnectionState connectionState,
-              __,
-            ) {
-              final cards = tableState.cards;
-              final cardsOther = tableState.cardsOther;
-              final pots = tableState.potChips;
-              final flipSpeed = tableState.flipSpeed;
-
-              return Transform.scale(
-                scale: 1 / boardAttributes.tableScale,
-                child: CenterView(
-                  centerKey,
-                  tableState.twoBoardsNeeded,
-                  widget.gameInfo.gameCode,
-                  widget.gameInfo.isHost,
-                  isBoardHorizontal,
-                  cards,
-                  cardsOther,
-                  pots,
-                  tableState.potToHighlight,
-                  double.parse(
-                    tableState.potChipsUpdates != null
-                        ? tableState.potChipsUpdates.toString()
-                        : '0.0',
-                  ),
-                  tableState.gameStatus,
-                  tableState.tableStatus,
-                  valueNotifierFooterStatus.value == FooterStatus.Result,
-                  widget.onStartGame,
-                  flipSpeed,
-                ),
-              );
-            },
-          ),
-        ),
-
         Consumer<Players>(
           builder: (
             BuildContext _,
@@ -236,6 +189,53 @@ class _BoardViewState extends State<BoardView> {
           alignment: Alignment.center,
           child: SizedBox(
             key: emptyCenterKey,
+          ),
+        ),
+
+        Positioned(
+          top: boardAttributes.centerOffset.dy,
+          left: boardAttributes.centerOffset.dx,
+          width: boardAttributes.centerSize.width,
+          height: boardAttributes.centerSize.height,
+          child: Consumer3<TableState, ValueNotifier<FooterStatus>,
+              ServerConnectionState>(
+            builder: (
+              _,
+              TableState tableState,
+              ValueNotifier<FooterStatus> valueNotifierFooterStatus,
+              ServerConnectionState connectionState,
+              __,
+            ) {
+              final cards = tableState.cards;
+              final cardsOther = tableState.cardsOther;
+              final pots = tableState.potChips;
+              final flipSpeed = tableState.flipSpeed;
+
+              return Transform.scale(
+                scale: 1 / boardAttributes.tableScale,
+                child: CenterView(
+                  centerKey,
+                  tableState.twoBoardsNeeded,
+                  widget.gameInfo.gameCode,
+                  widget.gameInfo.isHost,
+                  isBoardHorizontal,
+                  cards,
+                  cardsOther,
+                  pots,
+                  tableState.potToHighlight,
+                  double.parse(
+                    tableState.potChipsUpdates != null
+                        ? tableState.potChipsUpdates.toString()
+                        : '0.0',
+                  ),
+                  tableState.gameStatus,
+                  tableState.tableStatus,
+                  valueNotifierFooterStatus.value == FooterStatus.Result,
+                  widget.onStartGame,
+                  flipSpeed,
+                ),
+              );
+            },
           ),
         ),
 

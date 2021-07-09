@@ -1,15 +1,24 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hive/hive.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/resources/app_constants.dart';
+import 'package:pokerapp/resources/new/app_assets_new.dart';
+import 'package:pokerapp/resources/new/app_strings_new.dart';
+import 'package:pokerapp/resources/new/app_styles_new.dart';
+import 'package:pokerapp/screens/club_screen/club_action_screens/club_member_detailed_view/club_member_detailed_view.dart';
+import 'package:pokerapp/screens/club_screen/widgets/roud_icon_button.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/game_play/graphql/seat_change_service.dart';
 import 'package:pokerapp/widgets/custom_text_button.dart';
+import 'package:pokerapp/widgets/round_color_button.dart';
+import 'package:pokerapp/widgets/round_raised_button.dart';
 import 'package:provider/provider.dart';
+import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class CenterButtonView extends StatelessWidget {
   final String tableStatus;
@@ -128,33 +137,71 @@ class CenterButtonView extends StatelessWidget {
                   horizontal: 20.0,
                   vertical: 10.0,
                 ),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20.0),
-                  color: Colors.black.withOpacity(0.50),
-                ),
-                child: Wrap(
-                  crossAxisAlignment: WrapCrossAlignment.center,
+                decoration: AppStylesNew.resumeBgDecoration,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    CustomTextButton(
-                      adaptive: false,
-                      text: 'Resume',
-                      onTap: _onResumePress,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10.0,
-                      ),
-                      child: CustomTextButton(
-                        adaptive: false,
-                        text: 'Terminate',
-                        onTap: _onTerminatePress,
+                    Container(
+                      margin: EdgeInsets.only(bottom: 8),
+                      child: Text(
+                        AppStringsNew.gamePausedText,
+                        style: AppStylesNew.cardHeaderTextStyle,
                       ),
                     ),
-                    CustomTextButton(
-                      adaptive: false,
-                      split: true,
-                      text: 'Rearrange Seats',
-                      onTap: () => _onRearrangeSeatsPress(context),
+                    Wrap(
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      alignment: WrapAlignment.center,
+                      children: [
+                        // CustomTextButton(
+                        //   adaptive: false,
+                        //   text: 'Resume',
+                        //   onTap: _onResumePress,
+                        // ),
+                        IconAndTitleWidget(
+                          child: SvgPicture.asset(
+                            AppAssetsNew.resumeImagePath,
+                            height: 48.ph,
+                            width: 48.pw,
+                          ),
+                          onTap: _onResumePress,
+                          text: AppStringsNew.resumeText,
+                        ),
+
+                        IconAndTitleWidget(
+                          child: SvgPicture.asset(
+                            AppAssetsNew.seatChangeImagePath,
+                            height: 48.ph,
+                            width: 48.pw,
+                          ),
+                          onTap: () => _onRearrangeSeatsPress(context),
+                          text: AppStringsNew.rearrangeText,
+                        ),
+                        IconAndTitleWidget(
+                          child: SvgPicture.asset(
+                            AppAssetsNew.terminateImagePath,
+                            height: 48.ph,
+                            width: 48.pw,
+                          ),
+                          onTap: _onTerminatePress,
+                          text: AppStringsNew.terminateText,
+                        ),
+                        // Padding(
+                        //   padding: const EdgeInsets.symmetric(
+                        //     horizontal: 10.0,
+                        //   ),
+                        //   child: CustomTextButton(
+                        //     adaptive: false,
+                        //     text: 'Terminate',
+                        //     onTap: _onTerminatePress,
+                        //   ),
+                        // ),
+                        // CustomTextButton(
+                        //   adaptive: false,
+                        //   split: true,
+                        //   text: 'Rearrange Seats',
+                        //   onTap: () => _onRearrangeSeatsPress(context),
+                        // ),
+                      ],
                     ),
                   ],
                 ),

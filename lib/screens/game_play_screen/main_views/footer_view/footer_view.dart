@@ -52,15 +52,21 @@ class _FooterViewState extends State<FooterView>
         return Stack(
           children: [
             /* hand analyse view */
-            Consumer<GameContextObject>(builder: (context, gameContext, _) {
+            Consumer2<SeatChangeNotifier, GameContextObject>(
+                builder: (context, hostSeatChange, gameContext, _) {
               return Positioned(
                 left: 0,
                 top: 0,
-                child: HandAnalyseView(
-                  gameState,
-                  widget.clubCode,
-                  gameContext,
-                ),
+                child: (hostSeatChange.seatChangeInProgress ||
+                            gameState.hostSeatChangeInProgress) &&
+                        gameContext.isHost() &&
+                        !gameState.playerSeatChangeInProgress
+                    ? SizedBox.shrink()
+                    : HandAnalyseView(
+                        gameState,
+                        widget.clubCode,
+                        gameContext,
+                      ),
               );
             }),
 

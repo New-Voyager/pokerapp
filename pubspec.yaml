@@ -109,6 +109,7 @@ flutter:
     - assets/images/backgrounds/
     - assets/images/table/
     - assets/images/game/
+    - assets/images/game-screen/
     - assets/images/chips/
     - assets/images/speak/
     - assets/images/network_connectivity/

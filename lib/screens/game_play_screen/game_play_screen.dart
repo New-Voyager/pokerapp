@@ -23,6 +23,7 @@ import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
+import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/game_context_screen/game_chat/game_chat.dart';
 import 'package:pokerapp/screens/game_play_screen/game_play_screen_util_methods.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/board_view.dart';
@@ -604,7 +605,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
               builder: (_) {
                 // show a progress indicator if the game info object is null
                 if (_gameInfoModel == null)
-                  return Center(child: CircularProgressIndicator());
+                  return Center(child: CircularProgressWidget());
 
                 var dividerTotalHeight = MediaQuery.of(context).size.height / 6;
 
