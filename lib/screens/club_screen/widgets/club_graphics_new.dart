@@ -4,6 +4,7 @@ import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
+import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/utils/club_weekly_activity_bar_chart.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
@@ -39,10 +40,7 @@ class ClubGraphicsViewNew extends StatelessWidget {
           Expanded(
             flex: 4,
             child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8.pw),
-                color: AppColorsNew.newBackgroundBlackColor,
-              ),
+              decoration: AppStylesNew.actionRowDecoration,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -51,8 +49,8 @@ class ClubGraphicsViewNew extends StatelessWidget {
                     margin: EdgeInsets.all(5.pw),
                     padding: EdgeInsets.all(8.pw),
                     child: Text(
-                      "Unsettled",
-                      style: AppStylesNew.gameActionTextStyle,
+                      AppStringsNew.unsettledText,
+                      style: AppStylesNew.labelTextStyle,
                     ),
                   ),
                   Container(
@@ -79,10 +77,8 @@ class ClubGraphicsViewNew extends StatelessWidget {
             flex: 7,
             child: Container(
               padding: EdgeInsets.all(8.pw),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8.pw),
-                color: AppColorsNew.newBackgroundBlackColor,
-              ),
+                           decoration: AppStylesNew.actionRowDecoration,
+
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
@@ -92,8 +88,8 @@ class ClubGraphicsViewNew extends StatelessWidget {
                     child: Column(
                       children: [
                         Text(
-                          "Weekly Activity",
-                          style: AppStylesNew.gameActionTextStyle,
+                          AppStringsNew.weeklyActivity,
+                          style: AppStylesNew.labelTextStyle,
                         ),
                       ],
                     ),

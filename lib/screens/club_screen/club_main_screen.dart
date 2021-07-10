@@ -15,6 +15,7 @@ import 'package:pokerapp/screens/game_screens/new_game_settings/new_game_setting
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/clubs_service.dart';
 import 'package:pokerapp/widgets/custom_text_button.dart';
+import 'package:pokerapp/widgets/round_color_button.dart';
 import 'package:provider/provider.dart';
 import 'package:pokerapp/models/pending_approvals.dart';
 
@@ -80,6 +81,41 @@ class _ClubMainScreenNewState extends State<ClubMainScreenNew>
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+                  Container(
+                    margin: EdgeInsets.symmetric(vertical: 24),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        BackArrowWidget(),
+                        RoundedColorButton(
+                          onTapFunction: () async {
+                            final dynamic result = await Navigator.pushNamed(
+                              context,
+                              Routes.new_game_settings,
+                              arguments: widget.clubCode,
+                            );
+
+                            if (result != null) {
+                              /* show game settings dialog */
+                              NewGameSettings2.show(
+                                context,
+                                clubCode: widget.clubCode,
+                                mainGameType: result['gameType'],
+                                subGameTypes: List.from(
+                                      result['gameTypes'],
+                                    ) ??
+                                    [],
+                              );
+                            }
+                          },
+                          text: '+ Create Game',
+                          backgroundColor: AppColorsNew.yellowAccentColor,
+                          textColor: AppColorsNew.darkGreenShadeColor,
+                        ),
+                      ],
+                    ),
+                  ),
+
                   // banner
                   ClubBannerViewNew(
                     clubModel: clubModel,
@@ -148,43 +184,6 @@ class _ClubMainScreenNewState extends State<ClubMainScreenNew>
                       ),
                       child: Scaffold(
                         backgroundColor: Colors.transparent,
-                        appBar: CustomAppBar(
-                          context: context,
-                          actionsList: [
-                            !isOwnerOrManager
-                                ? Container()
-                                : Container(
-                                    padding: EdgeInsets.only(
-                                      top: 8.ph,
-                                      right: 16.pw,
-                                    ),
-                                    child: CustomTextButton(
-                                      onTap: () async {
-                                        final dynamic result =
-                                            await Navigator.pushNamed(
-                                          context,
-                                          Routes.new_game_settings,
-                                          arguments: widget.clubCode,
-                                        );
-
-                                        if (result != null) {
-                                          /* show game settings dialog */
-                                          NewGameSettings2.show(
-                                            context,
-                                            clubCode: widget.clubCode,
-                                            mainGameType: result['gameType'],
-                                            subGameTypes: List.from(
-                                                  result['gameTypes'],
-                                                ) ??
-                                                [],
-                                          );
-                                        }
-                                      },
-                                      text: '+ Create Game',
-                                    ),
-                                  ),
-                          ],
-                        ),
                         body: _buildMainBody(clubModel),
                       ),
                     ),

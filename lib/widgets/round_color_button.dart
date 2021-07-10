@@ -10,6 +10,7 @@ class RoundedColorButton extends StatelessWidget {
   final Color backgroundColor;
   final Color textColor;
   final Color borderColor;
+  final double fontSize;
   RoundedColorButton({
     Key key,
     this.onTapFunction,
@@ -17,6 +18,7 @@ class RoundedColorButton extends StatelessWidget {
     this.backgroundColor,
     this.textColor,
     this.borderColor,
+    this.fontSize,
   }) : super(key: key);
 
   @override
@@ -29,7 +31,9 @@ class RoundedColorButton extends StatelessWidget {
           style: AppStylesNew.joinTextStyle.copyWith(
             color: textColor ?? AppColorsNew.newTextColor,
             fontWeight: FontWeight.normal,
+            fontSize: fontSize ?? 10.dp,
           ),
+          textAlign: TextAlign.center,
         ),
         padding: EdgeInsets.symmetric(
           horizontal: 14.pw,

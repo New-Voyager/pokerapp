@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pokerapp/models/club_homepage_model.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
+import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/utils/alerts.dart';
 
@@ -66,11 +67,17 @@ class ClubBannerViewNew extends StatelessWidget {
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.baseline,
+          textBaseline: TextBaseline.alphabetic,
           children: [
             Text(
-              "Club Code: " + clubModel.clubCode,
-              style: AppStylesNew.clubTitleTextStyle.copyWith(
-                fontSize: 10.dp,
+              AppStringsNew.clubCodeText + ": ",
+              style: AppStylesNew.labelTextStyle,
+            ),
+            Text(
+              clubModel.clubCode,
+              style: AppStylesNew.valueTextStyle.copyWith(
+                fontWeight: FontWeight.normal,
               ),
             ),
             GestureDetector(

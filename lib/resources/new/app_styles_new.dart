@@ -224,7 +224,7 @@ class AppStylesNew {
 
   static final clubShortCodeTextStyle = TextStyle(
     color: AppColorsNew.newTextColor,
-    fontSize: 24.0.dp,
+    fontSize: 20.0.dp,
     fontFamily: AppAssetsNew.fontFamilyPoppins,
     fontWeight: FontWeight.w700,
   );
