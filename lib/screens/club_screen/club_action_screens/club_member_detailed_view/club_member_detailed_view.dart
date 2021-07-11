@@ -639,7 +639,8 @@ class IconAndTitleWidget extends StatelessWidget {
   final IconData icon;
   final String text;
   final Function onTap;
-  IconAndTitleWidget({this.icon, this.text, this.onTap});
+  final Widget child;
+  IconAndTitleWidget({this.icon, this.text, this.onTap, this.child});
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -647,34 +648,31 @@ class IconAndTitleWidget extends StatelessWidget {
       borderRadius: BorderRadius.circular(32),
       child: Column(
         children: [
-          Container(
-            decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: AppColorsNew.darkGreenShadeColor,
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColorsNew.newGreenButtonColor,
-                    spreadRadius: 2,
-                    blurRadius: 2,
-                    offset: Offset(1, 0),
-                  ),
-                ]),
-            child: Icon(
-              icon,
-              size: 20,
-            ),
-            padding: EdgeInsets.all(16),
-          ),
+          child ??
+              Container(
+                decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: AppColorsNew.darkGreenShadeColor,
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColorsNew.newGreenButtonColor,
+                        spreadRadius: 2,
+                        blurRadius: 2,
+                        offset: Offset(1, 0),
+                      ),
+                    ]),
+                child: Icon(
+                  icon ?? Icons.info,
+                  size: 20,
+                ),
+                padding: EdgeInsets.all(16),
+              ),
           Container(
             padding: EdgeInsets.all(5),
-            child: Column(
-              children: [
-                Text(
-                  text,
-                  style: TextStyle(
-                      fontSize: 10.dp, color: AppColorsNew.newGreenButtonColor),
-                ),
-              ],
+            child: Text(
+              text,
+              style: TextStyle(
+                  fontSize: 10.dp, color: AppColorsNew.newGreenButtonColor),
             ),
           ),
         ],

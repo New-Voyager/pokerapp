@@ -60,6 +60,7 @@ class BoardView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final gameState = GameState.getState(context);
+    gameState.boardKey = boardViewKey;
     final boardAttributes = gameState.getBoardAttributes(context);
     final isBoardHorizontal =
         boardAttributes.orientation == BoardOrientation.horizontal;

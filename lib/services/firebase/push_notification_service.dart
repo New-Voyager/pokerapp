@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/pending_approvals.dart';
@@ -17,6 +18,12 @@ import 'package:provider/provider.dart';
 //   }
 // }
 
+enum NotificationType { NEW_GAME, NEW_CLUB, FREE_CHIPS }
+
+extension NotifyTypeParsing on NotificationType {
+  String value() => this.toString().split('.').last;
+}
+
 Future<void> saveFirebaseToken(String token) async {
   // call graphql to save the token
   String playerId = await AuthService.fetchUUID();
@@ -28,10 +35,66 @@ Future<void> saveFirebaseToken(String token) async {
   }
 }
 
+Future<void> _backgroundMessageHandler(RemoteMessage message) async {
+  print('background message = ${message.data}');
+  print('message type = ${message.data['type']}');
+  print('message text = ${message.data['text']}');
+  print('message title = ${message.data['title']}');
+  _showNotification(message);
+}
+
+FlutterLocalNotificationsPlugin _initLocalNotifications() {
+  var androidSettings = AndroidInitializationSettings('logo');
+  var iosSettings = IOSInitializationSettings();
+  var initializationSettings =
+      InitializationSettings(android: androidSettings, iOS: iosSettings);
+
+  var flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+  flutterLocalNotificationsPlugin.initialize(initializationSettings,
+      onSelectNotification: _onTapNotification);
+  return flutterLocalNotificationsPlugin;
+}
+
+Future _onTapNotification(String payload) async {
+  print('_onTapNotification = $payload');
+}
+
+Future _showNotification(RemoteMessage message) async {
+  AndroidNotificationDetails androidDetails;
+  IOSNotificationDetails iosDetails;
+  var notificationType = message.data['type'];
+  print('notificationType = $notificationType');
+  print(
+      'NotificationType.NEW_GAME.value() = ${NotificationType.NEW_GAME.value()}');
+  if (notificationType == NotificationType.NEW_GAME.value()) {
+    androidDetails = AndroidNotificationDetails(
+        "com.voyagerent.pokerapp.channel", "pokerapp", "Poker App Channel",
+        sound: RawResourceAndroidNotificationSound('check'),  playSound: true);
+    iosDetails = IOSNotificationDetails();
+  } else if (notificationType == NotificationType.NEW_CLUB.value()) {
+    androidDetails = AndroidNotificationDetails(
+        "com.voyagerent.pokerapp.channel", "pokerapp", "Poker App Channel",
+        sound: RawResourceAndroidNotificationSound('player_turn'), playSound: true);
+    iosDetails = IOSNotificationDetails();
+  }
+
+  var notificationDetails =
+      NotificationDetails(android: androidDetails, iOS: iosDetails);
+  var flutterLocalNotificationsPlugin = _initLocalNotifications();
+  flutterLocalNotificationsPlugin.show(
+      0, message.data['title'], message.data['text'], notificationDetails,
+      payload: "this is my payload");
+}
+
 void registerPushNotifications() {
+  // registering for background messages
+  FirebaseMessaging.onBackgroundMessage(_backgroundMessageHandler);
+
   FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
     print('Got a message whilst in the foreground!');
     print('Message data: ${message.data}');
+
+    _showNotification(message);
 
     if (message.notification != null) {
       print('Message also contained a notification: ${message.notification}');

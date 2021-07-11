@@ -110,4 +110,16 @@ class AppStringsNew {
   static String noDataAvailable = "No data available!";
 
   static String recentGamesText = "Recent Games";
+
+  static String gamePausedText = "Game Paused";
+
+  static String resumeText = "Resume";
+  static String rearrangeText = "Rearrange";
+  static String terminateText = "Terminate";
+  static String applySeatChanges = "Apply Seat Changes?";
+
+  static String clubCodeText = "Club code";
+
+  static String unsettledText = "Unsettled";
+  static String weeklyActivity = "Weekly Activity";
 }
