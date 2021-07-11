@@ -66,13 +66,6 @@ class BoardView extends StatelessWidget {
         boardAttributes.orientation == BoardOrientation.horizontal;
     var dimensions = boardAttributes.dimensions(context);
 
-    // final centerKey = GlobalKey();
-    // final emptyCenterKey = GlobalKey();
-
-    // boardAttributes.centerKey = centerKey;
-    // boardAttributes.emptyCenterKey = emptyCenterKey;
-    // boardAttributes.dummyKey = GlobalKey();
-
     /* finally the view */
     return Stack(
       clipBehavior: Clip.none,
@@ -84,63 +77,38 @@ class BoardView extends StatelessWidget {
           child: TableView(width: dimensions.width, height: dimensions.height),
         ),
 
-        // Positioned(
-        //   top: boardAttributes.centerOffset.dy,
-        //   width: boardAttributes.centerSize.width,
-        //   height: boardAttributes.centerSize.height,
-        //   child: Opacity(
-        //     opacity: 1.0,
-        //     child: Container(
-        //       key: boardAttributes.dummyKey,
-        //       width: boardAttributes.centerSize.width,
-        //       height: boardAttributes.centerSize.height,
-        //       color: Colors.transparent,
-        //     ),
-        //   ),
-        // ),
-
         /* center view */
         Positioned(
           top: boardAttributes.centerOffset.dy,
           left: boardAttributes.centerOffset.dx,
           width: boardAttributes.centerSize.width,
           height: boardAttributes.centerSize.height,
-          child: Consumer3<TableState, ValueNotifier<FooterStatus>,
-              ServerConnectionState>(
-            builder: (
-              _,
-              TableState tableState,
-              ValueNotifier<FooterStatus> valueNotifierFooterStatus,
-              ServerConnectionState connectionState,
-              __,
-            ) {
-              final cards = tableState.cards;
-              final cardsOther = tableState.cardsOther;
-              final pots = tableState.potChips;
-              final flipSpeed = tableState.flipSpeed;
+          child: Builder(
+            builder: (context) {
+              // final cards = tableState.cards;
+              // final cardsOther = tableState.cardsOther;
+              // final pots = tableState.potChips;
 
               return Transform.scale(
                 scale: 1 / boardAttributes.tableScale,
                 child: CenterView(
-                  null,
-                  tableState.twoBoardsNeeded,
-                  gameInfo.gameCode,
-                  gameInfo.isHost,
-                  isBoardHorizontal,
-                  cards,
-                  cardsOther,
-                  pots,
-                  tableState.potToHighlight,
-                  double.parse(
-                    tableState.potChipsUpdates != null
-                        ? tableState.potChipsUpdates.toString()
-                        : '0.0',
-                  ),
-                  tableState.gameStatus,
-                  tableState.tableStatus,
-                  valueNotifierFooterStatus.value == FooterStatus.Result,
-                  onStartGame,
-                  flipSpeed,
+                  tableState: context.read<TableState>(),
+                  // twoBoardsNeeded: tableState.twoBoardsNeeded,
+                  gameCode: gameInfo.gameCode,
+                  isHost: gameInfo.isHost,
+                  isBoardHorizontal: isBoardHorizontal,
+                  // cards: cards,
+                  // cardsOther: cardsOther,
+                  // potChips: pots,
+                  // whichPotToHighlight: tableState.potChipsUpdates,
+                  // potChipsUpdates: double.parse(
+                  //   tableState.potChipsUpdates != null
+                  //       ? tableState.potChipsUpdates.toString()
+                  //       : '0.0',
+                  // ),
+                  // gameStatus: tableState.gameStatus,
+                  // tableStatus: tableState.tableStatus,
+                  onStartGame: onStartGame,
                 ),
               );
             },
@@ -149,11 +117,7 @@ class BoardView extends StatelessWidget {
 
         /* players */
         Consumer<Players>(
-          builder: (
-            BuildContext _,
-            Players players,
-            Widget __,
-          ) =>
+          builder: (BuildContext _, Players players, Widget __) =>
               Transform.translate(
             offset: boardAttributes.playerOnTableOffset,
             child: PlayersOnTableView(
@@ -181,85 +145,58 @@ class BoardView extends StatelessWidget {
         ),
 
         /* this widget is used to show animating of stacks in case user changes seats */
-        Align(
-          child: StackSwitchSeatAnimatingWidget(),
-        ),
+        Align(child: StackSwitchSeatAnimatingWidget()),
 
+        // building buy in button
         Consumer<MyState>(
-          builder: (
-            BuildContext _,
-            MyState myState,
-            Widget __,
-          ) =>
-              Align(
+          builder: (BuildContext _, MyState myState, Widget __) => Align(
             alignment: Alignment.bottomCenter,
             child: buyInButton(context),
           ),
         ),
 
+        // building sit back button
         Consumer<MyState>(
-          builder: (
-            BuildContext _,
-            MyState myState,
-            Widget __,
-          ) =>
-              Align(
+          builder: (BuildContext _, MyState myState, Widget __) => Align(
             alignment: Alignment.bottomCenter,
             child: sitBackButton(context),
           ),
         ),
 
+        // hand rank text
         !gameState.gameInfo.showHandRank
-            ? Container()
+            ? const SizedBox.shrink()
             : Consumer<MyState>(
-                builder: (
-                  BuildContext _,
-                  MyState myState,
-                  Widget __,
-                ) =>
+                builder: (BuildContext _, MyState myState, Widget __) =>
                     Transform.translate(
                   offset: Offset(0, 20.ph),
                   child: Align(
-                      alignment: Alignment.bottomCenter,
-                      child: rankText(context)),
+                    alignment: Alignment.bottomCenter,
+                    child: rankText(context),
+                  ),
                 ),
               ),
 
-        // Align(
-        //   alignment: Alignment.center,
-        //   child: SizedBox(
-        //     key: emptyCenterKey,
-        //   ),
+        // Consumer<PopupButtonState>(
+        //   builder: (BuildContext _, PopupButtonState popupState, Widget __) {
+        //     final seatPos = gameState?.getTappedSeatPos;
+        //     final Seat seat = gameState?.popupSelectedSeat;
+
+        //     bool showPopupButtons = false;
+        //     if (seatPos != null) {
+        //       showPopupButtons = true;
+        //     }
+
+        //     return Visibility(
+        //       key: boardViewKey,
+        //       visible: showPopupButtons,
+        //       child: Align(
+        //         alignment: Alignment.topLeft,
+        //         child: PopupWidget(gameState, seat, boardViewKey),
+        //       ),
+        //     );
+        //   },
         // ),
-
-        Consumer<PopupButtonState>(
-          builder: (
-            BuildContext _,
-            PopupButtonState popupState,
-            Widget __,
-          ) {
-            final seatPos = gameState?.getTappedSeatPos;
-            final Seat seat = gameState?.popupSelectedSeat;
-
-            bool showPopupButtons = false;
-            if (seatPos != null) {
-              showPopupButtons = true;
-            }
-
-            return Visibility(
-              key: boardViewKey,
-              visible: showPopupButtons,
-              child: Align(
-                alignment: Alignment.topLeft,
-                child: PopupWidget(
-                  gameState,
-                  seat,
-                  boardViewKey,
-                ),
-              ),
-            );
-          },
-        ),
       ],
     );
   }
