@@ -1,6 +1,8 @@
 import 'dart:math';
 
+import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
+
 import 'package:pokerapp/enums/hand_actions.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
@@ -184,6 +186,83 @@ class PlayerModel {
     this.highlight = false;
     this._action.reset(stickAction: stickAction);
     this._connectivity.reset();
+  }
+
+  PlayerModel copyWith({
+    bool isMe,
+    String name,
+    int seatNo,
+    int playerId,
+    String playerUuid,
+    int buyIn,
+    int stack,
+    int startingStack,
+    String avatarUrl,
+    String status,
+    List<int> cards,
+    List<int> highlightCards,
+    PlayerActedState action,
+    PlayerConnectivityState connectivity,
+    TablePosition playerType,
+    bool winner,
+    bool showFirework,
+    String rankText,
+    int noOfCardsVisible,
+    bool showBuyIn,
+    DateTime buyInTimeExpAt,
+    bool buyInExpired,
+    bool waitForBuyInApproval,
+    bool animatingFold,
+    bool highlight,
+    bool playerFolded,
+    StackReloadState stackReloadState,
+    bool inBreak,
+    DateTime breakTimeExpAt,
+    DateTime breakTimeStartedAt,
+    bool muted,
+    bool talking,
+    bool showMicOn,
+    bool showMicOff,
+  }) {
+    final p = PlayerModel(
+      name: name ?? this.name,
+      seatNo: seatNo ?? this.seatNo,
+      playerId: playerId ?? this.playerId,
+      playerUuid: playerUuid ?? this.playerUuid,
+      buyIn: buyIn ?? this.buyIn,
+      stack: stack ?? this.stack,
+      status: status ?? this.status,
+    );
+
+    p.isMe = isMe ?? this.isMe;
+    p.startingStack = startingStack ?? this.startingStack;
+    p.avatarUrl = avatarUrl ?? this.avatarUrl;
+    p.cards = cards ?? this.cards;
+    p.highlightCards = highlightCards ?? this.highlightCards;
+    p._action = action ?? this.action;
+    p._connectivity = connectivity ?? this.connectivity;
+    p.playerType = playerType ?? this.playerType;
+    p.winner = winner ?? this.winner;
+    p.showFirework = showFirework ?? this.showFirework;
+    p.rankText = rankText ?? this.rankText;
+    p.noOfCardsVisible = noOfCardsVisible ?? this.noOfCardsVisible;
+    p.showBuyIn = showBuyIn ?? this.showBuyIn;
+    p.buyInTimeExpAt = buyInTimeExpAt ?? this.buyInTimeExpAt;
+    p.buyInExpired = buyInExpired ?? this.buyInExpired;
+    p.waitForBuyInApproval = waitForBuyInApproval ?? this.waitForBuyInApproval;
+    p.animatingFold = animatingFold ?? this.animatingFold;
+    p.highlight = highlight ?? this.highlight;
+    p.playerFolded = playerFolded ?? this.playerFolded;
+    p.stackReloadState = stackReloadState ?? this.stackReloadState;
+    p.inBreak = inBreak ?? this.inBreak;
+    p.breakTimeExpAt = breakTimeExpAt ?? this.breakTimeExpAt;
+    p.breakTimeStartedAt = breakTimeStartedAt ?? this.breakTimeStartedAt;
+    p.muted = muted ?? this.muted;
+    p.talking = talking ?? this.talking;
+    p.showMicOn = showMicOn ?? this.showMicOn;
+    p.showMicOff = showMicOff ?? this.showMicOff;
+
+    return p;
   }
 }
 

@@ -818,9 +818,9 @@ class ServerConnectionState extends ChangeNotifier {
   }
 }
 
+// FIXME: WHAT IS THE USE OF THIS CLASS?
 class PopupButtonState extends ChangeNotifier {
-  SeatPos _prevPos = null;
-  SeatPos _currentPos = null;
+  SeatPos _currentPos;
 
   setCurrentPos(SeatPos pos) {
     _currentPos = pos;

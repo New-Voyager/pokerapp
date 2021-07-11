@@ -18,52 +18,39 @@ import 'package:provider/provider.dart';
 
 import 'footer_action_view.dart';
 
-// MyCardView represent the player who has hole cards
-// The cards may be active or dead/folded
-//
-class HoleCardsViewAndFooterActionView extends StatefulWidget {
+class HoleCardsViewAndFooterActionView extends StatelessWidget {
   final PlayerModel playerModel;
-  //final FooterStatus footerStatus;
-  final bool showActionWidget;
-  final GameContextObject gameContext;
 
-  const HoleCardsViewAndFooterActionView({
-    Key key,
-    this.playerModel,
-    this.gameContext,
-    this.showActionWidget,
-  }) : super(key: key);
+  HoleCardsViewAndFooterActionView({this.playerModel});
 
-  @override
-  _HoleCardsViewAndFooterActionViewState createState() =>
-      _HoleCardsViewAndFooterActionViewState();
-}
-
-class _HoleCardsViewAndFooterActionViewState
-    extends State<HoleCardsViewAndFooterActionView> {
-  bool _isCardVisible = false;
+  final ValueNotifier<bool> _showDarkBackgroundVn = ValueNotifier(false);
+  final ValueNotifier<bool> _isCardVisibleVn = ValueNotifier(false);
 
   bool _showAllCardSelectionButton(var vnfs) {
     final bool isInResult = vnfs.value == FooterStatus.Result;
-    return isInResult && (widget.playerModel?.playerFolded ?? false);
+    return isInResult && (playerModel?.playerFolded ?? false);
   }
 
-  void _markAllCardsAsSelected() {
+  void _markAllCardsAsSelected(BuildContext context) {
     // flip all the cards to front, if not already
-    setState(() => _isCardVisible = true);
+    _isCardVisibleVn.value = true;
 
     // mark all the cards for revealing
-    context.read<MarkedCards>().markAll(widget.playerModel.cardObjects);
+    context.read<MarkedCards>().markAll(playerModel.cardObjects);
   }
 
   Widget _buildAllHoleCardSelectionButton() =>
       Consumer<ValueNotifier<FooterStatus>>(
-        builder: (_, vnfs, __) => _showAllCardSelectionButton(vnfs)
-            ? InkWell(
-                onTap: _markAllCardsAsSelected,
-                child: Icon(Icons.visibility_rounded),
-              )
-            : const SizedBox.shrink(),
+        builder: (context, vnfs, __) {
+          bool _showEye = _showAllCardSelectionButton(vnfs);
+          return Opacity(
+            opacity: _showEye ? 1.0 : 0.0,
+            child: InkWell(
+              onTap: _showEye ? () => _markAllCardsAsSelected(context) : null,
+              child: Icon(Icons.visibility_rounded),
+            ),
+          );
+        },
       );
 
   Widget _buildholeCardViewAndStraddleDialog(
@@ -84,7 +71,7 @@ class _HoleCardsViewAndFooterActionViewState
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     // main hole card view
-                    holeCardView(context),
+                    _buildHoleCardView(context),
 
                     // all hole card selection button
                     _buildAllHoleCardSelectionButton(),
@@ -93,43 +80,66 @@ class _HoleCardsViewAndFooterActionViewState
               ),
             ),
 
-            Align(
-              child: Transform.scale(
-                scale: 0.80,
-                child: StraddleDialog(
-                  straddlePrompt: straddlePrompt,
-                  onSelect: (List<bool> optionAutoValue) {
-                    print(optionAutoValue);
+            Consumer<StraddlePromptState>(
+              builder: (_, __, ___) => Align(
+                child: Transform.scale(
+                  scale: 0.80,
+                  child: StraddleDialog(
+                    straddlePrompt: straddlePrompt,
+                    onSelect: (List<bool> optionAutoValue) {
+                      print(optionAutoValue);
 
-                    final straddleOption = optionAutoValue[0];
-                    final autoStraddle = optionAutoValue[1];
-                    final straddleChoice = optionAutoValue[2];
-                    if (straddleChoice != null) {
-                      gameState.straddlePrompt = false;
-                      final straddlePromptState =
-                          gameState.straddlePromptState(context);
-                      straddlePromptState.notify();
+                      final straddleOption = optionAutoValue[0];
+                      final autoStraddle = optionAutoValue[1];
+                      final straddleChoice = optionAutoValue[2];
+                      if (straddleChoice != null) {
+                        gameState.straddlePrompt = false;
+                        final straddlePromptState =
+                            gameState.straddlePromptState(context);
+                        straddlePromptState.notify();
 
-                      if (straddleChoice == true) {
-                        // act now
-                        log('Player wants to straddle');
-                        HandActionService.takeAction(
-                          context: context,
-                          action: AppConstants.STRADDLE,
-                          amount: 2 * gameState.gameInfo.bigBlind,
-                        );
-                      } else {
-                        log('Player does not want to straddle');
-                        // show action buttons
-                        gameState.showAction(context, true);
+                        if (straddleChoice == true) {
+                          // act now
+                          log('Player wants to straddle');
+                          HandActionService.takeAction(
+                            context: context,
+                            action: AppConstants.STRADDLE,
+                            amount: 2 * gameState.gameInfo.bigBlind,
+                          );
+                        } else {
+                          log('Player does not want to straddle');
+                          // show action buttons
+                          gameState.showAction(context, true);
+                        }
                       }
-                    }
-                  },
+                    },
+                  ),
                 ),
               ),
             ),
           ],
         ),
+      );
+
+  Widget _buildDarkBackground() => ValueListenableBuilder<bool>(
+        valueListenable: _showDarkBackgroundVn,
+        builder: (_, showDarkBg, __) => AnimatedSwitcher(
+          duration: AppConstants.fastAnimationDuration,
+          reverseDuration: AppConstants.fastAnimationDuration,
+          child: showDarkBg
+              ? Container(
+                  width: double.infinity,
+                  height: double.infinity,
+                  color: Colors.black.withOpacity(0.80),
+                )
+              : const SizedBox.shrink(),
+        ),
+      );
+
+  Widget _buildFooterActionView(BuildContext context) => FooterActionView(
+        gameContext: context.read<GameContextObject>(),
+        isBetWidgetVisible: (bool isBetWidgetVisible) =>
+            _showDarkBackgroundVn.value = isBetWidgetVisible,
       );
 
   @override
@@ -138,76 +148,46 @@ class _HoleCardsViewAndFooterActionViewState
 
     final boardAttributes = context.read<BoardAttributesObject>();
 
-    return ListenableProvider(
-      create: (_) => ValueNotifier<bool>(false),
-      builder: (BuildContext context, __) => Stack(
-        children: [
-          Align(
-            alignment: Alignment.topCenter,
-            child: _buildholeCardViewAndStraddleDialog(
-                gameState, boardAttributes, gameState.straddlePrompt),
+    return Stack(
+      children: [
+        Align(
+          alignment: Alignment.topCenter,
+          child: _buildholeCardViewAndStraddleDialog(
+            gameState,
+            boardAttributes,
+            gameState.straddlePrompt,
           ),
+        ),
 
-          /* dark overlay to show in-front of cards, when the bet widget is displayed */
-          Consumer<ValueNotifier<bool>>(
-            builder: (_, vnIsBetWidgetVisible, __) => AnimatedSwitcher(
-              duration: AppConstants.fastAnimationDuration,
-              reverseDuration: AppConstants.fastAnimationDuration,
-              child: vnIsBetWidgetVisible.value
-                  ? Container(
-                      width: double.infinity,
-                      height: double.infinity,
-                      color: Colors.black.withOpacity(0.80),
-                    )
-                  : const SizedBox.shrink(),
-            ),
-          ),
+        /* dark overlay to show in-front of cards, when the bet widget is displayed */
+        _buildDarkBackground(),
 
-          // action view (show when it is time for this user to act)
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: widget.showActionWidget ?? false
-                ? FooterActionView(
-                    gameContext: widget.gameContext,
-                    isBetWidgetVisible: (bool isBetWidgetVisible) =>
-                        Provider.of<ValueNotifier<bool>>(
-                      context,
-                      listen: false,
-                    ).value = isBetWidgetVisible,
-                  )
+        // action view (show when it is time for this user to act)
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: Consumer<ActionState>(
+            builder: (context, actionState, __) => actionState.show
+                ? _buildFooterActionView(context)
                 : const SizedBox.shrink(),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
-  Widget holeCardView(BuildContext context) {
+  Widget _buildHoleCardView(BuildContext context) {
     final gameState = GameState.getState(context);
 
     Widget cardsWidget = cards(
-      playerFolded: widget.playerModel.playerFolded,
-      cardsInt: widget.playerModel?.cards,
+      playerFolded: playerModel.playerFolded,
+      cardsInt: playerModel?.cards,
       straddlePrompt: gameState.straddlePrompt,
     );
 
-    if (gameState.straddlePrompt) {
-      return cardsWidget;
-    }
+    if (gameState.straddlePrompt) return cardsWidget;
 
     return GestureDetector(
-      onTap: () {
-        setState(() {
-          _isCardVisible = !_isCardVisible;
-          print('i am here');
-        });
-      },
-      // onLongPress: () {
-      //   setState(() => _isCardVisible = true);
-      // },
-      // onLongPressEnd: (_) {
-      //   setState(() => _isCardVisible = false);
-      // },
+      onTap: () => _isCardVisibleVn.value = !_isCardVisibleVn.value,
       child: cardsWidget,
     );
   }
@@ -227,16 +207,13 @@ class _HoleCardsViewAndFooterActionViewState
         )?.toList() ??
         [];
 
-    bool cardVisible = _isCardVisible;
-
-    if (straddlePrompt) {
-      cardVisible = false;
-    }
-
-    return HoleStackCardView(
-      cards: cards,
-      deactivated: playerFolded ?? false,
-      isCardVisible: cardVisible,
+    return ValueListenableBuilder<bool>(
+      valueListenable: _isCardVisibleVn,
+      builder: (_, isCardVisible, __) => HoleStackCardView(
+        cards: cards,
+        deactivated: playerFolded ?? false,
+        isCardVisible: straddlePrompt ? false : isCardVisible,
+      ),
     );
   }
 }

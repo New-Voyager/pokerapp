@@ -3,33 +3,33 @@ import 'dart:developer';
 import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
-import 'package:pokerapp/utils/utils.dart';
 import 'package:provider/provider.dart';
 import 'communication_view.dart';
 import 'hand_analyse_view.dart';
 import 'hole_cards_view_and_footer_action_view.dart';
 import 'seat_change_confirm_widget.dart';
+import 'package:collection/collection.dart';
 
 class FooterView extends StatefulWidget {
-  //final GameComService gameComService;
   final String gameCode;
   final String clubCode;
   final String playerUuid;
   final Function chatVisibilityChange;
   final GameContextObject gameContext;
 
-  FooterView(
-    this.gameContext,
-    this.gameCode,
-    this.playerUuid,
-    this.chatVisibilityChange,
-    this.clubCode,
-  );
+  FooterView({
+    @required this.gameContext,
+    @required this.gameCode,
+    @required this.playerUuid,
+    @required this.chatVisibilityChange,
+    @required this.clubCode,
+  });
 
   @override
   _FooterViewState createState() => _FooterViewState();
@@ -37,175 +37,152 @@ class FooterView extends StatefulWidget {
 
 class _FooterViewState extends State<FooterView>
     with AfterLayoutMixin<FooterView> {
-  @override
-  Widget build(BuildContext context) {
-    log('FooterView:  ::build::');
-    var screenWidth = MediaQuery.of(context).size.width;
-    var screenHeight = MediaQuery.of(context).size.height;
-    final gameState = GameState.getState(context);
+  final ValueNotifier<PlayerModel> mePlayerModelVn = ValueNotifier(null);
 
-    return Consumer2<Players, ActionState>(
-      builder: (_, players, actionState, __) {
-        bool me = players.me != null;
+  final Function eq = const ListEquality().equals;
 
-        // Need to use stack instead of Row to accomodate Voice text widget
-        return Stack(
-          children: [
-            /* hand analyse view */
-            Consumer2<SeatChangeNotifier, GameContextObject>(
-                builder: (context, hostSeatChange, gameContext, _) {
-              return Positioned(
-                left: 0,
-                top: 0,
-                child: (hostSeatChange.seatChangeInProgress ||
-                            gameState.hostSeatChangeInProgress) &&
-                        gameContext.isHost() &&
-                        !gameState.playerSeatChangeInProgress
-                    ? SizedBox.shrink()
-                    : HandAnalyseView(
-                        gameState,
-                        widget.clubCode,
-                        gameContext,
-                      ),
-              );
-            }),
+  Players _players;
 
-            /* hole card view & footer action view */
-            !me
-                ? Container(width: screenWidth, height: screenHeight / 3)
-                : Consumer<StraddlePromptState>(
-                    // rebuild based straddle prompt
-                    builder: (context, _, __) {
-                      return HoleCardsViewAndFooterActionView(
-                        gameContext: widget.gameContext,
-                        playerModel: players.me,
-                        showActionWidget: actionState.show,
-                      );
-                    },
-                  ),
+  bool _needsRebuilding(PlayerModel me) {
+    final bool cardsChanged = !eq(mePlayerModelVn.value.cards, me.cards);
+    final bool playerStateChanged =
+        (mePlayerModelVn.value.playerFolded != me.playerFolded);
+    return cardsChanged || playerStateChanged;
+  }
 
-            /* communication widgets */
-            Positioned(
-              right: 0,
-              top: 0,
-              child: CommunicationView(
-                widget.chatVisibilityChange,
-                widget.gameContext.gameComService.gameMessaging,
-              ),
-            ),
+  void onPlayersChanges() {
+    final PlayerModel me = _players?.me;
 
-            /* seat confirm widget */
-            Consumer2<SeatChangeNotifier, GameContextObject>(
-              builder: (
-                context,
-                hostSeatChange,
-                gameContextObject,
-                _,
-              ) =>
-                  (hostSeatChange.seatChangeInProgress ||
-                              gameState.hostSeatChangeInProgress) &&
-                          gameContextObject.isHost() &&
-                          !gameState.playerSeatChangeInProgress
-                      ? Align(
-                          alignment: Alignment.center,
-                          child: SeatChangeConfirmWidget(
-                            gameCode: widget.gameContext.gameState.gameCode,
-                          ),
-                        )
-                      : SizedBox.shrink(),
-            )
-          ],
-        );
+    if (mePlayerModelVn.value == null) {
+      // if me is null, fill value of me
+      mePlayerModelVn.value = me.copyWith();
+    } else {
+      // if the cards in players object and local me object is not same, rebuild the hole card widget
+      // also, if folded, rebuild the widget
+      if (_needsRebuilding(me)) {
+        mePlayerModelVn.value = me.copyWith();
+      }
+    }
+  }
 
-        /*
+  /* init */
+  void _init() {
+    _players = context.read<Players>();
+    mePlayerModelVn.value = _players?.me?.copyWith();
 
-        return Stack(
-          children: [
-            Align(
-              alignment: Alignment.topLeft,
-              child: HandAnalyseView(widget.gameCode, widget.clubCode),
-            ),
-            !me
-                ? SizedBox.shrink()
-                : Positioned(
-                    left: 50,
-                    top: 0,
-                    width: width,
-                    height: height,
-                    child: HoleCardsView(
-                      gameContext: widget.gameContext,
-                      playerModel: players.me,
-                      showActionWidget: actionState.show,
-                    ),
-                  ),
-            Align(
-                alignment: Alignment.topRight,
-                child: CommunicationView(widget.chatVisibilityChange,
-                    widget.gameContext.gameComService.gameMessaging)),
-            Consumer2<HostSeatChange, GameContextObject>(
-              builder: (
-                context,
-                hostSeatChange,
-                gameContextObject,
-                _,
-              ) =>
-                  hostSeatChange.seatChangeInProgress &&
-                          gameContextObject.playerId ==
-                              hostSeatChange.seatChangeHost
-                      ? Align(
-                          alignment: Alignment.center,
-                          child: SeatChangeConfirmWidget(),
-                        )
-                      : SizedBox.shrink(),
-            )
-          ],
-        );
-         */
+    // listen for changes in my PlayerModel state
+    _players?.addListener(onPlayersChanges);
+  }
 
-        // Column(children: [
-        //   SizedBox.fromSize(size: Size(0, 0)),
-        //   Row(
-        //     children: [
-        //       HandAnalyseView(widget.gameCode, widget.clubCode),
-        //       Expanded(
-        //         child: !me
-        //             ? SizedBox.shrink()
-        //             : HoleCardsView(
-        //                   playerModel: players.me,
-        //                   showActionWidget: actionState.show,
-        //                 ),
+  void _dispose() {
+    _players?.removeListener(onPlayersChanges);
+  }
 
-        //       ),
-        //       CommunicationView(widget.chatVisibilityChange,
-        //           widget.gameComService.gameMessaging),
-        //       Consumer2<HostSeatChange, GameContextObject>(
-        //         builder: (context, hostSeatChange, gameContextObject, _) =>
-        //             hostSeatChange.seatChangeInProgress &&
-        //                     gameContextObject.playerId ==
-        //                         hostSeatChange.seatChangeHost
-        //                 ? Align(
-        //                     alignment: Alignment.center,
-        //                     child: SeatChangeConfirmWidget(),
-        //                   )
-        //                 : SizedBox.shrink(),
-        //       )
-        //     ],
-        //   )
-        // ]);
+  /* hand analyse view builder */
+  Widget _buildHandAnalyseView(BuildContext context) {
+    final gameState = context.read<GameState>();
+
+    return Consumer<GameContextObject>(
+      builder: (context, gameContextObject, _) => Positioned(
+        left: 0,
+        top: 0,
+        child: HandAnalyseView(
+          gameState: gameState,
+          clubCode: widget.clubCode,
+          gameContextObject: gameContextObject,
+        ),
+      ),
+    );
+  }
+
+  /* straddle prompt builder / footer action view builder / hole card view builder */
+  Widget _buildMainView() {
+    final width = MediaQuery.of(context).size.width;
+
+    /* build the HoleCardsViewAndFooterActionView only if me is NOT null */
+    return ValueListenableBuilder<PlayerModel>(
+      valueListenable: mePlayerModelVn,
+      builder: (_, me, __) => me == null
+          ? SizedBox(width: width)
+          : HoleCardsViewAndFooterActionView(playerModel: me),
+    );
+  }
+
+  Widget _buildCommunicationWidget() => Positioned(
+        right: 0,
+        top: 0,
+        child: CommunicationView(
+          widget.chatVisibilityChange,
+          widget.gameContext.gameComService.gameMessaging,
+        ),
+      );
+
+  Widget _buildSeatConfirmWidget(BuildContext context) {
+    final gameContextObject = context.read<GameContextObject>();
+    final gameState = context.read<GameState>();
+
+    final bool isHost = gameContextObject.isHost();
+
+    // FIXME: REBUILD-FIX: need to check if seat change prompts are rebuilding as expected
+    return Consumer<SeatChangeNotifier>(
+      builder: (_, hostSeatChange, __) {
+        final bool seatChangeInProgress = hostSeatChange.seatChangeInProgress ||
+            gameState.hostSeatChangeInProgress;
+
+        final bool showSeatChangeConfirmWidget = seatChangeInProgress &&
+            isHost &&
+            !gameState.playerSeatChangeInProgress;
+
+        return showSeatChangeConfirmWidget
+            ? Align(
+                alignment: Alignment.center,
+                child: SeatChangeConfirmWidget(
+                  gameCode: widget.gameContext.gameState.gameCode,
+                ),
+              )
+            : SizedBox.shrink();
       },
     );
   }
 
   @override
+  void initState() {
+    super.initState();
+    _init();
+  }
+
+  @override
+  void dispose() {
+    _dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => Stack(
+        children: [
+          /* hand analyse view */
+          _buildHandAnalyseView(context),
+
+          /* build main view - straddle prompt, hole cards, action view*/
+          _buildMainView(),
+
+          /* communication widgets */
+          _buildCommunicationWidget(),
+
+          /* seat confirm widget */
+          _buildSeatConfirmWidget(context),
+        ],
+      );
+
+  @override
   void afterFirstLayout(BuildContext context) {
-    final RenderBox object = context.findRenderObject();
-    final pos = object.localToGlobal(Offset(0, 0));
-    final size = object.size;
+    final RenderBox renderBox = context.findRenderObject();
+    final pos = renderBox.localToGlobal(Offset.zero);
+    final size = renderBox.size;
+
     log('Footer view size: $size pos: $pos');
-    final boardAttr = Provider.of<BoardAttributesObject>(
-      context,
-      listen: false,
-    );
+
+    final boardAttr = context.read<BoardAttributesObject>();
     boardAttr.setFooterDimensions(pos, size);
   }
 }
