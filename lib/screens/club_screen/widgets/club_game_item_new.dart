@@ -9,6 +9,8 @@ import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/widgets/custom_text_button.dart';
+import 'package:pokerapp/widgets/round_color_button.dart';
+import 'package:pokerapp/widgets/rounded_accent_button.dart';
 
 class ClubGameItemNew extends StatelessWidget {
   final GameModel _clubGameModel;
@@ -20,17 +22,17 @@ class ClubGameItemNew extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.fromLTRB(0, 5.0, 0, 5.0),
+      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       decoration: AppStylesNew.actionRowDecoration,
       child: Row(
         children: <Widget>[
           /*
           * color
           * */
-          Expanded(
-            flex: 1,
-            child: Container(),
-          ),
+          // Expanded(
+          //   flex: 1,
+          //   child: Container(),
+          // ),
           Expanded(
             flex: 6,
             child: Container(
@@ -128,13 +130,14 @@ class ClubGameItemNew extends StatelessWidget {
           ),
           Expanded(
             flex: 2,
-            child: Container(
-              child: CustomTextButton(
-                text: _clubGameModel.waitList == 0 ? "Join" : "Join Waitlist",
-                onTap: () => navigatorKey.currentState.pushNamed(
-                  Routes.game_play,
-                  arguments: clubGameModel.gameCode,
-                ),
+            child: RoundedColorButton(
+              backgroundColor: AppColorsNew.yellowAccentColor,
+              textColor: AppColorsNew.darkGreenShadeColor,
+              // fontSize: _clubGameModel.waitList != 0 ? 8 : 6,
+              text: _clubGameModel.waitList == 0 ? "Join" : "Join Waitlist",
+              onTapFunction: () => navigatorKey.currentState.pushNamed(
+                Routes.game_play,
+                arguments: clubGameModel.gameCode,
               ),
             ),
           ),

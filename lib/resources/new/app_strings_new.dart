@@ -117,5 +117,9 @@ class AppStringsNew {
   static String rearrangeText = "Rearrange";
   static String terminateText = "Terminate";
   static String applySeatChanges = "Apply Seat Changes?";
-  
+
+  static String clubCodeText = "Club code";
+
+  static String unsettledText = "Unsettled";
+  static String weeklyActivity = "Weekly Activity";
 }
