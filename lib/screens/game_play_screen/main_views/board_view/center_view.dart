@@ -127,14 +127,14 @@ class _CenterViewState extends State<CenterView> {
 
     // need rebuilding check
     if (_needsRebuilding(vnCards.value, tableState.cards))
-      vnCards.value = List.of(tableState.cards);
+      vnCards.value = List.of(tableState.cards ?? []);
 
     // need rebuilding check
     if (_needsRebuilding(vnCardOthers.value, tableState.cardsOther))
       vnCardOthers.value = List.of(tableState.cardsOther ?? []);
 
     // needs rebuilding check
-    if (_needsRebuilding(vnPotChips.value, tableState.potChips ?? []))
+    if (_needsRebuilding(vnPotChips.value, tableState.potChips))
       vnPotChips.value = List.of(tableState.potChips ?? []);
 
     vnTwoBoardsNeeded.value = tableState.twoBoardsNeeded;
