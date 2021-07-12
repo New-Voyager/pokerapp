@@ -122,4 +122,13 @@ class AppStringsNew {
 
   static String unsettledText = "Unsettled";
   static String weeklyActivity = "Weekly Activity";
+
+  static String handlogSendToDevTeam =
+      "Would you like to send this hand data to App Developement Team?";
+
+  static String sendReportText = "Send Report";
+
+  static String sendButtonText = "Send";
+
+  static String cancelButtonText = "Cancel";
 }
