@@ -8,6 +8,7 @@ import 'package:pokerapp/models/bookmarkedHands_model.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
@@ -25,6 +26,7 @@ import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
 import 'package:pokerapp/widgets/num_diamond_widget.dart';
+import 'package:pokerapp/widgets/round_color_button.dart';
 
 import '../../../routes.dart';
 
@@ -221,6 +223,9 @@ class _HandLogViewState extends State<HandLogView> with RouteAwareAnalytics {
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             // replay, share, bookmark buttons
+            RoundIconButton(
+                onTap: () => _sendHand(), icon: Icons.developer_board),
+            AppDimensionsNew.getHorizontalSpace(8),
             RoundIconButton(onTap: () => _replayHand(), icon: Icons.replay),
             AppDimensionsNew.getHorizontalSpace(8),
             RoundIconButton(
@@ -296,5 +301,54 @@ class _HandLogViewState extends State<HandLogView> with RouteAwareAnalytics {
       AppDimensionsNew.getVerticalSizedBox(8),
       HandlogSummary(handlogModel: _handLogModel),
     ];
+  }
+
+  _sendHand() async {
+    final res = await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: AppColorsNew.newDialogBgColor,
+        elevation: 5,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+          side: BorderSide(
+            color: AppColorsNew.newBorderColor,
+          ),
+        ),
+        buttonPadding: EdgeInsets.all(16),
+        title: Text(AppStringsNew.sendReportText),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              AppStringsNew.handlogSendToDevTeam,
+            ),
+          ],
+        ),
+        actions: [
+          RoundedColorButton(
+            text: AppStringsNew.cancelButtonText,
+            backgroundColor: Colors.transparent,
+            textColor: AppColorsNew.newGreenButtonColor,
+            borderColor: AppColorsNew.newGreenButtonColor,
+            onTapFunction: () {
+              Navigator.of(context).pop();
+            },
+          ),
+          RoundedColorButton(
+            text: AppStringsNew.sendButtonText,
+            backgroundColor: AppColorsNew.yellowAccentColor,
+            textColor: AppColorsNew.darkGreenShadeColor,
+            onTapFunction: () {
+              Navigator.of(context).pop(true);
+            },
+          ),
+        ],
+      ),
+    );
+    if (res != null) {
+      // Make API Call
+      Alerts.showNotification(titleText: "Handlog data sent to App team.");
+    }
   }
 }
