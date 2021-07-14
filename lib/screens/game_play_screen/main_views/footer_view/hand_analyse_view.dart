@@ -367,7 +367,7 @@ class HandAnalyseView extends StatelessWidget {
       child: InkWell(
         onTap: () {
           Navigator.of(context).pop();
-          onClickViewHandAnalysis(context);
+          callback(context);
         },
         child: Row(
           children: [
@@ -377,7 +377,7 @@ class HandAnalyseView extends StatelessWidget {
             ),
             SizedBox(width: 5),
             Text(
-              'Hand History',
+              label,
               style: AppStylesNew.labelTextStyle.copyWith(
                 fontSize: 12.dp,
               ),
