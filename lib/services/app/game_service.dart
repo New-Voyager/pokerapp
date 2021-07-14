@@ -24,6 +24,8 @@ class GameService {
           gameType
           gameCode
           gameNum
+          smallBlind
+          bigBlind
           startedBy
           startedAt
           endedBy

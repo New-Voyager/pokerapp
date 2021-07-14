@@ -25,9 +25,8 @@ class CustomAppBar extends AppBar {
           backgroundColor: Colors.transparent,
           elevation: 0,
           leadingWidth: 100.pw,
-          leading: (showBackButton ?? true)
-              ? BackArrowWidget()
-              : SizedBox.shrink(),
+          leading:
+              (showBackButton ?? true) ? BackArrowWidget() : SizedBox.shrink(),
           title: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -59,19 +58,19 @@ class BackArrowWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        alignment: Alignment.centerLeft,
-        padding: EdgeInsets.only(left: 16.pw),
-        child: InkWell(
-          child: SvgPicture.asset(
-            'assets/images/backarrow.svg',
-            color: AppColorsNew.newGreenButtonColor,
-            width: 24.pw,
-            height: 24.pw,
-            fit: BoxFit.contain,
-          ),
-          borderRadius: BorderRadius.circular(24.pw),
-          onTap: () => Navigator.of(context).pop(),
+      alignment: Alignment.centerLeft,
+      padding: EdgeInsets.only(left: 16.pw),
+      child: InkWell(
+        child: SvgPicture.asset(
+          'assets/images/backarrow.svg',
+          color: AppColorsNew.newGreenButtonColor,
+          width: 24.pw,
+          height: 24.pw,
+          fit: BoxFit.contain,
         ),
-      );
+        borderRadius: BorderRadius.circular(24.pw),
+        onTap: () => Navigator.of(context).pop(),
+      ),
+    );
   }
 }

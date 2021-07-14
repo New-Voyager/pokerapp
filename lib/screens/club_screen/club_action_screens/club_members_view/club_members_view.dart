@@ -38,7 +38,7 @@ class _ClubMembersViewState extends State<ClubMembersView>
   List<ClubMemberModel> _all = [];
   List<ClubMemberModel> _inactive = [];
   List<ClubMemberModel> _managers = [];
-  List<ClubMemberModel> _unsettled = [];
+  //List<ClubMemberModel> _unsettled = [];
 
   bool _isLoading = true;
 
@@ -53,8 +53,8 @@ class _ClubMembersViewState extends State<ClubMembersView>
         _clubHomePageModel.clubCode, MemberListOptions.INACTIVE);
     _managers = await ClubInteriorService.getClubMembers(
         _clubHomePageModel.clubCode, MemberListOptions.MANAGERS);
-    _unsettled = await ClubInteriorService.getClubMembers(
-        _clubHomePageModel.clubCode, MemberListOptions.UNSETTLED);
+    // _unsettled = await ClubInteriorService.getClubMembers(
+    //     _clubHomePageModel.clubCode, MemberListOptions.UNSETTLED);
     if (mounted)
       setState(() {
         _isLoading = false;
@@ -63,7 +63,7 @@ class _ClubMembersViewState extends State<ClubMembersView>
 
   @override
   void initState() {
-    _controller = new TabController(length: 4, vsync: this);
+    _controller = new TabController(length: 3, vsync: this);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _fetchData();
     });
@@ -101,9 +101,9 @@ class _ClubMembersViewState extends State<ClubMembersView>
                             Tab(
                               text: 'All',
                             ),
-                            Tab(
-                              text: 'Unsettled',
-                            ),
+                            // Tab(
+                            //   text: 'Unsettled',
+                            // ),
                             Tab(
                               text: 'Managers',
                             ),
@@ -123,12 +123,12 @@ class _ClubMembersViewState extends State<ClubMembersView>
                               MemberListOptions.ALL,
                               _clubHomePageModel.isOwner,
                             ),
-                            ClubMembersListView(
-                              this._clubHomePageModel.clubCode,
-                              _unsettled,
-                              MemberListOptions.UNSETTLED,
-                              _clubHomePageModel.isOwner,
-                            ),
+                            // ClubMembersListView(
+                            //   this._clubHomePageModel.clubCode,
+                            //   _unsettled,
+                            //   MemberListOptions.UNSETTLED,
+                            //   _clubHomePageModel.isOwner,
+                            // ),
                             ClubMembersListView(
                               this._clubHomePageModel.clubCode,
                               _managers,

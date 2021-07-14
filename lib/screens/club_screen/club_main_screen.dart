@@ -122,7 +122,7 @@ class _ClubMainScreenNewState extends State<ClubMainScreenNew>
                   ),
 
                   // stats view
-                 /*  ClubGraphicsViewNew(
+                  /*  ClubGraphicsViewNew(
                     clubModel.playerBalance ?? 0.0,
                     clubModel.weeklyActivity,
                   ), */

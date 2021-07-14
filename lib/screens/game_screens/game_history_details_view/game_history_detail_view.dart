@@ -453,24 +453,19 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
   }
 
   Widget gameTypeTile() {
+    String title = '';
+    String blind = '';
+
+    if (loadingDone) {
+      title = '${_gameDetail.gameTypeStr ?? ""}';
+      blind =
+          '${DataFormatter.chipsFormat(_gameDetail.smallBlind)} / ${DataFormatter.chipsFormat(_gameDetail.bigBlind)}';
+    }
     return Container(
       height: 150.ph,
       decoration: AppStylesNew.greenContainerDecoration,
       child: Row(
         children: [
-          // Container(
-          //   width: 20.0,
-          //   // color: Color(0xffef9712),
-          //   decoration: BoxDecoration(
-          //     color: Color(0xffef9712),
-          //     borderRadius: const BorderRadius.horizontal(
-          //       left: Radius.circular(AppDimensions.cardRadius),
-          //     ),
-          //   ),
-          // ),
-          // SizedBox(
-          //   width: 5.0,
-          // ),
           Container(
             padding: EdgeInsets.all(8),
             child: Column(
@@ -483,13 +478,23 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
                   children: [
                     Visibility(
                         visible: loadingDone && _gameDetail.gameTypeStr != null,
-                        child: Text(
-                          _gameDetail.gameTypeStr ?? '',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 14.dp,
+                        child: Row(children: [
+                          Text(
+                            title,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 14.dp,
+                            ),
                           ),
-                        )),
+                          SizedBox(width: 10.pw),
+                          Text(
+                            blind,
+                            style: TextStyle(
+                              color: Colors.yellow,
+                              fontSize: 14.dp,
+                            ),
+                          ),
+                        ])),
                     seprator,
                     Visibility(
                         visible:
@@ -512,18 +517,41 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
                 /*  SizedBox(
                   height: 15,
                 ), */
-                Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-                  Visibility(
-                    visible: loadingDone && _gameDetail.endedAt != null,
-                    child: Text(
-                      _gameDetail.endedAtStr != null
-                          ? 'Ended at ${_gameDetail.endedAtStr}'
-                          : '',
-                      style:
-                          AppStylesNew.labelTextStyle.copyWith(fontSize: 6.dp),
-                    ),
-                  )
-                ]),
+                Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Visibility(
+                        visible: loadingDone && _gameDetail.endedAt != null,
+                        child: Text(
+                          _gameDetail.endedAtStr != null
+                              ? 'Started by ${_gameDetail.startedBy}'
+                              : '',
+                          style: AppStylesNew.labelTextStyle
+                              .copyWith(fontSize: 6.dp),
+                        ),
+                      ),
+                      Visibility(
+                        visible: loadingDone && _gameDetail.endedAt != null,
+                        child: Text(
+                          _gameDetail.endedAtStr != null
+                              ? 'Ended by ${_gameDetail.endedBy}'
+                              : '',
+                          style: AppStylesNew.labelTextStyle
+                              .copyWith(fontSize: 6.dp),
+                        ),
+                      ),
+                      Visibility(
+                        visible: loadingDone && _gameDetail.endedAt != null,
+                        child: Text(
+                          _gameDetail.endedAtStr != null
+                              ? 'Ended at ${_gameDetail.endedAtStr}'
+                              : '',
+                          style: AppStylesNew.labelTextStyle
+                              .copyWith(fontSize: 6.dp),
+                        ),
+                      )
+                    ]),
               ],
             ),
           ),
@@ -581,6 +609,69 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
   }
 
   Widget getLowerCard() {
+    bool hhTracked = false;
+    if (loadingDone) {
+      hhTracked = _gameDetail.hhTracked;
+    }
+    Widget hhTile;
+    if (!hhTracked) {
+      hhTile = ListTile(
+        tileColor: AppColorsNew.actionRowBgColor,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        leading: Container(
+          width: 36.ph,
+          height: 36.ph,
+          padding: EdgeInsets.all(8),
+          decoration:
+              BoxDecoration(color: Colors.yellow, shape: BoxShape.circle),
+          child: SvgPicture.asset(
+            'assets/images/highhand.svg',
+            color: AppColorsNew.darkGreenShadeColor,
+            width: 24.ph,
+            height: 24.ph,
+            fit: BoxFit.cover,
+          ),
+        ),
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "High Hand Log",
+            ),
+          ],
+        ),
+        trailing: Text('Not tracked'),
+      );
+    } else {
+      hhTile = ListTile(
+        tileColor: AppColorsNew.actionRowBgColor,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        onTap: () => this.onHighHandLogPressed(context),
+        leading: Container(
+          width: 36.ph,
+          height: 36.ph,
+          padding: EdgeInsets.all(8),
+          decoration:
+              BoxDecoration(color: Colors.yellow, shape: BoxShape.circle),
+          child: SvgPicture.asset(
+            'assets/images/highhand.svg',
+            color: AppColorsNew.darkGreenShadeColor,
+            width: 24.ph,
+            height: 24.ph,
+            fit: BoxFit.cover,
+          ),
+        ),
+        title: Text(
+          "High Hand Log",
+        ),
+        trailing: Icon(
+          Icons.arrow_forward_ios,
+          color: AppColorsNew.newGreenButtonColor,
+          size: 12.dp,
+        ),
+      );
+    }
+
     log('hands Played: ${_gameDetail.handsPlayed}');
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16),
@@ -668,34 +759,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
             ),
           ),
           AppDimensionsNew.getVerticalSizedBox(16),
-          ListTile(
-            tileColor: AppColorsNew.actionRowBgColor,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-            onTap: () => this.onHighHandLogPressed(context),
-            leading: Container(
-              width: 36.ph,
-              height: 36.ph,
-              padding: EdgeInsets.all(8),
-              decoration:
-                  BoxDecoration(color: Colors.yellow, shape: BoxShape.circle),
-              child: SvgPicture.asset(
-                'assets/images/highhand.svg',
-                color: AppColorsNew.darkGreenShadeColor,
-                width: 24.ph,
-                height: 24.ph,
-                fit: BoxFit.cover,
-              ),
-            ),
-            title: Text(
-              "High Hand Log",
-            ),
-            trailing: Icon(
-              Icons.arrow_forward_ios,
-              color: AppColorsNew.newGreenButtonColor,
-              size: 12.dp,
-            ),
-          ),
+          hhTile,
         ],
       ),
     );

@@ -125,8 +125,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
       }
 
       // show popup menu
-      showPlayerPopup(context, widget.seat.key,
-          widget.gameState, widget.seat);
+      showPlayerPopup(context, widget.seat.key, widget.gameState, widget.seat);
 
       // Enable this for popup buttons
       // gameState.setTappedSeatPos(
