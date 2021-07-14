@@ -143,31 +143,31 @@ class ClubActionsNew extends StatelessWidget {
               flex: 3,
               child: getHostMemberChatWidget(),
             ),
-            Expanded(
-              flex: 3,
-              child: ClubActionButtonNew(
-                this._clubHomePageModel,
-                ClubActions.MANAGE_CHIPS,
-                "Manage Chips",
-                SvgPicture.asset("assets/images/club/manage_chips.svg"),
-              ),
-            ),
-            Expanded(
-              flex: 3,
-              child: ClubActionButtonNew(
-                this._clubHomePageModel,
-                ClubActions.REWARDS,
-                "Rewards",
-                SvgPicture.asset("assets/images/club/rewards.svg"),
-                onTap: () {
-                  Navigator.pushNamed(
-                    context,
-                    Routes.rewards_list_screen,
-                    arguments: this.clubCode,
-                  );
-                },
-              ),
-            ),
+            // Expanded(
+            //   flex: 3,
+            //   child: ClubActionButtonNew(
+            //     this._clubHomePageModel,
+            //     ClubActions.MANAGE_CHIPS,
+            //     "Manage Chips",
+            //     SvgPicture.asset("assets/images/club/manage_chips.svg"),
+            //   ),
+            // ),
+            // Expanded(
+            //   flex: 3,
+            //   child: ClubActionButtonNew(
+            //     this._clubHomePageModel,
+            //     ClubActions.REWARDS,
+            //     "Rewards",
+            //     SvgPicture.asset("assets/images/club/rewards.svg"),
+            //     onTap: () {
+            //       Navigator.pushNamed(
+            //         context,
+            //         Routes.rewards_list_screen,
+            //         arguments: this.clubCode,
+            //       );
+            //     },
+            //   ),
+            // ),
             // Expanded(
             //   flex: 3,
             //   child: Container(),

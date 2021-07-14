@@ -36,14 +36,14 @@ class AppStylesNew {
   );
   static final TextStyle appBarTitleTextStyle = TextStyle(
     fontFamily: AppAssetsNew.fontFamilyPoppins,
-    fontSize: 12.dp,
+    fontSize: 20.dp,
     fontWeight: FontWeight.w500,
     color: AppColorsNew.yellowAccentColor,
   );
 
   static final TextStyle appBarSubTitleTextStyle = TextStyle(
     fontFamily: AppAssetsNew.fontFamilyPoppins,
-    fontSize: 8.dp,
+    fontSize: 16.dp,
     fontWeight: FontWeight.w400,
     color: Colors.grey,
   );

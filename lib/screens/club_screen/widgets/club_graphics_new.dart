@@ -77,8 +77,7 @@ class ClubGraphicsViewNew extends StatelessWidget {
             flex: 7,
             child: Container(
               padding: EdgeInsets.all(8.pw),
-                           decoration: AppStylesNew.actionRowDecoration,
-
+              decoration: AppStylesNew.actionRowDecoration,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,

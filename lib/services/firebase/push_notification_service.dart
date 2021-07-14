@@ -69,12 +69,13 @@ Future _showNotification(RemoteMessage message) async {
   if (notificationType == NotificationType.NEW_GAME.value()) {
     androidDetails = AndroidNotificationDetails(
         "com.voyagerent.pokerapp.channel", "pokerapp", "Poker App Channel",
-        sound: RawResourceAndroidNotificationSound('check'),  playSound: true);
+        sound: RawResourceAndroidNotificationSound('check'), playSound: true);
     iosDetails = IOSNotificationDetails();
   } else if (notificationType == NotificationType.NEW_CLUB.value()) {
     androidDetails = AndroidNotificationDetails(
         "com.voyagerent.pokerapp.channel", "pokerapp", "Poker App Channel",
-        sound: RawResourceAndroidNotificationSound('player_turn'), playSound: true);
+        sound: RawResourceAndroidNotificationSound('player_turn'),
+        playSound: true);
     iosDetails = IOSNotificationDetails();
   }
 

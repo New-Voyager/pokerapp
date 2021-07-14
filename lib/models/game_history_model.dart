@@ -141,7 +141,7 @@ class GameHistoryDetailModel extends ChangeNotifier {
   int riverHands;
   int showdownHands;
   int handsPlayed = 0;
-  bool hhTracked = true;
+  bool hhTracked = false;
   String gameType;
   int gameHands;
   String runTimeStr;
@@ -152,6 +152,10 @@ class GameHistoryDetailModel extends ChangeNotifier {
   double buyIn;
   double profit;
   bool playedGame = false;
+  double smallBlind;
+  double bigBlind;
+  String startedBy;
+  String endedBy;
 
   List<HandData> handsData = [];
   List<HighHandWinner> hhWinners = [];
@@ -161,6 +165,13 @@ class GameHistoryDetailModel extends ChangeNotifier {
 
   void load() async {
     final gameData = jsonData['completedGame'];
+
+    this.smallBlind = double.parse(gameData['smallBlind'].toString());
+    this.bigBlind = double.parse(gameData['bigBlind'].toString());
+    this.startedBy = gameData['startedBy'] ?? '';
+    this.endedBy = gameData['endedBy'] ?? '';
+    this.hhTracked = gameData['highHandTracked'] ?? false;
+
     if (gameData['handsPlayed'] == null) {
       this.playedGame = false;
     } else {
@@ -195,7 +206,7 @@ class GameHistoryDetailModel extends ChangeNotifier {
           .add(new HandData('Showdown', (showdownHands / handsPlayed) * 100.0));
     }
 
-    if (hhTracked) {
+    if (this.hhTracked) {
       List<dynamic> winners = jsonData['hhWinners'];
       if (winners != null) {
         for (dynamic winner in winners) {
