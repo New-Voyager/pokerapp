@@ -53,6 +53,7 @@ class GameService {
           handsDealt
           profit
           buyIn
+          highHandTracked
           stackStat {
             handNum
             before
