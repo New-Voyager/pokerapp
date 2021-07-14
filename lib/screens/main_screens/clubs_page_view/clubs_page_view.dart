@@ -9,6 +9,7 @@ import 'package:pokerapp/models/pending_approvals.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
+import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/routes.dart';
@@ -273,7 +274,7 @@ class _ClubsPageViewState extends State<ClubsPageView>
           decoration: BoxDecoration(
             image: DecorationImage(
               image:
-                  AssetImage("assets/images/backgrounds/chat-background.png"),
+                  AssetImage(AppAssetsNew.chatBgImagePath),
               repeat: ImageRepeat.repeat,
             ),
           ),
