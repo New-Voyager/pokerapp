@@ -347,6 +347,7 @@ class _HandLogViewState extends State<HandLogView> with RouteAwareAnalytics {
       ),
     );
     if (res != null) {
+      await HandService.debugHandLog(widget.gameCode, widget.handNum);
       // Make API Call
       Alerts.showNotification(titleText: "Handlog data sent to App team.");
     }
