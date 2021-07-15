@@ -37,7 +37,7 @@ import 'iap_test.dart';
 
 class TestService {
   static bool get isTesting {
-    return false;
+    return true;
   }
 
   static var _showResult = false;
@@ -449,11 +449,11 @@ class TestService {
     player.cards = [
       194,
       196,
-      200,
-      50,
-      56,
+      // 200,
+      // 50,
+      // 56,
     ];
-    player.noOfCardsVisible = 2;
+    player.noOfCardsVisible = player.cards.length;
     final players = gameState.getPlayers(_context);
     players.notifyAll();
   }

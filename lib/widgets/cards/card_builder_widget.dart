@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
-import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
@@ -48,7 +47,8 @@ class CardBuilderWidget extends StatelessWidget {
         return 1.2 * bao.communityCardSizeScales;
 
       case CardType.HoleCard:
-        return 2.9;
+        final bao = context.read<BoardAttributesObject>();
+        return bao.holeCardSizeRatio;
 
       case CardType.PlayerCard:
         return 0.90;

@@ -111,7 +111,7 @@ class HoleStackCardView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('isCardVisible: $isCardVisible');
+    context.read<BoardAttributesObject>().noOfCards = cards?.length ?? 0;
 
     final GameState gameState = GameState.getState(context);
 
