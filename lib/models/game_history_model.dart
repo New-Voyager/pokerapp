@@ -19,7 +19,20 @@ class GameHistoryModel {
   double balance;
   int handsPlayed;
 
+  // New Fields from game record
+  // gameType
+  String clubCode;
+  String clubName;
+  String endedBy;
+  double stack;
+  double buyIn;
+
   GameHistoryModel.fromJson(var jsonData) {
+    clubCode = jsonData['clubCode'];
+    clubName = jsonData['clubName'];
+    endedBy = jsonData['endedBy'];
+    stack = jsonData['stack'];
+    buyIn = jsonData['buyIn'];
     gameTypeStr = jsonData["gameType"];
     gameCode = jsonData["gameCode"];
     startedBy = jsonData["startedBy"];

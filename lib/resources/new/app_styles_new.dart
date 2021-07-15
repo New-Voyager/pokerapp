@@ -36,14 +36,14 @@ class AppStylesNew {
   );
   static final TextStyle appBarTitleTextStyle = TextStyle(
     fontFamily: AppAssetsNew.fontFamilyPoppins,
-    fontSize: 20.dp,
+    fontSize: 12.dp,
     fontWeight: FontWeight.w500,
     color: AppColorsNew.yellowAccentColor,
   );
 
   static final TextStyle appBarSubTitleTextStyle = TextStyle(
     fontFamily: AppAssetsNew.fontFamilyPoppins,
-    fontSize: 16.dp,
+    fontSize: 8.dp,
     fontWeight: FontWeight.w400,
     color: Colors.grey,
   );
@@ -141,13 +141,14 @@ class AppStylesNew {
     ],
     stops: [0.1, 0.3],
   );
-  static const BoxDecoration bgDecoration = BoxDecoration(
+  static BoxDecoration bgDecoration = BoxDecoration(
     color: AppColorsNew.newBackgroundBlackColor,
     image: DecorationImage(
       image: AssetImage(
-        AppAssetsNew.pathBackgroundImage,
+        AppAssetsNew.chatBgImagePath,
+        // AppAssetsNew.pathBackgroundImage,
       ),
-      fit: BoxFit.cover,
+      repeat: ImageRepeat.repeat,
     ),
   );
 

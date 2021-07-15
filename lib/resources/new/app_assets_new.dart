@@ -53,6 +53,11 @@ class AppAssetsNew {
   static String pauseBgPath = "assets/images/game-screen/pause_bg.png";
 
   static String doneImagePath = "assets/images/game-screen/done.svg";
+  static String liveGamesTabImagePath = "assets/images/live.png";
+
+  static String playedGamesTabImagePath = "assets/images/record.png";
+
+  static String chatBgImagePath ="assets/images/backgrounds/chat-background.png";
 
   static String coinsImagePath = "assets/images/coins.svg";
 }
