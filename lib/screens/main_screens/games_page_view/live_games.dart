@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/game_history_model.dart';
 import 'package:pokerapp/models/newmodels/game_model_new.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
@@ -11,6 +12,7 @@ import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/routes.dart';
+import 'package:pokerapp/screens/main_screens/games_page_view/widgets/game_record_item.dart';
 import 'package:pokerapp/screens/main_screens/games_page_view/widgets/live_games_item.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/test/test_service.dart';
@@ -29,7 +31,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
   bool _isLoading = true;
   bool _isPlayedGamesLoading = true;
   List<GameModelNew> liveGames = [];
-  List<GameModelNew> _playedGames = [];
+  List<GameHistoryModel> _playedGames = [];
 
   TabController _tabController;
 
@@ -116,7 +118,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
             TabBar(
               tabs: [
                 Tab(
-                  text: "Live Games",
+                  text: AppStringsNew.liveGamesText,
                   icon: Image.asset(
                     AppAssetsNew.liveGamesTabImagePath,
                     height: 24,
@@ -125,7 +127,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
                   ),
                 ),
                 Tab(
-                  text: "Game Record",
+                  text: AppStringsNew.gameRecordText,
                   icon: Image.asset(
                     AppAssetsNew.playedGamesTabImagePath,
                     height: 24,
@@ -200,7 +202,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
                               physics: BouncingScrollPhysics(),
                               shrinkWrap: true,
                               itemBuilder: (context, index) {
-                                return LiveGameItem(
+                                return GameRecordItem(
                                     game: _playedGames[index],
                                     onTapFunction: () async {
                                       await Navigator.of(context).pushNamed(
