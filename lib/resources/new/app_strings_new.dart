@@ -135,4 +135,5 @@ class AppStringsNew {
   static String noGameRecordsText = "No Games";
   static String liveGamesText = "Live Games";
   static String gameRecordText = "Game Record";
+  static String buyButtonText = "Buy";
 }

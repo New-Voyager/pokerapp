@@ -77,10 +77,13 @@ hands:
       
       # balance indicates the player balance after the hand
       # bb player won a chip
-      stacks:
+      players:
         - seat: 1
-          stack: 150
+          balance:
+            after: 150
         - seat: 5
-          stack: 0
+          balance:
+            after: 0
         - seat: 8
-          stack: 0
+          balance:
+            after: 0
