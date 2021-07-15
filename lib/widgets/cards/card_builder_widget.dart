@@ -80,10 +80,6 @@ class CardBuilderWidget extends StatelessWidget {
 
     bool highlight = card.highlight ?? false;
 
-    Color highlightColor = (card.otherHighlightColor ?? false)
-        ? Colors.blue.shade100
-        : Colors.green.shade100;
-
     cardTextStyle = AppStyles.cardTextStyle.copyWith(
       color: card.color,
     );
@@ -128,18 +124,7 @@ class CardBuilderWidget extends StatelessWidget {
         ),
         color: Colors.white,
       ),
-      child: cardFace == CardFace.FRONT
-          ? isCardVisible
-              ? cardBuilder(cardTextStyle, suitTextStyle)
-              : Container()
-          : ClipRRect(
-              borderRadius: BorderRadius.all(
-                Radius.circular(roundRadius),
-              ),
-              child: Image.asset(
-                AppAssetsNew.cardBackImagePath,
-              ),
-            ),
+      child: _buildCardBackSide(cardTextStyle, suitTextStyle, context),
     );
 
     if (highlight && keepPulsatingHighlight)
@@ -152,5 +137,21 @@ class CardBuilderWidget extends StatelessWidget {
       );
 
     return cardWidget;
+  }
+
+  _buildCardBackSide(
+      TextStyle cardTextStyle, TextStyle suitTextStyle, BuildContext context) {
+    if (cardFace == CardFace.FRONT)
+      return isCardVisible
+          ? cardBuilder(cardTextStyle, suitTextStyle)
+          : Container();
+
+    // get the card back side asset as we need
+    final vnCardBackImage = context.read<ValueNotifier<String>>();
+
+    return ClipRRect(
+      borderRadius: BorderRadius.all(Radius.circular(roundRadius)),
+      child: Image.asset(vnCardBackImage.value),
+    );
   }
 }
