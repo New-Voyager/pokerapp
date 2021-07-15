@@ -144,6 +144,12 @@ class HandService {
   }
   """;
 
+  static String debugHandLogQuery = """
+    mutation debugHand(\$gameCode:String!, \$handNum:Int!) {
+      debugHandLog(gameCode: \$gameCode, handNum: \$handNum)
+    }
+  """;
+
   static Future<void> getAllHands(HandHistoryListModel model) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
     Map<String, dynamic> variables = {
@@ -277,19 +283,9 @@ class HandService {
 
   static getBookMarkedHands() async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
-
-    // Map<String, dynamic> variables = {
-    //   "gameCode": gameCode,
-    //   "handNum": handNum,
-    // };
-
-    //  log("Variables : $variables");
-    QueryResult result = await _client.mutate(MutationOptions(
+    QueryResult result = await _client.query(QueryOptions(
       documentNode: gql(bookmarkedHands),
     ));
-    //print("Bookmarking API : ${result.data.values}");
-    log("results : ${result.data.keys}");
-    log("results : ${result.data.values}");
 
     if (result.hasException) {
       print("Exception in BookmarkHand: ${result.exception}");
@@ -303,19 +299,31 @@ class HandService {
 
     Map<String, dynamic> variables = {
       "gameCode": gameCode,
-      //   "handNum": handNum,
     };
 
-    //  log("Variables : $variables");
-    QueryResult result = await _client.mutate(MutationOptions(
+    QueryResult result = await _client.query(QueryOptions(
         documentNode: gql(bookmarkedHandsForGame), variables: variables));
-    // print("Bookmarking DFGSDFG API : ${result.data.values}");
-    // print("Bookmarking DFGSDFG API : ${result.data.keys}");
 
     if (result.hasException) {
       print("Exception in BookmarkHand for game: ${result.exception}");
       return null;
     }
     return result.data;
+  }
+
+  static Future<bool> debugHandLog(String gameCode, int handNum) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+
+    Map<String, dynamic> variables = {"gameCode": gameCode, "handNum": handNum};
+
+    QueryResult result = await _client.mutate(MutationOptions(
+        documentNode: gql(debugHandLogQuery), variables: variables));
+
+    if (result.hasException) {
+      print(
+          "Exception in when marking a hand for debugging: ${result.exception}");
+      return false;
+    }
+    return true;
   }
 }

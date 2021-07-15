@@ -131,4 +131,6 @@ class AppStringsNew {
   static String sendButtonText = "Send";
 
   static String cancelButtonText = "Cancel";
+
+  static String buyButtonText = "Buy";
 }

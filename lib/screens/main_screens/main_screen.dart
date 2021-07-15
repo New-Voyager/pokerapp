@@ -12,6 +12,7 @@ import 'package:pokerapp/screens/game_screens/game_history_details_view/hand_sta
 import 'package:pokerapp/screens/main_screens/clubs_page_view/clubs_page_view.dart';
 import 'package:pokerapp/screens/main_screens/games_page_view/live_games.dart';
 import 'package:pokerapp/screens/main_screens/profile_page_view/profile_page_view_new.dart';
+import 'package:pokerapp/screens/main_screens/purchase_page_view/purchase_new.dart';
 import 'package:pokerapp/screens/main_screens/purchase_page_view/purchase_page_view.dart';
 import 'package:pokerapp/services/app/clubs_service.dart';
 import 'package:pokerapp/services/app/gif_cache_service.dart';
@@ -176,7 +177,7 @@ class _MainScreenState extends State<MainScreen>
       LiveGamesScreen(),
       ClubsPageView(),
       ProfilePageNew(),
-      PurchasePageView()
+      PurchasePageNew(),
     ]);
 
     if (TestService.isTesting) widgets.add(HandStatsView());
