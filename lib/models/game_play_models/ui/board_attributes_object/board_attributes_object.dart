@@ -458,6 +458,9 @@ class BoardAttributesObject extends ChangeNotifier {
   Size _boardSize;
   Size _tableSize;
 
+  int _noOfCards = 2; // default no of cards be 2
+  set noOfCards(int n) => _noOfCards = n;
+
   // center attributes
   // TODO HOW IS THIS CENTER SIZE RELEVANT
   Size _centerSize;
@@ -731,6 +734,30 @@ class BoardAttributesObject extends ChangeNotifier {
         equalTo6Inches: 1.0,
         equalTo7Inches: 1.10,
         greaterThan7Inches: 1.30,
+      ) as double;
+
+  /// Different No of cards, will create different sized hole card
+  double get _getScaleBasedOnNoOfCards {
+    switch (_noOfCards) {
+      case 2:
+        return 1.4;
+
+      case 4:
+        return 1.2;
+
+      case 5:
+        return 1;
+
+      default:
+        return 1;
+    }
+  }
+
+  double get holeCardSizeRatio => _decide(
+        lessThan6Inches: _getScaleBasedOnNoOfCards * 3.0,
+        equalTo6Inches: _getScaleBasedOnNoOfCards * 3.4,
+        equalTo7Inches: _getScaleBasedOnNoOfCards * 4.0,
+        greaterThan7Inches: _getScaleBasedOnNoOfCards * 4.6,
       ) as double;
 
   double get communityCardSizeScales => _decide(
