@@ -253,7 +253,7 @@ class CurvedNavItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
+      // crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
         Icon(
           iconData,
@@ -271,7 +271,7 @@ class CurvedNavItem extends StatelessWidget {
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: AppColorsNew.newTextColor,
-                    fontSize: 10.dp,
+                    fontSize: 8.dp,
                     letterSpacing: 0.7.dp,
                     fontWeight: FontWeight.w300,
                   ),

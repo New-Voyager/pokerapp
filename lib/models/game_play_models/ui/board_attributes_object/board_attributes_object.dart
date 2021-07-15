@@ -754,7 +754,7 @@ class BoardAttributesObject extends ChangeNotifier {
   }
 
   double get holeCardSizeRatio => _decide(
-        lessThan6Inches: _getScaleBasedOnNoOfCards * 2.9,
+        lessThan6Inches: _getScaleBasedOnNoOfCards * 3.0,
         equalTo6Inches: _getScaleBasedOnNoOfCards * 3.4,
         equalTo7Inches: _getScaleBasedOnNoOfCards * 2.9,
         greaterThan7Inches: _getScaleBasedOnNoOfCards * 2.9,
