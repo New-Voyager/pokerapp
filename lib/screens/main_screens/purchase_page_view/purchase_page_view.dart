@@ -4,12 +4,12 @@ import 'package:pokerapp/main2.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/services/test/test_service.dart';
 
-class PurchasePageView extends StatefulWidget {
+class PurchasePageOldView extends StatefulWidget {
   @override
-  _PurchasePageViewState createState() => _PurchasePageViewState();
+  _PurchasePageOldViewState createState() => _PurchasePageOldViewState();
 }
 
-class _PurchasePageViewState extends State<PurchasePageView> {
+class _PurchasePageOldViewState extends State<PurchasePageOldView> {
   @override
   Widget build(BuildContext context) {
     //return Text("Purchase Page View", style:TextStyle(color: Colors.white),);
