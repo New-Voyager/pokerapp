@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'utils.dart';
 import 'package:http/http.dart' as http;
 import 'package:web_socket_channel/web_socket_channel.dart';
@@ -79,6 +80,34 @@ class WebSocketJanusTransport extends JanusTransport {
       sink.add(stringify(data));
       return parse(await stream.firstWhere(
           (element) => (parse(element)['transaction'] == data['transaction'])));
+    } else {
+      throw "transaction key missing in body";
+    }
+  }
+
+  Future<dynamic> sendUmute(Map<String, dynamic> data, {int handleId}) async {
+    if (data['transaction'] != null) {
+      data['session_id'] = sessionId;
+      if (handleId != null) {
+        data['handle_id'] = handleId;
+      }
+      sink.add(stringify(data));
+
+      // we need to get the message within 10 messages
+      int maxCount = 25;
+      while (maxCount > 0) {
+        maxCount--;
+        final message = await stream.take(1).first;
+        if (message == null) {
+          break;
+        }
+        log('janus resp: $message');
+        final parsedMsg = parse(message);
+        if (parsedMsg['transaction'] == data['transaction']) {
+          return parsedMsg;
+        }
+      }
+      return null;
     } else {
       throw "transaction key missing in body";
     }

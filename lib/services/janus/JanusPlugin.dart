@@ -367,6 +367,34 @@ class JanusPlugin {
     }
   }
 
+  Future<dynamic> sendUnmute({dynamic data, RTCSessionDescription jsep}) async {
+    try {
+      String transaction = getUuid().v4();
+      Map<String, dynamic> response;
+      var request = {
+        "janus": "message",
+        "body": data,
+        "transaction": transaction,
+      };
+      if (context.token != null) request["token"] = context.token;
+      if (context.apiSecret != null) request["apisecret"] = context.apiSecret;
+      if (jsep != null) {
+        print(jsep.toMap());
+        request["jsep"] = jsep.toMap();
+      }
+      if (transport is RestJanusTransport) {
+        RestJanusTransport rest = (transport as RestJanusTransport);
+        response = await rest.post(request, handleId: handleId);
+      } else if (transport is WebSocketJanusTransport) {
+        WebSocketJanusTransport ws = (transport as WebSocketJanusTransport);
+        response = await ws.sendUmute(request, handleId: handleId);
+      }
+      return response;
+    } catch (e) {
+      print(e);
+    }
+  }
+
   /// It allows you to set Remote Description on internal peer connection, Received from janus server
   Future<void> handleRemoteJsep(RTCSessionDescription data) async {
     await webRTCHandle.peerConnection.setRemoteDescription(data);

@@ -149,15 +149,27 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     if (!_gameState.audioConfEnabled) {
       return;
     }
-    if (_audioPlayer != null) {
-      _audioPlayer.resume();
-    }
-    if (_voiceTextPlayer != null) {
-      _voiceTextPlayer.resume();
-    }
+    // try {
+    //   if (_audioPlayer != null) {
+    //     _audioPlayer.resume();
+    //   }
+    // } catch(err) {
+    //   log('Error when resuming audio');
+    // }
+    // try {
+    //   if (_voiceTextPlayer != null) {
+    //     _voiceTextPlayer.resume();
+    //   }
+    // } catch(err) {
+    //   log('Error when resuming audio');
+    // }
 
     //final janusEngine = _gameState.getJanusEngine(_providerContext);
-    _gameState.janusEngine.joinChannel('test');
+    try {
+      _gameState.janusEngine.joinChannel('test');
+    } catch (err) {
+      log('Error when resuming audio');
+    }
     return;
 
     // agora code

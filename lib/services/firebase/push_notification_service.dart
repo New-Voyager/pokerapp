@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/main.dart';
@@ -18,7 +19,16 @@ import 'package:provider/provider.dart';
 //   }
 // }
 
-enum NotificationType { NEW_GAME, NEW_CLUB, FREE_CHIPS }
+enum NotificationType {
+  UNKNOWN,
+  NEW_GAME,
+  NEW_CLUB,
+  FREE_CHIPS,
+  BUYIN_REQUEST,
+  MEMBER_APPROVED,
+  PLAYER_RENAMED
+}
+FlutterLocalNotificationsPlugin _plugin;
 
 extension NotifyTypeParsing on NotificationType {
   String value() => this.toString().split('.').last;
@@ -44,6 +54,10 @@ Future<void> _backgroundMessageHandler(RemoteMessage message) async {
 }
 
 FlutterLocalNotificationsPlugin _initLocalNotifications() {
+  if (_plugin != null) {
+    return _plugin;
+  }
+
   var androidSettings = AndroidInitializationSettings('logo');
   var iosSettings = IOSInitializationSettings();
   var initializationSettings =
@@ -52,7 +66,8 @@ FlutterLocalNotificationsPlugin _initLocalNotifications() {
   var flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
   flutterLocalNotificationsPlugin.initialize(initializationSettings,
       onSelectNotification: _onTapNotification);
-  return flutterLocalNotificationsPlugin;
+  _plugin = flutterLocalNotificationsPlugin;
+  return _plugin;
 }
 
 Future _onTapNotification(String payload) async {
@@ -60,31 +75,64 @@ Future _onTapNotification(String payload) async {
 }
 
 Future _showNotification(RemoteMessage message) async {
+  if (message.data['type'].toString() == null) {
+    return;
+  }
+
   AndroidNotificationDetails androidDetails;
   IOSNotificationDetails iosDetails;
-  var notificationType = message.data['type'];
+  var notificationTypeStr = message.data['type'];
+  NotificationType notificationType = NotificationType.UNKNOWN;
+
+  if (notificationTypeStr == 'BUYIN_REQUEST') {
+    notificationType = NotificationType.BUYIN_REQUEST;
+  } else if (notificationTypeStr == 'NEW_GAME') {
+    notificationType = NotificationType.NEW_GAME;
+  } else if (notificationTypeStr == 'MEMBER_APPROVED') {
+    notificationType = NotificationType.MEMBER_APPROVED;
+  } else if (notificationTypeStr == 'PLAYER_RENAMED') {
+    notificationType = NotificationType.PLAYER_RENAMED;
+  }
+
   print('notificationType = $notificationType');
   print(
       'NotificationType.NEW_GAME.value() = ${NotificationType.NEW_GAME.value()}');
-  if (notificationType == NotificationType.NEW_GAME.value()) {
-    androidDetails = AndroidNotificationDetails(
-        "com.voyagerent.pokerapp.channel", "pokerapp", "Poker App Channel",
-        sound: RawResourceAndroidNotificationSound('check'), playSound: true);
-    iosDetails = IOSNotificationDetails();
-  } else if (notificationType == NotificationType.NEW_CLUB.value()) {
-    androidDetails = AndroidNotificationDetails(
-        "com.voyagerent.pokerapp.channel", "pokerapp", "Poker App Channel",
-        sound: RawResourceAndroidNotificationSound('player_turn'),
-        playSound: true);
-    iosDetails = IOSNotificationDetails();
+
+  androidDetails = AndroidNotificationDetails(
+      "com.voyagerent.pokerapp.channel", "pokerapp", "Poker App Channel",
+      sound: RawResourceAndroidNotificationSound('check'), playSound: true);
+  iosDetails = IOSNotificationDetails();
+
+  if (notificationType == NotificationType.NEW_GAME) {
+    // change sound and other attributes
+  }
+  final notificationDetails =
+      NotificationDetails(android: androidDetails, iOS: iosDetails);
+  final flutterLocalNotificationsPlugin = _initLocalNotifications();
+
+  String title;
+  String body;
+  bool showNotification = false;
+  if (notificationType == NotificationType.BUYIN_REQUEST) {
+    title = 'Buyin Request';
+    /*
+    data: {
+          amount: amount.toString(),
+          gameCode: game.gameCode,
+          playerName: requestingPlayer.name,
+          playerUuid: requestingPlayer.uuid,
+          type: 'BUYIN_REQUEST',
+        }
+    */
+    final data = message.data;
+    body =
+        '${data["playerName"]} is requesting to buyin ${data["amount"]}. Gamecode: ${data["gameCode"]}';
+    showNotification = true;
   }
 
-  var notificationDetails =
-      NotificationDetails(android: androidDetails, iOS: iosDetails);
-  var flutterLocalNotificationsPlugin = _initLocalNotifications();
-  flutterLocalNotificationsPlugin.show(
-      0, message.data['title'], message.data['text'], notificationDetails,
-      payload: "this is my payload");
+  if (showNotification) {
+    flutterLocalNotificationsPlugin.show(0, title, body, notificationDetails);
+  }
 }
 
 void registerPushNotifications() {
@@ -120,40 +168,6 @@ void registerPushNotifications() {
         ),
         duration: Duration(seconds: 5),
       );
-
-      /*    showSimpleNotification(
-          Text(
-            "Buyin request of '${message.data['amount']}' from '${message.data['playerName']}'",
-            style: TextStyle(
-              color: AppColors.appAccentColor,
-              fontWeight: FontWeight.w600,
-              fontSize: 16,
-            ),
-          ),
-          subtitle: Text(
-            "Total pending buyin requests : $approvalCount",
-            style: TextStyle(
-              color: AppColors.appAccentColor,
-              fontWeight: FontWeight.w400,
-              fontSize: 12,
-            ),
-          ),
-          trailing: IconButton(
-              icon: Icon(
-                Icons.cancel_rounded,
-                color: AppColors.appAccentColor,
-              ),
-              onPressed: () {}),
-          background: Colors.grey.shade100,
-          slideDismissDirection: DismissDirection.horizontal,
-          autoDismiss: true,
-          elevation: 3,
-          duration: Duration(seconds: 4),
-          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-          leading: Image.asset(
-            AppAssets.cardsImage,
-          ));
-    */
     }
   });
   log('Registered for push notifications');
