@@ -70,6 +70,7 @@ class Alerts {
     IconData leadingIcon,
     Duration duration,
     String imagePath,
+    String svgPath,
   }) {
     if (duration == null) {
       duration = Duration(milliseconds: 1500);
@@ -80,6 +81,7 @@ class Alerts {
         subTitle: subTitleText,
         icon: leadingIcon,
         image: imagePath,
+        svgPath: svgPath,
       ),
       position: NotificationPosition.top,
       duration: duration,

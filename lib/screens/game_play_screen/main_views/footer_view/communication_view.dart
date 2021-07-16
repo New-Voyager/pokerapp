@@ -16,6 +16,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 //import 'package:pokerapp/services/agora/agora.dart';
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
+import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/widgets/blinking_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
@@ -194,8 +195,18 @@ class _CommunicationViewState extends State<CommunicationView> {
           log('mic is tapped');
           if (state.audioConferenceStatus == AudioConferenceStatus.CONNECTED) {
             gameState.janusEngine.leaveChannel(notify: true);
+
+            // inform the user that we left the audio conference
+            Alerts.showNotification(
+                titleText: "Conference",
+                svgPath: 'assets/images/game/conf-on.svg',
+                subTitleText: 'You left the audio conference');
           } else {
             gameState.janusEngine.joinChannel(gameState.janusEngine.janusToken);
+            Alerts.showNotification(
+                titleText: "Conference",
+                svgPath: 'assets/images/game/conf-on.svg',
+                subTitleText: 'You joined the audio conference');
           }
         },
         child: child);
