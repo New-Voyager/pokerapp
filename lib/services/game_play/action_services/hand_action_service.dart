@@ -1823,6 +1823,7 @@ class HandActionService {
     // notify to build the table (community cards)
     tableState.setBoardCards(1, boardCards);
     tableState.notifyAll();
+    playSoundEffect(AppAssets.fireworksSound);
 
     // notify to build the players
     for (final s in playerSeats) s.notify();

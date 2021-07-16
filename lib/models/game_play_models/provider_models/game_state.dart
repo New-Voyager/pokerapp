@@ -690,6 +690,7 @@ class GameState {
         final data = (await rootBundle.load(assetFile)).buffer.asUint8List();
         _audioCache[assetFile] = data;
       } catch (err) {
+        log('File loading failed. ${err.toString()}');
         _audioCache[assetFile] = Uint8List(0);
       }
     }
