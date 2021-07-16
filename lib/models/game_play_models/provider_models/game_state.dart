@@ -834,6 +834,7 @@ class PopupButtonState extends ChangeNotifier {
 enum AudioConferenceStatus {
   CONNECTING,
   CONNECTED,
+  LEFT,
   FAILED,
   ERROR,
 }
@@ -877,6 +878,11 @@ class CommunicationState extends ChangeNotifier {
 
   void connected() {
     _audioConferenceStatus = AudioConferenceStatus.CONNECTED;
+    notifyListeners();
+  }
+
+  void left() {
+    _audioConferenceStatus = AudioConferenceStatus.LEFT;
     notifyListeners();
   }
 
