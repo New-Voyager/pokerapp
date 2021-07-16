@@ -3,7 +3,7 @@ description: A new Flutter application.
 
 publish_to: "none"
 
-version: 0.5.0
+version: 0.1.0
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -79,7 +79,8 @@ dependencies:
   web_socket_channel: ^2.0.0
   zflutter: ^0.0.1+2
   flutter_local_notifications: ^6.0.0
-
+  get_version: any
+  
 dependency_overrides:
   http: ^0.12.2
   http_parser: ^4.0.0
@@ -93,7 +94,6 @@ dependency_overrides:
   file: ^6.1.1
   convert: ^3.0.0
   args: ^2.1.1
-  get_version: any
 
 dev_dependencies:
   flutter_test:

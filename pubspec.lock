@@ -581,7 +581,7 @@ packages:
     source: hosted
     version: "6.1.1"
   get_version:
-    dependency: "direct overridden"
+    dependency: "direct main"
     description:
       name: get_version
       url: "https://pub.dartlang.org"

@@ -60,12 +60,16 @@ class _StorePageState extends State<StorePage> {
 
   Future<void> initStoreInfo() async {
     String projectAppID;
+    String appVersion;
+    String platformVersion;
     try {
       projectAppID = await GetVersion.appID;
+      appVersion = await GetVersion.projectVersion;
+      platformVersion = await GetVersion.platformVersion;
     } catch (e) {
       projectAppID = 'Failed to get app ID.';
     }
-    log('Project App ID: $projectAppID');
+    log('Project App ID: $projectAppID appVersion: $appVersion platformVersion: $platformVersion');
 
     _enabledProducts = await AppCoinService.availableProducts();
     final bool isAvailable = await _connection.isAvailable();
