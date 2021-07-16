@@ -100,6 +100,11 @@ class ClubActionButtonNew extends StatelessWidget {
               );
               break;
             case ClubActions.ANNOUNCEMETS:
+              Navigator.pushNamed(
+                context,
+                Routes.announcements,
+                arguments: clubModel.clubName,
+              );
               break;
             case ClubActions.MESSAGE_HOST:
               if (_clubModel.isOwner) {
