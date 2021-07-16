@@ -155,7 +155,7 @@ class _CommunicationViewState extends State<CommunicationView> {
             }
           },
           child: child);
-      log('audio is muted: $mic');
+      log('audio is ${state.muted ? "muted" : "on"}: $mic');
     }
 
     return <Widget>[

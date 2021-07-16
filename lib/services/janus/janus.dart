@@ -83,7 +83,7 @@ class JanusEngine extends ChangeNotifier {
     }
   }
 
-  joinChannel(String janusToken) async {
+  Future<void> joinChannel(String janusToken) async {
     if (initializing) {
       log('janus: in the process of initializing. Skipping');
       return;
@@ -239,7 +239,7 @@ class JanusEngine extends ChangeNotifier {
     initializing = false;
   }
 
-  leaveChannel() async {
+  Future<void> leaveChannel() async {
     if (!initialized || !joined) {
       return;
     }
@@ -332,14 +332,15 @@ class JanusEngine extends ChangeNotifier {
     }
   }
 
-  void muteUnmute() {
+  void muteUnmute() async {
     final currentPlayer = gameState.getSeatByPlayer(playerId)?.player;
     if (currentPlayer != null) {
       if (currentPlayer.muted) {
         currentPlayer.muted = false;
         unmute();
         log('janus: mic is unmuted');
-        joinChannel(this.janusToken);
+        await leaveChannel();
+        await joinChannel(this.janusToken);
       } else {
         currentPlayer.muted = true;
         mute();
@@ -359,6 +360,21 @@ class JanusEngine extends ChangeNotifier {
       log('leaving audio conference');
       leaveChannel();
     }
+  }
+
+  Future<dynamic> getParticipants() async {
+    var data = {
+      "request": "listparticipants",
+      "room": this.roomId,
+    };
+    try {
+      final resp = await plugin.send(data: data);
+      log('janus: listparticipants response : ${jsonEncode(resp)}');
+      return resp;
+    } catch (err) {
+      log('mute operation failed. err: ${err.toString()}');
+    }
+    return null;
   }
 
   void mute() async {
@@ -382,10 +398,11 @@ class JanusEngine extends ChangeNotifier {
       "id": this.playerId,
     };
     try {
-      await plugin.send(data: data);
+      final resp = await plugin.sendUnmute(data: data);
+      log('janus: unmute response : ${jsonEncode(resp)}');
       muted = false;
     } catch (err) {
-      log('unmute operation failed. err: ${err.toString()}');
+      log('janus: unmute operation failed. err: ${err.toString()}');
     }
   }
 
