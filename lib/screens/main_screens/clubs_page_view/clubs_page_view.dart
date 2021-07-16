@@ -273,8 +273,7 @@ class _ClubsPageViewState extends State<ClubsPageView>
         builder: (ctx) => Container(
           decoration: BoxDecoration(
             image: DecorationImage(
-              image:
-                  AssetImage(AppAssetsNew.chatBgImagePath),
+              image: AssetImage(AppAssetsNew.chatBgImagePath),
               repeat: ImageRepeat.repeat,
             ),
           ),

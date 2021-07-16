@@ -3,7 +3,7 @@ description: A new Flutter application.
 
 publish_to: "none"
 
-version: 0.1.0
+version: 0.5.0
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -93,6 +93,7 @@ dependency_overrides:
   file: ^6.1.1
   convert: ^3.0.0
   args: ^2.1.1
+  get_version: any
 
 dev_dependencies:
   flutter_test:
