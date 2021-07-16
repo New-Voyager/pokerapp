@@ -1,5 +1,6 @@
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:pokerapp/main.dart';
+import 'package:pokerapp/models/app_coin.dart';
 
 class AppCoinService {
   AppCoinService._();
@@ -51,5 +52,31 @@ class AppCoinService {
     );
     if (result.hasException) return 0;
     return result.data['coins'] ?? 0;
+  }
+
+  static Future<List<IapAppCoinProduct>> availableProducts() async {
+    String query = '''
+      query getAvailableProducts {
+        products: availableIapProducts {
+          productId
+          coins
+        }
+      }   
+    ''';
+
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+
+    QueryResult result = await _client.query(
+      QueryOptions(
+        documentNode: gql(query),
+      ),
+    );
+    if (result.hasException) return [];
+    final productsJson = result.data['products'];
+    List<IapAppCoinProduct> products = [];
+    for (final productJson in productsJson) {
+      products.add(IapAppCoinProduct.fromJson(productJson));
+    }
+    return products;
   }
 }

@@ -1,17 +1,20 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
-
+import 'package:get_version/get_version.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:pokerapp/consumable_store.dart';
+import 'package:pokerapp/models/app_coin.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
+import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/appcoin_service.dart';
 import 'package:pokerapp/widgets/round_color_button.dart';
@@ -32,14 +35,13 @@ class _StorePageState extends State<StorePage> {
   final InAppPurchaseConnection _connection = InAppPurchaseConnection.instance;
   StreamSubscription<List<PurchaseDetails>> _subscription;
   List<String> _notFoundIds = [];
-  List<ProductDetails> _products = [];
+  List<IapAppCoinProduct> _enabledProducts = [];
+  List<ProductDetails> _iapProducts = [];
   List<PurchaseDetails> _purchases = [];
-  List<String> _consumables = [];
   bool _isAvailable = false;
   bool _purchasePending = false;
   bool _loading = true;
   String _queryProductError;
-
 
   @override
   void initState() {
@@ -57,15 +59,21 @@ class _StorePageState extends State<StorePage> {
   }
 
   Future<void> initStoreInfo() async {
+    String projectAppID;
+    try {
+      projectAppID = await GetVersion.appID;
+    } catch (e) {
+      projectAppID = 'Failed to get app ID.';
+    }
+    log('Project App ID: $projectAppID');
+
+    _enabledProducts = await AppCoinService.availableProducts();
     final bool isAvailable = await _connection.isAvailable();
     log("isConnectionAvailable = $isAvailable");
     if (!isAvailable) {
       setState(() {
         _isAvailable = isAvailable;
-        _products = [];
-        _purchases = [];
-        _notFoundIds = [];
-        _consumables = [];
+        _iapProducts = [];
         _purchasePending = false;
         _loading = false;
       });
@@ -73,9 +81,10 @@ class _StorePageState extends State<StorePage> {
     }
 
     // get product ids from the server
+    List<String> productIds = _enabledProducts.map((e) => e.productId).toList();
 
     ProductDetailsResponse productDetailResponse =
-        await _connection.queryProductDetails(_kProductIds.toSet());
+        await _connection.queryProductDetails(productIds.toSet());
     log("productDetailResponse.productDetails = ${productDetailResponse.productDetails}");
     log("productDetailResponse.notFoundIDs = ${productDetailResponse.notFoundIDs}");
 
@@ -85,10 +94,9 @@ class _StorePageState extends State<StorePage> {
       setState(() {
         _queryProductError = productDetailResponse.error.message;
         _isAvailable = isAvailable;
-        _products = productDetailResponse.productDetails;
+        _iapProducts = [];
         _purchases = [];
         _notFoundIds = productDetailResponse.notFoundIDs;
-        _consumables = [];
         _purchasePending = false;
         _loading = false;
       });
@@ -99,10 +107,9 @@ class _StorePageState extends State<StorePage> {
       setState(() {
         _queryProductError = null;
         _isAvailable = isAvailable;
-        _products = productDetailResponse.productDetails;
+        _iapProducts = productDetailResponse.productDetails;
         _purchases = [];
         _notFoundIds = productDetailResponse.notFoundIDs;
-        _consumables = [];
         _purchasePending = false;
         _loading = false;
       });
@@ -120,13 +127,11 @@ class _StorePageState extends State<StorePage> {
         verifiedPurchases.add(purchase);
       }
     }
-    List<String> consumables = await ConsumableStore.load();
     setState(() {
       _isAvailable = isAvailable;
-      _products = productDetailResponse.productDetails;
+      _iapProducts = productDetailResponse.productDetails;
       _purchases = verifiedPurchases;
       _notFoundIds = productDetailResponse.notFoundIDs;
-      _consumables = consumables;
       _purchasePending = false;
       _loading = false;
     });
@@ -140,80 +145,109 @@ class _StorePageState extends State<StorePage> {
 
   @override
   Widget build(BuildContext context) {
+    List<Widget> body = [
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              BackArrowWidget(),
+              AppDimensionsNew.getHorizontalSpace(16),
+              Text(
+                "App Coins",
+                style: AppStylesNew.appBarTitleTextStyle,
+              ),
+            ],
+          ),
+          Container(
+            margin: EdgeInsets.only(right: 16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  "3399",
+                ),
+                Text(
+                  "coins",
+                  style: AppStylesNew.labelTextStyle,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    ];
+    if (!_loading) {
+      _enabledProducts.sort((a, b) => a.coins.compareTo(b.coins));
+      for (final enabledProduct in _enabledProducts) {
+        final productId = enabledProduct.productId;
+        bool found = false;
+        // locate the id in the product list to get number of coins
+        final noCoins = enabledProduct.productId;
+        ProductDetails iapProductFound;
+        for (final iapProduct in _iapProducts) {
+          if (iapProduct.id == productId) {
+            found = true;
+            iapProductFound = iapProduct;
+            break;
+          }
+        }
+        if (!found) {
+          continue;
+        }
+
+        body.add(PurchaseItem(
+          mrpPrice: iapProductFound.rawPrice,
+          offerPrice: iapProductFound.rawPrice,
+          noOfCoins: enabledProduct.coins,
+          onBuy: () async {
+            log('Purchasing $productId no of coins: ${enabledProduct.coins}');
+            await handlePurchase(iapProductFound);
+          },
+        ));
+      }
+    }
+
     return Container(
       decoration: AppStylesNew.BgGreenRadialGradient,
       child: SafeArea(
         child: Scaffold(
           backgroundColor: Colors.transparent,
-          body: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      BackArrowWidget(),
-                      AppDimensionsNew.getHorizontalSpace(16),
-                      Text(
-                        "App Coins",
-                        style: AppStylesNew.appBarTitleTextStyle,
-                      ),
-                    ],
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(right: 16),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          "3399",
-                        ),
-                        Text(
-                          "coins",
-                          style: AppStylesNew.labelTextStyle,
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              PurchaseItem(
-                mrpPrice: 2,
-                offerPrice: 0.99,
-                noOfCoins: 10,
-              ),
-              PurchaseItem(
-                mrpPrice: 3,
-                offerPrice: 1.99,
-                noOfCoins: 25,
-              ),
-              PurchaseItem(
-                mrpPrice: 5,
-                offerPrice: 3.49,
-                noOfCoins: 50,
-              ),
-              PurchaseItem(
-                mrpPrice: 8,
-                offerPrice: 5.99,
-                noOfCoins: 100,
-              ),
-            ],
-          ),
+          body: _loading
+              ? CircularProgressWidget(
+                  text: "Loadig products",
+                )
+              : Column(
+                  children: body,
+                ),
         ),
       ),
     );
   }
+
   void showPendingUI() {
     setState(() {
       _purchasePending = true;
     });
   }
+
   void handleError(IAPError error) {
     setState(() {
       _purchasePending = false;
     });
   }
 
+  Future<void> handlePurchase(ProductDetails productDetails) async {
+    PurchaseParam purchaseParam = PurchaseParam(
+        productDetails: productDetails, applicationUserName: null);
+    try {
+      bool purchased = await _connection.buyConsumable(
+          purchaseParam: purchaseParam,
+          autoConsume: _kAutoConsume || Platform.isIOS);
+    } catch (err) {
+      log('Purchased ${productDetails.id}');
+    }
+  }
 
   Future<bool> _verifyPurchase(PurchaseDetails purchaseDetails) async {
     // IMPORTANT!! Always verify a purchase before delivering the product.
@@ -246,9 +280,7 @@ class _StorePageState extends State<StorePage> {
     return Future<bool>.value(true);
   }
 
-  void deliverProduct(PurchaseDetails purchaseDetails) async {
-
-  }
+  void deliverProduct(PurchaseDetails purchaseDetails) async {}
 
   void _handleInvalidPurchase(PurchaseDetails purchaseDetails) {
     // handle invalid purchase here if  _verifyPurchase` failed.
@@ -264,8 +296,8 @@ class _StorePageState extends State<StorePage> {
         } else if (purchaseDetails.status == PurchaseStatus.purchased) {
           bool valid = await _verifyPurchase(purchaseDetails);
           if (valid) {
-            //final data = jsonEncode(purchaseDetails);
-            //debugPrint(data);
+            final data = jsonEncode(purchaseDetails);
+            debugPrint(data);
             deliverProduct(purchaseDetails);
           } else {
             _handleInvalidPurchase(purchaseDetails);
@@ -284,18 +316,21 @@ class _StorePageState extends State<StorePage> {
         }
       }
     });
-  }  
+  }
 }
 
 class PurchaseItem extends StatelessWidget {
   final int noOfCoins;
   final double mrpPrice;
   final double offerPrice;
+  final Function onBuy;
+
   const PurchaseItem({
     Key key,
     this.noOfCoins,
     this.mrpPrice,
     this.offerPrice,
+    this.onBuy,
   }) : super(key: key);
 
   @override
@@ -345,10 +380,10 @@ class PurchaseItem extends StatelessWidget {
           ),
         ),
         trailing: RoundedColorButton(
-          text: AppStringsNew.buyButtonText,
-          backgroundColor: AppColorsNew.yellowAccentColor,
-          textColor: AppColorsNew.darkGreenShadeColor,
-        ),
+            text: AppStringsNew.buyButtonText,
+            backgroundColor: AppColorsNew.yellowAccentColor,
+            textColor: AppColorsNew.darkGreenShadeColor,
+            onTapFunction: onBuy),
       ),
     );
   }

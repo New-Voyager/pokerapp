@@ -74,7 +74,9 @@ android {
     productFlavors {
         dev{
             dimension "default"
-            applicationIdSuffix ".dev"
+            applicationId "com.voyagerent.pokerclub.dev"
+            //applicationId "com.voyagerent.pokerclubtest"
+            //-*applicationIdSuffix ".dev"
         }
 
         flavorTest{
