@@ -8,6 +8,10 @@ class IconWithBadge extends StatelessWidget {
   IconWithBadge({this.child, this.count, this.onClickFunction});
   @override
   Widget build(BuildContext context) {
+    bool visible = true;
+    if (count == null || count == 0) {
+      visible = false;
+    }
     return InkWell(
       onTap: onClickFunction,
       child: Stack(
@@ -19,7 +23,7 @@ class IconWithBadge extends StatelessWidget {
           ),
           Visibility(
             // get approval count and check condition > 0
-            visible: count > 0,
+            visible: visible,
             child: Positioned(
                 child: Container(
                   padding: EdgeInsets.all(5),
