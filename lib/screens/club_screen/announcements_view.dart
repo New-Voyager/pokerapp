@@ -70,7 +70,8 @@ class _AnnouncementsViewState extends State<AnnouncementsView> {
                         ),
                       ),
                       Visibility(
-                        visible: widget.clubModel.isOwner,
+                        visible: (widget.clubModel.isOwner ||
+                            widget.clubModel.isManager),
                         child: RoundedColorButton(
                           text: "+ New",
                           backgroundColor: AppColorsNew.yellowAccentColor,
@@ -176,7 +177,7 @@ class _AnnouncementsViewState extends State<AnnouncementsView> {
               ),
               AppDimensionsNew.getHorizontalSpace(8),
               Text(
-               AppStringsNew.newAnnouncementText,
+                AppStringsNew.newAnnouncementText,
                 style: AppStylesNew.labelTextStyle,
               )
             ],
@@ -225,10 +226,13 @@ class _AnnouncementsViewState extends State<AnnouncementsView> {
 
     if (res != null) {
       final result = await ClubsService.createAnnouncement(
-          widget.clubModel.clubCode,
-          res,
-          DateTime.now().add(Duration(days: 10)));
-      if (result) {
+        widget.clubModel.clubCode,
+        res,
+        DateTime.now().add(
+          Duration(days: 10),
+        ),
+      );
+      if (result.toString().isNotEmpty) {
         Alerts.showNotification(
             titleText: AppStringsNew.announcementSuccessText,
             duration: Duration(seconds: 5));
@@ -236,7 +240,6 @@ class _AnnouncementsViewState extends State<AnnouncementsView> {
           loading = true;
         });
         await _fetchAnnouncements();
-       
       } else {
         Alerts.showNotification(
             titleText: AppStringsNew.announcementFailedText,
