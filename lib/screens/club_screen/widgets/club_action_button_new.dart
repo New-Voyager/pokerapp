@@ -103,7 +103,7 @@ class ClubActionButtonNew extends StatelessWidget {
               Navigator.pushNamed(
                 context,
                 Routes.announcements,
-                arguments: clubModel.clubName,
+                arguments: this._clubModel,
               );
               break;
             case ClubActions.MESSAGE_HOST:

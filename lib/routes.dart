@@ -433,11 +433,11 @@ class Routes {
           ),
         );
       case announcements:
-        var clubName = settings.arguments as String;
+        var clubModel = settings.arguments as ClubHomePageModel;
         return _getPageRoute(
           routeName: settings.name,
           viewToShow: AnnouncementsView(
-            clubName: clubName,
+            clubModel: clubModel,
           ),
         );
 
