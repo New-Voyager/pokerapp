@@ -7,7 +7,6 @@ import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
-import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/app/clubs_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/formatter.dart';
@@ -70,11 +69,14 @@ class _AnnouncementsViewState extends State<AnnouncementsView> {
                           ],
                         ),
                       ),
-                      RoundedColorButton(
-                        text: "+ New",
-                        backgroundColor: AppColorsNew.yellowAccentColor,
-                        textColor: AppColorsNew.darkGreenShadeColor,
-                        onTapFunction: () => _handleNewAnnouncement(),
+                      Visibility(
+                        visible: widget.clubModel.isOwner,
+                        child: RoundedColorButton(
+                          text: "+ New",
+                          backgroundColor: AppColorsNew.yellowAccentColor,
+                          textColor: AppColorsNew.darkGreenShadeColor,
+                          onTapFunction: () => _handleNewAnnouncement(),
+                        ),
                       ),
                     ],
                   ),
@@ -87,12 +89,13 @@ class _AnnouncementsViewState extends State<AnnouncementsView> {
                       : _listOfAnnounce.isEmpty
                           ? Center(
                               child: Text(
-                                "No Announcements",
+                                AppStringsNew.noAnnouncementText,
                                 style: AppStylesNew.titleTextStyle,
                               ),
                             )
                           : ListView.builder(
                               itemCount: _listOfAnnounce.length,
+                              reverse: true,
                               itemBuilder: (context, index) {
                                 AnnouncementModel model =
                                     _listOfAnnounce.elementAt(index);
@@ -110,6 +113,7 @@ class _AnnouncementsViewState extends State<AnnouncementsView> {
                                           ),
                                         ],
                                       ),
+                                      AppDimensionsNew.getVerticalSizedBox(16),
                                       Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.end,
@@ -172,7 +176,7 @@ class _AnnouncementsViewState extends State<AnnouncementsView> {
               ),
               AppDimensionsNew.getHorizontalSpace(8),
               Text(
-                "New Announcement",
+               AppStringsNew.newAnnouncementText,
                 style: AppStylesNew.labelTextStyle,
               )
             ],
@@ -182,7 +186,7 @@ class _AnnouncementsViewState extends State<AnnouncementsView> {
               TextField(
                 controller: _controller,
                 decoration: InputDecoration(
-                  hintText: "Enter text here",
+                  hintText: AppStringsNew.enterTextHint,
                   fillColor: AppColorsNew.actionRowBgColor,
                   filled: true,
                   border: InputBorder.none,
@@ -225,9 +229,18 @@ class _AnnouncementsViewState extends State<AnnouncementsView> {
           res,
           DateTime.now().add(Duration(days: 10)));
       if (result) {
-        Alerts.showNotification(titleText: "Announcement creation successful.");
+        Alerts.showNotification(
+            titleText: AppStringsNew.announcementSuccessText,
+            duration: Duration(seconds: 5));
+        setState(() {
+          loading = true;
+        });
+        await _fetchAnnouncements();
+       
       } else {
-        Alerts.showNotification(titleText: "Failed to create announcement.");
+        Alerts.showNotification(
+            titleText: AppStringsNew.announcementFailedText,
+            duration: Duration(seconds: 5));
       }
     }
   }

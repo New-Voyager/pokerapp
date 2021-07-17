@@ -335,7 +335,7 @@ class ClubsService {
     Map<String, dynamic> variables = {
       "clubCode": clubCode,
       "text": text,
-      "expiresAt": expiresAt
+      "expiresAt": expiresAt.toString()
     };
 
     QueryResult result = await _client.mutate(
