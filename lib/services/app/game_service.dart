@@ -8,6 +8,7 @@ import 'package:pokerapp/models/game/new_game_model.dart';
 import 'package:pokerapp/models/game_history_model.dart';
 import 'package:pokerapp/models/game_model.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
+import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/newmodels/game_model_new.dart';
 import 'package:pokerapp/models/seat_change_model.dart';
 import 'package:pokerapp/models/table_record.dart';
@@ -762,6 +763,44 @@ class GameService {
     }
 
     return result.data['joinGame'];
+  }
+
+  static Future<PlayerModel> takeSeat(String gameCode, int seatNo) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+
+    String _mutation = """mutation (\$gameCode: String! \$seatNo: Int!) {
+      takeSeat(gameCode: \$gameCode, seatNo: \$seatNo) {
+        seatNo
+        playerUuid
+        playerId
+        name
+        buyIn
+        stack
+        status
+        openSeat
+        buyInExpTime
+        breakStartedTime
+        breakExpTime
+        gameToken
+        isBot
+      }
+    }
+    """;
+    Map<String, dynamic> variables = {
+      "gameCode": gameCode,
+      "seatNo": seatNo,
+    };
+
+    QueryResult result = await _client.mutate(
+      MutationOptions(documentNode: gql(_mutation), variables: variables),
+    );
+
+    if (result.hasException) {
+      throw GqlError.fromException(result.exception);
+    }
+    final seatPlayer = result.data['takeSeat'];
+    PlayerModel player = PlayerModel.fromJson(seatPlayer);
+    return player;
   }
 
   /* player switches to a open seat */

@@ -16,3 +16,16 @@ enum PlayerStatus {
   PENDING_UPDATES,
   WAIT_FOR_BUYIN_APPROVAL
 }
+
+PlayerStatus playerStatusFromStr(String status) {
+  final playerStatus = 'PlayerStatus.' + status;
+  final index = PlayerStatus.values
+      .map((e) => e.toString())
+      .toList()
+      .indexOf(playerStatus);
+  if (index == -1) {
+    return PlayerStatus.NOT_PLAYING;
+  } else {
+    return PlayerStatus.values[index];
+  }
+}

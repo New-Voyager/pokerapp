@@ -140,4 +140,18 @@ class AppStringsNew {
   static String startText = "Start";
 
   static String gameEndedText= "Game Ended";
+
+  static String announcementsTitleText = "Announcements";
+
+  static String announceButtonText = "Announce";
+
+  static String announcementSuccessText = "New announcement is posted.";
+
+  static String announcementFailedText = "Failed to post announcement.";
+
+  static String newAnnouncementText = "New Announcement";
+
+  static String enterTextHint = "Enter text here";
+
+  static String noAnnouncementText = "No Announcements";
 }

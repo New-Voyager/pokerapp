@@ -581,12 +581,12 @@ class GameState {
     players.notifyAll();
   }
 
-  void newPlayer(BuildContext context, PlayerModel newPlayer) {
-    final players = getPlayers(context);
+  bool newPlayer(BuildContext context, PlayerModel newPlayer) {
+    final players = this._players; //getPlayers(context);
     if (newPlayer.playerId != null) {
       _playerIdsToNames[newPlayer.playerId] = newPlayer.name;
     }
-    players.addNewPlayerSilent(newPlayer);
+    return players.addNewPlayerSilent(newPlayer);
   }
 
   void removePlayer(BuildContext context, int seatNo) {
