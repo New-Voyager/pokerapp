@@ -111,7 +111,6 @@ flutter:
     - assets/images/table/
     - assets/images/game/
     - assets/images/game-screen/
-    - assets/images/chips/
     - assets/images/speak/
     - assets/images/network_connectivity/
     - assets/images/betchips/
@@ -135,6 +134,7 @@ flutter:
     - assets/images/cards/
     - assets/images/club/
     - assets/images/livegames/
+    - assets/images/card_face/
 
   fonts:
     - family: Lato

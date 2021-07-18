@@ -36,6 +36,7 @@ class NumericKeyboard2 extends StatelessWidget {
   // final bool decimal;
   final String title;
   final int currValue;
+  bool firstKey = true;
 
   NumericKeyboard2({
     Key key,
@@ -267,11 +268,17 @@ class NumericKeyboard2 extends StatelessWidget {
   ) {
     String value = vnValue.value;
 
+    if (firstKey) {
+      value = '';
+    }
     /*
     * backspace action
     * */
     if (buttonValue == 'bksp') {
-      if (value == '0') return;
+      if (value == '0' || value == '') {
+        vnValue.value = '';
+        return;
+      }
       String newValue = value.substring(0, value.length - 1);
       if (newValue.isEmpty) newValue = '0';
       vnValue.value = newValue;
