@@ -285,7 +285,6 @@ class CenterButtonView extends StatelessWidget {
                 onTap: this.onStartGame,
                 text: AppStringsNew.startText,
               ),
-
               IconAndTitleWidget(
                 child: SvgPicture.asset(
                   AppAssetsNew.terminateImagePath,
@@ -295,7 +294,6 @@ class CenterButtonView extends StatelessWidget {
                 onTap: _onTerminatePress,
                 text: AppStringsNew.terminateText,
               ),
-            
             ],
           ),
         ),

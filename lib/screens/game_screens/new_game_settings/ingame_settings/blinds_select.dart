@@ -38,7 +38,7 @@ class BlindsSelect extends StatelessWidget {
                   child: TextField(
                     onChanged: (value) {
                       Provider.of<NewGameModelProvider>(context, listen: false)
-                          .smallBlind = int.parse(value);
+                          .smallBlind = double.parse(value);
                     },
                     controller: sb,
                     keyboardType: TextInputType.number,
@@ -66,7 +66,7 @@ class BlindsSelect extends StatelessWidget {
                   child: TextField(
                     onChanged: (value) {
                       Provider.of<NewGameModelProvider>(context, listen: false)
-                          .bigBlind = int.parse(value);
+                          .bigBlind = double.parse(value);
                     },
                     style: TextStyle(color: Colors.white),
                     keyboardType: TextInputType.number,
@@ -94,7 +94,7 @@ class BlindsSelect extends StatelessWidget {
                   child: TextField(
                     onChanged: (value) {
                       Provider.of<NewGameModelProvider>(context, listen: false)
-                          .straddleBet = int.parse(value);
+                          .straddleBet = double.parse(value);
                     },
                     controller: straddle,
                     style: TextStyle(color: Colors.white),
@@ -122,7 +122,7 @@ class BlindsSelect extends StatelessWidget {
                   child: TextField(
                     onChanged: (value) {
                       Provider.of<NewGameModelProvider>(context, listen: false)
-                          .ante = int.parse(value);
+                          .ante = double.parse(value);
                     },
                     controller: ante,
                     style: TextStyle(color: Colors.white),

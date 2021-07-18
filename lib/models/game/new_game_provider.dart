@@ -207,22 +207,22 @@ class NewGameModelProvider extends ChangeNotifier {
         ante: settings.ante);
   }
 
-  set smallBlind(int value) {
+  set smallBlind(double value) {
     settings.smallBlind = value;
     notifyListeners();
   }
 
-  set bigBlind(int value) {
+  set bigBlind(double value) {
     settings.bigBlind = value;
     notifyListeners();
   }
 
-  set straddleBet(int value) {
+  set straddleBet(double value) {
     settings.straddleBet = value;
     notifyListeners();
   }
 
-  set ante(int value) {
+  set ante(double value) {
     settings.ante = value;
     notifyListeners();
   }
@@ -243,15 +243,15 @@ class NewGameModelProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  int get rakePercentage => settings.rakePercentage;
-  int get rakeCap => settings.rakeCap;
+  double get rakePercentage => settings.rakePercentage;
+  double get rakeCap => settings.rakeCap;
 
-  set rakePercentage(int value) {
+  set rakePercentage(double value) {
     settings.rakePercentage = value;
     notifyListeners();
   }
 
-  set rakeCap(int value) {
+  set rakeCap(double value) {
     settings.rakeCap = value;
     notifyListeners();
   }

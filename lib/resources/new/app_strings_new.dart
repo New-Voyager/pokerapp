@@ -139,7 +139,7 @@ class AppStringsNew {
 
   static String startText = "Start";
 
-  static String gameEndedText= "Game Ended";
+  static String gameEndedText = "Game Ended";
 
   static String announcementsTitleText = "Announcements";
 

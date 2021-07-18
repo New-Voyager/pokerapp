@@ -246,7 +246,7 @@ class NewGameSettings2 extends StatelessWidget {
                           minValue: 0,
                           maxValue: 1000,
                           onChange: (value) {
-                            gmp.blinds.bigBlind = value;
+                            gmp.blinds.bigBlind = value.toDouble();
                           },
                         ),
                       ),
@@ -262,7 +262,7 @@ class NewGameSettings2 extends StatelessWidget {
                           minValue: 0,
                           maxValue: 1000,
                           onChange: (value) {
-                            gmp.blinds.ante = value;
+                            gmp.blinds.ante = value.toDouble();
                           },
                         ),
                       ),
@@ -328,7 +328,7 @@ class NewGameSettings2 extends StatelessWidget {
                             minValue: 0,
                             maxValue: 1000,
                             onChange: (value) {
-                              gmp.rakePercentage = value;
+                              gmp.rakePercentage = value.toDouble();
                             },
                           ),
                         ),
@@ -339,13 +339,13 @@ class NewGameSettings2 extends StatelessWidget {
                         /* max */
                         Expanded(
                           child: TextInputWidget(
-                            value: gmp.rakeCap,
+                            value: gmp.rakeCap.toInt(),
                             small: true,
                             leading: 'cap',
-                            minValue: 0.0,
-                            maxValue: 1000,
+                            minValue: 0,
+                            maxValue: -1,
                             onChange: (value) {
-                              gmp.rakeCap = value;
+                              gmp.rakeCap = value.toDouble();
                             },
                           ),
                         ),

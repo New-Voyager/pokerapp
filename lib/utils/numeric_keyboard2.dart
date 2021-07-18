@@ -142,7 +142,7 @@ class NumericKeyboard2 extends StatelessWidget {
     double v = double.parse(value);
 
     if (min == null) min = 0;
-    if (max == null) max = double.infinity;
+    if (max == null || max == -1) max = double.infinity;
 
     if (min <= v && v <= max) return Navigator.pop(context, v);
 
