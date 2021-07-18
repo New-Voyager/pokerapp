@@ -58,11 +58,7 @@ class StackCardView00 extends StatelessWidget {
         CardObject card = CardHelper.getCard(c);
         card.cardType = CardType.HandLogOrHandHistoryCard;
         cardViews.add(card.widget);
-        cardViews.add(
-          SizedBox(
-            width: 2.0,
-          ),
-        );
+        cardViews.add(SizedBox(width: 2.0));
       }
       if ((needToShowEmptyCards ?? false) && cards.length < 5) {
         for (int i = 0; i < 5 - cards.length; i++) {
@@ -73,11 +69,7 @@ class StackCardView00 extends StatelessWidget {
           // card.empty = true;
           card.cardFace = CardFace.BACK;
           cardViews.add(card.widget);
-          cardViews.add(
-            SizedBox(
-              width: 2.0,
-            ),
-          );
+          cardViews.add(SizedBox(width: 2.0));
         }
       }
     } else {
@@ -85,9 +77,7 @@ class StackCardView00 extends StatelessWidget {
         CardObject card = CardHelper.getCard(0);
         cardViews.add(card.widget);
         cardViews.add(
-          SizedBox(
-            width: 2.0,
-          ),
+          SizedBox(width: 2.0),
         );
       }
     }
