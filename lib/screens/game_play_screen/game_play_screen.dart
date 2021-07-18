@@ -37,6 +37,7 @@ import 'package:pokerapp/services/app/auth_service.dart';
 //import 'package:pokerapp/services/agora/agora.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/app/player_service.dart';
+import 'package:pokerapp/services/data/game_log_store.dart';
 import 'package:pokerapp/services/encryption/encryption_service.dart';
 import 'package:pokerapp/services/game_play/action_services/game_action_service/util_action_services.dart';
 import 'package:pokerapp/services/game_play/action_services/game_update_service.dart';
@@ -165,9 +166,16 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     // }
 
     //final janusEngine = _gameState.getJanusEngine(_providerContext);
+    final player = _gameState.currentPlayer;
     try {
+      debugLog(
+          widget.gameCode, 'Player ${player.name} is joining audio conference');
       _gameState.janusEngine.joinChannel('test');
+      debugLog(
+          widget.gameCode, 'Player ${player.name} has joined audio conference');
     } catch (err) {
+      debugLog(widget.gameCode,
+          'Player ${player.name} failed to join audio conference. Error: ${err.toString()}');
       log('Error when resuming audio');
     }
     return;
@@ -463,6 +471,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     } else {
       try {
         await GamePlayScreenUtilMethods.joinGame(
+          context: _providerContext,
           seatPos: seatPos,
           gameCode: widget.gameCode,
           gameState: gameState,
