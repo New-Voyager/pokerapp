@@ -17,11 +17,13 @@ import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
+import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/debuglog_bottomsheet.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/player_stats_bottomsheet.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/table_result_bottomsheet.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/game_circle_button.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/icon_with_badge.dart';
 import 'package:pokerapp/services/app/player_service.dart';
+import 'package:pokerapp/services/data/game_log_store.dart';
 import 'package:pokerapp/widgets/cards/multiple_stack_card_views.dart';
 import 'package:pokerapp/widgets/num_diamond_widget.dart';
 import 'package:provider/provider.dart';
@@ -336,6 +338,11 @@ class HandAnalyseView extends StatelessWidget {
               onClickHandler: () => onMoreOptionsPress(context),
             ),
 
+            GameCircleButton(
+              iconData: Icons.adb,
+              onClickHandler: () => onShowDebugLog(context),
+            ),
+
             // rabbit button
             Consumer<RabbitState>(
               builder: (context, rb, __) =>
@@ -353,6 +360,26 @@ class HandAnalyseView extends StatelessWidget {
   void onMoreOptionsPress(BuildContext context) {
     log('onMoreOptionsPress');
     showMoreOptions(context);
+  }
+
+  void onShowDebugLog(BuildContext context) {
+    // log('onShowDebugLog');
+    // debugLog(gameState.gameCode, 'this is first log');
+    // debugLog(gameState.gameCode, 'this is second log');
+    // debugLog(gameState.gameCode, 'this is third log');
+    // debugLog(gameState.gameCode, 'this is fourth log');
+    showBottomSheet(
+      context: context,
+      //backgroundColor: Colors.transparent,
+      builder: (_) => Provider.value(
+        // THIS MAKES SURE, THE LAST HAND ANAYLYSE BOTTOM SHEET
+        // GETS THE GameState
+        value: gameState,
+        child: DebugLogBottomSheet(
+          gameCode: gameState.gameCode,
+        ),
+      ),
+    );
   }
 
   PopupMenuItem _buildPopupMenuItem({
