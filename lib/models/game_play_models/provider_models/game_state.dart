@@ -840,7 +840,7 @@ enum AudioConferenceStatus {
 
 class CommunicationState extends ChangeNotifier {
   AudioConferenceStatus _audioConferenceStatus = AudioConferenceStatus.ERROR;
-  bool showTextChat = false;
+  bool showTextChat = true;
   bool audioConfEnabled = false;
   bool voiceChatEnable = false;
   bool _muted = false;

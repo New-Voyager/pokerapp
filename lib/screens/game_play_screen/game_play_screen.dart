@@ -449,8 +449,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   }
 
   void _toggleChatVisibility(BuildContext context) {
-    ValueNotifier<bool> chatVisibilityNotifier =
-        context.read<ValueNotifier<bool>>();
+    final chatVisibilityNotifier = context.read<ValueNotifier<bool>>();
     chatVisibilityNotifier.value = !chatVisibilityNotifier.value;
   }
 
@@ -539,8 +538,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     });
   }
 
-  Widget _buildChatWindow(BuildContext context) =>
-      Consumer<ValueNotifier<bool>>(
+  Widget _buildChatWindow() => Consumer<ValueNotifier<bool>>(
         builder: (context, vnChatVisibility, __) {
           _isChatScreenVisible = vnChatVisibility.value;
           return AnimatedSwitcher(
@@ -551,8 +549,9 @@ class _GamePlayScreenState extends State<GamePlayScreen>
                     child: GameChat(
                       scrollController: _gcsController,
                       chatService: _gameContextObj.gameComService.gameMessaging,
-                      onChatVisibilityChange: () =>
-                          _toggleChatVisibility(context),
+                      onChatVisibilityChange: () => _toggleChatVisibility(
+                        context,
+                      ),
                     ),
                   )
                 : const SizedBox.shrink(),
@@ -583,7 +582,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         ),
       );
 
-  Widget _buildFooterView() => Expanded(
+  Widget _buildFooterView(BuildContext context) => Expanded(
         child: Container(
           decoration: BoxDecoration(
             image: DecorationImage(
@@ -709,7 +708,10 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     }
   }
 
-  Widget _buildCoreBody(BoardAttributesObject boardAttributes) {
+  Widget _buildCoreBody(
+    BuildContext context,
+    BoardAttributesObject boardAttributes,
+  ) {
     var dividerTotalHeight = MediaQuery.of(context).size.height / 6;
 
     final width = MediaQuery.of(context).size.width;
@@ -744,12 +746,12 @@ class _GamePlayScreenState extends State<GamePlayScreen>
             Divider(color: AppColors.dividerColor, thickness: 3),
 
             // footer section
-            _buildFooterView(),
+            _buildFooterView(context),
           ],
         ),
 
         /* chat window widget */
-        _buildChatWindow(context),
+        _buildChatWindow(),
 
         /* notification view */
         Notifications.buildNotificationWidget(),
@@ -796,8 +798,9 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
         /* This listenable provider takes care of showing or hiding the chat widget */
         return ListenableProvider<ValueNotifier<bool>>(
+          // default value false means, we keep the chat window hidden initially
           create: (_) => ValueNotifier<bool>(false),
-          builder: (context, _) => _buildCoreBody(boardAttributes),
+          builder: (context, _) => _buildCoreBody(context, boardAttributes),
         );
       },
     );
