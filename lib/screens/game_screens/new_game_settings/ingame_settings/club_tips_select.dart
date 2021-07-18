@@ -39,7 +39,7 @@ class ClubTipsSelect extends StatelessWidget {
               Slider(
                 value: providerData.rakePercentage.toDouble(),
                 onChanged: (value) =>
-                    providerData.rakePercentage = value.toDouble(),
+                    providerData.rakePercentage = value.floor().toDouble(),
                 min: 0,
                 max: 40,
                 divisions: 40,
@@ -60,7 +60,7 @@ class ClubTipsSelect extends StatelessWidget {
                     width: 100.0,
                     child: TextField(
                       onChanged: (value) {
-                        providerData.rakeCap = int.parse(value);
+                        providerData.rakeCap = double.parse(value);
                       },
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(

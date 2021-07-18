@@ -243,15 +243,15 @@ class NewGameModelProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  get rakePercentage => settings.rakePercentage;
-  get rakeCap => settings.rakeCap;
+  double get rakePercentage => settings.rakePercentage;
+  double get rakeCap => settings.rakeCap;
 
   set rakePercentage(double value) {
     settings.rakePercentage = value;
     notifyListeners();
   }
 
-  set rakeCap(int value) {
+  set rakeCap(double value) {
     settings.rakeCap = value;
     notifyListeners();
   }

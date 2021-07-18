@@ -137,6 +137,10 @@ class AppStringsNew {
   static String gameRecordText = "Game Record";
   static String buyButtonText = "Buy";
 
+  static String startText = "Start";
+
+  static String gameEndedText = "Game Ended";
+
   static String announcementsTitleText = "Announcements";
 
   static String announceButtonText = "Announce";

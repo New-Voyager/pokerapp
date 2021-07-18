@@ -214,53 +214,89 @@ class CenterButtonView extends StatelessWidget {
   Widget newGameButtons(BuildContext context) {
     return Consumer<GameContextObject>(builder: (context, gameContext, _) {
       if (!gameContext.isAdmin()) {
-        return Container();
+        return SizedBox.shrink();
       }
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 20.0,
-              vertical: 10.0,
-            ),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20.0),
-              color: Colors.black.withOpacity(0.50),
-            ),
-            child: Wrap(
-              crossAxisAlignment: WrapCrossAlignment.center,
-              children: [
-                CustomTextButton(
-                  text: 'Start',
-                  onTap: this.onStartGame,
+      // return Row(
+      //   mainAxisAlignment: MainAxisAlignment.center,
+      //   children: [
+      //     Container(
+      //       padding: const EdgeInsets.symmetric(
+      //         horizontal: 20.0,
+      //         vertical: 10.0,
+      //       ),
+      //       decoration: BoxDecoration(
+      //         borderRadius: BorderRadius.circular(20.0),
+      //         color: Colors.black.withOpacity(0.50),
+      //       ),
+      //       child: Wrap(
+      //         crossAxisAlignment: WrapCrossAlignment.center,
+      //         children: [
+      //           CustomTextButton(
+      //             text: 'Start',
+      //             onTap: this.onStartGame,
+      //           ),
+
+      //         ],
+      //       ),
+      //     ),
+      //     SizedBox(
+      //       width: 10,
+      //     ),
+      //     Container(
+      //       padding: const EdgeInsets.symmetric(
+      //         horizontal: 20.0,
+      //         vertical: 10.0,
+      //       ),
+      //       decoration: BoxDecoration(
+      //         borderRadius: BorderRadius.circular(20.0),
+      //         color: Colors.black.withOpacity(0.50),
+      //       ),
+      //       child: Wrap(
+      //         crossAxisAlignment: WrapCrossAlignment.center,
+      //         children: [
+      //           CustomTextButton(
+      //             text: 'Terminate',
+      //             onTap: _onTerminatePress,
+      //           ),
+      //         ],
+      //       ),
+      //     ),
+      //   ],
+      // );
+
+      return Center(
+        child: Container(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 20.0,
+            vertical: 10.0,
+          ),
+          decoration: AppStylesNew.resumeBgDecoration,
+          child: Wrap(
+            crossAxisAlignment: WrapCrossAlignment.center,
+            alignment: WrapAlignment.center,
+            spacing: 16,
+            children: [
+              IconAndTitleWidget(
+                child: SvgPicture.asset(
+                  AppAssetsNew.resumeImagePath,
+                  height: 48.ph,
+                  width: 48.pw,
                 ),
-              ],
-            ),
-          ),
-          SizedBox(
-            width: 10,
-          ),
-          Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 20.0,
-              vertical: 10.0,
-            ),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20.0),
-              color: Colors.black.withOpacity(0.50),
-            ),
-            child: Wrap(
-              crossAxisAlignment: WrapCrossAlignment.center,
-              children: [
-                CustomTextButton(
-                  text: 'Terminate',
-                  onTap: _onTerminatePress,
+                onTap: this.onStartGame,
+                text: AppStringsNew.startText,
+              ),
+              IconAndTitleWidget(
+                child: SvgPicture.asset(
+                  AppAssetsNew.terminateImagePath,
+                  height: 48.ph,
+                  width: 48.pw,
                 ),
-              ],
-            ),
+                onTap: _onTerminatePress,
+                text: AppStringsNew.terminateText,
+              ),
+            ],
           ),
-        ],
+        ),
       );
     });
   }

@@ -1,6 +1,10 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:pokerapp/enums/game_type.dart';
+import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/screens/game_context_screen/game_options/game_option_bottom_sheet.dart';
@@ -8,10 +12,10 @@ import 'package:provider/provider.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class HeaderView extends StatelessWidget {
-  final String gameCode;
+  final GameInfoModel gameInfoModel;
 
   HeaderView({
-    @required this.gameCode,
+    @required this.gameInfoModel,
   });
 
   String _getTitleText(HandInfoState his) {
@@ -27,39 +31,48 @@ class HeaderView extends StatelessWidget {
   }
 
   Widget _buildMainContent() => Consumer<HandInfoState>(
-        builder: (_, his, __) => Column(
-          children: [
-            /* title text */
-            RichText(
-              text: TextSpan(
-                text: _getTitleText(his),
-                style: TextStyle(
-                  color: AppColorsNew.newTextColor,
+        builder: (_, his, __) {
+          String titleText = "";
+          if (his.handNum == 0) {
+            titleText =
+                "${gameTypeStr(gameTypeFromStr(gameInfoModel.gameType))}  ${gameInfoModel.smallBlind}/${gameInfoModel.bigBlind}";
+          } else {
+            titleText = _getTitleText(his);
+          }
+          return Column(
+            children: [
+              /* title text */
+              RichText(
+                text: TextSpan(
+                  text: titleText,
+                  style: TextStyle(
+                    color: AppColorsNew.newTextColor,
+                  ),
                 ),
               ),
-            ),
 
-            /* hand number */
-            RichText(
-              text: TextSpan(
-                text: "Hand ",
-                style: TextStyle(
-                  color: AppColorsNew.newTextColor,
+              /* hand number */
+              RichText(
+                text: TextSpan(
+                  text: "Hand ",
+                  style: TextStyle(
+                    color: AppColorsNew.newTextColor,
+                  ),
+                  children: [
+                    TextSpan(
+                      text: "#${his.handNum}",
+                      style: TextStyle(
+                        color: AppColorsNew.yellowAccentColor,
+                        fontSize: 8.dp,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    )
+                  ],
                 ),
-                children: [
-                  TextSpan(
-                    text: "#${his.handNum}",
-                    style: TextStyle(
-                      color: AppColorsNew.yellowAccentColor,
-                      fontSize: 8.dp,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  )
-                ],
               ),
-            ),
-          ],
-        ),
+            ],
+          );
+        },
       );
 
   Widget _buildBackButton(BuildContext context) => Align(
@@ -115,6 +128,7 @@ class HeaderView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: AppColorsNew.newBackgroundBlackColor.withOpacity(0.7),
+      padding: EdgeInsets.symmetric(vertical: 8),
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
         child: Stack(
@@ -127,7 +141,10 @@ class HeaderView extends StatelessWidget {
             _buildBackButton(context),
 
             /* game menu */
-            _buildGameMenuNavButton(context),
+
+            Visibility(
+                child: _buildGameMenuNavButton(context),
+                visible: gameInfoModel.status != 'ENDED'),
           ],
         ),
       ),

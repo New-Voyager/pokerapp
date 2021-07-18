@@ -243,10 +243,11 @@ class NewGameSettings2 extends StatelessWidget {
                         child: TextInputWidget(
                           value: gmp.blinds.bigBlind,
                           label: 'Big Blind',
-                          minValue: 0.0,
+                          minValue: 0,
                           maxValue: 1000,
+                          title: 'Enter big blind',
                           onChange: (value) {
-                            gmp.bigBlind = value.toDouble();
+                            gmp.blinds.bigBlind = value.toDouble();
                           },
                         ),
                       ),
@@ -259,10 +260,11 @@ class NewGameSettings2 extends StatelessWidget {
                         child: TextInputWidget(
                           value: gmp.blinds.ante,
                           label: 'Ante',
-                          minValue: 0.0,
+                          title: 'Enter ante',
+                          minValue: 0,
                           maxValue: 1000,
                           onChange: (value) {
-                            gmp.ante = value.toDouble();
+                            gmp.blinds.ante = value.toDouble();
                           },
                         ),
                       ),
@@ -283,7 +285,8 @@ class NewGameSettings2 extends StatelessWidget {
                             small: true,
                             label: 'min',
                             trailing: 'BB',
-                            minValue: 0.0,
+                            title: 'Enter min buyin (x BB)',
+                            minValue: 0,
                             maxValue: 1000,
                             onChange: (value) {
                               gmp.buyInMin = value;
@@ -300,8 +303,9 @@ class NewGameSettings2 extends StatelessWidget {
                             value: gmp.buyInMax,
                             small: true,
                             label: 'max',
+                            title: 'Enter max buyin (x BB)',
                             trailing: 'BB',
-                            minValue: 0.0,
+                            minValue: 0,
                             maxValue: 1000,
                             onChange: (value) {
                               gmp.buyInMax = value;
@@ -325,7 +329,8 @@ class NewGameSettings2 extends StatelessWidget {
                             value: gmp.rakePercentage,
                             small: true,
                             trailing: '%',
-                            minValue: 0.0,
+                            title: 'Enter tips in % of pot',
+                            minValue: 0,
                             maxValue: 1000,
                             onChange: (value) {
                               gmp.rakePercentage = value.toDouble();
@@ -339,13 +344,14 @@ class NewGameSettings2 extends StatelessWidget {
                         /* max */
                         Expanded(
                           child: TextInputWidget(
-                            value: gmp.rakeCap,
+                            value: gmp.rakeCap.toInt(),
                             small: true,
                             leading: 'cap',
-                            minValue: 0.0,
-                            maxValue: 1000,
+                            title: 'Enter max tips taken from the pot',
+                            minValue: 0,
+                            maxValue: -1,
                             onChange: (value) {
-                              gmp.rakeCap = value;
+                              gmp.rakeCap = value.toDouble();
                             },
                           ),
                         ),
@@ -400,8 +406,10 @@ class NewGameSettings2 extends StatelessWidget {
                                   label: 'Buyin wait time',
                                   value: 120,
                                   trailing: 'secs',
+                                  title:
+                                      'Enter max wait time (in seconds) for buyin approval',
                                   minValue: 0.0,
-                                  maxValue: 100,
+                                  maxValue: 0,
                                   onChange: (value) {},
                                 ),
                         ),
@@ -446,7 +454,7 @@ class NewGameSettings2 extends StatelessWidget {
                     children: [
                       /* allow audio conference */
                       _buildRadio(
-                        label: 'Allow Audio Conference',
+                        label: 'Use Audio Conference    (Beta)',
                         value: gmp.audioConference,
                         onChange: (bool b) {
                           gmp.audioConference = b;

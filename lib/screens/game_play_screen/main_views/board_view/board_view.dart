@@ -77,6 +77,26 @@ class BoardView extends StatelessWidget {
           child: TableView(width: dimensions.width, height: dimensions.height),
         ),
 
+        /* players */
+        Consumer<Players>(
+          builder: (BuildContext _, Players players, Widget __) =>
+              Transform.translate(
+            offset: boardAttributes.playerOnTableOffset,
+            child: PlayersOnTableView(
+              players: players,
+              gameComService: gameComService,
+              isBoardHorizontal:
+                  boardAttributes.orientation == BoardOrientation.horizontal,
+              widthOfBoard: dimensions.width,
+              heightOfBoard: dimensions.height,
+              onUserTap: onUserTap,
+              maxPlayers: gameInfo.maxPlayers,
+              audioPlayer: audioPlayer,
+              gameState: gameState,
+            ),
+          ),
+        ),
+
         /* center view */
         Positioned(
           top: boardAttributes.centerOffset.dy,
@@ -112,26 +132,6 @@ class BoardView extends StatelessWidget {
                 ),
               );
             },
-          ),
-        ),
-
-        /* players */
-        Consumer<Players>(
-          builder: (BuildContext _, Players players, Widget __) =>
-              Transform.translate(
-            offset: boardAttributes.playerOnTableOffset,
-            child: PlayersOnTableView(
-              players: players,
-              gameComService: gameComService,
-              isBoardHorizontal:
-                  boardAttributes.orientation == BoardOrientation.horizontal,
-              widthOfBoard: dimensions.width,
-              heightOfBoard: dimensions.height,
-              onUserTap: onUserTap,
-              maxPlayers: gameInfo.maxPlayers,
-              audioPlayer: audioPlayer,
-              gameState: gameState,
-            ),
           ),
         ),
 
