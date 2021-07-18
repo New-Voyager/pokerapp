@@ -690,6 +690,7 @@ class GameState {
         final data = (await rootBundle.load(assetFile)).buffer.asUint8List();
         _audioCache[assetFile] = data;
       } catch (err) {
+        log('File loading failed. ${err.toString()}');
         _audioCache[assetFile] = Uint8List(0);
       }
     }
@@ -834,6 +835,7 @@ class PopupButtonState extends ChangeNotifier {
 enum AudioConferenceStatus {
   CONNECTING,
   CONNECTED,
+  LEFT,
   FAILED,
   ERROR,
 }
@@ -877,6 +879,11 @@ class CommunicationState extends ChangeNotifier {
 
   void connected() {
     _audioConferenceStatus = AudioConferenceStatus.CONNECTED;
+    notifyListeners();
+  }
+
+  void left() {
+    _audioConferenceStatus = AudioConferenceStatus.LEFT;
     notifyListeners();
   }
 

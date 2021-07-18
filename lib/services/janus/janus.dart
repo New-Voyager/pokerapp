@@ -150,7 +150,17 @@ class JanusEngine extends ChangeNotifier {
         final response = await plugin.send(data: join);
         log('janus: joined audio room ${this.roomId} ${jsonEncode(response)}');
         this.gameState.getCommunicationState().connected();
+
+        log('janus: current player $playerId joined the conference. Creating offer for the audio conference');
+        // player joined
+        RTCSessionDescription offer = await plugin.createOffer(
+            offerToReceiveVideo: false, offerToReceiveAudio: true);
+        var publish = {"request": "configure"};
+        await plugin.send(data: publish, jsep: offer);
+        log('janus: offer is sent to plugin');
+
         joined = true;
+        muteUnmute();
       } catch (err) {
         debugPrint('No room in that name. error: ${err.toString()}');
         log('janus: failed to join audio room ${this.roomId} ${err.toString()}');
@@ -195,13 +205,23 @@ class JanusEngine extends ChangeNotifier {
               await plugin.send(data: publish, jsep: offer);
             }
           } else if (data['audiobridge'] == 'joined') {
-            log('janus: creating offer for the audio conference');
-            // player joined
-            RTCSessionDescription offer = await plugin.createOffer(
-                offerToReceiveVideo: false, offerToReceiveAudio: true);
-            var publish = {"request": "configure"};
-            await plugin.send(data: publish, jsep: offer);
-            log('janus: offer is sent to plugin');
+            // get player id
+            // var participants = data['participants'];
+            // if (participants != null && participants.length >= 1) {
+            //   for (final participant in participants) {
+            //     if (participant['id'] != null &&
+            //         participant['id'] == playerId) {
+            //       log('janus: current player $playerId joined the conference. Creating offer for the audio conference');
+            //       // player joined
+            //       RTCSessionDescription offer = await plugin.createOffer(
+            //           offerToReceiveVideo: false, offerToReceiveAudio: true);
+            //       var publish = {"request": "configure"};
+            //       await plugin.send(data: publish, jsep: offer);
+            //       log('janus: offer is sent to plugin');
+            //       break;
+            //     }
+            //   }
+            // }
             listParticipants();
           } else if (data['audiobridge'] == 'event') {
             debugPrint('audiobridge: $data');
@@ -239,7 +259,7 @@ class JanusEngine extends ChangeNotifier {
     initializing = false;
   }
 
-  Future<void> leaveChannel() async {
+  Future<void> leaveChannel({bool notify = false}) async {
     if (!initialized || !joined) {
       return;
     }
@@ -276,6 +296,9 @@ class JanusEngine extends ChangeNotifier {
         session = null;
       }
       log('janus: engine ${this.roomId} disposed');
+      if (notify) {
+        gameState.getCommunicationState().left();
+      }
     } catch (err) {
       log('Leaving channel caught exception');
     }
@@ -339,11 +362,13 @@ class JanusEngine extends ChangeNotifier {
         currentPlayer.muted = false;
         unmute();
         log('janus: mic is unmuted');
-        await leaveChannel();
-        await joinChannel(this.janusToken);
+        plugin.unmute();
+        //await leaveChannel();
+        //await joinChannel(this.janusToken);
       } else {
         currentPlayer.muted = true;
         mute();
+        plugin.mute();
         log('janus: mic is muted');
         // leave the channel
         // don't need to leave channel if he mute himself
@@ -386,6 +411,7 @@ class JanusEngine extends ChangeNotifier {
     try {
       await plugin.send(data: data);
       muted = true;
+      await getParticipants();
     } catch (err) {
       log('mute operation failed. err: ${err.toString()}');
     }
@@ -399,7 +425,8 @@ class JanusEngine extends ChangeNotifier {
     };
     try {
       final resp = await plugin.sendUnmute(data: data);
-      log('janus: unmute response : ${jsonEncode(resp)}');
+      //log('janus: unmute response : ${jsonEncode(resp)}');
+      await getParticipants();
       muted = false;
     } catch (err) {
       log('janus: unmute operation failed. err: ${err.toString()}');

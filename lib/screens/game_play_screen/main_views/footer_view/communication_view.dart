@@ -16,6 +16,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 //import 'package:pokerapp/services/agora/agora.dart';
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
+import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/widgets/blinking_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
@@ -55,8 +56,10 @@ class _CommunicationViewState extends State<CommunicationView> {
                     'voiceChatEnable = ${communicationState.voiceChatEnable}');
 
                 if (gameState.myState.status == PlayerStatus.PLAYING &&
-                    communicationState.audioConferenceStatus ==
-                        AudioConferenceStatus.CONNECTED) {
+                    (communicationState.audioConferenceStatus ==
+                            AudioConferenceStatus.CONNECTED ||
+                        communicationState.audioConferenceStatus ==
+                            AudioConferenceStatus.LEFT)) {
                   if (gameState.settings.audioConf) {
                     log('User is playing and audio conference connected, showing janusAudioWidgets');
                     children.addAll(
@@ -158,16 +161,65 @@ class _CommunicationViewState extends State<CommunicationView> {
       log('audio is ${state.muted ? "muted" : "on"}: $mic');
     }
 
-    return <Widget>[
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8),
-        child: Icon(
-          Icons.circle,
-          size: 15.pw,
-          color: iconColor,
-        ),
+    if (state.audioConferenceStatus == AudioConferenceStatus.LEFT) {
+      Widget child = SvgPicture.asset('assets/images/game/mic-mute.svg',
+          width: 16, height: 16, color: Colors.black);
+
+      mic = GameCircleButton(
+          disabled: true, onClickHandler: () async {}, child: child);
+    }
+    bool confOn = true;
+    final confOnIcon = SvgPicture.asset('assets/images/game/conf-on.svg',
+        width: 16, height: 16, color: Colors.black);
+    final confOffIcon = SvgPicture.asset('assets/images/game/conf-off.svg',
+        width: 16, height: 16, color: Colors.black);
+    Widget child;
+    if (state.audioConferenceStatus == AudioConferenceStatus.CONNECTED) {
+      // child = Stack(children: [
+      //   Align(
+      //       alignment: Alignment.topCenter,
+      //       child: Icon(
+      //         Icons.circle,
+      //         size: 5.pw,
+      //         color: iconColor,
+      //       )),
+      //   confOnIcon
+      // ]);
+      child = confOnIcon;
+    } else {
+      child = confOffIcon;
+      confOn = false;
+    }
+    final confIcon = GameCircleButton(
+        onClickHandler: () async {
+          log('mic is tapped');
+          if (state.audioConferenceStatus == AudioConferenceStatus.CONNECTED) {
+            gameState.janusEngine.leaveChannel(notify: true);
+
+            // inform the user that we left the audio conference
+            Alerts.showNotification(
+                titleText: "Conference",
+                svgPath: 'assets/images/game/conf-on.svg',
+                subTitleText: 'You left the audio conference');
+          } else {
+            gameState.janusEngine.joinChannel(gameState.janusEngine.janusToken);
+            Alerts.showNotification(
+                titleText: "Conference",
+                svgPath: 'assets/images/game/conf-on.svg',
+                subTitleText: 'You joined the audio conference');
+          }
+        },
+        child: child);
+    List<Widget> widgets = [];
+    widgets.add(GestureDetector(
+      onTap: () async {},
+      child: Container(
+        padding: EdgeInsets.symmetric(vertical: 4),
+        child: confIcon,
       ),
-      GestureDetector(
+    ));
+    if (confOn) {
+      widgets.add(GestureDetector(
         onTap: () async {
           if (state.audioConferenceStatus == AudioConferenceStatus.CONNECTED) {
             gameState.janusEngine.muteUnmute();
@@ -177,8 +229,10 @@ class _CommunicationViewState extends State<CommunicationView> {
           padding: EdgeInsets.symmetric(vertical: 4),
           child: mic,
         ),
-      ),
-    ];
+      ));
+    }
+
+    return widgets;
   }
 
   voiceTextWidgets(GameMessagingService chatService) {

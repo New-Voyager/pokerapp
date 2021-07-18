@@ -10,6 +10,7 @@ class GameCircleButton extends StatelessWidget {
   final IconData iconData;
   final Widget child;
   final Color color;
+  final bool disabled;
   const GameCircleButton({
     Key key,
     this.onClickHandler,
@@ -17,6 +18,7 @@ class GameCircleButton extends StatelessWidget {
     this.iconData,
     this.child,
     this.color,
+    this.disabled = false,
   }) : super(key: key);
 
   @override
@@ -49,12 +51,17 @@ class GameCircleButton extends StatelessWidget {
               color: Colors.black, //AppColorsNew.newGreenButtonColor,
             ));
     }
+
+    Color buttonColor = AppColorsNew.newActiveBoxColor;
+    if (disabled) {
+      buttonColor = AppColorsNew.disabledColor;
+    }
     final button = Container(
       height: 32.pw,
       width: 32.pw,
       decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: AppColorsNew.newActiveBoxColor,
+          color: buttonColor,
           border: Border.all(
               color: Color(
                   0xff8b4513))), //AppColors.gameButtonBorderColor)), //Colors.yellow)),

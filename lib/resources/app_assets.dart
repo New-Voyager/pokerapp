@@ -47,7 +47,7 @@ class AppAssets {
   static const String flopSound = 'assets/sound_effects/flop.wav';
   static const String turnRiverSound = 'assets/sound_effects/river.wav';
   static const String applauseSound = 'assets/sound_effects/applause.wav';
-  static const String fireworksSound = 'assets/sound_effects/fireworks.mp3';
+  static const String fireworksSound = 'assets/animations/fireworks.mp3';
 
   static const String cardBackImage =
       'assets/images/card_back/set2/Asset 6.png';

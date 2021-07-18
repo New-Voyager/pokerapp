@@ -37,6 +37,7 @@ class JanusPlugin {
   StreamController<EventMessage> _messagesStreamController;
   StreamController<RTCDataChannelMessage> _dataStreamController;
   StreamController<RTCDataChannelState> _onDataStreamController;
+  MediaStreamTrack _audioTrack;
 
   int _pollingRetries = 0;
   Timer pollingTimer;
@@ -48,6 +49,18 @@ class JanusPlugin {
 
   JanusPlugin(
       {this.handleId, this.context, this.transport, this.session, this.plugin});
+
+  void mute() {
+    if (_audioTrack != null) {
+      _audioTrack.setMicrophoneMute(true);
+    }
+  }
+
+  void unmute() {
+    if (_audioTrack != null) {
+      _audioTrack.setMicrophoneMute(false);
+    }
+  }
 
   Future<void> init() async {
     if (webRTCHandle != null) {
@@ -164,8 +177,15 @@ class JanusPlugin {
 
     // source for onRemoteStream
     peerConnection.onAddStream = (mediaStream) {
+      final tracks = mediaStream.getAudioTracks();
+      if (tracks.length >= 1) {
+        _audioTrack = tracks[0];
+        // _audioTrack.setVolume(0);
+        // _audioTrack.enableSpeakerphone(false);
+      }
       _remoteStreamController.sink.add(mediaStream);
     };
+
     // get ice candidates and send to janus on this plugin handle
     peerConnection.onIceCandidate = (RTCIceCandidate candidate) async {
       Map<String, dynamic> response;

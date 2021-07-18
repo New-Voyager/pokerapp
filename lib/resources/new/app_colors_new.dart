@@ -9,6 +9,7 @@ class AppColorsNew {
 
   AppColorsNew._();
   static const Color labelColor = Color(0xff848484);
+  static const Color disabledColor = Color(0xff848484);
   static const Color newBorderColor = Color(0xFFE0961A);
   static const Color newBackgroundBlackColor = Color(0xFF000104);
   static const Color newTextColor = Color(0xFFF4F4F4);
