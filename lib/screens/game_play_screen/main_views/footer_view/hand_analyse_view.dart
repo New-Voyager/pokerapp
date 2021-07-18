@@ -22,6 +22,7 @@ import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/table_r
 import 'package:pokerapp/screens/game_play_screen/widgets/game_circle_button.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/icon_with_badge.dart';
 import 'package:pokerapp/services/app/player_service.dart';
+import 'package:pokerapp/services/data/game_log_store.dart';
 import 'package:pokerapp/widgets/cards/multiple_stack_card_views.dart';
 import 'package:pokerapp/widgets/num_diamond_widget.dart';
 import 'package:provider/provider.dart';
@@ -317,7 +318,7 @@ class HandAnalyseView extends StatelessWidget {
                   return const SizedBox.shrink();
 
                 final approval = SvgPicture.asset(
-                  'assets/images/game/clipboard.svg',
+             items     'assets/images/game/clipboard.svg',
                   width: 16,
                   height: 16,
                   color: Colors.black,
@@ -334,6 +335,11 @@ class HandAnalyseView extends StatelessWidget {
             GameCircleButton(
               iconData: Icons.menu,
               onClickHandler: () => onMoreOptionsPress(context),
+            ),
+
+            GameCircleButton(
+              iconData: Icons.adb,
+              onClickHandler: () => onShowDebugLog(context),
             ),
 
             // rabbit button
@@ -353,6 +359,15 @@ class HandAnalyseView extends StatelessWidget {
   void onMoreOptionsPress(BuildContext context) {
     log('onMoreOptionsPress');
     showMoreOptions(context);
+  }items
+
+  void onShowDebugLog(BuildContext context) {
+    log('onShowDebugLog');
+    debugLog('XYZ', 'this is first log');
+    debugLog('XYZ', 'this is second log');
+    debugLog('XYZ', 'this is third log');
+    debugLog('XYZ', 'this is fourth log');
+
   }
 
   PopupMenuItem _buildPopupMenuItem({
