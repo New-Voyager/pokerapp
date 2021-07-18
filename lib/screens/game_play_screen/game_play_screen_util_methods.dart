@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
+import 'package:pokerapp/enums/player_status.dart';
 import 'package:pokerapp/models/game_play_models/business/card_distribution_model.dart';
 import 'package:pokerapp/models/game_play_models/business/game_chat_notfi_state.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
@@ -484,7 +485,8 @@ class GamePlayScreenUtilMethods {
   * the passed setPosition info is used to join the game
   * This function can be disabled, when the current user get's in the game */
 
-  static Future joinGame({
+  static Future<PlayerStatus> joinGame({
+    @required BuildContext context,
     @required int seatPos,
     @required String gameCode,
     @required GameState gameState,
@@ -494,18 +496,50 @@ class GamePlayScreenUtilMethods {
     developer.log('joining game with seat no $seatPos');
 
     // if setPos is -1 that means block this function call
-    if (seatPos == -1) return;
+    if (seatPos == -1) return PlayerStatus.NOT_PLAYING;
 
     int seatNumber = seatPos;
-    debugLog(gameCode, 'Player ${gameState.currentPlayer.name} joining at seat $seatNumber');    
-    final resp = await GameService.joinGame(
+    debugLog(gameCode,
+        'Player ${gameState.currentPlayer.name} joining at seat $seatNumber');
+    // final resp = await GameService.joinGame(
+    //   gameCode,
+    //   seatNumber,
+    // );
+    final newPlayerModel = await GameService.takeSeat(
       gameCode,
       seatNumber,
     );
-    debugLog(gameCode, 'Player ${gameState.currentPlayer.name} join response: ${resp.toString()}');
+    debugLog(gameCode,
+        'Player ${gameState.currentPlayer.name} join response: ${newPlayerModel.toString()}');
+    PlayerStatus status = playerStatusFromStr(newPlayerModel.status);
 
-    // if the player status is WAIT_FOR_BUYIN, show buyin dialog
-    
+    assert(newPlayerModel != null);
+    if (newPlayerModel.playerUuid == gameState.currentPlayerUuid) {
+      newPlayerModel.isMe = true;
+    }
+    gameState.newPlayer(context, newPlayerModel);
+    if (newPlayerModel.stack == 0) {
+      newPlayerModel.showBuyIn = true;
+    }
+    if (newPlayerModel.isMe) {
+      await Future.delayed(Duration(milliseconds: 100));
+      final mySeat = gameState.mySeat(context);
+      mySeat.player = newPlayerModel;
+      mySeat.notify();
+
+      if (status == PlayerStatus.WAIT_FOR_BUYIN_APPROVAL ||
+          status == PlayerStatus.WAIT_FOR_BUYIN) {
+        gameState.myState.status = PlayerStatus.WAIT_FOR_BUYIN_APPROVAL;
+      }
+      gameState.myState.notify();
+    }
+    final tableState = gameState.getTableState(context);
+    tableState.notifyAll();
+    gameState.updatePlayers(context);
+    if (newPlayerModel.isMe && status == PlayerStatus.WAIT_FOR_BUYIN) {
+      GamePlayScreenUtilMethods.onBuyin(context);
+    }
+
     GameHiveStore ghs = gameState.gameHiveStore;
     // we can offer user inital reward here, as well as reset timers here
     if (ghs.isFirstJoin()) {
@@ -518,6 +552,7 @@ class GamePlayScreenUtilMethods {
       // for any subsequent joins, reset the timer
       ghs.updateLastDiamondUpdateTime();
     }
+    return status;
   }
 
   /* provider method, returns list of all the providers used in the below hierarchy */

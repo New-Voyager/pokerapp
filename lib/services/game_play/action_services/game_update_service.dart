@@ -24,6 +24,7 @@ import 'package:pokerapp/screens/game_play_screen/seat_view/count_down_timer.dar
 import 'package:pokerapp/screens/game_play_screen/widgets/overlay_notification.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/app/game_service.dart';
+import 'package:pokerapp/services/data/game_log_store.dart';
 import 'package:pokerapp/services/game_play/graphql/seat_change_service.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:provider/provider.dart';
@@ -241,6 +242,12 @@ class GameUpdateService {
     int seatNo = playerUpdate['seatNo'];
     // fetch new player using GameInfo API and add to the game
     if (closed) return;
+
+    debugLog(_gameState.gameCode, 'New player message');
+    debugLog(_gameState.gameCode, jsonEncode(playerUpdate));
+
+    debugLog(_gameState.gameCode, 'Fetching game information');
+    final start = DateTime.now();
     GameInfoModel _gameInfoModel =
         await GameService.getGameInfo(_gameState.gameCode);
     assert(_gameInfoModel != null);
@@ -249,39 +256,47 @@ class GameUpdateService {
       (pm) => pm.seatNo == seatNo,
       orElse: () => null,
     ); // this must return a PLayerModel object
+    final end = DateTime.now();
+    final timeTaken = end.difference(start);
+    debugLog(_gameState.gameCode,
+        'Time taken to fetch game information: ${timeTaken.inMilliseconds}');
 
     assert(newPlayerModel != null);
-
     // put the status of the fetched player
     newPlayerModel?.status = playerUpdate['status'];
 
     if (newPlayerModel.playerUuid == _gameState.currentPlayerUuid) {
       newPlayerModel.isMe = true;
     }
-    _gameState.newPlayer(_context, newPlayerModel);
 
-    if (newPlayerModel.stack == 0) {
-      newPlayerModel.showBuyIn = true;
+    if (!newPlayerModel.isMe) {
+      bool found = _gameState.newPlayer(_context, newPlayerModel);
+      if (!found) {
+        if (newPlayerModel.stack == 0) {
+          newPlayerModel.showBuyIn = true;
+        }
+      }
     }
 
-    if (newPlayerModel.isMe) {
-      await Future.delayed(Duration(milliseconds: 100));
-      if (closed) return;
-      final mySeat = _gameState.mySeat(_context);
-      mySeat.player = newPlayerModel;
-      mySeat.notify();
+    // if (newPlayerModel.isMe) {
+    //   await Future.delayed(Duration(milliseconds: 100));
+    //   if (closed) return;
+    //   final mySeat = _gameState.mySeat(_context);
+    //   mySeat.player = newPlayerModel;
+    //   mySeat.notify();
 
-      _gameState.myState.status = PlayerStatus.WAIT_FOR_BUYIN_APPROVAL;
-      _gameState.myState.notify();
-    }
+    //   _gameState.myState.status = PlayerStatus.WAIT_FOR_BUYIN_APPROVAL;
+    //   _gameState.myState.notify();
+    // }
     if (closed) return;
     final tableState = _gameState.getTableState(_context);
     tableState.notifyAll();
     _gameState.updatePlayers(_context);
-    if (newPlayerModel.isMe &&
-        playerUpdate['status'] == AppConstants.WAIT_FOR_BUYIN) {
-      GamePlayScreenUtilMethods.onBuyin(_context);
-    }
+    // if (newPlayerModel.isMe &&
+    //     playerUpdate['status'] == AppConstants.WAIT_FOR_BUYIN) {
+    //   GamePlayScreenUtilMethods.onBuyin(_context);
+    // }
+    //}
   }
 
   void handlePlayerLeftGame({

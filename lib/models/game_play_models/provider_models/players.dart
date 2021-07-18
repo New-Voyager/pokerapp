@@ -111,8 +111,17 @@ class Players extends ChangeNotifier {
       _players[i].playerType = TablePosition.None;
   }
 
-  void addNewPlayerSilent(PlayerModel playerModel) {
-    _players.add(playerModel);
+  bool addNewPlayerSilent(PlayerModel playerModel) {
+    bool found = false;
+    for (final player in _players) {
+      if (player.playerUuid == playerModel.playerUuid) {
+        found = true;
+      }
+    }
+    if (!found) {
+      _players.add(playerModel);
+    }
+    return found;
   }
 
   void updateExistingPlayerSilent(int idx, PlayerModel newPlayerModel) {
