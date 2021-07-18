@@ -566,73 +566,77 @@ class HandAnalyseView extends StatelessWidget {
     // show a popup
     await showDialog(
       context: context,
-      builder: (_) => ListenableProvider(
-        create: (_) => ValueNotifier<bool>(false),
-        child: Align(
-          alignment: Alignment.center,
-          child: Container(
-            width: MediaQuery.of(context).size.width * 0.70,
-            decoration: BoxDecoration(
-              color: AppColorsNew.darkGreenShadeColor,
-              borderRadius: BorderRadius.circular(15.0),
-            ),
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                /* hand number */
-                Text('Hand #${rs.handNo}'),
+      builder: (_) => ListenableProvider.value(
+        // pass down the cards back string asset to the new dialog
+        value: context.read<ValueNotifier<String>>(),
+        child: ListenableProvider(
+          create: (_) => ValueNotifier<bool>(false),
+          child: Align(
+            alignment: Alignment.center,
+            child: Container(
+              width: MediaQuery.of(context).size.width * 0.70,
+              decoration: BoxDecoration(
+                color: AppColorsNew.darkGreenShadeColor,
+                borderRadius: BorderRadius.circular(15.0),
+              ),
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  /* hand number */
+                  Text('Hand #${rs.handNo}'),
 
-                // sep
-                const SizedBox(height: 15.0),
+                  // sep
+                  const SizedBox(height: 15.0),
 
-                /* your cards */
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text('Your cards:'),
-                    const SizedBox(width: 10.0),
-                    StackCardView00(
-                      cards: rs.myCards,
+                  /* your cards */
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text('Your cards:'),
+                      const SizedBox(width: 10.0),
+                      StackCardView00(
+                        cards: rs.myCards,
+                      ),
+                    ],
+                  ),
+
+                  // sep
+                  const SizedBox(height: 15.0),
+
+                  // diamond widget
+                  Provider.value(
+                    value: context.read<GameState>(),
+                    child: Consumer<ValueNotifier<bool>>(
+                      builder: (_, __, ___) => NumDiamondWidget(),
                     ),
-                  ],
-                ),
-
-                // sep
-                const SizedBox(height: 15.0),
-
-                // diamond widget
-                Provider.value(
-                  value: context.read<GameState>(),
-                  child: Consumer<ValueNotifier<bool>>(
-                    builder: (_, __, ___) => NumDiamondWidget(),
                   ),
-                ),
 
-                // sep
-                const SizedBox(height: 15.0),
+                  // sep
+                  const SizedBox(height: 15.0),
 
-                // show REVEAL button / share button
-                Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 20.0),
-                  child: Consumer<ValueNotifier<bool>>(
-                    builder: (_, vnIsRevealed, __) => vnIsRevealed.value
-                        ? _buildShareButton()
-                        : _buildRevealButton(vnIsRevealed),
+                  // show REVEAL button / share button
+                  Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: Consumer<ValueNotifier<bool>>(
+                      builder: (_, vnIsRevealed, __) => vnIsRevealed.value
+                          ? _buildShareButton()
+                          : _buildRevealButton(vnIsRevealed),
+                    ),
                   ),
-                ),
 
-                // sep
-                const SizedBox(height: 15.0),
+                  // sep
+                  const SizedBox(height: 15.0),
 
-                // finally show here the community cards
-                Consumer<ValueNotifier<bool>>(
-                  builder: (_, vnIsRevealed, __) => Transform.scale(
-                    scale: 1.2,
-                    child: _buildCommunityCardWidget(vnIsRevealed.value),
+                  // finally show here the community cards
+                  Consumer<ValueNotifier<bool>>(
+                    builder: (_, vnIsRevealed, __) => Transform.scale(
+                      scale: 1.2,
+                      child: _buildCommunityCardWidget(vnIsRevealed.value),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

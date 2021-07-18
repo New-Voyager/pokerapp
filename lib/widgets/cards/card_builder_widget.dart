@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
+import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
@@ -146,12 +147,21 @@ class CardBuilderWidget extends StatelessWidget {
           ? cardBuilder(cardTextStyle, suitTextStyle)
           : Container();
 
-    // get the card back side asset as we need
-    final vnCardBackImage = context.read<ValueNotifier<String>>();
+    String vnCardBackImage;
+
+    try {
+      // get the card back side asset as we need
+      vnCardBackImage = context.read<ValueNotifier<String>>().value;
+    } catch (e) {
+      // we cath exceptions in case we dont have the back card asset available,
+      // such as in cases of Hand Logs or Hand Histories back card assets
+      // in such cases, show the default card, cardBackImage
+      vnCardBackImage = AppAssets.cardBackImage;
+    }
 
     return ClipRRect(
       borderRadius: BorderRadius.all(Radius.circular(roundRadius)),
-      child: Image.asset(vnCardBackImage.value),
+      child: Image.asset(vnCardBackImage),
     );
   }
 }
