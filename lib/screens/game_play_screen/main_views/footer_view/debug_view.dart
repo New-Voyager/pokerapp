@@ -2,13 +2,15 @@ import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/data/game_log_store.dart';
 
 class DebugLogView extends StatefulWidget {
   final String gameCode;
-
+  final bool isBottomSheet;
   DebugLogView({
     this.gameCode,
+    this.isBottomSheet,
   });
 
   @override
@@ -17,11 +19,13 @@ class DebugLogView extends StatefulWidget {
 
 class _DebugLogViewState extends State<DebugLogView> {
   bool loading = true;
-  GameLog log;
+  ScrollController _scrollController = new ScrollController();
+
+  GameLog debugLog;
   @override
   void initState() {
     loading = true;
-    log = getDebugLogger(widget.gameCode);
+    debugLog = getDebugLogger(widget.gameCode);
     loading = false;
     super.initState();
   }
@@ -33,10 +37,17 @@ class _DebugLogViewState extends State<DebugLogView> {
     }
 
     return ListView.builder(
-      itemCount: log.logs.length,
+      itemCount: debugLog.logs.length,
+      controller: _scrollController,
+      //reverse: true,
+      //shrinkWrap: true,
       itemBuilder: (context, index) {
         return ListTile(
-          title: Text('${log.logs[index]}'),
+          title: Text('${debugLog.logs[index]}'),
+          onTap: () {
+            showAlertDialog(context, 'log', debugLog.logs[index]);
+            //log('Show ${debugLog.logs[index]}');
+          },
         );
       },
     );
