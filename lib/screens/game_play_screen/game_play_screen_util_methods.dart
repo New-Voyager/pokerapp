@@ -27,6 +27,7 @@ import 'package:pokerapp/screens/util_screens/util.dart';
 //import 'package:pokerapp/services/agora/agora.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/data/game_hive_store.dart';
+import 'package:pokerapp/services/data/game_log_store.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 import 'package:timer_count_down/timer_count_down.dart';
@@ -496,13 +497,16 @@ class GamePlayScreenUtilMethods {
     if (seatPos == -1) return;
 
     int seatNumber = seatPos;
-    await GameService.joinGame(
+    debugLog(gameCode, 'Player ${gameState.currentPlayer.name} joining at seat $seatNumber');    
+    final resp = await GameService.joinGame(
       gameCode,
       seatNumber,
     );
+    debugLog(gameCode, 'Player ${gameState.currentPlayer.name} join response: ${resp.toString()}');
 
+    // if the player status is WAIT_FOR_BUYIN, show buyin dialog
+    
     GameHiveStore ghs = gameState.gameHiveStore;
-
     // we can offer user inital reward here, as well as reset timers here
     if (ghs.isFirstJoin()) {
       // on first join, we give 10 diamonds

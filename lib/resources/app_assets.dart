@@ -18,7 +18,7 @@ class AppAssets {
   static const String cityBackground2 =
       'assets/images/backgrounds/city_background_2.png';
   static const String barBookshelfBackground =
-      'assets/images/backgrounds/bar_bookshelf.jpg';
+      'assets/images/backgrounds/bar_bookshelf_light.jpg';
 
   static const String goldNamePlate =
       'assets/images/name_plates/gold_name_plate.png';
@@ -49,7 +49,6 @@ class AppAssets {
   static const String applauseSound = 'assets/sound_effects/applause.wav';
   static const String fireworksSound = 'assets/sound_effects/fireworks.mp3';
 
-  static const String cardsImage = 'assets/images/cardicon.png';
   static const String cardBackImage =
       'assets/images/card_back/set2/Asset 6.png';
   static const String handHistory = 'assets/images/handhistory.svg';

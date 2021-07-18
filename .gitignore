@@ -52,3 +52,4 @@ pubspec.lock
 .VSCodeCounter/2021-03-18_17-22-50/results.txt
 out/linecounter.json
 out/linecounter.txt
+.VSCodeCounter/*
