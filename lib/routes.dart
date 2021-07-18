@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:pokerapp/screens/club_screen/announcements_view.dart';
 import 'package:pokerapp/screens/club_screen/bookmarked_hands.dart';
 import 'package:pokerapp/screens/club_screen/botscripts.dart';
 import 'package:pokerapp/screens/club_screen/club_main_screen.dart';
@@ -96,6 +97,8 @@ class Routes {
 
   // player profile statistics
   static const String player_statistics = "/player_statistics";
+  // announcements
+  static const String announcements = "/announcements";
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -427,6 +430,14 @@ class Routes {
           routeName: settings.name,
           viewToShow: PerformanceView(
             playerUuid: playerUuid,
+          ),
+        );
+      case announcements:
+        var clubModel = settings.arguments as ClubHomePageModel;
+        return _getPageRoute(
+          routeName: settings.name,
+          viewToShow: AnnouncementsView(
+            clubModel: clubModel,
           ),
         );
 

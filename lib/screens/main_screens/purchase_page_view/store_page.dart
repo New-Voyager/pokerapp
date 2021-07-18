@@ -343,7 +343,7 @@ class PurchaseItem extends StatelessWidget {
       return Container();
     }
     double discountPer = ((mrpPrice - offerPrice) / (mrpPrice)) * 100;
-    log("Discount : $discountPer");
+    //log("Discount : $discountPer");
     bool showDiscount = discountPer.toInt() > 0;
 
     return Container(

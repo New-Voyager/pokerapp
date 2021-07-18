@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:pokerapp/main.dart';
+import 'package:pokerapp/models/announcement_model.dart';
 import 'package:pokerapp/models/club_homepage_model.dart';
 import 'package:pokerapp/models/club_model.dart';
 import 'package:pokerapp/models/club_weekly_activity_model.dart';
@@ -127,6 +128,23 @@ class ClubsService {
     mutation (\$clubCode: String!){
       deleteClub(clubCode: \$clubCode)
     }
+  """;
+
+  static String getAnnouncementsQuery = """
+    query (\$clubCode :String!){
+  clubAnnouncements(clubCode : \$clubCode){
+    text
+    createdAt
+    expiresAt
+  }
+}
+  """;
+
+  static String createAnnouncmentQuery = """
+   mutation (\$clubCode :String!,\$text :String!,\$expiresAt:DateTime!){
+  ret:addClubAnnouncement(clubCode :\$clubCode,text:\$text,expiresAt:\$expiresAt)
+}
+
   """;
 
   static Future<bool> markMemberRead({String player, String clubCode}) async {
@@ -308,6 +326,50 @@ class ClubsService {
     String clubCode = result.data['createClub'];
 
     return clubCode;
+  }
+
+  static Future<bool> createAnnouncement(
+      String clubCode, String text, DateTime expiresAt) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+
+    Map<String, dynamic> variables = {
+      "clubCode": clubCode,
+      "text": text,
+      "expiresAt": expiresAt.toString()
+    };
+
+    QueryResult result = await _client.mutate(
+      MutationOptions(
+          documentNode: gql(createAnnouncmentQuery), variables: variables),
+    );
+
+    print(result.exception);
+
+    if (result.hasException) return false;
+
+    log("Result of createNewQuery : ${result.data}");
+    bool res = result.data['ret'];
+
+    return res ?? false;
+  }
+
+  static Future<List<AnnouncementModel>> getAnnouncementsForAClub(
+      String clubCode) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+    Map<String, dynamic> variables = {"clubCode": clubCode};
+    QueryResult result = await _client.query(
+      QueryOptions(
+          documentNode: gql(getAnnouncementsQuery), variables: variables),
+    );
+
+    if (result.hasException) return [];
+
+    var jsonResponse = result.data['clubAnnouncements'];
+
+    return jsonResponse
+        .map<AnnouncementModel>(
+            (var announce) => AnnouncementModel.fromJson(announce))
+        .toList();
   }
 
   static Future<List<ClubModel>> getMyClubs() async {
