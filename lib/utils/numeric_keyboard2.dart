@@ -2,7 +2,9 @@ import 'dart:core';
 
 import 'package:flutter/material.dart';
 import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:provider/provider.dart';
+import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 const BACKSPACE_BTN = 'bksp';
 const sizedBox20 = const SizedBox(
@@ -53,11 +55,11 @@ class NumericKeyboard2 extends StatelessWidget {
     String valueStr = value.round().toString();
 
     return Container(
-      decoration: const BoxDecoration(
-        border: const Border(
-          top: const BorderSide(
-            color: AppColors.appAccentColor,
-            width: 2.0,
+      decoration: BoxDecoration(
+        border: Border(
+          top: BorderSide(
+            color: AppColorsNew.newBorderColor,
+            width: 2.ph,
           ),
         ),
       ),
@@ -127,7 +129,7 @@ class NumericKeyboard2 extends StatelessWidget {
     return Text(
       title,
       style: TextStyle(
-        fontSize: 15.0,
+        fontSize: 18.dp,
         color: Colors.white,
       ),
     );
@@ -168,7 +170,7 @@ class NumericKeyboard2 extends StatelessWidget {
             decoration: BoxDecoration(
               border: Border(
                 bottom: BorderSide(
-                  color: error ? Colors.red : AppColors.appAccentColor,
+                  color: error ? Colors.red : Colors.grey,
                   width: 1.0,
                 ),
               ),
@@ -180,8 +182,8 @@ class NumericKeyboard2 extends StatelessWidget {
                   child: Text(
                     vnValue.value.toString(),
                     style: TextStyle(
-                      color: AppColors.appAccentColor,
-                      fontSize: 18.0,
+                      color: AppColorsNew.newTextColor,
+                      fontSize: 18.dp,
                     ),
                   ),
                 ),
@@ -193,7 +195,7 @@ class NumericKeyboard2 extends StatelessWidget {
                   },
                   child: Icon(
                     Icons.highlight_off_rounded,
-                    color: Colors.red,
+                    color: Colors.grey,
                     size: 30.0,
                   ),
                 ),
@@ -203,7 +205,7 @@ class NumericKeyboard2 extends StatelessWidget {
         ),
 
         /* separator */
-        const SizedBox(width: 15.0),
+        SizedBox(width: 25.pw),
 
         /* done button */
         InkWell(
@@ -220,7 +222,7 @@ class NumericKeyboard2 extends StatelessWidget {
             ),
             child: Icon(
               Icons.check_rounded,
-              size: 25.0,
+              size: 25.pw,
               color: Colors.white,
             ),
           ),
@@ -244,7 +246,7 @@ class NumericKeyboard2 extends StatelessWidget {
             ),
             child: Icon(
               Icons.close_rounded,
-              size: 25.0,
+              size: 25.pw,
               color: Colors.white,
             ),
           ),
@@ -347,10 +349,17 @@ class NumericKeyboard2 extends StatelessWidget {
     Color color = Colors.blue;
     Color splashColor = Colors.blue[800];
     IconData icon;
+    color = AppColorsNew.newBorderColor;
+    splashColor = AppColorsNew.newBorderColor;
     if (value == BACKSPACE_BTN) {
-      color = Colors.lightBlue;
-      splashColor = Colors.blue[800];
+      color = Colors.blueGrey;
+      //splashColor = Colors.blue[800];
       icon = Icons.backspace_rounded;
+    }
+
+    if (value == '') {
+      color = Colors.transparent;
+      splashColor = Colors.transparent;
     }
 
     // if (value == '.' && !decimal) {
@@ -407,7 +416,7 @@ class NumericKeyboard2 extends StatelessWidget {
                       value,
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: 18.0,
+                        fontSize: 28.dp,
                       ),
                     ),
             ),

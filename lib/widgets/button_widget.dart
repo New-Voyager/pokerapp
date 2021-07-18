@@ -24,13 +24,13 @@ class ButtonWidget extends StatelessWidget {
                   color: const Color(0xff00FAAD),
                   width: 2.0,
                 ),
-                boxShadow: [
-                  BoxShadow(
-                    blurRadius: 10.0,
-                    spreadRadius: 5.0,
-                    color: const Color(0xff00FAAD),
-                  )
-                ],
+                // boxShadow: [
+                //   BoxShadow(
+                //     blurRadius: 10.0,
+                //     spreadRadius: 5.0,
+                //     color: const Color(0xff00FAAD),
+                //   )
+                // ],
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
