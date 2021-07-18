@@ -723,7 +723,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
             _buildAudioWidget(),
 
             // header view
-            HeaderView(gameCode: widget.gameCode),
+            HeaderView(gameInfoModel: _gameState.gameInfo),
 
             // empty space to highlight the background view
             SizedBox(width: width, height: divider1),

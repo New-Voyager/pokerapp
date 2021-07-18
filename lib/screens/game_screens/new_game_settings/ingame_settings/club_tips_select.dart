@@ -39,7 +39,7 @@ class ClubTipsSelect extends StatelessWidget {
               Slider(
                 value: providerData.rakePercentage.toDouble(),
                 onChanged: (value) =>
-                    providerData.rakePercentage = value.toDouble(),
+                    providerData.rakePercentage = value.floor(),
                 min: 0,
                 max: 40,
                 divisions: 40,

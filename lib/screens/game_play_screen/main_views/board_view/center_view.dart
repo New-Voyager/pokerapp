@@ -10,6 +10,7 @@ import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/boar
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/center_button_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/pots_view.dart';
 import 'package:pokerapp/utils/formatter.dart';
@@ -76,10 +77,10 @@ class _CenterViewState extends State<CenterView> {
 
   Widget _buildGameEndedWidget() => Center(
         child: Text(
-          'Game Ended',
+          AppStringsNew.gameEndedText,
           style: TextStyle(
-            color: Colors.white,
-            fontSize: 32.0,
+            color: Colors.grey,
+            fontSize: 22.0,
             fontWeight: FontWeight.w600,
           ),
         ),

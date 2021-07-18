@@ -83,7 +83,7 @@ class TextInputWidget extends StatelessWidget {
 
             /* main value */
             Expanded(
-              child: Consumer<ValueNotifier<double>>(
+              child: Consumer<ValueNotifier<int>>(
                 builder: (_, vnValue, __) => Text(
                   vnValue.value?.toString() ?? (value?.toString() ?? ''),
                   style: TextStyle(
@@ -113,7 +113,7 @@ class TextInputWidget extends StatelessWidget {
       );
 
   @override
-  Widget build(BuildContext _) => ListenableProvider<ValueNotifier<double>>(
+  Widget build(BuildContext _) => ListenableProvider<ValueNotifier<int>>(
         create: (_) => ValueNotifier(null),
         builder: (BuildContext context, _) => InkWell(
           onTap: () async {
@@ -127,7 +127,7 @@ class TextInputWidget extends StatelessWidget {
 
             if (value == null) return;
 
-            context.read<ValueNotifier<double>>().value = value;
+            context.read<ValueNotifier<int>>().value = value.toInt();
           },
           child: Container(
             padding: const EdgeInsets.symmetric(

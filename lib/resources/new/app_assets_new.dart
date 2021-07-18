@@ -61,4 +61,6 @@ class AppAssetsNew {
       "assets/images/backgrounds/chat-background.png";
 
   static String coinsImagePath = "assets/images/coins.svg";
+
+  static String startImagePath;
 }

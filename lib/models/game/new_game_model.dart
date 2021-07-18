@@ -53,16 +53,16 @@ class NewGameModel {
   String clubCode;
   String title = 'Test';
   GameType gameType = GameType.HOLDEM;
-  double smallBlind = 1;
-  double bigBlind = 2.0;
-  double straddleBet = 4.0;
-  double ante = 0.0;
+  int smallBlind = 1;
+  int bigBlind = 2;
+  int straddleBet = 4;
+  int ante = 0;
   bool utgStraddleAllowed = false;
   int minPlayers = 2;
   int maxPlayers = 9;
   int gameLength = 60;
   bool buyInApproval = true;
-  double rakePercentage = 0;
+  int rakePercentage = 0;
   int rakeCap = 0;
   int buyInMin = 30;
   int buyInMax = 100;
@@ -197,10 +197,10 @@ class NewGameModel {
 }
 
 class Blinds {
-  double smallBlind = 1.0;
-  double bigBlind = 2.0;
-  double straddle = 4.0;
-  double ante = 0.0;
+  int smallBlind = 1;
+  int bigBlind = 2;
+  int straddle = 4;
+  int ante = 0;
 
   Blinds({this.smallBlind, this.bigBlind, this.straddle, this.ante});
 }
