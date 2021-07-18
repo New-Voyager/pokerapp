@@ -180,9 +180,7 @@ class StackCardView02 extends StatelessWidget {
         card.cardType = CardType.HandLogOrHandHistoryCard;
         cardViews.add(card.widget);
         cardViews.add(
-          SizedBox(
-            width: 2.0,
-          ),
+          SizedBox(width: 2.0),
         );
       }
     }

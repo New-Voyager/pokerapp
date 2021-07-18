@@ -6,8 +6,6 @@ import 'package:pokerapp/enums/game_stages.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/bookmarkedHands_model.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
-import 'package:pokerapp/resources/app_colors.dart';
-import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
@@ -25,8 +23,8 @@ import 'package:pokerapp/services/app/hand_service.dart';
 import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
-import 'package:pokerapp/widgets/num_diamond_widget.dart';
 import 'package:pokerapp/widgets/round_color_button.dart';
+import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 import '../../../routes.dart';
 
@@ -38,11 +36,14 @@ class HandLogView extends StatefulWidget {
   final HandLogModelNew handLogModel;
   final bool isBottomSheet;
 
-  HandLogView(this.gameCode, this.handNum,
-      {this.isAppbarWithHandNumber = false,
-      this.clubCode,
-      this.handLogModel,
-      this.isBottomSheet = false});
+  HandLogView(
+    this.gameCode,
+    this.handNum, {
+    this.isAppbarWithHandNumber = false,
+    this.clubCode,
+    this.handLogModel,
+    this.isBottomSheet = false,
+  });
 
   @override
   State<StatefulWidget> createState() => _HandLogViewState();
@@ -164,25 +165,31 @@ class _HandLogViewState extends State<HandLogView> with RouteAwareAnalytics {
     //   title = "Hand Log #" + widget.handNum.toString();
     // }
     List<Widget> children = [];
+
     if (!this._isLoading) {
       if (_handLogModel == null) {
+        // if hand log is null we show not avaiable message
         children = [
-          Center(
-              child: Text(
+          Text(
             'Hand data is not available',
-            style: TextStyle(color: Colors.white),
-          ))
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 12.dp,
+            ),
+          ),
         ];
       } else {
         if (_handLogModel.authorized) {
+          // if we are authorized to view the hand, we can show it
+          // getHandLog actually fetches the hand log
           children = getHandLog();
         } else {
+          // else, if we are not authorized, we show a message
           children = [
-            Center(
-                child: Text(
+            Text(
               'You are not allowed to view this hand',
               style: TextStyle(color: Colors.white),
-            ))
+            )
           ];
         }
       }
@@ -200,9 +207,7 @@ class _HandLogViewState extends State<HandLogView> with RouteAwareAnalytics {
           showBackButton: !(widget.isBottomSheet ?? false),
         ),
         body: this._isLoading == true
-            ? Center(
-                child: CircularProgressIndicator(),
-              )
+            ? Center(child: CircularProgressIndicator())
             : SingleChildScrollView(
                 physics: BouncingScrollPhysics(),
                 child: Column(
@@ -215,19 +220,32 @@ class _HandLogViewState extends State<HandLogView> with RouteAwareAnalytics {
 
   List<Widget> getHandLog() {
     return [
-      // main top header
+      // main top header - send, replay, share, bookmark buttons
       Container(
-        padding: EdgeInsets.symmetric(vertical: 5),
-        margin: EdgeInsets.symmetric(horizontal: 16),
+        padding: EdgeInsets.symmetric(vertical: 5.ph),
+        margin: EdgeInsets.symmetric(horizontal: 16.pw),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            // replay, share, bookmark buttons
+            // send hand button
             RoundIconButton(
-                onTap: () => _sendHand(), icon: Icons.developer_board),
-            AppDimensionsNew.getHorizontalSpace(8),
-            RoundIconButton(onTap: () => _replayHand(), icon: Icons.replay),
-            AppDimensionsNew.getHorizontalSpace(8),
+              onTap: _sendHand,
+              icon: Icons.developer_board,
+            ),
+
+            // sep
+            AppDimensionsNew.getHorizontalSpace(8.pw),
+
+            // replay hand button
+            RoundIconButton(
+              onTap: _replayHand,
+              icon: Icons.replay,
+            ),
+
+            // sep
+            AppDimensionsNew.getHorizontalSpace(8.pw),
+
+            // share button
             RoundIconButton(
               onTap: () async {
                 log("SHARE12: ${_handLogModel.hand.gameCode} : ${_handLogModel.hand.handNum} : ${widget.clubCode}");
@@ -247,7 +265,11 @@ class _HandLogViewState extends State<HandLogView> with RouteAwareAnalytics {
               },
               icon: Icons.share,
             ),
-            AppDimensionsNew.getHorizontalSpace(8),
+
+            // sep
+            AppDimensionsNew.getHorizontalSpace(8.pw),
+
+            // bookmark button
             RoundIconButton(
               onTap: () async {
                 if (_isTheHandBookmarked(_handLogModel.hand.handNum)) {
@@ -273,32 +295,41 @@ class _HandLogViewState extends State<HandLogView> with RouteAwareAnalytics {
           ],
         ),
       ),
-      HandLogHeaderView(_handLogModel),
-      AppDimensionsNew.getVerticalSizedBox(4),
 
+      // hand log header
+      HandLogHeaderView(_handLogModel),
+
+      // sep
+      AppDimensionsNew.getVerticalSizedBox(4.ph),
+
+      // hand winners view
       HandWinnersView(handLogModel: _handLogModel),
-      HandStageView(
-        handLogModel: _handLogModel,
-        stageEnum: GameStages.PREFLOP,
-      ),
-      HandStageView(
-        handLogModel: _handLogModel,
-        stageEnum: GameStages.FLOP,
-      ),
-      HandStageView(
-        handLogModel: _handLogModel,
-        stageEnum: GameStages.TURN,
-      ),
-      HandStageView(
-        handLogModel: _handLogModel,
-        stageEnum: GameStages.RIVER,
-      ),
-      HandlogShowDown(
-        handLogModel: _handLogModel,
-      ),
-      AppDimensionsNew.getVerticalSizedBox(8),
+
+      // preflop hand stage view
+      HandStageView(handLogModel: _handLogModel, stageEnum: GameStages.PREFLOP),
+
+      // flop hand stage view
+      HandStageView(handLogModel: _handLogModel, stageEnum: GameStages.FLOP),
+
+      // turn hand stage view
+      HandStageView(handLogModel: _handLogModel, stageEnum: GameStages.TURN),
+
+      // river hand stage view
+      HandStageView(handLogModel: _handLogModel, stageEnum: GameStages.RIVER),
+
+      // hand low show down
+      HandlogShowDown(handLogModel: _handLogModel),
+
+      // sep
+      AppDimensionsNew.getVerticalSizedBox(8.ph),
+
+      // hand log action view
       HandLogActionView(handLogModel: _handLogModel),
-      AppDimensionsNew.getVerticalSizedBox(8),
+
+      // sep
+      AppDimensionsNew.getVerticalSizedBox(8.ph),
+
+      // summary
       HandlogSummary(handlogModel: _handLogModel),
     ];
   }

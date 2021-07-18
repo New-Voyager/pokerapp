@@ -3,6 +3,7 @@ import 'package:pokerapp/enums/game_stages.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/widgets/cards/multiple_stack_card_views.dart';
+import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class HandLogHeaderView extends StatelessWidget {
   final HandLogModelNew _handLogModel;
@@ -12,37 +13,37 @@ class HandLogHeaderView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      padding: EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+      margin: EdgeInsets.symmetric(horizontal: 8.pw, vertical: 4.ph),
+      padding: EdgeInsets.symmetric(horizontal: 10.pw, vertical: 8.ph),
       decoration: AppStylesNew.gradientBoxDecoration,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // game, game type, hand number row
+          // game, game type, hand number
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
                 "Game: " + _handLogModel.hand.gameId,
-                style: const TextStyle(
+                style: TextStyle(
                   color: Colors.white,
-                  fontSize: 12.0,
+                  fontSize: 8.5.dp,
                   fontWeight: FontWeight.w300,
                 ),
               ),
               Text(
                 _handLogModel.hand.gameType,
-                style: const TextStyle(
+                style: TextStyle(
                   color: Colors.white,
-                  fontSize: 14.0,
+                  fontSize: 10.0.dp,
                   fontWeight: FontWeight.w500,
                 ),
               ),
               Text(
                 "Hand: #" + _handLogModel.hand.handNum.toString(),
-                style: const TextStyle(
+                style: TextStyle(
                   color: Colors.white,
-                  fontSize: 12.0,
+                  fontSize: 8.5.dp,
                   fontWeight: FontWeight.w300,
                 ),
               ),
@@ -54,6 +55,7 @@ class HandLogHeaderView extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
+                // community cards
                 Container(
                   margin: EdgeInsets.only(top: 5, bottom: 5),
                   child: Column(
@@ -64,9 +66,9 @@ class HandLogHeaderView extends StatelessWidget {
                         margin: EdgeInsets.only(bottom: 5),
                         child: Text(
                           "Community Cards",
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: Colors.white,
-                            fontSize: 10.0,
+                            fontSize: 6.5.dp,
                             fontWeight: FontWeight.w300,
                           ),
                         ),
@@ -79,10 +81,10 @@ class HandLogHeaderView extends StatelessWidget {
                     ],
                   ),
                 ),
+
+                // your cards
                 Container(
-                  margin: EdgeInsets.only(
-                    top: 5,
-                  ),
+                  margin: EdgeInsets.only(top: 5.ph),
                   child: Visibility(
                     visible: _handLogModel.getMyCards().length > 0,
                     child: Column(
@@ -90,12 +92,12 @@ class HandLogHeaderView extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Container(
-                          margin: EdgeInsets.only(bottom: 5),
+                          margin: EdgeInsets.only(bottom: 5.ph),
                           child: Text(
                             "Your Cards",
-                            style: const TextStyle(
+                            style: TextStyle(
                               color: Colors.white,
-                              fontSize: 10.0,
+                              fontSize: 6.5.dp,
                               fontWeight: FontWeight.w300,
                             ),
                           ),
