@@ -24,6 +24,8 @@ import 'package:pokerapp/screens/game_screens/new_game_settings/ingame_settings/
 import 'package:pokerapp/services/app/player_service.dart';
 import 'package:pokerapp/services/gql_errors.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
+import 'package:pokerapp/utils/alerts.dart';
+import 'package:pokerapp/widgets/round_color_button.dart';
 
 showAlertDialog(BuildContext context, String title, String message) {
   // set up the button
@@ -461,7 +463,83 @@ showPlayerPopup(context, GlobalKey seatKey, GameState gameState, Seat seat) {
     if (delta != null) {
       switch (delta) {
         case 0:
+          // Handling note selection
           log('user selected NOTE option');
+          final data = await showDialog(
+            context: context,
+            builder: (context) {
+              // Fetch text from API
+              String oldText = "Default Text";
+              TextEditingController _controller =
+                  TextEditingController(text: oldText);
+              return AlertDialog(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                    side: BorderSide(
+                      color: AppColorsNew.newBorderColor,
+                    )),
+                backgroundColor: AppColorsNew.newDialogBgColor,
+                title: Row(
+                  children: [
+                    Icon(
+                      Icons.note,
+                      color: AppColorsNew.labelColor,
+                    ),
+                    AppDimensionsNew.getHorizontalSpace(8),
+                    Text(
+                      AppStringsNew.notesTitleText,
+                      style: AppStylesNew.labelTextStyle,
+                    )
+                  ],
+                ),
+                content: Column(
+                  children: [
+                    TextField(
+                      controller: _controller,
+                      decoration: InputDecoration(
+                        hintText: AppStringsNew.enterTextHint,
+                        fillColor: AppColorsNew.actionRowBgColor,
+                        filled: true,
+                        border: InputBorder.none,
+                      ),
+                      minLines: 5,
+                      maxLines: 8,
+                    ),
+                    AppDimensionsNew.getVerticalSizedBox(16),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        RoundedColorButton(
+                          text: AppStringsNew.cancelButtonText,
+                          textColor: AppColorsNew.newRedButtonColor,
+                          backgroundColor: Colors.transparent,
+                          borderColor: AppColorsNew.newRedButtonColor,
+                          onTapFunction: () => Navigator.of(context).pop(),
+                        ),
+                        RoundedColorButton(
+                          text: AppStringsNew.saveButtonText,
+                          textColor: AppColorsNew.darkGreenShadeColor,
+                          backgroundColor: AppColorsNew.newGreenButtonColor,
+                          borderColor: AppColorsNew.darkGreenShadeColor,
+                          onTapFunction: () =>
+                              Navigator.of(context).pop(_controller.text),
+                        ),
+                      ],
+                    ),
+                    AppDimensionsNew.getVerticalSizedBox(16),
+                  ],
+                  mainAxisSize: MainAxisSize.min,
+                ),
+              );
+            },
+          );
+          if (data != null) {
+            // API Call to save notes
+            if (true) {
+              Alerts.showNotification(
+                  titleText: AppStringsNew.notesSavedAlertText);
+            }
+          }
           break;
         case 1:
           final data = await showDialog(
@@ -486,7 +564,7 @@ showPlayerPopup(context, GlobalKey seatKey, GameState gameState, Seat seat) {
 
           gameState.gameComService.gameMessaging.sendAnimation(
             gameState.me(context).seatNo,
-            gameState.popupSelectedSeat.serverSeatPos,
+            seat.serverSeatPos,
             data['animationID'],
           );
           break;
@@ -497,11 +575,9 @@ showPlayerPopup(context, GlobalKey seatKey, GameState gameState, Seat seat) {
         case 3:
           log('calling kickPlayer with ${gameState.gameCode} and ${seat.player.playerUuid}');
           PlayerService.kickPlayer(gameState.gameCode, seat.player.playerUuid);
-          showSimpleNotification(
-            Text('Player will be removed after this hand'),
-            position: NotificationPosition.top,
-            duration: Duration(seconds: 10),
-          );
+          Alerts.showNotification(
+              titleText: AppStringsNew.kickedAlertMessage,
+              duration: Duration(seconds: 5));
           break;
       }
     }
