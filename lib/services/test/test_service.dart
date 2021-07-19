@@ -105,10 +105,10 @@ class TestService {
     seat.player.rankText = 'Two Pair';
     myState.notify();
 
-    await Future.delayed(AppConstants.highHandFireworkAnimationDuration);
+    //await Future.delayed(AppConstants.highHandFireworkAnimationDuration);
 
-    seat.player.rankText = '';
-    myState.notify();
+    //seat.player.rankText = '';
+    //myState.notify();
   }
 
   static PlayerInfo get currentPlayer {
@@ -440,19 +440,32 @@ class TestService {
     showWaitlistStatus(_context, message, 10);
   }
 
+  static int i = 0;
   static Future<void> showHoleCards() async {
     GameState gameState = Provider.of<GameState>(
       _context,
       listen: false,
     );
     final player = gameState.me(_context);
+    i++;
     player.cards = [
+      162,
       194,
       196,
       200,
-      50,
       // 56,
     ];
+    int r = i % 4;
+    if (r == 1) {
+      player.cards[0] = 161;
+    }
+    if (r == 2) {
+      player.cards[0] = 177;
+    }
+    if (r == 3) {
+      player.cards[0] = 184;
+    }
+
     player.noOfCardsVisible = player.cards.length;
     final players = gameState.getPlayers(_context);
     players.notifyAll();

@@ -319,6 +319,13 @@ class GameUpdateService {
     @required var playerUpdate,
   }) {
     int seatNo = playerUpdate['seatNo'];
+    final seat = _gameState.getSeat(_context, seatNo);
+    if (seat.isMe) {
+      if (_gameState.buyInKeyboardShown) {
+        Navigator.pop(_context);
+        _gameState.buyInKeyboardShown = false;
+      }
+    }
     removePlayer(seatNo);
   }
 
@@ -342,6 +349,8 @@ class GameUpdateService {
     if (closed) return;
     final seat = _gameState.getSeat(_context, seatNo);
     if (seat != null && seat.player != null && seat.player.isMe) {
+      seat.player.showBuyIn = true;
+      seat.notify();
       _gameState.myState.status = PlayerStatus.NOT_PLAYING;
       _gameState.myState.notify();
     }

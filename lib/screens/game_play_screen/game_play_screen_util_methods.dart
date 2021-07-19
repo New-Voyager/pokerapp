@@ -752,6 +752,7 @@ class GamePlayScreenUtilMethods {
     final gameState = GameState.getState(context);
     final gameInfo = gameState.gameInfo;
 
+    gameState.buyInKeyboardShown = true;
     /* use numeric keyboard to get buyin */
     double value = await NumericKeyboard2.show(
       context,
@@ -759,6 +760,7 @@ class GamePlayScreenUtilMethods {
       min: gameInfo.buyInMin.toDouble(),
       max: gameInfo.buyInMax.toDouble(),
     );
+    gameState.buyInKeyboardShown = false;
 
     if (value == null) return;
 

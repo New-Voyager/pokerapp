@@ -169,7 +169,7 @@ class BoardView extends StatelessWidget {
             : Consumer<MyState>(
                 builder: (BuildContext _, MyState myState, Widget __) =>
                     Transform.translate(
-                  offset: Offset(0, 20.ph),
+                  offset: Offset(0, 10.ph),
                   child: Align(
                     alignment: Alignment.bottomCenter,
                     child: rankText(context),
@@ -272,16 +272,16 @@ class BoardView extends StatelessWidget {
         ),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(6.pw),
-          border: Border.all(color: Colors.redAccent),
-          color: Colors.black,
+          border: Border.all(color: Colors.grey[700]),
+          //color: Colors.green[700],
         ),
         child: Text(
           mySeat.player.rankText,
           style: TextStyle(
-            color: Colors.white,
-            fontSize: 18.dp,
+            color: Colors.grey[700],
+            fontSize: 14.dp,
             fontFamily: AppAssets.fontFamilyLato,
-            fontWeight: FontWeight.w700,
+            fontWeight: FontWeight.w400,
           ),
         ),
       );
@@ -343,7 +343,7 @@ class BoardView extends StatelessWidget {
   Future<void> onBuyin(BuildContext context) async {
     final gameState = GameState.getState(context);
     final gameInfo = gameState.gameInfo;
-
+    gameState.buyInKeyboardShown = true;
     /* use numeric keyboard to get buyin */
     double value = await NumericKeyboard2.show(
       context,
@@ -351,6 +351,7 @@ class BoardView extends StatelessWidget {
       min: gameInfo.buyInMin.toDouble(),
       max: gameInfo.buyInMax.toDouble(),
     );
+    gameState.buyInKeyboardShown = false;
 
     if (value == null) return;
 

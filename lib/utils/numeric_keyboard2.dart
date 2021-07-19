@@ -3,6 +3,7 @@ import 'dart:core';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
+import 'package:pokerapp/utils/utils.dart';
 import 'package:provider/provider.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
@@ -36,6 +37,7 @@ class NumericKeyboard2 extends StatelessWidget {
   // final bool decimal;
   final String title;
   final int currValue;
+  bool firstKey = true;
 
   NumericKeyboard2({
     Key key,
@@ -267,11 +269,18 @@ class NumericKeyboard2 extends StatelessWidget {
   ) {
     String value = vnValue.value;
 
+    if (firstKey) {
+      value = '';
+    }
+    firstKey = false;
     /*
     * backspace action
     * */
     if (buttonValue == 'bksp') {
-      if (value == '0') return;
+      if (value == '0' || value == '') {
+        vnValue.value = '';
+        return;
+      }
       String newValue = value.substring(0, value.length - 1);
       if (newValue.isEmpty) newValue = '0';
       vnValue.value = newValue;
@@ -345,6 +354,7 @@ class NumericKeyboard2 extends StatelessWidget {
   Widget _buildButton({
     String value,
     int flex = 1,
+    double textSize = 28,
   }) {
     Color color = Colors.blue;
     Color splashColor = Colors.blue[800];
@@ -416,7 +426,7 @@ class NumericKeyboard2 extends StatelessWidget {
                       value,
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: 28.dp,
+                        fontSize: textSize,
                       ),
                     ),
             ),
@@ -427,6 +437,11 @@ class NumericKeyboard2 extends StatelessWidget {
   }
 
   Widget _buildKeyboard() {
+    int screenSize = Screen.diagonalInches.floor();
+    double textSize = 28.dp;
+    if (screenSize <= 6) {
+      textSize = 16.dp;
+    }
     return Expanded(
       child: Column(
         children: [
@@ -436,6 +451,7 @@ class NumericKeyboard2 extends StatelessWidget {
               children: [
                 _buildButton(
                   value: '7',
+                  textSize: textSize,
                 ),
                 _buildButton(
                   value: '8',
