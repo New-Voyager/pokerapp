@@ -15,6 +15,7 @@ import 'package:pokerapp/screens/main_screens/profile_page_view/profile_page_vie
 import 'package:pokerapp/screens/main_screens/purchase_page_view/store_page.dart';
 import 'package:pokerapp/services/app/clubs_service.dart';
 import 'package:pokerapp/services/app/gif_cache_service.dart';
+import 'package:pokerapp/services/app/loadassets_service.dart';
 import 'package:pokerapp/services/app/player_service.dart';
 import 'package:pokerapp/services/firebase/push_notification_service.dart';
 import 'package:pokerapp/services/nats/nats.dart';
@@ -77,6 +78,8 @@ class _MainScreenState extends State<MainScreen>
       for (final club in clubs) {
         _nats.subscribeClubMessages(club.clubCode);
       }
+
+      assetLoader.load();
 
       // TODO: WHY DO WE NEEDED THE DELAY?
       // Future.delayed(Duration(milliseconds: 100), () async {
