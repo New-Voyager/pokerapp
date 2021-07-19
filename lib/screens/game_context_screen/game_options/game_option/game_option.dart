@@ -48,25 +48,36 @@ class _GameOptionState extends State<GameOption> {
     super.dispose();
   }
 
-  void onLeave() {
-    Alerts.showNotification(
-        titleText: "LEAVE",
-        leadingIcon: Icons.time_to_leave,
-        subTitleText: AppStringsNew.leaveGameNotificationText);
+  void onLeave() async {
     // Dismisses bottomsheet
     Navigator.of(context).pop();
-    GameService.leaveGame(this.gameCode);
+    if (widget.gameState.running) {
+      Alerts.showNotification(
+          titleText: "Game",
+          svgPath: 'assets/images/casino.svg',
+          subTitleText: AppStringsNew.leaveGameNotificationText);
+      GameService.leaveGame(this.gameCode);
+    }
+
+    if (!widget.gameState.running) {
+      await GameService.leaveGame(this.gameCode);
+      widget.gameState.refresh(context);
+    }
   }
 
-  void onEndGame() {
-    Alerts.showNotification(
-        titleText: "Game",
-        svgPath: 'assets/images/casino.svg',
-        subTitleText: AppStringsNew.gameEndNotificationText);
-    // We need to broadcast to all the players
+  void onEndGame() async {
     Navigator.of(context).pop();
-
-    GameService.endGame(this.gameCode);
+    if (widget.gameState.running) {
+      Alerts.showNotification(
+          titleText: "Game",
+          svgPath: 'assets/images/casino.svg',
+          subTitleText: AppStringsNew.gameEndNotificationText);
+      // We need to broadcast to all the players
+      GameService.endGame(this.gameCode);
+    } else {
+      await GameService.endGame(this.gameCode);
+      widget.gameState.refresh(context);
+    }
   }
 
   void onPause() {
@@ -158,12 +169,6 @@ class _GameOptionState extends State<GameOption> {
             this.onLeave();
           }),
       OptionItemModel(
-          title: "Break",
-          iconData: Icons.shop,
-          onTap: (context) {
-            this.onBreak();
-          }),
-      OptionItemModel(
           title: "Reload",
           iconData: Icons.shop,
           onTap: (context) {
@@ -171,14 +176,31 @@ class _GameOptionState extends State<GameOption> {
           }),
     ];
 
-    if (widget.isAdmin) {
+    if (widget.gameState.running) {
       gameActions.add(OptionItemModel(
-          title: "Pause",
-          iconData: Icons.pause,
+          title: "Break",
+          iconData: Icons.shop,
           onTap: (context) {
-            this.onPause();
+            this.onBreak();
           }));
+      if (widget.isAdmin) {
+        gameActions.add(OptionItemModel(
+            title: "Pause",
+            iconData: Icons.pause,
+            onTap: (context) {
+              this.onPause();
+            }));
 
+        gameActions.add(OptionItemModel(
+            title: "Terminate",
+            iconData: Icons.cancel_outlined,
+            onTap: (context) {
+              this.onEndGame();
+            }));
+      }
+    }
+
+    if (widget.isAdmin) {
       gameActions.add(OptionItemModel(
           title: "Terminate",
           iconData: Icons.cancel_outlined,
@@ -532,7 +554,7 @@ class _GameOptionState extends State<GameOption> {
             Container(
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: AppColorsNew.newGreenButtonColor,
+                color: AppColorsNew.gameOptionColor,
               ),
               padding: EdgeInsets.all(10),
               child: Icon(

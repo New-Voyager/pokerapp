@@ -281,6 +281,10 @@ class Players extends ChangeNotifier {
     return tmp;
   }
 
+  int get count {
+    return this._players.length;
+  }
+
   // bool get showBuyinPrompt {
   //   if (this.me != null && this.me.stack == 0) {
   //     return true;
