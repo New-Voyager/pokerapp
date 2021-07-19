@@ -33,7 +33,6 @@ class HeaderView extends StatelessWidget {
   Widget _buildMainContent() {
     return Consumer<HandInfoState>(
       builder: (_, his, __) {
-        log('rebuilding header view');
         String titleText = "";
         if (his.handNum == 0) {
           titleText =
