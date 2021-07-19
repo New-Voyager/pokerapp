@@ -12,6 +12,7 @@ import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/routes.dart';
+import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/game_screens/game_history_details_view/stack_chart_view.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/game_service.dart';
@@ -72,7 +73,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
           subTitleText: "Game code: ${_gameDetail.gameCode}",
         ),
         body: !loadingDone
-            ? Center(child: CircularProgressIndicator())
+            ? Center(child: CircularProgressWidget())
             : SingleChildScrollView(
                 child: Column(
                   children: [
@@ -124,7 +125,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
                       margin: EdgeInsets.symmetric(horizontal: 8),
                       child: Row(
                         children: [
-                          Flexible(
+                          Expanded(
                             flex: 3,
                             child: stackTile(),
                           ),
@@ -133,7 +134,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
                           //   child: resultTile(),
                           // ),
                           AppDimensionsNew.getHorizontalSpace(8),
-                          Flexible(
+                          Expanded(
                             flex: 3,
                             child: actionTile(),
                           ),

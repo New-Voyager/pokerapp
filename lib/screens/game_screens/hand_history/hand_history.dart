@@ -10,6 +10,7 @@ import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
+import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/game_screens/hand_history/played_hands.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/hand_service.dart';
@@ -73,7 +74,7 @@ class _HandHistoryState extends State<HandHistoryListView>
           titleText: "Hand History",
         ),
         body: !loadingDone
-            ? Center(child: CircularProgressIndicator())
+            ? Center(child: CircularProgressWidget())
             : Container(
                 child: Column(
                   children: [
