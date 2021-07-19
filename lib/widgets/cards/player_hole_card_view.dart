@@ -24,7 +24,7 @@ class PlayerHoleCardView extends StatelessWidget {
     TextStyle cardTextStyle,
     TextStyle suitTextStyle,
   ) {
-    return Stack(children: [
+    return Stack(fit: StackFit.expand, children: [
       SvgPicture.asset('assets/images/card_face/${card.cardNum}.svg'),
       /* visible marker */
       Positioned(
