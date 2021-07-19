@@ -157,7 +157,7 @@ class _BookmarkedHandsState extends State<BookmarkedHands>
                                         arguments: {
                                           "gameCode": hand.gameCode,
                                           "handNum": hand.handNum,
-                                          "clubCode" : widget.clubCode,
+                                          "clubCode": widget.clubCode,
                                         });
                                   },
                                   child: Container(
