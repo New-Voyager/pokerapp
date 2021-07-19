@@ -21,6 +21,7 @@ import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/profile_popup.dart';
 import 'package:pokerapp/screens/game_screens/new_game_settings/ingame_settings/game_type_select.dart';
+import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/app/player_service.dart';
 import 'package:pokerapp/services/gql_errors.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
@@ -465,13 +466,15 @@ showPlayerPopup(context, GlobalKey seatKey, GameState gameState, Seat seat) {
         case 0:
           // Handling note selection
           log('user selected NOTE option');
+          final savedNotes =
+              await GameService.getNotesForUser(seat.player.playerUuid);
+
           final data = await showDialog(
             context: context,
             builder: (context) {
               // Fetch text from API
-              String oldText = "Default Text";
               TextEditingController _controller =
-                  TextEditingController(text: oldText);
+                  TextEditingController(text: savedNotes);
               return AlertDialog(
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
@@ -535,7 +538,9 @@ showPlayerPopup(context, GlobalKey seatKey, GameState gameState, Seat seat) {
           );
           if (data != null) {
             // API Call to save notes
-            if (true) {
+            final res =
+                await GameService.setNotesForUser(seat.player.playerUuid, data);
+            if (res) {
               Alerts.showNotification(
                   titleText: AppStringsNew.notesSavedAlertText);
             }
