@@ -54,8 +54,8 @@ enum HandState {
 class GameState {
   ListenableProvider<MarkedCards> _markedCards;
   Provider<GameMessagingService> _gameMessagingService;
-  ListenableProvider<HandInfoState> _handInfo;
-  ListenableProvider<TableState> _tableState;
+  ListenableProvider<HandInfoState> _handInfoProvider;
+  ListenableProvider<TableState> _tableStateProvider;
   ListenableProvider<Players> _playersProvider;
   ListenableProvider<ActionState> _playerAction;
   ListenableProvider<HandResultState> _handResult;
@@ -69,6 +69,8 @@ class GameState {
 
   CommunicationState _communicationState;
   Players _players;
+  TableState _tableState;
+  HandInfoState _handInfo;
 
   final Map<String, Uint8List> _audioCache = Map<String, Uint8List>();
   GameComService gameComService;
@@ -138,20 +140,21 @@ class GameState {
       this._seats[seatNo] = Seat(seatNo, null);
     }
 
-    final tableState = TableState();
+    _tableState = TableState();
     if (gameInfo != null) {
-      tableState.updateGameStatusSilent(gameInfo.status);
-      tableState.updateTableStatusSilent(gameInfo.tableStatus);
+      _tableState.updateGameStatusSilent(gameInfo.status);
+      _tableState.updateTableStatusSilent(gameInfo.tableStatus);
     }
 
     this._gameMessagingService = Provider<GameMessagingService>(
       create: (_) => gameMessagingService,
     );
 
-    this._handInfo =
-        ListenableProvider<HandInfoState>(create: (_) => HandInfoState());
-    this._tableState =
-        ListenableProvider<TableState>(create: (_) => tableState);
+    this._handInfo = HandInfoState();
+    this._handInfoProvider =
+        ListenableProvider<HandInfoState>(create: (_) => this._handInfo);
+    this._tableStateProvider =
+        ListenableProvider<TableState>(create: (_) => _tableState);
     this._playerAction =
         ListenableProvider<ActionState>(create: (_) => ActionState());
     this._handResult =
@@ -312,6 +315,30 @@ class GameState {
     return this._gameInfo;
   }
 
+  bool get running {
+    if (this._gameInfo.status == 'ACTIVE' &&
+        this._gameInfo.tableStatus == 'GAME_RUNNING') {
+      return true;
+    }
+    return false;
+  }
+
+  bool get botGame {
+    return this._gameInfo.botGame ?? false;
+  }
+
+  int get playersInSeatsCount {
+    return _players.count;
+  }
+
+  bool get ended {
+    return this._gameInfo.status == AppConstants.GAME_ENDED;
+  }
+
+  bool get started {
+    return this._gameInfo.status == AppConstants.GAME_ACTIVE;
+  }
+
   String get gameCode {
     return this._gameCode;
   }
@@ -360,7 +387,7 @@ class GameState {
       seat.betWidgetPos = null;
     }
 
-    final players = this.getPlayers(context);
+    final players = this._players;
     List<PlayerModel> playersInSeats = [];
     if (gameInfo.playersInSeats != null) {
       playersInSeats = gameInfo.playersInSeats;
@@ -395,7 +422,7 @@ class GameState {
 
     players.updatePlayersSilent(playersInSeats);
 
-    final tableState = this.getTableState(context);
+    final tableState = this._tableState; //this.getTableState(context);
     tableState.updateGameStatusSilent(gameInfo.status);
     tableState.updateTableStatusSilent(gameInfo.tableStatus);
     players.notifyAll();
@@ -410,6 +437,8 @@ class GameState {
       this._myState.gameStatus = GameStatus.RUNNING;
       this._myState.notify();
     }
+
+    this._handInfo.notify();
   }
 
   void seatPlayer(int seatNo, PlayerModel player) {
@@ -553,8 +582,8 @@ class GameState {
 
   List<SingleChildStatelessWidget> get providers {
     return [
-      this._handInfo,
-      this._tableState,
+      this._handInfoProvider,
+      this._tableStateProvider,
       this._playersProvider,
       this._playerAction,
       this._handResult,

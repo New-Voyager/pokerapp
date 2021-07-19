@@ -294,68 +294,73 @@ class HandAnalyseView extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) => Align(
-        alignment: Alignment.topLeft,
-        child: Column(
-          children: [
-            // first
-            Consumer<MyState>(
-              builder: (context, myState, child) {
-                log('myState.gameStatus = ${myState.gameStatus}, myState.status = ${myState.status}');
-                return myState.gameStatus == GameStatus.RUNNING &&
-                        myState.status == PlayerStatus.PLAYING
-                    ? GameCircleButton(
-                        onClickHandler: () => onClickViewHand(context),
-                        imagePath: AppAssetsNew.lastHandPath,
-                      )
-                    : const SizedBox.shrink();
-              },
-            ),
+  Widget build(BuildContext context) {
+    log('game started: ${gameState.started}');
+    return Align(
+      alignment: Alignment.topLeft,
+      child: Column(
+        children: [
+          // first
+          Consumer<MyState>(
+            builder: (context, myState, child) {
+              log('myState.gameStatus = ${myState.gameStatus}, myState.status = ${myState.status}');
+              return myState.gameStatus == GameStatus.RUNNING &&
+                      myState.status == PlayerStatus.PLAYING
+                  ? GameCircleButton(
+                      onClickHandler: () => onClickViewHand(context),
+                      imagePath: AppAssetsNew.lastHandPath,
+                    )
+                  : const SizedBox.shrink();
+            },
+          ),
 
-            // Pending approval button
-            Consumer2<PendingApprovalsState, GameContextObject>(
-              builder: (context, value, gameContextObj, child) {
-                if (!gameContextObject.isAdmin())
-                  return const SizedBox.shrink();
+          // Pending approval button
+          Consumer2<PendingApprovalsState, GameContextObject>(
+            builder: (context, value, gameContextObj, child) {
+              if (!gameContextObject.isAdmin()) return const SizedBox.shrink();
 
-                final approval = SvgPicture.asset(
-                  'assets/images/game/clipboard.svg',
-                  width: 16,
-                  height: 16,
-                  color: Colors.black,
-                );
+              final approval = SvgPicture.asset(
+                'assets/images/game/clipboard.svg',
+                width: 16,
+                height: 16,
+                color: Colors.black,
+              );
 
-                return IconWithBadge(
-                  count: value.totalPending,
-                  onClickFunction: () => onClickPendingBuyInApprovals(context),
-                  child: GameCircleButton(child: approval),
-                );
-              },
-            ),
+              return IconWithBadge(
+                count: value.totalPending,
+                onClickFunction: () => onClickPendingBuyInApprovals(context),
+                child: GameCircleButton(child: approval),
+              );
+            },
+          ),
 
-            GameCircleButton(
+          Visibility(
+            visible: gameState.started,
+            child: GameCircleButton(
               iconData: Icons.menu,
               onClickHandler: () => onMoreOptionsPress(context),
             ),
+          ),
 
-            GameCircleButton(
-              iconData: Icons.adb,
-              onClickHandler: () => onShowDebugLog(context),
-            ),
+          GameCircleButton(
+            iconData: Icons.adb,
+            onClickHandler: () => onShowDebugLog(context),
+          ),
 
-            // rabbit button
-            Consumer<RabbitState>(
-              builder: (context, rb, __) =>
-                  rb.show && gameState.gameInfo.allowRabbitHunt
-                      ? GameCircleButton(
-                          onClickHandler: () => onRabbitTap(rb.copy(), context),
-                          imagePath: AppAssets.rabbit,
-                        )
-                      : const SizedBox.shrink(),
-            ),
-          ],
-        ),
-      );
+          // rabbit button
+          Consumer<RabbitState>(
+            builder: (context, rb, __) =>
+                rb.show && gameState.gameInfo.allowRabbitHunt
+                    ? GameCircleButton(
+                        onClickHandler: () => onRabbitTap(rb.copy(), context),
+                        imagePath: AppAssets.rabbit,
+                      )
+                    : const SizedBox.shrink(),
+          ),
+        ],
+      ),
+    );
+  }
 
   void onMoreOptionsPress(BuildContext context) {
     log('onMoreOptionsPress');

@@ -99,6 +99,52 @@ class GameService {
       } 
   """;
 
+  static String getNotesForUserQuery = """ 
+      query (\$playerUuid: String!){
+       ret : notes(playerUuid: \$playerUuid)
+      }
+  """;
+
+  static String addNotesForUserQuery = """
+     mutation setNotes(\$playerUuid:String!,\$notes:String!){
+        ret :setNotes(playerUuid:\$playerUuid, notes:\$notes)
+      }
+  """;
+
+  static Future<bool> setNotesForUser(String playerUuid, String notes) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+    Map<String, dynamic> variables = {"playerUuid": playerUuid, "notes": notes};
+    QueryResult result = await _client.query(
+        QueryOptions(documentNode: gql(addNotesForUserQuery), variables: variables));
+
+    if (result.hasException) {
+      log(result.exception.toString());
+      return false;
+    }
+    // ignoring the return value
+    return true;
+  }
+
+  static Future<String> getNotesForUser(String playerUuid) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+    Map<String, dynamic> variables = {"playerUuid": playerUuid};
+    QueryResult result = await _client.query(
+        QueryOptions(documentNode: gql(getNotesForUserQuery), variables: variables));
+
+    if (result.hasException) {
+      log(result.exception.toString());
+      return "";
+    }
+    /* Sample return data 
+    {
+      "data": {
+        "ret": "Sample notes2"
+      }
+    } 
+    */
+    return result.data['ret'];
+  }
+
   static Future<GameHistoryDetailModel> getGameHistoryDetail(
       GameHistoryDetailModel model) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();

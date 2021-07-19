@@ -156,4 +156,10 @@ class AppStringsNew {
   static String noAnnouncementText = "No Announcements";
 
   static String myProfileTitleText = "My Profile";
+
+  static String kickedAlertMessage = "Player will be removed after this hand";
+
+  static String notesTitleText = "Notes";
+
+  static String notesSavedAlertText = "Notes saved";
 }
