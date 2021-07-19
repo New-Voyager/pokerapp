@@ -60,14 +60,9 @@ class _GameOptionState extends State<GameOption> {
 
   void onEndGame() {
     Alerts.showNotification(
-        titleText: "ENDED",
-        leadingIcon: Icons.close,
+        titleText: "Game",
+        svgPath: 'assets/images/casino.svg',
         subTitleText: AppStringsNew.gameEndNotificationText);
-    // showSimpleNotification(
-    //   Text(''),
-    //   position: NotificationPosition.top,
-    //   duration: Duration(seconds: 10),
-    // );
     // We need to broadcast to all the players
     Navigator.of(context).pop();
 

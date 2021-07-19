@@ -105,10 +105,10 @@ class TestService {
     seat.player.rankText = 'Two Pair';
     myState.notify();
 
-    await Future.delayed(AppConstants.highHandFireworkAnimationDuration);
+    //await Future.delayed(AppConstants.highHandFireworkAnimationDuration);
 
-    seat.player.rankText = '';
-    myState.notify();
+    //seat.player.rankText = '';
+    //myState.notify();
   }
 
   static PlayerInfo get currentPlayer {

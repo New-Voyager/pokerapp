@@ -110,6 +110,9 @@ class GameState {
   // central board key
   GlobalKey boardKey;
 
+  // tracks whether buyin keyboard is shown or not
+  bool buyInKeyboardShown = false;
+
   Future<void> initialize({
     String gameCode,
     @required GameInfoModel gameInfo,
