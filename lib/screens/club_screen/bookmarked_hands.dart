@@ -157,7 +157,7 @@ class _BookmarkedHandsState extends State<BookmarkedHands>
                                         arguments: {
                                           "gameCode": hand.gameCode,
                                           "handNum": hand.handNum,
-                                          "clubCode": widget.clubCode,
+                                          "clubCode" : widget.clubCode,
                                         });
                                   },
                                   child: Container(
@@ -212,23 +212,6 @@ class _BookmarkedHandsState extends State<BookmarkedHands>
                                                   SizedBox(width: 20),
                                                   InkWell(
                                                     onTap: () async {
-                                                      await _shareHandWithClub(
-                                                        list[index].handlogData,
-                                                      );
-                                                    },
-                                                    child: Container(
-                                                      alignment:
-                                                          Alignment.bottomRight,
-                                                      child: Icon(
-                                                        Icons.share,
-                                                        color: Colors.white,
-                                                        size: 20,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  SizedBox(width: 20),
-                                                  InkWell(
-                                                    onTap: () async {
                                                       await _replayHand(
                                                         list[index].handlogData,
                                                       );
@@ -240,6 +223,31 @@ class _BookmarkedHandsState extends State<BookmarkedHands>
                                                         Icons.replay,
                                                         color: Colors.white,
                                                         size: 20,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  SizedBox(width: 20),
+                                                  Visibility(
+                                                    visible:
+                                                        ((widget.clubCode !=
+                                                                null) &&
+                                                            (widget.clubCode
+                                                                .isNotEmpty)),
+                                                    child: InkWell(
+                                                      onTap: () async {
+                                                        await _shareHandWithClub(
+                                                          list[index]
+                                                              .handlogData,
+                                                        );
+                                                      },
+                                                      child: Container(
+                                                        alignment: Alignment
+                                                            .bottomRight,
+                                                        child: Icon(
+                                                          Icons.share,
+                                                          color: Colors.white,
+                                                          size: 20,
+                                                        ),
                                                       ),
                                                     ),
                                                   ),

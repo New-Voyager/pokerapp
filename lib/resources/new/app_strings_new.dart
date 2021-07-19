@@ -154,4 +154,6 @@ class AppStringsNew {
   static String enterTextHint = "Enter text here";
 
   static String noAnnouncementText = "No Announcements";
+
+  static String myProfileTitleText = "My Profile";
 }
