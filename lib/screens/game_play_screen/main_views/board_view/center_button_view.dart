@@ -138,7 +138,7 @@ class CenterButtonView extends StatelessWidget {
   Widget pauseButtons(BuildContext context) {
     final gameContext = Provider.of<GameContextObject>(context, listen: false);
     log('is admin: ${gameContext.isAdmin()} isHost: ${gameContext.isHost()}');
-
+    final providerContext = context;
     return Consumer<GameContextObject>(
       builder: (context, gameContext, _) => gameContext.isAdmin()
           ? Center(
@@ -184,7 +184,7 @@ class CenterButtonView extends StatelessWidget {
                             height: 48.ph,
                             width: 48.pw,
                           ),
-                          onTap: () => _onRearrangeSeatsPress(context),
+                          onTap: () => _onRearrangeSeatsPress(providerContext),
                           text: AppStringsNew.rearrangeText,
                         ),
                         SizedBox(width: 15.pw),

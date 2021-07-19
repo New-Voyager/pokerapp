@@ -51,6 +51,7 @@ class AppStringsNew {
   static const String breakGameNotificationText = "Take break after this hand";
   static const String pauseGameNotificationText =
       "The game will pause after this hand";
+  static const String pausedGameNotificationText = "The game is paused";
 
   static const String seatRearrangeText =
       "Tap a seat, drag and drop on another seat to move the player";

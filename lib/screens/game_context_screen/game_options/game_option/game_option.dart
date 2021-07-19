@@ -190,13 +190,6 @@ class _GameOptionState extends State<GameOption> {
             onTap: (context) {
               this.onPause();
             }));
-
-        gameActions.add(OptionItemModel(
-            title: "Terminate",
-            iconData: Icons.cancel_outlined,
-            onTap: (context) {
-              this.onEndGame();
-            }));
       }
     }
 
