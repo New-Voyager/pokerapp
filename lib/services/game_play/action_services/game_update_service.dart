@@ -19,6 +19,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/seat_change_mod
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
+import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/screens/game_play_screen/pop_ups/seat_change_confirmation_pop_up.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/count_down_timer.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/overlay_notification.dart';
@@ -26,6 +27,7 @@ import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/data/game_log_store.dart';
 import 'package:pokerapp/services/game_play/graphql/seat_change_service.dart';
+import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:provider/provider.dart';
 import 'package:pokerapp/screens/game_play_screen/game_play_screen_util_methods.dart';
@@ -1026,8 +1028,9 @@ class GameUpdateService {
     tableState.updateTableStatusSilent(tableStatus);
     tableState.updateGameStatusSilent(gameStatus);
 
-    if (tableStatus == AppConstants.TABLE_STATUS_GAME_RUNNING ||
-        tableStatus == AppConstants.TABLE_STATUS_GAME_RUNNING_1) {
+    if (gameStatus == AppConstants.GAME_ACTIVE &&
+        (tableStatus == AppConstants.TABLE_STATUS_GAME_RUNNING ||
+            tableStatus == AppConstants.TABLE_STATUS_GAME_RUNNING_1)) {
       log('Game is running. Update the state');
       _gameState.refresh(_context);
       /* QUERY_CURRENT_HAND is done here, only after making sure,
@@ -1037,15 +1040,20 @@ class GameUpdateService {
     } else if (gameStatus == AppConstants.GAME_ENDED) {
       // end the game
       log('Game has ended. Update the state');
+      resetBoard();
       _gameState.refresh(_context);
       tableState.updateTableStatusSilent(AppConstants.GAME_ENDED);
-      resetBoard();
     } else if (gameStatus == AppConstants.GAME_PAUSED) {
-      log('Game has ended. Update the state');
+      log('Game has paused. Update the state');
+      resetBoard();
+      Alerts.showNotification(
+          titleText: "Game",
+          svgPath: 'assets/images/casino.svg',
+          subTitleText: AppStringsNew.pausedGameNotificationText);
+
       _gameState.refresh(_context);
       // paused the game
       tableState.updateTableStatusSilent(AppConstants.GAME_PAUSED);
-      resetBoard();
     }
 
     tableState.notifyAll();

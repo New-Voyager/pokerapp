@@ -13,6 +13,7 @@ import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/club_screen/club_action_screens/club_member_detailed_view/club_member_detailed_view.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/game_play/graphql/seat_change_service.dart';
+import 'package:pokerapp/utils/alerts.dart';
 import 'package:provider/provider.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
@@ -34,16 +35,24 @@ class CenterButtonView extends StatelessWidget {
     GameService.resumeGame(gameCode);
   }
 
-  Future<void> _onTerminatePress() async {
+  Future<void> _onTerminatePress(BuildContext context) async {
     log('Termininating game $gameCode');
-    GameService.endGame(gameCode);
+    await GameService.endGame(gameCode);
+    final gameState = GameState.getState(context);
+    gameState.refresh(context);
   }
 
-  void _onRearrangeSeatsPress(context) {
+  void _onRearrangeSeatsPress(context) async {
     GameContextObject gameContextObject = Provider.of<GameContextObject>(
       context,
       listen: false,
     );
+    Alerts.showNotification(
+        titleText: "Game",
+        svgPath: AppAssetsNew.seatChangeImagePath,
+        subTitleText: AppStringsNew.seatRearrangeText,
+        duration: Duration(seconds: 30));
+
     Provider.of<SeatChangeNotifier>(
       context,
       listen: false,
@@ -51,7 +60,10 @@ class CenterButtonView extends StatelessWidget {
       ..updateSeatChangeHost(gameContextObject.playerId)
       ..updateSeatChangeInProgress(true);
 
-    SeatChangeService.hostSeatChangeBegin(gameCode);
+    await SeatChangeService.hostSeatChangeBegin(gameCode);
+    final gameState = GameState.getState(context);
+    await gameState.refresh(context);
+    log('status: ${gameState.gameInfo.status} table status: ${gameState.gameInfo.tableStatus}');
   }
 
   @override
@@ -60,13 +72,15 @@ class CenterButtonView extends StatelessWidget {
     final gameContext = Provider.of<GameContextObject>(context, listen: false);
     final gameState = GameState.getState(context);
     log('Seat Change: seat change in progress: ${gameState.playerSeatChangeInProgress}');
-    if (gameState.playerSeatChangeInProgress) {
+    if (gameState.playerSeatChangeInProgress ||
+        gameState.gameInfo.tableStatus ==
+            AppConstants.TABLE_STATUS_HOST_SEATCHANGE_IN_PROGRESS) {
       return Center(
           child: Text(
         'Seat Change in Progress',
         style: TextStyle(
           color: Colors.white,
-          fontSize: 14.0,
+          fontSize: 14.dp,
           fontWeight: FontWeight.w600,
         ),
       ));
@@ -124,7 +138,7 @@ class CenterButtonView extends StatelessWidget {
   Widget pauseButtons(BuildContext context) {
     final gameContext = Provider.of<GameContextObject>(context, listen: false);
     log('is admin: ${gameContext.isAdmin()} isHost: ${gameContext.isHost()}');
-
+    final providerContext = context;
     return Consumer<GameContextObject>(
       builder: (context, gameContext, _) => gameContext.isAdmin()
           ? Center(
@@ -163,22 +177,24 @@ class CenterButtonView extends StatelessWidget {
                           text: AppStringsNew.resumeText,
                         ),
 
+                        SizedBox(width: 15.pw),
                         IconAndTitleWidget(
                           child: SvgPicture.asset(
                             AppAssetsNew.seatChangeImagePath,
                             height: 48.ph,
                             width: 48.pw,
                           ),
-                          onTap: () => _onRearrangeSeatsPress(context),
+                          onTap: () => _onRearrangeSeatsPress(providerContext),
                           text: AppStringsNew.rearrangeText,
                         ),
+                        SizedBox(width: 15.pw),
                         IconAndTitleWidget(
                           child: SvgPicture.asset(
                             AppAssetsNew.terminateImagePath,
                             height: 48.ph,
                             width: 48.pw,
                           ),
-                          onTap: _onTerminatePress,
+                          onTap: () => _onTerminatePress(context),
                           text: AppStringsNew.terminateText,
                         ),
                         // Padding(
@@ -247,7 +263,7 @@ class CenterButtonView extends StatelessWidget {
                   height: 48.ph,
                   width: 48.pw,
                 ),
-                onTap: _onTerminatePress,
+                onTap: () => _onTerminatePress(context),
                 text: AppStringsNew.terminateText,
               ),
             ],
