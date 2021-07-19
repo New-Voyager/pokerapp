@@ -26,6 +26,7 @@ class PlayerHoleCardView extends StatelessWidget {
     TextStyle suitTextStyle,
   ) {
     return SvgPicture.asset('assets/images/card_face/${card.cardNum}.svg');
+    //return Image.asset('assets/images/card_face/${card.cardNum}.png');
   }
 
   Widget _buildCardUI2(

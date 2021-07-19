@@ -271,6 +271,7 @@ class NumericKeyboard2 extends StatelessWidget {
     if (firstKey) {
       value = '';
     }
+    firstKey = false;
     /*
     * backspace action
     * */

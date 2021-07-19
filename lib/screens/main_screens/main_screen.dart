@@ -79,13 +79,12 @@ class _MainScreenState extends State<MainScreen>
         _nats.subscribeClubMessages(club.clubCode);
       }
 
-      assetLoader.load();
-
       // TODO: WHY DO WE NEEDED THE DELAY?
       // Future.delayed(Duration(milliseconds: 100), () async {
       //   await natsClient.init(_currentPlayer.channel);
       // });
     }
+    assetLoader.load();
 
     // WidgetsBinding.instance.addPostFrameCallback((_) async {
     // });
