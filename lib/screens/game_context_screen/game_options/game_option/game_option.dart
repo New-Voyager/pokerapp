@@ -48,14 +48,21 @@ class _GameOptionState extends State<GameOption> {
     super.dispose();
   }
 
-  void onLeave() {
-    Alerts.showNotification(
-        titleText: "LEAVE",
-        leadingIcon: Icons.time_to_leave,
-        subTitleText: AppStringsNew.leaveGameNotificationText);
+  void onLeave() async {
     // Dismisses bottomsheet
     Navigator.of(context).pop();
-    GameService.leaveGame(this.gameCode);
+    if (widget.gameState.running) {
+      Alerts.showNotification(
+          titleText: "Game",
+          svgPath: 'assets/images/casino.svg',
+          subTitleText: AppStringsNew.leaveGameNotificationText);
+      GameService.leaveGame(this.gameCode);
+    }
+
+    if (!widget.gameState.running) {
+      await GameService.leaveGame(this.gameCode);
+      widget.gameState.refresh(context);
+    }
   }
 
   void onEndGame() {
