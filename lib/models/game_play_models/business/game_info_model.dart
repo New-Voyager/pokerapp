@@ -38,6 +38,7 @@ class GameInfoModel {
   int noHandsPlayed = 0;
   bool allowRabbitHunt = false;
   bool showHandRank = false;
+  bool botGame = false;
 
   // nats channels
   String gameToPlayerChannel;
@@ -96,6 +97,7 @@ class GameInfoModel {
     this.playerGameStatus = data['playerGameStatus'];
     this.playerRunItTwice = data['playerRunItTwiceConfig'] ?? false;
     this.playerMuckLosingHand = data['playerMuckLosingHandConfig'] ?? false;
+    this.botGame = data['botGame'];
 
     this.sessionTime = data['sessionTime'] ?? 0;
     this.runningTime = data['runningTime'] ?? 0;
@@ -156,6 +158,7 @@ class GameInfoModel {
       tableStatus
       allowRabbitHunt
       showHandRank
+      botGame
 
       sessionTime
       runningTime

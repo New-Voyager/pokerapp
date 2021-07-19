@@ -12,10 +12,10 @@ import 'package:provider/provider.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class HeaderView extends StatelessWidget {
-  final GameInfoModel gameInfoModel;
+  final GameState gameState;
 
   HeaderView({
-    @required this.gameInfoModel,
+    @required this.gameState,
   });
 
   String _getTitleText(HandInfoState his) {
@@ -30,50 +30,53 @@ class HeaderView extends StatelessWidget {
     return '';
   }
 
-  Widget _buildMainContent() => Consumer<HandInfoState>(
-        builder: (_, his, __) {
-          String titleText = "";
-          if (his.handNum == 0) {
-            titleText =
-                "${gameTypeStr(gameTypeFromStr(gameInfoModel.gameType))}  ${gameInfoModel.smallBlind}/${gameInfoModel.bigBlind}";
-          } else {
-            titleText = _getTitleText(his);
-          }
-          return Column(
-            children: [
-              /* title text */
-              RichText(
-                text: TextSpan(
-                  text: titleText,
-                  style: TextStyle(
-                    color: AppColorsNew.newTextColor,
-                  ),
+  Widget _buildMainContent() {
+    return Consumer<HandInfoState>(
+      builder: (_, his, __) {
+        log('rebuilding header view');
+        String titleText = "";
+        if (his.handNum == 0) {
+          titleText =
+              "${gameTypeStr(gameTypeFromStr(gameState.gameInfo.gameType))}  ${gameState.gameInfo.smallBlind}/${gameState.gameInfo.bigBlind}";
+        } else {
+          titleText = _getTitleText(his);
+        }
+        return Column(
+          children: [
+            /* title text */
+            RichText(
+              text: TextSpan(
+                text: titleText,
+                style: TextStyle(
+                  color: AppColorsNew.newTextColor,
                 ),
               ),
+            ),
 
-              /* hand number */
-              RichText(
-                text: TextSpan(
-                  text: "Hand ",
-                  style: TextStyle(
-                    color: AppColorsNew.newTextColor,
-                  ),
-                  children: [
-                    TextSpan(
-                      text: "#${his.handNum}",
-                      style: TextStyle(
-                        color: AppColorsNew.yellowAccentColor,
-                        fontSize: 8.dp,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    )
-                  ],
+            /* hand number */
+            RichText(
+              text: TextSpan(
+                text: "Hand ",
+                style: TextStyle(
+                  color: AppColorsNew.newTextColor,
                 ),
+                children: [
+                  TextSpan(
+                    text: "#${his.handNum}",
+                    style: TextStyle(
+                      color: AppColorsNew.yellowAccentColor,
+                      fontSize: 8.dp,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  )
+                ],
               ),
-            ],
-          );
-        },
-      );
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   Widget _buildBackButton(BuildContext context) => Align(
         alignment: Alignment.centerLeft,
@@ -141,10 +144,11 @@ class HeaderView extends StatelessWidget {
             _buildBackButton(context),
 
             /* game menu */
-
-            Visibility(
-                child: _buildGameMenuNavButton(context),
-                visible: gameInfoModel.status != 'ENDED'),
+            Consumer<HandInfoState>(builder: (_, his, __) {
+              return Visibility(
+                  child: _buildGameMenuNavButton(context),
+                  visible: !gameState.ended);
+            }),
           ],
         ),
       ),

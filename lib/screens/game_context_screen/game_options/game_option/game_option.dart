@@ -65,15 +65,19 @@ class _GameOptionState extends State<GameOption> {
     }
   }
 
-  void onEndGame() {
-    Alerts.showNotification(
-        titleText: "Game",
-        svgPath: 'assets/images/casino.svg',
-        subTitleText: AppStringsNew.gameEndNotificationText);
-    // We need to broadcast to all the players
+  void onEndGame() async {
     Navigator.of(context).pop();
-
-    GameService.endGame(this.gameCode);
+    if (widget.gameState.running) {
+      Alerts.showNotification(
+          titleText: "Game",
+          svgPath: 'assets/images/casino.svg',
+          subTitleText: AppStringsNew.gameEndNotificationText);
+      // We need to broadcast to all the players
+      GameService.endGame(this.gameCode);
+    } else {
+      await GameService.endGame(this.gameCode);
+      widget.gameState.refresh(context);
+    }
   }
 
   void onPause() {
@@ -194,6 +198,15 @@ class _GameOptionState extends State<GameOption> {
               this.onEndGame();
             }));
       }
+    }
+
+    if (widget.isAdmin) {
+      gameActions.add(OptionItemModel(
+          title: "Terminate",
+          iconData: Icons.cancel_outlined,
+          onTap: (context) {
+            this.onEndGame();
+          }));
     }
 
     gameSecondaryOptions = [

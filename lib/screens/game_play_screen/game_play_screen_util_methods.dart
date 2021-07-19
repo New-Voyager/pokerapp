@@ -751,6 +751,9 @@ class GamePlayScreenUtilMethods {
   static Future<void> onBuyin(BuildContext context) async {
     final gameState = GameState.getState(context);
     final gameInfo = gameState.gameInfo;
+    if (gameState.buyInKeyboardShown) {
+      return;
+    }
 
     gameState.buyInKeyboardShown = true;
     /* use numeric keyboard to get buyin */

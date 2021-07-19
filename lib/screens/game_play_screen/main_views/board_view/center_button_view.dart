@@ -11,12 +11,8 @@ import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/club_screen/club_action_screens/club_member_detailed_view/club_member_detailed_view.dart';
-import 'package:pokerapp/screens/club_screen/widgets/roud_icon_button.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/game_play/graphql/seat_change_service.dart';
-import 'package:pokerapp/widgets/custom_text_button.dart';
-import 'package:pokerapp/widgets/round_color_button.dart';
-import 'package:pokerapp/widgets/round_raised_button.dart';
 import 'package:provider/provider.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
@@ -216,53 +212,13 @@ class CenterButtonView extends StatelessWidget {
       if (!gameContext.isAdmin()) {
         return SizedBox.shrink();
       }
-      // return Row(
-      //   mainAxisAlignment: MainAxisAlignment.center,
-      //   children: [
-      //     Container(
-      //       padding: const EdgeInsets.symmetric(
-      //         horizontal: 20.0,
-      //         vertical: 10.0,
-      //       ),
-      //       decoration: BoxDecoration(
-      //         borderRadius: BorderRadius.circular(20.0),
-      //         color: Colors.black.withOpacity(0.50),
-      //       ),
-      //       child: Wrap(
-      //         crossAxisAlignment: WrapCrossAlignment.center,
-      //         children: [
-      //           CustomTextButton(
-      //             text: 'Start',
-      //             onTap: this.onStartGame,
-      //           ),
 
-      //         ],
-      //       ),
-      //     ),
-      //     SizedBox(
-      //       width: 10,
-      //     ),
-      //     Container(
-      //       padding: const EdgeInsets.symmetric(
-      //         horizontal: 20.0,
-      //         vertical: 10.0,
-      //       ),
-      //       decoration: BoxDecoration(
-      //         borderRadius: BorderRadius.circular(20.0),
-      //         color: Colors.black.withOpacity(0.50),
-      //       ),
-      //       child: Wrap(
-      //         crossAxisAlignment: WrapCrossAlignment.center,
-      //         children: [
-      //           CustomTextButton(
-      //             text: 'Terminate',
-      //             onTap: _onTerminatePress,
-      //           ),
-      //         ],
-      //       ),
-      //     ),
-      //   ],
-      // );
+      // if this is not bot game and the player count is less than 2
+      // don't allow the player to start the game
+      final gameState = GameState.getState(context);
+      if (!gameState.botGame && gameState.playersInSeatsCount <= 1) {
+        return SizedBox.shrink();
+      }
 
       return Center(
         child: Container(

@@ -18,6 +18,7 @@ import 'package:pokerapp/widgets/cards/animations/animating_shuffle_card_view.da
 import 'package:pokerapp/widgets/cards/community_cards_view/community_cards_view.dart';
 import 'package:provider/provider.dart';
 import 'package:collection/collection.dart';
+import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 import 'board_view_util_methods.dart';
 
@@ -75,16 +76,22 @@ class _CenterViewState extends State<CenterView> {
         ),
       );
 
-  Widget _buildGameEndedWidget() => Center(
-        child: Text(
-          AppStringsNew.gameEndedText,
-          style: TextStyle(
-            color: Colors.grey,
-            fontSize: 22.0,
-            fontWeight: FontWeight.w600,
-          ),
+  Widget _buildGameEndedWidget() {
+    return centerTextWidget(AppStringsNew.gameEndedText);
+  }
+
+  Widget centerTextWidget(String text) {
+    return Center(
+      child: Text(
+        text,
+        style: TextStyle(
+          color: Colors.grey,
+          fontSize: 16.dp,
+          fontWeight: FontWeight.w600,
         ),
-      );
+      ),
+    );
+  }
 
   Widget _buildGamePauseOptions(Offset centerViewButtonOffset) =>
       Transform.translate(
@@ -164,19 +171,25 @@ class _CenterViewState extends State<CenterView> {
   }) {
     if (gameStatus == AppConstants.GAME_ENDED) return _buildGameEndedWidget();
 
+    final gameState = GameState.getState(context);
+    if (!gameState.botGame && gameState.playersInSeatsCount <= 1) {
+      String text = 'Waiting for players to join';
+      return centerTextWidget(text);
+    }
+
     final bool isGamePausedOrWaiting = gameStatus == AppConstants.GAME_PAUSED ||
         tableStatus == AppConstants.WAITING_TO_BE_STARTED;
 
     /* if the game is paused, show the options available during game pause */
-    if (isGamePausedOrWaiting)
+    if (isGamePausedOrWaiting) {
       return _buildGamePauseOptions(
         boardAttributes.centerViewButtonVerticalTranslate,
       );
-
-    String _text = BoardViewUtilMethods.getText(tableStatus);
+    }
+    String text = BoardViewUtilMethods.getText(tableStatus);
 
     /* in case of new hand, show the deck shuffling animation */
-    if (_text == AppConstants.NEW_HAND) {
+    if (text == AppConstants.NEW_HAND) {
       return _positionAnimationShuffleCardView(
         offset: boardAttributes.centerViewCardShufflePosition,
         scale: boardAttributes.centerViewCenterScale,

@@ -54,7 +54,7 @@ enum HandState {
 class GameState {
   ListenableProvider<MarkedCards> _markedCards;
   Provider<GameMessagingService> _gameMessagingService;
-  ListenableProvider<HandInfoState> _handInfo;
+  ListenableProvider<HandInfoState> _handInfoProvider;
   ListenableProvider<TableState> _tableStateProvider;
   ListenableProvider<Players> _playersProvider;
   ListenableProvider<ActionState> _playerAction;
@@ -70,6 +70,7 @@ class GameState {
   CommunicationState _communicationState;
   Players _players;
   TableState _tableState;
+  HandInfoState _handInfo;
 
   final Map<String, Uint8List> _audioCache = Map<String, Uint8List>();
   GameComService gameComService;
@@ -149,8 +150,9 @@ class GameState {
       create: (_) => gameMessagingService,
     );
 
-    this._handInfo =
-        ListenableProvider<HandInfoState>(create: (_) => HandInfoState());
+    this._handInfo = HandInfoState();
+    this._handInfoProvider =
+        ListenableProvider<HandInfoState>(create: (_) => this._handInfo);
     this._tableStateProvider =
         ListenableProvider<TableState>(create: (_) => _tableState);
     this._playerAction =
@@ -316,9 +318,25 @@ class GameState {
   bool get running {
     if (this._gameInfo.status == 'ACTIVE' &&
         this._gameInfo.tableStatus == 'GAME_RUNNING') {
-          return true;
+      return true;
     }
     return false;
+  }
+
+  bool get botGame {
+    return this._gameInfo.botGame ?? false;
+  }
+
+  int get playersInSeatsCount {
+    return _players.count;
+  }
+
+  bool get ended {
+    return this._gameInfo.status == AppConstants.GAME_ENDED;
+  }
+
+  bool get started {
+    return this._gameInfo.status == AppConstants.GAME_ACTIVE;
   }
 
   String get gameCode {
@@ -404,7 +422,7 @@ class GameState {
 
     players.updatePlayersSilent(playersInSeats);
 
-    final tableState = this._tableState;//this.getTableState(context);
+    final tableState = this._tableState; //this.getTableState(context);
     tableState.updateGameStatusSilent(gameInfo.status);
     tableState.updateTableStatusSilent(gameInfo.tableStatus);
     players.notifyAll();
@@ -419,6 +437,8 @@ class GameState {
       this._myState.gameStatus = GameStatus.RUNNING;
       this._myState.notify();
     }
+
+    this._handInfo.notify();
   }
 
   void seatPlayer(int seatNo, PlayerModel player) {
@@ -562,7 +582,7 @@ class GameState {
 
   List<SingleChildStatelessWidget> get providers {
     return [
-      this._handInfo,
+      this._handInfoProvider,
       this._tableStateProvider,
       this._playersProvider,
       this._playerAction,
