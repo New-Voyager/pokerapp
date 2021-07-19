@@ -143,14 +143,8 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
                     ),
                     seprator,
                     Container(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        children: [
-                          Flexible(
-                            child: highHandTile(),
-                          ),
-                        ],
-                      ),
+                      margin: const EdgeInsets.all(8.0),
+                      child: highHandTile(),
                     ),
                     getLowerCard(),
                   ],
@@ -376,9 +370,11 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
               child: Expanded(
                   flex: 1,
                   child: !_gameDetail.playedGame
-                      ? Text(
-                          "No Data",
-                          style: AppStylesNew.labelTextStyle,
+                      ? Center(
+                          child: Text(
+                            "No Data",
+                            style: AppStylesNew.labelTextStyle,
+                          ),
                         )
                       : StackChartView(_gameDetail.stack, openStackDetails)),
               // PointsLineChart()),
@@ -484,7 +480,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
                             title,
                             style: TextStyle(
                               color: Colors.white,
-                              fontSize: 14.dp,
+                              fontSize: 10.dp,
                             ),
                           ),
                           SizedBox(width: 10.pw),
@@ -492,7 +488,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
                             blind,
                             style: TextStyle(
                               color: Colors.yellow,
-                              fontSize: 14.dp,
+                              fontSize: 10.dp,
                             ),
                           ),
                         ])),
@@ -562,14 +558,11 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
   }
 
   Widget highHandTile() {
-    return Container(
-      decoration: AppStylesNew.greenContainerDecoration,
-      child: Visibility(
-        visible: this._gameDetail != null &&
-            this._gameDetail.hhWinners.length > 0 &&
-            this._gameDetail.hhTracked == true,
-        child: HighhandWinnersView(this._gameDetail),
-      ),
+    return Visibility(
+      visible: this._gameDetail != null &&
+          this._gameDetail.hhWinners.length > 0 &&
+          this._gameDetail.hhTracked == true,
+      child: HighhandWinnersView(this._gameDetail),
     );
   }
 
