@@ -114,8 +114,8 @@ class GameService {
   static Future<bool> setNotesForUser(String playerUuid, String notes) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
     Map<String, dynamic> variables = {"playerUuid": playerUuid, "notes": notes};
-    QueryResult result = await _client.query(
-        QueryOptions(documentNode: gql(addNotesForUserQuery), variables: variables));
+    QueryResult result = await _client.query(QueryOptions(
+        documentNode: gql(addNotesForUserQuery), variables: variables));
 
     if (result.hasException) {
       log(result.exception.toString());
@@ -128,8 +128,8 @@ class GameService {
   static Future<String> getNotesForUser(String playerUuid) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
     Map<String, dynamic> variables = {"playerUuid": playerUuid};
-    QueryResult result = await _client.query(
-        QueryOptions(documentNode: gql(getNotesForUserQuery), variables: variables));
+    QueryResult result = await _client.query(QueryOptions(
+        documentNode: gql(getNotesForUserQuery), variables: variables));
 
     if (result.hasException) {
       log(result.exception.toString());

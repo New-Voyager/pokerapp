@@ -52,6 +52,9 @@ class AppStringsNew {
   static const String pauseGameNotificationText =
       "The game will pause after this hand";
 
+  static const String seatRearrangeText =
+      "Tap a seat, drag and drop on another seat to move the player";
+
   static const waitingListTitle = "Waiting List";
 
   static String playersInWaitingListText = "Players in the List";

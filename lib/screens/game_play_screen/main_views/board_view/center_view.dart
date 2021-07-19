@@ -177,8 +177,13 @@ class _CenterViewState extends State<CenterView> {
       return centerTextWidget(text);
     }
 
+    if (gameState.gameInfo.tableStatus ==
+        AppConstants.TABLE_STATUS_HOST_SEATCHANGE_IN_PROGRESS) {
+      return centerTextWidget('Seat change in progress');
+    }
+
     final bool isGamePausedOrWaiting = gameStatus == AppConstants.GAME_PAUSED ||
-        tableStatus == AppConstants.WAITING_TO_BE_STARTED;
+        gameState.gameInfo.tableStatus == AppConstants.WAITING_TO_BE_STARTED;
 
     /* if the game is paused, show the options available during game pause */
     if (isGamePausedOrWaiting) {
