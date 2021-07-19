@@ -165,12 +165,6 @@ class _GameOptionState extends State<GameOption> {
             this.onLeave();
           }),
       OptionItemModel(
-          title: "Break",
-          iconData: Icons.shop,
-          onTap: (context) {
-            this.onBreak();
-          }),
-      OptionItemModel(
           title: "Reload",
           iconData: Icons.shop,
           onTap: (context) {
@@ -178,20 +172,28 @@ class _GameOptionState extends State<GameOption> {
           }),
     ];
 
-    if (widget.isAdmin) {
+    if (widget.gameState.running) {
       gameActions.add(OptionItemModel(
-          title: "Pause",
-          iconData: Icons.pause,
+          title: "Break",
+          iconData: Icons.shop,
           onTap: (context) {
-            this.onPause();
+            this.onBreak();
           }));
+      if (widget.isAdmin) {
+        gameActions.add(OptionItemModel(
+            title: "Pause",
+            iconData: Icons.pause,
+            onTap: (context) {
+              this.onPause();
+            }));
 
-      gameActions.add(OptionItemModel(
-          title: "Terminate",
-          iconData: Icons.cancel_outlined,
-          onTap: (context) {
-            this.onEndGame();
-          }));
+        gameActions.add(OptionItemModel(
+            title: "Terminate",
+            iconData: Icons.cancel_outlined,
+            onTap: (context) {
+              this.onEndGame();
+            }));
+      }
     }
 
     gameSecondaryOptions = [
@@ -539,7 +541,7 @@ class _GameOptionState extends State<GameOption> {
             Container(
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: AppColorsNew.newGreenButtonColor,
+                color: AppColorsNew.gameOptionColor,
               ),
               padding: EdgeInsets.all(10),
               child: Icon(
