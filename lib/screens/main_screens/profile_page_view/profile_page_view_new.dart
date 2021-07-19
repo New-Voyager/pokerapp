@@ -60,7 +60,7 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
           body: SingleChildScrollView(
             child: Column(
               children: [
-                HeadingWidget(heading: "My Profile"),
+                HeadingWidget(heading: AppStringsNew.myProfileTitleText),
                 Container(
                   decoration: AppStylesNew.actionRowDecoration.copyWith(
                     border: Border.all(
