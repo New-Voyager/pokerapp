@@ -35,7 +35,7 @@ class AppStringsNew {
 
   static const HighHandlogTitle = "High Handlog";
   static const HandlogTitle = "Hand Log";
-  static const SummaryText = "Summary";
+  static const StackText = "Stack";
 
   static const PerformanceTitle = "Statistics";
   static const PerformanceTab1 = "Hand Stats";
