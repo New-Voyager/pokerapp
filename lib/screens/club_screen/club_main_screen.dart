@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/club_homepage_model.dart';
 import 'package:pokerapp/models/club_model.dart';
+import 'package:pokerapp/models/newmodels/game_model_new.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/routes.dart';
@@ -14,6 +15,7 @@ import 'package:pokerapp/screens/club_screen/widgets/club_live_games_view.dart';
 import 'package:pokerapp/screens/game_screens/new_game_settings/new_game_settings2.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/clubs_service.dart';
+import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/widgets/custom_text_button.dart';
 import 'package:pokerapp/widgets/round_color_button.dart';
 import 'package:provider/provider.dart';
@@ -35,10 +37,24 @@ class ClubMainScreenNew extends StatefulWidget {
 
 class _ClubMainScreenNewState extends State<ClubMainScreenNew>
     with RouteAware, RouteAwareAnalytics {
+  List<GameModelNew> _liveGames = [];
   @override
   String get routeName => Routes.club_main;
+
+  _fetchLiveGames() async {
+    _liveGames.clear();
+    final List<GameModelNew> list = await GameService.getLiveGamesNew();
+    for (GameModelNew game in list) {
+      if (game.clubCode == widget.clubCode) {
+        _liveGames.add(game);
+      }
+    }
+    setState(() {});
+  }
+
   void refreshClubMainScreen() {
-    //  log('refresh club main screen');
+    log('refresh club main screen');
+    _fetchLiveGames();
     setState(() {});
   }
 
@@ -66,6 +82,9 @@ class _ClubMainScreenNewState extends State<ClubMainScreenNew>
   @override
   void initState() {
     context.read<ClubsUpdateState>().addListener(listener);
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      _fetchLiveGames();
+    });
     super.initState();
   }
 
@@ -99,7 +118,7 @@ class _ClubMainScreenNewState extends State<ClubMainScreenNew>
 
                               if (result != null) {
                                 /* show game settings dialog */
-                                NewGameSettings2.show(
+                                await NewGameSettings2.show(
                                   context,
                                   clubCode: widget.clubCode,
                                   mainGameType: result['gameType'],
@@ -108,6 +127,7 @@ class _ClubMainScreenNewState extends State<ClubMainScreenNew>
                                       ) ??
                                       [],
                                 );
+                                setState(() {});
                               }
                             },
                             text: '+ Create Game',
@@ -131,7 +151,7 @@ class _ClubMainScreenNewState extends State<ClubMainScreenNew>
                   ), */
 
                   // live game
-                  ClubLiveGamesView(clubModel),
+                  ClubLiveGamesView(_liveGames),
 
                   // seperator
                   AppDimensionsNew.getVerticalSizedBox(16.ph),

@@ -12,38 +12,9 @@ import 'package:pokerapp/screens/club_screen/widgets/club_game_item_new.dart';
 import 'package:pokerapp/screens/main_screens/games_page_view/widgets/live_games_item.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 
-class ClubLiveGamesView extends StatefulWidget {
-  final ClubHomePageModel clubModel;
-  ClubLiveGamesView(this.clubModel);
-
-  @override
-  _ClubLiveGamesViewState createState() => _ClubLiveGamesViewState();
-}
-
-class _ClubLiveGamesViewState extends State<ClubLiveGamesView> {
-  List<GameModelNew> liveGames = [];
-  bool loading = true;
-
-  @override
-  void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      _fetchLiveGames();
-    });
-    super.initState();
-  }
-
-  _fetchLiveGames() async {
-    liveGames.clear();
-    final List<GameModelNew> list = await GameService.getLiveGamesNew();
-    for (GameModelNew game in list) {
-      if (game.clubCode == widget.clubModel.clubCode) {
-        liveGames.add(game);
-      }
-    }
-    setState(() {
-      loading = false;
-    });
-  }
+class ClubLiveGamesView extends StatelessWidget {
+  final List<GameModelNew> liveGames;
+  ClubLiveGamesView(this.liveGames);
 
   @override
   Widget build(BuildContext context) {
@@ -60,35 +31,26 @@ class _ClubLiveGamesViewState extends State<ClubLiveGamesView> {
             "Live Games",
             style: AppStylesNew.cardHeaderTextStyle,
           ),
-          loading
+          liveGames.length == 0
               ? Container(
-                  height: 200,
+                  height: 150,
                   child: Center(
-                    child: CircularProgressWidget(
-                      text: AppStringsNew.fetchLiveGamesText,
-                    ),
+                    child: Text(AppStringsNew.noLiveGamesText,
+                        style: AppStylesNew.labelTextStyle),
                   ),
                 )
-              : liveGames.length == 0
-                  ? Container(
-                      height: 150,
-                      child: Center(
-                        child: Text(AppStringsNew.noLiveGamesText,
-                            style: AppStylesNew.labelTextStyle),
-                      ),
-                    )
-                  : ListView.separated(
-                      physics: NeverScrollableScrollPhysics(),
-                      itemCount: liveGames.length,
-                      shrinkWrap: true,
-                      itemBuilder: (_, index) {
-                        return LiveGameItem(
-                          game: liveGames[index],
-                        );
-                      },
-                      separatorBuilder: (context, index) =>
-                          AppDimensionsNew.getVerticalSizedBox(8),
-                    ),
+              : ListView.separated(
+                  physics: NeverScrollableScrollPhysics(),
+                  itemCount: liveGames.length,
+                  shrinkWrap: true,
+                  itemBuilder: (_, index) {
+                    return LiveGameItem(
+                      game: liveGames[index],
+                    );
+                  },
+                  separatorBuilder: (context, index) =>
+                      AppDimensionsNew.getVerticalSizedBox(8),
+                ),
         ],
       ),
     );
