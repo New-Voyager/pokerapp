@@ -28,7 +28,7 @@ class HandlogSummary extends StatelessWidget {
             padding: EdgeInsets.all(8),
             width: double.infinity,
             alignment: Alignment.center,
-            child: Text(AppStringsNew.SummaryText,
+            child: Text(AppStringsNew.StackText,
                 style: AppStylesNew.valueTextStyle),
           ),
           Container(

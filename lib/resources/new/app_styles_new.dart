@@ -239,6 +239,16 @@ class AppStylesNew {
   static final gradientBoxDecoration = BoxDecoration(
     gradient: LinearGradient(
       colors: [
+        AppColorsNew.darkFlopShadeColor,
+        AppColorsNew.flopStopColor,
+      ],
+    ),
+    borderRadius: BorderRadius.circular(8),
+  );
+
+  static final gradientFlopBoxDecoration = BoxDecoration(
+    gradient: LinearGradient(
+      colors: [
         AppColorsNew.darkGreenShadeColor,
         AppColorsNew.newGreenRadialStopColor,
       ],
@@ -261,14 +271,14 @@ class AppStylesNew {
   );
 
   static final stageNameTextStyle = TextStyle(
-    fontSize: 14,
-    fontWeight: FontWeight.w500,
+    fontSize: 14.dp,
+    fontWeight: FontWeight.w800,
     color: AppColorsNew.newTextColor,
   );
 
   static final potSizeTextStyle = TextStyle(
     fontSize: 14,
-    fontWeight: FontWeight.w500,
+    fontWeight: FontWeight.w800,
     color: AppColorsNew.newTextColor,
   );
 
