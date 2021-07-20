@@ -167,5 +167,9 @@ class AppStringsNew {
 
   static String notesSavedAlertText = "Notes saved";
 
+  static String noLiveGamesText = "No Live Games";
+
+  static String fetchLiveGamesText = "Fetching Live games...";
+
   static String highHandWinnersText = "High hand winners";
 }

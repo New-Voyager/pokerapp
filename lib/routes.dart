@@ -229,7 +229,10 @@ class Routes {
         var args = settings.arguments as dynamic;
         return _getPageRoute(
           routeName: settings.name,
-          viewToShow: HighHandLogView(args['gameCode'],clubCode: args['clubCode'],),
+          viewToShow: HighHandLogView(
+            args['gameCode'],
+            clubCode: args['clubCode'],
+          ),
         );
 
       case table_result:
