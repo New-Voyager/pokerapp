@@ -317,8 +317,8 @@ class GameService {
   """;
 
   static String updatePlayerGameConfig = """
-    mutation muckLosingHand(\$gameCode:String! \$config:GameConfigChangeInput!) {
-      ret: updateGameConfig(gameCode: \$gameCode, config: \$config)
+    mutation updatePlayerGameConfig(\$gameCode:String! \$config:GameConfigChangeInput!) {
+      ret: updatePlayerGameConfig(gameCode: \$gameCode, config: \$config)
     }
     """;
 
