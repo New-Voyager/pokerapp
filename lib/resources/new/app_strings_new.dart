@@ -166,4 +166,8 @@ class AppStringsNew {
   static String notesTitleText = "Notes";
 
   static String notesSavedAlertText = "Notes saved";
+
+  static String pendingApprovalTitleText = "Pending Approvals";
+
+  static String noPendingText = "No Pending approvals";
 }
