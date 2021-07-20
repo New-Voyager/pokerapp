@@ -7,6 +7,7 @@ import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
+import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/club_screen/widgets/club_game_item_new.dart';
 import 'package:pokerapp/screens/main_screens/games_page_view/widgets/live_games_item.dart';
@@ -46,6 +47,13 @@ class ClubLiveGamesView extends StatelessWidget {
                   itemBuilder: (_, index) {
                     return LiveGameItem(
                       game: liveGames[index],
+                      onTapFunction: () async {
+                        await Navigator.of(context).pushNamed(
+                          Routes.game_play,
+                          arguments: liveGames[index].gameCode,
+                        );
+                        // Refreshes livegames again
+                      },
                     );
                   },
                   separatorBuilder: (context, index) =>
