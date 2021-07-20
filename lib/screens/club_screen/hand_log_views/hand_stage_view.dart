@@ -1,107 +1,62 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_stages.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
 import 'package:pokerapp/resources/app_assets.dart';
-import 'package:pokerapp/resources/app_colors.dart';
-import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_stage_header.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
+import 'package:pokerapp/utils/adaptive_sizer.dart';
 
-const sbTextStyle = TextStyle(
-  fontFamily: AppAssets.fontFamilyLato,
-  color: Colors.blueGrey,
-  fontSize: 12.0,
-  fontWeight: FontWeight.w500,
-);
-
-const bbTextStyle = TextStyle(
-  fontFamily: AppAssets.fontFamilyLato,
-  color: Colors.blue,
-  fontSize: 12.0,
-  fontWeight: FontWeight.w500,
-);
-
-const betTextStyle = TextStyle(
-  fontFamily: AppAssets.fontFamilyLato,
-  color: Colors.redAccent,
-  fontSize: 12.0,
-  fontWeight: FontWeight.w500,
-);
-
-const raiseTextStyle = TextStyle(
-  fontFamily: AppAssets.fontFamilyLato,
-  color: Colors.redAccent,
-  fontSize: 12.0,
-  fontWeight: FontWeight.w500,
-);
-
-const checkTextStyle = TextStyle(
-  fontFamily: AppAssets.fontFamilyLato,
-  color: Colors.white,
-  fontSize: 12.0,
-  fontWeight: FontWeight.w500,
-);
-
-const callTextStyle = TextStyle(
-  color: Colors.lightGreenAccent,
-  fontSize: 12.0,
-  fontWeight: FontWeight.w500,
-);
-
-const foldTextStyle = TextStyle(
-  color: Colors.blueGrey,
-  fontSize: 12.0,
-  fontWeight: FontWeight.w500,
-);
-
-const straddleTextStyle = TextStyle(
-  color: Colors.cyan,
-  fontSize: 12.0,
-  fontWeight: FontWeight.w500,
-);
-
-const allinTextStyle = TextStyle(
-  color: Colors.yellowAccent,
-  fontSize: 12.0,
-  fontWeight: FontWeight.w500,
-);
+// different colors for different actions
+const Color sbColor = Colors.blueGrey;
+const Color bbColor = Colors.blue;
+const Color betColor = Colors.redAccent;
+const Color raiseColor = Colors.redAccent;
+const Color checkColor = Colors.white;
+const Color foldColor = Colors.blueGrey;
+const Color callColor = Colors.lightGreenAccent;
+const Color allInColor = Colors.yellowAccent;
+const Color straddleColor = Colors.cyan;
 
 class HandStageView extends StatelessWidget {
   final HandLogModelNew handLogModel;
   final GameStages stageEnum;
   final bool shown;
-  String stageName;
 
-  HandStageView({this.handLogModel, this.stageEnum, this.shown});
+  final ValueNotifier<String> _vnStageName = ValueNotifier<String>(null);
+
+  HandStageView({
+    this.handLogModel,
+    this.stageEnum,
+    this.shown,
+  });
 
   @override
   Widget build(BuildContext context) {
     GameActions actions = _getActions(stageEnum);
-    // String stageName = _getStageName(stageEnum);
     List<int> stageCards = _getStageCardsList(stageEnum);
 
     // This check will hide this stage.
     return (actions != null && actions.actions.length > 0)
         ? Column(
             children: [
+              // hand stage header
               HandStageHeader(
-                stageName: stageName,
+                stageName: _vnStageName.value,
                 handLogModel: handLogModel,
                 stageCards: stageCards,
                 actions: actions,
               ),
+
+              // main body
               Container(
-                // padding: EdgeInsets.only(left: 10, right: 10, bottom: 5),
                 child: Column(
                   children: [
                     Container(
-                      margin: EdgeInsets.only(bottom: 5),
-                      padding: EdgeInsets.symmetric(horizontal: 8),
+                      margin: EdgeInsets.only(bottom: 5.ph),
+                      padding: EdgeInsets.symmetric(horizontal: 8.pw),
                       child: ListView.separated(
                         physics: NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
@@ -112,7 +67,7 @@ class HandStageView extends StatelessWidget {
                         separatorBuilder: (context, index) {
                           return Divider(
                             color: Colors.transparent,
-                            height: 1,
+                            height: 1.ph,
                           );
                         },
                       ),
@@ -126,71 +81,80 @@ class HandStageView extends StatelessWidget {
   }
 
   Container actionRow(int index, GameActions actions) {
-    var textStyle = TextStyle(
-      color: Colors.white,
-      fontSize: 12.0,
-      fontWeight: FontWeight.w600,
+    TextStyle textStyle;
+
+    final TextStyle baseTextStyle = TextStyle(
+      fontFamily: AppAssets.fontFamilyLato,
+      fontSize: 9.0.dp,
+      fontWeight: FontWeight.w500,
     );
 
     String action = "";
-    //log('action: ${actions.actions[index].action.toString()}');
     switch (actions.actions[index].action) {
       case HandActions.SB:
-        textStyle = sbTextStyle;
+        textStyle = baseTextStyle.copyWith(color: sbColor);
         action = "SB";
         break;
+
       case HandActions.BB:
-        textStyle = bbTextStyle;
+        textStyle = baseTextStyle.copyWith(color: bbColor);
         action = "BB";
         break;
+
       case HandActions.BET:
-        textStyle = betTextStyle;
+        textStyle = baseTextStyle.copyWith(color: betColor);
         action = "Bet";
         break;
+
       case HandActions.RAISE:
-        textStyle = raiseTextStyle;
+        textStyle = baseTextStyle.copyWith(color: raiseColor);
         action = "Raise";
         break;
+
       case HandActions.CHECK:
-        textStyle = checkTextStyle;
+        textStyle = baseTextStyle.copyWith(color: checkColor);
         action = "Check";
         break;
+
       case HandActions.CALL:
-        textStyle = callTextStyle;
+        textStyle = baseTextStyle.copyWith(color: callColor);
         action = "Call";
         break;
+
       case HandActions.FOLD:
-        textStyle = foldTextStyle;
+        textStyle = baseTextStyle.copyWith(color: foldColor);
         action = "Fold";
         break;
+
       case HandActions.STRADDLE:
-        textStyle = straddleTextStyle;
+        textStyle = baseTextStyle.copyWith(color: straddleColor);
         action = "Straddle";
         break;
+
       case HandActions.ALLIN:
-        textStyle = allinTextStyle;
+        textStyle = baseTextStyle.copyWith(color: allInColor);
         action = "All-in";
         break;
-      // case HandActions.UNKNOWN:
-      //   // TODO: Handle this case.
-      //   textStyle = sbTextStyle;
-      //   break;
 
       default:
-        textStyle = sbTextStyle;
+        textStyle = textStyle = baseTextStyle;
         action = "";
     }
 
     return Container(
       decoration: BoxDecoration(
         color: AppColorsNew.actionRowBgColor,
-        borderRadius: BorderRadius.circular(5),
+        borderRadius: BorderRadius.circular(5.pw),
       ),
-      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      padding: EdgeInsets.symmetric(
+        horizontal: 8.pw,
+        vertical: 4.ph,
+      ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // player name
           Expanded(
             flex: 4,
             child: Text(
@@ -202,6 +166,8 @@ class HandStageView extends StatelessWidget {
               textAlign: TextAlign.left,
             ),
           ),
+
+          // action
           Expanded(
             flex: 2,
             child: Text(
@@ -210,6 +176,8 @@ class HandStageView extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
           ),
+
+          // amount
           Expanded(
             flex: 2,
             child: Text(
@@ -217,21 +185,23 @@ class HandStageView extends StatelessWidget {
                       actions.actions[index].action != HandActions.FOLD
                   ? actions.actions[index].amount.toString()
                   : "",
-              style: const TextStyle(
+              style: TextStyle(
                 color: Colors.white,
-                fontSize: 12.0,
+                fontSize: 9.0.dp,
                 fontWeight: FontWeight.w500,
               ),
               textAlign: TextAlign.center,
             ),
           ),
+
+          // stack after action
           Expanded(
             flex: 2,
             child: Text(
               actions.actions[index].stack.toString(),
-              style: const TextStyle(
+              style: TextStyle(
                 color: Colors.white,
-                fontSize: 12.0,
+                fontSize: 9.0.dp,
                 fontWeight: FontWeight.w500,
               ),
               textAlign: TextAlign.right,
@@ -267,25 +237,23 @@ class HandStageView extends StatelessWidget {
   GameActions _getActions(GameStages stage) {
     switch (stage) {
       case GameStages.PREFLOP:
-        stageName = "Preflop";
+        _vnStageName.value = 'Preflop';
         return handLogModel.hand.handLog.preflopActions;
-      case GameStages.FLOP:
-        stageName = "Flop";
 
+      case GameStages.FLOP:
+        _vnStageName.value = 'Flop';
         return handLogModel.hand.handLog.flopActions;
 
       case GameStages.TURN:
-        stageName = "Turn";
-
+        _vnStageName.value = 'Turn';
         return handLogModel.hand.handLog.turnActions;
 
       case GameStages.RIVER:
-        stageName = "River";
-
+        _vnStageName.value = 'River';
         return handLogModel.hand.handLog.riverActions;
-      case GameStages.SHOWDOWN:
-        stageName = "Showdown";
 
+      case GameStages.SHOWDOWN:
+        _vnStageName.value = 'Showdown';
         return null;
 
       default:

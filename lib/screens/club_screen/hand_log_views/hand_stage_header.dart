@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
-import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/widgets/cards/multiple_stack_card_views.dart';
+import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class HandStageHeader extends StatelessWidget {
   final String stageName;
@@ -17,10 +17,11 @@ class HandStageHeader extends StatelessWidget {
     this.stageCards,
     this.actions,
   });
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      margin: EdgeInsets.symmetric(horizontal: 8.pw, vertical: 4.ph),
       decoration: AppStylesNew.gradientBoxDecoration,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -29,29 +30,36 @@ class HandStageHeader extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // stage name
               Container(
-                margin: EdgeInsets.only(left: 10, top: 5, right: 10),
+                margin: EdgeInsets.only(left: 10.pw, top: 5.ph, right: 10.pw),
                 alignment: Alignment.centerLeft,
                 child: Text(
                   stageName,
                   style: AppStylesNew.stageNameTextStyle,
                 ),
               ),
+
+              // cards
               Container(
                 margin:
                     EdgeInsets.only(left: 10, top: 8, bottom: 10, right: 10),
                 alignment: Alignment.centerLeft,
-                child: StackCardView00(
-                  cards: stageCards,
-                  show: true,
-                  needToShowEmptyCards: true,
+                child: Transform.scale(
+                  scale: 0.90.pw,
+                  alignment: Alignment.centerLeft,
+                  child: StackCardView00(
+                    cards: stageCards,
+                    show: true,
+                    needToShowEmptyCards: true,
+                  ),
                 ),
               ),
             ],
           ),
           actions != null
               ? Container(
-                  margin: EdgeInsets.all(8),
+                  margin: EdgeInsets.all(8.pw),
                   child: Text(
                     "Pot: ${actions.potStart ?? 0}",
                     style: AppStylesNew.potSizeTextStyle,
@@ -60,7 +68,7 @@ class HandStageHeader extends StatelessWidget {
               : stageName == "Showdown"
                   ? Container(
                       child: _getPotAmountWidget(),
-                      margin: EdgeInsets.all(8),
+                      margin: EdgeInsets.all(8.pw),
                     )
                   : Container(),
         ],
@@ -95,12 +103,12 @@ class HandStageHeader extends StatelessWidget {
           Container(
               child: Text(
             "Pot: ${handLogModel.hand.handLog.potWinners['0'].amount}",
-            style: AppStyles.playerNameTextStyle,
+            style: AppStylesNew.playerNameTextStyle,
           )),
           Container(
             child: Text(
               "$sidePots",
-              style: AppStyles.playerNameTextStyle,
+              style: AppStylesNew.playerNameTextStyle,
             ),
           ),
         ],

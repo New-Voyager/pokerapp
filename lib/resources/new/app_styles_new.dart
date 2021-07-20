@@ -261,25 +261,25 @@ class AppStylesNew {
   );
 
   static final stageNameTextStyle = TextStyle(
-    fontSize: 14,
+    fontSize: 10.dp,
     fontWeight: FontWeight.w500,
     color: AppColorsNew.newTextColor,
   );
 
   static final potSizeTextStyle = TextStyle(
-    fontSize: 14,
+    fontSize: 10.dp,
     fontWeight: FontWeight.w500,
     color: AppColorsNew.newTextColor,
   );
 
   static final playerNameTextStyle = TextStyle(
-    fontSize: 12,
+    fontSize: 9.dp,
     fontWeight: FontWeight.w500,
     color: AppColorsNew.newTextColor,
   );
 
   static final balanceTextStyle = TextStyle(
-    fontSize: 14,
+    fontSize: 10.0.dp,
     fontWeight: FontWeight.w500,
     color: AppColorsNew.newTextColor,
   );

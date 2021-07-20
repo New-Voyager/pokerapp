@@ -10,6 +10,49 @@ class HandLogHeaderView extends StatelessWidget {
 
   HandLogHeaderView(this._handLogModel);
 
+  Widget _buildTitledCards({
+    @required final String text,
+    @required final List<int> boardCards,
+    @required final bool show,
+    bool is00 = false,
+  }) {
+    return Container(
+      margin: EdgeInsets.only(top: 5.ph, bottom: 5.ph),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            margin: EdgeInsets.only(bottom: 5.ph),
+            child: Text(
+              text,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 6.5.dp,
+                fontWeight: FontWeight.w300,
+              ),
+            ),
+          ),
+          Transform.scale(
+            scale: 0.90.pw,
+            alignment: is00 ? Alignment.centerRight : Alignment.centerLeft,
+            child: Container(
+              child: is00
+                  ? StackCardView00(
+                      cards: boardCards,
+                      show: show,
+                    )
+                  : StackCardView02(
+                      cards: boardCards,
+                      show: show,
+                    ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -51,67 +94,24 @@ class HandLogHeaderView extends StatelessWidget {
           ),
 
           // community cards, and your cards row
-          Container(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                // community cards
-                Container(
-                  margin: EdgeInsets.only(top: 5, bottom: 5),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        margin: EdgeInsets.only(bottom: 5),
-                        child: Text(
-                          "Community Cards",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 6.5.dp,
-                            fontWeight: FontWeight.w300,
-                          ),
-                        ),
-                      ),
-                      StackCardView02(
-                        cards: _handLogModel.hand.boardCards,
-                        show: _handLogModel.hand.handLog.wonAt ==
-                            GameStages.SHOWDOWN,
-                      ),
-                    ],
-                  ),
-                ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              // community cards
+              _buildTitledCards(
+                text: 'Community Cards',
+                boardCards: _handLogModel.hand.boardCards,
+                show: _handLogModel.hand.handLog.wonAt == GameStages.SHOWDOWN,
+              ),
 
-                // your cards
-                Container(
-                  margin: EdgeInsets.only(top: 5.ph),
-                  child: Visibility(
-                    visible: _handLogModel.getMyCards().length > 0,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Container(
-                          margin: EdgeInsets.only(bottom: 5.ph),
-                          child: Text(
-                            "Your Cards",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 6.5.dp,
-                              fontWeight: FontWeight.w300,
-                            ),
-                          ),
-                        ),
-                        StackCardView00(
-                          cards: _handLogModel.getMyCards(),
-                          show: true,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
+              // your cards
+              _buildTitledCards(
+                is00: true,
+                text: 'Your Cards',
+                boardCards: _handLogModel.getMyCards(),
+                show: true,
+              ),
+            ],
           ),
         ],
       ),

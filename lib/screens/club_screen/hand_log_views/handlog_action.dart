@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
-import 'package:pokerapp/resources/app_assets.dart';
-import 'package:pokerapp/resources/app_colors.dart';
-import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
+import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class HandLogActionView extends StatelessWidget {
   final HandLogModelNew handLogModel;
@@ -19,15 +17,16 @@ class HandLogActionView extends StatelessWidget {
           return Container();
         }
         return Container(
-          margin: EdgeInsets.symmetric(horizontal: 8),
-          padding: EdgeInsets.all(8),
+          margin: EdgeInsets.symmetric(horizontal: 8.pw),
+          padding: EdgeInsets.all(8.pw),
           decoration: BoxDecoration(
             color: AppColorsNew.actionRowBgColor,
-            borderRadius: BorderRadius.circular(5),
+            borderRadius: BorderRadius.circular(5.pw),
           ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              // player name
               Expanded(
                 flex: 4,
                 child: Text(
@@ -37,14 +36,18 @@ class HandLogActionView extends StatelessWidget {
                   textAlign: TextAlign.left,
                 ),
               ),
+
+              // received text
               Expanded(
                 flex: 2,
                 child: Text(
-                  "Recieved",
+                  'Received',
                   style: AppStylesNew.playerNameTextStyle,
                   textAlign: TextAlign.center,
                 ),
               ),
+
+              // received value
               Expanded(
                 flex: 2,
                 child: Text(
@@ -53,6 +56,8 @@ class HandLogActionView extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
               ),
+
+              // player balance after
               Expanded(
                 flex: 2,
                 child: Text(
@@ -71,10 +76,10 @@ class HandLogActionView extends StatelessWidget {
           return Container();
         }
         return Divider(
-          endIndent: 16,
-          indent: 16,
+          endIndent: 16.pw,
+          indent: 16.pw,
           color: Colors.transparent,
-          height: 1,
+          height: 1.ph,
         );
       },
       itemCount: handLogModel.hand.playersInSeats.length,

@@ -339,14 +339,14 @@ class _HandLogViewState extends State<HandLogView> with RouteAwareAnalytics {
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: AppColorsNew.newDialogBgColor,
-        elevation: 5,
+        elevation: 5.pw,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(16.pw),
           side: BorderSide(
             color: AppColorsNew.newBorderColor,
           ),
         ),
-        buttonPadding: EdgeInsets.all(16),
+        buttonPadding: EdgeInsets.all(16.pw),
         title: Text(AppStringsNew.sendReportText),
         content: Column(
           mainAxisSize: MainAxisSize.min,
