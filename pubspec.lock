@@ -15,6 +15,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.1.0"
+  agora_rtc_engine:
+    dependency: "direct main"
+    description:
+      name: agora_rtc_engine
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.0.5-rc.0"
   analyzer:
     dependency: transitive
     description:
@@ -30,12 +37,12 @@ packages:
     source: hosted
     version: "4.2.1"
   archive:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
       name: archive
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.13"
+    version: "3.1.2"
   args:
     dependency: "direct overridden"
     description:
@@ -507,6 +514,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.0.0"
+  flutter_native_splash:
+    dependency: "direct dev"
+    description:
+      name: flutter_native_splash
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.2.0"
   flutter_speed_dial:
     dependency: "direct main"
     description:
@@ -664,6 +678,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.0.0"
+  image:
+    dependency: transitive
+    description:
+      name: image
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.0.2"
   in_app_purchase:
     dependency: "direct main"
     description:
@@ -1054,6 +1075,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.8.1"
+  splashscreen:
+    dependency: "direct main"
+    description:
+      name: splashscreen
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.3.5"
   sqflite:
     dependency: transitive
     description:
@@ -1162,12 +1190,12 @@ packages:
     source: hosted
     version: "1.3.0"
   universal_io:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
       name: universal_io
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.2"
+    version: "2.0.4"
   uuid:
     dependency: "direct overridden"
     description:
@@ -1265,7 +1293,7 @@ packages:
       name: xml
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "5.1.0"
+    version: "5.1.2"
   yaml:
     dependency: transitive
     description:
@@ -1280,13 +1308,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.0.1+2"
-  zone_local:
-    dependency: transitive
-    description:
-      name: zone_local
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.1.2"
 sdks:
   dart: ">=2.12.0 <3.0.0"
   flutter: ">=2.2.0"
