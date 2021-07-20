@@ -4,10 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/club_homepage_model.dart';
 import 'package:pokerapp/models/club_model.dart';
-import 'package:pokerapp/models/newmodels/game_model_new.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
+import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/routes.dart';
+import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/club_screen/widgets/club_actions_new.dart';
 import 'package:pokerapp/screens/club_screen/widgets/club_banner_new.dart';
 import 'package:pokerapp/screens/club_screen/widgets/club_graphics_new.dart';
@@ -15,7 +16,6 @@ import 'package:pokerapp/screens/club_screen/widgets/club_live_games_view.dart';
 import 'package:pokerapp/screens/game_screens/new_game_settings/new_game_settings2.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/clubs_service.dart';
-import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/widgets/custom_text_button.dart';
 import 'package:pokerapp/widgets/round_color_button.dart';
 import 'package:provider/provider.dart';
@@ -37,24 +37,10 @@ class ClubMainScreenNew extends StatefulWidget {
 
 class _ClubMainScreenNewState extends State<ClubMainScreenNew>
     with RouteAware, RouteAwareAnalytics {
-  List<GameModelNew> _liveGames = [];
   @override
   String get routeName => Routes.club_main;
-
-  _fetchLiveGames() async {
-    _liveGames.clear();
-    final List<GameModelNew> list = await GameService.getLiveGamesNew();
-    for (GameModelNew game in list) {
-      if (game.clubCode == widget.clubCode) {
-        _liveGames.add(game);
-      }
-    }
-    setState(() {});
-  }
-
   void refreshClubMainScreen() {
-    log('refresh club main screen');
-    _fetchLiveGames();
+    //  log('refresh club main screen');
     setState(() {});
   }
 
@@ -82,90 +68,80 @@ class _ClubMainScreenNewState extends State<ClubMainScreenNew>
   @override
   void initState() {
     context.read<ClubsUpdateState>().addListener(listener);
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      _fetchLiveGames();
-    });
     super.initState();
   }
 
   Widget _buildMainBody(ClubHomePageModel clubModel) => Stack(
         children: [
-          Container(
-            margin: EdgeInsets.only(top: 60.ph),
-          ),
-          Container(
-            margin: EdgeInsets.only(top: 20.ph),
-            child: SingleChildScrollView(
-              physics: BouncingScrollPhysics(),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Container(
-                    margin: EdgeInsets.symmetric(vertical: 24),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        BackArrowWidget(),
-                        Visibility(
-                          visible: (clubModel.isManager || clubModel.isOwner),
-                          child: RoundedColorButton(
-                            onTapFunction: () async {
-                              final dynamic result = await Navigator.pushNamed(
+          SingleChildScrollView(
+            physics: BouncingScrollPhysics(),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Container(
+                  margin: EdgeInsets.symmetric(vertical: 24),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      BackArrowWidget(),
+                      Visibility(
+                        visible: (clubModel.isManager || clubModel.isOwner),
+                        child: RoundedColorButton(
+                          onTapFunction: () async {
+                            final dynamic result = await Navigator.pushNamed(
+                              context,
+                              Routes.new_game_settings,
+                              arguments: widget.clubCode,
+                            );
+
+                            if (result != null) {
+                              /* show game settings dialog */
+                              NewGameSettings2.show(
                                 context,
-                                Routes.new_game_settings,
-                                arguments: widget.clubCode,
+                                clubCode: widget.clubCode,
+                                mainGameType: result['gameType'],
+                                subGameTypes: List.from(
+                                      result['gameTypes'],
+                                    ) ??
+                                    [],
                               );
-
-                              if (result != null) {
-                                /* show game settings dialog */
-                                await NewGameSettings2.show(
-                                  context,
-                                  clubCode: widget.clubCode,
-                                  mainGameType: result['gameType'],
-                                  subGameTypes: List.from(
-                                        result['gameTypes'],
-                                      ) ??
-                                      [],
-                                );
-                                setState(() {});
-                              }
-                            },
-                            text: '+ Create Game',
-                            backgroundColor: AppColorsNew.yellowAccentColor,
-                            textColor: AppColorsNew.darkGreenShadeColor,
-                          ),
+                            }
+                          },
+                          text: '+ Create Game',
+                          backgroundColor: AppColorsNew.yellowAccentColor,
+                          textColor: AppColorsNew.darkGreenShadeColor,
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
+                ),
 
-                  // banner
-                  ClubBannerViewNew(
-                    clubModel: clubModel,
-                  ),
+                // banner
+                ClubBannerViewNew(
+                  clubModel: clubModel,
+                ),
 
-                  // stats view
-                  /*  ClubGraphicsViewNew(
-                    clubModel.playerBalance ?? 0.0,
-                    clubModel.weeklyActivity,
-                  ), */
+                // stats view
+                /*  ClubGraphicsViewNew(
+                  clubModel.playerBalance ?? 0.0,
+                  clubModel.weeklyActivity,
+                ), */
 
-                  // live game
-                  ClubLiveGamesView(_liveGames),
+                // live game
+                ClubLiveGamesView(clubModel.liveGames),
 
-                  // seperator
-                  AppDimensionsNew.getVerticalSizedBox(16.ph),
+                // seperator
+                AppDimensionsNew.getVerticalSizedBox(16.ph),
 
-                  // club actions
-                  ClubActionsNew(
-                    clubModel,
-                    this.widget.clubCode,
-                  ),
+                // club actions
+                ClubActionsNew(
+                  clubModel,
+                  this.widget.clubCode,
+                ),
 
-                  // seperator
-                  AppDimensionsNew.getVerticalSizedBox(16.ph),
-                ],
-              ),
+                // seperator
+                AppDimensionsNew.getVerticalSizedBox(16.ph),
+              ],
             ),
           ),
         ],
@@ -188,29 +164,22 @@ class _ClubMainScreenNewState extends State<ClubMainScreenNew>
               isOwnerOrManager =
                   (clubModel.isOwner || clubModel.isManager) ?? false;
             }
-            return clubModel == null
-                ? Center(
-                    child: CircularProgressIndicator(),
-                  )
-                : ListenableProvider<ClubHomePageModel>(
-                    create: (_) => clubModel,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        gradient: RadialGradient(
-                          colors: [
-                            AppColorsNew.newGreenRadialStartColor,
-                            AppColorsNew.newBackgroundBlackColor,
-                          ],
-                          center: Alignment.topLeft,
-                          radius: 0.80.pw,
+            return Container(
+              decoration: AppStylesNew.BgGreenRadialGradient,
+              child: SafeArea(
+                child: Scaffold(
+                  backgroundColor: Colors.transparent,
+                  body: clubModel == null
+                      ? Center(
+                          child: CircularProgressWidget(),
+                        )
+                      : ListenableProvider<ClubHomePageModel>(
+                          create: (_) => clubModel,
+                          child: _buildMainBody(clubModel),
                         ),
-                      ),
-                      child: Scaffold(
-                        backgroundColor: Colors.transparent,
-                        body: _buildMainBody(clubModel),
-                      ),
-                    ),
-                  );
+                ),
+              ),
+            );
           },
         ),
       );

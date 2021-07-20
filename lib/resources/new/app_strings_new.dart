@@ -33,7 +33,7 @@ class AppStringsNew {
   static const ClubChatTitle = "Club chat";
   static const BookmarkedHandsTitle = "Bookmarked Hands";
 
-  static const HighHandlogTitle = "High Handlog";
+  static const HighHandlogTitle = "High Hand Log";
   static const HandlogTitle = "Hand Log";
   static const StackText = "Stack";
 
@@ -170,4 +170,6 @@ class AppStringsNew {
   static String noLiveGamesText = "No Live Games";
 
   static String fetchLiveGamesText = "Fetching Live games...";
+
+  static String highHandWinnersText = "High hand winners";
 }
