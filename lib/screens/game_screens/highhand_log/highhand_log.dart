@@ -16,7 +16,8 @@ import '../../../routes.dart';
 
 class HighHandLogView extends StatefulWidget {
   final String gameCode;
-  HighHandLogView(this.gameCode);
+  final String clubCode;
+  HighHandLogView(this.gameCode, {this.clubCode});
 
   @override
   State<StatefulWidget> createState() {
@@ -68,7 +69,11 @@ class _HighHandLogViewState extends State<HighHandLogView>
                     Expanded(
                       child: ListView.separated(
                         itemBuilder: (context, index) {
-                          return new HighhandWidget(this.hhWinners[index]);
+                          this.hhWinners[index].gameCode = widget.gameCode;
+                          return HighhandWidget(
+                            this.hhWinners[index],
+                            clubCode: widget.clubCode,
+                          );
                         },
                         itemCount: hhWinners.length,
                         separatorBuilder: (context, index) {

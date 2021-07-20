@@ -162,4 +162,6 @@ class AppStringsNew {
   static String notesTitleText = "Notes";
 
   static String notesSavedAlertText = "Notes saved";
+
+  static String highHandWinnersText = "High hand winners";
 }

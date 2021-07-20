@@ -6,6 +6,7 @@ import 'package:pokerapp/models/club_homepage_model.dart';
 import 'package:pokerapp/models/club_model.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
+import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/club_screen/widgets/club_actions_new.dart';
@@ -163,31 +164,22 @@ class _ClubMainScreenNewState extends State<ClubMainScreenNew>
               isOwnerOrManager =
                   (clubModel.isOwner || clubModel.isManager) ?? false;
             }
-            return clubModel == null
-                ? Center(
-                    child: CircularProgressWidget(),
-                  )
-                : ListenableProvider<ClubHomePageModel>(
-                    create: (_) => clubModel,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        gradient: RadialGradient(
-                          colors: [
-                            AppColorsNew.newGreenRadialStartColor,
-                            AppColorsNew.newBackgroundBlackColor,
-                          ],
-                          center: Alignment.topLeft,
-                          radius: 0.80.pw,
+            return Container(
+              decoration: AppStylesNew.BgGreenRadialGradient,
+              child: SafeArea(
+                child: Scaffold(
+                  backgroundColor: Colors.transparent,
+                  body: clubModel == null
+                      ? Center(
+                          child: CircularProgressWidget(),
+                        )
+                      : ListenableProvider<ClubHomePageModel>(
+                          create: (_) => clubModel,
+                          child: _buildMainBody(clubModel),
                         ),
-                      ),
-                      child: SafeArea(
-                        child: Scaffold(
-                          backgroundColor: Colors.transparent,
-                          body: _buildMainBody(clubModel),
-                        ),
-                      ),
-                    ),
-                  );
+                ),
+              ),
+            );
           },
         ),
       );
