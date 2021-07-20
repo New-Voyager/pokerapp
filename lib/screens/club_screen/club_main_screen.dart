@@ -131,7 +131,7 @@ class _ClubMainScreenNewState extends State<ClubMainScreenNew>
                   ), */
 
                   // live game
-                  ClubLiveGamesView(clubModel.liveGames),
+                  ClubLiveGamesView(clubModel),
 
                   // seperator
                   AppDimensionsNew.getVerticalSizedBox(16.ph),

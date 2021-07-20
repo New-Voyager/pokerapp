@@ -77,10 +77,12 @@ class DataFormatter {
       return "$timeInSec seconds";
     }
     double mins = timeInSec / 60;
-    int secs = timeInSec % 60;
-    if (mins > 0 && mins < 60) {
-      return "${mins.toStringAsFixed(0)}mins ${secs}seconds";
+    if (mins > 0 && mins <= 1) {
+      return "${mins.toStringAsFixed(0)}min";
     }
-    return "${(mins / 60).toStringAsFixed(0)}hrs ${(mins % 60).toStringAsFixed(0)}mins";
+    if (mins > 1 && mins < 60) {
+      return "${mins.toStringAsFixed(0)}mins";
+    }
+    return "${(mins / 60).toStringAsFixed(0)}hrs ";
   }
 }
