@@ -33,7 +33,7 @@ class Agora extends ChangeNotifier {
     print("check");
     engine?.setEventHandler(RtcEngineEventHandler(
       joinChannelSuccess: (channel, uid, elapsed) {
-        log('joinChannelSuccess ${channel} ${uid} ${elapsed}');
+        log('joinChannelSuccess $channel $uid $elapsed');
         isJoined = true;
       },
       leaveChannel: (stats) {
