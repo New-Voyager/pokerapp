@@ -24,32 +24,16 @@ import 'board_view_util_methods.dart';
 
 class CenterView extends StatefulWidget {
   final TableState tableState;
-  // final bool twoBoardsNeeded;
-  // final String gameStatus;
-  // final String tableStatus;
-  // final List<CardObject> cards;
-  // final List<CardObject> cardsOther;
-  // final List<int> potChips;
-  // final int whichPotToHighlight;
   final Function onStartGame;
   final bool isBoardHorizontal;
-  // final double potChipsUpdates;
   final bool isHost;
   final String gameCode;
 
   CenterView({
-    // @required this.twoBoardsNeeded,
     @required this.tableState,
     @required this.gameCode,
     @required this.isHost,
     @required this.isBoardHorizontal,
-    // @required this.cards,
-    // @required this.cardsOther,
-    // @required this.potChips,
-    // @required this.whichPotToHighlight,
-    // @required this.potChipsUpdates,
-    // @required this.gameStatus,
-    // @required this.tableStatus,
     @required this.onStartGame,
   });
 
@@ -176,14 +160,17 @@ class _CenterViewState extends State<CenterView> {
     @required final BoardAttributesObject boardAttributes,
   }) {
     final gameState = GameState.getState(context);
+    log('potViewPos: before game ended.');
     if (gameState.gameInfo.status == AppConstants.GAME_ENDED)
       return _buildGameEndedWidget();
 
+    log('potViewPos: before waiting for players.');
     if (!gameState.botGame && gameState.playersInSeatsCount <= 1) {
       String text = 'Waiting for players to join';
       return centerTextWidget(text);
     }
 
+    log('potViewPos: before seat change progress.');
     if (gameState.gameInfo.tableStatus ==
         AppConstants.TABLE_STATUS_HOST_SEATCHANGE_IN_PROGRESS) {
       return centerTextWidget('Seat change in progress');
@@ -193,8 +180,9 @@ class _CenterViewState extends State<CenterView> {
             AppConstants.GAME_PAUSED ||
         gameState.gameInfo.tableStatus == AppConstants.WAITING_TO_BE_STARTED;
 
+    log('potViewPos: before is paused or waiting isGameRunning: ${gameState.isGameRunning} isGamePausedOrWaiting: $isGamePausedOrWaiting ${gameState.gameInfo.tableStatus}');
     /* if the game is paused, show the options available during game pause */
-    if (isGamePausedOrWaiting) {
+    if (isGamePausedOrWaiting && !gameState.isGameRunning) {
       return _buildGamePauseOptions(
         gameState,
         boardAttributes.centerViewButtonVerticalTranslate,
@@ -202,6 +190,7 @@ class _CenterViewState extends State<CenterView> {
     }
     String text = BoardViewUtilMethods.getText(tableStatus);
 
+    log('potViewPos: before new hand.');
     /* in case of new hand, show the deck shuffling animation */
     if (text == AppConstants.NEW_HAND) {
       return _positionAnimationShuffleCardView(
@@ -210,6 +199,7 @@ class _CenterViewState extends State<CenterView> {
         child: AnimatingShuffleCardView(),
       );
     }
+    log('potViewPos: building main center view');
 
     /* if we reach here, means, the game is RUNNING */
     /* The following view, shows the community cards
@@ -234,50 +224,51 @@ class _CenterViewState extends State<CenterView> {
     );
   }
 
-  Widget _buildMainCenterView(final context, final boardAttributes) =>
-      Transform.translate(
-        offset: boardAttributes.centerViewVerticalTranslate,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            /* main pot view */
-            Transform.scale(
-              scale: boardAttributes.centerPotScale,
-              alignment: Alignment.topCenter,
-              child: _buildMultiplePots(boardAttributes),
-            ),
+  Widget _buildMainCenterView(final context, final boardAttributes) {
+    return Transform.translate(
+      offset: boardAttributes.centerViewVerticalTranslate,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          /* main pot view */
+          Transform.scale(
+            scale: boardAttributes.centerPotScale,
+            alignment: Alignment.topCenter,
+            child: _buildMultiplePots(boardAttributes),
+          ),
 
-            // divider
-            SizedBox(height: boardAttributes.centerGap),
+          // divider
+          SizedBox(height: boardAttributes.centerGap),
 
-            /* community cards view */
-            ValueListenableBuilder3<List<CardObject>, List<CardObject>, bool>(
-              vnCards,
-              vnCardOthers,
-              vnTwoBoardsNeeded,
-              builder: (_, cards, cardsOther, twoBoardsNeeded, __) =>
-                  CommunityCardsView(
-                cards: cards,
-                cardsOther: cardsOther,
-                twoBoardsNeeded: twoBoardsNeeded,
-                horizontal: true,
-              ),
+          /* community cards view */
+          ValueListenableBuilder3<List<CardObject>, List<CardObject>, bool>(
+            vnCards,
+            vnCardOthers,
+            vnTwoBoardsNeeded,
+            builder: (_, cards, cardsOther, twoBoardsNeeded, __) =>
+                CommunityCardsView(
+              cards: cards,
+              cardsOther: cardsOther,
+              twoBoardsNeeded: twoBoardsNeeded,
+              horizontal: true,
             ),
-            // divider
-            SizedBox(height: boardAttributes.centerGap),
+          ),
+          // divider
+          SizedBox(height: boardAttributes.centerGap),
 
-            /* potUpdates view OR the rank widget (rank widget is shown only when we have a result) */
-            Consumer<ValueNotifier<FooterStatus>>(
-              builder: (_, vnFooterStatus, __) {
-                bool showDown = vnFooterStatus.value == FooterStatus.Result;
-                return showDown
-                    ? rankWidget(boardAttributes)
-                    : potUpdatesView(boa: boardAttributes, showDown: showDown);
-              },
-            ),
-          ],
-        ),
-      );
+          /* potUpdates view OR the rank widget (rank widget is shown only when we have a result) */
+          Consumer<ValueNotifier<FooterStatus>>(
+            builder: (_, vnFooterStatus, __) {
+              bool showDown = vnFooterStatus.value == FooterStatus.Result;
+              return showDown
+                  ? rankWidget(boardAttributes)
+                  : potUpdatesView(boa: boardAttributes, showDown: showDown);
+            },
+          ),
+        ],
+      ),
+    );
+  }
 
   Widget _buildMultiplePots(boardAttributes) =>
       ValueListenableBuilder2<List<int>, int>(
@@ -287,7 +278,7 @@ class _CenterViewState extends State<CenterView> {
           final List<Widget> pots = [];
 
           final List<int> cleanedPotChips = potChips ?? [];
-
+          bool rebuildSeats = false;
           for (int i = 0; i < cleanedPotChips.length; i++) {
             if (cleanedPotChips[i] == null) cleanedPotChips[i] = 0;
 
@@ -303,7 +294,9 @@ class _CenterViewState extends State<CenterView> {
               highlight: (potToHighlight ?? -1) == i,
             );
 
-            boardAttributes.setPotsKey(i, potKey);
+            if (boardAttributes.setPotsKey(i, potKey)) {
+              rebuildSeats = true;
+            }
             pots.add(potsView);
           }
 
@@ -319,10 +312,17 @@ class _CenterViewState extends State<CenterView> {
               transparent: true,
             );
 
-            boardAttributes.setPotsKey(0, potKey);
+            if (boardAttributes.setPotsKey(0, potKey)) {
+              rebuildSeats = true;
+            }
             pots.add(emptyPotsView);
           }
-
+          if (rebuildSeats) {
+            Future.delayed(Duration(milliseconds: 100), () {
+              final gameState = GameState.getState(context);
+              gameState.rebuildSeats();
+            });
+          }
           return Row(
             mainAxisSize: MainAxisSize.min,
             children: pots,

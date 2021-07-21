@@ -430,8 +430,8 @@ class GameState {
     // reset seats
     for (var seat in this._seats.values) {
       seat.player = null;
-      seat.potViewPos = null;
-      seat.betWidgetPos = null;
+      // seat.potViewPos = null;
+      // seat.betWidgetPos = null;
     }
 
     final players = this._players;
@@ -497,6 +497,13 @@ class GameState {
 
   List<Seat> get seats {
     return this._seats.values.toList();
+  }
+
+  void rebuildSeats() {
+    log('potViewPos: rebuilding seats.');
+    for (final seat in this._seats.values) {
+      seat.notify();
+    }
   }
 
   Seat getSeatByPlayer(int playerId) {

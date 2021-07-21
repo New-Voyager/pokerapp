@@ -39,6 +39,8 @@ class _ChipAmountWidgetState extends State<ChipAmountWidget>
     with AfterLayoutMixin<ChipAmountWidget> {
   @override
   Widget build(BuildContext context) {
+    log('potViewPos: Rebuilding ChipAmountWidget seat ${widget.seat.serverSeatPos} position: ${widget.seat.potViewPos}');
+
     bool showBet = false;
     Offset offset = Offset.zero;
 
@@ -155,22 +157,30 @@ class _ChipAmountWidgetState extends State<ChipAmountWidget>
 
   @override
   void afterFirstLayout(BuildContext context) {
+    log('potViewPos: 1 afterFirstLayout ChipAmountWidget seat ${widget.seat.serverSeatPos} position: ${widget.seat.potViewPos}');
     if (widget.seat.potViewPos != null) {
+      log('potViewPos: 1 return afterFirstLayout ChipAmountWidget seat ${widget.seat.serverSeatPos} position: ${widget.seat.potViewPos}');
       return;
     }
+    log('potViewPos: 2 afterFirstLayout ChipAmountWidget seat ${widget.seat.serverSeatPos} position: ${widget.seat.potViewPos}');
     if (this.widget.animate) {
+      log('potViewPos: 2 return afterFirstLayout ChipAmountWidget seat ${widget.seat.serverSeatPos} position: ${widget.seat.potViewPos}');
       return;
     }
     final potKey = widget.boardAttributesObject.getPotsKey(0);
+    log('potViewPos: 3 afterFirstLayout ChipAmountWidget seat ${widget.seat.serverSeatPos} position: ${widget.seat.potViewPos}');
 
     if (potKey == null || potKey.currentContext == null) {
+      log('potViewPos: 3 return afterFirstLayout ChipAmountWidget seat ${widget.seat.serverSeatPos} position: ${widget.seat.potViewPos} potKey: ${potKey} potKey.currentContext: ${potKey.currentContext}');
       return;
     }
 
+    log('potViewPos: 4 afterFirstLayout ChipAmountWidget seat ${widget.seat.serverSeatPos} position: ${widget.seat.potViewPos}');
     final RenderBox potViewBox = potKey.currentContext.findRenderObject();
     final potViewPos = potViewBox.localToGlobal(Offset(0, 0));
     final RenderBox box = context.findRenderObject();
     widget.seat.potViewPos = box.globalToLocal(potViewPos);
+    log('potViewPos: Setting potViewPos for seat ${widget.seat.serverSeatPos} position: ${widget.seat.potViewPos}');
   }
 }
 
