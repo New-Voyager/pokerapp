@@ -39,18 +39,29 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
     context.read<MarkedCards>().markAll(playerModel.cardObjects);
   }
 
-  Widget _buildAllHoleCardSelectionButton() =>
-      Consumer<ValueNotifier<FooterStatus>>(
-        builder: (context, vnfs, __) {
-          bool _showEye = _showAllCardSelectionButton(vnfs);
-          return Opacity(
-            opacity: _showEye ? 1.0 : 0.0,
-            child: InkWell(
-              onTap: _showEye ? () => _markAllCardsAsSelected(context) : null,
-              child: Icon(Icons.visibility_rounded),
-            ),
-          );
-        },
+  Widget _buildAllHoleCardSelectionButton(context) => Transform.translate(
+        offset: Offset(0.0, MediaQuery.of(context).size.height * 0.04),
+        child: Consumer<ValueNotifier<FooterStatus>>(
+          builder: (context, vnfs, __) {
+            bool _showEye = _showAllCardSelectionButton(vnfs);
+            return Opacity(
+              opacity: _showEye ? 1.0 : 0.0,
+              child: Container(
+                padding: EdgeInsets.symmetric(vertical: 10.0),
+                width: double.infinity,
+                color: Colors.black.withOpacity(0.70),
+                child: InkWell(
+                  onTap:
+                      _showEye ? () => _markAllCardsAsSelected(context) : null,
+                  child: Icon(
+                    Icons.visibility_rounded,
+                    size: 40.0,
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
       );
 
   Widget _buildholeCardViewAndStraddleDialog(
@@ -67,14 +78,15 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
               offset: boardAttributes.holeCardViewOffset,
               child: Transform.scale(
                 scale: boardAttributes.holeCardViewScale,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
+                child: Stack(
+                  alignment: Alignment.bottomCenter,
+                  // mainAxisSize: MainAxisSize.min,
                   children: [
                     // main hole card view
                     _buildHoleCardView(context),
 
                     // all hole card selection button
-                    _buildAllHoleCardSelectionButton(),
+                    _buildAllHoleCardSelectionButton(context),
                   ],
                 ),
               ),
