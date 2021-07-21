@@ -4,7 +4,7 @@ club:
 
 game:
   create: true
-  title: "1 Human 2 Bots"
+  title: "1 Human 3 Bots"
   game-type: "HOLDEM"
   small-blind: 1.0
   big-blind: 2.0
@@ -13,13 +13,12 @@ game:
   min-players: 2
   max-players: 4
   game-length: 60
-  buy-in-approval: true
+  buy-in-approval: false
   rake-percentage: 5.0
   rake-cap: 5.0
   buy-in-min: 100
   buy-in-max: 300
-  action-time: 10
-  # dont-start: true
+  action-time: 60
   run-it-twice-allowed: true
   muck-losing-hand: true
 
@@ -27,26 +26,17 @@ starting-seats:
   - seat: 1
     player: yong
     buy-in: 100
-    run-it-twice: true
-    run-it-twice-prompt: true
   - seat: 2
     player: brian
     buy-in: 100
-    run-it-twice: true
-    run-it-twice-prompt: true
   - seat: 3
     player: chris
     buy-in: 100
-    run-it-twice: true
-    run-it-twice-prompt: true
   - seat: 4
     player: tom
     buy-in: 100
-    run-it-twice: true
-    run-it-twice-prompt: true
 
-# Human plays this user.
-#tester: yong
+tester: brian
 
 # deal the following hands in the table
 hands:
@@ -63,6 +53,13 @@ hands:
           cards: ["9h", "2s"]
         - seat: 4
           cards: ["9c", "5s"]
+      run-it-twice:
+        - seat: 2
+          allow-prompt: true
+          confirm: true
+        - seat: 3
+          allow-prompt: true
+          confirm: true
 
     # simulate pre-flop action
     preflop:
@@ -79,5 +76,5 @@ hands:
       seat-actions:
         - action: 2, CHECK
         - action: 3, ALLIN
-        - action: 1, FOLD
+        - action: 4, FOLD
         - action: 2, ALLIN

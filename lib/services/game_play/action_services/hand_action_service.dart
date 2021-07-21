@@ -724,9 +724,11 @@ class HandActionService {
       if (availableActions?.contains(AppConstants.RUN_IT_TWICE_PROMPT) ??
           false) {
         if (_close) return;
+        int secondsTillTimeout = seatAction['secondsTillTimesout'];
+
         return RunItTwiceDialog.promptRunItTwice(
           context: _context,
-          expTime: 30, // TODO: WE GET THIS TIME FROM THE SERVER
+          expTime: secondsTillTimeout,
         );
       } else {
         if (availableActions?.contains(AppConstants.STRADDLE) ?? false) {
