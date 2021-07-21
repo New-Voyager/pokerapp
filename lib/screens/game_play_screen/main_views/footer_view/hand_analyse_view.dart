@@ -49,12 +49,25 @@ class HandAnalyseView extends StatefulWidget {
 }
 
 class _HandAnalyseViewState extends State<HandAnalyseView> {
+  BuildContext _context;
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      while (mounted) {
+            log('0-0-0-0- inside while Polling for pending approvals');
+
+        await Future.delayed(Duration(seconds: 10));
+        _pollPendingApprovals();
+      }
     });
     super.initState();
+  }
+
+  _pollPendingApprovals() async {
+    log('0-0-0-0- Polling for pending approvals');
+    final approvals = await PlayerService.getPendingApprovals();
+    final state = Provider.of<PendingApprovalsState>(_context, listen: false);
+    state.setPendingList(approvals);
   }
 
   Future<void> onClickViewHand(BuildContext context) async {
@@ -131,195 +144,212 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                       ),
                       padding: EdgeInsets.all(8)),
                   Expanded(
-                    child: // main body
-                        FutureBuilder(
-                      future: PlayerService.getPendingApprovals(),
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.done) {
-                          if (snapshot.hasData) {
-                            List<PendingApproval> list = snapshot.data;
+                    child: Consumer<PendingApprovalsState>(
+                      builder: (_, pending, __) => // main body
+                          FutureBuilder(
+                        future: PlayerService.getPendingApprovals(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.done) {
+                            if (snapshot.hasData) {
+                              List<PendingApproval> list = snapshot.data;
 
-                            if (list.length > 0) {
-                              return Container(
-                                constraints: BoxConstraints(
-                                    minHeight: height / 3,
-                                    maxHeight: height / 2),
-                                child: ListView.separated(
-                                  itemCount: list.length,
-                                  shrinkWrap: true,
-                                  separatorBuilder: (context, index) => Divider(
-                                    height: 8,
-                                    color: Colors.black45,
-                                  ),
-                                  itemBuilder: (context, index) {
-                                    final item = list[index];
-                                    return Container(
-                                      decoration:
-                                          AppStylesNew.actionRowDecoration,
-                                      padding: EdgeInsets.all(8),
-                                      margin: EdgeInsets.symmetric(
-                                          horizontal: 16, vertical: 8),
-                                      child: ListTile(
-                                        tileColor:
-                                            AppColors.cardBackgroundColor,
-                                        title: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            SizedBox(
-                                              height: 16,
-                                            ),
-                                            RichText(
-                                              text: TextSpan(
-                                                text: "${item.name}",
-                                                children: [
-                                                  TextSpan(
-                                                      text: " request buyin",
-                                                      style: AppStylesNew
-                                                          .labelTextStyle),
-                                                  TextSpan(
-                                                    text: " ${item.amount}",
-                                                    style: AppStylesNew
-                                                        .joinTextStyle
-                                                        .copyWith(
-                                                      color: AppColorsNew
-                                                          .newTextColor,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            Text(
-                                                "Outstanding balance: ${item.balance}",
-                                                style: AppStyles
-                                                    .itemInfoTextStyle),
-                                            SizedBox(
-                                              height: 16,
-                                            ),
-                                          ],
-                                        ),
-                                        subtitle: Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              "Game: ${item.gameType}",
-                                              style:
-                                                  AppStyles.itemInfoTextStyle,
-                                            ),
-                                            Text(
-                                              "Code: ${item.gameCode}",
-                                              style:
-                                                  AppStyles.itemInfoTextStyle,
-                                            ),
-                                            Text(
-                                              "Club: ${item.clubCode}",
-                                              style:
-                                                  AppStyles.itemInfoTextStyle,
-                                            ),
-                                            SizedBox(
-                                              height: 16,
-                                            )
-                                          ],
-                                        ),
-                                        trailing: Container(
-                                          width: 100,
-                                          child: Row(
+                              if (list.length > 0) {
+                                return Container(
+                                  constraints: BoxConstraints(
+                                      minHeight: height / 3,
+                                      maxHeight: height / 2),
+                                  child: ListView.separated(
+                                    itemCount: list.length,
+                                    shrinkWrap: true,
+                                    separatorBuilder: (context, index) =>
+                                        Divider(
+                                      height: 8,
+                                      color: Colors.black45,
+                                    ),
+                                    itemBuilder: (context, index) {
+                                      final item = list[index];
+                                      return Container(
+                                        decoration:
+                                            AppStylesNew.actionRowDecoration,
+                                        padding: EdgeInsets.all(8),
+                                        margin: EdgeInsets.symmetric(
+                                            horizontal: 16, vertical: 8),
+                                        child: ListTile(
+                                          tileColor:
+                                              AppColors.cardBackgroundColor,
+                                          title: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             children: [
-                                              IconButton(
+                                              SizedBox(
+                                                height: 16,
+                                              ),
+                                              RichText(
+                                                text: TextSpan(
+                                                  text: "${item.name}",
+                                                  children: [
+                                                    TextSpan(
+                                                        text: " request buyin",
+                                                        style: AppStylesNew
+                                                            .labelTextStyle),
+                                                    TextSpan(
+                                                      text: " ${item.amount}",
+                                                      style: AppStylesNew
+                                                          .joinTextStyle
+                                                          .copyWith(
+                                                        color: AppColorsNew
+                                                            .newTextColor,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              Text(
+                                                  "Outstanding balance: ${item.balance}",
+                                                  style: AppStyles
+                                                      .itemInfoTextStyle),
+                                              SizedBox(
+                                                height: 16,
+                                              ),
+                                            ],
+                                          ),
+                                          subtitle: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                "Game: ${item.gameType}",
+                                                style:
+                                                    AppStyles.itemInfoTextStyle,
+                                              ),
+                                              Text(
+                                                "Code: ${item.gameCode}",
+                                                style:
+                                                    AppStyles.itemInfoTextStyle,
+                                              ),
+                                              Text(
+                                                "Club: ${item.clubCode}",
+                                                style:
+                                                    AppStyles.itemInfoTextStyle,
+                                              ),
+                                              SizedBox(
+                                                height: 16,
+                                              )
+                                            ],
+                                          ),
+                                          trailing: Container(
+                                            width: 100,
+                                            child: Row(
+                                              children: [
+                                                IconButton(
+                                                    icon: Icon(
+                                                      Icons.check_circle,
+                                                      color: Colors.green,
+                                                    ),
+                                                    onPressed: () async {
+                                                      final bool val =
+                                                          await PlayerService
+                                                              .approveBuyInRequest(
+                                                        item.gameCode,
+                                                        item.playerUuid,
+                                                      );
+                                                      if (val == null) {
+                                                        log("Exception in approve request");
+                                                      } else if (val) {
+                                                        _pollPendingApprovals();
+                                                        // Provider.of<PendingApprovalsState>(
+                                                        //         context,
+                                                        //         listen: false)
+                                                        //     .decreaseTotalPending();
+                                                        // final List<
+                                                        //         PendingApproval>
+                                                        //     list =
+                                                        //     await PlayerService
+                                                        //         .getPendingApprovals();
+                                                        // Provider.of<PendingApprovalsState>(
+                                                        //         context,
+                                                        //         listen: false)
+                                                        //     .setTotalPending(
+                                                        //         list == null
+                                                        //             ? 0
+                                                        //             : list
+                                                        //                 .length);
+                                                        // localSetState(() {});
+                                                      } else {
+                                                        log("Failed to approve request");
+                                                      }
+                                                    }),
+                                                IconButton(
                                                   icon: Icon(
-                                                    Icons.check_circle,
-                                                    color: Colors.green,
+                                                    Icons.cancel_rounded,
+                                                    color: Colors.red,
                                                   ),
                                                   onPressed: () async {
                                                     final bool val =
                                                         await PlayerService
-                                                            .approveBuyInRequest(
+                                                            .declineBuyInRequest(
                                                       item.gameCode,
                                                       item.playerUuid,
                                                     );
-                                                    if (val == null) {
-                                                      log("Exception in approve request");
-                                                    } else if (val) {
-                                                      Provider.of<PendingApprovalsState>(
-                                                              context,
-                                                              listen: false)
-                                                          .decreaseTotalPending();
-                                                      final List<
-                                                              PendingApproval>
-                                                          list =
-                                                          await PlayerService
-                                                              .getPendingApprovals();
-                                                      Provider.of<PendingApprovalsState>(
-                                                              context,
-                                                              listen: false)
-                                                          .setTotalPending(
-                                                              list == null
-                                                                  ? 0
-                                                                  : list
-                                                                      .length);
-                                                      localSetState(() {});
-                                                    } else {
-                                                      log("Failed to approve request");
-                                                    }
-                                                  }),
-                                              IconButton(
-                                                icon: Icon(
-                                                  Icons.cancel_rounded,
-                                                  color: Colors.red,
-                                                ),
-                                                onPressed: () async {
-                                                  final bool val =
-                                                      await PlayerService
-                                                          .declineBuyInRequest(
-                                                    item.gameCode,
-                                                    item.playerUuid,
-                                                  );
 
-                                                  if (val == null) {
-                                                    toast(
-                                                        "Exception occured decline Request");
-                                                  } else if (val) {
-                                                    Provider.of<PendingApprovalsState>(
-                                                            context,
-                                                            listen: false)
-                                                        .decreaseTotalPending();
-                                                    final List<PendingApproval>
-                                                        list =
-                                                        await PlayerService
-                                                            .getPendingApprovals();
-                                                    Provider.of<PendingApprovalsState>(
-                                                            context,
-                                                            listen: false)
-                                                        .setTotalPending(
-                                                            list == null
-                                                                ? 0
-                                                                : list.length);
-                                                    localSetState(() {});
-                                                  } else {
-                                                    toast(
-                                                      "Failed to decline Request",
-                                                    );
-                                                  }
-                                                },
-                                              )
-                                            ],
+                                                    if (val == null) {
+                                                      toast(
+                                                          "Exception occured decline Request");
+                                                    } else if (val) {
+                                                      _pollPendingApprovals();
+                                                      // Provider.of<PendingApprovalsState>(
+                                                      //         context,
+                                                      //         listen: false)
+                                                      //     .decreaseTotalPending();
+                                                      // final List<
+                                                      //         PendingApproval>
+                                                      //     list =
+                                                      //     await PlayerService
+                                                      //         .getPendingApprovals();
+                                                      // Provider.of<PendingApprovalsState>(
+                                                      //         context,
+                                                      //         listen: false)
+                                                      //     .setTotalPending(
+                                                      //         list == null
+                                                      //             ? 0
+                                                      //             : list
+                                                      //                 .length);
+                                                      // localSetState(() {});
+
+                                                    } else {
+                                                      toast(
+                                                        "Failed to decline Request",
+                                                      );
+                                                    }
+                                                  },
+                                                )
+                                              ],
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              );
+                                      );
+                                    },
+                                  ),
+                                );
+                              } else {
+                                return Container(
+                                  height: height / 4,
+                                  child: Center(
+                                    child: Text(
+                                      AppStringsNew.noPendingText,
+                                      style: AppStylesNew.labelTextStyle,
+                                    ),
+                                  ),
+                                );
+                              }
                             } else {
                               return Container(
                                 height: height / 4,
                                 child: Center(
-                                  child: Text(
-                                    AppStringsNew.noPendingText,
-                                    style: AppStylesNew.labelTextStyle,
-                                  ),
+                                  child:
+                                      Text("Something went wrong. Try again!"),
                                 ),
                               );
                             }
@@ -327,19 +357,12 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                             return Container(
                               height: height / 4,
                               child: Center(
-                                child: Text("Something went wrong. Try again!"),
+                                child: CircularProgressWidget(),
                               ),
                             );
                           }
-                        } else {
-                          return Container(
-                            height: height / 4,
-                            child: Center(
-                              child: CircularProgressWidget(),
-                            ),
-                          );
-                        }
-                      },
+                        },
+                      ),
                     ),
                   ),
                 ],
@@ -581,6 +604,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
 
   @override
   Widget build(BuildContext context) {
+    _context = context;
     log('game started: ${widget.gameState.started}');
     return Align(
       alignment: Alignment.topLeft,
@@ -614,7 +638,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
               );
 
               return IconWithBadge(
-                count: value.totalPending,
+                count: value.approvalList.length,
                 onClickFunction: () => onClickPendingBuyInApprovals(context),
                 child: GameCircleButton(child: approval),
               );

@@ -150,13 +150,14 @@ void registerPushNotifications() {
     }
     if (message.data['type'].toString() == 'BUYIN_REQUEST') {
       final approvals = await PlayerService.getPendingApprovals();
-      final approvalCount = await PlayerService.getPendingApprovalsCount();
+    //  final approvalCount = await PlayerService.getPendingApprovalsCount();
       final state = Provider.of<PendingApprovalsState>(
           navigatorKey.currentContext,
           listen: false);
-      state.setTotalPending(approvalCount);
+      state.setPendingList(approvals);
+      //(approvalCount);
       // state.incrementTotalPending();
-      print('approval count: $approvalCount length: ${approvals.length}');
+      print('approval count: ${approvals.length} length: ${approvals.length}');
       // toast("Message arrived", duration: Duration(seconds: 2));
 
       // Display overlay notification irrespective of user in any screen.
@@ -164,7 +165,7 @@ void registerPushNotifications() {
         (context) => OverlayNotificationWidget(
           amount: message.data['amount'],
           playerName: message.data['playerName'],
-          pendingCount: approvalCount,
+          pendingCount: approvals.length,
         ),
         duration: Duration(seconds: 5),
       );
