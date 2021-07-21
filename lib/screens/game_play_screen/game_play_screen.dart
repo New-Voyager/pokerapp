@@ -147,9 +147,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   }
 
   Future _joinAudio() async {
-    if (!_gameState.audioConfEnabled) {
-      return;
-    }
     // try {
     //   if (_audioPlayer != null) {
     //     _audioPlayer.resume();
@@ -157,26 +154,46 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     // } catch(err) {
     //   log('Error when resuming audio');
     // }
-    // try {
-    //   if (_voiceTextPlayer != null) {
-    //     _voiceTextPlayer.resume();
-    //   }
-    // } catch(err) {
-    //   log('Error when resuming audio');
-    // }
+    if (!_gameState.audioConfEnabled) {
+      try {
+        if (_voiceTextPlayer != null) {
+          _voiceTextPlayer.resume();
+        }
+      } catch(err) {
+        log('Error when resuming audio');
+      }
+      return;
+    }
 
-    //final janusEngine = _gameState.getJanusEngine(_providerContext);
     final player = _gameState.currentPlayer;
-    try {
-      debugLog(
-          widget.gameCode, 'Player ${player.name} is joining audio conference');
-      _gameState.janusEngine.joinChannel('test');
-      debugLog(
-          widget.gameCode, 'Player ${player.name} has joined audio conference');
-    } catch (err) {
-      debugLog(widget.gameCode,
-          'Player ${player.name} failed to join audio conference. Error: ${err.toString()}');
-      log('Error when resuming audio');
+    if (_gameState.useAgora) {
+      try {
+        debugLog(
+            widget.gameCode, 'agora: Player ${player.name} is joining audio conference');
+        log('agora: Player ${player.name} is joining audio conference');
+
+        _gameState.agoraEngine.joinChannel(_gameState.agoraToken);
+        log('agora: Player ${player.name} has joined audio conference');
+        debugLog(
+            widget.gameCode, 'Player ${player.name} has joined audio conference');
+        this._gameState.getCommunicationState().notify();
+      } catch (err) {
+        debugLog(widget.gameCode,
+            'Player ${player.name} failed to join audio conference. Error: ${err.toString()}');
+        log('Error when resuming audio');
+      }
+    } else {
+      try {
+        debugLog(
+            widget.gameCode, 'Player ${player.name} is joining audio conference');
+        _gameState.janusEngine.joinChannel('test');
+        debugLog(
+            widget.gameCode, 'Player ${player.name} has joined audio conference');
+      } catch (err) {
+        debugLog(widget.gameCode,
+            'Player ${player.name} failed to join audio conference. Error: ${err.toString()}');
+        log('Error when resuming audio');
+      }
     }
     return;
 
@@ -342,7 +359,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
     try {
       _gameContextObj?.dispose();
-      _gameState?.janusEngine?.disposeObject();
       _gameState?.close();
       _audioPlayer?.dispose();
       _voiceTextPlayer?.dispose();
@@ -867,6 +883,9 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       _audioPlayer?.pause();
       _voiceTextPlayer?.pause();
       _gameState.janusEngine?.leaveChannel();
+      if (_gameState.useAgora) {
+        _gameState.agoraEngine?.leaveChannel();
+      }
     }
   }
 }

@@ -57,6 +57,10 @@ class GameInfoModel {
   int janusRoomId;
   String janusRoomPin;
 
+  bool useAgora;
+  String agoraToken;
+  String agoraAppId;
+
   // all players in the game
   Map<int, GamePlayer> allPlayers = Map<int, GamePlayer>();
 
@@ -126,6 +130,10 @@ class GameInfoModel {
     this.janusRoomPin = data['janusRoomPin'];
     this.janusToken = data['janusToken'];
     this.janusSecret = data['janusSecret'];
+
+    this.useAgora = data['useAgora'];
+    this.agoraAppId = data['agoraAppId'];
+    this.agoraToken = data['agoraToken'];
 
     if (data['allPlayers'] != null) {
       for (final playerData in data['allPlayers']) {
@@ -203,6 +211,10 @@ class GameInfoModel {
       janusSecret
       janusRoomId
       janusRoomPin
+
+      useAgora
+      agoraToken
+      agoraAppId
     }
   } """;
 }

@@ -52,6 +52,7 @@ class JanusEngine extends ChangeNotifier {
     if (initialized) {
       leaveChannel();
     }
+    initialized = false;
     engine = null;
   }
 

@@ -512,7 +512,16 @@ class GamePlayScreenUtilMethods {
     debugLog(gameCode,
         'Player ${gameState.currentPlayer.name} join response: ${newPlayerModel.toString()}');
     PlayerStatus status = playerStatusFromStr(newPlayerModel.status);
-
+    if (gameState.useAgora) {
+      debugLog(gameCode, 'Fetching agora token');
+      log('Fetching agora token');
+      final audioToken = await GameService.getLiveAudioToken(
+        gameCode,
+      );
+      debugLog(gameCode, 'agora token: $audioToken');
+      log('agora token: $audioToken');
+      gameState.agoraToken = audioToken;
+    }
     assert(newPlayerModel != null);
     if (newPlayerModel.playerUuid == gameState.currentPlayerUuid) {
       newPlayerModel.isMe = true;
