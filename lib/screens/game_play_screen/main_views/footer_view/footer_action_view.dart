@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -355,7 +356,13 @@ class _FooterActionViewState extends State<FooterActionView> {
             Transform.scale(
               scale: boardAttributes.footerActionViewScale,
               alignment: Alignment.bottomCenter,
-              child: _buildActionWidgets(actionState.action),
+              child: Container(
+                padding: EdgeInsets.symmetric(vertical: 10.0),
+                decoration: new BoxDecoration(
+                  color: Colors.black.withOpacity(0.80),
+                ),
+                child: _buildActionWidgets(actionState.action),
+              ),
             ),
           ],
         ),

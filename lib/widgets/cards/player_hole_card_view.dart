@@ -26,7 +26,7 @@ class PlayerHoleCardView extends StatelessWidget {
       SvgPicture.asset('assets/images/card_face/${card.cardNum}.svg'),
       /* visible marker */
       Positioned(
-        top: 40,
+        top: 50,
         left: 5,
         child: marked
             ? Icon(

@@ -69,14 +69,19 @@ class HoleStackCardView extends StatelessWidget {
         if (fanOut) {
           double m = cards.length == 2 ? 0.50 : mid.toDouble();
 
-          return Transform.rotate(
-            /* the following code makes the cards - LOOKS A LITTLE FAR AWAY */
-            // alignment: Alignment.bottomCenter,
-            // angle: -((i - m) * 0.10),
+          int ss = context.read<BoardAttributesObject>().screenSize;
 
-            /* the following code makes the cards - LOOKS MORE CLOSER */
-            alignment: Alignment.center,
-            angle: -((i - m) * 0.25),
+          Alignment _getAlignment(int ss) {
+            if (ss <= 7) return Alignment.bottomCenter;
+
+            return Alignment.topCenter;
+          }
+
+          return Transform.rotate(
+            alignment: _getAlignment(ss),
+            // 6 inch: 0.25
+            // 10 inch: 0.10
+            angle: -((i - m) * 0.10),
             child: card,
           );
         } else {
