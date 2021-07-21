@@ -25,7 +25,7 @@ class PendingApprovalsState extends ChangeNotifier {
 
   void setPendingList(List<PendingApproval> approvals) {
     approvalList.clear();
-    approvalList.addAll(approvals);
+    approvalList.addAll(approvals ?? []);
     notify();
   }
 }

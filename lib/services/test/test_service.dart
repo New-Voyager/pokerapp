@@ -451,8 +451,8 @@ class TestService {
     player.cards = [
       162,
       194,
-      196,
-      200,
+      // 196,
+      // 200,
       // 56,
     ];
     int r = i % 4;

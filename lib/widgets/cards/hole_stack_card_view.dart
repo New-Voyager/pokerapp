@@ -45,7 +45,6 @@ class HoleStackCardView extends StatelessWidget {
     bool isCardVisible = false,
     bool fanOut = false,
   }) {
-    Size deviceSize = MediaQuery.of(context).size;
     List<Widget> children = List.generate(
       cards.length,
       (i) {
@@ -68,11 +67,18 @@ class HoleStackCardView extends StatelessWidget {
           ),
         );
         if (fanOut) {
+          double m = cards.length == 2 ? 0.50 : mid.toDouble();
+
           return Transform.rotate(
-              alignment: Alignment.bottomCenter,
-              angle: (i - mid) * 0.10,
-              origin: Offset(0, 0),
-              child: card);
+            /* the following code makes the cards - LOOKS A LITTLE FAR AWAY */
+            // alignment: Alignment.bottomCenter,
+            // angle: -((i - m) * 0.10),
+
+            /* the following code makes the cards - LOOKS MORE CLOSER */
+            alignment: Alignment.center,
+            angle: -((i - m) * 0.25),
+            child: card,
+          );
         } else {
           return card;
         }
@@ -122,7 +128,6 @@ class HoleStackCardView extends StatelessWidget {
     @required int mid,
     @required MarkedCards markedCards,
     @required double displacementValue,
-    bool isCardVisible = false,
   }) {
     return FittedBox(
       child: Transform.translate(
@@ -184,18 +189,16 @@ class HoleStackCardView extends StatelessWidget {
       isCardVisible: false,
     );
 
-    final Widget fannedView = _buildFannedCards(
-      context: context,
-      xOffset: evenNoDisplacement,
-      mid: mid,
-      markedCards: markedCards,
-      displacementValue: displacementValue,
-      isCardVisible: true,
-    );
-
     // if need to show front card, do not procced to build the page curling effect
-    if (isCardVisible) return fannedView;
-    //if (isCardVisible) return frontCardsView;
+    if (isCardVisible) {
+      return _buildFannedCards(
+        context: context,
+        xOffset: evenNoDisplacement,
+        mid: mid,
+        markedCards: markedCards,
+        displacementValue: displacementValue,
+      );
+    }
 
     final tcs = _getTotalCardsSize(context, displacementValue);
 

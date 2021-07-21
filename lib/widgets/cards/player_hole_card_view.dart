@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/widgets/cards/card_builder_widget.dart';
-import 'package:pokerapp/resources/app_assets.dart';
-import 'package:pokerapp/utils/card_helper.dart';
 
 class PlayerHoleCardView extends StatelessWidget {
   final CardObject card;
@@ -28,7 +26,7 @@ class PlayerHoleCardView extends StatelessWidget {
       SvgPicture.asset('assets/images/card_face/${card.cardNum}.svg'),
       /* visible marker */
       Positioned(
-        bottom: 5,
+        top: 40,
         left: 5,
         child: marked
             ? Icon(
