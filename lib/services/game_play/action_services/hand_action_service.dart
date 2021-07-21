@@ -31,6 +31,7 @@ import 'package:pokerapp/screens/game_play_screen/widgets/overlay_notification.d
 import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/services/app/game_service.dart';
+import 'package:pokerapp/services/data/game_log_store.dart';
 import 'package:pokerapp/services/encryption/encryption_service.dart';
 import 'package:pokerapp/services/game_play/utils/audio.dart';
 import 'package:pokerapp/services/test/test_service.dart';
@@ -271,7 +272,9 @@ class HandActionService {
     // if the service is closed, don't process incoming messages
     if (closed) return;
 
-    // debugPrint(jsonEncode(data));
+    final jsonData = jsonEncode(data);
+    debugPrint(jsonData);
+    debugLog(_gameState.gameCode, jsonData);
 
     String messageType = data['messageType'];
 
@@ -807,8 +810,8 @@ class HandActionService {
         );
       } catch (e) {}
 
-      tableState.updateTableStatusSilent(null);
-      tableState.notifyAll();
+      // tableState.updateTableStatusSilent(null);
+      // tableState.notifyAll();
     } finally {
       log('Hand Message: ::handleNextAction:: END');
     }
@@ -885,9 +888,9 @@ class HandActionService {
 
       /* card distribution ends, put the value to NULL */
       cardDistributionModel.seatNo = null;
-      tableState.updateTableStatusSilent(null);
+      // tableState.updateTableStatusSilent(null);
       if (_close) return;
-      tableState.notifyAll();
+      // tableState.notifyAll();
       // no of cards in this game
       players.visibleCardNumbersForAllSilent(handInfo.noCards);
       if (_close) return;

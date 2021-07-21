@@ -38,7 +38,6 @@ class TableState extends ChangeNotifier {
     _board2?.clear();
     _potChips?.clear();
     _potUpdatesChips = null;
-    _tableStatus = AppConstants.CLEAR;
     _flipSpeed = 500;
     _rankStr = null;
     _twoBoardsNeeded = false;

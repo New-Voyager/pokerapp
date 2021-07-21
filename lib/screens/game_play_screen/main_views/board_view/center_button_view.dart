@@ -12,6 +12,7 @@ import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/club_screen/club_action_screens/club_member_detailed_view/club_member_detailed_view.dart';
 import 'package:pokerapp/services/app/game_service.dart';
+import 'package:pokerapp/services/data/game_log_store.dart';
 import 'package:pokerapp/services/game_play/graphql/seat_change_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:provider/provider.dart';
@@ -71,7 +72,7 @@ class CenterButtonView extends StatelessWidget {
     final seatChange = Provider.of<SeatChangeNotifier>(context, listen: false);
     final gameContext = Provider.of<GameContextObject>(context, listen: false);
     final gameState = GameState.getState(context);
-    log('Seat Change: seat change in progress: ${gameState.playerSeatChangeInProgress}');
+    log('Seat Change: seat change in progress: ${gameState.playerSeatChangeInProgress} gameRunning: ${gameState.isGameRunning}');
     if (gameState.playerSeatChangeInProgress ||
         gameState.gameInfo.tableStatus ==
             AppConstants.TABLE_STATUS_HOST_SEATCHANGE_IN_PROGRESS) {
@@ -115,7 +116,12 @@ class CenterButtonView extends StatelessWidget {
       }
     } else if (this.tableStatus == AppConstants.WAITING_TO_BE_STARTED) {
       if (this.isHost) {
-        return newGameButtons(context);
+        if (!gameState.isGameRunning) {
+          debugLog(gameState.gameCode, 'Showing start/terminate buttons');
+          return newGameButtons(context);
+        } else {
+          return Container();
+        }
       } else {
         // other players are waiting for the game to be started
         return Container(
@@ -131,6 +137,7 @@ class CenterButtonView extends StatelessWidget {
         );
       }
     } else {
+      debugLog(gameState.gameCode, 'No center buttons');
       return Container();
     }
   }

@@ -225,8 +225,8 @@ class TestService {
     initHandSevice();
     await _handActionService.handleDealStarted();
 
-    tableState.updateTableStatusSilent(null);
-    tableState.notifyAll();
+    // tableState.updateTableStatusSilent(null);
+    // tableState.notifyAll();
   }
 
   static Future<void> clearBoardCards() async {

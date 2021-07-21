@@ -319,8 +319,8 @@ class GameReplayActionService {
     }
 
     /* remove the center card */
-    tableState.updateTableStatusSilent(null);
-    tableState.notifyAll();
+    // tableState.updateTableStatusSilent(null);
+    // tableState.notifyAll();
   }
 
   Future<void> takeAction(

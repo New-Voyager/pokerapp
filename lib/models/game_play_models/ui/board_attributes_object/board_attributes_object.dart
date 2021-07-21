@@ -619,15 +619,21 @@ class BoardAttributesObject extends ChangeNotifier {
     return this._pots[i].key;
   }
 
-  void setPotsKey(int i, GlobalKey key) {
+  // returns true, if the seats needs to be rebuilt
+  bool setPotsKey(int i, GlobalKey key) {
+    bool ret = false;
     if (i <= _pots.length - 1) {
+      if (_pots[i].key == null) {
+        ret = true;
+      }
       _pots[i].key = key;
-      return;
+      return ret;
     }
     if (i == _pots.length) {
       PotAttribute attr = PotAttribute();
       attr.key = key;
       _pots.add(attr);
+      return true;
     } else {
       throw Exception('Invalid index');
     }

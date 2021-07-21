@@ -57,18 +57,18 @@ class GameUpdateService {
         // don't process table message in the middle of the hand
         dynamic message = _messages[0];
 
-        String messageType = message['messageType'];
-        log(':GameUpdateService: message type: $messageType handState: ${_gameState.handState.toString()}');
-        if (_gameState.handState != HandState.UNKNOWN &&
-            _gameState.handState != HandState.ENDED) {
-          if (messageType == AppConstants.GAME_STATUS ||
-              messageType == AppConstants.TABLE_UPDATE) {
-            _messages.removeAt(0);
-            _messages.add(message);
-            await Future.delayed(Duration(milliseconds: 500));
-            continue;
-          }
-        }
+        //String messageType = message['messageType'];
+        log(':GameUpdateService: ${jsonEncode(message)}');
+        // if (_gameState.handState != HandState.UNKNOWN &&
+        //     _gameState.handState != HandState.ENDED) {
+        //   if (messageType == AppConstants.GAME_STATUS ||
+        //       messageType == AppConstants.TABLE_UPDATE) {
+        //     _messages.removeAt(0);
+        //     _messages.add(message);
+        //     await Future.delayed(Duration(milliseconds: 500));
+        //     continue;
+        //   }
+        // }
 
         dynamic m = _messages.removeAt(0);
         bool done = false;
@@ -82,10 +82,10 @@ class GameUpdateService {
             });
           }
           m = null;
-          await Future.delayed(Duration(milliseconds: 50));
+          await Future.delayed(Duration(milliseconds: 100));
         }
       }
-      await Future.delayed(Duration(milliseconds: 50));
+      await Future.delayed(Duration(milliseconds: 100));
     }
   }
 
@@ -102,8 +102,12 @@ class GameUpdateService {
     // if the service is closed, don't process incoming messages
     if (closed) return;
 
-    debugPrint(jsonEncode(data));
     String messageType = data['messageType'];
+    if (messageType.indexOf('PLAYER_CONNECTIVITY') == -1) {
+      final jsonData = jsonEncode(data);
+      debugPrint(jsonData);
+      debugLog(_gameState.gameCode, jsonData);
+    }
     String type = data['type']; // new format used by API server
     if (messageType != null) {
       // delegate further actions to sub services as per messageType
@@ -1025,38 +1029,41 @@ class GameUpdateService {
 
     final tableState = _gameState.getTableState(_context);
 
-    tableState.updateTableStatusSilent(tableStatus);
-    tableState.updateGameStatusSilent(gameStatus);
+    if (tableState.tableStatus != tableStatus ||
+        tableState.gameStatus != gameStatus) {
+      tableState.updateTableStatusSilent(tableStatus);
+      tableState.updateGameStatusSilent(gameStatus);
 
-    if (gameStatus == AppConstants.GAME_ACTIVE &&
-        (tableStatus == AppConstants.TABLE_STATUS_GAME_RUNNING ||
-            tableStatus == AppConstants.TABLE_STATUS_GAME_RUNNING_1)) {
-      log('Game is running. Update the state');
-      _gameState.refresh(_context);
-      /* QUERY_CURRENT_HAND is done here, only after making sure,
-      * that the game is running.
-      * This is done to get update of the game */
-      gameContext.handActionService.queryCurrentHand();
-    } else if (gameStatus == AppConstants.GAME_ENDED) {
-      // end the game
-      log('Game has ended. Update the state');
-      resetBoard();
-      _gameState.refresh(_context);
-      tableState.updateTableStatusSilent(AppConstants.GAME_ENDED);
-    } else if (gameStatus == AppConstants.GAME_PAUSED) {
-      log('Game has paused. Update the state');
-      resetBoard();
-      Alerts.showNotification(
-          titleText: "Game",
-          svgPath: 'assets/images/casino.svg',
-          subTitleText: AppStringsNew.pausedGameNotificationText);
+      if (gameStatus == AppConstants.GAME_ACTIVE &&
+          (tableStatus == AppConstants.TABLE_STATUS_GAME_RUNNING ||
+              tableStatus == AppConstants.TABLE_STATUS_GAME_RUNNING_1)) {
+        log('Game is running. Update the state: ${_gameState.isGameRunning}');
+        //_gameState.refresh(_context);
+        /* QUERY_CURRENT_HAND is done here, only after making sure,
+        * that the game is running.
+        * This is done to get update of the game */
+        //gameContext.handActionService.queryCurrentHand();
+      } else if (gameStatus == AppConstants.GAME_ENDED) {
+        // end the game
+        log('Game has ended. Update the state');
+        resetBoard();
+        _gameState.refresh(_context);
+        tableState.updateTableStatusSilent(AppConstants.GAME_ENDED);
+      } else if (gameStatus == AppConstants.GAME_PAUSED) {
+        log('Game has paused. Update the state');
+        resetBoard();
+        Alerts.showNotification(
+            titleText: "Game",
+            svgPath: 'assets/images/casino.svg',
+            subTitleText: AppStringsNew.pausedGameNotificationText);
 
-      _gameState.refresh(_context);
-      // paused the game
-      tableState.updateTableStatusSilent(AppConstants.GAME_PAUSED);
+        _gameState.refresh(_context);
+        // paused the game
+        tableState.updateTableStatusSilent(AppConstants.GAME_PAUSED);
+      }
+
+      tableState.notifyAll();
     }
-
-    tableState.notifyAll();
   }
 
   void handlePlayerSeatChangePrompt({

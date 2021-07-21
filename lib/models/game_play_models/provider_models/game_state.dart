@@ -404,6 +404,18 @@ class GameState {
     this._gameInfo?.agoraToken = v;
   }
 
+  bool get isGameRunning {
+    bool tableRunning =
+        _tableState.tableStatus == AppConstants.TABLE_STATUS_GAME_RUNNING ||
+            _tableState.tableStatus == AppConstants.TABLE_STATUS_GAME_RUNNING_1;
+
+    log('isGameRunning: tableStatus: ${_tableState.tableStatus} gameStatus: ${_tableState.gameStatus} tableRunning: ${tableRunning}');
+    if (_tableState.gameStatus == AppConstants.GAME_ACTIVE && tableRunning) {
+      return true;
+    }
+    return false;
+  }
+
   int get currentHandNum => this._currentHandNum;
 
   set currentHandNum(int handNum) => this._currentHandNum = currentHandNum;
@@ -418,8 +430,8 @@ class GameState {
     // reset seats
     for (var seat in this._seats.values) {
       seat.player = null;
-      seat.potViewPos = null;
-      seat.betWidgetPos = null;
+      // seat.potViewPos = null;
+      // seat.betWidgetPos = null;
     }
 
     final players = this._players;
@@ -485,6 +497,13 @@ class GameState {
 
   List<Seat> get seats {
     return this._seats.values.toList();
+  }
+
+  void rebuildSeats() {
+    log('potViewPos: rebuilding seats.');
+    for (final seat in this._seats.values) {
+      seat.notify();
+    }
   }
 
   Seat getSeatByPlayer(int playerId) {

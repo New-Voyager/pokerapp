@@ -138,10 +138,9 @@ class BetWidget extends StatelessWidget {
                 children: [
                   /* (-) button */
                   GestureDetector(
-                        onTap: () {
-                          log('1 - button is pressed');
-                        },
-
+                    onTap: () {
+                      log('1 - button is pressed');
+                    },
                     child: Expanded(
                       flex: 2,
                       child: GestureDetector(
@@ -206,7 +205,7 @@ class BetWidget extends StatelessWidget {
                               children: [
                                 Consumer<ValueNotifier<double>>(
                                     builder: (_, vnVal, __) {
-                                  return betButton(vnVal, remainingTime);
+                                  return betButton1(vnVal);
                                 })
                               ],
                             ),
