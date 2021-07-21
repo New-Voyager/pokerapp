@@ -1,4 +1,5 @@
-import 'dart:math';
+import 'dart:math' as math;
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -48,7 +49,6 @@ class HoleStackCardView extends StatelessWidget {
     List<Widget> children = List.generate(
       cards.length,
       (i) {
-        debugPrint('fanOut: $fanOut');
         final offsetInX = -(i - mid) * displacementValue;
         final card = Transform.translate(
           offset: Offset(offsetInX, 0),
@@ -168,8 +168,11 @@ class HoleStackCardView extends StatelessWidget {
       context,
       listen: true,
     );
-
-    if (cards == null || cards.isEmpty) return const SizedBox.shrink();
+    log('HoleCards: build cards: $cards');
+    if (cards == null || cards.isEmpty) {
+      log('HoleCards: build cards are not shown $cards');
+      return const SizedBox.shrink();
+    }
     int mid = (cards.length ~/ 2);
 
     final double displacementValue = boardAttributes.holeCardDisplacement;
@@ -208,7 +211,7 @@ class HoleStackCardView extends StatelessWidget {
     final tcs = _getTotalCardsSize(context, displacementValue);
 
     return PageCurl(
-      back: Transform.rotate(angle: pi, child: frontCardsView),
+      back: Transform.rotate(angle: math.pi, child: frontCardsView),
       front: backCardsView,
       size: tcs,
     );

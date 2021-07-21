@@ -64,6 +64,7 @@ class CardObject {
   String toString() => jsonEncode({
         // 'suit': suit,
         // 'label': label,
+        'num': cardNum,
         'highlight': highlight,
         'empty': empty,
       });

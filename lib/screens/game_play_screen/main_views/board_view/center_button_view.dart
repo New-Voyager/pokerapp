@@ -40,7 +40,9 @@ class CenterButtonView extends StatelessWidget {
     log('Termininating game $gameCode');
     await GameService.endGame(gameCode);
     final gameState = GameState.getState(context);
-    gameState.refresh(context);
+    if (!gameState.isGameRunning) {
+      gameState.refresh(context);
+    }
   }
 
   void _onRearrangeSeatsPress(context) async {

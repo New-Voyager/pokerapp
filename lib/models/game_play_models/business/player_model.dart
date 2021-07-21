@@ -1,4 +1,5 @@
-import 'dart:math';
+import 'dart:math' as math;
+import 'dart:developer';
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
@@ -33,7 +34,7 @@ class PlayerModel {
   int startingStack = 0;
   String avatarUrl = '';
   String status = '';
-  List<int> cards = [];
+  List<int> _cards = [];
   List<int> highlightCards = [];
   PlayerActedState _action;
   PlayerConnectivityState _connectivity;
@@ -98,7 +99,7 @@ class PlayerModel {
 
     // todo: at later point data may contain the player avatar
     // for now randomly choose from the asset files
-    int tmpN = Random().nextInt(6) + 1;
+    int tmpN = math.Random().nextInt(6) + 1;
     this.avatarUrl = 'assets/images/$tmpN.png';
   }
 
@@ -147,7 +148,7 @@ class PlayerModel {
 
     // todo: at later point data may contain the player avatar
     // for now randomly choose from the asset files
-    int tmpN = Random().nextInt(6) + 1;
+    int tmpN = math.Random().nextInt(6) + 1;
     this.avatarUrl = 'assets/images/$tmpN.png';
   }
 
@@ -170,6 +171,15 @@ class PlayerModel {
     if (!this.showBuyIn) {
       this.buyInTimeExpAt = null;
     }
+  }
+
+  List<int> get cards {
+    return this._cards;
+  }
+
+  set cards(List<int> v) {
+    log('HoleCards: cards set $v');
+    this._cards = v;
   }
 
   List<CardObject> get cardObjects {

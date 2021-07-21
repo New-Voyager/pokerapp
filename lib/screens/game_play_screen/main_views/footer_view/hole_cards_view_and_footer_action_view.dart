@@ -188,6 +188,7 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
   }
 
   Widget _buildHoleCardView(BuildContext context) {
+    log('HoleCards: rebuilding');
     final gameState = GameState.getState(context);
 
     Widget cardsWidget = cards(
@@ -221,11 +222,14 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
 
     return ValueListenableBuilder<bool>(
       valueListenable: _isCardVisibleVn,
-      builder: (_, isCardVisible, __) => HoleStackCardView(
-        cards: cards,
-        deactivated: playerFolded ?? false,
-        isCardVisible: straddlePrompt ? false : isCardVisible,
-      ),
+      builder: (_, isCardVisible, __) {
+        log('HoleCards: isCardVisible: $isCardVisible');
+        return HoleStackCardView(
+          cards: cards,
+          deactivated: playerFolded ?? false,
+          isCardVisible: straddlePrompt ? false : isCardVisible,
+        );
+      },
     );
   }
 }
