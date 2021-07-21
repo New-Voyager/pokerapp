@@ -8,6 +8,7 @@ import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/routes.dart';
+import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/game_screens/game_history_view/game_history_item_new.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/club_interior_service.dart';
@@ -105,7 +106,7 @@ class _GameHistoryViewState extends State<GameHistoryView>
         ),
         body: _prevGames == null
             ? Center(
-                child: CircularProgressIndicator(),
+                child: CircularProgressWidget(),
               )
             : SafeArea(child: body()),
         // child: _prevGames == null

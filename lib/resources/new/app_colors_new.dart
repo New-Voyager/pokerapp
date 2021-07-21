@@ -28,6 +28,7 @@ class AppColorsNew {
   static const Color newDialogBgColor = Color(0xFF000C04);
   static const Color newRedButtonColor = Color(0xFFFA0000);
   static const Color newGreenButtonColor = Color(0xFF00FAAD);
+  static const Color gameOptionColor = Color(0xFFD89E40); //Color(0xFF00FAAD);
   static const Color actionRowBgColor = Color(0xFF0B2324);
   static const Color darkGreenShadeColor = Color(0xFF0C2013);
   static const Color yellowAccentColor = Color(0xFFD89E40);
@@ -39,4 +40,12 @@ class AppColorsNew {
   static const Color badgeColor = Color(0xFFEBA83A);
   static const Color tileColor = Color(0xFF025955);
   static const Color tileGreenColor = Color(0xFF042111);
+  static const Color darkFlopShadeColor = Color(0xFF4f8901);
+  static const Color flopStopColor = Color(0xFF4f8901);
+
+  static const Color handlogPreflopColor = Color(0xFF1A0E2D);
+  static const Color handlogFlopColor = Color(0xFF101E33);
+  static const Color handlogTurnColor = Color(0xFF072818);
+  static const Color handlogRiverColor = Color(0xff453A02);
+  static const Color handlogShowdownColor = Color(0xFF44110A);
 }

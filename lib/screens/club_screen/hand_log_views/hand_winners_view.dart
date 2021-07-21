@@ -239,7 +239,7 @@ class HandWinnersView extends StatelessWidget {
                 potStr = "Main Pot:";
               }
               return Container(
-                decoration: AppStylesNew.gradientBoxDecoration,
+                decoration: AppStylesNew.actionRowDecoration,
                 padding: EdgeInsets.only(bottom: 16.ph, top: 8.ph),
                 child: Column(
                   children: [

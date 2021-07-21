@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
-import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/widgets/cards/card_builder_widget.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/utils/card_helper.dart';
@@ -21,6 +21,38 @@ class PlayerHoleCardView extends StatelessWidget {
   });
 
   Widget _buildCardUI(
+    TextStyle cardTextStyle,
+    TextStyle suitTextStyle,
+  ) {
+    return Stack(fit: StackFit.expand, children: [
+      SvgPicture.asset('assets/images/card_face/${card.cardNum}.svg'),
+      /* visible marker */
+      Positioned(
+        bottom: 5,
+        left: 5,
+        child: marked
+            ? Icon(
+                Icons.visibility,
+                color: Colors.green,
+              )
+            : const SizedBox.shrink(),
+      ),
+
+      /* tap widget */
+      Positioned(
+        top: 0,
+        left: 0,
+        bottom: 0,
+        width: 30,
+        child: GestureDetector(
+          onTap: onMarkTapCallback,
+        ),
+      )
+    ]);
+    //return Image.asset('assets/images/card_face/${card.cardNum}.png');
+  }
+
+  Widget _buildCardUI2(
     TextStyle cardTextStyle,
     TextStyle suitTextStyle,
   ) {

@@ -33,9 +33,9 @@ class AppStringsNew {
   static const ClubChatTitle = "Club chat";
   static const BookmarkedHandsTitle = "Bookmarked Hands";
 
-  static const HighHandlogTitle = "High Handlog";
+  static const HighHandlogTitle = "High Hand Log";
   static const HandlogTitle = "Hand Log";
-  static const SummaryText = "Summary";
+  static const StackText = "Stack";
 
   static const PerformanceTitle = "Statistics";
   static const PerformanceTab1 = "Hand Stats";
@@ -51,6 +51,10 @@ class AppStringsNew {
   static const String breakGameNotificationText = "Take break after this hand";
   static const String pauseGameNotificationText =
       "The game will pause after this hand";
+  static const String pausedGameNotificationText = "The game is paused";
+
+  static const String seatRearrangeText =
+      "Tap a seat, drag and drop on another seat to move the player";
 
   static const waitingListTitle = "Waiting List";
 
@@ -154,4 +158,18 @@ class AppStringsNew {
   static String enterTextHint = "Enter text here";
 
   static String noAnnouncementText = "No Announcements";
+
+  static String myProfileTitleText = "My Profile";
+
+  static String kickedAlertMessage = "Player will be removed after this hand";
+
+  static String notesTitleText = "Notes";
+
+  static String notesSavedAlertText = "Notes saved";
+
+  static String noLiveGamesText = "No Live Games";
+
+  static String fetchLiveGamesText = "Fetching Live games...";
+
+  static String highHandWinnersText = "High hand winners";
 }

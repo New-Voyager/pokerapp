@@ -44,14 +44,24 @@ class _FooterViewState extends State<FooterView>
   Players _players;
 
   bool _needsRebuilding(PlayerModel me) {
-    final bool cardsChanged = !eq(mePlayerModelVn.value.cards, me.cards);
-    final bool playerStateChanged =
-        (mePlayerModelVn.value.playerFolded != me.playerFolded);
+    bool cardsChanged = true;
+    bool playerStateChanged = true;
+    if (mePlayerModelVn.value.cards != null && me != null && me.cards != null) {
+      cardsChanged = !eq(mePlayerModelVn.value.cards, me.cards);
+    }
+    if (mePlayerModelVn.value != null && me != null) {
+      playerStateChanged =
+          (mePlayerModelVn.value.playerFolded != me.playerFolded);
+    }
     return cardsChanged || playerStateChanged;
   }
 
   void onPlayersChanges() {
     final PlayerModel me = _players?.me;
+
+    if (me == null) {
+      return;
+    }
 
     if (mePlayerModelVn.value == null) {
       // if me is null, fill value of me

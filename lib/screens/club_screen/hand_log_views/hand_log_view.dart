@@ -10,6 +10,7 @@ import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
+import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_log_header_view.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_stage_view.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_winners_view.dart';
@@ -248,30 +249,6 @@ class _HandLogViewState extends State<HandLogView> with RouteAwareAnalytics {
             // share button
             RoundIconButton(
               onTap: () async {
-                log("SHARE12: ${_handLogModel.hand.gameCode} : ${_handLogModel.hand.handNum} : ${widget.clubCode}");
-                var result = await HandService.shareHand(
-                  _handLogModel.hand.gameCode,
-                  _handLogModel.hand.handNum,
-                  widget.clubCode,
-                );
-                Alerts.showNotification(
-                  titleText: result ? "SUCCESS" : "FAILED",
-                  subTitleText: result
-                      ? "Hand " +
-                          _handLogModel.hand.handNum.toString() +
-                          " has been shared with the club"
-                      : "Couldn't share the hand. Please try again later",
-                );
-              },
-              icon: Icons.share,
-            ),
-
-            // sep
-            AppDimensionsNew.getHorizontalSpace(8.pw),
-
-            // bookmark button
-            RoundIconButton(
-              onTap: () async {
                 if (_isTheHandBookmarked(_handLogModel.hand.handNum)) {
                   _removeBookmark(_handLogModel.hand.handNum);
                 } else {
@@ -291,6 +268,30 @@ class _HandLogViewState extends State<HandLogView> with RouteAwareAnalytics {
               icon: _isTheHandBookmarked(_handLogModel.hand.handNum)
                   ? Icons.star
                   : Icons.star_outline,
+            ),
+            AppDimensionsNew.getHorizontalSpace(8),
+            Visibility(
+              visible:
+                  ((widget.clubCode != null) && (widget.clubCode.isNotEmpty)),
+              child: RoundIconButton(
+                onTap: () async {
+                  log("SHARE12: ${_handLogModel.hand.gameCode} : ${_handLogModel.hand.handNum} : ${widget.clubCode}");
+                  var result = await HandService.shareHand(
+                    _handLogModel.hand.gameCode,
+                    _handLogModel.hand.handNum,
+                    widget.clubCode,
+                  );
+                  Alerts.showNotification(
+                    titleText: result ? "SUCCESS" : "FAILED",
+                    subTitleText: result
+                        ? "Hand " +
+                            _handLogModel.hand.handNum.toString() +
+                            " has been shared with the club"
+                        : "Couldn't share the hand. Please try again later",
+                  );
+                },
+                icon: Icons.share,
+              ),
             ),
           ],
         ),

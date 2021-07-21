@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pokerapp/enums/club_actions.dart';
 import 'package:pokerapp/models/club_homepage_model.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
+import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/club_screen/widgets/club_action_button_new.dart';
 
@@ -19,9 +20,6 @@ class ClubActionsNew extends StatelessWidget {
     if (_clubHomePageModel.unreadMessageCount > 0) {
       chatBadgeContent = Text(
         _clubHomePageModel.unreadMessageCount.toString(),
-        style: TextStyle(
-          color: Colors.white,
-        ),
       );
     }
     Widget chat = ClubActionButtonNew(

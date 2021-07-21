@@ -133,10 +133,10 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
       final fromSeat = widget.gameState.getSeat(context, fromSeatNo);
       final toSeat = widget.gameState.getSeat(context, toSeatNo);
 
-      log('Seat Change data: $fromSeatNo (${fromSeat.player.name}, ${fromSeat.uiSeatPos.toString()}) and $toSeatNo (${toSeat.player.name} ${toSeat.uiSeatPos.toString()})');
-
       if (fromSeatNo == null || toSeatNo == null) return;
       if (fromSeatNo == 0 || toSeatNo == 0) return;
+
+      log('Seat Change data: $fromSeatNo (${fromSeat.player.name}, ${fromSeat.uiSeatPos.toString()}) and $toSeatNo (${toSeat.player.name} ${toSeat.uiSeatPos.toString()})');
 
       final positions = findPositionOfFromAndToUser(
         fromSeat: fromSeatNo,

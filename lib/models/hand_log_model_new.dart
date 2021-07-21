@@ -268,21 +268,33 @@ class HandLog {
   int handEndedAt;
   bool runItTwice;
   dynamic runItTwiceResult;
+  List<SeatPot> seatPotsInShowdown;
 
-  factory HandLog.fromJson(Map<String, dynamic> json) => HandLog(
-        preflopActions: GameActions.fromJson(json["preflopActions"]),
-        flopActions: GameActions.fromJson(json["flopActions"]),
-        turnActions: GameActions.fromJson(json["turnActions"]),
-        riverActions: GameActions.fromJson(json["riverActions"]),
-        potWinners: Map.from(json["potWinners"]).map(
-            (k, v) => MapEntry<String, PotWinner>(k, PotWinner.fromJson(v))),
-        wonAt: stagesEnumValues.map[json["wonAt"]],
-        showDown: json["showDown"],
-        handStartedAt: int.parse(json["handStartedAt"].toString()),
-        handEndedAt: int.parse(json["handEndedAt"].toString()),
-        runItTwice: json["runItTwice"],
-        runItTwiceResult: json["runItTwiceResult"],
-      );
+  factory HandLog.fromJson(Map<String, dynamic> json) {
+    final handLog = HandLog(
+      preflopActions: GameActions.fromJson(json["preflopActions"]),
+      flopActions: GameActions.fromJson(json["flopActions"]),
+      turnActions: GameActions.fromJson(json["turnActions"]),
+      riverActions: GameActions.fromJson(json["riverActions"]),
+      potWinners: Map.from(json["potWinners"])
+          .map((k, v) => MapEntry<String, PotWinner>(k, PotWinner.fromJson(v))),
+      wonAt: stagesEnumValues.map[json["wonAt"]],
+      showDown: json["showDown"],
+      handStartedAt: int.parse(json["handStartedAt"].toString()),
+      handEndedAt: int.parse(json["handEndedAt"].toString()),
+      runItTwice: json["runItTwice"],
+      runItTwiceResult: json["runItTwiceResult"],
+    );
+    final seatPotsJson = json["seatsPotsShowdown"];
+    List<SeatPot> seatPots = [];
+    if (seatPotsJson.length > 0) {
+      for (final seatPot in seatPotsJson) {
+        seatPots.add(SeatPot.fromJson(seatPot));
+      }
+    }
+    handLog.seatPotsInShowdown = seatPots;
+    return handLog;
+  }
 
   Map<String, dynamic> toJson() => {
         "preflopActions": preflopActions.toJson(),
@@ -300,23 +312,53 @@ class HandLog {
       };
 }
 
+class SeatPot {
+  List<int> seats = [];
+  double pot;
+  SeatPot();
+
+  factory SeatPot.fromJson(dynamic json) {
+    SeatPot seatPot = SeatPot();
+
+    seatPot.seats = [];
+    for (final seat in json['seats']) {
+      seatPot.seats.add(int.parse(seat.toString()));
+    }
+    seatPot.pot = double.parse(json['pot'].toString());
+    return seatPot;
+  }
+}
+
 class GameActions {
   GameActions({
     this.pots,
     this.potStart,
     this.actions,
+    this.seatPots,
   });
 
   List<int> pots;
   List<ActionElement> actions;
   int potStart;
+  List<SeatPot> seatPots;
 
-  factory GameActions.fromJson(Map<String, dynamic> json) => GameActions(
-        pots: json["pots"]?.map<int>((e) => int.parse(e.toString()))?.toList(),
-        potStart: json["potStart"],
-        actions: List<ActionElement>.from(
-            json["actions"].map((x) => ActionElement.fromJson(x))),
-      );
+  factory GameActions.fromJson(Map<String, dynamic> json) {
+    final seatPotsJson = json["seatsPots"];
+    List<SeatPot> seatPots = [];
+    if (seatPotsJson.length > 0) {
+      for (final seatPot in seatPotsJson) {
+        seatPots.add(SeatPot.fromJson(seatPot));
+      }
+    }
+
+    return GameActions(
+      pots: json["pots"]?.map<int>((e) => int.parse(e.toString()))?.toList(),
+      potStart: json["potStart"],
+      actions: List<ActionElement>.from(
+          json["actions"].map((x) => ActionElement.fromJson(x))),
+      seatPots: seatPots,
+    );
+  }
 
   Map<String, dynamic> toJson() => {
         "pot": pots,
