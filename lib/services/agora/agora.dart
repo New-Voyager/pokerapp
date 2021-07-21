@@ -13,7 +13,6 @@ class Agora extends ChangeNotifier {
   bool isJoined = false, openMicrophone = true, enableSpeakerphone = true;
   bool initializing = false;
   bool initialized = false;
-
   String gameCode;
   String uuid;
   int playerId;
@@ -159,7 +158,7 @@ class Agora extends ChangeNotifier {
         ?.setEnableSpeakerphone(!enableSpeakerphone)
         ?.then((value) {})
         ?.catchError((err) {
-      log('agora: setEnableSpeakerphone $err');
-    });
+           log('agora: setEnableSpeakerphone $err');
+       });
   }
 }
