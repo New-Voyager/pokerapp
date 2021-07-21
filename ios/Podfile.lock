@@ -1,4 +1,8 @@
 PODS:
+  - agora_rtc_engine (4.0.5-rc.0):
+    - AgoraRtcEngine_iOS (= 3.4.5)
+    - Flutter
+  - AgoraRtcEngine_iOS (3.4.5)
   - audio_recorder (0.0.1):
     - Flutter
   - audio_session (0.0.1):
@@ -165,6 +169,7 @@ PODS:
     - Flutter
 
 DEPENDENCIES:
+  - agora_rtc_engine (from `.symlinks/plugins/agora_rtc_engine/ios`)
   - audio_recorder (from `.symlinks/plugins/audio_recorder/ios`)
   - audio_session (from `.symlinks/plugins/audio_session/ios`)
   - audioplayers (from `.symlinks/plugins/audioplayers/ios`)
@@ -193,6 +198,7 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
+    - AgoraRtcEngine_iOS
     - Firebase
     - FirebaseAnalytics
     - FirebaseCore
@@ -211,6 +217,8 @@ SPEC REPOS:
     - SAMKeychain
 
 EXTERNAL SOURCES:
+  agora_rtc_engine:
+    :path: ".symlinks/plugins/agora_rtc_engine/ios"
   audio_recorder:
     :path: ".symlinks/plugins/audio_recorder/ios"
   audio_session:
@@ -261,6 +269,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/wakelock/ios"
 
 SPEC CHECKSUMS:
+  agora_rtc_engine: 11b2e523e91a014a6d67e589d643dc7e432c58ce
+  AgoraRtcEngine_iOS: af270dad94a9ef8f8ba82f5f3c7c4145b3dda6ec
   audio_recorder: 8d200bc5ca10f8a5f8121ad1d2fcf49108a0b3bf
   audio_session: 4f3e461722055d21515cf3261b64c973c062f345
   audioplayers: 455322b54050b30ea4b1af7cd9e9d105f74efa8c
