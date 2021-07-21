@@ -167,6 +167,10 @@ class AppStringsNew {
 
   static String notesSavedAlertText = "Notes saved";
 
+  static String pendingApprovalTitleText = "Pending Approvals";
+
+  static String noPendingText = "No Pending approvals";
+
   static String noLiveGamesText = "No Live Games";
 
   static String fetchLiveGamesText = "Fetching Live games...";

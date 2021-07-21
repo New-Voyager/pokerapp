@@ -1,25 +1,32 @@
 import 'package:flutter/material.dart';
 
 class PendingApprovalsState extends ChangeNotifier {
-  int totalPending = 0;
+  //int totalPending = 0;
+  List<PendingApproval> approvalList = [];
 
-  setTotalPending(int i) {
-    totalPending = i;
-    notify();
-  }
+  // setTotalPending(int i) {
+  //   totalPending = i;
+  //   notify();
+  // }
 
-  decreaseTotalPending() {
-    totalPending--;
-    notify();
-  }
+  // decreaseTotalPending() {
+  //   totalPending--;
+  //   notify();
+  // }
 
-  incrementTotalPending() {
-    totalPending++;
-    notify();
-  }
+  // incrementTotalPending() {
+  //   totalPending++;
+  //   notify();
+  // }
 
   notify() {
     notifyListeners();
+  }
+
+  void setPendingList(List<PendingApproval> approvals) {
+    approvalList.clear();
+    approvalList.addAll(approvals);
+    notify();
   }
 }
 
