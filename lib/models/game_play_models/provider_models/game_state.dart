@@ -404,6 +404,18 @@ class GameState {
     this._gameInfo?.agoraToken = v;
   }
 
+  bool get isGameRunning {
+    bool tableRunning =
+        _tableState.tableStatus == AppConstants.TABLE_STATUS_GAME_RUNNING ||
+            _tableState.tableStatus == AppConstants.TABLE_STATUS_GAME_RUNNING_1;
+
+    log('isGameRunning: tableStatus: ${_tableState.tableStatus} gameStatus: ${_tableState.gameStatus} tableRunning: ${tableRunning}');
+    if (_tableState.gameStatus == AppConstants.GAME_ACTIVE && tableRunning) {
+      return true;
+    }
+    return false;
+  }
+
   int get currentHandNum => this._currentHandNum;
 
   set currentHandNum(int handNum) => this._currentHandNum = currentHandNum;

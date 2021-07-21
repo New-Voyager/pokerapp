@@ -97,18 +97,22 @@ class _CenterViewState extends State<CenterView> {
       GameState gameState, Offset centerViewButtonOffset) {
     return Transform.translate(
       offset: centerViewButtonOffset,
-      child: Consumer<SeatChangeNotifier>(
-        builder: (_, SeatChangeNotifier seatChange, __) =>
-            ValueListenableBuilder2<String, String>(
+      child: Consumer2<SeatChangeNotifier, TableState>(
+        builder:
+            (_, SeatChangeNotifier seatChange, TableState tableState, __) =>
+                ValueListenableBuilder2<String, String>(
           vnGameStatus,
           vnTableStatus,
-          builder: (_, gameStatus, tableStatus, __) => CenterButtonView(
-            gameCode: this.widget.gameCode,
-            isHost: this.widget.isHost,
-            gameStatus: gameState.gameInfo.status,
-            tableStatus: gameState.gameInfo.tableStatus,
-            onStartGame: this.widget.onStartGame,
-          ),
+          builder: (_, gameStatus, tableStatus, __) {
+            log('Rebuilding center view: Is game running: ${gameState.isGameRunning}');
+            return CenterButtonView(
+              gameCode: this.widget.gameCode,
+              isHost: this.widget.isHost,
+              gameStatus: gameState.gameInfo.status,
+              tableStatus: gameState.gameInfo.tableStatus,
+              onStartGame: this.widget.onStartGame,
+            );
+          },
         ),
       ),
     );

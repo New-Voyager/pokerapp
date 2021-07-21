@@ -217,7 +217,7 @@ class _ChipAmountAnimatingWidgetState extends State<ChipAmountAnimatingWidget>
     Offset begin = Offset(0, 0);
     begin = seat.betWidgetPos;
     this.begin = begin;
-
+    log('chip amount animation end: $end');
     //log('reverse animation: ${widget.reverse ?? false}, winner: ${seat.player.action.winner}');
     if (widget.reverse ?? false) {
       Offset swap = end;
@@ -255,81 +255,3 @@ class _ChipAmountAnimatingWidgetState extends State<ChipAmountAnimatingWidget>
     );
   }
 }
-
-/*
-
-  Offset _getCenterPos(BuildContext context) {
-    List<Offset> _playerPositions = [];
-
-    // go through all the seat nos
-    for (int i = 1; i <= 9; i++) {
-      try {
-        _playerPositions.add(_getFinalPosition(context, i));
-      } catch (_) {}
-    }
-
-    double xAvg = 0;
-    double yAvg = 0;
-
-    for (Offset offset in _playerPositions) {
-      xAvg += offset.dx;
-      yAvg += offset.dy;
-    }
-
-    xAvg /= _playerPositions.length;
-    yAvg /= _playerPositions.length;
-
-    return Offset(
-      xAvg,
-      yAvg,
-    );
-  }
-
-  Offset _getFinalPosition(
-    BuildContext context,
-    int seatNo,
-  ) {
-    Offset _getPositionOffsetFromKey(GlobalKey key) {
-      final RenderBox renderBox = key.currentContext.findRenderObject();
-      return renderBox.localToGlobal(Offset.zero);
-    }
-
-    if (_finalPositionCache.containsKey(seatNo)) {
-      // log('final position from cache');
-      return _finalPositionCache[seatNo];
-    }
-
-    final gameState = GameState.getState(context);
-    final seat = gameState.getSeat(context, seatNo);
-
-    return _getPositionOffsetFromKey(seat.key);
-  }
-
-
-
-
-    // final Offset p = _getFinalPosition(
-    //   context,
-    //   seat.serverSeatPos,
-    // );
-
-    // final Offset c = _getCenterPos(
-    //   context,
-    // );
-
-    // /* get the angle theta */
-    // final double yy = c.dy - p.dy;
-    // final double xx = c.dx - p.dx;
-
-    // final double theta = math.atan(yy / xx);
-
-    // final double moveByConstant =
-    //     boardAttributesObject.getBetPos() * (xx < 0 ? -1 : 1); // 100: 10 inch, 60: 5 inch,  75: 7 inch
-
-    // // log('${seat.serverSeatPos} : $yy : $xx : $theta');
-
-    // Offset offset = Offset(
-    //   moveByConstant * math.cos(theta),
-    //   moveByConstant * math.sin(theta),
-    // );
-*/

@@ -680,10 +680,10 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
 
   void onShowDebugLog(BuildContext context) {
     // log('onShowDebugLog');
-    debugLog(widget.gameState.gameCode, 'this is first log');
-    debugLog(widget.gameState.gameCode, 'this is second log');
-    debugLog(widget.gameState.gameCode, 'this is third log');
-    debugLog(widget.gameState.gameCode, 'this is fourth log');
+    // debugLog(widget.gameState.gameCode, 'this is first log');
+    // debugLog(widget.gameState.gameCode, 'this is second log');
+    // debugLog(widget.gameState.gameCode, 'this is third log');
+    // debugLog(widget.gameState.gameCode, 'this is fourth log');
     showBottomSheet(
       context: context,
       //backgroundColor: Colors.transparent,
