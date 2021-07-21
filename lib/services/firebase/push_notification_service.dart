@@ -150,7 +150,7 @@ void registerPushNotifications() {
     }
     if (message.data['type'].toString() == 'BUYIN_REQUEST') {
       final approvals = await PlayerService.getPendingApprovals();
-    //  final approvalCount = await PlayerService.getPendingApprovalsCount();
+      //  final approvalCount = await PlayerService.getPendingApprovalsCount();
       final state = Provider.of<PendingApprovalsState>(
           navigatorKey.currentContext,
           listen: false);

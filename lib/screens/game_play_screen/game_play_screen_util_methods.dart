@@ -317,15 +317,15 @@ class GamePlayScreenUtilMethods {
         //   label: 'set game status inactive',
         //   onTap: () => TestService.setGameStateInActive(),
         // ),
-        // SpeedDialChild(
-        //   child: Icon(
-        //     Icons.adb_rounded,
-        //     color: Colors.white,
-        //   ),
-        //   backgroundColor: Colors.red,
-        //   label: 'Fill center view',
-        //   onTap: () => TestService.fillCenterView(),
-        // ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
+          label: 'Fill center view',
+          onTap: () => TestService.fillCenterView(),
+        ),
         // SpeedDialChild(
         //   child: Icon(
         //     Icons.adb_rounded,

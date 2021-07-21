@@ -18,6 +18,10 @@ class GameLog {
   List<String> getLogs() {
     return logs;
   }
+
+  void clear() {
+    logs.clear();
+  }
 }
 
 class GameLogger {
@@ -50,4 +54,9 @@ debugLog(String gameCode, String msg) {
 
 GameLog getDebugLogger(String gameCode) {
   return loggers.getLogger(gameCode);
+}
+
+clearDebugLog(String gameCode) {
+  final logger = loggers.getLogger(gameCode);
+  logger.clear();
 }

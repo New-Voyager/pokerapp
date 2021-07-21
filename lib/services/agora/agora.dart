@@ -21,7 +21,13 @@ class Agora extends ChangeNotifier {
   GameState gameState;
   CommunicationState state;
   Seat mySeat;
-  Agora({this.appId, this.gameCode, this.uuid, this.playerId, this.state, this.gameState});
+  Agora(
+      {this.appId,
+      this.gameCode,
+      this.uuid,
+      this.playerId,
+      this.state,
+      this.gameState});
   Future initEngine() async {
     mySeat = this.gameState.mySeat(null);
     engine = await RtcEngine.create(appId);
@@ -54,7 +60,7 @@ class Agora extends ChangeNotifier {
             (List<AudioVolumeInfo> speakers, int totalVolume) {
       // speakers[0].vad == 1 (speaking)
       // speakers[0].vad == 0 (not speaking)
-      
+
       for (final speaker in speakers) {
         //log('agora: uid: ${speaker.uid} channel: ${speaker.channelId} vad: ${speaker.vad} volume: ${speaker.volume}');
         if (speaker.uid == 0 || speaker.uid == this.playerId) {
@@ -66,14 +72,14 @@ class Agora extends ChangeNotifier {
             // player stopped talking
             this.state.talking = false;
             this.state.notify();
-          } else if(!this.state.talking && speaker.vad == 1) {
+          } else if (!this.state.talking && speaker.vad == 1) {
             // player started talking
             this.state.talking = true;
             log('agora: Current player stopped talking');
             this.state.notify();
             mySeat.player.talking = true;
             mySeat.notify();
-          } 
+          }
         } else {
           // other players
           log('agora: Other player ${speaker.uid} talking/not talking ${speaker.uid}');
@@ -110,9 +116,11 @@ class Agora extends ChangeNotifier {
       await initEngine();
     }
 
-    debugLog(gameCode, 'Joining agora channel ${this.playerId} agora token: ${this.agoraToken}');
+    debugLog(gameCode,
+        'Joining agora channel ${this.playerId} agora token: ${this.agoraToken}');
     log('Joining agora channel ${this.playerId}');
-    await engine.joinChannel(this.agoraToken, this.gameCode, null, this.playerId);
+    await engine.joinChannel(
+        this.agoraToken, this.gameCode, null, this.playerId);
     log('Joined agora channel ${this.playerId}');
     debugLog(gameCode, 'Joined agora channel ${this.playerId}');
     state.audioConferenceStatus = AudioConferenceStatus.CONNECTED;
@@ -124,11 +132,11 @@ class Agora extends ChangeNotifier {
     if (this.agoraToken.isEmpty || !isJoined) {
       return;
     }
-    debugLog(gameCode,'player $uuid leaving audio channel');
+    debugLog(gameCode, 'player $uuid leaving audio channel');
     log('agora: player $uuid leaving audio channel');
     await engine.leaveChannel();
     log('agora: player $uuid left audio channel');
-    debugLog(gameCode,'player $uuid left audio channel');
+    debugLog(gameCode, 'player $uuid left audio channel');
     isJoined = false;
     state.audioConferenceStatus = AudioConferenceStatus.LEFT;
   }
@@ -158,7 +166,7 @@ class Agora extends ChangeNotifier {
         ?.setEnableSpeakerphone(!enableSpeakerphone)
         ?.then((value) {})
         ?.catchError((err) {
-           log('agora: setEnableSpeakerphone $err');
-       });
+      log('agora: setEnableSpeakerphone $err');
+    });
   }
 }

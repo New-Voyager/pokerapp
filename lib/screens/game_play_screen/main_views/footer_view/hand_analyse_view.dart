@@ -54,7 +54,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       while (mounted) {
-            log('0-0-0-0- inside while Polling for pending approvals');
+        log('0-0-0-0- inside while Polling for pending approvals');
 
         await Future.delayed(Duration(seconds: 10));
         _pollPendingApprovals();
@@ -680,10 +680,10 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
 
   void onShowDebugLog(BuildContext context) {
     // log('onShowDebugLog');
-    // debugLog(gameState.gameCode, 'this is first log');
-    // debugLog(gameState.gameCode, 'this is second log');
-    // debugLog(gameState.gameCode, 'this is third log');
-    // debugLog(gameState.gameCode, 'this is fourth log');
+    debugLog(widget.gameState.gameCode, 'this is first log');
+    debugLog(widget.gameState.gameCode, 'this is second log');
+    debugLog(widget.gameState.gameCode, 'this is third log');
+    debugLog(widget.gameState.gameCode, 'this is fourth log');
     showBottomSheet(
       context: context,
       //backgroundColor: Colors.transparent,

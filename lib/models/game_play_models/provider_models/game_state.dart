@@ -191,15 +191,15 @@ class GameState {
         uuid: this._currentPlayer.uuid,
         playerId: this._currentPlayer.id);
 
-    if (this.gameInfo.useAgora) {
+    if (this.gameInfo.useAgora ?? false) {
       this.agoraEngine = Agora(
-          appId: this.gameInfo.agoraAppId,
-          gameCode: this.gameInfo.gameCode,
-          uuid: this._currentPlayer.uuid,
-          state: _communicationState,
-          gameState: this,
-          playerId: this._currentPlayer.id,
-          );
+        appId: this.gameInfo.agoraAppId,
+        gameCode: this.gameInfo.gameCode,
+        uuid: this._currentPlayer.uuid,
+        state: _communicationState,
+        gameState: this,
+        playerId: this._currentPlayer.id,
+      );
     }
 
     this._janusEngine =
@@ -567,7 +567,7 @@ class GameState {
 
   Seat mySeat(BuildContext context) {
     if (context == null) {
-      for(final seat in _seats.values) {
+      for (final seat in _seats.values) {
         if (seat.isMe) {
           return seat;
         }

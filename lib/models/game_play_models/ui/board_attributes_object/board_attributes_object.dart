@@ -9,6 +9,7 @@ import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_mappings.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:tuple/tuple.dart';
+import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 enum BoardOrientation {
   horizontal,
@@ -683,7 +684,9 @@ class BoardAttributesObject extends ChangeNotifier {
     }
   }
 
-  static const holeCardViewDisplacementConstant = 30.0;
+  double get holeCardDisplacement {
+    return 20.pw;
+  }
 
   /* center view scales for different widgets */
 
@@ -757,7 +760,7 @@ class BoardAttributesObject extends ChangeNotifier {
         lessThan6Inches: _getScaleBasedOnNoOfCards * 3.0,
         equalTo6Inches: _getScaleBasedOnNoOfCards * 3.4,
         equalTo7Inches: _getScaleBasedOnNoOfCards * 4.0,
-        greaterThan7Inches: _getScaleBasedOnNoOfCards * 4.6,
+        greaterThan7Inches: _getScaleBasedOnNoOfCards * 4.0,
       ) as double;
 
   double get communityCardSizeScales => _decide(
