@@ -603,6 +603,15 @@ class BoardAttributesObject extends ChangeNotifier {
 
   get tableSize => this._tableSize;
 
+  double get lottieScale {
+    if (this._screenSize <= 6) {
+      return 1.0;
+    } else if (this._screenSize == 7) {
+      return 1.3;
+    } else {
+      return 2.0;
+    }
+  }
   // get emptyCenterKey => this._emptyCenterKey;
   // set emptyCenterKey(Key key) => this._emptyCenterKey = key;
 

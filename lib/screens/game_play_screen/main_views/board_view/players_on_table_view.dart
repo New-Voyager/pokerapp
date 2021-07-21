@@ -328,6 +328,8 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
   Widget build(BuildContext context) {
     // cacheSeatPositions();
     log('PlayersOnTableView:  ::build::');
+    final boardAttributes =
+        GameState.getState(context).getBoardAttributes(context);
 
     // am I on this table?
     return Transform.translate(
@@ -356,7 +358,8 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
                   animation: animation,
                   builder: (_, child) => Transform.translate(
                     offset: animation.value,
-                    child: child,
+                    child: Transform.scale(
+                        scale: boardAttributes.lottieScale, child: child),
                   ),
                 )
               : SizedBox.shrink(),
@@ -367,10 +370,12 @@ class _PlayersOnTableViewState extends State<PlayersOnTableView>
                   child: Container(
                     height: _lottieAnimationContainerSize,
                     width: _lottieAnimationContainerSize,
-                    child: Lottie.asset(
-                      'assets/animations/$animationAssetID.json',
-                      controller: _lottieController,
-                    ),
+                    child: Transform.scale(
+                        scale: boardAttributes.lottieScale,
+                        child: Lottie.asset(
+                          'assets/animations/$animationAssetID.json',
+                          controller: _lottieController,
+                        )),
                   ),
                 )
               : SizedBox.shrink(),

@@ -67,7 +67,7 @@ class _GameOptionState extends State<GameOption> {
 
   void onEndGame() async {
     Navigator.of(context).pop();
-    if (widget.gameState.running) {
+    if (widget.gameState.isGameRunning) {
       Alerts.showNotification(
           titleText: "Game",
           svgPath: 'assets/images/casino.svg',
