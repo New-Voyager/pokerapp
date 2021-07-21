@@ -456,6 +456,7 @@ class GamePlayScreenUtilMethods {
           label: 'Buyin Test',
           onTap: () => TestService.buyInTest(),
         ),
+        */
         SpeedDialChild(
           child: Icon(
             Icons.adb_rounded,
@@ -465,7 +466,6 @@ class GamePlayScreenUtilMethods {
           label: 'Show Bets',
           onTap: () => TestService.testBetWidget(),
         ),
-          */
       ],
       backgroundColor: AppColors.appAccentColor,
     );

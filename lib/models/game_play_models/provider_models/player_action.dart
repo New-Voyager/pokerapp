@@ -107,4 +107,29 @@ class PlayerAction {
   int get minRaiseAmount => _minRaiseAmount;
   int get maxRaiseAmount => _maxRaiseAmount;
   int get seatNo => _seatNo;
+
+  void sort() {
+    List<AvailableAction> sortedActions = [];
+    // fold
+    // check
+    // call
+    // bet/raise
+    // all in
+    List<String> actionOrder = [
+      FOLD,
+      CHECK,
+      CALL,
+      BET,
+      RAISE,
+      ALLIN,
+    ];
+    for (final action in actionOrder) {
+      final found = _actions.firstWhere((e) => e.actionName == action,
+          orElse: () => null);
+      if (found != null) {
+        sortedActions.add(found);
+      }
+    }
+    _actions = sortedActions;
+  }
 }

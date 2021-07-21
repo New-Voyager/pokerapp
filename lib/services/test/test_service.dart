@@ -388,7 +388,7 @@ class TestService {
     final seatActionJsonStr = '''
         {
           "seatNo": 1,
-          "availableActions": ["FOLD", "CALL", "BET", "ALLIN"],
+          "availableActions": ["FOLD", "BET", "CALL", "ALLIN"],
           "callAmount": 2,
           "minRaiseAmount": 4,
           "maxRaiseAmount": 30,

@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/player_action.dart';
@@ -6,20 +7,113 @@ import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/pulsating_button.dart';
 import 'package:pokerapp/utils/formatter.dart';
-import 'package:pokerapp/utils/numeric_keyboard.dart';
 import 'package:pokerapp/utils/numeric_keyboard2.dart';
 import 'package:provider/provider.dart';
 import 'package:sleek_circular_slider/sleek_circular_slider.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
+import 'package:timer_count_down/timer_count_down.dart';
 
 class BetWidget extends StatelessWidget {
   final Function onSubmitCallBack;
   final PlayerAction action;
+  final int remainingTime;
 
   BetWidget({
     @required this.action,
     this.onSubmitCallBack,
+    this.remainingTime,
   });
+
+  Widget betButton1(ValueNotifier<double> vnVal) {
+    return Container(
+      width: 60.pw,
+      height: 74.ph,
+      child: Stack(fit: StackFit.expand, children: [
+        PulsatingCircleIconButton(
+          onTap: () => onSubmitCallBack?.call(vnVal.value),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                DataFormatter.chipsFormat(
+                  vnVal.value,
+                ),
+                style: TextStyle(
+                  fontSize: 10.dp,
+                  color: Colors.white,
+                ),
+              ),
+              //  SizedBox(height: 5),
+              Text(
+                "BET",
+                style: TextStyle(
+                  fontSize: 10.dp,
+                  color: Colors.white,
+                ),
+              )
+            ],
+          ),
+        ),
+      ]),
+    );
+  }
+
+  Widget betButton(ValueNotifier<double> vnVal, int remainingTime) {
+    return Container(
+      width: 40.pw,
+      height: 40.pw,
+      //decoration: BoxDecoration(color: Colors.red, shape: BoxShape.circle),
+      decoration: BoxDecoration(
+        //color: Colors.red,
+        border:
+            Border.all(color: AppColorsNew.newSelectedGreenColor, width: 2.pw),
+        color: AppColorsNew.newGreenRadialStopColor,
+        shape: BoxShape.circle,
+      ),
+      child: Stack(fit: StackFit.expand, children: [
+        // Countdown(
+        //     seconds: remainingTime,
+        //     onFinished: () {},
+        //     build: (_, time) {
+        //       double value = time / remainingTime;
+        //       return  CircularProgressIndicator(
+        //         strokeWidth: 2.pw,
+        //           value: value,
+        //           color: AppColorsNew.newBorderColor,
+        //       );
+        //     }),
+        CircularProgressIndicator(
+          strokeWidth: 2.pw,
+          color: AppColorsNew.newBorderColor,
+        ),
+
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              DataFormatter.chipsFormat(
+                vnVal.value,
+              ),
+              style: TextStyle(
+                fontSize: 10.dp,
+                color: Colors.white,
+              ),
+            ),
+            //  SizedBox(height: 5),
+            Text(
+              "BET",
+              style: TextStyle(
+                fontSize: 10.dp,
+                color: Colors.white,
+              ),
+            )
+          ],
+        ),
+      ]),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,26 +137,40 @@ class BetWidget extends StatelessWidget {
               child: Row(
                 children: [
                   /* (-) button */
-                  Expanded(
-                    flex: 2,
-                    child: Transform.translate(
-                      offset: Offset(70, -20),
-                      child: Align(
-                        alignment: Alignment.centerRight,
+                  GestureDetector(
+                        onTap: () {
+                          log('1 - button is pressed');
+                        },
+
+                    child: Expanded(
+                      flex: 2,
+                      child: GestureDetector(
+                        onTap: () {
+                          log('- button is pressed');
+                        },
                         child: Container(
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                          ),
-                          child: IconButton(
-                            icon: Icon(
-                              Icons.remove_circle_rounded,
-                              color: AppColorsNew.newGreenButtonColor,
+                          child: Transform.translate(
+                            offset: Offset(85.pw, 10.ph),
+                            child: Align(
+                              alignment: Alignment.centerRight,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                ),
+                                child: IconButton(
+                                  icon: Icon(
+                                    Icons.remove_circle_rounded,
+                                    color: AppColorsNew.newGreenButtonColor,
+                                  ),
+                                  onPressed: () {
+                                    log('on - pressed');
+                                    if (valueNotifierVal.value <=
+                                        action.minRaiseAmount) return;
+                                    valueNotifierVal.value--;
+                                  },
+                                ),
+                              ),
                             ),
-                            onPressed: () {
-                              if (valueNotifierVal.value <=
-                                  action.minRaiseAmount) return;
-                              valueNotifierVal.value--;
-                            },
                           ),
                         ),
                       ),
@@ -76,7 +184,7 @@ class BetWidget extends StatelessWidget {
                       children: [
                         /* seek slider */
                         Transform.translate(
-                          offset: Offset(0, 20),
+                          offset: Offset(0, 70.ph),
                           child: Align(
                             alignment: Alignment.center,
                             child: Container(
@@ -97,40 +205,9 @@ class BetWidget extends StatelessWidget {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Consumer<ValueNotifier<double>>(
-                                  builder: (_, vnVal, __) => Container(
-                                    width: 60.pw,
-                                    height: 74.ph,
-                                    child: PulsatingCircleIconButton(
-                                      onTap: () =>
-                                          onSubmitCallBack?.call(vnVal.value),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            DataFormatter.chipsFormat(
-                                              vnVal.value,
-                                            ),
-                                            style: TextStyle(
-                                              fontSize: 10.dp,
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                          //  SizedBox(height: 5),
-                                          Text(
-                                            "BET",
-                                            style: TextStyle(
-                                              fontSize: 10.dp,
-                                              color: Colors.white,
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                )
+                                    builder: (_, vnVal, __) {
+                                  return betButton(vnVal, remainingTime);
+                                })
                               ],
                             ),
                           ),
@@ -143,7 +220,7 @@ class BetWidget extends StatelessWidget {
                   Expanded(
                     flex: 2,
                     child: Transform.translate(
-                      offset: Offset(-80, -20),
+                      offset: Offset(-80.pw, 10.ph),
                       child: Align(
                         alignment: Alignment.centerLeft,
                         child: Container(
@@ -156,6 +233,7 @@ class BetWidget extends StatelessWidget {
                               color: AppColorsNew.newGreenButtonColor,
                             ),
                             onPressed: () {
+                              log('+ button');
                               if (valueNotifierVal.value >=
                                   action.maxRaiseAmount) return;
                               valueNotifierVal.value++;

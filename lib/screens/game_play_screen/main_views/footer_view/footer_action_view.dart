@@ -216,6 +216,7 @@ class _FooterActionViewState extends State<FooterActionView> {
 
   Widget _buildActionWidgets(PlayerAction playerAction) {
     AvailableAction allin;
+    playerAction.sort();
     for (final action in playerAction?.actions) {
       if (action.actionName == ALLIN) {
         allin = action;
@@ -310,23 +311,26 @@ class _FooterActionViewState extends State<FooterActionView> {
     );
   }
 
-  Widget _buildBetWidget(PlayerAction playerAction) => AnimatedSwitcher(
-        duration: AppConstants.fastAnimationDuration,
-        reverseDuration: AppConstants.fastAnimationDuration,
-        transitionBuilder: (child, animation) => ScaleTransition(
-          alignment: Alignment.bottomCenter,
-          scale: animation,
-          child: child,
-        ),
-        child: playerAction?.options == null
-            ? shrinkedBox
-            : _showOptions
-                ? BetWidget(
-                    action: playerAction,
-                    onSubmitCallBack: _betOrRaise,
-                  )
-                : shrinkedBox,
-      );
+  Widget _buildBetWidget(PlayerAction playerAction, int remainingTime) {
+    return AnimatedSwitcher(
+      duration: AppConstants.fastAnimationDuration,
+      reverseDuration: AppConstants.fastAnimationDuration,
+      transitionBuilder: (child, animation) => ScaleTransition(
+        alignment: Alignment.bottomCenter,
+        scale: animation,
+        child: child,
+      ),
+      child: playerAction?.options == null
+          ? shrinkedBox
+          : _showOptions
+              ? BetWidget(
+                  action: playerAction,
+                  onSubmitCallBack: _betOrRaise,
+                  remainingTime: remainingTime,
+                )
+              : shrinkedBox,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -348,7 +352,7 @@ class _FooterActionViewState extends State<FooterActionView> {
             Expanded(
               child: Transform.scale(
                 scale: boardAttributes.footerActionViewScale,
-                child: _buildBetWidget(actionState.action),
+                child: _buildBetWidget(actionState.action, 30),
               ),
             ),
 
