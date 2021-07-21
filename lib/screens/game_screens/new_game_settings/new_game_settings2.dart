@@ -461,6 +461,15 @@ class NewGameSettings2 extends StatelessWidget {
                         },
                       ),
 
+                      /* allow audio conference */
+                      _buildRadio(
+                        label: 'Use Agora Audio Conference    (Beta)',
+                        value: gmp.useAgora,
+                        onChange: (bool b) {
+                          gmp.useAgora = b;
+                        },
+                      ),
+
                       /* bot games */
                       _buildRadio(
                         label: 'Bot Game',

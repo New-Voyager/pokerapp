@@ -16,6 +16,7 @@ import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/boar
 import 'package:pokerapp/models/hand_log_model_new.dart';
 import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/resources/app_constants.dart';
+import 'package:pokerapp/services/agora/agora.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/app/handlog_cache_service.dart';
 import 'package:pokerapp/services/data/game_hive_store.dart';
@@ -85,6 +86,7 @@ class GameState {
   Map<int, Seat> _seats = Map<int, Seat>();
   PlayerInfo _currentPlayer;
   JanusEngine janusEngine;
+  Agora agoraEngine;
   int _currentHandNum;
   bool _playerSeatChangeInProgress = false;
   int _seatChangeSeat = 0;
@@ -173,7 +175,7 @@ class GameState {
     this._connectionState = ListenableProvider<ServerConnectionState>(
         create: (_) => ServerConnectionState());
 
-    _communicationState = CommunicationState();
+    _communicationState = CommunicationState(this);
     this._communicationStateProvider = ListenableProvider<CommunicationState>(
         create: (_) => _communicationState);
     this._straddlePromptState = ListenableProvider<StraddlePromptState>(
@@ -188,6 +190,17 @@ class GameState {
         janusSecret: this.gameInfo.janusSecret,
         uuid: this._currentPlayer.uuid,
         playerId: this._currentPlayer.id);
+
+    if (this.gameInfo.useAgora) {
+      this.agoraEngine = Agora(
+          appId: this.gameInfo.agoraAppId,
+          gameCode: this.gameInfo.gameCode,
+          uuid: this._currentPlayer.uuid,
+          state: _communicationState,
+          gameState: this,
+          playerId: this._currentPlayer.id,
+          );
+    }
 
     this._janusEngine =
         ListenableProvider<JanusEngine>(create: (_) => this.janusEngine);
@@ -268,6 +281,12 @@ class GameState {
   void close() {
     if (!this.replayMode) {
       gameHiveStore.close();
+    }
+    if (this.agoraEngine != null) {
+      this.agoraEngine.disposeObject();
+    }
+    if (this.janusEngine != null) {
+      this.janusEngine.disposeObject();
     }
   }
 
@@ -367,6 +386,22 @@ class GameState {
 
   bool get audioConfEnabled {
     return this._gameInfo?.audioConfEnabled;
+  }
+
+  bool get useAgora {
+    return this._gameInfo?.useAgora ?? false;
+  }
+
+  String get agoraAppId {
+    return this._gameInfo?.agoraAppId ?? '';
+  }
+
+  String get agoraToken {
+    return this._gameInfo?.agoraToken ?? '';
+  }
+
+  set agoraToken(String v) {
+    this._gameInfo?.agoraToken = v;
   }
 
   int get currentHandNum => this._currentHandNum;
@@ -531,13 +566,22 @@ class GameState {
   MyState get myState => this._myState;
 
   Seat mySeat(BuildContext context) {
-    final players = getPlayers(context);
-    final me = players.me;
-    if (me == null) {
+    if (context == null) {
+      for(final seat in _seats.values) {
+        if (seat.isMe) {
+          return seat;
+        }
+      }
       return null;
+    } else {
+      final players = getPlayers(context);
+      final me = players.me;
+      if (me == null) {
+        return null;
+      }
+      final seat = getSeat(context, me.seatNo);
+      return seat;
     }
-    final seat = getSeat(context, me.seatNo);
-    return seat;
   }
 
   BoardAttributesObject getBoardAttributes(
@@ -879,6 +923,9 @@ class CommunicationState extends ChangeNotifier {
   bool voiceChatEnable = false;
   bool _muted = false;
   bool _talking = false;
+  final GameState gameState;
+
+  CommunicationState(this.gameState);
 
   AudioConferenceStatus get audioConferenceStatus => _audioConferenceStatus;
 

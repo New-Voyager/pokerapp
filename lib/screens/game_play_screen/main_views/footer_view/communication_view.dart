@@ -13,6 +13,7 @@ import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/game_circle_button.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/voice_text_widget.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:pokerapp/services/data/game_log_store.dart';
 
 //import 'package:pokerapp/services/agora/agora.dart';
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
@@ -60,10 +61,17 @@ class _CommunicationViewState extends State<CommunicationView> {
                             AudioConferenceStatus.CONNECTED ||
                         communicationState.audioConferenceStatus ==
                             AudioConferenceStatus.LEFT)) {
-                  if (gameState.settings.audioConf) {
-                    log('User is playing and audio conference connected, showing janusAudioWidgets');
-                    children.addAll(
-                        janusAudioWidgets(gameState, communicationState));
+                  if (gameState.audioConfEnabled) {
+                    if (gameState.useAgora) {
+                      // debugLog(gameState.gameCode, 'Show agora audio widgets');
+                      // log('Show agora audio widgets');
+                      children.addAll(
+                          agoraAudioWidgets(gameState, communicationState));
+                    } else {
+                      log('User is playing and audio conference connected, showing janusAudioWidgets');
+                      children.addAll(
+                          janusAudioWidgets(gameState, communicationState));
+                    }
                   } else {
                     // when the user turns off audio conf
                     log('User turned off audio conf, showing audioChatWidgets');
@@ -223,6 +231,151 @@ class _CommunicationViewState extends State<CommunicationView> {
         onTap: () async {
           if (state.audioConferenceStatus == AudioConferenceStatus.CONNECTED) {
             gameState.janusEngine.muteUnmute();
+          }
+        },
+        child: Container(
+          padding: EdgeInsets.symmetric(vertical: 4),
+          child: mic,
+        ),
+      ));
+    }
+
+    return widgets;
+  }
+
+
+  agoraAudioWidgets(GameState gameState, CommunicationState state) {
+    Color iconColor = Colors.grey;
+    Widget mic;
+
+    if (state != null) {
+      if (state.audioConferenceStatus == AudioConferenceStatus.CONNECTING) {
+        iconColor = Colors.yellow;
+      } else if (state.audioConferenceStatus ==
+          AudioConferenceStatus.CONNECTED) {
+        iconColor = Colors.green;
+      }
+
+      log('Audio status: ${state.audioConferenceStatus.toString()} iconColor: ${iconColor.toString()} muted: ${state.muted} talking: ${state.talking}');
+
+      if (state?.talking ?? false) {
+        mic = talkingAnimation(() async {
+          log('mic is tapped');
+          if (state.audioConferenceStatus == AudioConferenceStatus.CONNECTED) {
+            if (gameState.agoraEngine.micMuted) {
+              Alerts.showNotification(
+                  titleText: "Conference",
+                  svgPath: 'assets/images/game/conf-on.svg',
+                  subTitleText: 'Mic is unmuted');
+            } else {
+              Alerts.showNotification(
+                  titleText: "Conference",
+                  svgPath: 'assets/images/game/conf-on.svg',
+                  subTitleText: 'Mic is muted');
+            }
+
+            gameState.agoraEngine.switchMicrophone();
+            //Alerts.showNotification(titleText: "AudioConfigChanged from anim");
+          }
+        });
+      }
+    }
+
+    if (mic == null) {
+      Widget child;
+      if (state.muted) {
+        child = SvgPicture.asset('assets/images/game/mic-mute.svg',
+            width: 16, height: 16, color: Colors.black);
+      } else {
+        child = SvgPicture.asset('assets/images/game/mic.svg',
+            width: 16, height: 16, color: Colors.black);
+      }
+      mic = GameCircleButton(
+          onClickHandler: () async {
+            log('mic is tapped');
+            if (state.audioConferenceStatus ==
+                AudioConferenceStatus.CONNECTED) {
+              if (gameState.agoraEngine.micMuted) {
+                Alerts.showNotification(
+                    titleText: "Conference",
+                    svgPath: 'assets/images/game/conf-on.svg',
+                    subTitleText: 'Mic is unmuted');
+              } else {
+                Alerts.showNotification(
+                    titleText: "Conference",
+                    svgPath: 'assets/images/game/conf-on.svg',
+                    subTitleText: 'Mic is muted');
+              }
+              gameState.agoraEngine.switchMicrophone();
+            }
+          },
+          child: child);
+      log('audio is ${state.muted ? "muted" : "on"}: $mic');
+    }
+
+    if (state.audioConferenceStatus == AudioConferenceStatus.LEFT) {
+      Widget child = SvgPicture.asset('assets/images/game/mic-mute.svg',
+          width: 16, height: 16, color: Colors.black);
+
+      mic = GameCircleButton(
+          disabled: true, onClickHandler: () async {}, child: child);
+    }
+    bool confOn = true;
+    final confOnIcon = SvgPicture.asset('assets/images/game/conf-on.svg',
+        width: 16, height: 16, color: Colors.black);
+    final confOffIcon = SvgPicture.asset('assets/images/game/conf-off.svg',
+        width: 16, height: 16, color: Colors.black);
+    Widget child;
+    if (state.audioConferenceStatus == AudioConferenceStatus.CONNECTED) {
+      // child = Stack(children: [
+      //   Align(
+      //       alignment: Alignment.topCenter,
+      //       child: Icon(
+      //         Icons.circle,
+      //         size: 5.pw,
+      //         color: iconColor,
+      //       )),
+      //   confOnIcon
+      // ]);
+      child = confOnIcon;
+    } else {
+      child = confOffIcon;
+      confOn = false;
+    }
+    final confIcon = GameCircleButton(
+        onClickHandler: () async {
+          log('mic is tapped');
+          if (state.audioConferenceStatus == AudioConferenceStatus.CONNECTED) {
+            gameState.agoraEngine.leaveChannel();
+
+            // inform the user that we left the audio conference
+            Alerts.showNotification(
+                titleText: "Conference",
+                svgPath: 'assets/images/game/conf-on.svg',
+                subTitleText: 'You left the audio conference');
+          } else {
+            gameState.agoraEngine.joinChannel(gameState.agoraToken);
+            Alerts.showNotification(
+                titleText: "Conference",
+                svgPath: 'assets/images/game/conf-on.svg',
+                subTitleText: 'You joined the audio conference');
+          }
+        },
+        child: child);
+    List<Widget> widgets = [];
+    widgets.add(GestureDetector(
+      onTap: () async {},
+      child: Container(
+        padding: EdgeInsets.symmetric(vertical: 4),
+        child: confIcon,
+      ),
+    ));
+    if (confOn) {
+      widgets.add(GestureDetector(
+        onTap: () async {
+          if (state.audioConferenceStatus == AudioConferenceStatus.CONNECTED) {
+            gameState.agoraEngine.switchMicrophone();
+            //gameState.janusEngine.muteUnmute();
           }
         },
         child: Container(
