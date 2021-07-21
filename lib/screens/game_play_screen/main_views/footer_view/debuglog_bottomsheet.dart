@@ -3,6 +3,10 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_log_view.dart';
+import 'package:pokerapp/services/data/game_log_store.dart';
+import 'package:pokerapp/utils/adaptive_sizer.dart';
+import 'package:pokerapp/widgets/custom_text_button.dart';
+import 'package:pokerapp/widgets/rounded_accent_button.dart';
 
 import 'debug_view.dart';
 
@@ -35,8 +39,27 @@ class _DebugLogBottomSheetState extends State<DebugLogBottomSheet> {
           Column(
             children: [
               SizedBox(
-                height: 13,
+                height: 40,
               ),
+              Container(
+                  height: 50,
+                  child: Center(
+                      child: Row(
+                    children: [
+                      Text(
+                        'Debug Logs',
+                        style: TextStyle(fontSize: 16.dp),
+                      ),
+                      SizedBox(width: 20.pw),
+                      RoundedAccentButton(
+                        text: 'Clear',
+                        onTapFunction: () {
+                          clearDebugLog(widget.gameCode);
+                          setState(() {});
+                        },
+                      )
+                    ],
+                  ))),
               Expanded(
                 child: DebugLogView(
                   gameCode: widget.gameCode,

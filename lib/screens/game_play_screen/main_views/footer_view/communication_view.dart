@@ -243,7 +243,6 @@ class _CommunicationViewState extends State<CommunicationView> {
     return widgets;
   }
 
-
   agoraAudioWidgets(GameState gameState, CommunicationState state) {
     Color iconColor = Colors.grey;
     Widget mic;

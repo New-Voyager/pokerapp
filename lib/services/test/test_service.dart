@@ -388,7 +388,7 @@ class TestService {
     final seatActionJsonStr = '''
         {
           "seatNo": 1,
-          "availableActions": ["FOLD", "CALL", "BET", "ALLIN"],
+          "availableActions": ["FOLD", "BET", "CALL", "ALLIN"],
           "callAmount": 2,
           "minRaiseAmount": 4,
           "maxRaiseAmount": 30,
@@ -451,8 +451,8 @@ class TestService {
     player.cards = [
       162,
       194,
-      196,
-      200,
+      // 196,
+      // 200,
       // 56,
     ];
     int r = i % 4;

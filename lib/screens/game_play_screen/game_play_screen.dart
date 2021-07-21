@@ -159,7 +159,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         if (_voiceTextPlayer != null) {
           _voiceTextPlayer.resume();
         }
-      } catch(err) {
+      } catch (err) {
         log('Error when resuming audio');
       }
       return;
@@ -168,14 +168,14 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     final player = _gameState.currentPlayer;
     if (_gameState.useAgora) {
       try {
-        debugLog(
-            widget.gameCode, 'agora: Player ${player.name} is joining audio conference');
+        debugLog(widget.gameCode,
+            'agora: Player ${player.name} is joining audio conference');
         log('agora: Player ${player.name} is joining audio conference');
 
         _gameState.agoraEngine.joinChannel(_gameState.agoraToken);
         log('agora: Player ${player.name} has joined audio conference');
-        debugLog(
-            widget.gameCode, 'Player ${player.name} has joined audio conference');
+        debugLog(widget.gameCode,
+            'Player ${player.name} has joined audio conference');
         this._gameState.getCommunicationState().notify();
       } catch (err) {
         debugLog(widget.gameCode,
@@ -184,11 +184,11 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       }
     } else {
       try {
-        debugLog(
-            widget.gameCode, 'Player ${player.name} is joining audio conference');
+        debugLog(widget.gameCode,
+            'Player ${player.name} is joining audio conference');
         _gameState.janusEngine.joinChannel('test');
-        debugLog(
-            widget.gameCode, 'Player ${player.name} has joined audio conference');
+        debugLog(widget.gameCode,
+            'Player ${player.name} has joined audio conference');
       } catch (err) {
         debugLog(widget.gameCode,
             'Player ${player.name} failed to join audio conference. Error: ${err.toString()}');

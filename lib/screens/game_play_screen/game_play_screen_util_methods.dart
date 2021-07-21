@@ -62,6 +62,16 @@ class GamePlayScreenUtilMethods {
             color: Colors.white,
           ),
           backgroundColor: Colors.red,
+          label: 'Show Action View',
+          labelBackgroundColor: Colors.black,
+          onTap: () => TestService.testBetWidget(),
+        ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
           label: 'Show Rank',
           labelBackgroundColor: Colors.black,
           onTap: () => TestService.showRank(),
@@ -317,15 +327,15 @@ class GamePlayScreenUtilMethods {
         //   label: 'set game status inactive',
         //   onTap: () => TestService.setGameStateInActive(),
         // ),
-        // SpeedDialChild(
-        //   child: Icon(
-        //     Icons.adb_rounded,
-        //     color: Colors.white,
-        //   ),
-        //   backgroundColor: Colors.red,
-        //   label: 'Fill center view',
-        //   onTap: () => TestService.fillCenterView(),
-        // ),
+        SpeedDialChild(
+          child: Icon(
+            Icons.adb_rounded,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
+          label: 'Fill center view',
+          onTap: () => TestService.fillCenterView(),
+        ),
         // SpeedDialChild(
         //   child: Icon(
         //     Icons.adb_rounded,
@@ -446,6 +456,7 @@ class GamePlayScreenUtilMethods {
           label: 'Buyin Test',
           onTap: () => TestService.buyInTest(),
         ),
+        */
         SpeedDialChild(
           child: Icon(
             Icons.adb_rounded,
@@ -455,7 +466,6 @@ class GamePlayScreenUtilMethods {
           label: 'Show Bets',
           onTap: () => TestService.testBetWidget(),
         ),
-          */
       ],
       backgroundColor: AppColors.appAccentColor,
     );

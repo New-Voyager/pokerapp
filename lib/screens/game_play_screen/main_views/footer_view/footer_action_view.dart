@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -215,6 +216,7 @@ class _FooterActionViewState extends State<FooterActionView> {
 
   Widget _buildActionWidgets(PlayerAction playerAction) {
     AvailableAction allin;
+    playerAction.sort();
     for (final action in playerAction?.actions) {
       if (action.actionName == ALLIN) {
         allin = action;
@@ -309,23 +311,26 @@ class _FooterActionViewState extends State<FooterActionView> {
     );
   }
 
-  Widget _buildBetWidget(PlayerAction playerAction) => AnimatedSwitcher(
-        duration: AppConstants.fastAnimationDuration,
-        reverseDuration: AppConstants.fastAnimationDuration,
-        transitionBuilder: (child, animation) => ScaleTransition(
-          alignment: Alignment.bottomCenter,
-          scale: animation,
-          child: child,
-        ),
-        child: playerAction?.options == null
-            ? shrinkedBox
-            : _showOptions
-                ? BetWidget(
-                    action: playerAction,
-                    onSubmitCallBack: _betOrRaise,
-                  )
-                : shrinkedBox,
-      );
+  Widget _buildBetWidget(PlayerAction playerAction, int remainingTime) {
+    return AnimatedSwitcher(
+      duration: AppConstants.fastAnimationDuration,
+      reverseDuration: AppConstants.fastAnimationDuration,
+      transitionBuilder: (child, animation) => ScaleTransition(
+        alignment: Alignment.bottomCenter,
+        scale: animation,
+        child: child,
+      ),
+      child: playerAction?.options == null
+          ? shrinkedBox
+          : _showOptions
+              ? BetWidget(
+                  action: playerAction,
+                  onSubmitCallBack: _betOrRaise,
+                  remainingTime: remainingTime,
+                )
+              : shrinkedBox,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -347,7 +352,7 @@ class _FooterActionViewState extends State<FooterActionView> {
             Expanded(
               child: Transform.scale(
                 scale: boardAttributes.footerActionViewScale,
-                child: _buildBetWidget(actionState.action),
+                child: _buildBetWidget(actionState.action, 30),
               ),
             ),
 
@@ -355,7 +360,13 @@ class _FooterActionViewState extends State<FooterActionView> {
             Transform.scale(
               scale: boardAttributes.footerActionViewScale,
               alignment: Alignment.bottomCenter,
-              child: _buildActionWidgets(actionState.action),
+              child: Container(
+                padding: EdgeInsets.symmetric(vertical: 10.0),
+                decoration: new BoxDecoration(
+                  color: Colors.black.withOpacity(0.80),
+                ),
+                child: _buildActionWidgets(actionState.action),
+              ),
             ),
           ],
         ),

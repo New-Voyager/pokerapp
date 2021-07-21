@@ -43,12 +43,14 @@ class HoleStackCardView extends StatelessWidget {
     @required MarkedCards markedCards,
     @required double displacementValue,
     bool isCardVisible = false,
+    bool fanOut = false,
   }) {
     List<Widget> children = List.generate(
       cards.length,
       (i) {
+        debugPrint('fanOut: $fanOut');
         final offsetInX = -(i - mid) * displacementValue;
-        return Transform.translate(
+        final card = Transform.translate(
           offset: Offset(offsetInX, 0),
           child: Builder(
             builder: (context) => PlayerHoleCardView(
@@ -64,6 +66,27 @@ class HoleStackCardView extends StatelessWidget {
             ),
           ),
         );
+        if (fanOut) {
+          double m = cards.length == 2 ? 0.50 : mid.toDouble();
+
+          int ss = context.read<BoardAttributesObject>().screenSize;
+
+          Alignment _getAlignment(int ss) {
+            if (ss <= 7) return Alignment.bottomCenter;
+
+            return Alignment.topCenter;
+          }
+
+          return Transform.rotate(
+            alignment: _getAlignment(ss),
+            // 6 inch: 0.25
+            // 10 inch: 0.10
+            angle: -((i - m) * 0.10),
+            child: card,
+          );
+        } else {
+          return card;
+        }
       },
     );
 
@@ -104,6 +127,31 @@ class HoleStackCardView extends StatelessWidget {
         ),
       );
 
+  Widget _buildFannedCards({
+    @required BuildContext context,
+    @required double xOffset,
+    @required int mid,
+    @required MarkedCards markedCards,
+    @required double displacementValue,
+  }) {
+    return FittedBox(
+      child: Transform.translate(
+        offset: Offset(xOffset, 0.0),
+        child: Stack(
+          alignment: Alignment.center,
+          children: _getChildren(
+            context: context,
+            mid: mid,
+            markedCards: markedCards,
+            displacementValue: displacementValue,
+            isCardVisible: isCardVisible,
+            fanOut: true,
+          ),
+        ),
+      ),
+    );
+  }
+
   double getEvenNoDisplacement(double displacementValue) {
     if (cards.length % 2 == 0) return -displacementValue / 2;
     return 0.0;
@@ -114,6 +162,7 @@ class HoleStackCardView extends StatelessWidget {
     context.read<BoardAttributesObject>().noOfCards = cards?.length ?? 0;
 
     final GameState gameState = GameState.getState(context);
+    final boardAttributes = gameState.getBoardAttributes(context);
 
     final MarkedCards markedCards = gameState.getMarkedCards(
       context,
@@ -123,8 +172,7 @@ class HoleStackCardView extends StatelessWidget {
     if (cards == null || cards.isEmpty) return const SizedBox.shrink();
     int mid = (cards.length ~/ 2);
 
-    final double displacementValue =
-        BoardAttributesObject.holeCardViewDisplacementConstant;
+    final double displacementValue = boardAttributes.holeCardDisplacement;
 
     final double evenNoDisplacement = getEvenNoDisplacement(displacementValue);
 
@@ -147,7 +195,15 @@ class HoleStackCardView extends StatelessWidget {
     );
 
     // if need to show front card, do not procced to build the page curling effect
-    if (isCardVisible) return frontCardsView;
+    if (isCardVisible) {
+      return _buildFannedCards(
+        context: context,
+        xOffset: evenNoDisplacement,
+        mid: mid,
+        markedCards: markedCards,
+        displacementValue: displacementValue,
+      );
+    }
 
     final tcs = _getTotalCardsSize(context, displacementValue);
 
