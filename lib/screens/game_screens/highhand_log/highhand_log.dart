@@ -6,6 +6,7 @@ import 'package:pokerapp/models/game_history_model.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
+import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/game_screens/highhand_log/high_hand_widget.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/screens/game_screens/widgets/highhand_widget.dart';
@@ -15,7 +16,8 @@ import '../../../routes.dart';
 
 class HighHandLogView extends StatefulWidget {
   final String gameCode;
-  HighHandLogView(this.gameCode);
+  final String clubCode;
+  HighHandLogView(this.gameCode, {this.clubCode});
 
   @override
   State<StatefulWidget> createState() {
@@ -49,32 +51,39 @@ class _HighHandLogViewState extends State<HighHandLogView>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.screenBackgroundColor,
-      appBar: CustomAppBar(
-        titleText: AppStringsNew.HighHandlogTitle,
-        subTitleText: "Game code: ${widget.gameCode}",
-        context: context,
-      ),
-      body: Material(
-        type: MaterialType.transparency,
-        child: !loadingDone
-            ? Center(child: CircularProgressIndicator())
-            : Column(
-                children: [
-                  Expanded(
-                    child: ListView.separated(
-                      itemBuilder: (context, index) {
-                        return new HighhandWidget(this.hhWinners[index]);
-                      },
-                      itemCount: hhWinners.length,
-                      separatorBuilder: (context, index) {
-                        return Divider();
-                      },
+    return Container(
+      decoration: AppStylesNew.BgGreenRadialGradient,
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: CustomAppBar(
+          titleText: AppStringsNew.HighHandlogTitle,
+          subTitleText: "Game code: ${widget.gameCode}",
+          context: context,
+        ),
+        body: Material(
+          type: MaterialType.transparency,
+          child: !loadingDone
+              ? Center(child: CircularProgressIndicator())
+              : Column(
+                  children: [
+                    Expanded(
+                      child: ListView.separated(
+                        itemBuilder: (context, index) {
+                          this.hhWinners[index].gameCode = widget.gameCode;
+                          return HighhandWidget(
+                            this.hhWinners[index],
+                            clubCode: widget.clubCode,
+                          );
+                        },
+                        itemCount: hhWinners.length,
+                        separatorBuilder: (context, index) {
+                          return Divider();
+                        },
+                      ),
                     ),
-                  ),
-                ],
-              ),
+                  ],
+                ),
+        ),
       ),
     );
   }

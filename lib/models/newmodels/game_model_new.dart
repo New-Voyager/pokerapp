@@ -14,19 +14,22 @@ class GameModelNew {
   int tableCount;
   int elapsedTime;
   int waitlistCount;
+  String clubCode;
 
-  GameModelNew(
-      {this.gameCode,
-      this.gameType,
-      this.clubName,
-      this.buyInMin,
-      this.buyInMax,
-      this.smallBlind,
-      this.bigBlind,
-      this.maxPlayers,
-      this.tableCount,
-      this.elapsedTime,
-      this.waitlistCount});
+  GameModelNew({
+    this.gameCode,
+    this.gameType,
+    this.clubName,
+    this.buyInMin,
+    this.buyInMax,
+    this.smallBlind,
+    this.bigBlind,
+    this.maxPlayers,
+    this.tableCount,
+    this.elapsedTime,
+    this.waitlistCount,
+    this.clubCode,
+  });
 
   GameModelNew.fromJson(Map<String, dynamic> json) {
     gameCode = json['gameCode'];
@@ -40,6 +43,7 @@ class GameModelNew {
     tableCount = json['tableCount'];
     elapsedTime = json['elapsedTime'];
     waitlistCount = json['waitlistCount'];
+    clubCode = json['clubCode'];
   }
 
   Map<String, dynamic> toJson() {
@@ -55,6 +59,7 @@ class GameModelNew {
     data['elapsedTime'] = this.elapsedTime;
     data['tableCount'] = this.tableCount;
     data['waitlistCount'] = this.waitlistCount;
+    data['clubCode'] = this.clubCode;
 
     return data;
   }

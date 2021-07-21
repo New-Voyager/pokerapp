@@ -12,8 +12,10 @@ import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/routes.dart';
+import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/game_screens/game_history_details_view/stack_chart_view.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
+import 'package:pokerapp/screens/game_screens/widgets/highhand_widget.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/formatter.dart';
@@ -72,7 +74,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
           subTitleText: "Game code: ${_gameDetail.gameCode}",
         ),
         body: !loadingDone
-            ? Center(child: CircularProgressIndicator())
+            ? Center(child: CircularProgressWidget())
             : SingleChildScrollView(
                 child: Column(
                   children: [
@@ -124,7 +126,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
                       margin: EdgeInsets.symmetric(horizontal: 8),
                       child: Row(
                         children: [
-                          Flexible(
+                          Expanded(
                             flex: 3,
                             child: stackTile(),
                           ),
@@ -133,7 +135,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
                           //   child: resultTile(),
                           // ),
                           AppDimensionsNew.getHorizontalSpace(8),
-                          Flexible(
+                          Expanded(
                             flex: 3,
                             child: actionTile(),
                           ),
@@ -142,14 +144,8 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
                     ),
                     seprator,
                     Container(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        children: [
-                          Flexible(
-                            child: highHandTile(),
-                          ),
-                        ],
-                      ),
+                      margin: const EdgeInsets.all(8.0),
+                      child: highHandTile(),
                     ),
                     getLowerCard(),
                   ],
@@ -375,9 +371,11 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
               child: Expanded(
                   flex: 1,
                   child: !_gameDetail.playedGame
-                      ? Text(
-                          "No Data",
-                          style: AppStylesNew.labelTextStyle,
+                      ? Center(
+                          child: Text(
+                            "No Data",
+                            style: AppStylesNew.labelTextStyle,
+                          ),
                         )
                       : StackChartView(_gameDetail.stack, openStackDetails)),
               // PointsLineChart()),
@@ -483,7 +481,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
                             title,
                             style: TextStyle(
                               color: Colors.white,
-                              fontSize: 14.dp,
+                              fontSize: 10.dp,
                             ),
                           ),
                           SizedBox(width: 10.pw),
@@ -491,7 +489,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
                             blind,
                             style: TextStyle(
                               color: Colors.yellow,
-                              fontSize: 14.dp,
+                              fontSize: 10.dp,
                             ),
                           ),
                         ])),
@@ -561,14 +559,27 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
   }
 
   Widget highHandTile() {
-    return Container(
-      decoration: AppStylesNew.greenContainerDecoration,
-      child: Visibility(
-        visible: this._gameDetail != null &&
-            this._gameDetail.hhWinners.length > 0 &&
-            this._gameDetail.hhTracked == true,
-        child: HighhandWinnersView(this._gameDetail),
-      ),
+    return Visibility(
+      visible: this._gameDetail != null &&
+          this._gameDetail.hhWinners.length > 0 &&
+          this._gameDetail.hhTracked == true,
+      child: Container(
+        decoration: AppStylesNew.greenContainerDecoration,
+        margin: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+                padding: EdgeInsets.only(top: 16, left: 16),
+                child: Text(AppStringsNew.highHandWinnersText)),
+            HighhandWidget(
+              this._gameDetail.hhWinners[0],
+              clubCode: widget.clubCode,
+            ),
+          ],
+        ),
+      ), //HighhandWinnersView(this._gameDetail),
     );
   }
 
@@ -591,7 +602,10 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
     Navigator.pushNamed(
       context,
       Routes.high_hand_log,
-      arguments: _gameDetail.gameCode,
+      arguments: {
+        "gameCode": _gameDetail.gameCode,
+        "clubCode": widget.clubCode
+      },
     );
   }
 

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/club_actions.dart';
 import 'package:pokerapp/models/club_homepage_model.dart';
-import 'package:pokerapp/resources/new/app_assets_new.dart';
-import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:provider/provider.dart';
 import 'package:badges/badges.dart';
@@ -42,11 +40,6 @@ class ClubActionButtonNew extends StatelessWidget {
           child: Text(
             _actionName,
             textAlign: TextAlign.center,
-            style: TextStyle(
-              color: AppColorsNew.newTextColor,
-              fontSize: 10.0.dp,
-              fontFamily: AppAssetsNew.fontFamilyPoppins,
-            ),
           ),
         ),
       ],

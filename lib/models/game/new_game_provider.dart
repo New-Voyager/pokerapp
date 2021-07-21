@@ -321,6 +321,13 @@ class NewGameModelProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  get useAgora => settings.useAgora;
+  set useAgora(bool value) {
+    settings.useAgora = value;
+    settings.audioConference = value;
+    notifyListeners();
+  }
+
   get showHandRank => settings.showHandRank;
   set showHandRank(bool value) {
     settings.showHandRank = value;

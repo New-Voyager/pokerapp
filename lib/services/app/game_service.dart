@@ -351,6 +351,7 @@ class GameService {
           elapsedTime
           waitlistCount
           tableCount
+          clubCode
         }
       }
     """;
