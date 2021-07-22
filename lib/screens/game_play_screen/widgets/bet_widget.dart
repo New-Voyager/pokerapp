@@ -3,6 +3,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/player_action.dart';
+import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/option_item_model.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
@@ -59,10 +60,10 @@ class BetWidget extends StatelessWidget {
     );
   }
 
-  Widget betButton() {
+  Widget betButton(final bool isLargerDisplay) {
     return Transform.scale(
       alignment: Alignment.topCenter,
-      scale: 1.5,
+      scale: isLargerDisplay ? 1.8 : 1.5,
       child: Consumer<ValueNotifier<double>>(
         builder: (_, vnBetAmount, __) => _buildBetAmountChild(
           onTap: () => onSubmitCallBack?.call(vnBetAmount.value),
@@ -79,6 +80,10 @@ class BetWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
+
+    final int screenSize = context.read<BoardAttributesObject>().screenSize;
+    final bool isLargerDisplay = screenSize == 9 || screenSize == 10;
+    log('bet_widget : screenSize : $screenSize');
 
     return ListenableProvider<ValueNotifier<double>>(
       create: (_) => ValueNotifier<double>(
@@ -100,21 +105,21 @@ class BetWidget extends StatelessWidget {
                   children: [
                     /* seek slider */
                     Transform.translate(
-                      offset: Offset(0, 40.ph),
+                      offset: Offset(0, isLargerDisplay ? 60.ph : 40.ph),
                       child: sleekSlider(),
                     ),
 
                     /* bet button */
                     Transform.translate(
                       offset: Offset(0.0, -30.0.ph),
-                      child: betButton(),
+                      child: betButton(isLargerDisplay),
                     ),
                   ],
                 ),
 
                 /* (-) button */
                 Transform.translate(
-                  offset: Offset(-80.pw, 0.0),
+                  offset: Offset(-80.pw, isLargerDisplay ? 10.0 : 0.0),
                   child: Container(
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
@@ -122,7 +127,7 @@ class BetWidget extends StatelessWidget {
                     child: IconButton(
                       icon: Icon(
                         Icons.remove_circle_rounded,
-                        size: 24.0.pw,
+                        size: isLargerDisplay ? 14.0.pw : 24.0.pw,
                         color: AppColorsNew.newGreenButtonColor,
                       ),
                       onPressed: () {
@@ -137,7 +142,7 @@ class BetWidget extends StatelessWidget {
 
                 /* (+) button */
                 Transform.translate(
-                  offset: Offset(80.0.pw, 0.0),
+                  offset: Offset(80.0.pw, isLargerDisplay ? 10.0 : 0.0),
                   child: Container(
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
@@ -145,7 +150,7 @@ class BetWidget extends StatelessWidget {
                     child: IconButton(
                       icon: Icon(
                         Icons.add_circle_rounded,
-                        size: 24.0.pw,
+                        size: isLargerDisplay ? 14.0.pw : 24.0.pw,
                         color: AppColorsNew.newGreenButtonColor,
                       ),
                       onPressed: () {
@@ -163,13 +168,17 @@ class BetWidget extends StatelessWidget {
             /* button row for other bet options */
             Align(
               alignment: Alignment.center,
-              child: Transform.translate(
-                offset: const Offset(0.0, 64.0),
-                child: Container(
-                  alignment: Alignment.center,
-                  width: width / 1.5,
-                  height: 65.ph,
-                  child: betAmountList(valueNotifierVal),
+              child: Transform.scale(
+                alignment: Alignment.topCenter,
+                scale: isLargerDisplay ? 1.2 : 1.0,
+                child: Transform.translate(
+                  offset: const Offset(0.0, 64.0),
+                  child: Container(
+                    alignment: Alignment.center,
+                    width: width / 1.5,
+                    height: 65.ph,
+                    child: betAmountList(valueNotifierVal),
+                  ),
                 ),
               ),
             )
