@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/main.dart';
+import 'package:pokerapp/models/auth_model.dart';
 import 'package:pokerapp/resources/app_config.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/routes.dart';
@@ -36,6 +37,18 @@ class _SplashScreenState extends State<SplashScreen> {
         if (resp['status']) {
           // successfully logged in
           AppConfig.jwt = resp['jwt'];
+          // save device id, device secret and jwt
+          AuthModel currentUser = AuthModel(
+              deviceID: AppConfig.deviceId,
+              deviceSecret: AppConfig.deviceSecret,
+              name: resp['name'],
+              uuid: resp['uuid'],
+              playerId: resp['id'],
+              jwt: resp['jwt']);
+          await AuthService.save(currentUser);
+          AppConfig.jwt = resp['jwt'];
+          await graphQLConfiguration.init();
+
         } else {
           _moveToLoginScreen();
           return;

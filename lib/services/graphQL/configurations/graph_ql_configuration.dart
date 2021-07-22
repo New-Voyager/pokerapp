@@ -2,16 +2,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:pokerapp/resources/app_apis.dart';
 import 'package:pokerapp/resources/app_config.dart';
-import 'package:pokerapp/resources/app_constants.dart';
-import 'package:pokerapp/services/app/auth_service.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class GraphQLConfiguration {
   String apiURL;
 
   Future<void> init() async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    String apiUrl = sharedPreferences.getString(AppConstants.API_SERVER_URL);
+    String apiUrl = AppConfig.apiUrl;
     this.apiURL = '$apiUrl/graphql';
     print(apiURL);
   }

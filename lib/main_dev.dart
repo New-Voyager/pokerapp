@@ -10,15 +10,11 @@ import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/flavor_config.dart';
 import 'package:pokerapp/models/pending_approvals.dart';
 import 'package:pokerapp/resources/app_config.dart';
-import 'package:pokerapp/resources/app_host_urls.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
-import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/services/data/hive_datasource_impl.dart';
-import 'package:pokerapp/services/graphQL/configurations/graph_ql_configuration.dart';
 import 'package:pokerapp/services/nats/nats.dart';
 import 'package:provider/provider.dart';
-import 'package:pokerapp/utils/utils.dart';
 import 'package:sizer/sizer.dart';
 import 'main.dart';
 
@@ -48,13 +44,19 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   // Create the initialization Future outside of `build`:
-  final Future<FirebaseApp> _initialization = Firebase.initializeApp();
+  Future<FirebaseApp> _initialization(BuildContext context) async {
+    final apiUrl = FlavorConfig.of(context).apiBaseUrl;
+    await AppConfig.init(apiUrl);
+    log('Api server url: ${AppConfig.apiUrl}');
+    final app = Firebase.initializeApp();
+    return app;
+  }
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
       // Initialize FlutterFire:
-      future: _initialization,
+      future: _initialization(context),
       builder: (context, snapshot) {
         // Check for errors
         if (snapshot.hasError) {
@@ -65,8 +67,6 @@ class MyApp extends StatelessWidget {
         // Once complete, show your application
         if (snapshot.connectionState == ConnectionState.done) {
           //this.nats = Nats(context);
-          final apiUrl = FlavorConfig.of(context).apiBaseUrl;
-          AppConfig.init(apiUrl);
           print('Firebase initialized successfully');
           return MultiProvider(
             /* PUT INDEPENDENT PROVIDERS HERE */

@@ -11,14 +11,14 @@ class AppConfig {
 
   static SharedPreferences sharedPreferences;
 
-  static void init(String defaultUrl) async {
+  static Future<void> init(String defaultUrl) async {
     sharedPreferences = await SharedPreferences.getInstance();
     String apiServer = sharedPreferences.getString(AppConstants.API_SERVER_URL);
     if (apiServer == null) {
       apiServer = defaultUrl;
     }
 
-    if (!apiServer.contains('https://')) {
+    if (!apiServer.contains('https://') && !apiServer.contains('http://')) {
       apiServer = 'http://$apiServer:9501';
     }
     _apiUrl = apiServer;
@@ -36,7 +36,7 @@ class AppConfig {
   }) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
 
-    if (!apiServer.contains('https://')) {
+    if (!apiServer.contains('https://') && !apiServer.contains('http://')) {
       apiServer = 'http://$apiServer:9501';
     }
 

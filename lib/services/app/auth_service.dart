@@ -4,12 +4,9 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/auth_model.dart';
 import 'package:pokerapp/resources/app_config.dart';
 import 'package:pokerapp/resources/app_constants.dart';
-import 'package:pokerapp/resources/app_host_urls.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService {
@@ -85,10 +82,10 @@ class AuthService {
     String body =
         jsonEncode({"device-id": deviceId, "device-secret": deviceSecret});
 
-    String apiServerUrl = AppHostUrls.apiUrl;
+    String apiServerUrl = AppConfig.apiUrl;
 
     final response = await http.post(
-      '$apiServerUrl/auth/newlogin',
+      '$apiServerUrl/auth/new-login',
       headers: header,
       body: body,
     );
@@ -101,8 +98,8 @@ class AuthService {
         'error': respBody['errors'][0],
       };
     }
-    String jwt = respBody['jwt'];
-    return {'status': true, 'jwt': jwt};
+    respBody['status'] = true;
+    return respBody;
   }
 
   /// This function signs up a new player to the system
@@ -164,7 +161,7 @@ class AuthService {
     };
 
     String body = jsonEncode(payload);
-    String apiServerUrl = AppHostUrls.apiUrl;
+    String apiServerUrl = AppConfig.apiUrl;
 
     final response = await http.post(
       '$apiServerUrl/auth/recovery-code',
@@ -204,7 +201,7 @@ class AuthService {
     };
 
     String body = jsonEncode(payload);
-    String apiServerUrl = AppHostUrls.apiUrl;
+    String apiServerUrl = AppConfig.apiUrl;
 
     final response = await http.post(
       '$apiServerUrl/auth/login-recovery-code',
