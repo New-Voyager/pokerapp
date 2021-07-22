@@ -74,90 +74,6 @@ class BetWidget extends StatelessWidget {
         ),
       ),
     );
-
-    // return ElevatedButton(
-    //   onPressed: () {},
-    //   child: Consumer<ValueNotifier<double>>(
-    //     builder: (_, vnBetAmount, __) => Text(
-    //       'Bet\n${DataFormatter.chipsFormat(
-    //         vnBetAmount.value,
-    //       )}',
-    //       textAlign: TextAlign.center,
-    //       style: TextStyle(
-    //         fontSize: 10.dp,
-    //         fontWeight: FontWeight.bold,
-    //         color: Colors.black,
-    //       ),
-    //     ),
-    //   ),
-    //   style: ElevatedButton.styleFrom(
-    //     elevation: 10.0,
-    //     primary: AppColorsNew.gameOptionColor,
-    //     shadowColor: AppColorsNew.gameOptionColor,
-    //     shape: CircleBorder(),
-    //     padding: EdgeInsets.all(10),
-    //   ),
-    // );
-
-    // return Container(
-    //   width: 40.pw,
-    //   height: 40.pw,
-    //   //decoration: BoxDecoration(color: Colors.red, shape: BoxShape.circle),
-    //   decoration: BoxDecoration(
-    //     //color: Colors.red,
-    //     border: Border.all(
-    //       color: AppColorsNew.newSelectedGreenColor,
-    //       width: 2.pw,
-    //     ),
-    //     color: AppColorsNew.newGreenRadialStopColor,
-    //     shape: BoxShape.circle,
-    //   ),
-    //   child: Stack(
-    //     alignment: Alignment.center,
-    //     children: [
-    //       // Countdown(
-    //       //     seconds: remainingTime,
-    //       //     onFinished: () {},
-    //       //     build: (_, time) {
-    //       //       double value = time / remainingTime;
-    //       //       return  CircularProgressIndicator(
-    //       //         strokeWidth: 2.pw,
-    //       //           value: value,
-    //       //           color: AppColorsNew.newBorderColor,
-    //       //       );
-    //       //     }),
-    //       CircularProgressIndicator(
-    //         strokeWidth: 2.pw,
-    //         color: AppColorsNew.newBorderColor,
-    //       ),
-
-    //       Column(
-    //         crossAxisAlignment: CrossAxisAlignment.center,
-    //         mainAxisAlignment: MainAxisAlignment.center,
-    //         children: [
-    //           Text(
-    //             DataFormatter.chipsFormat(
-    //               // vnVal.value,
-    //               12,
-    //             ),
-    //             style: TextStyle(
-    //               fontSize: 10.dp,
-    //               color: Colors.white,
-    //             ),
-    //           ),
-    //           //  SizedBox(height: 5),
-    //           Text(
-    //             "BET",
-    //             style: TextStyle(
-    //               fontSize: 10.dp,
-    //               color: Colors.white,
-    //             ),
-    //           )
-    //         ],
-    //       ),
-    //     ],
-    //   ),
-    // );
   }
 
   @override
@@ -206,7 +122,7 @@ class BetWidget extends StatelessWidget {
                     child: IconButton(
                       icon: Icon(
                         Icons.remove_circle_rounded,
-                        size: 28.0.pw,
+                        size: 24.0.pw,
                         color: AppColorsNew.newGreenButtonColor,
                       ),
                       onPressed: () {
@@ -229,7 +145,7 @@ class BetWidget extends StatelessWidget {
                     child: IconButton(
                       icon: Icon(
                         Icons.add_circle_rounded,
-                        size: 28.0.pw,
+                        size: 24.0.pw,
                         color: AppColorsNew.newGreenButtonColor,
                       ),
                       onPressed: () {

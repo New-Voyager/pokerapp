@@ -313,8 +313,8 @@ class _FooterActionViewState extends State<FooterActionView> {
 
   Widget _buildBetWidget(PlayerAction playerAction, int remainingTime) {
     return AnimatedSwitcher(
-      duration: AppConstants.fastAnimationDuration,
-      reverseDuration: AppConstants.fastAnimationDuration,
+      duration: AppConstants.fastestAnimationDuration,
+      reverseDuration: AppConstants.fastestAnimationDuration,
       transitionBuilder: (child, animation) => ScaleTransition(
         alignment: Alignment.bottomCenter,
         scale: animation,
