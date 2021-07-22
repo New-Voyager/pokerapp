@@ -37,6 +37,53 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
   TapGestureRecognizer _termsClick = TapGestureRecognizer();
   TapGestureRecognizer _privacyClick = TapGestureRecognizer();
 
+  Widget _buildTextFormField({
+    TextInputType keyboardType,
+    @required TextEditingController controller,
+    @required void validator(String _),
+    @required String hintText,
+    @required void onInfoIconPress(),
+  }) {
+    return TextFormField(
+      keyboardType: keyboardType,
+      controller: controller,
+      validator: validator,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
+      decoration: InputDecoration(
+        hintText: hintText,
+        hintStyle: TextStyle(
+          fontSize: 13.0,
+          color: Colors.white30,
+        ),
+        contentPadding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+        focusedBorder: AppStylesNew.focusBorderStyle,
+        prefixIcon: Container(
+          margin: EdgeInsets.symmetric(horizontal: 16),
+          child: Image.asset(
+            AppAssetsNew.pathGameTypeChipImage,
+            height: 16,
+            width: 16,
+          ),
+        ),
+        suffixIcon: IconButton(
+          icon: Icon(
+            Icons.info,
+            color: AppColorsNew.labelColor,
+          ),
+          onPressed: onInfoIconPress,
+        ),
+        errorBorder: AppStylesNew.errorBorderStyle,
+        labelText: AppStringsNew.screenNameLabelText,
+        labelStyle: AppStylesNew.labelTextFieldStyle,
+        floatingLabelBehavior: FloatingLabelBehavior.always,
+        filled: true,
+        fillColor: AppColorsNew.actionRowBgColor,
+        alignLabelWithHint: true,
+        border: AppStylesNew.borderStyle,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -114,8 +161,9 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
                     key: _formKey,
                     child: Column(
                       children: [
-                        // Screen Name
-                        TextFormField(
+                        // screen name
+                        _buildTextFormField(
+                          keyboardType: TextInputType.name,
                           controller: _screenNameCtrl,
                           validator: (value) {
                             if (value.isEmpty) {
@@ -126,49 +174,21 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
                             }
                             return null;
                           },
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                          decoration: InputDecoration(
-                            contentPadding: EdgeInsets.symmetric(
-                                vertical: 16, horizontal: 16),
-                            focusedBorder: AppStylesNew.focusBorderStyle,
-                            prefixIcon: Container(
-                              margin: EdgeInsets.symmetric(horizontal: 16),
-                              child: Image.asset(
-                                AppAssetsNew.pathGameTypeChipImage,
-                                height: 16,
-                                width: 16,
-                              ),
-                            ),
-                            suffixIcon: IconButton(
-                              icon: Icon(
-                                Icons.info,
-                                color: AppColorsNew.labelColor,
-                              ),
-                              onPressed: () {
-                                toast(
-                                  AppStringsNew.screenNameHintToast,
-                                  duration: Duration(seconds: 3),
-                                );
-                              },
-                            ),
-                            // hintText: "Screen Name",
-                            // hintStyle: TextStyle(
-                            //   color: Colors.,
-                            // ),
-                            errorBorder: AppStylesNew.errorBorderStyle,
-                            labelText: AppStringsNew.screenNameLabelText,
-                            labelStyle: AppStylesNew.labelTextFieldStyle,
-                            floatingLabelBehavior: FloatingLabelBehavior.always,
-                            filled: true,
-                            fillColor: AppColorsNew.actionRowBgColor,
-                            alignLabelWithHint: true,
-                            border: AppStylesNew.borderStyle,
-                          ),
+                          hintText: 'Required',
+                          onInfoIconPress: () {
+                            toast(
+                              AppStringsNew.screenNameHintToast,
+                              duration: Duration(seconds: 3),
+                            );
+                          },
                         ),
+
+                        // sep
                         AppDimensionsNew.getVerticalSizedBox(16),
 
-                        // Name
-                        TextFormField(
+                        // name
+                        _buildTextFormField(
+                          keyboardType: TextInputType.name,
                           controller: _nameCtrl,
                           validator: (value) {
                             if (value.length > 30) {
@@ -176,47 +196,20 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
                             }
                             return null;
                           },
-                          decoration: InputDecoration(
-                            contentPadding: EdgeInsets.symmetric(
-                              vertical: 16,
-                              horizontal: 16,
-                            ),
-                            focusedBorder: AppStylesNew.focusBorderStyle,
-                            labelStyle: AppStylesNew.labelTextFieldStyle,
-                            floatingLabelBehavior: FloatingLabelBehavior.always,
-                            prefixIcon: Container(
-                              margin: EdgeInsets.symmetric(horizontal: 16),
-                              child: Image.asset(
-                                AppAssetsNew.pathGameTypeChipImage,
-                                height: 16,
-                                width: 16,
-                              ),
-                            ),
-                            suffixIcon: IconButton(
-                              icon: Icon(
-                                Icons.info,
-                                color: AppColorsNew.labelColor,
-                              ),
-                              onPressed: () {
-                                toast(
-                                  AppStringsNew.displayNameHintToast,
-                                  duration: Duration(seconds: 4),
-                                );
-                              },
-                            ),
-                            errorBorder: AppStylesNew.errorBorderStyle,
-                            //hintText: "Your Name (optional)",
-                            labelText: AppStringsNew.displayNameLabelText,
-                            filled: true,
-                            fillColor: AppColorsNew.actionRowBgColor,
-                            alignLabelWithHint: true,
-                            border: AppStylesNew.borderStyle,
-                          ),
+                          hintText: 'Optional',
+                          onInfoIconPress: () {
+                            toast(
+                              AppStringsNew.displayNameHintToast,
+                              duration: Duration(seconds: 4),
+                            );
+                          },
                         ),
+
+                        // sep
                         AppDimensionsNew.getVerticalSizedBox(16),
 
                         // Recover Email
-                        TextFormField(
+                        _buildTextFormField(
                           keyboardType: TextInputType.emailAddress,
                           controller: _emailCtrl,
                           validator: (value) {
@@ -232,46 +225,16 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
                             }
                             return null;
                           },
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                          decoration: InputDecoration(
-                            contentPadding: EdgeInsets.symmetric(
-                                vertical: 16, horizontal: 16),
-                            focusedBorder: AppStylesNew.focusBorderStyle,
-
-                            floatingLabelBehavior: FloatingLabelBehavior.always,
-                            prefixIcon: Container(
-                              margin: EdgeInsets.symmetric(horizontal: 16),
-                              child: Image.asset(
-                                AppAssetsNew.pathGameTypeChipImage,
-                                height: 16,
-                                width: 16,
-                              ),
-                            ),
-                            suffixIcon: IconButton(
-                              icon: Icon(
-                                Icons.info,
-                                color: AppColorsNew.labelColor,
-                              ),
-                              onPressed: () {
-                                toast(
-                                  AppStringsNew.emailHintToast,
-                                  duration: Duration(seconds: 5),
-                                );
-                              },
-                            ),
-                            errorBorder: AppStylesNew.errorBorderStyle,
-                            // hintText: "Recovery email (optional)",
-                            // hintStyle: TextStyle(
-                            //   color: AppColorsNew.labelColor,
-                            // ),
-                            labelText: AppStringsNew.emailLabelText,
-                            labelStyle: AppStylesNew.labelTextFieldStyle,
-                            filled: true,
-                            fillColor: AppColorsNew.actionRowBgColor,
-                            alignLabelWithHint: true,
-                            border: AppStylesNew.borderStyle,
-                          ),
+                          hintText: 'Optional',
+                          onInfoIconPress: () {
+                            toast(
+                              AppStringsNew.emailHintToast,
+                              duration: Duration(seconds: 5),
+                            );
+                          },
                         ),
+
+                        // sep
                         AppDimensionsNew.getVerticalSizedBox(16),
 
                         // Terms and privacy text
