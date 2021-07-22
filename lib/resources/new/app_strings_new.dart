@@ -176,4 +176,21 @@ class AppStringsNew {
   static String fetchLiveGamesText = "Fetching Live games...";
 
   static String highHandWinnersText = "High hand winners";
+  static String screenNameEmptyErrorText = "Screen name is mandatory";
+  static String screenNameLengthErrorText =
+      "Screen name should be less than 20 letters";
+  static String emailInvalidText = "Screen name should be less than 20 letters";
+  static String screenNameHintToast =
+      "Screen name: The name used in the poker table";
+  static String screenNameLabelText = "Screen Name";
+  static String displayNameLabelText = "Your Name";
+  static String emailLabelText = "Recovery email";
+
+  static String emailHintToast =                                   "Recovery email : To recover this poker game account in case of loss of this device or transfer to a new device";
+  static String displayNameLengthErrorText =
+      "Display name should be less than 30 letters";
+  static String displayNameHintToast =
+      "Your name: The name that is recognizable by your group/club and the club host";
+
+  static String signupButtonText = "SIGN UP";
 }
