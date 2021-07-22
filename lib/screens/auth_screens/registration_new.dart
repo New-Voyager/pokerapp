@@ -16,6 +16,7 @@ import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
 import 'package:pokerapp/widgets/appname_logo.dart';
+import 'package:pokerapp/widgets/custom_text_button.dart';
 import 'package:pokerapp/widgets/round_color_button.dart';
 import 'package:pokerapp/widgets/text_input_widget.dart';
 
@@ -268,8 +269,24 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
                           textColor: AppColorsNew.darkGreenShadeColor,
                           onTapFunction: () => _handleSignUpClick(),
                         ),
-                        AppDimensionsNew.getVerticalSizedBox(24),
                       ],
+                    ),
+                  ),
+                ),
+
+                InkWell(
+                  onTap: () {
+                    Navigator.of(context).pushNamed(Routes.restore_account);
+                  },
+                  child: Container(
+                    alignment: Alignment.center,
+                    padding: EdgeInsets.all(16),
+                    child: Text(
+                      AppStringsNew.restoreAccountText,
+                      style: TextStyle(
+                        decoration: TextDecoration.underline,
+                        color: AppColorsNew.yellowAccentColor,
+                      ),
                     ),
                   ),
                 ),
@@ -290,10 +307,13 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
   }
 
   _handleSignUpClick() async {
+    FocusScope.of(context).unfocus();
+
     if (_formKey.currentState.validate()) {
       log("Form is correct");
       // Make API call for registration
-      ConnectionDialog.show(context: context, loadingText: "Registering...");
+      ConnectionDialog.show(
+          context: context, loadingText: AppStringsNew.loadingTextRegister);
       bool status = await AuthService.register(
         AuthModel(
           authType: AuthType.Guest,
@@ -303,7 +323,8 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
       ConnectionDialog.dismiss(context: context);
 
       if (status) {
-        Alerts.showNotification(titleText: 'Registration Success!');
+        Alerts.showNotification(
+            titleText: AppStringsNew.registrationSuccessText);
 
         // Navigate to main screen
         Navigator.pushNamedAndRemoveUntil(
@@ -312,7 +333,7 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
           (_) => false,
         );
       } else
-        Alerts.showNotification(titleText: 'Registration Failed!');
+        Alerts.showNotification(titleText: AppStringsNew.registrationFailText);
     }
   }
 }

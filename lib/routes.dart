@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:pokerapp/screens/auth_screens/recover_account.dart';
 import 'package:pokerapp/screens/auth_screens/registration_new.dart';
 import 'package:pokerapp/screens/club_screen/announcements_view.dart';
 import 'package:pokerapp/screens/club_screen/bookmarked_hands.dart';
@@ -32,6 +33,8 @@ class Routes {
   static const String login = '/login';
   // RegistrationScreen
   static const String registration = '/registration';
+// Restore account
+  static const String restore_account = "/restore_account";
   // MainScreen
   static const String main = '/main';
   // GamePlayScreen
@@ -119,6 +122,12 @@ class Routes {
         return _getPageRoute(
           routeName: settings.name,
           viewToShow: RegistrationScreenNew(),
+        );
+
+      case restore_account:
+        return _getPageRoute(
+          routeName: settings.name,
+          viewToShow: RestoreAccountScreen(),
         );
 
       case main:
