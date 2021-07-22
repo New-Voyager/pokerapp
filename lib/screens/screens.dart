@@ -4,9 +4,6 @@ export 'main_screens/main_screen.dart';
 
 export 'main_screens/clubs_page_view/clubs_page_view.dart';
 
-export 'auth_screens/login_screen.dart';
-export 'auth_screens/registration_screen.dart';
-
 export 'game_play_screen/game_play_screen.dart';
 
 export 'club_screen/messages_page_view/messages_page_view.dart';

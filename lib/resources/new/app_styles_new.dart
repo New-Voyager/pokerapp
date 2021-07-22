@@ -343,4 +343,27 @@ class AppStylesNew {
           blurRadius: 20,
         ),
       ]);
+
+  static final labelTextFieldStyle = TextStyle(
+    color: AppColorsNew.yellowAccentColor,
+  );
+  static final focusBorderStyle = OutlineInputBorder(
+    borderRadius: BorderRadius.circular(32),
+    borderSide: BorderSide(
+      color: AppColorsNew.newBorderColor,
+    ),
+  );
+  static final errorBorderStyle = OutlineInputBorder(
+    borderRadius: BorderRadius.circular(32),
+    borderSide: BorderSide(
+      color: AppColorsNew.newRedButtonColor,
+    ),
+  );
+
+  static final borderStyle = OutlineInputBorder(
+    borderRadius: BorderRadius.circular(32),
+    borderSide: BorderSide(
+      color: AppColorsNew.actionRowBgColor,
+    ),
+  );
 }

@@ -1,13 +1,11 @@
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:flutter_udid/flutter_udid.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:pokerapp/enums/auth_type.dart';
-import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/auth_model.dart';
+import 'package:pokerapp/resources/app_config.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -16,6 +14,7 @@ class AuthService {
 
   static final String _prefKey = 'auth_service_pref_key';
   static String playerUuid;
+  static AuthModel _user;
 
   static String createPlayerQuery = """
   mutation (\$name: String!, \$email: String, \$deviceID: String, \$password: String) {
@@ -29,172 +28,210 @@ class AuthService {
 
   /* private methods */
 
-  static Future<bool> _save(AuthModel authModel) async {
+  static save(AuthModel currentUser) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    return sharedPreferences.setString(_prefKey, authModel.toJson());
+    sharedPreferences.setString(AppConstants.DEVICE_ID, currentUser.deviceID);
+    sharedPreferences.setString(
+        AppConstants.DEVICE_SECRET, currentUser.deviceSecret);
+    _user = currentUser;
   }
 
-  static Future<bool> _remove() async {
+  static _remove() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    return sharedPreferences.remove(_prefKey);
+    sharedPreferences.remove(AppConstants.DEVICE_ID);
+    sharedPreferences.remove(AppConstants.DEVICE_SECRET);
+  }
+
+  static logout() async {
+    _user = null;
+    await _remove();
   }
 
   static Future<AuthModel> get() async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    String jsonData = sharedPreferences.get(_prefKey);
+    return _user;
+  }
 
-    return jsonData == null ? null : AuthModel.fromJson(jsonDecode(jsonData));
+  static void setUser(AuthModel user) async {
+    _user = user;
   }
 
   /* methods exposed */
 
   /* get player ID from the JWT */
   static Future<String> getPlayerID() async {
-    String jwt = await getJwt();
-    String tmp = jwt.split('.')[1];
-    var data = jsonDecode(utf8.decode(base64.decode(base64.normalize(tmp))));
-    return data['id'].toString();
+    return _user.uuid;
   }
 
   /* method that returns back the uuid */
-  static String getUuid() => playerUuid;
+  static String getUuid() => _user.uuid;
 
-  static Future<String> getJwt() async => (await get())?.jwt;
+  static getJwt() => _user.jwt;
 
-  /* method that deletes the stored user contents and logs out */
-  static Future<bool> logout() async => _remove();
-
-  /* method that talks to the graphQL server to get back a user (or create a new) */
-  static Future<bool> register(AuthModel authModel) async {
-    GraphQLClient _client =
-        graphQLConfiguration.clientToQuery(noAuthLink: true);
-
-    if (authModel.authType == AuthType.Email)
-      authModel.deviceID = null;
-    else if (authModel.authType == AuthType.Guest) {
-      authModel.email = null;
-      authModel.deviceID = await FlutterUdid.udid;
-    } else {
-      return false;
-    }
-
-    String _query = createPlayerQuery;
-    Map<String, dynamic> variables = {
-      "name": authModel.name,
-      "email": authModel.email,
-      "password": authModel.password,
-      "deviceID": authModel.deviceID,
-    };
-
-    QueryResult result = await _client.mutate(
-      MutationOptions(documentNode: gql(_query), variables: variables),
-    );
-
-    if (result.hasException) {
-      print('auth_service: register: ${result.exception}');
-      return false;
-    }
-
-    authModel.uuid = (result.data as LazyCacheMap).data['createPlayer'];
-    playerUuid = authModel.uuid;
-
-    /* after account is created, login with the login API */
-
-    Map<String, dynamic> res = await login(authModel);
-
-    return res['status'];
+  static Future<String> fetchUUID() async {
+    return _user.uuid;
   }
 
-  static Future<Map<String, dynamic>> login(AuthModel authModel) async {
+  /// This function logs in the user with device id and device secret to generate JWT
+  /// If the JWT expires, we need to generate a new JWT.
+  /// When the user opens the app everytime, we will generate a new JWT.
+  static Future<Map<String, dynamic>> newlogin(
+      String deviceId, String deviceSecret) async {
     Map<String, String> header = {
       'Content-type': 'application/json',
     };
+    String body =
+        jsonEncode({"device-id": deviceId, "device-secret": deviceSecret});
 
-    String body;
+    String apiServerUrl = AppConfig.apiUrl;
 
-    if (authModel.authType == null || authModel.authType == AuthType.Email) {
-      /* in case if authType is null or Email */
-
-      if (authModel.email == null || authModel.email.isEmpty)
-        return {
-          'status': false,
-          'message': "Email can't be empty",
-        };
-      if (authModel.password == null || authModel.password.isEmpty)
-        return {
-          'status': false,
-          'message': "Password can't be empty",
-        };
-
-      body = jsonEncode({
-        'email': authModel.email,
-        'password': authModel.password,
-      });
-    } else if (authModel.authType == AuthType.Guest) {
-      /* only if the authType is Guest */
-      body = jsonEncode({
-        'device-id': authModel.deviceID,
-        'uuid': authModel.uuid,
-      });
-    } else if (authModel.authType == AuthType.Name) {
-      // FIXME: THIS IS A TEMP AND DEBUG REQUIREMENT
-      body = jsonEncode({
-        'name': authModel.name,
-      });
-    }
-
-    assert(body != null);
-
-    String apiServerUrl = (await SharedPreferences.getInstance())
-        .getString(AppConstants.API_SERVER_URL);
-
-    http.Response response = await http.post(
-      '$apiServerUrl/auth/login',
+    final response = await http.post(
+      '$apiServerUrl/auth/new-login',
       headers: header,
       body: body,
     );
 
     String resBody = response.body;
-
-    if (response.statusCode != 200)
+    final respBody = jsonDecode(resBody);
+    if (response.statusCode != 200) {
       return {
         'status': false,
-        'message': jsonDecode(resBody)['errors'][0],
+        'error': respBody['errors'][0],
       };
-
-    String jwt = jsonDecode(resBody)['jwt'];
-
-    authModel.jwt = jwt;
-    authModel.password = null;
-
-    /* IF THE PLAYER UUID IS UNKNOWN, USE THE MY INFO API TO FETCH IT */
-    if (authModel.uuid == null) {
-      await _save(authModel); // this is done to save the JWT first
-      authModel.uuid = await fetchUUID();
     }
-    playerUuid = authModel.uuid;
+    respBody['status'] = true;
+    return respBody;
+  }
 
-    log("PLAYER UUID : $playerUuid");
+  /// This function signs up a new player to the system
+  /// Returns a device secret (used for login) and jwt
+  static Future<Map<String, dynamic>> signup(
+      {@required String deviceId,
+      @required String screenName,
+      String recoveryEmail,
+      String displayName}) async {
+    Map<String, String> header = {
+      'Content-type': 'application/json',
+    };
 
+    Map<String, String> payload = {
+      "device-id": deviceId,
+      "screen-name": screenName,
+    };
+    if (recoveryEmail != null) {
+      payload["recovery-email"] = recoveryEmail;
+    }
+
+    if (displayName != null) {
+      payload["display-name"] = displayName;
+    }
+    String body = jsonEncode(payload);
+
+    String apiServerUrl = AppConfig.apiUrl;
+
+    final response = await http.post(
+      '$apiServerUrl/auth/signup',
+      headers: header,
+      body: body,
+    );
+
+    String resBody = response.body;
+    final respBody = jsonDecode(resBody);
+    if (response.statusCode != 200) {
+      return {
+        'status': false,
+        'error': respBody['errors'][0],
+      };
+    }
+
+    String jwt = respBody['jwt'];
+    String deviceSecret = respBody['device-secret'];
+    return {'status': true, 'jwt': jwt, "deviceSecret": deviceSecret};
+  }
+
+  /// This function signs up a new player to the system
+  /// Returns a device secret (used for login) and jwt
+  static Future<Map<String, dynamic>> sendRecoveryCode(
+      String recoveryEmail) async {
+    Map<String, String> header = {
+      'Content-type': 'application/json',
+    };
+
+    Map<String, String> payload = {
+      "recovery-email": recoveryEmail,
+    };
+
+    String body = jsonEncode(payload);
+    String apiServerUrl = AppConfig.apiUrl;
+
+    final response = await http.post(
+      '$apiServerUrl/auth/recovery-code',
+      headers: header,
+      body: body,
+    );
+
+    String resBody = response.body;
+    final respBody = jsonDecode(resBody);
+    if (response.statusCode != 200) {
+      String message = 'Failed to send recovery code';
+      if (respBody['error']) {
+        message = respBody['error'];
+      }
+      return {
+        'status': false,
+        'error': message,
+      };
+    }
     return {
-      'status': await _save(authModel),
+      'status': true,
     };
   }
 
-  static Future<String> fetchUUID() async {
-    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+  /// This function signs up a new player to the system
+  /// Returns a device secret (used for login) and jwt
+  static Future<Map<String, dynamic>> loginUsingRecoveryCode(
+      String deviceId, String recoveryEmail, String code) async {
+    Map<String, String> header = {
+      'Content-type': 'application/json',
+    };
 
-    String _query = """query{
-      myInfo{
-        uuid
-      }
-    }
-    """;
+    Map<String, String> payload = {
+      "recovery-email": recoveryEmail,
+      "code": code,
+      "device-id": deviceId,
+    };
 
-    QueryResult result = await _client.query(
-      QueryOptions(documentNode: gql(_query)),
+    String body = jsonEncode(payload);
+    String apiServerUrl = AppConfig.apiUrl;
+
+    final response = await http.post(
+      '$apiServerUrl/auth/login-recovery-code',
+      headers: header,
+      body: body,
     );
 
-    return result.hasException ? null : result.data['myInfo']['uuid'];
+    String resBody = response.body;
+    final respBody = jsonDecode(resBody);
+    if (response.statusCode != 200) {
+      String message = 'Failed to send recovery code';
+      if (respBody['error']) {
+        message = respBody['error'];
+      }
+      return {
+        'status': false,
+        'error': message,
+      };
+    }
+
+    /*
+      {
+        "device-secret": "a34da203-b90b-4f6b-ae6c-13ef459af799",
+        "jwt": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoic29tYTEiLCJ1dWlkIjoiYjMzYzE0MmQtODljNi00OGJhLWE0YjgtZDkzNTFiYjZmMWVjIiwiaWQiOjMsImlhdCI6MTYyNjk3MjA2MywiZXhwIjoxNjI3MjMxMjYzfQ.akTJsqHqVPKVd76FE_B6StLjjoNrEWEbx3NPptxdeRk"
+      }
+    */
+    return {
+      'status': true,
+      'deviceSecret': respBody['device-secret'],
+      'jwt': respBody['jwt'],
+    };
   }
 }

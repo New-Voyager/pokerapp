@@ -1,5 +1,3 @@
-import 'package:flutter/src/widgets/framework.dart';
-
 class AppStringsNew {
   static const GameId = "GameID";
   static const BuyIn = "BuyIn";
@@ -176,4 +174,38 @@ class AppStringsNew {
   static String fetchLiveGamesText = "Fetching Live games...";
 
   static String highHandWinnersText = "High hand winners";
+  static String screenNameEmptyErrorText = "Screen name is mandatory";
+  static String screenNameLengthErrorText =
+      "Screen name should be less than 20 letters";
+  static String emailInvalidText = "Invalid email";
+  static String screenNameHintToast =
+      "Screen name: The name used in the poker table";
+  static String screenNameLabelText = "Screen Name";
+  static String displayNameLabelText = "Your Name";
+  static String emailLabelText = "Recovery email";
+
+  static String emailHintToast =
+      "Recovery email : To recover this poker game account in case of loss of this device or transfer to a new device";
+  static String displayNameLengthErrorText =
+      "Display name should be less than 30 letters";
+  static String displayNameHintToast =
+      "Your name: The name that is recognizable by your group/club and the club host";
+
+  static String signupButtonText = "SIGN UP";
+  static String transferAccountText = "Transfer existing account";
+
+  static String restoreAccountText = "Restore Account";
+
+  static String restoreButtonText = "RESTORE";
+
+  static String getCodeButtonText = "Get Code";
+
+  static String recoveryCodeLabelText = "Recovery code";
+
+  static String recoveryCodeInfoToastText =
+      "Recovery code will be sent to your registered email account";
+  static String loadingTextRegister = "Registering...";
+
+  static String registrationSuccessText = "Registration Success!";
+  static String registrationFailText = "Registration Failed!";
 }

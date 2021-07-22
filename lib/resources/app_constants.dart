@@ -16,6 +16,12 @@ class AppConstants {
 
   static const String API_SERVER_URL = 'API_SERVER_URL';
 
+  static const String DEVICE_ID = 'DEVICE_ID';
+
+  static const String DEVICE_SECRET = 'DEVICE_SECRET';
+
+  static const String SCREEN_NAME = 'SCREEN_NAME';
+
   // DO URLs
   static const String DO_API_URL = 'https://api.pokerapp.club/graphql';
 

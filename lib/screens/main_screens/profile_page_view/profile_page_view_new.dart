@@ -244,7 +244,7 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                           await AuthService.logout();
                           Navigator.pushNamedAndRemoveUntil(
                             context,
-                            Routes.login,
+                            Routes.registration,
                             (route) => false,
                           );
                         },
