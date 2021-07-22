@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:pokerapp/screens/auth_screens/registration_new.dart';
 import 'package:pokerapp/screens/club_screen/announcements_view.dart';
 import 'package:pokerapp/screens/club_screen/bookmarked_hands.dart';
 import 'package:pokerapp/screens/club_screen/botscripts.dart';
@@ -117,7 +118,7 @@ class Routes {
       case registration:
         return _getPageRoute(
           routeName: settings.name,
-          viewToShow: RegistrationScreen(),
+          viewToShow: RegistrationScreenNew(),
         );
 
       case main:
