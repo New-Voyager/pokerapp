@@ -13,7 +13,7 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   _moveToLoginScreen() => Navigator.pushReplacementNamed(
         context,
-        Routes.login,
+        Routes.registration,
       );
 
   _moveToMainScreen() => Navigator.pushReplacementNamed(

@@ -4,7 +4,10 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/enums/auth_type.dart';
+import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/auth_model.dart';
+import 'package:pokerapp/resources/app_constants.dart';
+import 'package:pokerapp/resources/app_host_urls.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
@@ -16,9 +19,12 @@ import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
 import 'package:pokerapp/widgets/appname_logo.dart';
+import 'package:pokerapp/widgets/card_form_text_field.dart';
+import 'package:pokerapp/widgets/custom_icon_button.dart';
 import 'package:pokerapp/widgets/custom_text_button.dart';
 import 'package:pokerapp/widgets/round_color_button.dart';
 import 'package:pokerapp/widgets/text_input_widget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class RegistrationScreenNew extends StatefulWidget {
   const RegistrationScreenNew({Key key}) : super(key: key);
@@ -43,6 +49,60 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
         child: Scaffold(
           backgroundColor: Colors.transparent,
           resizeToAvoidBottomInset: true,
+          floatingActionButton: IconButton(
+            icon: Icon(
+              Icons.bug_report,
+              color: AppColorsNew.labelColor,
+            ),
+            onPressed: () async {
+              String apiUrl = "";
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  actionsPadding:
+                      EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  backgroundColor: AppColorsNew.actionRowBgColor,
+                  title: Text("Debug details"),
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      CardFormTextField(
+                        hintText: "API Server URL",
+                        onChanged: (val) {
+                          //log("VALUE : $val");
+                          apiUrl = val;
+                        },
+                        keyboardType: TextInputType.number,
+                      ),
+                    ],
+                  ),
+                  actions: [
+                    RoundedColorButton(
+                        text: "SAVE",
+                        backgroundColor: AppColorsNew.yellowAccentColor,
+                        textColor: AppColorsNew.darkGreenShadeColor,
+                        onTapFunction: () async {
+                          if (apiUrl.isEmpty) {
+                            toast("API url can't be empty");
+                            return;
+                          }
+
+                          // FIRST SET THE URLS
+                          await AppHostUrls.save(
+                            apiServer: apiUrl.trim(),
+                          );
+
+                          await graphQLConfiguration.init();
+
+                          Alerts.showNotification(titleText: 'API url is SET');
+
+                          Navigator.of(context).pop();
+                        }),
+                  ],
+                ),
+              );
+            },
+          ),
           body: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
