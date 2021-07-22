@@ -82,7 +82,7 @@ class BetWidget extends StatelessWidget {
     final width = MediaQuery.of(context).size.width;
 
     final int screenSize = context.read<BoardAttributesObject>().screenSize;
-    final bool isLargerDisplay = screenSize == 9 || screenSize == 10;
+    final bool isLargerDisplay = screenSize >= 9;
     log('bet_widget : screenSize : $screenSize');
 
     return ListenableProvider<ValueNotifier<double>>(
