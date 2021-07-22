@@ -3,6 +3,8 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/player_action.dart';
+import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
+import 'package:pokerapp/models/option_item_model.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/pulsating_button.dart';
@@ -11,7 +13,6 @@ import 'package:pokerapp/utils/numeric_keyboard2.dart';
 import 'package:provider/provider.dart';
 import 'package:sleek_circular_slider/sleek_circular_slider.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
-import 'package:timer_count_down/timer_count_down.dart';
 
 class BetWidget extends StatelessWidget {
   final Function onSubmitCallBack;
@@ -59,203 +60,125 @@ class BetWidget extends StatelessWidget {
     );
   }
 
-  Widget betButton(ValueNotifier<double> vnVal, int remainingTime) {
-    return Container(
-      width: 40.pw,
-      height: 40.pw,
-      //decoration: BoxDecoration(color: Colors.red, shape: BoxShape.circle),
-      decoration: BoxDecoration(
-        //color: Colors.red,
-        border:
-            Border.all(color: AppColorsNew.newSelectedGreenColor, width: 2.pw),
-        color: AppColorsNew.newGreenRadialStopColor,
-        shape: BoxShape.circle,
+  Widget betButton(final bool isLargerDisplay) {
+    return Transform.scale(
+      alignment: Alignment.topCenter,
+      scale: isLargerDisplay ? 1.8 : 1.5,
+      child: Consumer<ValueNotifier<double>>(
+        builder: (_, vnBetAmount, __) => _buildBetAmountChild(
+          onTap: () => onSubmitCallBack?.call(vnBetAmount.value),
+          betButton: true,
+          option: Option(
+            text: 'Bet',
+            amount: vnBetAmount.value.toInt(),
+          ),
+        ),
       ),
-      child: Stack(fit: StackFit.expand, children: [
-        // Countdown(
-        //     seconds: remainingTime,
-        //     onFinished: () {},
-        //     build: (_, time) {
-        //       double value = time / remainingTime;
-        //       return  CircularProgressIndicator(
-        //         strokeWidth: 2.pw,
-        //           value: value,
-        //           color: AppColorsNew.newBorderColor,
-        //       );
-        //     }),
-        CircularProgressIndicator(
-          strokeWidth: 2.pw,
-          color: AppColorsNew.newBorderColor,
-        ),
-
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              DataFormatter.chipsFormat(
-                vnVal.value,
-              ),
-              style: TextStyle(
-                fontSize: 10.dp,
-                color: Colors.white,
-              ),
-            ),
-            //  SizedBox(height: 5),
-            Text(
-              "BET",
-              style: TextStyle(
-                fontSize: 10.dp,
-                color: Colors.white,
-              ),
-            )
-          ],
-        ),
-      ]),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
-    log('slider $width');
+
+    final int screenSize = context.read<BoardAttributesObject>().screenSize;
+    final bool isLargerDisplay = screenSize >= 9;
+    log('bet_widget : screenSize : $screenSize');
+
     return ListenableProvider<ValueNotifier<double>>(
       create: (_) => ValueNotifier<double>(
         action.minRaiseAmount.toDouble(),
       ),
       builder: (BuildContext context, _) {
-        final valueNotifierVal = Provider.of<ValueNotifier<double>>(
-          context,
-          listen: false,
-        );
+        final valueNotifierVal = context.read<ValueNotifier<double>>();
+
         return Stack(
           children: [
             /* top */
-            Align(
-              alignment: Alignment.topCenter,
-              child: Row(
-                children: [
-                  /* (-) button */
-                  GestureDetector(
-                    onTap: () {
-                      log('1 - button is pressed');
-                    },
-                    child: Expanded(
-                      flex: 2,
-                      child: GestureDetector(
-                        onTap: () {
-                          log('- button is pressed');
-                        },
-                        child: Container(
-                          child: Transform.translate(
-                            offset: Offset(85.pw, 10.ph),
-                            child: Align(
-                              alignment: Alignment.centerRight,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                ),
-                                child: IconButton(
-                                  icon: Icon(
-                                    Icons.remove_circle_rounded,
-                                    color: AppColorsNew.newGreenButtonColor,
-                                  ),
-                                  onPressed: () {
-                                    log('on - pressed');
-                                    if (valueNotifierVal.value <=
-                                        action.minRaiseAmount) return;
-                                    valueNotifierVal.value--;
-                                  },
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
+            Stack(
+              alignment: Alignment.center,
+              // mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                /* center widget - bet amount, bet button & slider */
+                Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    /* seek slider */
+                    Transform.translate(
+                      offset: Offset(0, isLargerDisplay ? 60.ph : 40.ph),
+                      child: sleekSlider(),
+                    ),
+
+                    /* bet button */
+                    Transform.translate(
+                      offset: Offset(0.0, -30.0.ph),
+                      child: betButton(isLargerDisplay),
+                    ),
+                  ],
+                ),
+
+                /* (-) button */
+                Transform.translate(
+                  offset: Offset(-80.pw, isLargerDisplay ? 10.0 : 0.0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                    ),
+                    child: IconButton(
+                      icon: Icon(
+                        Icons.remove_circle_rounded,
+                        size: isLargerDisplay ? 14.0.pw : 24.0.pw,
+                        color: AppColorsNew.newGreenButtonColor,
                       ),
+                      onPressed: () {
+                        log('- button');
+                        if (valueNotifierVal.value <= action.minRaiseAmount)
+                          return;
+                        valueNotifierVal.value--;
+                      },
                     ),
                   ),
+                ),
 
-                  /* center widget - bet amount, bet button & slider */
-                  Expanded(
-                    flex: 20,
-                    child: Stack(
-                      children: [
-                        /* seek slider */
-                        Transform.translate(
-                          offset: Offset(0, 70.ph),
-                          child: Align(
-                            alignment: Alignment.center,
-                            child: Container(
-                              margin: EdgeInsets.only(bottom: 16),
-                              child: sleekSlider(),
-                            ),
-                          ),
-                        ),
-
-                        /* bet button */
-                        Align(
-                          alignment: Alignment.center,
-                          child: Transform.translate(
-                            offset: const Offset(0.0, -30.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Consumer<ValueNotifier<double>>(
-                                    builder: (_, vnVal, __) {
-                                  return betButton1(vnVal);
-                                })
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
+                /* (+) button */
+                Transform.translate(
+                  offset: Offset(80.0.pw, isLargerDisplay ? 10.0 : 0.0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
                     ),
-                  ),
-
-                  /* (+) button */
-                  Expanded(
-                    flex: 2,
-                    child: Transform.translate(
-                      offset: Offset(-80.pw, 10.ph),
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                          ),
-                          child: IconButton(
-                            icon: Icon(
-                              Icons.add_circle_rounded,
-                              color: AppColorsNew.newGreenButtonColor,
-                            ),
-                            onPressed: () {
-                              log('+ button');
-                              if (valueNotifierVal.value >=
-                                  action.maxRaiseAmount) return;
-                              valueNotifierVal.value++;
-                            },
-                          ),
-                        ),
+                    child: IconButton(
+                      icon: Icon(
+                        Icons.add_circle_rounded,
+                        size: isLargerDisplay ? 14.0.pw : 24.0.pw,
+                        color: AppColorsNew.newGreenButtonColor,
                       ),
+                      onPressed: () {
+                        log('+ button');
+                        if (valueNotifierVal.value >= action.maxRaiseAmount)
+                          return;
+                        valueNotifierVal.value++;
+                      },
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
 
             /* button row for other bet options */
             Align(
               alignment: Alignment.center,
-              child: Transform.translate(
-                offset: const Offset(0.0, 64.0),
-                child: Container(
-                  alignment: Alignment.center,
-                  width: width / 1.5,
-                  height: 65.ph,
-                  child: betAmountList(valueNotifierVal),
+              child: Transform.scale(
+                alignment: Alignment.topCenter,
+                scale: isLargerDisplay ? 1.2 : 1.0,
+                child: Transform.translate(
+                  offset: const Offset(0.0, 64.0),
+                  child: Container(
+                    alignment: Alignment.center,
+                    width: width / 1.5,
+                    height: 65.ph,
+                    child: betAmountList(valueNotifierVal),
+                  ),
                 ),
               ),
             )
@@ -300,8 +223,8 @@ class BetWidget extends StatelessWidget {
             ],
           ),
           customWidths: CustomSliderWidths(
-            trackWidth: 16,
-            progressBarWidth: 16,
+            trackWidth: 12,
+            progressBarWidth: 12,
             handlerSize: 16,
           ),
         ),
@@ -310,6 +233,7 @@ class BetWidget extends StatelessWidget {
   }
 
   Widget _buildBetAmountChild({
+    bool betButton = false,
     bool isKeyboard = false,
     Option option,
     void onTap(),
@@ -331,29 +255,30 @@ class BetWidget extends StatelessWidget {
                       ? const EdgeInsets.fromLTRB(0, 4, 0, 0)
                       : const EdgeInsets.symmetric(vertical: 4),
                   decoration: BoxDecoration(
-                      //color: Colors.red,
-                      //  border: Border.all(color: Colors.white, width: 1.0),
-                      shape: BoxShape.circle,
-                      gradient: RadialGradient(
-                        // begin: Alignment.topRight,
-                        // end: Alignment.bottomLeft,
-                        colors: [
-                          AppColorsNew.newGreenRadialStartColor,
-                          AppColorsNew.newGreenRadialStopColor,
-                        ],
-                        stops: [
-                          0.2,
-                          0.8,
-                        ],
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColorsNew.newGreenButtonColor,
-                          offset: Offset(0, 1),
-                          blurRadius: 0.5,
-                          spreadRadius: 0.5,
-                        )
-                      ]),
+                    //color: Colors.red,
+                    //  border: Border.all(color: Colors.white, width: 1.0),
+                    shape: BoxShape.circle,
+                    gradient: RadialGradient(
+                      // begin: Alignment.topRight,
+                      // end: Alignment.bottomLeft,
+                      colors: [
+                        AppColorsNew.newGreenRadialStartColor,
+                        AppColorsNew.newGreenRadialStopColor,
+                      ],
+                      stops: [
+                        0.2,
+                        0.8,
+                      ],
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColorsNew.newGreenButtonColor,
+                        offset: Offset(0, 1),
+                        blurRadius: 0.5,
+                        spreadRadius: 0.5,
+                      )
+                    ],
+                  ),
                   child: isKeyboard
                       ? Icon(
                           Icons.keyboard,

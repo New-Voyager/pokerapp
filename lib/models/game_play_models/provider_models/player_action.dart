@@ -23,9 +23,21 @@ class Option {
   String text;
   int amount;
 
+  Option({
+    @required this.text,
+    @required this.amount,
+  });
+
   Option.fromJson(var data) {
     this.text = data['text'];
     this.amount = data['amount'];
+  }
+
+  static Option get sample {
+    return Option.fromJson({
+      'text': 'Bet',
+      'amount': 34,
+    });
   }
 }
 
