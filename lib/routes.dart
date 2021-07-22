@@ -112,11 +112,11 @@ class Routes {
           viewToShow: SplashScreen(),
         );
 
-      case login:
-        return _getPageRoute(
-          routeName: settings.name,
-          viewToShow: LoginScreen(),
-        );
+      // case login:
+      //   return _getPageRoute(
+      //     routeName: settings.name,
+      //     viewToShow: LoginScreen(),
+      //   );
 
       case registration:
         return _getPageRoute(

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:pokerapp/resources/app_apis.dart';
+import 'package:pokerapp/resources/app_config.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -20,7 +21,7 @@ class GraphQLConfiguration {
   );
 
   static AuthLink authLink = AuthLink(
-    getToken: () async => 'jwt ${await AuthService.getJwt()}',
+    getToken: () async => 'jwt ${AppConfig.jwt}',
   );
 
   final ValueNotifier<GraphQLClient> client = ValueNotifier(

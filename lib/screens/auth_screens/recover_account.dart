@@ -229,12 +229,12 @@ class _RestoreAccountScreenState extends State<RestoreAccountScreen> {
       ConnectionDialog.show(
           context: context, loadingText: "Restoring account...");
       await Future.delayed(Duration(seconds: 5));
-       // Navigate to main screen
-        // Navigator.pushNamedAndRemoveUntil(
-        //   context,
-        //   Routes.main,
-        //   (_) => false,
-        // );
+      // Navigate to main screen
+      // Navigator.pushNamedAndRemoveUntil(
+      //   context,
+      //   Routes.main,
+      //   (_) => false,
+      // );
       ConnectionDialog.dismiss(context: context);
     }
   }

@@ -9,6 +9,8 @@ import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/flavor_config.dart';
 import 'package:pokerapp/models/pending_approvals.dart';
+import 'package:pokerapp/resources/app_config.dart';
+import 'package:pokerapp/resources/app_host_urls.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/routes.dart';
@@ -63,6 +65,8 @@ class MyApp extends StatelessWidget {
         // Once complete, show your application
         if (snapshot.connectionState == ConnectionState.done) {
           //this.nats = Nats(context);
+          final apiUrl = FlavorConfig.of(context).apiBaseUrl;
+          AppConfig.init(apiUrl);
           print('Firebase initialized successfully');
           return MultiProvider(
             /* PUT INDEPENDENT PROVIDERS HERE */
