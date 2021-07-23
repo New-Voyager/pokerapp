@@ -118,7 +118,7 @@ class AuthService {
       "screen-name": screenName,
     };
     if (recoveryEmail != null) {
-      payload["recovery-email"] = recoveryEmail;
+      payload["email"] = recoveryEmail;
     }
 
     if (displayName != null) {
@@ -157,7 +157,7 @@ class AuthService {
     };
 
     Map<String, String> payload = {
-      "recovery-email": recoveryEmail,
+      "email": recoveryEmail,
     };
 
     String body = jsonEncode(payload);
@@ -195,7 +195,7 @@ class AuthService {
     };
 
     Map<String, String> payload = {
-      "recovery-email": recoveryEmail,
+      "email": recoveryEmail,
       "code": code,
       "device-id": deviceId,
     };
