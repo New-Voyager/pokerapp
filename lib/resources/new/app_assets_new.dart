@@ -63,4 +63,7 @@ class AppAssetsNew {
   static String coinsImagePath = "assets/images/coins.svg";
 
   static String startImagePath;
+
+  static String hostImagePath = "assets/images/host.svg";
+  static String joinImagePath = "assets/images/join.svg";
 }
