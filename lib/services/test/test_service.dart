@@ -484,6 +484,20 @@ class TestService {
     //await HandActionService.handle(context: _context, message: dealStartedMessage());
   }
 
+  static Future<void> sendResult() async {
+    final gameState = GameState.getState(_context);
+    gameState.settings.gameSound = false;
+    if (_handActionService == null) {
+      _handActionService =
+          HandActionService(_context, gameState, null, null, null);
+      _handActionService.loop();
+    }
+    await _handActionService.handle(testResultMessage);
+    //await _handActionService.handle(dealCardsMessage());
+    //await HandActionService.handle(context: _context, message: yourActionNextActionMsg());
+    //await HandActionService.handle(context: _context, message: dealStartedMessage());
+  }
+
   static void emptySeatDealer() {
     final gameState = GameState.getState(_context);
     final seat = gameState.getSeat(_context, 5);

@@ -48,7 +48,6 @@ class _SplashScreenState extends State<SplashScreen> {
           await AuthService.save(currentUser);
           AppConfig.jwt = resp['jwt'];
           await graphQLConfiguration.init();
-
         } else {
           _moveToLoginScreen();
           return;

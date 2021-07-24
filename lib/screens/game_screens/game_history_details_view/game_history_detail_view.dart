@@ -559,8 +559,15 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
   }
 
   Widget highHandTile() {
+    if (this._gameDetail == null ||
+        this._gameDetail.hhTracked == false ||
+        this._gameDetail.hhWinners == null ||
+        this._gameDetail.hhWinners.length == 0) {
+      return Container();
+    }
     return Visibility(
       visible: this._gameDetail != null &&
+          this._gameDetail.hhWinners != null &&
           this._gameDetail.hhWinners.length > 0 &&
           this._gameDetail.hhTracked == true,
       child: Container(
