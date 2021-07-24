@@ -14,6 +14,9 @@ class UtilActionServices {
     final String fromPlayerID = chatMessage.fromPlayer.toString();
     final String myPlayerID = context.read<Players>().me?.playerId?.toString();
 
+    // we dont need to proceed showing empty cards
+    if (chatMessage.cards.isEmpty) return;
+
     final int handNum = context.read<HandInfoState>().handNum;
     final int receivedHandNum = int.parse(chatMessage.text ?? '-1');
 

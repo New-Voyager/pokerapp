@@ -1300,6 +1300,7 @@ class HandActionService {
       /* update state */
       players.notifyAll();
       tableState.notifyAll();
+      tableState.refreshCommunityCards();
 
       /* finally animate the moving stack */
       gameState.animateSeatActions();
@@ -1360,6 +1361,7 @@ class HandActionService {
 
     players.notifyAll();
     tableState.notifyAll();
+    tableState.refreshCommunityCards();
   }
 
   static Future<void> processForHighWinnersDelayProcessForLowWinners({
@@ -1414,6 +1416,7 @@ class HandActionService {
       tableState: tableState,
       players: players,
       gameState: gameState,
+      boardIndex: boardIndex,
     );
 
     // this method takes another 500 MS
@@ -1429,18 +1432,18 @@ class HandActionService {
     /** wait for the extra duration */
     balancedMstoWait =
         lowWinnersTimeInMs - AppConstants.animationDuration.inMilliseconds;
-
     await Future.delayed(Duration(milliseconds: balancedMstoWait));
     audioPlayer.stop();
 
     /* if we are from replay, we dont need to clear the result state */
-    if (fromReplay || resetState) return;
+    if (fromReplay || resetState == false) return;
 
     /* need to clear the board */
     resetResult(
       tableState: tableState,
       players: players,
       gameState: gameState,
+      boardIndex: boardIndex,
     );
   }
 
@@ -1489,6 +1492,9 @@ class HandActionService {
 
       final Map board2PotWinners = runItTwiceResult['board2Winners'];
 
+      log('board 1 winners: $board1PotWinners');
+      log('board 2 winners: $board2PotWinners');
+
       /* process board 1 first
       * 0. get all hi winner players for board 1
       * 1. highlight hi winner
@@ -1498,6 +1504,7 @@ class HandActionService {
 
       // this loop should take 3000 ms per POT winners
       for (final board1Winners in board1PotWinners.entries) {
+        log('completed: board1 winners');
         final potNo = int.parse(board1Winners.key.toString());
 
         // highlight the req pot no
@@ -1525,8 +1532,8 @@ class HandActionService {
         tableState.notifyAll();
       }
 
-      /* if we dont have any board 2 winners to show, we pause here */
-      if (board2PotWinners.isEmpty && fromReplay) return;
+      // /* if we dont have any board 2 winners to show, we pause here */
+      // if (board2PotWinners.isEmpty && fromReplay) return;
 
       /* cleanup all highlights and rankStr */
       resetResult(
@@ -1535,6 +1542,9 @@ class HandActionService {
         gameState: gameState,
         boardIndex: 1,
       );
+
+      // refresh after un highlighting
+      tableState.refreshCommunityCards();
 
       /* then, process board 2
       * 0. get all hi winner players for board 1
