@@ -1237,26 +1237,24 @@ class HandActionService {
   }
 
   /* seat-no, list of cards mapping */
-  static Map<int, List<int>> _getCards(final data, String myID) {
+  static Map<int, List<int>> _getCards(final data, int myID) {
     final Map players = data['handResult']['players'];
 
     final String kShowDown = 'SHOW_DOWN';
 
     Map<int, List<int>> seatNoCardsMap = Map<int, List<int>>();
+
     players.forEach((seatNo, d) {
       /* WE ONLY SHOW CARDS FOR PLAYERS, WHO PLAYED TILL THE SHOWDOWN */
       final int sn = int.parse(seatNo.toString());
       final String playerID = d['id'] as String;
 
       // if it's me do not update my cards
-      if (playerID != myID) {
+      if (playerID != '$myID') {
         // if the player has survived till show down
         if (d['playedUntil'] == kShowDown)
-          seatNoCardsMap[sn] = d['cards']
-              ?.map<int>(
-                (e) => int.parse(e.toString()),
-              )
-              ?.toList();
+          seatNoCardsMap[sn] =
+              d['cards']?.map<int>((e) => int.parse(e.toString()))?.toList();
       }
     });
 
@@ -1699,9 +1697,12 @@ class HandActionService {
     _gameState.lastHand = jsonData;
     _gameState.setHandLog(handNum, jsonData, _gameState.currentCards);
 
+    log('MY CARDS ${players.me.cards}');
+    log('MY CARDS ${players.me.cardObjects}');
+
     /* showdown time, show other players cards */
     players.updateUserCardsSilent(
-      _getCards(data, await AuthService.getPlayerID()),
+      _getCards(data, players?.me?.playerId ?? 0),
     );
 
     /* check if the result is a run it twice result */

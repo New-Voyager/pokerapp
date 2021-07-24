@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_status.dart';
 import 'package:pokerapp/enums/player_status.dart';
@@ -223,6 +225,7 @@ class Players extends ChangeNotifier {
   }
 
   void updateUserCardsSilent(Map<int, List<int>> data) {
+    log('updating: $data');
     /* seat-no, list of cards */
     data.forEach((seatNo, cards) {
       int idx = _players.indexWhere((p) => p.seatNo == seatNo);
@@ -231,6 +234,7 @@ class Players extends ChangeNotifier {
   }
 
   void updateCardSilent(int seatNo, List<int> cards) {
+    log('updating $seatNo seat\'s cards to $cards');
     int idx = _players.indexWhere((p) => p.seatNo == seatNo);
     if (idx == -1) {
       return;
