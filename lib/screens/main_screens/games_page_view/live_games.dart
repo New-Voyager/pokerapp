@@ -227,7 +227,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
                                 index,
                               ) =>
                                   AppDimensionsNew.getVerticalSizedBox(16.ph),
-                              itemCount: liveGames.length,
+                              itemCount: _playedGames.length,
                             ),
                 ],
               ),
