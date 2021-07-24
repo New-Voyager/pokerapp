@@ -43,6 +43,7 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
     @required void validator(String _),
     @required String hintText,
     @required void onInfoIconPress(),
+    @required String labelText,
   }) {
     return TextFormField(
       keyboardType: keyboardType,
@@ -73,7 +74,7 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
           onPressed: onInfoIconPress,
         ),
         errorBorder: AppStylesNew.errorBorderStyle,
-        labelText: AppStringsNew.screenNameLabelText,
+        labelText: labelText,
         labelStyle: AppStylesNew.labelTextFieldStyle,
         floatingLabelBehavior: FloatingLabelBehavior.always,
         filled: true,
@@ -163,6 +164,7 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
                       children: [
                         // screen name
                         _buildTextFormField(
+                          labelText: AppStringsNew.screenNameLabelText,
                           keyboardType: TextInputType.name,
                           controller: _screenNameCtrl,
                           validator: (value) {
@@ -188,6 +190,7 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
 
                         // name
                         _buildTextFormField(
+                          labelText: AppStringsNew.displayNameLabelText,
                           keyboardType: TextInputType.name,
                           controller: _nameCtrl,
                           validator: (value) {
@@ -210,6 +213,7 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
 
                         // Recover Email
                         _buildTextFormField(
+                          labelText: AppStringsNew.recoveryCodeLabelText,
                           keyboardType: TextInputType.emailAddress,
                           controller: _emailCtrl,
                           validator: (value) {
@@ -341,10 +345,11 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
       ConnectionDialog.show(
           context: context, loadingText: AppStringsNew.loadingTextRegister);
       final resp = await AuthService.signup(
-          deviceId: deviceId,
-          screenName: _screenNameCtrl.text,
-          displayName: _nameCtrl.text,
-          recoveryEmail: _emailCtrl.text);
+        deviceId: deviceId,
+        screenName: _screenNameCtrl.text.trim(),
+        displayName: _nameCtrl.text.trim(),
+        recoveryEmail: _emailCtrl.text.trim(),
+      );
       ConnectionDialog.dismiss(context: context);
       if (resp['status']) {
         // successful
@@ -370,7 +375,12 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
         );
       } else {
         // failed
-        Alerts.showNotification(titleText: AppStringsNew.registrationFailText);
+        log("ERROR : ${resp['error']}");
+        Alerts.showNotification(
+          titleText: AppStringsNew.registrationFailText,
+          subTitleText: resp['error'],
+          duration: Duration(seconds: 5),
+        );
       }
 
       // // Make API call for registration

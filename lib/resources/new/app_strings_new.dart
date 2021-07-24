@@ -208,4 +208,6 @@ class AppStringsNew {
 
   static String registrationSuccessText = "Registration Success!";
   static String registrationFailText = "Registration Failed!";
+
+  static String restoreSuccessText = "Restoration Success!";
 }

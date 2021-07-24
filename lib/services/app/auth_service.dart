@@ -151,7 +151,7 @@ class AuthService {
   /// This function signs up a new player to the system
   /// Returns a device secret (used for login) and jwt
   static Future<Map<String, dynamic>> sendRecoveryCode(
-      String recoveryEmail) async {
+      {String recoveryEmail}) async {
     Map<String, String> header = {
       'Content-type': 'application/json',
     };
@@ -173,7 +173,7 @@ class AuthService {
     final respBody = jsonDecode(resBody);
     if (response.statusCode != 200) {
       String message = 'Failed to send recovery code';
-      if (respBody['error']) {
+      if (respBody['error'] != null) {
         message = respBody['error'];
       }
       return {
@@ -189,7 +189,9 @@ class AuthService {
   /// This function signs up a new player to the system
   /// Returns a device secret (used for login) and jwt
   static Future<Map<String, dynamic>> loginUsingRecoveryCode(
-      String deviceId, String recoveryEmail, String code) async {
+      {String deviceId,
+      @required String recoveryEmail,
+      @required String code}) async {
     Map<String, String> header = {
       'Content-type': 'application/json',
     };
@@ -232,6 +234,9 @@ class AuthService {
       'status': true,
       'deviceSecret': respBody['device-secret'],
       'jwt': respBody['jwt'],
+      'name': respBody['name'],
+      'uuid': respBody['uuidd'],
+      'id': respBody['id']
     };
   }
 }
