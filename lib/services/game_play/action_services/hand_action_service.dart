@@ -1237,26 +1237,24 @@ class HandActionService {
   }
 
   /* seat-no, list of cards mapping */
-  static Map<int, List<int>> _getCards(final data, String myID) {
+  static Map<int, List<int>> _getCards(final data, int myID) {
     final Map players = data['handResult']['players'];
 
     final String kShowDown = 'SHOW_DOWN';
 
     Map<int, List<int>> seatNoCardsMap = Map<int, List<int>>();
+
     players.forEach((seatNo, d) {
       /* WE ONLY SHOW CARDS FOR PLAYERS, WHO PLAYED TILL THE SHOWDOWN */
       final int sn = int.parse(seatNo.toString());
       final String playerID = d['id'] as String;
 
       // if it's me do not update my cards
-      if (playerID != myID) {
+      if (playerID != '$myID') {
         // if the player has survived till show down
         if (d['playedUntil'] == kShowDown)
-          seatNoCardsMap[sn] = d['cards']
-              ?.map<int>(
-                (e) => int.parse(e.toString()),
-              )
-              ?.toList();
+          seatNoCardsMap[sn] =
+              d['cards']?.map<int>((e) => int.parse(e.toString()))?.toList();
       }
     });
 
@@ -1302,6 +1300,7 @@ class HandActionService {
       /* update state */
       players.notifyAll();
       tableState.notifyAll();
+      tableState.refreshCommunityCards();
 
       /* finally animate the moving stack */
       gameState.animateSeatActions();
@@ -1362,6 +1361,7 @@ class HandActionService {
 
     players.notifyAll();
     tableState.notifyAll();
+    tableState.refreshCommunityCards();
   }
 
   static Future<void> processForHighWinnersDelayProcessForLowWinners({
@@ -1416,6 +1416,7 @@ class HandActionService {
       tableState: tableState,
       players: players,
       gameState: gameState,
+      boardIndex: boardIndex,
     );
 
     // this method takes another 500 MS
@@ -1431,18 +1432,18 @@ class HandActionService {
     /** wait for the extra duration */
     balancedMstoWait =
         lowWinnersTimeInMs - AppConstants.animationDuration.inMilliseconds;
-
     await Future.delayed(Duration(milliseconds: balancedMstoWait));
     audioPlayer.stop();
 
     /* if we are from replay, we dont need to clear the result state */
-    if (fromReplay || resetState) return;
+    if (fromReplay || resetState == false) return;
 
     /* need to clear the board */
     resetResult(
       tableState: tableState,
       players: players,
       gameState: gameState,
+      boardIndex: boardIndex,
     );
   }
 
@@ -1491,6 +1492,9 @@ class HandActionService {
 
       final Map board2PotWinners = runItTwiceResult['board2Winners'];
 
+      log('board 1 winners: $board1PotWinners');
+      log('board 2 winners: $board2PotWinners');
+
       /* process board 1 first
       * 0. get all hi winner players for board 1
       * 1. highlight hi winner
@@ -1500,6 +1504,7 @@ class HandActionService {
 
       // this loop should take 3000 ms per POT winners
       for (final board1Winners in board1PotWinners.entries) {
+        log('completed: board1 winners');
         final potNo = int.parse(board1Winners.key.toString());
 
         // highlight the req pot no
@@ -1527,8 +1532,8 @@ class HandActionService {
         tableState.notifyAll();
       }
 
-      /* if we dont have any board 2 winners to show, we pause here */
-      if (board2PotWinners.isEmpty && fromReplay) return;
+      // /* if we dont have any board 2 winners to show, we pause here */
+      // if (board2PotWinners.isEmpty && fromReplay) return;
 
       /* cleanup all highlights and rankStr */
       resetResult(
@@ -1537,6 +1542,9 @@ class HandActionService {
         gameState: gameState,
         boardIndex: 1,
       );
+
+      // refresh after un highlighting
+      tableState.refreshCommunityCards();
 
       /* then, process board 2
       * 0. get all hi winner players for board 1
@@ -1699,9 +1707,12 @@ class HandActionService {
     _gameState.lastHand = jsonData;
     _gameState.setHandLog(handNum, jsonData, _gameState.currentCards);
 
+    log('MY CARDS ${players.me.cards}');
+    log('MY CARDS ${players.me.cardObjects}');
+
     /* showdown time, show other players cards */
     players.updateUserCardsSilent(
-      _getCards(data, await AuthService.getPlayerID()),
+      _getCards(data, players?.me?.playerId ?? 0),
     );
 
     /* check if the result is a run it twice result */

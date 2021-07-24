@@ -111,6 +111,7 @@ class _CenterViewState extends State<CenterView> {
   final vnPotChipsUpdates = ValueNotifier<int>(null);
   final vnPotToHighlight = ValueNotifier<int>(null);
   final vnRankStr = ValueNotifier<String>(null);
+  final vnCommunityCardsRefresh = ValueNotifier<int>(null);
 
   final Function eq = const ListEquality().equals;
 
@@ -122,6 +123,8 @@ class _CenterViewState extends State<CenterView> {
   void tableStateListener() {
     vnGameStatus.value = tableState.gameStatus;
     vnTableStatus.value = tableState.tableStatus;
+    vnCommunityCardsRefresh.value = tableState.communityCardRefresh;
+    log('completed: tableSTateListener: ${tableState.communityCardRefresh}');
 
     // need rebuilding check
     if (_needsRebuilding(vnCards.value, tableState.cards))
@@ -241,17 +244,24 @@ class _CenterViewState extends State<CenterView> {
           SizedBox(height: boardAttributes.centerGap),
 
           /* community cards view */
-          ValueListenableBuilder3<List<CardObject>, List<CardObject>, bool>(
-            vnCards,
-            vnCardOthers,
-            vnTwoBoardsNeeded,
-            builder: (_, cards, cardsOther, twoBoardsNeeded, __) =>
-                CommunityCardsView(
-              cards: cards,
-              cardsOther: cardsOther,
-              twoBoardsNeeded: twoBoardsNeeded,
-              horizontal: true,
-            ),
+          ValueListenableBuilder<int>(
+            valueListenable: vnCommunityCardsRefresh,
+            builder: (_, __, ___) {
+              return ValueListenableBuilder3<List<CardObject>, List<CardObject>,
+                  bool>(
+                vnCards,
+                vnCardOthers,
+                vnTwoBoardsNeeded,
+                builder: (_, cards, cardsOther, twoBoardsNeeded, __) {
+                  return CommunityCardsView(
+                    cards: cards,
+                    cardsOther: cardsOther,
+                    twoBoardsNeeded: twoBoardsNeeded,
+                    horizontal: true,
+                  );
+                },
+              );
+            },
           ),
           // divider
           SizedBox(height: boardAttributes.centerGap),

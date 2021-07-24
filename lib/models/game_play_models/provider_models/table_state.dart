@@ -1,9 +1,9 @@
 import 'dart:developer';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/resources/app_constants.dart';
-import 'package:pokerapp/utils/card_helper.dart';
 
 class TableState extends ChangeNotifier {
   /* This object holds the game status, table status, pot chips, and community cards */
@@ -17,6 +17,11 @@ class TableState extends ChangeNotifier {
   String _rankStr;
   bool _twoBoardsNeeded;
   int _potToHighlight;
+
+  final math.Random r = math.Random();
+
+  int get communityCardRefresh => _communityCardRefresh;
+  int _communityCardRefresh;
 
   TableState({
     String tableStatus,
@@ -53,6 +58,12 @@ class TableState extends ChangeNotifier {
   }
 
   void notifyAll() => notifyListeners();
+
+  void refreshCommunityCards() {
+    const _100crore = 1000000000;
+    _communityCardRefresh = r.nextInt(_100crore);
+    notifyListeners();
+  }
 
   void updatePotToHighlightSilent(int potIdx) {
     _potToHighlight = potIdx;
@@ -333,6 +344,7 @@ class TableState extends ChangeNotifier {
       for (final card in _board1) {
         card.highlight = false;
         card.dim = false;
+        log('completed: un highlighting cards from board 1');
       }
     } else if (boardIndex == 2 && _board2 != null) {
       for (final card in _board2) {
@@ -349,19 +361,17 @@ class TableState extends ChangeNotifier {
 
       /* dim all the cards, THEN highlight the NEEDED cards */
       for (final card in _board1) card.dim = true;
-      log('WINNER player board cards: $_board1');
       for (int i = 0; i < _board1.length; i++) {
         int rawCardNumber = _board1[i].cardNum;
         if (rawCards.any((rc) => rc == rawCardNumber))
           _board1[i].highlight = true;
-        log('WINNER player board cards after highlight: $_board1');
       }
     } else if (boardIndex == 2) {
       /* dim all the cards, THEN highlight the NEEDED cards */
       for (final card in _board2) card.dim = true;
 
       for (int i = 0; i < _board2.length; i++) {
-        int rawCardNumber = _board1[i].cardNum;
+        int rawCardNumber = _board2[i].cardNum;
         if (rawCards.any((rc) => rc == rawCardNumber))
           _board2[i].highlight = true;
       }
