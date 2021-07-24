@@ -12,7 +12,7 @@ class UtilActionServices {
     ChatMessage chatMessage,
   ) async {
     final String fromPlayerID = chatMessage.fromPlayer.toString();
-    final String myPlayerID = context.read<Players>().me.playerId.toString();
+    final String myPlayerID = context.read<Players>().me?.playerId?.toString();
 
     final int handNum = context.read<HandInfoState>().handNum;
     final int receivedHandNum = int.parse(chatMessage.text ?? '-1');
