@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_udid/flutter_udid.dart';
 import 'package:overlay_support/overlay_support.dart';
+import 'package:pokerapp/models/auth_model.dart';
+import 'package:pokerapp/resources/app_config.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/routes.dart';
+import 'package:pokerapp/services/app/auth_service.dart';
+import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
 import 'package:pokerapp/widgets/appname_logo.dart';
 import 'package:pokerapp/widgets/round_color_button.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
+import 'package:uuid/uuid.dart';
 
 class RestoreAccountScreen extends StatefulWidget {
   const RestoreAccountScreen({Key key}) : super(key: key);
@@ -228,14 +234,48 @@ class _RestoreAccountScreenState extends State<RestoreAccountScreen> {
     if (_formKey.currentState.validate()) {
       ConnectionDialog.show(
           context: context, loadingText: "Restoring account...");
-      await Future.delayed(Duration(seconds: 5));
-      // Navigate to main screen
-      // Navigator.pushNamedAndRemoveUntil(
-      //   context,
-      //   Routes.main,
-      //   (_) => false,
-      // );
-      ConnectionDialog.dismiss(context: context);
+
+      // Get Device ID
+      String deviceId = new Uuid().v4().toString();
+      try {
+        final devId = await FlutterUdid.udid;
+        deviceId = devId;
+      } catch (err) {
+        // couldn't get device id, use the uuid
+      }
+      final result = await AuthService.loginUsingRecoveryCode(
+        recoveryEmail: _emailCtrl.text.trim(),
+        code: _codeCtrl.text.trim(),
+        deviceId: deviceId,
+      );
+
+      if (result['status']) {
+        ConnectionDialog.dismiss(context: context);
+        // successful
+        Alerts.showNotification(
+            titleText: AppStringsNew.registrationSuccessText);
+
+        // save device id, device secret and jwt
+        AuthModel currentUser = AuthModel(
+          deviceID: deviceId,
+          deviceSecret: result['deviceSecret'],
+          name: result['name'],
+          uuid: result['uuid'],
+          playerId: result['id'],
+          jwt: result['jwt'],
+        );
+        await AuthService.save(currentUser);
+        AppConfig.jwt = result['jwt'];
+        // Navigate to main screen
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          Routes.main,
+          (_) => false,
+        );
+      } else {
+        ConnectionDialog.dismiss(context: context);
+        Alerts.showNotification(titleText: result['error']);
+      }
     }
   }
 
@@ -244,11 +284,25 @@ class _RestoreAccountScreenState extends State<RestoreAccountScreen> {
     // Make API Call to get code
     if (_formKey.currentState.validate()) {
       ConnectionDialog.show(context: context, loadingText: "Sending code...");
-      await Future.delayed(Duration(seconds: 2));
+      final result = await AuthService.sendRecoveryCode(
+        recoveryEmail: _emailCtrl.text.trim(),
+      );
+      if (result['status']) {
+        Alerts.showNotification(
+          titleText: "Code sent to recovery mail.",
+          duration: Duration(seconds: 4),
+        );
+        setState(() {
+          _restoreVisible = true;
+        });
+      } else {
+        Alerts.showNotification(
+          titleText: "Failed to send code.",
+          subTitleText: result['error'],
+          duration: Duration(seconds: 4),
+        );
+      }
       ConnectionDialog.dismiss(context: context);
-      setState(() {
-        _restoreVisible = true;
-      });
     }
   }
 }
