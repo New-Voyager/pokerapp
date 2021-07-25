@@ -73,7 +73,8 @@ class _PerformanceViewState extends State<PerformanceView>
           ),
           body: loading
               ? Center(child: CircularProgressWidget())
-              : performance.performanceList == null ||
+              : (performance == null) ||
+                      performance.performanceList == null ||
                       performance.performanceList.length == 0
                   ? Center(
                       child: Text(

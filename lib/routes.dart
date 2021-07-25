@@ -12,6 +12,7 @@ import 'package:pokerapp/screens/game_screens/game_history_details_view/hand_sta
 import 'package:pokerapp/screens/game_screens/game_history_details_view/stack_details_view.dart';
 import 'package:pokerapp/screens/game_screens/new_game_settings/choose_game_new.dart';
 import 'package:pokerapp/screens/game_screens/new_game_settings/new_game_settings2.dart';
+import 'package:pokerapp/screens/profile_screens/help_screen.dart';
 import 'package:pokerapp/screens/profile_screens/performance_view.dart';
 import 'package:provider/provider.dart';
 
@@ -103,6 +104,8 @@ class Routes {
   static const String player_statistics = "/player_statistics";
   // announcements
   static const String announcements = "/announcements";
+  // help
+  static const String help = "/help";
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -451,6 +454,15 @@ class Routes {
           routeName: settings.name,
           viewToShow: AnnouncementsView(
             clubModel: clubModel,
+          ),
+        );
+
+      case help:
+        var versionCode = settings.arguments as String;
+        return _getPageRoute(
+          routeName: settings.name,
+          viewToShow: HelpScreen(
+            version: versionCode,
           ),
         );
 

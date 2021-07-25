@@ -2,9 +2,12 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:http/http.dart' as http;
+import 'package:pokerapp/main.dart';
 
 import 'package:pokerapp/models/auth_model.dart';
+import 'package:pokerapp/models/user_update_input.dart';
 import 'package:pokerapp/resources/app_config.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -26,7 +29,54 @@ class AuthService {
     })
   }""";
 
+  static String updatUserDetailsQuery = """ 
+      mutation updatePlayer(\$input :PlayerUpdateInput!){
+        ret :updatePlayer(input:\$input)
+      }
+  """;
+
+  static String getPlayerInfoQuery = """
+     query myInfo(\$getPrivs : Boolean!){
+      ret: myInfo(getPrivs : \$getPrivs){
+          uuid
+          id
+          name
+          email
+          lastActiveTime
+          channel
+        }
+        }
+  """;
+
   /* private methods */
+
+  /// For updating user details
+  static Future<bool> updateUserDetails(PlayerUpdateInput input) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+    Map<String, dynamic> variables = {"input": input.toJson()};
+
+    // if (input.name != null) {
+    //   variables["name"] = input.name;
+    // }
+
+    // if (input.displayName != null) {
+    //   variables["displayName"] = input.displayName;
+    // }
+
+    // if (input.email != null) {
+    //   variables["email"] = input.email;
+    // }
+
+    QueryResult result = await _client.query(QueryOptions(
+        documentNode: gql(updatUserDetailsQuery), variables: variables));
+
+    if (result.hasException) {
+      log(result.exception.toString());
+      return false;
+    }
+    // ignoring the return value
+    return true;
+  }
 
   static save(AuthModel currentUser) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
@@ -238,5 +288,27 @@ class AuthService {
       'uuid': respBody['uuidd'],
       'id': respBody['id']
     };
+  }
+
+  static getPlayerInfo() async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+    QueryResult result = await _client.query(QueryOptions(
+        documentNode: gql(getPlayerInfoQuery), variables: {"getPrivs": true}));
+
+    if (result.hasException) {
+      log(result.exception.toString());
+      return null;
+    }
+    if (result.data['ret'] == null) {
+      return null;
+    }
+    var data = result.data['ret'];
+    log("Auth Data : ${data}");
+    AuthModel auth = _user;
+    auth.email = data['email'];
+    auth.name = data['name'];
+    auth.playerId = data['id'];
+    auth.uuid = data['uuid'];
+    return auth;
   }
 }

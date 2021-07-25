@@ -97,7 +97,9 @@ class AppStringsNew {
 
   static String tellAFriendText = "Tell a Friend";
 
-  static String nameChangeTitleText = "Change display name";
+  static String nameChangeTitleText = "Change screen name";
+  static String emailChangeTitleText = "Change email";
+  static String displayNameChangeTitleText = "Change display name";
 
   static String hintTextForTextField = "Enter text";
 
@@ -210,4 +212,19 @@ class AppStringsNew {
   static String registrationFailText = "Registration Failed!";
 
   static String restoreSuccessText = "Restoration Success!";
+
+  static String changeScreenName = "Change screen name";
+
+  static String setDisplayName = "Set display name";
+  static String setRecoveryMail = "Set recovery Email address";
+
+  static String changeDisplayName = "Change display name";
+  static String changeRecoveryMail = "Change recovery Email address";
+
+  static String appName = "Poker Club App";
+
+  static String helpCenterText = "Help Center";
+  static String requestFeature = "Request Feature";
+  static String termsPolicy = "Terms and Privacy Policy";
+  static String licenses = "Licenses";
 }
