@@ -191,7 +191,7 @@ class NumericKeyboard2 extends StatelessWidget {
                 ),
 
                 /* clear text button */
-                InkWell(
+                InkResponse(
                   onTap: () {
                     vnValue.value = '';
                   },
@@ -210,7 +210,7 @@ class NumericKeyboard2 extends StatelessWidget {
         SizedBox(width: 25.pw),
 
         /* done button */
-        InkWell(
+        InkResponse(
           focusColor: Colors.transparent,
           highlightColor: Colors.transparent,
           splashColor: Colors.transparent,
@@ -234,7 +234,7 @@ class NumericKeyboard2 extends StatelessWidget {
         const SizedBox(width: 15.0),
 
         /* close button */
-        InkWell(
+        InkResponse(
           focusColor: Colors.transparent,
           highlightColor: Colors.transparent,
           splashColor: Colors.transparent,
@@ -306,51 +306,6 @@ class NumericKeyboard2 extends StatelessWidget {
     vnValue.value = newValue;
   }
 
-  // Widget _buildButton1({
-  //   String value,
-  //   int flex = 1,
-  // }) {
-  //   // Color color = Colors.blue;
-  //   // Color splashColor = Colors.blue[800];
-  //   IconData icon;
-  //   if (value == BACKSPACE_BTN) {
-  //     // color = Colors.lightBlue;
-  //     // splashColor = Colors.blue[800];
-  //     icon = Icons.backspace_rounded;
-  //   }
-
-  //   // if (value == '.' && !decimal) {
-  //   //   color = Colors.grey;
-  //   //   splashColor = Colors.white70;
-  //   // }
-
-  //   return Expanded(
-  //     flex: flex,
-  //     child: Material(
-  //       color: Colors.blue, // button color
-  //       child: InkWell(
-  //         splashColor: Colors.red, // inkwell color
-  //         //child: SizedBox(width: 56, height: 56, child: Icon(Icons.menu)),
-  //         child: Center(
-  //           child: icon != null
-  //               ? Icon(
-  //                   icon,
-  //                   color: Colors.white,
-  //                 )
-  //               : Text(
-  //                   value,
-  //                   style: TextStyle(
-  //                     color: Colors.white,
-  //                     fontSize: 18.0,
-  //                   ),
-  //                 ),
-  //         ),
-  //         onTap: () {},
-  //       ),
-  //     ),
-  //   );
-  // }
-
   Widget _buildButton({
     String value,
     int flex = 1,
@@ -360,7 +315,7 @@ class NumericKeyboard2 extends StatelessWidget {
     Color splashColor = Colors.blue[800];
     IconData icon;
     color = AppColorsNew.newBorderColor;
-    splashColor = AppColorsNew.newBorderColor;
+    splashColor = AppColorsNew.newGreenRadialStartColor;
     if (value == BACKSPACE_BTN) {
       color = Colors.blueGrey;
       //splashColor = Colors.blue[800];
@@ -396,7 +351,7 @@ class NumericKeyboard2 extends StatelessWidget {
               ),
             ],
           ),
-          child: InkWell(
+          child: InkResponse(
             focusColor: Colors.transparent,
             highlightColor: Colors.transparent,
             splashColor: splashColor, //Colors.transparent,
