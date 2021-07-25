@@ -31,7 +31,7 @@ class GameModelNew {
     this.clubCode,
   });
 
-  GameModelNew.fromJson(Map<String, dynamic> json) {
+  GameModelNew.fromJson(Map<String, dynamic> json, {bool playedGame}) {
     gameCode = json['gameCode'];
     gameType = json['gameType'];
     clubName = json['clubName'];

@@ -148,12 +148,14 @@ class GameModel {
       clubCode
       clubName
       gameCode
+      smallBlind
+      bigBlind
       title
       gameType
       sessionTime
       buyIn
       stack
-      gameTime
+      runTime
       startedAt
       endedAt
     }  

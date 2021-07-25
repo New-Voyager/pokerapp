@@ -87,13 +87,11 @@ class GameMessagingService {
     final ChatMessage message = ChatMessage.fromMessage(natsMsg.string);
 
     // handle messages
-    if (message.type == 'TEXT' ||
-        message.type == 'GIPHY') {
+    if (message.type == 'TEXT' || message.type == 'GIPHY') {
       if (this.messages.length > MAX_CHAT_BUFSIZE) {
         this.messages.removeAt(0);
       }
     }
-
 
     if (message != null) {
       if (this.messages.length > 0) {

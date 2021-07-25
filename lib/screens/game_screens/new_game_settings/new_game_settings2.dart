@@ -78,11 +78,15 @@ class NewGameSettings2 extends StatelessWidget {
     gm.gameType = mainGameType;
     gm.roeGames = subGameTypes;
     gm.dealerChoiceGames = subGameTypes;
-
-    String gameCode = await GameService.configureClubGame(
-      clubCode,
-      gm,
-    );
+    String gameCode;
+    if (clubCode != null && clubCode.isNotEmpty) {
+      gameCode = await GameService.configureClubGame(
+        clubCode,
+        gm,
+      );
+    } else {
+      gameCode = await GameService.configurePlayerGame(gm);
+    }
 
     if (gameCode != null)
       _joinGame(context, gameCode);

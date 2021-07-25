@@ -217,8 +217,8 @@ class _MainScreenState extends State<MainScreen>
                   selected: _navPos == 2,
                 ),
                 CurvedNavItem(
-                  iconData: Icons.money,
-                  title: 'Purchase',
+                  iconData: Icons.shopping_cart,
+                  title: 'Store',
                   selected: _navPos == 3,
                 ),
                 if (TestService.isTesting)
@@ -269,7 +269,7 @@ class CurvedNavItem extends StatelessWidget {
             : Container(
                 margin: EdgeInsets.only(top: 4.ph),
                 child: Text(
-                  title.toUpperCase() ?? 'Title'.toUpperCase(),
+                  title, //.toUpperCase() ?? 'Title'.toUpperCase(),
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: AppColorsNew.newTextColor,

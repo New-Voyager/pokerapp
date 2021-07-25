@@ -14,6 +14,7 @@ import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/routes.dart';
+import 'package:pokerapp/screens/game_screens/game_history_view/game_history_item_new.dart';
 import 'package:pokerapp/screens/game_screens/new_game_settings/new_game_settings2.dart';
 import 'package:pokerapp/screens/main_screens/games_page_view/widgets/game_record_item.dart';
 import 'package:pokerapp/screens/main_screens/games_page_view/widgets/live_games_item.dart';
@@ -37,7 +38,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
   bool _isLoading = true;
   bool _isPlayedGamesLoading = true;
   List<GameModelNew> liveGames = [];
-  List<GameHistoryModel> _playedGames = [];
+  List<GameHistoryModel> playedGames = [];
 
   TabController _tabController;
 
@@ -46,6 +47,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
   Future<void> _fillLiveGames() async {
     //print('fetching live games');
     liveGames = await GameService.getLiveGamesNew();
+    playedGames = await GameService.getPastGames();
   }
 
   @override
@@ -59,11 +61,10 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
       TestService.isTesting ? _loadTestLiveGames() : _fetchPlayedGames();
     });
 
-    // THIS IS A TEMPORARY SOLUTION
-    // _refreshTimer = Timer.periodic(const Duration(seconds: 5), (timer) async {
-    //   await _fillLiveGames();
-    //   if(mounted) setState(() {});
-    // });
+    _refreshTimer = Timer.periodic(const Duration(seconds: 30), (timer) async {
+      await _fillLiveGames();
+      if (mounted) setState(() {});
+    });
   }
 
   _fetchLiveGames() async {
@@ -306,46 +307,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
                       ),
                     ],
                   ),
-                  _isPlayedGamesLoading
-                      ? Container()
-                      : _playedGames.isEmpty
-                          ? Center(
-                              child: Text(
-                                AppStringsNew.noGameRecordsText,
-                                style: AppStylesNew.titleTextStyle,
-                              ),
-                            )
-                          : ListView.separated(
-                              physics: BouncingScrollPhysics(),
-                              shrinkWrap: true,
-                              itemBuilder: (context, index) {
-                                return GameRecordItem(
-                                    game: _playedGames[index],
-                                    onTapFunction: () async {
-                                      await Navigator.of(context).pushNamed(
-                                        Routes.game_play,
-                                        arguments: _playedGames[index].gameCode,
-                                      );
-                                      // Refreshes livegames again
-                                      if (TestService.isTesting) {
-                                        _loadTestLiveGames();
-                                      } else {
-                                        _fetchLiveGames();
-                                        _fetchPlayedGames();
-                                      }
-                                    });
-                              },
-                              padding: EdgeInsets.only(
-                                bottom: 64.ph,
-                                top: 16.ph,
-                              ),
-                              separatorBuilder: (
-                                context,
-                                index,
-                              ) =>
-                                  AppDimensionsNew.getVerticalSizedBox(16.ph),
-                              itemCount: _playedGames.length,
-                            ),
+                  _isPlayedGamesLoading ? Container() : getPlayedGames(),
                 ],
               ),
             ),
@@ -353,5 +315,48 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
         ),
       ),
     );
+  }
+
+  Widget getPlayedGames() {
+    return playedGames.isEmpty
+        ? Center(
+            child: Text(
+              AppStringsNew.noGameRecordsText,
+              style: AppStylesNew.titleTextStyle,
+            ),
+          )
+        : ListView.separated(
+            physics: BouncingScrollPhysics(),
+            shrinkWrap: true,
+            itemBuilder: gameHistoryItem,
+            padding: EdgeInsets.only(
+              bottom: 64.ph,
+              top: 16.ph,
+            ),
+            separatorBuilder: (
+              context,
+              index,
+            ) =>
+                AppDimensionsNew.getVerticalSizedBox(16.ph),
+            itemCount: playedGames.length,
+          );
+  }
+
+  Widget gameHistoryItem(BuildContext context, int index) {
+    final item = playedGames[index];
+    return GestureDetector(
+        onTap: () {
+          GameHistoryDetailModel model =
+              GameHistoryDetailModel(item.gameCode, true);
+          Navigator.pushNamed(
+            context,
+            Routes.game_history_detail_view,
+            arguments: {'model': model, 'clubCode': item.clubCode},
+          );
+        },
+        child: GameHistoryItemNew(
+          game: playedGames[index],
+          showClubName: true,
+        ));
   }
 }
