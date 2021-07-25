@@ -222,4 +222,9 @@ class AppStringsNew {
   static String changeRecoveryMail = "Change recovery Email address";
 
   static String appName = "Poker Club App";
+
+  static String helpCenterText = "Help Center";
+  static String requestFeature = "Request Feature";
+  static String termsPolicy = "Terms and Privacy Policy";
+  static String licenses = "Licenses";
 }

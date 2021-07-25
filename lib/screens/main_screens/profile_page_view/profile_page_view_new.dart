@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get_version/get_version.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/auth_model.dart';
@@ -294,9 +295,12 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                     imagePath:
                                         AppAssetsNew.bookmarkedHandsImagePath,
                                     index: 3,
-                                    onTapFunction: () {
-                                      Navigator.of(context)
-                                          .pushNamed(Routes.help);
+                                    onTapFunction: () async {
+                                      String version =
+                                          await GetVersion.projectVersion;
+                                      Navigator.of(context).pushNamed(
+                                          Routes.help,
+                                          arguments: version,);
                                     },
                                   ),
                                   ListTileItem(

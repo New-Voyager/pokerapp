@@ -458,9 +458,12 @@ class Routes {
         );
 
       case help:
+        var versionCode = settings.arguments as String;
         return _getPageRoute(
           routeName: settings.name,
-          viewToShow: HelpScreen(),
+          viewToShow: HelpScreen(
+            version: versionCode,
+          ),
         );
 
       default:
