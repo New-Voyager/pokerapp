@@ -61,10 +61,10 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
       TestService.isTesting ? _loadTestLiveGames() : _fetchPlayedGames();
     });
 
-    _refreshTimer = Timer.periodic(const Duration(seconds: 30), (timer) async {
-      await _fillLiveGames();
-      if (mounted) setState(() {});
-    });
+    // _refreshTimer = Timer.periodic(const Duration(seconds: 30), (timer) async {
+    //   await _fillLiveGames();
+    //   if (mounted) setState(() {});
+    // });
   }
 
   _fetchLiveGames() async {
