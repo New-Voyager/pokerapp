@@ -321,6 +321,11 @@ class AppStylesNew {
     borderRadius: BorderRadius.circular(8),
   );
 
+  static final gameHistoryDecoration = BoxDecoration(
+    border: Border.all(color: AppColorsNew.gameHistoryColor, width: 2),
+    color: AppColorsNew.newBackgroundBlackColor,
+    borderRadius: BorderRadius.circular(8),
+  );
   static final greenContainerDecoration = BoxDecoration(
     border: Border.all(color: AppColorsNew.borderColor, width: 1),
     color: AppColorsNew.tileGreenColor,

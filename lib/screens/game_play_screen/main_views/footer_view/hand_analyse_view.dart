@@ -53,8 +53,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       while (mounted) {
-        log('0-0-0-0- inside while Polling for pending approvals');
-
+        //log('0-0-0-0- inside while Polling for pending approvals');
         await Future.delayed(Duration(seconds: 10));
         _pollPendingApprovals();
       }
@@ -63,7 +62,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
   }
 
   _pollPendingApprovals() async {
-    log('0-0-0-0- Polling for pending approvals');
+    //log('0-0-0-0- Polling for pending approvals');
     final approvals = await PlayerService.getPendingApprovals();
     final state = Provider.of<PendingApprovalsState>(_context, listen: false);
     state.setPendingList(approvals);

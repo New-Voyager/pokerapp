@@ -432,19 +432,21 @@ class _PlayedHandsScreenState extends State<PlayedHandsScreen> {
                               ),
                             ),
                             SizedBox(width: 20),
-                            InkWell(
-                              onTap: () async {
-                                await _shareHandWithClub(index);
-                              },
-                              child: Container(
-                                alignment: Alignment.bottomRight,
-                                child: Icon(
-                                  Icons.share,
-                                  color: Colors.white,
-                                  size: 20,
-                                ),
-                              ),
-                            ),
+                            (widget.clubCode == null || widget.clubCode == '')
+                                ? Container()
+                                : InkWell(
+                                    onTap: () async {
+                                      await _shareHandWithClub(index);
+                                    },
+                                    child: Container(
+                                      alignment: Alignment.bottomRight,
+                                      child: Icon(
+                                        Icons.share,
+                                        color: Colors.white,
+                                        size: 20,
+                                      ),
+                                    ),
+                                  ),
                             SizedBox(width: 20),
                             InkWell(
                               onTap: () {

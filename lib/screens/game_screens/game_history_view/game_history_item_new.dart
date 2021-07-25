@@ -12,12 +12,35 @@ import 'package:pokerapp/utils/formatter.dart';
 
 class GameHistoryItemNew extends StatelessWidget {
   final GameHistoryModel game;
-  const GameHistoryItemNew({Key key, this.game}) : super(key: key);
+  final bool showClubName;
+  const GameHistoryItemNew({Key key, this.game, this.showClubName})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    Widget clubName = Container();
+    if ((this.showClubName ?? false) && this.game.clubName != null) {
+      clubName = Row(
+        children: [
+          Expanded(
+            flex: 2,
+            child: Text(
+              "Club",
+              style: AppStylesNew.labelTextStyle,
+            ),
+          ),
+          Expanded(
+            flex: 3,
+            child: Text(
+              " ${this.game.clubName}",
+            ),
+          ),
+        ],
+      );
+    }
+
     return Container(
-      decoration: AppStylesNew.blackContainerDecoration,
+      decoration: AppStylesNew.gameHistoryDecoration,
       child: Stack(
         alignment: Alignment.center,
         children: [
@@ -35,18 +58,6 @@ class GameHistoryItemNew extends StatelessWidget {
           ),
           Row(
             children: [
-              // Container(
-              //   margin: EdgeInsets.symmetric(horizontal: 16),
-              //   child: Column(
-              //     children: [
-              //       Container(
-              //         width: 12.pw,
-              //         color: AppColorsNew.badgeColor,
-              //         height: 50,
-              //       ),
-              //     ],
-              //   ),
-              // ),
               Expanded(
                 flex: 6,
                 child: Container(
@@ -79,6 +90,7 @@ class GameHistoryItemNew extends StatelessWidget {
                           ],
                         ),
                       ),
+                      clubName,
                       Row(
                         children: [
                           Expanded(
@@ -122,7 +134,7 @@ class GameHistoryItemNew extends StatelessWidget {
                           Expanded(
                             flex: 3,
                             child: Text(
-                              " ${DataFormatter.getTimeInHHMMFormat(game.runTime)}",
+                              " ${DataFormatter.getTimeInHHMMFormatInMin(game.runTime)}",
                             ),
                           ),
                         ],
@@ -138,7 +150,7 @@ class GameHistoryItemNew extends StatelessWidget {
                           Expanded(
                               flex: 3,
                               child: Text(
-                                  " ${DataFormatter.getTimeInHHMMFormat(game.sessionTime)}")),
+                                  " ${DataFormatter.getTimeInHHMMFormatInMin(game.sessionTime)}")),
                         ],
                       ),
                     ],

@@ -164,7 +164,10 @@ class _ClubsPageViewState extends State<ClubsPageView>
 
     /* finally, show a status message and fetch all the clubs (if required) */
     if (clubCode != null) {
-      Alerts.showSnackBar(ctx, 'Created new club');
+      Alerts.showNotification(
+          titleText: 'Club',
+          subTitleText: 'Created club: $clubName',
+          duration: Duration(seconds: 2));
       final natsClient = Provider.of<Nats>(context, listen: false);
       natsClient.subscribeClubMessages(clubCode);
       _fetchClubs();

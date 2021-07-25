@@ -356,6 +356,33 @@ class GameService {
       }
     """;
 
+  static String pastGamesQuery = """
+      query {
+        pastGames {
+          clubCode
+          clubName
+          gameCode
+          smallBlind
+          bigBlind
+          gameType
+          startedBy
+          startedAt
+          endedAt
+          endedBy
+          runTime
+          smallBlind
+          bigBlind
+          endedAt
+          startedAt
+          handsDealt
+          handsPlayed
+          sessionTime
+          stack
+          buyIn
+          balance
+        }
+      }
+    """;
   static String openSeatsQuery = """
       query openSeats(\$gameCode: String!) {
         seats: openSeats(gameCode: \$gameCode)
@@ -384,6 +411,30 @@ class GameService {
     }
     //log("Returning liveGames Count: ${liveGames.length}");
     return liveGames;
+  }
+
+  static Future<List<GameHistoryModel>> getPastGames() async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+    List<GameHistoryModel> pastGames = [];
+
+    QueryResult result =
+        await _client.query(QueryOptions(documentNode: gql(pastGamesQuery)));
+
+    // print("result.data ${result.data} ${result.hasException}");
+    if (result.hasException) {
+      log("Exception In GraphQl Response: ${result.exception}");
+    } else {
+      try {
+        result.data['pastGames'].forEach((item) {
+          pastGames.add(GameHistoryModel.fromJson(item));
+        });
+      } catch (e) {
+        log("Exception in converting to model: $e");
+        return pastGames;
+      }
+    }
+    //log("Returning liveGames Count: ${liveGames.length}");
+    return pastGames;
   }
 
   static Future<List<int>> getOpenSeats(String gameCode) async {
@@ -926,6 +977,34 @@ class GameService {
           """;
     Map<String, dynamic> variables = {
       "clubCode": clubCode,
+      "gameInput": input.toJson(),
+    };
+
+    QueryResult result = await _client.mutate(
+      MutationOptions(documentNode: gql(_query), variables: variables),
+    );
+
+    print(result.exception);
+    if (result.hasException) return null;
+
+    Map game = (result.data as LazyCacheMap).data['configuredGame'];
+    String gameCode = game["gameCode"];
+    log('Created game: $gameCode');
+    return gameCode;
+  }
+
+  static Future<String> configurePlayerGame(
+    NewGameModel input,
+  ) async {
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+    String _query = """
+          mutation (\$gameInput: GameCreateInput!){
+            configuredGame: configureFriendsGame(game: \$gameInput) {
+              gameCode
+            }
+          }
+          """;
+    Map<String, dynamic> variables = {
       "gameInput": input.toJson(),
     };
 

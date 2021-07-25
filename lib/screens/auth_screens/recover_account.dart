@@ -252,8 +252,7 @@ class _RestoreAccountScreenState extends State<RestoreAccountScreen> {
       if (result['status'] == true) {
         ConnectionDialog.dismiss(context: context);
         // successful
-        Alerts.showNotification(
-            titleText: AppStringsNew.restoreSuccessText);
+        Alerts.showNotification(titleText: AppStringsNew.restoreSuccessText);
 
         // save device id, device secret and jwt
         AuthModel currentUser = AuthModel(

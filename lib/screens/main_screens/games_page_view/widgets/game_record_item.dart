@@ -75,16 +75,6 @@ class GameRecordItem extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Row(
-                      //   mainAxisAlignment: MainAxisAlignment.end,
-                      //   children: [
-                      //     Text(
-                      //       '${AppStringsNew.BuyIn}}-${game.buyInMax}',
-                      //       style: AppStylesNew.buyInTextStyle,
-                      //     ),
-                      //     AppDimensionsNew.getHorizontalSpace(16.pw),
-                      //   ],
-                      // ),
                       Text(
                         "${GameModelNew.getGameTypeStr(game.gameTypeStr)} ${game.smallBlind}/${game.bigBlind}",
                         style: AppStylesNew.gameTypeTextStyle,

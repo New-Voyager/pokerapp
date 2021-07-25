@@ -7,9 +7,9 @@ class LoadAssets {
     for (int i = 1; i <= 200; i++) {
       String card = 'assets/images/card_face/$i.svg';
       try {
-        log('Loading $card');
+        //log('Loading $card');
         SvgPicture.asset(card);
-        log('Loaded $card');
+        //log('Loaded $card');
       } catch (err) {
         log('Failed to load $card');
       }
