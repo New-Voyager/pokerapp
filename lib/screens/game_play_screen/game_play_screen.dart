@@ -251,7 +251,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
     _gameState = GameState();
     _gameState.gameComService = gameComService;
-    _gameState.initialize(
+    await _gameState.initialize(
       gameCode: _gameInfoModel.gameCode,
       gameInfo: _gameInfoModel,
       currentPlayer: _currentPlayer,

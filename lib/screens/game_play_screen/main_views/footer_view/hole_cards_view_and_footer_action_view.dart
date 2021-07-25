@@ -20,11 +20,14 @@ import 'footer_action_view.dart';
 
 class HoleCardsViewAndFooterActionView extends StatelessWidget {
   final PlayerModel playerModel;
+  final ValueNotifier<bool> isHoleCardsVisibleVn;
 
-  HoleCardsViewAndFooterActionView({this.playerModel});
+  HoleCardsViewAndFooterActionView({
+    @required this.playerModel,
+    @required this.isHoleCardsVisibleVn,
+  });
 
   final ValueNotifier<bool> _showDarkBackgroundVn = ValueNotifier(false);
-  final ValueNotifier<bool> _isCardVisibleVn = ValueNotifier(false);
 
   bool _showAllCardSelectionButton(var vnfs) {
     final bool isInResult = vnfs.value == FooterStatus.Result;
@@ -33,7 +36,7 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
 
   void _markAllCardsAsSelected(BuildContext context) {
     // flip all the cards to front, if not already
-    _isCardVisibleVn.value = true;
+    isHoleCardsVisibleVn.value = true;
 
     // mark all the cards for revealing
     context.read<MarkedCards>().markAll(playerModel.cardObjects);
@@ -200,7 +203,14 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
     if (gameState.straddlePrompt) return cardsWidget;
 
     return GestureDetector(
-      onTap: () => _isCardVisibleVn.value = !_isCardVisibleVn.value,
+      onTap: () {
+        isHoleCardsVisibleVn.value = !isHoleCardsVisibleVn.value;
+
+        // write the final _isCardVisible value to local storage
+        gameState.gameHiveStore.setHoleCardsVisibilityState(
+          isHoleCardsVisibleVn.value,
+        );
+      },
       child: cardsWidget,
     );
   }
@@ -221,8 +231,9 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
         [];
 
     return ValueListenableBuilder<bool>(
-      valueListenable: _isCardVisibleVn,
+      valueListenable: isHoleCardsVisibleVn,
       builder: (_, isCardVisible, __) {
+        //
         log('HoleCards: isCardVisible: $isCardVisible');
         return HoleStackCardView(
           cards: cards,

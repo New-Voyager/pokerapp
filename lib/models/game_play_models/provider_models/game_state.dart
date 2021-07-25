@@ -265,7 +265,7 @@ class GameState {
       gameHiveStore = GameHiveStore();
       await gameHiveStore.open(_gameCode);
 
-      if (!gameHiveStore.isInitialized()) {
+      if (!gameHiveStore.haveGameSettings()) {
         log('In GameState initialize(), gameBox is empty');
         settings = GameSettings(gameCode);
         gameHiveStore.putGameSettings(settings);
@@ -275,6 +275,7 @@ class GameState {
       }
       log('In GameState initialize(), gameSettings = $settings');
       _communicationState.showTextChat = settings.showChat;
+      print('makes sense');
     }
   }
 

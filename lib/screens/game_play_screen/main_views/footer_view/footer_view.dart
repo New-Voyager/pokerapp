@@ -39,6 +39,9 @@ class _FooterViewState extends State<FooterView>
     with AfterLayoutMixin<FooterView> {
   final ValueNotifier<PlayerModel> mePlayerModelVn = ValueNotifier(null);
 
+  /* this value notifier is used in a child widget - hole cards view */
+  final ValueNotifier<bool> isHoleCardsVisibleVn = ValueNotifier(false);
+
   final Function eq = const ListEquality().equals;
 
   Players _players;
@@ -77,6 +80,10 @@ class _FooterViewState extends State<FooterView>
 
   /* init */
   void _init() {
+    // get the game card visibility state from local storage
+    isHoleCardsVisibleVn.value =
+        context.read<GameState>().gameHiveStore.getHoleCardsVisibilityState();
+
     _players = context.read<Players>();
     mePlayerModelVn.value = _players?.me?.copyWith();
 
@@ -114,7 +121,10 @@ class _FooterViewState extends State<FooterView>
       valueListenable: mePlayerModelVn,
       builder: (_, me, __) => me == null
           ? SizedBox(width: width)
-          : HoleCardsViewAndFooterActionView(playerModel: me),
+          : HoleCardsViewAndFooterActionView(
+              playerModel: me,
+              isHoleCardsVisibleVn: isHoleCardsVisibleVn,
+            ),
     );
   }
 
