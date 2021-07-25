@@ -820,8 +820,7 @@ class HandActionService {
 
   Future<void> handleDealStarted({
     bool fromGameReplay = false,
-    // works only if in testing mode
-    int testNo = 2,
+    int testNo = 2, // works only if in testing mode
   }) async {
     log('Hand Message: ::handleDealStarted:: START');
     // final me = _gameState.me(_context);
@@ -832,9 +831,8 @@ class HandActionService {
 
     if (_close) return;
     try {
-      /* show card shuffling */
       final TableState tableState = _gameState.getTableState(_context);
-      /* stop showing card shuffling */
+
       tableState.clear();
       tableState.notifyAll();
 
@@ -842,6 +840,12 @@ class HandActionService {
 
       // play the deal sound effect
       playSoundEffect(AppAssets.dealSound);
+
+      /* show card shuffling*/
+      tableState.updateCardShufflingAnimation(true);
+      await Future.delayed(const Duration(milliseconds: 800)); // wait
+      tableState.updateCardShufflingAnimation(false);
+      /* end card shuffling animation */
 
       if (_close) return;
 

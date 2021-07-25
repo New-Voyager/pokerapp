@@ -18,6 +18,9 @@ class TableState extends ChangeNotifier {
   bool _twoBoardsNeeded;
   int _potToHighlight;
 
+  bool get showCardsShuffling => _showCardsShuffling;
+  bool _showCardsShuffling;
+
   final math.Random r = math.Random();
 
   int get communityCardRefresh => _communityCardRefresh;
@@ -36,6 +39,7 @@ class TableState extends ChangeNotifier {
     this._potUpdatesChips = potUpdatesChips;
     this._flipSpeed = 500;
     this._twoBoardsNeeded = false;
+    this._showCardsShuffling = false;
   }
 
   void clear() {
@@ -58,6 +62,12 @@ class TableState extends ChangeNotifier {
   }
 
   void notifyAll() => notifyListeners();
+
+  void updateCardShufflingAnimation(bool animate) {
+    _showCardsShuffling = animate;
+    _tableStatus = AppConstants.NEW_HAND;
+    notifyListeners();
+  }
 
   void refreshCommunityCards() {
     const _100crore = 1000000000;

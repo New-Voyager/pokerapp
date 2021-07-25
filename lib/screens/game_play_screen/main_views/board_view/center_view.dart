@@ -112,6 +112,7 @@ class _CenterViewState extends State<CenterView> {
   final vnPotToHighlight = ValueNotifier<int>(null);
   final vnRankStr = ValueNotifier<String>(null);
   final vnCommunityCardsRefresh = ValueNotifier<int>(null);
+  final vnShowCardShuffling = ValueNotifier<bool>(false);
 
   final Function eq = const ListEquality().equals;
 
@@ -124,7 +125,7 @@ class _CenterViewState extends State<CenterView> {
     vnGameStatus.value = tableState.gameStatus;
     vnTableStatus.value = tableState.tableStatus;
     vnCommunityCardsRefresh.value = tableState.communityCardRefresh;
-    log('completed: tableSTateListener: ${tableState.communityCardRefresh}');
+    vnShowCardShuffling.value = tableState.showCardsShuffling;
 
     // need rebuilding check
     if (_needsRebuilding(vnCards.value, tableState.cards))
@@ -191,17 +192,17 @@ class _CenterViewState extends State<CenterView> {
         boardAttributes.centerViewButtonVerticalTranslate,
       );
     }
-    String text = BoardViewUtilMethods.getText(tableStatus);
+    // String text = BoardViewUtilMethods.getText(tableStatus);
 
     log('potViewPos: before new hand.');
-    /* in case of new hand, show the deck shuffling animation */
-    if (text == AppConstants.NEW_HAND) {
-      return _positionAnimationShuffleCardView(
-        offset: boardAttributes.centerViewCardShufflePosition,
-        scale: boardAttributes.centerViewCenterScale,
-        child: AnimatingShuffleCardView(),
-      );
-    }
+    // /* in case of new hand, show the deck shuffling animation */
+    // if (text == AppConstants.NEW_HAND) {
+    //   return _positionAnimationShuffleCardView(
+    //     offset: boardAttributes.centerViewCardShufflePosition,
+    //     scale: boardAttributes.centerViewCenterScale,
+    //     child: AnimatingShuffleCardView(),
+    //   );
+    // }
     log('potViewPos: building main center view');
 
     /* if we reach here, means, the game is RUNNING */
@@ -215,15 +216,23 @@ class _CenterViewState extends State<CenterView> {
     final gameState = Provider.of<GameState>(context, listen: false);
     final boardAttributes = gameState.getBoardAttributes(context);
 
-    return ValueListenableBuilder2<String, String>(
+    return ValueListenableBuilder3<String, String, bool>(
       vnGameStatus,
       vnTableStatus,
-      builder: (_, gameStatus, tableStatus, __) => _mainBuild(
-        context,
-        tableStatus: tableStatus,
-        gameStatus: gameStatus,
-        boardAttributes: boardAttributes,
-      ),
+      vnShowCardShuffling,
+      builder: (_, gameStatus, tableStatus, showCardsShuffling, __) =>
+          showCardsShuffling
+              ? _positionAnimationShuffleCardView(
+                  offset: boardAttributes.centerViewCardShufflePosition,
+                  scale: boardAttributes.centerViewCenterScale,
+                  child: AnimatingShuffleCardView(),
+                )
+              : _mainBuild(
+                  context,
+                  tableStatus: tableStatus,
+                  gameStatus: gameStatus,
+                  boardAttributes: boardAttributes,
+                ),
     );
   }
 

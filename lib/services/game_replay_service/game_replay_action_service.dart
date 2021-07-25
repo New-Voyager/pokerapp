@@ -282,13 +282,20 @@ class GameReplayActionService {
 
     if (_close) return;
 
-    /* set the table status to NEW_HAND and thus shows the card shuffle animation */
+    /* show card shuffling*/
     final tableState = gameState.getTableState(_context);
-    tableState.updateTableStatusSilent(AppConstants.NEW_HAND);
-    tableState.notifyAll();
+    tableState.updateCardShufflingAnimation(true);
+    await Future.delayed(const Duration(milliseconds: 800)); // wait
+    tableState.updateCardShufflingAnimation(false);
+    /* end card shuffling animation */
 
-    /* wait for the card shuffling animation to finish :todo can be tweaked */
-    await Future.delayed(const Duration(milliseconds: 800));
+    // /* set the table status to NEW_HAND and thus shows the card shuffle animation */
+    // final tableState = gameState.getTableState(_context);
+    // tableState.updateTableStatusSilent(AppConstants.NEW_HAND);
+    // tableState.notifyAll();
+
+    // /* wait for the card shuffling animation to finish :todo can be tweaked */
+    // await Future.delayed(const Duration(milliseconds: 800));
 
     /* finding the current Player */
     final playerID = gameState.currentPlayerId;
