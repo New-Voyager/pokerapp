@@ -57,7 +57,7 @@ class TableState extends ChangeNotifier {
 
   void updateCardShufflingAnimation(bool animate) {
     _showCardsShuffling = animate;
-    _tableStatus = AppConstants.NEW_HAND;
+    _tableStatus = AppConstants.TABLE_STATUS_GAME_RUNNING;
     notifyListeners();
   }
 

@@ -60,25 +60,29 @@ class _CenterViewState extends State<CenterView> {
         ),
       );
 
-  Widget _buildGameEndedWidget() {
-    return centerTextWidget(AppStringsNew.gameEndedText);
-  }
-
-  Widget centerTextWidget(String text) {
-    return Center(
-      child: Text(
-        text,
-        style: TextStyle(
-          color: Colors.grey,
-          fontSize: 16.dp,
-          fontWeight: FontWeight.w600,
+  Widget centerTextWidget(
+    String text,
+    Offset offset,
+  ) {
+    return Transform.translate(
+      offset: offset,
+      child: Center(
+        child: Text(
+          text,
+          style: TextStyle(
+            color: Colors.grey,
+            fontSize: 16.dp,
+            fontWeight: FontWeight.w600,
+          ),
         ),
       ),
     );
   }
 
   Widget _buildGamePauseOptions(
-      GameState gameState, Offset centerViewButtonOffset) {
+    GameState gameState,
+    Offset centerViewButtonOffset,
+  ) {
     return Transform.translate(
       offset: centerViewButtonOffset,
       child: Consumer2<SeatChangeNotifier, TableState>(
@@ -166,18 +170,23 @@ class _CenterViewState extends State<CenterView> {
     final gameState = GameState.getState(context);
     log('potViewPos: before game ended.');
     if (gameState.gameInfo.status == AppConstants.GAME_ENDED)
-      return _buildGameEndedWidget();
+      return centerTextWidget(
+        AppStringsNew.gameEndedText,
+        boardAttributes.centerViewButtonVerticalTranslate,
+      );
 
     log('potViewPos: before waiting for players.');
     if (!gameState.botGame && gameState.playersInSeatsCount <= 1) {
       String text = 'Waiting for players to join';
-      return centerTextWidget(text);
+      return centerTextWidget(
+          text, boardAttributes.centerViewButtonVerticalTranslate);
     }
 
     log('potViewPos: before seat change progress.');
     if (gameState.gameInfo.tableStatus ==
         AppConstants.TABLE_STATUS_HOST_SEATCHANGE_IN_PROGRESS) {
-      return centerTextWidget('Seat change in progress');
+      return centerTextWidget('Seat change in progress',
+          boardAttributes.centerViewButtonVerticalTranslate);
     }
 
     final bool isGamePausedOrWaiting = gameState.gameInfo.status ==
@@ -187,6 +196,7 @@ class _CenterViewState extends State<CenterView> {
     log('potViewPos: before is paused or waiting isGameRunning: ${gameState.isGameRunning} isGamePausedOrWaiting: $isGamePausedOrWaiting ${gameState.gameInfo.tableStatus}');
     /* if the game is paused, show the options available during game pause */
     if (isGamePausedOrWaiting && !gameState.isGameRunning) {
+      print('_buildGamePauseOptions');
       return _buildGamePauseOptions(
         gameState,
         boardAttributes.centerViewButtonVerticalTranslate,
