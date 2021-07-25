@@ -192,18 +192,6 @@ class _CenterViewState extends State<CenterView> {
         boardAttributes.centerViewButtonVerticalTranslate,
       );
     }
-    // String text = BoardViewUtilMethods.getText(tableStatus);
-
-    log('potViewPos: before new hand.');
-    // /* in case of new hand, show the deck shuffling animation */
-    // if (text == AppConstants.NEW_HAND) {
-    //   return _positionAnimationShuffleCardView(
-    //     offset: boardAttributes.centerViewCardShufflePosition,
-    //     scale: boardAttributes.centerViewCenterScale,
-    //     child: AnimatingShuffleCardView(),
-    //   );
-    // }
-    log('potViewPos: building main center view');
 
     /* if we reach here, means, the game is RUNNING */
     /* The following view, shows the community cards

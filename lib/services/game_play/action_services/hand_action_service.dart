@@ -843,7 +843,7 @@ class HandActionService {
 
       /* show card shuffling*/
       tableState.updateCardShufflingAnimation(true);
-      await Future.delayed(const Duration(milliseconds: 800)); // wait
+      await Future.delayed(AppConstants.cardShufflingTotalWaitDuration); // wait
       tableState.updateCardShufflingAnimation(false);
       /* end card shuffling animation */
 
