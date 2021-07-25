@@ -31,6 +31,10 @@ class AppConstants {
 
   static const Duration diamondUpdateDuration = const Duration(minutes: 1);
 
+  static const Duration cardShufflingTotalWaitDuration = const Duration(
+    milliseconds: 800,
+  );
+
   static const Duration cardShufflingWaitDuration = const Duration(
     milliseconds: 200,
   );

@@ -60,25 +60,29 @@ class _CenterViewState extends State<CenterView> {
         ),
       );
 
-  Widget _buildGameEndedWidget() {
-    return centerTextWidget(AppStringsNew.gameEndedText);
-  }
-
-  Widget centerTextWidget(String text) {
-    return Center(
-      child: Text(
-        text,
-        style: TextStyle(
-          color: Colors.grey,
-          fontSize: 16.dp,
-          fontWeight: FontWeight.w600,
+  Widget centerTextWidget(
+    String text,
+    Offset offset,
+  ) {
+    return Transform.translate(
+      offset: offset,
+      child: Center(
+        child: Text(
+          text,
+          style: TextStyle(
+            color: Colors.grey,
+            fontSize: 16.dp,
+            fontWeight: FontWeight.w600,
+          ),
         ),
       ),
     );
   }
 
   Widget _buildGamePauseOptions(
-      GameState gameState, Offset centerViewButtonOffset) {
+    GameState gameState,
+    Offset centerViewButtonOffset,
+  ) {
     return Transform.translate(
       offset: centerViewButtonOffset,
       child: Consumer2<SeatChangeNotifier, TableState>(
@@ -112,6 +116,7 @@ class _CenterViewState extends State<CenterView> {
   final vnPotToHighlight = ValueNotifier<int>(null);
   final vnRankStr = ValueNotifier<String>(null);
   final vnCommunityCardsRefresh = ValueNotifier<int>(null);
+  final vnShowCardShuffling = ValueNotifier<bool>(false);
 
   final Function eq = const ListEquality().equals;
 
@@ -124,7 +129,7 @@ class _CenterViewState extends State<CenterView> {
     vnGameStatus.value = tableState.gameStatus;
     vnTableStatus.value = tableState.tableStatus;
     vnCommunityCardsRefresh.value = tableState.communityCardRefresh;
-    log('completed: tableSTateListener: ${tableState.communityCardRefresh}');
+    vnShowCardShuffling.value = tableState.showCardsShuffling;
 
     // need rebuilding check
     if (_needsRebuilding(vnCards.value, tableState.cards))
@@ -165,18 +170,23 @@ class _CenterViewState extends State<CenterView> {
     final gameState = GameState.getState(context);
     log('potViewPos: before game ended.');
     if (gameState.gameInfo.status == AppConstants.GAME_ENDED)
-      return _buildGameEndedWidget();
+      return centerTextWidget(
+        AppStringsNew.gameEndedText,
+        boardAttributes.centerViewButtonVerticalTranslate,
+      );
 
     log('potViewPos: before waiting for players.');
     if (!gameState.botGame && gameState.playersInSeatsCount <= 1) {
       String text = 'Waiting for players to join';
-      return centerTextWidget(text);
+      return centerTextWidget(
+          text, boardAttributes.centerViewButtonVerticalTranslate);
     }
 
     log('potViewPos: before seat change progress.');
     if (gameState.gameInfo.tableStatus ==
         AppConstants.TABLE_STATUS_HOST_SEATCHANGE_IN_PROGRESS) {
-      return centerTextWidget('Seat change in progress');
+      return centerTextWidget('Seat change in progress',
+          boardAttributes.centerViewButtonVerticalTranslate);
     }
 
     final bool isGamePausedOrWaiting = gameState.gameInfo.status ==
@@ -186,23 +196,12 @@ class _CenterViewState extends State<CenterView> {
     log('potViewPos: before is paused or waiting isGameRunning: ${gameState.isGameRunning} isGamePausedOrWaiting: $isGamePausedOrWaiting ${gameState.gameInfo.tableStatus}');
     /* if the game is paused, show the options available during game pause */
     if (isGamePausedOrWaiting && !gameState.isGameRunning) {
+      print('_buildGamePauseOptions');
       return _buildGamePauseOptions(
         gameState,
         boardAttributes.centerViewButtonVerticalTranslate,
       );
     }
-    String text = BoardViewUtilMethods.getText(tableStatus);
-
-    log('potViewPos: before new hand.');
-    /* in case of new hand, show the deck shuffling animation */
-    if (text == AppConstants.NEW_HAND) {
-      return _positionAnimationShuffleCardView(
-        offset: boardAttributes.centerViewCardShufflePosition,
-        scale: boardAttributes.centerViewCenterScale,
-        child: AnimatingShuffleCardView(),
-      );
-    }
-    log('potViewPos: building main center view');
 
     /* if we reach here, means, the game is RUNNING */
     /* The following view, shows the community cards
@@ -215,15 +214,23 @@ class _CenterViewState extends State<CenterView> {
     final gameState = Provider.of<GameState>(context, listen: false);
     final boardAttributes = gameState.getBoardAttributes(context);
 
-    return ValueListenableBuilder2<String, String>(
+    return ValueListenableBuilder3<String, String, bool>(
       vnGameStatus,
       vnTableStatus,
-      builder: (_, gameStatus, tableStatus, __) => _mainBuild(
-        context,
-        tableStatus: tableStatus,
-        gameStatus: gameStatus,
-        boardAttributes: boardAttributes,
-      ),
+      vnShowCardShuffling,
+      builder: (_, gameStatus, tableStatus, showCardsShuffling, __) =>
+          showCardsShuffling
+              ? _positionAnimationShuffleCardView(
+                  offset: boardAttributes.centerViewCardShufflePosition,
+                  scale: boardAttributes.centerViewCenterScale,
+                  child: AnimatingShuffleCardView(),
+                )
+              : _mainBuild(
+                  context,
+                  tableStatus: tableStatus,
+                  gameStatus: gameStatus,
+                  boardAttributes: boardAttributes,
+                ),
     );
   }
 

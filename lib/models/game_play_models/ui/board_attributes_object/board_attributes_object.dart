@@ -707,7 +707,7 @@ class BoardAttributesObject extends ChangeNotifier {
 
   Offset get centerViewCardShufflePosition => _decide(
         lessThan6Inches: Offset.zero,
-        equalTo6Inches: Offset.zero,
+        equalTo6Inches: Offset(0.0, -20.0),
         equalTo7Inches: Offset(0.0, -50.0),
         greaterThan7Inches: Offset(0.0, -40.0),
       ) as Offset;

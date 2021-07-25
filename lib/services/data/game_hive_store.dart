@@ -9,12 +9,30 @@ class GameHiveStore {
 
   GameHiveStore();
 
+  static const _GAME_SETTINGS_KEY = 'game_settings';
+
   GameSettings getGameSettings() {
-    return GameSettings.fromJson(jsonDecode(_gameBox.get("gameSettings")));
+    return GameSettings.fromJson(jsonDecode(_gameBox.get(_GAME_SETTINGS_KEY)));
+  }
+
+  bool haveGameSettings() {
+    return _gameBox.containsKey(_GAME_SETTINGS_KEY);
   }
 
   putGameSettings(GameSettings gameSettings) {
-    _gameBox.put("gameSettings", jsonEncode(gameSettings));
+    _gameBox.put(_GAME_SETTINGS_KEY, jsonEncode(gameSettings));
+  }
+
+  /* HOLE CARD VISIBILITY STATE */
+  static const _HOLE_CARDS_VISIBILITY_STATE = 'hole_cards_visibility_state';
+  void setHoleCardsVisibilityState(bool visible) {
+    _gameBox.put(_HOLE_CARDS_VISIBILITY_STATE, visible);
+  }
+
+  bool getHoleCardsVisibilityState() {
+    print('initialized HIVE, then calling this get ${_gameBox == null}');
+    // return false;
+    return _gameBox.get(_HOLE_CARDS_VISIBILITY_STATE, defaultValue: false);
   }
 
   static const _DIAMONDS = 'diamonds';
@@ -89,7 +107,7 @@ class GameHiveStore {
   }
 
   bool isInitialized() {
-    return _gameBox.isNotEmpty;
+    return _gameBox.isOpen;
   }
 
   void close() {

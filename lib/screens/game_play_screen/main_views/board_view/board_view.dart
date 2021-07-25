@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
@@ -20,7 +19,6 @@ import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/utils/numeric_keyboard2.dart';
 import 'package:pokerapp/widgets/round_raised_button.dart';
 import 'package:provider/provider.dart';
-import 'package:pokerapp/screens/game_play_screen/seat_view/popup_buttons.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
@@ -113,21 +111,9 @@ class BoardView extends StatelessWidget {
                 scale: 1 / boardAttributes.tableScale,
                 child: CenterView(
                   tableState: context.read<TableState>(),
-                  // twoBoardsNeeded: tableState.twoBoardsNeeded,
                   gameCode: gameInfo.gameCode,
                   isHost: gameInfo.isHost,
                   isBoardHorizontal: isBoardHorizontal,
-                  // cards: cards,
-                  // cardsOther: cardsOther,
-                  // potChips: pots,
-                  // whichPotToHighlight: tableState.potChipsUpdates,
-                  // potChipsUpdates: double.parse(
-                  //   tableState.potChipsUpdates != null
-                  //       ? tableState.potChipsUpdates.toString()
-                  //       : '0.0',
-                  // ),
-                  // gameStatus: tableState.gameStatus,
-                  // tableStatus: tableState.tableStatus,
                   onStartGame: onStartGame,
                 ),
               );
@@ -176,27 +162,6 @@ class BoardView extends StatelessWidget {
                   ),
                 ),
               ),
-
-        // Consumer<PopupButtonState>(
-        //   builder: (BuildContext _, PopupButtonState popupState, Widget __) {
-        //     final seatPos = gameState?.getTappedSeatPos;
-        //     final Seat seat = gameState?.popupSelectedSeat;
-
-        //     bool showPopupButtons = false;
-        //     if (seatPos != null) {
-        //       showPopupButtons = true;
-        //     }
-
-        //     return Visibility(
-        //       key: boardViewKey,
-        //       visible: showPopupButtons,
-        //       child: Align(
-        //         alignment: Alignment.topLeft,
-        //         child: PopupWidget(gameState, seat, boardViewKey),
-        //       ),
-        //     );
-        //   },
-        // ),
       ],
     );
   }
@@ -320,25 +285,20 @@ class BoardView extends StatelessWidget {
         }
         log('Rebuild sitBackButton show');
         return Transform.translate(
-            offset: Offset(0, 10),
-            child: RoundRaisedButtonWithTimer(
-              buttonText: 'Sit Back',
-              color: Colors.blueGrey,
-              verticalPadding: 1,
-              fontSize: 14,
-              onButtonTap: () async => {await onSitBack(context)},
-              // timerWidget:
-              //     GamePlayScreenUtilMethods.breakBuyIntimer(context, seat),
-            ));
+          offset: Offset(0, 10),
+          child: RoundRaisedButtonWithTimer(
+            buttonText: 'Sit Back',
+            color: Colors.blueGrey,
+            verticalPadding: 1,
+            fontSize: 14,
+            onButtonTap: () async => {await onSitBack(context)},
+          ),
+        );
       }),
     );
 
     return widget;
   }
-
-  // Future<void> onBuyinAlert(BuildContext context) async {
-  //   dynamic ret = await showBuyinDialog(context, _buyInKey, 30, 100);
-  // }
 
   Future<void> onBuyin(BuildContext context) async {
     final gameState = GameState.getState(context);

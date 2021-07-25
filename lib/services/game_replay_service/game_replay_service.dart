@@ -234,7 +234,7 @@ class GameReplayService {
     );
 
     final GameState gameState = GameState();
-    gameState.initialize(
+    await gameState.initialize(
       gameCode: gameCode,
       gameInfo: gameInfoModel,
       currentPlayer: PlayerInfo(

@@ -1,7 +1,6 @@
 import 'dart:math' as math;
 import 'dart:developer';
 
-import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 
 import 'package:pokerapp/enums/hand_actions.dart';
@@ -57,8 +56,8 @@ class PlayerModel {
   bool playerFolded = false;
 
   // reload stack related data - whenever stack reload state is
-  bool get reloadAnimation => stackReloadState != null;
   StackReloadState stackReloadState;
+  bool get reloadAnimation => stackReloadState != null;
 
   // break time
   bool inBreak = false;

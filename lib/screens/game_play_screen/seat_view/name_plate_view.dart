@@ -1,10 +1,8 @@
 import 'dart:developer';
 
-import 'package:blinking_text/blinking_text.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
-import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
@@ -14,9 +12,7 @@ import 'package:pokerapp/screens/game_play_screen/game_play_screen_util_methods.
 import 'package:pokerapp/screens/game_play_screen/seat_view/animating_widgets/stack_reload_animating_widget.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/milliseconds_counter.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/plate_border.dart';
-import 'package:pokerapp/widgets/cards/pulsating_card_container.dart';
 import 'package:provider/provider.dart';
-import 'package:timer_count_down/timer_count_down.dart';
 
 class NamePlateWidget extends StatelessWidget {
   final GlobalKey globalKey;
@@ -43,6 +39,7 @@ class NamePlateWidget extends StatelessWidget {
         _,
       ) {
         Widget displayWidget;
+
         if (gameContextObject.isHost() && hostSeatChange.seatChangeInProgress) {
           log('SeatChange: Seat change in progress: building seat [${seat.serverSeatPos}]');
           displayWidget = Draggable(
@@ -211,36 +208,37 @@ class NamePlateWidget extends StatelessWidget {
             ),
 
             /* main body contents */
-            AnimatedSwitcher(
+            AnimatedOpacity(
               duration: AppConstants.animationDuration,
-              reverseDuration: AppConstants.animationDuration,
-              child: AnimatedOpacity(
-                duration: AppConstants.animationDuration,
-                opacity: seat.isOpen ? 0.0 : 1.0,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    FittedBox(
-                      child: Text(
-                        seat.player?.name ?? '',
-                        style: AppStyles.gamePlayScreenPlayerName.copyWith(
-                          color: Colors.white,
-                        ),
+              opacity: seat.isOpen ? 0.0 : 1.0,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // player name
+                  FittedBox(
+                    child: Text(
+                      seat.player?.name ?? '',
+                      style: AppStyles.gamePlayScreenPlayerName.copyWith(
+                        color: Colors.white,
                       ),
                     ),
-                    PlayerViewDivider(),
-                    Align(
-                      alignment: Alignment.topRight,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 5),
-                        child: FittedBox(
-                          child: bottomWidget(context),
-                        ),
+                  ),
+
+                  // divider
+                  PlayerViewDivider(),
+
+                  // bottom widget - to show stack, sit back time, etc.
+                  Align(
+                    alignment: Alignment.topRight,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 5),
+                      child: FittedBox(
+                        child: bottomWidget(context),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ],
