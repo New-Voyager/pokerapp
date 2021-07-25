@@ -50,7 +50,7 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
                 padding: EdgeInsets.symmetric(vertical: 10.0),
                 width: double.infinity,
                 color: Colors.black.withOpacity(0.70),
-                child: InkWell(
+                child: GestureDetector(
                   onTap:
                       _showEye ? () => _markAllCardsAsSelected(context) : null,
                   child: Icon(
