@@ -214,12 +214,15 @@ class BetWidget extends StatelessWidget {
           ),
           customColors: CustomSliderColors(
             hideShadow: false,
-            trackColor: AppColors.lightGrayColor,
+            trackColor: AppColorsNew.newGreenRadialStartColor,
             dotColor: AppColorsNew.newBorderColor,
             progressBarColors: [
-              Colors.red,
-              Colors.yellow,
-              Colors.green,
+              AppColorsNew.newBorderColor,
+              AppColorsNew.newBorderColor,
+              AppColorsNew.newBorderColor,
+              // Colors.red,
+              // Colors.yellow,
+              // Colors.green,
             ],
           ),
           customWidths: CustomSliderWidths(

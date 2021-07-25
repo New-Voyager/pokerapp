@@ -25,7 +25,6 @@ import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/table_r
 import 'package:pokerapp/screens/game_play_screen/widgets/game_circle_button.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/icon_with_badge.dart';
 import 'package:pokerapp/services/app/player_service.dart';
-import 'package:pokerapp/services/data/game_log_store.dart';
 import 'package:pokerapp/widgets/cards/multiple_stack_card_views.dart';
 import 'package:pokerapp/widgets/num_diamond_widget.dart';
 import 'package:provider/provider.dart';

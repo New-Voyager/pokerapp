@@ -1,8 +1,6 @@
 import 'dart:convert';
 import 'dart:typed_data';
-import 'package:flutter/cupertino.dart';
 import 'package:pokerapp/models/rabbit_state.dart';
-import 'package:pokerapp/screens/game_play_screen/seat_view/player_view.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:dart_nats/dart_nats.dart';
@@ -20,6 +18,7 @@ class GameMessagingService {
   bool active;
   PlayerInfo currentPlayer;
   List<ChatMessage> messages = [];
+  List<String> playedAudio = [];
 
   GameMessagingService(
     this.currentPlayer,
@@ -85,12 +84,16 @@ class GameMessagingService {
   void handleMessage(Message natsMsg) {
     log('chat message received: $messages');
 
+    final ChatMessage message = ChatMessage.fromMessage(natsMsg.string);
+
     // handle messages
-    if (this.messages.length > MAX_CHAT_BUFSIZE) {
-      this.messages.removeAt(0);
+    if (message.type == 'TEXT' ||
+        message.type == 'GIPHY') {
+      if (this.messages.length > MAX_CHAT_BUFSIZE) {
+        this.messages.removeAt(0);
+      }
     }
 
-    final ChatMessage message = ChatMessage.fromMessage(natsMsg.string);
 
     if (message != null) {
       if (this.messages.length > 0) {
@@ -110,7 +113,13 @@ class GameMessagingService {
 
       if (message.type == 'AUDIO') {
         if (this.onAudio != null) {
-          this.onAudio(message);
+          if (playedAudio.indexOf(message.messageId) == -1) {
+            playedAudio.add(message.messageId);
+            if (playedAudio.length >= MAX_CHAT_BUFSIZE) {
+              playedAudio.removeAt(0);
+            }
+            this.onAudio(message);
+          }
         }
       }
 
