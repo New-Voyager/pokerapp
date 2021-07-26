@@ -45,23 +45,21 @@ class _ChipAmountWidgetState extends State<ChipAmountWidget>
     Offset offset = Offset.zero;
 
     final BoardAttributesObject boardAttributesObject =
-        Provider.of<BoardAttributesObject>(
-      context,
-      listen: false,
-    );
+        context.read<BoardAttributesObject>();
 
     Map<SeatPos, Offset> betAmountPos = boardAttributesObject.betAmountPosition;
 
     if (betAmountPos[widget.seat.uiSeatPos] != null) {
       offset = betAmountPos[widget.seat.uiSeatPos];
     }
+
     if (widget.seat.betWidgetPos == null) {
       widget.seat.betWidgetPos = offset;
     }
 
     if (widget.seat.player.action.amount != null &&
         widget.seat.player.action.amount != 0 &&
-        widget.seat.player.startingStack > 0) {
+        widget.seat.player.startingStack >= 0) {
       showBet = true;
     }
 
@@ -77,6 +75,9 @@ class _ChipAmountWidgetState extends State<ChipAmountWidget>
       );
 
     List<Widget> children = [];
+
+    print(
+        'paul debug: action.amount ${action.amount} gameInfo.bigBlind ${widget.gameInfo.bigBlind}');
 
     // TODO: FIX THE LOGIC FOR SHOWING CHIPS
     Widget coin;
