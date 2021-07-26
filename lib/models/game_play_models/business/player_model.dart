@@ -328,6 +328,7 @@ class PlayerActedState {
     if (data is ActionElement) {
       _playerAction = data.action;
       _amount = data.amount?.toDouble();
+      print('paul debug: $_playerAction $_amount');
       return;
     }
 

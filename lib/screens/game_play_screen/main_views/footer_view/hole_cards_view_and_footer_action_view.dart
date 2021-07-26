@@ -42,29 +42,26 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
     context.read<MarkedCards>().markAll(playerModel.cardObjects);
   }
 
-  Widget _buildAllHoleCardSelectionButton(context) => Transform.translate(
-        offset: Offset(0.0, MediaQuery.of(context).size.height * 0.04),
-        child: Consumer<ValueNotifier<FooterStatus>>(
-          builder: (context, vnfs, __) {
-            bool _showEye = _showAllCardSelectionButton(vnfs);
-            return Opacity(
-              opacity: _showEye ? 1.0 : 0.0,
-              child: Container(
-                padding: EdgeInsets.symmetric(vertical: 10.0),
-                width: double.infinity,
-                color: Colors.black.withOpacity(0.70),
-                child: GestureDetector(
-                  onTap:
-                      _showEye ? () => _markAllCardsAsSelected(context) : null,
-                  child: Icon(
-                    Icons.visibility_rounded,
-                    size: 40.0,
-                  ),
+  Widget _buildAllHoleCardSelectionButton(context) =>
+      Consumer<ValueNotifier<FooterStatus>>(
+        builder: (context, vnfs, __) {
+          bool _showEye = _showAllCardSelectionButton(vnfs);
+          return Opacity(
+            opacity: _showEye ? 1.0 : 0.0,
+            child: Container(
+              padding: EdgeInsets.symmetric(vertical: 10.0),
+              width: double.infinity,
+              color: Colors.black.withOpacity(0.70),
+              child: GestureDetector(
+                onTap: _showEye ? () => _markAllCardsAsSelected(context) : null,
+                child: Icon(
+                  Icons.visibility_rounded,
+                  size: 40.0,
                 ),
               ),
-            );
-          },
-        ),
+            ),
+          );
+        },
       );
 
   Widget _buildholeCardViewAndStraddleDialog(
@@ -102,7 +99,7 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
                   child: StraddleDialog(
                     straddlePrompt: straddlePrompt,
                     onSelect: (List<bool> optionAutoValue) {
-                      print(optionAutoValue);
+                      print('paul debug $optionAutoValue');
 
                       final straddleOption = optionAutoValue[0];
                       final autoStraddle = optionAutoValue[1];

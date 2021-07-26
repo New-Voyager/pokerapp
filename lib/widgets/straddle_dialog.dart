@@ -32,13 +32,13 @@ class _StraddleDialogState extends State<StraddleDialog> {
     String text,
     void Function() onTap,
   }) =>
-      InkWell(
+      GestureDetector(
         onTap: onTap,
         child: Container(
           height: 32.ph,
           width: 80.pw,
           margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-          padding: const EdgeInsets.all(2.0),
+          padding: const EdgeInsets.all(3.0),
           decoration: BoxDecoration(
             color: Colors.transparent,
             shape: BoxShape.rectangle,
@@ -48,16 +48,14 @@ class _StraddleDialogState extends State<StraddleDialog> {
             ),
             borderRadius: BorderRadius.circular(16),
           ),
-          child: Center(
-            child: FittedBox(
-              fit: BoxFit.fitHeight,
-              child: Text(
-                text.toUpperCase(),
-                textAlign: TextAlign.center,
-                style: AppStyles.clubItemInfoTextStyle.copyWith(
-                  fontSize: 10.0.dp,
-                  color: AppColorsNew.newGreenButtonColor,
-                ),
+          child: FittedBox(
+            fit: BoxFit.fitHeight,
+            child: Text(
+              text.toUpperCase(),
+              textAlign: TextAlign.center,
+              style: AppStyles.clubItemInfoTextStyle.copyWith(
+                fontSize: 10.0.dp,
+                color: AppColorsNew.newGreenButtonColor,
               ),
             ),
           ),
@@ -87,8 +85,8 @@ class _StraddleDialogState extends State<StraddleDialog> {
               /* title */
               Text(
                 'Straddle?',
-                textAlign: TextAlign.left,
-                style: TextStyle(fontSize: 20.0),
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 23.0),
               ),
 
               // sep

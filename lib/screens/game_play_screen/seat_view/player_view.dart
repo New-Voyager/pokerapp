@@ -210,10 +210,8 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
       return openSeatWidget;
     }
 
-    final GameInfoModel gameInfo = Provider.of<ValueNotifier<GameInfoModel>>(
-      context,
-      listen: false,
-    ).value;
+    final GameInfoModel gameInfo =
+        context.read<ValueNotifier<GameInfoModel>>().value;
     String gameCode = gameInfo.gameCode;
     bool isDealer = false;
 

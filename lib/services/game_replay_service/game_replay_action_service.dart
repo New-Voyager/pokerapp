@@ -65,10 +65,6 @@ class GameReplayActionService {
     final gameState = GameState.getState(_context);
 
     if (_close) return;
-    // reset highlight for other players
-    gameState.resetActionHighlight(_context, -1);
-
-    if (_close) return;
     Players players = _context.read<Players>();
 
     int idx = players.players.indexWhere(
@@ -86,24 +82,31 @@ class GameReplayActionService {
         idx,
         true,
       );
+
+      players.notifyAll();
     } else {
       if (_close) return;
       final seat = gameState.getSeat(_context, action.seatNo);
       seat.player.action.setAction(action);
 
-      players.updateStatusSilent(
-        idx,
-        handActionsToString(action.action),
-      );
+      // players.updateStatusSilent(
+      //   idx,
+      //   handActionsToString(action.action),
+      // );
 
-      players.updateStackWithValueSilent(
-        action.seatNo,
-        action.stack,
-      );
+      seat.player.stack = action.stack;
+
+      // players.updateStackWithValueSilent(
+      //   action.seatNo,
+      //   action.stack,
+      // );
+
+      seat.notify();
     }
 
     if (_close) return;
 
+    // playing audio for action
     if (action.action == HandActions.CHECK) {
       gameState
           .getAudioBytes(AppAssets.checkSound)
@@ -122,7 +125,11 @@ class GameReplayActionService {
     );
 
     tableState.notifyAll();
-    players.notifyAll();
+    // players.notifyAll();
+
+    // reset highlight for other players
+    if (_close) return;
+    gameState.resetActionHighlight(_context, -1);
   }
 
   Future<void> _stageUpdateUtilAction(GameReplayAction action) async {
