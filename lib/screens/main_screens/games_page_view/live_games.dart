@@ -8,6 +8,7 @@ import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/models/game_history_model.dart';
 import 'package:pokerapp/models/newmodels/game_model_new.dart';
 import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/resources/app_strings.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
@@ -27,6 +28,7 @@ import 'package:pokerapp/widgets/heading_widget.dart';
 
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/widgets/round_color_button.dart';
+import 'package:pokerapp/widgets/rounded_accent_button.dart';
 
 class LiveGamesScreen extends StatefulWidget {
   @override
@@ -122,6 +124,96 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
         child: Scaffold(
           backgroundColor: Colors.transparent,
           body: Column(children: [
+            // AppBar
+            Container(
+              margin: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  RoundedAccentButton(
+                    onTapFunction: () async {
+                      final dynamic result = await Navigator.of(context)
+                          .pushNamed(Routes.new_game_settings);
+                      if (result != null) {
+                        /* show game settings dialog */
+                        NewGameSettings2.show(
+                          context,
+                          clubCode: "",
+                          mainGameType: result['gameType'],
+                          subGameTypes: List.from(
+                                result['gameTypes'],
+                              ) ??
+                              [],
+                        );
+                      }
+                    },
+                    text: "HOST",
+                  ),
+                  Expanded(
+                    child: Text(
+                      AppStringsNew.appName,
+                      style: AppStylesNew.accentTextStyle,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  RoundedAccentButton(
+                    onTapFunction: () async {
+                      String gameCode = "";
+                      final String result = await showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          actionsPadding:
+                              EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                          backgroundColor: AppColorsNew.actionRowBgColor,
+                          title: Text("Game code"),
+                          content: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              CardFormTextField(
+                                hintText: "Enter Game code",
+                                onChanged: (val) {
+                                  //log("VALUE : $val");
+                                  gameCode = val;
+                                },
+                                keyboardType: TextInputType.name,
+                              ),
+                            ],
+                          ),
+                          actions: [
+                            RoundedColorButton(
+                                text: AppStringsNew.Join,
+                                backgroundColor: AppColorsNew.yellowAccentColor,
+                                textColor: AppColorsNew.darkGreenShadeColor,
+                                onTapFunction: () async {
+                                  if (gameCode.isEmpty) {
+                                    toast("GameCode can't be empty");
+                                    return;
+                                  }
+
+                                  Navigator.of(context).pop(gameCode);
+                                }),
+                          ],
+                        ),
+                      );
+
+                      if (result != null) {
+                        // Check game exists or not
+                        final gameInfo =
+                            await GameService.getGameInfo(gameCode);
+                        if (gameInfo == null) {
+                          Alerts.showNotification(titleText: "Game not found!");
+                        } else {
+                          Navigator.of(context)
+                              .pushNamed(Routes.game_play, arguments: result);
+                        }
+                      }
+                    },
+                    text: "JOIN",
+                  ),
+                ],
+              ),
+            ),
+
             TabBar(
               tabs: [
                 Tab(
@@ -199,112 +291,6 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
                                           16.ph),
                                   itemCount: liveGames.length,
                                 ),
-                      Positioned(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            InkWell(
-                              onTap: () async {
-                                final dynamic result =
-                                    await Navigator.of(context)
-                                        .pushNamed(Routes.new_game_settings);
-                                if (result != null) {
-                                  /* show game settings dialog */
-                                  NewGameSettings2.show(
-                                    context,
-                                    clubCode: "",
-                                    mainGameType: result['gameType'],
-                                    subGameTypes: List.from(
-                                          result['gameTypes'],
-                                        ) ??
-                                        [],
-                                  );
-                                }
-                              },
-                              child: CircleAvatar(
-                                backgroundColor: AppColorsNew.newRedButtonColor,
-                                child: Text(
-                                  "HOST",
-                                  style: AppStylesNew.valueTextStyle,
-                                ),
-                                radius: 24.dp,
-                              ),
-                            ),
-                            InkWell(
-                              onTap: () async {
-                                String gameCode = "";
-                                final String result = await showDialog(
-                                  context: context,
-                                  builder: (context) => AlertDialog(
-                                    actionsPadding: EdgeInsets.symmetric(
-                                        horizontal: 16, vertical: 8),
-                                    backgroundColor:
-                                        AppColorsNew.actionRowBgColor,
-                                    title: Text("Game code"),
-                                    content: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        CardFormTextField(
-                                          hintText: "Enter Game code",
-                                          onChanged: (val) {
-                                            //log("VALUE : $val");
-                                            gameCode = val;
-                                          },
-                                          keyboardType: TextInputType.name,
-                                        ),
-                                      ],
-                                    ),
-                                    actions: [
-                                      RoundedColorButton(
-                                          text: AppStringsNew.Join,
-                                          backgroundColor:
-                                              AppColorsNew.yellowAccentColor,
-                                          textColor:
-                                              AppColorsNew.darkGreenShadeColor,
-                                          onTapFunction: () async {
-                                            if (gameCode.isEmpty) {
-                                              toast("GameCode can't be empty");
-                                              return;
-                                            }
-
-                                            Navigator.of(context).pop(gameCode);
-                                          }),
-                                    ],
-                                  ),
-                                );
-
-                                if (result != null) {
-                                  // Check game exists or not
-                                  final gameInfo =
-                                      await GameService.getGameInfo(gameCode);
-                                  if (gameInfo == null) {
-                                    Alerts.showNotification(
-                                        titleText: "Game not found!");
-                                  } else {
-                                    Navigator.of(context).pushNamed(
-                                        Routes.game_play,
-                                        arguments: result);
-                                  }
-                                }
-                              },
-                              child: CircleAvatar(
-                                backgroundColor:
-                                    AppColorsNew.newGreenButtonColor,
-                                child: Text(
-                                  "JOIN",
-                                  style: AppStylesNew.valueTextStyle.copyWith(
-                                    color: AppColorsNew.darkGreenShadeColor,
-                                  ),
-                                ),
-                                radius: 24.dp,
-                              ),
-                            ),
-                          ],
-                        ),
-                        bottom: 100,
-                        left: 16,
-                        right: 16,
-                      ),
                     ],
                   ),
                   _isPlayedGamesLoading ? Container() : getPlayedGames(),

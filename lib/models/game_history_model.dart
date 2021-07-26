@@ -31,8 +31,13 @@ class GameHistoryModel {
     clubCode = jsonData['clubCode'];
     clubName = jsonData['clubName'];
     endedBy = jsonData['endedBy'];
-    stack = double.parse(jsonData['stack'].toString());
-    buyIn = double.parse(jsonData['buyIn'].toString());
+    if (jsonData['stack'] != null) {
+      stack = double.parse(jsonData['stack'].toString());
+    }
+
+    if (jsonData['buyIn'] != null) {
+      buyIn = double.parse(jsonData['buyIn'].toString());
+    }
     gameTypeStr = jsonData["gameType"];
     gameCode = jsonData["gameCode"];
     startedBy = jsonData["startedBy"];
