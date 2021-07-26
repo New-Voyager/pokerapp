@@ -97,9 +97,9 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
                 child: Transform.scale(
                   scale: 0.80,
                   child: StraddleDialog(
-                    straddlePrompt: straddlePrompt,
+                    straddlePrompt: true, //straddlePrompt,
                     onSelect: (List<bool> optionAutoValue) {
-                      print(optionAutoValue);
+                      print('paul debug $optionAutoValue');
 
                       final straddleOption = optionAutoValue[0];
                       final autoStraddle = optionAutoValue[1];
