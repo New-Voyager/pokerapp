@@ -299,8 +299,9 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                       String version =
                                           await GetVersion.projectVersion;
                                       Navigator.of(context).pushNamed(
-                                          Routes.help,
-                                          arguments: version,);
+                                        Routes.help,
+                                        arguments: version,
+                                      );
                                     },
                                   ),
                                   ListTileItem(
