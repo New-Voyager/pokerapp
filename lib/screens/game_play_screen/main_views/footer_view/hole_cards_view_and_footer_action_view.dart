@@ -46,8 +46,8 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
       Consumer<ValueNotifier<FooterStatus>>(
         builder: (context, vnfs, __) {
           bool _showEye = _showAllCardSelectionButton(vnfs);
-          return Opacity(
-            opacity: _showEye ? 1.0 : 0.0,
+          return Visibility(
+            visible: _showEye,
             child: Container(
               padding: EdgeInsets.symmetric(vertical: 10.0),
               width: double.infinity,
