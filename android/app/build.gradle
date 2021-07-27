@@ -81,10 +81,12 @@ android {
 
         flavorTest{
             dimension "default"
+            applicationId "com.voyagerent.pokerclub.test"
         }
 
         prod{
             dimension "default"
+            applicationId "com.voyagerent.pokerclub"
         }
     }
 
