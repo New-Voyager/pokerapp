@@ -76,9 +76,6 @@ class _ChipAmountWidgetState extends State<ChipAmountWidget>
 
     List<Widget> children = [];
 
-    print(
-        'paul debug: action.amount ${action.amount} gameInfo.bigBlind ${widget.gameInfo.bigBlind}');
-
     // TODO: FIX THE LOGIC FOR SHOWING CHIPS
     Widget coin;
     if (action.amount <= widget.gameInfo.bigBlind / 2) {

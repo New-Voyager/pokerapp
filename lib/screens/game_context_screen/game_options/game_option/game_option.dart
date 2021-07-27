@@ -265,6 +265,7 @@ class _GameOptionState extends State<GameOption> {
                 onChange: (bool v) async {
                   await GameService.updateGameConfig(widget.gameState.gameCode,
                       muckLosingHand: v);
+                  // setting the value saves it to local storage too
                   widget.gameState.gameInfo.playerMuckLosingHand = v;
                   if (closed) return;
                   setState(() {});
@@ -275,6 +276,7 @@ class _GameOptionState extends State<GameOption> {
               onChange: (bool v) async {
                 await GameService.updateGameConfig(widget.gameState.gameCode,
                     runItTwicePrompt: v);
+                // setting the value saves it to local storage too
                 widget.gameState.gameInfo.playerRunItTwice = v;
                 if (closed) return;
                 setState(() {});
@@ -284,9 +286,8 @@ class _GameOptionState extends State<GameOption> {
               text: 'Game Sounds',
               value: widget.gameState.settings.gameSound,
               onChange: (bool v) async {
+                // setting the value saves it to local storage too
                 widget.gameState.settings.gameSound = v;
-                widget.gameState.gameHiveStore
-                    .putGameSettings(widget.gameState.settings);
                 log('In toggle button widget, gameSounds = ${widget.gameState.settings.gameSound}');
                 if (closed) return;
                 setState(() {});
@@ -297,10 +298,9 @@ class _GameOptionState extends State<GameOption> {
                     text: 'Audio Conference',
                     value: widget.gameState.settings.audioConf,
                     onChange: (bool v) async {
+                      // setting the value saves it to local storage too
                       widget.gameState.settings.audioConf = v;
                       widget.gameState.janusEngine.joinLeaveAudioConference();
-                      widget.gameState.gameHiveStore
-                          .putGameSettings(widget.gameState.settings);
                       log('In toggle button widget, audioConf = ${widget.gameState.settings.audioConf}');
                       if (closed) return;
                       setState(() {});
@@ -311,9 +311,8 @@ class _GameOptionState extends State<GameOption> {
               text: 'Animations',
               value: widget.gameState.settings.animations,
               onChange: (bool v) async {
+                // setting the value saves it to local storage too
                 widget.gameState.settings.animations = v;
-                widget.gameState.gameHiveStore
-                    .putGameSettings(widget.gameState.settings);
                 log('In toggle button widget, animations = ${widget.gameState.settings.animations}');
                 setState(() {});
               },
@@ -322,42 +321,53 @@ class _GameOptionState extends State<GameOption> {
               text: 'Show Chat',
               value: widget.gameState.settings.showChat,
               onChange: (bool v) async {
+                // setting the value saves it to local storage too
                 widget.gameState.settings.showChat = v;
-                widget.gameState.gameHiveStore
-                    .putGameSettings(widget.gameState.settings);
                 log('In toggle button widget, showChat = ${widget.gameState.settings.showChat}');
                 widget.gameState.getCommunicationState().showTextChat = v;
                 widget.gameState.getCommunicationState().notify();
                 setState(() {});
               },
             ),
-            _buildCheckBox(
-              text: 'Straddle Off',
-              value: widget.gameState.settings.straddleOption,
-              onChange: (bool v) async {
-                widget.gameState.settings.straddleOption = v;
-                widget.gameState.gameHiveStore
-                    .putGameSettings(widget.gameState.settings);
-                log('In toggle button widget, straddleOption = ${widget.gameState.settings.straddleOption}');
-                if (closed) return;
-                setState(() {});
-              },
-            ),
-            _buildCheckBox(
-              text: 'Auto Straddle',
-              value: widget.gameState.settings.autoStraddle,
-              onChange: (bool v) async {
-                if (v) {
-                  await FirebaseAnalytics().logEvent(
-                      name: "Auto_Straddle",
-                      parameters: {"name": "Auto Straddle is turned ON"});
-                }
-                widget.gameState.settings.autoStraddle = v;
-                widget.gameState.gameHiveStore
-                    .putGameSettings(widget.gameState.settings);
-                log('In toggle button widget, autoStraddle = ${widget.gameState.settings.autoStraddle}');
-              },
-            ),
+
+            /* show straddle off and auto straddle options ONLY when the UTG STRADDLE is on */
+            widget.gameState.gameInfo.utgStraddleAllowed
+                ? Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // straddle off
+                      _buildCheckBox(
+                        text: 'Straddle',
+                        value: widget.gameState.settings.straddleOption,
+                        onChange: (bool v) async {
+                          // setting the value saves it to local storage too
+                          widget.gameState.settings.straddleOption = v;
+                          log('In toggle button widget, straddleOption = ${widget.gameState.settings.straddleOption}');
+                          if (closed) return;
+                          setState(() {});
+                        },
+                      ),
+
+                      // auto straddle
+                      _buildCheckBox(
+                        text: 'Auto Straddle',
+                        value: widget.gameState.settings.autoStraddle,
+                        onChange: (bool v) async {
+                          if (v) {
+                            await FirebaseAnalytics().logEvent(
+                                name: "Auto_Straddle",
+                                parameters: {
+                                  "name": "Auto Straddle is turned ON"
+                                });
+                          }
+                          // setting the value saves it to local storage too
+                          widget.gameState.settings.autoStraddle = v;
+                          log('In toggle button widget, autoStraddle = ${widget.gameState.settings.autoStraddle}');
+                        },
+                      ),
+                    ],
+                  )
+                : const SizedBox.shrink(),
           ],
         ),
       );

@@ -583,7 +583,14 @@ class HandActionService {
           nextActionSeat.player.stack >= 2 * _gameState.gameInfo.bigBlind) {
         // set straddlePrompt true
         if (_gameState.settings.straddleOption) {
-          _gameState.straddlePrompt = true;
+          // we show the straddle dialog only when the auto straddle is off
+          if (_gameState.settings.autoStraddle == true) {
+            // set straddle bet
+            _gameState.straddleBet = true;
+          } else {
+            // prompt for the straddle dialog
+            _gameState.straddlePrompt = true;
+          }
         }
       }
     }
@@ -704,6 +711,20 @@ class HandActionService {
 
   Future<void> handleYourAction(var data) async {
     log('Hand Message: ::handleYourAction:: START');
+
+    if (_gameState.straddleBet == true) {
+      // we have the straddleBet set to true, do a bet
+      if (_close) return;
+      HandActionService.takeAction(
+        context: _context,
+        action: AppConstants.STRADDLE,
+        amount: 2 * _gameState.gameInfo.bigBlind,
+      );
+
+      // once, the first bet is done, set straddleBet to false, and wait for next hand
+      return _gameState.straddleBet = false;
+    }
+
     if (_close) return;
     try {
       final me = _gameState.me(_context);
@@ -1205,9 +1226,9 @@ class HandActionService {
     if (_close) return;
     final seat = gameState.getSeat(_context, seatNo);
     // hide straddle dialog
-    if (gameState.straddlePrompt && seat.isMe) {
+    if (gameState.straddlePrompt) {
       gameState.straddlePrompt = false;
-      gameState.straddlePromptState(_context).notify();
+      _context.read<StraddlePromptState>().notify();
     }
     if (seat.player.action == null) {
       log('Hand Message: ::handlePlayerActed:: player acted: $seatNo, player: ${seat.player.name}');
@@ -1387,7 +1408,7 @@ class HandActionService {
         lowWinners.isEmpty ? totalWaitTimeInMs : totalWaitTimeInMs ~/ 2;
     int lowWinnersTimeInMs = totalWaitTimeInMs ~/ 2;
 
-    if (gameState.settings.gameSound) {
+    if (gameState.settings._gameSound) {
       gameState.getAudioBytes(AppAssets.applauseSound).then((value) {
         audioPlayer.playBytes(value);
       });
