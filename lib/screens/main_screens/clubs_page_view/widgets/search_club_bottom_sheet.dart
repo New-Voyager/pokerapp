@@ -3,17 +3,10 @@ import 'package:pokerapp/models/search_club_model.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
-import 'package:pokerapp/screens/club_screen/widgets/roud_icon_button.dart';
-import 'package:pokerapp/screens/game_screens/widgets/new_button_widget.dart';
 import 'package:pokerapp/services/nats/nats.dart';
 import 'package:pokerapp/widgets/card_form_text_field.dart';
-import 'package:pokerapp/widgets/custom_text_button.dart';
 import 'package:pokerapp/widgets/round_color_button.dart';
-import 'package:pokerapp/widgets/round_raised_button.dart';
-import 'package:pokerapp/widgets/rounded_accent_button.dart';
 import 'package:provider/provider.dart';
-import '../../../../resources/app_colors.dart';
-import '../../../../resources/app_styles.dart';
 import '../../../../services/app/club_interior_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 

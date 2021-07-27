@@ -44,7 +44,7 @@ class EmojiPickerWidget extends StatelessWidget {
 😡
 👻
 🤠
-😎
+😎    
 🤡
 💋
 👏
