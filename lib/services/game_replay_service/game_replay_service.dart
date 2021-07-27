@@ -30,12 +30,13 @@ class GameReplayService {
       .toList();
 
   /* returns back the mapping of <seat.no-cards> */
-  Map<int, List<int>> _getPlayerCards(List<Player> players) {
+  Map<int, List<int>> _getPlayerCards(List<Player> players, int myID) {
     Map<int, List<int>> _playerCards = {};
 
     /* IF I played until showdown then only show my cards */
     for (Player p in players)
-      if (p.playedUntil == 'SHOW_DOWN') _playerCards[p.seatNo] = p.cards;
+      if (p.playedUntil == 'SHOW_DOWN' || p.id == myID)
+        _playerCards[p.seatNo] = p.cards;
 
     return _playerCards;
   }
@@ -210,12 +211,12 @@ class GameReplayService {
       playersInSeats: players,
     );
 
-    final Map<int, List<int>> playerCards =
-        _getPlayerCards(handLog.hand.playersInSeats);
-
     /* finding the current Player */
     final PlayerModel currPlayer =
         players.firstWhere((p) => p.playerId == playerID);
+
+    final Map<int, List<int>> playerCards =
+        _getPlayerCards(handLog.hand.playersInSeats, playerID);
 
     final List<GameReplayAction> actions = _getActions(
       myCards: playerCards[currPlayer.seatNo],
