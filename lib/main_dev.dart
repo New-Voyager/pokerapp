@@ -8,6 +8,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/flavor_config.dart';
+import 'package:pokerapp/models/app_state.dart';
 import 'package:pokerapp/models/pending_approvals.dart';
 import 'package:pokerapp/resources/app_config.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
@@ -76,6 +77,9 @@ class MyApp extends StatelessWidget {
               ),
               ListenableProvider<ClubsUpdateState>(
                 create: (_) => ClubsUpdateState(),
+              ),
+              ChangeNotifierProvider<AppState>(
+                create: (_) => AppState(),
               ),
             ],
             builder: (context, _) => MultiProvider(

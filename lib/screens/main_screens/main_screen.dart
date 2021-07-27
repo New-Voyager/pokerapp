@@ -4,6 +4,7 @@ import 'package:curved_bottom_navigation/curved_bottom_navigation.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:pokerapp/models/app_state.dart';
 import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_icons.dart';
@@ -40,7 +41,7 @@ class _MainScreenState extends State<MainScreen>
   @override
   String get routeName => Routes.main;
 
-  TabController _controller;
+  //TabController _controller;
   PlayerInfo _currentPlayer;
   int _navPos = 0;
   Nats _nats;
@@ -94,10 +95,10 @@ class _MainScreenState extends State<MainScreen>
   void initState() {
     super.initState();
     _init();
-    _controller = TabController(
-      vsync: this,
-      length: 4,
-    );
+    // _controller = TabController(
+    //   vsync: this,
+    //   length: 4,
+    // );
   }
 
   @override
@@ -199,6 +200,8 @@ class _MainScreenState extends State<MainScreen>
               fabBgColor: AppColorsNew.newNavBarColor,
               onItemClick: (i) {
                 setState(() => _navPos = i);
+                log("0-0-0-Current Index : $i");
+                Provider.of<AppState>(context, listen: false).setIndex(i);
               },
               items: [
                 CurvedNavItem(

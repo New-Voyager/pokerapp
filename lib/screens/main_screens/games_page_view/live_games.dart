@@ -4,7 +4,10 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:overlay_support/overlay_support.dart';
+import 'package:pokerapp/main.dart';
+import 'package:pokerapp/models/app_state.dart';
 import 'package:pokerapp/models/game_history_model.dart';
 import 'package:pokerapp/models/newmodels/game_model_new.dart';
 import 'package:pokerapp/resources/app_colors.dart';
@@ -29,6 +32,7 @@ import 'package:pokerapp/widgets/heading_widget.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/widgets/round_color_button.dart';
 import 'package:pokerapp/widgets/rounded_accent_button.dart';
+import 'package:provider/provider.dart';
 
 class LiveGamesScreen extends StatefulWidget {
   @override
@@ -63,10 +67,30 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
       TestService.isTesting ? _loadTestLiveGames() : _fetchPlayedGames();
     });
 
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      _serverPolling();
+    });
     // _refreshTimer = Timer.periodic(const Duration(seconds: 30), (timer) async {
     //   await _fillLiveGames();
     //   if (mounted) setState(() {});
     // });
+  }
+
+  _serverPolling() async {
+    while (true) {
+      await Future.delayed(Duration(seconds: 10));
+      if (mounted) {
+        final int currentIndex =
+            Provider.of<AppState>(context, listen: false).currentIndex;
+        if (currentIndex == 0) {
+          if (_tabController.index == 0) {
+            log("0-0-0-In LiveGames");
+          } else if (_tabController.index == 1) {
+            log("0-0-0-In Game record");
+          }
+        }
+      }
+    }
   }
 
   _fetchLiveGames() async {
@@ -152,7 +176,10 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
                   Expanded(
                     child: Text(
                       AppStringsNew.appName,
-                      style: AppStylesNew.accentTextStyle,
+                      style: AppStylesNew.accentTextStyle.copyWith(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12.dp,
+                      ),
                       textAlign: TextAlign.center,
                     ),
                   ),
