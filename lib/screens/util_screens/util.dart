@@ -366,6 +366,7 @@ showPlayerPopup(context, GlobalKey seatKey, GameState gameState, Seat seat) {
   );
 
   double menuItemHeight = 40;
+  final mySeat = gameState.mySeat(context);
   showMenu(
     context: context,
     color: AppColorsNew.actionRowBgColor,
@@ -377,49 +378,53 @@ showPlayerPopup(context, GlobalKey seatKey, GameState gameState, Seat seat) {
     ),
     position: position,
     items: <PopupMenuEntry>[
-      PopupMenuItem(
-        height: menuItemHeight,
-        value: 0,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Text(
-              "Note",
-            ),
-            Icon(
-              Icons.note,
-              color: AppColorsNew.yellowAccentColor,
-            ),
-          ],
-        ),
-      ),
-      PopupMenuItem(
-        value: 1,
-        height: menuItemHeight,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text("Animation"),
-            Icon(
-              Icons.note,
-              color: AppColorsNew.yellowAccentColor,
-            ),
-            // Lottie.asset(
-            //   'assets/animations/chicken.json',
-            //   height: 32,
-            //   width: 32,
-            //   controller: _controller,
-            //   onLoaded: (composition) {
-            //     // Configure the AnimationController with the duration of the
-            //     // Lottie file and start the animation.
-            //     _controller
-            //       ..duration = composition.duration
-            //       ..forward();
-            //   },
-            // ),
-          ],
-        ),
-      ),
+      (mySeat != null)
+          ? PopupMenuItem(
+              height: menuItemHeight,
+              value: 0,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text(
+                    "Note",
+                  ),
+                  Icon(
+                    Icons.note,
+                    color: AppColorsNew.yellowAccentColor,
+                  ),
+                ],
+              ),
+            )
+          : PopupMenuItem(child: SizedBox.shrink(), height: 0),
+      (mySeat != null)
+          ? PopupMenuItem(
+              value: 1,
+              height: menuItemHeight,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text("Animation"),
+                  Icon(
+                    Icons.note,
+                    color: AppColorsNew.yellowAccentColor,
+                  ),
+                  // Lottie.asset(
+                  //   'assets/animations/chicken.json',
+                  //   height: 32,
+                  //   width: 32,
+                  //   controller: _controller,
+                  //   onLoaded: (composition) {
+                  //     // Configure the AnimationController with the duration of the
+                  //     // Lottie file and start the animation.
+                  //     _controller
+                  //       ..duration = composition.duration
+                  //       ..forward();
+                  //   },
+                  // ),
+                ],
+              ),
+            )
+          : PopupMenuItem(child: SizedBox.shrink(), height: 0),
       (gameState.currentPlayer.isAdmin())
           ? PopupMenuItem(
               value: 2,
