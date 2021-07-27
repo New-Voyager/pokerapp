@@ -116,11 +116,11 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
 
       final me = gameState.me(context);
       // If user is not playing do not show dialog
-      if (me == null) {
-        return;
-      }
+      // if (me == null) {
+      //   return;
+      // }
       final mySeat = gameState.mySeat(context);
-      if (widget.seat.serverSeatPos == mySeat.serverSeatPos) {
+      if (me != null && widget.seat.serverSeatPos == mySeat.serverSeatPos) {
         return;
       }
 

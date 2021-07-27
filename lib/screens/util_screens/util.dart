@@ -437,7 +437,7 @@ showPlayerPopup(context, GlobalKey seatKey, GameState gameState, Seat seat) {
                 ],
               ),
             )
-          : SizedBox.shrink(),
+          : PopupMenuItem(child: SizedBox.shrink(), height: 0),
       (gameState.currentPlayer.isAdmin())
           ? PopupMenuItem(
               value: 3,
@@ -455,7 +455,10 @@ showPlayerPopup(context, GlobalKey seatKey, GameState gameState, Seat seat) {
                 ],
               ),
             )
-          : SizedBox.shrink(),
+          : PopupMenuItem(
+              child: SizedBox.shrink(),
+              height: 0,
+            ),
     ],
   ).then<void>((delta) async {
     // delta would be null if user taps on outside the popup menu
@@ -546,6 +549,8 @@ showPlayerPopup(context, GlobalKey seatKey, GameState gameState, Seat seat) {
             }
           }
           break;
+
+        // Animation
         case 1:
           final data = await showDialog(
             context: context,
@@ -568,15 +573,18 @@ showPlayerPopup(context, GlobalKey seatKey, GameState gameState, Seat seat) {
           // log("SEAT TO:: ${widget.gameState.popupSelectedSeat.serverSeatPos}");
 
           gameState.gameComService.gameMessaging.sendAnimation(
-            gameState.me(context).seatNo,
+            gameState.me(context)?.seatNo,
             seat.serverSeatPos,
             data['animationID'],
           );
           break;
 
+// Mute option
         case 2:
           log('user selected mute option');
           break;
+
+        // Kickoption
         case 3:
           log('calling kickPlayer with ${gameState.gameCode} and ${seat.player.playerUuid}');
           PlayerService.kickPlayer(gameState.gameCode, seat.player.playerUuid);
