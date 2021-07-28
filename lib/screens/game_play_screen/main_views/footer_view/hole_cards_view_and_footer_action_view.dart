@@ -46,8 +46,8 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
       Consumer<ValueNotifier<FooterStatus>>(
         builder: (context, vnfs, __) {
           bool _showEye = _showAllCardSelectionButton(vnfs);
-          return Opacity(
-            opacity: _showEye ? 1.0 : 0.0,
+          return Visibility(
+            visible: _showEye,
             child: Container(
               padding: EdgeInsets.symmetric(vertical: 10.0),
               width: double.infinity,
@@ -67,7 +67,6 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
   Widget _buildholeCardViewAndStraddleDialog(
     GameState gameState,
     BoardAttributesObject boardAttributes,
-    bool straddlePrompt,
   ) =>
       Builder(
         builder: (context) => Stack(
@@ -93,21 +92,23 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
             ),
 
             Consumer<StraddlePromptState>(
-              builder: (_, __, ___) => Align(
+              builder: (_, straddlePromptState, ___) => Align(
                 child: Transform.scale(
                   scale: 0.80,
                   child: StraddleDialog(
-                    straddlePrompt: straddlePrompt,
+                    straddlePrompt: gameState.straddlePrompt,
+                    gameState: gameState,
                     onSelect: (List<bool> optionAutoValue) {
-                      print('paul debug $optionAutoValue');
-
                       final straddleOption = optionAutoValue[0];
                       final autoStraddle = optionAutoValue[1];
                       final straddleChoice = optionAutoValue[2];
+
+                      // put the settings in the game state settings
+                      gameState.settings.straddleOption = straddleOption;
+                      gameState.settings.autoStraddle = autoStraddle;
+
                       if (straddleChoice != null) {
                         gameState.straddlePrompt = false;
-                        final straddlePromptState =
-                            gameState.straddlePromptState(context);
                         straddlePromptState.notify();
 
                         if (straddleChoice == true) {
@@ -167,7 +168,6 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
           child: _buildholeCardViewAndStraddleDialog(
             gameState,
             boardAttributes,
-            gameState.straddlePrompt,
           ),
         ),
 

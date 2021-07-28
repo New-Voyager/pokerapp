@@ -389,14 +389,14 @@ class _CommunicationViewState extends State<CommunicationView> {
 
   voiceTextWidgets(GameMessagingService chatService) {
     return <Widget>[
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
-        child: Icon(
-          Icons.circle,
-          size: 15,
-          color: Colors.grey,
-        ),
-      ),
+      // Padding(
+      //   padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
+      //   child: Icon(
+      //     Icons.circle,
+      //     size: 15,
+      //     color: Colors.grey,
+      //   ),
+      // ),
       VoiceTextWidget(
         recordStart: () => record(),
         recordStop: (int dur) {

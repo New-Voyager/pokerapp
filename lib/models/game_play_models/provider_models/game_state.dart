@@ -98,13 +98,14 @@ class GameState {
   Map<int, String> _playerIdsToNames = Map<int, String>();
   Map<int, List<int>> _myCards = Map<int, List<int>>();
   bool straddlePrompt = false;
+  bool straddleBet = false;
 
   // host seat change state (only used when initialization)
   List<PlayerInSeat> _hostSeatChangeSeats = [];
   bool hostSeatChangeInProgress = false;
 
   bool gameSounds = true;
-  GameSettings settings = GameSettings('');
+  GameSettings settings;
   GameHiveStore gameHiveStore;
   bool replayMode = false;
 
@@ -133,7 +134,6 @@ class GameState {
     this._currentHandNum = -1;
     this._tappedSeatPos = null;
     this.replayMode = replayMode ?? false;
-    this.settings = GameSettings(gameCode);
 
     this._hostSeatChangeSeats = hostSeatChangeSeats;
     this.hostSeatChangeInProgress = hostSeatChangeInProgress ?? false;
@@ -267,8 +267,10 @@ class GameState {
 
       if (!gameHiveStore.haveGameSettings()) {
         log('In GameState initialize(), gameBox is empty');
-        settings = GameSettings(gameCode);
-        gameHiveStore.putGameSettings(settings);
+
+        // create a new settings object, and init it (by init -> saves locally)
+        settings = GameSettings(gameCode, gameHiveStore);
+        await settings.init();
       } else {
         log('In GameState initialize(), getting gameSettings from gameBox');
         settings = gameHiveStore.getGameSettings();

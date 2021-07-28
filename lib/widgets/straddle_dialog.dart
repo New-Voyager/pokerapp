@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
@@ -6,10 +7,12 @@ import 'package:pokerapp/widgets/switch_widget.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class StraddleDialog extends StatefulWidget {
+  final GameState gameState;
   final bool straddlePrompt;
   final Function(List<bool>) onSelect;
 
   StraddleDialog({
+    @required this.gameState,
     @required this.straddlePrompt,
     @required this.onSelect,
   });
@@ -22,6 +25,15 @@ class _StraddleDialogState extends State<StraddleDialog> {
   bool _option = true;
   bool _auto = false;
   bool _value;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // fetch the option and auto value from the game state settings object
+    _option = widget.gameState.settings.straddleOption;
+    _auto = widget.gameState.settings.autoStraddle;
+  }
 
   void _onValuePress(bool value, BuildContext context) {
     _value = value;

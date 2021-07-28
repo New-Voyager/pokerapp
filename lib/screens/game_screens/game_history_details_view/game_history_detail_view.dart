@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:pokerapp/models/game_history_model.dart';
 import 'package:pokerapp/models/hand_history_model.dart';
-import 'package:pokerapp/resources/app_assets.dart';
-import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
@@ -19,6 +17,7 @@ import 'package:pokerapp/screens/game_screens/widgets/highhand_widget.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/formatter.dart';
+import 'package:pokerapp/widgets/round_color_button.dart';
 
 import '../../../main.dart';
 import 'hands_chart_view.dart';
@@ -300,6 +299,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
                     "Hands",
@@ -309,6 +309,15 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
                     _gameDetail.playedGame
                         ? _gameDetail.handsPlayedStr ?? ''
                         : '0',
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: RoundedIconButton2(
+                      onTap: () {
+                        openHandStatistics();
+                      },
+                      icon: Icons.query_stats_sharp,
+                    ),
                   ),
                 ],
               ),
@@ -360,13 +369,24 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                "Stack",
-                textAlign: TextAlign.left,
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  "Stack",
+                  textAlign: TextAlign.left,
+                ),
               ),
-            ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: RoundedIconButton2(
+                  onTap: () {
+                    openStackDetails();
+                  },
+                  icon: Icons.query_stats_sharp,
+                ),
+              )
+            ]),
             Visibility(
               child: Expanded(
                   flex: 1,

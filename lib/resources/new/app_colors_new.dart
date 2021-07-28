@@ -13,6 +13,7 @@ class AppColorsNew {
   static const Color newBorderColor = Color(0xFFE0961A);
   static const Color newBackgroundBlackColor = Color(0xFF000104);
   static const Color newTextColor = Color(0xFFF4F4F4);
+  static const Color btnTextColor = Color(0xFF000104);
   static const Color newTextGreenColor = Color(0xFF00FAAD);
   static const Color newNavBarColor = Color(0xFF3D5242);
   static const Color newNavBarInactiveItemColor = Color(0x77F0F1F0);
@@ -26,6 +27,7 @@ class AppColorsNew {
   static const Color newBlueShadeColor = Color(0xFF008FFF);
   static const Color newSelectedGreenColor = Color(0xFF086027);
   static const Color newDialogBgColor = Color(0xFF000C04);
+  static const Color roundBtn2IconColor = Color(0xFF000C04);
   static const Color newRedButtonColor = Color(0xFFFA0000);
   static const Color newGreenButtonColor = Color(0xFF00FAAD);
   static const Color gameOptionColor = Color(0xFFD89E40); //Color(0xFF00FAAD);

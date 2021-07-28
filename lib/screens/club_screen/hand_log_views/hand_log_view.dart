@@ -19,7 +19,6 @@ import 'package:pokerapp/screens/club_screen/hand_log_views/hand_winners_view.da
 import 'package:pokerapp/screens/club_screen/hand_log_views/handlog_action.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/handlog_showdown.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/handlog_summary.dart';
-import 'package:pokerapp/screens/club_screen/widgets/roud_icon_button.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/screens/util_screens/replay_hand_dialog/replay_hand_dialog.dart';
 import 'package:pokerapp/services/app/hand_service.dart';

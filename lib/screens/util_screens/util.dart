@@ -366,6 +366,7 @@ showPlayerPopup(context, GlobalKey seatKey, GameState gameState, Seat seat) {
   );
 
   double menuItemHeight = 40;
+  final mySeat = gameState.mySeat(context);
   showMenu(
     context: context,
     color: AppColorsNew.actionRowBgColor,
@@ -377,49 +378,53 @@ showPlayerPopup(context, GlobalKey seatKey, GameState gameState, Seat seat) {
     ),
     position: position,
     items: <PopupMenuEntry>[
-      PopupMenuItem(
-        height: menuItemHeight,
-        value: 0,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Text(
-              "Note",
-            ),
-            Icon(
-              Icons.note,
-              color: AppColorsNew.yellowAccentColor,
-            ),
-          ],
-        ),
-      ),
-      PopupMenuItem(
-        value: 1,
-        height: menuItemHeight,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text("Animation"),
-            Icon(
-              Icons.note,
-              color: AppColorsNew.yellowAccentColor,
-            ),
-            // Lottie.asset(
-            //   'assets/animations/chicken.json',
-            //   height: 32,
-            //   width: 32,
-            //   controller: _controller,
-            //   onLoaded: (composition) {
-            //     // Configure the AnimationController with the duration of the
-            //     // Lottie file and start the animation.
-            //     _controller
-            //       ..duration = composition.duration
-            //       ..forward();
-            //   },
-            // ),
-          ],
-        ),
-      ),
+      (mySeat != null)
+          ? PopupMenuItem(
+              height: menuItemHeight,
+              value: 0,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text(
+                    "Note",
+                  ),
+                  Icon(
+                    Icons.note,
+                    color: AppColorsNew.yellowAccentColor,
+                  ),
+                ],
+              ),
+            )
+          : PopupMenuItem(child: SizedBox.shrink(), height: 0),
+      (mySeat != null)
+          ? PopupMenuItem(
+              value: 1,
+              height: menuItemHeight,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text("Animation"),
+                  Icon(
+                    Icons.note,
+                    color: AppColorsNew.yellowAccentColor,
+                  ),
+                  // Lottie.asset(
+                  //   'assets/animations/chicken.json',
+                  //   height: 32,
+                  //   width: 32,
+                  //   controller: _controller,
+                  //   onLoaded: (composition) {
+                  //     // Configure the AnimationController with the duration of the
+                  //     // Lottie file and start the animation.
+                  //     _controller
+                  //       ..duration = composition.duration
+                  //       ..forward();
+                  //   },
+                  // ),
+                ],
+              ),
+            )
+          : PopupMenuItem(child: SizedBox.shrink(), height: 0),
       (gameState.currentPlayer.isAdmin())
           ? PopupMenuItem(
               value: 2,
@@ -437,7 +442,7 @@ showPlayerPopup(context, GlobalKey seatKey, GameState gameState, Seat seat) {
                 ],
               ),
             )
-          : SizedBox.shrink(),
+          : PopupMenuItem(child: SizedBox.shrink(), height: 0),
       (gameState.currentPlayer.isAdmin())
           ? PopupMenuItem(
               value: 3,
@@ -455,7 +460,10 @@ showPlayerPopup(context, GlobalKey seatKey, GameState gameState, Seat seat) {
                 ],
               ),
             )
-          : SizedBox.shrink(),
+          : PopupMenuItem(
+              child: SizedBox.shrink(),
+              height: 0,
+            ),
     ],
   ).then<void>((delta) async {
     // delta would be null if user taps on outside the popup menu
@@ -546,6 +554,8 @@ showPlayerPopup(context, GlobalKey seatKey, GameState gameState, Seat seat) {
             }
           }
           break;
+
+        // Animation
         case 1:
           final data = await showDialog(
             context: context,
@@ -568,15 +578,18 @@ showPlayerPopup(context, GlobalKey seatKey, GameState gameState, Seat seat) {
           // log("SEAT TO:: ${widget.gameState.popupSelectedSeat.serverSeatPos}");
 
           gameState.gameComService.gameMessaging.sendAnimation(
-            gameState.me(context).seatNo,
+            gameState.me(context)?.seatNo,
             seat.serverSeatPos,
             data['animationID'],
           );
           break;
 
+// Mute option
         case 2:
           log('user selected mute option');
           break;
+
+        // Kickoption
         case 3:
           log('calling kickPlayer with ${gameState.gameCode} and ${seat.player.playerUuid}');
           PlayerService.kickPlayer(gameState.gameCode, seat.player.playerUuid);

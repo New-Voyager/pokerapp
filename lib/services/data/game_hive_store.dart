@@ -12,15 +12,16 @@ class GameHiveStore {
   static const _GAME_SETTINGS_KEY = 'game_settings';
 
   GameSettings getGameSettings() {
-    return GameSettings.fromJson(jsonDecode(_gameBox.get(_GAME_SETTINGS_KEY)));
+    return GameSettings.fromJson(
+        jsonDecode(_gameBox.get(_GAME_SETTINGS_KEY)), this);
   }
 
   bool haveGameSettings() {
     return _gameBox.containsKey(_GAME_SETTINGS_KEY);
   }
 
-  putGameSettings(GameSettings gameSettings) {
-    _gameBox.put(_GAME_SETTINGS_KEY, jsonEncode(gameSettings));
+  Future<void> putGameSettings(GameSettings gameSettings) {
+    return _gameBox.put(_GAME_SETTINGS_KEY, jsonEncode(gameSettings));
   }
 
   /* HOLE CARD VISIBILITY STATE */
