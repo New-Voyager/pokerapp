@@ -1071,10 +1071,11 @@ class HandActionService {
         (element) => (element.toString() == 'GameType.' + gameTypeStr));
 
     handInfo.update(
-        handNum: handNum,
-        smallBlind: smallBlind,
-        bigBlind: bigBlind,
-        gameType: gameType);
+      handNum: handNum,
+      smallBlind: smallBlind,
+      bigBlind: bigBlind,
+      gameType: gameType,
+    );
 
     /* set the noOfVisible cards for other players */
     int noOfCards = int.parse(currentHandState["noCards"].toString());
