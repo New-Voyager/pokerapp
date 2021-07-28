@@ -1409,12 +1409,11 @@ class HandActionService {
         lowWinners.isEmpty ? totalWaitTimeInMs : totalWaitTimeInMs ~/ 2;
     int lowWinnersTimeInMs = totalWaitTimeInMs ~/ 2;
 
-    if (gameState.settings._gameSound) {
+    if (gameState.settings.gameSound) {
       gameState.getAudioBytes(AppAssets.applauseSound).then((value) {
         audioPlayer.playBytes(value);
       });
     }
-    log('Result: Animating winner');
 
     /** process the high pot winners: this method already takes 500ms*/
     await processWinners(
