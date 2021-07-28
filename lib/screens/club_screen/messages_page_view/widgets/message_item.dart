@@ -11,6 +11,7 @@ import 'package:pokerapp/models/hand_history_model.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/chat_time.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/chat_user_avatar.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/replay_button.dart';
@@ -173,18 +174,39 @@ class MessageItem extends StatelessWidget {
                     ],
                   ),
                 ),
-                Flexible(
-                  flex: 1,
-                  child: ReplayButton(
-                    onTapFunction: () {
+                // Flexible(
+                //   flex: 1,
+                //   child: ReplayButton(
+                //     onTapFunction: () {
+                //       ReplayHandDialog.show(
+                //         context: context,
+                //         hand: messageModel.sharedHand.data,
+                //         playerID: playerInfo['id'],
+                //       );
+                //     },
+                //   ),
+                // )
+
+                Row(
+                  children: [
+                    _buildIconButton(Icons.book_outlined, () {
+                      Navigator.of(context)
+                          .pushNamed(Routes.hand_log_view, arguments: {
+                        "gameCode": messageModel.sharedHand.gameCode,
+                        "handNum": messageModel.sharedHand.handNum,
+                        "clubCode": messageModel.clubCode,
+                      });
+                    }),
+                    SizedBox(width: 5),
+                    _buildIconButton(Icons.replay, () {
                       ReplayHandDialog.show(
                         context: context,
                         hand: messageModel.sharedHand.data,
                         playerID: playerInfo['id'],
                       );
-                    },
-                  ),
-                )
+                    })
+                  ],
+                ),
               ],
             ),
             SizedBox(height: 10),
@@ -208,6 +230,21 @@ class MessageItem extends StatelessWidget {
             ),
           ],
         ));
+  }
+
+  Widget _buildIconButton(IconData icon, Function onTap) {
+    Color color = Color.fromARGB(255, 0, 255, 176);
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          border: Border.all(color: color, width: 2),
+        ),
+        padding: const EdgeInsets.all(5),
+        child: Icon(icon, size: 20, color: color),
+      ),
+    );
   }
 
   Widget _buildMessage(BuildContext context, bool isMe) {
