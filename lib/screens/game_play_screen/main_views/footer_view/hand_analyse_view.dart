@@ -643,14 +643,6 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
             },
           ),
 
-          // Visibility(
-          //   visible: widget.gameState.started,
-          //   child: GameCircleButton(
-          //     iconData: Icons.menu,
-          //     onClickHandler: () => onMoreOptionsPress(context),
-          //   ),
-          // ),
-
           GameCircleButton(
             iconData: Icons.menu,
             onClickHandler: () => onMoreOptionsPress(context),
