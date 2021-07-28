@@ -1409,7 +1409,7 @@ class HandActionService {
         lowWinners.isEmpty ? totalWaitTimeInMs : totalWaitTimeInMs ~/ 2;
     int lowWinnersTimeInMs = totalWaitTimeInMs ~/ 2;
 
-    if (gameState.settings.gameSound) {
+    if (gameState?.settings?.gameSound ?? true) {
       gameState.getAudioBytes(AppAssets.applauseSound).then((value) {
         audioPlayer.playBytes(value);
       });
