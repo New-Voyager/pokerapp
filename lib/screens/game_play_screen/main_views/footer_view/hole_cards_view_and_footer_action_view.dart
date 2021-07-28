@@ -82,7 +82,9 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
                   // mainAxisSize: MainAxisSize.min,
                   children: [
                     // main hole card view
-                    _buildHoleCardView(context),
+                    Consumer<StraddlePromptState>(
+                      builder: (_, __, ___) => _buildHoleCardView(context),
+                    ),
 
                     // all hole card selection button
                     _buildAllHoleCardSelectionButton(context),

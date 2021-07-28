@@ -1071,10 +1071,11 @@ class HandActionService {
         (element) => (element.toString() == 'GameType.' + gameTypeStr));
 
     handInfo.update(
-        handNum: handNum,
-        smallBlind: smallBlind,
-        bigBlind: bigBlind,
-        gameType: gameType);
+      handNum: handNum,
+      smallBlind: smallBlind,
+      bigBlind: bigBlind,
+      gameType: gameType,
+    );
 
     /* set the noOfVisible cards for other players */
     int noOfCards = int.parse(currentHandState["noCards"].toString());
@@ -1408,12 +1409,11 @@ class HandActionService {
         lowWinners.isEmpty ? totalWaitTimeInMs : totalWaitTimeInMs ~/ 2;
     int lowWinnersTimeInMs = totalWaitTimeInMs ~/ 2;
 
-    if (gameState.settings._gameSound) {
+    if (gameState.settings.gameSound) {
       gameState.getAudioBytes(AppAssets.applauseSound).then((value) {
         audioPlayer.playBytes(value);
       });
     }
-    log('Result: Animating winner');
 
     /** process the high pot winners: this method already takes 500ms*/
     await processWinners(
