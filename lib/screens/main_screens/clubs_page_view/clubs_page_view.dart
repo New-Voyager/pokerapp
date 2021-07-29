@@ -324,7 +324,7 @@ class _ClubsPageViewState extends State<ClubsPageView>
                   * create and search box
                   * */
                   // const SizedBox(height: 10),
-                  _showLoading
+                  (_showLoading || (_clubs == null))
                       ? Expanded(
                           child: Center(
                             child: CircularProgressWidget(),

@@ -3,6 +3,7 @@ import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/game/new_game_provider.dart';
+import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
@@ -11,6 +12,8 @@ import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/game_screens/widgets/game_type_item.dart';
 import 'package:pokerapp/screens/game_screens/widgets/new_button_widget.dart';
 import 'package:pokerapp/widgets/heading_widget.dart';
+import 'package:pokerapp/widgets/radio_list_widget.dart';
+import 'package:pokerapp/widgets/round_color_button.dart';
 import 'package:provider/provider.dart';
 
 import '../../../routes.dart';
@@ -75,7 +78,7 @@ class _ChooseGameNewState extends State<ChooseGameNew>
                   AppDimensionsNew.getHorizontalSpace(8),
                   InkWell(
                     onTap: () {
-                      // TODO : Handle load code
+                      _handleLoadGameClick(context);
                     },
                     child: CircleAvatar(
                       child: Icon(Icons.open_in_browser_rounded),
@@ -234,6 +237,48 @@ class _ChooseGameNewState extends State<ChooseGameNew>
           ),
         ),
       ),
+    );
+  }
+
+  _handleLoadGameClick(BuildContext context) async {
+    final game = await showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          scrollable: true,
+          title: Text(AppStringsNew.loadSettingsTitle),
+          content: Container(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height * 0.6,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Expanded(
+                  child: RadioListWidget(values: [1,2,3,4,5,6], onSelect: (val){}),
+                  //  ListView.separated(
+                  //   shrinkWrap: true,
+                  //   itemBuilder: (context, index) {
+                  //     return ListTile(
+                  //       title: Text("#$index"),
+                  //     );
+                  //   },
+                  //   separatorBuilder: (context, index) =>
+                  //       AppDimensionsNew.getVerticalSizedBox(8),
+                  //   itemCount: 10,
+                  //   physics: ClampingScrollPhysics(),
+                  // ),
+                ),
+                RoundedColorButton(
+                  onTapFunction: () {},
+                  text: AppStringsNew.startText,
+                  backgroundColor: AppColorsNew.yellowAccentColor,
+                  textColor: AppColorsNew.darkGreenShadeColor,
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 

@@ -227,4 +227,6 @@ class AppStringsNew {
   static String requestFeature = "Request Feature";
   static String termsPolicy = "Terms and Privacy Policy";
   static String licenses = "Licenses";
+
+  static String loadSettingsTitle = "Load Settings";
 }
