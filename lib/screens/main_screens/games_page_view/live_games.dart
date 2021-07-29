@@ -40,7 +40,7 @@ class LiveGamesScreen extends StatefulWidget {
 }
 
 class _LiveGamesScreenState extends State<LiveGamesScreen>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, WidgetsBindingObserver {
   bool _isLoading = true;
   bool _isPlayedGamesLoading = true;
   List<GameModelNew> liveGames = [];
@@ -49,12 +49,6 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
   TabController _tabController;
 
   Timer _refreshTimer;
-
-  Future<void> _fillLiveGames() async {
-    //print('fetching live games');
-    liveGames = await GameService.getLiveGamesNew();
-    playedGames = await GameService.getPastGames();
-  }
 
   @override
   void initState() {
@@ -66,39 +60,103 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
     WidgetsBinding.instance.addPostFrameCallback((_) {
       TestService.isTesting ? _loadTestLiveGames() : _fetchPlayedGames();
     });
+    WidgetsBinding.instance.addObserver(this);
 
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      _serverPolling();
-    });
-    // _refreshTimer = Timer.periodic(const Duration(seconds: 30), (timer) async {
-    //   await _fillLiveGames();
-    //   if (mounted) setState(() {});
+    // WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+    //   _serverPolling();
     // });
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      _initTimer();
+    });
   }
 
-  _serverPolling() async {
-    while (true) {
-      await Future.delayed(Duration(seconds: 10));
-      if (mounted) {
-        final int currentIndex =
-            Provider.of<AppState>(context, listen: false).currentIndex;
-        if (currentIndex == 0) {
-          if (_tabController.index == 0) {
-            log("0-0-0-In LiveGames");
-          } else if (_tabController.index == 1) {
-            log("0-0-0-In Game record");
+  @override
+  void dispose() {
+    _disposeTimer();
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  // Lifeccyle Methods
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    log("AppLifeCycleState : $state");
+    switch (state) {
+      case AppLifecycleState.paused:
+        log("0-0-0- PAUSED");
+        _disposeTimer();
+        break;
+      case AppLifecycleState.detached:
+        log("0-0-0- detached");
+        _disposeTimer();
+        break;
+      case AppLifecycleState.inactive:
+        log("0-0-0- INACTIVE");
+        _disposeTimer();
+        break;
+      case AppLifecycleState.resumed:
+        log("0-0-0- resumed");
+        _initTimer();
+        break;
+    }
+    super.didChangeAppLifecycleState(state);
+  }
+
+  _initTimer() async {
+    log("0-0-0- In Init Timer");
+    if (_refreshTimer == null || !_refreshTimer.isActive) {
+      log("0-0-0- In Init Timer - Timer initialized Again!");
+      _refreshTimer =
+          Timer.periodic(const Duration(seconds: 30), (timer) async {
+        if (mounted) {
+          final int currentIndex =
+              Provider.of<AppState>(context, listen: false).currentIndex;
+          if (currentIndex == 0) {
+            if (_tabController.index == 0) {
+              log("0-0-0-In LiveGames Refresh");
+              await _fetchLiveGames();
+            } else if (_tabController.index == 1) {
+              log("0-0-0-In Game record refresh ");
+              await _fetchPlayedGames();
+            }
           }
         }
-      }
+      });
     }
   }
+
+  _disposeTimer() {
+    log("0-0-0- In dispose Timer");
+    if (_refreshTimer != null || _refreshTimer.isActive) {
+      log("0-0-0- In dispose Timer - cancelled timer");
+      _refreshTimer.cancel();
+    }
+  }
+
+  // _serverPolling() async {
+  //   while (true) {
+  //     await Future.delayed(Duration(seconds: 10));
+  //     if (mounted) {
+  //       final int currentIndex =
+  //           Provider.of<AppState>(context, listen: false).currentIndex;
+  //       if (currentIndex == 0) {
+  //         if (_tabController.index == 0) {
+  //           log("0-0-0-In LiveGames");
+  //         } else if (_tabController.index == 1) {
+  //           log("0-0-0-In Game record");
+  //         }
+  //       }
+  //     }
+  //   }
+  // }
 
   _fetchLiveGames() async {
     ConnectionDialog.show(
       context: context,
       loadingText: AppStringsNew.LoadingGamesText,
     );
-    await _fillLiveGames();
+    liveGames.clear();
+    liveGames.addAll(await GameService.getLiveGamesNew());
     setState(() => _isLoading = false);
     ConnectionDialog.dismiss(context: context);
   }
@@ -108,7 +166,10 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
       context: context,
       loadingText: AppStringsNew.LoadingGamesText,
     );
-    await _fillLiveGames();
+    playedGames.clear();
+    //print('fetching live games');
+
+    playedGames.addAll(await GameService.getPastGames());
     setState(() => _isPlayedGamesLoading = false);
     ConnectionDialog.dismiss(context: context);
   }
@@ -134,13 +195,6 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
   }
 
   @override
-  void dispose() {
-    _refreshTimer?.cancel();
-    _tabController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Container(
       decoration: AppStylesNew.bgDecoration,
@@ -156,11 +210,12 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
                 children: [
                   RoundedAccentButton(
                     onTapFunction: () async {
+                      _disposeTimer();
                       final dynamic result = await Navigator.of(context)
                           .pushNamed(Routes.new_game_settings);
                       if (result != null) {
                         /* show game settings dialog */
-                        NewGameSettings2.show(
+                        await NewGameSettings2.show(
                           context,
                           clubCode: "",
                           mainGameType: result['gameType'],
@@ -170,6 +225,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
                               [],
                         );
                       }
+                      _initTimer();
                     },
                     text: "HOST",
                   ),
@@ -185,6 +241,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
                   ),
                   RoundedAccentButton(
                     onTapFunction: () async {
+                      _disposeTimer();
                       String gameCode = "";
                       final String result = await showDialog(
                         context: context,
@@ -234,6 +291,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
                               .pushNamed(Routes.game_play, arguments: result);
                         }
                       }
+                      _initTimer();
                     },
                     text: "JOIN",
                   ),
@@ -295,14 +353,13 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
                                     return LiveGameItem(
                                       game: liveGames[index],
                                       onTapFunction: () async {
+                                        _disposeTimer();
                                         await Navigator.of(context).pushNamed(
                                           Routes.game_play,
                                           arguments: liveGames[index].gameCode,
                                         );
                                         // Refreshes livegames again
-                                        TestService.isTesting
-                                            ? _loadTestLiveGames()
-                                            : _fetchLiveGames();
+                                        _initTimer();
                                       },
                                     );
                                   },
