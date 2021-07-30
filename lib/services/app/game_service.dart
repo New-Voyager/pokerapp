@@ -391,7 +391,7 @@ class GameService {
 
   static Future<List<GameModelNew>> getLiveGamesNew() async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
-    List<GameModelNew> liveGames = [];
+    final List<GameModelNew> liveGames = [];
 
     QueryResult result =
         await _client.query(QueryOptions(documentNode: gql(liveGamesNewQuery)));

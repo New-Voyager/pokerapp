@@ -502,7 +502,9 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
   void _initGameInfoModel() async {
     final GameInfoModel gameInfoModel = await _init();
-    setState(() => _gameInfoModel = gameInfoModel);
+    if (mounted) {
+      setState(() => _gameInfoModel = gameInfoModel);
+    }
     _queryCurrentHandIfNeeded();
   }
 
