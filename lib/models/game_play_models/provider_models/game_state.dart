@@ -98,7 +98,7 @@ class GameState {
   Map<int, String> _playerIdsToNames = Map<int, String>();
   Map<int, List<int>> _myCards = Map<int, List<int>>();
   bool straddlePrompt = false;
-  bool straddleBet = false;
+  bool straddleBetThisHand = false;
 
   // host seat change state (only used when initialization)
   List<PlayerInSeat> _hostSeatChangeSeats = [];
