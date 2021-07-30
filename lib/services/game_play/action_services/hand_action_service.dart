@@ -586,7 +586,7 @@ class HandActionService {
           // we show the straddle dialog only when the auto straddle is off
           if (_gameState.settings.autoStraddle == true) {
             // set straddle bet
-            _gameState.straddleBet = true;
+            _gameState.straddleBetThisHand = true;
           } else {
             // prompt for the straddle dialog
             _gameState.straddlePrompt = true;
@@ -712,19 +712,6 @@ class HandActionService {
   Future<void> handleYourAction(var data) async {
     log('Hand Message: ::handleYourAction:: START');
 
-    if (_gameState.straddleBet == true) {
-      // we have the straddleBet set to true, do a bet
-      if (_close) return;
-      HandActionService.takeAction(
-        context: _context,
-        action: AppConstants.STRADDLE,
-        amount: 2 * _gameState.gameInfo.bigBlind,
-      );
-
-      // once, the first bet is done, set straddleBet to false, and wait for next hand
-      return _gameState.straddleBet = false;
-    }
-
     if (_close) return;
     try {
       final me = _gameState.me(_context);
@@ -740,6 +727,20 @@ class HandActionService {
 
       /* play an sound effect alerting the user */
       playSoundEffect(AppAssets.playerTurnSound);
+
+
+      if (_gameState.straddleBetThisHand == true) {
+        // we have the straddleBet set to true, do a bet
+        if (_close) return;
+        HandActionService.takeAction(
+          context: _context,
+          action: AppConstants.STRADDLE,
+          amount: 2 * _gameState.gameInfo.bigBlind,
+        );
+
+        // once, the first bet is done, set straddleBet to false, and wait for next hand
+        return _gameState.straddleBetThisHand = false;
+      }
 
       /* this part handles if we receive a prompt for run it twice */
       List<String> availableActions = seatAction['availableActions']
