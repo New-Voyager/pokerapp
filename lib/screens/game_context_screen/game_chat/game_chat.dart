@@ -69,19 +69,6 @@ class _GameChatState extends State<GameChat> {
     if (_vnShowEmojiPicker.value) {
       FocusScope.of(context).unfocus();
     }
-
-    // close
-    // showModalBottomSheet(
-    //   context: context,
-    //   isScrollControlled: true,
-    //   builder: (_) => IntrinsicHeight(
-    //     child: EmojiPickerWidget(
-    //       onEmojiSelected: (String emoji) {
-    //         _textEditingController.text = _textEditingController.text + emoji;
-    //       },
-    //     ),
-    //   ),
-    // );
   }
 
   void _scrollToBottom() {

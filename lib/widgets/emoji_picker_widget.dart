@@ -56,9 +56,12 @@ class EmojiPicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return Container(
+      alignment: Alignment.center,
       color: Colors.black,
-      height: MediaQuery.of(context).size.height * 0.20,
+      width: size.width,
+      height: size.height * 0.20,
       child: SingleChildScrollView(
         physics: BouncingScrollPhysics(),
         child: Wrap(
