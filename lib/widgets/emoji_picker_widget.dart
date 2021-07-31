@@ -1,26 +1,73 @@
-import 'package:emoji_picker/emoji_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:pokerapp/services/data/box_type.dart';
-import 'package:pokerapp/services/data/hive_datasource_impl.dart';
 
-class EmojiPickerWidget extends StatelessWidget {
-  final Function(String) onEmojiSelected;
+const List<String> _emojis = [
+  '😊',
+  '😀',
+  '😁',
+  '😅',
+  '😂',
+  '😇',
+  '😍',
+  '😜',
+  '🤔',
+  '🙄',
+  '😴',
+  '🤐',
+  '😔',
+  '😑',
+  '😧',
+  '😥',
+  '😩',
+  '😡',
+  '👻',
+  '🤠',
+  '😎',
+  '🤡',
+  '💋',
+  '👏',
+  '🤞',
+  '🖕',
+  '👍',
+  '👎',
+  '🙏',
+];
 
-  const EmojiPickerWidget({
-    @required this.onEmojiSelected,
-    Key key,
-  }) : super(key: key);
+class EmojiPicker extends StatelessWidget {
+  final Function onEmojiSelected;
+
+  EmojiPicker({
+    @required void this.onEmojiSelected(String _),
+  });
+
+  Widget _buildSingleEmojiChild(String emoji) => InkWell(
+        onTap: () {
+          onEmojiSelected(emoji);
+        },
+        child: Padding(
+          padding: EdgeInsets.all(10.0),
+          child: Text(
+            emoji,
+            style: TextStyle(
+              fontSize: 20.0,
+            ),
+          ),
+        ),
+      );
 
   @override
-  Widget build(BuildContext context) => EmojiPicker(
-        HiveDatasource.getInstance.getBox(BoxType.EMOJI_BOX),
-        rows: 4,
-        columns: 8,
-        onEmojiSelected: (emoji, category) {
-          onEmojiSelected(emoji.emoji);
-          Navigator.pop(context);
-        },
-      );
+  Widget build(BuildContext context) {
+    return Container(
+      color: Colors.black,
+      height: MediaQuery.of(context).size.height * 0.20,
+      child: SingleChildScrollView(
+        physics: BouncingScrollPhysics(),
+        child: Wrap(
+          children:
+              _emojis.map((emoji) => _buildSingleEmojiChild(emoji)).toList(),
+        ),
+      ),
+    );
+  }
 }
 
 /*
