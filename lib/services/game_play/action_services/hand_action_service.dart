@@ -1395,7 +1395,7 @@ class HandActionService {
     final List highWinners,
     final List lowWinners,
     final gameState,
-    final tableState,
+    final TableState tableState,
     final players,
     final AudioPlayer audioPlayer,
     final int boardIndex = 1,
@@ -1418,6 +1418,7 @@ class HandActionService {
 
     /** process the high pot winners: this method already takes 500ms*/
     log('paul debug: HIGH pot winners starting');
+    tableState.setWhichWinner(AppConstants.HIGH_WINNERS);
     await processWinners(
       highWinners: highWinners,
       players: players,
@@ -1448,9 +1449,12 @@ class HandActionService {
       boardIndex: boardIndex,
     );
 
+    if (lowWinners.isEmpty) return;
+
     // this method takes another 500 MS
     /** process the low pot winners */
     log('paul debug: low pot winners starting: $lowWinners');
+    tableState.setWhichWinner(AppConstants.LOW_WINNERS);
     await processWinners(
       highWinners: lowWinners,
       players: players,

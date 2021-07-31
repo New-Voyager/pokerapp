@@ -170,6 +170,10 @@ class AppConstants {
   static const String CALL = 'CALL';
   static const String ALLIN = 'ALLIN';
 
+  // types of winners - high and low winners
+  static const String HIGH_WINNERS = 'High Winners';
+  static const String LOW_WINNERS = 'Low Winners';
+
   /* message types */
   static const String PLAYER_UPDATE = 'PLAYER_UPDATE';
   static const String STACK_RELOADED = 'STACK_RELOADED';

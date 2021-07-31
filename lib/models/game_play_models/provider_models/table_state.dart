@@ -18,6 +18,9 @@ class TableState extends ChangeNotifier {
   bool _twoBoardsNeeded;
   int _potToHighlight;
 
+  String get whichWinner => _whichWinner;
+  String _whichWinner;
+
   bool get showCardsShuffling => _showCardsShuffling;
   bool _showCardsShuffling;
 
@@ -54,9 +57,15 @@ class TableState extends ChangeNotifier {
     _rankStr = null;
     _twoBoardsNeeded = false;
     _potToHighlight = -1;
+    _whichWinner = null;
   }
 
   void notifyAll() => notifyListeners();
+
+  void setWhichWinner(String whichWinner) {
+    _whichWinner = whichWinner;
+    notifyAll();
+  }
 
   void updateCardShufflingAnimation(bool animate) {
     _showCardsShuffling = animate;
