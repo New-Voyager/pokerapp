@@ -86,30 +86,33 @@ class _ClubMainScreenNewState extends State<ClubMainScreenNew>
                       BackArrowWidget(),
                       Visibility(
                         visible: (clubModel.isManager || clubModel.isOwner),
-                        child: RoundedColorButton(
-                          onTapFunction: () async {
-                            final dynamic result = await Navigator.pushNamed(
-                              context,
-                              Routes.new_game_settings,
-                              arguments: widget.clubCode,
-                            );
-
-                            if (result != null) {
-                              /* show game settings dialog */
-                              NewGameSettings2.show(
+                        child: Padding(
+                          padding: const EdgeInsets.only(right:8.0),
+                          child: RoundedColorButton(
+                            onTapFunction: () async {
+                              final dynamic result = await Navigator.pushNamed(
                                 context,
-                                clubCode: widget.clubCode,
-                                mainGameType: result['gameType'],
-                                subGameTypes: List.from(
-                                      result['gameTypes'],
-                                    ) ??
-                                    [],
+                                Routes.new_game_settings,
+                                arguments: widget.clubCode,
                               );
-                            }
-                          },
-                          text: '+ Create Game',
-                          backgroundColor: AppColorsNew.yellowAccentColor,
-                          textColor: AppColorsNew.darkGreenShadeColor,
+
+                              if (result != null) {
+                                /* show game settings dialog */
+                                NewGameSettings2.show(
+                                  context,
+                                  clubCode: widget.clubCode,
+                                  mainGameType: result['gameType'],
+                                  subGameTypes: List.from(
+                                        result['gameTypes'],
+                                      ) ??
+                                      [],
+                                );
+                              }
+                            },
+                            text: '+ Create Game',
+                            backgroundColor: AppColorsNew.yellowAccentColor,
+                            textColor: AppColorsNew.darkGreenShadeColor,
+                          ),
                         ),
                       ),
                     ],

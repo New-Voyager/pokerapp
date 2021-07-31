@@ -78,6 +78,7 @@ class NewGameSettings2 extends StatelessWidget {
     gm.gameType = mainGameType;
     gm.roeGames = subGameTypes;
     gm.dealerChoiceGames = subGameTypes;
+
     String gameCode;
     if (clubCode != null && clubCode.isNotEmpty) {
       gameCode = await GameService.configureClubGame(
@@ -180,6 +181,16 @@ class NewGameSettings2 extends StatelessWidget {
         create: (_) => NewGameModelProvider(clubCode),
         builder: (BuildContext context, _) {
           final NewGameModelProvider gmp = context.read<NewGameModelProvider>();
+
+          // Initializing values
+          // Initial value for BigBlind
+          gmp.blinds.bigBlind = 2.0;
+          // Initial value for Buyin Min and max
+          gmp.buyInMin = 30;
+          gmp.buyInMax = 100;
+          gmp.rakePercentage = 0;
+          gmp.rakeCap = 0;
+
           return Container(
             decoration: BoxDecoration(
               gradient: RadialGradient(
@@ -260,18 +271,18 @@ class NewGameSettings2 extends StatelessWidget {
                       sepH10,
 
                       /* ante */
-                      Expanded(
-                        child: TextInputWidget(
-                          value: gmp.blinds.ante,
-                          label: 'Ante',
-                          title: 'Enter ante',
-                          minValue: 0,
-                          maxValue: 1000,
-                          onChange: (value) {
-                            gmp.blinds.ante = value.toDouble();
-                          },
-                        ),
-                      ),
+                      // Expanded(
+                      //   child: TextInputWidget(
+                      //     value: gmp.blinds.ante,
+                      //     label: 'Ante',
+                      //     title: 'Enter ante',
+                      //     minValue: 0,
+                      //     maxValue: 1000,
+                      //     onChange: (value) {
+                      //       gmp.blinds.ante = value.toDouble();
+                      //     },
+                      //   ),
+                      // ),
                     ],
                   ),
 
@@ -285,7 +296,7 @@ class NewGameSettings2 extends StatelessWidget {
                         /* min */
                         Expanded(
                           child: TextInputWidget(
-                            value: gmp.buyInMin,
+                            value: gmp.buyInMin.toDouble(),
                             small: true,
                             label: 'min',
                             trailing: 'BB',
@@ -293,7 +304,7 @@ class NewGameSettings2 extends StatelessWidget {
                             minValue: 0,
                             maxValue: 1000,
                             onChange: (value) {
-                              gmp.buyInMin = value;
+                              gmp.buyInMin = value.floor();
                             },
                           ),
                         ),
@@ -304,7 +315,7 @@ class NewGameSettings2 extends StatelessWidget {
                         /* max */
                         Expanded(
                           child: TextInputWidget(
-                            value: gmp.buyInMax,
+                            value: gmp.buyInMax.toDouble(),
                             small: true,
                             label: 'max',
                             title: 'Enter max buyin (x BB)',
@@ -312,7 +323,7 @@ class NewGameSettings2 extends StatelessWidget {
                             minValue: 0,
                             maxValue: 1000,
                             onChange: (value) {
-                              gmp.buyInMax = value;
+                              gmp.buyInMax = value.floor();
                             },
                           ),
                         ),
@@ -337,7 +348,7 @@ class NewGameSettings2 extends StatelessWidget {
                             minValue: 0,
                             maxValue: 1000,
                             onChange: (value) {
-                              gmp.rakePercentage = value.toDouble();
+                              gmp.rakePercentage = value;
                             },
                           ),
                         ),
@@ -348,14 +359,14 @@ class NewGameSettings2 extends StatelessWidget {
                         /* max */
                         Expanded(
                           child: TextInputWidget(
-                            value: gmp.rakeCap.toInt(),
+                            value: gmp.rakeCap,
                             small: true,
                             leading: 'cap',
                             title: 'Enter max tips taken from the pot',
                             minValue: 0,
                             maxValue: -1,
                             onChange: (value) {
-                              gmp.rakeCap = value.toDouble();
+                              gmp.rakeCap = value;
                             },
                           ),
                         ),
@@ -408,7 +419,7 @@ class NewGameSettings2 extends StatelessWidget {
                               ? const SizedBox.shrink()
                               : TextInputWidget(
                                   label: 'Buyin wait time',
-                                  value: 120,
+                                  value: 120.0,
                                   trailing: 'secs',
                                   title:
                                       'Enter max wait time (in seconds) for buyin approval',
