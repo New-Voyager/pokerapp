@@ -169,7 +169,7 @@ class _ChipAmountWidgetState extends State<ChipAmountWidget>
     log('potViewPos: 3 afterFirstLayout ChipAmountWidget seat ${widget.seat.serverSeatPos} position: ${widget.seat.potViewPos}');
 
     if (potKey == null || potKey.currentContext == null) {
-     // log('potViewPos: 3 return afterFirstLayout ChipAmountWidget seat ${widget.seat.serverSeatPos} position: ${widget.seat.potViewPos} potKey: ${potKey} potKey.currentContext: ${potKey.currentContext}');
+      // log('potViewPos: 3 return afterFirstLayout ChipAmountWidget seat ${widget.seat.serverSeatPos} position: ${widget.seat.potViewPos} potKey: ${potKey} potKey.currentContext: ${potKey.currentContext}');
       return;
     }
 
@@ -188,10 +188,11 @@ class ChipAmountAnimatingWidget extends StatefulWidget {
   final bool reverse;
 
   ChipAmountAnimatingWidget({
+    Key key,
     this.seatPos,
     this.child,
     this.reverse,
-  });
+  }) : super(key: key);
 
   @override
   _ChipAmountAnimatingWidgetState createState() =>

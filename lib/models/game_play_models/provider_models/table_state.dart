@@ -23,6 +23,9 @@ class TableState extends ChangeNotifier {
 
   final math.Random r = math.Random();
 
+  int get tableRefresh => _tableRefresh;
+  int _tableRefresh;
+
   int get communityCardRefresh => _communityCardRefresh;
   int _communityCardRefresh;
 
@@ -59,6 +62,12 @@ class TableState extends ChangeNotifier {
     _showCardsShuffling = animate;
     _tableStatus = AppConstants.TABLE_STATUS_GAME_RUNNING;
     notifyListeners();
+  }
+
+  void refreshTable() {
+    const _100crore = 1000000000;
+    _tableRefresh = r.nextInt(_100crore);
+    // notifyListeners();
   }
 
   void refreshCommunityCards() {
