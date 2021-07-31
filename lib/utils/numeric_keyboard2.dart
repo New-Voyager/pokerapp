@@ -337,7 +337,8 @@ class NumericKeyboard2 extends StatelessWidget {
         builder: (context) => Container(
           margin: const EdgeInsets.all(5.0),
           decoration: BoxDecoration(
-            shape: BoxShape.circle,
+            shape: BoxShape.rectangle,
+            borderRadius: BorderRadius.circular(16),
             color: color,
             // border: Border.all(
             //   color: AppColors.appAccentColor,
@@ -478,6 +479,7 @@ class NumericKeyboard2 extends StatelessWidget {
     String title = 'Title goes here',
     double min = 0,
     double max,
+    double currentVal,
   }) {
     return showGeneralDialog(
       barrierLabel: "Numeric Keyboard",
@@ -491,7 +493,7 @@ class NumericKeyboard2 extends StatelessWidget {
           title: title,
           min: min,
           max: max,
-          currValue: min.round(),
+          currValue: currentVal.floor(),
           // decimal: decimal,
         ),
       ),

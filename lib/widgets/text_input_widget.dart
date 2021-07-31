@@ -130,16 +130,18 @@ class TextInputWidget extends StatelessWidget {
       builder: (BuildContext context, _) => InkWell(
         onTap: () async {
           /* open the numeric keyboard */
-          final double value = await NumericKeyboard2.show(
+          final double val = await NumericKeyboard2.show(
             context,
             title: title,
             min: minValue,
             max: maxValue,
+            currentVal: value.toDouble(),
           );
 
-          if (value == null) return;
-
-          context.read<ValueNotifier<double>>().value = value;
+          if (val != null) {
+            context.read<ValueNotifier<double>>().value = val;
+            return onChange(val);
+          }
         },
         child: Container(
           padding: const EdgeInsets.symmetric(

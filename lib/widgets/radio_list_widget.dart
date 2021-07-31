@@ -6,7 +6,6 @@ class RadioListWidget extends StatelessWidget {
   final List<int> values;
   final int defaultValue;
   final void Function(int value) onSelect;
-  
 
   RadioListWidget({
     @required this.values,
@@ -37,7 +36,7 @@ class RadioListWidget extends StatelessWidget {
             child: Text(
               v == -1 ? '∞' : v.toString(),
               style: TextStyle(
-                fontSize: 12.dp,
+                fontSize: 10.dp,
                 color: Colors.white,
                 shadows: [
                   Shadow(
