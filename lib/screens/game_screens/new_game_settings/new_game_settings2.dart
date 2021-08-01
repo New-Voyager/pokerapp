@@ -2,11 +2,14 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/game/new_game_model.dart';
 import 'package:pokerapp/models/game/new_game_provider.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
+import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/services/app/game_service.dart';
+import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/widgets/button_widget.dart';
 import 'package:pokerapp/widgets/custom_text_button.dart';
 import 'package:pokerapp/widgets/heading_widget.dart';
@@ -78,7 +81,9 @@ class NewGameSettings2 extends StatelessWidget {
     gm.gameType = mainGameType;
     gm.roeGames = subGameTypes;
     gm.dealerChoiceGames = subGameTypes;
+
     String gameCode;
+
     if (clubCode != null && clubCode.isNotEmpty) {
       gameCode = await GameService.configureClubGame(
         clubCode,
@@ -180,6 +185,17 @@ class NewGameSettings2 extends StatelessWidget {
         create: (_) => NewGameModelProvider(clubCode),
         builder: (BuildContext context, _) {
           final NewGameModelProvider gmp = context.read<NewGameModelProvider>();
+
+          // Initializing values
+          // Initial value for BigBlind
+          gmp.blinds.bigBlind = 2.0;
+          // Initial value for Buyin Min and max
+          gmp.buyInMin = 30;
+          gmp.buyInMax = 100;
+          gmp.rakePercentage = 0;
+          gmp.rakeCap = 0;
+          gmp.buyInWaitTime = 120;
+
           return Container(
             decoration: BoxDecoration(
               gradient: RadialGradient(
@@ -247,7 +263,7 @@ class NewGameSettings2 extends StatelessWidget {
                         child: TextInputWidget(
                           value: gmp.blinds.bigBlind,
                           label: 'Big Blind',
-                          minValue: 0,
+                          minValue: 2,
                           maxValue: 1000,
                           title: 'Enter big blind',
                           onChange: (value) {
@@ -260,18 +276,18 @@ class NewGameSettings2 extends StatelessWidget {
                       sepH10,
 
                       /* ante */
-                      Expanded(
-                        child: TextInputWidget(
-                          value: gmp.blinds.ante,
-                          label: 'Ante',
-                          title: 'Enter ante',
-                          minValue: 0,
-                          maxValue: 1000,
-                          onChange: (value) {
-                            gmp.blinds.ante = value.toDouble();
-                          },
-                        ),
-                      ),
+                      // Expanded(
+                      //   child: TextInputWidget(
+                      //     value: gmp.blinds.ante,
+                      //     label: 'Ante',
+                      //     title: 'Enter ante',
+                      //     minValue: 0,
+                      //     maxValue: 1000,
+                      //     onChange: (value) {
+                      //       gmp.blinds.ante = value.toDouble();
+                      //     },
+                      //   ),
+                      // ),
                     ],
                   ),
 
@@ -285,7 +301,7 @@ class NewGameSettings2 extends StatelessWidget {
                         /* min */
                         Expanded(
                           child: TextInputWidget(
-                            value: gmp.buyInMin,
+                            value: gmp.buyInMin.toDouble(),
                             small: true,
                             label: 'min',
                             trailing: 'BB',
@@ -293,7 +309,14 @@ class NewGameSettings2 extends StatelessWidget {
                             minValue: 0,
                             maxValue: 1000,
                             onChange: (value) {
-                              gmp.buyInMin = value;
+                              gmp.buyInMin = value.floor();
+
+                              if (gmp.buyInMax <= value.floor()) {
+                                Alerts.showNotification(
+                                    titleText:
+                                        "Buyin Min must be less than Buyin Max",
+                                    duration: Duration(seconds: 5));
+                              }
                             },
                           ),
                         ),
@@ -304,7 +327,7 @@ class NewGameSettings2 extends StatelessWidget {
                         /* max */
                         Expanded(
                           child: TextInputWidget(
-                            value: gmp.buyInMax,
+                            value: gmp.buyInMax.toDouble(),
                             small: true,
                             label: 'max',
                             title: 'Enter max buyin (x BB)',
@@ -312,7 +335,13 @@ class NewGameSettings2 extends StatelessWidget {
                             minValue: 0,
                             maxValue: 1000,
                             onChange: (value) {
-                              gmp.buyInMax = value;
+                              gmp.buyInMax = value.floor();
+                              if (gmp.buyInMin >= value.floor()) {
+                                Alerts.showNotification(
+                                    titleText:
+                                        "Buyin Max must be greater than Buyin Min",
+                                    duration: Duration(seconds: 5));
+                              }
                             },
                           ),
                         ),
@@ -337,7 +366,7 @@ class NewGameSettings2 extends StatelessWidget {
                             minValue: 0,
                             maxValue: 1000,
                             onChange: (value) {
-                              gmp.rakePercentage = value.toDouble();
+                              gmp.rakePercentage = value;
                             },
                           ),
                         ),
@@ -348,14 +377,14 @@ class NewGameSettings2 extends StatelessWidget {
                         /* max */
                         Expanded(
                           child: TextInputWidget(
-                            value: gmp.rakeCap.toInt(),
+                            value: gmp.rakeCap,
                             small: true,
                             leading: 'cap',
                             title: 'Enter max tips taken from the pot',
                             minValue: 0,
                             maxValue: -1,
                             onChange: (value) {
-                              gmp.rakeCap = value.toDouble();
+                              gmp.rakeCap = value;
                             },
                           ),
                         ),
@@ -390,183 +419,195 @@ class NewGameSettings2 extends StatelessWidget {
                   /* sep */
                   sepV20,
 
+                  /* UTG straddle */
+                  _buildRadio(
+                    label: 'UTG Straddle',
+                    value: gmp.straddleAllowed,
+                    onChange: (bool b) {
+                      gmp.straddleAllowed = b;
+                    },
+                  ),
+                  sepV20,
+
+                  /* allow run it twice */
+                  _buildRadio(
+                    label: 'Allow Run It Twice',
+                    value: gmp.runItTwice,
+                    onChange: (bool b) {
+                      gmp.runItTwice = b;
+                    },
+                  ),
+                  sepV20,
                   /* buy in approval */
-                  _buildDecoratedContainer(
+
+                  ExpansionTile(
+                    subtitle: Text("Choose advanced configurations",
+                        style: AppStylesNew.labelTextStyle),
+                    title: Text("Advanced Settings"),
                     children: [
-                      SwitchWidget(
-                        value: gmp.buyInApproval,
-                        label: 'Buyin Approval',
-                        onChange: (bool value) {
-                          gmp.buyInApproval = value;
-                        },
-                      ),
+                      _buildDecoratedContainer(
+                        children: [
+                          SwitchWidget(
+                            value: gmp.buyInApproval,
+                            label: 'Buyin Approval',
+                            onChange: (bool value) {
+                              gmp.buyInApproval = value;
+                            },
+                          ),
 
-                      // buy in wait time
-                      Consumer<NewGameModelProvider>(
-                        builder: (_, vnGmp, __) => _buildAnimatedSwitcher(
-                          child: vnGmp.buyInApproval == false
-                              ? const SizedBox.shrink()
-                              : TextInputWidget(
-                                  label: 'Buyin wait time',
-                                  value: 120,
-                                  trailing: 'secs',
-                                  title:
-                                      'Enter max wait time (in seconds) for buyin approval',
-                                  minValue: 0.0,
-                                  maxValue: 0,
-                                  onChange: (value) {},
-                                ),
-                        ),
-                      ),
+                          // buy in wait time
+                          Consumer<NewGameModelProvider>(
+                            builder: (_, vnGmp, __) => _buildAnimatedSwitcher(
+                              child: vnGmp.buyInApproval == false
+                                  ? const SizedBox.shrink()
+                                  : Column(
+                                      children: [
+                                        _buildLabel(
+                                            'Buyin max wait time (in seconds)'),
+                                        RadioListWidget(
+                                          defaultValue: gmp.buyInWaitTime,
+                                          values:
+                                              NewGameConstants.BUYIN_WAIT_TIMES,
+                                          onSelect: (int value) {
+                                            gmp.buyInWaitTime = value;
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                            ),
+                          ),
 
-                      /* seperator */
-                      sepV20,
-                      _buildSeperator(),
+                          /* seperator */
+                          sepV20,
+                          _buildSeperator(),
+
+                          /* sep */
+                          sepV20,
+
+                          SwitchWidget(
+                            value: gmp.breakAllowed,
+                            label: 'Break allowed',
+                            onChange: (bool value) {
+                              gmp.breakAllowed = value;
+                            },
+                          ),
+
+                          // buy in wait time
+                          Consumer<NewGameModelProvider>(
+                            builder: (_, vnGmp, __) => _buildAnimatedSwitcher(
+                              child: vnGmp.breakAllowed == false
+                                  ? const SizedBox.shrink()
+                                  : TextInputWidget(
+                                      label: 'Max break time',
+                                      value: 10,
+                                      trailing: 'mins',
+                                      minValue: 0.0,
+                                      maxValue: 100,
+                                      onChange: (value) {},
+                                    ),
+                            ),
+                          ),
+                        ],
+                      ),
 
                       /* sep */
                       sepV20,
+                      _buildDecoratedContainer(
+                        children: [
+                          /* allow audio conference */
+                          _buildRadio(
+                            label: 'Use Audio Conference    (Beta)',
+                            value: gmp.audioConference,
+                            onChange: (bool b) {
+                              gmp.audioConference = b;
+                            },
+                          ),
 
-                      SwitchWidget(
-                        value: gmp.breakAllowed,
-                        label: 'Break allowed',
-                        onChange: (bool value) {
-                          gmp.breakAllowed = value;
-                        },
-                      ),
+                          /* allow audio conference */
+                          _buildRadio(
+                            label: 'Use Agora Audio Conference    (Beta)',
+                            value: gmp.useAgora,
+                            onChange: (bool b) {
+                              gmp.useAgora = b;
+                            },
+                          ),
 
-                      // buy in wait time
-                      Consumer<NewGameModelProvider>(
-                        builder: (_, vnGmp, __) => _buildAnimatedSwitcher(
-                          child: vnGmp.breakAllowed == false
-                              ? const SizedBox.shrink()
-                              : TextInputWidget(
-                                  label: 'Max break time',
-                                  value: 10,
-                                  trailing: 'mins',
-                                  minValue: 0.0,
-                                  maxValue: 100,
-                                  onChange: (value) {},
-                                ),
-                        ),
-                      ),
-                    ],
-                  ),
+                          /* bot games */
+                          _buildRadio(
+                            label: 'Bot Game',
+                            value: gmp.botGame,
+                            onChange: (bool b) {
+                              gmp.botGame = b;
+                            },
+                          ),
+                          /* location check */
+                          _buildRadio(
+                            label: 'Location Check',
+                            value: gmp.locationCheck,
+                            onChange: (bool b) {
+                              gmp.locationCheck = b;
+                            },
+                          ),
 
-                  /* sep */
-                  sepV20,
-                  _buildDecoratedContainer(
-                    children: [
-                      /* allow audio conference */
-                      _buildRadio(
-                        label: 'Use Audio Conference    (Beta)',
-                        value: gmp.audioConference,
-                        onChange: (bool b) {
-                          gmp.audioConference = b;
-                        },
-                      ),
+                          /* ip check */
+                          _buildRadio(
+                            label: 'IP Check',
+                            value: gmp.ipCheck,
+                            onChange: (bool b) {
+                              gmp.ipCheck = b;
+                            },
+                          ),
 
-                      /* allow audio conference */
-                      _buildRadio(
-                        label: 'Use Agora Audio Conference    (Beta)',
-                        value: gmp.useAgora,
-                        onChange: (bool b) {
-                          gmp.useAgora = b;
-                        },
-                      ),
+                          /* waitlist */
+                          _buildRadio(
+                            label: 'Waitlist',
+                            value: gmp.waitList,
+                            onChange: (bool b) {
+                              gmp.waitList = b;
+                            },
+                          ),
 
-                      /* bot games */
-                      _buildRadio(
-                        label: 'Bot Game',
-                        value: gmp.botGame,
-                        onChange: (bool b) {
-                          gmp.botGame = b;
-                        },
-                      ),
+                          /* allow run it twice */
+                          _buildRadio(
+                            label: 'Allow Fun Animations',
+                            value: true,
+                            onChange: (bool b) {},
+                          ),
 
-                      /* UTG straddle */
-                      _buildRadio(
-                        label: 'UTG Straddle',
-                        value: gmp.straddleAllowed,
-                        onChange: (bool b) {
-                          gmp.straddleAllowed = b;
-                        },
-                      ),
+                          /* allow run it twice */
+                          _buildRadio(
+                            label: 'Muck Losing Hand',
+                            value: false,
+                            onChange: (bool b) {},
+                          ),
 
-                      /* location check */
-                      _buildRadio(
-                        label: 'Location Check',
-                        value: gmp.locationCheck,
-                        onChange: (bool b) {
-                          gmp.locationCheck = b;
-                        },
-                      ),
+                          /* show player buyin */
+                          _buildRadio(
+                            label: 'Show player buyin',
+                            value: gmp.showPlayerBuyin,
+                            onChange: (bool b) {
+                              gmp.showPlayerBuyin = b;
+                            },
+                          ),
 
-                      /* ip check */
-                      _buildRadio(
-                        label: 'IP Check',
-                        value: gmp.ipCheck,
-                        onChange: (bool b) {
-                          gmp.ipCheck = b;
-                        },
-                      ),
+                          /* allow rabbit hunt */
+                          _buildRadio(
+                            label: 'Allow Rabbit Hunt',
+                            value: gmp.allowRabbitHunt,
+                            onChange: (bool b) {
+                              gmp.allowRabbitHunt = b;
+                            },
+                          ),
 
-                      /* waitlist */
-                      _buildRadio(
-                        label: 'Waitlist',
-                        value: gmp.waitList,
-                        onChange: (bool b) {
-                          gmp.waitList = b;
-                        },
-                      ),
-
-                      /* allow run it twice */
-                      _buildRadio(
-                        label: 'Allow Run It Twice',
-                        value: gmp.runItTwice,
-                        onChange: (bool b) {
-                          gmp.runItTwice = b;
-                        },
-                      ),
-
-                      /* allow run it twice */
-                      _buildRadio(
-                        label: 'Allow Fun Animations',
-                        value: true,
-                        onChange: (bool b) {},
-                      ),
-
-                      /* allow run it twice */
-                      _buildRadio(
-                        label: 'Muck Losing Hand',
-                        value: false,
-                        onChange: (bool b) {},
-                      ),
-
-                      /* show player buyin */
-                      _buildRadio(
-                        label: 'Show player buyin',
-                        value: gmp.showPlayerBuyin,
-                        onChange: (bool b) {
-                          gmp.showPlayerBuyin = b;
-                        },
-                      ),
-
-                      /* allow rabbit hunt */
-                      _buildRadio(
-                        label: 'Allow Rabbit Hunt',
-                        value: gmp.allowRabbitHunt,
-                        onChange: (bool b) {
-                          gmp.allowRabbitHunt = b;
-                        },
-                      ),
-
-                      /* show hand rank */
-                      _buildRadio(
-                        label: 'Show Hand Rank',
-                        value: gmp.showHandRank,
-                        onChange: (bool b) {
-                          gmp.showHandRank = b;
-                        },
+                          /* show hand rank */
+                          _buildRadio(
+                            label: 'Show Hand Rank',
+                            value: gmp.showHandRank,
+                            onChange: (bool b) {
+                              gmp.showHandRank = b;
+                            },
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -576,7 +617,24 @@ class NewGameSettings2 extends StatelessWidget {
                   ButtonWidget(
                     text: 'Start',
                     onTap: () {
-                      Navigator.pop(context, gmp);
+                      if (gmp.blinds.bigBlind % 2 != 0) {
+                        Alerts.showNotification(
+                          titleText: "Game creation failed!",
+                          subTitleText: "Please check Bigblind values",
+                          duration: Duration(seconds: 5),
+                        );
+                        return;
+                      } else if (gmp.buyInMax < gmp.buyInMin) {
+                        Alerts.showNotification(
+                          titleText: "Game creation failed!",
+                          subTitleText:
+                              "Please check Buyin Min and Buyin max values",
+                          duration: Duration(seconds: 5),
+                        );
+                        return;
+                      } else {
+                        Navigator.pop(context, gmp);
+                      }
                     },
                   ),
 

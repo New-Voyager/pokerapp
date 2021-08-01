@@ -339,4 +339,10 @@ class NewGameModelProvider extends ChangeNotifier {
     settings.allowRabbitHunt = value;
     notifyListeners();
   }
+
+    get buyInWaitTime => settings.buyInWaitTime;
+  set buyInWaitTime(int value) {
+    settings.buyInWaitTime = value;
+    notifyListeners();
+  }
 }

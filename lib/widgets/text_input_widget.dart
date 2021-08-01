@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/utils/numeric_keyboard2.dart';
@@ -13,7 +15,7 @@ class TextInputWidget extends StatelessWidget {
   final FontWeight labelFontWeight;
   final bool small;
   final String title;
-  final void Function(int value) onChange;
+  final void Function(double value) onChange;
 
   final double minValue;
   final double maxValue;
@@ -86,7 +88,7 @@ class TextInputWidget extends StatelessWidget {
 
             /* main value */
             Expanded(
-              child: Consumer<ValueNotifier<int>>(
+              child: Consumer<ValueNotifier<double>>(
                 builder: (_, vnValue, __) => Text(
                   DataFormatter.chipsFormat(vnValue.value ?? 0),
                   //vnValue.value?.toString() ?? (value?.toString() ?? ''),
@@ -122,21 +124,24 @@ class TextInputWidget extends StatelessWidget {
     if (title == null || title == '') {
       title = this.label ?? 'Enter value';
     }
-    return ListenableProvider<ValueNotifier<int>>(
-      create: (_) => ValueNotifier(null),
+    log("$title : $value");
+    return ListenableProvider<ValueNotifier<double>>(
+      create: (_) => ValueNotifier(value),
       builder: (BuildContext context, _) => InkWell(
         onTap: () async {
           /* open the numeric keyboard */
-          final double value = await NumericKeyboard2.show(
+          final double val = await NumericKeyboard2.show(
             context,
             title: title,
             min: minValue,
             max: maxValue,
+            currentVal: value.toDouble(),
           );
 
-          if (value == null) return;
-
-          context.read<ValueNotifier<int>>().value = value.toInt();
+          if (val != null) {
+            context.read<ValueNotifier<double>>().value = val;
+            return onChange(val);
+          }
         },
         child: Container(
           padding: const EdgeInsets.symmetric(
