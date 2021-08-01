@@ -711,16 +711,16 @@ class GameState {
     actionState.setAction(seatNo, seatAction);
   }
 
-  //
   void resetSeatActions({bool newHand}) {
     for (final seat in this._seats.values) {
       if (seat.player == null) {
         continue;
       }
+      seat.player.action.animateAction = false;
       // if newHand is true, we pass 'false' flag to say don't stick any action to player.
       // otherwise stick last player action to nameplate
       seat.player.reset(
-          stickAction: newHand ?? false
+          stickAction: (newHand ?? false)
               ? false
               : (seat.player.action.action == HandActions.ALLIN));
       seat.notify();

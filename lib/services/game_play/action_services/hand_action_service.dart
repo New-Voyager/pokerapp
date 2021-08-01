@@ -728,7 +728,6 @@ class HandActionService {
       /* play an sound effect alerting the user */
       playSoundEffect(AppAssets.playerTurnSound);
 
-
       if (_gameState.straddleBetThisHand == true) {
         // we have the straddleBet set to true, do a bet
         if (_close) return;
@@ -1387,6 +1386,7 @@ class HandActionService {
     gameState.resetSeatActions(newHand: true);
 
     players.notifyAll();
+    tableState.refreshTable();
     tableState.notifyAll();
     tableState.refreshCommunityCards();
   }
@@ -1395,15 +1395,15 @@ class HandActionService {
     final List highWinners,
     final List lowWinners,
     final gameState,
-    final tableState,
+    final TableState tableState,
     final players,
     final AudioPlayer audioPlayer,
     final int boardIndex = 1,
     final bool fromReplay = false,
     final bool resetState = false,
   }) async {
-    /* we have 3000 ms to complete this entire pot */
-    int totalWaitTimeInMs = 3000;
+    /* we have 3000 / 6000 (incase we have both hi and low winners) ms to complete this entire pot */
+    int totalWaitTimeInMs = lowWinners.isNotEmpty ? 6000 : 3000;
 
     // if we dont have lowWinners to process, spend entire time for highWinners
     int highWinnersTimeInMs =
@@ -1417,6 +1417,8 @@ class HandActionService {
     }
 
     /** process the high pot winners: this method already takes 500ms*/
+    log('paul debug: HIGH pot winners starting');
+    tableState.setWhichWinner(AppConstants.HIGH_WINNERS);
     await processWinners(
       highWinners: highWinners,
       players: players,
@@ -1428,6 +1430,8 @@ class HandActionService {
     /** wait for the extra duration */
     int balancedMstoWait =
         highWinnersTimeInMs - AppConstants.animationDuration.inMilliseconds;
+
+    log('paul debug: waiting for: $balancedMstoWait');
 
     await Future.delayed(Duration(milliseconds: balancedMstoWait));
     audioPlayer.stop();
@@ -1445,8 +1449,12 @@ class HandActionService {
       boardIndex: boardIndex,
     );
 
+    if (lowWinners.isEmpty) return;
+
     // this method takes another 500 MS
     /** process the low pot winners */
+    log('paul debug: low pot winners starting: $lowWinners');
+    tableState.setWhichWinner(AppConstants.LOW_WINNERS);
     await processWinners(
       highWinners: lowWinners,
       players: players,

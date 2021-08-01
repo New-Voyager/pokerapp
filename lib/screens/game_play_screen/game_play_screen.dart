@@ -30,6 +30,7 @@ import 'package:pokerapp/screens/game_play_screen/main_views/board_view/board_vi
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/decorative_views/background_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/footer_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/header_view/header_view.dart';
+import 'package:pokerapp/screens/game_play_screen/main_views/which_winner_widget.dart';
 import 'package:pokerapp/screens/game_play_screen/notifications/notifications.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
@@ -754,8 +755,15 @@ class _GamePlayScreenState extends State<GamePlayScreen>
             // header view
             HeaderView(gameState: _gameState),
 
-            // empty space to highlight the background view
-            SizedBox(width: width, height: divider1),
+            // seperator
+            // SizedBox(width: width, height: divider1 / 2),
+
+            // this widget, shows which winner is currently showing - high winner / low winner
+            // this widget also acts as a natural seperator between header and board view
+            WhichWinnerWidget(seperator: divider1),
+
+            // seperator
+            // SizedBox(width: width, height: divider1 / 2),
 
             // main board view
             _buildBoardView(boardDimensions, tableScale),

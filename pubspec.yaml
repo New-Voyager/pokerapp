@@ -11,8 +11,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  emoji_picker:
-    path: ./emoji_picker
   audio_recorder:
     git:
       url: https://github.com/New-Voyager/audio_recorder.git

@@ -116,6 +116,7 @@ class _CenterViewState extends State<CenterView> {
   final vnPotToHighlight = ValueNotifier<int>(null);
   final vnRankStr = ValueNotifier<String>(null);
   final vnCommunityCardsRefresh = ValueNotifier<int>(null);
+  // final vnTableRefresh = ValueNotifier<int>(null);
   final vnShowCardShuffling = ValueNotifier<bool>(false);
 
   final Function eq = const ListEquality().equals;
@@ -129,6 +130,7 @@ class _CenterViewState extends State<CenterView> {
     vnGameStatus.value = tableState.gameStatus;
     vnTableStatus.value = tableState.tableStatus;
     vnCommunityCardsRefresh.value = tableState.communityCardRefresh;
+    // vnTableRefresh.value = tableState.tableRefresh;
     vnShowCardShuffling.value = tableState.showCardsShuffling;
 
     // need rebuilding check

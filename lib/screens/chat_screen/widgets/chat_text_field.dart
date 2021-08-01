@@ -6,16 +6,18 @@ class ChatTextField extends StatelessWidget {
   final TextEditingController textEditingController;
   final IconData icon;
   final Function onTap;
-  final Function onSave;
-  final Function onEmoji;
+  final Function onSend;
+  final Function onEmojiSelectTap;
+  final Function onGifSelectTap;
 
   const ChatTextField({
     Key key,
     this.textEditingController,
     this.icon,
     this.onTap,
-    this.onSave,
-    this.onEmoji,
+    this.onSend,
+    this.onEmojiSelectTap,
+    this.onGifSelectTap,
   }) : super(key: key);
 
   @override
@@ -24,11 +26,13 @@ class ChatTextField extends StatelessWidget {
       color: chatHeaderColor,
       child: Row(
         children: [
+          // gif button
           _buildTextFieldIcon(
             icon: icon,
-            onPressed: onEmoji,
+            onPressed: onGifSelectTap,
             color: iconColor,
           ),
+
           Expanded(
             child: TextFormField(
               controller: textEditingController,
@@ -46,9 +50,19 @@ class ChatTextField extends StatelessWidget {
               ),
             ),
           ),
+
+          // emoji button
+          _buildTextFieldIcon(
+            padding: false,
+            icon: Icons.emoji_emotions,
+            onPressed: onEmojiSelectTap,
+            color: iconColor,
+          ),
+
+          // send button
           _buildTextFieldIcon(
             icon: Icons.send,
-            onPressed: onSave,
+            onPressed: onSend,
             color: Color.fromARGB(255, 0, 160, 233),
           ),
         ],
@@ -56,10 +70,13 @@ class ChatTextField extends StatelessWidget {
     );
   }
 
-  Widget _buildTextFieldIcon({IconData icon, Color color, Function onPressed}) {
+  Widget _buildTextFieldIcon(
+      {IconData icon, Color color, Function onPressed, bool padding = true}) {
     return Container(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10),
+        padding: padding
+            ? const EdgeInsets.symmetric(horizontal: 5)
+            : const EdgeInsets.all(0.0),
         child: IconButton(
           icon: Icon(icon),
           color: color,

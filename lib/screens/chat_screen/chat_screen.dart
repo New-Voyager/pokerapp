@@ -109,9 +109,9 @@ class _ChatScreenState extends State<ChatScreen> with RouteAwareAnalytics {
         ),
         ChatTextField(
           icon: Icons.emoji_emotions_outlined,
-          onEmoji: _onEmoji,
+          onGifSelectTap: _onEmoji,
           textEditingController: _textController,
-          onSave: _onSaveClicked,
+          onSend: _onSaveClicked,
           onTap: _onTap,
         ),
       ],

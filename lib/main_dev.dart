@@ -43,8 +43,16 @@ void main() async {
   );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   // Create the initialization Future outside of `build`:
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  FirebaseApp _firebaseApp;
+  bool _error = false;
+
   Future<FirebaseApp> _initialization(BuildContext context) async {
     final apiUrl = FlavorConfig.of(context).apiBaseUrl;
     await AppConfig.init(apiUrl);
@@ -53,72 +61,84 @@ class MyApp extends StatelessWidget {
     return app;
   }
 
+  void _init(BuildContext context) async {
+    try {
+      _firebaseApp = await _initialization(context);
+    } catch (e) {
+      log('$e');
+      _error = true;
+    }
+
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      // Initialize FlutterFire:
-      future: _initialization(context),
-      builder: (context, snapshot) {
-        // Check for errors
-        if (snapshot.hasError) {
-          print('Firebase initialization failed! ${snapshot.error.toString()}');
-          return Text('Something went wrong!');
-        }
+    if (_firebaseApp == null && _error == false) _init(context);
 
-        // Once complete, show your application
-        if (snapshot.connectionState == ConnectionState.done) {
-          //this.nats = Nats(context);
-          print('Firebase initialized successfully');
-          return MultiProvider(
-            /* PUT INDEPENDENT PROVIDERS HERE */
-            providers: [
-              ListenableProvider<PendingApprovalsState>(
-                create: (_) => PendingApprovalsState(),
-              ),
-              ListenableProvider<ClubsUpdateState>(
-                create: (_) => ClubsUpdateState(),
-              ),
-              ChangeNotifierProvider<AppState>(
-                create: (_) => AppState(),
-              ),
-            ],
-            builder: (context, _) => MultiProvider(
-              /* PUT DEPENDENT PROVIDERS HERE */
-              providers: [
-                Provider<Nats>(
-                  create: (_) => Nats(context),
-                ),
-              ],
-              child: OverlaySupport.global(
-                child: LayoutBuilder(
-                  builder: (context, constraints) => OrientationBuilder(
-                    builder: (context, orientation) {
-                      SizerUtil().init(constraints, orientation);
-                      return MaterialApp(
-                        title: FlavorConfig.of(context).appName,
-                        debugShowCheckedModeBanner: false,
-                        navigatorKey: navigatorKey,
-                        theme: ThemeData(
-                          colorScheme: ColorScheme.dark(),
-                          visualDensity: VisualDensity.adaptivePlatformDensity,
-                          fontFamily: AppAssetsNew.fontFamilyPoppins,
-                        ),
-                        onGenerateRoute: Routes.generateRoute,
-                        initialRoute: Routes.initial,
-                        navigatorObservers: [routeObserver],
-                      );
-                    },
+    // Check for errors
+    if (_error) {
+      print('Firebase initialization failed!');
+      return Container(color: Colors.red);
+    }
+
+    if (_firebaseApp == null)
+      return Center(
+        child: CircularProgressIndicator(),
+      );
+
+    // Once complete, show your application
+
+    //this.nats = Nats(context);
+    print('Firebase initialized successfully');
+    return MultiProvider(
+      /* PUT INDEPENDENT PROVIDERS HERE */
+      providers: [
+        ListenableProvider<PendingApprovalsState>(
+          create: (_) => PendingApprovalsState(),
+        ),
+        ListenableProvider<ClubsUpdateState>(
+          create: (_) => ClubsUpdateState(),
+        ),
+        ChangeNotifierProvider<AppState>(
+          create: (_) => AppState(),
+        ),
+      ],
+      builder: (context, _) => MultiProvider(
+        /* PUT DEPENDENT PROVIDERS HERE */
+        providers: [
+          Provider<Nats>(
+            create: (_) => Nats(context),
+          ),
+        ],
+        child: OverlaySupport.global(
+          child: LayoutBuilder(
+            builder: (context, constraints) => OrientationBuilder(
+              builder: (context, orientation) {
+                SizerUtil().init(constraints, orientation);
+                return MaterialApp(
+                  title: FlavorConfig.of(context).appName,
+                  debugShowCheckedModeBanner: false,
+                  navigatorKey: navigatorKey,
+                  theme: ThemeData(
+                    colorScheme: ColorScheme.dark(),
+                    visualDensity: VisualDensity.adaptivePlatformDensity,
+                    fontFamily: AppAssetsNew.fontFamilyPoppins,
                   ),
-                ),
-              ),
+                  onGenerateRoute: Routes.generateRoute,
+                  initialRoute: Routes.initial,
+                  navigatorObservers: [routeObserver],
+                );
+              },
             ),
-          );
-        }
-        // Otherwise, show something whilst waiting for initialization to complete
-        return Center(
-          child: CircularProgressIndicator(),
-        );
-      },
+          ),
+        ),
+      ),
     );
   }
 }
