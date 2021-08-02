@@ -684,15 +684,19 @@ class _GamePlayScreenState extends State<GamePlayScreen>
                               * Next Action - contains the seat No which is to act next
                               *
                               * This stream also contains the output for the query of current hand */
+            bool binaryData = true;
             try {
-              final messageStr = message.string.trim();
-              if(messageStr.startsWith("{") && messageStr.indexOf("messages") != -1) {
-                _gameContextObj.handActionService.handle(message.string);
-              } else {
-                _gameContextObj.handActionBinService.handleBinary(message.data);
+              if (message.data[0] == 123 /*{*/) {
+                final messageStr = message.string.trim();
+                if(messageStr.startsWith("{") && messageStr.indexOf("messages") != -1) {
+                  _gameContextObj.handActionService.handle(message.string);
+                  binaryData = false;
+                }
               }
             } catch (err) {
-                _gameContextObj.handActionBinService.handleBinary(message.data);
+            }
+            if (binaryData) {
+              _gameContextObj.handActionBinService.handleBinary(message.data);
             }
           },
         );
