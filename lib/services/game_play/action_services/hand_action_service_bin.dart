@@ -44,6 +44,30 @@ enum PlayerActedSendState {
   ACK_RECEIVED,
 }
 
+testHand() {
+  String b64 =
+      '''EAIYDSIIY2dua2dpeHQoAUoXTkVXX0hBTkQ6MTpQUkVGTE9QOjA6OjBYAWJuOghORVdfSEFORHJiCAEQARgCIAEoAjgBQAJNAACAP1UAAABAZQAAgEByEggBEg4IEhIDc3NzGAIlAADwQXITCAISDwgCEgR5b25nGAIlAADIQnoSCAESDggFFQAAAEAdAACAPyABegYIAhICCAE=''';
+  String base64Str;
+  Uint8List protoData;
+  String hex;
+  try {
+    // base64 decoding
+    protoData = base64Decode(b64);
+    //hex = toHex(protoData);
+    log("\n\n");
+    //log(hex);
+    HandMessage message = HandMessage.fromBuffer(protoData);
+    //_binaryMessages.addAll(message.messages);
+  } catch (err) {
+    //final data = utf8.decode(messageData);
+    log('${err.toString()}');
+    try {
+      HandMessage message = HandMessage.fromBuffer(protoData);
+    } catch (err) {}
+    throw err;
+  }
+}
+
 class RetrySendingBinMsg {
   GameComService _gameComService;
   String _messageType;
@@ -86,7 +110,7 @@ class RetrySendingBinMsg {
       await Future.delayed(Duration(milliseconds: 50));
     }
   }
-  
+
   cancel() {
     _cancel = true;
   }
@@ -218,7 +242,7 @@ class HandActionBinService {
     //   "gameCode": "${_gameState.gameCode}",
     //   "playerId": "$playerID",
     //   "handNum": $handNum,
-    //   "seatNo": $seatNo, 
+    //   "seatNo": $seatNo,
     //   "messageId": "$messageId",
     //   "messages": [{
     //     "messageType": "PLAYER_ACTED",
@@ -249,22 +273,23 @@ class HandActionBinService {
     }
 
     HandMessageItem playerActed = HandMessageItem(
-      messageType: "PLAYER_ACTED",
-      playerActed: HandAction(
-      seatNo: seatNo,
-      action: actionEnum,
-      amount: amount.toDouble(),
-    ));
-    HandMessage handMessage = HandMessage(gameCode: _gameState.gameCode, 
-          handNum: handNum, 
-          seatNo: seatNo, 
-          messageId: messageId,
-          messages: [
-            playerActed
-          ]);
+        messageType: "PLAYER_ACTED",
+        playerActed: HandAction(
+          seatNo: seatNo,
+          action: actionEnum,
+          amount: amount.toDouble(),
+        ));
+    HandMessage handMessage = HandMessage(
+        gameCode: _gameState.gameCode,
+        handNum: handNum,
+        seatNo: seatNo,
+        messageId: messageId,
+        messages: [playerActed]);
     final binMessage = handMessage.writeToBuffer();
+    final base64Str = base64Encode(binMessage);
+    final data = utf8.encode(base64Str);
     _retryMsg =
-        RetrySendingBinMsg(_gameComService, binMessage, 'PLAYER_ACTED', messageId);
+        RetrySendingBinMsg(_gameComService, data, 'PLAYER_ACTED', messageId);
     _retryMsg.run();
   }
 
@@ -281,23 +306,76 @@ class HandActionBinService {
     //   }]
     // }""";
 
-    HandMessage handMessage = HandMessage(gameCode: _gameState.gameCode, 
-          messageId: messageId,
-          playerId: $fixnum.Int64.parseInt(playerID.toString()),
-          messages: [
-            HandMessageItem(messageType: "QUERY_CURRENT_HAND")
-          ]);
+    HandMessage handMessage = HandMessage(
+        gameCode: _gameState.gameCode,
+        messageId: messageId,
+        playerId: $fixnum.Int64.parseInt(playerID.toString()),
+        messages: [HandMessageItem(messageType: "QUERY_CURRENT_HAND")]);
     final binMessage = handMessage.writeToBuffer();
     this._gameComService.sendBinPlayerToHandChannel(binMessage);
   }
 
-  handleBinary(List<int> messageData) async {
+  static toHex(Uint8List bArr) {
+    int length;
+    if (bArr == null || (length = bArr.length) <= 0) {
+      return "";
+    }
+    Uint8List cArr = new Uint8List(length << 1);
+    int i = 0;
+    for (int i2 = 0; i2 < length; i2++) {
+      int i3 = i + 1;
+      var cArr2 = [
+        '0',
+        '1',
+        '2',
+        '3',
+        '4',
+        '5',
+        '6',
+        '7',
+        '8',
+        '9',
+        'a',
+        'b',
+        'c',
+        'd',
+        'e',
+        'f'
+      ];
+
+      var index = (bArr[i2] >> 4) & 15;
+      cArr[i] = cArr2[index].codeUnitAt(0);
+      i = i3 + 1;
+      cArr[i3] = cArr2[bArr[i2] & 15].codeUnitAt(0);
+    }
+    return new String.fromCharCodes(cArr);
+  }
+
+  handleBinary(Uint8List messageData) async {
     assert(_gameState != null);
     assert(_context != null);
     assert(messageData != null && messageData.isNotEmpty);
-
-    HandMessage message = HandMessage.fromBuffer(messageData);
-    _binaryMessages.addAll(message.messages);
+    String base64Str;
+    Uint8List protoData;
+    String hex;
+    try {
+      // base64 decoding
+      base64Str = new String.fromCharCodes(messageData);
+      log(base64Str);
+      protoData = base64Decode(base64Str);
+      hex = toHex(protoData);
+      log("\n\n");
+      log(hex);
+      HandMessage message = HandMessage.fromBuffer(protoData);
+      _binaryMessages.addAll(message.messages);
+    } catch (err) {
+      //final data = utf8.decode(messageData);
+      log('${err.toString()}');
+      try {
+        HandMessage message = HandMessage.fromBuffer(protoData);
+      } catch (err) {}
+      throw err;
+    }
   }
 
   Future<void> handleMessage(HandMessageItem message) async {
@@ -561,8 +639,7 @@ class HandActionBinService {
     }
 
     // next action seat is me
-    final nextActionSeat =
-        _gameState.getSeat(_context, newHand.nextActionSeat);
+    final nextActionSeat = _gameState.getSeat(_context, newHand.nextActionSeat);
     if (nextActionSeat != null && nextActionSeat.isMe) {
       // if straddle is allowed, my stack size > straddle value, and I haven't turned off straddle option
       if (_gameState.gameInfo.utgStraddleAllowed &&
@@ -688,7 +765,9 @@ class HandActionBinService {
 
     /* card distribution ends, put the value to NULL */
     if (_close) return;
-    audioPlayer.stop();
+    if (audioPlayer != null) {
+      audioPlayer.stop();
+    }
     _context.read<CardDistributionModel>().seatNo = null;
     _gameState.handState = HandState.DEAL;
 
@@ -714,7 +793,6 @@ class HandActionBinService {
       /* play an sound effect alerting the user */
       playSoundEffect(AppAssets.playerTurnSound);
 
-
       if (_gameState.straddleBetThisHand == true) {
         // we have the straddleBet set to true, do a bet
         if (_close) return;
@@ -729,9 +807,8 @@ class HandActionBinService {
       }
 
       /* this part handles if we receive a prompt for run it twice */
-      List<String> availableActions = seatAction.availableActions
-          .map<String>((e) => e.toString())
-          .toList();
+      List<String> availableActions =
+          seatAction.availableActions.map<String>((e) => e.toString()).toList();
       if (availableActions?.contains(AppConstants.RUN_IT_TWICE_PROMPT) ??
           false) {
         if (_close) return;
@@ -748,7 +825,7 @@ class HandActionBinService {
       }
 
       if (_close) return;
-      _gameState.setAction(_context, seatNo, seatAction);
+      _gameState.setActionProto(_context, seatNo, seatAction);
 
       if (_close) return;
       if (_gameState.straddlePrompt) {
@@ -959,7 +1036,7 @@ class HandActionBinService {
     } else if (stage == 'river') {
       pots = message.river.pots.map((e) => e.toInt()).toList();
     }
-    
+
     updatePot(pots, _context);
     players.notifyAll();
 
@@ -986,25 +1063,25 @@ class HandActionBinService {
       _gameState.handState = HandState.TURN;
       playSoundEffect(AppAssets.flopSound);
       final turnCard = message.turn.turnCard;
-      tableState.addTurnOrRiverCard(
-          1, CardHelper.getCard(turnCard));
+      tableState.addTurnOrRiverCard(1, CardHelper.getCard(turnCard));
       playerCardRanks = message.turn.playerCardRanks;
     } else if (stage == 'river') {
       _gameState.handState = HandState.RIVER;
       playSoundEffect(AppAssets.flopSound);
 
       final riverCard = message.river.riverCard;
-      tableState.addTurnOrRiverCard(
-          1, CardHelper.getCard(riverCard));
+      tableState.addTurnOrRiverCard(1, CardHelper.getCard(riverCard));
       playerCardRanks = message.river.playerCardRanks;
     }
-    
+
     if (_close) return;
     updateRank(playerCardRanks);
 
     tableState.notifyAll();
     await Future.delayed(Duration(seconds: 1));
-    audioPlayer.stop();
+    if (audioPlayer != null) {
+      audioPlayer.stop();
+    }
     // log('stage update end');
   }
 
@@ -1146,16 +1223,15 @@ class HandActionBinService {
     int idx = players.players.indexWhere((p) => p.seatNo == nextSeatToAct);
 
     if (players.players[idx].isMe) {
-      handleNextAction(
-        HandMessageItem(actionChange: ActionChange(seatNo: nextSeatToAct, pots: []))
-      );
+      handleNextAction(HandMessageItem(
+          actionChange: ActionChange(seatNo: nextSeatToAct, pots: [])));
 
-      HandMessageItem yourActionMsg = HandMessageItem(seatAction: message.currentHandState.nextSeatAction);
+      HandMessageItem yourActionMsg =
+          HandMessageItem(seatAction: message.currentHandState.nextSeatAction);
       handleYourAction(yourActionMsg);
     } else {
-      handleNextAction(
-        HandMessageItem(actionChange: ActionChange(seatNo: nextSeatToAct, pots: []))
-      );
+      handleNextAction(HandMessageItem(
+          actionChange: ActionChange(seatNo: nextSeatToAct, pots: [])));
     }
     log('Hand Message: ::handleStageChange:: END');
 
@@ -1200,7 +1276,7 @@ class HandActionBinService {
       log('Hand Message: ::handlePlayerActed:: player acted: $seatNo, player: ${seat.player.name}');
     }
     final action = seat.player.action;
-    action.setAction(playerActed);
+    action.setActionProto(playerActed);
     log('Hand Message: ::handlePlayerActed:: player acted: $seatNo, player: ${seat.player.name} action: ${action.action.toString()}');
 
     // play the bet-raise sound effect
@@ -1229,7 +1305,6 @@ class HandActionBinService {
 
   /* seat-no, list of cards mapping */
   static Map<int, List<int>> _getCards(final HandResult handResult, int myID) {
-
     final String kShowDown = 'SHOW_DOWN';
 
     Map<int, List<int>> seatNoCardsMap = Map<int, List<int>>();
@@ -1242,9 +1317,9 @@ class HandActionBinService {
       // if it's me do not update my cards
       if (playerID != '$myID') {
         // if the player has survived till show down
-        final playedUntil = d.playedUntil.toString().replaceAll("HandStatus.", "");
-        if (playedUntil == kShowDown)
-          seatNoCardsMap[sn] = d.cards;
+        final playedUntil =
+            d.playedUntil.toString().replaceAll("HandStatus.", "");
+        if (playedUntil == kShowDown) seatNoCardsMap[sn] = d.cards;
       }
     });
 
@@ -1393,7 +1468,10 @@ class HandActionBinService {
         highWinnersTimeInMs - AppConstants.animationDuration.inMilliseconds;
 
     await Future.delayed(Duration(milliseconds: balancedMstoWait));
-    audioPlayer.stop();
+    if (audioPlayer != null) {
+      audioPlayer.stop();
+    }
+
     log('Result: Animation done');
 
     /* if we dont have any low winners to show AND we are from
@@ -1422,7 +1500,9 @@ class HandActionBinService {
     balancedMstoWait =
         lowWinnersTimeInMs - AppConstants.animationDuration.inMilliseconds;
     await Future.delayed(Duration(milliseconds: balancedMstoWait));
-    audioPlayer.stop();
+    if (audioPlayer != null) {
+      audioPlayer.stop();
+    }
 
     /* if we are from replay, we dont need to clear the result state */
     if (fromReplay || resetState == false) return;
@@ -1477,9 +1557,11 @@ class HandActionBinService {
       }
       tableState.setBoardCards(2, boardCards2CO);
 
-      final Map<int, PotWinners> board1PotWinners = runItTwiceResult.board1Winners;
+      final Map<int, PotWinners> board1PotWinners =
+          runItTwiceResult.board1Winners;
 
-      final Map<int, PotWinners> board2PotWinners = runItTwiceResult.board2Winners;
+      final Map<int, PotWinners> board2PotWinners =
+          runItTwiceResult.board2Winners;
 
       log('board 1 winners: $board1PotWinners');
       log('board 2 winners: $board2PotWinners');
@@ -1550,7 +1632,7 @@ class HandActionBinService {
         tableState.updatePotToHighlightSilent(potNo);
         tableState.notifyAll();
 
-        final PotWinners  winners = board2Winners.value;
+        final PotWinners winners = board2Winners.value;
 
         final List<HandWinner> highWinners = winners.hiWinners;
         final List<HandWinner> lowWinners = winners.lowWinners;
@@ -1704,7 +1786,8 @@ class HandActionBinService {
 
     final runItTwiceResult = handResult.handLog.runItTwiceResult;
     final potWinners = handResult.handLog.potWinners;
-    final wonAt = handResult.handLog.wonAt.toString().replaceAll("HandStatus.", "");
+    final wonAt =
+        handResult.handLog.wonAt.toString().replaceAll("HandStatus.", "");
 
     if (wonAt == 'FLOP') {
       boardCards = boardCards.sublist(0, 3);

@@ -36,7 +36,10 @@ class PingResponder {
   }
 
   void handleMessage(Message natsMsg) {
-    final PingPongMessage message = PingPongMessage.fromBuffer(natsMsg.data);
+    String s = new String.fromCharCodes(natsMsg.data);
+    final data = base64Decode(s);
+
+    final PingPongMessage message = PingPongMessage.fromBuffer(data);
 
     if (debug) {
       // Don't respond to the network check sometimes, so that we can see the
@@ -55,8 +58,11 @@ class PingResponder {
 
   void sendResponse(PingPongMessage msg) {
     msg.playerId = $fixnum.Int64.parseInt(this.playerId.toString());
+    final encoded = base64Encode(msg.writeToBuffer());
+    final data = utf8.encode(encoded);
+
     //String msgStr = msg.toJson();
-    this.client.pub(this.pongChannel, msg.writeToBuffer());
+    this.client.pub(this.pongChannel, data);
   }
 }
 /*

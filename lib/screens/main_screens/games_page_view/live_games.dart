@@ -23,6 +23,7 @@ import 'package:pokerapp/screens/game_screens/new_game_settings/new_game_setting
 import 'package:pokerapp/screens/main_screens/games_page_view/widgets/game_record_item.dart';
 import 'package:pokerapp/screens/main_screens/games_page_view/widgets/live_games_item.dart';
 import 'package:pokerapp/services/app/game_service.dart';
+import 'package:pokerapp/services/game_play/action_services/hand_action_service_bin.dart';
 import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
@@ -210,22 +211,23 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
                 children: [
                   RoundedAccentButton(
                     onTapFunction: () async {
-                      _disposeTimer();
-                      final dynamic result = await Navigator.of(context)
-                          .pushNamed(Routes.new_game_settings);
-                      if (result != null) {
-                        /* show game settings dialog */
-                        await NewGameSettings2.show(
-                          context,
-                          clubCode: "",
-                          mainGameType: result['gameType'],
-                          subGameTypes: List.from(
-                                result['gameTypes'],
-                              ) ??
-                              [],
-                        );
-                      }
-                      _initTimer();
+                      testHand();
+                      // _disposeTimer();
+                      // final dynamic result = await Navigator.of(context)
+                      //     .pushNamed(Routes.new_game_settings);
+                      // if (result != null) {
+                      //   /* show game settings dialog */
+                      //   await NewGameSettings2.show(
+                      //     context,
+                      //     clubCode: "",
+                      //     mainGameType: result['gameType'],
+                      //     subGameTypes: List.from(
+                      //           result['gameTypes'],
+                      //         ) ??
+                      //         [],
+                      //   );
+                      // }
+                      // _initTimer();
                     },
                     text: "HOST",
                   ),

@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:pokerapp/proto/hand.pb.dart';
 
 const String FOLD = 'FOLD';
 const String CALL = 'CALL';
@@ -50,8 +51,43 @@ class PlayerAction {
 
   List<Option> _options;
 
-  PlayerAction(int seatNo, var seatAction) {
-    _seatNo = seatNo;
+  PlayerAction();
+
+  factory PlayerAction.fromProto(int seatNo, NextSeatAction seatAction) {
+    PlayerAction yourAction = PlayerAction();
+    yourAction._seatNo = seatNo;
+    yourAction._minRaiseAmount = seatAction.minRaiseAmount.toInt();
+    yourAction._maxRaiseAmount = seatAction.maxRaiseAmount.toInt();
+    yourAction._options = [];
+    for (final option in seatAction.betOptions) {
+      Option betOption =
+          Option(amount: option.amount.toInt(), text: option.text);
+      yourAction._options.add(betOption);
+    }
+    yourAction._actions = [];
+    for (final availableAction in seatAction.availableActions) {
+      AvailableAction action = AvailableAction(
+        actionName: availableAction.name,
+      );
+
+      if (availableAction == ACTION.ALLIN) {
+        action.actionValue =
+            seatAction.allInAmount.toInt() - seatAction.seatInSoFar.toInt();
+      } else if (availableAction == ACTION.CALL) {
+        action.actionValue =
+            seatAction.callAmount.toInt() - seatAction.seatInSoFar.toInt();
+      } else if (availableAction == ACTION.RAISE) {
+        action.minActionValue = seatAction.minRaiseAmount.toInt();
+      }
+      yourAction._actions.add(action);
+    }
+
+    return yourAction;
+  }
+
+  factory PlayerAction.fromJson(int seatNo, var seatAction) {
+    PlayerAction yourAction = PlayerAction();
+    yourAction._seatNo = seatNo;
 
     /*
       {
@@ -82,14 +118,14 @@ class PlayerAction {
     */
 
     // FIXME: MIN RAISE AMOUNT VALUE NOT RECEIVING?
-    this._minRaiseAmount = seatAction['minRaiseAmount'] ?? 2;
-    this._maxRaiseAmount = seatAction['maxRaiseAmount'];
+    yourAction._minRaiseAmount = seatAction['minRaiseAmount'] ?? 2;
+    yourAction._maxRaiseAmount = seatAction['maxRaiseAmount'];
 
-    _options = seatAction['betOptions']
+    yourAction._options = seatAction['betOptions']
         ?.map<Option>((var data) => Option.fromJson(data))
         ?.toList();
 
-    _actions = [];
+    yourAction._actions = [];
     seatAction['availableActions']
         .map<String>((s) => s.toString())
         .forEach((String actionName) {
@@ -109,8 +145,9 @@ class PlayerAction {
           break;
       }
 
-      _actions.add(action);
+      yourAction._actions.add(action);
     });
+    return yourAction;
   }
 
   List<AvailableAction> get actions => _actions;

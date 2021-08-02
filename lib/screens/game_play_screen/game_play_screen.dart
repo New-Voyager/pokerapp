@@ -149,13 +149,13 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   }
 
   Future _joinAudio() async {
-    // try {
-    //   if (_audioPlayer != null) {
-    //     _audioPlayer.resume();
-    //   }
-    // } catch(err) {
-    //   log('Error when resuming audio');
-    // }
+    try {
+      if (_audioPlayer != null) {
+        _audioPlayer.resume();
+      }
+    } catch (err) {
+      log('Error when resuming audio');
+    }
     if (!_gameState.audioConfEnabled) {
       try {
         if (_voiceTextPlayer != null) {
@@ -520,8 +520,8 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     WidgetsBinding.instance.addObserver(this);
     log('game screen initState');
 
-    _audioPlayer = AudioPlayer();
-    _voiceTextPlayer = AudioPlayer();
+    // _audioPlayer = AudioPlayer();
+    // _voiceTextPlayer = AudioPlayer();
 
     _initGameInfoModel();
   }
@@ -688,13 +688,13 @@ class _GamePlayScreenState extends State<GamePlayScreen>
             try {
               if (message.data[0] == 123 /*{*/) {
                 final messageStr = message.string.trim();
-                if(messageStr.startsWith("{") && messageStr.indexOf("messages") != -1) {
+                if (messageStr.startsWith("{") &&
+                    messageStr.indexOf("messages") != -1) {
                   _gameContextObj.handActionService.handle(message.string);
                   binaryData = false;
                 }
               }
-            } catch (err) {
-            }
+            } catch (err) {}
             if (binaryData) {
               _gameContextObj.handActionBinService.handleBinary(message.data);
             }
@@ -714,13 +714,14 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
             try {
               final messageStr = message.string.trim();
-              if(messageStr.startsWith("{") && messageStr.indexOf("messages") != -1) {
+              if (messageStr.startsWith("{") &&
+                  messageStr.indexOf("messages") != -1) {
                 _gameContextObj.handActionService.handle(message.string);
               } else {
                 _gameContextObj.handActionBinService.handleBinary(message.data);
               }
             } catch (err) {
-                _gameContextObj.handActionBinService.handleBinary(message.data);
+              _gameContextObj.handActionBinService.handleBinary(message.data);
             }
 
             // if (TestService.isTesting) {

@@ -15,6 +15,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
 import 'package:pokerapp/models/player_info.dart';
+import 'package:pokerapp/proto/hand.pb.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/services/agora/agora.dart';
 import 'package:pokerapp/services/app/game_service.dart';
@@ -711,6 +712,12 @@ class GameState {
     actionState.setAction(seatNo, seatAction);
   }
 
+  void setActionProto(
+      BuildContext context, int seatNo, NextSeatAction seatAction) {
+    final actionState = getActionState(context);
+    actionState.setActionProto(seatNo, seatAction);
+  }
+
   void resetSeatActions({bool newHand}) {
     for (final seat in this._seats.values) {
       if (seat.player == null) {
@@ -883,7 +890,11 @@ class ActionState extends ChangeNotifier {
   }
 
   void setAction(int seatNo, var seatAction) {
-    this._currentAction = PlayerAction(seatNo, seatAction);
+    this._currentAction = PlayerAction.fromJson(seatNo, seatAction);
+  }
+
+  void setActionProto(int seatNo, NextSeatAction seatAction) {
+    this._currentAction = PlayerAction.fromProto(seatNo, seatAction);
   }
 
   PlayerAction get action {
