@@ -53,7 +53,7 @@ class _SplashScreenState extends State<SplashScreen> {
             _moveToLoginScreen();
             return;
           }
-        } catch(err) {
+        } catch (err) {
           _moveToLoginScreen();
           return;
         }

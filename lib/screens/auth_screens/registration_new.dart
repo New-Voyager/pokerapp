@@ -116,9 +116,7 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
                         onChanged: (val) {
                           //log("VALUE : $val");
                           apiUrl = val;
-                          setState(() {
-                            
-                          });
+                          setState(() {});
                         },
                         keyboardType: TextInputType.number,
                       ),
@@ -318,10 +316,12 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
                   ),
                 ),
                 SizedBox(height: 100),
-                 Padding(
-                        padding: EdgeInsets.only(bottom: 10.0),
-                          child: Center(child: Text(AppConfig.apiUrl, style: TextStyle(fontSize: 20))),
-                    ),
+                Padding(
+                  padding: EdgeInsets.only(bottom: 10.0),
+                  child: Center(
+                      child: Text(AppConfig.apiUrl,
+                          style: TextStyle(fontSize: 20))),
+                ),
               ],
             ),
           ),

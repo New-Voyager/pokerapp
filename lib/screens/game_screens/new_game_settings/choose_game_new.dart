@@ -254,7 +254,8 @@ class _ChooseGameNewState extends State<ChooseGameNew>
               mainAxisSize: MainAxisSize.min,
               children: [
                 Expanded(
-                  child: RadioListWidget(values: [1,2,3,4,5,6], onSelect: (val){}),
+                  child: RadioListWidget(
+                      values: [1, 2, 3, 4, 5, 6], onSelect: (val) {}),
                   //  ListView.separated(
                   //   shrinkWrap: true,
                   //   itemBuilder: (context, index) {

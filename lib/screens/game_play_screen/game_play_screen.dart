@@ -719,10 +719,12 @@ class _GamePlayScreenState extends State<GamePlayScreen>
                   messageStr.indexOf("messages") != -1) {
                 _gameContextObj.handActionService.handle(message.string);
               } else {
-                _gameContextObj.handActionBinService.handleBinary(message.data, encrypted: true);
+                _gameContextObj.handActionBinService
+                    .handleBinary(message.data, encrypted: true);
               }
             } catch (err) {
-              _gameContextObj.handActionBinService.handleBinary(message.data, encrypted: true);
+              _gameContextObj.handActionBinService
+                  .handleBinary(message.data, encrypted: true);
             }
 
             // if (TestService.isTesting) {

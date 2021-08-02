@@ -81,7 +81,8 @@ toHexString(List<int> bArr) {
 }
 
 testHand() {
-  String b64 = '''EEYYYiIIY2dtZHlrbG4oAkoXTkVXX0hBTkQ6MjpQUkVGTE9QOjA6OjBYAmJxOghORVdfSEFORHJlCAIQAhgBIAIoATgBQAJNAACAP1UAAABAZQAAgEBqFAgBEhAIiggSBHNvbWEYAiUAAOBBahQIAhIQCPoHEgR5b25nGAIlAADMQnIGCAESAggCchIIAhIOCAUVAAAAQB0AAIA/IAE=''';
+  String b64 =
+      '''EEYYYiIIY2dtZHlrbG4oAkoXTkVXX0hBTkQ6MjpQUkVGTE9QOjA6OjBYAmJxOghORVdfSEFORHJlCAIQAhgBIAIoATgBQAJNAACAP1UAAABAZQAAgEBqFAgBEhAIiggSBHNvbWEYAiUAAOBBahQIAhIQCPoHEgR5b25nGAIlAADMQnIGCAESAggCchIIAhIOCAUVAAAAQB0AAIA/IAE=''';
   String b642 =
       '''nTUWWyz1eXZ9bKBtdTgADr/u8B3UhCXu88jaiuSB1CLEtNiYrmkxcipiVKWTJtjL7I2txZgyFR/5Q63Bh79CrGpP5M5ziodR7/Os2dzUk4oMbhy/QeYpMLdNM56ial60s7+EuEPzliUJ''';
   String base64Str;
@@ -94,7 +95,7 @@ testHand() {
     log("\n\n");
     log(hex);
     List<int> buf = [];
-    for(final byte in protoData) {
+    for (final byte in protoData) {
       buf.add(byte);
     }
     hex = toHexString(buf);
@@ -323,15 +324,14 @@ class HandActionBinService {
       actionEnum = ACTION.FOLD;
     }
     final handAction = HandAction(
-          seatNo: seatNo,
-          action: actionEnum,
-        );
+      seatNo: seatNo,
+      action: actionEnum,
+    );
     if (amount != null) {
       handAction.amount = amount.toDouble();
     }
-    HandMessageItem playerActed = HandMessageItem(
-        messageType: "PLAYER_ACTED",
-        playerActed: handAction);
+    HandMessageItem playerActed =
+        HandMessageItem(messageType: "PLAYER_ACTED", playerActed: handAction);
     HandMessage handMessage = HandMessage(
         gameCode: _gameState.gameCode,
         handNum: handNum,
@@ -341,8 +341,8 @@ class HandActionBinService {
     final binMessage = handMessage.writeToBuffer();
     //final base64Str = base64Encode(binMessage);
     //final data = utf8.encode(base64Str);
-    _retryMsg =
-        RetrySendingBinMsg(_gameComService, binMessage, 'PLAYER_ACTED', messageId);
+    _retryMsg = RetrySendingBinMsg(
+        _gameComService, binMessage, 'PLAYER_ACTED', messageId);
     _retryMsg.run();
   }
 
@@ -382,8 +382,8 @@ class HandActionBinService {
       // protoData = base64Decode(base64Str);
 
       if (encrypted) {
-        List<int> decryptedMessage = await
-            this._encryptionService.decrypt(protoData);
+        List<int> decryptedMessage =
+            await this._encryptionService.decrypt(protoData);
         protoData = decryptedMessage;
       }
 

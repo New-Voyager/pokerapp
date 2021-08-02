@@ -260,9 +260,7 @@ class _FooterActionViewState extends State<FooterActionView> {
             );
           case CALL:
             return _buildRoundButton(
-              text: action.actionName +
-                  ' ' +
-                  action.actionValue.toString(),
+              text: action.actionName + ' ' + action.actionValue.toString(),
               onTap: () => _call(
                 playerAction.callAmount,
                 context: context,

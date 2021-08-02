@@ -87,7 +87,7 @@ class _ClubMainScreenNewState extends State<ClubMainScreenNew>
                       Visibility(
                         visible: (clubModel.isManager || clubModel.isOwner),
                         child: Padding(
-                          padding: const EdgeInsets.only(right:8.0),
+                          padding: const EdgeInsets.only(right: 8.0),
                           child: RoundedColorButton(
                             onTapFunction: () async {
                               final dynamic result = await Navigator.pushNamed(
