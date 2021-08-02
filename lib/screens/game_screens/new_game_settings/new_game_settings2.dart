@@ -7,13 +7,20 @@ import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/game/new_game_model.dart';
 import 'package:pokerapp/models/game/new_game_provider.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
+import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
+import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/services/app/game_service.dart';
+import 'package:pokerapp/services/data/box_type.dart';
+import 'package:pokerapp/services/data/hive_datasource_impl.dart';
 import 'package:pokerapp/utils/alerts.dart';
+import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/widgets/button_widget.dart';
+import 'package:pokerapp/widgets/card_form_text_field.dart';
 import 'package:pokerapp/widgets/custom_text_button.dart';
 import 'package:pokerapp/widgets/heading_widget.dart';
 import 'package:pokerapp/widgets/radio_list_widget.dart';
+import 'package:pokerapp/widgets/round_color_button.dart';
 import 'package:pokerapp/widgets/switch_widget.dart';
 import 'package:pokerapp/widgets/text_input_widget.dart';
 import 'package:provider/provider.dart';
@@ -61,6 +68,7 @@ class NewGameSettings2 extends StatelessWidget {
     @required String clubCode,
     @required GameType mainGameType,
     @required List<GameType> subGameTypes,
+    NewGameModel savedModel,
   }) async {
     NewGameModelProvider gmp = await showDialog<NewGameModelProvider>(
       context: context,
@@ -69,7 +77,8 @@ class NewGameSettings2 extends StatelessWidget {
           horizontal: 15.0,
           vertical: 30.0,
         ),
-        child: NewGameSettings2(clubCode),
+        child:
+            NewGameSettings2(clubCode, mainGameType, subGameTypes, savedModel),
       ),
     );
 
@@ -100,7 +109,15 @@ class NewGameSettings2 extends StatelessWidget {
   }
 
   final String clubCode;
-  NewGameSettings2(this.clubCode);
+  final GameType mainGameType;
+  final List<GameType> subGameTypes;
+  final NewGameModel savedModel;
+  NewGameSettings2(
+    this.clubCode,
+    this.mainGameType,
+    this.subGameTypes,
+    this.savedModel,
+  );
 
   Widget _buildLabel(String label) => Padding(
         padding: const EdgeInsets.symmetric(vertical: 5.0),
@@ -186,15 +203,21 @@ class NewGameSettings2 extends StatelessWidget {
         builder: (BuildContext context, _) {
           final NewGameModelProvider gmp = context.read<NewGameModelProvider>();
 
-          // Initializing values
-          // Initial value for BigBlind
-          gmp.blinds.bigBlind = 2.0;
-          // Initial value for Buyin Min and max
-          gmp.buyInMin = 30;
-          gmp.buyInMax = 100;
-          gmp.rakePercentage = 0;
-          gmp.rakeCap = 0;
-          gmp.buyInWaitTime = 120;
+          // Load default values if it is not from Saved Settings.
+          if (savedModel == null) {
+            // Initializing values
+            // Initial value for BigBlind
+            gmp.blinds.bigBlind = 2.0;
+            // Initial value for Buyin Min and max
+            gmp.buyInMin = 30;
+            gmp.buyInMax = 100;
+            gmp.rakePercentage = 0;
+            gmp.rakeCap = 0;
+            gmp.buyInWaitTime = 120;
+          } else {
+            gmp.blinds = Blinds(bigBlind: savedModel.bigBlind);
+            gmp.settings = savedModel;
+          }
 
           return Container(
             decoration: BoxDecoration(
@@ -221,7 +244,52 @@ class NewGameSettings2 extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       InkWell(
-                        onTap: () {},
+                        onTap: () async {
+                          // Setting default name for settings with timestamp
+                          String defaultText =
+                              'Settings_${DataFormatter.yymmddhhmmssFormat()}';
+                          TextEditingController _controller =
+                              TextEditingController(text: defaultText);
+                          final result = await showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              backgroundColor: AppColorsNew.darkGreenShadeColor,
+                              title: Text(
+                                AppStringsNew.saveGameSettingsTitle,
+                                style: AppStylesNew.labelTextStyle,
+                              ),
+                              content: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  CardFormTextField(
+                                    controller: _controller,
+                                    maxLines: 1,
+                                    hintText:
+                                        AppStringsNew.hintTextForTextField,
+                                  ),
+                                  AppDimensionsNew.getVerticalSizedBox(12),
+                                  RoundedColorButton(
+                                    text: AppStringsNew.saveButtonText,
+                                    backgroundColor:
+                                        AppColorsNew.yellowAccentColor,
+                                    textColor: AppColorsNew.darkGreenShadeColor,
+                                    onTapFunction: () {
+                                      if (_controller.text.isNotEmpty) {
+                                        Navigator.of(context)
+                                            .pop(_controller.text);
+                                      }
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                          if (result != null && result.isNotEmpty) {
+                            final instance = HiveDatasource.getInstance
+                                .getBox(BoxType.GAME_SETTINGS_BOX);
+                            await instance.put(result, gmp.settings.toJson());
+                          }
+                        },
                         child: CircleAvatar(
                           child: Icon(Icons.save),
                           backgroundColor:
@@ -261,13 +329,14 @@ class NewGameSettings2 extends StatelessWidget {
                       /* big blind */
                       Expanded(
                         child: TextInputWidget(
-                          value: gmp.blinds.bigBlind,
+                          value: gmp.bigBlind,
                           label: 'Big Blind',
                           minValue: 2,
                           maxValue: 1000,
                           title: 'Enter big blind',
                           onChange: (value) {
-                            gmp.blinds.bigBlind = value.toDouble();
+                            //gmp.blinds.bigBlind = value.toDouble();
+                            gmp.bigBlind = value.toDouble();
                           },
                         ),
                       ),
@@ -409,10 +478,10 @@ class NewGameSettings2 extends StatelessWidget {
                   _buildLabel('Game Time (in hours)'),
                   sepV8,
                   RadioListWidget(
-                    defaultValue: gmp.gameLengthInMins ~/ 60,
+                    defaultValue: gmp.gameLengthInHrs,
                     values: NewGameConstants.GAME_LENGTH,
                     onSelect: (int value) {
-                      gmp.gameLengthInMins = value;
+                      gmp.gameLengthInHrs = value;
                     },
                   ),
 

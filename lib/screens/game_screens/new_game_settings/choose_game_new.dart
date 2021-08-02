@@ -1,7 +1,11 @@
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/main.dart';
+import 'package:pokerapp/models/game/new_game_model.dart';
 import 'package:pokerapp/models/game/new_game_provider.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
@@ -9,8 +13,11 @@ import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
+import 'package:pokerapp/screens/game_screens/new_game_settings/new_game_settings2.dart';
 import 'package:pokerapp/screens/game_screens/widgets/game_type_item.dart';
 import 'package:pokerapp/screens/game_screens/widgets/new_button_widget.dart';
+import 'package:pokerapp/services/data/box_type.dart';
+import 'package:pokerapp/services/data/hive_datasource_impl.dart';
 import 'package:pokerapp/widgets/heading_widget.dart';
 import 'package:pokerapp/widgets/radio_list_widget.dart';
 import 'package:pokerapp/widgets/round_color_button.dart';
@@ -241,45 +248,100 @@ class _ChooseGameNewState extends State<ChooseGameNew>
   }
 
   _handleLoadGameClick(BuildContext context) async {
-    final game = await showDialog(
+    final instance =
+        HiveDatasource.getInstance.getBox(BoxType.GAME_SETTINGS_BOX);
+    int selectedIndex = -1;
+
+    final indexSelected = await showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
+          backgroundColor: AppColorsNew.darkGreenShadeColor,
           scrollable: true,
           title: Text(AppStringsNew.loadSettingsTitle),
-          content: Container(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height * 0.6,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Expanded(
-                  child: RadioListWidget(values: [1,2,3,4,5,6], onSelect: (val){}),
-                  //  ListView.separated(
-                  //   shrinkWrap: true,
-                  //   itemBuilder: (context, index) {
-                  //     return ListTile(
-                  //       title: Text("#$index"),
-                  //     );
-                  //   },
-                  //   separatorBuilder: (context, index) =>
-                  //       AppDimensionsNew.getVerticalSizedBox(8),
-                  //   itemCount: 10,
-                  //   physics: ClampingScrollPhysics(),
-                  // ),
+          content: StatefulBuilder(
+            builder: (BuildContext context, localSetState) {
+              return Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height * 0.6,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    instance.keys.toList().length == 0
+                        ? Expanded(
+                            child: Center(child: Text("No Saved Settings")))
+                        : Expanded(
+                            child: ListView.separated(
+                              shrinkWrap: true,
+                              itemBuilder: (context, index) {
+                                return ListTile(
+                                    tileColor: (selectedIndex == index)
+                                        ? AppColorsNew.yellowAccentColor
+                                        : AppColorsNew.actionRowBgColor,
+                                    title: Text(
+                                        "${instance.keys.toList()[index]}"),
+                                    leading: (selectedIndex == index)
+                                        ? Icon(Icons.done)
+                                        : null,
+                                    onTap: () {
+                                      localSetState(() {
+                                        selectedIndex = index;
+                                      });
+                                    });
+                              },
+                              separatorBuilder: (context, index) =>
+                                  AppDimensionsNew.getVerticalSizedBox(8),
+                              itemCount: instance.keys.toList().length,
+                              physics: ClampingScrollPhysics(),
+                            ),
+                          ),
+                    RoundedColorButton(
+                      onTapFunction: () {
+                        if (instance.keys.toList().length == 0) {
+                          Navigator.of(context).pop();
+                        } else {
+                          Navigator.of(context).pop(selectedIndex);
+                        }
+                      },
+                      text: instance.keys.toList().length == 0
+                          ? AppStringsNew.okText
+                          : AppStringsNew.startText,
+                      backgroundColor: AppColorsNew.yellowAccentColor,
+                      textColor: AppColorsNew.darkGreenShadeColor,
+                    ),
+                  ],
                 ),
-                RoundedColorButton(
-                  onTapFunction: () {},
-                  text: AppStringsNew.startText,
-                  backgroundColor: AppColorsNew.yellowAccentColor,
-                  textColor: AppColorsNew.darkGreenShadeColor,
-                ),
-              ],
-            ),
+              );
+            },
           ),
         );
       },
     );
+    if (indexSelected != null && indexSelected != -1) {
+      final jsonGame = instance.get(instance.keys.toList()[indexSelected]);
+      if (jsonGame != null) {
+        NewGameModel game;
+        try {
+          game = NewGameModel.fromJson(jsonGame.cast<String, dynamic>());
+        } on Exception {
+          log("Failed to parse game string");
+        }
+
+        if (game != null) {
+          NewGameSettings2.show(
+            context,
+            clubCode: widget.clubCode,
+            mainGameType: game.gameType,
+            subGameTypes: game.gameType == GameType.DEALER_CHOICE
+                ? game.dealerChoiceGames
+                : game.gameType == GameType.ROE
+                    ? game.roeGames
+                    : [],
+            savedModel: game,
+          );
+        }
+      }
+    }
   }
 
   handleItemClick(GameType gameType) async {

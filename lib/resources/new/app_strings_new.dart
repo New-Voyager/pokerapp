@@ -229,4 +229,8 @@ class AppStringsNew {
   static String licenses = "Licenses";
 
   static String loadSettingsTitle = "Load Settings";
+
+  static String saveGameSettingsTitle = "Save Settings";
+
+  static String okText = "Ok";
 }

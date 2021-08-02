@@ -113,13 +113,13 @@ class NewGameModelProvider extends ChangeNotifier {
     return "";
   }
 
-  set blinds(Blinds blinds) {
-    settings.setBlinds(blinds);
-    notifyListeners();
-  }
-
-  int get gameLengthInMins => settings.gameLength;
-  set gameLengthInMins(value) {
+  // int get gameLengthInMins => settings.gameLength;
+  // set gameLengthInMins(value) {
+  //   settings.gameLength = value;
+  //   notifyListeners();
+  // }
+  int get gameLengthInHrs => settings.gameLength;
+  set gameLengthInHrs(value) {
     settings.gameLength = value;
     notifyListeners();
   }
@@ -198,6 +198,10 @@ class NewGameModelProvider extends ChangeNotifier {
   //   }
   //   return "";
   // }
+  set blinds(Blinds blinds) {
+    settings.setBlinds(blinds);
+    notifyListeners();
+  }
 
   Blinds get blinds {
     return Blinds(
@@ -207,21 +211,25 @@ class NewGameModelProvider extends ChangeNotifier {
         ante: settings.ante);
   }
 
+  double get smallBlind => settings.smallBlind;
   set smallBlind(double value) {
     settings.smallBlind = value;
     notifyListeners();
   }
 
+  double get bigBlind => settings.bigBlind;
   set bigBlind(double value) {
     settings.bigBlind = value;
     notifyListeners();
   }
 
+  double get straddleBet => settings.straddleBet;
   set straddleBet(double value) {
     settings.straddleBet = value;
     notifyListeners();
   }
 
+  double get ante => settings.ante;
   set ante(double value) {
     settings.ante = value;
     notifyListeners();
@@ -340,7 +348,7 @@ class NewGameModelProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-    get buyInWaitTime => settings.buyInWaitTime;
+  get buyInWaitTime => settings.buyInWaitTime;
   set buyInWaitTime(int value) {
     settings.buyInWaitTime = value;
     notifyListeners();
