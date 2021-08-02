@@ -993,12 +993,14 @@ class HandActionService {
       playSoundEffect(AppAssets.flopSound);
 
       tableState.addTurnOrRiverCard(
+        true,
           1, CardHelper.getCard(data[stage]['${stage}Card']));
     } else if (stage == 'river') {
       _gameState.handState = HandState.RIVER;
       playSoundEffect(AppAssets.flopSound);
 
       tableState.addTurnOrRiverCard(
+        false,
           1, CardHelper.getCard(data[stage]['${stage}Card']));
     }
     if (_close) return;

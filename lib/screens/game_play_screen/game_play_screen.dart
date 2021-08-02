@@ -706,6 +706,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
             if (!_gameContextObj.gameComService.active) return;
 
             if (_gameContextObj.handActionService == null) return;
+            if (_gameContextObj.handActionBinService == null) return;
 
             /* This stream receives hand related messages that is specific to THIS player only
                               * e.g
@@ -718,10 +719,10 @@ class _GamePlayScreenState extends State<GamePlayScreen>
                   messageStr.indexOf("messages") != -1) {
                 _gameContextObj.handActionService.handle(message.string);
               } else {
-                _gameContextObj.handActionBinService.handleBinary(message.data);
+                _gameContextObj.handActionBinService.handleBinary(message.data, encrypted: true);
               }
             } catch (err) {
-              _gameContextObj.handActionBinService.handleBinary(message.data);
+              _gameContextObj.handActionBinService.handleBinary(message.data, encrypted: true);
             }
 
             // if (TestService.isTesting) {

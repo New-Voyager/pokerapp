@@ -340,7 +340,7 @@ class NewGameModelProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-    get buyInWaitTime => settings.buyInWaitTime;
+  get buyInWaitTime => settings.buyInWaitTime;
   set buyInWaitTime(int value) {
     settings.buyInWaitTime = value;
     notifyListeners();

@@ -470,22 +470,20 @@ final $typed_data.Uint8List announcementDescriptor = $convert.base64Decode('CgxB
 const HandMessage$json = const {
   '1': 'HandMessage',
   '2': const [
-    const {'1': 'version', '3': 1, '4': 1, '5': 9, '10': 'version'},
-    const {'1': 'club_id', '3': 2, '4': 1, '5': 13, '10': 'clubId'},
-    const {'1': 'game_id', '3': 3, '4': 1, '5': 4, '10': 'gameId'},
-    const {'1': 'game_code', '3': 4, '4': 1, '5': 9, '10': 'gameCode'},
-    const {'1': 'hand_num', '3': 5, '4': 1, '5': 13, '10': 'handNum'},
-    const {'1': 'seat_no', '3': 6, '4': 1, '5': 13, '10': 'seatNo'},
-    const {'1': 'player_id', '3': 8, '4': 1, '5': 4, '10': 'playerId'},
-    const {'1': 'message_id', '3': 9, '4': 1, '5': 9, '10': 'messageId'},
-    const {'1': 'game_token', '3': 10, '4': 1, '5': 9, '10': 'gameToken'},
-    const {'1': 'hand_status', '3': 11, '4': 1, '5': 14, '6': '.game.HandStatus', '10': 'handStatus'},
-    const {'1': 'messages', '3': 12, '4': 3, '5': 11, '6': '.game.HandMessageItem', '10': 'messages'},
+    const {'1': 'game_id', '3': 1, '4': 1, '5': 4, '10': 'gameId'},
+    const {'1': 'game_code', '3': 2, '4': 1, '5': 9, '10': 'gameCode'},
+    const {'1': 'hand_num', '3': 3, '4': 1, '5': 13, '10': 'handNum'},
+    const {'1': 'seat_no', '3': 4, '4': 1, '5': 13, '10': 'seatNo'},
+    const {'1': 'player_id', '3': 5, '4': 1, '5': 4, '10': 'playerId'},
+    const {'1': 'message_id', '3': 6, '4': 1, '5': 9, '10': 'messageId'},
+    const {'1': 'game_token', '3': 7, '4': 1, '5': 9, '10': 'gameToken'},
+    const {'1': 'hand_status', '3': 8, '4': 1, '5': 14, '6': '.game.HandStatus', '10': 'handStatus'},
+    const {'1': 'messages', '3': 9, '4': 3, '5': 11, '6': '.game.HandMessageItem', '10': 'messages'},
   ],
 };
 
 /// Descriptor for `HandMessage`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List handMessageDescriptor = $convert.base64Decode('CgtIYW5kTWVzc2FnZRIYCgd2ZXJzaW9uGAEgASgJUgd2ZXJzaW9uEhcKB2NsdWJfaWQYAiABKA1SBmNsdWJJZBIXCgdnYW1lX2lkGAMgASgEUgZnYW1lSWQSGwoJZ2FtZV9jb2RlGAQgASgJUghnYW1lQ29kZRIZCghoYW5kX251bRgFIAEoDVIHaGFuZE51bRIXCgdzZWF0X25vGAYgASgNUgZzZWF0Tm8SGwoJcGxheWVyX2lkGAggASgEUghwbGF5ZXJJZBIdCgptZXNzYWdlX2lkGAkgASgJUgltZXNzYWdlSWQSHQoKZ2FtZV90b2tlbhgKIAEoCVIJZ2FtZVRva2VuEjEKC2hhbmRfc3RhdHVzGAsgASgOMhAuZ2FtZS5IYW5kU3RhdHVzUgpoYW5kU3RhdHVzEjEKCG1lc3NhZ2VzGAwgAygLMhUuZ2FtZS5IYW5kTWVzc2FnZUl0ZW1SCG1lc3NhZ2Vz');
+final $typed_data.Uint8List handMessageDescriptor = $convert.base64Decode('CgtIYW5kTWVzc2FnZRIXCgdnYW1lX2lkGAEgASgEUgZnYW1lSWQSGwoJZ2FtZV9jb2RlGAIgASgJUghnYW1lQ29kZRIZCghoYW5kX251bRgDIAEoDVIHaGFuZE51bRIXCgdzZWF0X25vGAQgASgNUgZzZWF0Tm8SGwoJcGxheWVyX2lkGAUgASgEUghwbGF5ZXJJZBIdCgptZXNzYWdlX2lkGAYgASgJUgltZXNzYWdlSWQSHQoKZ2FtZV90b2tlbhgHIAEoCVIJZ2FtZVRva2VuEjEKC2hhbmRfc3RhdHVzGAggASgOMhAuZ2FtZS5IYW5kU3RhdHVzUgpoYW5kU3RhdHVzEjEKCG1lc3NhZ2VzGAkgAygLMhUuZ2FtZS5IYW5kTWVzc2FnZUl0ZW1SCG1lc3NhZ2Vz');
 @$core.Deprecated('Use dealerChoiceDescriptor instead')
 const DealerChoice$json = const {
   '1': 'DealerChoice',

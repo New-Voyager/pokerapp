@@ -44,26 +44,71 @@ enum PlayerActedSendState {
   ACK_RECEIVED,
 }
 
+toHexString(List<int> bArr) {
+  int length;
+  if (bArr == null || (length = bArr.length) <= 0) {
+    return "";
+  }
+  Uint8List cArr = new Uint8List(length << 1);
+  int i = 0;
+  for (int i2 = 0; i2 < length; i2++) {
+    int i3 = i + 1;
+    var cArr2 = [
+      '0',
+      '1',
+      '2',
+      '3',
+      '4',
+      '5',
+      '6',
+      '7',
+      '8',
+      '9',
+      'a',
+      'b',
+      'c',
+      'd',
+      'e',
+      'f'
+    ];
+
+    var index = (bArr[i2] >> 4) & 15;
+    cArr[i] = cArr2[index].codeUnitAt(0);
+    i = i3 + 1;
+    cArr[i3] = cArr2[bArr[i2] & 15].codeUnitAt(0);
+  }
+  return new String.fromCharCodes(cArr);
+}
+
 testHand() {
-  String b64 =
-      '''EAIYDSIIY2dua2dpeHQoAUoXTkVXX0hBTkQ6MTpQUkVGTE9QOjA6OjBYAWJuOghORVdfSEFORHJiCAEQARgCIAEoAjgBQAJNAACAP1UAAABAZQAAgEByEggBEg4IEhIDc3NzGAIlAADwQXITCAISDwgCEgR5b25nGAIlAADIQnoSCAESDggFFQAAAEAdAACAPyABegYIAhICCAE=''';
+  String b64 = '''EEYYYiIIY2dtZHlrbG4oAkoXTkVXX0hBTkQ6MjpQUkVGTE9QOjA6OjBYAmJxOghORVdfSEFORHJlCAIQAhgBIAIoATgBQAJNAACAP1UAAABAZQAAgEBqFAgBEhAIiggSBHNvbWEYAiUAAOBBahQIAhIQCPoHEgR5b25nGAIlAADMQnIGCAESAggCchIIAhIOCAUVAAAAQB0AAIA/IAE=''';
+  String b642 =
+      '''nTUWWyz1eXZ9bKBtdTgADr/u8B3UhCXu88jaiuSB1CLEtNiYrmkxcipiVKWTJtjL7I2txZgyFR/5Q63Bh79CrGpP5M5ziodR7/Os2dzUk4oMbhy/QeYpMLdNM56ial60s7+EuEPzliUJ''';
   String base64Str;
   Uint8List protoData;
   String hex;
   try {
     // base64 decoding
     protoData = base64Decode(b64);
-    //hex = toHex(protoData);
+    hex = toHexString(protoData);
     log("\n\n");
-    //log(hex);
-    HandMessage message = HandMessage.fromBuffer(protoData);
+    log(hex);
+    List<int> buf = [];
+    for(final byte in protoData) {
+      buf.add(byte);
+    }
+    hex = toHexString(buf);
+    log("\n\n");
+    log(hex);
+
+    HandMessage message = HandMessage.fromBuffer(buf);
     //_binaryMessages.addAll(message.messages);
   } catch (err) {
     //final data = utf8.decode(messageData);
     log('${err.toString()}');
-    try {
-      HandMessage message = HandMessage.fromBuffer(protoData);
-    } catch (err) {}
+    // try {
+    //   HandMessage message = HandMessage.fromBuffer(protoData);
+    // } catch (err) {}
     throw err;
   }
 }
@@ -140,11 +185,17 @@ class RetrySendingBinMsg {
   }
 }
 
+class HandMessageObject {
+  final HandMessage message;
+  final HandMessageItem item;
+  HandMessageObject(this.message, this.item);
+}
+
 class HandActionBinService {
   final GameState _gameState;
   final BuildContext _context;
-  final List<HandMessageItem> _binaryMessages = [];
-
+  final List<HandMessageObject> _binaryMessages = [];
+  final List<String> _seenMessages = [];
   bool _close = false;
   bool closed = false;
 
@@ -215,7 +266,7 @@ class HandActionBinService {
       listen: false,
     );
 
-    gameContextObject.handActionService.playerActed(
+    gameContextObject.handActionBinService.playerActed(
       gameContextObject.playerId,
       handInfo.handNum,
       actionState.action.seatNo,
@@ -271,14 +322,16 @@ class HandActionBinService {
     } else if (action == 'FOLD') {
       actionEnum = ACTION.FOLD;
     }
-
-    HandMessageItem playerActed = HandMessageItem(
-        messageType: "PLAYER_ACTED",
-        playerActed: HandAction(
+    final handAction = HandAction(
           seatNo: seatNo,
           action: actionEnum,
-          amount: amount.toDouble(),
-        ));
+        );
+    if (amount != null) {
+      handAction.amount = amount.toDouble();
+    }
+    HandMessageItem playerActed = HandMessageItem(
+        messageType: "PLAYER_ACTED",
+        playerActed: handAction);
     HandMessage handMessage = HandMessage(
         gameCode: _gameState.gameCode,
         handNum: handNum,
@@ -286,10 +339,10 @@ class HandActionBinService {
         messageId: messageId,
         messages: [playerActed]);
     final binMessage = handMessage.writeToBuffer();
-    final base64Str = base64Encode(binMessage);
-    final data = utf8.encode(base64Str);
+    //final base64Str = base64Encode(binMessage);
+    //final data = utf8.encode(base64Str);
     _retryMsg =
-        RetrySendingBinMsg(_gameComService, data, 'PLAYER_ACTED', messageId);
+        RetrySendingBinMsg(_gameComService, binMessage, 'PLAYER_ACTED', messageId);
     _retryMsg.run();
   }
 
@@ -315,82 +368,52 @@ class HandActionBinService {
     this._gameComService.sendBinPlayerToHandChannel(binMessage);
   }
 
-  static toHex(Uint8List bArr) {
-    int length;
-    if (bArr == null || (length = bArr.length) <= 0) {
-      return "";
-    }
-    Uint8List cArr = new Uint8List(length << 1);
-    int i = 0;
-    for (int i2 = 0; i2 < length; i2++) {
-      int i3 = i + 1;
-      var cArr2 = [
-        '0',
-        '1',
-        '2',
-        '3',
-        '4',
-        '5',
-        '6',
-        '7',
-        '8',
-        '9',
-        'a',
-        'b',
-        'c',
-        'd',
-        'e',
-        'f'
-      ];
-
-      var index = (bArr[i2] >> 4) & 15;
-      cArr[i] = cArr2[index].codeUnitAt(0);
-      i = i3 + 1;
-      cArr[i3] = cArr2[bArr[i2] & 15].codeUnitAt(0);
-    }
-    return new String.fromCharCodes(cArr);
-  }
-
-  handleBinary(Uint8List messageData) async {
+  handleBinary(Uint8List messageData, {bool encrypted = false}) async {
     assert(_gameState != null);
     assert(_context != null);
     assert(messageData != null && messageData.isNotEmpty);
     String base64Str;
-    Uint8List protoData;
+    Uint8List protoData = messageData;
     String hex;
     try {
       // base64 decoding
-      base64Str = new String.fromCharCodes(messageData);
-      log(base64Str);
-      protoData = base64Decode(base64Str);
-      hex = toHex(protoData);
+      // base64Str = new String.fromCharCodes(messageData);
+      // log(base64Str);
+      // protoData = base64Decode(base64Str);
+
+      if (encrypted) {
+        List<int> decryptedMessage = await
+            this._encryptionService.decrypt(protoData);
+        protoData = decryptedMessage;
+      }
+
+      hex = toHexString(protoData);
       log("\n\n");
       log(hex);
       HandMessage message = HandMessage.fromBuffer(protoData);
-      _binaryMessages.addAll(message.messages);
+      for (final item in message.messages) {
+        _binaryMessages.add(HandMessageObject(message, item));
+      }
     } catch (err) {
       //final data = utf8.decode(messageData);
       log('${err.toString()}');
-      try {
-        HandMessage message = HandMessage.fromBuffer(protoData);
-      } catch (err) {}
       throw err;
     }
   }
 
-  Future<void> handleMessage(HandMessageItem message) async {
+  Future<void> handleMessage(HandMessageObject messageObject) async {
     // if the service is closed, don't process incoming messages
     if (closed) return;
 
-    log(message.writeToJson());
+    log(messageObject.item.writeToJson());
 
-    debugLog(_gameState.gameCode, message.writeToJson());
+    debugLog(_gameState.gameCode, messageObject.item.writeToJson());
     //debugLog(_gameState.gameCode, jsonData);
 
-    String messageType = message.messageType;
+    String messageType = messageObject.item.messageType;
 
     if (_retryMsg != null) {
-      bool handled = _retryMsg.handleMsg(message);
+      bool handled = _retryMsg.handleMsg(messageObject.item);
       // cancel retry now
       _retryMsg.cancel();
       _retryMsg = null;
@@ -399,12 +422,27 @@ class HandActionBinService {
         return;
       } else {
         // something went wrong, we need to refresh the screen
-        this.queryCurrentHand();
+        //this.queryCurrentHand();
       }
     }
 
     log('Hand Message: ::handleMessage:: START messageType: $messageType');
-
+    HandMessageItem message = messageObject.item;
+    // final messageId = messageObject.message.messageId;
+    // if (message.messageType == AppConstants.FLOP ||
+    //     message.messageType == AppConstants.TURN ||
+    //     message.messageType == AppConstants.RIVER) {
+    //   String seenMessageId  = '$messageId-${message.messageType}-${messageObject.message.handNum}';
+    //   if (_seenMessages.indexOf(seenMessageId) != -1) {
+    //     return;
+    //   }
+    //   _seenMessages.add(seenMessageId);
+    //   if (_seenMessages.length >= 20) {
+    //     for (int i = 0; i < 5; i++) {
+    //       _seenMessages.removeAt(0);
+    //     }
+    //   }
+    // }
     try {
       // delegate further actions to sub services as per messageType
       switch (messageType) {
@@ -442,14 +480,22 @@ class HandActionBinService {
           return;
 
         case AppConstants.FLOP:
+          log('Hand Message: ::handleStageChange:: FLOP');
           await handleStageChange(message, 'flop');
+          log('Hand Message: ::handleStageChange:: FLOP DONE');
           return;
 
         case AppConstants.TURN:
-          return handleStageChange(message, 'turn');
+          log('Hand Message: ::handleStageChange:: TURN');
+          await handleStageChange(message, 'turn');
+          log('Hand Message: ::handleStageChange:: TURN DONE');
+          return;
 
         case AppConstants.RIVER:
-          return handleStageChange(message, 'river');
+          log('Hand Message: ::handleStageChange:: RIVER');
+          await handleStageChange(message, 'river');
+          log('Hand Message: ::handleStageChange:: RIVER DONE');
+          return;
 
         case AppConstants.ANNOUNCEMENT:
           return handleAnnouncement(message);
@@ -1063,14 +1109,14 @@ class HandActionBinService {
       _gameState.handState = HandState.TURN;
       playSoundEffect(AppAssets.flopSound);
       final turnCard = message.turn.turnCard;
-      tableState.addTurnOrRiverCard(1, CardHelper.getCard(turnCard));
+      tableState.addTurnOrRiverCard(true, 1, CardHelper.getCard(turnCard));
       playerCardRanks = message.turn.playerCardRanks;
     } else if (stage == 'river') {
       _gameState.handState = HandState.RIVER;
       playSoundEffect(AppAssets.flopSound);
 
       final riverCard = message.river.riverCard;
-      tableState.addTurnOrRiverCard(1, CardHelper.getCard(riverCard));
+      tableState.addTurnOrRiverCard(false, 1, CardHelper.getCard(riverCard));
       playerCardRanks = message.river.playerCardRanks;
     }
 
@@ -1762,10 +1808,10 @@ class HandActionBinService {
     // get hand winners data and update results
     final handResult = message.handResult;
 
-    final jsonData = jsonEncode(message.handResult);
-    log('\nResult: \n');
-    log('Result: ' + jsonData);
-    log('\n\n');
+    // final jsonData = jsonEncode(message.handResult);
+    // log('\nResult: \n');
+    // log('Result: ' + jsonData);
+    // log('\n\n');
     final handNum = handResult.handNum;
     //_gameState.lastHand = jsonData;
     //_gameState.setHandLog(handNum, jsonData, _gameState.currentCards);

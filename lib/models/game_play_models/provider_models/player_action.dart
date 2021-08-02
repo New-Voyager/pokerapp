@@ -48,9 +48,10 @@ class PlayerAction {
 
   int _minRaiseAmount;
   int _maxRaiseAmount;
+  int _callAmount = 0;
+  int _allInAmount = 0;
 
   List<Option> _options;
-
   PlayerAction();
 
   factory PlayerAction.fromProto(int seatNo, NextSeatAction seatAction) {
@@ -58,6 +59,8 @@ class PlayerAction {
     yourAction._seatNo = seatNo;
     yourAction._minRaiseAmount = seatAction.minRaiseAmount.toInt();
     yourAction._maxRaiseAmount = seatAction.maxRaiseAmount.toInt();
+    yourAction._callAmount = seatAction.callAmount.toInt();
+    yourAction._allInAmount = seatAction.allInAmount.toInt();
     yourAction._options = [];
     for (final option in seatAction.betOptions) {
       Option betOption =
@@ -155,6 +158,8 @@ class PlayerAction {
 
   int get minRaiseAmount => _minRaiseAmount;
   int get maxRaiseAmount => _maxRaiseAmount;
+  int get callAmount => _callAmount;
+  int get allInAount => _allInAmount;
   int get seatNo => _seatNo;
 
   void sort() {

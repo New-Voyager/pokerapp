@@ -32,23 +32,28 @@ class _SplashScreenState extends State<SplashScreen> {
         _moveToLoginScreen();
       } else {
         // generate jwt
-        final resp = await AuthService.newlogin(
-            AppConfig.deviceId, AppConfig.deviceSecret);
-        if (resp['status']) {
-          // successfully logged in
-          AppConfig.jwt = resp['jwt'];
-          // save device id, device secret and jwt
-          AuthModel currentUser = AuthModel(
-              deviceID: AppConfig.deviceId,
-              deviceSecret: AppConfig.deviceSecret,
-              name: resp['name'],
-              uuid: resp['uuid'],
-              playerId: resp['id'],
-              jwt: resp['jwt']);
-          await AuthService.save(currentUser);
-          AppConfig.jwt = resp['jwt'];
-          await graphQLConfiguration.init();
-        } else {
+        try {
+          final resp = await AuthService.newlogin(
+              AppConfig.deviceId, AppConfig.deviceSecret);
+          if (resp['status']) {
+            // successfully logged in
+            AppConfig.jwt = resp['jwt'];
+            // save device id, device secret and jwt
+            AuthModel currentUser = AuthModel(
+                deviceID: AppConfig.deviceId,
+                deviceSecret: AppConfig.deviceSecret,
+                name: resp['name'],
+                uuid: resp['uuid'],
+                playerId: resp['id'],
+                jwt: resp['jwt']);
+            await AuthService.save(currentUser);
+            AppConfig.jwt = resp['jwt'];
+            await graphQLConfiguration.init();
+          } else {
+            _moveToLoginScreen();
+            return;
+          }
+        } catch(err) {
           _moveToLoginScreen();
           return;
         }

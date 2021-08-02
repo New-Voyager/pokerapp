@@ -238,8 +238,13 @@ class TestService {
 
   static Future<void> addTurnOrRiverCard() async {
     final tableState = _getTableState();
+    bool turn = true;
+    if (tableState.cards.length >= 4) {
+      turn = false;
+    }
 
     tableState.addTurnOrRiverCard(
+      true,
       1,
       CardHelper.getCard(162),
     );
@@ -564,10 +569,12 @@ class TestService {
     );
 
     tableState.addTurnOrRiverCard(
+      true,
       1,
       CardHelper.getCard(200),
     );
     tableState.addTurnOrRiverCard(
+      false,
       1,
       CardHelper.getCard(200),
     );

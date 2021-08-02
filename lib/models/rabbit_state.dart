@@ -73,8 +73,9 @@ class RabbitState extends ChangeNotifier {
 
       _wonAt = handLog['wonAt'];
       _handNo = int.parse(result['handNum'].toString());
-      _communityCards =
-          result['boardCards'].map<int>((e) => int.parse(e.toString())).toList();
+      _communityCards = result['boardCards']
+          .map<int>((e) => int.parse(e.toString()))
+          .toList();
     }
 
     // if wonAt is not FLOP or TURN, we dont proceed

@@ -1179,7 +1179,7 @@ class RunItTwiceBoards extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'RunItTwiceBoards', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'game'), createEmptyInstance: create)
     ..p<$core.int>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'board1', $pb.PbFieldType.PU3, protoName: 'board_1')
     ..p<$core.int>(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'board2', $pb.PbFieldType.PU3, protoName: 'board_2')
-    ..e<$0.HandStatus>(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'stage', $pb.PbFieldType.OE, defaultOrMaker: $0.HandStatus.DEAL, valueOf: $0.HandStatus.valueOf, enumValues: $0.HandStatus.values)
+    ..e<$0.HandStatus>(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'stage', $pb.PbFieldType.OE, defaultOrMaker: $0.HandStatus.HandStatus_UNKNOWN, valueOf: $0.HandStatus.valueOf, enumValues: $0.HandStatus.values)
     ..pc<$0.SeatsInPots>(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'seatsPots', $pb.PbFieldType.PM, subBuilder: $0.SeatsInPots.create)
     ..a<$core.int>(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'seat1', $pb.PbFieldType.OU3)
     ..a<$core.int>(6, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'seat2', $pb.PbFieldType.OU3)
@@ -1317,7 +1317,7 @@ class NoMoreActions extends $pb.GeneratedMessage {
 
 class RunItTwiceResult extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'RunItTwiceResult', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'game'), createEmptyInstance: create)
-    ..e<$0.HandStatus>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'runItTwiceStartedAt', $pb.PbFieldType.OE, defaultOrMaker: $0.HandStatus.DEAL, valueOf: $0.HandStatus.valueOf, enumValues: $0.HandStatus.values)
+    ..e<$0.HandStatus>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'runItTwiceStartedAt', $pb.PbFieldType.OE, defaultOrMaker: $0.HandStatus.HandStatus_UNKNOWN, valueOf: $0.HandStatus.valueOf, enumValues: $0.HandStatus.values)
     ..m<$core.int, $0.PotWinners>(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'board1Winners', protoName: 'board_1_winners', entryClassName: 'RunItTwiceResult.Board1WinnersEntry', keyFieldType: $pb.PbFieldType.OU3, valueFieldType: $pb.PbFieldType.OM, valueCreator: $0.PotWinners.create, packageName: const $pb.PackageName('game'))
     ..m<$core.int, $0.PotWinners>(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'board2Winners', protoName: 'board_2_winners', entryClassName: 'RunItTwiceResult.Board2WinnersEntry', keyFieldType: $pb.PbFieldType.OU3, valueFieldType: $pb.PbFieldType.OM, valueCreator: $0.PotWinners.create, packageName: const $pb.PackageName('game'))
     ..hasRequiredFields = false
@@ -1385,7 +1385,7 @@ class HandLog extends $pb.GeneratedMessage {
     ..aOM<$0.HandActionLog>(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'turnActions', subBuilder: $0.HandActionLog.create)
     ..aOM<$0.HandActionLog>(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'riverActions', subBuilder: $0.HandActionLog.create)
     ..m<$core.int, $0.PotWinners>(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'potWinners', entryClassName: 'HandLog.PotWinnersEntry', keyFieldType: $pb.PbFieldType.OU3, valueFieldType: $pb.PbFieldType.OM, valueCreator: $0.PotWinners.create, packageName: const $pb.PackageName('game'))
-    ..e<$0.HandStatus>(6, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'wonAt', $pb.PbFieldType.OE, defaultOrMaker: $0.HandStatus.DEAL, valueOf: $0.HandStatus.valueOf, enumValues: $0.HandStatus.values)
+    ..e<$0.HandStatus>(6, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'wonAt', $pb.PbFieldType.OE, defaultOrMaker: $0.HandStatus.HandStatus_UNKNOWN, valueOf: $0.HandStatus.valueOf, enumValues: $0.HandStatus.values)
     ..aOM<Showdown>(8, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'showDown', subBuilder: Showdown.create)
     ..a<$fixnum.Int64>(9, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'handStartedAt', $pb.PbFieldType.OU6, defaultOrMaker: $fixnum.Int64.ZERO)
     ..a<$fixnum.Int64>(11, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'handEndedAt', $pb.PbFieldType.OU6, defaultOrMaker: $fixnum.Int64.ZERO)
@@ -1646,7 +1646,7 @@ class PlayerInfo extends $pb.GeneratedMessage {
     ..p<$core.int>(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'cards', $pb.PbFieldType.PU3)
     ..p<$core.int>(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'bestCards', $pb.PbFieldType.PU3)
     ..a<$core.int>(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'rank', $pb.PbFieldType.OU3)
-    ..e<$0.HandStatus>(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'playedUntil', $pb.PbFieldType.OE, defaultOrMaker: $0.HandStatus.DEAL, valueOf: $0.HandStatus.valueOf, enumValues: $0.HandStatus.values)
+    ..e<$0.HandStatus>(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'playedUntil', $pb.PbFieldType.OE, defaultOrMaker: $0.HandStatus.HandStatus_UNKNOWN, valueOf: $0.HandStatus.valueOf, enumValues: $0.HandStatus.values)
     ..aOM<HandPlayerBalance>(6, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'balance', subBuilder: HandPlayerBalance.create)
     ..p<$core.int>(7, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'hhCards', $pb.PbFieldType.PU3)
     ..a<$core.int>(8, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'hhRank', $pb.PbFieldType.OU3)
@@ -2212,24 +2212,20 @@ class Announcement extends $pb.GeneratedMessage {
 
 class HandMessage extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'HandMessage', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'game'), createEmptyInstance: create)
-    ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'version')
-    ..a<$core.int>(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'clubId', $pb.PbFieldType.OU3)
-    ..a<$fixnum.Int64>(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'gameId', $pb.PbFieldType.OU6, defaultOrMaker: $fixnum.Int64.ZERO)
-    ..aOS(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'gameCode')
-    ..a<$core.int>(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'handNum', $pb.PbFieldType.OU3)
-    ..a<$core.int>(6, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'seatNo', $pb.PbFieldType.OU3)
-    ..a<$fixnum.Int64>(8, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'playerId', $pb.PbFieldType.OU6, defaultOrMaker: $fixnum.Int64.ZERO)
-    ..aOS(9, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'messageId')
-    ..aOS(10, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'gameToken')
-    ..e<$0.HandStatus>(11, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'handStatus', $pb.PbFieldType.OE, defaultOrMaker: $0.HandStatus.DEAL, valueOf: $0.HandStatus.valueOf, enumValues: $0.HandStatus.values)
-    ..pc<HandMessageItem>(12, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'messages', $pb.PbFieldType.PM, subBuilder: HandMessageItem.create)
+    ..a<$fixnum.Int64>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'gameId', $pb.PbFieldType.OU6, defaultOrMaker: $fixnum.Int64.ZERO)
+    ..aOS(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'gameCode')
+    ..a<$core.int>(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'handNum', $pb.PbFieldType.OU3)
+    ..a<$core.int>(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'seatNo', $pb.PbFieldType.OU3)
+    ..a<$fixnum.Int64>(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'playerId', $pb.PbFieldType.OU6, defaultOrMaker: $fixnum.Int64.ZERO)
+    ..aOS(6, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'messageId')
+    ..aOS(7, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'gameToken')
+    ..e<$0.HandStatus>(8, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'handStatus', $pb.PbFieldType.OE, defaultOrMaker: $0.HandStatus.HandStatus_UNKNOWN, valueOf: $0.HandStatus.valueOf, enumValues: $0.HandStatus.values)
+    ..pc<HandMessageItem>(9, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'messages', $pb.PbFieldType.PM, subBuilder: HandMessageItem.create)
     ..hasRequiredFields = false
   ;
 
   HandMessage._() : super();
   factory HandMessage({
-    $core.String? version,
-    $core.int? clubId,
     $fixnum.Int64? gameId,
     $core.String? gameCode,
     $core.int? handNum,
@@ -2241,12 +2237,6 @@ class HandMessage extends $pb.GeneratedMessage {
     $core.Iterable<HandMessageItem>? messages,
   }) {
     final _result = create();
-    if (version != null) {
-      _result.version = version;
-    }
-    if (clubId != null) {
-      _result.clubId = clubId;
-    }
     if (gameId != null) {
       _result.gameId = gameId;
     }
@@ -2298,97 +2288,79 @@ class HandMessage extends $pb.GeneratedMessage {
   static HandMessage? _defaultInstance;
 
   @$pb.TagNumber(1)
-  $core.String get version => $_getSZ(0);
+  $fixnum.Int64 get gameId => $_getI64(0);
   @$pb.TagNumber(1)
-  set version($core.String v) { $_setString(0, v); }
+  set gameId($fixnum.Int64 v) { $_setInt64(0, v); }
   @$pb.TagNumber(1)
-  $core.bool hasVersion() => $_has(0);
+  $core.bool hasGameId() => $_has(0);
   @$pb.TagNumber(1)
-  void clearVersion() => clearField(1);
+  void clearGameId() => clearField(1);
 
   @$pb.TagNumber(2)
-  $core.int get clubId => $_getIZ(1);
+  $core.String get gameCode => $_getSZ(1);
   @$pb.TagNumber(2)
-  set clubId($core.int v) { $_setUnsignedInt32(1, v); }
+  set gameCode($core.String v) { $_setString(1, v); }
   @$pb.TagNumber(2)
-  $core.bool hasClubId() => $_has(1);
+  $core.bool hasGameCode() => $_has(1);
   @$pb.TagNumber(2)
-  void clearClubId() => clearField(2);
+  void clearGameCode() => clearField(2);
 
   @$pb.TagNumber(3)
-  $fixnum.Int64 get gameId => $_getI64(2);
+  $core.int get handNum => $_getIZ(2);
   @$pb.TagNumber(3)
-  set gameId($fixnum.Int64 v) { $_setInt64(2, v); }
+  set handNum($core.int v) { $_setUnsignedInt32(2, v); }
   @$pb.TagNumber(3)
-  $core.bool hasGameId() => $_has(2);
+  $core.bool hasHandNum() => $_has(2);
   @$pb.TagNumber(3)
-  void clearGameId() => clearField(3);
+  void clearHandNum() => clearField(3);
 
   @$pb.TagNumber(4)
-  $core.String get gameCode => $_getSZ(3);
+  $core.int get seatNo => $_getIZ(3);
   @$pb.TagNumber(4)
-  set gameCode($core.String v) { $_setString(3, v); }
+  set seatNo($core.int v) { $_setUnsignedInt32(3, v); }
   @$pb.TagNumber(4)
-  $core.bool hasGameCode() => $_has(3);
+  $core.bool hasSeatNo() => $_has(3);
   @$pb.TagNumber(4)
-  void clearGameCode() => clearField(4);
+  void clearSeatNo() => clearField(4);
 
   @$pb.TagNumber(5)
-  $core.int get handNum => $_getIZ(4);
+  $fixnum.Int64 get playerId => $_getI64(4);
   @$pb.TagNumber(5)
-  set handNum($core.int v) { $_setUnsignedInt32(4, v); }
+  set playerId($fixnum.Int64 v) { $_setInt64(4, v); }
   @$pb.TagNumber(5)
-  $core.bool hasHandNum() => $_has(4);
+  $core.bool hasPlayerId() => $_has(4);
   @$pb.TagNumber(5)
-  void clearHandNum() => clearField(5);
+  void clearPlayerId() => clearField(5);
 
   @$pb.TagNumber(6)
-  $core.int get seatNo => $_getIZ(5);
+  $core.String get messageId => $_getSZ(5);
   @$pb.TagNumber(6)
-  set seatNo($core.int v) { $_setUnsignedInt32(5, v); }
+  set messageId($core.String v) { $_setString(5, v); }
   @$pb.TagNumber(6)
-  $core.bool hasSeatNo() => $_has(5);
+  $core.bool hasMessageId() => $_has(5);
   @$pb.TagNumber(6)
-  void clearSeatNo() => clearField(6);
+  void clearMessageId() => clearField(6);
+
+  @$pb.TagNumber(7)
+  $core.String get gameToken => $_getSZ(6);
+  @$pb.TagNumber(7)
+  set gameToken($core.String v) { $_setString(6, v); }
+  @$pb.TagNumber(7)
+  $core.bool hasGameToken() => $_has(6);
+  @$pb.TagNumber(7)
+  void clearGameToken() => clearField(7);
 
   @$pb.TagNumber(8)
-  $fixnum.Int64 get playerId => $_getI64(6);
+  $0.HandStatus get handStatus => $_getN(7);
   @$pb.TagNumber(8)
-  set playerId($fixnum.Int64 v) { $_setInt64(6, v); }
+  set handStatus($0.HandStatus v) { setField(8, v); }
   @$pb.TagNumber(8)
-  $core.bool hasPlayerId() => $_has(6);
+  $core.bool hasHandStatus() => $_has(7);
   @$pb.TagNumber(8)
-  void clearPlayerId() => clearField(8);
+  void clearHandStatus() => clearField(8);
 
   @$pb.TagNumber(9)
-  $core.String get messageId => $_getSZ(7);
-  @$pb.TagNumber(9)
-  set messageId($core.String v) { $_setString(7, v); }
-  @$pb.TagNumber(9)
-  $core.bool hasMessageId() => $_has(7);
-  @$pb.TagNumber(9)
-  void clearMessageId() => clearField(9);
-
-  @$pb.TagNumber(10)
-  $core.String get gameToken => $_getSZ(8);
-  @$pb.TagNumber(10)
-  set gameToken($core.String v) { $_setString(8, v); }
-  @$pb.TagNumber(10)
-  $core.bool hasGameToken() => $_has(8);
-  @$pb.TagNumber(10)
-  void clearGameToken() => clearField(10);
-
-  @$pb.TagNumber(11)
-  $0.HandStatus get handStatus => $_getN(9);
-  @$pb.TagNumber(11)
-  set handStatus($0.HandStatus v) { setField(11, v); }
-  @$pb.TagNumber(11)
-  $core.bool hasHandStatus() => $_has(9);
-  @$pb.TagNumber(11)
-  void clearHandStatus() => clearField(11);
-
-  @$pb.TagNumber(12)
-  $core.List<HandMessageItem> get messages => $_getList(10);
+  $core.List<HandMessageItem> get messages => $_getList(8);
 }
 
 class DealerChoice extends $pb.GeneratedMessage {

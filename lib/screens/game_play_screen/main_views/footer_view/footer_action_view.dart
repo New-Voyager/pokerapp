@@ -229,19 +229,19 @@ class _FooterActionViewState extends State<FooterActionView> {
     //     ?.firstWhere((element) => element.actionName == ALLIN, orElse: null);
     var actionButtons = [];
     actionButtons = playerAction?.actions?.map<Widget>(
-      (playerAction) {
-        switch (playerAction.actionName) {
+      (action) {
+        switch (action.actionName) {
           case FOLD:
             return _buildRoundButton(
-              text: playerAction.actionName,
+              text: action.actionName,
               onTap: () => _fold(
-                playerAction.actionValue,
+                action.actionValue,
                 context: context,
               ),
             );
           case CHECK:
             return _buildRoundButton(
-              text: playerAction.actionName,
+              text: action.actionName,
               onTap: () => _check(
                 context: context,
               ),
@@ -252,7 +252,7 @@ class _FooterActionViewState extends State<FooterActionView> {
             bet = true;
             return _buildRoundButton(
               isSelected: _showOptions,
-              text: playerAction.actionName,
+              text: action.actionName,
               onTap: () => setState(() {
                 _showOptions = !_showOptions;
                 widget.isBetWidgetVisible?.call(_showOptions);
@@ -260,11 +260,11 @@ class _FooterActionViewState extends State<FooterActionView> {
             );
           case CALL:
             return _buildRoundButton(
-              text: playerAction.actionName +
+              text: action.actionName +
                   ' ' +
-                  playerAction.actionValue.toString(),
+                  action.actionValue.toString(),
               onTap: () => _call(
-                playerAction.actionValue,
+                playerAction.callAmount,
                 context: context,
               ),
             );
@@ -274,7 +274,7 @@ class _FooterActionViewState extends State<FooterActionView> {
             raise = true;
             return _buildRoundButton(
               isSelected: _showOptions,
-              text: playerAction.actionName,
+              text: action.actionName,
               onTap: () => setState(() {
                 _showOptions = !_showOptions;
                 widget.isBetWidgetVisible?.call(_showOptions);
@@ -290,7 +290,7 @@ class _FooterActionViewState extends State<FooterActionView> {
       actionButtons.add(_buildRoundButton(
         text: allin.actionName + ' ' + allin.actionValue.toString(),
         onTap: () => _allIn(
-          amount: allin.actionValue,
+          amount: playerAction.allInAount,
           context: context,
         ),
       ));

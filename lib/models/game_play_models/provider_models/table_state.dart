@@ -187,31 +187,31 @@ class TableState extends ChangeNotifier {
         await _delay(1);
 
         /* add turn cards */
-        addTurnOrRiverCard(1, cards[3]);
+        addTurnOrRiverCard(true, 1, cards[3]);
         notifyAll();
 
         /* wait for the duration */
         await _delay(1);
 
         /* finally, add the river cards */
-        addTurnOrRiverCard(1, cards.last);
+        addTurnOrRiverCard(false, 1, cards.last);
         notifyAll();
       } else if (_board1.length == 3) {
         /* flop cards are added, just need to add turn and river cards sequentially */
 
         /* add turn cards */
-        addTurnOrRiverCard(1, cards[3]);
+        addTurnOrRiverCard(true, 1, cards[3]);
         notifyAll();
 
         /* wait for the duration */
         await _delay(1);
 
         /* finally, add the river cards */
-        addTurnOrRiverCard(1, cards.last);
+        addTurnOrRiverCard(false, 1, cards.last);
         notifyAll();
       } else if (_board1.length == 4) {
         /* cards till turn are added, just need to add river cards  */
-        addTurnOrRiverCard(1, cards.last);
+        addTurnOrRiverCard(false, 1, cards.last);
         notifyAll();
       } else {
         return;
@@ -229,19 +229,19 @@ class TableState extends ChangeNotifier {
       await _delay(1);
 
       /* add turn cards */
-      addTurnOrRiverCard(2, cards[3]);
+      addTurnOrRiverCard(true, 2, cards[3]);
       notifyAll();
 
       /* wait for the duration */
       await _delay(1);
 
       /* finally, add the river cards */
-      addTurnOrRiverCard(2, cards.last);
+      addTurnOrRiverCard(true, 2, cards.last);
       notifyAll();
     }
   }
 
-  void addTurnOrRiverCard(int boardIndex, CardObject card) {
+  void addTurnOrRiverCard(bool turn, int boardIndex, CardObject card) {
     if (boardIndex == 1) {
       /* prevent calling this method, if there are less than 4 cards */
       if (this._board1 == null ||
@@ -249,7 +249,15 @@ class TableState extends ChangeNotifier {
           this._board1.length == 5) {
         return;
       }
-      this._board1.add(card);
+      if (turn) {
+        if (this._board1.length < 4) {
+          this._board1.add(card);
+        }
+      } else {
+        if (this._board1.length < 5) {
+          this._board1.add(card);
+        }
+      }
     } else if (boardIndex == 2) {
       /* prevent calling this method, if there are less than 4 cards */
       if (this._board2 == null ||
@@ -257,7 +265,15 @@ class TableState extends ChangeNotifier {
           this._board2.length == 5) {
         return;
       }
-      this._board2.add(card);
+      if (turn) {
+        if (this._board2.length < 4) {
+          this._board2.add(card);
+        }
+      } else {
+        if (this._board2.length < 5) {
+          this._board2.add(card);
+        }
+      }
     }
   }
 

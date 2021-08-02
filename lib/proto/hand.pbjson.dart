@@ -12,49 +12,52 @@ import 'dart:typed_data' as $typed_data;
 const ACTION$json = const {
   '1': 'ACTION',
   '2': const [
-    const {'1': 'SB', '2': 0},
-    const {'1': 'BB', '2': 1},
-    const {'1': 'STRADDLE', '2': 2},
-    const {'1': 'CHECK', '2': 3},
-    const {'1': 'CALL', '2': 4},
-    const {'1': 'FOLD', '2': 5},
-    const {'1': 'BET', '2': 6},
-    const {'1': 'RAISE', '2': 7},
-    const {'1': 'ALLIN', '2': 8},
-    const {'1': 'RUN_IT_TWICE_YES', '2': 9},
-    const {'1': 'RUN_IT_TWICE_NO', '2': 10},
-    const {'1': 'RUN_IT_TWICE_PROMPT', '2': 11},
-    const {'1': 'POST_BLIND', '2': 12},
+    const {'1': 'ACTION_UNKNOWN', '2': 0},
+    const {'1': 'SB', '2': 1},
+    const {'1': 'BB', '2': 2},
+    const {'1': 'STRADDLE', '2': 3},
+    const {'1': 'CHECK', '2': 4},
+    const {'1': 'CALL', '2': 5},
+    const {'1': 'FOLD', '2': 6},
+    const {'1': 'BET', '2': 7},
+    const {'1': 'RAISE', '2': 8},
+    const {'1': 'ALLIN', '2': 9},
+    const {'1': 'RUN_IT_TWICE_YES', '2': 10},
+    const {'1': 'RUN_IT_TWICE_NO', '2': 11},
+    const {'1': 'RUN_IT_TWICE_PROMPT', '2': 12},
+    const {'1': 'POST_BLIND', '2': 13},
   ],
 };
 
 /// Descriptor for `ACTION`. Decode as a `google.protobuf.EnumDescriptorProto`.
-final $typed_data.Uint8List aCTIONDescriptor = $convert.base64Decode('CgZBQ1RJT04SBgoCU0IQABIGCgJCQhABEgwKCFNUUkFERExFEAISCQoFQ0hFQ0sQAxIICgRDQUxMEAQSCAoERk9MRBAFEgcKA0JFVBAGEgkKBVJBSVNFEAcSCQoFQUxMSU4QCBIUChBSVU5fSVRfVFdJQ0VfWUVTEAkSEwoPUlVOX0lUX1RXSUNFX05PEAoSFwoTUlVOX0lUX1RXSUNFX1BST01QVBALEg4KClBPU1RfQkxJTkQQDA==');
+final $typed_data.Uint8List aCTIONDescriptor = $convert.base64Decode('CgZBQ1RJT04SEgoOQUNUSU9OX1VOS05PV04QABIGCgJTQhABEgYKAkJCEAISDAoIU1RSQURETEUQAxIJCgVDSEVDSxAEEggKBENBTEwQBRIICgRGT0xEEAYSBwoDQkVUEAcSCQoFUkFJU0UQCBIJCgVBTExJThAJEhQKEFJVTl9JVF9UV0lDRV9ZRVMQChITCg9SVU5fSVRfVFdJQ0VfTk8QCxIXChNSVU5fSVRfVFdJQ0VfUFJPTVBUEAwSDgoKUE9TVF9CTElORBAN');
 @$core.Deprecated('Use handStatusDescriptor instead')
 const HandStatus$json = const {
   '1': 'HandStatus',
   '2': const [
-    const {'1': 'DEAL', '2': 0},
-    const {'1': 'PREFLOP', '2': 1},
-    const {'1': 'FLOP', '2': 2},
-    const {'1': 'TURN', '2': 3},
-    const {'1': 'RIVER', '2': 4},
-    const {'1': 'SHOW_DOWN', '2': 5},
-    const {'1': 'EVALUATE_HAND', '2': 6},
-    const {'1': 'RESULT', '2': 7},
-    const {'1': 'HAND_CLOSED', '2': 8},
+    const {'1': 'HandStatus_UNKNOWN', '2': 0},
+    const {'1': 'DEAL', '2': 1},
+    const {'1': 'PREFLOP', '2': 2},
+    const {'1': 'FLOP', '2': 3},
+    const {'1': 'TURN', '2': 4},
+    const {'1': 'RIVER', '2': 5},
+    const {'1': 'SHOW_DOWN', '2': 6},
+    const {'1': 'EVALUATE_HAND', '2': 7},
+    const {'1': 'RESULT', '2': 8},
+    const {'1': 'HAND_CLOSED', '2': 9},
   ],
 };
 
 /// Descriptor for `HandStatus`. Decode as a `google.protobuf.EnumDescriptorProto`.
-final $typed_data.Uint8List handStatusDescriptor = $convert.base64Decode('CgpIYW5kU3RhdHVzEggKBERFQUwQABILCgdQUkVGTE9QEAESCAoERkxPUBACEggKBFRVUk4QAxIJCgVSSVZFUhAEEg0KCVNIT1dfRE9XThAFEhEKDUVWQUxVQVRFX0hBTkQQBhIKCgZSRVNVTFQQBxIPCgtIQU5EX0NMT1NFRBAI');
+final $typed_data.Uint8List handStatusDescriptor = $convert.base64Decode('CgpIYW5kU3RhdHVzEhYKEkhhbmRTdGF0dXNfVU5LTk9XThAAEggKBERFQUwQARILCgdQUkVGTE9QEAISCAoERkxPUBADEggKBFRVUk4QBBIJCgVSSVZFUhAFEg0KCVNIT1dfRE9XThAGEhEKDUVWQUxVQVRFX0hBTkQQBxIKCgZSRVNVTFQQCBIPCgtIQU5EX0NMT1NFRBAJ');
 @$core.Deprecated('Use playerActStateDescriptor instead')
 const PlayerActState$json = const {
   '1': 'PlayerActState',
   '2': const [
-    const {'1': 'PLAYER_ACT_EMPTY_SEAT', '2': 0},
-    const {'1': 'PLAYER_ACT_NOT_ACTED', '2': 1},
-    const {'1': 'PLAYER_ACT_FOLDED', '2': 2},
+    const {'1': 'PLAYER_ACT_UNKNOWN', '2': 0},
+    const {'1': 'PLAYER_ACT_EMPTY_SEAT', '2': 1},
+    const {'1': 'PLAYER_ACT_NOT_ACTED', '2': 2},
+    const {'1': 'PLAYER_ACT_FOLDED', '2': 3},
     const {'1': 'PLAYER_ACT_ALL_IN', '2': 4},
     const {'1': 'PLAYER_ACT_BB', '2': 5},
     const {'1': 'PLAYER_ACT_STRADDLE', '2': 6},
@@ -67,28 +70,29 @@ const PlayerActState$json = const {
 };
 
 /// Descriptor for `PlayerActState`. Decode as a `google.protobuf.EnumDescriptorProto`.
-final $typed_data.Uint8List playerActStateDescriptor = $convert.base64Decode('Cg5QbGF5ZXJBY3RTdGF0ZRIZChVQTEFZRVJfQUNUX0VNUFRZX1NFQVQQABIYChRQTEFZRVJfQUNUX05PVF9BQ1RFRBABEhUKEVBMQVlFUl9BQ1RfRk9MREVEEAISFQoRUExBWUVSX0FDVF9BTExfSU4QBBIRCg1QTEFZRVJfQUNUX0JCEAUSFwoTUExBWUVSX0FDVF9TVFJBRERMRRAGEhIKDlBMQVlFUl9BQ1RfQkVUEAcSEwoPUExBWUVSX0FDVF9DQUxMEAgSFAoQUExBWUVSX0FDVF9SQUlTRRAJEhQKEFBMQVlFUl9BQ1RfQ0hFQ0sQChIZChVQTEFZRVJfQUNUX1BPU1RfQkxJTkQQCw==');
+final $typed_data.Uint8List playerActStateDescriptor = $convert.base64Decode('Cg5QbGF5ZXJBY3RTdGF0ZRIWChJQTEFZRVJfQUNUX1VOS05PV04QABIZChVQTEFZRVJfQUNUX0VNUFRZX1NFQVQQARIYChRQTEFZRVJfQUNUX05PVF9BQ1RFRBACEhUKEVBMQVlFUl9BQ1RfRk9MREVEEAMSFQoRUExBWUVSX0FDVF9BTExfSU4QBBIRCg1QTEFZRVJfQUNUX0JCEAUSFwoTUExBWUVSX0FDVF9TVFJBRERMRRAGEhIKDlBMQVlFUl9BQ1RfQkVUEAcSEwoPUExBWUVSX0FDVF9DQUxMEAgSFAoQUExBWUVSX0FDVF9SQUlTRRAJEhQKEFBMQVlFUl9BQ1RfQ0hFQ0sQChIZChVQTEFZRVJfQUNUX1BPU1RfQkxJTkQQCw==');
 @$core.Deprecated('Use flowStateDescriptor instead')
 const FlowState$json = const {
   '1': 'FlowState',
   '2': const [
-    const {'1': 'DEAL_HAND', '2': 0},
-    const {'1': 'WAIT_FOR_NEXT_ACTION', '2': 1},
-    const {'1': 'PREPARE_NEXT_ACTION', '2': 2},
-    const {'1': 'MOVE_TO_NEXT_ACTION', '2': 3},
-    const {'1': 'MOVE_TO_NEXT_ROUND', '2': 4},
-    const {'1': 'ALL_PLAYERS_ALL_IN', '2': 5},
-    const {'1': 'ONE_PLAYER_REMAINING', '2': 6},
-    const {'1': 'SHOWDOWN', '2': 7},
-    const {'1': 'HAND_ENDED', '2': 8},
-    const {'1': 'MOVE_TO_NEXT_HAND', '2': 9},
-    const {'1': 'RUNITTWICE_UP_PROMPT', '2': 10},
-    const {'1': 'RUNITTWICE_PROMPT_RESPONSE', '2': 11},
+    const {'1': 'FlowState_UNKNOWN', '2': 0},
+    const {'1': 'DEAL_HAND', '2': 1},
+    const {'1': 'WAIT_FOR_NEXT_ACTION', '2': 2},
+    const {'1': 'PREPARE_NEXT_ACTION', '2': 3},
+    const {'1': 'MOVE_TO_NEXT_ACTION', '2': 4},
+    const {'1': 'MOVE_TO_NEXT_ROUND', '2': 5},
+    const {'1': 'ALL_PLAYERS_ALL_IN', '2': 6},
+    const {'1': 'ONE_PLAYER_REMAINING', '2': 7},
+    const {'1': 'SHOWDOWN', '2': 8},
+    const {'1': 'HAND_ENDED', '2': 9},
+    const {'1': 'MOVE_TO_NEXT_HAND', '2': 10},
+    const {'1': 'RUNITTWICE_UP_PROMPT', '2': 11},
+    const {'1': 'RUNITTWICE_PROMPT_RESPONSE', '2': 12},
   ],
 };
 
 /// Descriptor for `FlowState`. Decode as a `google.protobuf.EnumDescriptorProto`.
-final $typed_data.Uint8List flowStateDescriptor = $convert.base64Decode('CglGbG93U3RhdGUSDQoJREVBTF9IQU5EEAASGAoUV0FJVF9GT1JfTkVYVF9BQ1RJT04QARIXChNQUkVQQVJFX05FWFRfQUNUSU9OEAISFwoTTU9WRV9UT19ORVhUX0FDVElPThADEhYKEk1PVkVfVE9fTkVYVF9ST1VORBAEEhYKEkFMTF9QTEFZRVJTX0FMTF9JThAFEhgKFE9ORV9QTEFZRVJfUkVNQUlOSU5HEAYSDAoIU0hPV0RPV04QBxIOCgpIQU5EX0VOREVEEAgSFQoRTU9WRV9UT19ORVhUX0hBTkQQCRIYChRSVU5JVFRXSUNFX1VQX1BST01QVBAKEh4KGlJVTklUVFdJQ0VfUFJPTVBUX1JFU1BPTlNFEAs=');
+final $typed_data.Uint8List flowStateDescriptor = $convert.base64Decode('CglGbG93U3RhdGUSFQoRRmxvd1N0YXRlX1VOS05PV04QABINCglERUFMX0hBTkQQARIYChRXQUlUX0ZPUl9ORVhUX0FDVElPThACEhcKE1BSRVBBUkVfTkVYVF9BQ1RJT04QAxIXChNNT1ZFX1RPX05FWFRfQUNUSU9OEAQSFgoSTU9WRV9UT19ORVhUX1JPVU5EEAUSFgoSQUxMX1BMQVlFUlNfQUxMX0lOEAYSGAoUT05FX1BMQVlFUl9SRU1BSU5JTkcQBxIMCghTSE9XRE9XThAIEg4KCkhBTkRfRU5ERUQQCRIVChFNT1ZFX1RPX05FWFRfSEFORBAKEhgKFFJVTklUVFdJQ0VfVVBfUFJPTVBUEAsSHgoaUlVOSVRUV0lDRV9QUk9NUFRfUkVTUE9OU0UQDA==');
 @$core.Deprecated('Use handActionDescriptor instead')
 const HandAction$json = const {
   '1': 'HandAction',

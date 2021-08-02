@@ -181,8 +181,12 @@ class GameReplayActionService {
 
     /* finally update the community cards */
     final TableState tableState = _context.read<TableState>();
-
+    bool turn = true;
+    if (tableState.cards.length >= 4) {
+      turn = false;
+    }
     tableState.addTurnOrRiverCard(
+      turn,
       1,
       CardHelper.getCard(action.boardCard),
     );
