@@ -43,6 +43,7 @@ import 'package:pokerapp/services/encryption/encryption_service.dart';
 import 'package:pokerapp/services/game_play/action_services/game_action_service/util_action_services.dart';
 import 'package:pokerapp/services/game_play/action_services/game_update_service.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_service.dart';
+import 'package:pokerapp/services/game_play/action_services/hand_action_service_bin.dart';
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/services/game_play/graphql/seat_change_service.dart';
@@ -659,6 +660,17 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
       _gameContextObj.handActionService.loop();
 
+      _gameContextObj.handActionBinService = HandActionBinService(
+        _providerContext,
+        _gameState,
+        _gameContextObj.gameComService,
+        _gameContextObj.encryptionService,
+        _gameContextObj.currentPlayer,
+        audioPlayer: _audioPlayer,
+      );
+
+      _gameContextObj.handActionBinService.loop();
+
       if (!TestService.isTesting) {
         _gameContextObj.gameComService.handToAllChannelStream.listen(
           (nats.Message message) {
@@ -672,7 +684,16 @@ class _GamePlayScreenState extends State<GamePlayScreen>
                               * Next Action - contains the seat No which is to act next
                               *
                               * This stream also contains the output for the query of current hand */
-            _gameContextObj.handActionService.handle(message.string);
+            try {
+              final messageStr = message.string.trim();
+              if(messageStr.startsWith("{") && messageStr.indexOf("messages") != -1) {
+                _gameContextObj.handActionService.handle(message.string);
+              } else {
+                _gameContextObj.handActionBinService.handleBinary(message.data);
+              }
+            } catch (err) {
+                _gameContextObj.handActionBinService.handleBinary(message.data);
+            }
           },
         );
 
@@ -687,15 +708,26 @@ class _GamePlayScreenState extends State<GamePlayScreen>
                               * Deal - contains seat No and cards
                               * Your Action - seat No, available actions & amounts */
 
-            if (TestService.isTesting) {
-              _gameContextObj.handActionService.handle(message.string);
-            } else {
-              Future<List<int>> decryptedMessage =
-                  _gameContextObj.encryptionService.decrypt(message.data);
-              decryptedMessage.then((decryptedBytes) => _gameContextObj
-                  .handActionService
-                  .handle(utf8.decode(decryptedBytes)));
+            try {
+              final messageStr = message.string.trim();
+              if(messageStr.startsWith("{") && messageStr.indexOf("messages") != -1) {
+                _gameContextObj.handActionService.handle(message.string);
+              } else {
+                _gameContextObj.handActionBinService.handleBinary(message.data);
+              }
+            } catch (err) {
+                _gameContextObj.handActionBinService.handleBinary(message.data);
             }
+
+            // if (TestService.isTesting) {
+            //   _gameContextObj.handActionService.handle(message.string);
+            // } else {
+            //   Future<List<int>> decryptedMessage =
+            //       _gameContextObj.encryptionService.decrypt(message.data);
+            //   decryptedMessage.then((decryptedBytes) => _gameContextObj
+            //       .handActionService
+            //       .handle(utf8.decode(decryptedBytes)));
+            // }
           },
         );
       }

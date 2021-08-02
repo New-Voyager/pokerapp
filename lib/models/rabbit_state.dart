@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/widgets.dart';
+import 'package:pokerapp/proto/handmessage.pbserver.dart';
 
 import 'package:pokerapp/resources/app_constants.dart';
 
@@ -51,30 +52,41 @@ class RabbitState extends ChangeNotifier {
   void putResult(var result, {List<int> myCards = const []}) {
     if (result == null) return _clear();
 
-    result = result['handResult'];
+    if (result is HandMessageItem) {
+      final HandMessageItem message = result;
+      final handLog = message.handResult.handLog;
+      if (handLog.runItTwice) {
+        return;
+      }
+      _wonAt = handLog.wonAt.name.replaceAll("HandStatus.", "");
+      _handNo = message.handResult.handNum;
+      _communityCards = message.handResult.boardCards;
+    } else {
+      result = result['handResult'];
 
-    final handLog = result['handLog'];
+      final handLog = result['handLog'];
 
-    // if run it twice, do nothing
-    final bool isRunItTwice = handLog['runItTwice'] as bool;
+      // if run it twice, do nothing
+      final bool isRunItTwice = handLog['runItTwice'] as bool;
 
-    if (isRunItTwice) return;
+      if (isRunItTwice) return;
 
-    final String wonAt = handLog['wonAt'];
+      _wonAt = handLog['wonAt'];
+      _handNo = int.parse(result['handNum'].toString());
+      _communityCards =
+          result['boardCards'].map<int>((e) => int.parse(e.toString())).toList();
+    }
 
     // if wonAt is not FLOP or TURN, we dont proceed
-    if (wonAt != AppConstants.FLOP && wonAt != AppConstants.TURN) return;
+    if (_wonAt != AppConstants.FLOP && _wonAt != AppConstants.TURN) return;
 
     // fill in the values
     _show = true;
     _wonAt = wonAt;
-    _handNo = int.parse(result['handNum'].toString());
-    _communityCards =
-        result['boardCards'].map<int>((e) => int.parse(e.toString())).toList();
     _myCards = myCards;
 
     // fill revealed cards
-    if (wonAt == AppConstants.FLOP) {
+    if (_wonAt == AppConstants.FLOP) {
       // we already have 3 cards at table
       _revealedCards = _communityCards.sublist(3);
     } else if (wonAt == AppConstants.TURN) {

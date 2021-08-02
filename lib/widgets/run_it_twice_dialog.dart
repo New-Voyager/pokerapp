@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_service.dart';
+import 'package:pokerapp/services/game_play/action_services/hand_action_service_bin.dart';
 import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/widgets/general_dialog_widget.dart';
 
@@ -47,7 +48,7 @@ class RunItTwiceDialog {
       return print('run it twice prompt response: $playerAction');
 
     /* send the player action, as PLAYER_ACTED message: RUN_IT_TWICE_YES or RUN_IT_TWICE_NO */
-    HandActionService.takeAction(
+    HandActionBinService.takeAction(
       context: context,
       action: playerAction,
     );

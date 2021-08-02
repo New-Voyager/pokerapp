@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'dart:math';
+import 'package:fixnum/fixnum.dart' as $fixnum;
 
 import 'package:dart_nats/dart_nats.dart';
+import 'package:pokerapp/proto/handmessage.pb.dart';
 
 class PingResponder {
   int playerId;
@@ -34,7 +36,7 @@ class PingResponder {
   }
 
   void handleMessage(Message natsMsg) {
-    final PingPongMessage message = PingPongMessage.fromMessage(natsMsg.string);
+    final PingPongMessage message = PingPongMessage.fromBuffer(natsMsg.data);
 
     if (debug) {
       // Don't respond to the network check sometimes, so that we can see the
@@ -52,12 +54,12 @@ class PingResponder {
   }
 
   void sendResponse(PingPongMessage msg) {
-    msg.playerId = this.playerId;
-    String msgStr = msg.toJson();
-    this.client.pubString(this.pongChannel, msgStr);
+    msg.playerId = $fixnum.Int64.parseInt(this.playerId.toString());
+    //String msgStr = msg.toJson();
+    this.client.pub(this.pongChannel, msg.writeToBuffer());
   }
 }
-
+/*
 class PingPongMessage {
   int gameId;
   String gameCode;
@@ -89,3 +91,4 @@ class PingPongMessage {
         'seq': this.seq,
       });
 }
+*/

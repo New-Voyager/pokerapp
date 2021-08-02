@@ -13,6 +13,7 @@ import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/bet_widget.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_service.dart';
+import 'package:pokerapp/services/game_play/action_services/hand_action_service_bin.dart';
 import 'package:provider/provider.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
@@ -134,7 +135,7 @@ class _FooterActionViewState extends State<FooterActionView> {
     String action,
     int amount,
   }) =>
-      HandActionService.takeAction(
+      HandActionBinService.takeAction(
         context: context,
         action: action,
         amount: amount,

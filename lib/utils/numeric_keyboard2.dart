@@ -481,6 +481,10 @@ class NumericKeyboard2 extends StatelessWidget {
     double max,
     double currentVal,
   }) {
+    if (currentVal == null) {
+      currentVal = 0.0;
+    }
+
     return showGeneralDialog(
       barrierLabel: "Numeric Keyboard",
       barrierDismissible: true,
