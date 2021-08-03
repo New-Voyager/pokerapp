@@ -133,8 +133,8 @@ class HandLogModel {
 class PotWinnerDetailsModel {
   int potNumber;
   int totalPotAmount;
-  List<WinnerDetailsModel> hiWinners = new List<WinnerDetailsModel>();
-  List<WinnerDetailsModel> loWinners = new List<WinnerDetailsModel>();
+  List<WinnerDetailsModel> hiWinners = [];
+  List<WinnerDetailsModel> loWinners = [];
 
   PotWinnerDetailsModel.fromJson(String potKey, var potWinner, playersJson) {
     potNumber = int.parse(potKey);
@@ -161,7 +161,7 @@ class PotWinnerDetailsModel {
     if (potNumber == 0) {
       return 'Main Pot';
     } else {
-      return 'Side Pot ${potNumber}';
+      return 'Side Pot $potNumber';
     }
   }
 }
@@ -170,7 +170,7 @@ class WinnerDetailsModel {
   int seatNum;
   String name;
   int amount;
-  List<dynamic> winningCards = new List<dynamic>();
+  List<dynamic> winningCards = [];
 
   WinnerDetailsModel.fromJson(var jsonData, var allPlayersJson) {
     seatNum = jsonData["seatNo"] == null ? 0 : jsonData["seatNo"];
@@ -185,8 +185,8 @@ class WinnerDetailsModel {
 class HandStageModel {
   String stageName;
   int potAmount;
-  List<int> stageCards = new List<int>();
-  List<ActionModel> stageActions = new List<ActionModel>();
+  List<int> stageCards = [];
+  List<ActionModel> stageActions = [];
 
   HandStageModel.fromJson(Map<int, String> playerIdName, String sName,
       var jsonData, List<int> cardsList, var playersData) {

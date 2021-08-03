@@ -159,6 +159,7 @@ class GameService {
     // instantiate game history detail object
     model.jsonData = result.data;
     model.load();
+    return model;
   }
 
   static Future<dynamic> getStackStat(String gameCode) async {
@@ -391,7 +392,7 @@ class GameService {
 
   static Future<List<GameModelNew>> getLiveGamesNew() async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
-    List<GameModelNew> liveGames = [];
+    final List<GameModelNew> liveGames = [];
 
     QueryResult result =
         await _client.query(QueryOptions(documentNode: gql(liveGamesNewQuery)));
@@ -629,15 +630,13 @@ class GameService {
 
   static Future<List<WaitingListModel>> listOfWaitingPlayer(
       String gameCode) async {
-    print("gameCode ${gameCode}");
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
-    List<WaitingListModel> waitingListPlayers = List<WaitingListModel>();
+    List<WaitingListModel> waitingListPlayers = [];
     Map<String, dynamic> variables = {
       "gameCode": gameCode,
     };
     QueryResult result = await _client.query(
         QueryOptions(documentNode: gql(waitlistQuery), variables: variables));
-    print("result.data ${result.data} ${result.hasException}");
     if (result.hasException) return null;
     List players = result.data['waitingList'];
     waitingListPlayers = players.map((e) {
@@ -690,7 +689,7 @@ class GameService {
 
   static Future<List<GameModel>> getLiveGames() async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
-    List<GameModel> allLiveGames = new List<GameModel>();
+    List<GameModel> allLiveGames = [];
 
     QueryResult result =
         await _client.query(QueryOptions(documentNode: gql(liveGameQuery)));

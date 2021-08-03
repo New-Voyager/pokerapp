@@ -61,7 +61,7 @@ class _GamesPageViewState extends State<GamesPageView> {
     _toggleLoading();
 
     if (TestService.isTesting) {
-      _liveGames = await TestService.fetchLiveGames();
+      _liveGames = TestService.fetchLiveGames();
     } else {
       _liveGames = await UserGamesService.fetchLiveGames();
     }

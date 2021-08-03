@@ -1,9 +1,6 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/club_homepage_model.dart';
-import 'package:pokerapp/models/club_model.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
@@ -11,12 +8,10 @@ import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/club_screen/widgets/club_actions_new.dart';
 import 'package:pokerapp/screens/club_screen/widgets/club_banner_new.dart';
-import 'package:pokerapp/screens/club_screen/widgets/club_graphics_new.dart';
 import 'package:pokerapp/screens/club_screen/widgets/club_live_games_view.dart';
 import 'package:pokerapp/screens/game_screens/new_game_settings/new_game_settings2.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/clubs_service.dart';
-import 'package:pokerapp/widgets/custom_text_button.dart';
 import 'package:pokerapp/widgets/round_color_button.dart';
 import 'package:provider/provider.dart';
 import 'package:pokerapp/models/pending_approvals.dart';
@@ -86,30 +81,33 @@ class _ClubMainScreenNewState extends State<ClubMainScreenNew>
                       BackArrowWidget(),
                       Visibility(
                         visible: (clubModel.isManager || clubModel.isOwner),
-                        child: RoundedColorButton(
-                          onTapFunction: () async {
-                            final dynamic result = await Navigator.pushNamed(
-                              context,
-                              Routes.new_game_settings,
-                              arguments: widget.clubCode,
-                            );
-
-                            if (result != null) {
-                              /* show game settings dialog */
-                              NewGameSettings2.show(
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 8.0),
+                          child: RoundedColorButton(
+                            onTapFunction: () async {
+                              final dynamic result = await Navigator.pushNamed(
                                 context,
-                                clubCode: widget.clubCode,
-                                mainGameType: result['gameType'],
-                                subGameTypes: List.from(
-                                      result['gameTypes'],
-                                    ) ??
-                                    [],
+                                Routes.new_game_settings,
+                                arguments: widget.clubCode,
                               );
-                            }
-                          },
-                          text: '+ Create Game',
-                          backgroundColor: AppColorsNew.yellowAccentColor,
-                          textColor: AppColorsNew.darkGreenShadeColor,
+
+                              if (result != null) {
+                                /* show game settings dialog */
+                                NewGameSettings2.show(
+                                  context,
+                                  clubCode: widget.clubCode,
+                                  mainGameType: result['gameType'],
+                                  subGameTypes: List.from(
+                                        result['gameTypes'],
+                                      ) ??
+                                      [],
+                                );
+                              }
+                            },
+                            text: '+ Create Game',
+                            backgroundColor: AppColorsNew.yellowAccentColor,
+                            textColor: AppColorsNew.darkGreenShadeColor,
+                          ),
                         ),
                       ),
                     ],
@@ -159,11 +157,6 @@ class _ClubMainScreenNewState extends State<ClubMainScreenNew>
           future: ClubsService.getClubHomePageData(widget.clubCode),
           builder: (BuildContext context, snapshot) {
             ClubHomePageModel clubModel = snapshot.data;
-            bool isOwnerOrManager = false;
-            if (clubModel != null) {
-              isOwnerOrManager =
-                  (clubModel.isOwner || clubModel.isManager) ?? false;
-            }
             return Container(
               decoration: AppStylesNew.BgGreenRadialGradient,
               child: SafeArea(

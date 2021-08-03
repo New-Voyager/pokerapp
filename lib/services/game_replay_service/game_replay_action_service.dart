@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
@@ -13,9 +11,11 @@ import 'package:pokerapp/models/game_replay_models/game_replay_action.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
-import 'package:pokerapp/services/game_play/action_services/hand_action_service.dart';
+import 'package:pokerapp/services/game_play/action_services/hand_action_proto_service.dart';
+import 'package:pokerapp/services/game_play/action_services/result_handler.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:provider/provider.dart';
+import 'package:pokerapp/proto/hand.pb.dart' as proto;
 
 class GameReplayActionService {
   final BuildContext _context;
@@ -220,7 +220,7 @@ class GameReplayActionService {
   }
 
   Future<void> _runItTwiceAction(GameReplayAction action) =>
-      HandActionService.handleRunItTwiceStatic(
+      HandActionProtoService.handleRunItTwiceStatic(
         context: _context,
         board1Cards: action.boardCards,
         board2Cards: action.boardCards2,
@@ -228,15 +228,17 @@ class GameReplayActionService {
 
   Future<void> _runItTwiceWinner(GameReplayAction action) {
     // update pots before result
-    HandActionService.updatePotBeforeResultStatic(
+    HandActionProtoService.updatePotBeforeResultStatic(
       isRunItTwice: true,
       runItTwiceResult: action.runItTwiceResult,
       potWinners: null,
       context: _context,
     );
+    final GameState gameState = GameState.getState(_context);
 
-    return HandActionService.handleResultStatic(
-      fromReplay: true,
+    ResultHandler resultHandler = ResultHandler(
+      gameState: gameState,
+      replay: true,
       isRunItTwice: true,
       runItTwiceResult: action.runItTwiceResult,
       boardCards: action.boardCards,
@@ -245,31 +247,37 @@ class GameReplayActionService {
       context: _context,
       audioPlayer: _audioPlayer,
     );
+    return resultHandler.show();
   }
 
   Future<void> _potWinnerResult(GameReplayAction action) {
-    final Map<String, dynamic> potWinners = {};
-
-    for (final pw in action.potWinners.entries)
-      potWinners[pw.key] = pw.value.toJson();
+    //final Map<String, dynamic> potWinners = {};
+    Map<int, proto.PotWinners> potWinners = {};
+    for (final pw in action.potWinners.entries) {
+      int potNo = int.parse(pw.key.toString());
+      potWinners[potNo] = pw.value.toProto();
+    }
 
     // update pots before result
-    HandActionService.updatePotBeforeResultStatic(
+    HandActionProtoService.updatePotBeforeResultStatic(
       isRunItTwice: false,
       runItTwiceResult: null,
       potWinners: potWinners,
       context: _context,
     );
+    final GameState gameState = GameState.getState(_context);
 
-    return HandActionService.handleResultStatic(
-        fromReplay: true,
-        isRunItTwice: false,
-        runItTwiceResult: null,
-        boardCards2: null,
-        potWinners: potWinners,
-        boardCards: action.boardCards,
-        context: _context,
-        audioPlayer: _audioPlayer);
+    ResultHandler resultHandler = ResultHandler(
+      gameState: gameState,
+      replay: true,
+      isRunItTwice: false,
+      runItTwiceResult: null,
+      boardCards: action.boardCards,
+      potWinners: potWinners,
+      context: _context,
+      audioPlayer: _audioPlayer,
+    );
+    return resultHandler.show();
   }
 
   /* this method sets no of cards & distributes the cards */

@@ -2,8 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:pokerapp/models/club_weekly_activity_model.dart';
 import 'package:pokerapp/models/newmodels/game_model_new.dart';
 
-import 'game_model.dart';
-
 class ClubHomePageModel extends ChangeNotifier {
   // GraphQL query to get data to populate club home page
   static String query = """

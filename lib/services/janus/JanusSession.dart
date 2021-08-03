@@ -122,10 +122,9 @@ class JanusSession {
         this._keepAliveTimer = timer;
         try {
           String transaction = getUuid().v4();
-          Map<String, dynamic> response;
           if (transport is RestJanusTransport) {
             RestJanusTransport rest = (transport as RestJanusTransport);
-            response = await rest.post({
+            await rest.post({
               "janus": "keepalive",
               "session_id": sessionId,
               "transaction": transaction,
@@ -144,7 +143,7 @@ class JanusSession {
               ...context.apiMap,
               ...context.tokenMap
             }));
-            response = parse(await ws.stream.firstWhere(
+            parse(await ws.stream.firstWhere(
                 (element) => (parse(element)['transaction'] == transaction)));
           }
         } catch (e) {

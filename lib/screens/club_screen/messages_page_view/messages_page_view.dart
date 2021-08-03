@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -7,8 +5,6 @@ import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/auth_model.dart';
 import 'package:pokerapp/models/club_members_model.dart';
 import 'package:pokerapp/models/club_message_model.dart';
-import 'package:pokerapp/resources/app_colors.dart';
-import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/club_screen/messages_page_view/bottom_sheet/gif_drawer_sheet.dart';
@@ -17,6 +13,7 @@ import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/services/app/club_interior_service.dart';
 import 'package:pokerapp/services/app/club_message_service.dart';
+import 'package:pokerapp/widgets/emoji_picker_widget.dart';
 
 import '../../../routes.dart';
 import '../../chat_screen/utils.dart';
@@ -38,14 +35,25 @@ class _MessagesPageViewState extends State<MessagesPageView>
     with RouteAwareAnalytics {
   @override
   String get routeName => Routes.message_page;
-  TextEditingController _textController = TextEditingController();
 
+  final ValueNotifier<bool> _vnShowEmojiPicker = ValueNotifier(false);
+  final TextEditingController _textController = TextEditingController();
   List<ClubMessageModel> messages = [];
 
   AuthModel _authModel;
   Map<String, String> _players;
 
+  void _onEmojiSelectTap() {
+    _vnShowEmojiPicker.value = !_vnShowEmojiPicker.value;
+
+    // close keyboard
+    if (_vnShowEmojiPicker.value) {
+      FocusScope.of(context).unfocus();
+    }
+  }
+
   void _sendMessage() {
+    _vnShowEmojiPicker.value = false;
     String text = _textController.text.trim();
     _textController.clear();
 
@@ -152,38 +160,53 @@ class _MessagesPageViewState extends State<MessagesPageView>
               },
             ),
           ),
+
+          // chat text field
           ChatTextField(
             icon: FontAwesomeIcons.icons,
-            onEmoji: _openGifDrawer,
+            onGifSelectTap: _openGifDrawer,
             textEditingController: _textController,
-            onSave: _sendMessage,
+            onSend: _sendMessage,
+            onEmojiSelectTap: _onEmojiSelectTap,
             onTap: _onTap,
+          ),
+
+          // emoji picker
+          ValueListenableBuilder<bool>(
+            valueListenable: _vnShowEmojiPicker,
+            builder: (_, showEmojiPicker, __) => showEmojiPicker
+                ? EmojiPicker(
+                    onEmojiSelected: (String emoji) {
+                      _textController.text += emoji;
+                    },
+                  )
+                : const SizedBox.shrink(),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildAppBar() {
-    return AppBar(
-      backgroundColor: chatHeaderColor,
-      leading: IconButton(
-        iconSize: 24,
-        icon: Icon(
-          Icons.arrow_back_ios,
-          color: AppColors.appAccentColor,
-        ),
-        onPressed: () {
-          Navigator.of(context).pop();
-        },
-      ),
-      centerTitle: false,
-      title: Text(
-        'Club Chat',
-        style: AppStyles.titleBarTextStyle.copyWith(fontSize: 16),
-      ),
-    );
-  }
+  // Widget _buildAppBar() {
+  //   return AppBar(
+  //     backgroundColor: chatHeaderColor,
+  //     leading: IconButton(
+  //       iconSize: 24,
+  //       icon: Icon(
+  //         Icons.arrow_back_ios,
+  //         color: AppColors.appAccentColor,
+  //       ),
+  //       onPressed: () {
+  //         Navigator.of(context).pop();
+  //       },
+  //     ),
+  //     centerTitle: false,
+  //     title: Text(
+  //       'Club Chat',
+  //       style: AppStyles.titleBarTextStyle.copyWith(fontSize: 16),
+  //     ),
+  //   );
+  // }
 
   List<ClubChatModel> _convert() {
     List<ClubChatModel> chats = [];
@@ -225,5 +248,8 @@ class _MessagesPageViewState extends State<MessagesPageView>
     return chats;
   }
 
-  void _onTap() {}
+  void _onTap() {
+    // close emoji picker
+    _vnShowEmojiPicker.value = false;
+  }
 }

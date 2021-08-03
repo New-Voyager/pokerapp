@@ -3,7 +3,6 @@ import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_history_model.dart';
 import 'package:pokerapp/models/hand_stats_model.dart';
-import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 

@@ -1,8 +1,6 @@
-import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/club_actions.dart';
 import 'package:pokerapp/models/club_homepage_model.dart';
-import 'package:pokerapp/models/club_members_model.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/routes.dart';
@@ -21,7 +19,7 @@ class ClubActionButton extends StatelessWidget {
 
   ClubActionButton(
       this._clubModel, this._action, this._actionName, this._actionIcon,
-      {this.onTap, this.badgeContent = null});
+      {this.onTap, this.badgeContent});
   @override
   Widget build(BuildContext context) {
     Widget card = Card(
@@ -114,9 +112,6 @@ class ClubActionButton extends StatelessWidget {
                   },
                 );
               }
-              break;
-            case ClubActions.MANAGE_CHIPS:
-              // TODO: Handle this case.
               break;
             case ClubActions.REWARDS:
               this.onTap();

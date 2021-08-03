@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/club_model.dart';
 import 'package:pokerapp/models/pending_approvals.dart';
-import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
@@ -224,18 +223,6 @@ class _ClubsPageViewState extends State<ClubsPageView>
     context.read<ClubsUpdateState>().notify();
   }
 
-  Text _getTitleTextWidget(title) {
-    return Text(
-      title,
-      style: const TextStyle(
-        fontFamily: AppAssets.fontFamilyLato,
-        color: Colors.white,
-        fontSize: 30.0,
-        fontWeight: FontWeight.w900,
-      ),
-    );
-  }
-
   void openClub(BuildContext context, ClubModel club) async {
     if (club.memberStatus == 'ACTIVE') {
       Navigator.pushNamed(
@@ -324,7 +311,7 @@ class _ClubsPageViewState extends State<ClubsPageView>
                   * create and search box
                   * */
                   // const SizedBox(height: 10),
-                  _showLoading
+                  (_showLoading || (_clubs == null))
                       ? Expanded(
                           child: Center(
                             child: CircularProgressWidget(),

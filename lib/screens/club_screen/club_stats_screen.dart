@@ -1,7 +1,4 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/club_stats_model.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
@@ -43,17 +40,6 @@ class _ClubStatsScreenState extends State<ClubStatsScreen>
 
   _fetchClubStats() async {
     _clubStats = await StatsService.getClubStats(widget.clubCode);
-    if (_clubStats != null) {
-      setState(() {});
-    }
-  }
-
-  _fetchTestClubStats() async {
-    String data = await DefaultAssetBundle.of(context)
-        .loadString("assets/sample-data/club-stats.json");
-
-    final jsonResult = json.decode(data);
-    _clubStats = ClubStatsModel.fromJson(jsonResult);
     if (_clubStats != null) {
       setState(() {});
     }

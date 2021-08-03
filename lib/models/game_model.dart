@@ -78,8 +78,13 @@ class GameModel {
       case GameType.FIVE_CARD_PLO_HILO:
         gameTypeStr = '5 Card PLO HiLo';
         break;
+      case GameType.DEALER_CHOICE:
+        gameTypeStr = 'Dealer Choice';
+        break;
+      case GameType.ROE:
+        gameTypeStr = 'Round of Each';
+        break;
       case GameType.UNKNOWN:
-        // TODO: Handle this case.
         break;
     }
 
@@ -102,9 +107,6 @@ class GameModel {
     this.startedAt = jsonData['startedAt'] == null
         ? null
         : DateTime.parse(jsonData['startedAt']);
-
-    GameStatus gameStatus;
-    PlayerStatus playerStatus;
 
     this.sessionTime = jsonData['sessionTime'] == null
         ? null

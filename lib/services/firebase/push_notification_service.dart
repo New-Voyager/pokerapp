@@ -1,13 +1,11 @@
 import 'dart:developer';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/pending_approvals.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/overlay_notification.dart';
-import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/services/app/player_service.dart';
 import 'package:provider/provider.dart';
 
@@ -36,7 +34,6 @@ extension NotifyTypeParsing on NotificationType {
 
 Future<void> saveFirebaseToken(String token) async {
   // call graphql to save the token
-  String playerId = await AuthService.fetchUUID();
   bool ret = await PlayerService.updateFirebaseToken(token);
   if (ret ?? false) {
     log('Successfully updated firebase token for the player');

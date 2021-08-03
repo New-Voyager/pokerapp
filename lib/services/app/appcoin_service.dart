@@ -6,10 +6,10 @@ class AppCoinService {
   AppCoinService._();
 
   static Future<bool> purchaseProduct(
-      String storeType, String receiptData) async {
+      String storeType, int coinsPurchased, String receiptData) async {
     String query = '''
-      mutation (\$storeType: StoreType! \$data: String!) {
-        verify: appCoinPurchase(storeType: \$storeType receipt: \$data) {
+      mutation (\$storeType: StoreType! \$coinsPurchased:Int \$data: String!) {
+        verify: appCoinPurchase(storeType: \$storeType coinsPurchased: \$coinsPurchased receipt: \$data) {
           valid
           duplicate
         }
@@ -18,6 +18,7 @@ class AppCoinService {
     Map<String, dynamic> variables = {
       "storeType": storeType,
       "data": receiptData,
+      "coinsPurchased": coinsPurchased,
     };
     QueryResult result = await _client.mutate(
       MutationOptions(

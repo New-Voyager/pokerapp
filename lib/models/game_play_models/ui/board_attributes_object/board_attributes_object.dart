@@ -16,7 +16,6 @@ enum BoardOrientation {
   vertical,
 }
 
-/* TODO; PUT THIS IN A DIFFERENT FILE */
 class CommunityCardAttribute {
   static Map<int, Offset> cardOffsets = Map();
 
@@ -468,10 +467,6 @@ class BoardAttributesObject extends ChangeNotifier {
 
   Size _namePlateSize;
 
-  GlobalKey _centerKey;
-  GlobalKey _emptyCenterKey;
-  // GlobalKey _centerPotBetKey;
-  GlobalKey _dummyViewKey;
   List<PotAttribute> _pots;
 
   // player view attributes
@@ -612,14 +607,6 @@ class BoardAttributesObject extends ChangeNotifier {
       return 2.0;
     }
   }
-  // get emptyCenterKey => this._emptyCenterKey;
-  // set emptyCenterKey(Key key) => this._emptyCenterKey = key;
-
-  // get centerKey => this._centerKey;
-  // set centerKey(Key key) => this._centerKey = key;
-
-  // get dummyKey => this._dummyViewKey;
-  // set dummyKey(Key key) => this._dummyViewKey = key;
 
   GlobalKey getPotsKey(int i) {
     if (this._pots.length == 0 || i >= _pots.length) {

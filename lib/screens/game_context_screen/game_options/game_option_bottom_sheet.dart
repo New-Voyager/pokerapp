@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_model.dart';
@@ -7,8 +5,6 @@ import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart
 import 'package:pokerapp/models/option_item_model.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
-import 'package:pokerapp/resources/new/app_colors_new.dart';
-import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/club_screen/club_games_page_view.dart';
@@ -16,7 +12,6 @@ import 'package:pokerapp/services/app/game_service.dart';
 
 import 'game_option/game_option.dart';
 import 'pending_approvals_option.dart';
-import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class GameOptionsBottomSheet extends StatefulWidget {
   final GameState gameState;

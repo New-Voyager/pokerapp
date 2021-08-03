@@ -13,6 +13,7 @@ import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/routes.dart';
+import 'package:pokerapp/services/app/appcoin_service.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/alerts.dart';
@@ -96,6 +97,7 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
           floatingActionButton: IconButton(
             icon: Icon(
               Icons.bug_report,
+              size: 32,
               color: AppColorsNew.labelColor,
             ),
             onPressed: () async {
@@ -115,6 +117,7 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
                         onChanged: (val) {
                           //log("VALUE : $val");
                           apiUrl = val;
+                          setState(() {});
                         },
                         keyboardType: TextInputType.number,
                       ),
@@ -313,6 +316,13 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
                     ),
                   ),
                 ),
+                SizedBox(height: 100),
+                Padding(
+                  padding: EdgeInsets.only(bottom: 10.0),
+                  child: Center(
+                      child: Text(AppConfig.apiUrl,
+                          style: TextStyle(fontSize: 20))),
+                ),
               ],
             ),
           ),
@@ -366,6 +376,9 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
             jwt: resp['jwt']);
         await AuthService.save(currentUser);
         AppConfig.jwt = resp['jwt'];
+
+        final availableCoins = await AppCoinService.availableCoins();
+        AppConfig.setAvailableCoins(availableCoins);
 
         // Navigate to main screen
         Navigator.pushNamedAndRemoveUntil(

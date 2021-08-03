@@ -2,13 +2,13 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
-import 'package:get_version/get_version.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get_version/get_version.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
-import 'package:pokerapp/consumable_store.dart';
 import 'package:pokerapp/models/app_coin.dart';
-import 'package:pokerapp/resources/app_assets.dart';
+import 'package:pokerapp/resources/app_config.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
@@ -17,11 +17,12 @@ import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/appcoin_service.dart';
+import 'package:pokerapp/widgets/cross_fade.dart';
 import 'package:pokerapp/widgets/round_color_button.dart';
+import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 const bool _kAutoConsume = true;
 const String _kConsumableId = 'chips';
-const List<String> _kProductIds = <String>[_kConsumableId];
 
 class StorePage extends StatefulWidget {
   const StorePage({Key key}) : super(key: key);
@@ -42,6 +43,9 @@ class _StorePageState extends State<StorePage> {
   bool _purchasePending = false;
   bool _loading = true;
   String _queryProductError;
+  bool _updateCoins = false;
+  int _coinsFrom = 0;
+  int _coinsTo = 0;
 
   @override
   void initState() {
@@ -155,7 +159,7 @@ class _StorePageState extends State<StorePage> {
         children: [
           Row(
             children: [
-              BackArrowWidget(),
+              //BackArrowWidget(),
               AppDimensionsNew.getHorizontalSpace(16),
               Text(
                 "App Coins",
@@ -168,13 +172,24 @@ class _StorePageState extends State<StorePage> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(
-                  "3399",
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 16),
+                  child: Image.asset(
+                    'assets/images/appcoin.png',
+                    height: 24.pw,
+                    width: 24.pw,
+                  ),
                 ),
-                Text(
-                  "coins",
-                  style: AppStylesNew.labelTextStyle,
-                ),
+                _updateCoins
+                    ? CrossFade<int>(
+                        onFadeComplete: onUpdateComplete,
+                        initialData: _coinsFrom,
+                        data: _coinsTo,
+                        builder: (value) => Text('$value', style: TextStyle(color: Colors.green),),
+                      )
+                    : Text(
+                        '${AppConfig.availableCoins}',
+                      ),
               ],
             ),
           ),
@@ -219,7 +234,7 @@ class _StorePageState extends State<StorePage> {
           backgroundColor: Colors.transparent,
           body: _loading
               ? CircularProgressWidget(
-                  text: "Loadig products",
+                  text: "Loading products",
                 )
               : Column(
                   children: body,
@@ -253,6 +268,11 @@ class _StorePageState extends State<StorePage> {
     }
   }
 
+  void onUpdateComplete() {
+    _updateCoins = false;
+    setState(() {});
+  }
+
   Future<bool> _verifyPurchase(PurchaseDetails purchaseDetails) async {
     // IMPORTANT!! Always verify a purchase before delivering the product.
     // For the purpose of an example, we directly return true.
@@ -273,11 +293,25 @@ class _StorePageState extends State<StorePage> {
         sourceType = 'IOS_APP_STORE';
         receipt = purchaseDetails.verificationData.serverVerificationData;
       }
-      bool ret = await AppCoinService.purchaseProduct(sourceType, receipt);
-      debugPrint('purchase product returned $ret');
+      _coinsFrom = AppConfig.availableCoins;
 
-      int coins = await AppCoinService.availableCoins();
-      debugPrint('Available coins $coins');
+      final product = _enabledProducts
+          .firstWhere((e) => e.productId == purchaseDetails.productID);
+      int coinsPurchased = 0;
+      if (product != null) {
+        coinsPurchased = product.coins;
+      }
+      bool ret = await AppCoinService.purchaseProduct(
+          sourceType, coinsPurchased, receipt);
+      debugPrint('purchase product returned $ret');
+      if (ret) {
+        final availableCoins = await AppCoinService.availableCoins();
+        AppConfig.setAvailableCoins(availableCoins);
+        _coinsTo = AppConfig.availableCoins;
+        debugPrint('Available coins $availableCoins');
+        _updateCoins = true;
+        setState(() {});
+      }
     } catch (err) {
       debugPrint(err.toString());
     }
@@ -355,10 +389,10 @@ class PurchaseItem extends StatelessWidget {
         contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         tileColor: AppColorsNew.actionRowBgColor,
         title: Text("$noOfCoins coins"),
-        leading: SvgPicture.asset(
-          AppAssetsNew.coinsImagePath,
-          height: 32,
-          width: 32,
+        leading: Image.asset(
+          'assets/images/appcoins.png',
+          height: 32.pw,
+          width: 32.pw,
         ),
         subtitle: RichText(
           text: TextSpan(

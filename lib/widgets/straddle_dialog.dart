@@ -76,7 +76,7 @@ class _StraddleDialogState extends State<StraddleDialog> {
 
   @override
   Widget build(BuildContext context) => widget.straddlePrompt == false
-      ? const SizedBox()
+      ? const SizedBox.shrink()
       : Container(
           padding: const EdgeInsets.symmetric(
             horizontal: 20.0,

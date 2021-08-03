@@ -8,7 +8,6 @@ import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/enums/player_status.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
-import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/notification_models/general_notification_model.dart';
@@ -30,7 +29,6 @@ import 'package:pokerapp/services/game_play/graphql/seat_change_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:provider/provider.dart';
-import 'package:pokerapp/screens/game_play_screen/game_play_screen_util_methods.dart';
 
 class GameUpdateService {
   final GameState _gameState;
@@ -845,7 +843,7 @@ class GameUpdateService {
     await Future.delayed(
       Duration(
         seconds: seatChangeTime * seatChangeSeatNo.length,
-      ), // TODO: MULTIPLE PLAYERS?
+      ),
     );
 
     /* remove notification */
@@ -953,7 +951,7 @@ class GameUpdateService {
     String gameCode = data['gameCode'] as String;
     int handNum = data['handNum'] as int;
 
-    // TODO: DO WE NEED MULTIPLE PLAYERS?
+    // TODO: HANDLE MULTIPLE HIGHHAND WINNERS
     var winner = data['winners'][0];
 
     String playerName = winner['playerName'];
@@ -1023,9 +1021,6 @@ class GameUpdateService {
 
     }
     */
-
-    final GameContextObject gameContext =
-        Provider.of<GameContextObject>(_context, listen: false);
 
     final tableState = _gameState.getTableState(_context);
 

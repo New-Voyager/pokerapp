@@ -36,7 +36,7 @@ class RadioListWidget extends StatelessWidget {
             child: Text(
               v == -1 ? '∞' : v.toString(),
               style: TextStyle(
-                fontSize: 12.dp,
+                fontSize: 10.dp,
                 color: Colors.white,
                 shadows: [
                   Shadow(

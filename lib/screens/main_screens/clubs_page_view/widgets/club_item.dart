@@ -1,8 +1,7 @@
+import 'package:badges/badges.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:badges/badges.dart';
 import 'package:pokerapp/models/club_model.dart';
-import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/resources/app_styles.dart';
@@ -11,10 +10,6 @@ import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
-import 'package:pokerapp/widgets/custom_text_button.dart';
-import 'package:pokerapp/widgets/round_color_button.dart';
-
-import '../../../../utils/color_generator.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class ClubItemView extends StatelessWidget {

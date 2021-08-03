@@ -37,8 +37,6 @@ class StackCardView extends StatelessWidget {
   }
 }
 
-/* TODO: NEED TO CLEANUP THESE STACK CARD VIEWS XX */
-
 class StackCardView00 extends StatelessWidget {
   final List<int> cards;
   final bool show;

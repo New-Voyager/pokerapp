@@ -1,7 +1,6 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_gifimage/flutter_gifimage.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/enums/game_status.dart';
@@ -11,6 +10,7 @@ import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_styles.dart';
@@ -62,11 +62,15 @@ class PlayerView extends StatefulWidget {
 }
 
 class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
+  TableState _tableState;
+
   AnimationController _lottieController;
   AssetImage _gifAssetImage;
 
   @override
   void initState() {
+    super.initState();
+
     _lottieController = AnimationController(
       vsync: this,
       duration: _lottieAnimationDuration,
@@ -80,7 +84,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
       }
     });
 
-    super.initState();
+    _tableState = context.read<TableState>();
   }
 
   @override
@@ -327,6 +331,7 @@ class _PlayerViewState extends State<PlayerView> with TickerProviderStateMixin {
               // /* building the chip amount widget */
               animate
                   ? ChipAmountAnimatingWidget(
+                      key: ValueKey(_tableState.tableRefresh),
                       seatPos: widget.seat.serverSeatPos,
                       child: chipAmountWidget,
                       reverse: widget.seat.player.action.winner,

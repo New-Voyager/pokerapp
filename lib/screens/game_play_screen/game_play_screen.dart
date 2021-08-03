@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
+
 import 'package:after_layout/after_layout.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:dart_nats/dart_nats.dart' as nats;
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/enums/game_status.dart';
 import 'package:pokerapp/enums/player_status.dart';
@@ -23,17 +23,15 @@ import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
-import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/game_context_screen/game_chat/game_chat.dart';
 import 'package:pokerapp/screens/game_play_screen/game_play_screen_util_methods.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/board_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/decorative_views/background_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/footer_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/header_view/header_view.dart';
+import 'package:pokerapp/screens/game_play_screen/main_views/which_winner_widget.dart';
 import 'package:pokerapp/screens/game_play_screen/notifications/notifications.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
-import 'package:pokerapp/services/app/auth_service.dart';
-
 //import 'package:pokerapp/services/agora/agora.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/app/player_service.dart';
@@ -41,11 +39,11 @@ import 'package:pokerapp/services/data/game_log_store.dart';
 import 'package:pokerapp/services/encryption/encryption_service.dart';
 import 'package:pokerapp/services/game_play/action_services/game_action_service/util_action_services.dart';
 import 'package:pokerapp/services/game_play/action_services/game_update_service.dart';
-import 'package:pokerapp/services/game_play/action_services/hand_action_service.dart';
-import 'package:pokerapp/services/game_play/game_messaging_service.dart';
+import 'package:pokerapp/services/game_play/action_services/hand_action_proto_service.dart';
+import 'package:pokerapp/services/game_play/action_services/hand_action_service_deprecated.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
+import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:pokerapp/services/game_play/graphql/seat_change_service.dart';
-import 'package:pokerapp/services/game_play/utils/audio_buffer.dart';
 import 'package:pokerapp/services/janus/janus.dart';
 import 'package:pokerapp/services/nats/nats.dart';
 import 'package:pokerapp/services/test/test_service.dart';
@@ -147,13 +145,14 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   }
 
   Future _joinAudio() async {
-    // try {
-    //   if (_audioPlayer != null) {
-    //     _audioPlayer.resume();
-    //   }
-    // } catch(err) {
-    //   log('Error when resuming audio');
-    // }
+    return;
+    try {
+      if (_audioPlayer != null) {
+        _audioPlayer.resume();
+      }
+    } catch (err) {
+      log('Error when resuming audio');
+    }
     if (!_gameState.audioConfEnabled) {
       try {
         if (_voiceTextPlayer != null) {
@@ -502,7 +501,9 @@ class _GamePlayScreenState extends State<GamePlayScreen>
 
   void _initGameInfoModel() async {
     final GameInfoModel gameInfoModel = await _init();
-    setState(() => _gameInfoModel = gameInfoModel);
+    if (mounted) {
+      setState(() => _gameInfoModel = gameInfoModel);
+    }
     _queryCurrentHandIfNeeded();
   }
 
@@ -644,8 +645,8 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       });
     }
 
-    if (_gameContextObj.handActionService == null) {
-      _gameContextObj.handActionService = HandActionService(
+    if (_gameContextObj.handActionProtoService == null) {
+      _gameContextObj.handActionProtoService = HandActionProtoService(
         _providerContext,
         _gameState,
         _gameContextObj.gameComService,
@@ -654,14 +655,14 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         audioPlayer: _audioPlayer,
       );
 
-      _gameContextObj.handActionService.loop();
+      _gameContextObj.handActionProtoService.loop();
 
       if (!TestService.isTesting) {
         _gameContextObj.gameComService.handToAllChannelStream.listen(
           (nats.Message message) {
             if (!_gameContextObj.gameComService.active) return;
 
-            if (_gameContextObj.handActionService == null) return;
+            if (_gameContextObj.handActionProtoService == null) return;
 
             /* This stream receives hand related messages that is common to all players
                               * e.g
@@ -669,7 +670,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
                               * Next Action - contains the seat No which is to act next
                               *
                               * This stream also contains the output for the query of current hand */
-            _gameContextObj.handActionService.handle(message.string);
+            _gameContextObj.handActionProtoService.handle(message.data);
           },
         );
 
@@ -677,7 +678,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
           (nats.Message message) {
             if (!_gameContextObj.gameComService.active) return;
 
-            if (_gameContextObj.handActionService == null) return;
+            if (_gameContextObj.handActionProtoService == null) return;
 
             /* This stream receives hand related messages that is specific to THIS player only
                               * e.g
@@ -685,30 +686,16 @@ class _GamePlayScreenState extends State<GamePlayScreen>
                               * Your Action - seat No, available actions & amounts */
 
             if (TestService.isTesting) {
-              _gameContextObj.handActionService.handle(message.string);
+              _gameContextObj.handActionProtoService.handle(message.data);
             } else {
-              Future<List<int>> decryptedMessage =
-                  _gameContextObj.encryptionService.decrypt(message.data);
-              decryptedMessage.then((decryptedBytes) => _gameContextObj
-                  .handActionService
-                  .handle(utf8.decode(decryptedBytes)));
+              _gameContextObj.handActionProtoService
+                  .handle(message.data, encrypted: true);
             }
           },
         );
       }
     }
   }
-
-  // void _setupAudioBufferService() {
-  //   // TODO: DO WE NEED THIS?
-  //   AudioBufferService.create().then(
-  //     (Map<String, String> tmpAudioFiles) =>
-  //         Provider.of<ValueNotifier<Map<String, String>>>(
-  //       context,
-  //       listen: false,
-  //     ).value = tmpAudioFiles,
-  //   );
-  // }
 
   void _queryCurrentHandIfNeeded() {
     /* THIS METHOD QUERIES THE CURRENT HAND AND POPULATE THE
@@ -719,7 +706,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     if (_gameInfoModel?.tableStatus == AppConstants.GAME_RUNNING) {
       // query current hand to get game update
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        _gameContextObj.handActionService.queryCurrentHand();
+        _gameContextObj.handActionProtoService.queryCurrentHand();
       });
     }
   }
@@ -752,8 +739,15 @@ class _GamePlayScreenState extends State<GamePlayScreen>
             // header view
             HeaderView(gameState: _gameState),
 
-            // empty space to highlight the background view
-            SizedBox(width: width, height: divider1),
+            // seperator
+            // SizedBox(width: width, height: divider1 / 2),
+
+            // this widget, shows which winner is currently showing - high winner / low winner
+            // this widget also acts as a natural seperator between header and board view
+            WhichWinnerWidget(seperator: divider1),
+
+            // seperator
+            // SizedBox(width: width, height: divider1 / 2),
 
             // main board view
             _buildBoardView(boardDimensions, tableScale),

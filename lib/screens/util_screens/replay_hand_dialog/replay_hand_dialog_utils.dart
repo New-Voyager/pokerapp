@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
@@ -93,12 +93,12 @@ class ReplayHandScreenUtils {
     /* fixme: for now, use handlog data from sample */
     /* todo: the network call can be made here */
 
-    String dataString = await rootBundle.loadString(s);
+    // String dataString = await rootBundle.loadString(s);
 
-    if (assetFile != null) {
-      dataString = await rootBundle.loadString(assetFile);
-    }
-    final fileData = jsonDecode(dataString);
+    // if (assetFile != null) {
+    //   dataString = await rootBundle.loadString(assetFile);
+    // }
+    //final fileData = jsonDecode(dataString);
 
     dynamic data;
 

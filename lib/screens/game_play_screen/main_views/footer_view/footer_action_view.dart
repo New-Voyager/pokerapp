@@ -3,18 +3,17 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/player_action.dart';
-import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
-import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/bet_widget.dart';
-import 'package:pokerapp/services/game_play/action_services/hand_action_service.dart';
-import 'package:provider/provider.dart';
+import 'package:pokerapp/services/game_play/action_services/hand_action_proto_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
+import 'package:provider/provider.dart';
 
 const shrinkedBox = const SizedBox.shrink(
   key: ValueKey('none'),
@@ -134,7 +133,7 @@ class _FooterActionViewState extends State<FooterActionView> {
     String action,
     int amount,
   }) =>
-      HandActionService.takeAction(
+      HandActionProtoService.takeAction(
         context: context,
         action: action,
         amount: amount,
@@ -228,19 +227,19 @@ class _FooterActionViewState extends State<FooterActionView> {
     //     ?.firstWhere((element) => element.actionName == ALLIN, orElse: null);
     var actionButtons = [];
     actionButtons = playerAction?.actions?.map<Widget>(
-      (playerAction) {
-        switch (playerAction.actionName) {
+      (action) {
+        switch (action.actionName) {
           case FOLD:
             return _buildRoundButton(
-              text: playerAction.actionName,
+              text: action.actionName,
               onTap: () => _fold(
-                playerAction.actionValue,
+                action.actionValue,
                 context: context,
               ),
             );
           case CHECK:
             return _buildRoundButton(
-              text: playerAction.actionName,
+              text: action.actionName,
               onTap: () => _check(
                 context: context,
               ),
@@ -251,7 +250,7 @@ class _FooterActionViewState extends State<FooterActionView> {
             bet = true;
             return _buildRoundButton(
               isSelected: _showOptions,
-              text: playerAction.actionName,
+              text: action.actionName,
               onTap: () => setState(() {
                 _showOptions = !_showOptions;
                 widget.isBetWidgetVisible?.call(_showOptions);
@@ -259,11 +258,9 @@ class _FooterActionViewState extends State<FooterActionView> {
             );
           case CALL:
             return _buildRoundButton(
-              text: playerAction.actionName +
-                  ' ' +
-                  playerAction.actionValue.toString(),
+              text: action.actionName + ' ' + action.actionValue.toString(),
               onTap: () => _call(
-                playerAction.actionValue,
+                playerAction.callAmount,
                 context: context,
               ),
             );
@@ -273,7 +270,7 @@ class _FooterActionViewState extends State<FooterActionView> {
             raise = true;
             return _buildRoundButton(
               isSelected: _showOptions,
-              text: playerAction.actionName,
+              text: action.actionName,
               onTap: () => setState(() {
                 _showOptions = !_showOptions;
                 widget.isBetWidgetVisible?.call(_showOptions);
@@ -289,7 +286,7 @@ class _FooterActionViewState extends State<FooterActionView> {
       actionButtons.add(_buildRoundButton(
         text: allin.actionName + ' ' + allin.actionValue.toString(),
         onTap: () => _allIn(
-          amount: allin.actionValue,
+          amount: playerAction.allInAmount,
           context: context,
         ),
       ));

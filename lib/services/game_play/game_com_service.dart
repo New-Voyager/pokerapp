@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:typed_data';
 
 import 'package:dart_nats/dart_nats.dart';
 import 'package:flutter/foundation.dart';
@@ -100,6 +101,11 @@ class GameComService {
   void sendPlayerToHandChannel(String data) {
     assert(active);
     this._nats.pubClient.pubString(this.playerToHandChannel, data);
+  }
+
+  void sendProtoPlayerToHandChannel(Uint8List data) {
+    assert(active);
+    this._nats.pubClient.pub(this.playerToHandChannel, data);
   }
 
   void dispose() {

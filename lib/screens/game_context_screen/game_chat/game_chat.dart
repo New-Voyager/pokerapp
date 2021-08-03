@@ -1,11 +1,9 @@
 import 'dart:math';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:pokerapp/models/game_play_models/business/game_chat_notfi_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
-import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
@@ -37,6 +35,7 @@ class _GameChatState extends State<GameChat> {
   GameMessagingService get chatService => widget.chatService;
   ScrollController get _scrollController => widget.scrollController;
 
+  final ValueNotifier<bool> _vnShowEmojiPicker = ValueNotifier(false);
   final _textEditingController = TextEditingController();
 
   int myID = -1;
@@ -62,18 +61,14 @@ class _GameChatState extends State<GameChat> {
     super.dispose();
   }
 
-  void _onEmojiClick() async {
-    await showModalBottomSheet<String>(
-      context: context,
-      isScrollControlled: true,
-      builder: (_) => IntrinsicHeight(
-        child: EmojiPickerWidget(
-          onEmojiSelected: (String emoji) {
-            _textEditingController.text = _textEditingController.text + emoji;
-          },
-        ),
-      ),
-    );
+  void _onEmojiClick() {
+    // open emoji picker
+    _vnShowEmojiPicker.value = !_vnShowEmojiPicker.value;
+
+    // close keyboard
+    if (_vnShowEmojiPicker.value) {
+      FocusScope.of(context).unfocus();
+    }
   }
 
   void _scrollToBottom() {
@@ -97,6 +92,9 @@ class _GameChatState extends State<GameChat> {
   }
 
   void _onSendClick() {
+    // close emoji picker
+    _vnShowEmojiPicker.value = false;
+
     /* when current user sends any message, scroll to the bottom */
     _scrollToBottom();
 
@@ -219,21 +217,33 @@ class _GameChatState extends State<GameChat> {
           borderRadius: BorderRadius.circular(10.0),
         ),
         margin: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-        padding: EdgeInsets.only(left: 15),
-        child: TextField(
-          controller: _textEditingController,
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 15.0,
-          ),
-          textAlign: TextAlign.start,
-          textAlignVertical: TextAlignVertical.center,
-          decoration: InputDecoration(
-            contentPadding: EdgeInsets.zero,
-            isDense: true,
-            border: InputBorder.none,
-            hintText: 'Enter text here...',
-            suffixIcon: GestureDetector(
+        padding: EdgeInsets.all(10.0),
+        child: Row(
+          children: [
+            // text field
+            Expanded(
+              child: TextField(
+                onTap: () {
+                  _vnShowEmojiPicker.value = false;
+                },
+                controller: _textEditingController,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 15.0,
+                ),
+                textAlign: TextAlign.start,
+                textAlignVertical: TextAlignVertical.center,
+                decoration: InputDecoration(
+                  contentPadding: EdgeInsets.zero,
+                  isDense: true,
+                  border: InputBorder.none,
+                  hintText: 'Type a message',
+                ),
+              ),
+            ),
+
+            // emoji button
+            GestureDetector(
               onTap: _onEmojiClick,
               child: Icon(
                 Icons.emoji_emotions_outlined,
@@ -241,7 +251,7 @@ class _GameChatState extends State<GameChat> {
                 color: AppColorsNew.yellowAccentColor,
               ),
             ),
-          ),
+          ],
         ),
       );
 
@@ -312,8 +322,7 @@ class _GameChatState extends State<GameChat> {
             : const SizedBox.shrink(),
       );
 
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildMainBody() {
     return Container(
       color: AppColorsNew.darkGreenShadeColor,
       // padding: EdgeInsets.only(
@@ -340,6 +349,29 @@ class _GameChatState extends State<GameChat> {
           _buildUserInputWidget(),
         ],
       ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        /* main bottom sheet, that has all the chat functionality */
+        _buildMainBody(),
+
+        /* emoji picker widget */
+        ValueListenableBuilder<bool>(
+          valueListenable: _vnShowEmojiPicker,
+          builder: (_, bool showPicker, __) => showPicker
+              ? EmojiPicker(
+                  onEmojiSelected: (String emoji) {
+                    _textEditingController.text += emoji;
+                  },
+                )
+              : const SizedBox.shrink(),
+        ),
+      ],
     );
   }
 }

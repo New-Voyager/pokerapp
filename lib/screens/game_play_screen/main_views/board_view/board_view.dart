@@ -243,8 +243,8 @@ class BoardView extends StatelessWidget {
         child: Text(
           mySeat.player.rankText,
           style: TextStyle(
-            color: Colors.grey[700],
-            fontSize: 14.dp,
+            color: Colors.white,
+            fontSize: 16.dp,
             fontFamily: AppAssets.fontFamilyLato,
             fontWeight: FontWeight.w400,
           ),

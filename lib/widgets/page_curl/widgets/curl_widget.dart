@@ -355,7 +355,7 @@ class _CurlWidgetState extends State<CurlWidget> {
   double getRatio(double a, double x) => a * x + 1;
 
   Matrix4 getScaleMatrix() {
-    // TODO: FIX THE WEIRD SCALING IN HORIZONTAL AXIS
+    // FIX THE WEIRD SCALING IN HORIZONTAL AXIS
     // double dy = abs(height - mF.y);
     // double pertDy = dy / height;
 

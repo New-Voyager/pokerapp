@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:audio_recorder/audio_recorder.dart';
 import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:pokerapp/enums/player_status.dart';
@@ -12,18 +13,13 @@ import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/game_circle_button.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/voice_text_widget.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:pokerapp/services/data/game_log_store.dart';
-
 //import 'package:pokerapp/services/agora/agora.dart';
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
+import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/widgets/blinking_widget.dart';
 import 'package:provider/provider.dart';
-import 'package:pokerapp/utils/adaptive_sizer.dart';
 
-//TODO: We need to get GameChatService here and record audio and send audio
-// via game chat channel for the games that don't use live audio.
 class CommunicationView extends StatefulWidget {
   final Function chatVisibilityChange;
   final GameMessagingService chatService;
@@ -389,14 +385,14 @@ class _CommunicationViewState extends State<CommunicationView> {
 
   voiceTextWidgets(GameMessagingService chatService) {
     return <Widget>[
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
-        child: Icon(
-          Icons.circle,
-          size: 15,
-          color: Colors.grey,
-        ),
-      ),
+      // Padding(
+      //   padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
+      //   child: Icon(
+      //     Icons.circle,
+      //     size: 15,
+      //     color: Colors.grey,
+      //   ),
+      // ),
       VoiceTextWidget(
         recordStart: () => record(),
         recordStop: (int dur) {

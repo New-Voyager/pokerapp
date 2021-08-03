@@ -249,7 +249,6 @@ class NamePlateWidget extends StatelessWidget {
 
   Widget bottomWidget(BuildContext context) {
     if (seat.player.inBreak && seat.player.breakTimeExpAt != null) {
-      final now = DateTime.now().toUtc();
       return GamePlayScreenUtilMethods.breakBuyIntimer(
         context,
         seat,
@@ -259,7 +258,6 @@ class NamePlateWidget extends StatelessWidget {
     if (seat.player.action.action != HandActions.ALLIN &&
         seat.player.stack == 0 &&
         seat.player.buyInTimeExpAt != null) {
-      final now = DateTime.now().toUtc();
       return GamePlayScreenUtilMethods.breakBuyIntimer(context, seat);
     } else {
       if (seat.player != null) {

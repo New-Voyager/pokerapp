@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:developer';
 
 import 'package:firebase_analytics/firebase_analytics.dart';
@@ -15,13 +14,14 @@ import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/app/game_service.dart';
+import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/utils/numeric_keyboard2.dart';
 import 'package:pokerapp/widgets/switch_widget.dart';
+
 import 'seat_change_bottom_sheet.dart';
 import 'waiting_list.dart';
-import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class GameOption extends StatefulWidget {
   final String gameCode;

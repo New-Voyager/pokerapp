@@ -21,7 +21,6 @@ import 'package:pokerapp/widgets/round_color_button.dart';
 
 import '../../../main.dart';
 import 'hands_chart_view.dart';
-import 'highhand_winners_view.dart';
 
 class GameHistoryDetailView extends StatefulWidget {
   final GameHistoryDetailModel data;
@@ -624,8 +623,6 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
   }
 
   void onHighHandLogPressed(BuildContext context) {
-    final model =
-        HandHistoryListModel(_gameDetail.gameCode, _gameDetail.isOwner);
     Navigator.pushNamed(
       context,
       Routes.high_hand_log,

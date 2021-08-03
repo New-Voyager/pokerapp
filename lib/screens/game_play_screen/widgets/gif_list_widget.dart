@@ -85,7 +85,7 @@ class GifListWidget extends StatelessWidget {
                     alignment: Alignment.topLeft,
                     child: InkWell(
                       onTap: () => onRemoveBookMark?.call(gif),
-                      child: Icon(Icons.bookmark_outline_rounded),
+                      child: Icon(Icons.bookmark_remove_rounded),
                     ),
                   ),
                 ],
@@ -104,8 +104,8 @@ class GifListWidget extends StatelessWidget {
                       onTap: () => onBookMark?.call(gif),
                       child: Icon(
                         GameService.isGifFavourite(gif)
-                            ? Icons.bookmark_outlined
-                            : Icons.bookmark_outlined,
+                            ? Icons.bookmark_added_rounded
+                            : Icons.bookmark_add_outlined,
                       ),
                     ),
                   ),
