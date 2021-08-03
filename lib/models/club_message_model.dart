@@ -1,6 +1,4 @@
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:pokerapp/enums/game_type.dart';
-import 'package:pokerapp/services/app/auth_service.dart';
 
 enum MessageType {
   TEXT,

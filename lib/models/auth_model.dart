@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 class AuthModel {
   String uuid;
   String name;

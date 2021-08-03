@@ -2,13 +2,12 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
-import 'package:get_version/get_version.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get_version/get_version.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
-import 'package:pokerapp/consumable_store.dart';
 import 'package:pokerapp/models/app_coin.dart';
-import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
@@ -21,7 +20,6 @@ import 'package:pokerapp/widgets/round_color_button.dart';
 
 const bool _kAutoConsume = true;
 const String _kConsumableId = 'chips';
-const List<String> _kProductIds = <String>[_kConsumableId];
 
 class StorePage extends StatefulWidget {
   const StorePage({Key key}) : super(key: key);

@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'dart:developer';
+
 import 'package:flutter/widgets.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:pokerapp/enums/approval_type.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/pending_approvals.dart';
 import 'package:pokerapp/models/player_info.dart';

@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:developer';
 import 'dart:typed_data';
 
@@ -27,7 +26,6 @@ import 'package:pokerapp/services/janus/janus.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
-import 'hand_result.dart';
 import 'host_seat_change.dart';
 import 'player_action.dart';
 import 'players.dart';
@@ -59,7 +57,6 @@ class GameState {
   ListenableProvider<TableState> _tableStateProvider;
   ListenableProvider<Players> _playersProvider;
   ListenableProvider<ActionState> _playerAction;
-  ListenableProvider<HandResultState> _handResult;
   ListenableProvider<MyState> _myStateProvider;
   ListenableProvider<WaitlistState> _waitlistProvider;
   ListenableProvider<ServerConnectionState> _connectionState;
@@ -159,8 +156,6 @@ class GameState {
         ListenableProvider<TableState>(create: (_) => _tableState);
     this._playerAction =
         ListenableProvider<ActionState>(create: (_) => ActionState());
-    this._handResult =
-        ListenableProvider<HandResultState>(create: (_) => HandResultState());
 
     this._myState = MyState();
     this._myStateProvider =
@@ -337,6 +332,10 @@ class GameState {
     return this._gameInfo;
   }
 
+  GameType get currentHandGameType {
+    return this._handInfo._gameType;
+  }
+
   bool get running {
     if (this._gameInfo.status == 'ACTIVE' &&
         this._gameInfo.tableStatus == 'GAME_RUNNING') {
@@ -407,12 +406,14 @@ class GameState {
     this._gameInfo?.agoraToken = v;
   }
 
+  HandInfoState get handInfo => this.handInfo;
+
   bool get isGameRunning {
     bool tableRunning =
         _tableState.tableStatus == AppConstants.TABLE_STATUS_GAME_RUNNING ||
             _tableState.tableStatus == AppConstants.TABLE_STATUS_GAME_RUNNING_1;
 
-    log('isGameRunning: tableStatus: ${_tableState.tableStatus} gameStatus: ${_tableState.gameStatus} tableRunning: ${tableRunning}');
+    log('isGameRunning: tableStatus: ${_tableState.tableStatus} gameStatus: ${_tableState.gameStatus} tableRunning: $tableRunning');
     if (_tableState.gameStatus == AppConstants.GAME_ACTIVE && tableRunning) {
       return true;
     }
@@ -523,7 +524,6 @@ class GameState {
   void clear(BuildContext context) {
     final tableState = this.getTableState(context);
     final players = this.getPlayers(context);
-    final handResult = this.getResultState(context);
 
     // clear players
     players.clear();
@@ -531,9 +531,6 @@ class GameState {
     // clear table state
     tableState.clear();
     tableState.notifyAll();
-
-    handResult.reset();
-    handResult.notifyAll();
   }
 
   GameMessagingService getGameMessagingService(BuildContext context) =>
@@ -553,9 +550,6 @@ class GameState {
 
   ActionState getActionState(BuildContext context, {bool listen = false}) =>
       Provider.of<ActionState>(context, listen: listen);
-
-  HandResultState getResultState(BuildContext context, {bool listen = false}) =>
-      Provider.of<HandResultState>(context, listen: listen);
 
   WaitlistState getWaitlistState(BuildContext context, {bool listen = false}) =>
       Provider.of<WaitlistState>(context, listen: listen);
@@ -652,7 +646,6 @@ class GameState {
       this._tableStateProvider,
       this._playersProvider,
       this._playerAction,
-      this._handResult,
       this._myStateProvider,
       this._markedCards,
       this._gameMessagingService,
@@ -814,6 +807,8 @@ class HandInfoState extends ChangeNotifier {
 
   int get noCards => _noCards;
 
+  GameType get gameTypeVal => this._gameType;
+
   String get gameType {
     String gameTypeStr = '';
     switch (this._gameType) {
@@ -891,13 +886,6 @@ class ActionState extends ChangeNotifier {
   }
 }
 
-void loadGameStateFromFile(BuildContext context) async {
-  final data = await rootBundle.loadString('assets/sample-data/players.json');
-  final jsonData = json.decode(data);
-  final List players = jsonData['players'];
-  final gameState = GameState.getState(context);
-}
-
 enum ConnectionStatus {
   UNKNOWN,
   CONNECTED,
@@ -919,12 +907,6 @@ class ServerConnectionState extends ChangeNotifier {
 
 // FIXME: WHAT IS THE USE OF THIS CLASS?
 class PopupButtonState extends ChangeNotifier {
-  SeatPos _currentPos;
-
-  setCurrentPos(SeatPos pos) {
-    _currentPos = pos;
-  }
-
   void notify() {
     notifyListeners();
   }

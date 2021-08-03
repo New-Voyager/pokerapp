@@ -11,7 +11,6 @@ import 'package:pokerapp/screens/club_screen/club_stats_screen.dart';
 import 'package:pokerapp/screens/game_screens/game_history_details_view/hand_stats_view.dart';
 import 'package:pokerapp/screens/game_screens/game_history_details_view/stack_details_view.dart';
 import 'package:pokerapp/screens/game_screens/new_game_settings/choose_game_new.dart';
-import 'package:pokerapp/screens/game_screens/new_game_settings/new_game_settings2.dart';
 import 'package:pokerapp/screens/profile_screens/help_screen.dart';
 import 'package:pokerapp/screens/profile_screens/performance_view.dart';
 import 'package:provider/provider.dart';
@@ -20,7 +19,6 @@ import 'package:pokerapp/screens/screens.dart';
 
 import 'package:pokerapp/models/club_homepage_model.dart';
 import 'package:pokerapp/models/club_members_model.dart';
-import 'package:pokerapp/models/game/new_game_provider.dart';
 import 'package:pokerapp/models/game_history_model.dart';
 import 'package:pokerapp/models/hand_history_model.dart';
 import 'package:pokerapp/models/rewards_model.dart';
@@ -68,8 +66,6 @@ class Routes {
   static const String hand_log_view = '/hand_log_view';
   // RewardsList
   static const String rewards_list = '/rewards_list';
-  // GameLengthSelect
-  static const String game_length_select = '/game_length_select';
   // ActionTimeSelect
   static const String action_time_select = '/action_time_select';
   // GameTypeSelect
@@ -214,7 +210,7 @@ class Routes {
             create: (_) => data,
             builder: (BuildContext context, _) => Consumer<ClubMemberModel>(
               builder: (_, ClubMemberModel data, __) =>
-                  ClubMembersDetailsView(data),
+                  ClubMembersDetailsView(data.clubCode, data.playerId),
             ),
           ),
         );
@@ -280,92 +276,6 @@ class Routes {
             args['gameCode'],
             args['handNum'],
             clubCode: args['clubCode'],
-          ),
-        );
-
-      case rewards_list:
-        var data = settings.arguments as NewGameModelProvider;
-        return _getPageRoute(
-          routeName: settings.name,
-          viewToShow: data.rewards == null
-              ? Container(
-                  child: Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                )
-              : ChangeNotifierProvider.value(
-                  value: data,
-                  child: RewardsList(),
-                ),
-        );
-
-      case game_length_select:
-        var data = settings.arguments as NewGameModelProvider;
-        return _getPageRoute(
-          routeName: settings.name,
-          viewToShow: ChangeNotifierProvider.value(
-            value: data,
-            child: GameLengthSelect(),
-          ),
-        );
-
-      case action_time_select:
-        var data = settings.arguments as NewGameModelProvider;
-        return _getPageRoute(
-          routeName: settings.name,
-          viewToShow: ChangeNotifierProvider.value(
-            value: data,
-            child: ActionTimeSelect(),
-          ),
-        );
-
-      case game_type_select:
-        var data = settings.arguments as NewGameModelProvider;
-        return _getPageRoute(
-          routeName: settings.name,
-          viewToShow: ChangeNotifierProvider.value(
-            value: data,
-            child: GameTypeSelect(),
-          ),
-        );
-
-      case blind_select:
-        var data = settings.arguments as NewGameModelProvider;
-        return _getPageRoute(
-          routeName: settings.name,
-          viewToShow: ChangeNotifierProvider.value(
-            value: data,
-            child: BlindsSelect(),
-          ),
-        );
-
-      case buy_in_range_select:
-        var data = settings.arguments as NewGameModelProvider;
-        return _getPageRoute(
-          routeName: settings.name,
-          viewToShow: ChangeNotifierProvider.value(
-            value: data,
-            child: BuyInRangesSelect(),
-          ),
-        );
-
-      case max_player_select:
-        var data = settings.arguments as NewGameModelProvider;
-        return _getPageRoute(
-          routeName: settings.name,
-          viewToShow: ChangeNotifierProvider.value(
-            value: data,
-            child: MaxPlayerSelect(),
-          ),
-        );
-
-      case club_tips_select:
-        var data = settings.arguments as NewGameModelProvider;
-        return _getPageRoute(
-          routeName: settings.name,
-          viewToShow: ChangeNotifierProvider.value(
-            value: data,
-            child: ClubTipsSelect(),
           ),
         );
 

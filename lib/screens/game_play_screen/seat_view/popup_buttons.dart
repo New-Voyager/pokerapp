@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
@@ -8,11 +9,8 @@ import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/boar
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/screens/game_play_screen/game_play_screen_util_methods.dart';
-import 'package:pokerapp/resources/app_assets.dart';
-import 'package:lottie/lottie.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/profile_popup.dart';
 import 'package:pokerapp/services/app/player_service.dart';
-import 'package:pokerapp/services/game_play/game_com_service.dart';
 
 class PopupWidget extends StatefulWidget {
   final GameState gameState;
@@ -532,7 +530,6 @@ class FloatingMenuItem extends StatelessWidget {
   Widget build(BuildContext context) {
     debugPrint('popup widget build');
     double angleInDegrees = 45.0;
-    double offsetDistance = 60.0;
     switch (seatPosition) {
       case SeatPos.bottomCenter:
         angleInDegrees = 180.0;

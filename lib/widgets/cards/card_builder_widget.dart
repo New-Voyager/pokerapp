@@ -4,7 +4,6 @@ import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/resources/app_styles.dart';
-import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/widgets/cards/pulsating_card_container.dart';
 import 'package:provider/provider.dart';
 
@@ -61,8 +60,6 @@ class CardBuilderWidget extends StatelessWidget {
         return 1.0;
     }
   }
-
-  // TODO: WE NEED TO CHANGE THE WAY WE HIGHLIGHT CARDS
 
   @override
   Widget build(BuildContext context) {

@@ -4,7 +4,7 @@ import 'flavor_config.dart';
 
 class FlavorBanner extends StatelessWidget {
   final Widget child;
-  BannerConfig bannerConfig;
+  final BannerConfig bannerConfig;
   FlavorBanner({@required this.child, @required this.bannerConfig});
   @override
   Widget build(BuildContext context) {

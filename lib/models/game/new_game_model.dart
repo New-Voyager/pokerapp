@@ -12,7 +12,7 @@ class NewGameConstants {
     GameType.DEALER_CHOICE: "Dealer Choice",
   };
 
-  static const List<int> ACTION_TIMES = [10, 15,20,30,45,60];
+  static const List<int> ACTION_TIMES = [10, 15, 20, 30, 45, 60];
   static const List<int> BUYIN_WAIT_TIMES = [60, 90, 120, 240, 300];
 
   // static const Map<int, String> ACTION_TIMES = {
@@ -35,7 +35,7 @@ class NewGameConstants {
     GameType.DEALER_CHOICE: 9
   };
 
-  static const List<int> GAME_LENGTH = [1, 2, 4,8,12, 20];
+  static const List<int> GAME_LENGTH = [1, 2, 4, 8, 12, 20];
 
   // static const Map<int, String> GAME_LENGTH = {
   //   -1: "Unlimited",

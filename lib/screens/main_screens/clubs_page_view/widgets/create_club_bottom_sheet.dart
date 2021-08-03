@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/widgets/card_form_text_field.dart';
-import 'package:pokerapp/widgets/custom_text_button.dart';
 import 'package:pokerapp/widgets/round_color_button.dart';
-
-import '../../../../resources/app_colors.dart';
 
 class CreateClubBottomSheet extends StatefulWidget {
   final String name;

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/models/club_weekly_activity_model.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
-import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:pokerapp/utils/club_weekly_activity_bar_chart.dart';
 
 class ClubGraphicsView extends StatelessWidget {

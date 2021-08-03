@@ -1,18 +1,13 @@
 import 'dart:convert';
 import 'dart:developer';
-import 'dart:typed_data';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
-import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
 import 'package:pokerapp/enums/player_status.dart';
-import 'package:pokerapp/models/game_history_model.dart';
 import 'package:pokerapp/models/game_play_models/business/card_distribution_model.dart';
-import 'package:pokerapp/models/game_play_models/business/hi_winners_model.dart';
-import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/marked_cards.dart';
@@ -21,25 +16,21 @@ import 'package:pokerapp/models/game_play_models/provider_models/remaining_time.
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
-import 'package:pokerapp/models/hand_log_model_new.dart';
 import 'package:pokerapp/models/newmodels/game_model_new.dart';
+import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/models/rabbit_state.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/card_back_assets.dart';
-import 'package:pokerapp/screens/game_play_screen/widgets/overlay_notification.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
-import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/data/game_log_store.dart';
 import 'package:pokerapp/services/encryption/encryption_service.dart';
-import 'package:pokerapp/services/game_play/utils/audio.dart';
-import 'package:pokerapp/services/test/test_service.dart';
+import 'package:pokerapp/services/game_play/action_services/result_handler.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:pokerapp/widgets/run_it_twice_dialog.dart';
 import 'package:provider/provider.dart';
-import 'package:pokerapp/models/player_info.dart';
 
 import '../game_com_service.dart';
 import '../message_id.dart';
@@ -1287,392 +1278,6 @@ class HandActionService {
     return seatNoCardsMap;
   }
 
-  static Future<void> processWinner({
-    final HiWinnersModel winner,
-    final Players players,
-    final TableState tableState,
-    final boardIndex = 1,
-    final GameState gameState,
-    final bool setState = false,
-  }) async {
-    /* highlight the hi winners */
-    players.highlightWinnerSilent(winner.seatNo);
-
-    /* highlight the winning cards for players */
-    players.highlightCardsSilent(
-      seatNo: winner.seatNo,
-      cards: winner.playerCards,
-    );
-
-    log('WINNER player.cards: ${winner.playerCards} boardCards: ${winner.boardCards} setState: $setState ${winner.rankStr} ${AppConstants.chipMovingAnimationDuration}');
-    /* highlight the winning cards for board 1 */
-    tableState.highlightCardsSilent(
-      boardIndex,
-      winner.boardCards,
-    );
-
-    /* update the rank str */
-    tableState.updateRankStrSilent(winner.rankStr);
-
-    /* update the stack amount for the winners */
-    final PlayerModel player = players.getPlayerBySeat(winner.seatNo);
-    if (player != null) {
-      player.action.amount = winner.amount.toDouble();
-      player.action.winner = true;
-    }
-
-    /** set state */
-    if (setState) {
-      /* update state */
-      players.notifyAll();
-      tableState.notifyAll();
-      tableState.refreshCommunityCards();
-
-      /* finally animate the moving stack */
-      gameState.animateSeatActions();
-
-      /* wait for the animation to finish */
-      await Future.delayed(AppConstants.chipMovingAnimationDuration);
-
-      /* update the actual stack */
-      players.addStackWithValueSilent(
-        winner.seatNo,
-        winner.amount,
-      );
-
-      players.notifyAll();
-    }
-  }
-
-  /* this method processes multiple winners */
-  /* THIS METHOD TAKES ONLY 500 MS (the pot moving animation time) */
-  static Future<void> processWinners({
-    List highWinners,
-    final Players players,
-    final TableState tableState,
-    final boardIndex = 1,
-    final GameState gameState,
-  }) async {
-    /** process the high pot winners */
-    for (int i = 0; i < highWinners.length; i++) {
-      final HiWinnersModel winner = HiWinnersModel.fromJson(highWinners[i]);
-
-      await processWinner(
-        winner: winner,
-        players: players,
-        tableState: tableState,
-        boardIndex: boardIndex,
-        gameState: gameState,
-        // for the last element only we set the state
-        setState: i == highWinners.length - 1,
-      );
-    }
-  }
-
-  /* only resets the highlights, and winners */
-  static void resetResult({
-    TableState tableState,
-    Players players,
-    GameState gameState,
-    int boardIndex = 1,
-  }) {
-    tableState.unHighlightCardsSilent(boardIndex);
-    players.removeAllHighlightsSilent();
-    players.removeWinnerHighlightSilent();
-    players.unHighlightCardsSilentForAll();
-
-    tableState.updateRankStrSilent(null);
-
-    gameState.resetSeatActions(newHand: true);
-
-    players.notifyAll();
-    tableState.refreshTable();
-    tableState.notifyAll();
-    tableState.refreshCommunityCards();
-  }
-
-  static Future<void> processForHighWinnersDelayProcessForLowWinners({
-    final List highWinners,
-    final List lowWinners,
-    final gameState,
-    final TableState tableState,
-    final players,
-    final AudioPlayer audioPlayer,
-    final int boardIndex = 1,
-    final bool fromReplay = false,
-    final bool resetState = false,
-  }) async {
-    /* we have 3000 / 6000 (incase we have both hi and low winners) ms to complete this entire pot */
-    int totalWaitTimeInMs = lowWinners.isNotEmpty ? 6000 : 3000;
-
-    // if we dont have lowWinners to process, spend entire time for highWinners
-    int highWinnersTimeInMs =
-        lowWinners.isEmpty ? totalWaitTimeInMs : totalWaitTimeInMs ~/ 2;
-    int lowWinnersTimeInMs = totalWaitTimeInMs ~/ 2;
-
-    if (gameState?.settings?.gameSound ?? true) {
-      gameState.getAudioBytes(AppAssets.applauseSound).then((value) {
-        audioPlayer.playBytes(value);
-      });
-    }
-
-    /** process the high pot winners: this method already takes 500ms*/
-    log('paul debug: HIGH pot winners starting');
-    tableState.setWhichWinner(AppConstants.HIGH_WINNERS);
-    await processWinners(
-      highWinners: highWinners,
-      players: players,
-      tableState: tableState,
-      boardIndex: boardIndex,
-      gameState: gameState,
-    );
-
-    /** wait for the extra duration */
-    int balancedMstoWait =
-        highWinnersTimeInMs - AppConstants.animationDuration.inMilliseconds;
-
-    log('paul debug: waiting for: $balancedMstoWait');
-
-    await Future.delayed(Duration(milliseconds: balancedMstoWait));
-    audioPlayer.stop();
-    log('Result: Animation done');
-
-    /* if we dont have any low winners to show AND we are from
-    replay hand, we end the function call here */
-    if (lowWinners.isEmpty && fromReplay) return;
-
-    /* need to clear the board */
-    resetResult(
-      tableState: tableState,
-      players: players,
-      gameState: gameState,
-      boardIndex: boardIndex,
-    );
-
-    if (lowWinners.isEmpty) return;
-
-    // this method takes another 500 MS
-    /** process the low pot winners */
-    log('paul debug: low pot winners starting: $lowWinners');
-    tableState.setWhichWinner(AppConstants.LOW_WINNERS);
-    await processWinners(
-      highWinners: lowWinners,
-      players: players,
-      tableState: tableState,
-      boardIndex: boardIndex,
-      gameState: gameState,
-    );
-
-    /** wait for the extra duration */
-    balancedMstoWait =
-        lowWinnersTimeInMs - AppConstants.animationDuration.inMilliseconds;
-    await Future.delayed(Duration(milliseconds: balancedMstoWait));
-    audioPlayer.stop();
-
-    /* if we are from replay, we dont need to clear the result state */
-    if (fromReplay || resetState == false) return;
-
-    /* need to clear the board */
-    resetResult(
-      tableState: tableState,
-      players: players,
-      gameState: gameState,
-      boardIndex: boardIndex,
-    );
-  }
-
-  static Future<void> handleResultStatic({
-    @required final bool isRunItTwice,
-    @required final dynamic runItTwiceResult,
-    @required final Map<String, dynamic> potWinners,
-    @required final List<int> boardCards,
-    @required final List<int> boardCards2,
-    @required final BuildContext context,
-    @required final AudioPlayer audioPlayer,
-    final bool fromReplay = false,
-  }) async {
-    assert(context != null);
-
-    final GameState gameState = GameState.getState(context);
-    final TableState tableState = gameState.getTableState(context);
-    final Players players = gameState.getPlayers(context);
-
-    /* then, change the status of the footer to show the result */
-    Provider.of<ValueNotifier<FooterStatus>>(
-      context,
-      listen: false,
-    ).value = FooterStatus.Result;
-
-    if (isRunItTwice) {
-      /* RUN IT TWICE CASE */
-
-      /* set the board cards first */
-
-      /* set board 1 cards */
-      List<CardObject> boardCards1CO = [];
-      for (final c in boardCards) {
-        boardCards1CO.add(CardHelper.getCard(c));
-      }
-      tableState.setBoardCards(1, boardCards1CO);
-
-      /* set board 2 cards */
-      List<CardObject> boardCards2CO = [];
-      for (final c in boardCards2) {
-        boardCards2CO.add(CardHelper.getCard(c));
-      }
-      tableState.setBoardCards(2, boardCards2CO);
-
-      final Map board1PotWinners = runItTwiceResult['board1Winners'];
-
-      final Map board2PotWinners = runItTwiceResult['board2Winners'];
-
-      log('board 1 winners: $board1PotWinners');
-      log('board 2 winners: $board2PotWinners');
-
-      /* process board 1 first
-      * 0. get all hi winner players for board 1
-      * 1. highlight hi winner
-      * 2. highlight winning cards - players and community one's
-      * 3. update the rankStr
-      * 4. move the pot chip to the winner */
-
-      // this loop should take 3000 ms per POT winners
-      for (final board1Winners in board1PotWinners.entries) {
-        log('completed: board1 winners');
-        final potNo = int.parse(board1Winners.key.toString());
-
-        // highlight the req pot no
-        tableState.updatePotToHighlightSilent(potNo);
-        tableState.notifyAll();
-
-        final Map winners = board1Winners.value;
-
-        final List highWinners = winners['hiWinners'];
-        final List lowWinners = winners['lowWinners'];
-
-        await processForHighWinnersDelayProcessForLowWinners(
-          highWinners: highWinners,
-          lowWinners: lowWinners,
-          gameState: gameState,
-          tableState: tableState,
-          players: players,
-          fromReplay: fromReplay,
-          resetState: true,
-          audioPlayer: audioPlayer,
-        );
-
-        // UN highlight the req pot no
-        tableState.updatePotToHighlightSilent(-1);
-        tableState.notifyAll();
-      }
-
-      // /* if we dont have any board 2 winners to show, we pause here */
-      // if (board2PotWinners.isEmpty && fromReplay) return;
-
-      /* cleanup all highlights and rankStr */
-      resetResult(
-        tableState: tableState,
-        players: players,
-        gameState: gameState,
-        boardIndex: 1,
-      );
-
-      // refresh after un highlighting
-      tableState.refreshCommunityCards();
-
-      /* then, process board 2
-      * 0. get all hi winner players for board 1
-      * 1. highlight hi winner
-      * 2. highlight winning cards - players and community one's
-      * 3. update the rankStr
-      * 4. move the pot chip to the winner */
-
-      // this loop should take 3000 ms per POT winners
-      for (final board2Winners in board2PotWinners.entries) {
-        final potNo = int.parse(board2Winners.key.toString());
-
-        // highlight the req pot no
-        tableState.updatePotToHighlightSilent(potNo);
-        tableState.notifyAll();
-
-        final Map winners = board2Winners.value;
-
-        final List highWinners = winners['hiWinners'];
-        final List lowWinners = winners['lowWinners'];
-
-        await processForHighWinnersDelayProcessForLowWinners(
-          highWinners: highWinners,
-          lowWinners: lowWinners,
-          gameState: gameState,
-          tableState: tableState,
-          players: players,
-          boardIndex: 2,
-          fromReplay: fromReplay,
-          audioPlayer: audioPlayer,
-        );
-
-        // UN highlight the req pot no
-        tableState.updatePotToHighlightSilent(-1);
-        tableState.notifyAll();
-      }
-
-      /* turn off two boards needed flag -> only if we are not from replay */
-      if (!fromReplay) tableState.updateTwoBoardsNeeded(false);
-    } else {
-      /* SIMPLE POT WINNER CASE */
-
-      /**
-       * DO the following for each pot:
-       *    1. show all the high pot winners
-       *    2. delay
-       *    3. show all the low pot winners
-       */
-      List<CardObject> boardCardsUpdate = [];
-      for (final c in boardCards) {
-        boardCardsUpdate.add(CardHelper.getCard(c));
-      }
-      tableState.setBoardCards(1, boardCardsUpdate);
-
-      // time we get for each pot is 3 seconds
-
-      for (final potWinner in potWinners.entries) {
-        final potNo = int.parse(potWinner.key.toString());
-
-        // highlight the req pot no
-        tableState.updatePotToHighlightSilent(potNo);
-        tableState.notifyAll();
-
-        final Map winners = potWinner.value;
-
-        final List highWinners = winners['hiWinners'];
-        final List lowWinners = winners['lowWinners'];
-
-        /* this method should complete in timePerPotInMs time */
-        await processForHighWinnersDelayProcessForLowWinners(
-          highWinners: highWinners,
-          lowWinners: lowWinners,
-          players: players,
-          gameState: gameState,
-          tableState: tableState,
-          fromReplay: fromReplay,
-          audioPlayer: audioPlayer,
-        );
-
-        // UN highlight the req pot no
-        tableState.updatePotToHighlightSilent(-1);
-        tableState.notifyAll();
-
-        if (fromReplay) return;
-      }
-    }
-
-    // remove all the community cards
-    tableState.clear();
-    tableState.notifyAll();
-
-    gameState.resetPlayers(context);
-  }
-
   static void updatePotBeforeResultStatic({
     @required final runItTwiceResult,
     @required final potWinners,
@@ -1786,16 +1391,19 @@ class HandActionService {
     );
 
     if (_close) return;
-    await handleResultStatic(
+
+    ResultHandler resultHandler = ResultHandler(
       isRunItTwice: isRunItTwice,
       runItTwiceResult: runItTwiceResult,
       potWinners: potWinners,
       boardCards: boardCards,
       boardCards2: boardCards2,
+      gameState: _gameState,
       context: _context,
       audioPlayer: audioPlayer,
+      replay: false,
     );
-
+    await resultHandler.show();
     if (_gameState.isPlaying) {
       final me = _gameState.me(_context);
       final myState = _gameState.getMyState(_context);

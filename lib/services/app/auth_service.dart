@@ -14,21 +14,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService {
   AuthService._();
-
-  static final String _prefKey = 'auth_service_pref_key';
   static String playerUuid;
   static AuthModel _user;
-
-  static String createPlayerQuery = """
-  mutation (\$name: String!, \$email: String, \$deviceID: String, \$password: String) {
-    createPlayer(player: {
-      name: \$name
-      email: \$email
-      deviceId: \$deviceID
-      password: \$password
-    })
-  }""";
-
   static String updatUserDetailsQuery = """ 
       mutation updatePlayer(\$input :PlayerUpdateInput!){
         ret :updatePlayer(input:\$input)
@@ -54,19 +41,6 @@ class AuthService {
   static Future<bool> updateUserDetails(PlayerUpdateInput input) async {
     GraphQLClient _client = graphQLConfiguration.clientToQuery();
     Map<String, dynamic> variables = {"input": input.toJson()};
-
-    // if (input.name != null) {
-    //   variables["name"] = input.name;
-    // }
-
-    // if (input.displayName != null) {
-    //   variables["displayName"] = input.displayName;
-    // }
-
-    // if (input.email != null) {
-    //   variables["email"] = input.email;
-    // }
-
     QueryResult result = await _client.query(QueryOptions(
         documentNode: gql(updatUserDetailsQuery), variables: variables));
 
@@ -303,7 +277,6 @@ class AuthService {
       return null;
     }
     var data = result.data['ret'];
-    log("Auth Data : ${data}");
     AuthModel auth = _user;
     auth.email = data['email'];
     auth.name = data['name'];

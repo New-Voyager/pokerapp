@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:pokerapp/models/hand_log_model_new.dart';
 
@@ -17,8 +16,6 @@ class BookmarkedHandModel {
   List<BookmarkedHand> bookmarkedHands;
 
   factory BookmarkedHandModel.fromJson(Map<String, dynamic> json) {
-    //log("BOOK : ${json['bookmarkedHandsByGame'].map((x) => BookmarkedHand.fromJson(x))}");
-    // TODO: it would be better to have same key for both bookmarkedHands and bookmarkedHandsByGame
     return BookmarkedHandModel(
       bookmarkedHands: json['bookmarkedHands'] == null
           ? List<BookmarkedHand>.from(json["bookmarkedHandsByGame"]

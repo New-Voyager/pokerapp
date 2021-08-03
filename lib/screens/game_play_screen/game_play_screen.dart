@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
+
 import 'package:after_layout/after_layout.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:dart_nats/dart_nats.dart' as nats;
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/enums/game_status.dart';
 import 'package:pokerapp/enums/player_status.dart';
@@ -23,7 +23,6 @@ import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
-import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/game_context_screen/game_chat/game_chat.dart';
 import 'package:pokerapp/screens/game_play_screen/game_play_screen_util_methods.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/board_view.dart';
@@ -33,8 +32,6 @@ import 'package:pokerapp/screens/game_play_screen/main_views/header_view/header_
 import 'package:pokerapp/screens/game_play_screen/main_views/which_winner_widget.dart';
 import 'package:pokerapp/screens/game_play_screen/notifications/notifications.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
-import 'package:pokerapp/services/app/auth_service.dart';
-
 //import 'package:pokerapp/services/agora/agora.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/app/player_service.dart';
@@ -43,10 +40,9 @@ import 'package:pokerapp/services/encryption/encryption_service.dart';
 import 'package:pokerapp/services/game_play/action_services/game_action_service/util_action_services.dart';
 import 'package:pokerapp/services/game_play/action_services/game_update_service.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_service.dart';
-import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
+import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:pokerapp/services/game_play/graphql/seat_change_service.dart';
-import 'package:pokerapp/services/game_play/utils/audio_buffer.dart';
 import 'package:pokerapp/services/janus/janus.dart';
 import 'package:pokerapp/services/nats/nats.dart';
 import 'package:pokerapp/services/test/test_service.dart';
@@ -701,17 +697,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       }
     }
   }
-
-  // void _setupAudioBufferService() {
-  //   // TODO: DO WE NEED THIS?
-  //   AudioBufferService.create().then(
-  //     (Map<String, String> tmpAudioFiles) =>
-  //         Provider.of<ValueNotifier<Map<String, String>>>(
-  //       context,
-  //       listen: false,
-  //     ).value = tmpAudioFiles,
-  //   );
-  // }
 
   void _queryCurrentHandIfNeeded() {
     /* THIS METHOD QUERIES THE CURRENT HAND AND POPULATE THE

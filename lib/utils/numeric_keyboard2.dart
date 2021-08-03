@@ -34,10 +34,9 @@ const sizedBox2 = const SizedBox(
 class NumericKeyboard2 extends StatelessWidget {
   final double min;
   final double max;
-  // final bool decimal;
   final String title;
   final int currValue;
-  bool firstKey = true;
+  bool firstKey;
 
   NumericKeyboard2({
     Key key,
@@ -481,6 +480,10 @@ class NumericKeyboard2 extends StatelessWidget {
     double max,
     double currentVal,
   }) {
+    if (currentVal == null) {
+      currentVal = 0;
+    }
+    final val = currentVal.floor();
     return showGeneralDialog(
       barrierLabel: "Numeric Keyboard",
       barrierDismissible: true,
@@ -493,7 +496,7 @@ class NumericKeyboard2 extends StatelessWidget {
           title: title,
           min: min,
           max: max,
-          currValue: currentVal.floor(),
+          currValue: val.floor(),
           // decimal: decimal,
         ),
       ),

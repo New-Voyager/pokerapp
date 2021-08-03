@@ -115,9 +115,6 @@ class ClubActionButtonNew extends StatelessWidget {
                 );
               }
               break;
-            case ClubActions.MANAGE_CHIPS:
-              // TODO: Handle this case.
-              break;
             case ClubActions.REWARDS:
               this.onTap();
               break;

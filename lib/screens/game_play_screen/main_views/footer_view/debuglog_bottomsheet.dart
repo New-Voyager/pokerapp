@@ -1,11 +1,8 @@
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
-import 'package:pokerapp/screens/club_screen/hand_log_views/hand_log_view.dart';
 import 'package:pokerapp/services/data/game_log_store.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
-import 'package:pokerapp/widgets/custom_text_button.dart';
 import 'package:pokerapp/widgets/rounded_accent_button.dart';
 
 import 'debug_view.dart';

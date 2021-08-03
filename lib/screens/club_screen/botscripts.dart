@@ -47,7 +47,7 @@ class _BotScriptsScreenState extends State<BotScriptsScreen>
     String apiUrl = prefs.getString(AppConstants.API_SERVER_URL);
     final url = Uri.parse(apiUrl);
     botRunnerHost = url.host;
-    var result = await http.get("http://${botRunnerHost}:8081/app-games");
+    var result = await http.get("http://$botRunnerHost:8081/app-games");
     log("URL : ${result.request.url}");
     if (result.statusCode != 200) {
       toast("Failed to get Results : ${result.reasonPhrase}");
@@ -104,7 +104,7 @@ class _BotScriptsScreenState extends State<BotScriptsScreen>
       oldLiveGames.add(game.gameCode);
     }
     var result = await http.post(
-      "http://${botRunnerHost}:8081/start-app-game",
+      "http://$botRunnerHost:8081/start-app-game",
       body: jsonEncode(<String, dynamic>{
         "clubCode": widget.clubModel.clubCode,
         "name": script.appGame,
