@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:pokerapp/enums/game_stages.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
 import 'package:pokerapp/proto/hand.pb.dart' as proto;
-import 'package:pokerapp/proto/handmessage.pb.dart' as proto;
 
 class HandLogModelNew {
   static HandLogModelNew handLogModelNewFromJson(
@@ -444,31 +443,31 @@ class PotWinner {
     final List<proto.HandWinner> hiWinners = [];
     final List<proto.HandWinner> lowWinners = [];
 
-    for(final winner in this.hiWinners) {
+    for (final winner in this.hiWinners) {
       final hiWinner = proto.HandWinner(
-        seatNo: winner.seatNo,
-        amount: winner.amount.toDouble(),
-        boardCards: winner.boardCards,
-        playerCards: winner.playerCards,
-        winningCards: winner.winningCards,
-        winningCardsStr: winner.winningCardsStr,
-        loCard: winner.loCard,
-        rank: winner.rank,
-        rankStr: winner.rankStr);
+          seatNo: winner.seatNo,
+          amount: winner.amount.toDouble(),
+          boardCards: winner.boardCards,
+          playerCards: winner.playerCards,
+          winningCards: winner.winningCards,
+          winningCardsStr: winner.winningCardsStr,
+          loCard: winner.loCard,
+          rank: winner.rank,
+          rankStr: winner.rankStr);
       hiWinners.add(hiWinner);
     }
 
-    for(final winner in this.lowWinners) {
+    for (final winner in this.lowWinners) {
       final loWinner = proto.HandWinner(
-        seatNo: winner.seatNo,
-        amount: winner.amount.toDouble(),
-        boardCards: winner.boardCards,
-        playerCards: winner.playerCards,
-        winningCards: winner.winningCards,
-        winningCardsStr: winner.winningCardsStr,
-        loCard: winner.loCard,
-        rank: winner.rank,
-        rankStr: winner.rankStr);
+          seatNo: winner.seatNo,
+          amount: winner.amount.toDouble(),
+          boardCards: winner.boardCards,
+          playerCards: winner.playerCards,
+          winningCards: winner.winningCards,
+          winningCardsStr: winner.winningCardsStr,
+          loCard: winner.loCard,
+          rank: winner.rank,
+          rankStr: winner.rankStr);
       lowWinners.add(loWinner);
     }
     final ret = proto.PotWinners(

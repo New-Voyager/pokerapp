@@ -145,13 +145,14 @@ class _GamePlayScreenState extends State<GamePlayScreen>
   }
 
   Future _joinAudio() async {
-    // try {
-    //   if (_audioPlayer != null) {
-    //     _audioPlayer.resume();
-    //   }
-    // } catch(err) {
-    //   log('Error when resuming audio');
-    // }
+    return;
+    try {
+      if (_audioPlayer != null) {
+        _audioPlayer.resume();
+      }
+    } catch (err) {
+      log('Error when resuming audio');
+    }
     if (!_gameState.audioConfEnabled) {
       try {
         if (_voiceTextPlayer != null) {
@@ -687,7 +688,8 @@ class _GamePlayScreenState extends State<GamePlayScreen>
             if (TestService.isTesting) {
               _gameContextObj.handActionProtoService.handle(message.data);
             } else {
-              _gameContextObj.handActionProtoService.handle(message.data, encrypted: true);
+              _gameContextObj.handActionProtoService
+                  .handle(message.data, encrypted: true);
               // Future<List<int>> decryptedMessage =
               //     _gameContextObj.encryptionService.decrypt(message.data);
               // decryptedMessage.then((decryptedBytes) => _gameContextObj

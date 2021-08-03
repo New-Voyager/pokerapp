@@ -107,7 +107,7 @@ class GameComService {
     assert(active);
     this._nats.pubClient.pub(this.playerToHandChannel, data);
   }
-  
+
   void dispose() {
     log('game com service -- disposing');
     _gameToPlayerChannelSubs?.unSub();

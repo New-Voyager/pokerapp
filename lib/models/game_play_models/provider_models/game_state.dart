@@ -705,7 +705,8 @@ class GameState {
     actionState.setAction(seatNo, seatAction);
   }
 
-  void setActionProto(BuildContext context, int seatNo, proto.NextSeatAction seatAction) {
+  void setActionProto(
+      BuildContext context, int seatNo, proto.NextSeatAction seatAction) {
     final actionState = getActionState(context);
     actionState.setActionProto(seatNo, seatAction);
   }
@@ -890,7 +891,6 @@ class ActionState extends ChangeNotifier {
   void setActionProto(int seatNo, proto.NextSeatAction seatAction) {
     this._currentAction = PlayerAction.fromProto(seatNo, seatAction);
   }
-
 
   PlayerAction get action {
     return this._currentAction;

@@ -42,10 +42,8 @@ class _ProfilePageViewState extends State<ProfilePageView>
           Container(
             width: double.infinity,
           ),
-
           Spacer(),
           Spacer(),
-
           _showGif
               ? Builder(
                   builder: (_) {

@@ -198,7 +198,7 @@ class HandActionProtoService {
       listen: false,
     );
 
-    gameContextObject.handActionService.playerActed(
+    gameContextObject.handActionProtoService.playerActed(
       gameContextObject.playerId,
       handInfo.handNum,
       actionState.action.seatNo,
@@ -240,7 +240,7 @@ class HandActionProtoService {
       actionEnum = proto.ACTION.FOLD;
     }
 
-    final messageItem = proto.HandMessageItem(      
+    final messageItem = proto.HandMessageItem(
       messageType: 'PLAYER_ACTED',
       playerActed: proto.HandAction(
         seatNo: seatNo,
@@ -258,8 +258,8 @@ class HandActionProtoService {
         messageId: messageId,
         messages: [messageItem]);
     final binMessage = handMessage.writeToBuffer();
-    _retryMsg =
-        RetrySendingProtoMsg(_gameComService, binMessage, 'PLAYER_ACTED', messageId);
+    _retryMsg = RetrySendingProtoMsg(
+        _gameComService, binMessage, 'PLAYER_ACTED', messageId);
     _retryMsg.run();
   }
 
@@ -470,7 +470,8 @@ class HandActionProtoService {
 
     List<GameType> gameChoices = [];
     for (final type in dealerChoice.games) {
-      final gameType = GameType.values.firstWhere((element) => element.index == type.value);
+      final gameType =
+          GameType.values.firstWhere((element) => element.index == type.value);
       gameChoices.add(gameType);
     }
     final timeout = int.parse(dealerChoice.timeout.toString());
@@ -502,7 +503,8 @@ class HandActionProtoService {
     double bigBlind = newHand.bigBlind;
     double smallBlind = newHand.smallBlind;
     int handNum = newHand.handNum;
-    GameType gameType = GameType.values.firstWhere((element) => element.index == newHand.gameType.value);
+    GameType gameType = GameType.values
+        .firstWhere((element) => element.index == newHand.gameType.value);
     _gameState.resetSeatActions(newHand: true);
 
     // clear marked cards here
@@ -611,8 +613,7 @@ class HandActionProtoService {
     }
 
     // next action seat is me
-    final nextActionSeat =
-        _gameState.getSeat(_context, newHand.nextActionSeat);
+    final nextActionSeat = _gameState.getSeat(_context, newHand.nextActionSeat);
     if (nextActionSeat != null && nextActionSeat.isMe) {
       // if straddle is allowed, my stack size > straddle value, and I haven't turned off straddle option
       if (_gameState.gameInfo.utgStraddleAllowed &&
@@ -778,9 +779,8 @@ class HandActionProtoService {
       }
 
       /* this part handles if we receive a prompt for run it twice */
-      List<String> availableActions = seatAction.availableActions
-          .map<String>((e) => e.toString())
-          .toList();
+      List<String> availableActions =
+          seatAction.availableActions.map<String>((e) => e.toString()).toList();
       if (availableActions?.contains(AppConstants.RUN_IT_TWICE_PROMPT) ??
           false) {
         if (_close) return;
@@ -797,7 +797,7 @@ class HandActionProtoService {
       }
 
       if (_close) return;
-      _gameState.setAction(_context, seatAction.seatNo, seatAction);
+      _gameState.setActionProto(_context, seatAction.seatNo, seatAction);
 
       if (_close) return;
       if (_gameState.straddlePrompt) {
@@ -964,7 +964,10 @@ class HandActionProtoService {
   // we update the pot only during
   void updatePot(List<double> potValues, String key, BuildContext context) {
     try {
-      List<int> pots = potValues?.map<int>((e) => int.parse(e.toString()))?.toList();
+      List<int> pots = [];
+      if (potValues != null) {
+        pots = potValues.map((e) => e.toInt()).toList();
+      }
 
       if (_close) return;
       final tableState = _gameState.getTableState(_context);
@@ -1108,8 +1111,8 @@ class HandActionProtoService {
     double smallBlind = currentHandState.smallBlind;
     double bigBlind = currentHandState.bigBlind;
     final protoGameType = currentHandState.gameType;
-    final gameType = GameType.values.firstWhere(
-        (element) => (element.index == protoGameType.value));
+    final gameType = GameType.values
+        .firstWhere((element) => (element.index == protoGameType.value));
 
     handInfo.update(
       handNum: handNum,

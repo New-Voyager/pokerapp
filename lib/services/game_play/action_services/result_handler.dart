@@ -130,9 +130,9 @@ class ResultHandler {
     log('paul debug: HIGH pot winners starting');
     if (gameState != null) {
       final currentGameType = gameState.currentHandGameType;
-      if (currentGameType == GameType.PLO_HILO || 
-        currentGameType == GameType.FIVE_CARD_PLO_HILO) {
-          tableState.setWhichWinner(AppConstants.HIGH_WINNERS);
+      if (currentGameType == GameType.PLO_HILO ||
+          currentGameType == GameType.FIVE_CARD_PLO_HILO) {
+        tableState.setWhichWinner(AppConstants.HIGH_WINNERS);
       }
     }
     //tableState.setWhichWinner(AppConstants.HIGH_WINNERS);
@@ -168,11 +168,11 @@ class ResultHandler {
     log('paul debug: low pot winners starting: $lowWinners');
     if (gameState != null) {
       final currentGameType = gameState.currentHandGameType;
-      if (currentGameType == GameType.PLO_HILO || 
-        currentGameType == GameType.FIVE_CARD_PLO_HILO) {
+      if (currentGameType == GameType.PLO_HILO ||
+          currentGameType == GameType.FIVE_CARD_PLO_HILO) {
         tableState.setWhichWinner(AppConstants.LOW_WINNERS);
       }
-    }    
+    }
     await processWinners(
       highWinners: lowWinners,
       boardIndex: boardIndex,

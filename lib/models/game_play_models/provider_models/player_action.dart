@@ -62,7 +62,7 @@ class PlayerAction {
     /*
       {
         ...
-        ...
+        ...playerAction
         "seatAction": {
           "seatNo": 1,
           "availableActions": ["FOLD", "CALL", "BET", "ALLIN"],
@@ -159,6 +159,8 @@ class PlayerAction {
 
   int get minRaiseAmount => _minRaiseAmount;
   int get maxRaiseAmount => _maxRaiseAmount;
+  int get callAmount => _callAmount;
+  int get allInAmount => _allInAmount;
   int get seatNo => _seatNo;
 
   void sort() {

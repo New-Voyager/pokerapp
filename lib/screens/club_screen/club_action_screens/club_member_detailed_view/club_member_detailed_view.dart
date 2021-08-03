@@ -246,7 +246,6 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
     );
   }
 
-
   void onCreditLimitEdit(BuildContext context) async {
     //await _showDialog(context);
   }

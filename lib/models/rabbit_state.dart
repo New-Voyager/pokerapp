@@ -117,6 +117,7 @@ class RabbitState extends ChangeNotifier {
 
     notifyListeners();
   }
+
   RabbitState copy() {
     final newRs = RabbitState();
     newRs._show = this._show;

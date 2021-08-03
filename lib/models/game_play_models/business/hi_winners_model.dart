@@ -1,5 +1,4 @@
 import 'package:pokerapp/proto/hand.pb.dart' as proto;
-import 'package:pokerapp/proto/handmessage.pb.dart' as proto;
 
 class HiWinnersModel {
   int seatNo;
@@ -32,5 +31,4 @@ class HiWinnersModel {
     this.boardCards =
         winner.boardCards.map<int>((e) => int.parse(e.toString())).toList();
   }
-
 }
