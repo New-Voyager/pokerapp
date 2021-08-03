@@ -7,7 +7,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/host_seat_chang
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/resources/app_constants.dart';
-import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/game_play_screen/game_play_screen_util_methods.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/animating_widgets/stack_reload_animating_widget.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/milliseconds_counter.dart';
@@ -219,7 +219,7 @@ class NamePlateWidget extends StatelessWidget {
                   FittedBox(
                     child: Text(
                       seat.player?.name ?? '',
-                      style: AppStyles.gamePlayScreenPlayerName.copyWith(
+                      style: AppStylesNew.gamePlayScreenPlayerName.copyWith(
                         color: Colors.white,
                       ),
                     ),
@@ -271,7 +271,7 @@ class NamePlateWidget extends StatelessWidget {
   Widget stack(BuildContext context) {
     Widget _buildStackTextWidget(int stack) => Text(
           stack?.toString() ?? 'XX',
-          style: AppStyles.gamePlayScreenPlayerChips.copyWith(
+          style: AppStylesNew.gamePlayScreenPlayerChips.copyWith(
             color: Colors.white,
           ),
         );
@@ -301,7 +301,7 @@ class NamePlateWidget extends StatelessWidget {
   //       build: (_, time) {
   //         if (time <= 10) {
   //           return BlinkText(_printDuration(Duration(seconds: time.toInt())),
-  //               style: AppStyles.itemInfoTextStyle.copyWith(
+  //               style: AppStylesNew.itemInfoTextStyle.copyWith(
   //                 color: Colors.white,
   //               ),
   //               beginColor: Colors.white,
@@ -311,7 +311,7 @@ class NamePlateWidget extends StatelessWidget {
   //         } else {
   //           return Text(
   //             _printDuration(Duration(seconds: time.toInt())),
-  //             style: AppStyles.itemInfoTextStyle.copyWith(
+  //             style: AppStylesNew.itemInfoTextStyle.copyWith(
   //               color: Colors.white,
   //             ),
   //           );

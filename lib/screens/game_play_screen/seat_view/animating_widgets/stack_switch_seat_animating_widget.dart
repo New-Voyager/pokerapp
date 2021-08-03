@@ -4,7 +4,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/seat_change_mod
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
-import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:provider/provider.dart';
 
 const shrinkedSizedBox = const SizedBox.shrink();
@@ -25,7 +25,7 @@ class StackSwitchSeatAnimatingWidget extends StatelessWidget {
           /* show the stack amount */
           Text(
             stack.toString(),
-            style: AppStyles.gamePlayScreenPlayerChips,
+            style: AppStylesNew.gamePlayScreenPlayerChips,
           ),
         ],
       );

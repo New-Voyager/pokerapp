@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/resources/app_assets.dart';
-import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
-import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/resources/new/app_styles_new.dart';
 
 class LiveGameOption extends StatelessWidget {
   @override
@@ -20,11 +20,11 @@ class LiveGameOption extends StatelessWidget {
       height: 135.0,
       margin: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
       decoration: const BoxDecoration(
-        color: AppColors.cardBackgroundColor,
+        color: AppColorsNew.cardBackgroundColor,
         borderRadius: BorderRadius.all(
           Radius.circular(AppDimensions.cardRadius),
         ),
-        boxShadow: AppStyles.cardBoxShadow,
+        boxShadow: AppStylesNew.cardBoxShadow,
       ),
       child: Row(
         children: <Widget>[
@@ -75,7 +75,7 @@ class LiveGameOption extends StatelessWidget {
                   ),
                   Text(
                     "Hosted by Club Boston",
-                    style: AppStyles.hostInfoTextStyle,
+                    style: AppStylesNew.hostInfoTextStyle,
                   ),
                   Spacer(),
                   Spacer(),
@@ -93,7 +93,7 @@ class LiveGameOption extends StatelessWidget {
                   ),
                   Text(
                     "Hosted by Club Boston",
-                    style: AppStyles.hostInfoTextStyle,
+                    style: AppStylesNew.hostInfoTextStyle,
                   ),
                   Spacer(),
                 ],
@@ -108,11 +108,11 @@ class LiveGameOption extends StatelessWidget {
           Container(
             width: 120.0,
             decoration: const BoxDecoration(
-              color: AppColors.cardBackgroundColor,
+              color: AppColorsNew.cardBackgroundColor,
               borderRadius: BorderRadius.horizontal(
                 right: Radius.circular(AppDimensions.cardRadius),
               ),
-              boxShadow: AppStyles.cardBoxShadowMedium,
+              boxShadow: AppStylesNew.cardBoxShadowMedium,
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -145,7 +145,7 @@ class LiveGameOption extends StatelessWidget {
         style: TextStyle(
           fontFamily: AppAssets.fontFamilyLato,
           fontSize: 20.0,
-          color: AppColors.appAccentColor,
+          color: AppColorsNew.appAccentColor,
         ),
       ),
     );

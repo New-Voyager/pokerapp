@@ -22,10 +22,10 @@ import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/boar
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/models/rabbit_state.dart';
 import 'package:pokerapp/resources/app_constants.dart';
-import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/resources/card_back_assets.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
-//import 'package:pokerapp/services/agora/agora.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/data/game_hive_store.dart';
 import 'package:pokerapp/services/data/game_log_store.dart';
@@ -34,7 +34,6 @@ import 'package:provider/single_child_widget.dart';
 import 'package:timer_count_down/timer_count_down.dart';
 import 'package:pokerapp/utils/numeric_keyboard2.dart';
 
-import '../../resources/app_colors.dart';
 import '../../services/test/test_service.dart';
 
 class GamePlayScreenUtilMethods {
@@ -467,7 +466,7 @@ class GamePlayScreenUtilMethods {
           onTap: () => TestService.testBetWidget(),
         ),
       ],
-      backgroundColor: AppColors.appAccentColor,
+      backgroundColor: AppColorsNew.appAccentColor,
     );
   }
 
@@ -749,7 +748,7 @@ class GamePlayScreenUtilMethods {
         build: (_, time) {
           if (time <= 10) {
             return BlinkText(printDuration(Duration(seconds: time.toInt())),
-                style: AppStyles.itemInfoTextStyle.copyWith(
+                style: AppStylesNew.itemInfoTextStyle.copyWith(
                   color: Colors.white,
                 ),
                 beginColor: Colors.white,
@@ -759,7 +758,7 @@ class GamePlayScreenUtilMethods {
           } else {
             return Text(
               printDuration(Duration(seconds: time.toInt())),
-              style: AppStyles.itemInfoTextStyle.copyWith(
+              style: AppStylesNew.itemInfoTextStyle.copyWith(
                 color: Colors.white,
               ),
             );

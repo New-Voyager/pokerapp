@@ -1,11 +1,10 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/option_item_model.dart';
-import 'package:pokerapp/resources/app_colors.dart';
-import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
+import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/club_screen/club_games_page_view.dart';
@@ -130,10 +129,10 @@ class _GameOptionsState extends State<GameOptionsBottomSheet> {
                 width: 60,
                 padding: EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: AppColors.screenBackgroundColor,
+                  color: AppColorsNew.screenBackgroundColor,
                   shape: BoxShape.circle,
                   border: index == selectedOptionIndex
-                      ? Border.all(color: AppColors.appAccentColor, width: 2)
+                      ? Border.all(color: AppColorsNew.appAccentColor, width: 2)
                       : Border(),
                 ),
                 child: Center(
@@ -145,24 +144,24 @@ class _GameOptionsState extends State<GameOptionsBottomSheet> {
                           ? Icon(
                               optionItem.iconData,
                               size: 35,
-                              color: AppColors.appAccentColor,
+                              color: AppColorsNew.appAccentColor,
                             )
                           : Container(
                               padding: EdgeInsets.symmetric(
                                   horizontal: 3, vertical: 1),
                               decoration: BoxDecoration(
-                                color: AppColors.appAccentColor,
+                                color: AppColorsNew.appAccentColor,
                                 borderRadius: BorderRadius.circular(3),
                               ),
                               child: Text(
                                 optionItem.name,
-                                style: AppStyles.optionname,
+                                style: AppStylesNew.optionname,
                               ),
                             ),
                 )),
             Text(
               optionItem.title,
-              style: AppStyles.optionTitle,
+              style: AppStylesNew.optionTitle,
               textAlign: TextAlign.center,
               maxLines: 2,
             )

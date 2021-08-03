@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/resources/animation_assets.dart';
-import 'package:pokerapp/resources/app_colors.dart';
-import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
+import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
@@ -78,7 +78,7 @@ class _ProfilePopupState extends State<ProfilePopup> {
           ),
           Text(
             widget.seat.player.name,
-            style: AppStyles.stickerDialogText,
+            style: AppStylesNew.stickerDialogText,
           )
         ],
       );
@@ -98,10 +98,10 @@ class _ProfilePopupState extends State<ProfilePopup> {
             margin: EdgeInsets.symmetric(vertical: 15),
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(25),
-                color: AppColors.stickerDialogActionColor),
+                color: AppColorsNew.stickerDialogActionColor),
             child: Text(
               "Confirm",
-              style: AppStyles.stickerDialogActionText,
+              style: AppStylesNew.stickerDialogActionText,
             ),
           ),
         ),
@@ -166,7 +166,7 @@ class _ProfilePopupState extends State<ProfilePopup> {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: AppColors.stickerDialogBorderColor,
+                  color: AppColorsNew.stickerDialogBorderColor,
                   width: 2,
                 ),
               ),
@@ -188,7 +188,7 @@ class _ProfilePopupState extends State<ProfilePopup> {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: AppColors.stickerDialogBorderColor,
+                  color: AppColorsNew.stickerDialogBorderColor,
                   width: 2,
                 ),
               ),
@@ -208,7 +208,7 @@ class _ProfilePopupState extends State<ProfilePopup> {
             Navigator.pop(context);
           },
           child: CircleAvatar(
-            backgroundColor: AppColors.stickerDialogActionColor,
+            backgroundColor: AppColorsNew.stickerDialogActionColor,
             radius: 11,
             child: Icon(
               Icons.close_outlined,

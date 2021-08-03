@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/waiting_list_model.dart';
-import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
@@ -145,7 +145,7 @@ class _WaitingListBottomSheetState extends State<WaitingListBottomSheet> {
                 padding: EdgeInsets.only(top: 15, bottom: 10),
                 child: Text(
                   seatChangeModel.name,
-                  style: AppStyles.clubCodeStyle,
+                  style: AppStylesNew.clubCodeStyle,
                 ),
               ),
               Spacer(),
@@ -266,7 +266,7 @@ class _WaitingListBottomSheetState extends State<WaitingListBottomSheet> {
 
                         // Text(
                         //   "Apply",
-                        //   style: AppStyles.subTitleTextStyle,
+                        //   style: AppStylesNew.subTitleTextStyle,
                         // ),
                         //),
                         SizedBox(

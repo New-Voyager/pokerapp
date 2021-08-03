@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
-import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/resources/new/app_styles_new.dart';
 
 import 'animating_widgets/stack_switch_seat_animating_widget.dart';
 
@@ -78,7 +78,7 @@ class ActionStatusWidget extends StatelessWidget {
     }
 
     Color fgColor = Colors.white;
-    return AppStyles.userPopUpMessageTextStyle
+    return AppStylesNew.userPopUpMessageTextStyle
         .copyWith(fontSize: 10, color: fgColor, backgroundColor: statusColor);
   }
 }

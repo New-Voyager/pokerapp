@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
-import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
 
 class ChatTextField extends StatelessWidget {
   final TextEditingController controller;
@@ -31,7 +31,7 @@ class ChatTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.chatInputBgColor,
+        color: AppColorsNew.chatInputBgColor,
         borderRadius: BorderRadius.all(
           Radius.circular(
             5.0,

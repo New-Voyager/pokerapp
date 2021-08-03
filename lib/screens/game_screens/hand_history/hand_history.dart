@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/hand_history_model.dart';
 import 'package:pokerapp/models/player_info.dart';
-import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
@@ -78,7 +78,7 @@ class _HandHistoryState extends State<HandHistoryListView>
                   children: [
                     Container(
                       child: TabBar(
-                        unselectedLabelColor: AppColors.lightGrayTextColor,
+                        unselectedLabelColor: AppColorsNew.lightGrayTextColor,
                         indicatorSize: TabBarIndicatorSize.label,
                         indicatorColor: AppColorsNew.yellowAccentColor,
                         labelColor: Colors.white,

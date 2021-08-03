@@ -1,6 +1,6 @@
 import 'package:blinking_text/blinking_text.dart';
 import 'package:flutter/material.dart';
-import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:timer_count_down/timer_count_down.dart';
@@ -97,7 +97,7 @@ class CountDownTextButton extends StatelessWidget {
         build: (_, time) {
           if (time <= 10) {
             return BlinkText(printDuration(Duration(seconds: time.toInt())),
-                style: AppStyles.itemInfoTextStyle.copyWith(
+                style: AppStylesNew.itemInfoTextStyle.copyWith(
                   color: Colors.white,
                 ),
                 beginColor: Colors.white,
@@ -107,7 +107,7 @@ class CountDownTextButton extends StatelessWidget {
           } else {
             return Text(
               printDuration(Duration(seconds: time.toInt())),
-              style: AppStyles.itemInfoTextStyle.copyWith(
+              style: AppStylesNew.itemInfoTextStyle.copyWith(
                 color: Colors.white,
               ),
             );

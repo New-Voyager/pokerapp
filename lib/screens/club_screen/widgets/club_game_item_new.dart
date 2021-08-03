@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/game_model.dart';
-import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/routes.dart';
@@ -58,7 +58,7 @@ class ClubGameItemNew extends StatelessWidget {
                                 _clubGameModel.bigBlind.toString(),
                             textAlign: TextAlign.left,
                             style: TextStyle(
-                              color: AppColors.contentColor,
+                              color: AppColorsNew.contentColor,
                               fontSize: 12.0,
                               fontWeight: FontWeight.w400,
                             ),
@@ -73,7 +73,7 @@ class ClubGameItemNew extends StatelessWidget {
                                 _clubGameModel.buyInMax.toString(),
                             textAlign: TextAlign.left,
                             style: TextStyle(
-                              color: AppColors.contentColor,
+                              color: AppColorsNew.contentColor,
                               fontSize: 12.0,
                               fontWeight: FontWeight.w400,
                             ),
@@ -95,7 +95,7 @@ class ClubGameItemNew extends StatelessWidget {
                                     " open seats",
                             textAlign: TextAlign.left,
                             style: TextStyle(
-                              color: AppColors.contentColor,
+                              color: AppColorsNew.contentColor,
                               fontSize: 12.0,
                               fontWeight: FontWeight.w400,
                             ),
@@ -110,7 +110,7 @@ class ClubGameItemNew extends StatelessWidget {
                                 : "",
                             textAlign: TextAlign.left,
                             style: TextStyle(
-                              color: AppColors.contentColor,
+                              color: AppColorsNew.contentColor,
                               fontSize: 12.0,
                               fontWeight: FontWeight.w400,
                             ),

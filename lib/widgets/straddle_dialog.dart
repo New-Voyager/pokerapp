@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
-import 'package:pokerapp/resources/app_colors.dart';
-import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
+import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/widgets/switch_widget.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
@@ -65,7 +65,7 @@ class _StraddleDialogState extends State<StraddleDialog> {
             child: Text(
               text.toUpperCase(),
               textAlign: TextAlign.center,
-              style: AppStyles.clubItemInfoTextStyle.copyWith(
+              style: AppStylesNew.clubItemInfoTextStyle.copyWith(
                 fontSize: 10.0.dp,
                 color: AppColorsNew.newGreenButtonColor,
               ),
@@ -86,7 +86,7 @@ class _StraddleDialogState extends State<StraddleDialog> {
             color: Colors.black,
             borderRadius: BorderRadius.circular(5.0),
             border: Border.all(
-              color: AppColors.dialogBorderColor,
+              color: AppColorsNew.dialogBorderColor,
               width: 2.0,
             ),
           ),

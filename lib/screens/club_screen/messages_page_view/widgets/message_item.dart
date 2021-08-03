@@ -6,7 +6,8 @@ import 'package:flutter/painting.dart';
 import 'package:pokerapp/models/auth_model.dart';
 import 'package:pokerapp/models/club_message_model.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
-import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/resources/new/app_styles_new.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/chat_time.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/chat_user_avatar.dart';
@@ -15,7 +16,6 @@ import 'package:pokerapp/screens/util_screens/replay_hand_dialog/replay_hand_dia
 import 'package:pokerapp/widgets/attributed_gif_widget.dart';
 import 'package:pokerapp/widgets/round_color_button.dart';
 
-import '../../../../resources/app_colors.dart';
 import '../../../chat_screen/utils.dart';
 import '../../../chat_screen/widgets/triangle_painter.dart';
 import '../club_chat_model.dart';
@@ -163,7 +163,7 @@ class MessageItem extends StatelessWidget {
                       ),
                       Text(
                         "($gameStr)",
-                        style: AppStyles.hostInfoTextStyle
+                        style: AppStylesNew.hostInfoTextStyle
                             .copyWith(color: Colors.white70, fontSize: 12),
                       ),
                     ],
@@ -248,7 +248,7 @@ class MessageItem extends StatelessWidget {
                   child: Text(
                     isMe ? 'You' : playerName,
                     style: TextStyle(
-                      color: AppColors.appAccentColor,
+                      color: AppColorsNew.appAccentColor,
                     ),
                   ),
                 ),

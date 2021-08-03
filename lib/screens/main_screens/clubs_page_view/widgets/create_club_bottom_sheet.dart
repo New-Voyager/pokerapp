@@ -34,7 +34,7 @@ class _CreateClubBottomSheetState extends State<CreateClubBottomSheet> {
         /*  padding: EdgeInsets.only(
          // bottom: MediaQuery.of(context).viewInsets.bottom,
         ), */
-        // color: AppColors.cardBackgroundColor,
+        // color: AppColorsNew.cardBackgroundColor,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

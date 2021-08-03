@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:pokerapp/models/club_members_model.dart';
 import 'package:pokerapp/resources/app_assets.dart';
-import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
-import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/widgets/custom_text_button.dart';
 
 class MemberItem extends StatelessWidget {
@@ -20,15 +20,15 @@ class MemberItem extends StatelessWidget {
       children: [
         Text(
           'Balance',
-          style: AppStyles.itemInfoSecondaryTextStyle,
+          style: AppStylesNew.itemInfoSecondaryTextStyle,
         ),
         const SizedBox(height: 5.0),
         Text(
           '200.0',
-          style: AppStyles.itemInfoSecondaryTextStyle.copyWith(
+          style: AppStylesNew.itemInfoSecondaryTextStyle.copyWith(
             color: double.parse('200.0') > 0
-                ? AppColors.positiveColor
-                : AppColors.negativeColor,
+                ? AppColorsNew.positiveColor
+                : AppColorsNew.negativeColor,
           ),
         ),
         const SizedBox(
@@ -49,11 +49,11 @@ class MemberItem extends StatelessWidget {
     return Container(
       height: 135.0,
       decoration: const BoxDecoration(
-        color: AppColors.cardBackgroundColor,
+        color: AppColorsNew.cardBackgroundColor,
         borderRadius: BorderRadius.all(
           Radius.circular(AppDimensions.cardRadius),
         ),
-        boxShadow: AppStyles.cardBoxShadow,
+        boxShadow: AppStylesNew.cardBoxShadow,
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -102,7 +102,7 @@ class MemberItem extends StatelessWidget {
                       separator,
                       Text(
                         'Member Since: ${DateFormat('dd MMM, yy').format(member.joinedDate)}',
-                        style: AppStyles.itemInfoTextStyle,
+                        style: AppStylesNew.itemInfoTextStyle,
                       ),
 
                       // TODO: need total buy in
@@ -110,7 +110,7 @@ class MemberItem extends StatelessWidget {
                       separator,
                       Text(
                         'Total BuyIn: 8000.00',
-                        style: AppStyles.itemInfoTextStyle,
+                        style: AppStylesNew.itemInfoTextStyle,
                       ),
 
                       // TODO: need profit
@@ -118,7 +118,7 @@ class MemberItem extends StatelessWidget {
                       separator,
                       Text(
                         'Profit: -2000.00',
-                        style: AppStyles.itemInfoTextStyle,
+                        style: AppStylesNew.itemInfoTextStyle,
                       ),
 
                       /* last played on */
@@ -127,7 +127,7 @@ class MemberItem extends StatelessWidget {
                         member.lastPlayedDate != null
                             ? 'Last Played on ${member.lastPlayedDate}'
                             : 'Never Played',
-                        style: AppStyles.itemInfoTextStyle,
+                        style: AppStylesNew.itemInfoTextStyle,
                       ),
                     ],
                   ),
@@ -143,11 +143,11 @@ class MemberItem extends StatelessWidget {
           Container(
             width: 120.0,
             decoration: const BoxDecoration(
-              color: AppColors.cardBackgroundColor,
+              color: AppColorsNew.cardBackgroundColor,
               borderRadius: BorderRadius.horizontal(
                 right: Radius.circular(AppDimensions.cardRadius),
               ),
-              boxShadow: AppStyles.cardBoxShadowMedium,
+              boxShadow: AppStylesNew.cardBoxShadowMedium,
             ),
             child: _buildSideAction(),
           ),

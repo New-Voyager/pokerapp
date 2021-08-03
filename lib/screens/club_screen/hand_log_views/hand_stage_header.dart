@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
-import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
@@ -154,7 +154,7 @@ class HandStageHeader extends StatelessWidget {
       return Container(
         child: Text(
           "Pot: ${handLogModel.hand.handLog.potWinners['0'].amount}",
-          style: AppStyles.playerNameTextStyle,
+          style: AppStylesNew.playerNameTextStyle,
         ),
       );
     }
@@ -175,12 +175,12 @@ class HandStageHeader extends StatelessWidget {
           Container(
               child: Text(
             "Pot: ${handLogModel.hand.handLog.potWinners['0'].amount}",
-            style: AppStyles.playerNameTextStyle,
+            style: AppStylesNew.playerNameTextStyle,
           )),
           Container(
             child: Text(
               "$sidePots",
-              style: AppStyles.playerNameTextStyle,
+              style: AppStylesNew.playerNameTextStyle,
             ),
           ),
         ],

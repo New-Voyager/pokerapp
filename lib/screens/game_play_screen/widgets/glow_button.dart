@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
 
 class GlowButton extends StatefulWidget {
   final String text;
@@ -24,7 +24,7 @@ class _GlowButtonState extends State<GlowButton> with TickerProviderStateMixin {
       padding: EdgeInsets.all(10),
       margin: EdgeInsets.symmetric(vertical: 4),
       decoration: BoxDecoration(
-          border: Border.all(color: AppColors.buttonBorderColor, width: 2.0),
+          border: Border.all(color: AppColorsNew.buttonBorderColor, width: 2.0),
           shape: BoxShape.circle,
           gradient: LinearGradient(
             colors: [

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
 
 class ConnectionDialog {
   static show({@required BuildContext context, String loadingText}) {
@@ -14,7 +14,7 @@ class ConnectionDialog {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),
             side: BorderSide(
-              color: AppColors.plateBorderColor,
+              color: AppColorsNew.plateBorderColor,
               width: 2,
             ),
           ),

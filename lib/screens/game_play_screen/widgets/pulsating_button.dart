@@ -56,7 +56,7 @@ class _PulsatingCircleIconButtonState extends State<PulsatingCircleIconButton>
             /*  decoration: BoxDecoration(
               //color: Colors.red,
               border:
-                  Border.all(color: AppColors.buttonBorderColor, width: 2.0),
+                  Border.all(color: AppColorsNew.buttonBorderColor, width: 2.0),
               shape: BoxShape.circle,
               gradient: LinearGradient(
                 colors: [

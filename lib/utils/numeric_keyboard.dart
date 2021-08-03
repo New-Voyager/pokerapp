@@ -1,6 +1,6 @@
 // import 'package:flutter/material.dart';
 // import 'package:flutter/widgets.dart';
-// import 'package:pokerapp/resources/app_colors.dart';
+// import 'package:pokerapp/resources/new/app_colors_new.dart';
 // import 'package:provider/provider.dart';
 
 // const sizedBox20 = const SizedBox(
@@ -73,7 +73,7 @@
 //               decoration: BoxDecoration(
 //                 border: Border(
 //                   bottom: BorderSide(
-//                     color: error ? Colors.red : AppColors.appAccentColor,
+//                     color: error ? Colors.red : AppColorsNew.appAccentColor,
 //                     width: 1.0,
 //                   ),
 //                 ),
@@ -81,7 +81,7 @@
 //               child: Text(
 //                 value.isEmpty ? '0' : value,
 //                 style: TextStyle(
-//                   color: AppColors.appAccentColor,
+//                   color: AppColorsNew.appAccentColor,
 //                   fontSize: 18.0,
 //                 ),
 //               ),
@@ -190,7 +190,7 @@
 //               shape: BoxShape.circle,
 //               color: icon != null ? Colors.grey : Colors.blue,
 //               // border: Border.all(
-//               //   color: AppColors.appAccentColor,
+//               //   color: AppColorsNew.appAccentColor,
 //               //   width: 2.0,
 //               // ),
 //               boxShadow: [
@@ -334,7 +334,7 @@
 //             decoration: const BoxDecoration(
 //               border: const Border(
 //                 top: const BorderSide(
-//                   color: AppColors.appAccentColor,
+//                   color: AppColorsNew.appAccentColor,
 //                   width: 2.0,
 //                 ),
 //               ),
@@ -353,7 +353,7 @@
 //                 ),
 //               ],
 //               builder: (context, __) => Scaffold(
-//                 backgroundColor: AppColors.widgetBackgroundColor,
+//                 backgroundColor: AppColorsNew.widgetBackgroundColor,
 //                 body: SafeArea(
 //                   top: false,
 //                   child: Padding(

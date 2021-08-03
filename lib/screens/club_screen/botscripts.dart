@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/club_homepage_model.dart';
-import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/app_constants.dart';
-import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:pokerapp/routes.dart';
@@ -62,7 +62,7 @@ class _BotScriptsScreenState extends State<BotScriptsScreen>
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 16),
       decoration: BoxDecoration(
-          gradient: AppStyles.handlogGreyGradient,
+          gradient: AppStylesNew.handlogGreyGradient,
           borderRadius: BorderRadius.circular(8)),
       child: ListTile(
         contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -82,7 +82,7 @@ class _BotScriptsScreenState extends State<BotScriptsScreen>
         trailing: IconButton(
           icon: Icon(
             Icons.play_circle_fill,
-            color: AppColors.appAccentColor,
+            color: AppColorsNew.appAccentColor,
           ),
           onPressed: () => _handlePlay(script, context),
         ),
@@ -164,12 +164,12 @@ class _BotScriptsScreenState extends State<BotScriptsScreen>
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
-      backgroundColor: AppColors.screenBackgroundColor,
+      backgroundColor: AppColorsNew.screenBackgroundColor,
       appBar: AppBar(
-        title: Text("Bot scripts", style: AppStyles.titleBarTextStyle),
+        title: Text("Bot scripts", style: AppStylesNew.titleBarTextStyle),
         leading: IconButton(
           icon: Icon(Icons.arrow_back_ios),
-          color: AppColors.appAccentColor,
+          color: AppColorsNew.appAccentColor,
           onPressed: () => Navigator.of(context).pop(),
         ),
         elevation: 0,
@@ -182,7 +182,7 @@ class _BotScriptsScreenState extends State<BotScriptsScreen>
                 return getScript(scripts.scripts[index], context);
               },
               separatorBuilder: (context, index) => Divider(
-                color: AppColors.veryLightGrayColor,
+                color: AppColorsNew.veryLightGrayColor,
                 indent: 32,
                 endIndent: 32,
               ),

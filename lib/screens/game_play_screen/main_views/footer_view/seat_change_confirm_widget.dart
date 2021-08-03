@@ -72,7 +72,7 @@ class SeatChangeConfirmWidget extends StatelessWidget {
               //     color: Colors.brown[700],
               //     child: Text(
               //       "Confirm\nRearrangement",
-              //       style: AppStyles.footerResultTextStyle2,
+              //       style: AppStylesNew.footerResultTextStyle2,
               //       textAlign: TextAlign.center,
               //     ),
               //   ),
@@ -88,7 +88,7 @@ class SeatChangeConfirmWidget extends StatelessWidget {
               //     color: Colors.brown[700],
               //     child: Text(
               //       "Cancel\nChanges",
-              //       style: AppStyles.footerResultTextStyle2,
+              //       style: AppStylesNew.footerResultTextStyle2,
               //       textAlign: TextAlign.center,
               //     ),
               //   ),

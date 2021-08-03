@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/notification_models/general_notification_model.dart';
-import 'package:pokerapp/resources/app_colors.dart';
-import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
+import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/count_down_timer.dart';
 
 class GeneralNotification extends StatelessWidget {
@@ -16,7 +16,7 @@ class GeneralNotification extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.cardBackgroundColor,
+        color: AppColorsNew.cardBackgroundColor,
         borderRadius: BorderRadius.circular(5.0),
       ),
       margin: const EdgeInsets.symmetric(
@@ -26,11 +26,11 @@ class GeneralNotification extends StatelessWidget {
       child: ListTile(
         title: Text(
           model?.titleText ?? 'Seat change in progress',
-          style: AppStyles.notificationTitleTextStyle,
+          style: AppStylesNew.notificationTitleTextStyle,
         ),
         subtitle: Text(
           model?.subTitleText ?? 'Seat change requested by Brian at seat no 4',
-          style: AppStyles.notificationSubTitleTextStyle,
+          style: AppStylesNew.notificationSubTitleTextStyle,
         ),
         trailing: model?.trailingWidget ??
             CountDownTimer(

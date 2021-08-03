@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
-import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
@@ -19,7 +19,7 @@ class DealerButtonWidget extends StatelessWidget {
 
     //final buttonColor = attributes.buttonColor(gameType);
     final buttonColor = Tuple2<Color, Color>(Colors.white, Colors.black);
-    final textStyle = AppStyles.dealerTextStyle.copyWith(
+    final textStyle = AppStylesNew.dealerTextStyle.copyWith(
       color: buttonColor.item2,
     );
     return Transform.translate(

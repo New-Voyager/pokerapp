@@ -7,9 +7,9 @@
 // import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 // import 'package:path_provider/path_provider.dart';
 // import 'package:pokerapp/main.dart';
-// import 'package:pokerapp/resources/app_colors.dart';
+// import 'package:pokerapp/resources/new/app_colors_new.dart';
 // import 'package:pokerapp/resources/app_constants.dart';
-// import 'package:pokerapp/resources/app_styles.dart';
+// import 'package:pokerapp/resources/new/app_styles_new.dart';
 // import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 // import 'package:pokerapp/widgets/chat_text_field.dart';
 // import 'package:pokerapp/widgets/emoji_picker_widget.dart';
@@ -106,14 +106,14 @@
 //         children: [
 //           Text(
 //             message.fromName.toString(),
-//             style: AppStyles.clubItemInfoTextStyle.copyWith(fontSize: 12),
+//             style: AppStylesNew.clubItemInfoTextStyle.copyWith(fontSize: 12),
 //             softWrap: true,
 //           ),
 //           SizedBox(height: 5),
 //           message.text != null
 //               ? Text(
 //                   widget.chatService.messages[index].text,
-//                   style: AppStyles.clubCodeStyle,
+//                   style: AppStylesNew.clubCodeStyle,
 //                 )
 //               : message.giphyLink != null
 //                   ? CachedNetworkImage(
@@ -134,7 +134,7 @@
 //             children: [
 //               Text(
 //                 "${AppConstants.CHAT_DATE_TIME_FORMAT.format(message.received.toLocal())}",
-//                 style: AppStyles.itemInfoSecondaryTextStyle.copyWith(
+//                 style: AppStylesNew.itemInfoSecondaryTextStyle.copyWith(
 //                   fontSize: 10,
 //                 ),
 //               )
@@ -155,7 +155,7 @@
 
 //     height = MediaQuery.of(context).size.height;
 //     return Container(
-//       color: AppColors.screenBackgroundColor,
+//       color: AppColorsNew.screenBackgroundColor,
 //       padding:
 //           EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
 //       height: isEmojiVisible || isKeyboardVisible || isGiphyVisible
@@ -175,7 +175,7 @@
 //                 padding: const EdgeInsets.symmetric(horizontal: 10),
 //                 child: Icon(
 //                   Icons.arrow_downward_rounded,
-//                   color: AppColors.appAccentColor,
+//                   color: AppColorsNew.appAccentColor,
 //                 ),
 //               ),
 //             ),
@@ -200,13 +200,13 @@
 //                     left: 8,
 //                   ),
 //                   padding: EdgeInsets.all(8),
-//                   decoration: AppStyles.othersMessageDecoration,
+//                   decoration: AppStylesNew.othersMessageDecoration,
 //                   child: Column(
 //                     crossAxisAlignment: CrossAxisAlignment.stretch,
 //                     children: [
 //                       Text(
 //                         message.fromName.toString(),
-//                         style: AppStyles.clubItemInfoTextStyle.copyWith(
+//                         style: AppStylesNew.clubItemInfoTextStyle.copyWith(
 //                           fontSize: 12,
 //                         ),
 //                         softWrap: true,
@@ -215,7 +215,7 @@
 //                       message.text != null
 //                           ? Text(
 //                               message.text,
-//                               style: AppStyles.clubCodeStyle,
+//                               style: AppStylesNew.clubCodeStyle,
 //                             )
 //                           : message.giphyLink != null
 //                               ? CachedNetworkImage(
@@ -238,7 +238,7 @@
 //                           Text(
 //                             "${AppConstants.CHAT_DATE_TIME_FORMAT.format(message.received.toLocal())}",
 //                             style:
-//                                 AppStyles.itemInfoSecondaryTextStyle.copyWith(
+//                                 AppStylesNew.itemInfoSecondaryTextStyle.copyWith(
 //                               fontSize: 10,
 //                             ),
 //                           )
@@ -264,7 +264,7 @@
 
 //   inputBox() {
 //     return Container(
-//       color: AppColors.screenBackgroundColor,
+//       color: AppColorsNew.screenBackgroundColor,
 //       child: Row(
 //         children: [
 //           SizedBox(

@@ -1,10 +1,9 @@
-
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_history_model.dart';
 import 'package:pokerapp/resources/app_assets.dart';
-import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
-import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/resources/new/app_styles_new.dart';
 
 class GameHistoryItem extends StatelessWidget {
   final GameHistoryModel item;
@@ -24,10 +23,10 @@ class GameHistoryItem extends StatelessWidget {
         const SizedBox(height: 5.0),
         Visibility(
           child: Text(item.balance.toString(),
-              style: AppStyles.itemInfoSecondaryTextStyle.copyWith(
+              style: AppStylesNew.itemInfoSecondaryTextStyle.copyWith(
                   color: item.balance > 0
-                      ? AppColors.positiveColor
-                      : AppColors.negativeColor)),
+                      ? AppColorsNew.positiveColor
+                      : AppColorsNew.negativeColor)),
           visible: item.handsPlayed > 0 && item.balance != null,
         ),
       ],
@@ -50,11 +49,11 @@ class GameHistoryItem extends StatelessWidget {
     return Container(
         height: 180,
         decoration: const BoxDecoration(
-          color: AppColors.cardBackgroundColor,
+          color: AppColorsNew.cardBackgroundColor,
           borderRadius: BorderRadius.all(
             Radius.circular(AppDimensions.cardRadius),
           ),
-          boxShadow: AppStyles.cardBoxShadow,
+          boxShadow: AppStylesNew.cardBoxShadow,
         ),
         child: Stack(
           children: [
@@ -127,7 +126,7 @@ class GameHistoryItem extends StatelessWidget {
                                 separator,
                                 Text(
                                   item.Blinds,
-                                  style: AppStyles.blindsTextStyle,
+                                  style: AppStylesNew.blindsTextStyle,
                                 ),
                               ],
                             ),
@@ -136,12 +135,12 @@ class GameHistoryItem extends StatelessWidget {
                             Row(children: [
                               Text(
                                 'Hosted by',
-                                style: AppStyles.hostInfoTextStyle,
+                                style: AppStylesNew.hostInfoTextStyle,
                               ),
                               colSeparator,
                               Text(
                                 item.startedBy,
-                                style: AppStyles.hostNameTextStyle,
+                                style: AppStylesNew.hostNameTextStyle,
                               ),
                             ]),
                             separator,
@@ -149,12 +148,12 @@ class GameHistoryItem extends StatelessWidget {
                             Row(children: [
                               Text(
                                 'Started at',
-                                style: AppStyles.hostInfoTextStyle,
+                                style: AppStylesNew.hostInfoTextStyle,
                               ),
                               colSeparator,
                               Text(
                                 item.StartedAt,
-                                style: AppStyles.hostNameTextStyle,
+                                style: AppStylesNew.hostNameTextStyle,
                               ),
                             ]),
                             separator,
@@ -163,12 +162,12 @@ class GameHistoryItem extends StatelessWidget {
                               children: [
                                 Text(
                                   'Game ran for',
-                                  style: AppStyles.hostInfoTextStyle,
+                                  style: AppStylesNew.hostInfoTextStyle,
                                 ),
                                 colRunTimeSeparator,
                                 Text(
                                   item.runTimeStr,
-                                  style: AppStyles.hostInfoTextStyle,
+                                  style: AppStylesNew.hostInfoTextStyle,
                                 ),
                               ],
                             ),
@@ -180,13 +179,13 @@ class GameHistoryItem extends StatelessWidget {
                                     visible: item.handsPlayed > 0,
                                     child: Text(
                                       'Played for',
-                                      style: AppStyles.hostInfoTextStyle,
+                                      style: AppStylesNew.hostInfoTextStyle,
                                     ),
                                   ),
                                   colRunTimeSeparator,
                                   Text(
                                     item.sessionTimeStr,
-                                    style: AppStyles.sessionTimeTextStyle,
+                                    style: AppStylesNew.sessionTimeTextStyle,
                                   ),
                                 ],
                               ),
@@ -206,11 +205,11 @@ class GameHistoryItem extends StatelessWidget {
                 Container(
                   width: 80.0,
                   decoration: const BoxDecoration(
-                    color: AppColors.cardBackgroundColor,
+                    color: AppColorsNew.cardBackgroundColor,
                     borderRadius: BorderRadius.horizontal(
                       right: Radius.circular(AppDimensions.cardRadius),
                     ),
-                    boxShadow: AppStyles.cardBoxShadowMedium,
+                    boxShadow: AppStylesNew.cardBoxShadowMedium,
                   ),
                   child: _buildSideAction(),
                 ),
@@ -226,12 +225,12 @@ class GameHistoryItem extends StatelessWidget {
                   children: [
                     Text(
                       item.gameCode,
-                      style: AppStyles.gameCodeTextStyle,
+                      style: AppStylesNew.gameCodeTextStyle,
                     ),
                     colSeparator,
                     Text(
                       '#' + item.gameNum.toString(),
-                      style: AppStyles.hostNameTextStyle,
+                      style: AppStylesNew.hostNameTextStyle,
                     ),
                     colSeparator,
                   ],

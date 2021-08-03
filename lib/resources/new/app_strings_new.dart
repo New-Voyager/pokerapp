@@ -233,4 +233,16 @@ class AppStringsNew {
   static String saveGameSettingsTitle = "Save Settings";
 
   static String okText = "Ok";
+
+  // imported from OLD app strings
+
+  // games screen
+  static const String playerGamesText = 'Recent Games';
+  // static const String liveGamesText = 'Live Games';
+
+  // login screen
+  static const String welcomeText = 'Welcome';
+  static const String emailText = 'Email';
+  static const String passwordText = 'Password';
+  static const String registerNowText = 'Register Now';
 }

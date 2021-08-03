@@ -2,9 +2,9 @@ import 'package:badges/badges.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/club_model.dart';
-import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
-import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
@@ -52,8 +52,8 @@ class ClubItemView extends StatelessWidget {
                   textAlign: TextAlign.end,
                   style: AppStylesNew.valueTextStyle.copyWith(
                     color: double.parse(club.balance) > 0
-                        ? AppColors.positiveColor
-                        : AppColors.negativeColor,
+                        ? AppColorsNew.positiveColor
+                        : AppColorsNew.negativeColor,
                   ),
                 ),
               ),
@@ -122,7 +122,7 @@ class ClubItemView extends StatelessWidget {
         ),
         // Text(
         //   '${club.memberCount} Member${club.memberCount == 0 || club.memberCount == 1 ? '' : 's'}',
-        //   style: AppStyles.itemInfoTextStyle,
+        //   style: AppStylesNew.itemInfoTextStyle,
         // ),
 
         /* separator */
@@ -133,7 +133,7 @@ class ClubItemView extends StatelessWidget {
             ? SizedBox.shrink()
             : Text(
                 "Joined at ${club.joinDate}",
-                style: AppStyles.itemInfoTextStyle,
+                style: AppStylesNew.itemInfoTextStyle,
               ),
       ],
     );
@@ -162,10 +162,10 @@ class ClubItem extends StatelessWidget {
               )
             : Text(
                 club.balance,
-                style: AppStyles.itemInfoSecondaryTextStyle.copyWith(
+                style: AppStylesNew.itemInfoSecondaryTextStyle.copyWith(
                   color: double.parse(club.balance) > 0
-                      ? AppColors.positiveColor
-                      : AppColors.negativeColor,
+                      ? AppColorsNew.positiveColor
+                      : AppColorsNew.negativeColor,
                 ),
               ),
       ];
@@ -279,7 +279,7 @@ class ClubItem extends StatelessWidget {
               borderRadius: BorderRadius.all(
                 Radius.circular(AppDimensions.cardRadius),
               ),
-              boxShadow: AppStyles.cardBoxShadowMedium,
+              boxShadow: AppStylesNew.cardBoxShadowMedium,
             ),
             child: _buildSideAction(club),
           ),
