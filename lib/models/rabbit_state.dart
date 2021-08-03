@@ -1,4 +1,7 @@
 import 'package:flutter/widgets.dart';
+import 'package:pokerapp/proto/hand.pb.dart' as proto;
+import 'package:pokerapp/proto/handmessage.pb.dart' as proto;
+import 'package:pokerapp/proto/enums.pb.dart' as proto;
 
 import 'package:pokerapp/resources/app_constants.dart';
 
@@ -82,6 +85,38 @@ class RabbitState extends ChangeNotifier {
     notifyListeners();
   }
 
+  void putResultProto(proto.HandResult result, {List<int> myCards = const []}) {
+    if (result == null) return _clear();
+    final handLog = result.handLog;
+
+    // if run it twice, do nothing
+    final bool isRunItTwice = handLog.runItTwice;
+
+    if (isRunItTwice) return;
+
+    final String wonAt = handLog.wonAt.name;
+
+    // if wonAt is not FLOP or TURN, we dont proceed
+    if (wonAt != AppConstants.FLOP && wonAt != AppConstants.TURN) return;
+
+    // fill in the values
+    _show = true;
+    _wonAt = wonAt;
+    _handNo = result.handNum;
+    _communityCards = result.boardCards;
+    _myCards = myCards;
+
+    // fill revealed cards
+    if (wonAt == AppConstants.FLOP) {
+      // we already have 3 cards at table
+      _revealedCards = _communityCards.sublist(3);
+    } else if (wonAt == AppConstants.TURN) {
+      // we already have 4 cards at table
+      _revealedCards = _communityCards.sublist(4);
+    }
+
+    notifyListeners();
+  }
   RabbitState copy() {
     final newRs = RabbitState();
     newRs._show = this._show;

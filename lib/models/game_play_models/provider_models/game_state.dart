@@ -25,6 +25,7 @@ import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:pokerapp/services/janus/janus.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
+import 'package:pokerapp/proto/hand.pb.dart' as proto;
 
 import 'host_seat_change.dart';
 import 'player_action.dart';
@@ -704,6 +705,11 @@ class GameState {
     actionState.setAction(seatNo, seatAction);
   }
 
+  void setActionProto(BuildContext context, int seatNo, proto.NextSeatAction seatAction) {
+    final actionState = getActionState(context);
+    actionState.setActionProto(seatNo, seatAction);
+  }
+
   void resetSeatActions({bool newHand}) {
     for (final seat in this._seats.values) {
       if (seat.player == null) {
@@ -878,8 +884,13 @@ class ActionState extends ChangeNotifier {
   }
 
   void setAction(int seatNo, var seatAction) {
-    this._currentAction = PlayerAction(seatNo, seatAction);
+    this._currentAction = PlayerAction.fromJson(seatNo, seatAction);
   }
+
+  void setActionProto(int seatNo, proto.NextSeatAction seatAction) {
+    this._currentAction = PlayerAction.fromProto(seatNo, seatAction);
+  }
+
 
   PlayerAction get action {
     return this._currentAction;

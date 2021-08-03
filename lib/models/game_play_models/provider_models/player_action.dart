@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:pokerapp/proto/hand.pb.dart' as proto;
 
 const String FOLD = 'FOLD';
 const String CALL = 'CALL';
@@ -47,11 +48,16 @@ class PlayerAction {
 
   int _minRaiseAmount;
   int _maxRaiseAmount;
+  int _callAmount = 0;
+  int _allInAmount = 0;
 
   List<Option> _options;
 
-  PlayerAction(int seatNo, var seatAction) {
-    _seatNo = seatNo;
+  PlayerAction();
+
+  factory PlayerAction.fromJson(int seatNo, var seatAction) {
+    PlayerAction playerAction = PlayerAction();
+    playerAction._seatNo = seatNo;
 
     /*
       {
@@ -82,14 +88,14 @@ class PlayerAction {
     */
 
     // FIXME: MIN RAISE AMOUNT VALUE NOT RECEIVING?
-    this._minRaiseAmount = seatAction['minRaiseAmount'] ?? 2;
-    this._maxRaiseAmount = seatAction['maxRaiseAmount'];
+    playerAction._minRaiseAmount = seatAction['minRaiseAmount'] ?? 2;
+    playerAction._maxRaiseAmount = seatAction['maxRaiseAmount'];
 
-    _options = seatAction['betOptions']
+    playerAction._options = seatAction['betOptions']
         ?.map<Option>((var data) => Option.fromJson(data))
         ?.toList();
 
-    _actions = [];
+    playerAction._actions = [];
     seatAction['availableActions']
         .map<String>((s) => s.toString())
         .forEach((String actionName) {
@@ -109,8 +115,43 @@ class PlayerAction {
           break;
       }
 
-      _actions.add(action);
+      playerAction._actions.add(action);
     });
+    return playerAction;
+  }
+
+  factory PlayerAction.fromProto(int seatNo, proto.NextSeatAction seatAction) {
+    PlayerAction yourAction = PlayerAction();
+    yourAction._seatNo = seatNo;
+    yourAction._minRaiseAmount = seatAction.minRaiseAmount.toInt();
+    yourAction._maxRaiseAmount = seatAction.maxRaiseAmount.toInt();
+    yourAction._callAmount = seatAction.callAmount.toInt();
+    yourAction._allInAmount = seatAction.allInAmount.toInt();
+    yourAction._options = [];
+    for (final option in seatAction.betOptions) {
+      Option betOption =
+          Option(amount: option.amount.toInt(), text: option.text);
+      yourAction._options.add(betOption);
+    }
+    yourAction._actions = [];
+    for (final availableAction in seatAction.availableActions) {
+      AvailableAction action = AvailableAction(
+        actionName: availableAction.name,
+      );
+
+      if (availableAction == proto.ACTION.ALLIN) {
+        action.actionValue =
+            seatAction.allInAmount.toInt() - seatAction.seatInSoFar.toInt();
+      } else if (availableAction == proto.ACTION.CALL) {
+        action.actionValue =
+            seatAction.callAmount.toInt() - seatAction.seatInSoFar.toInt();
+      } else if (availableAction == proto.ACTION.RAISE) {
+        action.minActionValue = seatAction.minRaiseAmount.toInt();
+      }
+      yourAction._actions.add(action);
+    }
+
+    return yourAction;
   }
 
   List<AvailableAction> get actions => _actions;

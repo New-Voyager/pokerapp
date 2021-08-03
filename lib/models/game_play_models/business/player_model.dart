@@ -9,6 +9,8 @@ import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/utils/card_helper.dart';
+import 'package:pokerapp/proto/hand.pb.dart' as proto;
+import 'package:pokerapp/proto/enums.pb.dart' as proto;
 
 class StackReloadState {
   int oldStack;
@@ -349,6 +351,26 @@ class PlayerActedState {
     if (amountStr != null) {
       double amount = double.parse(amountStr.toString());
       _amount = amount;
+    }
+  }
+
+  void setActionProto(proto.HandAction handAction) {
+    if (handAction.action == proto.ACTION.BET) {
+      _playerAction = HandActions.BET;
+    } else if (handAction.action == proto.ACTION.RAISE) {
+      _playerAction = HandActions.RAISE;
+    } else if (handAction.action == proto.ACTION.CALL) {
+      _playerAction = HandActions.CALL;
+    } else if (handAction.action == proto.ACTION.FOLD) {
+      _playerAction = HandActions.FOLD;
+    } else if (handAction.action == proto.ACTION.ALLIN) {
+      _playerAction = HandActions.ALLIN;
+    } else if (handAction.action == proto.ACTION.CHECK) {
+      _playerAction = HandActions.CHECK;
+    }
+    _amount = handAction.amount;
+    if (_amount == null) {
+      _amount = 0;
     }
   }
 

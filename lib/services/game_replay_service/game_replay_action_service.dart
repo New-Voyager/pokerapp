@@ -15,6 +15,7 @@ import 'package:pokerapp/services/game_play/action_services/hand_action_service.
 import 'package:pokerapp/services/game_play/action_services/result_handler.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:provider/provider.dart';
+import 'package:pokerapp/proto/hand.pb.dart' as proto;
 
 class GameReplayActionService {
   final BuildContext _context;
@@ -250,10 +251,11 @@ class GameReplayActionService {
   }
 
   Future<void> _potWinnerResult(GameReplayAction action) {
-    final Map<String, dynamic> potWinners = {};
-
-    for (final pw in action.potWinners.entries)
-      potWinners[pw.key] = pw.value.toJson();
+    //final Map<String, dynamic> potWinners = {};
+    Map<int, proto.PotWinners> potWinners = {};
+    for (final pw in action.potWinners.entries) {
+      potWinners[pw.value.potNo] = pw.value.toProto();
+    }
 
     // update pots before result
     HandActionService.updatePotBeforeResultStatic(
