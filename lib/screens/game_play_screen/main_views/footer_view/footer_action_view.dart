@@ -12,7 +12,6 @@ import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/bet_widget.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_proto_service.dart';
-import 'package:pokerapp/services/game_play/action_services/hand_action_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:provider/provider.dart';
 
