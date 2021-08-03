@@ -10,7 +10,6 @@ import 'package:pokerapp/models/hand_log_model_new.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:pokerapp/proto/hand.pb.dart' as proto;
-import 'package:pokerapp/proto/enums.pb.dart' as proto;
 
 class StackReloadState {
   int oldStack;

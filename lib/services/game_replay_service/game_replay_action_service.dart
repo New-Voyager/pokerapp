@@ -11,7 +11,7 @@ import 'package:pokerapp/models/game_replay_models/game_replay_action.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
-import 'package:pokerapp/services/game_play/action_services/hand_action_service.dart';
+import 'package:pokerapp/services/game_play/action_services/hand_action_proto_service.dart';
 import 'package:pokerapp/services/game_play/action_services/result_handler.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:provider/provider.dart';
@@ -220,7 +220,7 @@ class GameReplayActionService {
   }
 
   Future<void> _runItTwiceAction(GameReplayAction action) =>
-      HandActionService.handleRunItTwiceStatic(
+      HandActionProtoService.handleRunItTwiceStatic(
         context: _context,
         board1Cards: action.boardCards,
         board2Cards: action.boardCards2,
@@ -228,7 +228,7 @@ class GameReplayActionService {
 
   Future<void> _runItTwiceWinner(GameReplayAction action) {
     // update pots before result
-    HandActionService.updatePotBeforeResultStatic(
+    HandActionProtoService.updatePotBeforeResultStatic(
       isRunItTwice: true,
       runItTwiceResult: action.runItTwiceResult,
       potWinners: null,
@@ -254,11 +254,12 @@ class GameReplayActionService {
     //final Map<String, dynamic> potWinners = {};
     Map<int, proto.PotWinners> potWinners = {};
     for (final pw in action.potWinners.entries) {
-      potWinners[pw.value.potNo] = pw.value.toProto();
+      int potNo = int.parse(pw.key.toString());
+      potWinners[potNo] = pw.value.toProto();
     }
 
     // update pots before result
-    HandActionService.updatePotBeforeResultStatic(
+    HandActionProtoService.updatePotBeforeResultStatic(
       isRunItTwice: false,
       runItTwiceResult: null,
       potWinners: potWinners,

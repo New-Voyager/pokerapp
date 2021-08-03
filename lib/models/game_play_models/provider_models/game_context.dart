@@ -3,7 +3,6 @@ import 'package:pokerapp/models/player_info.dart';
 import 'package:pokerapp/services/encryption/encryption_service.dart';
 import 'package:pokerapp/services/game_play/action_services/game_update_service.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_proto_service.dart';
-import 'package:pokerapp/services/game_play/action_services/hand_action_service.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
 
 import 'game_state.dart';
@@ -17,7 +16,6 @@ class GameContextObject extends ChangeNotifier {
 
   bool _gameEnded = false;
   GameState gameState;
-  HandActionService handActionService;
   HandActionProtoService handActionProtoService;
   GameUpdateService gameUpdateService;
   GameComService gameComService;
@@ -28,7 +26,7 @@ class GameContextObject extends ChangeNotifier {
     @required PlayerInfo player,
     GameState gameState,
     GameUpdateService gameUpdateService,
-    HandActionService handActionService,
+    //HandActionService handActionService,
     HandActionProtoService handActionProtoService,
     GameComService gameComService,
     EncryptionService encryptionService,
@@ -40,7 +38,6 @@ class GameContextObject extends ChangeNotifier {
     this.encryptionService = encryptionService;
     this.gameState = gameState;
     this.gameUpdateService = gameUpdateService;
-    this.handActionService = handActionService;
     this.handActionProtoService = handActionProtoService;
   }
 
@@ -73,7 +70,7 @@ class GameContextObject extends ChangeNotifier {
 
   @override
   void dispose() {
-    handActionService?.close();
+    //handActionService?.close();
     gameUpdateService?.close();
     gameComService?.dispose();
     encryptionService?.dispose();

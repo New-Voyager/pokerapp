@@ -1,7 +1,5 @@
 import 'package:flutter/widgets.dart';
-import 'package:pokerapp/proto/hand.pb.dart' as proto;
 import 'package:pokerapp/proto/handmessage.pb.dart' as proto;
-import 'package:pokerapp/proto/enums.pb.dart' as proto;
 
 import 'package:pokerapp/resources/app_constants.dart';
 

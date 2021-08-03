@@ -40,7 +40,7 @@ import 'package:pokerapp/services/encryption/encryption_service.dart';
 import 'package:pokerapp/services/game_play/action_services/game_action_service/util_action_services.dart';
 import 'package:pokerapp/services/game_play/action_services/game_update_service.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_proto_service.dart';
-import 'package:pokerapp/services/game_play/action_services/hand_action_service.dart';
+import 'package:pokerapp/services/game_play/action_services/hand_action_service_deprecated.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/services/game_play/game_messaging_service.dart';
 import 'package:pokerapp/services/game_play/graphql/seat_change_service.dart';
@@ -690,11 +690,6 @@ class _GamePlayScreenState extends State<GamePlayScreen>
             } else {
               _gameContextObj.handActionProtoService
                   .handle(message.data, encrypted: true);
-              // Future<List<int>> decryptedMessage =
-              //     _gameContextObj.encryptionService.decrypt(message.data);
-              // decryptedMessage.then((decryptedBytes) => _gameContextObj
-              //     .handActionService
-              //     .handle(utf8.decode(decryptedBytes)));
             }
           },
         );
