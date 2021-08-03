@@ -3,6 +3,7 @@ import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/auth_model.dart';
 import 'package:pokerapp/resources/app_config.dart';
 import 'package:pokerapp/routes.dart';
+import 'package:pokerapp/services/app/appcoin_service.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -45,6 +46,8 @@ class _SplashScreenState extends State<SplashScreen> {
               jwt: resp['jwt']);
           await AuthService.save(currentUser);
           AppConfig.jwt = resp['jwt'];
+          final availableCoins = await AppCoinService.availableCoins();
+          AppConfig.setAvailableCoins(availableCoins);
           await graphQLConfiguration.init();
         } else {
           _moveToLoginScreen();

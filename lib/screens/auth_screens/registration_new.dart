@@ -13,6 +13,7 @@ import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/routes.dart';
+import 'package:pokerapp/services/app/appcoin_service.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/alerts.dart';
@@ -375,6 +376,9 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
             jwt: resp['jwt']);
         await AuthService.save(currentUser);
         AppConfig.jwt = resp['jwt'];
+
+        final availableCoins = await AppCoinService.availableCoins();
+        AppConfig.setAvailableCoins(availableCoins);
 
         // Navigate to main screen
         Navigator.pushNamedAndRemoveUntil(
