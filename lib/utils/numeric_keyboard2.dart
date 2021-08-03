@@ -36,7 +36,7 @@ class NumericKeyboard2 extends StatelessWidget {
   final double max;
   final String title;
   final int currValue;
-  bool firstKey;
+  bool firstKey = true;
 
   NumericKeyboard2({
     Key key,
