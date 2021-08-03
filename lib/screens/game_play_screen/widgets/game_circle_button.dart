@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
@@ -24,7 +23,7 @@ class GameCircleButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Widget child = this.child;
-    Widget svg = null;
+    Widget svg;
     if (imagePath != null) {
       if (color != null) {
         svg = SvgPicture.asset(

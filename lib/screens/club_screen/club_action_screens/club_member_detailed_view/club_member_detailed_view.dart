@@ -4,7 +4,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/club_members_model.dart';
-import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_icons.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
@@ -17,13 +16,10 @@ import 'package:pokerapp/services/app/club_interior_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class ClubMembersDetailsView extends StatefulWidget {
-  String clubCode;
-  String playerId;
+  final String clubCode;
+  final String playerId;
 
-  ClubMembersDetailsView(ClubMemberModel data) {
-    this.clubCode = data.clubCode;
-    this.playerId = data.playerId;
-  }
+  ClubMembersDetailsView(this.clubCode, this.playerId);
 
   @override
   _ClubMembersDetailsView createState() =>
@@ -42,7 +38,6 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
   TextEditingController _notesEditingController;
 
   _ClubMembersDetailsView(this.clubCode, this.playerId);
-  bool _isEditingContact = false;
 
   _fetchData() async {
     _data = await ClubInteriorService.getClubMemberDetail(clubCode, playerId);
@@ -251,100 +246,6 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
     );
   }
 
-  Widget _editContactTextField() {
-    if (_isEditingContact)
-      return Center(
-        child: TextField(
-          onSubmitted: (newValue) {
-            setState(() {
-              _data.contactInfo = newValue;
-              _isEditingContact = false;
-            });
-          },
-          autofocus: true,
-          controller: _contactEditingController,
-        ),
-      );
-    return InkWell(
-        onTap: () {
-          setState(() {
-            _isEditingContact = true;
-          });
-        },
-        child: Text(
-          _data.contactInfo,
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 18.0,
-          ),
-        ));
-  }
-
-  // _showDialog(BuildContext context) async {
-  //   final textField = new CupertinoTextField(
-  //     controller: TextEditingController(text: _data.creditLimit.toString()),
-  //     autofocus: true,
-  //     keyboardType: TextInputType.number,
-  //     onSubmitted: (value) => _data.creditLimit = int.parse(value),
-  //     style: TextStyle(
-  //       color: Colors.black,
-  //       fontFamily: AppAssets.fontFamilyLato,
-  //       fontSize: 18,
-  //     ),
-  //   );
-  //   await showDialog<String>(
-  //     context: context,
-  //     child: new _SystemPadding(
-  //       child: new AlertDialog(
-  //         backgroundColor: AppColors.cardBackgroundColor,
-  //         contentPadding: const EdgeInsets.all(8.0),
-  //         content: new Row(
-  //           children: <Widget>[
-  //             Text(
-  //               'Credit Limit',
-  //               style: TextStyle(
-  //                 color: Colors.white,
-  //                 fontFamily: AppAssets.fontFamilyLato,
-  //                 fontSize: 18,
-  //                 fontWeight: FontWeight.w600,
-  //               ),
-  //             ),
-  //             SizedBox(height: 10, width: 20),
-  //             new Expanded(child: textField)
-  //           ],
-  //         ),
-  //         actions: <Widget>[
-  //           new FlatButton(
-  //               child: const Text(
-  //                 'Cancel',
-  //                 style: TextStyle(
-  //                   color: AppColors.appAccentColor,
-  //                   fontFamily: AppAssets.fontFamilyLato,
-  //                   fontSize: 18,
-  //                 ),
-  //               ),
-  //               onPressed: () {
-  //                 Navigator.pop(context);
-  //               }),
-  //           new FlatButton(
-  //               child: const Text(
-  //                 'Set',
-  //                 style: TextStyle(
-  //                   color: AppColors.appAccentColor,
-  //                   fontFamily: AppAssets.fontFamilyLato,
-  //                   fontSize: 18,
-  //                 ),
-  //               ),
-  //               onPressed: () {
-  //                 String value = textField.controller.value.text;
-  //                 Navigator.pop(context);
-  //                 _data.creditLimit = int.parse(value);
-  //               })
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
 
   void onCreditLimitEdit(BuildContext context) async {
     //await _showDialog(context);
@@ -678,20 +579,5 @@ class IconAndTitleWidget extends StatelessWidget {
         ],
       ),
     );
-  }
-}
-
-class _SystemPadding extends StatelessWidget {
-  final Widget child;
-
-  _SystemPadding({Key key, this.child}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    var mediaQuery = MediaQuery.of(context);
-    return new AnimatedContainer(
-        padding: mediaQuery.viewInsets,
-        duration: const Duration(milliseconds: 300),
-        child: child);
   }
 }

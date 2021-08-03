@@ -91,7 +91,6 @@ class Nats {
     clubSub.stream.listen((Message message) {
       log('message in club channel: ${message.string}');
       dynamic json = jsonDecode(message.string);
-      String type = json['type'].toString();
       String changed = json['changed'];
       String clubCode = json['clubCode'];
       final clubChangeState = _providerContext.read<ClubsUpdateState>();

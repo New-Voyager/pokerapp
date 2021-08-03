@@ -46,7 +46,7 @@ class JanusEngine extends ChangeNotifier {
       this.roomId,
       this.roomPin,
       this.uuid,
-      this.playerId}) {}
+      this.playerId});
 
   void disposeObject() {
     if (initialized) {
@@ -97,7 +97,7 @@ class JanusEngine extends ChangeNotifier {
     final start = DateTime.now();
     log('janus: Change audio status to connecting');
     //this.gameState.getAudioConfState().connecting();
-    log('janus: engine: ${engine}');
+    log('janus: engine: $engine');
     if (engine == null) {
       log('janus: Using websocket');
       transport = WebSocketJanusTransport(url: janusUrlWs);
@@ -425,7 +425,7 @@ class JanusEngine extends ChangeNotifier {
       "id": this.playerId,
     };
     try {
-      final resp = await plugin.sendUnmute(data: data);
+      await plugin.sendUnmute(data: data);
       //log('janus: unmute response : ${jsonEncode(resp)}');
       await getParticipants();
       muted = false;

@@ -2,7 +2,6 @@
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_history_model.dart';
-import 'package:pokerapp/resources/app_assets.dart';
 
 class HandsPieChart extends StatelessWidget {
   bool animate;

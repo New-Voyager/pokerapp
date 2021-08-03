@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
@@ -14,6 +12,7 @@ import 'package:pokerapp/models/hand_log_model_new.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_service.dart';
+import 'package:pokerapp/services/game_play/action_services/result_handler.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:provider/provider.dart';
 
@@ -234,9 +233,11 @@ class GameReplayActionService {
       potWinners: null,
       context: _context,
     );
+    final GameState gameState = GameState.getState(_context);
 
-    return HandActionService.handleResultStatic(
-      fromReplay: true,
+    ResultHandler resultHandler = ResultHandler(
+      gameState: gameState,
+      replay: true,
       isRunItTwice: true,
       runItTwiceResult: action.runItTwiceResult,
       boardCards: action.boardCards,
@@ -245,6 +246,7 @@ class GameReplayActionService {
       context: _context,
       audioPlayer: _audioPlayer,
     );
+    return resultHandler.show();
   }
 
   Future<void> _potWinnerResult(GameReplayAction action) {
@@ -260,16 +262,19 @@ class GameReplayActionService {
       potWinners: potWinners,
       context: _context,
     );
+    final GameState gameState = GameState.getState(_context);
 
-    return HandActionService.handleResultStatic(
-        fromReplay: true,
-        isRunItTwice: false,
-        runItTwiceResult: null,
-        boardCards2: null,
-        potWinners: potWinners,
-        boardCards: action.boardCards,
-        context: _context,
-        audioPlayer: _audioPlayer);
+    ResultHandler resultHandler = ResultHandler(
+      gameState: gameState,
+      replay: true,
+      isRunItTwice: false,
+      runItTwiceResult: null,
+      boardCards: action.boardCards,
+      potWinners: potWinners,
+      context: _context,
+      audioPlayer: _audioPlayer,
+    );
+    return resultHandler.show();
   }
 
   /* this method sets no of cards & distributes the cards */

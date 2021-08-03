@@ -310,9 +310,9 @@ class Players extends ChangeNotifier {
   }
 }
 
-/**
- * The states that affect the current player.
- */
+// /**
+//  * The states that affect the current player.
+//  */
 class MyState extends ChangeNotifier {
   int _seatNo = 0;
   PlayerStatus _status = PlayerStatus.NOT_PLAYING;

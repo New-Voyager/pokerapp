@@ -1,5 +1,4 @@
 import 'dart:typed_data';
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';

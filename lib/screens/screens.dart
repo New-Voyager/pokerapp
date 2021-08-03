@@ -27,20 +27,9 @@ export 'game_screens/highhand_log/highhand_log.dart';
 
 export 'game_screens/table_result/table_result.dart';
 
-export 'game_screens/new_game_settings/new_game_settings.dart';
 
 export 'game_screens/game_history_view/game_history_view.dart';
 
 export 'game_screens/game_history_details_view/game_history_detail_view.dart';
-
-export 'game_screens/new_game_settings/ingame_settings/rewards_list.dart';
-
-export 'game_screens/new_game_settings/game_timing_settings/action_time_select.dart';
-export 'game_screens/new_game_settings/game_timing_settings/game_length_select.dart';
-export 'game_screens/new_game_settings/ingame_settings/blinds_select.dart';
-export 'game_screens/new_game_settings/ingame_settings/buyin_ranges_select.dart';
-export 'game_screens/new_game_settings/ingame_settings/club_tips_select.dart';
-export 'game_screens/new_game_settings/ingame_settings/game_type_select.dart';
-export 'game_screens/new_game_settings/ingame_settings/max_player_select.dart';
 
 export 'chat_screen/chat_screen.dart';

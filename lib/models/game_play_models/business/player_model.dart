@@ -92,7 +92,6 @@ class PlayerModel {
     // default values
     this.isMe = false;
 
-    /* TODO: WHY IS PLAYER TYPE VARIBLAE HOLDING TABLE POSITION? */
     this.playerType = TablePosition.None;
     this.highlight = false;
 

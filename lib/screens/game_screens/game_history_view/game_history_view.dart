@@ -2,9 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/game_history_model.dart';
-import 'package:pokerapp/resources/app_assets.dart';
-import 'package:pokerapp/resources/app_colors.dart';
-import 'package:pokerapp/resources/app_styles.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/routes.dart';
@@ -12,8 +9,6 @@ import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/game_screens/game_history_view/game_history_item_new.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/club_interior_service.dart';
-
-import 'game_history_widget.dart';
 
 class GameHistoryView extends StatefulWidget {
   final String clubCode;
@@ -31,7 +26,6 @@ class _GameHistoryViewState extends State<GameHistoryView>
   final String clubCode;
   _GameHistoryViewState(this.clubCode);
 
-  bool _isOwner = false;
   bool _loadingData = true;
 
   List<GameHistoryModel> _prevGames;
@@ -79,7 +73,6 @@ class _GameHistoryViewState extends State<GameHistoryView>
       );
     }
 
-    // TODO: we need to make this dynamic list
     // build game history list
     return ListView.separated(
       padding: const EdgeInsets.symmetric(

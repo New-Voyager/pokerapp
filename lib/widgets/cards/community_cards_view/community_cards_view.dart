@@ -107,7 +107,6 @@ class CommunityCardsView extends StatelessWidget {
   Widget build(BuildContext context) {
     log('community cards');
     if (twoBoardsNeeded ?? false) {
-      // TODO: WE MAY NEED TO CHANGE THE SCALE FOR DIFFERENT SCREEN SIZES
       return Transform.scale(
         alignment: Alignment.topCenter,
         scale: 0.70,

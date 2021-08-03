@@ -6,9 +6,8 @@ import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
-import 'package:pokerapp/utils/formatter.dart';
-import 'package:pokerapp/widgets/rounded_accent_button.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
+import 'package:pokerapp/utils/formatter.dart';
 
 class GameRecordItem extends StatelessWidget {
   final GameHistoryModel game;

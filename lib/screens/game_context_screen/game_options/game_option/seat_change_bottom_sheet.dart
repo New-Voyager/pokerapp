@@ -2,18 +2,16 @@ import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/seat_change_model.dart';
 import 'package:pokerapp/resources/app_colors.dart';
 import 'package:pokerapp/resources/app_styles.dart';
-import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/widgets/switch_widget.dart';
-import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 
 class SeatChangeBottomSheet extends StatefulWidget {
   final String gameCode;
@@ -155,12 +153,11 @@ class _SeatChangeBottomSheetState extends State<SeatChangeBottomSheet> {
           });
           if (isSeatChange) {
             // want to seat change
-            String result =
-                await GameService.requestForSeatChange(widget.gameCode);
+            await GameService.requestForSeatChange(widget.gameCode);
             // print("result $result");
           } else {
             // do not want to seat change
-            String result = await GameService.requestForSeatChange(
+            await GameService.requestForSeatChange(
                 widget.gameCode,
                 cancel: true);
             // print("result $result");

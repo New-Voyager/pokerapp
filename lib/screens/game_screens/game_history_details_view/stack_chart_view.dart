@@ -1,7 +1,6 @@
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_history_model.dart';
-import 'package:pokerapp/resources/app_assets.dart';
 
 class StackChartView extends StatelessWidget {
   final List<PlayerStack> stack;
@@ -13,7 +12,6 @@ class StackChartView extends StatelessWidget {
   charts.NumericTickProviderSpec getTickerSpec() {
     final maxValue = stack.reduce(
         (value, element) => value.balance > element.balance ? value : element);
-    final minValue = 0;
     return new charts.StaticNumericTickProviderSpec(
       <charts.TickSpec<num>>[
         charts.TickSpec<num>(maxValue.balance),

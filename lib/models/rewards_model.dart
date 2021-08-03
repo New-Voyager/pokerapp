@@ -38,7 +38,7 @@ class RewardsModel {
 
   RewardsModel.fromJson(Map<String, dynamic> json) {
     if (json['rewards'] != null) {
-      rewards = new List<Rewards>();
+      rewards = [];
       json['rewards'].forEach((v) {
         rewards.add(new Rewards.fromJson(v));
       });

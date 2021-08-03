@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/auth_model.dart';
 import 'package:pokerapp/resources/app_config.dart';
-import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
-import 'package:pokerapp/services/app/gif_cache_service.dart';
 
 class SplashScreen extends StatefulWidget {
   @override

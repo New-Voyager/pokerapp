@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:pokerapp/resources/app_assets.dart';
 
 class CardFormTextField extends StatelessWidget {
   const CardFormTextField({

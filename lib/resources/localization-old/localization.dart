@@ -1,4 +1,3 @@
-import 'package:flutter/widgets.dart';
 import 'package:intl/locale.dart';
 
 import 'english.dart';

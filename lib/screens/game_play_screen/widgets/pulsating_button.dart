@@ -1,6 +1,5 @@
 import 'package:flutter/animation.dart';
 import 'package:flutter/material.dart';
-import 'package:pokerapp/resources/app_colors.dart';
 
 class PulsatingCircleIconButton extends StatefulWidget {
   const PulsatingCircleIconButton({
