@@ -11,6 +11,7 @@ import 'package:pokerapp/screens/club_screen/club_stats_screen.dart';
 import 'package:pokerapp/screens/game_screens/game_history_details_view/hand_stats_view.dart';
 import 'package:pokerapp/screens/game_screens/game_history_details_view/stack_details_view.dart';
 import 'package:pokerapp/screens/game_screens/new_game_settings/choose_game_new.dart';
+import 'package:pokerapp/screens/profile_screens/customize_view.dart';
 import 'package:pokerapp/screens/profile_screens/help_screen.dart';
 import 'package:pokerapp/screens/profile_screens/performance_view.dart';
 import 'package:provider/provider.dart';
@@ -36,6 +37,9 @@ class Routes {
   static const String restore_account = "/restore_account";
   // MainScreen
   static const String main = '/main';
+  // Theme selection
+  static const String customize = "/customize";
+
   // GamePlayScreen
   static const String game_play = '/game_play';
   // NewGameSettings
@@ -278,7 +282,11 @@ class Routes {
             clubCode: args['clubCode'],
           ),
         );
-
+      case customize:
+        return _getPageRoute(
+          routeName: settings.name,
+          viewToShow: CustomizeScreen(),
+        );
       case club_main:
         var clubCode = settings.arguments as String;
         return _getPageRoute(

@@ -284,7 +284,11 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                     text: AppStringsNew.customize,
                                     imagePath: AppAssetsNew.customizeImagePath,
                                     index: 2,
-                                    onTapFunction: () {},
+                                    onTapFunction: () {
+                                      Navigator.of(context).pushNamed(
+                                        Routes.customize,
+                                      );
+                                    },
                                   ),
                                   ListTileItem(
                                     text: AppStringsNew.helpText,
