@@ -20,7 +20,7 @@ class AppTheme extends ChangeNotifier {
   // util functions for darkening or lighting a color
 
   // darken a color
-  Color _darken(Color color, [double amount = .1]) {
+  Color _darken(Color color, [double amount = 0.10]) {
     assert(amount >= 0 && amount <= 1);
     final hsl = HSLColor.fromColor(color);
     final hslDark = hsl.withLightness((hsl.lightness - amount).clamp(0.0, 1.0));
@@ -28,7 +28,7 @@ class AppTheme extends ChangeNotifier {
   }
 
   // lighten a color
-  Color _lighten(Color color, [double amount = .1]) {
+  Color _lighten(Color color, [double amount = 0.10]) {
     assert(amount >= 0 && amount <= 1);
     final hsl = HSLColor.fromColor(color);
     final hslLight =
@@ -38,23 +38,23 @@ class AppTheme extends ChangeNotifier {
 
   // main color that the app is based on
   Color get primaryColor => _themeData.primaryColor;
-  Color primaryColorWithDark({double d = 0.10}) =>
+  Color primaryColorWithDark([double d = 0.10]) =>
       _darken(_themeData.primaryColor, d);
-  Color primaryColorWithLight({double l = 0.10}) =>
+  Color primaryColorWithLight([double l = 0.10]) =>
       _lighten(_themeData.primaryColor, l);
 
   // color that is used on buttons or other highlighting places
   Color get secondaryColor => _themeData.secondaryColor;
-  Color secondaryColorWithDark({double d = 0.10}) =>
+  Color secondaryColorWithDark([double d = 0.10]) =>
       _darken(_themeData.secondaryColor, d);
-  Color secondaryColorWithLight({double l = 0.10}) =>
+  Color secondaryColorWithLight([double l = 0.10]) =>
       _lighten(_themeData.secondaryColor, l);
 
   // accent color that works with the main color in the app
   Color get accentColor => _themeData.accentColor;
-  Color accentColorWithDark({double d = 0.10}) =>
+  Color accentColorWithDark([double d = 0.10]) =>
       _darken(_themeData.accentColor, d);
-  Color accentColorWithLight({double l = 0.10}) =>
+  Color accentColorWithLight([double l = 0.10]) =>
       _lighten(_themeData.accentColor, l);
 
   // color that is used for filling inside text fields, or cards views
@@ -63,8 +63,20 @@ class AppTheme extends ChangeNotifier {
   // supporting color: color that is used to create constrast with main color and accent color
   // mainly used for texts (white, or shades of white)
   Color get supportingColor => _themeData.supportingColor;
-  Color supportingColorWithDark({double d = 0.10}) =>
+  Color supportingColorWithDark([double d = 0.10]) =>
       _darken(_themeData.supportingColor, d);
-  Color supportingColorWithLight({double l = 0.10}) =>
+  Color supportingColorWithLight([double l = 0.10]) =>
       _lighten(_themeData.supportingColor, l);
+
+  // gradients
+  BoxDecoration get bgGreenRadialGradient => BoxDecoration(
+        gradient: RadialGradient(
+          colors: [
+            primaryColor,
+            primaryColorWithDark(),
+          ],
+          center: Alignment.topLeft,
+          radius: 1.5,
+        ),
+      );
 }

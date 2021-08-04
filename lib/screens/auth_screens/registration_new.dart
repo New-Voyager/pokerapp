@@ -6,9 +6,9 @@ import 'package:flutter_udid/flutter_udid.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/auth_model.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_config.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
-import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
@@ -38,6 +38,8 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
   TapGestureRecognizer _termsClick = TapGestureRecognizer();
   TapGestureRecognizer _privacyClick = TapGestureRecognizer();
 
+  AppTheme _appTheme;
+
   Widget _buildTextFormField({
     TextInputType keyboardType,
     @required TextEditingController controller,
@@ -52,13 +54,12 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
       validator: validator,
       autovalidateMode: AutovalidateMode.onUserInteraction,
       decoration: InputDecoration(
-        hintText: hintText,
-        hintStyle: TextStyle(
-          fontSize: 13.0,
-          color: Colors.white30,
-        ),
-        contentPadding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+        /* border */
+        border: AppStylesNew.borderStyle,
+        errorBorder: AppStylesNew.errorBorderStyle,
         focusedBorder: AppStylesNew.focusBorderStyle,
+
+        /* icons - prefix, suffix */
         prefixIcon: Container(
           margin: EdgeInsets.symmetric(horizontal: 16),
           child: Image.asset(
@@ -70,18 +71,82 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
         suffixIcon: IconButton(
           icon: Icon(
             Icons.info,
-            color: AppColorsNew.labelColor,
+            color: _appTheme.supportingColorWithDark(0.50),
           ),
           onPressed: onInfoIconPress,
         ),
-        errorBorder: AppStylesNew.errorBorderStyle,
+
+        /* hint & label texts */
+        hintText: hintText,
+        hintStyle: TextStyle(
+          fontSize: 13.0,
+          color: _appTheme.supportingColorWithDark(0.60),
+        ),
         labelText: labelText,
         labelStyle: AppStylesNew.labelTextFieldStyle,
+
+        /* other */
+        contentPadding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
         floatingLabelBehavior: FloatingLabelBehavior.always,
         filled: true,
-        fillColor: AppColorsNew.actionRowBgColor,
+        fillColor: _appTheme.fillInColor,
         alignLabelWithHint: true,
-        border: AppStylesNew.borderStyle,
+      ),
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _appTheme = AppTheme.getTheme(context);
+  }
+
+  void onBugIconPress() {
+    String apiUrl = "";
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        actionsPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        backgroundColor: _appTheme.fillInColor,
+        title: Text("Debug details"),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            CardFormTextField(
+              hintText: "API Server URL",
+              onChanged: (val) {
+                //log("VALUE : $val");
+                apiUrl = val;
+                setState(() {});
+              },
+              keyboardType: TextInputType.number,
+            ),
+          ],
+        ),
+        actions: [
+          RoundedColorButton(
+              text: "SAVE",
+              backgroundColor: _appTheme.accentColor,
+              textColor: _appTheme.primaryColorWithDark(0.50),
+              onTapFunction: () async {
+                if (apiUrl.isEmpty) {
+                  toast("API url can't be empty");
+                  return;
+                }
+
+                // FIRST SET THE URLS
+                await AppConfig.saveApiUrl(
+                  apiServer: apiUrl.trim(),
+                );
+
+                await graphQLConfiguration.init();
+
+                Alerts.showNotification(titleText: 'API url is SET');
+
+                Navigator.of(context).pop();
+              }),
+        ],
       ),
     );
   }
@@ -89,7 +154,7 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: AppStylesNew.BgGreenRadialGradient,
+      decoration: _appTheme.bgGreenRadialGradient,
       child: SafeArea(
         child: Scaffold(
           backgroundColor: Colors.transparent,
@@ -98,57 +163,9 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
             icon: Icon(
               Icons.bug_report,
               size: 32,
-              color: AppColorsNew.labelColor,
+              color: _appTheme.supportingColorWithDark(0.50),
             ),
-            onPressed: () async {
-              String apiUrl = "";
-              showDialog(
-                context: context,
-                builder: (context) => AlertDialog(
-                  actionsPadding:
-                      EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  backgroundColor: AppColorsNew.actionRowBgColor,
-                  title: Text("Debug details"),
-                  content: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      CardFormTextField(
-                        hintText: "API Server URL",
-                        onChanged: (val) {
-                          //log("VALUE : $val");
-                          apiUrl = val;
-                          setState(() {});
-                        },
-                        keyboardType: TextInputType.number,
-                      ),
-                    ],
-                  ),
-                  actions: [
-                    RoundedColorButton(
-                        text: "SAVE",
-                        backgroundColor: AppColorsNew.yellowAccentColor,
-                        textColor: AppColorsNew.darkGreenShadeColor,
-                        onTapFunction: () async {
-                          if (apiUrl.isEmpty) {
-                            toast("API url can't be empty");
-                            return;
-                          }
-
-                          // FIRST SET THE URLS
-                          await AppConfig.saveApiUrl(
-                            apiServer: apiUrl.trim(),
-                          );
-
-                          await graphQLConfiguration.init();
-
-                          Alerts.showNotification(titleText: 'API url is SET');
-
-                          Navigator.of(context).pop();
-                        }),
-                  ],
-                ),
-              );
-            },
+            onPressed: onBugIconPress,
           ),
           body: SingleChildScrollView(
             child: Column(
@@ -289,10 +306,10 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
                           ),
                         ),
                         RoundedColorButton(
-                          backgroundColor: AppColorsNew.yellowAccentColor,
+                          backgroundColor: _appTheme.accentColor,
                           text: AppStringsNew.signupButtonText,
                           fontSize: 14.dp,
-                          textColor: AppColorsNew.darkGreenShadeColor,
+                          textColor: _appTheme.primaryColorWithDark(0.50),
                           onTapFunction: () => _handleSignUpClick(),
                         ),
                       ],
@@ -311,7 +328,7 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
                       AppStringsNew.restoreAccountText,
                       style: TextStyle(
                         decoration: TextDecoration.underline,
-                        color: AppColorsNew.yellowAccentColor,
+                        color: _appTheme.accentColor,
                       ),
                     ),
                   ),
@@ -395,29 +412,6 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
           duration: Duration(seconds: 5),
         );
       }
-
-      // // Make API call for registration
-      // bool status = await AuthService.register(
-      //   AuthModel(
-      //     authType: AuthType.Guest,
-      //     name: _screenNameCtrl.text.trim(),
-      //   ),
-      // );
-      // ConnectionDialog.dismiss(context: context);
-
-      // if (status) {
-      //   Alerts.showNotification(
-      //       titleText: AppStringsNew.registrationSuccessText);
-
-      //   // Navigate to main screen
-      //   Navigator.pushNamedAndRemoveUntil(
-      //     context,
-      //     Routes.main,
-      //     (_) => false,
-      //   );
-      // } else {
-      //   Alerts.showNotification(titleText: AppStringsNew.registrationFailText);
-      // }
     }
   }
 }
