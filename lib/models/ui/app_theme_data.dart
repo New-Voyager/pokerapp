@@ -1,21 +1,28 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 
-class Theme extends ChangeNotifier {
+class AppThemeData {
   // main color that the app is based on
-  // todo: we can have multiple shades of the main color
   Color primaryColor;
 
   // color that is used on buttons or other highlighting places
   Color secondaryColor;
 
   // accent color that works with the main color in the app
-  // todo: we may have multiple shades of the accent color
   Color accentColor;
 
   // color that is used for filling inside text fields, or cards views
   Color fillInColor;
 
   // supporting color: color that is used to create constrast with main color and accent color
-  // todo: we may have different shades of the supporting color
+  // mainly used for texts (white, or shades of white)
   Color supportingColor;
+
+  AppThemeData({
+    this.primaryColor = const Color(0xFF033614),
+    this.secondaryColor =
+        const Color(0xFF00FAAD), // Color(0xFF40D876); (darken secondary color)
+    this.accentColor = const Color(0xFFD89E40),
+    this.fillInColor = const Color(0xFF0B2324),
+    this.supportingColor = Colors.white,
+  });
 }

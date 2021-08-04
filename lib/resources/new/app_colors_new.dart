@@ -19,8 +19,10 @@ class AppColorsNew {
   static const Color newNavBarColor = Color(0xFF3D5242);
   static const Color newNavBarInactiveItemColor = Color(0x77F0F1F0);
   static const Color newFieldBgColor = Color(0xFF1E2E28);
+
   static const Color newGreenRadialStartColor = Color(0xFF033614);
   static const Color newGreenRadialStopColor = Color(0xFF02290F);
+
   static const Color newActiveBoxColor = Color(0xFFD89E40);
   static const Color newInactiveBoxColor = Color(0xFF092913);
   static const Color newCheckboxActiveColor = Color(0xFF40D876);
