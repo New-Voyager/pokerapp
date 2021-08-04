@@ -27,7 +27,6 @@ export 'game_screens/highhand_log/highhand_log.dart';
 
 export 'game_screens/table_result/table_result.dart';
 
-
 export 'game_screens/game_history_view/game_history_view.dart';
 
 export 'game_screens/game_history_details_view/game_history_detail_view.dart';

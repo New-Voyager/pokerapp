@@ -23,7 +23,6 @@ import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/last_ha
 import 'package:pokerapp/screens/game_play_screen/pop_ups/seat_change_confirmation_pop_up.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/overlay_notification.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
-import 'package:pokerapp/services/game_play/action_services/hand_action_service.dart';
 import 'package:pokerapp/services/test/hand_messages.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:pokerapp/utils/formatter.dart';
@@ -49,7 +48,7 @@ class TestService {
   static List<int> _pots;
 
   static BuildContext _context;
-  static HandActionService _handActionService;
+  //static HandActionService _handActionService;
   static InAppPurchaseTest _testIap;
 
   TestService._();
@@ -192,22 +191,6 @@ class TestService {
     }
   }
 
-  static void addBoardCards() {
-    // fixme: do nothing for testing
-    return;
-
-    List<CardObject> _boardCards = [130, 82, 193, 148, 20]
-        .map<CardObject>((e) => CardHelper.getCard(e))
-        .toList();
-
-    final TableState tableState = _getTableState();
-    tableState.setBoardCards(
-      1,
-      _boardCards,
-    );
-    tableState.notifyAll();
-  }
-
   static TableState _getTableState() {
     BuildContext context = _context;
 
@@ -215,19 +198,19 @@ class TestService {
     return gameState.getTableState(context);
   }
 
-  static Future<void> distributeCards() async {
-    // table state
-    final TableState tableState = _getTableState();
-    tableState.updateTableStatusSilent('NEW_HAND');
-    tableState.notifyAll();
+  // static Future<void> distributeCards() async {
+  //   // table state
+  //   final TableState tableState = _getTableState();
+  //   tableState.updateTableStatusSilent('NEW_HAND');
+  //   tableState.notifyAll();
 
-    await Future.delayed(const Duration(seconds: 2));
-    initHandSevice();
-    await _handActionService.handleDealStarted();
+  //   await Future.delayed(const Duration(seconds: 2));
+  //   initHandSevice();
+  //   await _handActionService.handleDealStarted();
 
-    // tableState.updateTableStatusSilent(null);
-    // tableState.notifyAll();
-  }
+  //   // tableState.updateTableStatusSilent(null);
+  //   // tableState.notifyAll();
+  // }
 
   static Future<void> clearBoardCards() async {
     final tableState = _getTableState();
@@ -471,32 +454,32 @@ class TestService {
     players.notifyAll();
   }
 
-  static Future<void> sendNewHand() async {
-    final gameState = GameState.getState(_context);
-    if (_handActionService == null) {
-      _handActionService =
-          HandActionService(_context, gameState, null, null, null);
-      _handActionService.loop();
-    }
-    await _handActionService.handle(newHandMessage());
-    //await _handActionService.handle(dealCardsMessage());
-    //await HandActionService.handle(context: _context, message: yourActionNextActionMsg());
-    //await HandActionService.handle(context: _context, message: dealStartedMessage());
-  }
+  // static Future<void> sendNewHand() async {
+  //   final gameState = GameState.getState(_context);
+  //   if (_handActionService == null) {
+  //     _handActionService =
+  //         HandActionService(_context, gameState, null, null, null);
+  //     _handActionService.loop();
+  //   }
+  //   await _handActionService.handle(newHandMessage());
+  //   //await _handActionService.handle(dealCardsMessage());
+  //   //await HandActionService.handle(context: _context, message: yourActionNextActionMsg());
+  //   //await HandActionService.handle(context: _context, message: dealStartedMessage());
+  // }
 
-  static Future<void> sendResult() async {
-    final gameState = GameState.getState(_context);
-    gameState.settings.gameSound = false;
-    if (_handActionService == null) {
-      _handActionService =
-          HandActionService(_context, gameState, null, null, null);
-      _handActionService.loop();
-    }
-    await _handActionService.handle(testResultMessage);
-    //await _handActionService.handle(dealCardsMessage());
-    //await HandActionService.handle(context: _context, message: yourActionNextActionMsg());
-    //await HandActionService.handle(context: _context, message: dealStartedMessage());
-  }
+  // static Future<void> sendResult() async {
+  //   final gameState = GameState.getState(_context);
+  //   gameState.settings.gameSound = false;
+  //   if (_handActionService == null) {
+  //     _handActionService =
+  //         HandActionService(_context, gameState, null, null, null);
+  //     _handActionService.loop();
+  //   }
+  //   await _handActionService.handle(testResultMessage);
+  //   //await _handActionService.handle(dealCardsMessage());
+  //   //await HandActionService.handle(context: _context, message: yourActionNextActionMsg());
+  //   //await HandActionService.handle(context: _context, message: dealStartedMessage());
+  // }
 
   static void emptySeatDealer() {
     final gameState = GameState.getState(_context);
@@ -517,19 +500,19 @@ class TestService {
     gameState.refresh(_context);
   }
 
-  static void reloadStack() {
-    initHandSevice();
-    _context
-        .read<GameContextObject>()
-        .gameUpdateService
-        .handle(reloadStackMessage);
-  }
+  // static void reloadStack() {
+  //   initHandSevice();
+  //   _context
+  //       .read<GameContextObject>()
+  //       .gameUpdateService
+  //       .handle(reloadStackMessage);
+  // }
 
-  static void runItTwiceResult() {
-    final resultMessage = runItTwiceMessage();
-    initHandSevice();
-    _handActionService.handle(resultMessage);
-  }
+  // static void runItTwiceResult() {
+  //   final resultMessage = runItTwiceMessage();
+  //   initHandSevice();
+  //   _handActionService.handle(resultMessage);
+  // }
 
   static void fillBothBoardCards() {
     final gameState = GameState.getState(_context);
@@ -580,24 +563,24 @@ class TestService {
     tableState.notifyAll();
   }
 
-  static initHandSevice() {
-    final gameState = GameState.getState(_context);
-    if (_handActionService == null) {
-      _handActionService =
-          HandActionService(_context, gameState, null, null, null);
-      _handActionService.loop();
-    }
-  }
+  // static initHandSevice() {
+  //   final gameState = GameState.getState(_context);
+  //   if (_handActionService == null) {
+  //     _handActionService =
+  //         HandActionService(_context, gameState, null, null, null);
+  //     _handActionService.loop();
+  //   }
+  // }
 
-  static Future<void> flop() async {
-    initHandSevice();
-    await _handActionService.handle(flopMessage());
-  }
+  // static Future<void> flop() async {
+  //   initHandSevice();
+  //   await _handActionService.handle(flopMessage());
+  // }
 
-  static Future<void> fold() async {
-    initHandSevice();
-    await _handActionService.handle(foldMessage());
-  }
+  // static Future<void> fold() async {
+  //   initHandSevice();
+  //   await _handActionService.handle(foldMessage());
+  // }
 
   static void resetGameState() {
     final gameState = GameState.getState(_context);
@@ -615,77 +598,77 @@ class TestService {
     players.notifyAll();
 
     /* wait then run fold */
-    Future.delayed(const Duration(milliseconds: 800)).then((value) => fold());
+    //Future.delayed(const Duration(milliseconds: 800)).then((value) => fold());
   }
 
-  static void sendRunItTwiceMessage() {
-    initHandSevice();
-    String message = '''{
-   "messageType":"RUN_IT_TWICE",
-   "runItTwice":{
-      "board1":[
-         200,
-         196,
-         8,
-         132,
-         33
-      ],
-      "board2":[
-         72,
-         84,
-         40,
-         100,
-         97
-      ],
-      "stage":"PREFLOP",
-      "seatsPots":[
-         {
-            "seats":[
-               5,
-               8
-            ],
-            "pot":100
-         }
-      ],
-      "seat1":5,
-      "seat2":8
-   }
-}''';
-    //final handActionService = HandActionService( _context, gameState);
-    _handActionService.clear();
-    _handActionService.handle('{"messages": [$message]}');
-  }
+//   static void sendRunItTwiceMessage() {
+//     initHandSevice();
+//     String message = '''{
+//    "messageType":"RUN_IT_TWICE",
+//    "runItTwice":{
+//       "board1":[
+//          200,
+//          196,
+//          8,
+//          132,
+//          33
+//       ],
+//       "board2":[
+//          72,
+//          84,
+//          40,
+//          100,
+//          97
+//       ],
+//       "stage":"PREFLOP",
+//       "seatsPots":[
+//          {
+//             "seats":[
+//                5,
+//                8
+//             ],
+//             "pot":100
+//          }
+//       ],
+//       "seat1":5,
+//       "seat2":8
+//    }
+// }''';
+//     //final handActionService = HandActionService( _context, gameState);
+//     _handActionService.clear();
+//     _handActionService.handle('{"messages": [$message]}');
+//   }
 
-  static void runItTwicePrompt() {
-    initHandSevice();
+//   static void runItTwicePrompt() {
+//     initHandSevice();
 
-    String message =
-        '''{"clubId": 1,"gameId": "1620287740","gameCode": "1620287740","handNum": 1,"messageId": "ACTION:1:FLOP:0:","handStatus": "FLOP","messages": [{"messageType": "PLAYER_ACTED","playerActed": {"seatNo": 8,"action": "ALLIN","amount": 50}}, {"messageType": "YOUR_ACTION","seatAction": {"seatNo": 1,"availableActions": ["RUN_IT_TWICE_PROMPT"]}}, {"messageType": "YOUR_ACTION","seatAction": {"seatNo": 8,"availableActions": ["RUN_IT_TWICE_PROMPT"]}}]}''';
-    //final handActionService = HandActionService( _context, gameState);
-    _handActionService.clear();
-    _handActionService.handle(message);
-  }
+//     String message =
+//         '''{"clubId": 1,"gameId": "1620287740","gameCode": "1620287740","handNum": 1,"messageId": "ACTION:1:FLOP:0:","handStatus": "FLOP","messages": [{"messageType": "PLAYER_ACTED","playerActed": {"seatNo": 8,"action": "ALLIN","amount": 50}}, {"messageType": "YOUR_ACTION","seatAction": {"seatNo": 1,"availableActions": ["RUN_IT_TWICE_PROMPT"]}}, {"messageType": "YOUR_ACTION","seatAction": {"seatNo": 8,"availableActions": ["RUN_IT_TWICE_PROMPT"]}}]}''';
+//     //final handActionService = HandActionService( _context, gameState);
+//     _handActionService.clear();
+//     _handActionService.handle(message);
+//   }
 
-  static void handMessage() {
-    initHandSevice();
+//   static void handMessage() {
+//     initHandSevice();
 
-    // final seat = gameState.getSeat(_context, 1);
-    // seat.player.highlight = true;
-    // seat.setActionTimer(gameState.gameInfo.actionTime);
-    // seat.notify();
-    String message =
-        '''{"version":"", "clubId":254, "gameId":"284", "gameCode":"CG-A2DHJIG7497MNKP", "handNum":36,
-     "seatNo":0, "playerId":"0", "messageId":"ACTION:36:RIVER:2443:40", "gameToken":"", "handStatus":"RIVER",
-     "messages":[
-       {"messageType":"PLAYER_ACTED", "playerActed":{"seatNo":1, "action":"CHECK", "amount":0, "timedOut":false, "actionTime":0, "stack":28}},
-       {"messageType":"RIVER", "river":{"board":[97, 145, 2, 130, 66], "riverCard":66, "cardsStr":"[ 8♠  J♠  2❤  T❤  6❤ ]", "pots":[4], "seatsPots":[{"seats":[1, 2], "pot":4}], "playerBalance":{"1":28, "2":98}}},
-       {"messageType":"YOUR_ACTION", "seatAction":{"seatNo":2, "availableActions":["FOLD", "CHECK", "BET", "ALLIN"], "straddleAmount":0, "callAmount":0, "raiseAmount":0, "minBetAmount":0, "maxBetAmount":0, "minRaiseAmount":2, "maxRaiseAmount":98, "allInAmount":98, "betOptions":[{"text":"100%", "amount":4}, {"text":"All-In", "amount":98}]}},
-       {"messageType":"NEXT_ACTION", "actionChange":{"seatNo":2, "pots":[4], "potUpdates":0, "seatsPots":[{"seats":[1, 2], "pot":4}]}}
-      ]}''';
-    //final handActionService = HandActionService( _context, gameState);
-    _handActionService.clear();
-    _handActionService.handle(message);
-  }
+//     // final seat = gameState.getSeat(_context, 1);
+//     // seat.player.highlight = true;
+//     // seat.setActionTimer(gameState.gameInfo.actionTime);
+//     // seat.notify();
+//     String message =
+//         '''{"version":"", "clubId":254, "gameId":"284", "gameCode":"CG-A2DHJIG7497MNKP", "handNum":36,
+//      "seatNo":0, "playerId":"0", "messageId":"ACTION:36:RIVER:2443:40", "gameToken":"", "handStatus":"RIVER",
+//      "messages":[
+//        {"messageType":"PLAYER_ACTED", "playerActed":{"seatNo":1, "action":"CHECK", "amount":0, "timedOut":false, "actionTime":0, "stack":28}},
+//        {"messageType":"RIVER", "river":{"board":[97, 145, 2, 130, 66], "riverCard":66, "cardsStr":"[ 8♠  J♠  2❤  T❤  6❤ ]", "pots":[4], "seatsPots":[{"seats":[1, 2], "pot":4}], "playerBalance":{"1":28, "2":98}}},
+//        {"messageType":"YOUR_ACTION", "seatAction":{"seatNo":2, "availableActions":["FOLD", "CHECK", "BET", "ALLIN"], "straddleAmount":0, "callAmount":0, "raiseAmount":0, "minBetAmount":0, "maxBetAmount":0, "minRaiseAmount":2, "maxRaiseAmount":98, "allInAmount":98, "betOptions":[{"text":"100%", "amount":4}, {"text":"All-In", "amount":98}]}},
+//        {"messageType":"NEXT_ACTION", "actionChange":{"seatNo":2, "pots":[4], "potUpdates":0, "seatsPots":[{"seats":[1, 2], "pot":4}]}}
+//       ]}''';
+//     //final handActionService = HandActionService( _context, gameState);
+//     _handActionService.clear();
+//     _handActionService.handle(message);
+//   }
 
   static void waitlistDialog() {
     final data = '''
@@ -766,10 +749,10 @@ class TestService {
     );
   }
 
-  static void handAnnouncement() async {
-    initHandSevice();
-    await _handActionService.handle(newGameAnnouncement());
-  }
+  // static void handAnnouncement() async {
+  //   initHandSevice();
+  //   await _handActionService.handle(newGameAnnouncement());
+  // }
 
   static void showPlayerStatus() {
     final gameState = GameState.getState(_context);
@@ -813,11 +796,11 @@ class TestService {
     players.notifyAll();
   }
 
-  static void dealerChoiceGame() async {
-    initHandSevice();
+  // static void dealerChoiceGame() async {
+  //   initHandSevice();
 
-    await _handActionService.handle(dealerChoiceMessage());
-  }
+  //   await _handActionService.handle(dealerChoiceMessage());
+  // }
 
   static List<GameModel> fetchLiveGames() {
     var json = jsonDecode('''{

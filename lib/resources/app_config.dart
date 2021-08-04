@@ -4,6 +4,7 @@ import 'app_constants.dart';
 
 class AppConfig {
   static String jwt = '';
+  static int _availableCoins = 0;
   static String _apiUrl;
   static String _deviceId;
   static String _deviceSecret;
@@ -83,5 +84,13 @@ class AppConfig {
 
   static String get screeName {
     return _screenName;
+  }
+
+  static int get availableCoins {
+    return _availableCoins;
+  }
+
+  static void setAvailableCoins(int coins) {
+    _availableCoins = coins;
   }
 }

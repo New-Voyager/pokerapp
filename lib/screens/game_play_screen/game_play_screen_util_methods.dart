@@ -116,15 +116,16 @@ class GamePlayScreenUtilMethods {
           onTap: () => TestService.showTextNotification(),
         ),
 
-        SpeedDialChild(
-            child: Icon(
-              Icons.adb_rounded,
-              color: Colors.white,
-            ),
-            backgroundColor: Colors.red,
-            labelBackgroundColor: Colors.black,
-            label: 'reload stack',
-            onTap: () => TestService.reloadStack()),
+        // SpeedDialChild(
+        //     child: Icon(
+        //       Icons.adb_rounded,
+        //       color: Colors.white,
+        //     ),
+        //     backgroundColor: Colors.red,
+        //     labelBackgroundColor: Colors.black,
+        //     label: 'reload stack',
+        //     onTap: () => TestService.reloadStack()),
+
         // SpeedDialChild(
         //   child: Icon(
         //     Icons.adb_rounded,

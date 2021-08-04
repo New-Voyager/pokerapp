@@ -607,7 +607,7 @@ class BoardAttributesObject extends ChangeNotifier {
       return 2.0;
     }
   }
-  
+
   GlobalKey getPotsKey(int i) {
     if (this._pots.length == 0 || i >= _pots.length) {
       return null;

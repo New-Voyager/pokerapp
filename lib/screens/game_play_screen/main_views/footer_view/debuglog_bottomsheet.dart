@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/services/data/game_log_store.dart';

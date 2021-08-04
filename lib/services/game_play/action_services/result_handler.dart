@@ -10,15 +10,18 @@ import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart
 import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
+import 'package:pokerapp/models/hand_log_model_new.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:provider/provider.dart';
+import 'package:pokerapp/proto/hand.pb.dart' as proto;
+import 'package:pokerapp/proto/handmessage.pb.dart' as proto;
 
 class ResultHandler {
   bool isRunItTwice;
-  dynamic runItTwiceResult;
-  dynamic potWinners;
+  proto.RunItTwiceResult runItTwiceResult;
+  Map<int, proto.PotWinners> potWinners;
   List<int> boardCards;
   List<int> boardCards2;
   BuildContext context;
@@ -77,10 +80,10 @@ class ResultHandler {
         tableState.updatePotToHighlightSilent(potNo);
         tableState.notifyAll();
 
-        final Map winners = potWinner.value;
+        final winners = potWinner.value;
 
-        final List highWinners = winners['hiWinners'];
-        final List lowWinners = winners['lowWinners'];
+        final highWinners = winners.hiWinners;
+        final lowWinners = winners.lowWinners;
 
         /* this method should complete in timePerPotInMs time */
         await processHiLoWinners(
@@ -104,8 +107,8 @@ class ResultHandler {
   }
 
   Future<void> processHiLoWinners({
-    final List highWinners,
-    final List lowWinners,
+    final List<proto.HandWinner> highWinners,
+    final List<proto.HandWinner> lowWinners,
     final int boardIndex = 1,
     final bool resetState = false,
   }) async {
@@ -127,9 +130,9 @@ class ResultHandler {
     log('paul debug: HIGH pot winners starting');
     if (gameState != null) {
       final currentGameType = gameState.currentHandGameType;
-      if (currentGameType == GameType.PLO_HILO || 
-        currentGameType == GameType.FIVE_CARD_PLO_HILO) {
-          tableState.setWhichWinner(AppConstants.HIGH_WINNERS);
+      if (currentGameType == GameType.PLO_HILO ||
+          currentGameType == GameType.FIVE_CARD_PLO_HILO) {
+        tableState.setWhichWinner(AppConstants.HIGH_WINNERS);
       }
     }
     //tableState.setWhichWinner(AppConstants.HIGH_WINNERS);
@@ -165,11 +168,11 @@ class ResultHandler {
     log('paul debug: low pot winners starting: $lowWinners');
     if (gameState != null) {
       final currentGameType = gameState.currentHandGameType;
-      if (currentGameType == GameType.PLO_HILO || 
-        currentGameType == GameType.FIVE_CARD_PLO_HILO) {
+      if (currentGameType == GameType.PLO_HILO ||
+          currentGameType == GameType.FIVE_CARD_PLO_HILO) {
         tableState.setWhichWinner(AppConstants.LOW_WINNERS);
       }
-    }    
+    }
     await processWinners(
       highWinners: lowWinners,
       boardIndex: boardIndex,
@@ -212,12 +215,12 @@ class ResultHandler {
   /* this method processes multiple winners */
   /* THIS METHOD TAKES ONLY 500 MS (the pot moving animation time) */
   Future<void> processWinners({
-    List highWinners,
+    List<proto.HandWinner> highWinners,
     final boardIndex = 1,
   }) async {
     /** process the high pot winners */
     for (int i = 0; i < highWinners.length; i++) {
-      final HiWinnersModel winner = HiWinnersModel.fromJson(highWinners[i]);
+      final HiWinnersModel winner = HiWinnersModel.fromProto(highWinners[i]);
 
       await processWinner(
         winner: winner,
@@ -301,9 +304,9 @@ class ResultHandler {
     }
     tableState.setBoardCards(2, boardCards2CO);
 
-    final Map board1PotWinners = runItTwiceResult['board1Winners'];
+    final board1PotWinners = runItTwiceResult.board1Winners;
 
-    final Map board2PotWinners = runItTwiceResult['board2Winners'];
+    final board2PotWinners = runItTwiceResult.board2Winners;
 
     log('board 1 winners: $board1PotWinners');
     log('board 2 winners: $board2PotWinners');
@@ -324,10 +327,10 @@ class ResultHandler {
       tableState.updatePotToHighlightSilent(potNo);
       tableState.notifyAll();
 
-      final Map winners = board1Winners.value;
+      final winners = board1Winners.value;
 
-      final List highWinners = winners['hiWinners'];
-      final List lowWinners = winners['lowWinners'];
+      final highWinners = winners.hiWinners;
+      final lowWinners = winners.lowWinners;
 
       await processHiLoWinners(
         highWinners: highWinners,
@@ -366,10 +369,10 @@ class ResultHandler {
       tableState.updatePotToHighlightSilent(potNo);
       tableState.notifyAll();
 
-      final Map winners = board2Winners.value;
+      final winners = board2Winners.value;
 
-      final List highWinners = winners['hiWinners'];
-      final List lowWinners = winners['lowWinners'];
+      final highWinners = winners.hiWinners;
+      final lowWinners = winners.lowWinners;
 
       await processHiLoWinners(
         highWinners: highWinners,
