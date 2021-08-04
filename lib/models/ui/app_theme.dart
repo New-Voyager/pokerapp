@@ -68,6 +68,10 @@ class AppTheme extends ChangeNotifier {
   Color supportingColorWithLight([double l = 0.10]) =>
       _lighten(_themeData.supportingColor, l);
 
+  // negative or error colors
+  // TODO: MAY BE WE CAN HAVE DIFFERENT SHADES OF THIS
+  Color get negativeOrErrorColor => _themeData.negativeOrErrorColor;
+
   // gradients
   BoxDecoration get bgGreenRadialGradient => BoxDecoration(
         gradient: RadialGradient(

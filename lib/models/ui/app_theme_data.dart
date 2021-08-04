@@ -17,12 +17,16 @@ class AppThemeData {
   // mainly used for texts (white, or shades of white)
   Color supportingColor;
 
+  // color used for negatives or errors
+  Color negativeOrErrorColor;
+
   AppThemeData({
-    this.primaryColor = const Color(0xFF033614),
-    this.secondaryColor =
-        const Color(0xFF00FAAD), // Color(0xFF40D876); (darken secondary color)
+    this.primaryColor = const Color(0xFF033614), // 0xFF300614
+    // Color(0xFF40D876); (darken secondary color)
+    this.secondaryColor = const Color(0xFF00FAAD),
     this.accentColor = const Color(0xFFD89E40),
     this.fillInColor = const Color(0xFF0B2324),
     this.supportingColor = Colors.white,
+    this.negativeOrErrorColor = const Color(0xFFFA0000),
   });
 }

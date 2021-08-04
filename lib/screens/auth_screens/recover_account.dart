@@ -45,7 +45,7 @@ class _RestoreAccountScreenState extends State<RestoreAccountScreen> {
               children: [
                 AppDimensionsNew.getVerticalSizedBox(16.pw),
                 // Logo section
-                AppNameAndLogoWidget(),
+                AppNameAndLogoWidget(null),
 
                 Container(
                   alignment: Alignment.center,

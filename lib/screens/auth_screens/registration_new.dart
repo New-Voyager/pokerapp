@@ -8,6 +8,8 @@ import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/auth_model.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_config.dart';
+import 'package:pokerapp/resources/app_decorators.dart';
+import 'package:pokerapp/resources/app_text_styles.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
@@ -55,9 +57,18 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
       autovalidateMode: AutovalidateMode.onUserInteraction,
       decoration: InputDecoration(
         /* border */
-        border: AppStylesNew.borderStyle,
-        errorBorder: AppStylesNew.errorBorderStyle,
-        focusedBorder: AppStylesNew.focusBorderStyle,
+        border: AppDecorators.getBorderStyle(
+          radius: 32.0,
+          color: _appTheme.primaryColorWithDark(),
+        ),
+        errorBorder: AppDecorators.getBorderStyle(
+          radius: 32.0,
+          color: _appTheme.negativeOrErrorColor,
+        ),
+        focusedBorder: AppDecorators.getBorderStyle(
+          radius: 32.0,
+          color: _appTheme.accentColorWithDark(),
+        ),
 
         /* icons - prefix, suffix */
         prefixIcon: Container(
@@ -78,12 +89,13 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
 
         /* hint & label texts */
         hintText: hintText,
-        hintStyle: TextStyle(
-          fontSize: 13.0,
+        hintStyle: AppTextStyles.T3.copyWith(
           color: _appTheme.supportingColorWithDark(0.60),
         ),
         labelText: labelText,
-        labelStyle: AppStylesNew.labelTextFieldStyle,
+        labelStyle: AppTextStyles.T1.copyWith(
+          color: _appTheme.accentColor,
+        ),
 
         /* other */
         contentPadding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
@@ -151,6 +163,47 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
     );
   }
 
+  Widget _buildTermsAndPrivacyText() => Container(
+        margin: EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 16,
+        ),
+        child: RichText(
+          text: TextSpan(
+            children: [
+              TextSpan(
+                text: "By creating an account, you agree with our ",
+                style: AppTextStyles.T2.copyWith(
+                  color: _appTheme.supportingColorWithDark(0.50),
+                ),
+              ),
+              TextSpan(
+                text: "Terms of Service",
+                style: AppTextStyles.T2.copyWith(
+                  decoration: TextDecoration.underline,
+                  color: _appTheme.supportingColorWithDark(0.50),
+                ),
+                recognizer: _termsClick..onTap = _openTermsOfService,
+              ),
+              TextSpan(
+                text: " & ",
+                style: AppTextStyles.T2.copyWith(
+                  color: _appTheme.supportingColorWithDark(0.50),
+                ),
+              ),
+              TextSpan(
+                text: "Privacy Policy",
+                style: AppTextStyles.T2.copyWith(
+                  decoration: TextDecoration.underline,
+                  color: _appTheme.supportingColorWithDark(0.50),
+                ),
+                recognizer: _privacyClick..onTap = _openPrivacyPolicy,
+              ),
+            ],
+          ),
+        ),
+      );
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -173,7 +226,7 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
               children: [
                 AppDimensionsNew.getVerticalSizedBox(16.pw),
                 // Logo section
-                AppNameAndLogoWidget(),
+                AppNameAndLogoWidget(_appTheme),
 
                 // Form
                 Container(
@@ -261,50 +314,8 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
                         // sep
                         AppDimensionsNew.getVerticalSizedBox(16),
 
-                        // Terms and privacy text
-                        Container(
-                          margin: EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 16,
-                          ),
-                          child: RichText(
-                            text: TextSpan(
-                              children: [
-                                TextSpan(
-                                  text:
-                                      "By creating an account, you agree with our ",
-                                  style: AppStylesNew.labelTextStyle.copyWith(
-                                    fontSize: 10.dp,
-                                  ),
-                                ),
-                                TextSpan(
-                                  text: "Terms of Service",
-                                  style: AppStylesNew.labelTextStyle.copyWith(
-                                    decoration: TextDecoration.underline,
-                                    fontSize: 10.dp,
-                                  ),
-                                  recognizer: _termsClick
-                                    ..onTap = _openTermsOfService,
-                                ),
-                                TextSpan(
-                                  text: " & ",
-                                  style: AppStylesNew.labelTextStyle.copyWith(
-                                    fontSize: 10.dp,
-                                  ),
-                                ),
-                                TextSpan(
-                                  text: "Privacy Policy",
-                                  style: AppStylesNew.labelTextStyle.copyWith(
-                                    decoration: TextDecoration.underline,
-                                    fontSize: 10.dp,
-                                  ),
-                                  recognizer: _privacyClick
-                                    ..onTap = _openPrivacyPolicy,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
+                        _buildTermsAndPrivacyText(), // Terms and privacy text
+
                         RoundedColorButton(
                           backgroundColor: _appTheme.accentColor,
                           text: AppStringsNew.signupButtonText,
@@ -317,6 +328,7 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
                   ),
                 ),
 
+                // restore account text
                 InkWell(
                   onTap: () {
                     Navigator.of(context).pushNamed(Routes.restore_account);
@@ -326,19 +338,26 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
                     padding: EdgeInsets.all(16),
                     child: Text(
                       AppStringsNew.restoreAccountText,
-                      style: TextStyle(
+                      style: AppTextStyles.T2.copyWith(
                         decoration: TextDecoration.underline,
                         color: _appTheme.accentColor,
                       ),
                     ),
                   ),
                 ),
+
+                /* ---- DEBUG REALM ---- */
+
+                // seperator
                 SizedBox(height: 100),
                 Padding(
                   padding: EdgeInsets.only(bottom: 10.0),
                   child: Center(
-                      child: Text(AppConfig.apiUrl,
-                          style: TextStyle(fontSize: 20))),
+                    child: Text(
+                      AppConfig.apiUrl,
+                      style: TextStyle(fontSize: 20),
+                    ),
+                  ),
                 ),
               ],
             ),
