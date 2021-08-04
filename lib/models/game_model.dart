@@ -83,7 +83,7 @@ class GameModel {
         break;
       case GameType.ROE:
         gameTypeStr = 'Round of Each';
-        break;        
+        break;
       case GameType.UNKNOWN:
         break;
     }

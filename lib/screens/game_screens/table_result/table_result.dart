@@ -7,8 +7,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/table_record.dart';
 import 'package:pokerapp/resources/app_assets.dart';
-import 'package:pokerapp/resources/app_colors.dart';
-import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
+import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
@@ -189,8 +189,8 @@ class _TableResultScreenState extends State<TableResultScreen>
                     style: TextStyle(
                       color: data is double
                           ? data > 0
-                              ? AppStyles.profitStyle.color
-                              : AppStyles.lossStyle.color
+                              ? AppStylesNew.profitStyle.color
+                              : AppStylesNew.lossStyle.color
                           : Color(0xffa09f9e),
                     ),
                   ),
@@ -287,7 +287,7 @@ class _TableResultScreenState extends State<TableResultScreen>
     initializeTableWidgets();
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      backgroundColor: AppColors.screenBackgroundColor,
+      backgroundColor: AppColorsNew.screenBackgroundColor,
       appBar: CustomAppBar(
         context: context,
         titleText: AppStringsNew.TableRecordTitle,
@@ -376,10 +376,10 @@ class _TableResultScreenState extends State<TableResultScreen>
                 children: [
                   Expanded(
                     child: CupertinoSegmentedControl<int>(
-                      unselectedColor: AppColors.screenBackgroundColor,
-                      selectedColor: AppColors.appAccentColor,
+                      unselectedColor: AppColorsNew.screenBackgroundColor,
+                      selectedColor: AppColorsNew.appAccentColor,
                       children: tableWidgets,
-                      borderColor: AppColors.appAccentColor,
+                      borderColor: AppColorsNew.appAccentColor,
                       onValueChanged: (int val) {
                         setState(() => _selectedTableWidget = val);
                       },

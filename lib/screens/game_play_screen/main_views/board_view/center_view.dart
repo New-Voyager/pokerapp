@@ -10,7 +10,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/table_state.dar
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/resources/app_constants.dart';
-import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/center_button_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/pots_view.dart';
@@ -381,7 +381,7 @@ class _CenterViewState extends State<CenterView> {
               ),
               child: Text(
                 'Pot: ${DataFormatter.chipsFormat(potChipsUpdates?.toDouble())}',
-                style: AppStyles.itemInfoTextStyleHeavy.copyWith(
+                style: AppStylesNew.itemInfoTextStyleHeavy.copyWith(
                   fontSize: 13,
                   fontWeight: FontWeight.w400,
                 ),
@@ -416,7 +416,7 @@ class _CenterViewState extends State<CenterView> {
                     ),
                     child: Text(
                       rankStr,
-                      style: AppStyles.footerResultTextStyle4,
+                      style: AppStylesNew.footerResultTextStyle4,
                     ),
                   ),
           ),

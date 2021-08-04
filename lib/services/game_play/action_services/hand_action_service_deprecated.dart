@@ -112,7 +112,7 @@ class RetrySendingMsg {
   }
 }
 
-class HandActionService {
+class HandActionServiceDecprecated {
   final GameState _gameState;
   final BuildContext _context;
   final List<dynamic> _messages = [];
@@ -126,7 +126,7 @@ class HandActionService {
   PlayerInfo _currentPlayer;
   AudioPlayer audioPlayer;
 
-  HandActionService(
+  HandActionServiceDecprecated(
     this._context,
     this._gameState,
     this._gameComService,
@@ -188,13 +188,13 @@ class HandActionService {
       listen: false,
     );
 
-    gameContextObject.handActionService.playerActed(
-      gameContextObject.playerId,
-      handInfo.handNum,
-      actionState.action.seatNo,
-      action,
-      amount,
-    );
+    // gameContextObject.handActionService.playerActed(
+    //   gameContextObject.playerId,
+    //   handInfo.handNum,
+    //   actionState.action.seatNo,
+    //   action,
+    //   amount,
+    // );
   }
 
   playerActed(
@@ -722,7 +722,7 @@ class HandActionService {
       if (_gameState.straddleBetThisHand == true) {
         // we have the straddleBet set to true, do a bet
         if (_close) return;
-        HandActionService.takeAction(
+        HandActionServiceDecprecated.takeAction(
           context: _context,
           action: AppConstants.STRADDLE,
           amount: 2 * _gameState.gameInfo.bigBlind,

@@ -95,7 +95,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
                     //     "Game Code: " + widget.data.gameCode.toString(),
                     //     style: const TextStyle(
                     //       fontFamily: AppAssets.fontFamilyLato,
-                    //       color: AppColors.lightGrayTextColor,
+                    //       color: AppColorsNew.lightGrayTextColor,
                     //       fontSize: 12.0,
                     //       fontWeight: FontWeight.w400,
                     //     ),

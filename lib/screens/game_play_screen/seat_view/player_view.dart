@@ -13,7 +13,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/resources/app_constants.dart';
-import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/widgets/blinking_widget.dart';
 import 'package:pokerapp/widgets/cards/hidden_card_view.dart';
@@ -520,7 +520,7 @@ class SeatNoWidget extends StatelessWidget {
           ),
           child: Text(
             seat.serverSeatPos.toString(),
-            style: AppStyles.itemInfoTextStyle.copyWith(
+            style: AppStylesNew.itemInfoTextStyle.copyWith(
               color: Colors.white,
             ),
           ),

@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/club_members_model.dart';
 import 'package:pokerapp/models/club_model.dart';

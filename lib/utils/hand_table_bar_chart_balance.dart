@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:pokerapp/models/table_record.dart';
 import 'package:pokerapp/resources/app_assets.dart';
-import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
 
 class HandTableBarChartBalance extends StatelessWidget {
   final TableRecord _handTableRecord;
@@ -77,8 +77,8 @@ class HandTableBarChartBalance extends StatelessWidget {
             fontSize: 10,
           ),
           lineStyle: charts.LineStyleSpec(
-            color:
-                charts.ColorUtil.fromDartColor(AppColors.listViewDividerColor),
+            color: charts.ColorUtil.fromDartColor(
+                AppColorsNew.listViewDividerColor),
           ),
         ),
       ),
@@ -94,8 +94,8 @@ class HandTableBarChartBalance extends StatelessWidget {
             fontSize: 10,
           ),
           lineStyle: charts.LineStyleSpec(
-            color:
-                charts.ColorUtil.fromDartColor(AppColors.listViewDividerColor),
+            color: charts.ColorUtil.fromDartColor(
+                AppColorsNew.listViewDividerColor),
           ),
         ),
       ),

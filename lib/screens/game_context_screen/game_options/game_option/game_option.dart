@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/option_item_model.dart';
-import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
@@ -207,7 +207,7 @@ class _GameOptionState extends State<GameOption> {
         title: "Seat Change",
         image: "assets/images/casino.png",
         name: "Request seat change",
-        backGroundColor: AppColors.gameOption2,
+        backGroundColor: AppColorsNew.gameOption2,
         onTap: (context) async {
           await showModalBottomSheet(
             context: context,
@@ -225,7 +225,7 @@ class _GameOptionState extends State<GameOption> {
         title: "Waiting List",
         image: "assets/images/casino.png",
         name: "Add to waiting list",
-        backGroundColor: AppColors.gameOption3,
+        backGroundColor: AppColorsNew.gameOption3,
         onTap: (context) async {
           await showModalBottomSheet(
               context: context,

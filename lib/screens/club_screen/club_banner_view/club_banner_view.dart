@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pokerapp/models/club_homepage_model.dart';
 import 'package:pokerapp/resources/app_assets.dart';
-import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
 
 import '../../../utils/color_generator.dart';
 
@@ -64,7 +64,7 @@ class ClubBannerView extends StatelessWidget {
               Text(
                 "Club code: " + clubModel.clubCode,
                 style: TextStyle(
-                  color: AppColors.lightGrayColor,
+                  color: AppColorsNew.lightGrayColor,
                   fontSize: 14.0,
                   fontFamily: AppAssets.fontFamilyLato,
                   fontWeight: FontWeight.w400,
@@ -75,7 +75,7 @@ class ClubBannerView extends StatelessWidget {
                   padding: EdgeInsets.all(8),
                   child: Icon(
                     Icons.copy,
-                    color: AppColors.appAccentColor,
+                    color: AppColorsNew.appAccentColor,
                     size: 16,
                   ),
                 ),

@@ -1,5 +1,8 @@
 import 'dart:convert';
 import 'dart:math';
+import 'dart:typed_data';
+import 'package:pokerapp/proto/handmessage.pb.dart' as proto;
+import 'package:fixnum/fixnum.dart' as $fixnum;
 
 import 'package:dart_nats/dart_nats.dart';
 
@@ -34,7 +37,7 @@ class PingResponder {
   }
 
   void handleMessage(Message natsMsg) {
-    final PingPongMessage message = PingPongMessage.fromMessage(natsMsg.string);
+    final PingPongMessage message = PingPongMessage.fromProto(natsMsg.data);
 
     if (debug) {
       // Don't respond to the network check sometimes, so that we can see the
@@ -52,9 +55,11 @@ class PingResponder {
   }
 
   void sendResponse(PingPongMessage msg) {
-    msg.playerId = this.playerId;
-    String msgStr = msg.toJson();
-    this.client.pubString(this.pongChannel, msgStr);
+    // msg.playerId = this.playerId;
+    // String msgStr = msg.toJson();
+    // this.client.pubString(this.pongChannel, msgStr);
+    Uint8List data = msg.toProto(this.playerId);
+    this.client.pub(this.pongChannel, data);
   }
 }
 
@@ -63,6 +68,7 @@ class PingPongMessage {
   String gameCode;
   int playerId;
   int seq;
+  proto.PingPongMessage pongMsg;
 
   static PingPongMessage fromMessage(String data) {
     try {
@@ -70,7 +76,7 @@ class PingPongMessage {
       PingPongMessage msg = new PingPongMessage();
 
       msg.gameId = int.parse(message['gameId'].toString());
-      msg.gameCode = message['gameCode'].toString();
+      msg.gameCode = message['gUint8ListameCode'].toString();
       if (message['playerId'] != null) {
         msg.playerId = int.parse(message['playerId'].toString());
       }
@@ -80,6 +86,29 @@ class PingPongMessage {
     } catch (Exception) {
       return null;
     }
+  }
+
+  static PingPongMessage fromProto(Uint8List data) {
+    try {
+      final message = proto.PingPongMessage.fromBuffer(data);
+      PingPongMessage msg = new PingPongMessage();
+      msg.pongMsg = message;
+
+      msg.gameId = message.gameId.toInt();
+      msg.gameCode = message.gameCode;
+      if (message.playerId != null) {
+        msg.playerId = message.playerId.toInt();
+      }
+      msg.seq = message.seq;
+      return msg;
+    } catch (Exception) {
+      return null;
+    }
+  }
+
+  Uint8List toProto(int playerId) {
+    pongMsg.playerId = $fixnum.Int64(playerId);
+    return pongMsg.writeToBuffer();
   }
 
   String toJson() => jsonEncode({

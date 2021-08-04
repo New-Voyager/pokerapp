@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_stages.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';

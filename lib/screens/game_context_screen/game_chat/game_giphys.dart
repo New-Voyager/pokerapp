@@ -3,9 +3,9 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/app_constants.dart';
-import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/gif_list_widget.dart';
 import 'package:pokerapp/services/app/game_service.dart';
@@ -107,7 +107,7 @@ class _GameChatBottomSheetState extends State<GameChatBottomSheet> {
             child: Text(
               cleanedText,
               textAlign: TextAlign.center,
-              style: AppStyles.clubItemInfoTextStyle.copyWith(
+              style: AppStylesNew.clubItemInfoTextStyle.copyWith(
                 fontSize: 15.0,
                 color: AppColorsNew.newGreenButtonColor,
               ),
@@ -207,12 +207,12 @@ class _GameChatBottomSheetState extends State<GameChatBottomSheet> {
                         Text(
                           'GIF',
                           style: isFavouriteGif
-                              ? AppStyles.footerResultTextStyle2.copyWith(
+                              ? AppStylesNew.footerResultTextStyle2.copyWith(
                                   fontSize: 15.0,
                                   fontWeight: FontWeight.bold,
                                   color: AppColorsNew.yellowAccentColor,
                                 )
-                              : AppStyles.footerResultTextStyle2.copyWith(
+                              : AppStylesNew.footerResultTextStyle2.copyWith(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 15.0,
                                 ),
@@ -241,12 +241,14 @@ class _GameChatBottomSheetState extends State<GameChatBottomSheet> {
                             child: Text(
                               e,
                               style: currentSelectedTab == e
-                                  ? AppStyles.footerResultTextStyle2.copyWith(
+                                  ? AppStylesNew.footerResultTextStyle2
+                                      .copyWith(
                                       fontSize: 15.0,
                                       fontWeight: FontWeight.bold,
                                       color: AppColorsNew.yellowAccentColor,
                                     )
-                                  : AppStyles.footerResultTextStyle2.copyWith(
+                                  : AppStylesNew.footerResultTextStyle2
+                                      .copyWith(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 15.0,
                                     ),
@@ -312,7 +314,8 @@ class _GameChatBottomSheetState extends State<GameChatBottomSheet> {
                         ),
                       ),
                       hintText: 'Search Tenor',
-                      hintStyle: TextStyle(color: AppColors.medLightGrayColor),
+                      hintStyle:
+                          TextStyle(color: AppColorsNew.medLightGrayColor),
                       border: InputBorder.none,
                     ),
                   ),

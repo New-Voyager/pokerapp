@@ -63,7 +63,7 @@ class GameCircleButton extends StatelessWidget {
           color: buttonColor,
           border: Border.all(
               color: Color(
-                  0xff8b4513))), //AppColors.gameButtonBorderColor)), //Colors.yellow)),
+                  0xff8b4513))), //AppColorsNew.gameButtonBorderColor)), //Colors.yellow)),
       padding: EdgeInsets.all(5.pw),
       margin: EdgeInsets.symmetric(
         horizontal: 5.pw,

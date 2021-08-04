@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/messages_from_member.dart';
-import 'package:pokerapp/resources/app_colors.dart';
-import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
+import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/services/app/clubs_service.dart';
 
 import '../../../../routes.dart';
@@ -46,7 +46,7 @@ class _ClubChatState extends State<ClubHostMessaging> with RouteAwareAnalytics {
     width = MediaQuery.of(context).size.width;
     height = MediaQuery.of(context).size.height;
     return Scaffold(
-      backgroundColor: AppColors.screenBackgroundColor,
+      backgroundColor: AppColorsNew.screenBackgroundColor,
       appBar: getappBar(),
       body: Container(
         child: Column(
@@ -83,11 +83,11 @@ class _ClubChatState extends State<ClubHostMessaging> with RouteAwareAnalytics {
                               borderRadius: BorderRadius.circular(5.0),
                               color: isHostView
                                   ? isHost
-                                      ? AppColors.chatMeColor
-                                      : AppColors.chatOthersColor
+                                      ? AppColorsNew.chatMeColor
+                                      : AppColorsNew.chatOthersColor
                                   : isHost
-                                      ? AppColors.chatOthersColor
-                                      : AppColors.chatMeColor,
+                                      ? AppColorsNew.chatOthersColor
+                                      : AppColorsNew.chatMeColor,
                             ),
                             margin: EdgeInsets.only(
                                 left: isHostView
@@ -122,7 +122,7 @@ class _ClubChatState extends State<ClubHostMessaging> with RouteAwareAnalytics {
 
   inputBox() {
     return Container(
-      color: AppColors.screenBackgroundColor,
+      color: AppColorsNew.screenBackgroundColor,
       child: Row(
         children: [
           Expanded(
@@ -131,7 +131,7 @@ class _ClubChatState extends State<ClubHostMessaging> with RouteAwareAnalytics {
               margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
               child: Container(
                 decoration: BoxDecoration(
-                  color: AppColors.chatInputBgColor,
+                  color: AppColorsNew.chatInputBgColor,
                   borderRadius: BorderRadius.all(
                     Radius.circular(
                       20.0,
@@ -188,13 +188,13 @@ class _ClubChatState extends State<ClubHostMessaging> with RouteAwareAnalytics {
           color: Colors.transparent,
           elevation: 5,
           child: Container(
-            color: AppColors.screenBackgroundColor,
+            color: AppColorsNew.screenBackgroundColor,
             child: Stack(
               children: [
                 IconButton(
                   icon: Icon(
                     Icons.arrow_back_ios,
-                    color: AppColors.appAccentColor,
+                    color: AppColorsNew.appAccentColor,
                   ),
                   onPressed: () => Navigator.of(context).pop(),
                 ),
@@ -211,12 +211,12 @@ class _ClubChatState extends State<ClubHostMessaging> with RouteAwareAnalytics {
                             widget.name != null
                                 ? widget.name[0].toLowerCase()
                                 : 'H',
-                            style: AppStyles.optionTitleText,
+                            style: AppStylesNew.optionTitleText,
                           ),
                         ),
                         Text(
                           widget.name ?? 'Host',
-                          style: AppStyles.credentialsTextStyle,
+                          style: AppStylesNew.credentialsTextStyle,
                         ),
                       ],
                     ),

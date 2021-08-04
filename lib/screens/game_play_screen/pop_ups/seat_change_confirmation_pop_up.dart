@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/widgets/custom_text_button.dart';
 import 'package:pokerapp/widgets/radio_list_widget.dart';
@@ -30,7 +30,7 @@ class SeatChangeConfirmationPopUp {
               decoration: BoxDecoration(
                 color: Colors.black,
                 borderRadius: BorderRadius.circular(40.pw),
-                border: Border.all(color: AppColors.dialogBorderColor),
+                border: Border.all(color: AppColorsNew.dialogBorderColor),
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(40.pw),

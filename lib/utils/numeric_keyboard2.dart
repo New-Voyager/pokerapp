@@ -1,7 +1,7 @@
 import 'dart:core';
 
 import 'package:flutter/material.dart';
-import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/utils/utils.dart';
 import 'package:provider/provider.dart';
@@ -78,7 +78,7 @@ class NumericKeyboard2 extends StatelessWidget {
           ),
         ],
         builder: (context, __) => Scaffold(
-          backgroundColor: AppColors.widgetBackgroundColor,
+          backgroundColor: AppColorsNew.widgetBackgroundColor,
           body: SafeArea(
             top: false,
             child: Padding(
@@ -340,7 +340,7 @@ class NumericKeyboard2 extends StatelessWidget {
             borderRadius: BorderRadius.circular(16),
             color: color,
             // border: Border.all(
-            //   color: AppColors.appAccentColor,
+            //   color: AppColorsNew.appAccentColor,
             //   width: 2.0,
             // ),
             boxShadow: [

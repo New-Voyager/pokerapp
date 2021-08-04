@@ -3,9 +3,9 @@ import 'package:flutter/painting.dart';
 import 'package:intl/intl.dart';
 import 'package:pokerapp/models/game_model.dart';
 import 'package:pokerapp/resources/app_assets.dart';
-import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
-import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/main_screens/games_page_view/enums.dart';
 import 'package:pokerapp/widgets/custom_text_button.dart';
@@ -37,11 +37,11 @@ class GameItem extends StatelessWidget {
       * decoration of the single game item widget
       * */
       decoration: const BoxDecoration(
-        color: AppColors.cardBackgroundColor,
+        color: AppColorsNew.cardBackgroundColor,
         borderRadius: BorderRadius.all(
           Radius.circular(AppDimensions.cardRadius),
         ),
-        boxShadow: AppStyles.cardBoxShadow,
+        boxShadow: AppStylesNew.cardBoxShadow,
       ),
       child: Row(
         children: <Widget>[
@@ -95,7 +95,7 @@ class GameItem extends StatelessWidget {
 
                       Text(
                         "${game.clubName}",
-                        style: AppStyles.itemInfoTextStyle,
+                        style: AppStylesNew.itemInfoTextStyle,
                       ),
                       Spacer(),
 
@@ -105,7 +105,7 @@ class GameItem extends StatelessWidget {
 
                       Text(
                         'Code - ${game.gameCode}',
-                        style: AppStyles.itemInfoTextStyle,
+                        style: AppStylesNew.itemInfoTextStyle,
                       ),
                       separator,
 
@@ -117,11 +117,11 @@ class GameItem extends StatelessWidget {
                       gameStatus == LiveOrPlayedGames.LiveGames
                           ? Text(
                               "${'1' == '0' ? 'No' : '1'} Open Seat${'1' == '1' ? '' : 's'}${'\t' * 4}${'56'}",
-                              style: AppStyles.itemInfoTextStyle,
+                              style: AppStylesNew.itemInfoTextStyle,
                             )
                           : Text(
                               "Session Time ${game.sessionTime}${'\t' * 4}Ended at : ${DateFormat('dd/yy hh:mm a').format(game.endedAt)}",
-                              style: AppStyles.itemInfoTextStyle,
+                              style: AppStylesNew.itemInfoTextStyle,
                             ),
                     ],
                   ),

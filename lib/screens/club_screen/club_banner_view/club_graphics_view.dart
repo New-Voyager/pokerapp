@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/club_weekly_activity_model.dart';
 import 'package:pokerapp/resources/app_assets.dart';
-import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/utils/club_weekly_activity_bar_chart.dart';
 
 class ClubGraphicsView extends StatelessWidget {
@@ -18,8 +18,8 @@ class ClubGraphicsView extends StatelessWidget {
     return number == 0
         ? Colors.white
         : number > 0
-            ? AppColors.positiveColor
-            : AppColors.negativeColor;
+            ? AppColorsNew.positiveColor
+            : AppColorsNew.negativeColor;
   }
 
   loadWeeklyActivityData() {}
@@ -35,7 +35,7 @@ class ClubGraphicsView extends StatelessWidget {
             Expanded(
               flex: 3,
               child: Card(
-                color: AppColors.cardBackgroundColor,
+                color: AppColorsNew.cardBackgroundColor,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -71,7 +71,7 @@ class ClubGraphicsView extends StatelessWidget {
             Expanded(
               flex: 7,
               child: Card(
-                color: AppColors.cardBackgroundColor,
+                color: AppColorsNew.cardBackgroundColor,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

@@ -111,7 +111,7 @@ class _MainScreenState extends State<MainScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.screenBackgroundColor,
+      backgroundColor: AppColorsNew.screenBackgroundColor,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.only(top: 10.0),
@@ -130,13 +130,13 @@ class _MainScreenState extends State<MainScreen>
                 ),
               ),
               Container(
-                color: AppColors.widgetBackgroundColor,
+                color: AppColorsNew.widgetBackgroundColor,
                 child: TabBar(
                   isScrollable: false,
                   controller: _controller,
                   indicatorColor: Colors.transparent,
-                  labelColor: AppColors.appAccentColor,
-                  unselectedLabelColor: AppColors.unselectedColor,
+                  labelColor: AppColorsNew.appAccentColor,
+                  unselectedLabelColor: AppColorsNew.unselectedColor,
                   labelPadding: const EdgeInsets.only(
                     top: 10.0,
                     bottom: 10.0,

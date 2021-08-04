@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/bookmarkedHands_model.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
-import 'package:pokerapp/resources/app_colors.dart';
-import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
+import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_winners_view.dart';
@@ -142,7 +142,7 @@ class _BookmarkedHandsState extends State<BookmarkedHands>
                           ? Center(
                               child: Text(
                                 "No bookmarked hands!",
-                                style: AppStyles.disabledButtonTextStyle,
+                                style: AppStylesNew.disabledButtonTextStyle,
                               ),
                             )
                           : ListView.builder(
@@ -172,7 +172,8 @@ class _BookmarkedHandsState extends State<BookmarkedHands>
                                           handLogModel: list[index].handlogData,
                                         ),
                                         Divider(
-                                          color: AppColors.veryLightGrayColor,
+                                          color:
+                                              AppColorsNew.veryLightGrayColor,
                                           indent: 8,
                                           endIndent: 8,
                                         ),
