@@ -119,7 +119,6 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
                           apiUrl = val;
                           setState(() {});
                         },
-                        keyboardType: TextInputType.number,
                       ),
                     ],
                   ),
