@@ -233,4 +233,19 @@ class AppStringsNew {
   static String saveGameSettingsTitle = "Save Settings";
 
   static String okText = "Ok";
+
+  static String customizeTitleText = "Customize";
+
+  static String colorsTitleText = "Choose color";
+
+  static String colorsSubtitleText = "App primary color will be affected";
+
+  static String bgImagesThemeText = "Choose background";
+
+  static String bgImagesSubtitleText = "Game screen backgroudn will be changed";
+
+  static String tableImagesThemeText = "Choose table";
+
+  static String tableImagesSubtitleText =
+      "Table image on game screen will be changed";
 }
