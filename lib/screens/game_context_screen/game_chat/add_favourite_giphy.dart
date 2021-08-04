@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:pokerapp/resources/app_colors.dart';
-import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
+import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 
@@ -33,7 +33,7 @@ class AddFavouriteGiphy extends StatelessWidget {
           child: Text(
             text,
             textAlign: TextAlign.center,
-            style: AppStyles.clubItemInfoTextStyle.copyWith(
+            style: AppStylesNew.clubItemInfoTextStyle.copyWith(
               fontSize: 16.0,
               color: AppColorsNew.newGreenButtonColor,
             ),
@@ -63,7 +63,7 @@ class AddFavouriteGiphy extends StatelessWidget {
             decoration: InputDecoration(
               hintText: 'Your preset message',
               hintStyle: TextStyle(
-                color: AppColors.lightGrayTextColor,
+                color: AppColorsNew.lightGrayTextColor,
               ),
               border: InputBorder.none,
             ),

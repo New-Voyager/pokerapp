@@ -6,7 +6,7 @@ import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
-import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/screens/game_play_screen/game_play_screen_util_methods.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/profile_popup.dart';
@@ -458,7 +458,7 @@ class _PopupWidget extends State<PopupWidget> with TickerProviderStateMixin {
                 ],
               ),
               Divider(
-                color: AppColors.listViewDividerColor,
+                color: AppColorsNew.listViewDividerColor,
               ),
             ],
           ),
@@ -480,7 +480,7 @@ class _PopupWidget extends State<PopupWidget> with TickerProviderStateMixin {
                 ],
               ),
               Divider(
-                color: AppColors.listViewDividerColor,
+                color: AppColorsNew.listViewDividerColor,
               ),
             ],
           ),

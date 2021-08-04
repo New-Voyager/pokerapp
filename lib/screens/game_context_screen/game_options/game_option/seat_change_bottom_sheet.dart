@@ -4,8 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/seat_change_model.dart';
-import 'package:pokerapp/resources/app_colors.dart';
-import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
+import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
@@ -127,7 +127,7 @@ class _SeatChangeBottomSheetState extends State<SeatChangeBottomSheet> {
             padding: EdgeInsets.only(top: 15, bottom: 10),
             child: Text(
               seatChangeModel.name,
-              style: AppStyles.clubCodeStyle,
+              style: AppStylesNew.clubCodeStyle,
             ),
           ),
           Divider(
@@ -178,12 +178,12 @@ class _SeatChangeBottomSheetState extends State<SeatChangeBottomSheet> {
                   children: [
                     Icon(
                       Icons.arrow_back_ios,
-                      color: AppColors.appAccentColor,
+                      color: AppColorsNew.appAccentColor,
                       size: 20,
                     ),
                     Text(
                       "Game",
-                      style: AppStyles.optionTitle,
+                      style: AppStylesNew.optionTitle,
                     )
                   ],
                 ),
@@ -193,7 +193,7 @@ class _SeatChangeBottomSheetState extends State<SeatChangeBottomSheet> {
               alignment: Alignment.center,
               child: Text(
                 "Seat Change",
-                style: AppStyles.optionTitleText,
+                style: AppStylesNew.optionTitleText,
               ),
             )
           ],

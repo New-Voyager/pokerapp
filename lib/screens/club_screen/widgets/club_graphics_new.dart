@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/club_weekly_activity_model.dart';
-import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
@@ -23,8 +23,8 @@ class ClubGraphicsViewNew extends StatelessWidget {
     return number == 0
         ? AppColorsNew.newTextColor
         : number > 0
-            ? AppColors.positiveColor
-            : AppColors.negativeColor;
+            ? AppColorsNew.positiveColor
+            : AppColorsNew.negativeColor;
   }
 
   loadWeeklyActivityData() {}

@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
-import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
@@ -36,7 +36,7 @@ class _ProfilePageViewState extends State<ProfilePageView>
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: AppColors.screenBackgroundColor,
+      color: AppColorsNew.screenBackgroundColor,
       child: Column(
         children: [
           Container(

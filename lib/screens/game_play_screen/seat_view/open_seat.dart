@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
-import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/resources/new/app_styles_new.dart';
 
 class OpenSeat extends StatelessWidget {
   final int seatPos;
@@ -45,7 +45,7 @@ class OpenSeat extends StatelessWidget {
       child: FittedBox(
         child: Text(
           'Open $seatPos',
-          style: AppStyles.openSeatTextStyle,
+          style: AppStylesNew.openSeatTextStyle,
         ),
       ),
     );

@@ -12,12 +12,10 @@ import 'package:pokerapp/models/hand_history_model.dart';
 import 'package:pokerapp/models/pending_approvals.dart';
 import 'package:pokerapp/models/rabbit_state.dart';
 import 'package:pokerapp/resources/app_assets.dart';
-import 'package:pokerapp/resources/app_colors.dart';
-import 'package:pokerapp/resources/app_styles.dart';
-import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
-import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
+import 'package:pokerapp/resources/new/app_assets_new.dart';
+import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/debuglog_bottomsheet.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/player_stats_bottomsheet.dart';
@@ -175,7 +173,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                                             horizontal: 16, vertical: 8),
                                         child: ListTile(
                                           tileColor:
-                                              AppColors.cardBackgroundColor,
+                                              AppColorsNew.cardBackgroundColor,
                                           title: Column(
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
@@ -204,9 +202,10 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                                                 ),
                                               ),
                                               Text(
-                                                  "Outstanding balance: ${item.balance}",
-                                                  style: AppStyles
-                                                      .itemInfoTextStyle),
+                                                "Outstanding balance: ${item.balance}",
+                                                style: AppStylesNew
+                                                    .itemInfoTextStyle,
+                                              ),
                                               SizedBox(
                                                 height: 16,
                                               ),
@@ -219,18 +218,18 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                                             children: [
                                               Text(
                                                 "Game: ${item.gameType}",
-                                                style:
-                                                    AppStyles.itemInfoTextStyle,
+                                                style: AppStylesNew
+                                                    .itemInfoTextStyle,
                                               ),
                                               Text(
                                                 "Code: ${item.gameCode}",
-                                                style:
-                                                    AppStyles.itemInfoTextStyle,
+                                                style: AppStylesNew
+                                                    .itemInfoTextStyle,
                                               ),
                                               Text(
                                                 "Club: ${item.clubCode}",
-                                                style:
-                                                    AppStyles.itemInfoTextStyle,
+                                                style: AppStylesNew
+                                                    .itemInfoTextStyle,
                                               ),
                                               SizedBox(
                                                 height: 16,
@@ -403,7 +402,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
             ListTile(
               title: Text(
                 "Pending approvals",
-                style: AppStyles.clubCodeStyle,
+                style: AppStylesNew.clubCodeStyle,
               ),
             ),
 
@@ -429,7 +428,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                           itemBuilder: (context, index) {
                             final item = list[index];
                             return ListTile(
-                              tileColor: AppColors.cardBackgroundColor,
+                              tileColor: AppColorsNew.cardBackgroundColor,
                               title: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -438,11 +437,11 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                                   ),
                                   Text(
                                     "${item.name} request buyin ${item.amount}",
-                                    style: AppStyles.itemInfoTextStyle
+                                    style: AppStylesNew.itemInfoTextStyle
                                         .copyWith(fontSize: 14),
                                   ),
                                   Text("Outstanding balance: ${item.balance}",
-                                      style: AppStyles.itemInfoTextStyle),
+                                      style: AppStylesNew.itemInfoTextStyle),
                                   SizedBox(
                                     height: 16,
                                   ),
@@ -454,15 +453,15 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                                 children: [
                                   Text(
                                     "Game: ${item.gameType}",
-                                    style: AppStyles.itemInfoTextStyle,
+                                    style: AppStylesNew.itemInfoTextStyle,
                                   ),
                                   Text(
                                     "Code: ${item.gameCode}",
-                                    style: AppStyles.itemInfoTextStyle,
+                                    style: AppStylesNew.itemInfoTextStyle,
                                   ),
                                   Text(
                                     "Club: ${item.clubCode}",
-                                    style: AppStyles.itemInfoTextStyle,
+                                    style: AppStylesNew.itemInfoTextStyle,
                                   ),
                                   SizedBox(
                                     height: 16,
@@ -555,7 +554,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                         child: Center(
                           child: Text(
                             "No pending approvals.",
-                            style: AppStyles.subTitleTextStyle,
+                            style: AppStylesNew.subTitleTextStyle,
                           ),
                         ),
                       );
@@ -595,7 +594,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
     // await showModalBottomSheet(
     //   context: context,
     //   isScrollControlled: true,
-    //   backgroundColor: AppColors.screenBackgroundColor.withOpacity(0.75),
+    //   backgroundColor: AppColorsNew.screenBackgroundColor.withOpacity(0.75),
     //   builder:
     // );
   }

@@ -20,7 +20,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/player_info.dart';
-import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/game_context_screen/game_chat/game_chat.dart';
@@ -753,7 +753,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
             _buildBoardView(boardDimensions, tableScale),
 
             /* divider that divides the board view and the footer */
-            Divider(color: AppColors.dividerColor, thickness: 3),
+            Divider(color: AppColorsNew.dividerColor, thickness: 3),
 
             // footer section
             _buildFooterView(context),

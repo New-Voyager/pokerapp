@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/messages_from_member.dart';
-import 'package:pokerapp/resources/app_colors.dart';
-import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
+import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/services/app/clubs_service.dart';
 
 class ClubChat extends StatefulWidget {
@@ -38,7 +38,7 @@ class _ClubChatState extends State<ClubChat> {
     width = MediaQuery.of(context).size.width;
     height = MediaQuery.of(context).size.height;
     return Scaffold(
-      backgroundColor: AppColors.screenBackgroundColor,
+      backgroundColor: AppColorsNew.screenBackgroundColor,
       appBar: getappBar(),
       body: Container(
         child: Column(
@@ -70,8 +70,8 @@ class _ClubChatState extends State<ClubChat> {
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(5.0),
                               color: isHost
-                                  ? AppColors.chatMeColor
-                                  : AppColors.chatOthersColor,
+                                  ? AppColorsNew.chatMeColor
+                                  : AppColorsNew.chatOthersColor,
                             ),
                             margin: EdgeInsets.only(
                                 left: isHost ? 80 : 20,
@@ -94,7 +94,7 @@ class _ClubChatState extends State<ClubChat> {
 
   inputBox() {
     return Container(
-      color: AppColors.screenBackgroundColor,
+      color: AppColorsNew.screenBackgroundColor,
       child: Row(
         children: [
           Expanded(
@@ -103,7 +103,7 @@ class _ClubChatState extends State<ClubChat> {
               margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
               child: Container(
                 decoration: BoxDecoration(
-                  color: AppColors.chatInputBgColor,
+                  color: AppColorsNew.chatInputBgColor,
                   borderRadius: BorderRadius.all(
                     Radius.circular(
                       20.0,
@@ -160,13 +160,13 @@ class _ClubChatState extends State<ClubChat> {
           color: Colors.transparent,
           elevation: 5,
           child: Container(
-            color: AppColors.screenBackgroundColor,
+            color: AppColorsNew.screenBackgroundColor,
             child: Stack(
               children: [
                 IconButton(
                   icon: Icon(
                     Icons.arrow_back_ios,
-                    color: AppColors.appAccentColor,
+                    color: AppColorsNew.appAccentColor,
                   ),
                   onPressed: () => Navigator.of(context).pop(),
                 ),
@@ -181,12 +181,12 @@ class _ClubChatState extends State<ClubChat> {
                           radius: 20,
                           child: Text(
                             "A",
-                            style: AppStyles.optionTitleText,
+                            style: AppStylesNew.optionTitleText,
                           ),
                         ),
                         Text(
                           "Messages",
-                          style: AppStyles.credentialsTextStyle,
+                          style: AppStylesNew.credentialsTextStyle,
                         ),
                       ],
                     ),

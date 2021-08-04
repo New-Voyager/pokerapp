@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:pokerapp/models/host_message_summary_model.dart';
-import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
@@ -98,7 +98,7 @@ class _ClubMembersState extends State<ClubMembers> with RouteAwareAnalytics {
                               snapshot.data[index].newMessageCount != 0
                                   ? Icon(
                                       Icons.circle,
-                                      color: AppColors.appAccentColor,
+                                      color: AppColorsNew.appAccentColor,
                                       size: 15,
                                     )
                                   : SizedBox(

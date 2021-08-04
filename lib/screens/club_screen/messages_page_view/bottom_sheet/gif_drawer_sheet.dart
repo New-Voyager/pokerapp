@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/gif_list_widget.dart';
 import 'package:pokerapp/services/app/tenor_service.dart';
 import 'package:tenor/tenor.dart';
@@ -49,7 +49,7 @@ class _GifDrawerSheetState extends State<GifDrawerSheet> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: AppColors.cardBackgroundColor,
+      color: AppColorsNew.cardBackgroundColor,
       height: MediaQuery.of(context).size.height * 0.75,
       padding: const EdgeInsets.all(10.0),
       child: Column(
@@ -58,12 +58,12 @@ class _GifDrawerSheetState extends State<GifDrawerSheet> {
 
           Container(
             decoration: BoxDecoration(
-              color: AppColors.contentColor,
+              color: AppColorsNew.contentColor,
               borderRadius: BorderRadius.circular(10.0),
             ),
             child: TextField(
               style: TextStyle(
-                color: AppColors.lightGrayColor,
+                color: AppColorsNew.lightGrayColor,
               ),
               onChanged: (String text) {
                 if (text.trim().isEmpty) return;
@@ -78,12 +78,12 @@ class _GifDrawerSheetState extends State<GifDrawerSheet> {
               decoration: InputDecoration(
                 prefixIcon: Icon(
                   FontAwesomeIcons.search,
-                  color: AppColors.lightGrayColor,
+                  color: AppColorsNew.lightGrayColor,
                   size: 18.0,
                 ),
                 hintText: 'Search Tenor Gifs',
                 hintStyle: TextStyle(
-                  color: AppColors.lightGrayColor,
+                  color: AppColorsNew.lightGrayColor,
                 ),
                 border: InputBorder.none,
               ),

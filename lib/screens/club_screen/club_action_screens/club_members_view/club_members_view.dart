@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/club_homepage_model.dart';
 import 'package:pokerapp/models/club_members_model.dart';
-import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/app_icons.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
@@ -145,7 +145,7 @@ class _ClubMembersViewState extends State<ClubMembersView>
                     ],
                   )
                 : Container(
-                    color: AppColors.screenBackgroundColor,
+                    color: AppColorsNew.screenBackgroundColor,
                     child: Container(
                       margin: EdgeInsets.all(15),
                       child: ListView.separated(
@@ -203,7 +203,7 @@ class _ClubMembersViewState extends State<ClubMembersView>
                         },
                         separatorBuilder: (context, index) {
                           return Divider(
-                            color: AppColors.listViewDividerColor,
+                            color: AppColorsNew.listViewDividerColor,
                           );
                         },
                       ),

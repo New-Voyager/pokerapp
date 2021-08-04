@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/club_model.dart';
 import 'package:pokerapp/models/pending_approvals.dart';
-import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
@@ -99,7 +99,7 @@ class _ClubsPageViewState extends State<ClubsPageView>
       builder: (context) => Dialog(
         child: Container(
           padding: EdgeInsets.all(15.0),
-          color: AppColors.cardBackgroundColor,
+          color: AppColorsNew.cardBackgroundColor,
           width: MediaQuery.of(context).size.width * 0.60,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -108,7 +108,7 @@ class _ClubsPageViewState extends State<ClubsPageView>
               /* delete club  */
               RoundRaisedButton(
                 radius: 5.0,
-                color: AppColors.contentColor,
+                color: AppColorsNew.contentColor,
                 buttonText: 'Delete Club',
                 onButtonTap: () {
                   Navigator.pop(context);
@@ -118,7 +118,7 @@ class _ClubsPageViewState extends State<ClubsPageView>
               SizedBox(height: 10.0),
               RoundRaisedButton(
                 radius: 5.0,
-                color: AppColors.contentColor,
+                color: AppColorsNew.contentColor,
                 buttonText: 'Edit Club',
                 onButtonTap: () {
                   Navigator.pop(context);

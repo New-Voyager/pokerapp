@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
 
 class ReplayButton extends StatelessWidget {
   final Function onTapFunction;
@@ -12,7 +12,7 @@ class ReplayButton extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
-          color: AppColors.appAccentColor,
+          color: AppColorsNew.appAccentColor,
         ),
         child: Text(
           'Replay',

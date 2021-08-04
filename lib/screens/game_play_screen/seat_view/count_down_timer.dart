@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:timer_count_down/timer_count_down.dart';
 
 const kTimerEnoughTimeLeftColor = const Color(0xff14e81b);
@@ -48,7 +48,7 @@ class CountDownTimer extends StatelessWidget {
               child: FittedBox(
                 child: Text(
                   text,
-                  style: AppStyles.itemInfoTextStyle.copyWith(
+                  style: AppStylesNew.itemInfoTextStyle.copyWith(
                     color: Colors.white,
                   ),
                 ),

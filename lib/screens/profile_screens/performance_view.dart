@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:pokerapp/models/player_performance_model.dart';
 import 'package:pokerapp/resources/app_assets.dart';
-import 'package:pokerapp/resources/app_colors.dart';
-import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
+import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
@@ -56,8 +56,8 @@ class _PerformanceViewState extends State<PerformanceView>
     return number == 0
         ? AppColorsNew.newTextColor
         : number > 0
-            ? AppColors.positiveColor
-            : AppColors.negativeColor;
+            ? AppColorsNew.positiveColor
+            : AppColorsNew.negativeColor;
   }
 
   @override
@@ -79,7 +79,7 @@ class _PerformanceViewState extends State<PerformanceView>
                   ? Center(
                       child: Text(
                         AppStringsNew.noDataAvailable,
-                        style: AppStyles.disabledButtonTextStyle,
+                        style: AppStylesNew.disabledButtonTextStyle,
                       ),
                     )
                   : Column(
@@ -207,7 +207,7 @@ class PerformanceBarChart extends StatelessWidget {
           ),
           lineStyle: charts.LineStyleSpec(
             color: charts.ColorUtil.fromDartColor(
-              AppColors.listViewDividerColor,
+              AppColorsNew.listViewDividerColor,
             ),
           ),
         ),

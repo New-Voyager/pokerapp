@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/resources/app_assets.dart';
-import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
-import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/resources/new/app_styles_new.dart';
 
 class PendingApprovalsOption extends StatelessWidget {
   @override
@@ -22,11 +22,11 @@ class PendingApprovalsOption extends StatelessWidget {
       height: 135.0,
       margin: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
       decoration: const BoxDecoration(
-        color: AppColors.cardBackgroundColor,
+        color: AppColorsNew.cardBackgroundColor,
         borderRadius: BorderRadius.all(
           Radius.circular(AppDimensions.cardRadius),
         ),
-        boxShadow: AppStyles.cardBoxShadow,
+        boxShadow: AppStylesNew.cardBoxShadow,
       ),
       child: Row(
         children: <Widget>[
@@ -64,30 +64,30 @@ class PendingApprovalsOption extends StatelessWidget {
                 children: <Widget>[
                   Text(
                     "Pauls wants to buy 300 chips",
-                    style: AppStyles.itemInfoSecondaryTextStyle,
+                    style: AppStylesNew.itemInfoSecondaryTextStyle,
                   ),
                   separator5,
                   Text(
                     "Game: ABHDJDJPLO 1/2",
-                    style: AppStyles.itemInfoSecondaryTextStyle,
+                    style: AppStylesNew.itemInfoSecondaryTextStyle,
                   ),
                   separator5,
                   Text(
                     "Game total buying: 0",
-                    style: AppStyles.itemInfoSecondaryTextStyle,
+                    style: AppStylesNew.itemInfoSecondaryTextStyle,
                   ),
                   separator5,
                   Row(
                     children: [
                       Text(
                         "Club balance: ",
-                        style: AppStyles.itemInfoSecondaryTextStyle,
+                        style: AppStylesNew.itemInfoSecondaryTextStyle,
                       ),
                       Text(
                         "1000",
-                        style: AppStyles.itemInfoSecondaryTextStyle.copyWith(
-                            color: AppColors
-                                .positiveColor), //AppColors.negativeColor
+                        style: AppStylesNew.itemInfoSecondaryTextStyle.copyWith(
+                          color: AppColorsNew.positiveColor,
+                        ), //AppColorsNew.negativeColor
                       ),
                     ],
                   ),
@@ -103,11 +103,11 @@ class PendingApprovalsOption extends StatelessWidget {
           Container(
             width: 120.0,
             decoration: const BoxDecoration(
-              color: AppColors.cardBackgroundColor,
+              color: AppColorsNew.cardBackgroundColor,
               borderRadius: BorderRadius.horizontal(
                 right: Radius.circular(AppDimensions.cardRadius),
               ),
-              boxShadow: AppStyles.cardBoxShadowMedium,
+              boxShadow: AppStylesNew.cardBoxShadowMedium,
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -140,7 +140,7 @@ class PendingApprovalsOption extends StatelessWidget {
         style: TextStyle(
           fontFamily: AppAssets.fontFamilyLato,
           fontSize: 22.0,
-          color: AppColors.appAccentColor,
+          color: AppColorsNew.appAccentColor,
         ),
       ),
     );

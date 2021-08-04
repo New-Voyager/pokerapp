@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_replay_models/game_replay_controller.dart';
-import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/screens/util_screens/replay_hand_controls/replay_hand_controls_utils.dart';
 
 class ReplayHandControls extends StatelessWidget {
@@ -12,7 +12,7 @@ class ReplayHandControls extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        color: AppColors.screenBackgroundColor,
+        color: AppColorsNew.screenBackgroundColor,
         padding: const EdgeInsets.symmetric(vertical: 15.0),
         child: StreamBuilder<bool>(
           initialData: false,

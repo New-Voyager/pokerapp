@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:path_drawing/path_drawing.dart';
-import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
 
 class FilledPathPainter extends CustomPainter {
   FilledPathPainter({
@@ -135,7 +135,7 @@ class _PlateWidgetState extends State<PlateWidget>
         'M 20 0 h 200 a 20 20 0 0 1 20 20 v 200 a 20 20 0 0 1 -20 20 h -200 a 20 20 0 0 1 -20 -20 v -200 a 20 20 0 0 1 20 -20 z';
     path = parseSvgPathData(roundedPath);
 
-    Color borderColor = AppColors.plateBorderColor;
+    Color borderColor = AppColorsNew.plateBorderColor;
     double percent = 0.0;
     double progressLength = 0.0;
     Path progressPath;

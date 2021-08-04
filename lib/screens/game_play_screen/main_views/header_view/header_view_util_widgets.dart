@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/resources/new/app_styles_new.dart';
 
 class HeaderViewUtilWidgets {
   HeaderViewUtilWidgets._();
@@ -8,8 +8,8 @@ class HeaderViewUtilWidgets {
         child: Text(
           text,
           style: whiteColor
-              ? AppStyles.gamePlayScreenHeaderTextStyle1
-              : AppStyles.gamePlayScreenHeaderTextStyle2,
+              ? AppStylesNew.gamePlayScreenHeaderTextStyle1
+              : AppStylesNew.gamePlayScreenHeaderTextStyle2,
         ),
       );
 }

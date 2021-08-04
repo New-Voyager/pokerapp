@@ -5,7 +5,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:pokerapp/models/game_play_models/business/game_chat_notfi_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
 import 'package:pokerapp/resources/app_constants.dart';
-import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/screens/game_context_screen/game_chat/game_giphys.dart';
 
@@ -142,8 +142,8 @@ class _GameChatState extends State<GameChat> {
           ),
           padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
           decoration: isMe
-              ? AppStyles.myMessageDecoration
-              : AppStyles.otherMessageDecoration,
+              ? AppStylesNew.myMessageDecoration
+              : AppStylesNew.otherMessageDecoration,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -153,7 +153,7 @@ class _GameChatState extends State<GameChat> {
                   // name
                   Text(
                     message.fromName.toString(),
-                    style: AppStyles.clubItemInfoTextStyle.copyWith(
+                    style: AppStylesNew.clubItemInfoTextStyle.copyWith(
                       fontSize: 12,
                       color: AppColorsNew.newGreenButtonColor,
                     ),
@@ -171,7 +171,7 @@ class _GameChatState extends State<GameChat> {
                   // time
                   Text(
                     "${AppConstants.CHAT_DATE_TIME_FORMAT.format(message.received.toLocal())}",
-                    style: AppStyles.itemInfoSecondaryTextStyle.copyWith(
+                    style: AppStylesNew.itemInfoSecondaryTextStyle.copyWith(
                       fontSize: 10,
                     ),
                   ),
@@ -185,7 +185,7 @@ class _GameChatState extends State<GameChat> {
               message.text != null
                   ? Text(
                       message.text,
-                      style: AppStyles.clubCodeStyle,
+                      style: AppStylesNew.clubCodeStyle,
                     )
                   : AttributedGifWidget(url: message.giphyLink),
             ],

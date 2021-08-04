@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
-import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
 
 class RoundTextField extends StatelessWidget {
   final String hintText;
@@ -17,7 +17,7 @@ class RoundTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.cardBackgroundColor,
+        color: AppColorsNew.cardBackgroundColor,
         borderRadius: BorderRadius.all(
           Radius.circular(
             100.0,
@@ -38,12 +38,12 @@ class RoundTextField extends StatelessWidget {
           prefixIcon: Icon(
             iconData ?? Icons.info,
             size: 30.0,
-            color: AppColors.contentColor,
+            color: AppColorsNew.contentColor,
           ),
           border: InputBorder.none,
           hintText: hintText ?? 'Hint Text',
           hintStyle: TextStyle(
-            color: AppColors.contentColor,
+            color: AppColorsNew.contentColor,
             fontSize: 17.0,
           ),
         ),

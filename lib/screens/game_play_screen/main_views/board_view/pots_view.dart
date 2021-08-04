@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/utils/formatter.dart';
 
 class PotsView extends StatelessWidget {
@@ -62,7 +62,7 @@ class PotsView extends StatelessWidget {
                     padding: const EdgeInsets.only(left: 5.0),
                     child: Text(
                       potText,
-                      style: AppStyles.itemInfoTextStyleHeavy.copyWith(
+                      style: AppStylesNew.itemInfoTextStyleHeavy.copyWith(
                         fontSize: 12,
                       ),
                     ),

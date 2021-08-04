@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
 
 class IOSLikeCheckList extends StatefulWidget {
   final List<String> list;
@@ -24,7 +24,7 @@ class _IOSLikeCheckListState extends State<IOSLikeCheckList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.screenBackgroundColor,
+      backgroundColor: AppColorsNew.screenBackgroundColor,
       body: ListView.separated(
         itemCount: widget.list.length,
         itemBuilder: (context, index) {

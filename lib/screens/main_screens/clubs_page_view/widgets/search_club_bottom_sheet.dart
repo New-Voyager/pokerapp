@@ -89,13 +89,13 @@ class _SearchClubBottomSheetState extends State<SearchClubBottomSheet> {
                   //         },
                   //         child: Text(
                   //           "Done",
-                  //           style: AppStyles.subTitleTextStyle,
+                  //           style: AppStylesNew.subTitleTextStyle,
                   //         ),
                   //       ),
                   //       separator15,
                   //       Text(
                   //         "Search Club",
-                  //         style: AppStyles.titleTextStyle,
+                  //         style: AppStylesNew.titleTextStyle,
                   //       )
                   //     ],
                   //   ),
@@ -213,7 +213,7 @@ class _SearchClubBottomSheetState extends State<SearchClubBottomSheet> {
                                               child: Text(
                                                 "Join",
                                                 style:
-                                                    AppStyles.subTitleTextStyle,
+                                                    AppStylesNew.subTitleTextStyle,
                                               ),
                                             ),
                                           ),

@@ -3,7 +3,7 @@ import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/boar
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
-import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/widgets/cards/pulsating_card_container.dart';
 import 'package:provider/provider.dart';
 
@@ -63,26 +63,26 @@ class CardBuilderWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TextStyle cardTextStyle = AppStyles.cardTextStyle.copyWith(fontSize: 12);
-    TextStyle suitTextStyle = AppStyles.cardTextStyle.copyWith(fontSize: 12);
+    TextStyle cardTextStyle = AppStylesNew.cardTextStyle.copyWith(fontSize: 12);
+    TextStyle suitTextStyle = AppStylesNew.cardTextStyle.copyWith(fontSize: 12);
 
-    cardTextStyle = AppStyles.cardTextStyle.copyWith(
+    cardTextStyle = AppStylesNew.cardTextStyle.copyWith(
       color: card.color,
       fontSize: 12,
     );
 
-    suitTextStyle = AppStyles.cardTextStyle.copyWith(
+    suitTextStyle = AppStylesNew.cardTextStyle.copyWith(
       color: card.color,
       fontSize: 8,
     );
 
     bool highlight = card.highlight ?? false;
 
-    cardTextStyle = AppStyles.cardTextStyle.copyWith(
+    cardTextStyle = AppStylesNew.cardTextStyle.copyWith(
       color: card.color,
     );
 
-    suitTextStyle = AppStyles.cardTextStyle.copyWith(
+    suitTextStyle = AppStylesNew.cardTextStyle.copyWith(
       color: card.color,
     );
 

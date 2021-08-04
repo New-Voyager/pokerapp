@@ -4,7 +4,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/game_history_model.dart';
-import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
 
 import 'package:charts_flutter/flutter.dart' as charts;
 
@@ -16,7 +16,7 @@ import 'package:pokerapp/utils/formatter.dart';
 
 import 'dart:convert';
 
-import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/utils/utils.dart';
 
@@ -119,7 +119,7 @@ class _PointsLineChart extends State<PointsLineChart> with RouteAwareAnalytics {
     return !loadingDone
         ? Center(child: CircularProgressIndicator())
         : Scaffold(
-            backgroundColor: AppColors.screenBackgroundColor,
+            backgroundColor: AppColorsNew.screenBackgroundColor,
             appBar: CustomAppBar(
               context: context,
               titleText: "Stack Timeline",
@@ -201,7 +201,8 @@ class _PointsLineChart extends State<PointsLineChart> with RouteAwareAnalytics {
           domainFn: (PlayerStackChartModel game, _) => game.handNum,
           measureFn: (PlayerStackChartModel game, _) => game.after,
           data: stackList,
-          seriesColor: charts.ColorUtil.fromDartColor(AppColors.appAccentColor))
+          seriesColor:
+              charts.ColorUtil.fromDartColor(AppColorsNew.appAccentColor))
     ];
   }
 
@@ -276,15 +277,15 @@ class _PointsLineChart extends State<PointsLineChart> with RouteAwareAnalytics {
                   children: [
                     Text(
                       "Hand: #${currentStack.handNum}",
-                      style: AppStyles.stackPopUpTextStyle,
+                      style: AppStylesNew.stackPopUpTextStyle,
                     ),
                     Text(
                       "Before:${DataFormatter.chipsFormat(currentStack.before)}",
-                      style: AppStyles.stackPopUpTextStyle,
+                      style: AppStylesNew.stackPopUpTextStyle,
                     ),
                     Text(
                       "After:${DataFormatter.chipsFormat(currentStack.after)}",
-                      style: AppStyles.stackPopUpTextStyle,
+                      style: AppStylesNew.stackPopUpTextStyle,
                     ),
                   ],
                 ),
@@ -300,7 +301,7 @@ class _PointsLineChart extends State<PointsLineChart> with RouteAwareAnalytics {
                     ),
                     Text(
                       "${DataFormatter.chipsFormat(currentStack.difference)}",
-                      style: AppStyles.stackPopUpTextStyle.copyWith(
+                      style: AppStylesNew.stackPopUpTextStyle.copyWith(
                         color: textColor,
                       ),
                     ),

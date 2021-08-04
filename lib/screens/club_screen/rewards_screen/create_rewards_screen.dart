@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/rewards_model.dart';
-import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/club_screen_icons_icons.dart';
 import 'package:pokerapp/widgets/custom_text_button.dart';
 import 'package:provider/provider.dart';
@@ -13,11 +13,11 @@ class CreateRewardsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: AppColors.screenBackgroundColor,
+      color: AppColorsNew.screenBackgroundColor,
       child: Column(
         children: [
           AppBar(
-            backgroundColor: AppColors.screenBackgroundColor,
+            backgroundColor: AppColorsNew.screenBackgroundColor,
             title: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [

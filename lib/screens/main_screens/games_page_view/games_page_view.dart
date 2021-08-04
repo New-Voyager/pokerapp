@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:pokerapp/models/game_model.dart';
 import 'package:pokerapp/resources/app_assets.dart';
-import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
-import 'package:pokerapp/resources/app_strings.dart';
+import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/screens/main_screens/games_page_view/enums.dart';
 import 'package:pokerapp/screens/main_screens/games_page_view/widgets/game_item.dart';
 import 'package:pokerapp/services/app/user_games_service.dart';
@@ -79,7 +79,7 @@ class _GamesPageViewState extends State<GamesPageView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.screenBackgroundColor,
+      backgroundColor: AppColorsNew.screenBackgroundColor,
       body: _isLoading
           ? Center(
               child: CircularProgressIndicator(),
@@ -93,13 +93,13 @@ class _GamesPageViewState extends State<GamesPageView> {
               ),
               children: <Widget>[
                 /* live games */
-                _buildTitleTextWidget(AppStrings.liveGamesText),
+                _buildTitleTextWidget(AppStringsNew.liveGamesText),
                 _liveGames.isEmpty
                     ? _buildEmptyGameListWidget('No Live Games')
                     : _buildGameList(LiveOrPlayedGames.LiveGames),
 
                 /* played games */
-                _buildTitleTextWidget(AppStrings.playerGamesText),
+                _buildTitleTextWidget(AppStringsNew.playerGamesText),
                 _playedGames.isEmpty
                     ? _buildEmptyGameListWidget('No Played Games')
                     : _buildGameList(LiveOrPlayedGames.PlayedGames),

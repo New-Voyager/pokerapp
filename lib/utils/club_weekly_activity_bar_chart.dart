@@ -3,7 +3,7 @@ import 'package:pokerapp/models/club_weekly_activity_model.dart';
 
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:pokerapp/resources/app_assets.dart';
-import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
 
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
@@ -42,7 +42,7 @@ class ClubWeeklyActivityBarChart extends StatelessWidget {
           ),
           lineStyle: charts.LineStyleSpec(
             color: charts.ColorUtil.fromDartColor(
-              AppColors.listViewDividerColor,
+              AppColorsNew.listViewDividerColor,
             ),
           ),
         ),

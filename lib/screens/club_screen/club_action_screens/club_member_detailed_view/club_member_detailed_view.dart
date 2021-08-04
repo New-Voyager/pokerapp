@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/club_members_model.dart';
-import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/app_icons.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
@@ -163,11 +163,11 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
                         ),
                       ),
                       Divider(
-                        color: AppColors.listViewDividerColor,
+                        color: AppColorsNew.listViewDividerColor,
                       ),
                       detailTile(),
                       Divider(
-                        color: AppColors.listViewDividerColor,
+                        color: AppColorsNew.listViewDividerColor,
                       ),
                       // contact info
                       Container(
@@ -201,7 +201,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
                         ),
                       ),
                       Divider(
-                        color: AppColors.listViewDividerColor,
+                        color: AppColorsNew.listViewDividerColor,
                       ),
                       // notes view
                       Container(
@@ -258,8 +258,8 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
     return number == 0
         ? Colors.white
         : number > 0
-            ? AppColors.positiveColor
-            : AppColors.negativeColor;
+            ? AppColorsNew.positiveColor
+            : AppColorsNew.negativeColor;
   }
 
   Widget detailTile() {

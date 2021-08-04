@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/club_actions.dart';
 import 'package:pokerapp/models/club_homepage_model.dart';
 import 'package:pokerapp/resources/app_assets.dart';
-import 'package:pokerapp/resources/app_colors.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:provider/provider.dart';
 import 'package:badges/badges.dart';
@@ -24,7 +24,7 @@ class ClubActionButton extends StatelessWidget {
   Widget build(BuildContext context) {
     Widget card = Card(
       margin: EdgeInsets.all(8.0),
-      color: AppColors.cardBackgroundColor,
+      color: AppColorsNew.cardBackgroundColor,
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

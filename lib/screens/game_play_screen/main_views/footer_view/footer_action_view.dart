@@ -8,7 +8,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart
 import 'package:pokerapp/models/game_play_models/provider_models/player_action.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/resources/app_constants.dart';
-import 'package:pokerapp/resources/app_styles.dart';
+import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/bet_widget.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_proto_service.dart';
@@ -58,14 +58,14 @@ class _FooterActionViewState extends State<FooterActionView> {
     bool isSelected = false,
     bool disable = false,
   }) {
-    TextStyle btnTextStyle = AppStyles.clubItemInfoTextStyle.copyWith(
+    TextStyle btnTextStyle = AppStylesNew.clubItemInfoTextStyle.copyWith(
       fontSize: 10.5,
       color: isSelected ? Colors.white : null,
     );
     Color btnColor = AppColorsNew.newGreenButtonColor;
     if (disable) {
       btnColor = Colors.grey;
-      btnTextStyle = AppStyles.disabledButtonTextStyle.copyWith(
+      btnTextStyle = AppStylesNew.disabledButtonTextStyle.copyWith(
         fontSize: 10.5,
       );
     }

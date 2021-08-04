@@ -194,7 +194,7 @@ class _MessagesPageViewState extends State<MessagesPageView>
   //       iconSize: 24,
   //       icon: Icon(
   //         Icons.arrow_back_ios,
-  //         color: AppColors.appAccentColor,
+  //         color: AppColorsNew.appAccentColor,
   //       ),
   //       onPressed: () {
   //         Navigator.of(context).pop();
@@ -203,7 +203,7 @@ class _MessagesPageViewState extends State<MessagesPageView>
   //     centerTitle: false,
   //     title: Text(
   //       'Club Chat',
-  //       style: AppStyles.titleBarTextStyle.copyWith(fontSize: 16),
+  //       style: AppStylesNew.titleBarTextStyle.copyWith(fontSize: 16),
   //     ),
   //   );
   // }
