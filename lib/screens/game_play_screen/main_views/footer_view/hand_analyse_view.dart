@@ -647,10 +647,10 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
             onClickHandler: () => onMoreOptionsPress(context),
           ),
 
-          GameCircleButton(
-            iconData: Icons.adb,
-            onClickHandler: () => onShowDebugLog(context),
-          ),
+          // GameCircleButton(
+          //   iconData: Icons.adb,
+          //   onClickHandler: () => onShowDebugLog(context),
+          // ),
 
           // rabbit button
           Consumer<RabbitState>(

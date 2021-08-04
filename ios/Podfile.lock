@@ -14,8 +14,6 @@ PODS:
     - Reachability
   - device_info (0.0.1):
     - Flutter
-  - emoji_picker (0.0.3):
-    - Flutter
   - Firebase/Analytics (8.0.0):
     - Firebase/Core
   - Firebase/Core (8.0.0):
@@ -175,7 +173,6 @@ DEPENDENCIES:
   - audioplayers (from `.symlinks/plugins/audioplayers/ios`)
   - connectivity (from `.symlinks/plugins/connectivity/ios`)
   - device_info (from `.symlinks/plugins/device_info/ios`)
-  - emoji_picker (from `.symlinks/plugins/emoji_picker/ios`)
   - Firebase/Analytics
   - firebase_analytics (from `.symlinks/plugins/firebase_analytics/ios`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
@@ -229,8 +226,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/connectivity/ios"
   device_info:
     :path: ".symlinks/plugins/device_info/ios"
-  emoji_picker:
-    :path: ".symlinks/plugins/emoji_picker/ios"
   firebase_analytics:
     :path: ".symlinks/plugins/firebase_analytics/ios"
   firebase_core:
@@ -276,7 +271,6 @@ SPEC CHECKSUMS:
   audioplayers: 455322b54050b30ea4b1af7cd9e9d105f74efa8c
   connectivity: c4130b2985d4ef6fd26f9702e886bd5260681467
   device_info: d7d233b645a32c40dfdc212de5cf646ca482f175
-  emoji_picker: 0e868059aa18f9473d234f3d0701fbd4d5fd310c
   Firebase: 73c3e3b216ec1ecbc54d2ffdd4670c65c749edb1
   firebase_analytics: 221d3bc4e8f1b5144a4bd4cc6b33790ee51bd543
   firebase_core: e4d3efb030a2b2021819f8faa538bb23deb46695
@@ -312,6 +306,6 @@ SPEC CHECKSUMS:
   sqflite: 6d358c025f5b867b29ed92fc697fd34924e11904
   wakelock: d0fc7c864128eac40eba1617cb5264d9c940b46f
 
-PODFILE CHECKSUM: d4786cda02b3169045aa77046b1581de1274b7d9
+PODFILE CHECKSUM: 73d3bf56ef89d3f794919be69946148ce5c4c452
 
 COCOAPODS: 1.10.1
