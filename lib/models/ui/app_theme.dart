@@ -73,7 +73,7 @@ class AppTheme extends ChangeNotifier {
   Color get negativeOrErrorColor => _themeData.negativeOrErrorColor;
 
   // gradients
-  BoxDecoration get bgGreenRadialGradient => BoxDecoration(
+  BoxDecoration get bgRadialGradient => BoxDecoration(
         gradient: RadialGradient(
           colors: [
             primaryColor,

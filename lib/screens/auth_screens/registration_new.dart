@@ -93,12 +93,15 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
           color: _appTheme.supportingColorWithDark(0.60),
         ),
         labelText: labelText,
-        labelStyle: AppTextStyles.T1.copyWith(
+        labelStyle: AppTextStyles.T0.copyWith(
           color: _appTheme.accentColor,
         ),
 
         /* other */
-        contentPadding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+        contentPadding: EdgeInsets.symmetric(
+          vertical: 16,
+          horizontal: 16,
+        ),
         floatingLabelBehavior: FloatingLabelBehavior.always,
         filled: true,
         fillColor: _appTheme.fillInColor,
@@ -207,7 +210,7 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: _appTheme.bgGreenRadialGradient,
+      decoration: _appTheme.bgRadialGradient,
       child: SafeArea(
         child: Scaffold(
           backgroundColor: Colors.transparent,
@@ -318,9 +321,9 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
 
                         RoundedColorButton(
                           backgroundColor: _appTheme.accentColor,
+                          textColor: _appTheme.primaryColorWithDark(0.50),
                           text: AppStringsNew.signupButtonText,
                           fontSize: 14.dp,
-                          textColor: _appTheme.primaryColorWithDark(0.50),
                           onTapFunction: () => _handleSignUpClick(),
                         ),
                       ],

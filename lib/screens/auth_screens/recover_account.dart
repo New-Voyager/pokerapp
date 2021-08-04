@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_udid/flutter_udid.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/models/auth_model.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_config.dart';
+import 'package:pokerapp/resources/app_decorators.dart';
+import 'package:pokerapp/resources/app_text_styles.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
@@ -33,8 +36,10 @@ class _RestoreAccountScreenState extends State<RestoreAccountScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final appTheme = AppTheme.getTheme(context);
+
     return Container(
-      decoration: AppStylesNew.BgGreenRadialGradient,
+      decoration: appTheme.bgRadialGradient,
       child: SafeArea(
         child: Scaffold(
           backgroundColor: Colors.transparent,
@@ -45,17 +50,20 @@ class _RestoreAccountScreenState extends State<RestoreAccountScreen> {
               children: [
                 AppDimensionsNew.getVerticalSizedBox(16.pw),
                 // Logo section
-                AppNameAndLogoWidget(null),
+                AppNameAndLogoWidget(appTheme),
 
+                // restore existing account text
                 Container(
                   alignment: Alignment.center,
                   margin: EdgeInsets.only(top: 16, bottom: 8),
                   child: Text(
                     "Restore existing account",
-                    style:
-                        AppStylesNew.labelTextStyle.copyWith(fontSize: 12.dp),
+                    style: AppTextStyles.T1.copyWith(
+                      color: appTheme.supportingColorWithDark(0.50),
+                    ),
                   ),
                 ),
+
                 // Form
                 Container(
                   margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -82,11 +90,21 @@ class _RestoreAccountScreenState extends State<RestoreAccountScreen> {
                           },
                           autovalidateMode: AutovalidateMode.onUserInteraction,
                           decoration: InputDecoration(
-                            contentPadding: EdgeInsets.symmetric(
-                                vertical: 16, horizontal: 16),
-                            focusedBorder: AppStylesNew.focusBorderStyle,
+                            /* border */
+                            border: AppDecorators.getBorderStyle(
+                              radius: 32.0,
+                              color: appTheme.primaryColorWithDark(),
+                            ),
+                            errorBorder: AppDecorators.getBorderStyle(
+                              radius: 32.0,
+                              color: appTheme.negativeOrErrorColor,
+                            ),
+                            focusedBorder: AppDecorators.getBorderStyle(
+                              radius: 32.0,
+                              color: appTheme.accentColorWithDark(),
+                            ),
 
-                            floatingLabelBehavior: FloatingLabelBehavior.always,
+                            /* icons - prefix, suffix */
                             prefixIcon: Container(
                               margin: EdgeInsets.symmetric(horizontal: 16),
                               child: Image.asset(
@@ -98,7 +116,7 @@ class _RestoreAccountScreenState extends State<RestoreAccountScreen> {
                             suffixIcon: IconButton(
                               icon: Icon(
                                 Icons.info,
-                                color: AppColorsNew.labelColor,
+                                color: appTheme.supportingColorWithDark(0.50),
                               ),
                               onPressed: () {
                                 toast(
@@ -107,28 +125,38 @@ class _RestoreAccountScreenState extends State<RestoreAccountScreen> {
                                 );
                               },
                             ),
-                            errorBorder: AppStylesNew.errorBorderStyle,
-                            // hintText: "Recovery email (optional)",
-                            // hintStyle: TextStyle(
-                            //   color: AppColorsNew.labelColor,
-                            // ),
-                            labelText: AppStringsNew.emailLabelText,
-                            labelStyle: AppStylesNew.labelTextFieldStyle,
+
+                            /* label texts */
+                            labelText: 'Recovery email',
+                            labelStyle: AppTextStyles.T0.copyWith(
+                              color: appTheme.accentColor,
+                            ),
+
+                            /* other */
+                            contentPadding: EdgeInsets.symmetric(
+                              vertical: 16,
+                              horizontal: 16,
+                            ),
+                            floatingLabelBehavior: FloatingLabelBehavior.always,
                             filled: true,
-                            fillColor: AppColorsNew.actionRowBgColor,
+                            fillColor: appTheme.fillInColor,
                             alignLabelWithHint: true,
-                            border: AppStylesNew.borderStyle,
                           ),
                         ),
+
+                        // sep
                         AppDimensionsNew.getVerticalSizedBox(16),
 
+                        // get code button
                         RoundedColorButton(
-                          backgroundColor: AppColorsNew.yellowAccentColor,
+                          backgroundColor: appTheme.accentColor,
+                          textColor: appTheme.primaryColorWithDark(0.50),
                           text: AppStringsNew.getCodeButtonText,
                           fontSize: 14.dp,
-                          textColor: AppColorsNew.darkGreenShadeColor,
                           onTapFunction: () => _handleGetCode(context),
                         ),
+
+                        // sep
                         AppDimensionsNew.getVerticalSizedBox(8),
 
                         // Name
@@ -136,7 +164,10 @@ class _RestoreAccountScreenState extends State<RestoreAccountScreen> {
                           visible: _restoreVisible,
                           child: Column(
                             children: [
+                              // sep
                               AppDimensionsNew.getVerticalSizedBox(24),
+
+                              // form
                               TextFormField(
                                 controller: _codeCtrl,
                                 validator: (value) {
@@ -148,14 +179,21 @@ class _RestoreAccountScreenState extends State<RestoreAccountScreen> {
                                   return null;
                                 },
                                 decoration: InputDecoration(
-                                  contentPadding: EdgeInsets.symmetric(
-                                    vertical: 16,
-                                    horizontal: 16,
+                                  /* border */
+                                  border: AppDecorators.getBorderStyle(
+                                    radius: 32.0,
+                                    color: appTheme.primaryColorWithDark(),
                                   ),
-                                  focusedBorder: AppStylesNew.focusBorderStyle,
-                                  labelStyle: AppStylesNew.labelTextFieldStyle,
-                                  floatingLabelBehavior:
-                                      FloatingLabelBehavior.always,
+                                  errorBorder: AppDecorators.getBorderStyle(
+                                    radius: 32.0,
+                                    color: appTheme.negativeOrErrorColor,
+                                  ),
+                                  focusedBorder: AppDecorators.getBorderStyle(
+                                    radius: 32.0,
+                                    color: appTheme.accentColorWithDark(),
+                                  ),
+
+                                  /* icons - prefix, suffix */
                                   prefixIcon: Container(
                                     margin:
                                         EdgeInsets.symmetric(horizontal: 16),
@@ -168,7 +206,8 @@ class _RestoreAccountScreenState extends State<RestoreAccountScreen> {
                                   suffixIcon: IconButton(
                                     icon: Icon(
                                       Icons.info,
-                                      color: AppColorsNew.labelColor,
+                                      color: appTheme
+                                          .supportingColorWithDark(0.50),
                                     ),
                                     onPressed: () {
                                       toast(
@@ -177,29 +216,47 @@ class _RestoreAccountScreenState extends State<RestoreAccountScreen> {
                                       );
                                     },
                                   ),
-                                  errorBorder: AppStylesNew.errorBorderStyle,
-                                  //hintText: "Your Name (optional)",
-                                  labelText:
-                                      AppStringsNew.recoveryCodeLabelText,
+
+                                  /* label texts */
+                                  labelText: 'Recovery email',
+                                  labelStyle: AppTextStyles.T0.copyWith(
+                                    color: appTheme.accentColor,
+                                  ),
+
+                                  /* other */
+                                  contentPadding: EdgeInsets.symmetric(
+                                    vertical: 16,
+                                    horizontal: 16,
+                                  ),
+                                  floatingLabelBehavior:
+                                      FloatingLabelBehavior.always,
                                   filled: true,
-                                  fillColor: AppColorsNew.actionRowBgColor,
+                                  fillColor: appTheme.fillInColor,
                                   alignLabelWithHint: true,
-                                  border: AppStylesNew.borderStyle,
                                 ),
                               ),
+
+                              // sep
                               AppDimensionsNew.getVerticalSizedBox(16),
+
+                              // button
                               RoundedColorButton(
-                                backgroundColor: AppColorsNew.yellowAccentColor,
+                                backgroundColor: appTheme.accentColor,
+                                textColor: appTheme.primaryColorWithDark(0.50),
                                 text: AppStringsNew.restoreButtonText,
                                 fontSize: 14.dp,
-                                textColor: AppColorsNew.darkGreenShadeColor,
-                                onTapFunction: () =>
-                                    _handleRestoreClick(context),
+                                onTapFunction: () => _handleRestoreClick(
+                                  context,
+                                ),
                               ),
                             ],
                           ),
                         ),
+
+                        // sep
                         AppDimensionsNew.getVerticalSizedBox(24),
+
+                        // signup text button
                         InkWell(
                           onTap: () {
                             Navigator.of(context).pop();
@@ -207,13 +264,11 @@ class _RestoreAccountScreenState extends State<RestoreAccountScreen> {
                           child: Container(
                             alignment: Alignment.center,
                             padding: EdgeInsets.all(16),
-                            child: Text(
-                              AppStringsNew.signupButtonText,
-                              style: TextStyle(
-                                decoration: TextDecoration.underline,
-                                color: AppColorsNew.yellowAccentColor,
-                              ),
-                            ),
+                            child: Text(AppStringsNew.signupButtonText,
+                                style: AppTextStyles.T2.copyWith(
+                                  decoration: TextDecoration.underline,
+                                  color: appTheme.accentColor,
+                                )),
                           ),
                         ),
                       ],
