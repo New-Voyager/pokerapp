@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/main.dart';
@@ -420,11 +421,11 @@ class GameService {
 
     QueryResult result =
         await _client.query(QueryOptions(documentNode: gql(pastGamesQuery)));
-
     // print("result.data ${result.data} ${result.hasException}");
     if (result.hasException) {
       log("Exception In GraphQl Response: ${result.exception}");
     } else {
+      debugPrint(jsonEncode(result.data['pastGames']));
       try {
         result.data['pastGames'].forEach((item) {
           pastGames.add(GameHistoryModel.fromJson(item));
