@@ -6,11 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/models/bookmarkedHands_model.dart';
 import 'package:pokerapp/models/hand_history_model.dart';
 import 'package:pokerapp/models/player_info.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_assets.dart';
-import 'package:pokerapp/resources/new/app_colors_new.dart';
-import 'package:pokerapp/resources/new/app_colors_new.dart';
+import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
-import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/handlog_bottomsheet.dart';
 import 'package:pokerapp/screens/util_screens/replay_hand_dialog/replay_hand_dialog.dart';
@@ -20,6 +19,7 @@ import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
 import 'package:pokerapp/widgets/cards/multiple_stack_card_views.dart';
+import 'package:provider/provider.dart';
 
 final _separator = SizedBox(
   height: 5.0,
@@ -64,27 +64,30 @@ class _PlayedHandsScreenState extends State<PlayedHandsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        SizedBox(
-          height: 16,
-        ),
-        //   getHeader(),
-        Expanded(
-          child: ListView.separated(
-            itemBuilder: (context, index) {
-              return getListItem(
-                context,
-                index,
-                _isTheHandBookmarked(widget.history[index].handNum),
-              );
-            },
-            itemCount: widget.history.length,
-            separatorBuilder: (context, index) =>
-                AppDimensionsNew.getVerticalSizedBox(8),
+    return Consumer<AppTheme>(
+      builder: (_, theme, __) => Column(
+        children: [
+          SizedBox(
+            height: 16,
           ),
-        ),
-      ],
+          //   getHeader(),
+          Expanded(
+            child: ListView.separated(
+              itemBuilder: (context, index) {
+                return getListItem(
+                  context,
+                  index,
+                  _isTheHandBookmarked(widget.history[index].handNum),
+                  theme,
+                );
+              },
+              itemCount: widget.history.length,
+              separatorBuilder: (context, index) =>
+                  AppDimensionsNew.getVerticalSizedBox(8),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -280,7 +283,7 @@ class _PlayedHandsScreenState extends State<PlayedHandsScreen> {
     });
   }
 
-  showCustomMenu(context, int index) {
+  showCustomMenu(context, int index, AppTheme theme) {
     final RenderBox overlay = Overlay.of(context).context.findRenderObject();
     showMenu(
       context: context,
@@ -310,7 +313,7 @@ class _PlayedHandsScreenState extends State<PlayedHandsScreen> {
                 ],
               ),
               Divider(
-                color: AppColorsNew.listViewDividerColor,
+                color: theme.fillInColor,
               ),
             ],
           ),
@@ -337,7 +340,7 @@ class _PlayedHandsScreenState extends State<PlayedHandsScreen> {
                   ],
                 ),
                 Divider(
-                  color: AppColorsNew.listViewDividerColor,
+                  color: theme.fillInColor,
                 ),
               ],
             ),
@@ -361,7 +364,8 @@ class _PlayedHandsScreenState extends State<PlayedHandsScreen> {
     });
   }
 
-  getListItem(BuildContext context, int index, bool isTheHandBookmarked) {
+  getListItem(BuildContext context, int index, bool isTheHandBookmarked,
+      AppTheme theme) {
     WinnerWidget winnerWidget = new WinnerWidget(item: widget.history[index]);
     return Builder(
       builder: (context) {
@@ -371,7 +375,7 @@ class _PlayedHandsScreenState extends State<PlayedHandsScreen> {
           onTap: () => onHistoryItemTapped(context, index),
           child: Container(
             margin: EdgeInsets.symmetric(horizontal: 8),
-            decoration: AppStylesNew.actionRowDecoration,
+            decoration: AppDecorators.tileDecoration(theme),
             child: Padding(
               padding: const EdgeInsets.all(6.0),
               child: Column(
@@ -388,7 +392,7 @@ class _PlayedHandsScreenState extends State<PlayedHandsScreen> {
                     ],
                   ),
                   Divider(
-                    color: AppColorsNew.newBackgroundBlackColor,
+                    color: theme.fillInColor,
                     indent: 8,
                     endIndent: 8,
                   ),
@@ -522,69 +526,68 @@ class WinnerWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Expanded(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Flexible(
-                  flex: 5,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      _separator,
-                      Container(child: getWinnersView()),
-                    ],
-                  ),
-                ),
-                Flexible(
-                  flex: 5,
-                  child: Container(
-                    margin: EdgeInsets.only(left: 30.0),
+    return Consumer<AppTheme>(
+      builder: (_, theme, __) => Expanded(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Expanded(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Flexible(
+                    flex: 5,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Column(
-                          children: getCommunityCards(),
-                        ),
-                        Container(
-                          child: Text(
-                            this.item.handTime,
-                            style: TextStyle(
-                              color: AppColorsNew.lightGrayTextColor,
-                              fontSize: 8.dp,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                        ),
+                        _separator,
+                        Container(child: getWinnersView(theme)),
                       ],
                     ),
                   ),
-                ),
-              ],
+                  Flexible(
+                    flex: 5,
+                    child: Container(
+                      margin: EdgeInsets.only(left: 30.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Column(
+                            children: getCommunityCards(),
+                          ),
+                          Container(
+                            child: Text(
+                              this.item.handTime,
+                              style:
+                                  AppDecorators.getSubtitle3Style(theme: theme),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-          Container(
-            child: Icon(
-              Icons.arrow_forward_ios,
-              color: AppColorsNew.newGreenButtonColor,
-              size: 12.ph,
+            Container(
+              child: Icon(
+                Icons.arrow_forward_ios,
+                color: theme.accentColor,
+                size: 12.ph,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 
-  Widget getWinnersView() {
+  Widget getWinnersView(AppTheme theme) {
     return ListView.separated(
       shrinkWrap: true,
       physics: ClampingScrollPhysics(),
@@ -594,19 +597,24 @@ class WinnerWidget extends StatelessWidget {
             name: winner.name,
             cards: winner.cards,
             pot: winner.amount,
-            showCards: winner.showCards);
+            showCards: winner.showCards,
+            theme: theme);
       },
       itemCount: this.item.winners.length,
       separatorBuilder: (context, index) {
         return Divider(
-          color: AppColorsNew.newBackgroundBlackColor,
+          color: theme.fillInColor,
         );
       },
     );
   }
 
   Widget getWinnerWidget(
-      {String name, List<int> cards, double pot, bool showCards}) {
+      {String name,
+      List<int> cards,
+      double pot,
+      bool showCards,
+      AppTheme theme}) {
     // log("IN WINNER : ${cards} ${showCards}");
     return Row(
       mainAxisSize: MainAxisSize.min,
@@ -632,23 +640,19 @@ class WinnerWidget extends StatelessWidget {
                 show: showCards,
               ),
               _separator,
-              Row(children: [
-                Text(
-                  'Received: ',
-                  style: TextStyle(
-                    color: AppColorsNew.lightGrayTextColor,
-                    fontSize: 8.dp,
+              Row(
+                children: [
+                  Text(
+                    'Received: ',
+                    style: AppDecorators.getSubtitle3Style(theme: theme),
                   ),
-                ),
-                _separator,
-                Text(
-                  DataFormatter.chipsFormat(pot),
-                  style: TextStyle(
-                    color: AppColorsNew.newGreenButtonColor,
-                    fontSize: 8.dp,
+                  _separator,
+                  Text(
+                    DataFormatter.chipsFormat(pot),
+                    style: AppDecorators.getSubtitle2Style(theme: theme),
                   ),
-                ),
-              ]),
+                ],
+              ),
               // _separator,
             ],
           ),

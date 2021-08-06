@@ -19,7 +19,7 @@ class AppDecorators {
         ),
       );
 
-  static BoxDecoration greenContainerDecoration(AppTheme theme) =>
+  static BoxDecoration tileDecoration(AppTheme theme) =>
       BoxDecoration(
         border: Border.all(color: AppColorsNew.borderColor, width: 1),
         color: theme.fillInColor,

@@ -296,7 +296,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
       },
       child: Container(
         height: 150.ph,
-        decoration: AppDecorators.greenContainerDecoration(theme),
+        decoration: AppDecorators.tileDecoration(theme),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
@@ -368,7 +368,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
       },
       child: Container(
         height: 150.ph,
-        decoration: AppDecorators.greenContainerDecoration(theme),
+        decoration: AppDecorators.tileDecoration(theme),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -417,7 +417,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
     return Container(
       height: 150.ph,
       width: double.maxFinite,
-      decoration: AppDecorators.greenContainerDecoration(theme),
+      decoration: AppDecorators.tileDecoration(theme),
       padding: EdgeInsets.all(8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -485,7 +485,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
     }
     return Container(
       height: 150.ph,
-      decoration: AppDecorators.greenContainerDecoration(theme),
+      decoration: AppDecorators.tileDecoration(theme),
       child: Row(
         children: [
           Container(
@@ -595,7 +595,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
           this._gameDetail.hhWinners.length > 0 &&
           this._gameDetail.hhTracked == true,
       child: Container(
-        decoration: AppDecorators.greenContainerDecoration(theme),
+        decoration: AppDecorators.tileDecoration(theme),
         margin: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
         child: Column(
           mainAxisSize: MainAxisSize.min,
