@@ -48,6 +48,7 @@ class AppCoinService {
 
     QueryResult result = await _client.query(
       QueryOptions(
+        
         documentNode: gql(query),
       ),
     );

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
 
 class CardFormTextField extends StatelessWidget {
   const CardFormTextField({
+    this.theme,
     this.color = Colors.transparent,
     this.onChanged,
     this.controller,
@@ -18,6 +20,7 @@ class CardFormTextField extends StatelessWidget {
     this.maxLines,
   });
   final Color hintColor;
+  final AppTheme theme;
   final Function onSaved;
   final List<TextInputFormatter> inputFormatters;
   final Function validator;
@@ -33,13 +36,14 @@ class CardFormTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+   
     return Card(
       color: color,
       margin: EdgeInsets.all(0.0),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(radius ?? 5.0),
         side: BorderSide(
-          color: Color(0xff878787),
+          color: theme.primaryColorWithLight(),
           width: 1.0,
         ),
       ),
@@ -56,14 +60,14 @@ class CardFormTextField extends StatelessWidget {
           maxLines: maxLines ?? 1,
           obscureText: obscureText ?? false,
           keyboardType: keyboardType,
-          style: const TextStyle(
-            color: Colors.white,
+          style: TextStyle(
+            color: theme.supportingColor,
             fontSize: 20.0,
           ),
           decoration: InputDecoration(
             hintText: hintText,
             hintStyle: TextStyle(
-              color: hintColor ?? Colors.white.withOpacity(0.21),
+              color: hintColor ?? theme.supportingColor.withAlpha(100),
             ),
             border: InputBorder.none,
           ),

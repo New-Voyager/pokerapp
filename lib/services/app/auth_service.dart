@@ -52,12 +52,13 @@ class AuthService {
     return true;
   }
 
-  static save(AuthModel currentUser) async {
+  static Future<void> save(AuthModel currentUser) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     sharedPreferences.setString(AppConstants.DEVICE_ID, currentUser.deviceID);
     sharedPreferences.setString(
         AppConstants.DEVICE_SECRET, currentUser.deviceSecret);
     _user = currentUser;
+    return;
   }
 
   static _remove() async {

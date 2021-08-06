@@ -7,6 +7,8 @@ import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/models/app_state.dart';
 import 'package:pokerapp/models/game_history_model.dart';
 import 'package:pokerapp/models/newmodels/game_model_new.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
@@ -45,6 +47,10 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
   @override
   void initState() {
     _tabController = TabController(length: 2, vsync: this);
+    _tabController.addListener(() {
+      log("Listeners//..");
+      setState(() {});
+    });
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       TestService.isTesting ? _loadTestLiveGames() : _fetchLiveGames();
@@ -188,78 +194,84 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: AppStylesNew.bgDecoration,
-      child: SafeArea(
-        child: Scaffold(
-          backgroundColor: Colors.transparent,
-          body: Column(children: [
-            // AppBar
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  RoundedAccentButton(
-                    onTapFunction: () async {
-                      _disposeTimer();
-                      final dynamic result = await Navigator.of(context)
-                          .pushNamed(Routes.new_game_settings);
-                      if (result != null) {
-                        /* show game settings dialog */
-                        await NewGameSettings2.show(
-                          context,
-                          clubCode: "",
-                          mainGameType: result['gameType'],
-                          subGameTypes: List.from(
-                                result['gameTypes'],
-                              ) ??
-                              [],
-                        );
-                      }
-                      _initTimer();
-                    },
-                    text: "HOST",
-                  ),
-                  Expanded(
-                    child: Text(
-                      AppStringsNew.appName,
-                      style: AppStylesNew.accentTextStyle.copyWith(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 12.dp,
-                      ),
-                      textAlign: TextAlign.center,
+    return Consumer<AppTheme>(builder: (_, appTheme, __) {
+      return Container(
+        decoration: appTheme.bgRadialGradient,
+        child: SafeArea(
+          child: Scaffold(
+            backgroundColor: Colors.transparent,
+            body: Column(children: [
+              // AppBar
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    RoundedColorButton(
+                      onTapFunction: () async {
+                        _disposeTimer();
+                        final dynamic result = await Navigator.of(context)
+                            .pushNamed(Routes.new_game_settings);
+                        if (result != null) {
+                          /* show game settings dialog */
+                          await NewGameSettings2.show(
+                            context,
+                            clubCode: "",
+                            mainGameType: result['gameType'],
+                            subGameTypes: List.from(
+                                  result['gameTypes'],
+                                ) ??
+                                [],
+                          );
+                        }
+                        _initTimer();
+                      },
+                      text: AppStringsNew.hostButtonText,
+                      backgroundColor: appTheme.accentColor,
+                      textColor: appTheme.primaryColorWithDark(),
                     ),
-                  ),
-                  RoundedAccentButton(
-                    onTapFunction: () async {
-                      _disposeTimer();
-                      String gameCode = "";
-                      final String result = await showDialog(
-                        context: context,
-                        builder: (context) => AlertDialog(
-                          actionsPadding:
-                              EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                          backgroundColor: AppColorsNew.actionRowBgColor,
-                          title: Text("Game code"),
-                          content: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              CardFormTextField(
-                                hintText: "Enter Game code",
-                                onChanged: (val) {
-                                  //log("VALUE : $val");
-                                  gameCode = val;
-                                },
-                                keyboardType: TextInputType.name,
-                              ),
-                            ],
-                          ),
-                          actions: [
-                            RoundedColorButton(
+                    Expanded(
+                      child: Text(
+                        AppStringsNew.appName,
+                        style:
+                            AppDecorators.getAccentTextStyle(theme: appTheme),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    RoundedColorButton(
+                      onTapFunction: () async {
+                        _disposeTimer();
+                        String gameCode = "";
+                        final String result = await showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            actionsPadding: EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 8),
+                            backgroundColor: appTheme.fillInColor,
+                            title: Text(
+                              AppStringsNew.gameCodeText,
+                              style: AppDecorators.getSubtitle2Style(
+                                  theme: appTheme),
+                            ),
+                            content: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                CardFormTextField(
+                                  theme: appTheme,
+                                  hintText: AppStringsNew.gameCodeHintText,
+                                  onChanged: (val) {
+                                    //log("VALUE : $val");
+                                    gameCode = val;
+                                  },
+                                  keyboardType: TextInputType.name,
+                                ),
+                              ],
+                            ),
+                            actions: [
+                              RoundedColorButton(
                                 text: AppStringsNew.Join,
-                                backgroundColor: AppColorsNew.yellowAccentColor,
-                                textColor: AppColorsNew.darkGreenShadeColor,
+                                backgroundColor: appTheme.accentColor,
+                                textColor: appTheme.primaryColorWithDark(),
                                 onTapFunction: () async {
                                   if (gameCode.isEmpty) {
                                     toast("GameCode can't be empty");
@@ -267,124 +279,156 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
                                   }
 
                                   Navigator.of(context).pop(gameCode);
-                                }),
-                          ],
-                        ),
-                      );
+                                },
+                              ),
+                            ],
+                          ),
+                        );
 
-                      if (result != null) {
-                        // Check game exists or not
-                        final gameInfo =
-                            await GameService.getGameInfo(gameCode);
-                        if (gameInfo == null) {
-                          Alerts.showNotification(titleText: "Game not found!");
-                        } else {
-                          Navigator.of(context)
-                              .pushNamed(Routes.game_play, arguments: result);
+                        if (result != null) {
+                          // Check game exists or not
+                          final gameInfo =
+                              await GameService.getGameInfo(gameCode);
+                          if (gameInfo == null) {
+                            Alerts.showNotification(
+                                titleText: AppStringsNew.noGamesFoundText);
+                          } else {
+                            Navigator.of(context)
+                                .pushNamed(Routes.game_play, arguments: result);
+                          }
                         }
-                      }
-                      _initTimer();
-                    },
-                    text: "JOIN",
-                  ),
-                ],
+                        _initTimer();
+                      },
+                      backgroundColor: appTheme.accentColor,
+                      textColor: appTheme.primaryColorWithDark(),
+                      text: AppStringsNew.Join,
+                    ),
+                  ],
+                ),
               ),
-            ),
 
-            TabBar(
-              tabs: [
-                Tab(
-                  text: AppStringsNew.liveGamesText,
-                  icon: Image.asset(
-                    AppAssetsNew.liveGamesTabImagePath,
-                    height: 24,
-                    width: 24,
-                    color: AppColorsNew.newGreenButtonColor,
+              TabBar(
+                tabs: [
+                  Tab(
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image.asset(
+                          AppAssetsNew.liveGamesTabImagePath,
+                          height: 16.ph,
+                          width: 16.pw,
+                          color: _tabController.index == 0
+                              ? appTheme.secondaryColor
+                              : appTheme.secondaryColorWithDark(),
+                        ),
+                        AppDimensionsNew.getHorizontalSpace(8),
+                        Text(
+                          AppStringsNew.liveGamesText,
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                Tab(
-                  text: AppStringsNew.gameRecordText,
-                  icon: Image.asset(
-                    AppAssetsNew.playedGamesTabImagePath,
-                    height: 24,
-                    width: 24,
-                    color: AppColorsNew.newGreenButtonColor,
+                  Tab(
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image.asset(
+                          AppAssetsNew.playedGamesTabImagePath,
+                          height: 16.ph,
+                          width: 16.pw,
+                          color: _tabController.index == 1
+                              ? appTheme.secondaryColor
+                              : appTheme.secondaryColorWithDark(),
+                        ),
+                        AppDimensionsNew.getHorizontalSpace(8),
+                        Text(
+                          AppStringsNew.gameRecordText,
+                        )
+                      ],
+                    ),
                   ),
-                ),
-              ],
-              indicatorColor: AppColorsNew.yellowAccentColor,
-              labelColor: AppColorsNew.newGreenButtonColor,
-              unselectedLabelColor:
-                  AppColorsNew.newGreenButtonColor.withAlpha(150),
-              indicatorSize: TabBarIndicatorSize.label,
-              labelStyle: AppStylesNew.valueTextStyle,
-              controller: _tabController,
-            ),
-            // HeadingWidget(
-            //   heading: 'Live Games',
-            // ),
-            Expanded(
-              child: TabBarView(
-                controller: _tabController,
-                children: [
-                  Stack(
-                    children: [
-                      _isLoading
-                          ? Container()
-                          : liveGames.isEmpty
-                              ? Center(
-                                  child: Text(
-                                    AppStringsNew.NoGamesText,
-                                    style: AppStylesNew.titleTextStyle,
-                                  ),
-                                )
-                              : ListView.separated(
-                                  physics: BouncingScrollPhysics(),
-                                  shrinkWrap: true,
-                                  itemBuilder: (context, index) {
-                                    return LiveGameItem(
-                                      game: liveGames[index],
-                                      onTapFunction: () async {
-                                        _disposeTimer();
-                                        await Navigator.of(context).pushNamed(
-                                          Routes.game_play,
-                                          arguments: liveGames[index].gameCode,
-                                        );
-                                        // Refreshes livegames again
-                                        _initTimer();
-                                      },
-                                    );
-                                  },
-                                  padding: EdgeInsets.only(
-                                    bottom: 64.ph,
-                                    top: 16.ph,
-                                  ),
-                                  separatorBuilder: (
-                                    context,
-                                    index,
-                                  ) =>
-                                      AppDimensionsNew.getVerticalSizedBox(
-                                          16.ph),
-                                  itemCount: liveGames.length,
-                                ),
-                    ],
-                  ),
-                  _isPlayedGamesLoading ? Container() : getPlayedGames(),
                 ],
+                indicatorColor: appTheme.accentColor,
+                labelColor: appTheme.secondaryColor,
+                unselectedLabelColor: appTheme.secondaryColorWithDark(0.2),
+                indicatorSize: TabBarIndicatorSize.label,
+                //labelStyle: AppDecorators.getSubtitle2Style(theme: appTheme),
+                //unselectedLabelStyle: AppDecorators.getSubtitle1Style(theme: appTheme),
+                controller: _tabController,
               ),
-            ),
-          ]),
+              // HeadingWidget(
+              //   heading: 'Live Games',
+              // ),
+              Expanded(
+                child: TabBarView(
+                  controller: _tabController,
+                  children: [
+                    Stack(
+                      children: [
+                        _isLoading
+                            ? Container()
+                            : liveGames.isEmpty
+                                ? Center(
+                                    child: Text(
+                                      AppStringsNew.NoGamesText,
+                                      style:
+                                          AppDecorators.getCenterTextTextstyle(
+                                              appTheme: appTheme),
+                                    ),
+                                  )
+                                : ListView.separated(
+                                    physics: BouncingScrollPhysics(),
+                                    shrinkWrap: true,
+                                    itemBuilder: (context, index) {
+                                      return LiveGameItem(
+                                        game: liveGames[index],
+                                        onTapFunction: () async {
+                                          _disposeTimer();
+                                          await Navigator.of(context).pushNamed(
+                                            Routes.game_play,
+                                            arguments:
+                                                liveGames[index].gameCode,
+                                          );
+                                          // Refreshes livegames again
+                                          _initTimer();
+                                        },
+                                      );
+                                    },
+                                    padding: EdgeInsets.only(
+                                      bottom: 64.ph,
+                                      top: 16.ph,
+                                    ),
+                                    separatorBuilder: (
+                                      context,
+                                      index,
+                                    ) =>
+                                        AppDimensionsNew.getVerticalSizedBox(
+                                            16.ph),
+                                    itemCount: liveGames?.length,
+                                  ),
+                      ],
+                    ),
+                    _isPlayedGamesLoading
+                        ? Container()
+                        : getPlayedGames(appTheme),
+                  ],
+                ),
+              ),
+            ]),
+          ),
         ),
-      ),
-    );
+      );
+    });
   }
 
-  Widget getPlayedGames() {
+  Widget getPlayedGames(AppTheme appTheme) {
     return playedGames.isEmpty
         ? Center(
             child: Text(
               AppStringsNew.noGameRecordsText,
-              style: AppStylesNew.titleTextStyle,
+              style: AppDecorators.getCenterTextTextstyle(appTheme: appTheme),
             ),
           )
         : ListView.separated(
@@ -400,7 +444,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
               index,
             ) =>
                 AppDimensionsNew.getVerticalSizedBox(16.ph),
-            itemCount: playedGames.length,
+            itemCount: playedGames?.length,
           );
   }
 

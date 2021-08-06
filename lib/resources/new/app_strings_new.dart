@@ -259,4 +259,17 @@ class AppStringsNew {
   static const String emailText = 'Email';
   static const String passwordText = 'Password';
   static const String registerNowText = 'Register Now';
+
+  static String gameCodeHintText = "Enter Game code";
+
+  static String noGamesFoundText = "Game not found!";
+
+  static String hostButtonText = "HOST";
+
+  static String createClubTitle = "Create Club";
+
+  static String createButtonText = "Create";
+
+  static String labelNameText = "Name";
+  static String labelDescriptionText = "Description";
 }
