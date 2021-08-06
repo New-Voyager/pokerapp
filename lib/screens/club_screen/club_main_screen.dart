@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/club_homepage_model.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/routes.dart';
@@ -159,7 +160,7 @@ class _ClubMainScreenNewState extends State<ClubMainScreenNew>
             builder: (BuildContext context, snapshot) {
               ClubHomePageModel clubModel = snapshot.data;
               return Container(
-                decoration: theme.bgRadialGradient,
+                decoration: AppDecorators.bgRadialGradient(theme),
                 child: SafeArea(
                   child: Scaffold(
                     backgroundColor: Colors.transparent,

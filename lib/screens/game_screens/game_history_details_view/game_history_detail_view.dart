@@ -5,11 +5,11 @@ import 'package:flutter_svg/svg.dart';
 import 'package:pokerapp/models/game_history_model.dart';
 import 'package:pokerapp/models/hand_history_model.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
-import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/game_screens/game_history_details_view/stack_chart_view.dart';
@@ -64,96 +64,98 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<AppTheme>(builder: (_,theme,__)=>Container(
-      decoration: AppStylesNew.BgGreenRadialGradient,
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        appBar: CustomAppBar(
-          theme:theme,
-          context: context,
-          titleText: AppStringsNew.GameDetailsTitle,
-          subTitleText: "Game code: ${_gameDetail.gameCode}",
-        ),
-        body: !loadingDone
-            ? Center(child: CircularProgressWidget())
-            : SingleChildScrollView(
-                child: Column(
-                  children: [
-                    // Container(
-                    //   margin: EdgeInsets.only(
-                    //     left: 16,
-                    //     top: 5,
-                    //     bottom: 5,
-                    //     right: 10,
-                    //   ),
-                    //   alignment: Alignment.centerLeft,
-                    //   child: Text(
-                    //     "Club code: ${widget.clubCode}",
-                    //   ),
-                    // ),
-                    // Container(
-                    //   margin: EdgeInsets.only(left: 10, bottom: 5, right: 10),
-                    //   alignment: Alignment.centerLeft,
-                    //   child: Text(
-                    //     "Game Code: " + widget.data.gameCode.toString(),
-                    //     style: const TextStyle(
-                    //       fontFamily: AppAssets.fontFamilyLato,
-                    //       color: AppColorsNew.lightGrayTextColor,
-                    //       fontSize: 12.0,
-                    //       fontWeight: FontWeight.w400,
-                    //     ),
-                    //   ),
-                    // ),
-                    Container(
-                      padding: const EdgeInsets.all(8.0),
-                      margin: EdgeInsets.symmetric(horizontal: 8),
-                      child: Row(
-                        children: [
-                          Flexible(
-                            flex: 7,
-                            child: gameTypeTile(),
-                          ),
-                          AppDimensionsNew.getHorizontalSpace(8),
-                          Flexible(
-                            flex: 3,
-                            child: balanceTile(),
-                          ),
-                        ],
+    return Consumer<AppTheme>(
+      builder: (_, theme, __) => Container(
+        decoration: AppDecorators.bgRadialGradient(theme),
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          appBar: CustomAppBar(
+            theme: theme,
+            context: context,
+            titleText: AppStringsNew.GameDetailsTitle,
+            subTitleText: "Game code: ${_gameDetail.gameCode}",
+          ),
+          body: !loadingDone
+              ? Center(child: CircularProgressWidget())
+              : SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      // Container(
+                      //   margin: EdgeInsets.only(
+                      //     left: 16,
+                      //     top: 5,
+                      //     bottom: 5,
+                      //     right: 10,
+                      //   ),
+                      //   alignment: Alignment.centerLeft,
+                      //   child: Text(
+                      //     "Club code: ${widget.clubCode}",
+                      //   ),
+                      // ),
+                      // Container(
+                      //   margin: EdgeInsets.only(left: 10, bottom: 5, right: 10),
+                      //   alignment: Alignment.centerLeft,
+                      //   child: Text(
+                      //     "Game Code: " + widget.data.gameCode.toString(),
+                      //     style: const TextStyle(
+                      //       fontFamily: AppAssets.fontFamilyLato,
+                      //       color: AppColorsNew.lightGrayTextColor,
+                      //       fontSize: 12.0,
+                      //       fontWeight: FontWeight.w400,
+                      //     ),
+                      //   ),
+                      // ),
+                      Container(
+                        padding: const EdgeInsets.all(8.0),
+                        margin: EdgeInsets.symmetric(horizontal: 8),
+                        child: Row(
+                          children: [
+                            Flexible(
+                              flex: 7,
+                              child: gameTypeTile(theme),
+                            ),
+                            AppDimensionsNew.getHorizontalSpace(8),
+                            Flexible(
+                              flex: 3,
+                              child: balanceTile(theme),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    seprator,
-                    Container(
-                      padding: const EdgeInsets.all(8.0),
-                      margin: EdgeInsets.symmetric(horizontal: 8),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            flex: 3,
-                            child: stackTile(),
-                          ),
-                          // Flexible(
-                          //   flex: 3,
-                          //   child: resultTile(),
-                          // ),
-                          AppDimensionsNew.getHorizontalSpace(8),
-                          Expanded(
-                            flex: 3,
-                            child: actionTile(),
-                          ),
-                        ],
+                      seprator,
+                      Container(
+                        padding: const EdgeInsets.all(8.0),
+                        margin: EdgeInsets.symmetric(horizontal: 8),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              flex: 3,
+                              child: stackTile(theme),
+                            ),
+                            // Flexible(
+                            //   flex: 3,
+                            //   child: resultTile(),
+                            // ),
+                            AppDimensionsNew.getHorizontalSpace(8),
+                            Expanded(
+                              flex: 3,
+                              child: actionTile(theme),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    seprator,
-                    Container(
-                      margin: const EdgeInsets.all(8.0),
-                      child: highHandTile(),
-                    ),
-                    getLowerCard(),
-                  ],
+                      seprator,
+                      Container(
+                        margin: const EdgeInsets.all(8.0),
+                        child: highHandTile(theme),
+                      ),
+                      getLowerCard(theme),
+                    ],
+                  ),
                 ),
-              ),
+        ),
       ),
-    ));
+    );
   }
 
   Widget listTile() {
@@ -285,7 +287,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
     );
   }
 
-  Widget actionTile() {
+  Widget actionTile(AppTheme theme) {
     return InkWell(
       onTap: () {
         if (_gameDetail.playedGame) {
@@ -294,7 +296,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
       },
       child: Container(
         height: 150.ph,
-        decoration: AppStylesNew.greenContainerDecoration,
+        decoration: AppDecorators.greenContainerDecoration(theme),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
@@ -328,10 +330,9 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
                 child: Visibility(
                   child: !_gameDetail.playedGame
                       ? Center(
-                          child: Text(
-                            "No Data",
-                            style: AppStylesNew.labelTextStyle,
-                          ),
+                          child: Text("No Data",
+                              style: AppDecorators.getSubtitle3Style(
+                                  theme: theme)),
                         )
                       : AbsorbPointer(
                           child: HandsPieChart(this._gameDetail.handsData)),
@@ -356,7 +357,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
         arguments: _gameDetail);
   }
 
-  Widget stackTile() {
+  Widget stackTile(AppTheme theme) {
     if (loadingDone) {
       // loading done
       print(_gameDetail.stack);
@@ -367,7 +368,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
       },
       child: Container(
         height: 150.ph,
-        decoration: AppStylesNew.greenContainerDecoration,
+        decoration: AppDecorators.greenContainerDecoration(theme),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -396,7 +397,8 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
                       ? Center(
                           child: Text(
                             "No Data",
-                            style: AppStylesNew.labelTextStyle,
+                            style:
+                                AppDecorators.getSubtitle3Style(theme: theme),
                           ),
                         )
                       : StackChartView(_gameDetail.stack, openStackDetails)),
@@ -409,20 +411,20 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
     );
   }
 
-  Widget balanceTile() {
+  Widget balanceTile(AppTheme theme) {
     double profit = _gameDetail.profit == null ? 0 : _gameDetail.profit;
 
     return Container(
       height: 150.ph,
       width: double.maxFinite,
-      decoration: AppStylesNew.greenContainerDecoration,
+      decoration: AppDecorators.greenContainerDecoration(theme),
       padding: EdgeInsets.all(8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             profit < 0 ? "Loss" : "Profit",
-            style: AppStylesNew.labelTextStyle,
+            style: AppDecorators.getSubtitle3Style(theme: theme),
           ),
           _gameDetail.playedGame
               ? FittedBox(
@@ -460,7 +462,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
             visible: _gameDetail.playedGame,
             child: Text(
               "Buy-in",
-              style: AppStylesNew.labelTextStyle,
+              style: AppDecorators.getSubtitle3Style(theme: theme),
             ),
           ),
           seprator,
@@ -472,7 +474,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
     );
   }
 
-  Widget gameTypeTile() {
+  Widget gameTypeTile(AppTheme theme) {
     String title = '';
     String blind = '';
 
@@ -483,7 +485,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
     }
     return Container(
       height: 150.ph,
-      decoration: AppStylesNew.greenContainerDecoration,
+      decoration: AppDecorators.greenContainerDecoration(theme),
       child: Row(
         children: [
           Container(
@@ -521,7 +523,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
                             loadingDone && _gameDetail.gameHandsText != null,
                         child: Text(
                           _gameDetail.gameHandsText ?? '',
-                          style: AppStylesNew.labelTextStyle,
+                          style: AppDecorators.getSubtitle3Style(theme: theme),
                         )),
                     seprator,
                     Visibility(
@@ -529,7 +531,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
                             loadingDone && _gameDetail.playerHandsText != null,
                         child: Text(
                           _gameDetail.playerHandsText ?? '',
-                          style: AppStylesNew.labelTextStyle,
+                          style: AppDecorators.getSubtitle3Style(theme: theme),
                         )),
                     seprator
                   ],
@@ -547,7 +549,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
                           _gameDetail.endedAtStr != null
                               ? 'Started by ${_gameDetail.startedBy}'
                               : '',
-                          style: AppStylesNew.labelTextStyle
+                          style: AppDecorators.getSubtitle3Style(theme: theme)
                               .copyWith(fontSize: 6.dp),
                         ),
                       ),
@@ -557,7 +559,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
                           _gameDetail.endedAtStr != null
                               ? 'Ended by ${_gameDetail.endedBy}'
                               : '',
-                          style: AppStylesNew.labelTextStyle
+                          style: AppDecorators.getSubtitle3Style(theme: theme)
                               .copyWith(fontSize: 6.dp),
                         ),
                       ),
@@ -567,7 +569,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
                           _gameDetail.endedAtStr != null
                               ? 'Ended at ${_gameDetail.endedAtStr}'
                               : '',
-                          style: AppStylesNew.labelTextStyle
+                          style: AppDecorators.getSubtitle3Style(theme: theme)
                               .copyWith(fontSize: 6.dp),
                         ),
                       )
@@ -580,7 +582,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
     );
   }
 
-  Widget highHandTile() {
+  Widget highHandTile(AppTheme theme) {
     if (this._gameDetail == null ||
         this._gameDetail.hhTracked == false ||
         this._gameDetail.hhWinners == null ||
@@ -593,7 +595,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
           this._gameDetail.hhWinners.length > 0 &&
           this._gameDetail.hhTracked == true,
       child: Container(
-        decoration: AppStylesNew.greenContainerDecoration,
+        decoration: AppDecorators.greenContainerDecoration(theme),
         margin: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -649,7 +651,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
     );
   }
 
-  Widget getLowerCard() {
+  Widget getLowerCard(AppTheme theme) {
     bool hhTracked = false;
     if (loadingDone) {
       hhTracked = _gameDetail.hhTracked;

@@ -17,6 +17,13 @@ class AppTheme extends ChangeNotifier {
   // call this from anywhere to get the app theme object
   static AppTheme getTheme(BuildContext context) => context.read<AppTheme>();
 
+  // font family
+  String get fontFamily => _themeData.fontFamily;
+  void updateFontFamily(String fontFamily) {
+    _themeData.fontFamily = fontFamily;
+    notifyListeners();
+  }
+
   // util functions for darkening or lighting a color
 
   // darken a color
@@ -72,15 +79,5 @@ class AppTheme extends ChangeNotifier {
   // TODO: MAY BE WE CAN HAVE DIFFERENT SHADES OF THIS
   Color get negativeOrErrorColor => _themeData.negativeOrErrorColor;
 
-  // gradients
-  BoxDecoration get bgRadialGradient => BoxDecoration(
-        gradient: RadialGradient(
-          colors: [
-            primaryColor,
-            primaryColorWithDark(),
-          ],
-          center: Alignment.topLeft,
-          radius: 1.5,
-        ),
-      );
+  
 }

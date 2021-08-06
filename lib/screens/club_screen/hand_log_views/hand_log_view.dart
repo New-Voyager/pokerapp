@@ -7,6 +7,7 @@ import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/bookmarkedHands_model.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
@@ -186,8 +187,9 @@ class _HandLogViewState extends State<HandLogView> with RouteAwareAnalytics {
       }
     }
 
-    return Consumer<AppTheme>(builder: (_,theme,__)=> Container(
-        decoration: theme.bgRadialGradient,
+    return Consumer<AppTheme>(
+      builder: (_, theme, __) => Container(
+        decoration: AppDecorators.bgRadialGradient(theme),
         child: Scaffold(
           backgroundColor: Colors.transparent,
           appBar: CustomAppBar(

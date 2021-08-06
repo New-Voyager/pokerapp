@@ -10,10 +10,8 @@ import 'package:pokerapp/models/newmodels/game_model_new.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
-import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
-import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/game_screens/game_history_view/game_history_item_new.dart';
 import 'package:pokerapp/screens/game_screens/new_game_settings/new_game_settings2.dart';
@@ -25,7 +23,6 @@ import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
 import 'package:pokerapp/widgets/card_form_text_field.dart';
 import 'package:pokerapp/widgets/round_color_button.dart';
-import 'package:pokerapp/widgets/rounded_accent_button.dart';
 import 'package:provider/provider.dart';
 
 class LiveGamesScreen extends StatefulWidget {
@@ -196,7 +193,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
   Widget build(BuildContext context) {
     return Consumer<AppTheme>(builder: (_, appTheme, __) {
       return Container(
-        decoration: appTheme.bgRadialGradient,
+        decoration: AppDecorators.bgRadialGradient(appTheme),
         child: SafeArea(
           child: Scaffold(
             backgroundColor: Colors.transparent,
