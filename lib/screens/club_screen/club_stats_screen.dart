@@ -11,6 +11,7 @@ import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/stats_service.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:pokerapp/widgets/cards/multiple_stack_card_views.dart';
+import 'package:provider/provider.dart';
 
 import '../../routes.dart';
 
@@ -47,58 +48,60 @@ class _ClubStatsScreenState extends State<ClubStatsScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: AppStylesNew.BgGreenRadialGradient,
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        appBar: CustomAppBar(
-          context: context,
-          titleText: AppStringsNew.clubStatisticsTitle,
-          subTitleText: widget.clubCode,
-        ),
-        body: _clubStats == null
-            ? CircularProgressWidget(
-                text: "Loading statistics..",
-              )
-            : Column(
-                children: [
-                  AppDimensionsNew.getVerticalSizedBox(8),
-                  TabBar(
-                    controller: _tabController,
-                    tabs: [
-                      Text("No Limit Holdem"),
-                      Text("PLO"),
-                      Text("5 Card PLO"),
-                    ],
-                    isScrollable: true,
-                    indicatorSize: TabBarIndicatorSize.label,
-                    indicatorColor: AppColorsNew.yellowAccentColor,
-                    labelColor: AppColorsNew.newTextColor,
-                    unselectedLabelColor:
-                        AppColorsNew.newTextColor.withAlpha(100),
-                  ),
-                  AppDimensionsNew.getVerticalSizedBox(8),
-                  Expanded(
-                    child: TabBarView(
+    return Consumer(builder: (_,theme,__)=> Container(
+        decoration: AppStylesNew.BgGreenRadialGradient,
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          appBar: CustomAppBar(
+            theme: theme,
+            context: context,
+            titleText: AppStringsNew.clubStatisticsTitle,
+            subTitleText: widget.clubCode,
+          ),
+          body: _clubStats == null
+              ? CircularProgressWidget(
+                  text: "Loading statistics..",
+                )
+              : Column(
+                  children: [
+                    AppDimensionsNew.getVerticalSizedBox(8),
+                    TabBar(
                       controller: _tabController,
-                      children: [
-                        StatsDetailForGame(
-                          action: _clubStats.holdem,
-                          imagePath: AppAssetsNew.pathHoldemTypeImage,
-                        ),
-                        StatsDetailForGame(
-                          action: _clubStats.plo,
-                          imagePath: AppAssetsNew.pathPLOTypeImage,
-                        ),
-                        StatsDetailForGame(
-                          action: _clubStats.fivecardPlo,
-                          imagePath: AppAssetsNew.pathFiveCardPLOTypeImage,
-                        ),
+                      tabs: [
+                        Text("No Limit Holdem"),
+                        Text("PLO"),
+                        Text("5 Card PLO"),
                       ],
+                      isScrollable: true,
+                      indicatorSize: TabBarIndicatorSize.label,
+                      indicatorColor: AppColorsNew.yellowAccentColor,
+                      labelColor: AppColorsNew.newTextColor,
+                      unselectedLabelColor:
+                          AppColorsNew.newTextColor.withAlpha(100),
                     ),
-                  )
-                ],
-              ),
+                    AppDimensionsNew.getVerticalSizedBox(8),
+                    Expanded(
+                      child: TabBarView(
+                        controller: _tabController,
+                        children: [
+                          StatsDetailForGame(
+                            action: _clubStats.holdem,
+                            imagePath: AppAssetsNew.pathHoldemTypeImage,
+                          ),
+                          StatsDetailForGame(
+                            action: _clubStats.plo,
+                            imagePath: AppAssetsNew.pathPLOTypeImage,
+                          ),
+                          StatsDetailForGame(
+                            action: _clubStats.fivecardPlo,
+                            imagePath: AppAssetsNew.pathFiveCardPLOTypeImage,
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+        ),
       ),
     );
   }

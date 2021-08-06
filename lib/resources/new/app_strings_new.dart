@@ -272,4 +272,10 @@ class AppStringsNew {
 
   static String labelNameText = "Name";
   static String labelDescriptionText = "Description";
+
+  static String loadingDefaultText = "Loading";
+
+  static String noClubsText = "No Clubs";
+
+  static String createGameText='+ Create Game';
 }

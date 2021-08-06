@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/game_history_model.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 
 import 'package:charts_flutter/flutter.dart' as charts;
@@ -19,6 +20,7 @@ import 'dart:convert';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/utils/utils.dart';
+import 'package:provider/provider.dart';
 
 class PointsLineChart extends StatefulWidget {
   //final GameHistoryDetailModel gameDetail;
@@ -116,75 +118,79 @@ class _PointsLineChart extends State<PointsLineChart> with RouteAwareAnalytics {
   @override
   Widget build(BuildContext context) {
     _tapPosition = Offset((Screen.width - 100) / 2, Screen.height - 100);
-    return !loadingDone
-        ? Center(child: CircularProgressIndicator())
-        : Scaffold(
-            backgroundColor: AppColorsNew.screenBackgroundColor,
-            appBar: CustomAppBar(
-              context: context,
-              titleText: "Stack Timeline",
-              showBackButton: widget.showBackButton,
-            ),
-            body: !loadingDone
-                ? Center(child: CircularProgressIndicator())
-                : SafeArea(
-                    child: Stack(
-                      children: [
-                        GestureDetector(
-                          onTapDown: (details) {
-                            setState(() {
-                              debugPrint(
-                                  '=====================\n\nStack item tapped');
-                              // _tapPosition = Offset(details.localPosition.dx,
-                              //     details.localPosition.dy);
-                            });
-                          },
-                          child: GestureDetector(
-                            onTapDown: (details) {
-                              debugPrint(
-                                  '=====================\n\LineChart item tapped');
-                            },
-                            child: charts.LineChart(
-                              _createSampleData(),
-                              animate: false,
-                              behaviors: [
-                                // new charts.SlidingViewport(),
-                                charts.PanAndZoomBehavior(),
-                                charts.SelectNearest(),
-                              ],
-                              selectionModels: [
-                                charts.SelectionModelConfig(
-                                    type: charts.SelectionModelType.info,
-                                    changedListener:
-                                        (charts.SelectionModel model) {
-                                      if (model.hasDatumSelection) {
-                                        setState(() {
-                                          debugPrint(
-                                              '\n circle tapped: ${model.hasDatumSelection}\n');
-                                          debugPrint('=====================');
-                                          _selectionModel = model;
-                                          _popUpVisible = true;
-                                        });
-                                      }
-                                    })
-                              ],
-                              defaultRenderer: new charts.LineRendererConfig(
-                                includePoints: true,
-                                radiusPx: 5,
+    return Consumer<AppTheme>(
+        builder: (_, theme, __) => !loadingDone
+            ? Center(child: CircularProgressIndicator())
+            : Scaffold(
+                backgroundColor: Colors.transparent,
+                appBar: CustomAppBar(
+                  theme: theme,
+                  context: context,
+                  titleText: "Stack Timeline",
+                  showBackButton: widget.showBackButton,
+                ),
+                body: !loadingDone
+                    ? Center(child: CircularProgressIndicator())
+                    : SafeArea(
+                        child: Stack(
+                          children: [
+                            GestureDetector(
+                              onTapDown: (details) {
+                                setState(() {
+                                  debugPrint(
+                                      '=====================\n\nStack item tapped');
+                                  // _tapPosition = Offset(details.localPosition.dx,
+                                  //     details.localPosition.dy);
+                                });
+                              },
+                              child: GestureDetector(
+                                onTapDown: (details) {
+                                  debugPrint(
+                                      '=====================\n\LineChart item tapped');
+                                },
+                                child: charts.LineChart(
+                                  _createSampleData(),
+                                  animate: false,
+                                  behaviors: [
+                                    // new charts.SlidingViewport(),
+                                    charts.PanAndZoomBehavior(),
+                                    charts.SelectNearest(),
+                                  ],
+                                  selectionModels: [
+                                    charts.SelectionModelConfig(
+                                        type: charts.SelectionModelType.info,
+                                        changedListener:
+                                            (charts.SelectionModel model) {
+                                          if (model.hasDatumSelection) {
+                                            setState(() {
+                                              debugPrint(
+                                                  '\n circle tapped: ${model.hasDatumSelection}\n');
+                                              debugPrint(
+                                                  '=====================');
+                                              _selectionModel = model;
+                                              _popUpVisible = true;
+                                            });
+                                          }
+                                        })
+                                  ],
+                                  defaultRenderer:
+                                      new charts.LineRendererConfig(
+                                    includePoints: true,
+                                    radiusPx: 5,
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
+                            Visibility(
+                              child: _selectionModel != null
+                                  ? _buildPopUp(context)
+                                  : Container(),
+                              visible: _popUpVisible,
+                            ),
+                          ],
                         ),
-                        Visibility(
-                          child: _selectionModel != null
-                              ? _buildPopUp(context)
-                              : Container(),
-                          visible: _popUpVisible,
-                        ),
-                      ],
-                    ),
-                  ),
-          );
+                      ),
+              ));
   }
 
   /// Create one series with sample hard coded data.

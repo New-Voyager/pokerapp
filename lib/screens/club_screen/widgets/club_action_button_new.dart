@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/club_actions.dart';
 import 'package:pokerapp/models/club_homepage_model.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:provider/provider.dart';
 import 'package:badges/badges.dart';
@@ -26,6 +28,7 @@ class ClubActionButtonNew extends StatelessWidget {
   });
   @override
   Widget build(BuildContext context) {
+    final theme = AppTheme.getTheme(context);
     Widget card = Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -39,6 +42,7 @@ class ClubActionButtonNew extends StatelessWidget {
           padding: EdgeInsets.all(5.0.pw),
           child: Text(
             _actionName,
+            style: AppDecorators.getSubtitle1Style(theme: theme),
             textAlign: TextAlign.center,
           ),
         ),

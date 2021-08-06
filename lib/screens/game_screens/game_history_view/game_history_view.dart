@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/game_history_model.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/routes.dart';
@@ -9,6 +10,7 @@ import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/game_screens/game_history_view/game_history_item_new.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/club_interior_service.dart';
+import 'package:provider/provider.dart';
 
 class GameHistoryView extends StatefulWidget {
   final String clubCode;
@@ -88,11 +90,12 @@ class _GameHistoryViewState extends State<GameHistoryView>
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return Consumer<AppTheme>(builder: (_,theme,__)=>Container(
       decoration: AppStylesNew.BgGreenRadialGradient,
       child: Scaffold(
         backgroundColor: Colors.transparent,
         appBar: CustomAppBar(
+          theme:theme,
           titleText: AppStringsNew.GameHistoryTitle,
           subTitleText: "Club code: ${widget.clubCode}",
           context: context,
@@ -110,6 +113,6 @@ class _GameHistoryViewState extends State<GameHistoryView>
         //         child: body(),
         //       ),
       ),
-    );
+    ),);
   }
 }

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/game_history_model.dart';
 import 'package:pokerapp/models/hand_stats_model.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
@@ -13,6 +14,7 @@ import 'package:pokerapp/screens/game_screens/game_history_details_view/hand_sta
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/stats_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
+import 'package:provider/provider.dart';
 
 import '../../../routes.dart';
 
@@ -80,12 +82,13 @@ class _HandStatsViewState extends State<HandStatsView>
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return Consumer<AppTheme>(builder: (_,theme,__)=>Container(
       decoration: AppStylesNew.BgGreenRadialGradient,
       child: Scaffold(
         backgroundColor: Colors.transparent,
         appBar: showThisGame
             ? CustomAppBar(
+              theme: theme,
                 context: context,
                 titleText: 'Hand Statistics',
                 subTitleText: 'Game: ${model?.gameCode} ',
@@ -453,7 +456,7 @@ class _HandStatsViewState extends State<HandStatsView>
                 ),
               ),
       ),
-    );
+    ),);
   }
 
   Widget _buildOneStageRow({Widget title, int thisVal, int allVal}) {

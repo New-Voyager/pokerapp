@@ -6,6 +6,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/table_record.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
@@ -15,6 +16,7 @@ import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/utils/hand_table_bar_chart_profit.dart';
+import 'package:provider/provider.dart';
 import 'package:share/share.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
@@ -285,113 +287,116 @@ class _TableResultScreenState extends State<TableResultScreen>
   @override
   Widget build(BuildContext context) {
     initializeTableWidgets();
-    return Scaffold(
-      resizeToAvoidBottomInset: true,
-      backgroundColor: AppColorsNew.screenBackgroundColor,
-      appBar: CustomAppBar(
-        context: context,
-        titleText: AppStringsNew.TableRecordTitle,
-        subTitleText: "Game code: ${widget.gameCode}",
-        showBackButton: widget.showBackButton,
-      ),
-      body: SingleChildScrollView(
-        physics: BouncingScrollPhysics(),
-        child: ConstrainedBox(
-          constraints: BoxConstraints(
-            maxHeight: MediaQuery.of(context).size.height,
-          ),
-          child: Column(
-            children: [
-              // table result heading widget
-              Container(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 15.0.pw,
-                    vertical: 5.0.pw,
-                  ),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          widget.showTips
-                              ? Text(
-                                  "Tips",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontFamily: AppAssets.fontFamilyLato,
-                                    fontSize: 12.0.dp,
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                )
-                              : Container(),
-
-                          // sep
-                          SizedBox(width: 10.0.pw),
-
-                          widget.showTips
-                              ? Text(
-                                  getTotalRake().toString(),
-                                  style: TextStyle(
-                                    color: Color(0xff1aff22),
-                                    fontFamily: AppAssets.fontFamilyLato,
-                                    fontSize: 12.0.dp,
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                )
-                              : Container(),
-                        ],
-                      ),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          SizedBox(width: 20.0.pw),
-                          widget.showDownload
-                              ? InkWell(
-                                  onTap: () async {
-                                    downloadTable(widget.gameCode);
-                                  },
-                                  child: Text(
-                                    "Download",
+    return Consumer<AppTheme>(
+      builder: (_, theme, __) => Scaffold(
+        resizeToAvoidBottomInset: true,
+        backgroundColor: AppColorsNew.screenBackgroundColor,
+        appBar: CustomAppBar(
+          theme: theme,
+          context: context,
+          titleText: AppStringsNew.TableRecordTitle,
+          subTitleText: "Game code: ${widget.gameCode}",
+          showBackButton: widget.showBackButton,
+        ),
+        body: SingleChildScrollView(
+          physics: BouncingScrollPhysics(),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(context).size.height,
+            ),
+            child: Column(
+              children: [
+                // table result heading widget
+                Container(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 15.0.pw,
+                      vertical: 5.0.pw,
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            widget.showTips
+                                ? Text(
+                                    "Tips",
                                     style: TextStyle(
-                                      color: Color(0xff319ffe),
+                                      color: Colors.white,
                                       fontFamily: AppAssets.fontFamilyLato,
                                       fontSize: 12.0.dp,
                                       fontWeight: FontWeight.w400,
                                     ),
-                                  ),
-                                )
-                              : Container(),
-                        ],
-                      ),
-                    ],
+                                  )
+                                : Container(),
+
+                            // sep
+                            SizedBox(width: 10.0.pw),
+
+                            widget.showTips
+                                ? Text(
+                                    getTotalRake().toString(),
+                                    style: TextStyle(
+                                      color: Color(0xff1aff22),
+                                      fontFamily: AppAssets.fontFamilyLato,
+                                      fontSize: 12.0.dp,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  )
+                                : Container(),
+                          ],
+                        ),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            SizedBox(width: 20.0.pw),
+                            widget.showDownload
+                                ? InkWell(
+                                    onTap: () async {
+                                      downloadTable(widget.gameCode);
+                                    },
+                                    child: Text(
+                                      "Download",
+                                      style: TextStyle(
+                                        color: Color(0xff319ffe),
+                                        fontFamily: AppAssets.fontFamilyLato,
+                                        fontSize: 12.0.dp,
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                    ),
+                                  )
+                                : Container(),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
 
-              // table - graph row
-              Row(
-                children: [
-                  Expanded(
-                    child: CupertinoSegmentedControl<int>(
-                      unselectedColor: AppColorsNew.screenBackgroundColor,
-                      selectedColor: AppColorsNew.appAccentColor,
-                      children: tableWidgets,
-                      borderColor: AppColorsNew.appAccentColor,
-                      onValueChanged: (int val) {
-                        setState(() => _selectedTableWidget = val);
-                      },
-                      groupValue: _selectedTableWidget,
-                    ),
-                  )
-                ],
-              ),
+                // table - graph row
+                Row(
+                  children: [
+                    Expanded(
+                      child: CupertinoSegmentedControl<int>(
+                        unselectedColor: AppColorsNew.screenBackgroundColor,
+                        selectedColor: AppColorsNew.appAccentColor,
+                        children: tableWidgets,
+                        borderColor: AppColorsNew.appAccentColor,
+                        onValueChanged: (int val) {
+                          setState(() => _selectedTableWidget = val);
+                        },
+                        groupValue: _selectedTableWidget,
+                      ),
+                    )
+                  ],
+                ),
 
-              // main body
-              _buildMainView(_selectedTableWidget),
-            ],
+                // main body
+                _buildMainView(_selectedTableWidget),
+              ],
+            ),
           ),
         ),
       ),

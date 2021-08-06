@@ -6,10 +6,10 @@ import 'package:pokerapp/enums/game_stages.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/bookmarkedHands_model.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
-import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_log_header_view.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_stage_view.dart';
@@ -24,6 +24,7 @@ import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
 import 'package:pokerapp/widgets/round_color_button.dart';
+import 'package:provider/provider.dart';
 
 import '../../../routes.dart';
 
@@ -185,27 +186,27 @@ class _HandLogViewState extends State<HandLogView> with RouteAwareAnalytics {
       }
     }
 
-    return Container(
-      decoration: (widget.isBottomSheet ?? false)
-          ? AppStylesNew.bgCurvedGreenRadialGradient
-          : AppStylesNew.BgGreenRadialGradient,
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        appBar: CustomAppBar(
-          context: context,
-          titleText: AppStringsNew.HandlogTitle,
-          showBackButton: !(widget.isBottomSheet ?? false),
-        ),
-        body: this._isLoading == true
-            ? Center(
-                child: CircularProgressWidget(),
-              )
-            : SingleChildScrollView(
-                physics: BouncingScrollPhysics(),
-                child: Column(
-                  children: children,
+    return Consumer<AppTheme>(builder: (_,theme,__)=> Container(
+        decoration: theme.bgRadialGradient,
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          appBar: CustomAppBar(
+            theme: theme,
+            context: context,
+            titleText: AppStringsNew.HandlogTitle,
+            showBackButton: !(widget.isBottomSheet ?? false),
+          ),
+          body: this._isLoading == true
+              ? Center(
+                  child: CircularProgressWidget(),
+                )
+              : SingleChildScrollView(
+                  physics: BouncingScrollPhysics(),
+                  child: Column(
+                    children: children,
+                  ),
                 ),
-              ),
+        ),
       ),
     );
   }

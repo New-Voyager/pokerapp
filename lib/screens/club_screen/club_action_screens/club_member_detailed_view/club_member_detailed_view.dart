@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/club_members_model.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/app_icons.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
@@ -14,6 +15,7 @@ import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/club_interior_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
+import 'package:provider/provider.dart';
 
 class ClubMembersDetailsView extends StatefulWidget {
   final String clubCode;
@@ -72,176 +74,180 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: AppStylesNew.BgGreenRadialGradient,
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        appBar: CustomAppBar(
-          context: context,
-          titleText: "",
-        ),
-        body: !loadingDone
-            ? CircularProgressWidget()
-            : SingleChildScrollView(
-                child: Container(
-                  margin:
-                      EdgeInsets.only(left: 15, right: 15, top: 5, bottom: 5),
-                  child: Column(
-                    children: [
-                      //banner view
-                      Container(
-                        child: Column(
-                          children: [
-                            CircleAvatar(
-                              radius: 40,
-                              backgroundColor: Color(
-                                      (math.Random().nextDouble() * 0xFFFFFF)
-                                          .toInt())
-                                  .withOpacity(1.0),
-                              child: ClipOval(
+    return Consumer<AppTheme>(
+      builder: (_, theme, __) => Container(
+        decoration: AppStylesNew.BgGreenRadialGradient,
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          appBar: CustomAppBar(
+            theme: theme,
+            context: context,
+            titleText: "",
+          ),
+          body: !loadingDone
+              ? CircularProgressWidget()
+              : SingleChildScrollView(
+                  child: Container(
+                    margin:
+                        EdgeInsets.only(left: 15, right: 15, top: 5, bottom: 5),
+                    child: Column(
+                      children: [
+                        //banner view
+                        Container(
+                          child: Column(
+                            children: [
+                              CircleAvatar(
+                                radius: 40,
+                                backgroundColor: Color(
+                                        (math.Random().nextDouble() * 0xFFFFFF)
+                                            .toInt())
+                                    .withOpacity(1.0),
+                                child: ClipOval(
+                                  child: Icon(
+                                    AppIcons.user,
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                padding: EdgeInsets.all(5),
+                                child: Text(
+                                  _data.name,
+                                  style: AppStylesNew.clubTitleTextStyle,
+                                ),
+                              ),
+                              Container(
+                                padding: EdgeInsets.only(bottom: 5),
+                                child: Text(
+                                  AppStringsNew.lastActiveText +
+                                      _data.lastPlayedDate,
+                                  style: AppStylesNew.labelTextStyle,
+                                ),
+                              ),
+                              Container(
+                                padding: EdgeInsets.only(bottom: 5, top: 20),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    //message
+                                    IconAndTitleWidget(
+                                      icon: Icons.message,
+                                      text: "Message",
+                                      onTap: () {
+                                        Navigator.pushNamed(
+                                          context,
+                                          Routes.chatScreen,
+                                          arguments: {
+                                            'clubCode': widget.clubCode,
+                                            'player': widget.playerId,
+                                            'name': _data.name,
+                                          },
+                                        );
+                                      },
+                                    ),
+
+                                    //boot
+                                    IconAndTitleWidget(
+                                      icon: Icons.eject_rounded,
+                                      text: "Boot",
+                                      onTap: () {},
+                                    ),
+
+                                    //settle
+                                    // IconAndTitleWidget(
+                                    //   icon: Icons.message,
+                                    //   text: "Settle",
+                                    //   onTap: () {},
+                                    // ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Divider(
+                          color: AppColorsNew.listViewDividerColor,
+                        ),
+                        detailTile(),
+                        Divider(
+                          color: AppColorsNew.listViewDividerColor,
+                        ),
+                        // contact info
+                        Container(
+                          padding: EdgeInsets.all(5),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                flex: 1,
                                 child: Icon(
-                                  AppIcons.user,
+                                  Icons.phone,
+                                  color: AppColorsNew.newGreenButtonColor,
                                 ),
                               ),
-                            ),
-                            Container(
-                              padding: EdgeInsets.all(5),
-                              child: Text(
-                                _data.name,
-                                style: AppStylesNew.clubTitleTextStyle,
-                              ),
-                            ),
-                            Container(
-                              padding: EdgeInsets.only(bottom: 5),
-                              child: Text(
-                                AppStringsNew.lastActiveText +
-                                    _data.lastPlayedDate,
-                                style: AppStylesNew.labelTextStyle,
-                              ),
-                            ),
-                            Container(
-                              padding: EdgeInsets.only(bottom: 5, top: 20),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  //message
-                                  IconAndTitleWidget(
-                                    icon: Icons.message,
-                                    text: "Message",
-                                    onTap: () {
-                                      Navigator.pushNamed(
-                                        context,
-                                        Routes.chatScreen,
-                                        arguments: {
-                                          'clubCode': widget.clubCode,
-                                          'player': widget.playerId,
-                                          'name': _data.name,
-                                        },
-                                      );
-                                    },
+                              Expanded(
+                                flex: 8,
+                                child: Padding(
+                                  padding: EdgeInsets.only(left: 5),
+                                  child: CupertinoTextField(
+                                    controller: _contactEditingController,
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 12.dp,
+                                    ),
+                                    decoration: BoxDecoration(
+                                        color: Colors.transparent),
                                   ),
-
-                                  //boot
-                                  IconAndTitleWidget(
-                                    icon: Icons.eject_rounded,
-                                    text: "Boot",
-                                    onTap: () {},
-                                  ),
-
-                                  //settle
-                                  // IconAndTitleWidget(
-                                  //   icon: Icons.message,
-                                  //   text: "Settle",
-                                  //   onTap: () {},
-                                  // ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Divider(
-                        color: AppColorsNew.listViewDividerColor,
-                      ),
-                      detailTile(),
-                      Divider(
-                        color: AppColorsNew.listViewDividerColor,
-                      ),
-                      // contact info
-                      Container(
-                        padding: EdgeInsets.all(5),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              flex: 1,
-                              child: Icon(
-                                Icons.phone,
-                                color: AppColorsNew.newGreenButtonColor,
-                              ),
-                            ),
-                            Expanded(
-                              flex: 8,
-                              child: Padding(
-                                padding: EdgeInsets.only(left: 5),
-                                child: CupertinoTextField(
-                                  controller: _contactEditingController,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 12.dp,
-                                  ),
-                                  decoration:
-                                      BoxDecoration(color: Colors.transparent),
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                      Divider(
-                        color: AppColorsNew.listViewDividerColor,
-                      ),
-                      // notes view
-                      Container(
-                        padding: EdgeInsets.all(5),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Expanded(
-                              flex: 1,
-                              child: Icon(
-                                Icons.note,
-                                color: AppColorsNew.newGreenButtonColor,
-                              ),
-                            ),
-                            Expanded(
-                              flex: 8,
-                              child: Padding(
-                                padding: EdgeInsets.only(left: 5),
-                                child: CupertinoTextField(
-                                  textAlignVertical: TextAlignVertical.center,
-                                  controller: _notesEditingController,
-                                  placeholder: 'insert notes here',
-                                  placeholderStyle: AppStylesNew.labelTextStyle,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 14.dp,
-                                  ),
-                                  decoration:
-                                      BoxDecoration(color: Colors.transparent),
+                        Divider(
+                          color: AppColorsNew.listViewDividerColor,
+                        ),
+                        // notes view
+                        Container(
+                          padding: EdgeInsets.all(5),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Expanded(
+                                flex: 1,
+                                child: Icon(
+                                  Icons.note,
+                                  color: AppColorsNew.newGreenButtonColor,
                                 ),
                               ),
-                            ),
-                          ],
+                              Expanded(
+                                flex: 8,
+                                child: Padding(
+                                  padding: EdgeInsets.only(left: 5),
+                                  child: CupertinoTextField(
+                                    textAlignVertical: TextAlignVertical.center,
+                                    controller: _notesEditingController,
+                                    placeholder: 'insert notes here',
+                                    placeholderStyle:
+                                        AppStylesNew.labelTextStyle,
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 14.dp,
+                                    ),
+                                    decoration: BoxDecoration(
+                                        color: Colors.transparent),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
-              ),
+        ),
       ),
     );
   }

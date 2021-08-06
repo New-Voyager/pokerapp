@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:pokerapp/models/game_history_model.dart';
 import 'package:pokerapp/models/hand_history_model.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
@@ -18,6 +19,7 @@ import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/widgets/round_color_button.dart';
+import 'package:provider/provider.dart';
 
 import '../../../main.dart';
 import 'hands_chart_view.dart';
@@ -62,11 +64,12 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return Consumer<AppTheme>(builder: (_,theme,__)=>Container(
       decoration: AppStylesNew.BgGreenRadialGradient,
       child: Scaffold(
         backgroundColor: Colors.transparent,
         appBar: CustomAppBar(
+          theme:theme,
           context: context,
           titleText: AppStringsNew.GameDetailsTitle,
           subTitleText: "Game code: ${_gameDetail.gameCode}",
@@ -150,7 +153,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
                 ),
               ),
       ),
-    );
+    ));
   }
 
   Widget listTile() {

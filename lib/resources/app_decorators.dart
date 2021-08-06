@@ -95,15 +95,15 @@ class AppDecorators {
         ]);
   }
 
-  static TextStyle getLabelTextStyle({AppTheme theme}) {
-    return TextStyle(
-      color: theme.secondaryColor.withAlpha(100),
-      fontSize: 10.dp,
-      fontWeight: FontWeight.w300,
-    );
-  }
+  // static TextStyle getLabelTextStyle({@required AppTheme theme}) {
+  //   return TextStyle(
+  //     color: theme.secondaryColor.withAlpha(100),
+  //     fontSize: 10.dp,
+  //     fontWeight: FontWeight.w300,
+  //   );
+  // }
 
-  static BoxDecoration getGameItemDecoration({AppTheme theme}) {
+  static BoxDecoration getGameItemDecoration({@required AppTheme theme}) {
     return BoxDecoration(
       border: Border.all(
         color: theme.secondaryColorWithDark(0.3),

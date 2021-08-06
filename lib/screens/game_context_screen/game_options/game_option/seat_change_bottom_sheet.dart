@@ -4,14 +4,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/seat_change_model.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
-import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/widgets/switch_widget.dart';
+import 'package:provider/provider.dart';
 
 class SeatChangeBottomSheet extends StatefulWidget {
   final String gameCode;
@@ -65,21 +66,23 @@ class _SeatChangeBottomSheetState extends State<SeatChangeBottomSheet> {
     width = MediaQuery.of(context).size.width;
     // print("playerUuid ${widget.playerUuid}");
     // print("gameCode ${widget.gameCode}");
-    return Container(
-      decoration: AppStylesNew.BgGreenRadialGradient,
-      height: height / 2,
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        appBar: CustomAppBar(
-          context: context,
-          titleText: AppStringsNew.seatChangeTitle,
-        ),
-        body: Column(
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            isPlaying ? seatChangeButton() : Container(),
-            playersInList()
-          ],
+    return Consumer<AppTheme>(builder: (_,theme,__)=> Container(
+        decoration: AppStylesNew.BgGreenRadialGradient,
+        height: height / 2,
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          appBar: CustomAppBar(
+            theme:theme,
+            context: context,
+            titleText: AppStringsNew.seatChangeTitle,
+          ),
+          body: Column(
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              isPlaying ? seatChangeButton() : Container(),
+              playersInList()
+            ],
+          ),
         ),
       ),
     );
