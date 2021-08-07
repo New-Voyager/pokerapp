@@ -1,0 +1,19 @@
+{
+    "liveGames": {
+        "EMPTY_GAMECODE_ERROR": "GameCode can't be empty",
+        "LOADING_GAMES": "Getting games..",
+        "NO_GAMES": "No Live Games",
+        "LIVE_GAMES_TITLE": "Live Games",
+        "JOIN_GAME": "JOIN",
+        "VIEW_GAME": "VIEW",
+        "GAME_RECORD": "Game Record"
+    },
+    "registration": {
+        "SUBTITLE": "Play poker with friends",
+        "REQUIRED": "Required",
+        "OPTIONAL": "Optional",
+        "SCREEN_NAME": "Screen Name",
+        "YOUR_NAME": "Your Name",
+        "RECOVERY_EMAIL": "Recovery Email"
+    }
+}
