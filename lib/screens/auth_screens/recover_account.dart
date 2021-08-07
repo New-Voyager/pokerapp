@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_udid/flutter_udid.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/models/auth_model.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_config.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
@@ -31,13 +32,13 @@ class _RestoreAccountScreenState extends State<RestoreAccountScreen> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController _codeCtrl = TextEditingController();
   TextEditingController _emailCtrl = TextEditingController();
-
+  AppTextScreen _appScreenText;
   bool _restoreVisible = false;
 
   @override
   Widget build(BuildContext context) {
     final appTheme = AppTheme.getTheme(context);
-
+    _appScreenText = getAppTextScreen("registration");
     return Container(
       decoration: appTheme.bgRadialGradient,
       child: SafeArea(
@@ -50,7 +51,7 @@ class _RestoreAccountScreenState extends State<RestoreAccountScreen> {
               children: [
                 AppDimensionsNew.getVerticalSizedBox(16.pw),
                 // Logo section
-                AppNameAndLogoWidget(appTheme),
+                AppNameAndLogoWidget(appTheme, _appScreenText),
 
                 // restore existing account text
                 Container(

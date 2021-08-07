@@ -140,6 +140,7 @@ flutter:
     - assets/images/club/
     - assets/images/livegames/
     - assets/images/card_face/
+    - assets/language/
 
   fonts:
     - family: Lato
