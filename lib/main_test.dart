@@ -32,7 +32,7 @@ void main() async {
 
   runApp(
     GraphQLProvider(
-      client: graphQLConfiguration.client,
+      //client: graphQLConfiguration.client,
       child: CacheProvider(
         child: testFlavorApp,
       ),

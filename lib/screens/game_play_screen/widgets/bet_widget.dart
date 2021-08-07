@@ -130,11 +130,11 @@ class BetWidget extends StatelessWidget {
   Widget _buildBetButton(final bool isLargerDisplay, vnBetAmount) {
     final vnAlignment = ValueNotifier<Alignment>(Alignment.bottomCenter);
 
-    const colorizeColors = [
-      Colors.purple,
-      Colors.blue,
-      Colors.yellow,
-      Colors.red,
+    final colorizeColors = [
+      Colors.green,
+      Colors.green[400],
+      Colors.green[200],
+      Colors.green[100],
     ];
 
     final colorizeTextStyle = TextStyle(
@@ -150,11 +150,11 @@ class BetWidget extends StatelessWidget {
         alignment: Alignment.center,
         children: [
           // bet coin
-          SvgPicture.string(
+          Transform.scale(scale: 1.5, child: SvgPicture.string(
             _getBetChipSvg(),
             height: s,
             width: s,
-          ),
+          )),
 
           // bet text
           IgnorePointer(
@@ -209,8 +209,8 @@ class BetWidget extends StatelessWidget {
             ),
           ),
         ),
-
         /* bet amount */
+        Transform.translate(offset: Offset(0, 10.dp), child:
         ValueListenableBuilder<double>(
           valueListenable: vnBetAmount,
           builder: (_, double betAmount, __) => Text(
@@ -220,7 +220,8 @@ class BetWidget extends StatelessWidget {
               color: Colors.white,
             ),
           ),
-        ),
+        )),
+
       ],
     );
   }

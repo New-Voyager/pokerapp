@@ -33,10 +33,13 @@ void main() async {
     apiBaseUrl: 'https://dev.pokerapp.club',
     child: MyApp(),
   );
-
+  await AppConfig.init(devFlavorApp.apiBaseUrl);
+  String apiUrl = AppConfig.apiUrl;
+  log('$apiUrl');
+  await graphQLConfiguration.init();
   runApp(
     GraphQLProvider(
-      client: graphQLConfiguration.client,
+      client: graphQLConfiguration.client(),
       child: CacheProvider(
         child: devFlavorApp,
       ),

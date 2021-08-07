@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:pokerapp/resources/app_apis.dart';
 import 'package:pokerapp/resources/app_config.dart';
 
 class GraphQLConfiguration {
@@ -12,28 +11,35 @@ class GraphQLConfiguration {
     print(apiURL);
   }
 
-  static HttpLink httpLink = HttpLink(
-    uri: AppApis.graphQLBaseUrl,
-  );
+  HttpLink httpLink() {
+    return HttpLink(uri: apiURL);
+  }
 
-  static AuthLink authLink = AuthLink(
-    getToken: () async => 'jwt ${AppConfig.jwt}',
-  );
+  AuthLink authLink() {
+    return AuthLink(getToken: () async {
+      return 'jwt ${AppConfig.jwt}';
+    });
+  }
 
-  final ValueNotifier<GraphQLClient> client = ValueNotifier(
-    GraphQLClient(
-      link: authLink.concat(httpLink),
-      cache: OptimisticCache(dataIdFromObject: typenameDataIdFromObject),
-    ),
-  );
+  // final ValueNotifier<GraphQLClient> client = ValueNotifier(
+  //   GraphQLClient(
+  //     link: authLink.concat(httpLink),
+  //     cache: OptimisticCache(dataIdFromObject: typenameDataIdFromObject),
+  //   ),
+  // );
+
+  ValueNotifier<GraphQLClient> client() {
+    return ValueNotifier(
+      GraphQLClient(
+        link: authLink().concat(httpLink()),
+        cache: OptimisticCache(dataIdFromObject: typenameDataIdFromObject),
+      ),
+    );
+  }
 
   GraphQLClient clientToQuery({bool noAuthLink = false}) {
-    final HttpLink hl = HttpLink(
-      uri: apiURL,
-    );
-
     return GraphQLClient(
-      link: noAuthLink ? hl : authLink.concat(hl),
+      link: authLink().concat(httpLink()),
       cache: OptimisticCache(dataIdFromObject: typenameDataIdFromObject),
     );
   }
