@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_stages.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
@@ -78,6 +79,7 @@ class HandStageView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     GameActions actions = _getActions(stageEnum);
+    final theme = AppTheme.getTheme(context);
     // String stageName = _getStageName(stageEnum);
     List<int> stageCards = _getStageCardsList(stageEnum);
 

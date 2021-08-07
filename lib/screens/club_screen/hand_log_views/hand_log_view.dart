@@ -8,7 +8,6 @@ import 'package:pokerapp/models/bookmarkedHands_model.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
-import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
@@ -25,7 +24,6 @@ import 'package:pokerapp/services/test/test_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
 import 'package:pokerapp/widgets/round_color_button.dart';
-import 'package:provider/provider.dart';
 
 import '../../../routes.dart';
 
@@ -162,6 +160,7 @@ class _HandLogViewState extends State<HandLogView> with RouteAwareAnalytics {
     // if (widget.isAppbarWithHandNumber && widget.handNum != -1) {
     //   title = "Hand Log #" + widget.handNum.toString();
     // }
+    final AppTheme theme = AppTheme.getTheme(context);
     List<Widget> children = [];
     if (!this._isLoading) {
       if (_handLogModel == null) {
@@ -174,7 +173,7 @@ class _HandLogViewState extends State<HandLogView> with RouteAwareAnalytics {
         ];
       } else {
         if (_handLogModel.authorized) {
-          children = getHandLog();
+          children = getHandLog(theme);
         } else {
           children = [
             Center(
@@ -187,33 +186,31 @@ class _HandLogViewState extends State<HandLogView> with RouteAwareAnalytics {
       }
     }
 
-    return Consumer<AppTheme>(
-      builder: (_, theme, __) => Container(
-        decoration: AppDecorators.bgRadialGradient(theme),
-        child: Scaffold(
-          backgroundColor: Colors.transparent,
-          appBar: CustomAppBar(
-            theme: theme,
-            context: context,
-            titleText: AppStringsNew.HandlogTitle,
-            showBackButton: !(widget.isBottomSheet ?? false),
-          ),
-          body: this._isLoading == true
-              ? Center(
-                  child: CircularProgressWidget(),
-                )
-              : SingleChildScrollView(
-                  physics: BouncingScrollPhysics(),
-                  child: Column(
-                    children: children,
-                  ),
-                ),
+    return Container(
+      decoration: AppDecorators.bgRadialGradient(theme),
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: CustomAppBar(
+          theme: theme,
+          context: context,
+          titleText: AppStringsNew.HandlogTitle,
+          showBackButton: !(widget.isBottomSheet ?? false),
         ),
+        body: this._isLoading == true
+            ? Center(
+                child: CircularProgressWidget(),
+              )
+            : SingleChildScrollView(
+                physics: BouncingScrollPhysics(),
+                child: Column(
+                  children: children,
+                ),
+              ),
       ),
     );
   }
 
-  List<Widget> getHandLog() {
+  List<Widget> getHandLog(AppTheme theme) {
     return [
       // main top header
       Container(
@@ -224,9 +221,18 @@ class _HandLogViewState extends State<HandLogView> with RouteAwareAnalytics {
           children: [
             // replay, share, bookmark buttons
             RoundIconButton(
-                onTap: () => _sendHand(), icon: Icons.developer_board),
+              onTap: () => _sendHand(theme),
+              icon: Icons.developer_board,
+              bgColor: theme.accentColor,
+              iconColor: theme.primaryColorWithDark(),
+            ),
             AppDimensionsNew.getHorizontalSpace(8),
-            RoundIconButton(onTap: () => _replayHand(), icon: Icons.replay),
+            RoundIconButton(
+              onTap: () => _replayHand(),
+              icon: Icons.replay,
+              bgColor: theme.accentColor,
+              iconColor: theme.primaryColorWithDark(),
+            ),
             AppDimensionsNew.getHorizontalSpace(8),
             RoundIconButton(
               onTap: () async {
@@ -249,6 +255,8 @@ class _HandLogViewState extends State<HandLogView> with RouteAwareAnalytics {
               icon: _isTheHandBookmarked(_handLogModel.hand.handNum)
                   ? Icons.star
                   : Icons.star_outline,
+              bgColor: theme.accentColor,
+              iconColor: theme.primaryColorWithDark(),
             ),
             AppDimensionsNew.getHorizontalSpace(8),
             Visibility(
@@ -272,6 +280,8 @@ class _HandLogViewState extends State<HandLogView> with RouteAwareAnalytics {
                   );
                 },
                 icon: Icons.share,
+                bgColor: theme.accentColor,
+                iconColor: theme.primaryColorWithDark(),
               ),
             ),
           ],
@@ -307,16 +317,16 @@ class _HandLogViewState extends State<HandLogView> with RouteAwareAnalytics {
     ];
   }
 
-  _sendHand() async {
+  _sendHand(AppTheme theme) async {
     final res = await showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: AppColorsNew.newDialogBgColor,
+        backgroundColor: theme.fillInColor,
         elevation: 5,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
           side: BorderSide(
-            color: AppColorsNew.newBorderColor,
+            color: theme.secondaryColor,
           ),
         ),
         buttonPadding: EdgeInsets.all(16),
@@ -333,16 +343,16 @@ class _HandLogViewState extends State<HandLogView> with RouteAwareAnalytics {
           RoundedColorButton(
             text: AppStringsNew.cancelButtonText,
             backgroundColor: Colors.transparent,
-            textColor: AppColorsNew.newGreenButtonColor,
-            borderColor: AppColorsNew.newGreenButtonColor,
+            textColor: theme.supportingColor,
+            borderColor: theme.accentColor,
             onTapFunction: () {
               Navigator.of(context).pop();
             },
           ),
           RoundedColorButton(
             text: AppStringsNew.sendButtonText,
-            backgroundColor: AppColorsNew.yellowAccentColor,
-            textColor: AppColorsNew.darkGreenShadeColor,
+            backgroundColor: theme.accentColor,
+            textColor: theme.primaryColorWithDark(),
             onTapFunction: () {
               Navigator.of(context).pop(true);
             },

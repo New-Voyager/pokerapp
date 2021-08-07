@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_stages.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_assets.dart';
-import 'package:pokerapp/resources/new/app_colors_new.dart';
-import 'package:pokerapp/resources/new/app_styles_new.dart';
+import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/widgets/cards/multiple_stack_card_views.dart';
 
@@ -17,17 +17,14 @@ class HandWinnersView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = AppTheme.getTheme(context);
     _getPotWinnersList(handLogModel);
 
     if (potWinnersList == null || potWinnersList.length == 0) {
       return Center(
         child: Text(
           "No winner details found",
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 14.0,
-            fontWeight: FontWeight.w400,
-          ),
+          style: AppDecorators.getSubtitle2Style(theme: theme),
         ),
       );
     } else {
@@ -69,7 +66,7 @@ class HandWinnersView extends StatelessWidget {
                 potStr = "Main Pot:";
               }
               return Container(
-                decoration: AppStylesNew.actionRowDecoration,
+                decoration: AppDecorators.tileDecoration(theme),
                 padding: EdgeInsets.only(bottom: 16, top: 8, left: 4),
                 child: Column(
                   children: [
@@ -78,7 +75,7 @@ class HandWinnersView extends StatelessWidget {
                       alignment: Alignment.centerRight,
                       child: Text(
                         "$potStr " + potWinnersList[index].amount.toString(),
-                        style: AppStylesNew.stageNameTextStyle,
+                        style: AppDecorators.getHeadLine4Style(theme: theme),
                       ),
                     ),
                     Container(
@@ -86,15 +83,11 @@ class HandWinnersView extends StatelessWidget {
                       alignment: Alignment.centerLeft,
                       child: Text(
                         winnersTitle,
-                        style: const TextStyle(
-                          color: AppColorsNew.newTextGreenColor,
-                          fontSize: 14.0,
-                          fontWeight: FontWeight.w300,
-                        ),
+                        style: AppDecorators.getSubtitle3Style(theme: theme),
                       ),
                     ),
                     Divider(
-                      color: AppColorsNew.veryLightGrayColor,
+                      color: theme.fillInColor,
                       endIndent: 200,
                       indent: 8,
                     ),
@@ -121,7 +114,8 @@ class HandWinnersView extends StatelessWidget {
                                           seatNo: potWinnersList[index]
                                               .hiWinners[winnerIndex]
                                               .seatNo),
-                                      style: AppStylesNew.playerNameTextStyle,
+                                      style: AppDecorators.getHeadLine4Style(
+                                          theme: theme),
                                       textAlign: TextAlign.left,
                                     ),
                                   ),
@@ -151,9 +145,9 @@ class HandWinnersView extends StatelessWidget {
                                                   bottom: 4, top: 8),
                                               child: Text(
                                                 "Community Cards",
-                                                style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 12),
+                                                style: AppDecorators
+                                                    .getSubtitle3Style(
+                                                        theme: theme),
                                               ),
                                             ),
                                             StackCardView01(
@@ -224,16 +218,12 @@ class HandWinnersView extends StatelessWidget {
                           children: [
                             Text(
                               "Lo-Winners",
-                              style: const TextStyle(
-                                fontFamily: AppAssets.fontFamilyLato,
-                                color: Colors.green,
-                                fontSize: 14.0,
-                                fontWeight: FontWeight.w400,
-                              ),
+                              style:
+                                  AppDecorators.getSubtitle3Style(theme: theme),
                               textAlign: TextAlign.left,
                             ),
                             Divider(
-                              color: AppColorsNew.veryLightGrayColor,
+                              color: theme.fillInColor,
                               endIndent: 50,
                             ),
                             Container(
@@ -261,13 +251,9 @@ class HandWinnersView extends StatelessWidget {
                                                     .lowWinners[winnerIndex]
                                                     .seatNo,
                                               ),
-                                              style: const TextStyle(
-                                                fontFamily:
-                                                    AppAssets.fontFamilyLato,
-                                                color: Colors.white,
-                                                fontSize: 14.0,
-                                                fontWeight: FontWeight.w400,
-                                              ),
+                                              style: AppDecorators
+                                                  .getHeadLine4Style(
+                                                      theme: theme),
                                               textAlign: TextAlign.left,
                                             ),
                                           ),
@@ -315,11 +301,9 @@ class HandWinnersView extends StatelessWidget {
                                                           bottom: 4, top: 8),
                                                       child: Text(
                                                         "Community Cards",
-                                                        style: TextStyle(
-                                                            fontFamily: AppAssets
-                                                                .fontFamilyLato,
-                                                            color: Colors.white,
-                                                            fontSize: 12),
+                                                        style: AppDecorators
+                                                            .getSubtitle3Style(
+                                                                theme: theme),
                                                       ),
                                                     ),
 
