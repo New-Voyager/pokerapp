@@ -171,62 +171,60 @@ class BetWidget extends StatelessWidget {
 </svg>""";
   }
 
-  Widget _buildBetButton(final bool isLargerDisplay) {
+  Widget _buildBetButton(final bool isLargerDisplay, vnBetAmount) {
     final vnAlignment = ValueNotifier<Alignment>(Alignment.bottomCenter);
 
-    return Consumer<ValueNotifier<double>>(
-      builder: (_, vnBetAmount, child) {
-        final double s = 40.0.dp;
+    final double s = 40.0.dp;
+    final Widget betChipWidget = SvgPicture.string(
+      _getBetChipSvg(),
+      height: s,
+      width: s,
+    );
 
-        final Widget betChipWidget = SvgPicture.string(
-          _getBetChipSvg(),
-          height: s,
-          width: s,
-        );
-
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            /* drag bet button */
-            GestureDetector(
-              // confirm bet ON TAP
-              onTap: () {
-                onSubmitCallBack?.call(vnBetAmount.value);
-              },
-              // confirm bet ON SLIDE UP
-              onPanUpdate: (details) {
-                if (details.delta.dy < 0) {
-                  vnAlignment.value = Alignment.topCenter;
-                }
-              },
-              child: Container(
-                height: 2 * s,
-                child: ValueListenableBuilder<Alignment>(
-                  valueListenable: vnAlignment,
-                  builder: (_, alignment, __) => AnimatedAlign(
-                    onEnd: () {
-                      // we finally bet
-                      onSubmitCallBack?.call(vnBetAmount.value);
-                    },
-                    duration: AppConstants.fastestAnimationDuration,
-                    alignment: alignment,
-                    child: betChipWidget,
-                  ),
-                ),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        /* drag bet button */
+        GestureDetector(
+          // confirm bet ON TAP
+          onTap: () {
+            onSubmitCallBack?.call(vnBetAmount.value);
+          },
+          // confirm bet ON SLIDE UP
+          onPanUpdate: (details) {
+            if (details.delta.dy < 0) {
+              vnAlignment.value = Alignment.topCenter;
+            }
+          },
+          child: Container(
+            height: 2 * s,
+            child: ValueListenableBuilder<Alignment>(
+              valueListenable: vnAlignment,
+              builder: (_, alignment, __) => AnimatedAlign(
+                onEnd: () {
+                  // we finally bet
+                  onSubmitCallBack?.call(vnBetAmount.value);
+                },
+                duration: AppConstants.fastestAnimationDuration,
+                alignment: alignment,
+                child: betChipWidget,
               ),
             ),
+          ),
+        ),
 
-            /* bet amount */
-            Text(
-              DataFormatter.chipsFormat(vnBetAmount.value.roundToDouble()),
-              style: TextStyle(
-                fontSize: 12.dp,
-                color: Colors.white,
-              ),
+        /* bet amount */
+        ValueListenableBuilder<double>(
+          valueListenable: vnBetAmount,
+          builder: (_, double betAmount, __) => Text(
+            DataFormatter.chipsFormat(betAmount.roundToDouble()),
+            style: TextStyle(
+              fontSize: 12.dp,
+              color: Colors.white,
             ),
-          ],
-        );
-      },
+          ),
+        ),
+      ],
     );
   }
 
@@ -275,7 +273,7 @@ class BetWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             /* bet button */
-            _buildBetButton(isLargerDisplay),
+            _buildBetButton(isLargerDisplay, valueNotifierVal),
 
             /* progress drag to bet */
             _buildBetSeekBar(width, appTheme),
