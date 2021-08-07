@@ -31,12 +31,13 @@ class _ClubMembersState extends State<ClubMembers> with RouteAwareAnalytics {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<AppTheme>(builder: (_,theme,__)=> Container(
+    return Consumer<AppTheme>(
+      builder: (_, theme, __) => Container(
         decoration: AppStylesNew.BgGreenRadialGradient,
         child: Scaffold(
           backgroundColor: Colors.transparent,
           appBar: CustomAppBar(
-            theme:theme,
+            theme: theme,
             context: context,
             titleText: "Messages",
           ),
@@ -61,7 +62,8 @@ class _ClubMembersState extends State<ClubMembers> with RouteAwareAnalytics {
             ),
           ),
           body: FutureBuilder<List<HostMessageSummaryModel>>(
-              future: ClubsService.hostMessageSummary(clubCode: widget.clubCode),
+              future:
+                  ClubsService.hostMessageSummary(clubCode: widget.clubCode),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
                   return Center(
@@ -87,7 +89,8 @@ class _ClubMembersState extends State<ClubMembers> with RouteAwareAnalytics {
                         });
                       },
                       child: Container(
-                        margin: EdgeInsets.symmetric(horizontal: 16, vertical: 5),
+                        margin:
+                            EdgeInsets.symmetric(horizontal: 16, vertical: 5),
                         padding: EdgeInsets.only(
                           top: 8,
                           right: 8,
@@ -112,12 +115,14 @@ class _ClubMembersState extends State<ClubMembers> with RouteAwareAnalytics {
                                     snapshot.data[index].memberName[0]
                                         .toUpperCase(),
                                   ),
-                                  backgroundColor: AppColorsNew.newDialogBgColor,
+                                  backgroundColor:
+                                      AppColorsNew.newDialogBgColor,
                                 ),
                                 AppDimensionsNew.getHorizontalSpace(8),
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Row(
                                         children: [

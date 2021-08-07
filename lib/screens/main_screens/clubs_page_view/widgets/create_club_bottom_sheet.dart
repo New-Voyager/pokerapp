@@ -32,8 +32,8 @@ class _CreateClubBottomSheetState extends State<CreateClubBottomSheet> {
     final separator5 = SizedBox(height: 10.0);
 
     return Consumer<AppTheme>(
-         builder: (_, theme, __) => Container(
-            decoration: AppDecorators.bgRadialGradient(theme),
+      builder: (_, theme, __) => Container(
+          decoration: AppDecorators.bgRadialGradient(theme),
           height: MediaQuery.of(context).size.height - 200,
           /*  padding: EdgeInsets.only(
            // bottom: MediaQuery.of(context).viewInsets.bottom,

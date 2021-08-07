@@ -277,7 +277,7 @@ class AppStringsNew {
 
   static String noClubsText = "No Clubs";
 
-  static String createGameText='+ Create Game';
+  static String createGameText = '+ Create Game';
 
   static String handHistoryTitle = "Hand History";
 }

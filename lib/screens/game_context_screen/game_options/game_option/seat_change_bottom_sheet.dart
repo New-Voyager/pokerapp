@@ -66,13 +66,14 @@ class _SeatChangeBottomSheetState extends State<SeatChangeBottomSheet> {
     width = MediaQuery.of(context).size.width;
     // print("playerUuid ${widget.playerUuid}");
     // print("gameCode ${widget.gameCode}");
-    return Consumer<AppTheme>(builder: (_,theme,__)=> Container(
+    return Consumer<AppTheme>(
+      builder: (_, theme, __) => Container(
         decoration: AppStylesNew.BgGreenRadialGradient,
         height: height / 2,
         child: Scaffold(
           backgroundColor: Colors.transparent,
           appBar: CustomAppBar(
-            theme:theme,
+            theme: theme,
             context: context,
             titleText: AppStringsNew.seatChangeTitle,
           ),

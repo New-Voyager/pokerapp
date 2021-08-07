@@ -223,7 +223,7 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
               onPressed: () => onBugIconPress(appTheme),
             ),
             body: SingleChildScrollView(
-              child: Column(                    
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   AppDimensionsNew.getVerticalSizedBox(16.pw),
@@ -316,7 +316,8 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
                           // sep
                           AppDimensionsNew.getVerticalSizedBox(16),
 
-                          _buildTermsAndPrivacyText(appTheme), // Terms and privacy text
+                          _buildTermsAndPrivacyText(
+                              appTheme), // Terms and privacy text
 
                           RoundedColorButton(
                             backgroundColor: appTheme.accentColor,

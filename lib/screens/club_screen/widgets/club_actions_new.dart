@@ -78,7 +78,10 @@ class ClubActionsNew extends StatelessWidget {
       this._clubHomePageModel,
       ClubActions.MESSAGE_HOST,
       "Message Host",
-      SvgPicture.asset("assets/images/club/message_host.svg",color: theme.accentColor,),
+      SvgPicture.asset(
+        "assets/images/club/message_host.svg",
+        color: theme.accentColor,
+      ),
       badgeContent: badgeContent,
     );
   }
@@ -118,7 +121,10 @@ class ClubActionsNew extends StatelessWidget {
                   this._clubHomePageModel,
                   ClubActions.BOOKMARKED_HANDS,
                   "Bookmarked Hands",
-                  SvgPicture.asset("assets/images/club/bookmarks.svg",color: theme.accentColor,),
+                  SvgPicture.asset(
+                    "assets/images/club/bookmarks.svg",
+                    color: theme.accentColor,
+                  ),
                 ),
               ),
               Expanded(
@@ -127,7 +133,10 @@ class ClubActionsNew extends StatelessWidget {
                   this._clubHomePageModel,
                   ClubActions.ANALYSIS,
                   "Analysis",
-                  SvgPicture.asset("assets/images/club/analysis.svg",color: theme.accentColor,),
+                  SvgPicture.asset(
+                    "assets/images/club/analysis.svg",
+                    color: theme.accentColor,
+                  ),
                 ),
               ),
               Expanded(
@@ -136,7 +145,10 @@ class ClubActionsNew extends StatelessWidget {
                   this._clubHomePageModel,
                   ClubActions.ANNOUNCEMETS,
                   "Announcements",
-                  SvgPicture.asset("assets/images/club/announcements.svg",color: theme.accentColor,),
+                  SvgPicture.asset(
+                    "assets/images/club/announcements.svg",
+                    color: theme.accentColor,
+                  ),
                 ),
               ),
             ],
@@ -189,7 +201,10 @@ class ClubActionsNew extends StatelessWidget {
                     this._clubHomePageModel,
                     ClubActions.BOTSCRIPTS,
                     "BOT Scripts",
-                    SvgPicture.asset("assets/images/club/rewards.svg",color: theme.accentColor,),
+                    SvgPicture.asset(
+                      "assets/images/club/rewards.svg",
+                      color: theme.accentColor,
+                    ),
                   ),
                 ),
               ],

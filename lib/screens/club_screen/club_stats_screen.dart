@@ -48,7 +48,8 @@ class _ClubStatsScreenState extends State<ClubStatsScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Consumer(builder: (_,theme,__)=> Container(
+    return Consumer(
+      builder: (_, theme, __) => Container(
         decoration: AppStylesNew.BgGreenRadialGradient,
         child: Scaffold(
           backgroundColor: Colors.transparent,
