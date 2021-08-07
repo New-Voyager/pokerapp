@@ -212,164 +212,161 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer(
-      builder: (_, appTheme, __) => Container(
-        decoration: appTheme.bgRadialGradient,
-        child: SafeArea(
-          child: Scaffold(
-            backgroundColor: Colors.transparent,
-            resizeToAvoidBottomInset: true,
-            floatingActionButton: IconButton(
-              icon: Icon(
-                Icons.bug_report,
-                size: 32,
-                color: appTheme.supportingColorWithDark(0.50),
-              ),
-              onPressed: () => onBugIconPress(appTheme),
+    return Container(
+      decoration: AppDecorators.bgRadialGradient(_appTheme),
+      child: SafeArea(
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          resizeToAvoidBottomInset: true,
+          floatingActionButton: IconButton(
+            icon: Icon(
+              Icons.bug_report,
+              size: 32,
+              color: _appTheme.supportingColorWithDark(0.50),
             ),
-            body: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  AppDimensionsNew.getVerticalSizedBox(16.pw),
-                  // Logo section
-                  AppNameAndLogoWidget(appTheme),
+            onPressed: () => onBugIconPress(_appTheme),
+          ),
+          body: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                AppDimensionsNew.getVerticalSizedBox(16.pw),
+                // Logo section
+                AppNameAndLogoWidget(_appTheme, _appScreenText),
 
-                  // Form
-                  Container(
-                    margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    child: Form(
-                      key: _formKey,
-                      child: Column(
-                        children: [
-                          // screen name
-                          _buildTextFormField(
-                            labelText: _appScreenText.getText('SCREEN_NAME'),
-                            keyboardType: TextInputType.name,
-                            controller: _screenNameCtrl,
-                            validator: (value) {
-                              if (value.isEmpty) {
-                                return AppStringsNew.screenNameEmptyErrorText;
-                              }
-                              if (value.length > 20) {
-                                return AppStringsNew.screenNameLengthErrorText;
-                              }
-                              return null;
-                            },
-                            hintText: _appScreenText.getText('REQUIRED'),
-                            onInfoIconPress: () {
-                              toast(
-                                AppStringsNew.screenNameHintToast,
-                                duration: Duration(seconds: 3),
-                              );
-                            },
-                          ),
-
-                          // sep
-                          AppDimensionsNew.getVerticalSizedBox(16),
-
-                          // name
-                          _buildTextFormField(
-                            labelText: _appScreenText.getText('YOUR_NAME'),
-                            keyboardType: TextInputType.name,
-                            controller: _nameCtrl,
-                            validator: (value) {
-                              if (value.length > 30) {
-                                return AppStringsNew.displayNameLengthErrorText;
-                              }
-                              return null;
-                            },
-                            hintText: _appScreenText.getText('OPTIONAL'),
-                            onInfoIconPress: () {
-                              toast(
-                                AppStringsNew.displayNameHintToast,
-                                duration: Duration(seconds: 4),
-                              );
-                            },
-                          ),
-
-                          // sep
-                          AppDimensionsNew.getVerticalSizedBox(16),
-
-                          // Recover Email
-                          _buildTextFormField(
-                            labelText: _appScreenText.getText('RECOVERY_EMAIL'),
-                            keyboardType: TextInputType.emailAddress,
-                            controller: _emailCtrl,
-                            validator: (value) {
-                              if (value.length > 50) {
-
-                                return AppStringsNew.emailInvalidText;
-                              } else if (value.isNotEmpty) {
-                                // RegExp for email validation
-                                if (!RegExp(
-                                        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$')
-                                    .hasMatch(value)) {
-                                  return AppStringsNew.emailInvalidText;
-                                }
-                              }
-                              return null;
-                            },
-                            hintText: _appScreenText.getText('OPTIONAL'),
-                            onInfoIconPress: () {
-                              toast(
-                                AppStringsNew.emailHintToast,
-                                duration: Duration(seconds: 5),
-                              );
-                            },
-                          ),
-
-                          // sep
-                          AppDimensionsNew.getVerticalSizedBox(16),
-
-                          _buildTermsAndPrivacyText(
-                              appTheme), // Terms and privacy text
-
-                          RoundedColorButton(
-                            backgroundColor: appTheme.accentColor,
-                            textColor: appTheme.primaryColorWithDark(0.50),
-                            text: AppStringsNew.signupButtonText,
-                            fontSize: 14.dp,
-                            onTapFunction: () => _handleSignUpClick(),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-
-                  // restore account text
-                  InkWell(
-                    onTap: () {
-                      Navigator.of(context).pushNamed(Routes.restore_account);
-                    },
-                    child: Container(
-                      alignment: Alignment.center,
-                      padding: EdgeInsets.all(16),
-                      child: Text(
-                        AppStringsNew.restoreAccountText,
-                        style: AppTextStyles.T2.copyWith(
-                          decoration: TextDecoration.underline,
-                          color: appTheme.accentColor,
+                // Form
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        // screen name
+                        _buildTextFormField(
+                          labelText: _appScreenText.getText('SCREEN_NAME'),
+                          keyboardType: TextInputType.name,
+                          controller: _screenNameCtrl,
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return AppStringsNew.screenNameEmptyErrorText;
+                            }
+                            if (value.length > 20) {
+                              return AppStringsNew.screenNameLengthErrorText;
+                            }
+                            return null;
+                          },
+                          hintText: _appScreenText.getText('REQUIRED'),
+                          onInfoIconPress: () {
+                            toast(
+                              AppStringsNew.screenNameHintToast,
+                              duration: Duration(seconds: 3),
+                            );
+                          },
                         ),
+
+                        // sep
+                        AppDimensionsNew.getVerticalSizedBox(16),
+
+                        // name
+                        _buildTextFormField(
+                          labelText: _appScreenText.getText('YOUR_NAME'),
+                          keyboardType: TextInputType.name,
+                          controller: _nameCtrl,
+                          validator: (value) {
+                            if (value.length > 30) {
+                              return AppStringsNew.displayNameLengthErrorText;
+                            }
+                            return null;
+                          },
+                          hintText: _appScreenText.getText('OPTIONAL'),
+                          onInfoIconPress: () {
+                            toast(
+                              AppStringsNew.displayNameHintToast,
+                              duration: Duration(seconds: 4),
+                            );
+                          },
+                        ),
+
+                        // sep
+                        AppDimensionsNew.getVerticalSizedBox(16),
+
+                        // Recover Email
+                        _buildTextFormField(
+                          labelText: _appScreenText.getText('RECOVERY_EMAIL'),
+                          keyboardType: TextInputType.emailAddress,
+                          controller: _emailCtrl,
+                          validator: (value) {
+                            if (value.length > 50) {
+                              return AppStringsNew.emailInvalidText;
+                            } else if (value.isNotEmpty) {
+                              // RegExp for email validation
+                              if (!RegExp(
+                                      r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$')
+                                  .hasMatch(value)) {
+                                return AppStringsNew.emailInvalidText;
+                              }
+                            }
+                            return null;
+                          },
+                          hintText: _appScreenText.getText('OPTIONAL'),
+                          onInfoIconPress: () {
+                            toast(
+                              AppStringsNew.emailHintToast,
+                              duration: Duration(seconds: 5),
+                            );
+                          },
+                        ),
+
+                        // sep
+                        AppDimensionsNew.getVerticalSizedBox(16),
+
+                        // Terms and privacy text
+                        _buildTermsAndPrivacyText(_appTheme),
+
+                        RoundedColorButton(
+                          backgroundColor: _appTheme.accentColor,
+                          textColor: _appTheme.primaryColorWithDark(0.50),
+                          text: AppStringsNew.signupButtonText,
+                          fontSize: 14.dp,
+                          onTapFunction: () => _handleSignUpClick(),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+                // restore account text
+                InkWell(
+                  onTap: () {
+                    Navigator.of(context).pushNamed(Routes.restore_account);
+                  },
+                  child: Container(
+                    alignment: Alignment.center,
+                    padding: EdgeInsets.all(16),
+                    child: Text(
+                      AppStringsNew.restoreAccountText,
+                      style: AppTextStyles.T2.copyWith(
+                        decoration: TextDecoration.underline,
+                        color: _appTheme.accentColor,
                       ),
                     ),
                   ),
+                ),
 
-                  /* ---- DEBUG REALM ---- */
+                /* ---- DEBUG REALM ---- */
 
-                  // seperator
-                  SizedBox(height: 100),
-                  Padding(
-                    padding: EdgeInsets.only(bottom: 10.0),
-                    child: Center(
-                      child: Text(
-                        AppConfig.apiUrl,
-                        style: TextStyle(fontSize: 20),
-                      ),
+                // seperator
+                SizedBox(height: 100),
+                Padding(
+                  padding: EdgeInsets.only(bottom: 10.0),
+                  child: Center(
+                    child: Text(
+                      AppConfig.apiUrl,
+                      style: TextStyle(fontSize: 20),
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),
