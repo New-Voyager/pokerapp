@@ -331,10 +331,7 @@ class _FooterActionViewState extends State<FooterActionView> {
 
   @override
   Widget build(BuildContext context) {
-    final boardAttributes = Provider.of<BoardAttributesObject>(
-      context,
-      listen: false,
-    );
+    final boardAttributes = context.read<BoardAttributesObject>();
 
     return Container(
       margin: const EdgeInsets.only(
