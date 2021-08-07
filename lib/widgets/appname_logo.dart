@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_text_styles.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
@@ -7,8 +8,8 @@ import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class AppNameAndLogoWidget extends StatelessWidget {
   final AppTheme _appTheme;
-
-  const AppNameAndLogoWidget(this._appTheme);
+  final AppTextScreen _appScreenText;
+  const AppNameAndLogoWidget(this._appTheme, this._appScreenText);
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +17,7 @@ class AppNameAndLogoWidget extends StatelessWidget {
       children: [
         Container(
           child: Text(
-            "Poker Club App",
+            'Poker Club App',
             textAlign: TextAlign.center,
             style: AppTextStyles.H1.copyWith(
               color: _appTheme.accentColor,
@@ -24,7 +25,7 @@ class AppNameAndLogoWidget extends StatelessWidget {
           ),
         ),
         Text(
-          "Play poker with friends",
+          this._appScreenText['SUBTITLE'],
           textAlign: TextAlign.center,
           style: AppTextStyles.T3.copyWith(
             color: _appTheme.supportingColorWithDark(0.50),

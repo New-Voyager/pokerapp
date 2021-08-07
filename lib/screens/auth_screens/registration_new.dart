@@ -6,6 +6,7 @@ import 'package:flutter_udid/flutter_udid.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/auth_model.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_config.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
@@ -40,6 +41,8 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
   TextEditingController _emailCtrl = TextEditingController();
   TapGestureRecognizer _termsClick = TapGestureRecognizer();
   TapGestureRecognizer _privacyClick = TapGestureRecognizer();
+  AppTextScreen _appScreenText;
+  AppTheme _appTheme;
 
   Widget _buildTextFormField({
     TextInputType keyboardType,
@@ -113,6 +116,8 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
   @override
   void initState() {
     super.initState();
+    _appScreenText = getAppTextScreen("registration");
+    _appTheme = AppTheme.getTheme(context);
   }
 
   void onBugIconPress(AppTheme appTheme) {
@@ -239,7 +244,7 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
                         children: [
                           // screen name
                           _buildTextFormField(
-                            labelText: AppStringsNew.screenNameLabelText,
+                            labelText: _appScreenText.getText('SCREEN_NAME'),
                             keyboardType: TextInputType.name,
                             controller: _screenNameCtrl,
                             validator: (value) {
@@ -251,7 +256,7 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
                               }
                               return null;
                             },
-                            hintText: 'Required',
+                            hintText: _appScreenText.getText('REQUIRED'),
                             onInfoIconPress: () {
                               toast(
                                 AppStringsNew.screenNameHintToast,
@@ -265,7 +270,7 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
 
                           // name
                           _buildTextFormField(
-                            labelText: AppStringsNew.displayNameLabelText,
+                            labelText: _appScreenText.getText('YOUR_NAME'),
                             keyboardType: TextInputType.name,
                             controller: _nameCtrl,
                             validator: (value) {
@@ -274,7 +279,7 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
                               }
                               return null;
                             },
-                            hintText: 'Optional',
+                            hintText: _appScreenText.getText('OPTIONAL'),
                             onInfoIconPress: () {
                               toast(
                                 AppStringsNew.displayNameHintToast,
@@ -288,11 +293,12 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
 
                           // Recover Email
                           _buildTextFormField(
-                            labelText: AppStringsNew.recoveryCodeLabelText,
+                            labelText: _appScreenText.getText('RECOVERY_EMAIL'),
                             keyboardType: TextInputType.emailAddress,
                             controller: _emailCtrl,
                             validator: (value) {
                               if (value.length > 50) {
+
                                 return AppStringsNew.emailInvalidText;
                               } else if (value.isNotEmpty) {
                                 // RegExp for email validation
@@ -304,7 +310,7 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
                               }
                               return null;
                             },
-                            hintText: 'Optional',
+                            hintText: _appScreenText.getText('OPTIONAL'),
                             onInfoIconPress: () {
                               toast(
                                 AppStringsNew.emailHintToast,
