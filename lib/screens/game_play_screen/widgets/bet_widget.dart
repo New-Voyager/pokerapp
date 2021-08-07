@@ -65,95 +65,6 @@ class BetWidget extends StatelessWidget {
     );
   }
 
-  // Widget _buildBetButton(final bool isLargerDisplay) {
-  //   return Transform.scale(
-  //     alignment: Alignment.center,
-  //     scale: isLargerDisplay ? 1.8 : 1.5,
-  //     child: Consumer<ValueNotifier<double>>(
-  //       builder: (_, vnBetAmount, child) => _buildBetAmountChild(
-  //         onTap: () => onSubmitCallBack?.call(vnBetAmount.value),
-  //         betButton: true,
-  //         option: Option(
-  //           text: 'Bet',
-  //           amount: vnBetAmount.value.toInt(),
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
-
-  // Widget _oldWay() => Stack(
-  //       alignment: Alignment.center,
-  //       // mainAxisAlignment: MainAxisAlignment.center,
-  //       children: [
-  //         /* bet button and amount */
-  //         betButton(isLargerDisplay),
-  //         // /* center widget - bet amount, bet button & slider */
-  //         // Stack(
-  //         //   alignment: Alignment.center,
-  //         //   children: [
-  //         //     // /* seek slider */
-  //         //     // Transform.translate(
-  //         //     //   offset: Offset(0, isLargerDisplay ? 60.ph : 40.ph),
-  //         //     //   child: sleekSlider(),
-  //         //     // ),
-
-  //         //     /* bet button */
-  //         //     Transform.translate(
-  //         //       offset: Offset(0.0, -0.0.ph),
-  //         //       child: betButton(isLargerDisplay),
-  //         //     ),
-  //         //   ],
-  //         // ),
-
-  //         /* (-) button */
-  //         // Transform.translate(
-  //         //   offset: Offset(-80.pw, isLargerDisplay ? 10.0 : 0.0),
-  //         //   child: Container(
-  //         //     decoration: BoxDecoration(
-  //         //       shape: BoxShape.circle,
-  //         //     ),
-  //         //     child: IconButton(
-  //         //       icon: Icon(
-  //         //         Icons.remove_circle_rounded,
-  //         //         size: isLargerDisplay ? 14.0.pw : 24.0.pw,
-  //         //         color: AppColorsNew.newGreenButtonColor,
-  //         //       ),
-  //         //       onPressed: () {
-  //         //         log('- button');
-  //         //         if (valueNotifierVal.value <= action.minRaiseAmount)
-  //         //           return;
-  //         //         valueNotifierVal.value--;
-  //         //       },
-  //         //     ),
-  //         //   ),
-  //         // ),
-
-  //         // /* (+) button */
-  //         // Transform.translate(
-  //         //   offset: Offset(80.0.pw, isLargerDisplay ? 10.0 : 0.0),
-  //         //   child: Container(
-  //         //     decoration: BoxDecoration(
-  //         //       shape: BoxShape.circle,
-  //         //     ),
-  //         //     child: IconButton(
-  //         //       icon: Icon(
-  //         //         Icons.add_circle_rounded,
-  //         //         size: isLargerDisplay ? 14.0.pw : 24.0.pw,
-  //         //         color: AppColorsNew.newGreenButtonColor,
-  //         //       ),
-  //         //       onPressed: () {
-  //         //         log('+ button');
-  //         //         if (valueNotifierVal.value >= action.maxRaiseAmount)
-  //         //           return;
-  //         //         valueNotifierVal.value++;
-  //         //       },
-  //         //     ),
-  //         //   ),
-  //         // ),
-  //       ],
-  //     );
-
   Widget _buildToolTipWith({Widget child}) {
     final userSettingsBox = HiveDatasource.getInstance.getBox(
       BoxType.USER_SETTINGS_BOX,
@@ -232,36 +143,34 @@ class BetWidget extends StatelessWidget {
     );
 
     final double s = 40.0.dp;
-    final Widget betChipWidget = _buildToolTipWith(
-      child: Container(
-        height: s,
-        width: s,
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            // bet coin
-            SvgPicture.string(
-              _getBetChipSvg(),
-              height: s,
-              width: s,
-            ),
+    final Widget betChipWidget = Container(
+      height: s,
+      width: s,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          // bet coin
+          SvgPicture.string(
+            _getBetChipSvg(),
+            height: s,
+            width: s,
+          ),
 
-            // bet text
-            IgnorePointer(
-              child: AnimatedTextKit(
-                // isRepeatingAnimation: true,
-                repeatForever: true,
-                animatedTexts: [
-                  ColorizeAnimatedText(
-                    'BET',
-                    textStyle: colorizeTextStyle,
-                    colors: colorizeColors,
-                  ),
-                ],
-              ),
+          // bet text
+          IgnorePointer(
+            child: AnimatedTextKit(
+              // isRepeatingAnimation: true,
+              repeatForever: true,
+              animatedTexts: [
+                ColorizeAnimatedText(
+                  'BET',
+                  textStyle: colorizeTextStyle,
+                  colors: colorizeColors,
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
 
@@ -280,18 +189,22 @@ class BetWidget extends StatelessWidget {
               vnAlignment.value = Alignment.topCenter;
             }
           },
-          child: Container(
-            height: 2 * s,
-            child: ValueListenableBuilder<Alignment>(
-              valueListenable: vnAlignment,
-              builder: (_, alignment, __) => AnimatedAlign(
-                onEnd: () {
-                  // we finally bet
-                  onSubmitCallBack?.call(vnBetAmount.value);
-                },
-                duration: AppConstants.fastestAnimationDuration,
-                alignment: alignment,
-                child: betChipWidget,
+          child: _buildToolTipWith(
+            child: IntrinsicWidth(
+              child: Container(
+                height: 2 * s,
+                child: ValueListenableBuilder<Alignment>(
+                  valueListenable: vnAlignment,
+                  builder: (_, alignment, __) => AnimatedAlign(
+                    onEnd: () {
+                      // we finally bet
+                      onSubmitCallBack?.call(vnBetAmount.value);
+                    },
+                    duration: AppConstants.fastestAnimationDuration,
+                    alignment: alignment,
+                    child: betChipWidget,
+                  ),
+                ),
               ),
             ),
           ),
