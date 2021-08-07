@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -9,10 +10,13 @@ import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/pulsating_button.dart';
+import 'package:pokerapp/services/data/box_type.dart';
+import 'package:pokerapp/services/data/hive_datasource_impl.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/utils/numeric_keyboard2.dart';
 import 'package:provider/provider.dart';
+import 'package:simple_tooltip/simple_tooltip.dart';
 import 'package:sleek_circular_slider/sleek_circular_slider.dart';
 
 class BetWidget extends StatelessWidget {
@@ -150,6 +154,47 @@ class BetWidget extends StatelessWidget {
   //       ],
   //     );
 
+  Widget _buildToolTipWith({Widget child}) {
+    final userSettingsBox = HiveDatasource.getInstance.getBox(
+      BoxType.USER_SETTINGS_BOX,
+    );
+
+    final betTooltipCountKey = 'bet_tooltip_count';
+
+    int betTooltipCount =
+        userSettingsBox.get(betTooltipCountKey, defaultValue: 0) as int;
+
+    if (betTooltipCount >= 3) {
+      // we dont need to show BET tooltip anymore
+      return child;
+    }
+
+    // else
+    // increment the tool tip count
+    userSettingsBox.put(betTooltipCountKey, betTooltipCount + 1);
+
+    return SimpleTooltip(
+      // ui
+      backgroundColor: Colors.white,
+      borderColor: AppColorsNew.newTextGreenColor,
+      ballonPadding: EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
+
+      // others
+      animationDuration: Duration(seconds: 1),
+      show: true,
+      tooltipDirection: TooltipDirection.right,
+      content: Text(
+        "Tap or slide-up to confirm bet",
+        style: TextStyle(
+          color: Colors.black,
+          fontSize: 13,
+          decoration: TextDecoration.none,
+        ),
+      ),
+      child: child,
+    );
+  }
+
   String _getBetChipSvg() {
     String primaryColor = '#168348';
     String accentColor = '#C8923B';
@@ -174,11 +219,50 @@ class BetWidget extends StatelessWidget {
   Widget _buildBetButton(final bool isLargerDisplay, vnBetAmount) {
     final vnAlignment = ValueNotifier<Alignment>(Alignment.bottomCenter);
 
+    const colorizeColors = [
+      Colors.purple,
+      Colors.blue,
+      Colors.yellow,
+      Colors.red,
+    ];
+
+    final colorizeTextStyle = TextStyle(
+      fontSize: 12.0.dp,
+      fontWeight: FontWeight.bold,
+    );
+
     final double s = 40.0.dp;
-    final Widget betChipWidget = SvgPicture.string(
-      _getBetChipSvg(),
-      height: s,
-      width: s,
+    final Widget betChipWidget = _buildToolTipWith(
+      child: Container(
+        height: s,
+        width: s,
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            // bet coin
+            SvgPicture.string(
+              _getBetChipSvg(),
+              height: s,
+              width: s,
+            ),
+
+            // bet text
+            IgnorePointer(
+              child: AnimatedTextKit(
+                // isRepeatingAnimation: true,
+                repeatForever: true,
+                animatedTexts: [
+                  ColorizeAnimatedText(
+                    'BET',
+                    textStyle: colorizeTextStyle,
+                    colors: colorizeColors,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
     );
 
     return Column(
