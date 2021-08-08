@@ -14,8 +14,15 @@ REDIS_IMAGE := $(REGISTRY)/redis:6.0.9
 POSTGRES_IMAGE := $(REGISTRY)/postgres:12.5
 
 .PHONE: login
-login:
-	docker login --username c1a5bd86f63f2882b8a11671bce3bae92e8355abf6e23613d7758a824c8f5082 --password c1a5bd86f63f2882b8a11671bce3bae92e8355abf6e23613d7758a824c8f5082 registry.digitalocean.com
+login: do-login
+
+.PHONE: do-login
+do-login:
+	@docker login --username c1a5bd86f63f2882b8a11671bce3bae92e8355abf6e23613d7758a824c8f5082 --password c1a5bd86f63f2882b8a11671bce3bae92e8355abf6e23613d7758a824c8f5082 registry.digitalocean.com
+
+.PHONE: gcp-login
+gcp-login:
+	@cat gcp_dev_image_pull.json | docker login -u _json_key --password-stdin https://gcr.io
 
 .PHONY: pull
 pull: login	
