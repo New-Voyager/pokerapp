@@ -7,16 +7,14 @@ import 'package:flutter_svg/svg.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/table_record.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
-import 'package:pokerapp/resources/app_assets.dart';
-import 'package:pokerapp/resources/new/app_colors_new.dart';
-import 'package:pokerapp/resources/new/app_styles_new.dart';
+import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
+import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/utils/hand_table_bar_chart_profit.dart';
-import 'package:provider/provider.dart';
 import 'package:share/share.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
@@ -100,10 +98,10 @@ class _TableResultScreenState extends State<TableResultScreen>
         ),
       );
 
-  Widget _buildTableHeader() => Container(
+  Widget _buildTableHeader(AppTheme theme) => Container(
         height: 70.0.ph,
         margin: EdgeInsets.all(10.pw),
-        color: Color(0xff313235),
+        color: theme.fillInColor,
         child: Row(
           children: [
             _buildHeaderChild(
@@ -171,6 +169,7 @@ class _TableResultScreenState extends State<TableResultScreen>
     var data,
     String icon,
     Color iconColor = Colors.transparent,
+    AppTheme theme,
   }) =>
       Expanded(
         flex: flex,
@@ -191,24 +190,24 @@ class _TableResultScreenState extends State<TableResultScreen>
                     style: TextStyle(
                       color: data is double
                           ? data > 0
-                              ? AppStylesNew.profitStyle.color
-                              : AppStylesNew.lossStyle.color
-                          : Color(0xffa09f9e),
+                              ? theme.secondaryColor
+                              : theme.negativeOrErrorColor
+                          : theme.supportingColor,
                     ),
                   ),
                 ),
               ),
       );
 
-  Widget _buildTableView() => Expanded(
+  Widget _buildTableView(AppTheme theme) => Expanded(
         child: this.data == null
-            ? Center(child: CircularProgressIndicator())
+            ? Center(child: CircularProgressWidget())
             : ListView.separated(
                 physics: NeverScrollableScrollPhysics(),
                 itemCount: this.data.rows.length + 1,
                 itemBuilder: (context, index) {
                   // index 0 draws the header
-                  if (index == 0) return _buildTableHeader();
+                  if (index == 0) return _buildTableHeader(theme);
 
                   final tableRowRecord = this.data.rows[index - 1];
 
@@ -221,26 +220,32 @@ class _TableResultScreenState extends State<TableResultScreen>
                           flex: widget.rankWidth,
                           icon: _getIconByRank(index),
                           iconColor: _getColorByRank(index),
+                          theme: theme,
                         ),
                         _buildTableContentChild(
                           flex: widget.playerWidth,
                           data: tableRowRecord.playerName,
+                          theme: theme,
                         ),
                         _buildTableContentChild(
                           flex: widget.sessionWidth,
                           data: tableRowRecord.sessionTimeStr,
+                          theme: theme,
                         ),
                         _buildTableContentChild(
                           flex: widget.numHandsWidth,
                           data: tableRowRecord.handsPlayed.toString(),
+                          theme: theme,
                         ),
                         _buildTableContentChild(
                           flex: widget.buyInWidth,
                           data: DataFormatter.chipsFormat(tableRowRecord.buyIn),
+                          theme: theme,
                         ),
                         _buildTableContentChild(
                           flex: widget.profitWidth,
                           data: tableRowRecord.profit,
+                          theme: theme,
                         ),
                         widget.showTips
                             ? _buildTableContentChild(
@@ -248,6 +253,7 @@ class _TableResultScreenState extends State<TableResultScreen>
                                 data: DataFormatter.chipsFormat(
                                   tableRowRecord.rakePaid,
                                 ),
+                                theme: theme,
                               )
                             : Container(),
                       ],
@@ -263,7 +269,7 @@ class _TableResultScreenState extends State<TableResultScreen>
               ),
       );
 
-  Widget _buildGraphView() => Expanded(
+  Widget _buildGraphView(AppTheme theme) => Expanded(
         child: Padding(
           padding: EdgeInsets.all(15.pw),
           child: Column(
@@ -281,16 +287,18 @@ class _TableResultScreenState extends State<TableResultScreen>
         ),
       );
 
-  Widget _buildMainView(int index) =>
-      index == 0 ? _buildTableView() : _buildGraphView();
+  Widget _buildMainView(int index, AppTheme theme) =>
+      index == 0 ? _buildTableView(theme) : _buildGraphView(theme);
 
   @override
   Widget build(BuildContext context) {
+    final theme = AppTheme.getTheme(context);
     initializeTableWidgets();
-    return Consumer<AppTheme>(
-      builder: (_, theme, __) => Scaffold(
+    return Container(
+      decoration: AppDecorators.bgRadialGradient(theme),
+      child: Scaffold(
         resizeToAvoidBottomInset: true,
-        backgroundColor: AppColorsNew.screenBackgroundColor,
+        backgroundColor: Colors.transparent,
         appBar: CustomAppBar(
           theme: theme,
           context: context,
@@ -322,13 +330,9 @@ class _TableResultScreenState extends State<TableResultScreen>
                           children: [
                             widget.showTips
                                 ? Text(
-                                    "Tips",
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontFamily: AppAssets.fontFamilyLato,
-                                      fontSize: 12.0.dp,
-                                      fontWeight: FontWeight.w400,
-                                    ),
+                                    AppStringsNew.tips,
+                                    style: AppDecorators.getSubtitle3Style(
+                                        theme: theme),
                                   )
                                 : Container(),
 
@@ -338,38 +342,34 @@ class _TableResultScreenState extends State<TableResultScreen>
                             widget.showTips
                                 ? Text(
                                     getTotalRake().toString(),
-                                    style: TextStyle(
-                                      color: Color(0xff1aff22),
-                                      fontFamily: AppAssets.fontFamilyLato,
-                                      fontSize: 12.0.dp,
-                                      fontWeight: FontWeight.w400,
-                                    ),
+                                    style: AppDecorators.getHeadLine4Style(
+                                        theme: theme),
                                   )
                                 : Container(),
                           ],
                         ),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            SizedBox(width: 20.0.pw),
-                            widget.showDownload
-                                ? InkWell(
+                        widget.showDownload
+                            ? Row(
+                                children: [
+                                  Icon(
+                                    Icons.download,
+                                    color: theme.accentColor,
+                                  ),
+                                  InkWell(
                                     onTap: () async {
                                       downloadTable(widget.gameCode);
                                     },
                                     child: Text(
-                                      "Download",
-                                      style: TextStyle(
-                                        color: Color(0xff319ffe),
-                                        fontFamily: AppAssets.fontFamilyLato,
-                                        fontSize: 12.0.dp,
-                                        fontWeight: FontWeight.w400,
-                                      ),
+                                      AppStringsNew.download,
+                                      style: AppDecorators.getAccentTextStyle(
+                                              theme: theme)
+                                          .copyWith(
+                                              fontWeight: FontWeight.normal),
                                     ),
-                                  )
-                                : Container(),
-                          ],
-                        ),
+                                  ),
+                                ],
+                              )
+                            : Container(),
                       ],
                     ),
                   ),
@@ -380,10 +380,10 @@ class _TableResultScreenState extends State<TableResultScreen>
                   children: [
                     Expanded(
                       child: CupertinoSegmentedControl<int>(
-                        unselectedColor: AppColorsNew.screenBackgroundColor,
-                        selectedColor: AppColorsNew.appAccentColor,
+                        unselectedColor: theme.primaryColor,
+                        selectedColor: theme.secondaryColorWithDark(),
                         children: tableWidgets,
-                        borderColor: AppColorsNew.appAccentColor,
+                        borderColor: theme.secondaryColor,
                         onValueChanged: (int val) {
                           setState(() => _selectedTableWidget = val);
                         },
@@ -394,7 +394,7 @@ class _TableResultScreenState extends State<TableResultScreen>
                 ),
 
                 // main body
-                _buildMainView(_selectedTableWidget),
+                _buildMainView(_selectedTableWidget, theme),
               ],
             ),
           ),

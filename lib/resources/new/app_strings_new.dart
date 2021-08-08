@@ -313,4 +313,6 @@ class AppStringsNew {
   static String perSymbol = "%";
 
   static String loadingStatistics = "Loading Statistics..";
+  static String tips = "Tips";
+  static String download = "Download";
 }
