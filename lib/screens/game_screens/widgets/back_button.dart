@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:pokerapp/resources/new/app_colors_new.dart';
-import 'package:pokerapp/resources/new/app_styles_new.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class CustomAppBar extends AppBar {
@@ -10,14 +10,16 @@ class CustomAppBar extends AppBar {
   final context;
   final actionsList;
   final bool showBackButton;
-  CustomAppBar(
-      {Key key,
-      this.titleText,
-      this.subTitleText,
-      this.context,
-      this.actionsList,
-      this.showBackButton})
-      : super(
+  final AppTheme theme;
+  CustomAppBar({
+    Key key,
+    this.titleText,
+    this.subTitleText,
+    this.context,
+    this.actionsList,
+    this.showBackButton,
+    @required this.theme,
+  }) : super(
           key: key,
           backgroundColor: Colors.transparent,
           elevation: 0,
@@ -29,14 +31,14 @@ class CustomAppBar extends AppBar {
             children: [
               Text(
                 titleText ?? "",
-                style: AppStylesNew.appBarTitleTextStyle,
+                style: AppDecorators.getAccentTextStyle(theme: theme),
                 textAlign: TextAlign.center,
               ),
               Visibility(
                 visible: subTitleText != null,
                 child: Text(
                   subTitleText ?? "",
-                  style: AppStylesNew.appBarSubTitleTextStyle,
+                  style: AppDecorators.getSubtitle3Style(theme: theme),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -54,13 +56,14 @@ class BackArrowWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = AppTheme.getTheme(context);
     return Container(
       alignment: Alignment.centerLeft,
       padding: EdgeInsets.only(left: 16.pw),
       child: InkWell(
         child: SvgPicture.asset(
           'assets/images/backarrow.svg',
-          color: AppColorsNew.newGreenButtonColor,
+          color: theme.secondaryColor,
           width: 24.pw,
           height: 24.pw,
           fit: BoxFit.contain,

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
+import 'package:pokerapp/resources/new/app_strings_new.dart';
 
 class NoMessageWidget extends StatelessWidget {
   @override
@@ -32,18 +35,16 @@ class CircularProgressWidget extends StatelessWidget {
   final double height;
   @override
   Widget build(BuildContext context) {
+    final theme = AppTheme.getTheme(context);
     return showText ?? true
         ? Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
-                text ?? "Loading",
+                text ?? AppStringsNew.loadingDefaultText,
                 textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 20.0,
-                ),
+                style: AppDecorators.getHeadLine4Style(theme: theme),
               ),
               const SizedBox(height: 15),
               Center(
@@ -51,9 +52,10 @@ class CircularProgressWidget extends StatelessWidget {
                   height: height ?? 32,
                   width: height ?? 32,
                   child: CircularProgressIndicator(
-                    backgroundColor: AppColorsNew.newGreenButtonColor,
+                    backgroundColor: theme.accentColorWithDark(),
                     valueColor: new AlwaysStoppedAnimation<Color>(
-                        AppColorsNew.actionRowBgColor),
+                      theme.accentColorWithLight(),
+                    ),
                   ),
                 ),
               ),
@@ -65,9 +67,9 @@ class CircularProgressWidget extends StatelessWidget {
               width: height ?? 32,
               child: CircularProgressIndicator(
                 strokeWidth: 1.0,
-                backgroundColor: AppColorsNew.newGreenButtonColor,
+                backgroundColor: theme.accentColorWithDark(),
                 valueColor: new AlwaysStoppedAnimation<Color>(
-                    AppColorsNew.actionRowBgColor),
+                    theme.accentColorWithLight()),
               ),
             ),
           );

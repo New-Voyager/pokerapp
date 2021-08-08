@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/club_homepage_model.dart';
-import 'package:pokerapp/resources/new/app_colors_new.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
-import 'package:pokerapp/resources/new/app_styles_new.dart';
+import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/club_screen/widgets/club_actions_new.dart';
@@ -66,7 +67,7 @@ class _ClubMainScreenNewState extends State<ClubMainScreenNew>
     super.initState();
   }
 
-  Widget _buildMainBody(ClubHomePageModel clubModel) => Stack(
+  Widget _buildMainBody(ClubHomePageModel clubModel, AppTheme theme) => Stack(
         children: [
           SingleChildScrollView(
             physics: BouncingScrollPhysics(),
@@ -104,9 +105,9 @@ class _ClubMainScreenNewState extends State<ClubMainScreenNew>
                                 );
                               }
                             },
-                            text: '+ Create Game',
-                            backgroundColor: AppColorsNew.yellowAccentColor,
-                            textColor: AppColorsNew.darkGreenShadeColor,
+                            text: AppStringsNew.createGameText,
+                            backgroundColor: theme.accentColor,
+                            textColor: theme.primaryColorWithDark(),
                           ),
                         ),
                       ),
@@ -146,34 +147,36 @@ class _ClubMainScreenNewState extends State<ClubMainScreenNew>
       );
 
   @override
-  Widget build(BuildContext context) => WillPopScope(
-        onWillPop: () async {
-          context.read<ClubsUpdateState>().removeListener(listener);
-          routeObserver.unsubscribe(this);
-          return true;
-        },
-        child: FutureBuilder<ClubHomePageModel>(
-          initialData: null,
-          future: ClubsService.getClubHomePageData(widget.clubCode),
-          builder: (BuildContext context, snapshot) {
-            ClubHomePageModel clubModel = snapshot.data;
-            return Container(
-              decoration: AppStylesNew.BgGreenRadialGradient,
-              child: SafeArea(
-                child: Scaffold(
-                  backgroundColor: Colors.transparent,
-                  body: clubModel == null
-                      ? Center(
-                          child: CircularProgressWidget(),
-                        )
-                      : ListenableProvider<ClubHomePageModel>(
-                          create: (_) => clubModel,
-                          child: _buildMainBody(clubModel),
-                        ),
-                ),
-              ),
-            );
+  Widget build(BuildContext context) => Consumer<AppTheme>(
+        builder: (_, theme, __) => WillPopScope(
+          onWillPop: () async {
+            context.read<ClubsUpdateState>().removeListener(listener);
+            routeObserver.unsubscribe(this);
+            return true;
           },
+          child: FutureBuilder<ClubHomePageModel>(
+            initialData: null,
+            future: ClubsService.getClubHomePageData(widget.clubCode),
+            builder: (BuildContext context, snapshot) {
+              ClubHomePageModel clubModel = snapshot.data;
+              return Container(
+                decoration: AppDecorators.bgRadialGradient(theme),
+                child: SafeArea(
+                  child: Scaffold(
+                    backgroundColor: Colors.transparent,
+                    body: clubModel == null
+                        ? Center(
+                            child: CircularProgressWidget(),
+                          )
+                        : ListenableProvider<ClubHomePageModel>(
+                            create: (_) => clubModel,
+                            child: _buildMainBody(clubModel, theme),
+                          ),
+                  ),
+                ),
+              );
+            },
+          ),
         ),
       );
 }

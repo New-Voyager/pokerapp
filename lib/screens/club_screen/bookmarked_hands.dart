@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/bookmarkedHands_model.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
@@ -16,6 +17,7 @@ import 'package:pokerapp/screens/util_screens/replay_hand_dialog/replay_hand_dia
 import 'package:pokerapp/services/app/hand_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
+import 'package:provider/provider.dart';
 
 import '../../routes.dart';
 
@@ -123,120 +125,102 @@ class _BookmarkedHandsState extends State<BookmarkedHands>
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: AppStylesNew.BgGreenRadialGradient,
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        resizeToAvoidBottomInset: true,
-        appBar: CustomAppBar(
-          context: context,
-          titleText: AppStringsNew.BookmarkedHandsTitle,
-        ),
-        body: loading
-            ? Center(child: CircularProgressIndicator())
-            : Container(
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: list.length == 0
-                          ? Center(
-                              child: Text(
-                                "No bookmarked hands!",
-                                style: AppStylesNew.disabledButtonTextStyle,
-                              ),
-                            )
-                          : ListView.builder(
-                              shrinkWrap: true,
-                              itemCount: list.length,
-                              itemBuilder: (BuildContext context, int index) {
-                                BookmarkedHand hand = list[index];
-                                return InkWell(
-                                  onTap: () {
-                                    Navigator.of(context).pushNamed(
-                                        Routes.hand_log_view,
-                                        arguments: {
-                                          "gameCode": hand.gameCode,
-                                          "handNum": hand.handNum,
-                                          "clubCode": widget.clubCode,
-                                        });
-                                  },
-                                  child: Container(
-                                    margin: EdgeInsets.symmetric(
-                                        horizontal: 16, vertical: 4),
-                                    padding: EdgeInsets.symmetric(vertical: 8),
-                                    decoration:
-                                        AppStylesNew.actionRowDecoration,
-                                    child: Column(
-                                      children: [
-                                        HandWinnersView(
-                                          handLogModel: list[index].handlogData,
-                                        ),
-                                        Divider(
-                                          color:
-                                              AppColorsNew.veryLightGrayColor,
-                                          indent: 8,
-                                          endIndent: 8,
-                                        ),
-                                        Container(
-                                          margin: EdgeInsets.symmetric(
-                                              horizontal: 16, vertical: 4),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(
-                                                "Hand #${list[index].handlogData.hand.handNum}",
-                                                style: TextStyle(
-                                                  color: Colors.grey,
-                                                  fontSize: 12,
+    return Consumer<AppTheme>(
+      builder: (_, theme, __) => Container(
+        decoration: AppStylesNew.BgGreenRadialGradient,
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          resizeToAvoidBottomInset: true,
+          appBar: CustomAppBar(
+            theme: theme,
+            context: context,
+            titleText: AppStringsNew.BookmarkedHandsTitle,
+          ),
+          body: loading
+              ? Center(child: CircularProgressIndicator())
+              : Container(
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: list.length == 0
+                            ? Center(
+                                child: Text(
+                                  "No bookmarked hands!",
+                                  style: AppStylesNew.disabledButtonTextStyle,
+                                ),
+                              )
+                            : ListView.builder(
+                                shrinkWrap: true,
+                                itemCount: list.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  BookmarkedHand hand = list[index];
+                                  return InkWell(
+                                    onTap: () {
+                                      Navigator.of(context).pushNamed(
+                                          Routes.hand_log_view,
+                                          arguments: {
+                                            "gameCode": hand.gameCode,
+                                            "handNum": hand.handNum,
+                                            "clubCode": widget.clubCode,
+                                          });
+                                    },
+                                    child: Container(
+                                      margin: EdgeInsets.symmetric(
+                                          horizontal: 16, vertical: 4),
+                                      padding:
+                                          EdgeInsets.symmetric(vertical: 8),
+                                      decoration:
+                                          AppStylesNew.actionRowDecoration,
+                                      child: Column(
+                                        children: [
+                                          HandWinnersView(
+                                            handLogModel:
+                                                list[index].handlogData,
+                                          ),
+                                          Divider(
+                                            color:
+                                                AppColorsNew.veryLightGrayColor,
+                                            indent: 8,
+                                            endIndent: 8,
+                                          ),
+                                          Container(
+                                            margin: EdgeInsets.symmetric(
+                                                horizontal: 16, vertical: 4),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text(
+                                                  "Hand #${list[index].handlogData.hand.handNum}",
+                                                  style: TextStyle(
+                                                    color: Colors.grey,
+                                                    fontSize: 12,
+                                                  ),
                                                 ),
-                                              ),
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.end,
-                                                children: [
-                                                  InkWell(
-                                                    onTap: () async {
-                                                      await _removeBookMark(
-                                                          list[index]);
-                                                    },
-                                                    child: Container(
-                                                      alignment:
-                                                          Alignment.bottomRight,
-                                                      child: Icon(
-                                                        Icons.star_rate,
-                                                        color: Colors.white,
-                                                        size: 20,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  SizedBox(width: 20),
-                                                  InkWell(
-                                                    onTap: () async {
-                                                      await _replayHand(
-                                                        list[index].handlogData,
-                                                      );
-                                                    },
-                                                    child: Container(
-                                                      alignment:
-                                                          Alignment.bottomRight,
-                                                      child: Icon(
-                                                        Icons.replay,
-                                                        color: Colors.white,
-                                                        size: 20,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  SizedBox(width: 20),
-                                                  Visibility(
-                                                    visible:
-                                                        ((widget.clubCode !=
-                                                                null) &&
-                                                            (widget.clubCode
-                                                                .isNotEmpty)),
-                                                    child: InkWell(
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.end,
+                                                  children: [
+                                                    InkWell(
                                                       onTap: () async {
-                                                        await _shareHandWithClub(
+                                                        await _removeBookMark(
+                                                            list[index]);
+                                                      },
+                                                      child: Container(
+                                                        alignment: Alignment
+                                                            .bottomRight,
+                                                        child: Icon(
+                                                          Icons.star_rate,
+                                                          color: Colors.white,
+                                                          size: 20,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    SizedBox(width: 20),
+                                                    InkWell(
+                                                      onTap: () async {
+                                                        await _replayHand(
                                                           list[index]
                                                               .handlogData,
                                                         );
@@ -245,28 +229,53 @@ class _BookmarkedHandsState extends State<BookmarkedHands>
                                                         alignment: Alignment
                                                             .bottomRight,
                                                         child: Icon(
-                                                          Icons.share,
+                                                          Icons.replay,
                                                           color: Colors.white,
                                                           size: 20,
                                                         ),
                                                       ),
                                                     ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
+                                                    SizedBox(width: 20),
+                                                    Visibility(
+                                                      visible:
+                                                          ((widget.clubCode !=
+                                                                  null) &&
+                                                              (widget.clubCode
+                                                                  .isNotEmpty)),
+                                                      child: InkWell(
+                                                        onTap: () async {
+                                                          await _shareHandWithClub(
+                                                            list[index]
+                                                                .handlogData,
+                                                          );
+                                                        },
+                                                        child: Container(
+                                                          alignment: Alignment
+                                                              .bottomRight,
+                                                          child: Icon(
+                                                            Icons.share,
+                                                            color: Colors.white,
+                                                            size: 20,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                );
-                              },
-                            ),
-                    ),
-                  ],
+                                  );
+                                },
+                              ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
+        ),
       ),
     );
   }

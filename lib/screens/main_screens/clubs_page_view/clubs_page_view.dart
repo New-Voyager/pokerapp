@@ -6,11 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/club_model.dart';
 import 'package:pokerapp/models/pending_approvals.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
-import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
-import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/main_screens/clubs_page_view/widgets/club_item.dart';
@@ -19,8 +19,8 @@ import 'package:pokerapp/services/app/clubs_service.dart';
 import 'package:pokerapp/services/nats/nats.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/widgets/heading_widget.dart';
+import 'package:pokerapp/widgets/round_color_button.dart';
 import 'package:pokerapp/widgets/round_raised_button.dart';
-import 'package:pokerapp/widgets/rounded_accent_button.dart';
 import 'package:provider/provider.dart';
 
 import 'widgets/search_club_bottom_sheet.dart';
@@ -253,109 +253,113 @@ class _ClubsPageViewState extends State<ClubsPageView>
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        context.read<ClubsUpdateState>().removeListener(listener);
-        routeObserver.unsubscribe(this);
-        return true;
-      },
-      child: Builder(
-        builder: (ctx) => Container(
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage(AppAssetsNew.chatBgImagePath),
-              repeat: ImageRepeat.repeat,
-            ),
-          ),
-          child: Scaffold(
-            backgroundColor: Colors.black.withAlpha(100),
-            body: Padding(
-              padding: EdgeInsets.only(
-                top: MediaQuery.of(context).padding.top,
-                left: AppDimensions.kMainPaddingHorizontal,
-                right: AppDimensions.kMainPaddingHorizontal,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  /*
-                  * title
-                  * */
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      RoundedAccentButton(
-                        text: 'Search',
-                        onTapFunction: () async {
-                          await showModalBottomSheet(
-                            context: context,
-                            backgroundColor: Colors.transparent,
-                            isScrollControlled: true,
-                            builder: (ctx) => SearchClubBottomSheet(),
-                          );
-                          _fetchClubs();
-                        },
-                      ),
-                      HeadingWidget(heading: AppStringsNew.clubsTitle),
-                      RoundedAccentButton(
-                        text: '+ Create',
-                        onTapFunction: () => _createClub(ctx),
-                      ),
-                    ],
-                  ),
+    return Consumer<AppTheme>(
+      builder: (_, theme, __) => WillPopScope(
+        onWillPop: () async {
+          context.read<ClubsUpdateState>().removeListener(listener);
+          routeObserver.unsubscribe(this);
+          return true;
+        },
+        child: Builder(
+          builder: (ctx) => Container(
+            decoration: AppDecorators.bgRadialGradient(theme),
+            child: Scaffold(
+              backgroundColor: Colors.black.withAlpha(100),
+              body: Padding(
+                padding: EdgeInsets.only(
+                  top: MediaQuery.of(context).padding.top,
+                  left: AppDimensions.kMainPaddingHorizontal,
+                  right: AppDimensions.kMainPaddingHorizontal,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    /*
+                    * title
+                    * */
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        RoundedColorButton(
+                          backgroundColor: theme.accentColor,
+                          textColor: theme.primaryColorWithDark(),
+                          text: 'Search',
+                          onTapFunction: () async {
+                            await showModalBottomSheet(
+                              context: context,
+                              backgroundColor: Colors.transparent,
+                              isScrollControlled: true,
+                              builder: (ctx) => SearchClubBottomSheet(),
+                            );
+                            _fetchClubs();
+                          },
+                        ),
+                        HeadingWidget(heading: AppStringsNew.clubsTitle),
+                        RoundedColorButton(
+                          backgroundColor: theme.accentColor,
+                          textColor: theme.primaryColorWithDark(),
+                          text: '+ Create',
+                          onTapFunction: () => _createClub(ctx),
+                        ),
+                      ],
+                    ),
 
-                  // _getTitleTextWidget('Clubs'),
+                    // _getTitleTextWidget('Clubs'),
 
-                  // const SizedBox(height: 30),
-                  /*
-                  * create and search box
-                  * */
-                  // const SizedBox(height: 10),
-                  (_showLoading || (_clubs == null))
-                      ? Expanded(
-                          child: Center(
-                            child: CircularProgressWidget(),
-                          ),
-                        )
-                      : _clubs.isEmpty
-                          ? Expanded(
-                              child: Center(
-                                child: Text(
-                                  'No Clubs',
-                                  style: AppStylesNew.titleTextStyle,
-                                ),
-                              ),
-                            )
-                          : Expanded(
-                              child: ListView.separated(
-                                physics: const BouncingScrollPhysics(),
-                                padding: const EdgeInsets.only(
-                                  bottom: 15.0,
-                                ),
-                                itemBuilder: (_, index) {
-                                  var club = _clubs[index];
-
-                                  return InkWell(
-                                    onTap: () => this.openClub(context, club),
-                                    onLongPress: () => _showClubOptions(
-                                      club,
-                                      ctx,
-                                    ),
-                                    child: Container(
-                                      decoration:
-                                          AppStylesNew.blackContainerDecoration,
-                                      child: ClubItem(
-                                        club: club,
-                                      ),
-                                    ),
-                                  );
-                                },
-                                separatorBuilder: (_, __) =>
-                                    const SizedBox(height: 16.0),
-                                itemCount: _clubs.length,
-                              ),
+                    // const SizedBox(height: 30),
+                    /*
+                    * create and search box
+                    * */
+                    // const SizedBox(height: 10),
+                    (_showLoading || (_clubs == null))
+                        ? Expanded(
+                            child: Center(
+                              child: CircularProgressWidget(),
                             ),
-                ],
+                          )
+                        : _clubs.isEmpty
+                            ? Expanded(
+                                child: Center(
+                                  child: Text(
+                                    AppStringsNew.noClubsText,
+                                    style: AppDecorators.getCenterTextTextstyle(
+                                        appTheme: theme),
+                                  ),
+                                ),
+                              )
+                            : Expanded(
+                                child: ListView.separated(
+                                  physics: const BouncingScrollPhysics(),
+                                  padding: const EdgeInsets.only(
+                                    bottom: 15.0,
+                                  ),
+                                  itemBuilder: (_, index) {
+                                    var club = _clubs[index];
+
+                                    return InkWell(
+                                      onTap: () => this.openClub(context, club),
+                                      onLongPress: () => _showClubOptions(
+                                        club,
+                                        ctx,
+                                      ),
+                                      child: Container(
+                                        decoration:
+                                            AppDecorators.getGameItemDecoration(
+                                                theme: theme),
+                                        child: ClubItem(
+                                          club: club,
+                                          theme: theme,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  separatorBuilder: (_, __) =>
+                                      const SizedBox(height: 16.0),
+                                  itemCount: _clubs.length,
+                                ),
+                              ),
+                  ],
+                ),
               ),
             ),
           ),

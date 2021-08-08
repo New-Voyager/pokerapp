@@ -34,6 +34,9 @@ class _SplashScreenState extends State<SplashScreen> {
         final resp = await AuthService.newlogin(
             AppConfig.deviceId, AppConfig.deviceSecret);
         if (resp['status']) {
+          // Need to initialize before queries
+          await graphQLConfiguration.init();
+
           // successfully logged in
           AppConfig.jwt = resp['jwt'];
           // save device id, device secret and jwt
@@ -48,7 +51,6 @@ class _SplashScreenState extends State<SplashScreen> {
           AppConfig.jwt = resp['jwt'];
           final availableCoins = await AppCoinService.availableCoins();
           AppConfig.setAvailableCoins(availableCoins);
-          await graphQLConfiguration.init();
         } else {
           _moveToLoginScreen();
           return;

@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_history_model.dart';
 import 'package:pokerapp/models/newmodels/game_model_new.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/formatter.dart';
+import 'package:provider/provider.dart';
 
 class GameHistoryItemNew extends StatelessWidget {
   final GameHistoryModel game;
@@ -16,6 +19,8 @@ class GameHistoryItemNew extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Widget clubName = Container();
+    AppTheme theme = AppTheme.getTheme(context);
+
     if ((this.showClubName ?? false) && this.game.clubName != null) {
       clubName = Row(
         children: [
@@ -23,155 +28,169 @@ class GameHistoryItemNew extends StatelessWidget {
             flex: 2,
             child: Text(
               "Club",
-              style: AppStylesNew.labelTextStyle,
+              style: AppDecorators.getSubtitle1Style(theme: theme),
             ),
           ),
           Expanded(
             flex: 3,
             child: Text(
               " ${this.game.clubName}",
+              style: AppDecorators.getSubtitle2Style(theme: theme),
             ),
           ),
         ],
       );
     }
 
-    return Container(
-      decoration: AppStylesNew.gameHistoryDecoration,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          Positioned(
-            top: 0,
-            right: 0,
-            child: Container(
-              alignment: Alignment.centerRight,
-              child: Image.asset(
-                "${GameModelNew.getGameTypeImageAsset(game.ShortGameType)}",
-                width: 48.pw,
-                height: 48.ph,
-              ),
-            ),
-          ),
-          Row(
+    return Consumer<AppTheme>(
+      builder: (_, theme, __) => Container(
+        margin: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+        decoration: AppDecorators.getGameItemDecoration(theme: theme),
+        child: Container(
+          child: Stack(
+            alignment: Alignment.center,
             children: [
-              Expanded(
-                flex: 6,
+              Positioned(
+                top: 0,
+                right: 0,
                 child: Container(
-                  margin: EdgeInsets.only(left: 16),
-                  padding: EdgeInsets.symmetric(vertical: 16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      RichText(
-                        text: TextSpan(
-                          text: "${game.GameType} ",
-                          style: TextStyle(
-                            color: AppColorsNew.newTextColor,
-                            fontFamily: AppAssetsNew.fontFamilyPoppins,
-                            fontSize: 16.dp,
-                            fontWeight: FontWeight.w500,
-                          ),
-                          children: [
-                            TextSpan(
-                              text:
-                                  "${DataFormatter.chipsFormat(game.smallBlind)}/${DataFormatter.chipsFormat(game.bigBlind)}",
-                              style: TextStyle(
-                                color: AppColorsNew.yellowAccentColor,
-                                fontFamily: AppAssetsNew.fontFamilyPoppins,
-                                fontSize: 16.dp,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                      clubName,
-                      Row(
-                        children: [
-                          Expanded(
-                            flex: 2,
-                            child: Text(
-                              "Hosted by",
-                              style: AppStylesNew.labelTextStyle,
-                            ),
-                          ),
-                          Expanded(
-                            flex: 3,
-                            child: Text(
-                              " ${game.startedBy}",
-                            ),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Expanded(
-                              flex: 2,
-                              child: Text(
-                                "Started at",
-                                style: AppStylesNew.labelTextStyle,
-                              )),
-                          Expanded(
-                              flex: 3,
-                              child: Text(
-                                  " ${DataFormatter.dateFormat(game.startedAt)}")),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Expanded(
-                            flex: 2,
-                            child: Text(
-                              "Running time",
-                              style: AppStylesNew.labelTextStyle,
-                            ),
-                          ),
-                          Expanded(
-                            flex: 3,
-                            child: Text(
-                              " ${DataFormatter.getTimeInHHMMFormatInMin(game.runTime)}",
-                            ),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Expanded(
-                              flex: 2,
-                              child: Text(
-                                "Session Time",
-                                style: AppStylesNew.labelTextStyle,
-                              )),
-                          Expanded(
-                              flex: 3,
-                              child: Text(
-                                  " ${DataFormatter.getTimeInHHMMFormatInMin(game.sessionTime)}")),
-                        ],
-                      ),
-                    ],
+                  alignment: Alignment.centerRight,
+                  child: Image.asset(
+                    "${GameModelNew.getGameTypeImageAsset(game.ShortGameType)}",
+                    width: 48.pw,
+                    height: 48.ph,
                   ),
                 ),
               ),
-              Expanded(
-                flex: 2,
-                child: Container(
-                  alignment: Alignment.center,
-                  child: Text(
-                    "${DataFormatter.chipsFormat(game.balance)}",
-                    style: TextStyle(
-                      color: getBalanceColor(game.balance),
-                      fontSize: 24.0.pw,
-                      fontFamily: AppAssetsNew.fontFamilyPoppins,
-                      fontWeight: FontWeight.w500,
+              Row(
+                children: [
+                  Expanded(
+                    flex: 6,
+                    child: Container(
+                      margin: EdgeInsets.only(left: 16),
+                      padding: EdgeInsets.symmetric(vertical: 16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          RichText(
+                            text: TextSpan(
+                              text: "${game.GameType} ",
+                              style:
+                                  AppDecorators.getHeadLine2Style(theme: theme),
+                              children: [
+                                TextSpan(
+                                  text:
+                                      "${DataFormatter.chipsFormat(game.smallBlind)}/${DataFormatter.chipsFormat(game.bigBlind)}",
+                                  style: AppDecorators.getAccentTextStyle(
+                                          theme: theme)
+                                      .copyWith(fontSize: 16.dp),
+                                )
+                              ],
+                            ),
+                          ),
+                          clubName,
+                          Row(
+                            children: [
+                              Expanded(
+                                flex: 2,
+                                child: Text(
+                                  "Hosted by",
+                                  style: AppDecorators.getSubtitle1Style(
+                                      theme: theme),
+                                ),
+                              ),
+                              Expanded(
+                                flex: 3,
+                                child: Text(
+                                  " ${game.startedBy}",
+                                  style: AppDecorators.getSubtitle2Style(
+                                      theme: theme),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Expanded(
+                                  flex: 2,
+                                  child: Text(
+                                    "Started at",
+                                    style: AppDecorators.getSubtitle1Style(
+                                        theme: theme),
+                                  )),
+                              Expanded(
+                                  flex: 3,
+                                  child: Text(
+                                    " ${DataFormatter.dateFormat(game.startedAt)}",
+                                    style: AppDecorators.getSubtitle2Style(
+                                        theme: theme),
+                                  )),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Expanded(
+                                flex: 2,
+                                child: Text(
+                                  "Running time",
+                                  style: AppDecorators.getSubtitle1Style(
+                                      theme: theme),
+                                ),
+                              ),
+                              Expanded(
+                                flex: 3,
+                                child: Text(
+                                  " ${DataFormatter.getTimeInHHMMFormatInMin(game.runTime)}",
+                                  style: AppDecorators.getSubtitle2Style(
+                                      theme: theme),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Expanded(
+                                  flex: 2,
+                                  child: Text(
+                                    "Session Time",
+                                    style: AppDecorators.getSubtitle1Style(
+                                        theme: theme),
+                                  )),
+                              Expanded(
+                                flex: 3,
+                                child: Text(
+                                  " ${DataFormatter.getTimeInHHMMFormatInMin(game.sessionTime)}",
+                                  style: AppDecorators.getSubtitle2Style(
+                                      theme: theme),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
+                  Expanded(
+                    flex: 2,
+                    child: Container(
+                      alignment: Alignment.center,
+                      child: Text(
+                        "${DataFormatter.chipsFormat(game.balance)}",
+                        style: TextStyle(
+                          color: getBalanceColor(game.balance),
+                          fontSize: 24.0.pw,
+                          fontFamily: AppAssetsNew.fontFamilyPoppins,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
-        ],
+        ),
       ),
     );
   }

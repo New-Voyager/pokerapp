@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
-import 'package:pokerapp/resources/new/app_colors_new.dart';
-import 'package:pokerapp/resources/new/app_styles_new.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/resources/app_decorators.dart';
+import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
+import 'package:provider/provider.dart';
 
 class HandLogActionView extends StatelessWidget {
   final HandLogModelNew handLogModel;
@@ -13,52 +15,51 @@ class HandLogActionView extends StatelessWidget {
       itemBuilder: (context, index) {
         Player player = handLogModel.hand.playersInSeats[index];
         if (player.received <= 0) {
-          return Container();
+          return SizedBox.shrink();
         }
-        return Container(
-          margin: EdgeInsets.symmetric(horizontal: 8),
-          padding: EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: AppColorsNew.actionRowBgColor,
-            borderRadius: BorderRadius.circular(5),
-          ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Expanded(
-                flex: 4,
-                child: Text(
-                  getPlayerNameBySeatNo(
-                      handLogModel: handLogModel, seatNo: player.seatNo),
-                  style: AppStylesNew.playerNameTextStyle,
-                  textAlign: TextAlign.left,
+        return Consumer<AppTheme>(
+          builder: (_, theme, __) => Container(
+            margin: EdgeInsets.symmetric(horizontal: 8),
+            padding: EdgeInsets.all(8),
+            decoration: AppDecorators.tileDecorationWithoutBorder(theme),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded(
+                  flex: 4,
+                  child: Text(
+                    getPlayerNameBySeatNo(
+                        handLogModel: handLogModel, seatNo: player.seatNo),
+                    style: AppDecorators.getSubtitle1Style(theme: theme),
+                    textAlign: TextAlign.left,
+                  ),
                 ),
-              ),
-              Expanded(
-                flex: 2,
-                child: Text(
-                  "Recieved",
-                  style: AppStylesNew.playerNameTextStyle,
-                  textAlign: TextAlign.center,
+                Expanded(
+                  flex: 2,
+                  child: Text(
+                    AppStringsNew.recievedText,
+                    style: AppDecorators.getSubtitle1Style(theme: theme),
+                    textAlign: TextAlign.center,
+                  ),
                 ),
-              ),
-              Expanded(
-                flex: 2,
-                child: Text(
-                  player.received.toString(),
-                  style: AppStylesNew.balanceTextStyle,
-                  textAlign: TextAlign.center,
+                Expanded(
+                  flex: 2,
+                  child: Text(
+                    player.received.toString(),
+                    style: AppDecorators.getSubtitle1Style(theme: theme),
+                    textAlign: TextAlign.center,
+                  ),
                 ),
-              ),
-              Expanded(
-                flex: 2,
-                child: Text(
-                  player.balance.after.toString(),
-                  style: AppStylesNew.balanceTextStyle,
-                  textAlign: TextAlign.right,
+                Expanded(
+                  flex: 2,
+                  child: Text(
+                    player.balance.after.toString(),
+                    style: AppDecorators.getSubtitle1Style(theme: theme),
+                    textAlign: TextAlign.right,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         );
       },

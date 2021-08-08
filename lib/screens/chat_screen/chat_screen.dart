@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/messages_from_member.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/screens/chat_screen/chat_model.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/chat_list_widget.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/clubs_service.dart';
+import 'package:provider/provider.dart';
 
 import '../../routes.dart';
 import 'utils.dart';
@@ -37,21 +39,25 @@ class _ChatScreenState extends State<ChatScreen> with RouteAwareAnalytics {
   @override
   Widget build(BuildContext context) {
     isHostView = widget.player != null;
-    return Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage("assets/images/backgrounds/chat-background.png"),
-            repeat: ImageRepeat.repeat,
+    return Consumer<AppTheme>(
+      builder: (_, theme, __) => Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image:
+                  AssetImage("assets/images/backgrounds/chat-background.png"),
+              repeat: ImageRepeat.repeat,
+            ),
           ),
-        ),
-        child: Scaffold(
-          backgroundColor: chatBg,
-          appBar: CustomAppBar(
-            context: context,
-            titleText: widget.name ?? 'Message',
-          ),
-          body: _buildBody(),
-        ));
+          child: Scaffold(
+            backgroundColor: chatBg,
+            appBar: CustomAppBar(
+              theme: theme,
+              context: context,
+              titleText: widget.name ?? 'Message',
+            ),
+            body: _buildBody(),
+          )),
+    );
   }
 
   // Widget _buildAppBar() {

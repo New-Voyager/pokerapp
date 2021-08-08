@@ -5,6 +5,7 @@ import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/auth_model.dart';
 import 'package:pokerapp/models/club_members_model.dart';
 import 'package:pokerapp/models/club_message_model.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/club_screen/messages_page_view/bottom_sheet/gif_drawer_sheet.dart';
@@ -14,6 +15,7 @@ import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/services/app/club_interior_service.dart';
 import 'package:pokerapp/services/app/club_message_service.dart';
 import 'package:pokerapp/widgets/emoji_picker_widget.dart';
+import 'package:provider/provider.dart';
 
 import '../../../routes.dart';
 import '../../chat_screen/utils.dart';
@@ -120,69 +122,72 @@ class _MessagesPageViewState extends State<MessagesPageView>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: chatBg,
-      appBar: CustomAppBar(
-        context: context,
-        titleText: AppStringsNew.ClubChatTitle,
-        subTitleText: "${widget.clubCode}",
-      ),
-      body: Column(
-        children: [
-          /* main view to show messages */
-          Expanded(
-            child: StreamBuilder<List<ClubMessageModel>>(
-              stream: ClubMessageService.pollMessages(widget.clubCode),
-              builder: (_, snapshot) {
-                if (snapshot.hasError || _players == null)
-                  return CircularProgressWidget(
-                    text: "Loading messages...",
-                  );
-
-                if (snapshot.data?.isEmpty ?? true) return NoMessageWidget();
-
-                messages = snapshot.data;
-                var mess = _convert();
-
-                return ListView.separated(
-                  reverse: true,
-                  padding: const EdgeInsets.all(5),
-                  itemBuilder: (_, int index) {
-                    return MessageItem(
-                      messageModel: mess[index],
-                      currentUser: _authModel,
-                      players: _players,
+    return Consumer<AppTheme>(
+      builder: (_, theme, __) => Scaffold(
+        backgroundColor: chatBg,
+        appBar: CustomAppBar(
+          theme: theme,
+          context: context,
+          titleText: AppStringsNew.ClubChatTitle,
+          subTitleText: "${widget.clubCode}",
+        ),
+        body: Column(
+          children: [
+            /* main view to show messages */
+            Expanded(
+              child: StreamBuilder<List<ClubMessageModel>>(
+                stream: ClubMessageService.pollMessages(widget.clubCode),
+                builder: (_, snapshot) {
+                  if (snapshot.hasError || _players == null)
+                    return CircularProgressWidget(
+                      text: "Loading messages...",
                     );
-                  },
-                  separatorBuilder: (_, __) => const SizedBox(height: 5.0),
-                  itemCount: snapshot.data.length,
-                );
-              },
-            ),
-          ),
 
-          // chat text field
-          ChatTextField(
-            icon: FontAwesomeIcons.icons,
-            onGifSelectTap: _openGifDrawer,
-            textEditingController: _textController,
-            onSend: _sendMessage,
-            onEmojiSelectTap: _onEmojiSelectTap,
-            onTap: _onTap,
-          ),
+                  if (snapshot.data?.isEmpty ?? true) return NoMessageWidget();
 
-          // emoji picker
-          ValueListenableBuilder<bool>(
-            valueListenable: _vnShowEmojiPicker,
-            builder: (_, showEmojiPicker, __) => showEmojiPicker
-                ? EmojiPicker(
-                    onEmojiSelected: (String emoji) {
-                      _textController.text += emoji;
+                  messages = snapshot.data;
+                  var mess = _convert();
+
+                  return ListView.separated(
+                    reverse: true,
+                    padding: const EdgeInsets.all(5),
+                    itemBuilder: (_, int index) {
+                      return MessageItem(
+                        messageModel: mess[index],
+                        currentUser: _authModel,
+                        players: _players,
+                      );
                     },
-                  )
-                : const SizedBox.shrink(),
-          ),
-        ],
+                    separatorBuilder: (_, __) => const SizedBox(height: 5.0),
+                    itemCount: snapshot.data.length,
+                  );
+                },
+              ),
+            ),
+
+            // chat text field
+            ChatTextField(
+              icon: FontAwesomeIcons.icons,
+              onGifSelectTap: _openGifDrawer,
+              textEditingController: _textController,
+              onSend: _sendMessage,
+              onEmojiSelectTap: _onEmojiSelectTap,
+              onTap: _onTap,
+            ),
+
+            // emoji picker
+            ValueListenableBuilder<bool>(
+              valueListenable: _vnShowEmojiPicker,
+              builder: (_, showEmojiPicker, __) => showEmojiPicker
+                  ? EmojiPicker(
+                      onEmojiSelected: (String emoji) {
+                        _textController.text += emoji;
+                      },
+                    )
+                  : const SizedBox.shrink(),
+            ),
+          ],
+        ),
       ),
     );
   }

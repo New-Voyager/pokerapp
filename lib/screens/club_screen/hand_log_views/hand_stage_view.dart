@@ -2,70 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_stages.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_assets.dart';
+import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_stage_header.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
-
-const sbTextStyle = TextStyle(
-  fontFamily: AppAssets.fontFamilyLato,
-  color: Colors.blueGrey,
-  fontSize: 12.0,
-  fontWeight: FontWeight.w500,
-);
-
-const bbTextStyle = TextStyle(
-  fontFamily: AppAssets.fontFamilyLato,
-  color: Colors.blue,
-  fontSize: 12.0,
-  fontWeight: FontWeight.w500,
-);
-
-const betTextStyle = TextStyle(
-  fontFamily: AppAssets.fontFamilyLato,
-  color: Colors.redAccent,
-  fontSize: 12.0,
-  fontWeight: FontWeight.w500,
-);
-
-const raiseTextStyle = TextStyle(
-  fontFamily: AppAssets.fontFamilyLato,
-  color: Colors.redAccent,
-  fontSize: 12.0,
-  fontWeight: FontWeight.w500,
-);
-
-const checkTextStyle = TextStyle(
-  fontFamily: AppAssets.fontFamilyLato,
-  color: Colors.white,
-  fontSize: 12.0,
-  fontWeight: FontWeight.w500,
-);
-
-const callTextStyle = TextStyle(
-  color: Colors.lightGreenAccent,
-  fontSize: 12.0,
-  fontWeight: FontWeight.w500,
-);
-
-const foldTextStyle = TextStyle(
-  color: Colors.blueGrey,
-  fontSize: 12.0,
-  fontWeight: FontWeight.w500,
-);
-
-const straddleTextStyle = TextStyle(
-  color: Colors.cyan,
-  fontSize: 12.0,
-  fontWeight: FontWeight.w500,
-);
-
-const allinTextStyle = TextStyle(
-  color: Colors.yellowAccent,
-  fontSize: 12.0,
-  fontWeight: FontWeight.w500,
-);
 
 class HandStageView extends StatelessWidget {
   final HandLogModelNew handLogModel;
@@ -78,6 +21,7 @@ class HandStageView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     GameActions actions = _getActions(stageEnum);
+    final theme = AppTheme.getTheme(context);
     // String stageName = _getStageName(stageEnum);
     List<int> stageCards = _getStageCardsList(stageEnum);
 
@@ -103,11 +47,11 @@ class HandStageView extends StatelessWidget {
                         shrinkWrap: true,
                         itemCount: actions.actions.length,
                         itemBuilder: (context, index) {
-                          return actionRow(index, actions);
+                          return actionRow(index, actions, theme);
                         },
                         separatorBuilder: (context, index) {
                           return Divider(
-                            color: Colors.transparent,
+                            color: theme.fillInColor,
                             height: 1,
                           );
                         },
@@ -121,11 +65,38 @@ class HandStageView extends StatelessWidget {
         : Container();
   }
 
-  Container actionRow(int index, GameActions actions) {
-    var textStyle = TextStyle(
+  Container actionRow(int index, GameActions actions, AppTheme theme) {
+    TextStyle textStyle = AppDecorators.getSubtitle1Style(theme: theme);
+    var sbTextStyle = textStyle.copyWith(
+      color: Colors.blueGrey,
+    );
+    var bbTextStyle = textStyle.copyWith(
+      color: Colors.blue,
+    );
+    var betTextStyle = textStyle.copyWith(
+      color: Colors.redAccent,
+    );
+
+    var raiseTextStyle = textStyle.copyWith(
+      color: Colors.redAccent,
+    );
+
+    var checkTextStyle = textStyle.copyWith(
       color: Colors.white,
-      fontSize: 12.0,
-      fontWeight: FontWeight.w600,
+    );
+    var callTextStyle = textStyle.copyWith(
+      color: Colors.lightGreenAccent,
+    );
+
+    var foldTextStyle = textStyle.copyWith(
+      color: Colors.blueGrey,
+    );
+
+    var straddleTextStyle = textStyle.copyWith(
+      color: Colors.cyan,
+    );
+    var allinTextStyle = textStyle.copyWith(
+      color: Colors.yellowAccent,
     );
 
     String action = "";
@@ -178,10 +149,7 @@ class HandStageView extends StatelessWidget {
     }
 
     return Container(
-      decoration: BoxDecoration(
-        color: AppColorsNew.actionRowBgColor,
-        borderRadius: BorderRadius.circular(5),
-      ),
+      decoration: AppDecorators.tileDecorationWithoutBorder(theme),
       padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -194,7 +162,7 @@ class HandStageView extends StatelessWidget {
                 handLogModel: handLogModel,
                 seatNo: actions.actions[index].seatNo,
               ),
-              style: AppStylesNew.playerNameTextStyle,
+              style: AppDecorators.getSubtitle1Style(theme: theme),
               textAlign: TextAlign.left,
             ),
           ),
@@ -213,11 +181,7 @@ class HandStageView extends StatelessWidget {
                       actions.actions[index].action != HandActions.FOLD
                   ? actions.actions[index].amount.toString()
                   : "",
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 12.0,
-                fontWeight: FontWeight.w500,
-              ),
+              style: AppDecorators.getSubtitle1Style(theme: theme),
               textAlign: TextAlign.center,
             ),
           ),
@@ -225,11 +189,7 @@ class HandStageView extends StatelessWidget {
             flex: 2,
             child: Text(
               actions.actions[index].stack.toString(),
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 12.0,
-                fontWeight: FontWeight.w500,
-              ),
+              style: AppDecorators.getSubtitle1Style(theme: theme),
               textAlign: TextAlign.right,
             ),
           ),

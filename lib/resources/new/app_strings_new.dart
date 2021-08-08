@@ -259,4 +259,60 @@ class AppStringsNew {
   static const String emailText = 'Email';
   static const String passwordText = 'Password';
   static const String registerNowText = 'Register Now';
+
+  static String gameCodeHintText = "Enter Game code";
+
+  static String noGamesFoundText = "Game not found!";
+
+  static String hostButtonText = "HOST";
+
+  static String createClubTitle = "Create Club";
+
+  static String createButtonText = "Create";
+
+  static String labelNameText = "Name";
+  static String labelDescriptionText = "Description";
+
+  static String loadingDefaultText = "Loading";
+
+  static String noClubsText = "No Clubs";
+
+  static String createGameText = '+ Create Game';
+
+  static String handHistoryTitle = "Hand History";
+
+  static String recievedText = "Recieved";
+
+  static String handStatisticsTitle = "Hand Statistics";
+
+  static String stageStatisticsTitle = "Stage Statistics";
+
+  static String thisGameText = "This Game";
+
+  static String allTimeText = "All Time";
+
+  static String preflop = "Preflop";
+  static String flop = "Flop";
+  static String turn = "Turn";
+  static String river = "River";
+  static String showdown = "Showdown";
+
+  static String actionStatistics = "Action Statistics";
+
+  static String vpip = "Vpip";
+  static String contbet = "Cont Bet";
+  static String threebet = "3 Bet";
+  static String wtsd = "WTSD";
+  static String wsd = "W\$SD";
+  static String headsup = "Headsup";
+  static String headsdown = "Headsup Won";
+  static String wtsdDesc = "WTSD : Went To Show Down";
+  static String wsdDesc = "W\$SD : Won at Show Down";
+  static String hands = "Hands";
+  static String won = "Won";
+  static String perSymbol = "%";
+
+  static String loadingStatistics = "Loading Statistics..";
+  static String tips = "Tips";
+  static String download = "Download";
 }

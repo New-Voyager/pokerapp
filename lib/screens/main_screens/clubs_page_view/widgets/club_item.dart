@@ -2,29 +2,25 @@ import 'package:badges/badges.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/club_model.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
-import 'package:pokerapp/resources/new/app_styles_new.dart';
-import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
-import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
-import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class ClubItemView extends StatelessWidget {
   final ClubModel club;
-  ClubItemView(this.club);
+  final AppTheme theme;
+  ClubItemView(this.club, this.theme);
 
   @override
   Widget build(BuildContext context) {
     var separator = SizedBox(height: 10.0);
     Widget clubName = Text(
       club.clubName,
-      style: AppStylesNew.cardHeaderTextStyle.copyWith(
-        fontSize: 14.dp,
-        color: AppColorsNew.yellowAccentColor,
-      ),
+      style: AppDecorators.getHeadLine2Style(theme: theme),
     );
 
     if (club.hostUnreadMessageCount != 0 ||
@@ -50,7 +46,7 @@ class ClubItemView extends StatelessWidget {
                 child: Text(
                   club.balance == '0' ? '' : club.balance,
                   textAlign: TextAlign.end,
-                  style: AppStylesNew.valueTextStyle.copyWith(
+                  style: AppDecorators.getHeadLine2Style(theme: theme).copyWith(
                     color: double.parse(club.balance) > 0
                         ? AppColorsNew.positiveColor
                         : AppColorsNew.negativeColor,
@@ -71,10 +67,11 @@ class ClubItemView extends StatelessWidget {
                 children: [
                   Text(
                     AppStringsNew.clubCodeLabel,
-                    style: AppStylesNew.labelTextStyle,
+                    style: AppDecorators.getSubtitle3Style(theme: theme),
                   ),
                   Text(
                     "${club.clubCode}",
+                    style: AppDecorators.getHeadLine4Style(theme: theme),
                   ),
                 ],
               ),
@@ -83,10 +80,11 @@ class ClubItemView extends StatelessWidget {
                 children: [
                   Text(
                     AppStringsNew.hostedBy,
-                    style: AppStylesNew.labelTextStyle,
+                    style: AppDecorators.getSubtitle3Style(theme: theme),
                   ),
                   Text(
                     club.isOwner ? "You" : "${club.hostName}",
+                    style: AppDecorators.getHeadLine4Style(theme: theme),
                   ),
                 ],
               ),
@@ -113,7 +111,7 @@ class ClubItemView extends StatelessWidget {
                   // ),
                   Text(
                     '${club.memberCount} Member${club.memberCount == 0 || club.memberCount == 1 ? '' : 's'}',
-                    style: AppStylesNew.appBarSubTitleTextStyle,
+                    style: AppDecorators.getSubtitle2Style(theme: theme),
                   ),
                 ],
               ),
@@ -133,7 +131,7 @@ class ClubItemView extends StatelessWidget {
             ? SizedBox.shrink()
             : Text(
                 "Joined at ${club.joinDate}",
-                style: AppStylesNew.itemInfoTextStyle,
+                style: AppDecorators.getSubtitle1Style(theme: theme),
               ),
       ],
     );
@@ -142,9 +140,11 @@ class ClubItemView extends StatelessWidget {
 
 class ClubItem extends StatelessWidget {
   final ClubModel club;
+  final AppTheme theme;
 
   ClubItem({
     @required this.club,
+    @required this.theme,
   }) {
     club.incomingRequest = false;
     club.outgoingRequest = true;
@@ -196,6 +196,7 @@ class ClubItem extends StatelessWidget {
         Text(
           'Waiting For Approval',
           textAlign: TextAlign.center,
+          style: AppDecorators.getSubtitle3Style(theme: theme),
         ),
       ];
     }
@@ -217,69 +218,21 @@ class ClubItem extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Row(
-          children: <Widget>[
-            /*
-            * color
-            * */
-
-            // Container(
-            //   width: 16.0,
-            //   constraints: BoxConstraints(minHeight: 100),
-            //   decoration: BoxDecoration(
-            //     color: generateColorFor(club.clubCode),
-            //     borderRadius: BorderRadius.horizontal(
-            //       left: Radius.circular(AppDimensions.cardRadius),
-            //     ),
-            //   ),
-            // ),
-
-            /*
-            * main content
-            * */
-
-            Expanded(
-              child: Container(
-                padding: EdgeInsets.only(left: 12, top: 8.0, bottom: 16),
-                decoration: BoxDecoration(
-                  color: Colors.black.withOpacity(0.7),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Column(
-                  children: <Widget>[
-                    ClubItemView(club),
-                    // Positioned(
-                    //   bottom: 0,
-                    //   right: 0,
-                    //   child: Text(
-                    //     club.isActive
-                    //         ? 'Active'
-                    //         : club.incomingRequest
-                    //             ? 'Invited on ${club.invitationDate}'
-                    //             : '',
-                    //   ),
-                    // ),
-                  ],
-                ),
-              ),
-            ),
-
-            /*
-            * action button or status
-            * */
-          ],
+        Container(
+          padding: EdgeInsets.only(left: 12, top: 8.0, bottom: 16),
+          child: ClubItemView(club, theme),
         ),
         Visibility(
           visible: (club.memberStatus == 'PENDING'),
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             margin: EdgeInsets.only(bottom: 8),
-            decoration: const BoxDecoration(
-              color: AppColorsNew.actionRowBgColor,
+            decoration: BoxDecoration(
+              color: theme.fillInColor,
               borderRadius: BorderRadius.all(
                 Radius.circular(AppDimensions.cardRadius),
               ),
-              boxShadow: AppStylesNew.cardBoxShadowMedium,
+              // boxShadow: AppStylesNew.cardBoxShadowMedium,
             ),
             child: _buildSideAction(club),
           ),

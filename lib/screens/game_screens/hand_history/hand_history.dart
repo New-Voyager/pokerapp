@@ -5,14 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/hand_history_model.dart';
 import 'package:pokerapp/models/player_info.dart';
-import 'package:pokerapp/resources/new/app_colors_new.dart';
-import 'package:pokerapp/resources/new/app_colors_new.dart';
-import 'package:pokerapp/resources/new/app_styles_new.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/resources/app_decorators.dart';
+import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/game_screens/hand_history/played_hands.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/hand_service.dart';
 import 'package:pokerapp/services/app/player_service.dart';
+import 'package:provider/provider.dart';
 
 import '../../../routes.dart';
 
@@ -62,63 +63,65 @@ class _HandHistoryState extends State<HandHistoryListView>
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: AppStylesNew.BgGreenRadialGradient,
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        appBar: CustomAppBar(
-          showBackButton: !widget.isInBottomSheet,
-          context: context,
-          titleText: "Hand History",
-        ),
-        body: !loadingDone
-            ? Center(child: CircularProgressWidget())
-            : Container(
-                child: Column(
-                  children: [
-                    Container(
-                      child: TabBar(
-                        unselectedLabelColor: AppColorsNew.lightGrayTextColor,
-                        indicatorSize: TabBarIndicatorSize.label,
-                        indicatorColor: AppColorsNew.yellowAccentColor,
-                        labelColor: Colors.white,
-                        labelStyle: TextStyle(),
-                        tabs: [
-                          new Tab(
-                            text: "All Hands",
-                          ),
-                          new Tab(
-                            text: "Winning Hands",
-                          ),
-                        ],
-                        controller: _tabController,
+    return Consumer<AppTheme>(
+      builder: (_, theme, __) => Container(
+        decoration: AppDecorators.bgRadialGradient(theme),
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          appBar: CustomAppBar(
+            theme: theme,
+            showBackButton: !widget.isInBottomSheet,
+            context: context,
+            titleText: AppStringsNew.handHistoryTitle,
+          ),
+          body: !loadingDone
+              ? Center(child: CircularProgressWidget())
+              : Container(
+                  child: Column(
+                    children: [
+                      Container(
+                        child: TabBar(
+                          unselectedLabelColor: theme.secondaryColorWithDark(),
+                          indicatorSize: TabBarIndicatorSize.label,
+                          indicatorColor: theme.accentColor,
+                          labelColor: theme.secondaryColorWithLight(),
+                          tabs: [
+                            new Tab(
+                              text: "All Hands",
+                            ),
+                            new Tab(
+                              text: "Winning Hands",
+                            ),
+                          ],
+                          controller: _tabController,
+                        ),
                       ),
-                    ),
-                    Expanded(
-                      child: TabBarView(
-                        children: [
-                          PlayedHandsScreen(
-                            _data.gameCode,
-                            _data.getMyHands(),
-                            //_data.getAllHands(),
-                            widget.clubCode,
-                            currentPlayer,
-                            isInBottomSheet: widget.isInBottomSheet,
-                          ),
-                          PlayedHandsScreen(
-                            _data.gameCode,
-                            _data.getWinningHands(),
-                            widget.clubCode,
-                            currentPlayer,
-                            isInBottomSheet: widget.isInBottomSheet,
-                          ),
-                        ],
-                        controller: _tabController,
+                      Expanded(
+                        child: TabBarView(
+                          children: [
+                            PlayedHandsScreen(
+                              _data.gameCode,
+                              _data.getMyHands(),
+                              //_data.getAllHands(),
+                              widget.clubCode,
+                              currentPlayer,
+                              isInBottomSheet: widget.isInBottomSheet,
+                            ),
+                            PlayedHandsScreen(
+                              _data.gameCode,
+                              _data.getWinningHands(),
+                              widget.clubCode,
+                              currentPlayer,
+                              isInBottomSheet: widget.isInBottomSheet,
+                            ),
+                          ],
+                          controller: _tabController,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
+        ),
       ),
     );
   }

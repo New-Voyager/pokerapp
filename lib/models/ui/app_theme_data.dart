@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:pokerapp/resources/new/app_assets_new.dart';
+import 'package:pokerapp/resources/new/app_strings_new.dart';
 
 class AppThemeData {
   // main color that the app is based on
@@ -20,6 +22,9 @@ class AppThemeData {
   // color used for negatives or errors
   Color negativeOrErrorColor;
 
+  // font family
+  String fontFamily;
+
   AppThemeData({
     this.primaryColor = const Color(0xFF033614), // 0xFF300614
     // Color(0xFF40D876); (darken secondary color)
@@ -28,5 +33,6 @@ class AppThemeData {
     this.fillInColor = const Color(0xFF0B2324),
     this.supportingColor = Colors.white,
     this.negativeOrErrorColor = const Color(0xFFFA0000),
+    this.fontFamily = AppAssetsNew.fontFamilyPoppins,
   });
 }

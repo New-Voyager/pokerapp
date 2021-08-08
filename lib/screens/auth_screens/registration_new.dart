@@ -24,6 +24,7 @@ import 'package:pokerapp/utils/loading_utils.dart';
 import 'package:pokerapp/widgets/appname_logo.dart';
 import 'package:pokerapp/widgets/card_form_text_field.dart';
 import 'package:pokerapp/widgets/round_color_button.dart';
+import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
 class RegistrationScreenNew extends StatefulWidget {
@@ -50,6 +51,7 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
     @required String hintText,
     @required void onInfoIconPress(),
     @required String labelText,
+    AppTheme appTheme,
   }) {
     return TextFormField(
       keyboardType: keyboardType,
@@ -60,15 +62,15 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
         /* border */
         border: AppDecorators.getBorderStyle(
           radius: 32.0,
-          color: _appTheme.primaryColorWithDark(),
+          color: appTheme.primaryColorWithDark(),
         ),
         errorBorder: AppDecorators.getBorderStyle(
           radius: 32.0,
-          color: _appTheme.negativeOrErrorColor,
+          color: appTheme.negativeOrErrorColor,
         ),
         focusedBorder: AppDecorators.getBorderStyle(
           radius: 32.0,
-          color: _appTheme.accentColorWithDark(),
+          color: appTheme.accentColorWithDark(),
         ),
 
         /* icons - prefix, suffix */
@@ -83,7 +85,7 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
         suffixIcon: IconButton(
           icon: Icon(
             Icons.info,
-            color: _appTheme.supportingColorWithDark(0.50),
+            color: appTheme.supportingColorWithDark(0.50),
           ),
           onPressed: onInfoIconPress,
         ),
@@ -91,11 +93,11 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
         /* hint & label texts */
         hintText: hintText,
         hintStyle: AppTextStyles.T3.copyWith(
-          color: _appTheme.supportingColorWithDark(0.60),
+          color: appTheme.supportingColorWithDark(0.60),
         ),
         labelText: labelText,
         labelStyle: AppTextStyles.T0.copyWith(
-          color: _appTheme.accentColor,
+          color: appTheme.accentColor,
         ),
 
         /* other */
@@ -105,7 +107,7 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
         ),
         floatingLabelBehavior: FloatingLabelBehavior.always,
         filled: true,
-        fillColor: _appTheme.fillInColor,
+        fillColor: appTheme.fillInColor,
         alignLabelWithHint: true,
       ),
     );
@@ -118,14 +120,14 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
     _appTheme = AppTheme.getTheme(context);
   }
 
-  void onBugIconPress() {
+  void onBugIconPress(AppTheme appTheme) {
     String apiUrl = "";
 
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         actionsPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        backgroundColor: _appTheme.fillInColor,
+        backgroundColor: appTheme.fillInColor,
         title: Text("Debug details"),
         content: Column(
           mainAxisSize: MainAxisSize.min,
@@ -143,8 +145,8 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
         actions: [
           RoundedColorButton(
               text: "SAVE",
-              backgroundColor: _appTheme.accentColor,
-              textColor: _appTheme.primaryColorWithDark(0.50),
+              backgroundColor: appTheme.accentColor,
+              textColor: appTheme.primaryColorWithDark(0.50),
               onTapFunction: () async {
                 if (apiUrl.isEmpty) {
                   toast("API url can't be empty");
@@ -167,7 +169,7 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
     );
   }
 
-  Widget _buildTermsAndPrivacyText() => Container(
+  Widget _buildTermsAndPrivacyText(AppTheme appTheme) => Container(
         margin: EdgeInsets.symmetric(
           horizontal: 16,
           vertical: 16,
@@ -178,28 +180,28 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
               TextSpan(
                 text: "By creating an account, you agree with our ",
                 style: AppTextStyles.T2.copyWith(
-                  color: _appTheme.supportingColorWithDark(0.50),
+                  color: appTheme.supportingColorWithDark(0.50),
                 ),
               ),
               TextSpan(
                 text: "Terms of Service",
                 style: AppTextStyles.T2.copyWith(
                   decoration: TextDecoration.underline,
-                  color: _appTheme.supportingColorWithDark(0.50),
+                  color: appTheme.supportingColorWithDark(0.50),
                 ),
                 recognizer: _termsClick..onTap = _openTermsOfService,
               ),
               TextSpan(
                 text: " & ",
                 style: AppTextStyles.T2.copyWith(
-                  color: _appTheme.supportingColorWithDark(0.50),
+                  color: appTheme.supportingColorWithDark(0.50),
                 ),
               ),
               TextSpan(
                 text: "Privacy Policy",
                 style: AppTextStyles.T2.copyWith(
                   decoration: TextDecoration.underline,
-                  color: _appTheme.supportingColorWithDark(0.50),
+                  color: appTheme.supportingColorWithDark(0.50),
                 ),
                 recognizer: _privacyClick..onTap = _openPrivacyPolicy,
               ),
@@ -211,7 +213,7 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: _appTheme.bgRadialGradient,
+      decoration: AppDecorators.bgRadialGradient(_appTheme),
       child: SafeArea(
         child: Scaffold(
           backgroundColor: Colors.transparent,
@@ -222,7 +224,7 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
               size: 32,
               color: _appTheme.supportingColorWithDark(0.50),
             ),
-            onPressed: onBugIconPress,
+            onPressed: () => onBugIconPress(_appTheme),
           ),
           body: SingleChildScrollView(
             child: Column(
@@ -241,7 +243,7 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
                       children: [
                         // screen name
                         _buildTextFormField(
-                          labelText: _appScreenText.getText("SCREEN_NAME"),
+                          labelText: _appScreenText.getText('SCREEN_NAME'),
                           keyboardType: TextInputType.name,
                           controller: _screenNameCtrl,
                           validator: (value) {
@@ -267,7 +269,7 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
 
                         // name
                         _buildTextFormField(
-                          labelText: _appScreenText.getText("YOUR_NAME"),
+                          labelText: _appScreenText.getText('YOUR_NAME'),
                           keyboardType: TextInputType.name,
                           controller: _nameCtrl,
                           validator: (value) {
@@ -290,7 +292,7 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
 
                         // Recover Email
                         _buildTextFormField(
-                          labelText: _appScreenText.getText("RECOVERY_EMAIL"),
+                          labelText: _appScreenText.getText('RECOVERY_EMAIL'),
                           keyboardType: TextInputType.emailAddress,
                           controller: _emailCtrl,
                           validator: (value) {
@@ -318,7 +320,8 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
                         // sep
                         AppDimensionsNew.getVerticalSizedBox(16),
 
-                        _buildTermsAndPrivacyText(), // Terms and privacy text
+                        // Terms and privacy text
+                        _buildTermsAndPrivacyText(_appTheme),
 
                         RoundedColorButton(
                           backgroundColor: _appTheme.accentColor,

@@ -12,69 +12,72 @@ class RewardsListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-//      resizeToAvoidBottomPadding: true,
-      key: _key,
-      backgroundColor: AppColorsNew.screenBackgroundColor,
-      appBar: CustomAppBar(
-        context: context,
-        titleText: "Rewards",
-      ),
-      /* AppBar(
+    return Consumer(
+      builder: (_, theme, __) => Scaffold(
+        //      resizeToAvoidBottomPadding: true,
+        key: _key,
         backgroundColor: AppColorsNew.screenBackgroundColor,
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              ClubScreenIcons.reward,
-              color: Colors.yellow,
-            ),
-            SizedBox(
-              width: 10.0,
-            ),
-            Text("Rewards"),
-          ],
+        appBar: CustomAppBar(
+          theme: theme,
+          context: context,
+          titleText: "Rewards",
         ),
-        elevation: 0.0,
-        centerTitle: true,
-        actions: _buildActions(context),
-      ), */
-      body: Consumer<RewardsModelProvider>(
-        builder: (context, data, child) => data.rewards != null
-            ? ListView.separated(
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: ListTile(
-                      title: Text(
-                        data.rewards[index].name,
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      subtitle: Padding(
-                        padding: const EdgeInsets.only(top: 5.0),
-                        child: Text(
-                          "Rewards: ${data.rewards[index].amount}",
+        /* AppBar(
+          backgroundColor: AppColorsNew.screenBackgroundColor,
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                ClubScreenIcons.reward,
+                color: Colors.yellow,
+              ),
+              SizedBox(
+                width: 10.0,
+              ),
+              Text("Rewards"),
+            ],
+          ),
+          elevation: 0.0,
+          centerTitle: true,
+          actions: _buildActions(context),
+        ), */
+        body: Consumer<RewardsModelProvider>(
+          builder: (context, data, child) => data.rewards != null
+              ? ListView.separated(
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ListTile(
+                        title: Text(
+                          data.rewards[index].name,
                           style: TextStyle(color: Colors.white),
                         ),
-                      ),
-                      trailing: IconButton(
-                        onPressed: null,
-                        icon: Icon(
-                          Icons.delete,
-                          color: Colors.white,
+                        subtitle: Padding(
+                          padding: const EdgeInsets.only(top: 5.0),
+                          child: Text(
+                            "Rewards: ${data.rewards[index].amount}",
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ),
+                        trailing: IconButton(
+                          onPressed: null,
+                          icon: Icon(
+                            Icons.delete,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
-                    ),
-                  );
-                },
-                itemCount: data.rewards.length,
-                separatorBuilder: (context, index) {
-                  return Divider(
-                    color: Colors.white,
-                  );
-                },
-              )
-            : Center(child: CircularProgressIndicator()),
+                    );
+                  },
+                  itemCount: data.rewards.length,
+                  separatorBuilder: (context, index) {
+                    return Divider(
+                      color: Colors.white,
+                    );
+                  },
+                )
+              : Center(child: CircularProgressIndicator()),
+        ),
       ),
     );
   }

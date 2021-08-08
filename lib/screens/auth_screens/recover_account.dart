@@ -8,10 +8,8 @@ import 'package:pokerapp/resources/app_config.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/app_text_styles.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
-import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
-import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
 import 'package:pokerapp/utils/alerts.dart';
@@ -39,8 +37,9 @@ class _RestoreAccountScreenState extends State<RestoreAccountScreen> {
   Widget build(BuildContext context) {
     final appTheme = AppTheme.getTheme(context);
     _appScreenText = getAppTextScreen("registration");
+
     return Container(
-      decoration: appTheme.bgRadialGradient,
+      decoration: AppDecorators.bgRadialGradient(appTheme),
       child: SafeArea(
         child: Scaffold(
           backgroundColor: Colors.transparent,

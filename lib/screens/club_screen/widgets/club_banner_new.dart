@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pokerapp/models/club_homepage_model.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
@@ -31,6 +33,7 @@ class ClubBannerViewNew extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = AppTheme.getTheme(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -41,11 +44,11 @@ class ClubBannerViewNew extends StatelessWidget {
             shape: BoxShape.circle,
             border: Border.all(
               width: 3.pw,
-              color: AppColorsNew.newTextGreenColor,
+              color: theme.secondaryColor,
             ),
             boxShadow: [
               BoxShadow(
-                color: AppColorsNew.newSelectedGreenColor,
+                color: theme.primaryColor,
                 blurRadius: 1.pw,
                 spreadRadius: 1.pw,
                 offset: Offset(1.pw, 4.pw),
@@ -55,14 +58,14 @@ class ClubBannerViewNew extends StatelessWidget {
           alignment: Alignment.center,
           child: Text(
             _getClubShortName(),
-            style: AppStylesNew.clubShortCodeTextStyle,
+            style: AppDecorators.getHeadLine2Style(theme: theme),
           ),
         ),
         Padding(
           padding: EdgeInsets.only(top: 8.0.pw),
           child: Text(
             clubModel.clubName,
-            style: AppStylesNew.clubTitleTextStyle,
+            style: AppDecorators.getHeadLine2Style(theme: theme),
           ),
         ),
         Row(
@@ -72,20 +75,18 @@ class ClubBannerViewNew extends StatelessWidget {
           children: [
             Text(
               AppStringsNew.clubCodeText + ": ",
-              style: AppStylesNew.labelTextStyle,
+              style: AppDecorators.getSubtitle3Style(theme: theme),
             ),
             Text(
               clubModel.clubCode,
-              style: AppStylesNew.valueTextStyle.copyWith(
-                fontWeight: FontWeight.normal,
-              ),
+              style: AppDecorators.getHeadLine3Style(theme: theme),
             ),
             GestureDetector(
               child: Padding(
                 padding: EdgeInsets.all(8.pw),
                 child: Icon(
                   Icons.copy,
-                  color: AppColorsNew.newTextGreenColor,
+                  color: theme.secondaryColor,
                   size: 16.pw,
                 ),
               ),

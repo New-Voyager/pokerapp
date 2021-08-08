@@ -2,9 +2,9 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
-import 'package:pokerapp/resources/new/app_styles_new.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
-import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/widgets/cards/multiple_stack_card_views.dart';
@@ -22,7 +22,7 @@ class HandStageHeader extends StatelessWidget {
     this.actions,
   });
 
-  List<Widget> pots(List<SeatPot> seatPots) {
+  List<Widget> pots(List<SeatPot> seatPots, AppTheme theme) {
     List<Widget> children = [];
     for (int i = 0; i < seatPots.length; i++) {
       String potName = '';
@@ -43,13 +43,13 @@ class HandStageHeader extends StatelessWidget {
         margin: EdgeInsets.all(8),
         child: Text(
           "$potName: $potValue",
-          style: AppStylesNew.potSizeTextStyle,
+          style: AppDecorators.getSubtitle1Style(theme: theme),
         ),
       );
       final playerNames = Flexible(
         child: Text(
           "[$players]",
-          style: AppStylesNew.potSizeTextStyle,
+          style: AppDecorators.getSubtitle1Style(theme: theme),
           maxLines: 3,
           softWrap: true,
           overflow: TextOverflow.fade,
@@ -70,6 +70,7 @@ class HandStageHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = AppTheme.getTheme(context);
     log('${handLogModel.hand.handLog.potWinners}');
     final stageRow = Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -80,7 +81,8 @@ class HandStageHeader extends StatelessWidget {
           alignment: Alignment.centerLeft,
           child: Text(
             stageName,
-            style: AppStylesNew.stageNameTextStyle,
+            style: AppDecorators.getHeadLine4Style(theme: theme)
+                .copyWith(fontWeight: FontWeight.w700),
           ),
         ),
         Container(
@@ -120,27 +122,26 @@ class HandStageHeader extends StatelessWidget {
               margin: EdgeInsets.all(8),
               child: Text(
                 "Pot: ${actions.potStart ?? 0}",
-                style: AppStylesNew.potSizeTextStyle,
+                style: AppDecorators.getSubtitle1Style(theme: theme)
+                    .copyWith(fontWeight: FontWeight.w700),
               ),
             )
           : stageName == "Showdown"
               ? Container(
-                  child: _getPotAmountWidget(),
+                  child: _getPotAmountWidget(theme),
                   margin: EdgeInsets.all(8),
                 )
               : Container();
       children.add(pot);
     } else {
-      final potWidgets = pots(seatPots);
+      final potWidgets = pots(seatPots, theme);
       children.addAll(potWidgets);
     }
 
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: stageColor,
-        borderRadius: BorderRadius.circular(8),
-      ),
+      decoration: AppDecorators.tileDecorationWithoutBorder(theme)
+          .copyWith(color: stageColor),
       child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -148,13 +149,13 @@ class HandStageHeader extends StatelessWidget {
     );
   }
 
-  _getPotAmountWidget() {
+  _getPotAmountWidget(AppTheme theme) {
     int length = handLogModel.hand.handLog.potWinners.length;
     if (length == 1) {
       return Container(
         child: Text(
           "Pot: ${handLogModel.hand.handLog.potWinners['0'].amount}",
-          style: AppStylesNew.playerNameTextStyle,
+          style: AppDecorators.getSubtitle1Style(theme: theme),
         ),
       );
     }
@@ -175,12 +176,12 @@ class HandStageHeader extends StatelessWidget {
           Container(
               child: Text(
             "Pot: ${handLogModel.hand.handLog.potWinners['0'].amount}",
-            style: AppStylesNew.playerNameTextStyle,
+            style: AppDecorators.getSubtitle1Style(theme: theme),
           )),
           Container(
             child: Text(
               "$sidePots",
-              style: AppStylesNew.playerNameTextStyle,
+              style: AppDecorators.getSubtitle1Style(theme: theme),
             ),
           ),
         ],

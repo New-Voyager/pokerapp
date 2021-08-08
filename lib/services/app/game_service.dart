@@ -424,6 +424,7 @@ class GameService {
     // print("result.data ${result.data} ${result.hasException}");
     if (result.hasException) {
       log("Exception In GraphQl Response: ${result.exception}");
+      return pastGames;
     } else {
       debugPrint(jsonEncode(result.data['pastGames']));
       try {

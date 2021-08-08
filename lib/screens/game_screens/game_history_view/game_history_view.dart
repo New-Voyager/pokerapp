@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/game_history_model.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/routes.dart';
@@ -9,6 +11,7 @@ import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/game_screens/game_history_view/game_history_item_new.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/club_interior_service.dart';
+import 'package:provider/provider.dart';
 
 class GameHistoryView extends StatefulWidget {
   final String clubCode;
@@ -60,25 +63,18 @@ class _GameHistoryViewState extends State<GameHistoryView>
         child: GameHistoryItemNew(game: _prevGames[index]));
   }
 
-  Widget body() {
+  Widget body(AppTheme theme) {
     if (_loadingData) {
       return Center(
-        child: const Text(
+        child: Text(
           'No games played',
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 20.0,
-          ),
+          style: AppDecorators.getCenterTextTextstyle(appTheme: theme),
         ),
       );
     }
 
     // build game history list
     return ListView.separated(
-      padding: const EdgeInsets.symmetric(
-        vertical: 10.0,
-        horizontal: 15.0,
-      ),
       shrinkWrap: true,
       itemBuilder: gameHistoryItem,
       itemCount: _prevGames.length,
@@ -88,27 +84,30 @@ class _GameHistoryViewState extends State<GameHistoryView>
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: AppStylesNew.BgGreenRadialGradient,
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        appBar: CustomAppBar(
-          titleText: AppStringsNew.GameHistoryTitle,
-          subTitleText: "Club code: ${widget.clubCode}",
-          context: context,
+    return Consumer<AppTheme>(
+      builder: (_, theme, __) => Container(
+        decoration: AppStylesNew.BgGreenRadialGradient,
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          appBar: CustomAppBar(
+            theme: theme,
+            titleText: AppStringsNew.GameHistoryTitle,
+            subTitleText: "Club code: ${widget.clubCode}",
+            context: context,
+          ),
+          body: _prevGames == null
+              ? Center(
+                  child: CircularProgressWidget(),
+                )
+              : SafeArea(child: body(theme)),
+          // child: _prevGames == null
+          //     ? Center(
+          //         child: CircularProgressIndicator(),
+          //       )
+          //     : Expanded(
+          //         child: body(),
+          //       ),
         ),
-        body: _prevGames == null
-            ? Center(
-                child: CircularProgressWidget(),
-              )
-            : SafeArea(child: body()),
-        // child: _prevGames == null
-        //     ? Center(
-        //         child: CircularProgressIndicator(),
-        //       )
-        //     : Expanded(
-        //         child: body(),
-        //       ),
       ),
     );
   }

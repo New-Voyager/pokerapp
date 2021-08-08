@@ -2,10 +2,12 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
-import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
+import 'package:provider/provider.dart';
 
 class HandlogSummary extends StatelessWidget {
   final HandLogModelNew handlogModel;
@@ -13,46 +15,52 @@ class HandlogSummary extends StatelessWidget {
   HandlogSummary({this.handlogModel});
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        children: [
-          Container(
-            margin: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            decoration: BoxDecoration(
-              color: AppColorsNew.newGreenRadialStartColor,
-              borderRadius: BorderRadius.circular(7),
-            ),
-            padding: EdgeInsets.all(8),
-            width: double.infinity,
-            alignment: Alignment.center,
-            child: Text(AppStringsNew.StackText,
-                style: AppStylesNew.valueTextStyle),
-          ),
-          Container(
-            padding: EdgeInsets.only(bottom: 16),
-            child: ListView.separated(
-              itemBuilder: (context, index) {
-                log("TOTAL : ${handlogModel.hand.playersInSeats.length}");
-                // log(handlogModel.hand.data.players[(index + 1).toString()].id);
-                return actionRow(handlogModel.hand.playersInSeats[index]);
-              },
-              itemCount: handlogModel.hand.playersInSeats.length,
-              shrinkWrap: true,
-              physics: ClampingScrollPhysics(),
-              separatorBuilder: (context, index) => Divider(
-                endIndent: 16,
-                indent: 16,
-                color: AppColorsNew.newBackgroundBlackColor,
-                height: 1,
+    return Consumer<AppTheme>(
+      builder: (_, theme, __) => Container(
+        child: Column(
+          children: [
+            Container(
+              margin: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: AppColorsNew.newGreenRadialStartColor,
+                borderRadius: BorderRadius.circular(7),
+              ),
+              padding: EdgeInsets.all(8),
+              width: double.infinity,
+              alignment: Alignment.center,
+              child: Text(
+                AppStringsNew.StackText,
+                style: AppDecorators.getHeadLine4Style(theme: theme)
+                    .copyWith(fontWeight: FontWeight.w700),
               ),
             ),
-          ),
-        ],
+            Container(
+              padding: EdgeInsets.only(bottom: 16),
+              child: ListView.separated(
+                itemBuilder: (context, index) {
+                  log("TOTAL : ${handlogModel.hand.playersInSeats.length}");
+                  // log(handlogModel.hand.data.players[(index + 1).toString()].id);
+                  return actionRow(
+                      handlogModel.hand.playersInSeats[index], theme);
+                },
+                itemCount: handlogModel.hand.playersInSeats.length,
+                shrinkWrap: true,
+                physics: ClampingScrollPhysics(),
+                separatorBuilder: (context, index) => Divider(
+                  endIndent: 16,
+                  indent: 16,
+                  color: AppColorsNew.newBackgroundBlackColor,
+                  height: 1,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  Widget actionRow(Player player) {
+  Widget actionRow(Player player, AppTheme theme) {
     final int diff = player.balance.after - player.balance.before;
     // int index = handlogModel.players
     //     .indexWhere((element) => element.id.toString() == player.id);
@@ -66,7 +74,7 @@ class HandlogSummary extends StatelessWidget {
       );
     }
     return Container(
-      decoration: AppStylesNew.actionRowDecoration,
+      decoration: AppDecorators.tileDecorationWithoutBorder(theme),
       margin: EdgeInsets.symmetric(horizontal: 8),
       padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       child: Row(
@@ -77,7 +85,8 @@ class HandlogSummary extends StatelessWidget {
             flex: 4,
             child: Text(
               playerName,
-              style: AppStylesNew.playerNameTextStyle,
+              style: AppDecorators.getSubtitle1Style(theme: theme)
+                  .copyWith(fontWeight: FontWeight.w500),
               textAlign: TextAlign.left,
             ),
           ),
@@ -101,7 +110,8 @@ class HandlogSummary extends StatelessWidget {
             flex: 2,
             child: Text(
               player.balance.after.toString(),
-              style: AppStylesNew.potSizeTextStyle,
+              style: AppDecorators.getSubtitle1Style(theme: theme)
+                  .copyWith(fontWeight: FontWeight.w500),
               textAlign: TextAlign.right,
             ),
           ),
