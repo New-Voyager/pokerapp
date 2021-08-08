@@ -2,13 +2,15 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/game_history_model.dart';
 import 'package:pokerapp/models/hand_stats_model.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
-import 'package:pokerapp/resources/new/app_styles_new.dart';
+import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/game_screens/game_history_details_view/hand_stat_chart.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
@@ -84,14 +86,14 @@ class _HandStatsViewState extends State<HandStatsView>
   Widget build(BuildContext context) {
     return Consumer<AppTheme>(
       builder: (_, theme, __) => Container(
-        decoration: AppStylesNew.BgGreenRadialGradient,
+        decoration: AppDecorators.bgRadialGradient(theme),
         child: Scaffold(
           backgroundColor: Colors.transparent,
           appBar: showThisGame
               ? CustomAppBar(
                   theme: theme,
                   context: context,
-                  titleText: 'Hand Statistics',
+                  titleText: AppStringsNew.handStatisticsTitle,
                   subTitleText: 'Game: ${model?.gameCode} ',
                 )
               : AppBar(
@@ -99,14 +101,14 @@ class _HandStatsViewState extends State<HandStatsView>
                 ),
           body: stats == null
               ? CircularProgressWidget(
-                  text: "Loading Statistics..",
+                  text: AppStringsNew.loadingStatistics,
                 )
               : SingleChildScrollView(
                   child: Column(
                     children: [
                       // Pie Charts
                       Container(
-                        decoration: AppStylesNew.actionRowDecoration,
+                        decoration: AppDecorators.tileDecoration(theme),
                         margin: EdgeInsets.symmetric(
                           horizontal: 16,
                         ),
@@ -124,11 +126,17 @@ class _HandStatsViewState extends State<HandStatsView>
                                     flex: 1,
                                     child: Column(
                                       children: [
-                                        Text("This Game"),
+                                        Text(AppStringsNew.thisGameText,
+                                            style:
+                                                AppDecorators.getHeadLine4Style(
+                                                    theme: theme)),
                                         Text(
-                                            "Hands : ${stats.thisGame.totalHands}"),
+                                            "${AppStringsNew.hands}: ${stats.thisGame.totalHands}",
+                                            style:
+                                                AppDecorators.getSubtitle1Style(
+                                                    theme: theme)),
                                         Container(
-                                            height: 150,
+                                            height: 150.ph,
                                             child: HandStatPieChart(
                                                 stats.thisGame)),
                                       ],
@@ -139,9 +147,12 @@ class _HandStatsViewState extends State<HandStatsView>
                                   flex: 1,
                                   child: Column(
                                     children: [
-                                      Text("All Time"),
+                                      Text(AppStringsNew.allTimeText,
+                                          style:
+                                              AppDecorators.getHeadLine4Style(
+                                                  theme: theme)),
                                       Text(
-                                          "Hands : ${stats.alltime.totalHands}"),
+                                          "${AppStringsNew.hands} : ${stats.alltime.totalHands}"),
                                       Container(
                                           height: 150,
                                           child:
@@ -154,16 +165,16 @@ class _HandStatsViewState extends State<HandStatsView>
                             // Legend for PieChart
                             Wrap(
                               children: [
-                                buildOneItemInLegend(
-                                    "Preflop", AppColorsNew.preflopColor),
-                                buildOneItemInLegend(
-                                    "Flop", AppColorsNew.flopColor),
-                                buildOneItemInLegend(
-                                    "Turn", AppColorsNew.turnColor),
-                                buildOneItemInLegend(
-                                    "River", AppColorsNew.riverColor),
-                                buildOneItemInLegend(
-                                    "Showdown", AppColorsNew.showDownColor),
+                                buildOneItemInLegend(AppStringsNew.preflop,
+                                    AppColorsNew.preflopColor, theme),
+                                buildOneItemInLegend(AppStringsNew.flop,
+                                    AppColorsNew.flopColor, theme),
+                                buildOneItemInLegend(AppStringsNew.turn,
+                                    AppColorsNew.turnColor, theme),
+                                buildOneItemInLegend(AppStringsNew.river,
+                                    AppColorsNew.riverColor, theme),
+                                buildOneItemInLegend(AppStringsNew.showdown,
+                                    AppColorsNew.showDownColor, theme),
                               ],
                             ),
                           ],
@@ -171,7 +182,7 @@ class _HandStatsViewState extends State<HandStatsView>
                       ),
                       // Action Statistics
                       Container(
-                        decoration: AppStylesNew.actionRowDecoration,
+                        decoration: AppDecorators.tileDecoration(theme),
                         margin:
                             EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                         padding: EdgeInsets.all(8),
@@ -181,9 +192,10 @@ class _HandStatsViewState extends State<HandStatsView>
                             Row(
                               children: [
                                 Text(
-                                  "Stage Statistics",
+                                  AppStringsNew.stageStatisticsTitle,
                                   textAlign: TextAlign.left,
-                                  style: AppStylesNew.cardHeaderTextStyle,
+                                  style: AppDecorators.getHeadLine4Style(
+                                      theme: theme),
                                 ),
                               ],
                             ),
@@ -197,52 +209,57 @@ class _HandStatsViewState extends State<HandStatsView>
                                   visible: showThisGame,
                                   child: Expanded(
                                     flex: 2,
-                                    child: Text(
-                                      "This Game",
-                                      textAlign: TextAlign.center,
-                                      style: AppStylesNew.labelTextStyle,
-                                    ),
+                                    child: Text(AppStringsNew.thisGameText,
+                                        textAlign: TextAlign.center,
+                                        style: AppDecorators.getSubtitle3Style(
+                                            theme: theme)),
                                   ),
                                 ),
                                 Expanded(
                                   flex: 2,
-                                  child: Text(
-                                    "All Time",
-                                    textAlign: TextAlign.center,
-                                    style: AppStylesNew.labelTextStyle,
-                                  ),
+                                  child: Text(AppStringsNew.allTimeText,
+                                      textAlign: TextAlign.center,
+                                      style: AppDecorators.getSubtitle3Style(
+                                          theme: theme)),
                                 ),
                               ],
                             ),
                             _buildOneStageRow(
-                              title: buildOneItemInLegend(
-                                  "Preflop", AppColorsNew.preflopColor),
+                              title: buildOneItemInLegend(AppStringsNew.preflop,
+                                  AppColorsNew.preflopColor, theme),
                               thisVal: stats.thisGame.inPreflop,
                               allVal: stats.alltime.inPreflop,
+                              theme: theme,
                             ),
                             _buildOneStageRow(
-                              title: buildOneItemInLegend(
-                                  "Flop", AppColorsNew.flopColor),
+                              title: buildOneItemInLegend(AppStringsNew.flop,
+                                  AppColorsNew.flopColor, theme),
                               thisVal: stats.thisGame.inFlop,
                               allVal: stats.alltime.inFlop,
+                              theme: theme,
                             ),
                             _buildOneStageRow(
-                              title: buildOneItemInLegend(
-                                  "Turn", AppColorsNew.turnColor),
+                              title: buildOneItemInLegend(AppStringsNew.turn,
+                                  AppColorsNew.turnColor, theme),
                               thisVal: stats.thisGame.inTurn,
                               allVal: stats.alltime.inTurn,
+                              theme: theme,
                             ),
                             _buildOneStageRow(
-                              title: buildOneItemInLegend(
-                                  "River", AppColorsNew.riverColor),
+                              title: buildOneItemInLegend(AppStringsNew.river,
+                                  AppColorsNew.riverColor, theme),
                               thisVal: stats.thisGame.inRiver,
                               allVal: stats.alltime.inRiver,
+                              theme: theme,
                             ),
                             _buildOneStageRow(
                               title: buildOneItemInLegend(
-                                  "Showdown", AppColorsNew.showDownColor),
+                                  AppStringsNew.showdown,
+                                  AppColorsNew.showDownColor,
+                                  theme),
                               thisVal: stats.thisGame.wentToShowDown,
                               allVal: stats.alltime.wentToShowDown,
+                              theme: theme,
                             ),
                             AppDimensionsNew.getVerticalSizedBox(16),
                           ],
@@ -251,7 +268,7 @@ class _HandStatsViewState extends State<HandStatsView>
 
                       // Action Statistics
                       Container(
-                        decoration: AppStylesNew.actionRowDecoration,
+                        decoration: AppDecorators.tileDecoration(theme),
                         margin: EdgeInsets.symmetric(horizontal: 16),
                         padding: EdgeInsets.all(8),
                         child: Column(
@@ -260,9 +277,10 @@ class _HandStatsViewState extends State<HandStatsView>
                             Row(
                               children: [
                                 Text(
-                                  "Action Statistics",
+                                  AppStringsNew.actionStatistics,
                                   textAlign: TextAlign.left,
-                                  style: AppStylesNew.cardHeaderTextStyle,
+                                  style: AppDecorators.getHeadLine4Style(
+                                      theme: theme),
                                 ),
                               ],
                             ),
@@ -277,72 +295,83 @@ class _HandStatsViewState extends State<HandStatsView>
                                   child: Expanded(
                                     flex: 2,
                                     child: Text(
-                                      "This Game",
+                                      AppStringsNew.thisGameText,
                                       textAlign: TextAlign.center,
-                                      style: AppStylesNew.labelTextStyle,
+                                      style: AppDecorators.getSubtitle3Style(
+                                          theme: theme),
                                     ),
                                   ),
                                 ),
                                 Expanded(
                                   flex: 2,
                                   child: Text(
-                                    "All Time",
+                                    AppStringsNew.allTimeText,
                                     textAlign: TextAlign.center,
-                                    style: AppStylesNew.labelTextStyle,
+                                    style: AppDecorators.getSubtitle3Style(
+                                        theme: theme),
                                   ),
                                 ),
                               ],
                             ),
                             _buildOneStatRow(
-                              title: "Vpip",
+                              title: AppStringsNew.vpip,
                               thisVal: stats.thisGame.vpipCount,
                               allVal: stats.alltime.vpipCount,
+                              theme: theme,
                             ),
                             _buildOneStatRow(
-                              title: "Cont Bet",
+                              title: AppStringsNew.contbet,
                               thisVal: stats.thisGame.contBet,
                               allVal: stats.alltime.contBet,
+                              theme: theme,
                             ),
                             _buildOneStatRow(
-                              title: "3 Bet",
+                              title: AppStringsNew.threebet,
                               thisVal: stats.thisGame.threeBet,
                               allVal: stats.alltime.threeBet,
+                              theme: theme,
                             ),
                             _buildOneStatRow(
-                              title: "WTSD",
+                              title: AppStringsNew.wtsd,
                               thisVal: stats.thisGame.wentToShowDown,
                               allVal: stats.alltime.wentToShowDown,
+                              theme: theme,
                             ),
                             _buildOneStatRow(
-                              title: "W\$SD",
+                              title: AppStringsNew.wsd,
                               thisVal: stats.thisGame.wonAtShowDown,
                               allVal: stats.alltime.wonAtShowDown,
+                              theme: theme,
                             ),
                             _buildOneStatRow(
-                              title: "Headsup",
+                              title: AppStringsNew.headsup,
                               thisVal: stats.thisGame.headsupHands,
                               allVal: stats.alltime.headsupHands,
+                              theme: theme,
                             ),
                             _buildOneStatRow(
-                              title: "Headsup Won",
+                              title: AppStringsNew.headsdown,
                               thisVal: stats.thisGame.wonHeadsupHands,
                               allVal: stats.alltime.wonHeadsupHands,
+                              theme: theme,
                             ),
                             AppDimensionsNew.getVerticalSizedBox(16),
                             Text(
-                              "WTSD : Went To Show Down",
-                              style: AppStylesNew.appBarSubTitleTextStyle,
+                              AppStringsNew.wtsdDesc,
+                              style:
+                                  AppDecorators.getSubtitle3Style(theme: theme),
                             ),
                             Text(
-                              "W\$SD : Won at Show Down",
-                              style: AppStylesNew.appBarSubTitleTextStyle,
+                              AppStringsNew.wsdDesc,
+                              style:
+                                  AppDecorators.getSubtitle3Style(theme: theme),
                             ),
                           ],
                         ),
                       ),
                       // Action Statistics
                       Container(
-                        decoration: AppStylesNew.actionRowDecoration,
+                        decoration: AppDecorators.tileDecoration(theme),
                         margin:
                             EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                         padding:
@@ -353,9 +382,10 @@ class _HandStatsViewState extends State<HandStatsView>
                             Row(
                               children: [
                                 Text(
-                                  "Headsup",
+                                  AppStringsNew.headsup,
                                   textAlign: TextAlign.left,
-                                  style: AppStylesNew.cardHeaderTextStyle,
+                                  style: AppDecorators.getHeadLine4Style(
+                                      theme: theme),
                                 ),
                               ],
                             ),
@@ -370,18 +400,20 @@ class _HandStatsViewState extends State<HandStatsView>
                                   child: Expanded(
                                     flex: 6,
                                     child: Text(
-                                      "This Game",
+                                      AppStringsNew.thisGameText,
                                       textAlign: TextAlign.center,
-                                      style: AppStylesNew.labelTextStyle,
+                                      style: AppDecorators.getSubtitle3Style(
+                                          theme: theme),
                                     ),
                                   ),
                                 ),
                                 Expanded(
                                   flex: 6,
                                   child: Text(
-                                    "All Time",
+                                    AppStringsNew.allTimeText,
                                     textAlign: TextAlign.center,
-                                    style: AppStylesNew.labelTextStyle,
+                                    style: AppDecorators.getSubtitle3Style(
+                                        theme: theme),
                                   ),
                                 ),
                               ],
@@ -400,23 +432,29 @@ class _HandStatsViewState extends State<HandStatsView>
                                       children: [
                                         Expanded(
                                           child: Text(
-                                            "Hands",
+                                            AppStringsNew.hands,
                                             textAlign: TextAlign.center,
-                                            style: AppStylesNew.labelTextStyle,
+                                            style:
+                                                AppDecorators.getSubtitle3Style(
+                                                    theme: theme),
                                           ),
                                         ),
                                         Expanded(
                                           child: Text(
-                                            "Won",
+                                            AppStringsNew.won,
                                             textAlign: TextAlign.center,
-                                            style: AppStylesNew.labelTextStyle,
+                                            style:
+                                                AppDecorators.getSubtitle3Style(
+                                                    theme: theme),
                                           ),
                                         ),
                                         Expanded(
                                           child: Text(
-                                            "%",
+                                            AppStringsNew.perSymbol,
                                             textAlign: TextAlign.center,
-                                            style: AppStylesNew.labelTextStyle,
+                                            style:
+                                                AppDecorators.getSubtitle3Style(
+                                                    theme: theme),
                                           ),
                                         ),
                                       ],
@@ -429,23 +467,29 @@ class _HandStatsViewState extends State<HandStatsView>
                                     children: [
                                       Expanded(
                                         child: Text(
-                                          "Hands",
+                                          AppStringsNew.hands,
                                           textAlign: TextAlign.center,
-                                          style: AppStylesNew.labelTextStyle,
+                                          style:
+                                              AppDecorators.getSubtitle3Style(
+                                                  theme: theme),
                                         ),
                                       ),
                                       Expanded(
                                         child: Text(
-                                          "Won",
+                                          AppStringsNew.won,
                                           textAlign: TextAlign.center,
-                                          style: AppStylesNew.labelTextStyle,
+                                          style:
+                                              AppDecorators.getSubtitle3Style(
+                                                  theme: theme),
                                         ),
                                       ),
                                       Expanded(
                                         child: Text(
-                                          "%",
+                                          AppStringsNew.perSymbol,
                                           textAlign: TextAlign.center,
-                                          style: AppStylesNew.labelTextStyle,
+                                          style:
+                                              AppDecorators.getSubtitle3Style(
+                                                  theme: theme),
                                         ),
                                       ),
                                     ],
@@ -453,7 +497,7 @@ class _HandStatsViewState extends State<HandStatsView>
                                 ),
                               ],
                             ),
-                            ...getHeadsupRows(),
+                            ...getHeadsupRows(theme),
                           ],
                         ),
                       ),
@@ -466,9 +510,10 @@ class _HandStatsViewState extends State<HandStatsView>
     );
   }
 
-  Widget _buildOneStageRow({Widget title, int thisVal, int allVal}) {
+  Widget _buildOneStageRow(
+      {Widget title, int thisVal, int allVal, @required AppTheme theme}) {
     return Container(
-      decoration: AppStylesNew.actionRowDecoration,
+      decoration: AppDecorators.tileDecorationWithoutBorder(theme),
       child: Row(
         children: [
           Expanded(
@@ -485,7 +530,7 @@ class _HandStatsViewState extends State<HandStatsView>
                     child: Text(
                       thisVal.toString(),
                       textAlign: TextAlign.center,
-                      style: AppStylesNew.statValTextStyle,
+                      style: AppDecorators.getSubtitle1Style(theme: theme),
                     ),
                   ),
                   Expanded(
@@ -494,7 +539,7 @@ class _HandStatsViewState extends State<HandStatsView>
                           ? 0
                           : "${((thisVal / stats.thisGame.totalHands) * 100).floor()}%",
                       textAlign: TextAlign.right,
-                      style: AppStylesNew.statValTextStyle,
+                      style: AppDecorators.getSubtitle1Style(theme: theme),
                     ),
                   ),
                 ],
@@ -509,7 +554,7 @@ class _HandStatsViewState extends State<HandStatsView>
                   child: Text(
                     allVal.toString(),
                     textAlign: TextAlign.right,
-                    style: AppStylesNew.statValTextStyle,
+                    style: AppDecorators.getSubtitle1Style(theme: theme),
                   ),
                 ),
                 Expanded(
@@ -518,7 +563,7 @@ class _HandStatsViewState extends State<HandStatsView>
                         ? 0
                         : "${((allVal / stats.alltime.totalHands) * 100).floor()}%",
                     textAlign: TextAlign.right,
-                    style: AppStylesNew.statValTextStyle,
+                    style: AppDecorators.getSubtitle1Style(theme: theme),
                   ),
                 ),
               ],
@@ -529,9 +574,10 @@ class _HandStatsViewState extends State<HandStatsView>
     );
   }
 
-  Widget _buildOneStatRow({String title, int thisVal, int allVal}) {
+  Widget _buildOneStatRow(
+      {String title, int thisVal, int allVal, @required AppTheme theme}) {
     return Container(
-      decoration: AppStylesNew.actionRowDecoration,
+      decoration: AppDecorators.tileDecorationWithoutBorder(theme),
       padding: EdgeInsets.only(left: 8),
       child: Row(
         children: [
@@ -539,7 +585,7 @@ class _HandStatsViewState extends State<HandStatsView>
             flex: 3,
             child: Text(
               title,
-              style: AppStylesNew.labelTextStyle,
+              style: AppDecorators.getSubtitle3Style(theme: theme),
             ),
           ),
           Visibility(
@@ -552,7 +598,7 @@ class _HandStatsViewState extends State<HandStatsView>
                     child: Text(
                       thisVal.toString(),
                       textAlign: TextAlign.center,
-                      style: AppStylesNew.statValTextStyle,
+                      style: AppDecorators.getSubtitle1Style(theme: theme),
                     ),
                   ),
                   Expanded(
@@ -561,7 +607,7 @@ class _HandStatsViewState extends State<HandStatsView>
                           ? 0
                           : "${((thisVal / stats.thisGame.totalHands) * 100).floor()}%",
                       textAlign: TextAlign.right,
-                      style: AppStylesNew.statValTextStyle,
+                      style: AppDecorators.getSubtitle1Style(theme: theme),
                     ),
                   ),
                 ],
@@ -576,7 +622,7 @@ class _HandStatsViewState extends State<HandStatsView>
                   child: Text(
                     allVal.toString(),
                     textAlign: TextAlign.center,
-                    style: AppStylesNew.statValTextStyle,
+                    style: AppDecorators.getSubtitle1Style(theme: theme),
                   ),
                 ),
                 Expanded(
@@ -585,7 +631,7 @@ class _HandStatsViewState extends State<HandStatsView>
                         ? 0
                         : "${((allVal / stats.alltime.totalHands) * 100).floor()}%",
                     textAlign: TextAlign.right,
-                    style: AppStylesNew.statValTextStyle,
+                    style: AppDecorators.getSubtitle1Style(theme: theme),
                   ),
                 ),
               ],
@@ -597,16 +643,21 @@ class _HandStatsViewState extends State<HandStatsView>
   }
 
   Widget _buildOnePlayerHeadsupRow(
-      {String player, int thisHands, int thisWon, int allHands, int allWon}) {
+      {String player,
+      int thisHands,
+      int thisWon,
+      int allHands,
+      int allWon,
+      @required AppTheme theme}) {
     return Container(
-      decoration: AppStylesNew.actionRowDecoration,
+      decoration: AppDecorators.tileDecoration(theme),
       child: Row(
         children: [
           Expanded(
             flex: 3,
             child: Text(
               player,
-              style: AppStylesNew.labelTextStyle,
+              style: AppDecorators.getSubtitle3Style(theme: theme),
             ),
           ),
           Visibility(
@@ -619,14 +670,14 @@ class _HandStatsViewState extends State<HandStatsView>
                     child: Text(
                       "$thisHands",
                       textAlign: TextAlign.center,
-                      style: AppStylesNew.statValTextStyle,
+                      style: AppDecorators.getSubtitle1Style(theme: theme),
                     ),
                   ),
                   Expanded(
                     child: Text(
                       "$thisWon",
                       textAlign: TextAlign.center,
-                      style: AppStylesNew.statValTextStyle,
+                      style: AppDecorators.getSubtitle1Style(theme: theme),
                     ),
                   ),
                   Expanded(
@@ -635,7 +686,7 @@ class _HandStatsViewState extends State<HandStatsView>
                           ? "$thisHands"
                           : "${((thisWon / thisHands) * 100).floor()}%",
                       textAlign: TextAlign.center,
-                      style: AppStylesNew.statValTextStyle,
+                      style: AppDecorators.getSubtitle1Style(theme: theme),
                     ),
                   ),
                 ],
@@ -650,14 +701,14 @@ class _HandStatsViewState extends State<HandStatsView>
                   child: Text(
                     allHands.toString(),
                     textAlign: TextAlign.center,
-                    style: AppStylesNew.statValTextStyle,
+                    style: AppDecorators.getSubtitle1Style(theme: theme),
                   ),
                 ),
                 Expanded(
                   child: Text(
                     allWon.toString(),
                     textAlign: TextAlign.center,
-                    style: AppStylesNew.statValTextStyle,
+                    style: AppDecorators.getSubtitle1Style(theme: theme),
                   ),
                 ),
                 Expanded(
@@ -666,7 +717,7 @@ class _HandStatsViewState extends State<HandStatsView>
                         ? 0
                         : "${((allWon / allHands) * 100).floor()}%",
                     textAlign: TextAlign.center,
-                    style: AppStylesNew.statValTextStyle,
+                    style: AppDecorators.getSubtitle1Style(theme: theme),
                   ),
                 ),
               ],
@@ -677,7 +728,7 @@ class _HandStatsViewState extends State<HandStatsView>
     );
   }
 
-  getHeadsupRows() {
+  getHeadsupRows(AppTheme theme) {
     List<Widget> list = [];
     stats.alltime.headsupHandSummary.forEach((key, value) {
       log("${key.runtimeType} ${stats.headsupThisGame.keys}");
@@ -690,6 +741,7 @@ class _HandStatsViewState extends State<HandStatsView>
         thisWon: verses == null ? 0 : verses.won,
         allHands: value.total,
         allWon: value.won,
+        theme: theme,
       ));
     });
     if (list.isEmpty) {
@@ -698,14 +750,14 @@ class _HandStatsViewState extends State<HandStatsView>
         child: Center(
             child: Text(
           "No headsup data",
-          style: AppStylesNew.labelTextStyle,
+          style: AppDecorators.getSubtitle3Style(theme: theme),
         )),
       ));
     }
     return list;
   }
 
-  buildOneItemInLegend(String text, Color color) {
+  buildOneItemInLegend(String text, Color color, AppTheme theme) {
     return Container(
       constraints: BoxConstraints(minWidth: 50),
       margin: EdgeInsets.only(left: 8),
@@ -718,7 +770,10 @@ class _HandStatsViewState extends State<HandStatsView>
             decoration: BoxDecoration(shape: BoxShape.circle, color: color),
           ),
           AppDimensionsNew.getHorizontalSpace(4),
-          Text(text),
+          Text(
+            text,
+            style: AppDecorators.getSubtitle1Style(theme: theme),
+          ),
         ],
       ),
     );
