@@ -112,7 +112,7 @@ class _StraddleDialogState extends State<StraddleDialog> {
                   _option = newValue;
                   if (_option == false) _auto = false;
                 }),
-                useSpacer: false,
+                // useSpacer: false,
               ),
 
               /* auto value */
@@ -122,7 +122,7 @@ class _StraddleDialogState extends State<StraddleDialog> {
                 value: _auto,
                 label: 'Auto:',
                 onChange: (bool newValue) => _auto = newValue,
-                useSpacer: false,
+                // useSpacer: false,
               ),
 
               // sep

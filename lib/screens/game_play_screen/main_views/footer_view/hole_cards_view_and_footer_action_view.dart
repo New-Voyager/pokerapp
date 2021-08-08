@@ -151,8 +151,9 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
         ),
       );
 
-  Widget _buildFooterActionView(BuildContext context) => FooterActionView(
-        gameContext: context.read<GameContextObject>(),
+  Widget _buildFooterActionView(BuildContext context, GameContextObject gco) =>
+      FooterActionView(
+        gameContext: gco,
         isBetWidgetVisible: (bool isBetWidgetVisible) =>
             _showDarkBackgroundVn.value = isBetWidgetVisible,
       );
@@ -161,6 +162,7 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
   Widget build(BuildContext context) {
     final gameState = GameState.getState(context);
 
+    final gco = context.read<GameContextObject>();
     final boardAttributes = context.read<BoardAttributesObject>();
 
     return Stack(
@@ -181,7 +183,7 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
           alignment: Alignment.bottomCenter,
           child: Consumer<ActionState>(
             builder: (context, actionState, __) => actionState.show
-                ? _buildFooterActionView(context)
+                ? _buildFooterActionView(context, gco)
                 : const SizedBox.shrink(),
           ),
         ),

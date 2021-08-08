@@ -14,6 +14,8 @@ import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/app/game_service.dart';
+import 'package:pokerapp/services/data/box_type.dart';
+import 'package:pokerapp/services/data/hive_datasource_impl.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/formatter.dart';
@@ -241,10 +243,14 @@ class _GameOptionState extends State<GameOption> {
     @required String text,
     @required bool value,
     @required void onChange(bool _),
+    String activeText = 'On',
+    String inactiveText = 'Off',
   }) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 10),
       child: SwitchWidget(
+        activeText: activeText,
+        inactiveText: inactiveText,
         label: text,
         value: value,
         onChange: (value) {
@@ -378,10 +384,12 @@ class _GameOptionState extends State<GameOption> {
     bool isPlaying = widget.gameState.isPlaying;
 
     return SingleChildScrollView(
+      physics: BouncingScrollPhysics(),
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 16),
         child: Column(
           children: [
+            // game options - standup, reload, break, pause...
             !isPlaying
                 ? Container()
                 : Container(
@@ -397,6 +405,8 @@ class _GameOptionState extends State<GameOption> {
                       ],
                     ),
                   ),
+
+            // game stats - elapsed time, won, hands...
             Container(
               padding: EdgeInsets.all(16),
               decoration: AppStylesNew.actionRowDecoration,
@@ -475,12 +485,99 @@ class _GameOptionState extends State<GameOption> {
                 ],
               ),
             ),
+
+            // sep
             AppDimensionsNew.getVerticalSizedBox(10),
+
+            // tap to bet VS swipe to bet
+            Container(
+              width: double.infinity,
+              padding: EdgeInsets.all(10),
+              decoration: AppStylesNew.actionRowDecoration,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // main text
+                        const Text(
+                          'Bet Action',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18.0,
+                          ),
+                        ),
+                        // hint text
+                        const Text(
+                          '(applied in next action)',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 13.0,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  // tap / swipe button
+                  // false ==> swipe is active
+                  Expanded(
+                    child: CupertinoSegmentedControl<bool>(
+                      borderColor: const Color(0xff40D876),
+                      selectedColor: const Color(0xff40D876),
+                      groupValue: HiveDatasource.getInstance
+                          .getBox(BoxType.USER_SETTINGS_BOX)
+                          .get('isTapForBetAction?', defaultValue: false),
+                      children: {
+                        false: Text('Swipe', style: TextStyle(fontSize: 18.0)),
+                        true: Text('Tap', style: TextStyle(fontSize: 18.0)),
+                      },
+                      onValueChanged: (bool v) async {
+                        await HiveDatasource.getInstance
+                            .getBox(BoxType.USER_SETTINGS_BOX)
+                            .put('isTapForBetAction?', v);
+                        setState(() {});
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            // Container(
+            //   padding: EdgeInsets.all(10),
+            //   decoration: AppStylesNew.actionRowDecoration,
+            //   child: _buildCheckBox(
+            //       text: 'Bet Action',
+            //       inactiveText: 'Swipe',
+            //       activeText: 'Tap',
+            //       value: HiveDatasource.getInstance
+            //           .getBox(BoxType.USER_SETTINGS_BOX)
+            //           .get('isTapForBetAction?', defaultValue: false),
+            //       onChange: (bool v) async {
+            //         HiveDatasource.getInstance
+            //             .getBox(BoxType.USER_SETTINGS_BOX)
+            //             .put(
+            //               'isTapForBetAction?',
+            //               v,
+            //             );
+            //       }),
+            // ),
+
+            // sep
+            AppDimensionsNew.getVerticalSizedBox(10),
+
+            // game settings
             Container(
               decoration: AppStylesNew.actionRowDecoration,
               child: _buildOtherGameOptions(),
             ),
+
+            // sep
             AppDimensionsNew.getVerticalSizedBox(10),
+
+            //game secondary options
             Container(
               padding: EdgeInsets.all(10),
               decoration: AppStylesNew.actionRowDecoration,
