@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_stages.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
-import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/widgets/cards/multiple_stack_card_views.dart';
@@ -114,8 +113,10 @@ class HandWinnersView extends StatelessWidget {
                                           seatNo: potWinnersList[index]
                                               .hiWinners[winnerIndex]
                                               .seatNo),
-                                      style: AppDecorators.getHeadLine4Style(
-                                          theme: theme),
+                                      style: AppDecorators.getSubtitle1Style(
+                                              theme: theme)
+                                          .copyWith(
+                                              fontWeight: FontWeight.w700),
                                       textAlign: TextAlign.left,
                                     ),
                                   ),

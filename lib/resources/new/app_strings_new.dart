@@ -280,4 +280,6 @@ class AppStringsNew {
   static String createGameText = '+ Create Game';
 
   static String handHistoryTitle = "Hand History";
+
+  static String recievedText = "Recieved";
 }
