@@ -128,7 +128,7 @@ class BetWidget extends StatelessWidget {
   }
 
   Widget _buildBetButton(final bool isLargerDisplay, vnBetAmount) {
-    final vnAlignment = ValueNotifier<Alignment>(Alignment.bottomCenter);
+    final vnOffsetValue = ValueNotifier<double>(.0);
 
     final colorizeColors = [
       Colors.green,
@@ -150,11 +150,14 @@ class BetWidget extends StatelessWidget {
         alignment: Alignment.center,
         children: [
           // bet coin
-          Transform.scale(scale: 1.5, child: SvgPicture.string(
-            _getBetChipSvg(),
-            height: s,
-            width: s,
-          )),
+          Transform.scale(
+            scale: 1.0,
+            child: SvgPicture.string(
+              _getBetChipSvg(),
+              height: s,
+              width: s,
+            ),
+          ),
 
           // bet text
           IgnorePointer(
@@ -183,45 +186,52 @@ class BetWidget extends StatelessWidget {
           onTap: () {
             onSubmitCallBack?.call(vnBetAmount.value);
           },
-          // confirm bet ON SLIDE UP
-          onPanUpdate: (details) {
-            if (details.delta.dy < 0) {
-              vnAlignment.value = Alignment.topCenter;
+          // confirm bet ON SLIDE UP TILL THE TOP
+          onVerticalDragEnd: (_) {
+            // on drag release bounce back to start
+            vnOffsetValue.value = 0.0;
+          },
+          onVerticalDragUpdate: (details) {
+            vnOffsetValue.value =
+                (vnOffsetValue.value - details.delta.dy / s).clamp(.0, 1.0);
+
+            // the moment value reaches 1.0, we confirm bet
+            if (vnOffsetValue.value == 1.0) {
+              onSubmitCallBack?.call(vnBetAmount.value);
             }
           },
           child: _buildToolTipWith(
             child: IntrinsicWidth(
               child: Container(
                 height: 2 * s,
-                child: ValueListenableBuilder<Alignment>(
-                  valueListenable: vnAlignment,
-                  builder: (_, alignment, __) => AnimatedAlign(
-                    onEnd: () {
-                      // we finally bet
-                      onSubmitCallBack?.call(vnBetAmount.value);
-                    },
-                    duration: AppConstants.fastestAnimationDuration,
-                    alignment: alignment,
-                    child: betChipWidget,
-                  ),
+                child: AnimatedBuilder(
+                  animation: vnOffsetValue,
+                  builder: (_, child) {
+                    log('doing: ${vnOffsetValue.value}');
+                    return Align(
+                      alignment: Alignment(.5, 1 - vnOffsetValue.value * 2),
+                      child: child,
+                    );
+                  },
+                  child: betChipWidget,
                 ),
               ),
             ),
           ),
         ),
         /* bet amount */
-        Transform.translate(offset: Offset(0, 10.dp), child:
-        ValueListenableBuilder<double>(
-          valueListenable: vnBetAmount,
-          builder: (_, double betAmount, __) => Text(
-            DataFormatter.chipsFormat(betAmount.roundToDouble()),
-            style: TextStyle(
-              fontSize: 12.dp,
-              color: Colors.white,
-            ),
-          ),
-        )),
-
+        Transform.translate(
+            offset: Offset(0, 10.dp),
+            child: ValueListenableBuilder<double>(
+              valueListenable: vnBetAmount,
+              builder: (_, double betAmount, __) => Text(
+                DataFormatter.chipsFormat(betAmount.roundToDouble()),
+                style: TextStyle(
+                  fontSize: 12.dp,
+                  color: Colors.white,
+                ),
+              ),
+            )),
       ],
     );
   }
