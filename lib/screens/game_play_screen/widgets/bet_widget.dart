@@ -65,6 +65,8 @@ class BetWidget extends StatelessWidget {
     );
   }
 
+  // TODO: MAKE THIS CLASS A GENERAL ONE SOMEWHERE OUTSIDE IN UTILS
+  // WE CAN REUSE THIS CLASS FOR OTHER PLACES AS WELL
   Widget _buildToolTipWith({Widget child}) {
     final userSettingsBox = HiveDatasource.getInstance.getBox(
       BoxType.USER_SETTINGS_BOX,
@@ -151,7 +153,7 @@ class BetWidget extends StatelessWidget {
         children: [
           // bet coin
           Transform.scale(
-            scale: 1.0,
+            scale: 1.5,
             child: SvgPicture.string(
               _getBetChipSvg(),
               height: s,
@@ -177,28 +179,35 @@ class BetWidget extends StatelessWidget {
       ),
     );
 
+    final bool isBetByTapActive = HiveDatasource.getInstance
+        .getBox(BoxType.USER_SETTINGS_BOX)
+        .get('isTapForBetAction?', defaultValue: false);
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         /* drag bet button */
         GestureDetector(
           // confirm bet ON TAP
-          onTap: () {
-            onSubmitCallBack?.call(vnBetAmount.value);
-          },
+          onTap: isBetByTapActive
+              ? () {
+                  onSubmitCallBack?.call(vnBetAmount.value);
+                }
+              : null,
           // confirm bet ON SLIDE UP TILL THE TOP
           onVerticalDragEnd: (_) {
-            // on drag release bounce back to start
+            // if we reach 1.0 and leave the chip, CONFIRM BET
+            if (vnOffsetValue.value == 1.0) {
+              return onSubmitCallBack?.call(vnBetAmount.value);
+            }
+
+            // ELSE on drag release bounce back to start
             vnOffsetValue.value = 0.0;
           },
           onVerticalDragUpdate: (details) {
+            if (isBetByTapActive) return;
             vnOffsetValue.value =
                 (vnOffsetValue.value - details.delta.dy / s).clamp(.0, 1.0);
-
-            // the moment value reaches 1.0, we confirm bet
-            if (vnOffsetValue.value == 1.0) {
-              onSubmitCallBack?.call(vnBetAmount.value);
-            }
           },
           child: _buildToolTipWith(
             child: IntrinsicWidth(
@@ -206,14 +215,12 @@ class BetWidget extends StatelessWidget {
                 height: 2 * s,
                 child: AnimatedBuilder(
                   animation: vnOffsetValue,
-                  builder: (_, child) {
-                    log('doing: ${vnOffsetValue.value}');
+                  builder: (_, __) {
                     return Align(
                       alignment: Alignment(.5, 1 - vnOffsetValue.value * 2),
-                      child: child,
+                      child: betChipWidget,
                     );
                   },
-                  child: betChipWidget,
                 ),
               ),
             ),
