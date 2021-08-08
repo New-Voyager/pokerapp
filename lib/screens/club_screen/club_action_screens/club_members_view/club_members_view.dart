@@ -71,7 +71,8 @@ class _ClubMembersViewState extends State<ClubMembersView>
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<AppTheme>(builder: (_,theme,__)=> Container(
+    return Consumer<AppTheme>(
+      builder: (_, theme, __) => Container(
         decoration: AppStylesNew.BgGreenRadialGradient,
         child: Scaffold(
           backgroundColor: Colors.transparent,

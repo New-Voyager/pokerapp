@@ -283,6 +283,20 @@ class HandActionProtoService {
     Uint8List protoData = messageData;
     //String hex;
     try {
+      // is this a text message
+      if (messageData[0] == 123 /*{*/) {
+        try {
+          String textMessage = utf8.decode(messageData);
+          // successfully converted
+          if (textMessage.indexOf("messages") != -1) {
+            // json message
+            handleJsonMessage(textMessage);
+          }
+        } catch (err) {
+          // ignore exception
+        }
+      }
+
       if (encrypted) {
         List<int> decryptedMessage =
             await this._encryptionService.decrypt(protoData);
@@ -450,40 +464,40 @@ class HandActionProtoService {
     );
   }
 
-  Future<void> handleDealerChoice(proto.HandMessageItem message) async {
-    final dealerChoice = message.dealerChoice;
-    if (dealerChoice == null) {
-      return;
-    }
+  // Future<void> handleDealerChoice(proto.HandMessageItem message) async {
+  //   final dealerChoice = message.dealerChoice;
+  //   if (dealerChoice == null) {
+  //     return;
+  //   }
 
-    if (_close) return;
-    final TableState tableState = _gameState.getTableState(_context);
-    // remove all the community cards
-    tableState.clear();
-    tableState.notifyAll();
+  //   if (_close) return;
+  //   final TableState tableState = _gameState.getTableState(_context);
+  //   // remove all the community cards
+  //   tableState.clear();
+  //   tableState.notifyAll();
 
-    if (_close) return;
-    _gameState.resetPlayers(_context, notify: true);
+  //   if (_close) return;
+  //   _gameState.resetPlayers(_context, notify: true);
 
-    if (_close) return;
-    _context.read<ValueNotifier<FooterStatus>>().value = FooterStatus.None;
+  //   if (_close) return;
+  //   _context.read<ValueNotifier<FooterStatus>>().value = FooterStatus.None;
 
-    List<GameType> gameChoices = [];
-    for (final type in dealerChoice.games) {
-      final gameType =
-          GameType.values.firstWhere((element) => element.index == type.value);
-      gameChoices.add(gameType);
-    }
-    final timeout = int.parse(dealerChoice.timeout.toString());
-    GameType type = await showGameSelectorDialog(
-      listOfGameTypes: gameChoices,
-      timeLimit: Duration(seconds: timeout),
-    );
-    log('selected game type: $type');
-    if (type != GameType.UNKNOWN) {
-      GameService.dealerChoice(_gameState.gameCode, type);
-    }
-  }
+  //   List<GameType> gameChoices = [];
+  //   for (final type in dealerChoice.games) {
+  //     final gameType =
+  //         GameType.values.firstWhere((element) => element.index == type.value);
+  //     gameChoices.add(gameType);
+  //   }
+  //   final timeout = int.parse(dealerChoice.timeout.toString());
+  //   GameType type = await showGameSelectorDialog(
+  //     listOfGameTypes: gameChoices,
+  //     timeLimit: Duration(seconds: timeout),
+  //   );
+  //   log('selected game type: $type');
+  //   if (type != GameType.UNKNOWN) {
+  //     GameService.dealerChoice(_gameState.gameCode, type);
+  //   }
+  // }
 
   Future<void> handleNewHand(proto.HandMessageItem message) async {
     _gameState.handState = HandState.STARTED;
@@ -1511,5 +1525,57 @@ class HandActionProtoService {
     // clear the board
     tableState.clear();
     tableState.notifyAll();
+  }
+
+  Future<void> handleJsonMessage(String jsonMessage) async {
+    try {
+      final Map<String, dynamic> message = jsonDecode(jsonMessage);
+      final List<dynamic> messages = message["messages"];
+      for (final message in messages) {
+        // handle each message
+        final messageType = message["messageType"].toString();
+        if (messageType == AppConstants.DEALER_CHOICE) {
+          await handleDealerChoice(message);
+        }
+      }
+    } catch (err) {
+      log('Failed to handle message: $jsonMessage');
+    }
+  }
+
+  // Json messages
+  Future<void> handleDealerChoice(var data) async {
+    final dealerChoice = data['dealerChoice'];
+    if (dealerChoice == null) {
+      return;
+    }
+
+    if (_close) return;
+    final TableState tableState = _gameState.getTableState(_context);
+    // remove all the community cards
+    tableState.clear();
+    tableState.notifyAll();
+
+    if (_close) return;
+    _gameState.resetPlayers(_context, notify: true);
+
+    if (_close) return;
+    _context.read<ValueNotifier<FooterStatus>>().value = FooterStatus.None;
+
+    List<GameType> gameChoices = [];
+    for (final type in dealerChoice['games']) {
+      final gameType =
+          GameType.values[type]; //.firstWhere((element) => element == type);
+      gameChoices.add(gameType);
+    }
+    final timeout = int.parse(dealerChoice['timeout'].toString());
+    GameType type = await showGameSelectorDialog(
+      listOfGameTypes: gameChoices,
+      timeLimit: Duration(seconds: timeout),
+    );
+    log('selected game type: $type');
+    if (type != GameType.UNKNOWN) {
+      GameService.dealerChoice(_gameState.gameCode, type);
+    }
   }
 }

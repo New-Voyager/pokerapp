@@ -78,6 +78,4 @@ class AppTheme extends ChangeNotifier {
   // negative or error colors
   // TODO: MAY BE WE CAN HAVE DIFFERENT SHADES OF THIS
   Color get negativeOrErrorColor => _themeData.negativeOrErrorColor;
-
-  
 }

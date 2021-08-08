@@ -36,7 +36,6 @@ class CardFormTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-   
     return Card(
       color: color,
       margin: EdgeInsets.all(0.0),

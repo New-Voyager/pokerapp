@@ -12,8 +12,9 @@ class RewardsListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer(builder: (_,theme,__)=>Scaffold(
-    //      resizeToAvoidBottomPadding: true,
+    return Consumer(
+      builder: (_, theme, __) => Scaffold(
+        //      resizeToAvoidBottomPadding: true,
         key: _key,
         backgroundColor: AppColorsNew.screenBackgroundColor,
         appBar: CustomAppBar(

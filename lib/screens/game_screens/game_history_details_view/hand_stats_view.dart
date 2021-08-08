@@ -82,313 +82,348 @@ class _HandStatsViewState extends State<HandStatsView>
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<AppTheme>(builder: (_,theme,__)=>Container(
-      decoration: AppStylesNew.BgGreenRadialGradient,
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        appBar: showThisGame
-            ? CustomAppBar(
-              theme: theme,
-                context: context,
-                titleText: 'Hand Statistics',
-                subTitleText: 'Game: ${model?.gameCode} ',
-              )
-            : AppBar(
-                toolbarHeight: 0,
-              ),
-        body: stats == null
-            ? CircularProgressWidget(
-                text: "Loading Statistics..",
-              )
-            : SingleChildScrollView(
-                child: Column(
-                  children: [
-                    // Pie Charts
-                    Container(
-                      decoration: AppStylesNew.actionRowDecoration,
-                      margin: EdgeInsets.symmetric(
-                        horizontal: 16,
-                      ),
-                      padding: EdgeInsets.symmetric(
-                        vertical: 16,
-                      ),
-                      child: Column(
-                        children: [
-                          Row(
-                            children: [
-                              Visibility(
-                                maintainState: false,
-                                visible: showThisGame,
-                                child: Expanded(
+    return Consumer<AppTheme>(
+      builder: (_, theme, __) => Container(
+        decoration: AppStylesNew.BgGreenRadialGradient,
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          appBar: showThisGame
+              ? CustomAppBar(
+                  theme: theme,
+                  context: context,
+                  titleText: 'Hand Statistics',
+                  subTitleText: 'Game: ${model?.gameCode} ',
+                )
+              : AppBar(
+                  toolbarHeight: 0,
+                ),
+          body: stats == null
+              ? CircularProgressWidget(
+                  text: "Loading Statistics..",
+                )
+              : SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      // Pie Charts
+                      Container(
+                        decoration: AppStylesNew.actionRowDecoration,
+                        margin: EdgeInsets.symmetric(
+                          horizontal: 16,
+                        ),
+                        padding: EdgeInsets.symmetric(
+                          vertical: 16,
+                        ),
+                        child: Column(
+                          children: [
+                            Row(
+                              children: [
+                                Visibility(
+                                  maintainState: false,
+                                  visible: showThisGame,
+                                  child: Expanded(
+                                    flex: 1,
+                                    child: Column(
+                                      children: [
+                                        Text("This Game"),
+                                        Text(
+                                            "Hands : ${stats.thisGame.totalHands}"),
+                                        Container(
+                                            height: 150,
+                                            child: HandStatPieChart(
+                                                stats.thisGame)),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
                                   flex: 1,
                                   child: Column(
                                     children: [
-                                      Text("This Game"),
+                                      Text("All Time"),
                                       Text(
-                                          "Hands : ${stats.thisGame.totalHands}"),
+                                          "Hands : ${stats.alltime.totalHands}"),
                                       Container(
                                           height: 150,
                                           child:
-                                              HandStatPieChart(stats.thisGame)),
+                                              HandStatPieChart(stats.alltime)),
                                     ],
                                   ),
                                 ),
-                              ),
-                              Expanded(
-                                flex: 1,
-                                child: Column(
-                                  children: [
-                                    Text("All Time"),
-                                    Text("Hands : ${stats.alltime.totalHands}"),
-                                    Container(
-                                        height: 150,
-                                        child: HandStatPieChart(stats.alltime)),
-                                  ],
+                              ],
+                            ),
+                            // Legend for PieChart
+                            Wrap(
+                              children: [
+                                buildOneItemInLegend(
+                                    "Preflop", AppColorsNew.preflopColor),
+                                buildOneItemInLegend(
+                                    "Flop", AppColorsNew.flopColor),
+                                buildOneItemInLegend(
+                                    "Turn", AppColorsNew.turnColor),
+                                buildOneItemInLegend(
+                                    "River", AppColorsNew.riverColor),
+                                buildOneItemInLegend(
+                                    "Showdown", AppColorsNew.showDownColor),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      // Action Statistics
+                      Container(
+                        decoration: AppStylesNew.actionRowDecoration,
+                        margin:
+                            EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        padding: EdgeInsets.all(8),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Text(
+                                  "Stage Statistics",
+                                  textAlign: TextAlign.left,
+                                  style: AppStylesNew.cardHeaderTextStyle,
                                 ),
-                              ),
-                            ],
-                          ),
-                          // Legend for PieChart
-                          Wrap(
-                            children: [
-                              buildOneItemInLegend(
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Expanded(
+                                  flex: 3,
+                                  child: SizedBox.shrink(),
+                                ),
+                                Visibility(
+                                  visible: showThisGame,
+                                  child: Expanded(
+                                    flex: 2,
+                                    child: Text(
+                                      "This Game",
+                                      textAlign: TextAlign.center,
+                                      style: AppStylesNew.labelTextStyle,
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 2,
+                                  child: Text(
+                                    "All Time",
+                                    textAlign: TextAlign.center,
+                                    style: AppStylesNew.labelTextStyle,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            _buildOneStageRow(
+                              title: buildOneItemInLegend(
                                   "Preflop", AppColorsNew.preflopColor),
-                              buildOneItemInLegend(
+                              thisVal: stats.thisGame.inPreflop,
+                              allVal: stats.alltime.inPreflop,
+                            ),
+                            _buildOneStageRow(
+                              title: buildOneItemInLegend(
                                   "Flop", AppColorsNew.flopColor),
-                              buildOneItemInLegend(
+                              thisVal: stats.thisGame.inFlop,
+                              allVal: stats.alltime.inFlop,
+                            ),
+                            _buildOneStageRow(
+                              title: buildOneItemInLegend(
                                   "Turn", AppColorsNew.turnColor),
-                              buildOneItemInLegend(
+                              thisVal: stats.thisGame.inTurn,
+                              allVal: stats.alltime.inTurn,
+                            ),
+                            _buildOneStageRow(
+                              title: buildOneItemInLegend(
                                   "River", AppColorsNew.riverColor),
-                              buildOneItemInLegend(
+                              thisVal: stats.thisGame.inRiver,
+                              allVal: stats.alltime.inRiver,
+                            ),
+                            _buildOneStageRow(
+                              title: buildOneItemInLegend(
                                   "Showdown", AppColorsNew.showDownColor),
-                            ],
-                          ),
-                        ],
+                              thisVal: stats.thisGame.wentToShowDown,
+                              allVal: stats.alltime.wentToShowDown,
+                            ),
+                            AppDimensionsNew.getVerticalSizedBox(16),
+                          ],
+                        ),
                       ),
-                    ),
-                    // Action Statistics
-                    Container(
-                      decoration: AppStylesNew.actionRowDecoration,
-                      margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                      padding: EdgeInsets.all(8),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Text(
-                                "Stage Statistics",
-                                textAlign: TextAlign.left,
-                                style: AppStylesNew.cardHeaderTextStyle,
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Expanded(
-                                flex: 3,
-                                child: SizedBox.shrink(),
-                              ),
-                              Visibility(
-                                visible: showThisGame,
-                                child: Expanded(
-                                  flex: 2,
-                                  child: Text(
-                                    "This Game",
-                                    textAlign: TextAlign.center,
-                                    style: AppStylesNew.labelTextStyle,
-                                  ),
-                                ),
-                              ),
-                              Expanded(
-                                flex: 2,
-                                child: Text(
-                                  "All Time",
-                                  textAlign: TextAlign.center,
-                                  style: AppStylesNew.labelTextStyle,
-                                ),
-                              ),
-                            ],
-                          ),
-                          _buildOneStageRow(
-                            title: buildOneItemInLegend(
-                                "Preflop", AppColorsNew.preflopColor),
-                            thisVal: stats.thisGame.inPreflop,
-                            allVal: stats.alltime.inPreflop,
-                          ),
-                          _buildOneStageRow(
-                            title: buildOneItemInLegend(
-                                "Flop", AppColorsNew.flopColor),
-                            thisVal: stats.thisGame.inFlop,
-                            allVal: stats.alltime.inFlop,
-                          ),
-                          _buildOneStageRow(
-                            title: buildOneItemInLegend(
-                                "Turn", AppColorsNew.turnColor),
-                            thisVal: stats.thisGame.inTurn,
-                            allVal: stats.alltime.inTurn,
-                          ),
-                          _buildOneStageRow(
-                            title: buildOneItemInLegend(
-                                "River", AppColorsNew.riverColor),
-                            thisVal: stats.thisGame.inRiver,
-                            allVal: stats.alltime.inRiver,
-                          ),
-                          _buildOneStageRow(
-                            title: buildOneItemInLegend(
-                                "Showdown", AppColorsNew.showDownColor),
-                            thisVal: stats.thisGame.wentToShowDown,
-                            allVal: stats.alltime.wentToShowDown,
-                          ),
-                          AppDimensionsNew.getVerticalSizedBox(16),
-                        ],
-                      ),
-                    ),
 
-                    // Action Statistics
-                    Container(
-                      decoration: AppStylesNew.actionRowDecoration,
-                      margin: EdgeInsets.symmetric(horizontal: 16),
-                      padding: EdgeInsets.all(8),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Text(
-                                "Action Statistics",
-                                textAlign: TextAlign.left,
-                                style: AppStylesNew.cardHeaderTextStyle,
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Expanded(
-                                flex: 3,
-                                child: SizedBox.shrink(),
-                              ),
-                              Visibility(
-                                visible: showThisGame,
-                                child: Expanded(
+                      // Action Statistics
+                      Container(
+                        decoration: AppStylesNew.actionRowDecoration,
+                        margin: EdgeInsets.symmetric(horizontal: 16),
+                        padding: EdgeInsets.all(8),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Text(
+                                  "Action Statistics",
+                                  textAlign: TextAlign.left,
+                                  style: AppStylesNew.cardHeaderTextStyle,
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Expanded(
+                                  flex: 3,
+                                  child: SizedBox.shrink(),
+                                ),
+                                Visibility(
+                                  visible: showThisGame,
+                                  child: Expanded(
+                                    flex: 2,
+                                    child: Text(
+                                      "This Game",
+                                      textAlign: TextAlign.center,
+                                      style: AppStylesNew.labelTextStyle,
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
                                   flex: 2,
                                   child: Text(
-                                    "This Game",
+                                    "All Time",
                                     textAlign: TextAlign.center,
                                     style: AppStylesNew.labelTextStyle,
                                   ),
                                 ),
-                              ),
-                              Expanded(
-                                flex: 2,
-                                child: Text(
-                                  "All Time",
-                                  textAlign: TextAlign.center,
-                                  style: AppStylesNew.labelTextStyle,
-                                ),
-                              ),
-                            ],
-                          ),
-                          _buildOneStatRow(
-                            title: "Vpip",
-                            thisVal: stats.thisGame.vpipCount,
-                            allVal: stats.alltime.vpipCount,
-                          ),
-                          _buildOneStatRow(
-                            title: "Cont Bet",
-                            thisVal: stats.thisGame.contBet,
-                            allVal: stats.alltime.contBet,
-                          ),
-                          _buildOneStatRow(
-                            title: "3 Bet",
-                            thisVal: stats.thisGame.threeBet,
-                            allVal: stats.alltime.threeBet,
-                          ),
-                          _buildOneStatRow(
-                            title: "WTSD",
-                            thisVal: stats.thisGame.wentToShowDown,
-                            allVal: stats.alltime.wentToShowDown,
-                          ),
-                          _buildOneStatRow(
-                            title: "W\$SD",
-                            thisVal: stats.thisGame.wonAtShowDown,
-                            allVal: stats.alltime.wonAtShowDown,
-                          ),
-                          _buildOneStatRow(
-                            title: "Headsup",
-                            thisVal: stats.thisGame.headsupHands,
-                            allVal: stats.alltime.headsupHands,
-                          ),
-                          _buildOneStatRow(
-                            title: "Headsup Won",
-                            thisVal: stats.thisGame.wonHeadsupHands,
-                            allVal: stats.alltime.wonHeadsupHands,
-                          ),
-                          AppDimensionsNew.getVerticalSizedBox(16),
-                          Text(
-                            "WTSD : Went To Show Down",
-                            style: AppStylesNew.appBarSubTitleTextStyle,
-                          ),
-                          Text(
-                            "W\$SD : Won at Show Down",
-                            style: AppStylesNew.appBarSubTitleTextStyle,
-                          ),
-                        ],
+                              ],
+                            ),
+                            _buildOneStatRow(
+                              title: "Vpip",
+                              thisVal: stats.thisGame.vpipCount,
+                              allVal: stats.alltime.vpipCount,
+                            ),
+                            _buildOneStatRow(
+                              title: "Cont Bet",
+                              thisVal: stats.thisGame.contBet,
+                              allVal: stats.alltime.contBet,
+                            ),
+                            _buildOneStatRow(
+                              title: "3 Bet",
+                              thisVal: stats.thisGame.threeBet,
+                              allVal: stats.alltime.threeBet,
+                            ),
+                            _buildOneStatRow(
+                              title: "WTSD",
+                              thisVal: stats.thisGame.wentToShowDown,
+                              allVal: stats.alltime.wentToShowDown,
+                            ),
+                            _buildOneStatRow(
+                              title: "W\$SD",
+                              thisVal: stats.thisGame.wonAtShowDown,
+                              allVal: stats.alltime.wonAtShowDown,
+                            ),
+                            _buildOneStatRow(
+                              title: "Headsup",
+                              thisVal: stats.thisGame.headsupHands,
+                              allVal: stats.alltime.headsupHands,
+                            ),
+                            _buildOneStatRow(
+                              title: "Headsup Won",
+                              thisVal: stats.thisGame.wonHeadsupHands,
+                              allVal: stats.alltime.wonHeadsupHands,
+                            ),
+                            AppDimensionsNew.getVerticalSizedBox(16),
+                            Text(
+                              "WTSD : Went To Show Down",
+                              style: AppStylesNew.appBarSubTitleTextStyle,
+                            ),
+                            Text(
+                              "W\$SD : Won at Show Down",
+                              style: AppStylesNew.appBarSubTitleTextStyle,
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    // Action Statistics
-                    Container(
-                      decoration: AppStylesNew.actionRowDecoration,
-                      margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Text(
-                                "Headsup",
-                                textAlign: TextAlign.left,
-                                style: AppStylesNew.cardHeaderTextStyle,
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Expanded(
-                                flex: 4,
-                                child: SizedBox.shrink(),
-                              ),
-                              Visibility(
-                                visible: showThisGame,
-                                child: Expanded(
+                      // Action Statistics
+                      Container(
+                        decoration: AppStylesNew.actionRowDecoration,
+                        margin:
+                            EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Text(
+                                  "Headsup",
+                                  textAlign: TextAlign.left,
+                                  style: AppStylesNew.cardHeaderTextStyle,
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Expanded(
+                                  flex: 4,
+                                  child: SizedBox.shrink(),
+                                ),
+                                Visibility(
+                                  visible: showThisGame,
+                                  child: Expanded(
+                                    flex: 6,
+                                    child: Text(
+                                      "This Game",
+                                      textAlign: TextAlign.center,
+                                      style: AppStylesNew.labelTextStyle,
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
                                   flex: 6,
                                   child: Text(
-                                    "This Game",
+                                    "All Time",
                                     textAlign: TextAlign.center,
                                     style: AppStylesNew.labelTextStyle,
                                   ),
                                 ),
-                              ),
-                              Expanded(
-                                flex: 6,
-                                child: Text(
-                                  "All Time",
-                                  textAlign: TextAlign.center,
-                                  style: AppStylesNew.labelTextStyle,
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Expanded(
+                                  flex: 3,
+                                  child: SizedBox.shrink(),
                                 ),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Expanded(
-                                flex: 3,
-                                child: SizedBox.shrink(),
-                              ),
-                              Visibility(
-                                visible: showThisGame,
-                                child: Expanded(
+                                Visibility(
+                                  visible: showThisGame,
+                                  child: Expanded(
+                                    flex: 6,
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          child: Text(
+                                            "Hands",
+                                            textAlign: TextAlign.center,
+                                            style: AppStylesNew.labelTextStyle,
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: Text(
+                                            "Won",
+                                            textAlign: TextAlign.center,
+                                            style: AppStylesNew.labelTextStyle,
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: Text(
+                                            "%",
+                                            textAlign: TextAlign.center,
+                                            style: AppStylesNew.labelTextStyle,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
                                   flex: 6,
                                   child: Row(
                                     children: [
@@ -416,47 +451,19 @@ class _HandStatsViewState extends State<HandStatsView>
                                     ],
                                   ),
                                 ),
-                              ),
-                              Expanded(
-                                flex: 6,
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                      child: Text(
-                                        "Hands",
-                                        textAlign: TextAlign.center,
-                                        style: AppStylesNew.labelTextStyle,
-                                      ),
-                                    ),
-                                    Expanded(
-                                      child: Text(
-                                        "Won",
-                                        textAlign: TextAlign.center,
-                                        style: AppStylesNew.labelTextStyle,
-                                      ),
-                                    ),
-                                    Expanded(
-                                      child: Text(
-                                        "%",
-                                        textAlign: TextAlign.center,
-                                        style: AppStylesNew.labelTextStyle,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                          ...getHeadsupRows(),
-                        ],
+                              ],
+                            ),
+                            ...getHeadsupRows(),
+                          ],
+                        ),
                       ),
-                    ),
-                    AppDimensionsNew.getVerticalSizedBox(56),
-                  ],
+                      AppDimensionsNew.getVerticalSizedBox(56),
+                    ],
+                  ),
                 ),
-              ),
+        ),
       ),
-    ),);
+    );
   }
 
   Widget _buildOneStageRow({Widget title, int thisVal, int allVal}) {

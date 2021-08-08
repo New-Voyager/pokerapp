@@ -79,26 +79,27 @@ class _WaitingListBottomSheetState extends State<WaitingListBottomSheet> {
 
     height = MediaQuery.of(context).size.height;
     width = MediaQuery.of(context).size.width;
-    return Consumer<AppTheme>(builder: (_,theme,__)=> Container(
-      decoration: AppStylesNew.BgGreenRadialGradient,
-      height: height / 2,
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        appBar: CustomAppBar(
-          theme:theme,
-          context: context,
-          titleText: AppStringsNew.waitingListTitle,
-        ),
-        body: Column(
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            addRemoveWaitingListButton(),
-            this.header,
-            playersInList()
-          ],
-        ),
-      ),
-    ));
+    return Consumer<AppTheme>(
+        builder: (_, theme, __) => Container(
+              decoration: AppStylesNew.BgGreenRadialGradient,
+              height: height / 2,
+              child: Scaffold(
+                backgroundColor: Colors.transparent,
+                appBar: CustomAppBar(
+                  theme: theme,
+                  context: context,
+                  titleText: AppStringsNew.waitingListTitle,
+                ),
+                body: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    addRemoveWaitingListButton(),
+                    this.header,
+                    playersInList()
+                  ],
+                ),
+              ),
+            ));
   }
 
   playersInList() {

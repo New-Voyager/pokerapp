@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_udid/flutter_udid.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/models/auth_model.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_config.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
@@ -16,7 +17,6 @@ import 'package:pokerapp/utils/loading_utils.dart';
 import 'package:pokerapp/widgets/appname_logo.dart';
 import 'package:pokerapp/widgets/round_color_button.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
-import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
 class RestoreAccountScreen extends StatefulWidget {
@@ -30,257 +30,252 @@ class _RestoreAccountScreenState extends State<RestoreAccountScreen> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController _codeCtrl = TextEditingController();
   TextEditingController _emailCtrl = TextEditingController();
-
+  AppTextScreen _appScreenText;
   bool _restoreVisible = false;
 
   @override
   Widget build(BuildContext context) {
     final appTheme = AppTheme.getTheme(context);
+    _appScreenText = getAppTextScreen("registration");
 
-    return Consumer(
-      builder: (_, theme, __) => Container(
-        decoration: AppDecorators.bgRadialGradient(theme),
-        child: SafeArea(
-          child: Scaffold(
-            backgroundColor: Colors.transparent,
-            resizeToAvoidBottomInset: true,
-            body: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  AppDimensionsNew.getVerticalSizedBox(16.pw),
-                  // Logo section
-                  AppNameAndLogoWidget(appTheme),
+    return Container(
+      decoration: AppDecorators.bgRadialGradient(appTheme),
+      child: SafeArea(
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          resizeToAvoidBottomInset: true,
+          body: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                AppDimensionsNew.getVerticalSizedBox(16.pw),
+                // Logo section
+                AppNameAndLogoWidget(appTheme, _appScreenText),
 
-                  // restore existing account text
-                  Container(
-                    alignment: Alignment.center,
-                    margin: EdgeInsets.only(top: 16, bottom: 8),
-                    child: Text(
-                      "Restore existing account",
-                      style: AppTextStyles.T1.copyWith(
-                        color: appTheme.supportingColorWithDark(0.50),
-                      ),
+                // restore existing account text
+                Container(
+                  alignment: Alignment.center,
+                  margin: EdgeInsets.only(top: 16, bottom: 8),
+                  child: Text(
+                    "Restore existing account",
+                    style: AppTextStyles.T1.copyWith(
+                      color: appTheme.supportingColorWithDark(0.50),
                     ),
                   ),
+                ),
 
-                  // Form
-                  Container(
-                    margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    child: Form(
-                      key: _formKey,
-                      child: Column(
-                        children: [
-                          // Recover Email
-                          TextFormField(
-                            keyboardType: TextInputType.emailAddress,
-                            controller: _emailCtrl,
-                            validator: (value) {
-                              if (value.length > 50) {
-                                return AppStringsNew.emailInvalidText;
-                              }
-                              // RegExp for email validation
-                              if (!RegExp(
-                                      r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$')
-                                  .hasMatch(value)) {
-                                return AppStringsNew.emailInvalidText;
-                              }
+                // Form
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        // Recover Email
+                        TextFormField(
+                          keyboardType: TextInputType.emailAddress,
+                          controller: _emailCtrl,
+                          validator: (value) {
+                            if (value.length > 50) {
+                              return AppStringsNew.emailInvalidText;
+                            }
+                            // RegExp for email validation
+                            if (!RegExp(
+                                    r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$')
+                                .hasMatch(value)) {
+                              return AppStringsNew.emailInvalidText;
+                            }
 
-                              return null;
-                            },
-                            autovalidateMode:
-                                AutovalidateMode.onUserInteraction,
-                            decoration: InputDecoration(
-                              /* border */
-                              border: AppDecorators.getBorderStyle(
-                                radius: 32.0,
-                                color: appTheme.primaryColorWithDark(),
-                              ),
-                              errorBorder: AppDecorators.getBorderStyle(
-                                radius: 32.0,
-                                color: appTheme.negativeOrErrorColor,
-                              ),
-                              focusedBorder: AppDecorators.getBorderStyle(
-                                radius: 32.0,
-                                color: appTheme.accentColorWithDark(),
-                              ),
-
-                              /* icons - prefix, suffix */
-                              prefixIcon: Container(
-                                margin: EdgeInsets.symmetric(horizontal: 16),
-                                child: Image.asset(
-                                  AppAssetsNew.pathGameTypeChipImage,
-                                  height: 16,
-                                  width: 16,
-                                ),
-                              ),
-                              suffixIcon: IconButton(
-                                icon: Icon(
-                                  Icons.info,
-                                  color: appTheme.supportingColorWithDark(0.50),
-                                ),
-                                onPressed: () {
-                                  toast(
-                                    AppStringsNew.emailHintToast,
-                                    duration: Duration(seconds: 5),
-                                  );
-                                },
-                              ),
-
-                              /* label texts */
-                              labelText: 'Recovery email',
-                              labelStyle: AppTextStyles.T0.copyWith(
-                                color: appTheme.accentColor,
-                              ),
-
-                              /* other */
-                              contentPadding: EdgeInsets.symmetric(
-                                vertical: 16,
-                                horizontal: 16,
-                              ),
-                              floatingLabelBehavior:
-                                  FloatingLabelBehavior.always,
-                              filled: true,
-                              fillColor: appTheme.fillInColor,
-                              alignLabelWithHint: true,
+                            return null;
+                          },
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          decoration: InputDecoration(
+                            /* border */
+                            border: AppDecorators.getBorderStyle(
+                              radius: 32.0,
+                              color: appTheme.primaryColorWithDark(),
                             ),
+                            errorBorder: AppDecorators.getBorderStyle(
+                              radius: 32.0,
+                              color: appTheme.negativeOrErrorColor,
+                            ),
+                            focusedBorder: AppDecorators.getBorderStyle(
+                              radius: 32.0,
+                              color: appTheme.accentColorWithDark(),
+                            ),
+
+                            /* icons - prefix, suffix */
+                            prefixIcon: Container(
+                              margin: EdgeInsets.symmetric(horizontal: 16),
+                              child: Image.asset(
+                                AppAssetsNew.pathGameTypeChipImage,
+                                height: 16,
+                                width: 16,
+                              ),
+                            ),
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                Icons.info,
+                                color: appTheme.supportingColorWithDark(0.50),
+                              ),
+                              onPressed: () {
+                                toast(
+                                  AppStringsNew.emailHintToast,
+                                  duration: Duration(seconds: 5),
+                                );
+                              },
+                            ),
+
+                            /* label texts */
+                            labelText: 'Recovery email',
+                            labelStyle: AppTextStyles.T0.copyWith(
+                              color: appTheme.accentColor,
+                            ),
+
+                            /* other */
+                            contentPadding: EdgeInsets.symmetric(
+                              vertical: 16,
+                              horizontal: 16,
+                            ),
+                            floatingLabelBehavior: FloatingLabelBehavior.always,
+                            filled: true,
+                            fillColor: appTheme.fillInColor,
+                            alignLabelWithHint: true,
                           ),
+                        ),
 
-                          // sep
-                          AppDimensionsNew.getVerticalSizedBox(16),
+                        // sep
+                        AppDimensionsNew.getVerticalSizedBox(16),
 
-                          // get code button
-                          RoundedColorButton(
-                            backgroundColor: appTheme.accentColor,
-                            textColor: appTheme.primaryColorWithDark(0.50),
-                            text: AppStringsNew.getCodeButtonText,
-                            fontSize: 14.dp,
-                            onTapFunction: () => _handleGetCode(context),
-                          ),
+                        // get code button
+                        RoundedColorButton(
+                          backgroundColor: appTheme.accentColor,
+                          textColor: appTheme.primaryColorWithDark(0.50),
+                          text: AppStringsNew.getCodeButtonText,
+                          fontSize: 14.dp,
+                          onTapFunction: () => _handleGetCode(context),
+                        ),
 
-                          // sep
-                          AppDimensionsNew.getVerticalSizedBox(8),
+                        // sep
+                        AppDimensionsNew.getVerticalSizedBox(8),
 
-                          // Name
-                          Visibility(
-                            visible: _restoreVisible,
-                            child: Column(
-                              children: [
-                                // sep
-                                AppDimensionsNew.getVerticalSizedBox(24),
+                        // Name
+                        Visibility(
+                          visible: _restoreVisible,
+                          child: Column(
+                            children: [
+                              // sep
+                              AppDimensionsNew.getVerticalSizedBox(24),
 
-                                // form
-                                TextFormField(
-                                  controller: _codeCtrl,
-                                  validator: (value) {
-                                    if (_restoreVisible) {
-                                      if (value.isEmpty) {
-                                        return "Enter recovery code";
-                                      }
+                              // form
+                              TextFormField(
+                                controller: _codeCtrl,
+                                validator: (value) {
+                                  if (_restoreVisible) {
+                                    if (value.isEmpty) {
+                                      return "Enter recovery code";
                                     }
-                                    return null;
-                                  },
-                                  decoration: InputDecoration(
-                                    /* border */
-                                    border: AppDecorators.getBorderStyle(
-                                      radius: 32.0,
-                                      color: appTheme.primaryColorWithDark(),
-                                    ),
-                                    errorBorder: AppDecorators.getBorderStyle(
-                                      radius: 32.0,
-                                      color: appTheme.negativeOrErrorColor,
-                                    ),
-                                    focusedBorder: AppDecorators.getBorderStyle(
-                                      radius: 32.0,
-                                      color: appTheme.accentColorWithDark(),
-                                    ),
-
-                                    /* icons - prefix, suffix */
-                                    prefixIcon: Container(
-                                      margin:
-                                          EdgeInsets.symmetric(horizontal: 16),
-                                      child: Image.asset(
-                                        AppAssetsNew.pathGameTypeChipImage,
-                                        height: 16,
-                                        width: 16,
-                                      ),
-                                    ),
-                                    suffixIcon: IconButton(
-                                      icon: Icon(
-                                        Icons.info,
-                                        color: appTheme
-                                            .supportingColorWithDark(0.50),
-                                      ),
-                                      onPressed: () {
-                                        toast(
-                                          AppStringsNew
-                                              .recoveryCodeInfoToastText,
-                                          duration: Duration(seconds: 4),
-                                        );
-                                      },
-                                    ),
-
-                                    /* label texts */
-                                    labelText: 'Recovery email',
-                                    labelStyle: AppTextStyles.T0.copyWith(
-                                      color: appTheme.accentColor,
-                                    ),
-
-                                    /* other */
-                                    contentPadding: EdgeInsets.symmetric(
-                                      vertical: 16,
-                                      horizontal: 16,
-                                    ),
-                                    floatingLabelBehavior:
-                                        FloatingLabelBehavior.always,
-                                    filled: true,
-                                    fillColor: appTheme.fillInColor,
-                                    alignLabelWithHint: true,
+                                  }
+                                  return null;
+                                },
+                                decoration: InputDecoration(
+                                  /* border */
+                                  border: AppDecorators.getBorderStyle(
+                                    radius: 32.0,
+                                    color: appTheme.primaryColorWithDark(),
                                   ),
-                                ),
-
-                                // sep
-                                AppDimensionsNew.getVerticalSizedBox(16),
-
-                                // button
-                                RoundedColorButton(
-                                  backgroundColor: appTheme.accentColor,
-                                  textColor:
-                                      appTheme.primaryColorWithDark(0.50),
-                                  text: AppStringsNew.restoreButtonText,
-                                  fontSize: 14.dp,
-                                  onTapFunction: () => _handleRestoreClick(
-                                    context,
+                                  errorBorder: AppDecorators.getBorderStyle(
+                                    radius: 32.0,
+                                    color: appTheme.negativeOrErrorColor,
                                   ),
-                                ),
-                              ],
-                            ),
-                          ),
+                                  focusedBorder: AppDecorators.getBorderStyle(
+                                    radius: 32.0,
+                                    color: appTheme.accentColorWithDark(),
+                                  ),
 
-                          // sep
-                          AppDimensionsNew.getVerticalSizedBox(24),
+                                  /* icons - prefix, suffix */
+                                  prefixIcon: Container(
+                                    margin:
+                                        EdgeInsets.symmetric(horizontal: 16),
+                                    child: Image.asset(
+                                      AppAssetsNew.pathGameTypeChipImage,
+                                      height: 16,
+                                      width: 16,
+                                    ),
+                                  ),
+                                  suffixIcon: IconButton(
+                                    icon: Icon(
+                                      Icons.info,
+                                      color: appTheme
+                                          .supportingColorWithDark(0.50),
+                                    ),
+                                    onPressed: () {
+                                      toast(
+                                        AppStringsNew.recoveryCodeInfoToastText,
+                                        duration: Duration(seconds: 4),
+                                      );
+                                    },
+                                  ),
 
-                          // signup text button
-                          InkWell(
-                            onTap: () {
-                              Navigator.of(context).pop();
-                            },
-                            child: Container(
-                              alignment: Alignment.center,
-                              padding: EdgeInsets.all(16),
-                              child: Text(AppStringsNew.signupButtonText,
-                                  style: AppTextStyles.T2.copyWith(
-                                    decoration: TextDecoration.underline,
+                                  /* label texts */
+                                  labelText: 'Recovery email',
+                                  labelStyle: AppTextStyles.T0.copyWith(
                                     color: appTheme.accentColor,
-                                  )),
-                            ),
+                                  ),
+
+                                  /* other */
+                                  contentPadding: EdgeInsets.symmetric(
+                                    vertical: 16,
+                                    horizontal: 16,
+                                  ),
+                                  floatingLabelBehavior:
+                                      FloatingLabelBehavior.always,
+                                  filled: true,
+                                  fillColor: appTheme.fillInColor,
+                                  alignLabelWithHint: true,
+                                ),
+                              ),
+
+                              // sep
+                              AppDimensionsNew.getVerticalSizedBox(16),
+
+                              // button
+                              RoundedColorButton(
+                                backgroundColor: appTheme.accentColor,
+                                textColor: appTheme.primaryColorWithDark(0.50),
+                                text: AppStringsNew.restoreButtonText,
+                                fontSize: 14.dp,
+                                onTapFunction: () => _handleRestoreClick(
+                                  context,
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
+                        ),
+
+                        // sep
+                        AppDimensionsNew.getVerticalSizedBox(24),
+
+                        // signup text button
+                        InkWell(
+                          onTap: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: Container(
+                            alignment: Alignment.center,
+                            padding: EdgeInsets.all(16),
+                            child: Text(AppStringsNew.signupButtonText,
+                                style: AppTextStyles.T2.copyWith(
+                                  decoration: TextDecoration.underline,
+                                  color: appTheme.accentColor,
+                                )),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),

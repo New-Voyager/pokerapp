@@ -63,7 +63,7 @@ class _PerformanceViewState extends State<PerformanceView>
   @override
   Widget build(BuildContext context) {
     return Consumer<AppTheme>(
-      builder: (_,theme,__)=> Container(
+      builder: (_, theme, __) => Container(
           decoration: AppStylesNew.BgGreenRadialGradient,
           child: Scaffold(
             backgroundColor: Colors.transparent,
@@ -108,7 +108,7 @@ class _PerformanceViewState extends State<PerformanceView>
                                     showToolbar: false,
                                   ),
                                 ),
-    
+
                                 // Performance
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,

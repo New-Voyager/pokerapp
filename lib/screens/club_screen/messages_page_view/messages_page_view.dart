@@ -122,7 +122,8 @@ class _MessagesPageViewState extends State<MessagesPageView>
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<AppTheme>(builder: (_,theme,__)=> Scaffold(
+    return Consumer<AppTheme>(
+      builder: (_, theme, __) => Scaffold(
         backgroundColor: chatBg,
         appBar: CustomAppBar(
           theme: theme,
@@ -141,12 +142,12 @@ class _MessagesPageViewState extends State<MessagesPageView>
                     return CircularProgressWidget(
                       text: "Loading messages...",
                     );
-    
+
                   if (snapshot.data?.isEmpty ?? true) return NoMessageWidget();
-    
+
                   messages = snapshot.data;
                   var mess = _convert();
-    
+
                   return ListView.separated(
                     reverse: true,
                     padding: const EdgeInsets.all(5),
@@ -163,7 +164,7 @@ class _MessagesPageViewState extends State<MessagesPageView>
                 },
               ),
             ),
-    
+
             // chat text field
             ChatTextField(
               icon: FontAwesomeIcons.icons,
@@ -173,7 +174,7 @@ class _MessagesPageViewState extends State<MessagesPageView>
               onEmojiSelectTap: _onEmojiSelectTap,
               onTap: _onTap,
             ),
-    
+
             // emoji picker
             ValueListenableBuilder<bool>(
               valueListenable: _vnShowEmojiPicker,

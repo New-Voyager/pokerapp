@@ -18,6 +18,7 @@ import 'package:pokerapp/services/nats/nats.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 import 'main.dart';
+import 'models/ui/app_text.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -63,6 +64,7 @@ class _MyAppState extends State<MyApp> {
 
   void _init(BuildContext context) async {
     try {
+      await initAppText('en');
       _firebaseApp = await _initialization(context);
     } catch (e) {
       log('$e');

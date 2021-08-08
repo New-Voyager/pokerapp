@@ -185,7 +185,10 @@ class _StorePageState extends State<StorePage> {
                         onFadeComplete: onUpdateComplete,
                         initialData: _coinsFrom,
                         data: _coinsTo,
-                        builder: (value) => Text('$value', style: TextStyle(color: Colors.green),),
+                        builder: (value) => Text(
+                          '$value',
+                          style: TextStyle(color: Colors.green),
+                        ),
                       )
                     : Text(
                         '${AppConfig.availableCoins}',
