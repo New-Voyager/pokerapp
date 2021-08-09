@@ -1,27 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
-import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
+import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class NoMessageWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final theme = AppTheme.getTheme(context);
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Icon(
           Icons.message_rounded,
-          size: 70,
-          color: Colors.white.withOpacity(0.5),
+          size: 56.dp,
+          color: theme.fillInColor,
         ),
         Text(
-          'No message',
+          AppStringsNew.noMessagesText,
           textAlign: TextAlign.center,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 20.0,
-          ),
+          style: AppDecorators.getSubtitle3Style(theme: theme),
         )
       ],
     );

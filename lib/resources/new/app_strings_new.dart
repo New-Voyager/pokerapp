@@ -346,4 +346,14 @@ class AppStringsNew {
   static String mobileNumberHintText = 'Mobile Number';
 
   static String insertNotesHintText = 'Insert notes here';
+
+  static String loadingMessagesText = "Loading messages";
+
+  static String noMessagesText = "No Messages";
+
+  static String youText = "You";
+
+  static String enterMessageHintText = "Enter message ";
+
+  static String searchTenorHintText = 'Search Tenor Gifs';
 }

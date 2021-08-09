@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/resources/app_decorators.dart';
+import 'package:pokerapp/resources/new/app_strings_new.dart';
+import 'package:provider/provider.dart';
 
 import '../utils.dart';
 
@@ -22,50 +26,49 @@ class ChatTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: chatHeaderColor,
-      child: Row(
-        children: [
-          // gif button
-          _buildTextFieldIcon(
-            icon: icon,
-            onPressed: onGifSelectTap,
-            color: iconColor,
-          ),
+    return Consumer<AppTheme>(
+      builder: (_, theme, __) => Container(
+        color: theme.fillInColor,
+        child: Row(
+          children: [
+            // gif button
+            _buildTextFieldIcon(
+              icon: icon,
+              onPressed: onGifSelectTap,
+              color: theme.secondaryColorWithDark(),
+            ),
+            // emoji button
+            _buildTextFieldIcon(
+              padding: false,
+              icon: Icons.emoji_emotions,
+              onPressed: onEmojiSelectTap,
+              color: theme.secondaryColorWithDark(),
+            ),
 
-          Expanded(
-            child: TextFormField(
-              controller: textEditingController,
-              onTap: onTap,
-              style: TextStyle(color: Colors.white),
-              minLines: 1,
-              maxLines: 3,
-              textInputAction: TextInputAction.newline,
-              decoration: InputDecoration(
-                border: InputBorder.none,
-                hintText: 'Message',
-                hintStyle: TextStyle(
-                  color: iconColor,
+            Expanded(
+              child: TextFormField(
+                controller: textEditingController,
+                onTap: onTap,
+                style: TextStyle(color: Colors.white),
+                minLines: 1,
+                maxLines: 3,
+                textInputAction: TextInputAction.newline,
+                decoration: InputDecoration(
+                  border: InputBorder.none,
+                  hintText: AppStringsNew.enterMessageHintText,
+                  hintStyle: AppDecorators.getSubtitle3Style(theme: theme),
                 ),
               ),
             ),
-          ),
 
-          // emoji button
-          _buildTextFieldIcon(
-            padding: false,
-            icon: Icons.emoji_emotions,
-            onPressed: onEmojiSelectTap,
-            color: iconColor,
-          ),
-
-          // send button
-          _buildTextFieldIcon(
-            icon: Icons.send,
-            onPressed: onSend,
-            color: Color.fromARGB(255, 0, 160, 233),
-          ),
-        ],
+            // send button
+            _buildTextFieldIcon(
+              icon: Icons.send,
+              onPressed: onSend,
+              color: theme.accentColor,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -75,7 +78,7 @@ class ChatTextField extends StatelessWidget {
     return Container(
       child: Padding(
         padding: padding
-            ? const EdgeInsets.symmetric(horizontal: 5)
+            ? const EdgeInsets.only(left: 5)
             : const EdgeInsets.all(0.0),
         child: IconButton(
           icon: Icon(icon),

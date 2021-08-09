@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/resources/app_decorators.dart';
 
 import '../../../utils/color_generator.dart';
 
@@ -16,16 +18,15 @@ class ChatUserAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = AppTheme.getTheme(context);
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       child: CircleAvatar(
         backgroundColor: generateColorFor(userId),
         child: Text(
-          name[0],
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
+          name[0].toUpperCase(),
+          style: AppDecorators.getHeadLine3Style(theme: theme),
+          textAlign: TextAlign.center,
         ),
       ),
     );
