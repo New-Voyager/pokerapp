@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/models/club_homepage_model.dart';
 import 'package:pokerapp/models/club_members_model.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/app_icons.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
@@ -73,7 +74,7 @@ class _ClubMembersViewState extends State<ClubMembersView>
   Widget build(BuildContext context) {
     return Consumer<AppTheme>(
       builder: (_, theme, __) => Container(
-        decoration: AppStylesNew.BgGreenRadialGradient,
+        decoration: AppDecorators.bgRadialGradient(theme),
         child: Scaffold(
           backgroundColor: Colors.transparent,
           appBar: CustomAppBar(
@@ -84,7 +85,7 @@ class _ClubMembersViewState extends State<ClubMembersView>
           ),
           body: _isLoading
               ? CircularProgressWidget(
-                  text: "Loadig members",
+                  text: AppStringsNew.loadingMembers,
                 )
               : _clubHomePageModel.isOwner
                   ? Column(
@@ -93,23 +94,24 @@ class _ClubMembersViewState extends State<ClubMembersView>
                           alignment: Alignment.topCenter,
                           child: TabBar(
                             controller: _controller,
-                            labelColor: AppColorsNew.newGreenButtonColor,
-                            indicatorColor: AppColorsNew.yellowAccentColor,
+                            labelColor: theme.secondaryColorWithLight(),
+                            indicatorColor: theme.accentColor,
                             indicatorSize: TabBarIndicatorSize.label,
-                            unselectedLabelColor: AppColorsNew.newTextColor,
+                            unselectedLabelColor:
+                                theme.secondaryColorWithDark(0.2),
                             isScrollable: true,
                             tabs: [
                               Tab(
-                                text: 'All',
+                                text: AppStringsNew.clubMemberTabAll,
                               ),
                               // Tab(
                               //   text: 'Unsettled',
                               // ),
                               Tab(
-                                text: 'Managers',
+                                text: AppStringsNew.clubMemberTabManagers,
                               ),
                               Tab(
-                                text: 'Inactive',
+                                text: AppStringsNew.clubMemberTabInactive,
                               ),
                             ],
                           ),
@@ -163,14 +165,13 @@ class _ClubMembersViewState extends State<ClubMembersView>
                                     flex: 2,
                                     child: CircleAvatar(
                                       radius: 30,
-                                      backgroundColor: Color(
-                                              (math.Random().nextDouble() *
-                                                      0xFFFFFF)
-                                                  .toInt())
-                                          .withOpacity(1.0),
+                                      backgroundColor: theme.fillInColor,
                                       child: ClipOval(
                                         child: _all[index].imageUrl == null
-                                            ? Icon(AppIcons.user)
+                                            ? Icon(
+                                                AppIcons.user,
+                                                color: theme.supportingColor,
+                                              )
                                             : Image.network(
                                                 _all[index].imageUrl,
                                               ),
