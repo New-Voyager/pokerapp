@@ -1229,3 +1229,760 @@ String testResultMessage = '''
 		}
 }]
 }''';
+
+
+String handResult2MultiPot = '''
+{
+	"activeSeats": [1, 2, 3, 4],
+	"wonAt": "SHOW_DOWN",
+	"boards": [{
+		"boardNo": 1,
+		"cards": [200, 196, 8, 132, 33],
+		"playerRank": {
+			"4": {
+				"boardNo": 1,
+				"seatNo": 4,
+				"hiRank": 2501,
+				"hiCards": [200, 196, 132, 130, 177]
+			},
+			"1": {
+				"boardNo": 1,
+				"seatNo": 1,
+				"hiRank": 2592,
+				"hiCards": [200, 196, 8, 132, 1]
+			},
+			"2": {
+				"boardNo": 1,
+				"seatNo": 2,
+				"hiRank": 3327,
+				"hiCards": [200, 196, 132, 178, 164]
+			},
+			"3": {
+				"boardNo": 1,
+				"seatNo": 3,
+				"hiRank": 3477,
+				"hiCards": [200, 196, 132, 33, 81]
+			}
+		}
+	}],
+	"potWinners": [{
+		"amount": 400.0,
+		"boardWinners": [{
+			"boardNo": 1,
+			"amount": 400.0,
+			"hiWinners": {
+				"4": {
+					"seatNo": 4,
+					"amount": 398.0
+				}
+			},
+			"hiRankText": "Two Pair"
+		}]
+	}, {
+		"potNo": 1,
+		"amount": 300.0,
+		"boardWinners": [{
+			"boardNo": 1,
+			"amount": 300.0,
+			"hiWinners": {
+				"4": {
+					"seatNo": 4,
+					"amount": 298.0
+				}
+			},
+			"hiRankText": "Two Pair"
+		}]
+	}, {
+		"potNo": 2,
+		"amount": 200.0,
+		"boardWinners": [{
+			"boardNo": 1,
+			"amount": 200.0,
+			"hiWinners": {
+				"4": {
+					"seatNo": 4,
+					"amount": 199.0
+				}
+			},
+			"hiRankText": "Two Pair"
+		}]
+	}],
+	"pauseTimeSecs": 5000,
+	"playerInfo": {
+		"1": {
+			"id": "6198",
+			"balance": {
+				"before": 100.0
+			}
+		},
+		"2": {
+			"id": "6199",
+			"balance": {
+				"before": 200.0
+			}
+		},
+		"3": {
+			"id": "6200",
+			"balance": {
+				"before": 300.0
+			}
+		},
+		"4": {
+			"id": "6207",
+			"balance": {
+				"before": 400.0,
+				"after": 995.0
+			},
+			"rakePaid": 5.0
+		}
+	},
+	"playerStats": {
+		"6200": {
+			"allin": true,
+			"wentToShowdown": true,
+			"inPreflop": true,
+			"inFlop": true,
+			"inTurn": true,
+			"inRiver": true,
+			"actedAtLeastOnce": true
+		},
+		"6207": {
+			"vpip": true,
+			"allin": true,
+			"wentToShowdown": true,
+			"wonChipsAtShowdown": true,
+			"inPreflop": true,
+			"inFlop": true,
+			"inTurn": true,
+			"inRiver": true,
+			"actedAtLeastOnce": true
+		},
+		"6198": {
+			"postflopRaise": true,
+			"vpip": true,
+			"allin": true,
+			"wentToShowdown": true,
+			"inPreflop": true,
+			"inFlop": true,
+			"inTurn": true,
+			"inRiver": true,
+			"actedAtLeastOnce": true
+		},
+		"6199": {
+			"vpip": true,
+			"allin": true,
+			"wentToShowdown": true,
+			"inPreflop": true,
+			"inFlop": true,
+			"inTurn": true,
+			"inRiver": true,
+			"actedAtLeastOnce": true
+		}
+	},
+	"handNum": 1
+}
+''';
+
+String multiPotV2Message = '''
+{
+	"2": [1, 2],
+	"3": 6,
+	"4": [{
+		"1": 1,
+		"2": [200, 196, 8, 132, 33],
+		"3": [{
+			"1": 1,
+			"2": {
+				"1": 1,
+				"2": 1,
+				"3": 2592,
+				"4": [200, 196, 8, 132, 1]
+			}
+		}, {
+			"1": 2,
+			"2": {
+				"1": 1,
+				"2": 2,
+				"3": 3327,
+				"4": [200, 196, 132, 178, 164]
+			}
+		}]
+	}],
+	"5": [{
+		"2": 302.0,
+		"3": [{
+			"2": 1,
+			"3": 302.0,
+			"4": [{
+				"1": 1,
+				"2": {
+					"1": 1,
+					"2": 297.0
+				}
+			}],
+			"6": "Two Pair"
+		}]
+	}],
+	"6": 5000,
+	"7": [{
+		"1": 1,
+		"2": {
+			"1": "6198",
+			"6": {
+				"1": 100.0,
+				"2": 297.0
+			},
+			"10": 5.0
+		}
+	}, {
+		"1": 2,
+		"2": {
+			"1": "6199",
+			"6": {
+				"1": 200.0,
+				"2": 100.0
+			}
+		}
+	}, {
+		"1": 3,
+		"2": {
+			"1": "6200",
+			"6": {
+				"1": 300.0,
+				"2": 298.0
+			}
+		}
+	}, {
+		"1": 4,
+		"2": {
+			"1": "6207",
+			"6": {
+				"1": 400.0,
+				"2": 300.0
+			}
+		}
+	}],
+	"9": [{
+		"1": "6207",
+		"2": {
+			"4": true,
+			"13": true,
+			"14": true,
+			"15": true,
+			"17": 1,
+			"18": true
+		}
+	}, {
+		"1": "6198",
+		"2": {
+			"2": true,
+			"4": true,
+			"6": true,
+			"7": true,
+			"8": true,
+			"9": true,
+			"10": "6199",
+			"11": true,
+			"13": true,
+			"14": true,
+			"15": true,
+			"16": true,
+			"18": true
+		}
+	}, {
+		"1": "6199",
+		"2": {
+			"4": true,
+			"6": true,
+			"7": true,
+			"9": true,
+			"10": "6198",
+			"13": true,
+			"14": true,
+			"15": true,
+			"16": true,
+			"18": true
+		}
+	}, {
+		"1": "6200",
+		"2": {
+			"13": true,
+			"14": true,
+			"17": 3
+		}
+	}],
+	"10": 1
+}
+''';
+
+
+String bombPotJsonMsg = '''
+{
+	"activeSeats": [1, 2],
+	"wonAt": "SHOW_DOWN",
+	"boards": [{
+		"boardNo": 1,
+		"cards": [200, 196, 8, 132, 33],
+		"playerRank": {
+			"1": {
+				"boardNo": 1,
+				"seatNo": 1,
+				"hiRank": 2592,
+				"hiCards": [200, 196, 8, 132, 1]
+			},
+			"2": {
+				"boardNo": 1,
+				"seatNo": 2,
+				"hiRank": 3327,
+				"hiCards": [200, 196, 132, 178, 164]
+			}
+		}
+	}, {
+		"boardNo": 2,
+		"cards": [104, 36, 72, 84, 177],
+		"playerRank": {
+			"1": {
+				"boardNo": 2,
+				"seatNo": 1,
+				"hiRank": 6938,
+				"hiCards": [104, 72, 84, 177, 114]
+			},
+			"2": {
+				"boardNo": 2,
+				"seatNo": 2,
+				"hiRank": 3625,
+				"hiCards": [104, 84, 177, 178, 164]
+			}
+		}
+	}],
+	"potWinners": [{
+		"amount": 80.0,
+		"boardWinners": [{
+			"boardNo": 1,
+			"amount": 40.0,
+			"hiWinners": {
+				"1": {
+					"seatNo": 1,
+					"amount": 38.0
+				}
+			},
+			"hiRankText": "Two Pair"
+		}, {
+			"boardNo": 2,
+			"amount": 40.0,
+			"hiWinners": {
+				"2": {
+					"seatNo": 2,
+					"amount": 38.0
+				}
+			},
+			"hiRankText": "Pair"
+		}]
+	}],
+	"pauseTimeSecs": 5000,
+	"playerInfo": {
+		"3": {
+			"id": "6200",
+			"balance": {
+				"before": 100.0,
+				"after": 88.0
+			}
+		},
+		"1": {
+			"id": "6198",
+			"balance": {
+				"before": 100.0,
+				"after": 104.0
+			},
+			"rakePaid": 2.0
+		},
+		"2": {
+			"id": "6199",
+			"balance": {
+				"before": 100.0,
+				"after": 104.0
+			},
+			"rakePaid": 2.0
+		}
+	},
+	"playerStats": {
+		"6199": {
+			"preflopRaise": true,
+			"postflopRaise": true,
+			"wentToShowdown": true,
+			"wonChipsAtShowdown": true,
+			"headsup": true,
+			"headsupPlayer": "6198",
+			"inPreflop": true,
+			"inFlop": true,
+			"inTurn": true,
+			"inRiver": true,
+			"actedAtLeastOnce": true
+		},
+		"6200": {
+			"preflopRaise": true,
+			"postflopRaise": true,
+			"inPreflop": true,
+			"inFlop": true,
+			"actedAtLeastOnce": true
+		},
+		"6198": {
+			"preflopRaise": true,
+			"wentToShowdown": true,
+			"wonChipsAtShowdown": true,
+			"headsup": true,
+			"headsupPlayer": "6199",
+			"wonHeadsup": true,
+			"inPreflop": true,
+			"inFlop": true,
+			"inTurn": true,
+			"inRiver": true,
+			"actedAtLeastOnce": true
+		}
+	},
+	"handNum": 1
+}
+''';
+
+String bombPotProtoMsg = '''
+{
+	"2": [1, 2],
+	"3": 6,
+	"4": [{
+		"1": 1,
+		"2": [200, 196, 8, 132, 33],
+		"3": [{
+			"1": 1,
+			"2": {
+				"1": 1,
+				"2": 1,
+				"3": 2592,
+				"4": [200, 196, 8, 132, 1]
+			}
+		}, {
+			"1": 2,
+			"2": {
+				"1": 1,
+				"2": 2,
+				"3": 3327,
+				"4": [200, 196, 132, 178, 164]
+			}
+		}]
+	}, {
+		"1": 2,
+		"2": [104, 36, 72, 84, 177],
+		"3": [{
+			"1": 2,
+			"2": {
+				"1": 2,
+				"2": 2,
+				"3": 3625,
+				"4": [104, 84, 177, 178, 164]
+			}
+		}, {
+			"1": 1,
+			"2": {
+				"1": 2,
+				"2": 1,
+				"3": 6938,
+				"4": [104, 72, 84, 177, 114]
+			}
+		}]
+	}],
+	"5": [{
+		"2": 80.0,
+		"3": [{
+			"2": 1,
+			"3": 40.0,
+			"4": [{
+				"1": 1,
+				"2": {
+					"1": 1,
+					"2": 38.0
+				}
+			}],
+			"6": "Two Pair"
+		}, {
+			"2": 2,
+			"3": 40.0,
+			"4": [{
+				"1": 2,
+				"2": {
+					"1": 2,
+					"2": 38.0
+				}
+			}],
+			"6": "Pair"
+		}]
+	}],
+	"6": 5000,
+	"7": [{
+		"1": 1,
+		"2": {
+			"1": "6231",
+			"2": [114, 1],
+			"5": 6,
+			"6": {
+				"1": 100.0,
+				"2": 104.0
+			},
+			"9": 4.0,
+			"10": 2.0
+		}
+	}, {
+		"1": 2,
+		"2": {
+			"1": "6232",
+			"2": [178, 164],
+			"5": 6,
+			"6": {
+				"1": 100.0,
+				"2": 104.0
+			},
+			"9": 4.0,
+			"10": 2.0
+		}
+	}, {
+		"1": 3,
+		"2": {
+			"1": "6233",
+			"2": [17, 81],
+			"5": 3,
+			"6": {
+				"1": 100.0,
+				"2": 88.0
+			},
+			"9": -12.0
+		}
+	}],
+	"9": [{
+		"1": "6231",
+		"2": {
+			"1": true,
+			"7": true,
+			"8": true,
+			"9": true,
+			"10": "6232",
+			"11": true,
+			"13": true,
+			"14": true,
+			"15": true,
+			"16": true,
+			"18": true
+		}
+	}, {
+		"1": "6232",
+		"2": {
+			"1": true,
+			"2": true,
+			"7": true,
+			"8": true,
+			"9": true,
+			"10": "6231",
+			"13": true,
+			"14": true,
+			"15": true,
+			"16": true,
+			"18": true
+		}
+	}, {
+		"1": "6233",
+		"2": {
+			"1": true,
+			"2": true,
+			"13": true,
+			"14": true,
+			"18": true
+		}
+	}],
+	"10": 1
+}
+''';
+
+String threePotsResultV2 = '''
+{
+	"2": [1, 2, 3, 4],
+	"3": 6,
+	"4": [{
+		"1": 1,
+		"2": [200, 196, 8, 132, 33],
+		"3": [{
+			"1": 4,
+			"2": {
+				"1": 1,
+				"2": 4,
+				"3": 2501,
+				"4": [200, 196, 132, 130, 177]
+			}
+		}, {
+			"1": 1,
+			"2": {
+				"1": 1,
+				"2": 1,
+				"3": 2592,
+				"4": [200, 196, 8, 132, 1]
+			}
+		}, {
+			"1": 2,
+			"2": {
+				"1": 1,
+				"2": 2,
+				"3": 3327,
+				"4": [200, 196, 132, 178, 164]
+			}
+		}, {
+			"1": 3,
+			"2": {
+				"1": 1,
+				"2": 3,
+				"3": 3477,
+				"4": [200, 196, 132, 33, 81]
+			}
+		}]
+	}],
+	"5": [{
+		"2": 400.0,
+		"3": [{
+			"2": 1,
+			"3": 400.0,
+			"4": [{
+				"1": 4,
+				"2": {
+					"1": 4,
+					"2": 398.0
+				}
+			}],
+			"6": "Two Pair"
+		}]
+	}, {
+		"1": 1,
+		"2": 300.0,
+		"3": [{
+			"2": 1,
+			"3": 300.0,
+			"4": [{
+				"1": 4,
+				"2": {
+					"1": 4,
+					"2": 298.0
+				}
+			}],
+			"6": "Two Pair"
+		}]
+	}, {
+		"1": 2,
+		"2": 200.0,
+		"3": [{
+			"2": 1,
+			"3": 200.0,
+			"4": [{
+				"1": 4,
+				"2": {
+					"1": 4,
+					"2": 199.0
+				}
+			}],
+			"6": "Two Pair"
+		}]
+	}],
+	"6": 5000,
+	"7": [{
+		"1": 1,
+		"2": {
+			"1": "6231",
+			"2": [114, 1],
+			"5": 6,
+			"6": {
+				"1": 100.0
+			},
+			"9": -100.0
+		}
+	}, {
+		"1": 2,
+		"2": {
+			"1": "6232",
+			"2": [178, 164],
+			"5": 6,
+			"6": {
+				"1": 200.0
+			},
+			"9": -200.0
+		}
+	}, {
+		"1": 3,
+		"2": {
+			"1": "6233",
+			"2": [17, 81],
+			"5": 6,
+			"6": {
+				"1": 300.0
+			},
+			"9": -300.0
+		}
+	}, {
+		"1": 4,
+		"2": {
+			"1": "6240",
+			"2": [130, 177],
+			"5": 6,
+			"6": {
+				"1": 400.0,
+				"2": 995.0
+			},
+			"9": 595.0,
+			"10": 5.0
+		}
+	}],
+	"9": [{
+		"1": "6233",
+		"2": {
+			"6": true,
+			"7": true,
+			"13": true,
+			"14": true,
+			"15": true,
+			"16": true,
+			"18": true
+		}
+	}, {
+		"1": "6240",
+		"2": {
+			"4": true,
+			"6": true,
+			"7": true,
+			"8": true,
+			"13": true,
+			"14": true,
+			"15": true,
+			"16": true,
+			"18": true
+		}
+	}, {
+		"1": "6231",
+		"2": {
+			"2": true,
+			"4": true,
+			"6": true,
+			"7": true,
+			"13": true,
+			"14": true,
+			"15": true,
+			"16": true,
+			"18": true
+		}
+	}, {
+		"1": "6232",
+		"2": {
+			"4": true,
+			"6": true,
+			"7": true,
+			"13": true,
+			"14": true,
+			"15": true,
+			"16": true,
+			"18": true
+		}
+	}],
+	"10": 1
+}
+''';

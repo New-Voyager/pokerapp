@@ -133,6 +133,7 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
           mainAxisSize: MainAxisSize.min,
           children: [
             CardFormTextField(
+              theme: _appTheme,
               hintText: "API Server URL",
               onChanged: (val) {
                 //log("VALUE : $val");

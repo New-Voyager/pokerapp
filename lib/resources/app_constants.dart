@@ -189,6 +189,7 @@ class AppConstants {
   static const String YOUR_ACTION = 'YOUR_ACTION';
   static const String QUERY_CURRENT_HAND = 'QUERY_CURRENT_HAND';
   static const String RESULT = 'RESULT';
+  static const String RESULT2 = 'RESULT2';
   static const String MSG_ACK = 'MSG_ACK';
   static const String RUN_IT_TWICE = 'RUN_IT_TWICE';
   static const String PLAYER_CONNECTIVITY_LOST = 'PLAYER_CONNECTIVITY_LOST';

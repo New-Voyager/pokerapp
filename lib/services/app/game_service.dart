@@ -876,7 +876,6 @@ class GameService {
         buyIn
         stack
         status
-        openSeat
         buyInExpTime
         breakStartedTime
         breakExpTime

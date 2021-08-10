@@ -31,6 +31,7 @@ import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/data/game_log_store.dart';
 import 'package:pokerapp/services/encryption/encryption_service.dart';
 import 'package:pokerapp/services/game_play/action_services/result_handler.dart';
+import 'package:pokerapp/services/game_play/action_services/result_handler_v2.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:pokerapp/widgets/run_it_twice_dialog.dart';
@@ -347,6 +348,10 @@ class HandActionProtoService {
       switch (messageType) {
         case AppConstants.RESULT:
           await handleResult(message);
+          return;
+
+        case AppConstants.RESULT2:
+          await handleResult2(message.handResultClient);
           return;
 
         case AppConstants.RUN_IT_TWICE:
@@ -1344,6 +1349,73 @@ class HandActionProtoService {
     final tableState = gameState.getTableState(context);
     tableState.updatePotChipsSilent(potChips: pots);
     tableState.notifyAll();
+  }
+
+  Future<void> handleResult2(proto.HandResultClient result) async {
+    /* invoke rabbit state */
+    if (_close) return;
+
+    // if (_gameState.isPlaying) {
+    //   _context.read<RabbitState>().putResultProto(
+    //         result,
+    //         myCards: _gameState.getPlayers(_context).me.cards,
+    //       );
+    // }
+
+    //_gameState.handState = HandState.RESULT;
+    final json = result.toProto3Json();
+    final jsonMsg = result.writeToJson();
+    final out = jsonEncode(json);
+    log("$out");
+    log("\n\n$jsonMsg\n\n");
+    if (_close) return;
+    final Players players = _gameState.getPlayers(_context);
+    _gameState.resetSeatActions();
+    players.clearForShowdown();
+    log('Hand Message: ::handleResult:: START');
+
+    // players.updateUserCardsSilent(
+    //   _getCards(handResult, players?.me?.playerId ?? 0),
+    // );
+
+    int myID = players?.me?.playerId ?? 0;
+    for (final seatNo in result.playerInfo.keys) {
+      final playerInfo = result.playerInfo[seatNo];
+      if (playerInfo.playedUntil == proto.HandStatus.SHOW_DOWN) {
+        final seat = _gameState.getSeat(_context, seatNo);
+        seat.player.cards = playerInfo.cards;
+      }
+    }
+    _gameState.handState = HandState.RESULT;
+    ResultHandlerV2 resultHandler = ResultHandlerV2(
+      result: result,
+      gameState: _gameState,
+      context: _context,
+      audioPlayer: audioPlayer,
+      replay: false,
+    );
+    //await resultHandler.show();
+    // if (_gameState.isPlaying) {
+    //   final me = _gameState.me(_context);
+    //   final myState = _gameState.getMyState(_context);
+    //   me.rankText = '';
+    //   myState.notify();
+    // }
+
+    // // clear rabbit state
+    // if (_close) return;
+    // _context.read<RabbitState>().resultDone();
+
+    // if (_close) return;
+    // if (_gameState.highHand != null) {
+    //   // animate high hand
+    //   log('highhand');
+    //   await showHighHands(_gameState.highHand);
+    //   _gameState.highHand = null;
+    // }
+
+    // _gameState.handState = HandState.ENDED;
+    // log('Hand Message: ::handleResult:: END');
   }
 
   Future<void> handleResult(proto.HandMessageItem message) async {

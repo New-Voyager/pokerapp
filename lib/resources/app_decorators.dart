@@ -25,7 +25,8 @@ class AppDecorators {
         borderRadius: BorderRadius.circular(8),
       );
 
- static BoxDecoration tileDecorationWithoutBorder(AppTheme theme) => BoxDecoration(
+  static BoxDecoration tileDecorationWithoutBorder(AppTheme theme) =>
+      BoxDecoration(
         color: theme.fillInColor,
         borderRadius: BorderRadius.circular(8),
       );
