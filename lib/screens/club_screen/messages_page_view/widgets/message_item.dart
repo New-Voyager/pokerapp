@@ -6,8 +6,9 @@ import 'package:flutter/painting.dart';
 import 'package:pokerapp/models/auth_model.dart';
 import 'package:pokerapp/models/club_message_model.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
-import 'package:pokerapp/resources/new/app_styles_new.dart';
-import 'package:pokerapp/resources/new/app_colors_new.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/resources/app_decorators.dart';
+import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/chat_time.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/chat_user_avatar.dart';
@@ -15,8 +16,8 @@ import 'package:pokerapp/screens/club_screen/hand_log_views/hand_winners_view.da
 import 'package:pokerapp/screens/util_screens/replay_hand_dialog/replay_hand_dialog.dart';
 import 'package:pokerapp/widgets/attributed_gif_widget.dart';
 import 'package:pokerapp/widgets/round_color_button.dart';
+import 'package:pokerapp/utils/adaptive_sizer.dart';
 
-import '../../../chat_screen/utils.dart';
 import '../../../chat_screen/widgets/triangle_painter.dart';
 import '../club_chat_model.dart';
 
@@ -37,15 +38,15 @@ class MessageItem extends StatelessWidget {
     /* ui */
 
     final bool isMe = currentUser.uuid == messageModel.sender;
-
+    final theme = AppTheme.getTheme(context);
     if (isMe) {
       return Row(
         mainAxisAlignment: MainAxisAlignment.end,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          _buildTile(context, isMe, messageModel.isGroupLatest),
+          _buildTile(context, isMe, messageModel.isGroupLatest, theme),
           SizedBox(width: 5),
-          _buildAvatar(),
+          _buildAvatar(theme),
         ],
       );
     }
@@ -53,14 +54,14 @@ class MessageItem extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        _buildAvatar(),
+        _buildAvatar(theme),
         SizedBox(width: 5),
-        _buildTile(context, isMe, messageModel.isGroupLatest),
+        _buildTile(context, isMe, messageModel.isGroupLatest, theme),
       ],
     );
   }
 
-  Widget _buildAvatar() {
+  Widget _buildAvatar(AppTheme theme) {
     if (messageModel.isGroupLatest)
       return ChatUserAvatar(
         name: players[messageModel.sender ?? ''] ?? 'Somebody',
@@ -69,10 +70,12 @@ class MessageItem extends StatelessWidget {
     return SizedBox();
   }
 
-  Widget _buildTile(BuildContext context, bool isMe, bool isGroupLatest) {
+  Widget _buildTile(
+      BuildContext context, bool isMe, bool isGroupLatest, AppTheme theme) {
     Widget triangle;
-    CustomPaint trianglePainer =
-        CustomPaint(painter: Triangle(isMe ? senderColor : receiverColor));
+    CustomPaint trianglePainer = CustomPaint(
+        painter: Triangle(
+            isMe ? theme.fillInColor : theme.primaryColorWithLight(0.2)));
     if (isMe) {
       triangle = Positioned(right: 0, bottom: 0, child: trianglePainer);
     } else {
@@ -88,14 +91,14 @@ class MessageItem extends StatelessWidget {
               left: !isGroupLatest ? 20 : 0,
               right: !isGroupLatest ? 20 : 0,
             ),
-            child: _buildMessage(context, isMe),
+            child: _buildMessage(context, isMe, theme),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildSharedHand(BuildContext context, bool isMe) {
+  Widget _buildSharedHand(BuildContext context, bool isMe, AppTheme theme) {
     final playerName = players[messageModel.sender ?? ''] ?? 'Somebody';
     log('player: ${messageModel.sender} isMe: $isMe name: $playerName ${messageModel.text}');
     String gameStr = messageModel.sharedHand.gameTypeStr;
@@ -131,7 +134,7 @@ class MessageItem extends StatelessWidget {
         ),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(5.0),
-          color: isMe ? senderColor : receiverColor,
+          color: isMe ? theme.fillInColor : theme.primaryColorWithLight(),
         ),
         child: Column(
           children: [
@@ -147,24 +150,20 @@ class MessageItem extends StatelessWidget {
                     children: [
                       RichText(
                         text: TextSpan(
-                            text: "$playerName",
-                            style: TextStyle(
-                              color: Colors.amber,
-                              fontSize: 14,
+                          text: "$playerName",
+                          style: AppDecorators.getAccentTextStyle(theme: theme),
+                          children: [
+                            TextSpan(
+                              text: " shared a hand",
+                              style:
+                                  AppDecorators.getSubtitle2Style(theme: theme),
                             ),
-                            children: [
-                              TextSpan(
-                                text: " shared a hand",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ]),
+                          ],
+                        ),
                       ),
                       Text(
                         "($gameStr)",
-                        style: AppStylesNew.hostInfoTextStyle
-                            .copyWith(color: Colors.white70, fontSize: 12),
+                        style: AppDecorators.getSubtitle1Style(theme: theme),
                       ),
                     ],
                   ),
@@ -181,9 +180,13 @@ class MessageItem extends StatelessWidget {
                         });
                       },
                       icon: Icons.format_align_justify_rounded,
+                      bgColor: theme.accentColor,
+                      iconColor: theme.primaryColorWithDark(),
                     ),
                     SizedBox(width: 5),
                     RoundIconButton(
+                        bgColor: theme.accentColor,
+                        iconColor: theme.primaryColorWithDark(),
                         icon: Icons.replay,
                         onTap: () {
                           ReplayHandDialog.show(
@@ -219,11 +222,11 @@ class MessageItem extends StatelessWidget {
         ));
   }
 
-  Widget _buildMessage(BuildContext context, bool isMe) {
+  Widget _buildMessage(BuildContext context, bool isMe, AppTheme theme) {
     final playerName = players[messageModel.sender ?? ''] ?? 'Somebody';
     log('player: ${messageModel.sender} isMe: $isMe name: $playerName ${messageModel.text}');
     if (messageModel.messageType == MessageType.HAND) {
-      return _buildSharedHand(context, isMe);
+      return _buildSharedHand(context, isMe, theme);
     }
 
     return Align(
@@ -237,7 +240,7 @@ class MessageItem extends StatelessWidget {
               messageModel.messageType == MessageType.GIPHY ? 0 : 5.0),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(5.0),
-            color: isMe ? senderColor : receiverColor,
+            color: isMe ? theme.fillInColor : theme.primaryColorWithDark(),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -246,10 +249,10 @@ class MessageItem extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.all(3.0),
                   child: Text(
-                    isMe ? 'You' : playerName,
-                    style: TextStyle(
-                      color: AppColorsNew.appAccentColor,
-                    ),
+                    isMe ? AppStringsNew.youText : playerName,
+                    style: AppDecorators.getAccentTextStyle(theme: theme)
+                        .copyWith(
+                            fontWeight: FontWeight.normal, fontSize: 10.dp),
                   ),
                 ),
               messageModel.messageType == MessageType.GIPHY
@@ -264,10 +267,7 @@ class MessageItem extends StatelessWidget {
                       padding: EdgeInsets.all(3),
                       child: Text(
                         messageModel.text,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 15.0,
-                        ),
+                        style: AppDecorators.getHeadLine4Style(theme: theme),
                       ),
                     ),
 

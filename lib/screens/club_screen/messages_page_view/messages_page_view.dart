@@ -6,6 +6,7 @@ import 'package:pokerapp/models/auth_model.dart';
 import 'package:pokerapp/models/club_members_model.dart';
 import 'package:pokerapp/models/club_message_model.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/club_screen/messages_page_view/bottom_sheet/gif_drawer_sheet.dart';
@@ -80,9 +81,10 @@ class _MessagesPageViewState extends State<MessagesPageView>
     ClubMessageService.sendMessage(_model);
   }
 
-  void _openGifDrawer() async {
+  void _openGifDrawer(AppTheme theme) async {
     String gifUrl = await showModalBottomSheet<String>(
       context: navigatorKey.currentContext,
+      backgroundColor: theme.fillInColor,
       builder: (_) => GifDrawerSheet(),
     );
 
@@ -123,70 +125,74 @@ class _MessagesPageViewState extends State<MessagesPageView>
   @override
   Widget build(BuildContext context) {
     return Consumer<AppTheme>(
-      builder: (_, theme, __) => Scaffold(
-        backgroundColor: chatBg,
-        appBar: CustomAppBar(
-          theme: theme,
-          context: context,
-          titleText: AppStringsNew.ClubChatTitle,
-          subTitleText: "${widget.clubCode}",
-        ),
-        body: Column(
-          children: [
-            /* main view to show messages */
-            Expanded(
-              child: StreamBuilder<List<ClubMessageModel>>(
-                stream: ClubMessageService.pollMessages(widget.clubCode),
-                builder: (_, snapshot) {
-                  if (snapshot.hasError || _players == null)
-                    return CircularProgressWidget(
-                      text: "Loading messages...",
-                    );
-
-                  if (snapshot.data?.isEmpty ?? true) return NoMessageWidget();
-
-                  messages = snapshot.data;
-                  var mess = _convert();
-
-                  return ListView.separated(
-                    reverse: true,
-                    padding: const EdgeInsets.all(5),
-                    itemBuilder: (_, int index) {
-                      return MessageItem(
-                        messageModel: mess[index],
-                        currentUser: _authModel,
-                        players: _players,
+      builder: (_, theme, __) => Container(
+        decoration: AppDecorators.bgRadialGradient(theme),
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          appBar: CustomAppBar(
+            theme: theme,
+            context: context,
+            titleText: AppStringsNew.ClubChatTitle,
+            subTitleText: "${widget.clubCode}",
+          ),
+          body: Column(
+            children: [
+              /* main view to show messages */
+              Expanded(
+                child: StreamBuilder<List<ClubMessageModel>>(
+                  stream: ClubMessageService.pollMessages(widget.clubCode),
+                  builder: (_, snapshot) {
+                    if (snapshot.hasError || _players == null)
+                      return CircularProgressWidget(
+                        text: AppStringsNew.loadingMessagesText,
                       );
-                    },
-                    separatorBuilder: (_, __) => const SizedBox(height: 5.0),
-                    itemCount: snapshot.data.length,
-                  );
-                },
-              ),
-            ),
 
-            // chat text field
-            ChatTextField(
-              icon: FontAwesomeIcons.icons,
-              onGifSelectTap: _openGifDrawer,
-              textEditingController: _textController,
-              onSend: _sendMessage,
-              onEmojiSelectTap: _onEmojiSelectTap,
-              onTap: _onTap,
-            ),
+                    if (snapshot.data?.isEmpty ?? true)
+                      return NoMessageWidget();
 
-            // emoji picker
-            ValueListenableBuilder<bool>(
-              valueListenable: _vnShowEmojiPicker,
-              builder: (_, showEmojiPicker, __) => showEmojiPicker
-                  ? EmojiPicker(
-                      onEmojiSelected: (String emoji) {
-                        _textController.text += emoji;
+                    messages = snapshot.data;
+                    var mess = _convert();
+
+                    return ListView.separated(
+                      reverse: true,
+                      padding: const EdgeInsets.all(5),
+                      itemBuilder: (_, int index) {
+                        return MessageItem(
+                          messageModel: mess[index],
+                          currentUser: _authModel,
+                          players: _players,
+                        );
                       },
-                    )
-                  : const SizedBox.shrink(),
-            ),
-          ],
+                      separatorBuilder: (_, __) => const SizedBox(height: 5.0),
+                      itemCount: snapshot.data.length,
+                    );
+                  },
+                ),
+              ),
+
+              // chat text field
+              ChatTextField(
+                icon: FontAwesomeIcons.icons,
+                onGifSelectTap: () => _openGifDrawer(theme),
+                textEditingController: _textController,
+                onSend: _sendMessage,
+                onEmojiSelectTap: _onEmojiSelectTap,
+                onTap: _onTap,
+              ),
+
+              // emoji picker
+              ValueListenableBuilder<bool>(
+                valueListenable: _vnShowEmojiPicker,
+                builder: (_, showEmojiPicker, __) => showEmojiPicker
+                    ? EmojiPicker(
+                        onEmojiSelected: (String emoji) {
+                          _textController.text += emoji;
+                        },
+                      )
+                    : const SizedBox.shrink(),
+              ),
+            ],
+          ),
         ),
       ),
     );

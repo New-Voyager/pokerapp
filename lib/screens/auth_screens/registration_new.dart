@@ -51,7 +51,7 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
     @required String hintText,
     @required void onInfoIconPress(),
     @required String labelText,
-    AppTheme appTheme,
+    @required AppTheme appTheme,
   }) {
     return TextFormField(
       keyboardType: keyboardType,
@@ -212,6 +212,7 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
 
   @override
   Widget build(BuildContext context) {
+    final appTheme = AppTheme.getTheme(context);
     return Container(
       decoration: AppDecorators.bgRadialGradient(_appTheme),
       child: SafeArea(
@@ -243,6 +244,7 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
                       children: [
                         // screen name
                         _buildTextFormField(
+                          appTheme: appTheme,
                           labelText: _appScreenText.getText('SCREEN_NAME'),
                           keyboardType: TextInputType.name,
                           controller: _screenNameCtrl,
@@ -269,6 +271,7 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
 
                         // name
                         _buildTextFormField(
+                          appTheme: appTheme,
                           labelText: _appScreenText.getText('YOUR_NAME'),
                           keyboardType: TextInputType.name,
                           controller: _nameCtrl,
@@ -292,6 +295,7 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
 
                         // Recover Email
                         _buildTextFormField(
+                          appTheme: appTheme,
                           labelText: _appScreenText.getText('RECOVERY_EMAIL'),
                           keyboardType: TextInputType.emailAddress,
                           controller: _emailCtrl,

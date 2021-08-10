@@ -1,6 +1,8 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/resources/app_decorators.dart';
 
 import '../utils.dart';
 
@@ -16,17 +18,14 @@ class ChatTimeWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    log("DATE : $date");
+    final theme = AppTheme.getTheme(context);
     return Align(
       alignment: Alignment.centerRight,
       child: Padding(
         padding: const EdgeInsets.only(left: 5, right: 5, bottom: 5),
         child: Text(
           dateString(date),
-          style: TextStyle(
-            color: Colors.white.withOpacity(0.5),
-            fontSize: 10,
-          ),
+          style: AppDecorators.getSubtitle3Style(theme: theme),
         ),
       ),
     );

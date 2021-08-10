@@ -5,16 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/club_members_model.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
-import 'package:pokerapp/resources/new/app_colors_new.dart';
+import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/app_icons.dart';
-import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
-import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/club_interior_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
+import 'package:pokerapp/widgets/card_form_text_field.dart';
 import 'package:provider/provider.dart';
 
 class ClubMembersDetailsView extends StatefulWidget {
@@ -76,7 +75,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
   Widget build(BuildContext context) {
     return Consumer<AppTheme>(
       builder: (_, theme, __) => Container(
-        decoration: AppStylesNew.BgGreenRadialGradient,
+        decoration: AppDecorators.bgRadialGradient(theme),
         child: Scaffold(
           backgroundColor: Colors.transparent,
           appBar: CustomAppBar(
@@ -98,13 +97,13 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
                             children: [
                               CircleAvatar(
                                 radius: 40,
-                                backgroundColor: Color(
-                                        (math.Random().nextDouble() * 0xFFFFFF)
-                                            .toInt())
-                                    .withOpacity(1.0),
+                                backgroundColor:
+                                    theme.supportingColor.withAlpha(100),
                                 child: ClipOval(
                                   child: Icon(
                                     AppIcons.user,
+                                    color: theme.fillInColor,
+                                    size: 24.dp,
                                   ),
                                 ),
                               ),
@@ -112,7 +111,8 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
                                 padding: EdgeInsets.all(5),
                                 child: Text(
                                   _data.name,
-                                  style: AppStylesNew.clubTitleTextStyle,
+                                  style: AppDecorators.getAccentTextStyle(
+                                      theme: theme),
                                 ),
                               ),
                               Container(
@@ -120,7 +120,8 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
                                 child: Text(
                                   AppStringsNew.lastActiveText +
                                       _data.lastPlayedDate,
-                                  style: AppStylesNew.labelTextStyle,
+                                  style: AppDecorators.getSubtitle3Style(
+                                      theme: theme),
                                 ),
                               ),
                               Container(
@@ -133,7 +134,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
                                     //message
                                     IconAndTitleWidget(
                                       icon: Icons.message,
-                                      text: "Message",
+                                      text: AppStringsNew.messageText,
                                       onTap: () {
                                         Navigator.pushNamed(
                                           context,
@@ -150,7 +151,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
                                     //boot
                                     IconAndTitleWidget(
                                       icon: Icons.eject_rounded,
-                                      text: "Boot",
+                                      text: AppStringsNew.bootText,
                                       onTap: () {},
                                     ),
 
@@ -167,37 +168,33 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
                           ),
                         ),
                         Divider(
-                          color: AppColorsNew.listViewDividerColor,
+                          color: theme.supportingColor,
                         ),
-                        detailTile(),
+                        detailTile(theme),
                         Divider(
-                          color: AppColorsNew.listViewDividerColor,
+                          color: theme.supportingColor,
                         ),
                         // contact info
                         Container(
                           padding: EdgeInsets.all(5),
                           child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Expanded(
                                 flex: 1,
-                                child: Icon(
-                                  Icons.phone,
-                                  color: AppColorsNew.newGreenButtonColor,
-                                ),
+                                child: Icon(Icons.phone,
+                                    color: theme.secondaryColor),
                               ),
                               Expanded(
                                 flex: 8,
                                 child: Padding(
                                   padding: EdgeInsets.only(left: 5),
-                                  child: CupertinoTextField(
+                                  child: CardFormTextField(
+                                    theme: theme,
                                     controller: _contactEditingController,
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 12.dp,
-                                    ),
-                                    decoration: BoxDecoration(
-                                        color: Colors.transparent),
+                                    hintText:
+                                        AppStringsNew.mobileNumberHintText,
+                                    maxLines: 1,
                                   ),
                                 ),
                               ),
@@ -205,7 +202,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
                           ),
                         ),
                         Divider(
-                          color: AppColorsNew.listViewDividerColor,
+                          color: theme.fillInColor,
                         ),
                         // notes view
                         Container(
@@ -218,25 +215,18 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
                                 flex: 1,
                                 child: Icon(
                                   Icons.note,
-                                  color: AppColorsNew.newGreenButtonColor,
+                                  color: theme.secondaryColor,
                                 ),
                               ),
                               Expanded(
                                 flex: 8,
                                 child: Padding(
                                   padding: EdgeInsets.only(left: 5),
-                                  child: CupertinoTextField(
-                                    textAlignVertical: TextAlignVertical.center,
+                                  child: CardFormTextField(
+                                    theme: theme,
                                     controller: _notesEditingController,
-                                    placeholder: 'insert notes here',
-                                    placeholderStyle:
-                                        AppStylesNew.labelTextStyle,
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 14.dp,
-                                    ),
-                                    decoration: BoxDecoration(
-                                        color: Colors.transparent),
+                                    hintText: AppStringsNew.insertNotesHintText,
+                                    maxLines: 5,
                                   ),
                                 ),
                               ),
@@ -256,7 +246,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
     //await _showDialog(context);
   }
 
-  Color getBalanceColor(double number) {
+  Color getBalanceColor(double number, AppTheme theme) {
     if (number == null) {
       return Colors.white;
     }
@@ -264,11 +254,11 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
     return number == 0
         ? Colors.white
         : number > 0
-            ? AppColorsNew.positiveColor
-            : AppColorsNew.negativeColor;
+            ? theme.secondaryColor
+            : theme.negativeOrErrorColor;
   }
 
-  Widget detailTile() {
+  Widget detailTile(AppTheme theme) {
     //list view
     return Container(
       child: Column(
@@ -334,8 +324,9 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
                   child: Padding(
                     padding: EdgeInsets.only(left: 5),
                     child: Text(
-                      "Credit Limit",
+                      AppStringsNew.creditLimitText,
                       textAlign: TextAlign.left,
+                      style: AppDecorators.getHeadLine4Style(theme: theme),
                     ),
                   ),
                 ),
@@ -351,10 +342,8 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
                             Text(
                               _data.creditLimit.toString(),
                               textAlign: TextAlign.left,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 12.dp,
-                              ),
+                              style:
+                                  AppDecorators.getHeadLine4Style(theme: theme),
                             ),
                             SizedBox(
                               width: 10,
@@ -362,7 +351,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
                             Icon(
                               Icons.edit,
                               size: 16,
-                              color: AppColorsNew.newGreenButtonColor,
+                              color: theme.accentColor,
                             )
                           ]),
                     ),
@@ -390,8 +379,9 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
                   child: Padding(
                     padding: EdgeInsets.only(left: 5),
                     child: Text(
-                      "Games Played",
+                      AppStringsNew.gamesPlayedText,
                       textAlign: TextAlign.left,
+                      style: AppDecorators.getHeadLine4Style(theme: theme),
                     ),
                   ),
                 ),
@@ -402,10 +392,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
                     child: Text(
                       _data.totalGames.toString(),
                       textAlign: TextAlign.left,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 12.dp,
-                      ),
+                      style: AppDecorators.getHeadLine4Style(theme: theme),
                     ),
                   ),
                 ),
@@ -431,8 +418,9 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
                   child: Padding(
                     padding: EdgeInsets.only(left: 5),
                     child: Text(
-                      "Total Buy-in",
+                      AppStringsNew.totalBuyInText,
                       textAlign: TextAlign.left,
+                      style: AppDecorators.getHeadLine4Style(theme: theme),
                     ),
                   ),
                 ),
@@ -443,10 +431,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
                     child: Text(
                       _data.totalBuyinStr,
                       textAlign: TextAlign.left,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 12.dp,
-                      ),
+                      style: AppDecorators.getHeadLine4Style(theme: theme),
                     ),
                   ),
                 ),
@@ -472,8 +457,9 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
                   child: Padding(
                     padding: EdgeInsets.only(left: 5),
                     child: Text(
-                      "Total Winnings",
+                      AppStringsNew.totalWinningsText,
                       textAlign: TextAlign.left,
+                      style: AppDecorators.getHeadLine4Style(theme: theme),
                     ),
                   ),
                 ),
@@ -484,10 +470,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
                     child: Text(
                       _data.totalWinningsStr,
                       textAlign: TextAlign.left,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 12.dp,
-                      ),
+                      style: AppDecorators.getHeadLine4Style(theme: theme),
                     ),
                   ),
                 ),
@@ -513,8 +496,9 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
                   child: Padding(
                     padding: EdgeInsets.only(left: 5),
                     child: Text(
-                      "Rake Paid",
+                      AppStringsNew.rakePaidText,
                       textAlign: TextAlign.left,
+                      style: AppDecorators.getHeadLine4Style(theme: theme),
                     ),
                   ),
                 ),
@@ -525,10 +509,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
                     child: Text(
                       _data.rakeStr,
                       textAlign: TextAlign.left,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 12.dp,
-                      ),
+                      style: AppDecorators.getHeadLine4Style(theme: theme),
                     ),
                   ),
                 ),
@@ -549,6 +530,7 @@ class IconAndTitleWidget extends StatelessWidget {
   IconAndTitleWidget({this.icon, this.text, this.onTap, this.child});
   @override
   Widget build(BuildContext context) {
+    final theme = AppTheme.getTheme(context);
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(32),
@@ -558,10 +540,10 @@ class IconAndTitleWidget extends StatelessWidget {
               Container(
                 decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: AppColorsNew.darkGreenShadeColor,
+                    color: theme.primaryColorWithDark(),
                     boxShadow: [
                       BoxShadow(
-                        color: AppColorsNew.newGreenButtonColor,
+                        color: theme.secondaryColor,
                         spreadRadius: 2,
                         blurRadius: 2,
                         offset: Offset(1, 0),
@@ -569,7 +551,8 @@ class IconAndTitleWidget extends StatelessWidget {
                     ]),
                 child: Icon(
                   icon ?? Icons.info,
-                  size: 20,
+                  size: 20.dp,
+                  color: theme.supportingColor,
                 ),
                 padding: EdgeInsets.all(16),
               ),
@@ -577,8 +560,7 @@ class IconAndTitleWidget extends StatelessWidget {
             padding: EdgeInsets.all(5),
             child: Text(
               text,
-              style: TextStyle(
-                  fontSize: 10.dp, color: AppColorsNew.newGreenButtonColor),
+              style: AppDecorators.getSubtitle3Style(theme: theme),
             ),
           ),
         ],

@@ -315,4 +315,45 @@ class AppStringsNew {
   static String loadingStatistics = "Loading Statistics..";
   static String tips = "Tips";
   static String download = "Download";
+  static String clubMemberTabAll = "All";
+  static String clubMemberTabManagers = "Managers";
+  static String clubMemberTabInactive = "Inactive";
+
+  static String loadingMembers = "Loadig members";
+
+  static String managerLabel = "Manager";
+
+  static String ownerLabel = "Owner";
+
+  static String approveButtonText = "Approve";
+  static String denyButtonText = "Deny";
+
+  static String pendingApprovalText = "[Pending Approval]";
+
+  static String messageText = "Message";
+  static String bootText = "Boot";
+
+  static String creditLimitText = "Credit Limit";
+
+  static String gamesPlayedText = "Games Played";
+
+  static String rakePaidText = "Rake Paid";
+
+  static String totalWinningsText = "Total Winnings";
+
+  static String totalBuyInText = "Total Buy-in";
+
+  static String mobileNumberHintText = 'Mobile Number';
+
+  static String insertNotesHintText = 'Insert notes here';
+
+  static String loadingMessagesText = "Loading messages";
+
+  static String noMessagesText = "No Messages";
+
+  static String youText = "You";
+
+  static String enterMessageHintText = "Enter message ";
+
+  static String searchTenorHintText = 'Search Tenor Gifs';
 }
