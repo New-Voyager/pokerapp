@@ -1394,7 +1394,7 @@ class HandActionProtoService {
       audioPlayer: audioPlayer,
       replay: false,
     );
-    //await resultHandler.show();
+    await resultHandler.show();
     // if (_gameState.isPlaying) {
     //   final me = _gameState.me(_context);
     //   final myState = _gameState.getMyState(_context);

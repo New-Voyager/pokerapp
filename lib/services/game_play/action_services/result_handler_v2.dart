@@ -24,7 +24,8 @@ class Winner {
   List<int> boardCards;
   double amount;
   String rankStr;
-  Winner(int seatNo, List<int> playerCards, List<int> boardCards, List<int> winningCards, double amount, String rank) {
+  Winner(int seatNo, List<int> playerCards, List<int> boardCards,
+      List<int> winningCards, double amount, String rank) {
     this.seatNo = seatNo;
     this.playerCards = [];
     this.boardCards = [];
@@ -70,7 +71,7 @@ class ResultHandlerV2 {
       log('We need at least one board');
       return;
     }
-    
+
     if (result.boards.length > 2) {
       log('max number of boards: 2');
       return;
@@ -94,7 +95,6 @@ class ResultHandlerV2 {
     } else {
       tableState.updateTwoBoardsNeeded(false);
     }
-
 
     /* then, change the status of the footer to show the result */
     Provider.of<ValueNotifier<FooterStatus>>(
@@ -154,18 +154,19 @@ class ResultHandlerV2 {
           // display high banner
           tableState.setWhichWinner(AppConstants.HIGH_WINNERS);
         }
-        await showWinners(board, 
-                  boardWinners.hiRankText, 
-                  boardWinners.hiWinners.values.toList(), 
-                  low: false);
+        await showWinners(board, boardWinners.hiRankText,
+            boardWinners.hiWinners.values.toList(),
+            low: false);
 
         if (boardWinners.lowWinners.length > 0) {
           // display low banner
           if (hiLoGame) {
             // display high banner
             tableState.setWhichWinner(AppConstants.LOW_WINNERS);
-          }            
-          await showWinners(board, boardWinners.hiRankText, boardWinners.lowWinners.values, low: false);
+          }
+          await showWinners(
+              board, boardWinners.hiRankText, boardWinners.lowWinners.values,
+              low: false);
         }
       }
 
@@ -190,7 +191,9 @@ class ResultHandlerV2 {
     }
   }
 
-  Future<void> showWinners(final proto.Board board, String rank, List<proto.Winner> winners, {bool low=false}) async {
+  Future<void> showWinners(
+      final proto.Board board, String rank, List<proto.Winner> winners,
+      {bool low = false}) async {
     for (int i = 0; i < winners.length; i++) {
       final winner = winners[0];
       final playerRank = board.playerRank[winner.seatNo];
@@ -202,20 +205,17 @@ class ResultHandlerV2 {
       } else {
         winningCards = playerRank.hiCards;
       }
-      Winner winningPlayer = Winner(winner.seatNo, 
-                          playerInfo.cards, 
-                          board.cards, 
-                          winningCards, 
-                          winner.amount,
-                          rank);
+      Winner winningPlayer = Winner(winner.seatNo, playerInfo.cards,
+          board.cards, winningCards, winner.amount, rank);
       bool setState = false;
       if (i == winners.length - 1) {
         setState = true;
       }
-      this.showWinner(winner: winningPlayer, boardIndex: board.boardNo, setState: setState);
+      this.showWinner(
+          winner: winningPlayer, boardIndex: board.boardNo, setState: setState);
     }
     await Future.delayed(Duration(milliseconds: result.pauseTimeSecs));
-    audioPlayer.stop();
+    audioPlayer?.stop();
   }
 
   Future<void> processHiLoWinners({
@@ -450,5 +450,4 @@ class ResultHandlerV2 {
       players.notifyAll();
     }
   }
-
 }

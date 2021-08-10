@@ -933,10 +933,10 @@ class TestService {
   }
 
   static showHandResult2() async {
-    final result = HandResultClient();
+    // final result = HandResultClient();
     try {
       if (_handActionProtoService == null) {
-      final gameState = GameState.getState(_context);
+        final gameState = GameState.getState(_context);
         _handActionProtoService =
             HandActionProtoService(_context, gameState, null, null, null);
         _handActionProtoService.loop();
@@ -948,5 +948,5 @@ class TestService {
     } catch (err) {
       log('Error: ${err.toString()}');
     }
-  }  
+  }
 }

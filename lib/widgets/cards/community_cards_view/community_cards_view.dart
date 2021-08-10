@@ -79,7 +79,7 @@ class CommunityCardsView extends StatelessWidget {
     return communityCards.toList();
   }
 
-  Widget buildSingleBoardCards(List<CardObject> boardCards) {
+  Widget buildSingleBoardCards(int boardNo, List<CardObject> boardCards) {
     /* we only need to show animation for the following 3 cases */
     if (boardCards?.length == 3)
       return FlopCommunityCards(
@@ -88,7 +88,7 @@ class CommunityCardsView extends StatelessWidget {
 
     if (boardCards?.length == 4 || boardCards?.length == 5)
       return TurnOrRiverCommunityCards(
-        key: ValueKey(boardCards.length),
+        key: ValueKey('$boardNo-${boardCards.length}'),
         riverOrTurnCards: getCommunityCards(boardCards),
       );
 
@@ -113,18 +113,18 @@ class CommunityCardsView extends StatelessWidget {
         child: Column(
           children: [
             /* board 1 cards */
-            buildSingleBoardCards(cards),
+            buildSingleBoardCards(1, cards),
 
             /* divider */
             const SizedBox(height: 12.0),
 
             /* board 2 cards */
-            buildSingleBoardCards(cardsOther),
+            buildSingleBoardCards(2, cardsOther),
           ],
         ),
       );
     }
 
-    return buildSingleBoardCards(cards);
+    return buildSingleBoardCards(1, cards);
   }
 }
