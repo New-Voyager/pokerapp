@@ -1352,7 +1352,6 @@ class HandActionProtoService {
   }
 
   Future<void> handleResult2(proto.HandResultClient result) async {
-    /* invoke rabbit state */
     if (_close) return;
 
     // if (_gameState.isPlaying) {
@@ -1498,6 +1497,7 @@ class HandActionProtoService {
       replay: false,
     );
     await resultHandler.show();
+
     if (_gameState.isPlaying) {
       final me = _gameState.me(_context);
       final myState = _gameState.getMyState(_context);
