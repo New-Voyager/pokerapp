@@ -67,6 +67,7 @@ class ResultHandlerV2 {
     tableState.updatePotChipsSilent(
       potChips: result.potWinners.map<int>((p) => p.amount.toInt()).toList(),
     );
+    tableState.dimPotsSilent(true);
     tableState.notifyAll();
 
     // NOTE: we support only two boards at this time

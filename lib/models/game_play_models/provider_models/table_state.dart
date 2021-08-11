@@ -17,6 +17,7 @@ class TableState extends ChangeNotifier {
   String _rankStr;
   bool _twoBoardsNeeded;
   int _potToHighlight;
+  bool _dimPots;
 
   String get whichWinner => _whichWinner;
   String _whichWinner;
@@ -93,6 +94,11 @@ class TableState extends ChangeNotifier {
     this._twoBoardsNeeded = b;
   }
 
+  bool get dimPots => _dimPots;
+  
+  void dimPotsSilent(bool b) {
+    _dimPots = b;
+  }
   /* public methods for updating values into our TableState */
   void updateTableStatusSilent(String tableStatus) {
     if (this._tableStatus == tableStatus) return;

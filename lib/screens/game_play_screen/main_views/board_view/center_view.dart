@@ -303,12 +303,18 @@ class _CenterViewState extends State<CenterView> {
             potChipValue = cleanedPotChips[i]?.toDouble();
 
             final potKey = GlobalKey();
+            bool dimView = tableState.dimPots;
+            bool highlight = (potToHighlight ?? -1) == i;
+            if (highlight) {
+              dimView = false;
+            }
 
             final potsView = PotsView(
               isBoardHorizontal: this.widget.isBoardHorizontal,
               potChip: potChipValue,
               uiKey: potKey,
-              highlight: (potToHighlight ?? -1) == i,
+              highlight: highlight,
+              dim: dimView,
             );
 
             if (boardAttributes.setPotsKey(i, potKey)) {
