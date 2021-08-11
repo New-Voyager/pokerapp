@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:pokerapp/enums/game_play_enums/footer_status.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_context.dart';
@@ -9,10 +10,16 @@ import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart
 import 'package:pokerapp/models/game_play_models/provider_models/marked_cards.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
+import 'package:pokerapp/models/rabbit_state.dart';
+import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
+import 'package:pokerapp/screens/game_play_screen/widgets/game_circle_button.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_proto_service.dart';
 import 'package:pokerapp/widgets/cards/hole_stack_card_view.dart';
 import 'package:pokerapp/utils/card_helper.dart';
+import 'package:pokerapp/widgets/cards/multiple_stack_card_views.dart';
+import 'package:pokerapp/widgets/num_diamond_widget.dart';
 import 'package:pokerapp/widgets/straddle_dialog.dart';
 import 'package:provider/provider.dart';
 
@@ -42,22 +49,213 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
     context.read<MarkedCards>().markAll(playerModel.cardObjects);
   }
 
-  Widget _buildAllHoleCardSelectionButton(context) =>
+  void onRabbitTap(RabbitState rs, BuildContext context) async {
+    // reveal button tap
+    void _onRevealButtonTap(ValueNotifier<bool> vnIsRevealed) async {
+      // deduct two diamonds
+      final bool deducted =
+          await context.read<GameState>().gameHiveStore.deductDiamonds();
+
+      // show community cards - only if deduction was possible
+      if (deducted) vnIsRevealed.value = true;
+    }
+
+    // share button tap
+    void _onShareButtonTap() {
+      // collect all the necessary data and send in the game chat channel
+      context.read<GameState>().gameComService.chat.sendRabbitHunt(rs);
+
+      // pop out the dialog
+      Navigator.pop(context);
+    }
+
+    Widget _buildDiamond() => SvgPicture.asset(
+          AppAssets.diamond,
+          width: 20.0,
+          color: Colors.cyan,
+        );
+
+    Widget _buildRevealButton(ValueNotifier<bool> vnIsRevealed) => Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            // diamond icons
+            _buildDiamond(),
+            _buildDiamond(),
+
+            // sep
+            const SizedBox(width: 10.0),
+
+            // visible button
+            GestureDetector(
+              onTap: () => _onRevealButtonTap(vnIsRevealed),
+              child: Icon(
+                Icons.visibility_outlined,
+                color: AppColorsNew.newGreenButtonColor,
+                size: 30.0,
+              ),
+            ),
+          ],
+        );
+
+    Widget _buildShareButton() => Align(
+          alignment: Alignment.centerRight,
+          child: GestureDetector(
+            onTap: _onShareButtonTap,
+            child: Icon(
+              Icons.share_rounded,
+              color: AppColorsNew.newGreenButtonColor,
+              size: 30.0,
+            ),
+          ),
+        );
+
+    List<int> _getHiddenCards() {
+      List<int> cards = List.of(rs.communityCards);
+
+      if (rs.revealedCards.length == 2) {
+        cards[3] = cards[4] = 0;
+      } else {
+        cards[4] = 0;
+      }
+
+      return cards;
+    }
+
+    Widget _buildCommunityCardWidget(bool isRevealed) => isRevealed
+        ? StackCardView00(
+            cards: rs.communityCards,
+          )
+        : StackCardView00(
+            cards: _getHiddenCards(),
+          );
+
+    // show a popup
+    await showDialog(
+      context: context,
+      builder: (_) => ListenableProvider.value(
+        // pass down the cards back string asset to the new dialog
+        value: context.read<ValueNotifier<String>>(),
+        child: ListenableProvider(
+          create: (_) => ValueNotifier<bool>(false),
+          child: Align(
+            alignment: Alignment.center,
+            child: Container(
+              width: MediaQuery.of(context).size.width * 0.70,
+              decoration: BoxDecoration(
+                color: AppColorsNew.darkGreenShadeColor,
+                borderRadius: BorderRadius.circular(15.0),
+              ),
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  /* hand number */
+                  Text('Hand #${rs.handNo}'),
+
+                  // sep
+                  const SizedBox(height: 15.0),
+
+                  /* your cards */
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text('Your cards:'),
+                      const SizedBox(width: 10.0),
+                      StackCardView00(
+                        cards: rs.myCards,
+                      ),
+                    ],
+                  ),
+
+                  // sep
+                  const SizedBox(height: 15.0),
+
+                  // diamond widget
+                  Provider.value(
+                    value: context.read<GameState>(),
+                    child: Consumer<ValueNotifier<bool>>(
+                      builder: (_, __, ___) => NumDiamondWidget(),
+                    ),
+                  ),
+
+                  // sep
+                  const SizedBox(height: 15.0),
+
+                  // show REVEAL button / share button
+                  Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: Consumer<ValueNotifier<bool>>(
+                      builder: (_, vnIsRevealed, __) => vnIsRevealed.value
+                          ? _buildShareButton()
+                          : _buildRevealButton(vnIsRevealed),
+                    ),
+                  ),
+
+                  // sep
+                  const SizedBox(height: 15.0),
+
+                  // finally show here the community cards
+                  Consumer<ValueNotifier<bool>>(
+                    builder: (_, vnIsRevealed, __) => Transform.scale(
+                      scale: 1.2,
+                      child: _buildCommunityCardWidget(vnIsRevealed.value),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    // as soon as the dialog is closed, nullify the result
+    context.read<RabbitState>().putResult(null);
+  }
+
+  Widget _buildAllHoleCardAndRabbitHuntSelectionButton(context) =>
       Consumer<ValueNotifier<FooterStatus>>(
         builder: (context, vnfs, __) {
           bool _showEye = _showAllCardSelectionButton(vnfs);
           return Visibility(
-            visible: _showEye,
+            visible: true,
             child: Container(
               padding: EdgeInsets.symmetric(vertical: 10.0),
-              width: double.infinity,
               color: Colors.black.withOpacity(0.70),
-              child: GestureDetector(
-                onTap: _showEye ? () => _markAllCardsAsSelected(context) : null,
-                child: Icon(
-                  Icons.visibility_rounded,
-                  size: 40.0,
-                ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                // hole card selection button and rabbit hunt button
+                children: [
+                  // hole card selection button
+                  GameCircleButton(
+                    iconData: Icons.visibility_rounded,
+                    onClickHandler: _showEye
+                        ? () => _markAllCardsAsSelected(context)
+                        : null,
+                  ),
+
+                  // GestureDetector(
+                  //   onTap: _showEye
+                  //       ? () => _markAllCardsAsSelected(context)
+                  //       : null,
+                  //   child: Icon(
+                  //     Icons.visibility_rounded,
+                  //     size: 40.0,
+                  //   ),
+                  // ),
+
+                  // rabbit hunt button
+                  Consumer<RabbitState>(
+                    builder: (context, rb, __) => rb.show &&
+                            context.read<GameState>().gameInfo.allowRabbitHunt
+                        ? GameCircleButton(
+                            onClickHandler: () =>
+                                onRabbitTap(rb.copy(), context),
+                            imagePath: AppAssets.rabbit,
+                          )
+                        : const SizedBox.shrink(),
+                  ),
+                ],
               ),
             ),
           );
@@ -87,7 +285,7 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
                     ),
 
                     // all hole card selection button
-                    _buildAllHoleCardSelectionButton(context),
+                    _buildAllHoleCardAndRabbitHuntSelectionButton(context),
                   ],
                 ),
               ),

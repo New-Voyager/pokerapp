@@ -215,12 +215,6 @@ class BetWidget extends StatelessWidget {
                 },
               )
             : GestureDetector(
-                // // confirm bet ON TAP
-                // onTap: isBetByTapActive
-                //     ? () {
-
-                //       }
-                //     : null,
                 // confirm bet ON SLIDE UP TILL THE TOP
                 onVerticalDragEnd: (_) {
                   // if we reach 1.0 and leave the chip, CONFIRM BET
