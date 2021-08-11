@@ -377,4 +377,6 @@ class AppStringsNew {
   static String odds = "Odds";
 
   static String newText = "New";
+
+  static String messagesText = "Messages";
 }
