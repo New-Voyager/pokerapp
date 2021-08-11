@@ -6,12 +6,12 @@ import 'package:get_version/get_version.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/auth_model.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/models/user_update_input.dart';
+import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
-import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
-import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
@@ -20,6 +20,7 @@ import 'package:pokerapp/utils/loading_utils.dart';
 import 'package:pokerapp/widgets/card_form_text_field.dart';
 import 'package:pokerapp/widgets/heading_widget.dart';
 import 'package:pokerapp/widgets/round_color_button.dart';
+import 'package:provider/provider.dart';
 
 class ProfilePageNew extends StatefulWidget {
   const ProfilePageNew({Key key}) : super(key: key);
@@ -59,77 +60,294 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: AppStylesNew.BgGreenRadialGradient,
-      child: SafeArea(
-        child: Scaffold(
-          backgroundColor: Colors.transparent,
-          body: _currentUser == null
-              ? CircularProgressWidget(
-                  text: "Getting details..",
-                )
-              : SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      HeadingWidget(heading: AppStringsNew.myProfileTitleText),
-                      Container(
-                        decoration: AppStylesNew.actionRowDecoration.copyWith(
-                          border: Border.all(
-                            color: AppColorsNew.newBorderColor,
-                          ),
-                        ),
-                        margin:
-                            EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                        child: Column(
-                          children: [
-                            Row(
+    return Consumer<AppTheme>(
+      builder: (_, theme, __) {
+        return Container(
+          decoration: AppDecorators.bgRadialGradient(theme),
+          child: SafeArea(
+            child: Scaffold(
+              backgroundColor: Colors.transparent,
+              body: _currentUser == null
+                  ? CircularProgressWidget(
+                      text: AppStringsNew.loadingDetailsText,
+                    )
+                  : SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          HeadingWidget(
+                              heading: AppStringsNew.myProfileTitleText),
+                          Container(
+                            decoration: AppDecorators.tileDecoration(theme),
+                            margin: EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 4),
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 4),
+                            child: Column(
                               children: [
-                                Container(
-                                  alignment: Alignment.center,
-                                  decoration: BoxDecoration(
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: AppColorsNew.newGreenButtonColor,
-                                        spreadRadius: 2,
-                                        blurRadius: 3,
-                                        offset: Offset(0, 1),
+                                Row(
+                                  children: [
+                                    Container(
+                                      alignment: Alignment.center,
+                                      decoration: BoxDecoration(
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: theme.secondaryColor,
+                                            spreadRadius: 2,
+                                            blurRadius: 3,
+                                            offset: Offset(0, 1),
+                                          ),
+                                        ],
+                                        shape: BoxShape.circle,
                                       ),
-                                    ],
-                                    shape: BoxShape.circle,
-                                  ),
-                                  margin: EdgeInsets.symmetric(vertical: 16),
-                                  child: CircleAvatar(
-                                    backgroundColor:
-                                        AppColorsNew.actionRowBgColor,
-                                    radius: 24,
-                                    child: Icon(
-                                      Icons.person,
-                                      size: 24,
+                                      margin:
+                                          EdgeInsets.symmetric(vertical: 16),
+                                      child: CircleAvatar(
+                                        backgroundColor: theme.fillInColor,
+                                        radius: 24,
+                                        child: Icon(
+                                          Icons.person,
+                                          size: 24,
+                                          color: theme.supportingColor,
+                                        ),
+                                      ),
                                     ),
+                                    AppDimensionsNew.getHorizontalSpace(16),
+                                    Container(
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Text(_displayName,
+                                              style: AppDecorators
+                                                  .getHeadLine4Style(
+                                                      theme: theme)),
+                                          AppDimensionsNew.getHorizontalSpace(
+                                              8),
+                                          RoundIconButton(
+                                            icon: Icons.edit,
+                                            bgColor: theme.fillInColor,
+                                            iconColor: theme.accentColor,
+                                            size: 16,
+                                            onTap: () async {
+                                              await _updateUserDetails(
+                                                  UpdateType.SCREEN_NAME,
+                                                  theme);
+                                              // Fetch user details from server
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Container(
+                                  margin: EdgeInsets.symmetric(vertical: 8),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            AppStringsNew.gamesText,
+                                            style:
+                                                AppDecorators.getSubtitle3Style(
+                                                    theme: theme),
+                                          ),
+                                          Text(
+                                            "254",
+                                            style:
+                                                AppDecorators.getHeadLine4Style(
+                                                    theme: theme),
+                                          ),
+                                        ],
+                                      ),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.end,
+                                        children: [
+                                          Text(AppStringsNew.hands,
+                                              style: AppDecorators
+                                                  .getSubtitle3Style(
+                                                      theme: theme)),
+                                          Text(
+                                            "3254",
+                                            style:
+                                                AppDecorators.getHeadLine4Style(
+                                                    theme: theme),
+                                          ),
+                                        ],
+                                      )
+                                    ],
                                   ),
                                 ),
-                                AppDimensionsNew.getHorizontalSpace(16),
+                              ],
+                            ),
+                          ),
+                          Container(
+                            margin: EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 8),
+                            child: Column(
+                              children: [
+                                //
                                 Container(
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
+                                  decoration:
+                                      AppDecorators.tileDecoration(theme),
+                                  padding: EdgeInsets.symmetric(vertical: 8),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
-                                      Text(
-                                        _displayName,
-                                        style:
-                                            AppStylesNew.appBarTitleTextStyle,
-                                      ),
-                                      AppDimensionsNew.getHorizontalSpace(8),
-                                      RoundIconButton(
-                                        icon: Icons.edit,
-                                        bgColor: AppColorsNew.actionRowBgColor,
-                                        iconColor: AppColorsNew.labelColor,
-                                        size: 16,
-                                        onTap: () async {
+                                      // Container(
+                                      //   margin:
+                                      //       EdgeInsets.symmetric(horizontal: 16),
+                                      //   child: Text(
+                                      //     "Personal Details",
+                                      //     style: AppStylesNew.labelTextStyle,
+                                      //   ),
+                                      // ),
+                                      ListTileItem(
+                                        text: _currentUser.name == null
+                                            ? AppStringsNew.setDisplayName
+                                            : AppStringsNew.changeDisplayName,
+                                        subTitleText: _currentUser.name != null
+                                            ? "(${_currentUser.name})"
+                                            : "",
+                                        imagePath:
+                                            AppAssetsNew.statisticsImagePath,
+                                        index: 1,
+                                        onTapFunction: () async {
                                           await _updateUserDetails(
-                                              UpdateType.SCREEN_NAME);
+                                              UpdateType.DISPLAY_NAME, theme);
                                           // Fetch user details from server
+                                        },
+                                      ),
+                                      ListTileItem(
+                                        text: _currentUser.email == null
+                                            ? AppStringsNew.setRecoveryMail
+                                            : AppStringsNew.changeRecoveryMail,
+                                        subTitleText: _currentUser.email != null
+                                            ? "(${_currentUser.email})"
+                                            : "",
+                                        imagePath:
+                                            AppAssetsNew.customizeImagePath,
+                                        index: 2,
+                                        onTapFunction: () async {
+                                          await _updateUserDetails(
+                                              UpdateType.EMAIL, theme);
+                                          // Fetch user details from server
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                AppDimensionsNew.getVerticalSizedBox(16),
+                                Container(
+                                  decoration:
+                                      AppDecorators.tileDecoration(theme),
+                                  padding: EdgeInsets.symmetric(vertical: 8),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      // Container(
+                                      //   margin:
+                                      //       EdgeInsets.symmetric(horizontal: 16),
+                                      //   child: Text(
+                                      //     "Game Details",
+                                      //     style: AppStylesNew.labelTextStyle,
+                                      //   ),
+                                      // ),
+                                      ListTileItem(
+                                        text:
+                                            AppStringsNew.BookmarkedHandsTitle,
+                                        imagePath: AppAssetsNew
+                                            .bookmarkedHandsImagePath,
+                                        index: 0,
+                                        onTapFunction: () =>
+                                            navigatorKey.currentState.pushNamed(
+                                          Routes.bookmarked_hands,
+                                          arguments: "",
+                                        ),
+                                      ),
+                                      ListTileItem(
+                                          text: AppStringsNew.statistics,
+                                          imagePath:
+                                              AppAssetsNew.statisticsImagePath,
+                                          index: 1,
+                                          onTapFunction: () {
+                                            navigatorKey.currentState.pushNamed(
+                                              Routes.player_statistics,
+                                              arguments: _currentUser.uuid,
+                                            );
+                                          }),
+                                    ],
+                                  ),
+                                ),
+                                AppDimensionsNew.getVerticalSizedBox(16),
+                                Container(
+                                  decoration:
+                                      AppDecorators.tileDecoration(theme),
+                                  padding: EdgeInsets.symmetric(vertical: 8),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      // Container(
+                                      //   margin:
+                                      //       EdgeInsets.symmetric(horizontal: 16),
+                                      //   child: Text(
+                                      //     "Other Settings",
+                                      //     style: AppStylesNew.labelTextStyle,
+                                      //   ),
+                                      // ),
+                                      ListTileItem(
+                                        text: AppStringsNew.customize,
+                                        imagePath:
+                                            AppAssetsNew.customizeImagePath,
+                                        index: 2,
+                                        onTapFunction: () {
+                                          Navigator.of(context).pushNamed(
+                                            Routes.customize,
+                                          );
+                                        },
+                                      ),
+                                      ListTileItem(
+                                        text: AppStringsNew.helpText,
+                                        imagePath: AppAssetsNew
+                                            .bookmarkedHandsImagePath,
+                                        index: 3,
+                                        onTapFunction: () async {
+                                          String version =
+                                              await GetVersion.projectVersion;
+                                          Navigator.of(context).pushNamed(
+                                            Routes.help,
+                                            arguments: version,
+                                          );
+                                        },
+                                      ),
+                                      ListTileItem(
+                                        text: AppStringsNew.tellAFriendText,
+                                        imagePath:
+                                            AppAssetsNew.announcementImagePath,
+                                        index: 4,
+                                        onTapFunction: () {},
+                                      ),
+                                      AppDimensionsNew.getVerticalSizedBox(16),
+                                      ListTileItem(
+                                        text: AppStringsNew.logout,
+                                        imagePath:
+                                            AppAssetsNew.announcementImagePath,
+                                        index: 5,
+                                        onTapFunction: () async {
+                                          await AuthService.logout();
+                                          Navigator.pushNamedAndRemoveUntil(
+                                            context,
+                                            Routes.registration,
+                                            (route) => false,
+                                          );
                                         },
                                       ),
                                     ],
@@ -137,211 +355,19 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                 ),
                               ],
                             ),
-                            Container(
-                              margin: EdgeInsets.symmetric(vertical: 8),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text("Games",
-                                          style: AppStylesNew.labelTextStyle),
-                                      Text(
-                                        "254",
-                                        style: AppStylesNew.valueTextStyle,
-                                      ),
-                                    ],
-                                  ),
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    children: [
-                                      Text("Hands",
-                                          style: AppStylesNew.labelTextStyle),
-                                      Text(
-                                        "3254",
-                                        style: AppStylesNew.valueTextStyle,
-                                      ),
-                                    ],
-                                  )
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
+                          ),
+                          AppDimensionsNew.getVerticalSizedBox(100),
+                        ],
                       ),
-                      Container(
-                        margin:
-                            EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                        child: Column(
-                          children: [
-                            //
-                            Container(
-                              decoration: AppStylesNew.blackContainerDecoration,
-                              padding: EdgeInsets.symmetric(vertical: 8),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  // Container(
-                                  //   margin:
-                                  //       EdgeInsets.symmetric(horizontal: 16),
-                                  //   child: Text(
-                                  //     "Personal Details",
-                                  //     style: AppStylesNew.labelTextStyle,
-                                  //   ),
-                                  // ),
-                                  ListTileItem(
-                                    text: _currentUser.name == null
-                                        ? AppStringsNew.setDisplayName
-                                        : AppStringsNew.changeDisplayName,
-                                    subTitleText: _currentUser.name != null
-                                        ? "(${_currentUser.name})"
-                                        : "",
-                                    imagePath: AppAssetsNew.statisticsImagePath,
-                                    index: 1,
-                                    onTapFunction: () async {
-                                      await _updateUserDetails(
-                                          UpdateType.DISPLAY_NAME);
-                                      // Fetch user details from server
-                                    },
-                                  ),
-                                  ListTileItem(
-                                    text: _currentUser.email == null
-                                        ? AppStringsNew.setRecoveryMail
-                                        : AppStringsNew.changeRecoveryMail,
-                                    subTitleText: _currentUser.email != null
-                                        ? "(${_currentUser.email})"
-                                        : "",
-                                    imagePath: AppAssetsNew.customizeImagePath,
-                                    index: 2,
-                                    onTapFunction: () async {
-                                      await _updateUserDetails(
-                                          UpdateType.EMAIL);
-                                      // Fetch user details from server
-                                    },
-                                  ),
-                                ],
-                              ),
-                            ),
-                            AppDimensionsNew.getVerticalSizedBox(16),
-                            Container(
-                              decoration: AppStylesNew.blackContainerDecoration,
-                              padding: EdgeInsets.symmetric(vertical: 8),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  // Container(
-                                  //   margin:
-                                  //       EdgeInsets.symmetric(horizontal: 16),
-                                  //   child: Text(
-                                  //     "Game Details",
-                                  //     style: AppStylesNew.labelTextStyle,
-                                  //   ),
-                                  // ),
-                                  ListTileItem(
-                                    text: AppStringsNew.BookmarkedHandsTitle,
-                                    imagePath:
-                                        AppAssetsNew.bookmarkedHandsImagePath,
-                                    index: 0,
-                                    onTapFunction: () =>
-                                        navigatorKey.currentState.pushNamed(
-                                      Routes.bookmarked_hands,
-                                      arguments: "",
-                                    ),
-                                  ),
-                                  ListTileItem(
-                                      text: AppStringsNew.statistics,
-                                      imagePath:
-                                          AppAssetsNew.statisticsImagePath,
-                                      index: 1,
-                                      onTapFunction: () {
-                                        navigatorKey.currentState.pushNamed(
-                                          Routes.player_statistics,
-                                          arguments: _currentUser.uuid,
-                                        );
-                                      }),
-                                ],
-                              ),
-                            ),
-                            AppDimensionsNew.getVerticalSizedBox(16),
-                            Container(
-                              decoration: AppStylesNew.blackContainerDecoration,
-                              padding: EdgeInsets.symmetric(vertical: 8),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  // Container(
-                                  //   margin:
-                                  //       EdgeInsets.symmetric(horizontal: 16),
-                                  //   child: Text(
-                                  //     "Other Settings",
-                                  //     style: AppStylesNew.labelTextStyle,
-                                  //   ),
-                                  // ),
-                                  ListTileItem(
-                                    text: AppStringsNew.customize,
-                                    imagePath: AppAssetsNew.customizeImagePath,
-                                    index: 2,
-                                    onTapFunction: () {
-                                      Navigator.of(context).pushNamed(
-                                        Routes.customize,
-                                      );
-                                    },
-                                  ),
-                                  ListTileItem(
-                                    text: AppStringsNew.helpText,
-                                    imagePath:
-                                        AppAssetsNew.bookmarkedHandsImagePath,
-                                    index: 3,
-                                    onTapFunction: () async {
-                                      String version =
-                                          await GetVersion.projectVersion;
-                                      Navigator.of(context).pushNamed(
-                                        Routes.help,
-                                        arguments: version,
-                                      );
-                                    },
-                                  ),
-                                  ListTileItem(
-                                    text: AppStringsNew.tellAFriendText,
-                                    imagePath:
-                                        AppAssetsNew.announcementImagePath,
-                                    index: 4,
-                                    onTapFunction: () {},
-                                  ),
-                                  AppDimensionsNew.getVerticalSizedBox(16),
-                                  ListTileItem(
-                                    text: AppStringsNew.logout,
-                                    imagePath:
-                                        AppAssetsNew.announcementImagePath,
-                                    index: 5,
-                                    onTapFunction: () async {
-                                      await AuthService.logout();
-                                      Navigator.pushNamedAndRemoveUntil(
-                                        context,
-                                        Routes.registration,
-                                        (route) => false,
-                                      );
-                                    },
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      AppDimensionsNew.getVerticalSizedBox(100),
-                    ],
-                  ),
-                ),
-        ),
-      ),
+                    ),
+            ),
+          ),
+        );
+      },
     );
   }
 
-  _updateUserDetails(UpdateType type) async {
+  _updateUserDetails(UpdateType type, AppTheme theme) async {
     String defaultText = type == UpdateType.SCREEN_NAME
         ? _currentUser.name
         : type == UpdateType.DISPLAY_NAME
@@ -353,7 +379,7 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
     final result = await showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: AppColorsNew.darkGreenShadeColor,
+        backgroundColor: theme.fillInColor,
         title: Text(
           type == UpdateType.SCREEN_NAME
               ? AppStringsNew.nameChangeTitleText
@@ -362,7 +388,7 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                   : type == UpdateType.EMAIL
                       ? AppStringsNew.emailChangeTitleText
                       : "Update details",
-          style: AppStylesNew.labelTextStyle,
+          style: AppDecorators.getSubtitle3Style(theme: theme),
         ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
@@ -371,12 +397,13 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
               controller: _controller,
               maxLines: 1,
               hintText: AppStringsNew.hintTextForTextField,
+              theme: theme,
             ),
             AppDimensionsNew.getVerticalSizedBox(12),
             RoundedColorButton(
               text: AppStringsNew.saveButtonText,
-              backgroundColor: AppColorsNew.yellowAccentColor,
-              textColor: AppColorsNew.darkGreenShadeColor,
+              backgroundColor: theme.accentColor,
+              textColor: theme.primaryColorWithDark(),
               onTapFunction: () {
                 if (_controller.text.isNotEmpty) {
                   Navigator.of(context).pop(_controller.text);
@@ -445,6 +472,7 @@ class ListTileItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = AppTheme.getTheme(context);
     return InkWell(
       onTap: onTapFunction,
       child: Container(
@@ -468,12 +496,13 @@ class ListTileItem extends StatelessWidget {
                 children: [
                   Text(
                     text,
+                    style: AppDecorators.getSubtitle1Style(theme: theme),
                   ),
                   Visibility(
                     visible: subTitleText != null,
                     child: Text(
                       subTitleText ?? "",
-                      style: AppStylesNew.labelTextStyle,
+                      style: AppDecorators.getSubtitle3Style(theme: theme),
                     ),
                   )
                 ],

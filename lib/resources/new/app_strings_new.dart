@@ -379,4 +379,8 @@ class AppStringsNew {
   static String newText = "New";
 
   static String messagesText = "Messages";
+
+  static String loadingDetailsText = "Getting details..";
+
+  static String gamesText = "Games";
 }
