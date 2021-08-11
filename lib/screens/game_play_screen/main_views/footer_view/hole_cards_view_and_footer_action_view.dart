@@ -218,7 +218,8 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
         builder: (context, vnfs, __) {
           bool _showEye = _showAllCardSelectionButton(vnfs);
           return Visibility(
-            visible: true,
+            // if in result, we show the bar
+            visible: vnfs.value == FooterStatus.Result,
             child: Container(
               padding: EdgeInsets.symmetric(vertical: 10.0),
               color: Colors.black.withOpacity(0.70),
@@ -227,12 +228,13 @@ class HoleCardsViewAndFooterActionView extends StatelessWidget {
                 // hole card selection button and rabbit hunt button
                 children: [
                   // hole card selection button
-                  GameCircleButton(
-                    iconData: Icons.visibility_rounded,
-                    onClickHandler: _showEye
-                        ? () => _markAllCardsAsSelected(context)
-                        : null,
-                  ),
+                  _showEye
+                      ? GameCircleButton(
+                          iconData: Icons.visibility_rounded,
+                          onClickHandler: () =>
+                              _markAllCardsAsSelected(context),
+                        )
+                      : const SizedBox.shrink(),
 
                   // GestureDetector(
                   //   onTap: _showEye
