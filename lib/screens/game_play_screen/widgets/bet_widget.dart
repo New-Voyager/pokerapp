@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:bouncing_widget/bouncing_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -183,49 +184,61 @@ class BetWidget extends StatelessWidget {
         .getBox(BoxType.USER_SETTINGS_BOX)
         .get('isTapForBetAction?', defaultValue: false);
 
+    final Widget mainWidget = _buildToolTipWith(
+      child: IntrinsicWidth(
+        child: Container(
+          height: 2 * s,
+          child: AnimatedBuilder(
+            animation: vnOffsetValue,
+            builder: (_, __) {
+              return Align(
+                alignment: Alignment(.5, 1 - vnOffsetValue.value * 2),
+                child: betChipWidget,
+              );
+            },
+          ),
+        ),
+      ),
+    );
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         /* drag bet button */
-        GestureDetector(
-          // confirm bet ON TAP
-          onTap: isBetByTapActive
-              ? () {
+        isBetByTapActive
+            // if confirm by tap is active, show a bouncing widget
+            ? BouncingWidget(
+                scaleFactor: 1.5,
+                child: mainWidget,
+                onPressed: () {
                   onSubmitCallBack?.call(vnBetAmount.value);
-                }
-              : null,
-          // confirm bet ON SLIDE UP TILL THE TOP
-          onVerticalDragEnd: (_) {
-            // if we reach 1.0 and leave the chip, CONFIRM BET
-            if (vnOffsetValue.value == 1.0) {
-              return onSubmitCallBack?.call(vnBetAmount.value);
-            }
+                },
+              )
+            : GestureDetector(
+                // // confirm bet ON TAP
+                // onTap: isBetByTapActive
+                //     ? () {
 
-            // ELSE on drag release bounce back to start
-            vnOffsetValue.value = 0.0;
-          },
-          onVerticalDragUpdate: (details) {
-            if (isBetByTapActive) return;
-            vnOffsetValue.value =
-                (vnOffsetValue.value - details.delta.dy / s).clamp(.0, 1.0);
-          },
-          child: _buildToolTipWith(
-            child: IntrinsicWidth(
-              child: Container(
-                height: 2 * s,
-                child: AnimatedBuilder(
-                  animation: vnOffsetValue,
-                  builder: (_, __) {
-                    return Align(
-                      alignment: Alignment(.5, 1 - vnOffsetValue.value * 2),
-                      child: betChipWidget,
-                    );
-                  },
-                ),
+                //       }
+                //     : null,
+                // confirm bet ON SLIDE UP TILL THE TOP
+                onVerticalDragEnd: (_) {
+                  // if we reach 1.0 and leave the chip, CONFIRM BET
+                  if (vnOffsetValue.value == 1.0) {
+                    return onSubmitCallBack?.call(vnBetAmount.value);
+                  }
+
+                  // ELSE on drag release bounce back to start
+                  vnOffsetValue.value = 0.0;
+                },
+                onVerticalDragUpdate: (details) {
+                  if (isBetByTapActive) return;
+                  vnOffsetValue.value =
+                      (vnOffsetValue.value - details.delta.dy / s)
+                          .clamp(.0, 1.0);
+                },
+                child: mainWidget,
               ),
-            ),
-          ),
-        ),
         /* bet amount */
         Transform.translate(
             offset: Offset(0, 10.dp),
