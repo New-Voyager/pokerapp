@@ -67,6 +67,12 @@ class AppTheme extends ChangeNotifier {
   // color that is used for filling inside text fields, or cards views
   Color get fillInColor => _themeData.fillInColor;
 
+  Color get preFlopColor => _themeData.handlogPreflopColor;
+  Color get flopColor => _themeData.handlogFlopColor;
+  Color get turnColor => _themeData.handlogTurnColor;
+  Color get riverColor => _themeData.handlogRiverColor;
+  Color get showDownColor => _themeData.handlogShowdownColor;
+
   // supporting color: color that is used to create constrast with main color and accent color
   // mainly used for texts (white, or shades of white)
   Color get supportingColor => _themeData.supportingColor;

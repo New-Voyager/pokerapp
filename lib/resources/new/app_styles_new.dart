@@ -664,4 +664,5 @@ class AppStylesNew {
 
   static final profitStyle = TextStyle(color: Colors.green[400]);
   static final lossStyle = TextStyle(color: Colors.red[800]);
+
 }

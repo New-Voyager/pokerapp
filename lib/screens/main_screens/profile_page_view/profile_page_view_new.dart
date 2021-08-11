@@ -74,8 +74,15 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                   : SingleChildScrollView(
                       child: Column(
                         children: [
+                          // Container(
+                          //   padding: EdgeInsets.all(16),
+                          //   child: Text(AppStringsNew.myProfileTitleText,
+                          //       style: AppDecorators.getAccentTextStyle(
+                          //           theme: theme)),
+                          // ),
                           HeadingWidget(
                               heading: AppStringsNew.myProfileTitleText),
+
                           Container(
                             decoration: AppDecorators.tileDecoration(theme),
                             margin: EdgeInsets.symmetric(

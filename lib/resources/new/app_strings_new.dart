@@ -383,4 +383,16 @@ class AppStringsNew {
   static String loadingDetailsText = "Getting details..";
 
   static String gamesText = "Games";
+
+  static String handStats = 'Hand Statistics';
+
+  static String gameText = "Game";
+
+  static String appCoinsName = "Store";
+
+  static String loadProductsText = "Loading products";
+
+  static String deleteClubText = 'Delete Club';
+
+  static String editClubText = 'Edit Club';
 }
