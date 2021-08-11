@@ -14,7 +14,6 @@ import 'package:pokerapp/resources/app_text_styles.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
-import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/services/app/appcoin_service.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
@@ -24,7 +23,6 @@ import 'package:pokerapp/utils/loading_utils.dart';
 import 'package:pokerapp/widgets/appname_logo.dart';
 import 'package:pokerapp/widgets/card_form_text_field.dart';
 import 'package:pokerapp/widgets/round_color_button.dart';
-import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
 class RegistrationScreenNew extends StatefulWidget {
@@ -125,7 +123,8 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
 
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (context) {
+        return AlertDialog(
         actionsPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         backgroundColor: appTheme.fillInColor,
         title: Text("Debug details"),
@@ -133,6 +132,7 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
           mainAxisSize: MainAxisSize.min,
           children: [
             CardFormTextField(
+              theme: appTheme,
               hintText: "API Server URL",
               onChanged: (val) {
                 //log("VALUE : $val");
@@ -165,7 +165,8 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
                 Navigator.of(context).pop();
               }),
         ],
-      ),
+      );
+      },
     );
   }
 

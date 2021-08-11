@@ -356,4 +356,25 @@ class AppStringsNew {
   static String enterMessageHintText = "Enter message ";
 
   static String searchTenorHintText = 'Search Tenor Gifs';
+
+  static String loadingBookmarksText = "Fetching bookmarks";
+  static String noBookmarksText = "No bookmarked hands!";
+
+  static String hand = "Hand";
+
+  static String tabNLHText = "No Limit Holdem";
+
+  static String tabPLOText = "PLO";
+
+  static String tab5CardPLOText = "5 Card PLO";
+
+  static String totalGamesText = "Total Games";
+
+  static String totalHandsText = "Total Hands";
+
+  static String hitsText = "Hits";
+
+  static String odds = "Odds";
+
+  static String newText = "New";
 }
