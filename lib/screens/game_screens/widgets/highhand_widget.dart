@@ -3,11 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:pokerapp/models/game_history_model.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/utils/card_helper.dart';
+import 'package:provider/provider.dart';
 
 class HighhandWidget extends StatelessWidget {
   final separator = SizedBox(
@@ -46,81 +49,85 @@ class HighhandWidget extends StatelessWidget {
           "clubCode": clubCode,
         });
       },
-      child: Container(
-        decoration: AppStylesNew.actionRowDecoration,
-        margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              // player, community
+      child: Consumer<AppTheme>(
+        builder: (_, theme, __) {
+          return Container(
+            decoration: AppDecorators.tileDecoration(theme),
+            margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  // player, community
                   children: [
-                    Text(
-                      winner.player,
-                      style: AppStylesNew.accentTextStyle,
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          winner.player,
+                          style: AppStylesNew.accentTextStyle,
+                        ),
+                        separator,
+                        cardsView(winner.playerCards),
+                      ],
                     ),
-                    separator,
-                    cardsView(winner.playerCards),
+                    colSeparator,
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Community',
+                          style: TextStyle(color: Colors.teal),
+                        ),
+                        separator,
+                        cardsView(winner.boardCards),
+                      ],
+                    )
                   ],
                 ),
-                colSeparator,
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                AppDimensionsNew.getVerticalSizedBox(16),
+                Row(
+                  // highhand
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'High hand',
+                          style: TextStyle(color: Colors.green),
+                        ),
+                        separator,
+                        cardsView(winner.hhCards),
+                      ],
+                    ),
+                  ],
+                ),
+                Divider(
+                  height: 16,
+                  color: AppColorsNew.labelColor,
+                ),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.baseline,
+                  textBaseline: TextBaseline.alphabetic,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisSize: MainAxisSize.max,
                   children: [
                     Text(
-                      'Community',
-                      style: TextStyle(color: Colors.teal),
+                      'Hand #${winner.handNum.toString()}',
+                      style: AppStylesNew.labelTextStyle,
                     ),
-                    separator,
-                    cardsView(winner.boardCards),
+                    Text(
+                      date,
+                      style: AppStylesNew.labelTextStyle,
+                    ),
                   ],
                 )
               ],
             ),
-            AppDimensionsNew.getVerticalSizedBox(16),
-            Row(
-              // highhand
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'High hand',
-                      style: TextStyle(color: Colors.green),
-                    ),
-                    separator,
-                    cardsView(winner.hhCards),
-                  ],
-                ),
-              ],
-            ),
-            Divider(
-              height: 16,
-              color: AppColorsNew.labelColor,
-            ),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.baseline,
-              textBaseline: TextBaseline.alphabetic,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Text(
-                  'Hand #${winner.handNum.toString()}',
-                  style: AppStylesNew.labelTextStyle,
-                ),
-                Text(
-                  date,
-                  style: AppStylesNew.labelTextStyle,
-                ),
-              ],
-            )
-          ],
-        ),
+          );
+        },
       ),
     );
   }

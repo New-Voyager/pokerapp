@@ -1,10 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
-import 'package:pokerapp/resources/new/app_colors_new.dart';
+import 'package:pokerapp/models/ui/app_theme_data.dart';
+import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
-import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:provider/provider.dart';
 
@@ -16,17 +16,56 @@ class CustomizeScreen extends StatefulWidget {
 }
 
 class _CustomizeScreenState extends State<CustomizeScreen> {
-  List<Color> colors = [
-    Colors.amber,
-    Colors.red,
-    Colors.blue,
-    Colors.greenAccent,
-    Colors.blueGrey,
-    Colors.purpleAccent,
-    Colors.cyanAccent,
-    Colors.deepOrange,
-    Colors.teal,
+  List<AppThemeData> themeList = [
+    AppThemeData(),
+    AppThemeData(
+      primaryColor: Colors.blue,
+      accentColor: Colors.amber[900],
+      secondaryColor: Colors.blueGrey,
+      fillInColor: Colors.grey,
+      supportingColor: Colors.black,
+    ),
+    AppThemeData(
+      primaryColor: Color(0xFF082032),
+      accentColor: Color(0xFFFF4C29),
+      secondaryColor: Colors.blueGrey,
+      fillInColor: Color(0xFF2C394B),
+      supportingColor: Color(0xFFEEEEEE),
+    ),
+    AppThemeData(
+      primaryColor: Colors.blue,
+      accentColor: Colors.amber[900],
+      secondaryColor: Colors.blueGrey,
+      fillInColor: Colors.grey,
+      supportingColor: Colors.black,
+    ),
+    AppThemeData(
+      primaryColor: Colors.blue,
+      accentColor: Colors.amber[900],
+      secondaryColor: Colors.blueGrey,
+      fillInColor: Colors.grey,
+      supportingColor: Colors.black,
+    ),
+    AppThemeData(
+      primaryColor: Colors.blue,
+      accentColor: Colors.amber[900],
+      secondaryColor: Colors.blueGrey,
+      fillInColor: Colors.grey,
+      supportingColor: Colors.black,
+    ),
   ];
+
+  // List<Color> colors = [
+  //   Colors.amber,
+  //   Colors.red,
+  //   Colors.blue,
+  //   Colors.greenAccent,
+  //   Colors.blueGrey,
+  //   Colors.purpleAccent,
+  //   Colors.cyanAccent,
+  //   Colors.deepOrange,
+  //   Colors.teal,
+  // ];
 
   List<String> bgImageUrls = [
     "https://assets-pokerclubapp.nyc3.digitaloceanspaces.com/background/western-saloon.jpg",
@@ -37,14 +76,14 @@ class _CustomizeScreenState extends State<CustomizeScreen> {
     "https://assets-pokerclubapp.nyc3.digitaloceanspaces.com/table/darkblue.png",
     "https://assets-pokerclubapp.nyc3.digitaloceanspaces.com/table/red.png",
   ];
-  Color selectedColor;
+  AppThemeData selectedThemeData;
   String selectedBgUrl;
   String selectedTableUrl;
 
   @override
   void initState() {
     super.initState();
-    selectedColor = colors[0];
+    selectedThemeData = themeList[0];
     selectedBgUrl = bgImageUrls[0];
     selectedTableUrl = tableImageUrls[0];
   }
@@ -53,7 +92,7 @@ class _CustomizeScreenState extends State<CustomizeScreen> {
   Widget build(BuildContext context) {
     return Consumer<AppTheme>(
       builder: (_, theme, __) => Container(
-        decoration: AppStylesNew.BgGreenRadialGradient,
+        decoration: AppDecorators.bgRadialGradient(theme),
         child: SafeArea(
           child: Scaffold(
             backgroundColor: Colors.transparent,
@@ -67,52 +106,100 @@ class _CustomizeScreenState extends State<CustomizeScreen> {
                 children: [
                   // Colors Scheme
                   Container(
-                    decoration: AppStylesNew.actionRowDecoration,
+                    decoration: AppDecorators.tileDecoration(theme),
                     padding: EdgeInsets.all(16),
                     margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(AppStringsNew.colorsTitleText),
+                        Text(
+                          AppStringsNew.colorsTitleText,
+                          style: AppDecorators.getHeadLine4Style(theme: theme),
+                        ),
                         Text(
                           AppStringsNew.colorsSubtitleText,
-                          style: AppStylesNew.labelTextStyle,
+                          style: AppDecorators.getSubtitle3Style(theme: theme),
                         ),
                         AppDimensionsNew.getVerticalSizedBox(8),
                         Container(
-                          height: 56,
+                          //   height: 56,
                           child: ListView.separated(
                             separatorBuilder: (context, index) =>
-                                AppDimensionsNew.getHorizontalSpace(8),
-                            itemCount: colors.length,
+                                AppDimensionsNew.getVerticalSizedBox(8),
+                            itemCount: themeList.length,
                             shrinkWrap: true,
-                            scrollDirection: Axis.horizontal,
-                            itemBuilder: (context, index) => InkResponse(
-                              onTap: () {
-                                setState(() {
-                                  selectedColor = colors[index];
-                                });
-                              },
-                              child: CircleAvatar(
-                                radius: 24,
-                                backgroundColor: colors[index],
-                                child: selectedColor == colors[index]
-                                    ? Icon(
-                                        Icons.done,
-                                        color: Colors.white,
-                                      )
-                                    : SizedBox.shrink(),
-                              ),
-                            ),
+                            //scrollDirection: Axis.horizontal,
+                            itemBuilder: (context, index) {
+                              final themeData = themeList[index];
+                              return InkResponse(
+                                onTap: () {
+                                  setState(() {
+                                    selectedThemeData = themeList[index];
+                                  });
+                                  theme.updateThemeData(selectedThemeData);
+                                },
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                        flex: 2,
+                                        child: Text("THEME ${index + 1}")),
+                                    AppDimensionsNew.getHorizontalSpace(16),
+                                    Expanded(
+                                      flex: 5,
+                                      child: Container(
+                                        decoration:
+                                            AppDecorators.tileDecoration(theme),
+                                        height: 32,
+                                        child: Row(
+                                          children: [
+                                            Container(
+                                              height: 32,
+                                              width: 32,
+                                              color: themeData.primaryColor,
+                                            ),
+                                            Container(
+                                              height: 32,
+                                              width: 32,
+                                              color: themeData.secondaryColor,
+                                            ),
+                                            Container(
+                                              height: 32,
+                                              width: 32,
+                                              color: themeData.accentColor,
+                                            ),
+                                            Container(
+                                              height: 32,
+                                              width: 32,
+                                              color: themeData.fillInColor,
+                                            ),
+                                            Container(
+                                              height: 32,
+                                              width: 32,
+                                              color: themeData.supportingColor,
+                                            ),
+                                            Container(
+                                              height: 32,
+                                              width: 32,
+                                              color: themeData
+                                                  .negativeOrErrorColor,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
                           ),
-                        )
+                        ),
                       ],
                     ),
                   ),
 
 // Game Background
                   Container(
-                    decoration: AppStylesNew.actionRowDecoration,
+                    decoration: AppDecorators.tileDecoration(theme),
                     padding: EdgeInsets.all(16),
                     margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     child: Column(
@@ -121,7 +208,7 @@ class _CustomizeScreenState extends State<CustomizeScreen> {
                         Text(AppStringsNew.bgImagesThemeText),
                         Text(
                           AppStringsNew.bgImagesSubtitleText,
-                          style: AppStylesNew.labelTextStyle,
+                          style: AppDecorators.getSubtitle3Style(theme: theme),
                         ),
                         AppDimensionsNew.getVerticalSizedBox(8),
                         Container(
@@ -144,7 +231,7 @@ class _CustomizeScreenState extends State<CustomizeScreen> {
                                 padding: EdgeInsets.all(8),
                                 decoration: BoxDecoration(
                                   border: Border.all(
-                                    color: AppColorsNew.newBorderColor,
+                                    color: theme.accentColor,
                                     width: selectedBgUrl == bgImageUrls[index]
                                         ? 3
                                         : 0,
@@ -165,16 +252,19 @@ class _CustomizeScreenState extends State<CustomizeScreen> {
 
 // Table Background
                   Container(
-                    decoration: AppStylesNew.actionRowDecoration,
+                    decoration: AppDecorators.tileDecoration(theme),
                     padding: EdgeInsets.all(16),
                     margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(AppStringsNew.tableImagesThemeText),
+                        Text(
+                          AppStringsNew.tableImagesThemeText,
+                          style: AppDecorators.getHeadLine4Style(theme: theme),
+                        ),
                         Text(
                           AppStringsNew.tableImagesSubtitleText,
-                          style: AppStylesNew.labelTextStyle,
+                          style: AppDecorators.getSubtitle3Style(theme: theme),
                         ),
                         AppDimensionsNew.getVerticalSizedBox(8),
                         Container(
@@ -197,7 +287,7 @@ class _CustomizeScreenState extends State<CustomizeScreen> {
                                 padding: EdgeInsets.all(8),
                                 decoration: BoxDecoration(
                                   border: Border.all(
-                                    color: AppColorsNew.newBorderColor,
+                                    color: theme.accentColor,
                                     width: selectedTableUrl ==
                                             tableImageUrls[index]
                                         ? 3
