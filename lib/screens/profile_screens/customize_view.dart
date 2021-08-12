@@ -19,11 +19,11 @@ class _CustomizeScreenState extends State<CustomizeScreen> {
   List<AppThemeData> themeList = [
     AppThemeData(),
     AppThemeData(
-      primaryColor: Colors.blue,
+      primaryColor: Colors.blueGrey.shade900,
       accentColor: Colors.amber[900],
-      secondaryColor: Colors.blueGrey,
-      fillInColor: Colors.grey,
-      supportingColor: Colors.black,
+      secondaryColor: Colors.blueGrey.shade400,
+      fillInColor: Colors.grey.shade800,
+      supportingColor: Colors.white,
     ),
     AppThemeData(
       primaryColor: Color(0xFF082032),
@@ -51,7 +51,7 @@ class _CustomizeScreenState extends State<CustomizeScreen> {
       accentColor: Colors.amber[900],
       secondaryColor: Colors.blueGrey,
       fillInColor: Colors.grey,
-      supportingColor: Colors.black,
+      supportingColor: Colors.white70,
     ),
   ];
 
@@ -205,7 +205,10 @@ class _CustomizeScreenState extends State<CustomizeScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(AppStringsNew.bgImagesThemeText),
+                        Text(
+                          AppStringsNew.bgImagesThemeText,
+                          style: AppDecorators.getHeadLine4Style(theme: theme),
+                        ),
                         Text(
                           AppStringsNew.bgImagesSubtitleText,
                           style: AppDecorators.getSubtitle3Style(theme: theme),

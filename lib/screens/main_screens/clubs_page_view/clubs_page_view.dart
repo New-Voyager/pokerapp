@@ -264,7 +264,7 @@ class _ClubsPageViewState extends State<ClubsPageView>
           builder: (ctx) => Container(
             decoration: AppDecorators.bgRadialGradient(theme),
             child: Scaffold(
-              backgroundColor: Colors.black.withAlpha(100),
+              backgroundColor: Colors.transparent,
               body: Padding(
                 padding: EdgeInsets.only(
                   top: MediaQuery.of(context).padding.top,

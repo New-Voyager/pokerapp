@@ -231,6 +231,7 @@ class AppStringsNew {
   static String loadSettingsTitle = "Load Settings";
 
   static String saveGameSettingsTitle = "Save Settings";
+  static String gameSettingsTitle = "Game Settings";
 
   static String okText = "Ok";
 
@@ -395,4 +396,18 @@ class AppStringsNew {
   static String deleteClubText = 'Delete Club';
 
   static String editClubText = 'Edit Club';
+
+  static String notTrackedText = "Not tracked";
+
+  static String notAvaialbleText = "Not available";
+
+  static String chooseGamesTitle = "Choose games";
+
+  static String playersText = 'Players';
+
+  static String actionTimeLabel = 'Action Time (in seconds)';
+
+  static String gameTimeLabel = 'Game Time (in hours)';
+
+  static String buyinMaxWaitTimeLabel = 'Buyin max wait time (in seconds)';
 }

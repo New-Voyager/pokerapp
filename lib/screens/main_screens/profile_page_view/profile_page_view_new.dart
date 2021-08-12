@@ -503,13 +503,13 @@ class ListTileItem extends StatelessWidget {
                 children: [
                   Text(
                     text,
-                    style: AppDecorators.getSubtitle1Style(theme: theme),
+                    style: AppDecorators.getHeadLine4Style(theme: theme),
                   ),
                   Visibility(
                     visible: subTitleText != null,
                     child: Text(
                       subTitleText ?? "",
-                      style: AppDecorators.getSubtitle3Style(theme: theme),
+                      style: AppDecorators.getSubtitle1Style(theme: theme),
                     ),
                   )
                 ],
