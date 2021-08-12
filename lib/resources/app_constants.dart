@@ -171,8 +171,8 @@ class AppConstants {
   static const String ALLIN = 'ALLIN';
 
   // types of winners - high and low winners
-  static const String HIGH_WINNERS = 'High Winners';
-  static const String LOW_WINNERS = 'Low Winners';
+  static const String HIGH_WINNERS = 'High';
+  static const String LOW_WINNERS = 'Low';
 
   /* message types */
   static const String PLAYER_UPDATE = 'PLAYER_UPDATE';

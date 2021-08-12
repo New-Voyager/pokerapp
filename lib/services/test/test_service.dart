@@ -942,7 +942,7 @@ class TestService {
         _handActionProtoService.loop();
       }
 
-      final result = HandResultClient.fromJson(threePotsResultV2);
+      final result = HandResultClient.fromJson(hiloMultiplePotsMessage);
       log('$result');
       _handActionProtoService.handleResult2(result);
     } catch (err) {

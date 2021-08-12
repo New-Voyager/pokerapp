@@ -118,6 +118,16 @@ class ResultHandlerV2 {
     final totalPots = result.potWinners.length;
     for (int i = totalPots - 1; i >= 0; i--) {
       final potWinner = result.potWinners[i];
+      for (final boardWinners in potWinner.boardWinners) {
+        if (boardWinners.lowWinners.length > 0) {
+          hiLoGame = true;
+          break;
+        } 
+      }
+    }
+
+    for (int i = totalPots - 1; i >= 0; i--) {
+      final potWinner = result.potWinners[i];
       final potNo = potWinner.potNo;
 
       // highlight the req pot no
@@ -155,7 +165,7 @@ class ResultHandlerV2 {
           // display board banner
           // highlight board
         }
-
+        tableState.setWhichWinner(null);
         if (hiLoGame) {
           // display high banner
           tableState.setWhichWinner(AppConstants.HIGH_WINNERS);
@@ -177,7 +187,7 @@ class ResultHandlerV2 {
             board,
             boardWinners.hiRankText,
             boardWinners.lowWinners.values.toList(),
-            low: false,
+            low: true,
           );
         }
       }
