@@ -28,12 +28,15 @@ class PotsView extends StatelessWidget {
     if (!isPotChipEmpty) {
       potText = DataFormatter.chipsFormat(potChip);
     }
-    TextStyle potTextStyle = AppStylesNew.itemInfoTextStyleHeavy.copyWith(fontSize: 12.dp,);
+    TextStyle potTextStyle = AppStylesNew.itemInfoTextStyleHeavy.copyWith(
+      fontSize: 12.dp,
+    );
     Color chipColor = Colors.yellow;
     if (dim ?? false) {
       potTextStyle = AppStylesNew.itemInfoTextStyleHeavy.copyWith(
-              color: Colors.white24, 
-              fontSize: 12.dp,);
+        color: Colors.white24,
+        fontSize: 12.dp,
+      );
       chipColor = Colors.white24;
     }
 
@@ -63,12 +66,9 @@ class PotsView extends StatelessWidget {
                   Align(
                     key: uiKey,
                     alignment: Alignment.centerLeft,
-                    child: 
-                    SvgPicture.asset("assets/images/chip.svg", 
-                        width: 15.pw, 
-                        height: 15.pw, 
-                        color: chipColor),
-                    
+                    child: SvgPicture.asset("assets/images/chip.svg",
+                        width: 15.pw, height: 15.pw, color: chipColor),
+
                     // Image.asset(
                     //   'assets/images/chips.png',
                     //   height: 15.pw,

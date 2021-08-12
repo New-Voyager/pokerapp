@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/widgets/cards/community_cards_view/community_card_view.dart';
@@ -15,7 +16,6 @@ class CommunityCardsView extends StatelessWidget {
   final List<CardObject> cardsOther;
   final bool twoBoardsNeeded;
   final bool horizontal;
-
   CommunityCardsView({
     @required this.cards,
     this.cardsOther,
@@ -23,7 +23,8 @@ class CommunityCardsView extends StatelessWidget {
     this.horizontal = true,
   });
 
-  List<Widget> getCommunityCards(List<CardObject> cards) {
+  List<Widget> getCommunityCards(List<CardObject> cards,
+      {bool dimBoard = false}) {
     List<CardObject> reversedList = cards?.toList() ?? [];
 
     /* if we do not have an already existing entry, then only go for the dummy card */
@@ -33,6 +34,9 @@ class CommunityCardsView extends StatelessWidget {
       for (int i = 0; i < 5; i++) {
         final card = CardHelper.getCard(17);
         card.cardType = CardType.CommunityCard;
+        if (dimBoard) {
+          card.dimBoard = true;
+        }
         reversedList.add(card);
       }
     } else {
@@ -56,7 +60,10 @@ class CommunityCardsView extends StatelessWidget {
     int idx = 4;
     for (var card in reversedList) {
       GlobalKey globalKey;
-
+      card.dimBoard = false;
+      if (dimBoard) {
+        card.dimBoard = true;
+      }
       if (!CommunityCardAttribute.hasEntry(idx)) {
         /* only add an entry, if there is no previous entry available */
         globalKey = GlobalKey();
@@ -64,6 +71,8 @@ class CommunityCardsView extends StatelessWidget {
         /* collect for offset calculation : offset is calculated post the widget tree is build */
         _globalKeys[idx] = globalKey;
       }
+
+      log('Card dim 3: dimboard: ${card.dimBoard}');
 
       Widget communityCardView = Padding(
         padding: EdgeInsets.symmetric(horizontal: 1.5),
@@ -79,17 +88,19 @@ class CommunityCardsView extends StatelessWidget {
     return communityCards.toList();
   }
 
-  Widget buildSingleBoardCards(int boardNo, List<CardObject> boardCards) {
+  Widget buildSingleBoardCards(int boardNo, List<CardObject> boardCards,
+      {bool dimBoard = false}) {
+    log('CommunityCardsView board: ${boardNo} dimBoard: $dimBoard');
     /* we only need to show animation for the following 3 cases */
     if (boardCards?.length == 3)
       return FlopCommunityCards(
-        flopCards: getCommunityCards(boardCards),
+        flopCards: getCommunityCards(boardCards, dimBoard: dimBoard),
       );
 
     if (boardCards?.length == 4 || boardCards?.length == 5)
       return TurnOrRiverCommunityCards(
         key: ValueKey('$boardNo-${boardCards.length}'),
-        riverOrTurnCards: getCommunityCards(boardCards),
+        riverOrTurnCards: getCommunityCards(boardCards, dimBoard: dimBoard),
       );
 
     /* default case - this is done to bake our data for animating in the future */
@@ -98,7 +109,7 @@ class CommunityCardsView extends StatelessWidget {
       opacity: (boardCards?.isEmpty ?? true) ? 0.0 : 1.0,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: getCommunityCards(boardCards),
+        children: getCommunityCards(boardCards, dimBoard: dimBoard),
       ),
     );
   }
@@ -106,6 +117,11 @@ class CommunityCardsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     log('community cards');
+
+    final gameState = GameState.getState(context);
+    final tableState = gameState.getTableState(context);
+    log('Table state: dim board1: ${tableState.dimBoard1} dim board2: ${tableState.dimBoard2}');
+
     if (twoBoardsNeeded ?? false) {
       return Transform.scale(
         alignment: Alignment.topCenter,
@@ -113,13 +129,14 @@ class CommunityCardsView extends StatelessWidget {
         child: Column(
           children: [
             /* board 1 cards */
-            buildSingleBoardCards(1, cards),
+            buildSingleBoardCards(1, cards, dimBoard: tableState.dimBoard1),
 
             /* divider */
             const SizedBox(height: 12.0),
 
             /* board 2 cards */
-            buildSingleBoardCards(2, cardsOther),
+            buildSingleBoardCards(2, cardsOther,
+                dimBoard: tableState.dimBoard2),
           ],
         ),
       );

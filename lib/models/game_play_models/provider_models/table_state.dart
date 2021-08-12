@@ -18,7 +18,8 @@ class TableState extends ChangeNotifier {
   bool _twoBoardsNeeded;
   int _potToHighlight;
   bool _dimPots;
-
+  bool dimBoard1;
+  bool dimBoard2;
   String get whichWinner => _whichWinner;
   String _whichWinner;
 
@@ -47,6 +48,8 @@ class TableState extends ChangeNotifier {
     this._flipSpeed = 500;
     this._twoBoardsNeeded = false;
     this._showCardsShuffling = false;
+    this.dimBoard1 = false;
+    this.dimBoard2 = false;
   }
 
   void clear() {
@@ -95,10 +98,11 @@ class TableState extends ChangeNotifier {
   }
 
   bool get dimPots => _dimPots;
-  
+
   void dimPotsSilent(bool b) {
     _dimPots = b;
   }
+
   /* public methods for updating values into our TableState */
   void updateTableStatusSilent(String tableStatus) {
     if (this._tableStatus == tableStatus) return;

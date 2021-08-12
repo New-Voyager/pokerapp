@@ -9,6 +9,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/host_seat_chang
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
@@ -277,6 +278,7 @@ class _CenterViewState extends State<CenterView> {
           Consumer<ValueNotifier<FooterStatus>>(
             builder: (_, vnFooterStatus, __) {
               bool showDown = vnFooterStatus.value == FooterStatus.Result;
+              log('showing rank widget: $showDown');
               return showDown
                   ? rankWidget(boardAttributes)
                   : potUpdatesView(boa: boardAttributes, showDown: showDown);
@@ -365,69 +367,77 @@ class _CenterViewState extends State<CenterView> {
   Widget potUpdatesView({
     final BoardAttributesObject boa,
     final bool showDown,
-  }) =>
-      Transform.scale(
-        scale: boa.centerPotUpdatesScale,
-        alignment: Alignment.bottomCenter,
-        child: ValueListenableBuilder<int>(
-          valueListenable: vnPotChipsUpdates,
-          builder: (_, potChipsUpdates, __) => Opacity(
-            opacity: _getOpacityForPotUpdatesView(
-              showDown: showDown,
-              potChipsUpdates: potChipsUpdates,
+  }) {
+    return Transform.scale(
+      scale: boa.centerPotUpdatesScale,
+      alignment: Alignment.bottomCenter,
+      child: ValueListenableBuilder<int>(
+        valueListenable: vnPotChipsUpdates,
+        builder: (_, potChipsUpdates, __) => Opacity(
+          opacity: _getOpacityForPotUpdatesView(
+            showDown: showDown,
+            potChipsUpdates: potChipsUpdates,
+          ),
+          child: Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 10.0,
+              vertical: 5.0,
             ),
-            child: Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 10.0,
-                vertical: 5.0,
-              ),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(100.0),
-                color: Colors.black26,
-              ),
-              child: Text(
-                'Pot: ${DataFormatter.chipsFormat(potChipsUpdates?.toDouble())}',
-                style: AppStylesNew.itemInfoTextStyleHeavy.copyWith(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w400,
-                ),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(100.0),
+              color: Colors.black26,
+            ),
+            child: Text(
+              'Pot: ${DataFormatter.chipsFormat(potChipsUpdates?.toDouble())}',
+              style: AppStylesNew.itemInfoTextStyleHeavy.copyWith(
+                fontSize: 13,
+                fontWeight: FontWeight.w400,
               ),
             ),
           ),
         ),
-      );
+      ),
+    );
+  }
 
   bool _hideRankStr(String rankStr) {
     return rankStr == null || rankStr.trim().isEmpty;
   }
 
-  Widget rankWidget(BoardAttributesObject boa) => Transform.scale(
-        scale: boa.centerRankStrScale,
-        child: ValueListenableBuilder(
+  Widget rankWidget(BoardAttributesObject boa) {
+    final theme = AppTheme.getTheme(context);
+    var textStyle = AppStylesNew.footerResultTextStyle4
+        .copyWith(fontSize: 20.dp, color: Colors.white);
+    return Transform.scale(
+      scale: boa.centerRankStrScale,
+      child: ValueListenableBuilder(
           valueListenable: vnRankStr,
-          builder: (_, rankStr, __) => AnimatedSwitcher(
-            duration: AppConstants.animationDuration,
-            reverseDuration: AppConstants.animationDuration,
-            child: _hideRankStr(rankStr)
-                ? const SizedBox.shrink()
-                : Container(
-                    margin: EdgeInsets.only(top: 5.0),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10.0,
-                      vertical: 5.0,
+          builder: (_, rankStr, __) {
+            log('rank str: $rankStr');
+            return AnimatedSwitcher(
+              duration: AppConstants.animationDuration,
+              reverseDuration: AppConstants.animationDuration,
+              child: _hideRankStr(rankStr)
+                  ? const SizedBox.shrink()
+                  : Container(
+                      margin: EdgeInsets.only(top: 5.0),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 40.pw,
+                        vertical: 2.pw,
+                      ),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(100.0),
+                        color: theme.accentColorWithDark(),
+                      ),
+                      child: Text(
+                        rankStr,
+                        style: textStyle,
+                      ),
                     ),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(100.0),
-                      color: Colors.black.withOpacity(0.70),
-                    ),
-                    child: Text(
-                      rankStr,
-                      style: AppStylesNew.footerResultTextStyle4,
-                    ),
-                  ),
-          ),
-        ),
-      );
+            );
+          }),
+    );
+  }
 }
 
 class ValueListenableBuilder2<A, B> extends StatelessWidget {

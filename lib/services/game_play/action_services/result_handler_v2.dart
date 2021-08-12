@@ -116,7 +116,7 @@ class ResultHandlerV2 {
     }
     tableState.setBoardCards(1, boardCardsUpdate);
     final totalPots = result.potWinners.length;
-    for(int i = totalPots - 1; i >= 0; i--) {
+    for (int i = totalPots - 1; i >= 0; i--) {
       final potWinner = result.potWinners[i];
       final potNo = potWinner.potNo;
 
@@ -127,10 +127,12 @@ class ResultHandlerV2 {
       for (final boardWinners in potWinner.boardWinners) {
         // reset board, hi lo banners
         tableState.setWhichWinner(null);
-        /* need to clear the board */
-        resetResult(
-          boardIndex: boardWinners.boardNo,
-        );
+        // clear all the boards
+        for (final board in result.boards) {
+          resetResult(
+            boardIndex: board.boardNo,
+          );
+        }
 
         // seat no, Winner
         proto.Board board;
@@ -139,6 +141,14 @@ class ResultHandlerV2 {
             board = b;
             break;
           }
+        }
+
+        if (board.boardNo == 1) {
+          tableState.dimBoard1 = false;
+          tableState.dimBoard2 = true;
+        } else {
+          tableState.dimBoard1 = true;
+          tableState.dimBoard2 = false;
         }
 
         if (result.boards.length > 1) {
@@ -175,14 +185,14 @@ class ResultHandlerV2 {
       // UN highlight the req pot no
       tableState.updatePotToHighlightSilent(-1);
       tableState.notifyAll();
+      //break;
     }
     if (replay) return;
-
+    resetResult();
     // remove all the community cards
+    gameState.resetPlayers(context);
     tableState.clear();
     tableState.notifyAll();
-
-    gameState.resetPlayers(context);
   }
 
   void playApplause() {
@@ -214,6 +224,7 @@ class ResultHandlerV2 {
         setState = true;
       }
       this.showWinner(
+        rank: rank,
         winner: winningPlayer,
         boardIndex: board.boardNo,
         setState: setState,
@@ -244,6 +255,7 @@ class ResultHandlerV2 {
   }
 
   Future<void> showWinner({
+    final String rank,
     final Winner winner,
     final boardIndex = 1,
     final bool setState = false,
@@ -265,7 +277,7 @@ class ResultHandlerV2 {
     );
 
     /* update the rank str */
-    tableState.updateRankStrSilent(winner.rankStr);
+    tableState.updateRankStrSilent(rank);
 
     /* update the stack amount for the winners */
     final PlayerModel player = players.getPlayerBySeat(winner.seatNo);

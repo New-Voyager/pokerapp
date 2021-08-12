@@ -1230,7 +1230,6 @@ String testResultMessage = '''
 }]
 }''';
 
-
 String handResult2MultiPot = '''
 {
 	"activeSeats": [1, 2, 3, 4],
@@ -1514,7 +1513,6 @@ String multiPotV2Message = '''
 	"10": 1
 }
 ''';
-
 
 String bombPotJsonMsg = '''
 {

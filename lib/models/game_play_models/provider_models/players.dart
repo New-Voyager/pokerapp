@@ -56,6 +56,8 @@ class Players extends ChangeNotifier {
     /* reset the noCardsVisible of each player and remove my cards too */
     this.removeCardsFromAllSilent();
 
+    this.removeActionsAllSilent();
+
     /* reset the reverse pot chips animation */
     // this.resetMoveCoinsFromPotSilent();
 
@@ -268,6 +270,11 @@ class Players extends ChangeNotifier {
   void removeCardsFromAllSilent() {
     for (int i = 0; i < _players.length; i++) _players[i].noOfCardsVisible = 0;
     for (int i = 0; i < _players.length; i++) _players[i].cards = null;
+  }
+
+  void removeActionsAllSilent() {
+    for (int i = 0; i < _players.length; i++)
+      _players[i].action.reset(stickAction: false);
   }
 
   void removePlayerSilent(int seatNo) {
