@@ -8,8 +8,8 @@ import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class AppNameAndLogoWidget extends StatelessWidget {
   final AppTheme _appTheme;
-  final AppTextScreen _appScreenText;
-  const AppNameAndLogoWidget(this._appTheme, this._appScreenText);
+  AppNameAndLogoWidget(this._appTheme, this._appScreenText);
+  AppTextScreen _appScreenText;
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +17,7 @@ class AppNameAndLogoWidget extends StatelessWidget {
       children: [
         Container(
           child: Text(
-            'Poker Club App',
+            _appScreenText['POCKERCLUBAPP'],
             textAlign: TextAlign.center,
             style: AppTextStyles.H1.copyWith(
               color: _appTheme.accentColor,

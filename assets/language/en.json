@@ -12,12 +12,46 @@
         "GAME_RECORD": "Game Record"
     },
     "registration": {
-        "SUBTITLE": "Play poker with friends",
         "REQUIRED": "Required",
         "OPTIONAL": "Optional",
         "SCREEN_NAME": "Screen Name",
         "YOUR_NAME": "Your Name",
         "RECOVERY_EMAIL": "Recovery Email",
-        "TOC_TEXT1": "By creating an account, you agree with our "
+        "TOC_TEXT1": "By creating an account, you agree with our ",
+        "DEBUGDETAILS": "Debug details",
+        "APISERVERURL": "API Server URL",
+        "SAVE": "SAVE",
+        "APIURLCANTBEEMPTY": "API url can't be empty",
+        "APIURLISSET": "API url is SET",
+        "BYCREATINGANACCOUNTYOUAGREEWITHOUR": "By creating an account, you agree with our ",
+        "TERMSOFSERVICE": "Terms of Service",
+        "PRIVACYPOLICY": "Privacy Policy",
+        "OPENINGPRIVACYPOLICYURL": "Opening privacy policy URL",
+        "OPENINGTERMSANDCONDITIONURL": "Opening Terms and conditions URL",
+        "SUBTITLE": "Play poker with friends",
+        "POCKERCLUBAPP": "Poker Club App",
+        "SCREENNAMEISMANDATORY": "Screen name is mandatory",
+        "SCREENNAME20LATTER": "Screen name should be less than 20 letters",
+        "SCREENNAMEDESCRIPTION": "Screen name: The name used in the poker table",
+        "DISPLAYNAME30LETTERS": "Display name should be less than 30 letters",
+        "YOURNAMEHINT": "Your name: The name that is recognizable by your group/club and the club host",
+        "INVALIDEMAIL": "Invalid email",
+        "RECOVERYEMAILHINT": "Recovery email : To recover this poker game account in case of loss of this device or transfer to a new device",
+        "SIGNUP": "SIGN UP",
+        "RESTOREACCOUNT": "Restore Account"
+    },
+    "recoveraccount": {
+        "RESTOREEXISTINGACCOUNT": "Restore existing account",
+        "RECOVERYEMAIL": "Recovery email",
+        "ENTERRECOVERYCODE": "Enter recovery code",
+        "RESTORINGACCOUT": "Restoring account...",
+        "SENDINGCODE": "Sending code...",
+        "CODESENTTORECOVERYMAIL": "Code sent to recovery mail.",
+        "FAILEDTOSENDCODE": "Failed to send code.",
+        "GETCODE": "Get Code",
+        "RESTORE": "RESTORE",
+        "SIGNUP": "SIGN UP",
+        "SUBTITLE": "Play poker with friends",
+        "POCKERCLUBAPP": "Poker Club App"
     }
 }
