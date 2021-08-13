@@ -231,6 +231,7 @@ class AppStringsNew {
   static String loadSettingsTitle = "Load Settings";
 
   static String saveGameSettingsTitle = "Save Settings";
+  static String gameSettingsTitle = "Game Settings";
 
   static String okText = "Ok";
 
@@ -356,4 +357,57 @@ class AppStringsNew {
   static String enterMessageHintText = "Enter message ";
 
   static String searchTenorHintText = 'Search Tenor Gifs';
+
+  static String loadingBookmarksText = "Fetching bookmarks";
+  static String noBookmarksText = "No bookmarked hands!";
+
+  static String hand = "Hand";
+
+  static String tabNLHText = "No Limit Holdem";
+
+  static String tabPLOText = "PLO";
+
+  static String tab5CardPLOText = "5 Card PLO";
+
+  static String totalGamesText = "Total Games";
+
+  static String totalHandsText = "Total Hands";
+
+  static String hitsText = "Hits";
+
+  static String odds = "Odds";
+
+  static String newText = "New";
+
+  static String messagesText = "Messages";
+
+  static String loadingDetailsText = "Getting details..";
+
+  static String gamesText = "Games";
+
+  static String handStats = 'Hand Statistics';
+
+  static String gameText = "Game";
+
+  static String appCoinsName = "Store";
+
+  static String loadProductsText = "Loading products";
+
+  static String deleteClubText = 'Delete Club';
+
+  static String editClubText = 'Edit Club';
+
+  static String notTrackedText = "Not tracked";
+
+  static String notAvaialbleText = "Not available";
+
+  static String chooseGamesTitle = "Choose games";
+
+  static String playersText = 'Players';
+
+  static String actionTimeLabel = 'Action Time (in seconds)';
+
+  static String gameTimeLabel = 'Game Time (in hours)';
+
+  static String buyinMaxWaitTimeLabel = 'Buyin max wait time (in seconds)';
 }

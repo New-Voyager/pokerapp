@@ -1,4 +1,7 @@
 {
+    "global": {
+        "OPTIONAL": "Optional"
+    },
     "liveGames": {
         "EMPTY_GAMECODE_ERROR": "GameCode can't be empty",
         "LOADING_GAMES": "Getting games..",
@@ -14,6 +17,7 @@
         "OPTIONAL": "Optional",
         "SCREEN_NAME": "Screen Name",
         "YOUR_NAME": "Your Name",
-        "RECOVERY_EMAIL": "Recovery Email"
+        "RECOVERY_EMAIL": "Recovery Email",
+        "TOC_TEXT1": "By creating an account, you agree with our "
     }
 }

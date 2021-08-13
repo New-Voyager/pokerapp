@@ -5,6 +5,8 @@ import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/game/new_game_model.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
@@ -17,6 +19,7 @@ import 'package:pokerapp/services/data/box_type.dart';
 import 'package:pokerapp/services/data/hive_datasource_impl.dart';
 import 'package:pokerapp/widgets/heading_widget.dart';
 import 'package:pokerapp/widgets/round_color_button.dart';
+import 'package:provider/provider.dart';
 
 import '../../../routes.dart';
 
@@ -67,182 +70,191 @@ class _ChooseGameNewState extends State<ChooseGameNew>
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: AppStylesNew.bgDecoration,
-      child: SafeArea(
-        child: Scaffold(
-          backgroundColor: Colors.transparent,
-          body: Column(
-            children: [
-              /* BUILD HEADER */
-              Row(
-                children: [
-                  AppDimensionsNew.getHorizontalSpace(8),
-                  InkWell(
-                    onTap: () {
-                      _handleLoadGameClick(context);
-                    },
-                    child: CircleAvatar(
-                      child: Icon(Icons.open_in_browser_rounded),
-                      backgroundColor: AppColorsNew.newGreenRadialStartColor,
+    return Consumer<AppTheme>(
+      builder: (_, theme, __) => Container(
+        decoration: AppDecorators.bgRadialGradient(theme),
+        child: SafeArea(
+          child: Scaffold(
+            backgroundColor: Colors.transparent,
+            body: Column(
+              children: [
+                /* BUILD HEADER */
+                Row(
+                  children: [
+                    AppDimensionsNew.getHorizontalSpace(8),
+                    InkWell(
+                      onTap: () {
+                        _handleLoadGameClick(context, theme);
+                      },
+                      child: CircleAvatar(
+                        child: Icon(Icons.open_in_browser_rounded,
+                            color: theme.primaryColorWithDark()),
+                        backgroundColor: theme.accentColor,
+                      ),
                     ),
-                  ),
-                  // Container(
-                  //   decoration: BoxDecoration(
-                  //       shape: BoxShape.circle,
-                  //                           color: AppColorsNew.newGreenButtonColor,
+                    // Container(
+                    //   decoration: BoxDecoration(
+                    //       shape: BoxShape.circle,
+                    //                           color: AppColorsNew.newGreenButtonColor,
 
-                  //       border: Border.all(
-                  //         color: AppColorsNew.newSelectedGreenColor,
-                  //       )),
-                  //   child: IconButton(
-                  //     onPressed: () => Navigator.of(context).pop(),
-                  //     icon: Icon(Icons.open_in_browser_rounded),
-                  //     tooltip: "Load Settings",
-                  //   ),
-                  // ),
-                  /* HEADING */
-                  Expanded(
-                    child: HeadingWidget(
-                      heading: 'game settings',
+                    //       border: Border.all(
+                    //         color: AppColorsNew.newSelectedGreenColor,
+                    //       )),
+                    //   child: IconButton(
+                    //     onPressed: () => Navigator.of(context).pop(),
+                    //     icon: Icon(Icons.open_in_browser_rounded),
+                    //     tooltip: "Load Settings",
+                    //   ),
+                    // ),
+                    /* HEADING */
+                    Expanded(
+                      child: HeadingWidget(
+                        heading: AppStringsNew.gameSettingsTitle,
+                      ),
                     ),
-                  ),
-                  InkWell(
-                    onTap: () => Navigator.of(context).pop(),
-                    child: CircleAvatar(
-                      child: Icon(Icons.close),
-                      backgroundColor: AppColorsNew.newGreenRadialStartColor,
+                    InkWell(
+                      onTap: () => Navigator.of(context).pop(),
+                      child: CircleAvatar(
+                        child: Icon(
+                          Icons.close,
+                          color: theme.primaryColorWithDark(),
+                        ),
+                        backgroundColor: theme.accentColor,
+                      ),
                     ),
-                  ),
-                  AppDimensionsNew.getHorizontalSpace(8),
-                ],
-              ),
-              Expanded(
-                child: SingleChildScrollView(
-                  physics: BouncingScrollPhysics(),
-                  child: Column(
-                    children: [
-                      InkWell(
-                        splashColor: Colors.transparent,
-                        highlightColor: Colors.transparent,
-                        onTap: () => handleItemClick(GameType.HOLDEM),
-                        child: GameTypeItem(
-                          clubCode: widget.clubCode,
-                          type: GameType.HOLDEM,
-                          imagePath: AppAssetsNew.pathHoldemTypeImage,
-                          isSelected: _selectedGameType == GameType.HOLDEM,
-                          animValue: _animationController.value,
-                          onArrowClick: () =>
-                              handleArrowClick(GameType.HOLDEM, context),
+                    AppDimensionsNew.getHorizontalSpace(8),
+                  ],
+                ),
+                Expanded(
+                  child: SingleChildScrollView(
+                    physics: BouncingScrollPhysics(),
+                    child: Column(
+                      children: [
+                        InkWell(
+                          splashColor: Colors.transparent,
+                          highlightColor: Colors.transparent,
+                          onTap: () => handleItemClick(GameType.HOLDEM),
+                          child: GameTypeItem(
+                            clubCode: widget.clubCode,
+                            type: GameType.HOLDEM,
+                            imagePath: AppAssetsNew.pathHoldemTypeImage,
+                            isSelected: _selectedGameType == GameType.HOLDEM,
+                            animValue: _animationController.value,
+                            onArrowClick: () =>
+                                handleArrowClick(GameType.HOLDEM, context),
+                          ),
                         ),
-                      ),
-                      InkWell(
-                        splashColor: Colors.transparent,
-                        highlightColor: Colors.transparent,
-                        onTap: () => handleItemClick(GameType.PLO),
-                        child: GameTypeItem(
-                          clubCode: widget.clubCode,
-                          type: GameType.PLO,
-                          imagePath: AppAssetsNew.pathPLOTypeImage,
-                          isSelected: _selectedGameType == GameType.PLO,
-                          animValue: _animationController.value,
-                          onArrowClick: () =>
-                              handleArrowClick(GameType.PLO, context),
+                        InkWell(
+                          splashColor: Colors.transparent,
+                          highlightColor: Colors.transparent,
+                          onTap: () => handleItemClick(GameType.PLO),
+                          child: GameTypeItem(
+                            clubCode: widget.clubCode,
+                            type: GameType.PLO,
+                            imagePath: AppAssetsNew.pathPLOTypeImage,
+                            isSelected: _selectedGameType == GameType.PLO,
+                            animValue: _animationController.value,
+                            onArrowClick: () =>
+                                handleArrowClick(GameType.PLO, context),
+                          ),
                         ),
-                      ),
-                      InkWell(
-                        splashColor: Colors.transparent,
-                        highlightColor: Colors.transparent,
-                        onTap: () => handleItemClick(GameType.PLO_HILO),
-                        child: GameTypeItem(
-                          clubCode: widget.clubCode,
-                          type: GameType.PLO_HILO,
-                          imagePath: AppAssetsNew.pathPLOHiLoTypeImage,
-                          isSelected: _selectedGameType == GameType.PLO_HILO,
-                          animValue: _animationController.value,
-                          onArrowClick: () =>
-                              handleArrowClick(GameType.PLO_HILO, context),
+                        InkWell(
+                          splashColor: Colors.transparent,
+                          highlightColor: Colors.transparent,
+                          onTap: () => handleItemClick(GameType.PLO_HILO),
+                          child: GameTypeItem(
+                            clubCode: widget.clubCode,
+                            type: GameType.PLO_HILO,
+                            imagePath: AppAssetsNew.pathPLOHiLoTypeImage,
+                            isSelected: _selectedGameType == GameType.PLO_HILO,
+                            animValue: _animationController.value,
+                            onArrowClick: () =>
+                                handleArrowClick(GameType.PLO_HILO, context),
+                          ),
                         ),
-                      ),
-                      InkWell(
-                        splashColor: Colors.transparent,
-                        highlightColor: Colors.transparent,
-                        onTap: () => handleItemClick(GameType.FIVE_CARD_PLO),
-                        child: GameTypeItem(
-                          clubCode: widget.clubCode,
-                          type: GameType.FIVE_CARD_PLO,
-                          imagePath: AppAssetsNew.pathFiveCardPLOTypeImage,
-                          isSelected:
-                              _selectedGameType == GameType.FIVE_CARD_PLO,
-                          animValue: _animationController.value,
-                          onArrowClick: () =>
-                              handleArrowClick(GameType.FIVE_CARD_PLO, context),
+                        InkWell(
+                          splashColor: Colors.transparent,
+                          highlightColor: Colors.transparent,
+                          onTap: () => handleItemClick(GameType.FIVE_CARD_PLO),
+                          child: GameTypeItem(
+                            clubCode: widget.clubCode,
+                            type: GameType.FIVE_CARD_PLO,
+                            imagePath: AppAssetsNew.pathFiveCardPLOTypeImage,
+                            isSelected:
+                                _selectedGameType == GameType.FIVE_CARD_PLO,
+                            animValue: _animationController.value,
+                            onArrowClick: () => handleArrowClick(
+                                GameType.FIVE_CARD_PLO, context),
+                          ),
                         ),
-                      ),
-                      InkWell(
-                        splashColor: Colors.transparent,
-                        highlightColor: Colors.transparent,
-                        onTap: () =>
-                            handleItemClick(GameType.FIVE_CARD_PLO_HILO),
-                        child: GameTypeItem(
-                          clubCode: widget.clubCode,
-                          type: GameType.FIVE_CARD_PLO_HILO,
-                          imagePath: AppAssetsNew.pathFiveCardPLOHiLoTypeImage,
-                          isSelected:
-                              _selectedGameType == GameType.FIVE_CARD_PLO_HILO,
-                          animValue: _animationController.value,
-                          onArrowClick: () => handleArrowClick(
-                              GameType.FIVE_CARD_PLO_HILO, context),
+                        InkWell(
+                          splashColor: Colors.transparent,
+                          highlightColor: Colors.transparent,
+                          onTap: () =>
+                              handleItemClick(GameType.FIVE_CARD_PLO_HILO),
+                          child: GameTypeItem(
+                            clubCode: widget.clubCode,
+                            type: GameType.FIVE_CARD_PLO_HILO,
+                            imagePath:
+                                AppAssetsNew.pathFiveCardPLOHiLoTypeImage,
+                            isSelected: _selectedGameType ==
+                                GameType.FIVE_CARD_PLO_HILO,
+                            animValue: _animationController.value,
+                            onArrowClick: () => handleArrowClick(
+                                GameType.FIVE_CARD_PLO_HILO, context),
+                          ),
                         ),
-                      ),
-                      InkWell(
-                        splashColor: Colors.transparent,
-                        highlightColor: Colors.transparent,
-                        onTap: () => handleItemClick(GameType.ROE),
-                        child: GameTypeItem(
-                          clubCode: widget.clubCode,
-                          type: GameType.ROE,
-                          imagePath: AppAssetsNew.pathROETypeImage,
-                          isSelected: _selectedGameType == GameType.ROE,
-                          animValue: _animationController.value,
-                          onSettingsClick: () =>
-                              handleSettingsClick(GameType.ROE, gamesRoe),
-                          gamesList: gamesRoe,
-                          onArrowClick: () =>
-                              handleArrowClick(GameType.ROE, context),
+                        InkWell(
+                          splashColor: Colors.transparent,
+                          highlightColor: Colors.transparent,
+                          onTap: () => handleItemClick(GameType.ROE),
+                          child: GameTypeItem(
+                            clubCode: widget.clubCode,
+                            type: GameType.ROE,
+                            imagePath: AppAssetsNew.pathROETypeImage,
+                            isSelected: _selectedGameType == GameType.ROE,
+                            animValue: _animationController.value,
+                            onSettingsClick: () => handleSettingsClick(
+                                GameType.ROE, gamesRoe, theme),
+                            gamesList: gamesRoe,
+                            onArrowClick: () =>
+                                handleArrowClick(GameType.ROE, context),
+                          ),
                         ),
-                      ),
-                      InkWell(
-                        splashColor: Colors.transparent,
-                        highlightColor: Colors.transparent,
-                        onTap: () => handleItemClick(GameType.DEALER_CHOICE),
-                        child: GameTypeItem(
-                          clubCode: widget.clubCode,
-                          type: GameType.DEALER_CHOICE,
-                          imagePath: AppAssetsNew.pathDealerChoiceTypeImage,
-                          isSelected:
-                              _selectedGameType == GameType.DEALER_CHOICE,
-                          animValue: _animationController.value,
-                          onSettingsClick: () => handleSettingsClick(
-                              GameType.DEALER_CHOICE, gamesDealerChoice),
-                          gamesList: gamesDealerChoice,
-                          onArrowClick: () =>
-                              handleArrowClick(GameType.DEALER_CHOICE, context),
+                        InkWell(
+                          splashColor: Colors.transparent,
+                          highlightColor: Colors.transparent,
+                          onTap: () => handleItemClick(GameType.DEALER_CHOICE),
+                          child: GameTypeItem(
+                            clubCode: widget.clubCode,
+                            type: GameType.DEALER_CHOICE,
+                            imagePath: AppAssetsNew.pathDealerChoiceTypeImage,
+                            isSelected:
+                                _selectedGameType == GameType.DEALER_CHOICE,
+                            animValue: _animationController.value,
+                            onSettingsClick: () => handleSettingsClick(
+                                GameType.DEALER_CHOICE,
+                                gamesDealerChoice,
+                                theme),
+                            gamesList: gamesDealerChoice,
+                            onArrowClick: () => handleArrowClick(
+                                GameType.DEALER_CHOICE, context),
+                          ),
                         ),
-                      ),
-                      // AppDimensionsNew.getVerticalSizedBox(64),
-                    ],
+                        // AppDimensionsNew.getVerticalSizedBox(64),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 
-  _handleLoadGameClick(BuildContext context) async {
+  _handleLoadGameClick(BuildContext context, AppTheme theme) async {
     final instance =
         HiveDatasource.getInstance.getBox(BoxType.GAME_SETTINGS_BOX);
     int selectedIndex = -1;
@@ -363,7 +375,7 @@ class _ChooseGameNewState extends State<ChooseGameNew>
   }
 
   Future<void> handleSettingsClick(
-      GameType gameType, List<GameType> existingChoices) async {
+      GameType gameType, List<GameType> existingChoices, AppTheme theme) async {
     setState(() => _selectedGameType = null);
 
     final List<GameType> games = await showDialog(
@@ -372,7 +384,7 @@ class _ChooseGameNewState extends State<ChooseGameNew>
         List<GameType> list = [];
         list.addAll(existingChoices);
         return AlertDialog(
-          backgroundColor: AppColorsNew.newDialogBgColor,
+          backgroundColor: theme.fillInColor,
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           content: StatefulBuilder(builder: (context, localSetState) {
@@ -380,8 +392,8 @@ class _ChooseGameNewState extends State<ChooseGameNew>
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  "Choose Games",
-                  style: AppStylesNew.inactiveChipTextStyle,
+                  AppStringsNew.chooseGamesTitle,
+                  style: AppDecorators.getHeadLine4Style(theme: theme),
                 ),
                 Container(
                   margin: EdgeInsets.symmetric(vertical: 16),
@@ -474,18 +486,18 @@ class _ChooseGameNewState extends State<ChooseGameNew>
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    NewButton(
-                      text: "CANCEL",
-                      style: AppStylesNew.cancelButtonStyle,
-                      onTapFunc: () => Navigator.of(context).pop(),
+                    RoundedColorButton(
+                      text: AppStringsNew.cancelButtonText,
+                      onTapFunction: () => Navigator.of(context).pop(),
+                      backgroundColor: Colors.transparent,
+                      borderColor: theme.secondaryColor,
                     ),
-                    NewButton(
-                      text: "SAVE",
-                      style: AppStylesNew.saveButtonStyle,
-                      onTapFunc: () {
-                        Navigator.of(context).pop(list);
-                      },
-                    )
+                    RoundedColorButton(
+                      text: AppStringsNew.saveButtonText,
+                      onTapFunction: () => Navigator.of(context).pop(list),
+                      backgroundColor: theme.accentColor,
+                      textColor: theme.primaryColorWithDark(),
+                    ),
                   ],
                 ),
               ],
@@ -517,17 +529,20 @@ class GameTypeChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = AppTheme.getTheme(context);
     return RawChip(
       label: Text(
         '${gameTypeShortStr(gameType)}',
         style: selected
-            ? AppStylesNew.activeChipTextStyle
-            : AppStylesNew.inactiveChipTextStyle,
+            ? AppDecorators.getHeadLine4Style(theme: theme)
+                .copyWith(color: theme.primaryColorWithDark())
+            : AppDecorators.getHeadLine4Style(theme: theme)
+                .copyWith(color: theme.secondaryColor),
       ),
       padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       selected: selected,
-      selectedColor: AppColorsNew.newActiveBoxColor,
-      backgroundColor: AppColorsNew.newTileBgBlackColor,
+      selectedColor: theme.secondaryColor,
+      backgroundColor: theme.fillInColor,
       onSelected: onTapFunc,
     );
   }

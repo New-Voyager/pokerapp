@@ -3,6 +3,7 @@ import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:pokerapp/models/player_performance_model.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_assets.dart';
+import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
@@ -63,87 +64,94 @@ class _PerformanceViewState extends State<PerformanceView>
   @override
   Widget build(BuildContext context) {
     return Consumer<AppTheme>(
-      builder: (_, theme, __) => Container(
-          decoration: AppStylesNew.BgGreenRadialGradient,
-          child: Scaffold(
-            backgroundColor: Colors.transparent,
-            resizeToAvoidBottomInset: true,
-            appBar: CustomAppBar(
-              theme: theme,
-              context: context,
-              titleText: AppStringsNew.PerformanceTitle,
-            ),
-            body: loading
-                ? Center(child: CircularProgressWidget())
-                : (performance == null) ||
-                        performance.performanceList == null ||
-                        performance.performanceList.length == 0
-                    ? Center(
-                        child: Text(
-                          AppStringsNew.noDataAvailable,
-                          style: AppStylesNew.disabledButtonTextStyle,
-                        ),
-                      )
-                    : Column(
-                        children: [
-                          TabBar(
-                            controller: _tabController,
-                            tabs: [
-                              Tab(text: AppStringsNew.PerformanceTab1),
-                              Tab(text: AppStringsNew.PerformanceTab2),
-                            ],
-                            labelColor: AppColorsNew.newTextColor,
-                            unselectedLabelColor: Colors.grey,
-                            indicatorSize: TabBarIndicatorSize.label,
-                            indicatorColor: AppColorsNew.yellowAccentColor,
+      builder: (_, theme, __) {
+        return Container(
+            decoration: AppDecorators.bgRadialGradient(theme),
+            child: Scaffold(
+              backgroundColor: Colors.transparent,
+              resizeToAvoidBottomInset: true,
+              appBar: CustomAppBar(
+                theme: theme,
+                context: context,
+                titleText: AppStringsNew.PerformanceTitle,
+              ),
+              body: loading
+                  ? Center(child: CircularProgressWidget())
+                  : (performance == null) ||
+                          performance.performanceList == null ||
+                          performance.performanceList.length == 0
+                      ? Center(
+                          child: Text(
+                            AppStringsNew.noDataAvailable,
+                            style: AppStylesNew.disabledButtonTextStyle,
                           ),
-                          Expanded(
-                            child: TabBarView(
+                        )
+                      : Column(
+                          children: [
+                            TabBar(
                               controller: _tabController,
-                              children: [
-                                // Hand statistics
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 8.0),
-                                  child: HandAlltimeStatsView(
-                                    showToolbar: false,
-                                  ),
-                                ),
-
-                                // Performance
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Padding(
-                                      padding: EdgeInsets.all(16.pw),
-                                      child: Column(
-                                        children: [
-                                          Text(
-                                            AppStringsNew.recentGamesText,
-                                            style: AppStylesNew.labelTextStyle,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    Expanded(
-                                      child: Container(
-                                        padding: EdgeInsets.all(8),
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(8.pw),
-                                          color: AppColorsNew.actionRowBgColor,
-                                        ),
-                                        child: PerformanceBarChart(performance),
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                              tabs: [
+                                Tab(text: AppStringsNew.PerformanceTab1),
+                                Tab(text: AppStringsNew.PerformanceTab2),
                               ],
+                              labelColor: theme.secondaryColorWithLight(),
+                              unselectedLabelColor:
+                                  theme.secondaryColorWithDark(),
+                              indicatorSize: TabBarIndicatorSize.label,
+                              indicatorColor: theme.accentColor,
                             ),
-                          ),
-                        ],
-                      ),
-          )),
+                            Expanded(
+                              child: TabBarView(
+                                controller: _tabController,
+                                children: [
+                                  // Hand statistics
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 8.0),
+                                    child: HandAlltimeStatsView(
+                                      showToolbar: false,
+                                    ),
+                                  ),
+
+                                  // Performance
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Padding(
+                                        padding: EdgeInsets.all(16.pw),
+                                        child: Column(
+                                          children: [
+                                            Text(
+                                              AppStringsNew.recentGamesText,
+                                              style: AppDecorators
+                                                  .getSubtitle3Style(
+                                                      theme: theme),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: Container(
+                                          margin: EdgeInsets.only(
+                                              left: 16, right: 16, bottom: 16),
+                                          padding: EdgeInsets.all(8),
+                                          decoration:
+                                              AppDecorators.tileDecoration(
+                                                  theme),
+                                          child:
+                                              PerformanceBarChart(performance),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+            ));
+      },
     );
   }
 

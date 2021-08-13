@@ -20,7 +20,7 @@ class AppDecorators {
       );
 
   static BoxDecoration tileDecoration(AppTheme theme) => BoxDecoration(
-        border: Border.all(color: AppColorsNew.borderColor, width: 1),
+        border: Border.all(color: theme.accentColor, width: 1),
         color: theme.fillInColor,
         borderRadius: BorderRadius.circular(8),
       );
@@ -137,7 +137,7 @@ class AppDecorators {
       borderRadius: BorderRadius.circular(
         8.pw,
       ),
-      color: theme.primaryColorWithDark(),
+      color: theme.secondaryColorWithDark(0.4),
       image: DecorationImage(
         image: AssetImage(
           AppAssetsNew.pathLiveGameItemBackground,

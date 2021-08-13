@@ -42,7 +42,7 @@ class CardFormTextField extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(radius ?? 5.0),
         side: BorderSide(
-          color: theme.primaryColorWithLight(),
+          color: theme.primaryColorWithDark(),
           width: 1.0,
         ),
       ),

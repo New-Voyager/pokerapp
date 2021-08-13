@@ -659,7 +659,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
     Widget hhTile;
     if (!hhTracked) {
       hhTile = ListTile(
-        tileColor: AppColorsNew.actionRowBgColor,
+        tileColor: theme.fillInColor,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         leading: Container(
           width: 36.ph,
@@ -669,7 +669,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
               BoxDecoration(color: Colors.yellow, shape: BoxShape.circle),
           child: SvgPicture.asset(
             'assets/images/highhand.svg',
-            color: AppColorsNew.darkGreenShadeColor,
+            color: theme.primaryColorWithDark(),
             width: 24.ph,
             height: 24.ph,
             fit: BoxFit.cover,
@@ -679,15 +679,16 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "High Hand Log",
+              AppStringsNew.HighHandlogTitle,
+              style: AppDecorators.getHeadLine4Style(theme: theme),
             ),
           ],
         ),
-        trailing: Text('Not tracked'),
+        trailing: Text(AppStringsNew.notTrackedText),
       );
     } else {
       hhTile = ListTile(
-        tileColor: AppColorsNew.actionRowBgColor,
+        tileColor: theme.fillInColor,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         onTap: () => this.onHighHandLogPressed(context),
         leading: Container(
@@ -705,11 +706,12 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
           ),
         ),
         title: Text(
-          "High Hand Log",
+          AppStringsNew.HighHandlogTitle,
+          style: AppDecorators.getHeadLine4Style(theme: theme),
         ),
         trailing: Icon(
           Icons.arrow_forward_ios,
-          color: AppColorsNew.newGreenButtonColor,
+          color: theme.accentColor,
           size: 12.dp,
         ),
       );
@@ -727,7 +729,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
           //   ),
           // ),
           ListTile(
-            tileColor: AppColorsNew.actionRowBgColor,
+            tileColor: theme.fillInColor,
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
             onTap: () {
@@ -749,41 +751,40 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
                 fit: BoxFit.cover,
               ),
             ),
-            title: Text(
-              "Hand History",
-            ),
+            title: Text(AppStringsNew.handHistoryTitle,
+                style: AppDecorators.getHeadLine4Style(theme: theme)),
             trailing: !_gameDetail.playedGame
                 ? Text(
-                    "Not Available",
+                    AppStringsNew.notAvaialbleText,
                   )
                 : Icon(
                     Icons.arrow_forward_ios,
-                    color: AppColorsNew.newGreenButtonColor,
+                    color: theme.accentColor,
                     size: 12.dp,
                   ),
           ),
           AppDimensionsNew.getVerticalSizedBox(16),
           ListTile(
-            tileColor: AppColorsNew.actionRowBgColor,
+            tileColor: theme.fillInColor,
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
             leading: Container(
               width: 36.ph,
               height: 36.ph,
               padding: EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                  color: AppColorsNew.newBlueShadeColor,
-                  shape: BoxShape.circle),
+              decoration:
+                  BoxDecoration(color: Colors.blue, shape: BoxShape.circle),
               child: SvgPicture.asset(
                 'assets/images/casino.svg',
-                color: AppColorsNew.newTextColor,
+                color: theme.supportingColor,
                 width: 24.ph,
                 height: 24.ph,
                 fit: BoxFit.contain,
               ),
             ),
             title: Text(
-              "Table Record",
+              AppStringsNew.TableRecordTitle,
+              style: AppDecorators.getHeadLine4Style(theme: theme),
             ),
             onTap: () {
               Navigator.pushNamed(
@@ -797,7 +798,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
             },
             trailing: Icon(
               Icons.arrow_forward_ios,
-              color: AppColorsNew.newGreenButtonColor,
+              color: theme.accentColor,
               size: 12.dp,
             ),
           ),

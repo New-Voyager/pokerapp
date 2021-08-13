@@ -5,7 +5,6 @@ import 'package:flutter/services.dart';
 class AppText {
   Map<String, Map<String, String>> languageTexts =
       Map<String, Map<String, String>>();
-
   AppText();
 
   getText(String screenName, String textId) {
@@ -57,6 +56,13 @@ class AppTextScreen {
   String getText(String textId) {
     if (texts.containsKey(textId)) {
       return texts[textId];
+    }
+
+    final global = appText.getScreen('global');
+    if (global != null) {
+      if (global.texts.containsKey(textId)) {
+        return global[textId];
+      }
     }
     return "No Text";
   }
