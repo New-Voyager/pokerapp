@@ -3,7 +3,7 @@ import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_history_model.dart';
 import 'package:pokerapp/models/hand_stats_model.dart';
-import 'package:pokerapp/resources/new/app_colors_new.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 
 class HandStatPieChart extends StatefulWidget {
@@ -52,41 +52,42 @@ class _HandStatPieChartState extends State<HandStatPieChart> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = AppTheme.getTheme(context);
     return loading
         ? CircularProgressWidget(
             showText: false,
           )
-        : charts.PieChart(data(),
+        : charts.PieChart(data(theme),
             animate: animate,
             defaultRenderer: new charts.ArcRendererConfig(
               arcWidth: 40,
             ));
   }
 
-  dynamic getColor(HandData hand) {
+  dynamic getColor(HandData hand, AppTheme theme) {
     if (hand != null) {
       if (hand.round == 'Pre-flop') {
-        return charts.ColorUtil.fromDartColor(AppColorsNew.preflopColor);
+        return charts.ColorUtil.fromDartColor(theme.preFlopColor);
       }
       if (hand.round == 'Flop') {
-        return charts.ColorUtil.fromDartColor(AppColorsNew.flopColor);
+        return charts.ColorUtil.fromDartColor(theme.flopColor);
       } else if (hand.round == 'Turn') {
-        return charts.ColorUtil.fromDartColor(AppColorsNew.turnColor);
+        return charts.ColorUtil.fromDartColor(theme.turnColor);
       } else if (hand.round == 'River') {
-        return charts.ColorUtil.fromDartColor(AppColorsNew.riverColor);
+        return charts.ColorUtil.fromDartColor(theme.riverColor);
       } else if (hand.round == 'Showdown') {
-        return charts.ColorUtil.fromDartColor(AppColorsNew.showDownColor);
+        return charts.ColorUtil.fromDartColor(theme.showDownColor);
       }
     }
   }
 
-  List<charts.Series<HandData, String>> data() {
+  List<charts.Series<HandData, String>> data(AppTheme theme) {
     return [
       new charts.Series<HandData, String>(
         id: 'Hands',
         domainFn: (HandData hand, _) => hand.round,
         measureFn: (HandData hand, _) => hand.percent,
-        colorFn: (HandData hand, _) => getColor(hand),
+        colorFn: (HandData hand, _) => getColor(hand, theme),
         data: handsData,
       )
     ];

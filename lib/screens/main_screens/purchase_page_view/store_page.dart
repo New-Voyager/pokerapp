@@ -4,20 +4,20 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_version/get_version.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:pokerapp/models/app_coin.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_config.dart';
-import 'package:pokerapp/resources/new/app_assets_new.dart';
+import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
-import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/appcoin_service.dart';
 import 'package:pokerapp/widgets/cross_fade.dart';
+import 'package:pokerapp/widgets/heading_widget.dart';
 import 'package:pokerapp/widgets/round_color_button.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
@@ -153,20 +153,23 @@ class _StorePageState extends State<StorePage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = AppTheme.getTheme(context);
     List<Widget> body = [
       Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Row(
-            children: [
-              //BackArrowWidget(),
-              AppDimensionsNew.getHorizontalSpace(16),
-              Text(
-                "App Coins",
-                style: AppStylesNew.appBarTitleTextStyle,
-              ),
-            ],
-          ),
+          // Row(
+          //   children: [
+          //     //BackArrowWidget(),
+          //     AppDimensionsNew.getHorizontalSpace(16),
+          //     Text(
+          //       "App Coins",
+          //       style: AppStylesNew.appBarTitleTextStyle,
+          //     ),
+          //   ],
+          // ),
+          AppDimensionsNew.getHorizontalSpace(24.pw),
+          HeadingWidget(heading: AppStringsNew.appCoinsName),
           Container(
             margin: EdgeInsets.only(right: 16),
             child: Column(
@@ -187,11 +190,12 @@ class _StorePageState extends State<StorePage> {
                         data: _coinsTo,
                         builder: (value) => Text(
                           '$value',
-                          style: TextStyle(color: Colors.green),
+                          style: AppDecorators.getSubtitle1Style(theme: theme),
                         ),
                       )
                     : Text(
                         '${AppConfig.availableCoins}',
+                        style: AppDecorators.getSubtitle1Style(theme: theme),
                       ),
               ],
             ),
@@ -231,13 +235,13 @@ class _StorePageState extends State<StorePage> {
     }
 
     return Container(
-      decoration: AppStylesNew.BgGreenRadialGradient,
+      decoration: AppDecorators.bgRadialGradient(theme),
       child: SafeArea(
         child: Scaffold(
           backgroundColor: Colors.transparent,
           body: _loading
               ? CircularProgressWidget(
-                  text: "Loading products",
+                  text: AppStringsNew.loadProductsText,
                 )
               : Column(
                   children: body,
@@ -376,6 +380,7 @@ class PurchaseItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = AppTheme.getTheme(context);
     if (mrpPrice <= 0) {
       return Container();
     }
@@ -388,10 +393,13 @@ class PurchaseItem extends StatelessWidget {
         horizontal: 16,
         vertical: 4,
       ),
+      decoration: AppDecorators.tileDecoration(theme),
       child: ListTile(
         contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        tileColor: AppColorsNew.actionRowBgColor,
-        title: Text("$noOfCoins coins"),
+        title: Text(
+          "$noOfCoins coins",
+          style: AppDecorators.getHeadLine4Style(theme: theme),
+        ),
         leading: Image.asset(
           'assets/images/appcoins.png',
           height: 32.pw,
@@ -401,15 +409,15 @@ class PurchaseItem extends StatelessWidget {
           text: TextSpan(
             children: [
               TextSpan(
-                  text: "\$$mrpPrice",
+                  text: "\$${mrpPrice.toStringAsFixed(2)}",
                   style: showDiscount
-                      ? AppStylesNew.accentTextStyle.copyWith(
+                      ? AppDecorators.getAccentTextStyle(theme: theme).copyWith(
                           decoration: TextDecoration.lineThrough,
                         )
-                      : AppStylesNew.accentTextStyle),
+                      : AppDecorators.getAccentTextStyle(theme: theme)),
               TextSpan(
                 text: showDiscount ? "\t\$$offerPrice" : "",
-                style: AppStylesNew.stageNameTextStyle,
+                style: AppDecorators.getSubtitle3Style(theme: theme),
               ),
               // TextSpan(
               //   text: showDiscount
@@ -422,8 +430,8 @@ class PurchaseItem extends StatelessWidget {
         ),
         trailing: RoundedColorButton(
             text: AppStringsNew.buyButtonText,
-            backgroundColor: AppColorsNew.yellowAccentColor,
-            textColor: AppColorsNew.darkGreenShadeColor,
+            backgroundColor: theme.accentColor,
+            textColor: theme.primaryColorWithDark(),
             onTapFunction: onBuy),
       ),
     );

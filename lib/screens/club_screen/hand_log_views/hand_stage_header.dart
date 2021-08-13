@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/models/ui/app_theme_data.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
@@ -99,16 +100,16 @@ class HandStageHeader extends StatelessWidget {
     List<Widget> children = [];
     children.add(stageRow);
     List<SeatPot> seatPots = [];
-    Color stageColor = AppColorsNew.handlogPreflopColor;
+    Color stageColor = theme.preFlopColor;
 
     if (stageName == 'Flop') {
-      stageColor = AppColorsNew.handlogFlopColor;
+      stageColor = AppColorsNew.flopColor;
     } else if (stageName == 'Turn') {
-      stageColor = AppColorsNew.handlogTurnColor;
+      stageColor = AppColorsNew.turnColor;
     } else if (stageName == 'River') {
-      stageColor = AppColorsNew.handlogRiverColor;
+      stageColor = AppColorsNew.riverColor;
     } else if (stageName == 'Showdown') {
-      stageColor = AppColorsNew.handlogShowdownColor;
+      stageColor = AppColorsNew.showDownColor;
     }
 
     if (actions != null && actions.seatPots != null) {

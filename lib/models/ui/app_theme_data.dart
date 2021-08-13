@@ -25,6 +25,13 @@ class AppThemeData {
   // font family
   String fontFamily;
 
+  // Handlog stage colors
+  Color handlogPreflopColor;
+  Color handlogFlopColor;
+  Color handlogTurnColor;
+  Color handlogRiverColor;
+  Color handlogShowdownColor;
+
   AppThemeData({
     this.primaryColor = const Color(0xFF033614), // 0xFF300614
     // Color(0xFF40D876); (darken secondary color)
@@ -34,5 +41,10 @@ class AppThemeData {
     this.supportingColor = Colors.white,
     this.negativeOrErrorColor = const Color(0xFFFA0000),
     this.fontFamily = AppAssetsNew.fontFamilyPoppins,
+    this.handlogPreflopColor = const Color(0xFF1A0E2D),
+    this.handlogFlopColor = const Color(0xFF101E33),
+    this.handlogTurnColor = const Color(0xFF072818),
+    this.handlogRiverColor = const Color(0xff453A02),
+    this.handlogShowdownColor = const Color(0xFF44110A),
   });
 }

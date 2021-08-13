@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/utils/numeric_keyboard2.dart';
 import 'package:provider/provider.dart';
@@ -33,7 +34,7 @@ class TextInputWidget extends StatelessWidget {
     @required this.onChange,
   });
 
-  Widget _buildLabelAndSep() => label == null
+  Widget _buildLabelAndSep(AppTheme theme) => label == null
       ? kEmpty
       : Row(
           mainAxisSize: MainAxisSize.min,
@@ -42,7 +43,7 @@ class TextInputWidget extends StatelessWidget {
             Text(
               label,
               style: TextStyle(
-                color: Colors.white,
+                color: theme.supportingColor,
                 fontSize: 15.0,
                 fontWeight: small ? FontWeight.w300 : labelFontWeight,
               ),
@@ -53,19 +54,19 @@ class TextInputWidget extends StatelessWidget {
               margin: const EdgeInsets.symmetric(horizontal: 10.0),
               height: 40.0,
               width: 0.30,
-              color: Colors.white,
+              color: theme.supportingColor.withAlpha(100),
             ),
           ],
         );
 
-  Widget _buildInputArea() => Container(
+  Widget _buildInputArea(AppTheme theme) => Container(
         margin: const EdgeInsets.symmetric(vertical: 10.0),
         padding: const EdgeInsets.only(bottom: 2.0),
         decoration: BoxDecoration(
           border: Border(
             bottom: BorderSide(
               width: 1.0,
-              color: Colors.white,
+              color: theme.fillInColor,
             ),
           ),
         ),
@@ -79,7 +80,7 @@ class TextInputWidget extends StatelessWidget {
                     child: Text(
                       leading,
                       style: TextStyle(
-                        color: Colors.white,
+                        color: theme.supportingColor,
                         fontSize: small ? 15.0 : 20.0,
                         fontWeight: FontWeight.w300,
                       ),
@@ -93,7 +94,7 @@ class TextInputWidget extends StatelessWidget {
                   DataFormatter.chipsFormat(vnValue.value ?? 0),
                   //vnValue.value?.toString() ?? (value?.toString() ?? ''),
                   style: TextStyle(
-                    color: Colors.white,
+                    color: theme.supportingColor,
                     fontSize: 15.0,
                   ),
                 ),
@@ -108,7 +109,7 @@ class TextInputWidget extends StatelessWidget {
                     child: Text(
                       trailing,
                       style: TextStyle(
-                        color: Colors.white,
+                        color: theme.supportingColor,
                         fontSize: small ? 12.0 : 15.0,
                         fontWeight: FontWeight.w300,
                       ),
@@ -119,7 +120,8 @@ class TextInputWidget extends StatelessWidget {
       );
 
   @override
-  Widget build(BuildContext _) {
+  Widget build(BuildContext context) {
+    final theme = AppTheme.getTheme(context);
     String title = this.title;
     if (title == null || title == '') {
       title = this.label ?? 'Enter value';
@@ -149,16 +151,16 @@ class TextInputWidget extends StatelessWidget {
             vertical: 5.0,
           ),
           decoration: BoxDecoration(
-            color: Color(0xff1E2E28),
+            color: theme.secondaryColor,
             borderRadius: BorderRadius.circular(5.0),
           ),
           child: Row(
             children: [
               /* build label and seperator */
-              _buildLabelAndSep(),
+              _buildLabelAndSep(theme),
 
               /* main input area */
-              Expanded(child: _buildInputArea()),
+              Expanded(child: _buildInputArea(theme)),
             ],
           ),
         ),

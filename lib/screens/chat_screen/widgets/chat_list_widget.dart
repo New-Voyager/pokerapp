@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/resources/app_decorators.dart';
+import 'package:pokerapp/screens/chat_screen/utils.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/chat_user_avatar.dart';
+import 'package:provider/provider.dart';
 
 import '../chat_model.dart';
-import '../utils.dart';
 import 'chat_date.dart';
 import 'chat_time.dart';
 import 'triangle_painter.dart';
@@ -31,36 +34,40 @@ class _ChatListWidgetState extends State<ChatListWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-        padding: const EdgeInsets.only(top: 5, left: 5, right: 5),
-        itemCount: widget.chats.length,
-        reverse: true,
-        physics: BouncingScrollPhysics(),
-        itemBuilder: (context, i) {
-          int day = 0;
-          if (i == 0) {
-            // _previous = null;
-          } else {
-            day = _dateDiff(i);
-          }
-          if (i == widget.chats.length - 1) {
-            return Column(children: [
-              ChatDateTime(date: widget.chats[i].messageTime),
-              _buildTile(widget.chats[i]),
-            ]);
-          }
-          if (day == 0) {
-            return _buildTile(widget.chats[i]);
-          } else {
-            return Column(children: [
-              _buildTile(widget.chats[i]),
-              ChatDateTime(date: widget.chats[i - 1].messageTime),
-            ]);
-          }
-        });
+    return Consumer<AppTheme>(
+      builder: (_, theme, __) {
+        return ListView.builder(
+            padding: const EdgeInsets.only(top: 5, left: 5, right: 5),
+            itemCount: widget.chats.length,
+            reverse: true,
+            physics: BouncingScrollPhysics(),
+            itemBuilder: (context, i) {
+              int day = 0;
+              if (i == 0) {
+                // _previous = null;
+              } else {
+                day = _dateDiff(i);
+              }
+              if (i == widget.chats.length - 1) {
+                return Column(children: [
+                  ChatDateTime(date: widget.chats[i].messageTime),
+                  _buildTile(widget.chats[i], theme),
+                ]);
+              }
+              if (day == 0) {
+                return _buildTile(widget.chats[i], theme);
+              } else {
+                return Column(children: [
+                  _buildTile(widget.chats[i], theme),
+                  ChatDateTime(date: widget.chats[i - 1].messageTime),
+                ]);
+              }
+            });
+      },
+    );
   }
 
-  Widget _buildTile(ChatModel message) {
+  Widget _buildTile(ChatModel message, AppTheme theme) {
     bool isSender = _isSender(message.messageType);
 
     if (!message.isGroupLatest) {
@@ -71,7 +78,7 @@ class _ChatListWidgetState extends State<ChatListWidget> {
           top: 3,
           bottom: 3,
         ),
-        child: _buildTextMessage(message),
+        child: _buildTextMessage(message, theme),
       );
     }
 
@@ -80,8 +87,8 @@ class _ChatListWidgetState extends State<ChatListWidget> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          _buildAvatar(message),
-          _buildChatMessage(message),
+          _buildAvatar(message, theme),
+          _buildChatMessage(message, theme),
         ],
       );
     }
@@ -89,13 +96,13 @@ class _ChatListWidgetState extends State<ChatListWidget> {
       mainAxisAlignment: MainAxisAlignment.end,
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        _buildChatMessage(message),
-        _buildAvatar(message),
+        _buildChatMessage(message, theme),
+        _buildAvatar(message, theme),
       ],
     );
   }
 
-  Widget _buildAvatar(ChatModel message) {
+  Widget _buildAvatar(ChatModel message, AppTheme theme) {
     String name = 'HOST';
     if (message.messageType != FROM_HOST) {
       name = message.memberName ?? 'A';
@@ -107,11 +114,12 @@ class _ChatListWidgetState extends State<ChatListWidget> {
     );
   }
 
-  Widget _buildChatMessage(ChatModel message) {
+  Widget _buildChatMessage(ChatModel message, AppTheme theme) {
     bool isSender = _isSender(message.messageType);
     Widget triangle;
-    CustomPaint trianglePainer =
-        CustomPaint(painter: Triangle(isSender ? senderColor : receiverColor));
+    CustomPaint trianglePainer = CustomPaint(
+        painter: Triangle(
+            isSender ? theme.fillInColor : theme.primaryColorWithLight(0.2)));
     if (isSender) {
       triangle = Positioned(right: 0, bottom: 0, child: trianglePainer);
     } else {
@@ -125,7 +133,7 @@ class _ChatListWidgetState extends State<ChatListWidget> {
           margin: EdgeInsets.symmetric(vertical: 3.0),
           child: Stack(
             children: [
-              _buildTextMessage(message),
+              _buildTextMessage(message, theme),
               triangle,
             ],
           ),
@@ -134,7 +142,7 @@ class _ChatListWidgetState extends State<ChatListWidget> {
     );
   }
 
-  Widget _buildTextMessage(ChatModel message) {
+  Widget _buildTextMessage(ChatModel message, AppTheme theme) {
     bool isSender = _isSender(message.messageType);
     return Align(
       alignment: isSender ? Alignment.centerRight : Alignment.centerLeft,
@@ -143,8 +151,9 @@ class _ChatListWidgetState extends State<ChatListWidget> {
           constraints: BoxConstraints(
             maxWidth: MediaQuery.of(context).size.width * 0.70,
           ),
-          decoration: decoration.copyWith(
-            color: isSender ? senderColor : receiverColor,
+          decoration: AppDecorators.tileDecorationWithoutBorder(theme).copyWith(
+            color:
+                isSender ? theme.fillInColor : theme.secondaryColorWithDark(),
           ),
           child: Column(
             crossAxisAlignment:
@@ -154,10 +163,7 @@ class _ChatListWidgetState extends State<ChatListWidget> {
                 padding: const EdgeInsets.all(7.0),
                 child: Text(
                   message.text,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 17,
-                  ),
+                  style: AppDecorators.getHeadLine4Style(theme: theme),
                 ),
               ),
               ChatTimeWidget(
