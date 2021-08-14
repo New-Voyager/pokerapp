@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
+import 'package:pokerapp/models/handlog_model.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/models/ui/app_theme_data.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
@@ -12,14 +13,12 @@ import 'package:pokerapp/widgets/cards/multiple_stack_card_views.dart';
 
 class HandStageHeader extends StatelessWidget {
   final String stageName;
-  final List<int> stageCards;
-  final HandLogModelNew handLogModel;
+  final HandResultData handResult;
   final GameActions actions;
 
   HandStageHeader({
     this.stageName,
-    this.handLogModel,
-    this.stageCards,
+    this.handResult,
     this.actions,
   });
 
@@ -34,7 +33,7 @@ class HandStageHeader extends StatelessWidget {
       }
       List<String> playersInPots = [];
       for (final seat in seatPots[i].seats) {
-        final player = handLogModel.getPlayerBySeatNo(seat);
+        final player = handResult.getPlayerBySeatNo(seat);
         playersInPots.add(player.name);
       }
       String players = playersInPots.join(',');
@@ -69,10 +68,36 @@ class HandStageHeader extends StatelessWidget {
     return children;
   }
 
+  List<int> getBoardCards(int boardNo) {
+    List<int> stageCards = [];
+    if (boardNo == 2 && handResult.result.boards.length >= 2) {
+      stageCards = handResult.result.boards[1].cards;
+    } else {
+      stageCards = handResult.result.boards[0].cards;
+    }
+    String stageName = this.stageName.toUpperCase();
+    if (stageName == 'PREFLOP') {
+      stageCards = [];
+    } else if (stageName == 'FLOP') {
+      stageCards = stageCards.sublist(0, 3);
+    } else if (stageName == 'TURN') {
+      stageCards = stageCards.sublist(0, 4);
+    } else if (stageName == 'RIVER') {
+      stageCards = stageCards.sublist(0, 5);
+    } else if (stageName == 'SHOWDOWN') {
+      stageCards = stageCards.sublist(0, 5);
+    } else {
+      stageCards = [];
+    }
+    return stageCards;
+  }
+
   @override
   Widget build(BuildContext context) {
+    List<int> stageCards1 = getBoardCards(1);
+    List<int> stageCards2 = getBoardCards(2);
+
     final theme = AppTheme.getTheme(context);
-    log('${handLogModel.hand.handLog.potWinners}');
     final stageRow = Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -89,11 +114,23 @@ class HandStageHeader extends StatelessWidget {
         Container(
           margin: EdgeInsets.only(left: 10, top: 8, bottom: 10, right: 10),
           alignment: Alignment.centerLeft,
-          child: StackCardView00(
-            cards: stageCards,
-            show: true,
-            needToShowEmptyCards: true,
-          ),
+          child: Column(children: [
+            StackCardView00(
+              cards: stageCards1,
+              show: true,
+              needToShowEmptyCards: true,
+            ),
+            SizedBox(
+              height: 5.dp,
+            ),
+            stageCards1.length > 0
+                ? StackCardView00(
+                    cards: stageCards2,
+                    show: true,
+                    needToShowEmptyCards: true,
+                  )
+                : Container(),
+          ]),
         ),
       ],
     );
@@ -114,9 +151,10 @@ class HandStageHeader extends StatelessWidget {
 
     if (actions != null && actions.seatPots != null) {
       seatPots = actions.seatPots;
-    } else if (stageName == 'Showdown') {
-      seatPots = handLogModel.hand.handLog.seatPotsInShowdown;
     }
+    // else if (stageName == 'Showdown') {
+    //   seatPots = handLogModel.hand.handLog.seatPotsInShowdown;
+    // }
     if (seatPots.length <= 1) {
       final Widget pot = actions != null
           ? Container(
@@ -151,32 +189,32 @@ class HandStageHeader extends StatelessWidget {
   }
 
   _getPotAmountWidget(AppTheme theme) {
-    int length = handLogModel.hand.handLog.potWinners.length;
+    int length = handResult.result.potWinners.length;
+    final potAmount = handResult.result.potWinners[0].amount;
     if (length == 1) {
       return Container(
         child: Text(
-          "Pot: ${handLogModel.hand.handLog.potWinners['0'].amount}",
+          "Pot: $potAmount",
           style: AppDecorators.getSubtitle1Style(theme: theme),
         ),
       );
     }
     if (length > 1) {
       String sidePots = "(";
-      handLogModel.hand.handLog.potWinners.forEach((key, value) {
-        if (key != "0") {
-          sidePots += value.amount.toString();
-          if (int.parse(key) < length) {
-            sidePots += ",";
-          }
+      for (int i = 1; i < handResult.result.potWinners.length; i++) {
+        sidePots += handResult.result.potWinners[i].amount.toString();
+        if (i != length - 1) {
+          sidePots += ",";
         }
-      });
+      }
       sidePots += ")";
+
       return Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Container(
               child: Text(
-            "Pot: ${handLogModel.hand.handLog.potWinners['0'].amount}",
+            "Pot: $potAmount",
             style: AppDecorators.getSubtitle1Style(theme: theme),
           )),
           Container(

@@ -7,6 +7,7 @@ import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/animating_widgets/card_distribution_animating_widget.dart';
@@ -229,7 +230,7 @@ class BoardView extends StatelessWidget {
 
     if (mySeat.player.rankText != null && mySeat.player.rankText.isNotEmpty) {
       //log('mySeat.player.inBreak');
-
+      final theme = AppTheme.getTheme(context);
       return Container(
         padding: EdgeInsets.symmetric(
           horizontal: 14.pw,
@@ -237,13 +238,14 @@ class BoardView extends StatelessWidget {
         ),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(6.pw),
-          border: Border.all(color: Colors.grey[700]),
+          border: Border.all(color: theme.accentColorWithDark()),
+          // border: Border.all(color: Colors.grey[700]),
           //color: Colors.green[700],
         ),
         child: Text(
           mySeat.player.rankText,
           style: TextStyle(
-            color: Colors.white,
+            color: Colors.green,
             fontSize: 16.dp,
             fontFamily: AppAssets.fontFamilyLato,
             fontWeight: FontWeight.w400,

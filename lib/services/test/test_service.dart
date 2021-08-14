@@ -17,12 +17,14 @@ import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
-import 'package:pokerapp/models/player_info.dart';
+import 'package:pokerapp/models/player_info.dart' as pi;
+import 'package:pokerapp/proto/handmessage.pb.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/footer_view/last_hand_analyse_bottomsheet.dart';
 import 'package:pokerapp/screens/game_play_screen/pop_ups/seat_change_confirmation_pop_up.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/overlay_notification.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
+import 'package:pokerapp/services/game_play/action_services/hand_action_proto_service.dart';
 import 'package:pokerapp/services/test/hand_messages.dart';
 import 'package:pokerapp/utils/card_helper.dart';
 import 'package:pokerapp/utils/formatter.dart';
@@ -40,7 +42,7 @@ class TestService {
   }
 
   static var _showResult = false;
-  static PlayerInfo _currentPlayer;
+  static pi.PlayerInfo _currentPlayer;
   static GameInfoModel _gameInfo;
   static dynamic _result;
 
@@ -50,7 +52,7 @@ class TestService {
   static BuildContext _context;
   //static HandActionService _handActionService;
   static InAppPurchaseTest _testIap;
-
+  static HandActionProtoService _handActionProtoService;
   TestService._();
 
   static set context(BuildContext context) => _context = context;
@@ -110,7 +112,7 @@ class TestService {
     //myState.notify();
   }
 
-  static PlayerInfo get currentPlayer {
+  static pi.PlayerInfo get currentPlayer {
     final data = jsonDecode('''  {
                   "myInfo": {
                     "id": 1,
@@ -123,7 +125,7 @@ class TestService {
                     "isManager": false
                   }
                 }''');
-    _currentPlayer = PlayerInfo.fromJson(data);
+    _currentPlayer = pi.PlayerInfo.fromJson(data);
     return _currentPlayer;
   }
 
@@ -162,11 +164,11 @@ class TestService {
                 "isManager": false
               }
             }''');
-        _currentPlayer = PlayerInfo.fromJson(data);
+        _currentPlayer = pi.PlayerInfo.fromJson(data);
         //_currentPlayer = PlayerInfo.fromJson(jsonData["currentPlayer"]);
       }
       // 2 4 6 8 9
-      var maxPlayers = 9;
+      var maxPlayers = 4;
       if (jsonData["gameInfo"] != null) {
         // todo: debug remove: change the max Players in a game here
         _gameInfo = GameInfoModel.fromJson(
@@ -928,5 +930,23 @@ class TestService {
         handLog: handLog,
       ),
     );
+  }
+
+  static showHandResult2() async {
+    // final result = HandResultClient();
+    try {
+      if (_handActionProtoService == null) {
+        final gameState = GameState.getState(_context);
+        _handActionProtoService =
+            HandActionProtoService(_context, gameState, null, null, null);
+        _handActionProtoService.loop();
+      }
+
+      final result = HandResultClient.fromJson(hiloMultiplePotsMessage);
+      log('$result');
+      _handActionProtoService.handleResult2(result);
+    } catch (err) {
+      log('Error: ${err.toString()}');
+    }
   }
 }

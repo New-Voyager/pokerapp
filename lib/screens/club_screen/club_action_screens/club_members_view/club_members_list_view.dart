@@ -153,7 +153,8 @@ class _ClubMembersListViewState extends State<ClubMembersListView> {
                                         vertical: 2,
                                       ),
                                       decoration:
-                                          AppDecorators.tileDecoration(theme).copyWith(),
+                                          AppDecorators.tileDecoration(theme)
+                                              .copyWith(),
                                       child: Text(
                                         (data.isManager
                                             ? AppStringsNew.managerLabel

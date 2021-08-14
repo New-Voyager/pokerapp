@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_stages.dart';
-import 'package:pokerapp/models/hand_log_model_new.dart';
+import 'package:pokerapp/models/handlog_model.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/widgets/cards/multiple_stack_card_views.dart';
 import 'package:provider/provider.dart';
+import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class HandLogHeaderView extends StatelessWidget {
-  final HandLogModelNew _handLogModel;
+  final HandResultData _handResult;
 
-  HandLogHeaderView(this._handLogModel);
+  HandLogHeaderView(this._handResult);
 
   @override
   Widget build(BuildContext context) {
+    final board1Cards = _handResult.getBoard1ShownCards();
+    final board2Cards = _handResult.getBoard2ShownCards();
     return Consumer<AppTheme>(
       builder: (_, theme, __) => Container(
         margin: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -26,15 +29,15 @@ class HandLogHeaderView extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "Game: " + _handLogModel.hand.gameId,
+                  "Game: " + _handResult.gameId,
                   style: AppDecorators.getSubtitle2Style(theme: theme),
                 ),
                 Text(
-                  _handLogModel.hand.gameType,
+                  _handResult.gameType,
                   style: AppDecorators.getHeadLine4Style(theme: theme),
                 ),
                 Text(
-                  "Hand: #" + _handLogModel.hand.handNum.toString(),
+                  "Hand: #" + _handResult.handNum.toString(),
                   style: AppDecorators.getSubtitle2Style(theme: theme),
                 ),
               ],
@@ -60,10 +63,21 @@ class HandLogHeaderView extends StatelessWidget {
                           ),
                         ),
                         StackCardView02(
-                          cards: _handLogModel.hand.boardCards,
-                          show: _handLogModel.hand.handLog.wonAt ==
-                              GameStages.SHOWDOWN,
+                          cards: board1Cards,
+                          show: _handResult.wonAt() == GameStages.SHOWDOWN,
                         ),
+                        board2Cards == null
+                            ? Container()
+                            : SizedBox(
+                                height: 10.dp,
+                              ),
+                        board2Cards == null
+                            ? Container()
+                            : StackCardView02(
+                                cards: board2Cards,
+                                show:
+                                    _handResult.wonAt() == GameStages.SHOWDOWN,
+                              ),
                       ],
                     ),
                   ),
@@ -72,7 +86,7 @@ class HandLogHeaderView extends StatelessWidget {
                       top: 5,
                     ),
                     child: Visibility(
-                      visible: _handLogModel.getMyCards().length > 0,
+                      visible: _handResult.getMyCards().length > 0,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.end,
@@ -86,7 +100,7 @@ class HandLogHeaderView extends StatelessWidget {
                             ),
                           ),
                           StackCardView00(
-                            cards: _handLogModel.getMyCards(),
+                            cards: _handResult.getMyCards(),
                             show: true,
                           ),
                         ],

@@ -271,11 +271,11 @@ class _PlayedHandsScreenState extends State<PlayedHandsScreen> {
         final handLogModel = await HandService.getHandLog(gameCode, handNum);
         Navigator.pop(context);
 
-        ReplayHandDialog.show(
-          context: context,
-          hand: jsonDecode(handLogModel.handData),
-          playerID: widget.currentPlayer.id,
-        );
+        // ReplayHandDialog.show(
+        //   context: context,
+        //   hand: jsonDecode(handLogModel.handData),
+        //   playerID: widget.currentPlayer.id,
+        // );
       } catch (err) {
         // ignore the error
         log('error: ${err.toString()}');

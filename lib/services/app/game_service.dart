@@ -61,6 +61,9 @@ class GameService {
             before
             after
           }
+          isHost
+          isManager
+          isOwner
         }
         hhWinners: highHandWinners(gameCode: \$gameCode) {
             rank
@@ -876,7 +879,6 @@ class GameService {
         buyIn
         stack
         status
-        openSeat
         buyInExpTime
         breakStartedTime
         breakExpTime

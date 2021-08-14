@@ -74,6 +74,11 @@ class ACTION extends $pb.ProtobufEnum {
       const $core.bool.fromEnvironment('protobuf.omit_enum_names')
           ? ''
           : 'POST_BLIND');
+  static const ACTION BOMB_POT_BET = ACTION._(
+      14,
+      const $core.bool.fromEnvironment('protobuf.omit_enum_names')
+          ? ''
+          : 'BOMB_POT_BET');
 
   static const $core.List<ACTION> values = <ACTION>[
     ACTION_UNKNOWN,
@@ -90,6 +95,7 @@ class ACTION extends $pb.ProtobufEnum {
     RUN_IT_TWICE_NO,
     RUN_IT_TWICE_PROMPT,
     POST_BLIND,
+    BOMB_POT_BET,
   ];
 
   static final $core.Map<$core.int, ACTION> _byValue =
@@ -232,6 +238,11 @@ class PlayerActState extends $pb.ProtobufEnum {
       const $core.bool.fromEnvironment('protobuf.omit_enum_names')
           ? ''
           : 'PLAYER_ACT_POST_BLIND');
+  static const PlayerActState PLAYER_ACT_BOMB_POT = PlayerActState._(
+      12,
+      const $core.bool.fromEnvironment('protobuf.omit_enum_names')
+          ? ''
+          : 'PLAYER_ACT_BOMB_POT');
 
   static const $core.List<PlayerActState> values = <PlayerActState>[
     PLAYER_ACT_UNKNOWN,
@@ -246,6 +257,7 @@ class PlayerActState extends $pb.ProtobufEnum {
     PLAYER_ACT_RAISE,
     PLAYER_ACT_CHECK,
     PLAYER_ACT_POST_BLIND,
+    PLAYER_ACT_BOMB_POT,
   ];
 
   static final $core.Map<$core.int, PlayerActState> _byValue =
