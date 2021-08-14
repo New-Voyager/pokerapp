@@ -4,10 +4,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/club_members_model.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/app_icons.dart';
-import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
@@ -40,6 +40,8 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
 
   _ClubMembersDetailsView(this.clubCode, this.playerId);
 
+  AppTextScreen _appScreenText;
+
   _fetchData() async {
     _data = await ClubInteriorService.getClubMemberDetail(clubCode, playerId);
     loadingDone = true;
@@ -60,6 +62,8 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
   @override
   void initState() {
     super.initState();
+    _appScreenText = getAppTextScreen("clubMembersDetailsView");
+
     _fetchData();
   }
 
@@ -118,7 +122,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
                               Container(
                                 padding: EdgeInsets.only(bottom: 5),
                                 child: Text(
-                                  AppStringsNew.lastActiveText +
+                                  _appScreenText['LASTACTIVE'] +
                                       _data.lastPlayedDate,
                                   style: AppDecorators.getSubtitle3Style(
                                       theme: theme),
@@ -134,7 +138,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
                                     //message
                                     IconAndTitleWidget(
                                       icon: Icons.message,
-                                      text: AppStringsNew.messageText,
+                                      text: _appScreenText['MESSAGE'],
                                       onTap: () {
                                         Navigator.pushNamed(
                                           context,
@@ -151,7 +155,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
                                     //boot
                                     IconAndTitleWidget(
                                       icon: Icons.eject_rounded,
-                                      text: AppStringsNew.bootText,
+                                      text: _appScreenText['BOOT'],
                                       onTap: () {},
                                     ),
 
@@ -192,8 +196,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
                                   child: CardFormTextField(
                                     theme: theme,
                                     controller: _contactEditingController,
-                                    hintText:
-                                        AppStringsNew.mobileNumberHintText,
+                                    hintText: _appScreenText['MOBILENUMBER'],
                                     maxLines: 1,
                                   ),
                                 ),
@@ -225,7 +228,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
                                   child: CardFormTextField(
                                     theme: theme,
                                     controller: _notesEditingController,
-                                    hintText: AppStringsNew.insertNotesHintText,
+                                    hintText: _appScreenText['INSERTNOTESHERE'],
                                     maxLines: 5,
                                   ),
                                 ),
@@ -324,7 +327,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
                   child: Padding(
                     padding: EdgeInsets.only(left: 5),
                     child: Text(
-                      AppStringsNew.creditLimitText,
+                      _appScreenText['CREDITLIMIT'],
                       textAlign: TextAlign.left,
                       style: AppDecorators.getHeadLine4Style(theme: theme),
                     ),
@@ -379,7 +382,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
                   child: Padding(
                     padding: EdgeInsets.only(left: 5),
                     child: Text(
-                      AppStringsNew.gamesPlayedText,
+                      _appScreenText['GAMESPLAYED'],
                       textAlign: TextAlign.left,
                       style: AppDecorators.getHeadLine4Style(theme: theme),
                     ),
@@ -418,7 +421,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
                   child: Padding(
                     padding: EdgeInsets.only(left: 5),
                     child: Text(
-                      AppStringsNew.totalBuyInText,
+                      _appScreenText['TOTALBUYIN'],
                       textAlign: TextAlign.left,
                       style: AppDecorators.getHeadLine4Style(theme: theme),
                     ),
@@ -457,7 +460,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
                   child: Padding(
                     padding: EdgeInsets.only(left: 5),
                     child: Text(
-                      AppStringsNew.totalWinningsText,
+                      _appScreenText['TOTALWINNINGS'],
                       textAlign: TextAlign.left,
                       style: AppDecorators.getHeadLine4Style(theme: theme),
                     ),
@@ -496,7 +499,7 @@ class _ClubMembersDetailsView extends State<ClubMembersDetailsView>
                   child: Padding(
                     padding: EdgeInsets.only(left: 5),
                     child: Text(
-                      AppStringsNew.rakePaidText,
+                      _appScreenText['RAKEPAID'],
                       textAlign: TextAlign.left,
                       style: AppDecorators.getHeadLine4Style(theme: theme),
                     ),

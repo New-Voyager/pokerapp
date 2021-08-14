@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/messages_from_member.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/screens/chat_screen/chat_model.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/chat_list_widget.dart';
@@ -35,6 +36,13 @@ class _ChatScreenState extends State<ChatScreen> with RouteAwareAnalytics {
   TextEditingController _textController = TextEditingController();
   List<MessagesFromMember> messages = [];
   bool isHostView;
+  AppTextScreen _appScreenText;
+
+  @override
+  void initState() {
+    super.initState();
+    _appScreenText = getAppTextScreen("chatScreen");
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +61,7 @@ class _ChatScreenState extends State<ChatScreen> with RouteAwareAnalytics {
             appBar: CustomAppBar(
               theme: theme,
               context: context,
-              titleText: widget.name ?? 'Message',
+              titleText: widget.name ?? _appScreenText['Message'],
             ),
             body: _buildBody(),
           )),
@@ -114,6 +122,7 @@ class _ChatScreenState extends State<ChatScreen> with RouteAwareAnalytics {
         ),
         ChatTextField(
           icon: Icons.emoji_emotions_outlined,
+          appScreenText: _appScreenText,
           onGifSelectTap: _onEmoji,
           textEditingController: _textController,
           onSend: _onSaveClicked,

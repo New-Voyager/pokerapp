@@ -5,6 +5,7 @@ import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/auth_model.dart';
 import 'package:pokerapp/models/club_members_model.dart';
 import 'package:pokerapp/models/club_message_model.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
@@ -42,6 +43,7 @@ class _MessagesPageViewState extends State<MessagesPageView>
   final ValueNotifier<bool> _vnShowEmojiPicker = ValueNotifier(false);
   final TextEditingController _textController = TextEditingController();
   List<ClubMessageModel> messages = [];
+  AppTextScreen _appScreenText;
 
   AuthModel _authModel;
   Map<String, String> _players;
@@ -107,6 +109,7 @@ class _MessagesPageViewState extends State<MessagesPageView>
   @override
   void initState() {
     super.initState();
+    _appScreenText = getAppTextScreen("chatScreen");
 
     /* this fetches the information regarding the current user */
     AuthService.get().then((value) => _authModel = value);
@@ -173,6 +176,7 @@ class _MessagesPageViewState extends State<MessagesPageView>
               // chat text field
               ChatTextField(
                 icon: FontAwesomeIcons.icons,
+                appScreenText: _appScreenText,
                 onGifSelectTap: () => _openGifDrawer(theme),
                 textEditingController: _textController,
                 onSend: _sendMessage,

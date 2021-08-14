@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
-import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class NoMessageWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    AppTextScreen appScreenText = getAppTextScreen("global");
+
     final theme = AppTheme.getTheme(context);
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -17,7 +19,7 @@ class NoMessageWidget extends StatelessWidget {
           color: theme.fillInColor,
         ),
         Text(
-          AppStringsNew.noMessagesText,
+          appScreenText['NOMESSAGES'],
           textAlign: TextAlign.center,
           style: AppDecorators.getSubtitle3Style(theme: theme),
         )
@@ -27,12 +29,18 @@ class NoMessageWidget extends StatelessWidget {
 }
 
 class CircularProgressWidget extends StatelessWidget {
-  CircularProgressWidget({this.text, this.showText, this.height});
+  CircularProgressWidget({
+    this.text,
+    this.showText,
+    this.height,
+  });
   final String text;
   final bool showText;
   final double height;
   @override
   Widget build(BuildContext context) {
+    AppTextScreen appScreenText = getAppTextScreen("global");
+
     final theme = AppTheme.getTheme(context);
     return showText ?? true
         ? Column(
@@ -40,7 +48,7 @@ class CircularProgressWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
-                text ?? AppStringsNew.loadingDefaultText,
+                text ?? appScreenText['LOADING'],
                 textAlign: TextAlign.center,
                 style: AppDecorators.getHeadLine4Style(theme: theme),
               ),

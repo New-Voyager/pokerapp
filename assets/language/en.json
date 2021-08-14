@@ -1,6 +1,9 @@
 {
     "global": {
-        "OPTIONAL": "Optional"
+        "OPTIONAL": "Optional",
+        "LOADING": "Loading",
+        "NOMESSAGES": "No Messages",
+        "PLAYER": "Player"
     },
     "liveGames": {
         "EMPTY_GAMECODE_ERROR": "GameCode can't be empty",
@@ -230,5 +233,103 @@
         "ANALYSIS": "Analysis",
         "ANNOUNCEMENTS": "Announcements",
         "BOTSCRIPTS": "BOT Scripts"
+    },
+    "gameHistoryView": {
+        "NOGAMESPLAYED": "No games played",
+        "CLUBCODE": "Club code"
+    },
+    "clubMembersView": {
+        "ALL": "All",
+        "MANAGERS": "Managers",
+        "INACTIVE": "Inactive",
+        "MANAGER": "Manager",
+        "PENDINGAPPROVAL": "[Pending Approval]",
+        "APPROVE": "Approve",
+        "DENY": "Deny",
+        "OWNER": "Owner"
+    },
+    "clubMembersDetailsView": {
+        "LASTACTIVE": "Last active",
+        "MESSAGE": "Message",
+        "BOOT": "Boot",
+        "CREDITLIMIT": "Credit Limit",
+        "GAMESPLAYED": "Games Played",
+        "RAKEPAID": "Rake Paid",
+        "TOTALBUYIN": "Total Buy-in",
+        "TOTALWINNINGS": "Total Winnings",
+        "MOBILENUMBER": "Mobile Number",
+        "INSERTNOTESHERE": "Insert notes here"
+    },
+    "chatScreen": {
+        "MESSAGE": "Message",
+        "ENTERMESSAGE": "Enter message"
+    },
+    "messagesPageView": {
+        "ENTERMESSAGE": "Enter message"
+    },
+    "bookmarkedHands": {
+        "SUCCESS": "SUCCESS",
+        "FAILED": "FAILED",
+        "REMOVEDFROMBOOKMARKS": "removed from bookmarks",
+        "COULDNOTREMOVEBOOKMARK": "Couldn't remove bookmark",
+        "HAND": "Hand",
+        "HASBEENSHAREDWITHTHECLUB": "has been shared with the club",
+        "COULDNOTSHARETHEHAND": "Couldn't share the hand. Please try again later",
+        "LOADINGHAND": "Loading hand ...",
+        "NOBOOKMARKEDHANDS": "No bookmarked hands!",
+        "BOOKMARKEDHANDS": "Bookmarked Hands"
+    },
+    "handWinnersView": {
+        "NOWINNERDETAILSFOUND": "No winner details found",
+        "WINNERS": "Winners",
+        "HIWINNERS": "Hi-Winners",
+        "POT": "Pot",
+        "MAINPOT": "Main Pot",
+        "COMMUNITYCARDS": "Community Cards",
+        "LOWINNERS": "Lo-Winners"
+    },
+    "handLogView": {
+        "SUCCESS": "SUCCESS",
+        "FAILED": "FAILED",
+        "REMOVEDFROMBOOKMARKS": "removed from bookmarks",
+        "COULDNOTREMOVEBOOKMARK": "Couldn't remove bookmark",
+        "LOADINGHAND": "Loading hand ...",
+        "HANDDATAISNOTAVAILABLE": "Hand data is not available",
+        "YOUARENOTALLOWEDTOVIEWTHISHAND": "You are not allowed to view this hand",
+        "HASBEENBOOKMARKED": "has been bookmarked",
+        "COULDNOTBOOKMARK": "Couldn't bookmark this hand! Please try again.",
+        "HASBENSHAREDWITHTHECLUB": "has been shared with the club",
+        "COULDBOTSHAREHAND": "Couldn't share the hand. Please try again later",
+        "WOULDYOULIKETOSENDHANDTODEVELOPMENTTEAM": "Would you like to send this hand data to App Developement Team?",
+        "CANCEL": "Cancel",
+        "SEND": "Send",
+        "HANDLOGDATASENTTOAPPTEAM": "Handlog data sent to App team.",
+        "RECIEVED": "Recieved",
+        "STACK": "Stack",
+        "SENDREPORT": "Send Report",
+        "HANDLOG": "Hand Log",
+        "HAND": "Hand"
+    },
+    "handStageView": {
+        "SB": "SB",
+        "BB": "BB",
+        "BET": "Bet",
+        "RAISE": "Raise",
+        "CHECK": "Check",
+        "CALL": "Call",
+        "STRADDLE": "Straddle",
+        "ALLIN": "All-in",
+        "FOLD": "Fold",
+        "PREFLOP": "Preflop",
+        "FLOP": "Flop",
+        "TURN": "Turn",
+        "RIVER": "River",
+        "SHOWDOWN": "Showdown"
+    },
+    "handLogHeaderView": {
+        "GAME": "Game",
+        "HAND": "Hand",
+        "COMMUNITYCARDS": "Community Cards",
+        "YOURCARDS": "Your Cards"
     }
 }

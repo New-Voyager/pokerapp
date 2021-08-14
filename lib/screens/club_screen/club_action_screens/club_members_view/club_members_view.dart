@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/club_homepage_model.dart';
 import 'package:pokerapp/models/club_members_model.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
@@ -42,6 +43,8 @@ class _ClubMembersViewState extends State<ClubMembersView>
 
   bool _isLoading = true;
 
+  AppTextScreen _appScreenText;
+
   _ClubMembersViewState(this._clubHomePageModel);
 
   _fetchData() async {
@@ -63,6 +66,8 @@ class _ClubMembersViewState extends State<ClubMembersView>
 
   @override
   void initState() {
+    _appScreenText = getAppTextScreen("clubMembersView");
+
     _controller = new TabController(length: 3, vsync: this);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _fetchData();
@@ -102,16 +107,16 @@ class _ClubMembersViewState extends State<ClubMembersView>
                             isScrollable: true,
                             tabs: [
                               Tab(
-                                text: AppStringsNew.clubMemberTabAll,
+                                text: _appScreenText['ALL'],
                               ),
                               // Tab(
                               //   text: 'Unsettled',
                               // ),
                               Tab(
-                                text: AppStringsNew.clubMemberTabManagers,
+                                text: _appScreenText['MANAGERS'],
                               ),
                               Tab(
-                                text: AppStringsNew.clubMemberTabInactive,
+                                text: _appScreenText['INACTIVE'],
                               ),
                             ],
                           ),
@@ -121,11 +126,11 @@ class _ClubMembersViewState extends State<ClubMembersView>
                             controller: _controller,
                             children: <Widget>[
                               ClubMembersListView(
-                                this._clubHomePageModel.clubCode,
-                                _all,
-                                MemberListOptions.ALL,
-                                _clubHomePageModel.isOwner,
-                              ),
+                                  this._clubHomePageModel.clubCode,
+                                  _all,
+                                  MemberListOptions.ALL,
+                                  _clubHomePageModel.isOwner,
+                                  _appScreenText),
                               // ClubMembersListView(
                               //   this._clubHomePageModel.clubCode,
                               //   _unsettled,
@@ -137,12 +142,14 @@ class _ClubMembersViewState extends State<ClubMembersView>
                                 _managers,
                                 MemberListOptions.MANAGERS,
                                 _clubHomePageModel.isOwner,
+                                _appScreenText,
                               ),
                               ClubMembersListView(
                                 this._clubHomePageModel.clubCode,
                                 _inactive,
                                 MemberListOptions.INACTIVE,
                                 _clubHomePageModel.isOwner,
+                                _appScreenText,
                               ),
                             ],
                           ),

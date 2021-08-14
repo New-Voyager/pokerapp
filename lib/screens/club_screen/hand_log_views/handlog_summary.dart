@@ -2,17 +2,18 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
-import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:provider/provider.dart';
 
 class HandlogSummary extends StatelessWidget {
   final HandLogModelNew handlogModel;
+  final AppTextScreen appTextScreen;
 
-  HandlogSummary({this.handlogModel});
+  HandlogSummary({this.handlogModel, this.appTextScreen});
   @override
   Widget build(BuildContext context) {
     return Consumer<AppTheme>(
@@ -29,7 +30,7 @@ class HandlogSummary extends StatelessWidget {
               width: double.infinity,
               alignment: Alignment.center,
               child: Text(
-                AppStringsNew.StackText,
+                appTextScreen['STACK'],
                 style: AppDecorators.getHeadLine4Style(theme: theme)
                     .copyWith(fontWeight: FontWeight.w700),
               ),

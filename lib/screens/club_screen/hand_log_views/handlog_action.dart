@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
-import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:provider/provider.dart';
 
 class HandLogActionView extends StatelessWidget {
   final HandLogModelNew handLogModel;
-  HandLogActionView({this.handLogModel});
+  final AppTextScreen appTextScreen;
+  HandLogActionView({this.handLogModel, this.appTextScreen});
   @override
   Widget build(BuildContext context) {
     return ListView.separated(
@@ -37,7 +38,7 @@ class HandLogActionView extends StatelessWidget {
                 Expanded(
                   flex: 2,
                   child: Text(
-                    AppStringsNew.recievedText,
+                    appTextScreen['RECIEVED'],
                     style: AppDecorators.getSubtitle1Style(theme: theme),
                     textAlign: TextAlign.center,
                   ),

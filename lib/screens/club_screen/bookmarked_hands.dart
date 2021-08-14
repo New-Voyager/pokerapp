@@ -6,10 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/bookmarkedHands_model.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
-import 'package:pokerapp/resources/new/app_styles_new.dart';
-import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_winners_view.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
@@ -35,10 +34,13 @@ class _BookmarkedHandsState extends State<BookmarkedHands>
   String get routeName => Routes.bookmarked_hands;
   bool loading = true;
   List<BookmarkedHand> list = [];
+  AppTextScreen _appScreenText;
 
   @override
   void initState() {
     super.initState();
+    _appScreenText = getAppTextScreen("bookmarkedHands");
+
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _fetchBookmarkedHands();
     });
@@ -70,12 +72,12 @@ class _BookmarkedHandsState extends State<BookmarkedHands>
   _removeBookMark(BookmarkedHand model) async {
     var result = await HandService.removeBookmark(model.id);
     Alerts.showNotification(
-      titleText: result ? "SUCCESS" : "FAILED",
+      titleText: result ? _appScreenText["SUCCESS"] : _appScreenText["FAILED"],
       subTitleText: result
-          ? "Hand " +
+          ? "${_appScreenText['HAND']} " +
               model.handlogData.hand.handNum.toString() +
-              " removed from bookmarks"
-          : "Couldn't remove bookmark",
+              " ${_appScreenText['REMOVEDFROMBOOKMARKS']}"
+          : "${_appScreenText['COULDNOTREMOVEBOOKMARK']}",
     );
 
     if (result) {
@@ -91,12 +93,12 @@ class _BookmarkedHandsState extends State<BookmarkedHands>
     var result = await HandService.shareHand(
         model.hand.gameCode, model.hand.handNum, widget.clubCode);
     Alerts.showNotification(
-      titleText: result ? "SUCCESS" : "FAILED",
+      titleText: result ? _appScreenText["SUCCESS"] : _appScreenText["FAILED"],
       subTitleText: result
-          ? "Hand " +
+          ? "${_appScreenText['HAND']} " +
               model.hand.handNum.toString() +
-              " has been shared with the club"
-          : "Couldn't share the hand. Please try again later",
+              " ${_appScreenText['HASBEENSHAREDWITHTHECLUB']}"
+          : "${_appScreenText['COULDNOTSHARETHEHAND']}",
       leadingIcon: Icons.share_rounded,
     );
   }
@@ -107,7 +109,7 @@ class _BookmarkedHandsState extends State<BookmarkedHands>
     Future.delayed(Duration(milliseconds: 10), () async {
       try {
         ConnectionDialog.show(
-            context: context, loadingText: "Loading hand ...");
+            context: context, loadingText: "${_appScreenText['LOADINGHAND']}");
         final handLogModel = await HandService.getHandLog(gameCode, handNum);
         Navigator.pop(context);
 
@@ -134,7 +136,7 @@ class _BookmarkedHandsState extends State<BookmarkedHands>
           appBar: CustomAppBar(
             theme: theme,
             context: context,
-            titleText: AppStringsNew.BookmarkedHandsTitle,
+            titleText: _appScreenText['BOOKMARKEDHANDS'],
           ),
           body: loading
               ? Center(child: CircularProgressIndicator())
@@ -145,7 +147,7 @@ class _BookmarkedHandsState extends State<BookmarkedHands>
                         child: list.length == 0
                             ? Center(
                                 child: Text(
-                                  "No bookmarked hands!",
+                                  "${_appScreenText['NOBOOKMARKEDHANDS']}",
                                   style: AppStylesNew.disabledButtonTextStyle,
                                 ),
                               )
@@ -192,7 +194,7 @@ class _BookmarkedHandsState extends State<BookmarkedHands>
                                                       .spaceBetween,
                                               children: [
                                                 Text(
-                                                  "Hand #${list[index].handlogData.hand.handNum}",
+                                                  "${_appScreenText['HAND']} #${list[index].handlogData.hand.handNum}",
                                                   style: TextStyle(
                                                     color: Colors.grey,
                                                     fontSize: 12,

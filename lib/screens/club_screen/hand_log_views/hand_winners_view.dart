@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_stages.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
@@ -16,21 +17,23 @@ class HandWinnersView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    AppTextScreen _appScreenText = getAppTextScreen("handWinnersView");
+
     final theme = AppTheme.getTheme(context);
     _getPotWinnersList(handLogModel);
 
     if (potWinnersList == null || potWinnersList.length == 0) {
       return Center(
         child: Text(
-          "No winner details found",
+          _appScreenText['NOWINNERDETAILSFOUND'],
           style: AppDecorators.getSubtitle2Style(theme: theme),
         ),
       );
     } else {
-      String winnersTitle = 'Winners';
+      String winnersTitle = _appScreenText['WINNERS'];
       for (final potWinner in potWinnersList) {
         if (potWinner.lowWinners.length > 0) {
-          winnersTitle = 'Hi-Winners';
+          winnersTitle = _appScreenText['HIWINNERS'];
           break;
         }
       }
@@ -60,9 +63,9 @@ class HandWinnersView extends StatelessWidget {
             ),
             itemCount: potWinnersList.length,
             itemBuilder: (context, index) {
-              String potStr = "Pot:";
+              String potStr = "${_appScreenText['POT']}:";
               if (index == 0 && potWinnersList.length > 1) {
-                potStr = "Main Pot:";
+                potStr = "${_appScreenText['MAINPOT']}:";
               }
               return Container(
                 decoration: AppDecorators.tileDecoration(theme),
@@ -145,7 +148,8 @@ class HandWinnersView extends StatelessWidget {
                                               margin: EdgeInsets.only(
                                                   bottom: 4, top: 8),
                                               child: Text(
-                                                "Community Cards",
+                                                _appScreenText[
+                                                    'COMMUNITYCARDS'],
                                                 style: AppDecorators
                                                     .getSubtitle3Style(
                                                         theme: theme),
@@ -218,7 +222,7 @@ class HandWinnersView extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "Lo-Winners",
+                              _appScreenText['LOWINNERS'],
                               style:
                                   AppDecorators.getSubtitle3Style(theme: theme),
                               textAlign: TextAlign.left,
@@ -301,7 +305,8 @@ class HandWinnersView extends StatelessWidget {
                                                       margin: EdgeInsets.only(
                                                           bottom: 4, top: 8),
                                                       child: Text(
-                                                        "Community Cards",
+                                                        _appScreenText[
+                                                            'COMMUNITYCARDS'],
                                                         style: AppDecorators
                                                             .getSubtitle3Style(
                                                                 theme: theme),
