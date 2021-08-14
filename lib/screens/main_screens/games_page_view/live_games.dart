@@ -7,6 +7,7 @@ import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/models/app_state.dart';
 import 'package:pokerapp/models/game_history_model.dart';
 import 'package:pokerapp/models/newmodels/game_model_new.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
@@ -40,10 +41,13 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
   TabController _tabController;
 
   Timer _refreshTimer;
+  AppTextScreen _appScreenText;
 
   @override
   void initState() {
     _tabController = TabController(length: 2, vsync: this);
+    _appScreenText = getAppTextScreen("liveGame");
+
     _tabController.addListener(() {
       log("Listeners//..");
       setState(() {});
@@ -148,7 +152,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
   _fetchLiveGames() async {
     ConnectionDialog.show(
       context: context,
-      loadingText: AppStringsNew.LoadingGamesText,
+      loadingText: _appScreenText['GETTINGGAMES'],
     );
     liveGames.clear();
     liveGames.addAll(await GameService.getLiveGamesNew());
@@ -159,7 +163,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
   _fetchPlayedGames() async {
     ConnectionDialog.show(
       context: context,
-      loadingText: AppStringsNew.LoadingGamesText,
+      loadingText: _appScreenText['GETTINGGAMES'],
     );
     playedGames.clear();
     //print('fetching live games');
@@ -171,7 +175,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
 
   _loadTestLiveGames() async {
     ConnectionDialog.show(
-        context: context, loadingText: AppStringsNew.LoadingGamesText);
+        context: context, loadingText: _appScreenText['GETTINGGAMES']);
     var data = await DefaultAssetBundle.of(context)
         .loadString("assets/sample-data/livegames.json");
     // log(data);
@@ -224,13 +228,13 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
                           }
                           _initTimer();
                         },
-                        text: AppStringsNew.hostButtonText,
+                        text: _appScreenText["HOST"],
                         backgroundColor: appTheme.accentColor,
                         textColor: appTheme.primaryColorWithDark(),
                       ),
                       Expanded(
                         child: Text(
-                          AppStringsNew.appName,
+                          _appScreenText['POKERCLUBAPP'],
                           style:
                               AppDecorators.getAccentTextStyle(theme: appTheme),
                           textAlign: TextAlign.center,
@@ -247,7 +251,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
                                   horizontal: 16, vertical: 8),
                               backgroundColor: appTheme.fillInColor,
                               title: Text(
-                                AppStringsNew.gameCodeText,
+                                _appScreenText['GAMECODE'],
                                 style: AppDecorators.getSubtitle2Style(
                                     theme: appTheme),
                               ),
@@ -256,7 +260,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
                                 children: [
                                   CardFormTextField(
                                     theme: appTheme,
-                                    hintText: AppStringsNew.gameCodeHintText,
+                                    hintText: _appScreenText['ENTERGAMECODE'],
                                     onChanged: (val) {
                                       //log("VALUE : $val");
                                       gameCode = val;
@@ -267,12 +271,13 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
                               ),
                               actions: [
                                 RoundedColorButton(
-                                  text: AppStringsNew.Join,
+                                  text: _appScreenText['JOIN'],
                                   backgroundColor: appTheme.accentColor,
                                   textColor: appTheme.primaryColorWithDark(),
                                   onTapFunction: () async {
                                     if (gameCode.isEmpty) {
-                                      toast("GameCode can't be empty");
+                                      toast(_appScreenText[
+                                          'GAMECODECANTBEEMPTY']);
                                       return;
                                     }
 
@@ -289,7 +294,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
                                 await GameService.getGameInfo(gameCode);
                             if (gameInfo == null) {
                               Alerts.showNotification(
-                                  titleText: AppStringsNew.noGamesFoundText);
+                                  titleText: _appScreenText['GAMENOTFOUND']);
                             } else {
                               Navigator.of(context).pushNamed(Routes.game_play,
                                   arguments: result);
@@ -299,7 +304,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
                         },
                         backgroundColor: appTheme.accentColor,
                         textColor: appTheme.primaryColorWithDark(),
-                        text: AppStringsNew.Join,
+                        text: _appScreenText['JOIN'],
                       ),
                     ],
                   ),
@@ -322,7 +327,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
                           ),
                           AppDimensionsNew.getHorizontalSpace(8),
                           Text(
-                            AppStringsNew.liveGamesText,
+                            _appScreenText['LIVEGAMES'],
                           ),
                         ],
                       ),
@@ -342,7 +347,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
                           ),
                           AppDimensionsNew.getHorizontalSpace(8),
                           Text(
-                            AppStringsNew.gameRecordText,
+                            _appScreenText['GAMERECORD'],
                           )
                         ],
                       ),
@@ -370,7 +375,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
                               : liveGames.isEmpty
                                   ? Center(
                                       child: Text(
-                                        AppStringsNew.NoGamesText,
+                                        _appScreenText['NOLIVEGAMES'],
                                         style: AppDecorators
                                             .getCenterTextTextstyle(
                                                 appTheme: appTheme),
@@ -428,7 +433,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
     return playedGames.isEmpty
         ? Center(
             child: Text(
-              AppStringsNew.noGameRecordsText,
+              _appScreenText['NOGAMES'],
               style: AppDecorators.getCenterTextTextstyle(appTheme: appTheme),
             ),
           )

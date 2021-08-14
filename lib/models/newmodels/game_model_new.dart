@@ -1,4 +1,5 @@
 import 'package:pokerapp/enums/game_type.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
 
@@ -65,32 +66,32 @@ class GameModelNew {
   }
 
   // Util methods
-  static String getGameTypeStr(String str) {
+  static String getGameTypeStr(String str, AppTextScreen _appTextScreen) {
     String gameTypeStr = "";
     switch (str) {
       case 'HOLDEM':
-        gameTypeStr = AppStringsNew.HoldemType;
+        gameTypeStr = _appTextScreen['HOLDEM'];
         break;
       case 'PLO':
-        gameTypeStr = AppStringsNew.PLOType;
+        gameTypeStr = _appTextScreen['PLO'];
         break;
       case 'PLO_HILO':
-        gameTypeStr = AppStringsNew.PLOHiLoType;
+        gameTypeStr = _appTextScreen['PLOHILO'];
         break;
       case 'FIVE_CARD_PLO':
-        gameTypeStr = AppStringsNew.FiveCardPLOType;
+        gameTypeStr = _appTextScreen['FIVECARDPLO'];
         break;
       case 'FIVE_CARD_PLO_HILO':
-        gameTypeStr = AppStringsNew.FiveCardPLOHiLoType;
+        gameTypeStr = _appTextScreen['FIVECARDPLOHILO'];
         break;
       case 'ROE':
-        gameTypeStr = AppStringsNew.ROEType;
+        gameTypeStr = _appTextScreen['ROE'];
         break;
       case 'DEALER_CHOICE':
-        gameTypeStr = AppStringsNew.DealerChoiceType;
+        gameTypeStr = _appTextScreen['DEALERCHOICE'];
         break;
       default:
-        gameTypeStr = AppStringsNew.DefaultType;
+        gameTypeStr = _appTextScreen['DEFAULTTYPE'];
     }
     return gameTypeStr;
   }
