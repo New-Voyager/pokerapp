@@ -1,8 +1,8 @@
 DEFAULT_DOCKER_NET := game
 
-GCR_REGISTRY := gcr.io/voyager-01-285603
+GCP_REGISTRY := gcr.io/voyager-01-285603
 DO_REGISTRY := registry.digitalocean.com/voyager
-REGISTRY := $(DO_REGISTRY)
+REGISTRY := $(GCP_REGISTRY)
 
 API_SERVER_IMAGE := $(REGISTRY)/api-server:0.5.28
 GAME_SERVER_IMAGE := $(REGISTRY)/game-server:0.6.0
@@ -14,7 +14,7 @@ REDIS_IMAGE := $(REGISTRY)/redis:6.0.9
 POSTGRES_IMAGE := $(REGISTRY)/postgres:12.5
 
 .PHONE: login
-login: do-login
+login: gcp-login
 
 .PHONE: do-login
 do-login:
