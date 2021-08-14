@@ -9,6 +9,7 @@ enum HandActions {
   FOLD,
   STRADDLE,
   ALLIN,
+  BOMB_POT_BET,
   UNKNOWN,
 }
 

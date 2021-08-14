@@ -13,8 +13,7 @@ class WhichWinnerWidget extends StatelessWidget {
   });
 
   Color _getColor(String whichWinner) {
-    if (whichWinner == AppConstants.HIGH_WINNERS)
-      return Colors.red;
+    if (whichWinner == AppConstants.HIGH_WINNERS) return Colors.red;
     return Colors.grey;
   }
 
@@ -27,7 +26,8 @@ class WhichWinnerWidget extends StatelessWidget {
         builder: (_, tableState, __) => tableState.whichWinner == null
             ? const SizedBox.shrink()
             : Container(
-                padding: EdgeInsets.symmetric(vertical: 4.pw, horizontal: 10.pw),
+                padding:
+                    EdgeInsets.symmetric(vertical: 4.pw, horizontal: 10.pw),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10.pw),
                   color: _getColor(tableState.whichWinner),

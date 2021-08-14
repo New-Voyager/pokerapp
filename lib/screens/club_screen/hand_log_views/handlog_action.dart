@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
+import 'package:pokerapp/models/handlog_model.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
@@ -7,13 +8,16 @@ import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:provider/provider.dart';
 
 class HandLogActionView extends StatelessWidget {
-  final HandLogModelNew handLogModel;
-  HandLogActionView({this.handLogModel});
+  final HandResultData handResult;
+  HandLogActionView({this.handResult});
   @override
   Widget build(BuildContext context) {
+    final playersInSeats = handResult.result.playerInfo.keys.toList();
+
     return ListView.separated(
       itemBuilder: (context, index) {
-        Player player = handLogModel.hand.playersInSeats[index];
+        final seatNo = playersInSeats[index];
+        final player = handResult.getPlayerBySeatNo(seatNo);
         if (player.received <= 0) {
           return SizedBox.shrink();
         }
@@ -28,8 +32,7 @@ class HandLogActionView extends StatelessWidget {
                 Expanded(
                   flex: 4,
                   child: Text(
-                    getPlayerNameBySeatNo(
-                        handLogModel: handLogModel, seatNo: player.seatNo),
+                    player.name,
                     style: AppDecorators.getSubtitle1Style(theme: theme),
                     textAlign: TextAlign.left,
                   ),
@@ -64,7 +67,8 @@ class HandLogActionView extends StatelessWidget {
         );
       },
       separatorBuilder: (context, index) {
-        Player player = handLogModel.hand.playersInSeats[index];
+        final seatNo = playersInSeats[index];
+        final player = handResult.getPlayerBySeatNo(seatNo);
         if (player.received <= 0) {
           return Container();
         }
@@ -75,7 +79,7 @@ class HandLogActionView extends StatelessWidget {
           height: 1,
         );
       },
-      itemCount: handLogModel.hand.playersInSeats.length,
+      itemCount: playersInSeats.length,
       shrinkWrap: true,
       physics: ClampingScrollPhysics(),
     );

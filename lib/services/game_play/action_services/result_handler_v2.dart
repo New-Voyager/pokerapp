@@ -122,7 +122,7 @@ class ResultHandlerV2 {
         if (boardWinners.lowWinners.length > 0) {
           hiLoGame = true;
           break;
-        } 
+        }
       }
     }
 

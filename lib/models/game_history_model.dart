@@ -151,7 +151,7 @@ class HighHandWinner {
 
 class GameHistoryDetailModel extends ChangeNotifier {
   final String gameCode;
-  final bool isOwner;
+  bool isOwner;
   List<PlayerStack> stack = [];
   int preflopHands;
   int flopHands;
@@ -174,6 +174,8 @@ class GameHistoryDetailModel extends ChangeNotifier {
   double bigBlind;
   String startedBy;
   String endedBy;
+  bool isHost;
+  bool isManager;
 
   List<HandData> handsData = [];
   List<HighHandWinner> hhWinners = [];
@@ -248,6 +250,10 @@ class GameHistoryDetailModel extends ChangeNotifier {
       profit = double.parse(gameData['profit'].toString());
       buyIn = double.parse(gameData['buyIn'].toString());
     }
+
+    isOwner = gameData['isOwner'];
+    isHost = gameData['isHost'];
+    isManager = gameData['isManager'];
   }
 
   String get gameHandsText {

@@ -61,6 +61,9 @@ class GameService {
             before
             after
           }
+          isHost
+          isManager
+          isOwner
         }
         hhWinners: highHandWinners(gameCode: \$gameCode) {
             rank

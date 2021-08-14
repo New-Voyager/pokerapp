@@ -41,11 +41,12 @@ class StackCardView00 extends StatelessWidget {
   final List<int> cards;
   final bool show;
   final bool needToShowEmptyCards;
-
+  final int maxCards;
   StackCardView00({
     this.cards,
     this.show,
     this.needToShowEmptyCards,
+    this.maxCards = 5,
   });
 
   @override
@@ -58,8 +59,8 @@ class StackCardView00 extends StatelessWidget {
         cardViews.add(card.widget);
         cardViews.add(SizedBox(width: 2.0));
       }
-      if ((needToShowEmptyCards ?? false) && cards.length < 5) {
-        for (int i = 0; i < 5 - cards.length; i++) {
+      if ((needToShowEmptyCards ?? false) && cards.length < this.maxCards) {
+        for (int i = 0; i < this.maxCards - cards.length; i++) {
           // pass 0 for getting card backside
           CardObject card = CardHelper.getCard(0);
           card.cardType = CardType.HandLogOrHandHistoryCard;

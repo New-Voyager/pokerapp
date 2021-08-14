@@ -111,11 +111,11 @@ class _BookmarkedHandsState extends State<BookmarkedHands>
         final handLogModel = await HandService.getHandLog(gameCode, handNum);
         Navigator.pop(context);
 
-        ReplayHandDialog.show(
-          context: context,
-          hand: jsonDecode(handLogModel.handData),
-          playerID: handLogModel.myInfo.id,
-        );
+        // ReplayHandDialog.show(
+        //   context: context,
+        //   hand: jsonDecode(handLogModel.handData),
+        //   playerID: handLogModel.myInfo.id,
+        // );
       } catch (err) {
         // ignore the error
         log('error: ${err.toString()}');

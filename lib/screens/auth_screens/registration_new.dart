@@ -125,47 +125,47 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
       context: context,
       builder: (context) {
         return AlertDialog(
-        actionsPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        backgroundColor: appTheme.fillInColor,
-        title: Text("Debug details"),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            CardFormTextField(
-              theme: _appTheme,
-              hintText: "API Server URL",
-              onChanged: (val) {
-                //log("VALUE : $val");
-                apiUrl = val;
-                setState(() {});
-              },
-            ),
+          actionsPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          backgroundColor: appTheme.fillInColor,
+          title: Text("Debug details"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              CardFormTextField(
+                theme: _appTheme,
+                hintText: "API Server URL",
+                onChanged: (val) {
+                  //log("VALUE : $val");
+                  apiUrl = val;
+                  setState(() {});
+                },
+              ),
+            ],
+          ),
+          actions: [
+            RoundedColorButton(
+                text: "SAVE",
+                backgroundColor: appTheme.accentColor,
+                textColor: appTheme.primaryColorWithDark(0.50),
+                onTapFunction: () async {
+                  if (apiUrl.isEmpty) {
+                    toast("API url can't be empty");
+                    return;
+                  }
+
+                  // FIRST SET THE URLS
+                  await AppConfig.saveApiUrl(
+                    apiServer: apiUrl.trim(),
+                  );
+
+                  await graphQLConfiguration.init();
+
+                  Alerts.showNotification(titleText: 'API url is SET');
+
+                  Navigator.of(context).pop();
+                }),
           ],
-        ),
-        actions: [
-          RoundedColorButton(
-              text: "SAVE",
-              backgroundColor: appTheme.accentColor,
-              textColor: appTheme.primaryColorWithDark(0.50),
-              onTapFunction: () async {
-                if (apiUrl.isEmpty) {
-                  toast("API url can't be empty");
-                  return;
-                }
-
-                // FIRST SET THE URLS
-                await AppConfig.saveApiUrl(
-                  apiServer: apiUrl.trim(),
-                );
-
-                await graphQLConfiguration.init();
-
-                Alerts.showNotification(titleText: 'API url is SET');
-
-                Navigator.of(context).pop();
-              }),
-        ],
-      );
+        );
       },
     );
   }

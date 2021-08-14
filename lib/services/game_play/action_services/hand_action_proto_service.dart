@@ -831,7 +831,9 @@ class HandActionProtoService {
   }
 
   playSoundEffect(String soundFile) {
-    if (_gameState.settings.gameSound) {
+    if (_gameState != null &&
+        _gameState.settings != null &&
+        _gameState.settings.gameSound) {
       _gameState
           .getAudioBytes(soundFile)
           .then((value) => audioPlayer.playBytes(value));
@@ -1040,31 +1042,67 @@ class HandActionProtoService {
     if (stage == 'flop') {
       _gameState.handState = HandState.FLOP;
       playSoundEffect(AppAssets.flopSound);
-      final board = message.flop.board;
+      var board = message.flop.boards[0];
       List<CardObject> cards = [];
       for (int i = 0; i < 3; i++) {
         final c = CardHelper.getCard(
           int.parse(
-            board[i].toString(),
+            board.cards[i].toString(),
           ),
         );
         cards.add(c);
       }
 
       tableState.addFlopCards(1, cards);
+      if (message.flop.boards.length >= 2) {
+        cards = [];
+        board = message.flop.boards[1];
+        for (int i = 0; i < 3; i++) {
+          final c = CardHelper.getCard(
+            int.parse(
+              board.cards[i].toString(),
+            ),
+          );
+          cards.add(c);
+        }
+        tableState.addFlopCards(2, cards);
+        tableState.updateTwoBoardsNeeded(true);
+      } else {
+        tableState.updateTwoBoardsNeeded(false);
+      }
       playerCardRanks = message.flop.playerCardRanks;
     } else if (stage == 'turn') {
       _gameState.handState = HandState.TURN;
       playSoundEffect(AppAssets.flopSound);
-      final turnCard = message.turn.turnCard;
+      var board = message.turn.boards[0];
+      var turnCard = board.cards[3];
       playerCardRanks = message.turn.playerCardRanks;
       tableState.addTurnOrRiverCard(1, CardHelper.getCard(turnCard));
+      if (message.turn.boards.length == 2) {
+        board = message.turn.boards[1];
+        if (!tableState.twoBoardsNeeded) {
+          tableState.updateTwoBoardsNeeded(true);
+          // flop the cards here (run it twice)
+        }
+        turnCard = board.cards[3];
+        tableState.addTurnOrRiverCard(2, CardHelper.getCard(turnCard));
+      }
     } else if (stage == 'river') {
       _gameState.handState = HandState.RIVER;
       playSoundEffect(AppAssets.flopSound);
-      final riverCard = message.river.riverCard;
+      var board = message.river.boards[0];
+      var riverCard = board.cards[4];
       playerCardRanks = message.river.playerCardRanks;
       tableState.addTurnOrRiverCard(1, CardHelper.getCard(riverCard));
+      if (message.river.boards.length == 2) {
+        board = message.river.boards[1];
+        if (!tableState.twoBoardsNeeded) {
+          tableState.updateTwoBoardsNeeded(true);
+          // flop the cards here (run it twice)
+        }
+        riverCard = board.cards[4];
+        tableState.addTurnOrRiverCard(2, CardHelper.getCard(riverCard));
+      }
     }
     if (_close) return;
     updateRank(playerCardRanks);
@@ -1265,8 +1303,9 @@ class HandActionProtoService {
       gameState.straddlePrompt = false;
       _context.read<StraddlePromptState>().notify();
     }
-    if (seat.player.action == null) {
-      log('Hand Message: ::handlePlayerActed:: player acted: $seatNo, player: ${seat.player.name}');
+    if (seat?.player?.action == null) {
+      //log('Hand Message: ::handlePlayerActed:: player acted: $seatNo, player: ${seat.player.name}');
+      return;
     }
     final action = seat.player.action;
     action.setActionProto(playerActed);
@@ -1373,10 +1412,6 @@ class HandActionProtoService {
     players.clearForShowdown();
     log('Hand Message: ::handleResult:: START');
 
-    // players.updateUserCardsSilent(
-    //   _getCards(handResult, players?.me?.playerId ?? 0),
-    // );
-
     int myID = players?.me?.playerId ?? 0;
     for (final seatNo in result.playerInfo.keys) {
       final playerInfo = result.playerInfo[seatNo];
@@ -1394,27 +1429,7 @@ class HandActionProtoService {
       replay: false,
     );
     await resultHandler.show();
-    // if (_gameState.isPlaying) {
-    //   final me = _gameState.me(_context);
-    //   final myState = _gameState.getMyState(_context);
-    //   me.rankText = '';
-    //   myState.notify();
-    // }
-
-    // // clear rabbit state
-    // if (_close) return;
-    // _context.read<RabbitState>().resultDone();
-
-    // if (_close) return;
-    // if (_gameState.highHand != null) {
-    //   // animate high hand
-    //   log('highhand');
-    //   await showHighHands(_gameState.highHand);
-    //   _gameState.highHand = null;
-    // }
-
-    // _gameState.handState = HandState.ENDED;
-    // log('Hand Message: ::handleResult:: END');
+    log('Hand Message: ::handleResult:: END');
   }
 
   Future<void> handleResult(proto.HandMessageItem message) async {
