@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/club_homepage_model.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
@@ -33,6 +34,8 @@ class ClubMainScreenNew extends StatefulWidget {
 
 class _ClubMainScreenNewState extends State<ClubMainScreenNew>
     with RouteAware, RouteAwareAnalytics {
+  AppTextScreen _appScreenText;
+
   @override
   String get routeName => Routes.club_main;
   void refreshClubMainScreen() {
@@ -63,6 +66,7 @@ class _ClubMainScreenNewState extends State<ClubMainScreenNew>
 
   @override
   void initState() {
+    _appScreenText = getAppTextScreen("clubMainScreenNew");
     context.read<ClubsUpdateState>().addListener(listener);
     super.initState();
   }
@@ -105,7 +109,7 @@ class _ClubMainScreenNewState extends State<ClubMainScreenNew>
                                 );
                               }
                             },
-                            text: AppStringsNew.createGameText,
+                            text: _appScreenText['CREATEGAME'],
                             backgroundColor: theme.accentColor,
                             textColor: theme.primaryColorWithDark(),
                           ),
@@ -118,6 +122,7 @@ class _ClubMainScreenNewState extends State<ClubMainScreenNew>
                 // banner
                 ClubBannerViewNew(
                   clubModel: clubModel,
+                  appScreenText: _appScreenText,
                 ),
 
                 // stats view
@@ -127,16 +132,13 @@ class _ClubMainScreenNewState extends State<ClubMainScreenNew>
                 ), */
 
                 // live game
-                ClubLiveGamesView(clubModel.liveGames),
+                ClubLiveGamesView(clubModel.liveGames, _appScreenText),
 
                 // seperator
                 AppDimensionsNew.getVerticalSizedBox(16.ph),
 
                 // club actions
-                ClubActionsNew(
-                  clubModel,
-                  this.widget.clubCode,
-                ),
+                ClubActionsNew(clubModel, this.widget.clubCode, _appScreenText),
 
                 // seperator
                 AppDimensionsNew.getVerticalSizedBox(16.ph),

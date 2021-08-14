@@ -110,7 +110,7 @@
     "headerView": {},
     "profilePageView": {},
     "gameType": {
-        "HOLDEM": "Holdem",
+        "HOLDEM": "No Limit Holdem",
         "NOLIMITHOLDEM": "No Limit Holdem",
         "PLO": "Pot Limit Omaha",
         "PLOHILO": "Pot Limit Omaha Hi-Lo",
@@ -180,5 +180,55 @@
         "GAMECREATIONFAILED": "Game creation failed!",
         "CHECKBIGBLIND": "Please check Bigblind values",
         "CHECKBUYINGMINMAX": "Please check Buyin Min and Buyin max values"
+    },
+    "clubsPageView": {
+        "UPADATESUCCESSFUL": "Update successful",
+        "COULDNOTUPDATE": "Could not update",
+        "DELETECLUB": "Delete Club",
+        "EDITCLUB": "Edit Club",
+        "CLUB": "Club",
+        "CREATEDCLUB": "Created club",
+        "SOMETHINGWENTWRONG": "Something went wrong",
+        "SEARCH": "Search",
+        "CREATE": "Create",
+        "NOCLUBS": "No Clubs",
+        "WAITINGFORAPPROVAL": "Waiting For Approval",
+        "CLUBCODE": "Club code",
+        "YOU": "You",
+        "MEMBER": "Member",
+        "MEMBERS": "Members",
+        "JOINEDAT": "Joined at"
+    },
+    "searchClubBottomSheet": {
+        "ENTERCLUBCODE": "Enter club code",
+        "YOUMUSTPROVIDEACLUBCODE": "You must provide a club code",
+        "NOCLUBSFOUNDFORTHECODE": "No clubs found for the code",
+        "ACLUBISFOUND": "A club is found",
+        "NAME": "Name",
+        "HOST": "Host",
+        "JOIN": "JOIN"
+    },
+    "createClubBottomSheet": {
+        "CREATECLUB": "Create Club",
+        "CREATE": "Create",
+        "NAME": "Name",
+        "YOUMUSSTPROVIDEANAME": "You must provide a name",
+        "DESCRIPTION": "Description",
+        "YOUMUSTPROVIDEDESCRIPTION": "'You must provide a description'"
+    },
+    "clubMainScreenNew": {
+        "CREATEGAME": "+ Create Game",
+        "CLUBCODE": "Club code",
+        "CLUBCODECOPIEDTOCLIPBOARD": "Club code copied to clipboard",
+        "LIVEGAMES": "Live Games",
+        "NOLIVEGAMES": "No Live Games",
+        "CHAT": "Chat",
+        "MEMBERS": "Members",
+        "MESSAGEHOST": "Message Host",
+        "GAMEHISTORY": "Game History",
+        "BOOKMRKEDHANDS": "Bookmarked Hands",
+        "ANALYSIS": "Analysis",
+        "ANNOUNCEMENTS": "Announcements",
+        "BOTSCRIPTS": "BOT Scripts"
     }
 }

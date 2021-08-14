@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/club_model.dart';
 import 'package:pokerapp/models/pending_approvals.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
@@ -37,6 +38,7 @@ class _ClubsPageViewState extends State<ClubsPageView>
   bool _showLoading = false;
 
   List<ClubModel> _clubs;
+  AppTextScreen _appScreenText;
 
   void _toggleLoading() {
     if (mounted)
@@ -86,11 +88,11 @@ class _ClubsPageViewState extends State<ClubsPageView>
     );
 
     if (status) {
-      Alerts.showSnackBar(ctx, 'Update successful');
+      Alerts.showSnackBar(ctx, _appScreenText['UPADATESUCCESSFUL']);
       return _fetchClubs();
     }
 
-    return Alerts.showSnackBar(ctx, 'Could not update');
+    return Alerts.showSnackBar(ctx, _appScreenText['COULDNOTUPDATE']);
   }
 
   void _showClubOptions(ClubModel club, BuildContext ctx) async {
@@ -109,7 +111,7 @@ class _ClubsPageViewState extends State<ClubsPageView>
               RoundRaisedButton(
                 radius: 5.0,
                 color: AppColorsNew.contentColor,
-                buttonText: 'Delete Club',
+                buttonText: _appScreenText['DELETECLUB'],
                 onButtonTap: () {
                   Navigator.pop(context);
                   _deleteClub(club, ctx);
@@ -119,7 +121,7 @@ class _ClubsPageViewState extends State<ClubsPageView>
               RoundRaisedButton(
                 radius: 5.0,
                 color: AppColorsNew.contentColor,
-                buttonText: 'Edit Club',
+                buttonText: _appScreenText['EDITCLUB'],
                 onButtonTap: () {
                   Navigator.pop(context);
                   _editClub(club, ctx);
@@ -164,14 +166,14 @@ class _ClubsPageViewState extends State<ClubsPageView>
     /* finally, show a status message and fetch all the clubs (if required) */
     if (clubCode != null) {
       Alerts.showNotification(
-          titleText: 'Club',
-          subTitleText: 'Created club: $clubName',
+          titleText: _appScreenText['CLUB'],
+          subTitleText: '${_appScreenText['CREATEDCLUB']}: $clubName',
           duration: Duration(seconds: 2));
       final natsClient = Provider.of<Nats>(context, listen: false);
       natsClient.subscribeClubMessages(clubCode);
       _fetchClubs();
     } else
-      Alerts.showSnackBar(ctx, 'Something went wrong');
+      Alerts.showSnackBar(ctx, _appScreenText['SOMETHINGWENTWRONG']);
   }
 
   Future<void> _fillClubs() async {
@@ -203,6 +205,7 @@ class _ClubsPageViewState extends State<ClubsPageView>
   @override
   void initState() {
     super.initState();
+    _appScreenText = getAppTextScreen("clubsPageView");
 
     /* fetch the clubs initially */
     _fetchClubs();
@@ -283,7 +286,7 @@ class _ClubsPageViewState extends State<ClubsPageView>
                         RoundedColorButton(
                           backgroundColor: theme.accentColor,
                           textColor: theme.primaryColorWithDark(),
-                          text: 'Search',
+                          text: _appScreenText['SEARCH'],
                           onTapFunction: () async {
                             await showModalBottomSheet(
                               context: context,
@@ -298,7 +301,7 @@ class _ClubsPageViewState extends State<ClubsPageView>
                         RoundedColorButton(
                           backgroundColor: theme.accentColor,
                           textColor: theme.primaryColorWithDark(),
-                          text: '+ Create',
+                          text: '+ ${_appScreenText['CREATE']}',
                           onTapFunction: () => _createClub(ctx),
                         ),
                       ],
@@ -321,7 +324,7 @@ class _ClubsPageViewState extends State<ClubsPageView>
                             ? Expanded(
                                 child: Center(
                                   child: Text(
-                                    AppStringsNew.noClubsText,
+                                    _appScreenText['NOCLUBS'],
                                     style: AppDecorators.getCenterTextTextstyle(
                                         appTheme: theme),
                                   ),
@@ -335,7 +338,6 @@ class _ClubsPageViewState extends State<ClubsPageView>
                                   ),
                                   itemBuilder: (_, index) {
                                     var club = _clubs[index];
-
                                     return InkWell(
                                       onTap: () => this.openClub(context, club),
                                       onLongPress: () => _showClubOptions(
@@ -349,6 +351,7 @@ class _ClubsPageViewState extends State<ClubsPageView>
                                         child: ClubItem(
                                           club: club,
                                           theme: theme,
+                                          appScreenText: _appScreenText,
                                         ),
                                       ),
                                     );

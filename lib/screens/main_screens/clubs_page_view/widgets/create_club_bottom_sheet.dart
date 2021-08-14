@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
@@ -25,6 +26,14 @@ class _CreateClubBottomSheetState extends State<CreateClubBottomSheet> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   final Map<String, String> clubDetails = {};
+  AppTextScreen _appScreenText;
+
+  @override
+  void initState() {
+    _appScreenText = getAppTextScreen("createClubBottomSheet");
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,11 +58,11 @@ class _CreateClubBottomSheetState extends State<CreateClubBottomSheet> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      AppStringsNew.createClubTitle,
+                      _appScreenText['CREATECLUB'],
                       style: AppDecorators.getHeadLine3Style(theme: theme),
                     ),
                     RoundedColorButton(
-                      text: AppStringsNew.createButtonText,
+                      text: _appScreenText['CREATE'],
                       textColor: theme.primaryColor,
                       backgroundColor: theme.accentColor,
                       onTapFunction: () {
@@ -85,7 +94,7 @@ class _CreateClubBottomSheetState extends State<CreateClubBottomSheet> {
                           separator20,
                           /* club name */
                           Text(
-                            AppStringsNew.labelNameText,
+                            _appScreenText['NAME'],
                             style:
                                 AppDecorators.getSubtitle3Style(theme: theme),
                           ),
@@ -93,9 +102,9 @@ class _CreateClubBottomSheetState extends State<CreateClubBottomSheet> {
                           CardFormTextField(
                             theme: theme,
                             elevation: 0.0,
-                            hintText: 'Name',
+                            hintText: _appScreenText['NAME'],
                             validator: (String val) => val.trim().isEmpty
-                                ? 'You must provide a name'
+                                ? _appScreenText['YOUMUSSTPROVIDEANAME']
                                 : null,
                             onSaved: (String val) =>
                                 clubDetails['name'] = val.trim(),
@@ -112,9 +121,9 @@ class _CreateClubBottomSheetState extends State<CreateClubBottomSheet> {
                           CardFormTextField(
                             theme: theme,
                             elevation: 0.0,
-                            hintText: 'Description',
+                            hintText: _appScreenText['DESCRIPTION'],
                             validator: (String val) => val.trim().isEmpty
-                                ? 'You must provide a description'
+                                ? _appScreenText['YOUMUSTPROVIDEDESCRIPTION']
                                 : null,
                             maxLines: 5,
                             onSaved: (String val) =>

@@ -2,6 +2,7 @@ import 'package:badges/badges.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/club_model.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
@@ -13,7 +14,9 @@ import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 class ClubItemView extends StatelessWidget {
   final ClubModel club;
   final AppTheme theme;
-  ClubItemView(this.club, this.theme);
+  final AppTextScreen appScreenText;
+
+  ClubItemView(this.club, this.theme, this.appScreenText);
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +69,7 @@ class ClubItemView extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    AppStringsNew.clubCodeLabel,
+                    appScreenText['CLUBCODE'],
                     style: AppDecorators.getSubtitle3Style(theme: theme),
                   ),
                   Text(
@@ -83,7 +86,9 @@ class ClubItemView extends StatelessWidget {
                     style: AppDecorators.getSubtitle3Style(theme: theme),
                   ),
                   Text(
-                    club.isOwner ? "You" : "${club.hostName}",
+                    club.isOwner
+                        ? "${appScreenText['YOU']}"
+                        : "${club.hostName}",
                     style: AppDecorators.getHeadLine4Style(theme: theme),
                   ),
                 ],
@@ -110,7 +115,7 @@ class ClubItemView extends StatelessWidget {
                   //   style: AppStylesNew.labelTextStyle,
                   // ),
                   Text(
-                    '${club.memberCount} Member${club.memberCount == 0 || club.memberCount == 1 ? '' : 's'}',
+                    '${club.memberCount} ${club.memberCount == 0 || club.memberCount == 1 ? appScreenText['MEMBER'] : appScreenText['MEMBERS']}',
                     style: AppDecorators.getSubtitle2Style(theme: theme),
                   ),
                 ],
@@ -130,7 +135,7 @@ class ClubItemView extends StatelessWidget {
         club.outgoingRequest || club.incomingRequest
             ? SizedBox.shrink()
             : Text(
-                "Joined at ${club.joinDate}",
+                "${appScreenText['JOINEDAT']} ${club.joinDate}",
                 style: AppDecorators.getSubtitle1Style(theme: theme),
               ),
       ],
@@ -141,10 +146,12 @@ class ClubItemView extends StatelessWidget {
 class ClubItem extends StatelessWidget {
   final ClubModel club;
   final AppTheme theme;
+  final AppTextScreen appScreenText;
 
   ClubItem({
     @required this.club,
     @required this.theme,
+    @required this.appScreenText,
   }) {
     club.incomingRequest = false;
     club.outgoingRequest = true;
@@ -194,7 +201,7 @@ class ClubItem extends StatelessWidget {
         ),
         AppDimensionsNew.getHorizontalSpace(8),
         Text(
-          'Waiting For Approval',
+          appScreenText['WAITINGFORAPPROVAL'],
           textAlign: TextAlign.center,
           style: AppDecorators.getSubtitle3Style(theme: theme),
         ),
@@ -220,7 +227,7 @@ class ClubItem extends StatelessWidget {
       children: [
         Container(
           padding: EdgeInsets.only(left: 12, top: 8.0, bottom: 16),
-          child: ClubItemView(club, theme),
+          child: ClubItemView(club, theme, appScreenText),
         ),
         Visibility(
           visible: (club.memberStatus == 'PENDING'),
