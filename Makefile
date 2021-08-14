@@ -14,7 +14,7 @@ REDIS_IMAGE := $(REGISTRY)/redis:6.0.9
 POSTGRES_IMAGE := $(REGISTRY)/postgres:12.5
 
 .PHONE: login
-login: do-login
+login: gcp-login
 
 .PHONE: do-login
 do-login:
