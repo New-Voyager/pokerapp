@@ -1054,6 +1054,10 @@ class HandActionProtoService {
       }
 
       tableState.addFlopCards(1, cards);
+      tableState.notifyAll();
+      await Future.delayed(Duration(seconds: 1));
+      audioPlayer.stop();
+
       if (message.flop.boards.length >= 2) {
         cards = [];
         board = message.flop.boards[1];
@@ -1065,8 +1069,12 @@ class HandActionProtoService {
           );
           cards.add(c);
         }
+        playSoundEffect(AppAssets.flopSound);
         tableState.addFlopCards(2, cards);
         tableState.updateTwoBoardsNeeded(true);
+        tableState.notifyAll();
+        await Future.delayed(Duration(seconds: 1));
+        audioPlayer.stop();
       } else {
         tableState.updateTwoBoardsNeeded(false);
       }
@@ -1078,14 +1086,20 @@ class HandActionProtoService {
       var turnCard = board.cards[3];
       playerCardRanks = message.turn.playerCardRanks;
       tableState.addTurnOrRiverCard(1, CardHelper.getCard(turnCard));
+      tableState.notifyAll();
+      await Future.delayed(Duration(seconds: 1));
+      audioPlayer.stop();
       if (message.turn.boards.length == 2) {
         board = message.turn.boards[1];
         if (!tableState.twoBoardsNeeded) {
           tableState.updateTwoBoardsNeeded(true);
-          // flop the cards here (run it twice)
         }
         turnCard = board.cards[3];
         tableState.addTurnOrRiverCard(2, CardHelper.getCard(turnCard));
+        playSoundEffect(AppAssets.flopSound);
+        tableState.notifyAll();
+        await Future.delayed(Duration(seconds: 1));
+        audioPlayer.stop();
       }
     } else if (stage == 'river') {
       _gameState.handState = HandState.RIVER;
@@ -1094,21 +1108,28 @@ class HandActionProtoService {
       var riverCard = board.cards[4];
       playerCardRanks = message.river.playerCardRanks;
       tableState.addTurnOrRiverCard(1, CardHelper.getCard(riverCard));
+      playSoundEffect(AppAssets.flopSound);
+      tableState.notifyAll();
+      await Future.delayed(Duration(seconds: 1));
+      audioPlayer.stop();      
       if (message.river.boards.length == 2) {
         board = message.river.boards[1];
         if (!tableState.twoBoardsNeeded) {
           tableState.updateTwoBoardsNeeded(true);
           // flop the cards here (run it twice)
         }
+        audioPlayer.stop();
         riverCard = board.cards[4];
         tableState.addTurnOrRiverCard(2, CardHelper.getCard(riverCard));
+        playSoundEffect(AppAssets.flopSound);
+        tableState.notifyAll();
+        await Future.delayed(Duration(seconds: 1));
+        audioPlayer.stop();
       }
     }
     if (_close) return;
     updateRank(playerCardRanks);
 
-    tableState.notifyAll();
-    await Future.delayed(Duration(seconds: 1));
     audioPlayer.stop();
     // log('stage update end');
   }

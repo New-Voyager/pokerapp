@@ -158,6 +158,7 @@ class AppConstants {
   static const String TABLE_STATUS_HOST_SEATCHANGE_IN_PROGRESS =
       'HOST_SEATCHANGE_IN_PROGRESS';
 
+  static const String GAME_CONFIGURED = 'CONFIGURED';
   static const String GAME_ACTIVE = 'ACTIVE';
   static const String GAME_RUNNING = 'GAME_RUNNING';
   static const String GAME_ENDED = 'ENDED';

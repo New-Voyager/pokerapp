@@ -236,6 +236,8 @@ class _CenterViewState extends State<CenterView> {
   }
 
   Widget _buildMainCenterView(final context, final boardAttributes) {
+    log('potViewPos: building main center view');
+
     return Transform.translate(
       offset: boardAttributes.centerViewVerticalTranslate,
       child: Column(
@@ -289,8 +291,9 @@ class _CenterViewState extends State<CenterView> {
     );
   }
 
-  Widget _buildMultiplePots(boardAttributes) =>
-      ValueListenableBuilder2<List<int>, int>(
+  Widget _buildMultiplePots(boardAttributes) {
+    log('potViewPos: building multiple pots');
+    return ValueListenableBuilder2<List<int>, int>(
         vnPotChips,
         vnPotToHighlight,
         builder: (context, potChips, potToHighlight, __) {
@@ -354,6 +357,7 @@ class _CenterViewState extends State<CenterView> {
           );
         },
       );
+  }
 
   double _getOpacityForPotUpdatesView({
     final bool showDown,

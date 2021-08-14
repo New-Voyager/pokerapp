@@ -53,6 +53,7 @@ class TableState extends ChangeNotifier {
   }
 
   void clear() {
+    _dimPots = false;
     _board1?.clear();
     _board2?.clear();
     _potChips?.clear();

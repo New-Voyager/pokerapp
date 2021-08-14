@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
 import 'package:pokerapp/models/game_play_models/business/player_model.dart';
+import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class MyLastActionAnimatingWidget extends StatelessWidget {
   final PlayerActedState myAction;
@@ -77,12 +78,12 @@ class MyLastActionAnimatingWidget extends StatelessWidget {
       textColorShadow['text'],
       style: TextStyle(
         color: textColorShadow['color'],
-        fontSize: 20.0,
+        fontSize: 20.dp,
         fontWeight: FontWeight.w900,
         shadows: [
           Shadow(
             offset: Offset(3.0, 3.0),
-            blurRadius: 5.0,
+            blurRadius: 2.pw,
             color: textColorShadow['shadow'],
           )
         ],
@@ -100,10 +101,10 @@ class MyLastActionAnimatingWidget extends StatelessWidget {
         key: UniqueKey(),
         curve: Curves.easeInOut,
         tween: Tween<double>(begin: 0, end: 1),
-        duration: const Duration(milliseconds: 1500),
+        duration: const Duration(milliseconds: 800),
         child: _buildText(myAction),
         builder: (_, anim, child) => Transform.translate(
-          offset: Offset(0, -150 * anim),
+          offset: Offset(0, -100.pw * anim),
           child: Opacity(opacity: 1 - anim, child: child),
         ),
       ),
