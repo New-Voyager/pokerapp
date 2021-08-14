@@ -1,3 +1,4 @@
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
 
 enum GameType {
@@ -12,44 +13,47 @@ enum GameType {
 }
 
 String gameTypeStr(GameType type) {
+  AppTextScreen appTextScreen = getAppTextScreen("gameType");
   switch (type) {
     case GameType.HOLDEM:
-      return AppStringsNew.HoldemType;
+      return appTextScreen['NOLIMITHOLDEM'];
     case GameType.PLO:
-      return AppStringsNew.PLOType;
+      return appTextScreen['PLO'];
     case GameType.PLO_HILO:
-      return AppStringsNew.PLOHiLoType;
+      return appTextScreen['PLOHILO'];
     case GameType.FIVE_CARD_PLO:
-      return AppStringsNew.FiveCardPLOType;
+      return appTextScreen['FIVECARDPLO'];
     case GameType.FIVE_CARD_PLO_HILO:
-      return AppStringsNew.FiveCardPLOHiLoType;
+      return appTextScreen['FIVECARDPLOHILO'];
     case GameType.ROE:
-      return AppStringsNew.ROEType;
+      return appTextScreen['ROE'];
     case GameType.DEALER_CHOICE:
-      return AppStringsNew.DealerChoiceType;
+      return appTextScreen['DEALERCHOICE'];
     default:
-      return "Unknown";
+      return appTextScreen["UNKNOWN"];
   }
 }
 
 String gameTypeShortStr(GameType type) {
+  AppTextScreen appTextScreen = getAppTextScreen("gameTypeShort");
+
   switch (type) {
     case GameType.HOLDEM:
-      return "NLH";
+      return appTextScreen["NLH"];
     case GameType.PLO:
-      return "PLO";
+      return appTextScreen["PLO"];
     case GameType.PLO_HILO:
-      return "PLO Hi-Lo";
+      return appTextScreen["PLOHILO"];
     case GameType.FIVE_CARD_PLO:
-      return "5 card PLO";
+      return appTextScreen["PLOHiLO"];
     case GameType.FIVE_CARD_PLO_HILO:
-      return "5 card PLO Hi-Lo";
+      return appTextScreen["5CARDPLO"];
     case GameType.ROE:
-      return "Round of Each";
+      return appTextScreen["ROUNDOFEACH"];
     case GameType.DEALER_CHOICE:
-      return "Dealer Choice";
+      return appTextScreen["DEALERCHOICE"];
     default:
-      return "Unknown";
+      return appTextScreen["UNKNOWN"];
   }
 }
 
