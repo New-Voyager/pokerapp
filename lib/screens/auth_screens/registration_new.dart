@@ -127,7 +127,7 @@ class _RegistrationScreenNewState extends State<RegistrationScreenNew> {
         return AlertDialog(
           actionsPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           backgroundColor: appTheme.fillInColor,
-          title: _appScreenText['DEBUGDETAILS'],
+          title: Text(_appScreenText['DEBUGDETAILS']),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
