@@ -10,7 +10,7 @@ import 'package:provider/provider.dart';
 class HandLogActionView extends StatelessWidget {
   final AppTextScreen appTextScreen;
   final HandResultData handResult;
-  HandLogActionView({this.handResult});
+  HandLogActionView({this.handResult, this.appTextScreen});
 
   @override
   Widget build(BuildContext context) {

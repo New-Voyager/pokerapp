@@ -111,7 +111,7 @@ class _ClubsPageViewState extends State<ClubsPageView>
               RoundRaisedButton(
                 radius: 5.0,
                 color: theme.accentColor,
-                buttonText: _appScreenText['DELETECLUB'],,
+                buttonText: _appScreenText['DELETECLUB'],
                 onButtonTap: () {
                   Navigator.pop(context);
                   _deleteClub(club, ctx);

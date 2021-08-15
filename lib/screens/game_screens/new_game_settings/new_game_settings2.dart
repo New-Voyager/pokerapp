@@ -5,9 +5,11 @@ import 'package:pokerapp/models/game/new_game_model.dart';
 import 'package:pokerapp/models/game/new_game_provider.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
+import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/data/box_type.dart';
 import 'package:pokerapp/services/data/hive_datasource_impl.dart';
@@ -357,7 +359,7 @@ class NewGameSettings2 extends StatelessWidget {
 
                 /* buyin */
                 sepV20,
-                _buildLabel(_appScreenText['BUYIN', theme),
+                _buildLabel(_appScreenText['BUYIN'], theme),
                 sepV8,
                 _buildDecoratedContainer(
                   child: Row(
@@ -514,6 +516,7 @@ class NewGameSettings2 extends StatelessWidget {
                   title: Text(_appScreenText['ADVANCESETTINGS']),
                   children: [
                     _buildDecoratedContainer(
+                      theme: theme,
                       children: [
                         SwitchWidget(
                           value: gmp.buyInApproval,
@@ -531,7 +534,7 @@ class NewGameSettings2 extends StatelessWidget {
                                 : Column(
                                     children: [
                                       _buildLabel(
-                                          _appScreenText['BUYINGMAXWAITTIME']),
+                                          _appScreenText['BUYINGMAXWAITTIME'],
                                           theme),
                                       RadioListWidget(
                                         defaultValue: gmp.buyInWaitTime,

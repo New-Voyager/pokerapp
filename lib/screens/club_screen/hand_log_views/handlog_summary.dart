@@ -16,7 +16,7 @@ class HandlogSummary extends StatelessWidget {
   final AppTextScreen appTextScreen;
   final HandResultData handResult;
 
-  HandlogSummary({this.handResult});
+  HandlogSummary({this.handResult, this.appTextScreen});
   @override
   Widget build(BuildContext context) {
     final playersInSeats = this.handResult.result.playerInfo.keys.toList();
