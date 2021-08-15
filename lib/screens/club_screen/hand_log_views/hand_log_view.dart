@@ -6,11 +6,10 @@ import 'package:pokerapp/enums/game_stages.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/bookmarkedHands_model.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
-import 'package:pokerapp/models/handlog_model.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
-import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_log_header_view.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_stage_view.dart';
@@ -54,11 +53,14 @@ class _HandLogViewState extends State<HandLogView> with RouteAwareAnalytics {
   bool _isLoading = true;
   var handLogjson;
   List<BookmarkedHand> list = [];
+  AppTextScreen _appScreenText;
   HandResultData _handResult;
 
   @override
   void initState() {
     super.initState();
+    _appScreenText = getAppTextScreen("handLogView");
+
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _fetchBookmarksForGame(widget.gameCode);
       if (TestService.isTesting && widget.handResult == null) {
@@ -117,10 +119,13 @@ class _HandLogViewState extends State<HandLogView> with RouteAwareAnalytics {
     if (hand != null) {
       var result = await HandService.removeBookmark(hand.id);
       Alerts.showNotification(
-        titleText: result ? "SUCCESS" : "FAILED",
+        titleText:
+            result ? _appScreenText["SUCCESS"] : _appScreenText["FAILED"],
         subTitleText: result
-            ? "Hand " + handnum.toString() + " removed from bookmarks"
-            : "Couldn't remove bookmark",
+            ? "${_appScreenText['HAND']} " +
+                handnum.toString() +
+                " ${_appScreenText['REMOVEDFROMBOOKMARKS']}"
+            : "${_appScreenText['COULDNOTREMOVEBOOKMARK']}",
       );
 
       if (result) {
@@ -128,8 +133,8 @@ class _HandLogViewState extends State<HandLogView> with RouteAwareAnalytics {
       }
     } else {
       Alerts.showNotification(
-        titleText: "FAILED",
-        subTitleText: "Couldn't remove bookmark",
+        titleText: _appScreenText["FAILED"],
+        subTitleText: "${_appScreenText['COULDNOTREMOVEBOOKMARK']}",
       );
     }
   }
@@ -140,7 +145,7 @@ class _HandLogViewState extends State<HandLogView> with RouteAwareAnalytics {
     Future.delayed(Duration(milliseconds: 10), () async {
       try {
         ConnectionDialog.show(
-            context: context, loadingText: "Loading hand ...");
+            context: context, loadingText: "${_appScreenText["LOADINGHAND"]}");
         final handLogModel = await HandService.getHandLog(gameCode, handNum);
         Navigator.pop(context);
 
@@ -176,7 +181,7 @@ class _HandLogViewState extends State<HandLogView> with RouteAwareAnalytics {
         children = [
           Center(
               child: Text(
-            'Hand data is not available',
+            '${_appScreenText["HANDDATAISNOTAVAILABLE"]}',
             style: TextStyle(color: Colors.white),
           ))
         ];
@@ -188,7 +193,7 @@ class _HandLogViewState extends State<HandLogView> with RouteAwareAnalytics {
           children = [
             Center(
                 child: Text(
-              'You are not allowed to view this hand',
+              '${_appScreenText["YOUARENOTALLOWEDTOVIEWTHISHAND"]}',
               style: TextStyle(color: Colors.white),
             ))
           ];
@@ -203,7 +208,7 @@ class _HandLogViewState extends State<HandLogView> with RouteAwareAnalytics {
         appBar: CustomAppBar(
           theme: theme,
           context: context,
-          titleText: AppStringsNew.HandlogTitle,
+          titleText: _appScreenText['HANDLOG'],
           showBackButton: !(widget.isBottomSheet ?? false),
         ),
         body: this._isLoading == true
@@ -254,10 +259,12 @@ class _HandLogViewState extends State<HandLogView> with RouteAwareAnalytics {
                     _handResult.handNum,
                   );
                   Alerts.showNotification(
-                    titleText: result ? "SUCCESS" : "FAILED",
+                    titleText: result
+                        ? _appScreenText["SUCCESS"]
+                        : _appScreenText["FAILED"],
                     subTitleText: result
-                        ? "Hand ${_handResult.handNum} has been bookmarked."
-                        : "Couldn't bookmark this hand! Please try again.",
+                        ? "${_appScreenText['HAND']} ${_appScreenText['HASBEENBOOKMARKED']}"
+                        : "${_appScreenText['COULDNOTBOOKMARK']}",
                   );
                   await _fetchBookmarksForGame(widget.gameCode);
                 }
@@ -281,12 +288,13 @@ class _HandLogViewState extends State<HandLogView> with RouteAwareAnalytics {
                     widget.clubCode,
                   );
                   Alerts.showNotification(
-                    titleText: result ? "SUCCESS" : "FAILED",
+                    titleText: result
+                        ? _appScreenText["SUCCESS"]
+                        : _appScreenText["FAILED"],
                     subTitleText: result
-                        ? "Hand " +
-                            _handResult.handNum.toString() +
-                            " has been shared with the club"
-                        : "Couldn't share the hand. Please try again later",
+                        ? "${_appScreenText['HAND']} " +
+                            " ${_appScreenText["HASBENSHAREDWITHTHECLUB"]}"
+                        : "${_appScreenText["COULDBOTSHAREHAND"]}",
                   );
                 },
                 icon: Icons.share,
@@ -321,9 +329,9 @@ class _HandLogViewState extends State<HandLogView> with RouteAwareAnalytics {
         handResult: _handResult,
       ),
       AppDimensionsNew.getVerticalSizedBox(8),
-      HandLogActionView(handResult: _handResult),
+      HandLogActionView(handResult: _handResult, appTextScreen: _appScreenText),
       AppDimensionsNew.getVerticalSizedBox(8),
-      HandlogSummary(handResult: _handResult),
+      HandlogSummary(handResult: _handResult, appTextScreen: _appScreenText),
     ];
   }
 
@@ -340,18 +348,16 @@ class _HandLogViewState extends State<HandLogView> with RouteAwareAnalytics {
           ),
         ),
         buttonPadding: EdgeInsets.all(16),
-        title: Text(AppStringsNew.sendReportText),
+        title: Text(_appScreenText['SENDREPORT']),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(
-              AppStringsNew.handlogSendToDevTeam,
-            ),
+            Text(_appScreenText['WOULDYOULIKETOSENDHANDTODEVELOPMENTTEAM']),
           ],
         ),
         actions: [
           RoundedColorButton(
-            text: AppStringsNew.cancelButtonText,
+            text: _appScreenText['CANCEL'],
             backgroundColor: Colors.transparent,
             textColor: theme.supportingColor,
             borderColor: theme.accentColor,
@@ -360,7 +366,7 @@ class _HandLogViewState extends State<HandLogView> with RouteAwareAnalytics {
             },
           ),
           RoundedColorButton(
-            text: AppStringsNew.sendButtonText,
+            text: _appScreenText['SEND'],
             backgroundColor: theme.accentColor,
             textColor: theme.primaryColorWithDark(),
             onTapFunction: () {
@@ -373,7 +379,8 @@ class _HandLogViewState extends State<HandLogView> with RouteAwareAnalytics {
     if (res != null) {
       await HandService.debugHandLog(widget.gameCode, widget.handNum);
       // Make API Call
-      Alerts.showNotification(titleText: "Handlog data sent to App team.");
+      Alerts.showNotification(
+          titleText: _appScreenText['HANDLOGDATASENTTOAPPTEAM']);
     }
   }
 }

@@ -5,6 +5,7 @@ import 'package:overlay_support/overlay_support.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/game/new_game_model.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
@@ -38,6 +39,7 @@ class _ChooseGameNewState extends State<ChooseGameNew>
     with SingleTickerProviderStateMixin, RouteAwareAnalytics {
   @override
   String get routeName => Routes.new_game_settings;
+  AppTextScreen _appScreenText;
 
   GameType _selectedGameType;
   AnimationController _animationController;
@@ -52,6 +54,8 @@ class _ChooseGameNewState extends State<ChooseGameNew>
 
   @override
   void initState() {
+    _appScreenText = getAppTextScreen("chooseGameNew");
+
     _animationController = AnimationController(
       vsync: this,
       duration: Duration(milliseconds: 250),
@@ -96,7 +100,6 @@ class _ChooseGameNewState extends State<ChooseGameNew>
                     //   decoration: BoxDecoration(
                     //       shape: BoxShape.circle,
                     //                           color: AppColorsNew.newGreenButtonColor,
-
                     //       border: Border.all(
                     //         color: AppColorsNew.newSelectedGreenColor,
                     //       )),
@@ -109,7 +112,7 @@ class _ChooseGameNewState extends State<ChooseGameNew>
                     /* HEADING */
                     Expanded(
                       child: HeadingWidget(
-                        heading: AppStringsNew.gameSettingsTitle,
+                        heading: _appScreenText['GAMESETTINGS'],
                       ),
                     ),
                     InkWell(
@@ -276,7 +279,8 @@ class _ChooseGameNewState extends State<ChooseGameNew>
                   children: [
                     instance.keys.toList().length == 0
                         ? Expanded(
-                            child: Center(child: Text("No Saved Settings")))
+                            child: Center(
+                                child: Text(_appScreenText['NOSAVEDSETTINGS'])))
                         : Expanded(
                             child: ListView.separated(
                               shrinkWrap: true,
@@ -311,8 +315,8 @@ class _ChooseGameNewState extends State<ChooseGameNew>
                         }
                       },
                       text: instance.keys.toList().length == 0
-                          ? AppStringsNew.okText
-                          : AppStringsNew.startText,
+                          ? _appScreenText['OK']
+                          : _appScreenText['START'],
                       backgroundColor: AppColorsNew.yellowAccentColor,
                       textColor: AppColorsNew.darkGreenShadeColor,
                     ),
@@ -392,7 +396,7 @@ class _ChooseGameNewState extends State<ChooseGameNew>
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  AppStringsNew.chooseGamesTitle,
+                  _appScreenText['CHOOSEGAMES'],
                   style: AppDecorators.getHeadLine4Style(theme: theme),
                 ),
                 Container(
@@ -408,7 +412,8 @@ class _ChooseGameNewState extends State<ChooseGameNew>
                             list.add(GameType.HOLDEM);
                           } else {
                             if (list.length <= 2) {
-                              toast("Minimum two types required");
+                              toast(
+                                  "${_appScreenText['MINIMUMTWOTYPESREQUIRED']}");
                               return;
                             }
                             list.remove(GameType.HOLDEM);
@@ -424,7 +429,8 @@ class _ChooseGameNewState extends State<ChooseGameNew>
                             list.add(GameType.PLO);
                           } else {
                             if (list.length <= 2) {
-                              toast("Minimum two types required");
+                              toast(
+                                  "${_appScreenText['MINIMUMTWOTYPESREQUIRED']}");
                               return;
                             }
                             list.remove(GameType.PLO);
@@ -440,7 +446,8 @@ class _ChooseGameNewState extends State<ChooseGameNew>
                             list.add(GameType.PLO_HILO);
                           } else {
                             if (list.length <= 2) {
-                              toast("Minimum two types required");
+                              toast(
+                                  "${_appScreenText['MINIMUMTWOTYPESREQUIRED']}");
                               return;
                             }
                             list.remove(GameType.PLO_HILO);
@@ -456,7 +463,8 @@ class _ChooseGameNewState extends State<ChooseGameNew>
                             list.add(GameType.FIVE_CARD_PLO);
                           } else {
                             if (list.length <= 2) {
-                              toast("Minimum two types required");
+                              toast(
+                                  "${_appScreenText['MINIMUMTWOTYPESREQUIRED']}");
                               return;
                             }
                             list.remove(GameType.FIVE_CARD_PLO);
@@ -472,7 +480,8 @@ class _ChooseGameNewState extends State<ChooseGameNew>
                             list.add(GameType.FIVE_CARD_PLO_HILO);
                           } else {
                             if (list.length <= 2) {
-                              toast("Minimum two types required");
+                              toast(
+                                  "${_appScreenText['MINIMUMTWOTYPESREQUIRED']}");
                               return;
                             }
                             list.remove(GameType.FIVE_CARD_PLO_HILO);
@@ -487,13 +496,13 @@ class _ChooseGameNewState extends State<ChooseGameNew>
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     RoundedColorButton(
-                      text: AppStringsNew.cancelButtonText,
+                      text: _appScreenText["CANCEL"],
                       onTapFunction: () => Navigator.of(context).pop(),
                       backgroundColor: Colors.transparent,
                       borderColor: theme.secondaryColor,
                     ),
                     RoundedColorButton(
-                      text: AppStringsNew.saveButtonText,
+                      text: _appScreenText["SAVE"],
                       onTapFunction: () => Navigator.of(context).pop(list),
                       backgroundColor: theme.accentColor,
                       textColor: theme.primaryColorWithDark(),

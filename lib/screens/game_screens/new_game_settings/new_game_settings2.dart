@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/game/new_game_model.dart';
 import 'package:pokerapp/models/game/new_game_provider.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
-import 'package:pokerapp/resources/app_decorators.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/services/app/game_service.dart';
@@ -26,6 +27,8 @@ import '../../../main.dart';
 import '../../../routes.dart';
 
 class NewGameSettings2 extends StatelessWidget {
+  static AppTextScreen _appScreenText;
+
   static void _joinGame(BuildContext context, String gameCode) =>
       navigatorKey.currentState.pushNamed(
         Routes.game_play,
@@ -49,7 +52,7 @@ class NewGameSettings2 extends StatelessWidget {
           ),
           actions: <Widget>[
             CustomTextButton(
-              text: 'OK',
+              text: _appScreenText['OK'],
               onTap: () {
                 Navigator.of(context).pop();
               },
@@ -102,7 +105,8 @@ class NewGameSettings2 extends StatelessWidget {
     if (gameCode != null)
       _joinGame(context, gameCode);
     else
-      _showError(context, 'Error', 'Creating game failed');
+      _showError(context, _appScreenText['ERROR'],
+          _appScreenText['CREATINGGAMEFAILED']);
   }
 
   final String clubCode;
@@ -194,6 +198,7 @@ class NewGameSettings2 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    _appScreenText = getAppTextScreen("newGameSettings2");
     final theme = AppTheme.getTheme(context);
     return ListenableProvider<NewGameModelProvider>(
       create: (_) => NewGameModelProvider(clubCode),
@@ -233,7 +238,7 @@ class NewGameSettings2 extends StatelessWidget {
                       onTap: () async {
                         // Setting default name for settings with timestamp
                         String defaultText =
-                            'Settings_${DataFormatter.yymmddhhmmssFormat()}';
+                            '${_appScreenText['SETTINGS']}_${DataFormatter.yymmddhhmmssFormat()}';
                         TextEditingController _controller =
                             TextEditingController(text: defaultText);
                         final result = await showDialog(
@@ -241,7 +246,7 @@ class NewGameSettings2 extends StatelessWidget {
                           builder: (context) => AlertDialog(
                             backgroundColor: theme.fillInColor,
                             title: Text(
-                              AppStringsNew.saveGameSettingsTitle,
+                              _appScreenText['SAVESETTINGS'],
                               style:
                                   AppDecorators.getHeadLine4Style(theme: theme),
                             ),
@@ -252,11 +257,11 @@ class NewGameSettings2 extends StatelessWidget {
                                   theme: theme,
                                   controller: _controller,
                                   maxLines: 1,
-                                  hintText: AppStringsNew.hintTextForTextField,
+                                  hintText: _appScreenText['ENTERTEXT'],
                                 ),
                                 AppDimensionsNew.getVerticalSizedBox(12),
                                 RoundedColorButton(
-                                  text: AppStringsNew.saveButtonText,
+                                  text: _appScreenText['SAVE'],
                                   backgroundColor: theme.accentColor,
                                   textColor: theme.primaryColorWithDark(),
                                   onTapFunction: () {
@@ -287,7 +292,7 @@ class NewGameSettings2 extends StatelessWidget {
                     /* HEADING */
                     Expanded(
                       child: HeadingWidget(
-                        heading: AppStringsNew.gameSettingsTitle,
+                        heading: _appScreenText['GAMESETTINGS'],
                       ),
                     ),
                     InkWell(
@@ -304,7 +309,7 @@ class NewGameSettings2 extends StatelessWidget {
                 ),
 
                 /* players */
-                _buildLabel(AppStringsNew.playersText, theme),
+                _buildLabel('PLAYERS', theme),
                 sepV8,
                 RadioListWidget(
                   defaultValue: gmp.maxPlayers,
@@ -320,10 +325,10 @@ class NewGameSettings2 extends StatelessWidget {
                     Expanded(
                       child: TextInputWidget(
                         value: gmp.bigBlind,
-                        label: 'Big Blind',
+                        label: _appScreenText['BIGBLIND'],
                         minValue: 2,
                         maxValue: 1000,
-                        title: 'Enter big blind',
+                        title:  _appScreenText['ENTERBIGBLIND'],
                         onChange: (value) {
                           //gmp.blinds.bigBlind = value.toDouble();
                           gmp.bigBlind = value.toDouble();
@@ -352,7 +357,7 @@ class NewGameSettings2 extends StatelessWidget {
 
                 /* buyin */
                 sepV20,
-                _buildLabel(AppStringsNew.BuyIn, theme),
+                _buildLabel(_appScreenText['BUYIN', theme),
                 sepV8,
                 _buildDecoratedContainer(
                   child: Row(
@@ -362,9 +367,9 @@ class NewGameSettings2 extends StatelessWidget {
                         child: TextInputWidget(
                           value: gmp.buyInMin.toDouble(),
                           small: true,
-                          label: 'min',
-                          trailing: 'BB',
-                          title: 'Enter min buyin (x BB)',
+                          label: _appScreenText['MIN'],
+                          trailing: _appScreenText['BB'],
+                          title: _appScreenText['ENTERMINBUYING'],
                           minValue: 0,
                           maxValue: 1000,
                           onChange: (value) {
@@ -372,8 +377,8 @@ class NewGameSettings2 extends StatelessWidget {
 
                             if (gmp.buyInMax <= value.floor()) {
                               Alerts.showNotification(
-                                  titleText:
-                                      "Buyin Min must be less than Buyin Max",
+                                  titleText: _appScreenText[
+                                      'BUYINMINMUSTBELESSTHANMAX'],
                                   duration: Duration(seconds: 5));
                             }
                           },
@@ -388,17 +393,17 @@ class NewGameSettings2 extends StatelessWidget {
                         child: TextInputWidget(
                           value: gmp.buyInMax.toDouble(),
                           small: true,
-                          label: 'max',
-                          title: 'Enter max buyin (x BB)',
-                          trailing: 'BB',
+                          label: _appScreenText['MAX'],
+                          title: _appScreenText['ENTERMAXBUYING'],
+                          trailing: _appScreenText['BB'],
                           minValue: 0,
                           maxValue: 1000,
                           onChange: (value) {
                             gmp.buyInMax = value.floor();
                             if (gmp.buyInMin >= value.floor()) {
                               Alerts.showNotification(
-                                  titleText:
-                                      "Buyin Max must be greater than Buyin Min",
+                                  titleText: _appScreenText[
+                                      'BUYINMAXMUSTBEGREATERTHANMIN'],
                                   duration: Duration(seconds: 5));
                             }
                           },
@@ -411,7 +416,7 @@ class NewGameSettings2 extends StatelessWidget {
 
                 /* tips */
                 sepV20,
-                _buildLabel(AppStringsNew.tips, theme),
+                _buildLabel(_appScreenText["TIPS"], theme),
                 sepV8,
                 _buildDecoratedContainer(
                   child: Row(
@@ -422,7 +427,7 @@ class NewGameSettings2 extends StatelessWidget {
                           value: gmp.rakePercentage,
                           small: true,
                           trailing: '%',
-                          title: 'Enter tips in % of pot',
+                          title: _appScreenText["ENTERTIPSINOFPOT"],
                           minValue: 0,
                           maxValue: 1000,
                           onChange: (value) {
@@ -439,8 +444,8 @@ class NewGameSettings2 extends StatelessWidget {
                         child: TextInputWidget(
                           value: gmp.rakeCap,
                           small: true,
-                          leading: 'cap',
-                          title: 'Enter max tips taken from the pot',
+                          leading: _appScreenText['CAP'],
+                          title: _appScreenText['ENTERMAXTIPSTAKENFROMTHEPOT'],
                           minValue: 0,
                           maxValue: -1,
                           onChange: (value) {
@@ -455,7 +460,7 @@ class NewGameSettings2 extends StatelessWidget {
 
                 /* action time */
                 sepV20,
-                _buildLabel(AppStringsNew.actionTimeLabel, theme),
+                _buildLabel(_appScreenText['ACTIONTIME'], theme),
                 sepV8,
                 RadioListWidget(
                   defaultValue: gmp.actionTime,
@@ -467,7 +472,7 @@ class NewGameSettings2 extends StatelessWidget {
 
                 /* game time */
                 sepV20,
-                _buildLabel(AppStringsNew.gameTimeLabel, theme),
+                _buildLabel(_appScreenText['GAMETIME'], theme),
                 sepV8,
                 RadioListWidget(
                   defaultValue: gmp.gameLengthInHrs,
@@ -482,7 +487,7 @@ class NewGameSettings2 extends StatelessWidget {
 
                 /* UTG straddle */
                 _buildRadio(
-                  label: 'UTG Straddle',
+                  label: _appScreenText['UTGSTRADDLE'],
                   value: gmp.straddleAllowed,
                   onChange: (bool b) {
                     gmp.straddleAllowed = b;
@@ -493,7 +498,7 @@ class NewGameSettings2 extends StatelessWidget {
 
                 /* allow run it twice */
                 _buildRadio(
-                  label: 'Allow Run It Twice',
+                  label: _appScreenText['ALLOWRUNITTWICE'],
                   value: gmp.runItTwice,
                   onChange: (bool b) {
                     gmp.runItTwice = b;
@@ -504,16 +509,15 @@ class NewGameSettings2 extends StatelessWidget {
                 /* buy in approval */
 
                 ExpansionTile(
-                  subtitle: Text("Choose advanced configurations",
-                      style: AppDecorators.getSubtitle3Style(theme: theme)),
-                  title: Text("Advanced Settings"),
+                  subtitle: Text(_appScreenText['CHOOSEADVANCECONFIGURATIONS'],
+                      style: AppStylesNew.labelTextStyle),
+                  title: Text(_appScreenText['ADVANCESETTINGS']),
                   children: [
                     _buildDecoratedContainer(
-                      theme: theme,
                       children: [
                         SwitchWidget(
                           value: gmp.buyInApproval,
-                          label: 'Buyin Approval',
+                          label: _appScreenText['BUYINGAPPROVAL'],
                           onChange: (bool value) {
                             gmp.buyInApproval = value;
                           },
@@ -527,7 +531,7 @@ class NewGameSettings2 extends StatelessWidget {
                                 : Column(
                                     children: [
                                       _buildLabel(
-                                          AppStringsNew.buyinMaxWaitTimeLabel,
+                                          _appScreenText['BUYINGMAXWAITTIME']),
                                           theme),
                                       RadioListWidget(
                                         defaultValue: gmp.buyInWaitTime,
@@ -551,7 +555,7 @@ class NewGameSettings2 extends StatelessWidget {
 
                         SwitchWidget(
                           value: gmp.breakAllowed,
-                          label: 'Break allowed',
+                          label: _appScreenText['BREAKALLOWED'],
                           onChange: (bool value) {
                             gmp.breakAllowed = value;
                           },
@@ -563,9 +567,9 @@ class NewGameSettings2 extends StatelessWidget {
                             child: vnGmp.breakAllowed == false
                                 ? const SizedBox.shrink()
                                 : TextInputWidget(
-                                    label: 'Max break time',
+                                    label: _appScreenText['MAXBREAKTIME'],
                                     value: 10,
-                                    trailing: 'mins',
+                                    trailing: _appScreenText['MINS'],
                                     minValue: 0.0,
                                     maxValue: 100,
                                     onChange: (value) {},
@@ -582,7 +586,7 @@ class NewGameSettings2 extends StatelessWidget {
                       children: [
                         /* allow audio conference */
                         _buildRadio(
-                          label: 'Use Audio Conference    (Beta)',
+                          label: _appScreenText['USEAUDIOCONFERENCE'],
                           value: gmp.audioConference,
                           onChange: (bool b) {
                             gmp.audioConference = b;
@@ -592,7 +596,7 @@ class NewGameSettings2 extends StatelessWidget {
 
                         /* allow audio conference */
                         _buildRadio(
-                          label: 'Use Agora Audio Conference    (Beta)',
+                          label: _appScreenText['USEAGORAAUDIOCONFERENCE'],
                           value: gmp.useAgora,
                           onChange: (bool b) {
                             gmp.useAgora = b;
@@ -602,7 +606,7 @@ class NewGameSettings2 extends StatelessWidget {
 
                         /* bot games */
                         _buildRadio(
-                          label: 'Bot Game',
+                          label: _appScreenText['BOTGAME'],
                           value: gmp.botGame,
                           onChange: (bool b) {
                             gmp.botGame = b;
@@ -611,7 +615,7 @@ class NewGameSettings2 extends StatelessWidget {
                         ),
                         /* location check */
                         _buildRadio(
-                          label: 'Location Check',
+                          label: _appScreenText['LOCATIONCHECK'],
                           value: gmp.locationCheck,
                           onChange: (bool b) {
                             gmp.locationCheck = b;
@@ -621,7 +625,7 @@ class NewGameSettings2 extends StatelessWidget {
 
                         /* ip check */
                         _buildRadio(
-                          label: 'IP Check',
+                          label: _appScreenText['IPCHECK'],
                           value: gmp.ipCheck,
                           onChange: (bool b) {
                             gmp.ipCheck = b;
@@ -631,7 +635,7 @@ class NewGameSettings2 extends StatelessWidget {
 
                         /* waitlist */
                         _buildRadio(
-                          label: 'Waitlist',
+                          label: _appScreenText['WAITLIST'],
                           value: gmp.waitList,
                           onChange: (bool b) {
                             gmp.waitList = b;
@@ -641,15 +645,15 @@ class NewGameSettings2 extends StatelessWidget {
 
                         /* allow run it twice */
                         _buildRadio(
+                          label: _appScreenText['ALLOWFUNANIMATION'],
                           theme: theme,
-                          label: 'Allow Fun Animations',
                           value: true,
                           onChange: (bool b) {},
                         ),
 
                         /* allow run it twice */
                         _buildRadio(
-                          label: 'Muck Losing Hand',
+                          label: _appScreenText['MUCKLOSINGHAND'],
                           value: false,
                           onChange: (bool b) {},
                           theme: theme,
@@ -657,7 +661,7 @@ class NewGameSettings2 extends StatelessWidget {
 
                         /* show player buyin */
                         _buildRadio(
-                          label: 'Show player buyin',
+                          label: _appScreenText['SHOWPLAYERBUYING'],
                           value: gmp.showPlayerBuyin,
                           onChange: (bool b) {
                             gmp.showPlayerBuyin = b;
@@ -667,7 +671,7 @@ class NewGameSettings2 extends StatelessWidget {
 
                         /* allow rabbit hunt */
                         _buildRadio(
-                          label: 'Allow Rabbit Hunt',
+                          label: _appScreenText['ALLOWRABBITHUNT'],
                           value: gmp.allowRabbitHunt,
                           onChange: (bool b) {
                             gmp.allowRabbitHunt = b;
@@ -677,7 +681,7 @@ class NewGameSettings2 extends StatelessWidget {
 
                         /* show hand rank */
                         _buildRadio(
-                          label: 'Show Hand Rank',
+                          label: _appScreenText['SHOWHANDRANK'],
                           value: gmp.showHandRank,
                           onChange: (bool b) {
                             gmp.showHandRank = b;
@@ -692,20 +696,19 @@ class NewGameSettings2 extends StatelessWidget {
                 /* start button */
                 sepV20,
                 ButtonWidget(
-                  text: 'Start',
+                  text: _appScreenText['START'],
                   onTap: () {
                     if (gmp.blinds.bigBlind % 2 != 0) {
                       Alerts.showNotification(
-                        titleText: "Game creation failed!",
-                        subTitleText: "Please check Bigblind values",
+                        titleText: _appScreenText['GAMECREATIONFAILED'],
+                        subTitleText: _appScreenText['CHECKBIGBLIND'],
                         duration: Duration(seconds: 5),
                       );
                       return;
                     } else if (gmp.buyInMax < gmp.buyInMin) {
                       Alerts.showNotification(
-                        titleText: "Game creation failed!",
-                        subTitleText:
-                            "Please check Buyin Min and Buyin max values",
+                        titleText: _appScreenText['GAMECREATIONFAILED'],
+                        subTitleText: _appScreenText['CHECKBUYINGMINMAX'],
                         duration: Duration(seconds: 5),
                       );
                       return;

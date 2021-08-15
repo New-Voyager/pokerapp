@@ -1,21 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pokerapp/models/club_homepage_model.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
-import 'package:pokerapp/resources/new/app_colors_new.dart';
-import 'package:pokerapp/resources/new/app_strings_new.dart';
-import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/utils/alerts.dart';
-
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class ClubBannerViewNew extends StatelessWidget {
   final ClubHomePageModel clubModel;
+  final AppTextScreen appScreenText;
 
-  ClubBannerViewNew({
-    @required this.clubModel,
-  });
+  ClubBannerViewNew({@required this.clubModel, @required this.appScreenText});
 
   String _getClubShortName() {
     String clubName = clubModel.clubName;
@@ -74,7 +70,7 @@ class ClubBannerViewNew extends StatelessWidget {
           textBaseline: TextBaseline.alphabetic,
           children: [
             Text(
-              AppStringsNew.clubCodeText + ": ",
+              appScreenText['CLUBCODE'] + ": ",
               style: AppDecorators.getSubtitle3Style(theme: theme),
             ),
             Text(
@@ -95,7 +91,7 @@ class ClubBannerViewNew extends StatelessWidget {
                   new ClipboardData(text: clubModel.clubCode),
                 );
                 Alerts.showNotification(
-                  titleText: "Club code copied to clipboard",
+                  titleText: appScreenText['CLUBCODECOPIEDTOCLIPBOARD'],
                 );
               },
             ),

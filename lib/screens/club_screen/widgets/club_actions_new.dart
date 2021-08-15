@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pokerapp/enums/club_actions.dart';
 import 'package:pokerapp/models/club_homepage_model.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/screens/club_screen/widgets/club_action_button_new.dart';
@@ -11,8 +12,9 @@ import 'package:provider/provider.dart';
 class ClubActionsNew extends StatelessWidget {
   final ClubHomePageModel _clubHomePageModel;
   final String clubCode;
+  final AppTextScreen appScreenText;
 
-  ClubActionsNew(this._clubHomePageModel, this.clubCode);
+  ClubActionsNew(this._clubHomePageModel, this.clubCode, this.appScreenText);
 
   ClubActionButtonNew getChat(AppTheme theme) {
     Widget chatBadgeContent;
@@ -25,7 +27,7 @@ class ClubActionsNew extends StatelessWidget {
     Widget chat = ClubActionButtonNew(
       this._clubHomePageModel,
       ClubActions.CHAT,
-      "Chat",
+      appScreenText['CHAT'],
       SvgPicture.asset("assets/images/club/chat.svg", color: theme.accentColor),
       badgeContent: chatBadgeContent,
     );
@@ -47,7 +49,7 @@ class ClubActionsNew extends StatelessWidget {
     return ClubActionButtonNew(
       this._clubHomePageModel,
       ClubActions.MEMBERS,
-      "Members",
+      appScreenText['MEMBERS'],
       SvgPicture.asset(
         "assets/images/club/member.svg",
         color: theme.accentColor,
@@ -77,7 +79,7 @@ class ClubActionsNew extends StatelessWidget {
     return ClubActionButtonNew(
       this._clubHomePageModel,
       ClubActions.MESSAGE_HOST,
-      "Message Host",
+      appScreenText['MESSAGEHOST'],
       SvgPicture.asset(
         "assets/images/club/message_host.svg",
         color: theme.accentColor,
@@ -97,7 +99,7 @@ class ClubActionsNew extends StatelessWidget {
                 child: ClubActionButtonNew(
                   this._clubHomePageModel,
                   ClubActions.GAME_HISTORY,
-                  "Game History",
+                  appScreenText['GAMEHISTORY'],
                   SvgPicture.asset(
                     "assets/images/club/game_history.svg",
                     color: theme.accentColor,
@@ -120,7 +122,7 @@ class ClubActionsNew extends StatelessWidget {
                 child: ClubActionButtonNew(
                   this._clubHomePageModel,
                   ClubActions.BOOKMARKED_HANDS,
-                  "Bookmarked Hands",
+                  appScreenText['BOOKMRKEDHANDS'],
                   SvgPicture.asset(
                     "assets/images/club/bookmarks.svg",
                     color: theme.accentColor,
@@ -132,7 +134,7 @@ class ClubActionsNew extends StatelessWidget {
                 child: ClubActionButtonNew(
                   this._clubHomePageModel,
                   ClubActions.ANALYSIS,
-                  "Analysis",
+                  appScreenText['ANALYSIS'],
                   SvgPicture.asset(
                     "assets/images/club/analysis.svg",
                     color: theme.accentColor,
@@ -144,7 +146,7 @@ class ClubActionsNew extends StatelessWidget {
                 child: ClubActionButtonNew(
                   this._clubHomePageModel,
                   ClubActions.ANNOUNCEMETS,
-                  "Announcements",
+                  appScreenText['ANNOUNCEMENTS'],
                   SvgPicture.asset(
                     "assets/images/club/announcements.svg",
                     color: theme.accentColor,
@@ -200,7 +202,7 @@ class ClubActionsNew extends StatelessWidget {
                   child: ClubActionButtonNew(
                     this._clubHomePageModel,
                     ClubActions.BOTSCRIPTS,
-                    "BOT Scripts",
+                    appScreenText['BOTSCRIPTS'],
                     SvgPicture.asset(
                       "assets/images/club/rewards.svg",
                       color: theme.accentColor,

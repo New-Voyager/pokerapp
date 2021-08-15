@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/game_history_model.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
@@ -28,6 +29,7 @@ class _GameHistoryViewState extends State<GameHistoryView>
 
   final String clubCode;
   _GameHistoryViewState(this.clubCode);
+  AppTextScreen _appScreenText;
 
   bool _loadingData = true;
 
@@ -42,6 +44,7 @@ class _GameHistoryViewState extends State<GameHistoryView>
   @override
   void initState() {
     super.initState();
+    _appScreenText = getAppTextScreen("gameHistoryView");
     // method call
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _fetchData();
@@ -67,7 +70,7 @@ class _GameHistoryViewState extends State<GameHistoryView>
     if (_loadingData) {
       return Center(
         child: Text(
-          'No games played',
+          _appScreenText['NOGAMESPLAYED'],
           style: AppDecorators.getCenterTextTextstyle(appTheme: theme),
         ),
       );
@@ -92,7 +95,7 @@ class _GameHistoryViewState extends State<GameHistoryView>
           appBar: CustomAppBar(
             theme: theme,
             titleText: AppStringsNew.GameHistoryTitle,
-            subTitleText: "Club code: ${widget.clubCode}",
+            subTitleText: "${_appScreenText['CLUBCODE']}: ${widget.clubCode}",
             context: context,
           ),
           body: _prevGames == null

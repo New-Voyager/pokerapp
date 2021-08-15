@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_stages.dart';
-import 'package:pokerapp/models/handlog_model.dart';
+import 'package:pokerapp/models/hand_log_model_new.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/widgets/cards/multiple_stack_card_views.dart';
@@ -14,6 +15,8 @@ class HandLogHeaderView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    AppTextScreen _appScreenText = getAppTextScreen("handLogHeaderView");
+
     final board1Cards = _handResult.getBoard1ShownCards();
     final board2Cards = _handResult.getBoard2ShownCards();
     return Consumer<AppTheme>(
@@ -29,7 +32,7 @@ class HandLogHeaderView extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "Game: " + _handResult.gameId,
+                  "${_appScreenText['GAME']}: " + _handResult.gameId,
                   style: AppDecorators.getSubtitle2Style(theme: theme),
                 ),
                 Text(
@@ -37,7 +40,7 @@ class HandLogHeaderView extends StatelessWidget {
                   style: AppDecorators.getHeadLine4Style(theme: theme),
                 ),
                 Text(
-                  "Hand: #" + _handResult.handNum.toString(),
+                  "${_appScreenText['HAND']}: #" + _handResult.handNum.toString(),
                   style: AppDecorators.getSubtitle2Style(theme: theme),
                 ),
               ],
@@ -57,7 +60,7 @@ class HandLogHeaderView extends StatelessWidget {
                         Container(
                           margin: EdgeInsets.only(bottom: 5),
                           child: Text(
-                            "Community Cards",
+                            "${_appScreenText['COMMUNITYCARDS']}",
                             style:
                                 AppDecorators.getSubtitle3Style(theme: theme),
                           ),
@@ -94,7 +97,7 @@ class HandLogHeaderView extends StatelessWidget {
                           Container(
                             margin: EdgeInsets.only(bottom: 5),
                             child: Text(
-                              "Your Cards",
+                              "${_appScreenText['YOURCARDS']}",
                               style:
                                   AppDecorators.getSubtitle3Style(theme: theme),
                             ),

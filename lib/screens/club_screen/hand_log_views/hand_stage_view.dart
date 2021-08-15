@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_stages.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/handlog_model.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
@@ -12,11 +13,14 @@ class HandStageView extends StatelessWidget {
   final GameStages stageEnum;
   final bool shown;
   String stageName;
+  AppTextScreen _appScreenText;
 
   HandStageView({this.handResult, this.stageEnum, this.shown});
 
   @override
   Widget build(BuildContext context) {
+    _appScreenText = getAppTextScreen("handStageView");
+
     GameActions actions = _getActions(stageEnum);
     final theme = AppTheme.getTheme(context);
     // String stageName = _getStageName(stageEnum);
@@ -100,39 +104,39 @@ class HandStageView extends StatelessWidget {
     switch (actions.actions[index].action) {
       case HandActions.SB:
         textStyle = sbTextStyle;
-        action = "SB";
+        action = _appScreenText["SB"];
         break;
       case HandActions.BB:
         textStyle = bbTextStyle;
-        action = "BB";
+        action = _appScreenText["BB"];
         break;
       case HandActions.BET:
         textStyle = betTextStyle;
-        action = "Bet";
+        action = _appScreenText["BET"];
         break;
       case HandActions.RAISE:
         textStyle = raiseTextStyle;
-        action = "Raise";
+        action = _appScreenText["RAISE"];
         break;
       case HandActions.CHECK:
         textStyle = checkTextStyle;
-        action = "Check";
+        action = _appScreenText["CHECK"];
         break;
       case HandActions.CALL:
         textStyle = callTextStyle;
-        action = "Call";
+        action = _appScreenText["CALL"];
         break;
       case HandActions.FOLD:
         textStyle = foldTextStyle;
-        action = "Fold";
+        action = _appScreenText["FOLD"];
         break;
       case HandActions.STRADDLE:
         textStyle = straddleTextStyle;
-        action = "Straddle";
+        action = _appScreenText["STRADDLE"];
         break;
       case HandActions.ALLIN:
         textStyle = allinTextStyle;
-        action = "All-in";
+        action = _appScreenText["ALLIN"];
         break;
       // case HandActions.UNKNOWN:
       //   // TODO: Handle this case.
@@ -194,23 +198,23 @@ class HandStageView extends StatelessWidget {
   GameActions _getActions(GameStages stage) {
     switch (stage) {
       case GameStages.PREFLOP:
-        stageName = "Preflop";
+        stageName = _appScreenText["PREFLOP"];
         return handResult.preflopActions;
 
       case GameStages.FLOP:
-        stageName = "Flop";
+        stageName = _appScreenText["FLOP"];
         return handResult.flopActions;
 
       case GameStages.TURN:
-        stageName = "Turn";
+        stageName = _appScreenText["TURN"];
         return handResult.turnActions;
 
       case GameStages.RIVER:
-        stageName = "River";
+        stageName =  _appScreenText["RIVER"];
         return handResult.riverActions;
 
       case GameStages.SHOWDOWN:
-        stageName = "Showdown";
+        stageName = _appScreenText["SHOWDOWN"];
         return null;
 
       default:

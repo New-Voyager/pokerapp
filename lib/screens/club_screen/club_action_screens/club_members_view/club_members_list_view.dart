@@ -1,14 +1,13 @@
 import 'dart:developer';
-import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/club_member_status.dart';
 import 'package:pokerapp/models/club_members_model.dart';
+import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/app_icons.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
-import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/services/app/club_interior_service.dart';
 import 'package:pokerapp/widgets/custom_icon_button.dart';
@@ -21,8 +20,10 @@ class ClubMembersListView extends StatefulWidget {
   //final Function fetchData;
   final bool viewAsOwner;
   final MemberListOptions option;
-  ClubMembersListView(
-      this.clubCode, this._membersList, this.option, this.viewAsOwner);
+  final AppTextScreen appScreenText;
+
+  ClubMembersListView(this.clubCode, this._membersList, this.option,
+      this.viewAsOwner, this.appScreenText);
 
   @override
   _ClubMembersListViewState createState() => _ClubMembersListViewState();
@@ -157,9 +158,9 @@ class _ClubMembersListViewState extends State<ClubMembersListView> {
                                               .copyWith(),
                                       child: Text(
                                         (data.isManager
-                                            ? AppStringsNew.managerLabel
+                                            ? widget.appScreenText['MANAGER']
                                             : data.isOwner
-                                                ? AppStringsNew.ownerLabel
+                                                ? widget.appScreenText['OWNER']
                                                 : ""),
                                         style: AppDecorators.getSubtitle2Style(
                                             theme: theme),
@@ -192,7 +193,7 @@ class _ClubMembersListViewState extends State<ClubMembersListView> {
                                 child: Row(
                                   children: [
                                     Text(
-                                      AppStringsNew.pendingApprovalText,
+                                      widget.appScreenText['PENDINGAPPROVAL'],
                                       textAlign: TextAlign.left,
                                       style: AppDecorators.getSubtitle3Style(
                                           theme: theme),
@@ -236,7 +237,7 @@ class _ClubMembersListViewState extends State<ClubMembersListView> {
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: <Widget>[
                           IconTextButton(
-                            text: AppStringsNew.approveButtonText,
+                            text: widget.appScreenText['APPROVE'],
                             buttonColor: theme.secondaryColor,
                             icon: Icons.done,
                             onTap: () async {
@@ -252,7 +253,7 @@ class _ClubMembersListViewState extends State<ClubMembersListView> {
                           ),
                           AppDimensionsNew.getHorizontalSpace(16),
                           IconTextButton(
-                            text: AppStringsNew.denyButtonText,
+                            text: widget.appScreenText['DENY'],
                             buttonColor: theme.negativeOrErrorColor,
                             icon: Icons.close,
                             onTap: () async {
