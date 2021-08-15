@@ -516,6 +516,7 @@ class NewGameSettings2 extends StatelessWidget {
                   title: Text(_appScreenText['ADVANCESETTINGS']),
                   children: [
                     _buildDecoratedContainer(
+                      theme: theme,
                       children: [
                         SwitchWidget(
                           value: gmp.buyInApproval,
