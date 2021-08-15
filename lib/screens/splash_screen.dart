@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/auth_model.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_config.dart';
 import 'package:pokerapp/routes.dart';
 import 'package:pokerapp/services/app/appcoin_service.dart';
 import 'package:pokerapp/services/app/auth_service.dart';
+import 'package:pokerapp/services/data/box_type.dart';
+import 'package:pokerapp/services/data/hive_datasource_impl.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -71,6 +74,13 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // final theme = AppTheme.getTheme(context);
+    // final themeData = HiveDatasource.getInstance
+    //     .getBox(BoxType.USER_SETTINGS_BOX)
+    //     .get("theme");
+    // if (themeData != null) {
+    //   theme.updateThemeData(themeData);
+    // }
     return Scaffold(
       backgroundColor: Colors.black,
       body: Center(

@@ -8,6 +8,10 @@ class AppTheme extends ChangeNotifier {
   // constructor, which takes in app theme data
   AppTheme(this._themeData);
 
+  get navBgColor => _themeData.navBgColor;
+
+  get navFabColor => _themeData.navFabColor;
+
   // function to update the theme data
   void updateThemeData(AppThemeData themeData) {
     _themeData = themeData;

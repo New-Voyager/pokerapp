@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
@@ -22,6 +23,7 @@ class GameCircleButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = AppTheme.getTheme(context);
     Widget child = this.child;
     Widget svg;
     if (imagePath != null) {
@@ -47,11 +49,12 @@ class GameCircleButton extends StatelessWidget {
               child: Icon(
               iconData,
               size: 20.pw,
-              color: Colors.black, //AppColorsNew.newGreenButtonColor,
+              color: theme
+                  .primaryColorWithDark(), //AppColorsNew.newGreenButtonColor,
             ));
     }
 
-    Color buttonColor = AppColorsNew.newActiveBoxColor;
+    Color buttonColor = theme.accentColor;
     if (disabled) {
       buttonColor = AppColorsNew.disabledColor;
     }
@@ -60,10 +63,7 @@ class GameCircleButton extends StatelessWidget {
       width: 32.pw,
       decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: buttonColor,
-          border: Border.all(
-              color: Color(
-                  0xff8b4513))), //AppColorsNew.gameButtonBorderColor)), //Colors.yellow)),
+          color: buttonColor,),
       padding: EdgeInsets.all(5.pw),
       margin: EdgeInsets.symmetric(
         horizontal: 5.pw,

@@ -6,11 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/option_item_model.dart';
-import 'package:pokerapp/resources/new/app_colors_new.dart';
-import 'package:pokerapp/resources/new/app_colors_new.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
-import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/util_screens/util.dart';
 import 'package:pokerapp/services/app/game_service.dart';
@@ -209,7 +208,7 @@ class _GameOptionState extends State<GameOption> {
         title: "Seat Change",
         image: "assets/images/casino.png",
         name: "Request seat change",
-        backGroundColor: AppColorsNew.gameOption2,
+        backGroundColor: Colors.redAccent,
         onTap: (context) async {
           await showModalBottomSheet(
             context: context,
@@ -227,7 +226,7 @@ class _GameOptionState extends State<GameOption> {
         title: "Waiting List",
         image: "assets/images/casino.png",
         name: "Add to waiting list",
-        backGroundColor: AppColorsNew.gameOption3,
+        backGroundColor: Colors.blue,
         onTap: (context) async {
           await showModalBottomSheet(
               context: context,
@@ -260,13 +259,13 @@ class _GameOptionState extends State<GameOption> {
     );
   }
 
-  Widget _buildOtherGameOptions() => Container(
+  Widget _buildOtherGameOptions(AppTheme theme) => Container(
         padding: const EdgeInsets.all(5.0),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             _buildCheckBox(
-                text: 'Muck Losing Hand',
+                text: AppStringsNew.muckLoosingHand,
                 value: widget.gameState.gameInfo.playerMuckLosingHand,
                 onChange: (bool v) async {
                   await GameService.updateGameConfig(widget.gameState.gameCode,
@@ -276,8 +275,9 @@ class _GameOptionState extends State<GameOption> {
                   if (closed) return;
                   setState(() {});
                 }),
+            
             _buildCheckBox(
-              text: 'Prompt run it twice',
+              text: AppStringsNew.promptRunitTwice,
               value: widget.gameState.gameInfo.playerRunItTwice,
               onChange: (bool v) async {
                 await GameService.updateGameConfig(widget.gameState.gameCode,
@@ -289,7 +289,7 @@ class _GameOptionState extends State<GameOption> {
               },
             ),
             _buildCheckBox(
-              text: 'Game Sounds',
+              text: AppStringsNew.gameSoundsText,
               value: widget.gameState.settings.gameSound,
               onChange: (bool v) async {
                 // setting the value saves it to local storage too
@@ -301,7 +301,7 @@ class _GameOptionState extends State<GameOption> {
             ),
             widget.gameState.gameInfo.audioConfEnabled ?? false
                 ? _buildCheckBox(
-                    text: 'Audio Conference',
+                    text: AppStringsNew.audioConferenceText,
                     value: widget.gameState.settings.audioConf,
                     onChange: (bool v) async {
                       // setting the value saves it to local storage too
@@ -314,7 +314,7 @@ class _GameOptionState extends State<GameOption> {
                   )
                 : SizedBox(),
             _buildCheckBox(
-              text: 'Animations',
+              text: AppStringsNew.animationsText,
               value: widget.gameState.settings.animations,
               onChange: (bool v) async {
                 // setting the value saves it to local storage too
@@ -324,7 +324,7 @@ class _GameOptionState extends State<GameOption> {
               },
             ),
             _buildCheckBox(
-              text: 'Show Chat',
+              text: AppStringsNew.showChatText,
               value: widget.gameState.settings.showChat,
               onChange: (bool v) async {
                 // setting the value saves it to local storage too
@@ -343,7 +343,7 @@ class _GameOptionState extends State<GameOption> {
                     children: [
                       // straddle off
                       _buildCheckBox(
-                        text: 'Straddle',
+                        text: AppStringsNew.straddleText,
                         value: widget.gameState.settings.straddleOption,
                         onChange: (bool v) async {
                           // setting the value saves it to local storage too
@@ -356,7 +356,7 @@ class _GameOptionState extends State<GameOption> {
 
                       // auto straddle
                       _buildCheckBox(
-                        text: 'Auto Straddle',
+                        text: AppStringsNew.autoStraddleText,
                         value: widget.gameState.settings.autoStraddle,
                         onChange: (bool v) async {
                           if (v) {
@@ -382,6 +382,7 @@ class _GameOptionState extends State<GameOption> {
   Widget build(BuildContext context) {
     height = MediaQuery.of(context).size.height;
     bool isPlaying = widget.gameState.isPlaying;
+    final theme = AppTheme.getTheme(context);
 
     return SingleChildScrollView(
       physics: BouncingScrollPhysics(),
@@ -391,17 +392,18 @@ class _GameOptionState extends State<GameOption> {
           children: [
             // game options - standup, reload, break, pause...
             !isPlaying
-                ? Container()
+                ? SizedBox.shrink()
                 : Container(
                     margin: EdgeInsets.only(bottom: 10),
                     padding: EdgeInsets.only(top: 16),
                     width: double.infinity,
-                    decoration: AppStylesNew.actionRowDecoration,
+                    decoration:
+                        AppDecorators.tileDecorationWithoutBorder(theme),
                     child: Wrap(
                       alignment: WrapAlignment.center,
                       //mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        ...gameActions.map((e) => gameActionItem(e)).toList(),
+                        ...gameActions.map((e) => gameActionItem(e,theme)).toList(),
                       ],
                     ),
                   ),
@@ -409,7 +411,7 @@ class _GameOptionState extends State<GameOption> {
             // game stats - elapsed time, won, hands...
             Container(
               padding: EdgeInsets.all(16),
-              decoration: AppStylesNew.actionRowDecoration,
+              decoration: AppDecorators.tileDecorationWithoutBorder(theme),
               child: Column(
                 children: [
                   Row(
@@ -418,7 +420,9 @@ class _GameOptionState extends State<GameOption> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("Elapsed", style: AppStylesNew.labelTextStyle),
+                          Text(AppStringsNew.elapsedLabel,
+                              style: AppDecorators.getSubtitle3Style(
+                                  theme: theme)),
                           isFetching
                               ? CircularProgressWidget(
                                   showText: false,
@@ -426,20 +430,31 @@ class _GameOptionState extends State<GameOption> {
                                 )
                               : Text(
                                   "${DataFormatter.timeFormat(gameInfo.runningTime)}",
-                                  style: AppStylesNew.valueTextStyle),
+                                  style: AppDecorators.getHeadLine4Style(
+                                          theme: theme)
+                                      .copyWith(fontWeight: FontWeight.w700),
+                                ),
                         ],
                       ),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
-                          Text("Hands", style: AppStylesNew.labelTextStyle),
+                          Text(
+                            AppStringsNew.hands,
+                            style:
+                                AppDecorators.getSubtitle3Style(theme: theme),
+                          ),
                           isFetching
                               ? CircularProgressWidget(
                                   showText: false,
                                   height: 24,
                                 )
-                              : Text("${gameInfo.noHandsPlayed}",
-                                  style: AppStylesNew.valueTextStyle),
+                              : Text(
+                                  "${gameInfo.noHandsPlayed}",
+                                  style: AppDecorators.getHeadLine4Style(
+                                          theme: theme)
+                                      .copyWith(fontWeight: FontWeight.w700),
+                                ),
                         ],
                       )
                     ],
@@ -453,8 +468,9 @@ class _GameOptionState extends State<GameOption> {
                           : Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text("Session",
-                                    style: AppStylesNew.labelTextStyle),
+                                Text(AppStringsNew.sessionText,
+                                    style: AppDecorators.getSubtitle3Style(
+                                        theme: theme)),
                                 isFetching
                                     ? CircularProgressWidget(
                                         showText: false,
@@ -462,7 +478,10 @@ class _GameOptionState extends State<GameOption> {
                                       )
                                     : Text(
                                         "${DataFormatter.timeFormat(gameInfo.sessionTime)}",
-                                        style: AppStylesNew.valueTextStyle),
+                                        style: AppDecorators.getHeadLine4Style(
+                                                theme: theme)
+                                            .copyWith(
+                                                fontWeight: FontWeight.w700)),
                               ],
                             ),
                       !isPlaying
@@ -470,14 +489,21 @@ class _GameOptionState extends State<GameOption> {
                           : Column(
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
-                                Text("Won", style: AppStylesNew.labelTextStyle),
+                                Text(
+                                  AppStringsNew.won,
+                                  style: AppDecorators.getSubtitle3Style(
+                                      theme: theme),
+                                ),
                                 isFetching
                                     ? CircularProgressWidget(
                                         showText: false,
                                         height: 24,
                                       )
                                     : Text("${gameInfo.noHandsWon}",
-                                        style: AppStylesNew.valueTextStyle),
+                                        style: AppDecorators.getHeadLine4Style(
+                                                theme: theme)
+                                            .copyWith(
+                                                fontWeight: FontWeight.w700)),
                               ],
                             )
                     ],
@@ -493,7 +519,7 @@ class _GameOptionState extends State<GameOption> {
             Container(
               width: double.infinity,
               padding: EdgeInsets.all(10),
-              decoration: AppStylesNew.actionRowDecoration,
+              decoration: AppDecorators.tileDecorationWithoutBorder(theme),
               child: Row(
                 children: [
                   Expanded(
@@ -501,20 +527,14 @@ class _GameOptionState extends State<GameOption> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         // main text
-                        const Text(
-                          'Bet Action',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18.0,
-                          ),
+                        Text(
+                          AppStringsNew.betActionText,
+                          style: AppDecorators.getHeadLine4Style(theme: theme),
                         ),
                         // hint text
-                        const Text(
-                          '(applied in next action)',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 13.0,
-                          ),
+                        Text(
+                          '(${AppStringsNew.betActionHintText})',
+                          style: AppDecorators.getSubtitle1Style(theme: theme),
                         ),
                       ],
                     ),
@@ -524,14 +544,19 @@ class _GameOptionState extends State<GameOption> {
                   // false ==> swipe is active
                   Expanded(
                     child: CupertinoSegmentedControl<bool>(
-                      borderColor: const Color(0xff40D876),
-                      selectedColor: const Color(0xff40D876),
+                      borderColor: theme.accentColor,
+                      selectedColor: theme.accentColor,
+                      unselectedColor: theme.fillInColor,
                       groupValue: HiveDatasource.getInstance
                           .getBox(BoxType.USER_SETTINGS_BOX)
                           .get('isTapForBetAction?', defaultValue: false),
                       children: {
-                        false: Text('Swipe', style: TextStyle(fontSize: 18.0)),
-                        true: Text('Tap', style: TextStyle(fontSize: 18.0)),
+                        false: Text(AppStringsNew.swipeText,
+                            style:
+                                AppDecorators.getHeadLine4Style(theme: theme)),
+                        true: Text(AppStringsNew.tapText,
+                            style:
+                                AppDecorators.getHeadLine4Style(theme: theme)),
                       },
                       onValueChanged: (bool v) async {
                         await HiveDatasource.getInstance
@@ -570,8 +595,8 @@ class _GameOptionState extends State<GameOption> {
 
             // game settings
             Container(
-              decoration: AppStylesNew.actionRowDecoration,
-              child: _buildOtherGameOptions(),
+              decoration: AppDecorators.tileDecorationWithoutBorder(theme),
+              child: _buildOtherGameOptions(theme),
             ),
 
             // sep
@@ -580,7 +605,7 @@ class _GameOptionState extends State<GameOption> {
             //game secondary options
             Container(
               padding: EdgeInsets.all(10),
-              decoration: AppStylesNew.actionRowDecoration,
+              decoration: AppDecorators.tileDecorationWithoutBorder(theme),
               child: ListView.separated(
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
@@ -589,12 +614,13 @@ class _GameOptionState extends State<GameOption> {
                   return gameSecondaryOptionItem(
                     gameSecondaryOptions[index],
                     context,
+                    theme,
                   );
                 },
                 separatorBuilder: (context, index) {
                   return Divider(
                     height: 2,
-                    color: AppColorsNew.newBackgroundBlackColor,
+                    color: theme.secondaryColor,
                     endIndent: 24,
                     indent: 24,
                   );
@@ -608,39 +634,38 @@ class _GameOptionState extends State<GameOption> {
   }
 
   gameSecondaryOptionItem(
-      OptionItemModel optionItemModel, BuildContext context) {
+      OptionItemModel optionItemModel, BuildContext context, AppTheme theme) {
     return ListTile(
       onTap: () => optionItemModel.onTap(context),
       title: Text(
         optionItemModel.title,
+        style: AppDecorators.getHeadLine4Style(theme: theme),
       ),
       leading: Container(
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: optionItemModel.backGroundColor,
-        ),
+        decoration: AppDecorators.tileDecorationWithoutBorder(theme)
+            .copyWith(color: optionItemModel.backGroundColor),
         padding: EdgeInsets.all(5),
         child: Image.asset(
           optionItemModel.image,
           height: 32.ph,
           width: 32.pw,
-          color: Colors.white,
+          color: theme.supportingColor,
         ),
       ),
       trailing: Icon(
         Icons.arrow_forward_ios,
-        color: AppColorsNew.newGreenButtonColor,
+        color: theme.accentColor,
       ),
       subtitle: optionItemModel.name != null
           ? Text(
               optionItemModel.name,
-              style: AppStylesNew.labelTextStyle,
+              style: AppDecorators.getSubtitle1Style(theme: theme),
             )
           : Container(),
     );
   }
 
-  gameActionItem(OptionItemModel optionItemModel) {
+  gameActionItem(OptionItemModel optionItemModel,AppTheme theme) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 5),
       child: GestureDetector(
@@ -654,20 +679,20 @@ class _GameOptionState extends State<GameOption> {
             Container(
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: AppColorsNew.gameOptionColor,
+                color:theme.accentColor,
               ),
               padding: EdgeInsets.all(10),
               child: Icon(
                 optionItemModel.iconData ?? Icons.message,
                 size: 20.pw,
-                color: AppColorsNew.darkGreenShadeColor,
+                color: theme.primaryColorWithDark(),
               ),
             ),
             Container(
               padding: EdgeInsets.all(5),
               child: Text(
                 optionItemModel.title,
-                style: AppStylesNew.labelTextStyle,
+                style: AppDecorators.getSubtitle3Style(theme: theme),
               ),
             ),
           ],

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/screens/game_screens/table_result/table_result.dart';
 
@@ -16,6 +17,7 @@ class _TableResultBottomSheetState extends State<TableResultBottomSheet> {
   double ratio = 2;
   @override
   Widget build(BuildContext context) {
+    final theme = AppTheme.getTheme(context);
     height = MediaQuery.of(context).size.height;
     return Container(
       height: height / ratio,
@@ -51,13 +53,13 @@ class _TableResultBottomSheetState extends State<TableResultBottomSheet> {
                 child: Container(
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: AppColorsNew.newGreenButtonColor,
+                    color: theme.accentColor,
                   ),
                   padding: EdgeInsets.all(6),
                   child: Icon(
                     ratio == 2 ? Icons.arrow_upward : Icons.arrow_downward,
                     size: 20,
-                    color: AppColorsNew.darkGreenShadeColor,
+                    color: theme.primaryColorWithDark(),
                   ),
                 ),
               ),
@@ -72,14 +74,12 @@ class _TableResultBottomSheetState extends State<TableResultBottomSheet> {
                 },
                 child: Container(
                   decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: AppColorsNew.newGreenButtonColor,
-                  ),
+                      shape: BoxShape.circle, color: theme.accentColor),
                   padding: EdgeInsets.all(6),
                   child: Icon(
                     Icons.close,
                     size: 20,
-                    color: AppColorsNew.darkGreenShadeColor,
+                    color: theme.primaryColorWithDark(),
                   ),
                 ),
               ),

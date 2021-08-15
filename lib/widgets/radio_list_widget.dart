@@ -78,7 +78,7 @@ class RadioListWidget extends StatelessWidget {
           vertical: 15.0,
         ),
         decoration: BoxDecoration(
-          color: theme.secondaryColor,
+          color: theme.primaryColorWithDark(),
           borderRadius: BorderRadius.circular(5.0),
         ),
         child: _buildItems(theme),

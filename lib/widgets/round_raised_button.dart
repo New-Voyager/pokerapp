@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_assets.dart';
+import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
@@ -70,12 +72,13 @@ class RoundRaisedButtonWithTimer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = AppTheme.getTheme(context);
     return RaisedButton(
       elevation: 5.0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(radius ?? 20),
       ),
-      color: color ?? Colors.white,
+      color: color ?? Colors.blueGrey,
       onPressed: onButtonTap,
       child: Padding(
           padding: EdgeInsets.symmetric(
@@ -88,12 +91,7 @@ class RoundRaisedButtonWithTimer extends StatelessWidget {
                 Column(mainAxisAlignment: MainAxisAlignment.center, children: [
               Text(
                 buttonText ?? 'Button Text Goes Here',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontFamily: AppAssets.fontFamilyLato,
-                  fontSize: fontSize,
-                  fontWeight: FontWeight.w700,
-                ),
+                style: AppDecorators.getSubtitle1Style(theme: theme),
               ),
               //timerWidget,
             ]),

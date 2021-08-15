@@ -10,6 +10,7 @@ import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/test/test_service.dart';
@@ -126,7 +127,7 @@ class _PointsLineChart extends State<PointsLineChart> with RouteAwareAnalytics {
                 appBar: CustomAppBar(
                   theme: theme,
                   context: context,
-                  titleText: "Stack Timeline",
+                  titleText: AppStringsNew.stackTimelineText,
                   showBackButton: widget.showBackButton,
                 ),
                 body: !loadingDone
@@ -149,7 +150,7 @@ class _PointsLineChart extends State<PointsLineChart> with RouteAwareAnalytics {
                                       '=====================\n\LineChart item tapped');
                                 },
                                 child: charts.LineChart(
-                                  _createSampleData(),
+                                  _createSampleData(theme),
                                   animate: false,
                                   behaviors: [
                                     // new charts.SlidingViewport(),
@@ -194,7 +195,8 @@ class _PointsLineChart extends State<PointsLineChart> with RouteAwareAnalytics {
   }
 
   /// Create one series with sample hard coded data.
-  List<charts.Series<PlayerStackChartModel, int>> _createSampleData() {
+  List<charts.Series<PlayerStackChartModel, int>> _createSampleData(
+      AppTheme theme) {
     return [
       new charts.Series<PlayerStackChartModel, int>(
           id: 'Stack',
@@ -207,8 +209,7 @@ class _PointsLineChart extends State<PointsLineChart> with RouteAwareAnalytics {
           domainFn: (PlayerStackChartModel game, _) => game.handNum,
           measureFn: (PlayerStackChartModel game, _) => game.after,
           data: stackList,
-          seriesColor:
-              charts.ColorUtil.fromDartColor(AppColorsNew.appAccentColor))
+          seriesColor: charts.ColorUtil.fromDartColor(theme.accentColor))
     ];
   }
 

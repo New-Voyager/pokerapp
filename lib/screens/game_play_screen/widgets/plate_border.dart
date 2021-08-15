@@ -2,12 +2,14 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:path_drawing/path_drawing.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 
 class FilledPathPainter extends CustomPainter {
   FilledPathPainter({
     @required this.path,
     @required this.color,
+    @required this.fillColor,
     @required this.percent,
     @required this.progressPath,
   });
@@ -16,6 +18,7 @@ class FilledPathPainter extends CustomPainter {
   final Path progressPath;
   final Color color;
   final double percent;
+  final Color fillColor;
   Matrix4 matrix4;
 
   @override
@@ -37,7 +40,7 @@ class FilledPathPainter extends CustomPainter {
     canvas.drawPath(
         transformedPath,
         Paint()
-          ..color = Color(0XFF494444)
+          ..color = fillColor
           ..style = PaintingStyle.fill
           ..strokeWidth = 2);
 
@@ -130,12 +133,13 @@ class _PlateWidgetState extends State<PlateWidget>
 
   @override
   Widget build(BuildContext context) {
+    final theme = AppTheme.getTheme(context);
     var path = parseSvgPathData('M 0,0 L100,0 L 100,100 L 0,100 L 0,0Z');
     var roundedPath =
         'M 20 0 h 200 a 20 20 0 0 1 20 20 v 200 a 20 20 0 0 1 -20 20 h -200 a 20 20 0 0 1 -20 -20 v -200 a 20 20 0 0 1 20 -20 z';
     path = parseSvgPathData(roundedPath);
 
-    Color borderColor = AppColorsNew.plateBorderColor;
+    Color borderColor = theme.accentColor;
     double percent = 0.0;
     double progressLength = 0.0;
     Path progressPath;
@@ -160,6 +164,7 @@ class _PlateWidgetState extends State<PlateWidget>
           progressPath: progressPath,
           color: borderColor,
           percent: percent,
+          fillColor: theme.primaryColorWithDark(),
         ),
       ),
     );

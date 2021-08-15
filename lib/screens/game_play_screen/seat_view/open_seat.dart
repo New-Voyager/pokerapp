@@ -2,6 +2,8 @@ import 'dart:developer';
 
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 
 class OpenSeat extends StatelessWidget {
@@ -17,7 +19,7 @@ class OpenSeat extends StatelessWidget {
     Key key,
   }) : super(key: key);
 
-  Widget _openSeat() {
+  Widget _openSeat(AppTheme theme) {
     if (seatChangeInProgress && seatChangeSeat) {
       log('open seat $seatChangeInProgress');
       return Padding(
@@ -45,7 +47,7 @@ class OpenSeat extends StatelessWidget {
       child: FittedBox(
         child: Text(
           'Open $seatPos',
-          style: AppStylesNew.openSeatTextStyle,
+          style: AppDecorators.getSubtitle1Style(theme: theme),
         ),
       ),
     );
@@ -53,8 +55,10 @@ class OpenSeat extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = AppTheme.getTheme(context);
     return InkWell(
-        splashColor: Colors.blue,
+        splashColor: theme.secondaryColor,
+        borderRadius: BorderRadius.circular(16),
         onTap: () {
           log('Pressed $seatPos');
           this.onUserTap(seatPos);
@@ -65,7 +69,7 @@ class OpenSeat extends StatelessWidget {
           child: Stack(
             alignment: Alignment.center,
             children: [
-              _openSeat(),
+              _openSeat(theme),
               // CircularProgressIndicator(
               //   strokeWidth: 2.0,
               //   valueColor : AlwaysStoppedAnimation(Colors.white),
@@ -76,10 +80,18 @@ class OpenSeat extends StatelessWidget {
           //   child: _openSeat(),
           // ),
           decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: Color(0XFF494444),
-            //color: Colors.blue[900],
-          ),
+              shape: BoxShape.circle,
+              color: theme.primaryColorWithDark(),
+              boxShadow: [
+                BoxShadow(
+                  color: theme.secondaryColor,
+                  blurRadius: 1,
+                  spreadRadius: 1,
+                  offset: Offset(1, 0),
+                ),
+              ]
+              //color: Colors.blue[900],
+              ),
         ));
   }
 }

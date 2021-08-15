@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/hand_history_model.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/screens/game_screens/hand_history/hand_history.dart';
 
@@ -19,6 +20,7 @@ class _HandHistoryAnalyseBottomSheetState
   @override
   Widget build(BuildContext context) {
     height = MediaQuery.of(context).size.height;
+    final theme = AppTheme.getTheme(context);
     return Container(
       height: height / ratio,
       color: Colors.transparent,
@@ -55,13 +57,13 @@ class _HandHistoryAnalyseBottomSheetState
                 child: Container(
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: AppColorsNew.newGreenButtonColor,
+                    color: theme.accentColor,
                   ),
                   padding: EdgeInsets.all(6),
                   child: Icon(
                     ratio == 2 ? Icons.arrow_upward : Icons.arrow_downward,
                     size: 20,
-                    color: AppColorsNew.darkGreenShadeColor,
+                    color: theme.primaryColorWithDark(),
                   ),
                 ),
               ),
@@ -76,14 +78,12 @@ class _HandHistoryAnalyseBottomSheetState
                 },
                 child: Container(
                   decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: AppColorsNew.newGreenButtonColor,
-                  ),
+                      shape: BoxShape.circle, color: theme.accentColor),
                   padding: EdgeInsets.all(6),
                   child: Icon(
                     Icons.close,
                     size: 20,
-                    color: AppColorsNew.darkGreenShadeColor,
+                    color: theme.primaryColorWithDark(),
                   ),
                 ),
               ),
