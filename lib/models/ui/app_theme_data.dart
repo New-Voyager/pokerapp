@@ -32,6 +32,9 @@ class AppThemeData {
   Color handlogRiverColor;
   Color handlogShowdownColor;
 
+  Color navFabColor;
+  Color navBgColor;
+
   AppThemeData({
     this.primaryColor = const Color(0xFF033614), // 0xFF300614
     // Color(0xFF40D876); (darken secondary color)
@@ -46,5 +49,7 @@ class AppThemeData {
     this.handlogTurnColor = const Color(0xFF072818),
     this.handlogRiverColor = const Color(0xff453A02),
     this.handlogShowdownColor = const Color(0xFF44110A),
+    this.navBgColor = const Color(0xFF3D5242),
+    this.navFabColor = const Color(0xFF40D876),
   });
 }

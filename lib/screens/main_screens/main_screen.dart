@@ -5,7 +5,9 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/app_state.dart';
 import 'package:pokerapp/models/player_info.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_constants.dart';
+import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/app_icons.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/screens/game_screens/game_history_details_view/hand_stats_view.dart';
@@ -172,6 +174,7 @@ class _MainScreenState extends State<MainScreen>
 
   @override
   Widget build(BuildContext context) {
+    final theme = AppTheme.getTheme(context);
     List<Widget> widgets = [];
     widgets.addAll([
       LiveGamesScreen(),
@@ -194,8 +197,8 @@ class _MainScreenState extends State<MainScreen>
               selected: _navPos,
               fabSize: 35.pw,
               navHeight: 50.ph,
-              bgColor: AppColorsNew.newNavBarColor,
-              fabBgColor: AppColorsNew.newNavBarColor,
+              bgColor: theme.navBgColor,
+              fabBgColor: theme.secondaryColorWithDark(0.2),
               onItemClick: (i) {
                 setState(() => _navPos = i);
                 log("0-0-0-Current Index : $i");
@@ -254,6 +257,7 @@ class CurvedNavItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = AppTheme.getTheme(context);
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       // crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -262,8 +266,8 @@ class CurvedNavItem extends StatelessWidget {
           iconData,
           size: 15.0.pw,
           color: selected
-              ? AppColorsNew.newTextGreenColor
-              : AppColorsNew.newNavBarInactiveItemColor,
+              ? theme.supportingColor
+              : theme.supportingColor.withAlpha(150),
         ),
         selected
             ? Container()
@@ -272,12 +276,7 @@ class CurvedNavItem extends StatelessWidget {
                 child: Text(
                   title, //.toUpperCase() ?? 'Title'.toUpperCase(),
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: AppColorsNew.newTextColor,
-                    fontSize: 8.dp,
-                    letterSpacing: 0.7.dp,
-                    fontWeight: FontWeight.w300,
-                  ),
+                  style: AppDecorators.getSubtitle1Style(theme: theme),
                 ),
               ),
       ],

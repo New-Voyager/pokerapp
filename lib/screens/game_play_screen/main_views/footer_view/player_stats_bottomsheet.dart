@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/screens/game_screens/game_history_details_view/stack_details_view.dart';
 
@@ -15,9 +17,10 @@ class _PlayerStatsBottomSheetState extends State<PlayerStatsBottomSheet> {
   @override
   Widget build(BuildContext context) {
     height = MediaQuery.of(context).size.height;
+    final theme = AppTheme.getTheme(context);
     return Container(
       height: height / ratio,
-      color: Colors.transparent,
+      decoration: AppDecorators.bgRadialGradient(theme),
       child: Stack(
         children: [
           Column(
@@ -50,13 +53,13 @@ class _PlayerStatsBottomSheetState extends State<PlayerStatsBottomSheet> {
                 child: Container(
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: AppColorsNew.newGreenButtonColor,
+                    color: theme.accentColor,
                   ),
                   padding: EdgeInsets.all(6),
                   child: Icon(
                     ratio == 2 ? Icons.arrow_upward : Icons.arrow_downward,
                     size: 20,
-                    color: AppColorsNew.darkGreenShadeColor,
+                    color: theme.primaryColorWithDark(),
                   ),
                 ),
               ),
@@ -72,13 +75,13 @@ class _PlayerStatsBottomSheetState extends State<PlayerStatsBottomSheet> {
                 child: Container(
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: AppColorsNew.newGreenButtonColor,
+                    color: theme.accentColor,
                   ),
                   padding: EdgeInsets.all(6),
                   child: Icon(
                     Icons.close,
                     size: 20,
-                    color: AppColorsNew.darkGreenShadeColor,
+                    color: theme.primaryColorWithDark(),
                   ),
                 ),
               ),

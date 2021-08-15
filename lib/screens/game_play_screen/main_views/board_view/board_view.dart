@@ -7,8 +7,11 @@ import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/table_state.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_constants.dart';
+import 'package:pokerapp/resources/app_decorators.dart';
+import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/animating_widgets/card_distribution_animating_widget.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/center_view.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/decorative_views/table_view.dart';
@@ -17,6 +20,7 @@ import 'package:pokerapp/screens/game_play_screen/seat_view/animating_widgets/st
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/game_play/game_com_service.dart';
 import 'package:pokerapp/utils/numeric_keyboard2.dart';
+import 'package:pokerapp/widgets/round_color_button.dart';
 import 'package:pokerapp/widgets/round_raised_button.dart';
 import 'package:provider/provider.dart';
 import 'package:audioplayers/audioplayers.dart';
@@ -57,6 +61,7 @@ class BoardView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = AppTheme.getTheme(context);
     final gameState = GameState.getState(context);
     gameState.boardKey = boardViewKey;
     final boardAttributes = gameState.getBoardAttributes(context);
@@ -137,7 +142,7 @@ class BoardView extends StatelessWidget {
         Consumer<MyState>(
           builder: (BuildContext _, MyState myState, Widget __) => Align(
             alignment: Alignment.bottomCenter,
-            child: buyInButton(context),
+            child: buyInButton(context, theme),
           ),
         ),
 
@@ -158,7 +163,7 @@ class BoardView extends StatelessWidget {
                   offset: Offset(0, 10.ph),
                   child: Align(
                     alignment: Alignment.bottomCenter,
-                    child: rankText(context),
+                    child: rankText(context, theme),
                   ),
                 ),
               ),
@@ -166,7 +171,7 @@ class BoardView extends StatelessWidget {
     );
   }
 
-  Widget buyInButton(BuildContext context) {
+  Widget buyInButton(BuildContext context, AppTheme theme) {
     // show buyin button only for if the current player is in a seat
     final gameState = GameState.getState(context);
     final mySeat = gameState.mySeat(context);
@@ -197,8 +202,8 @@ class BoardView extends StatelessWidget {
             seat.player.status == AppConstants.WAIT_FOR_BUYIN_APPROVAL) {
           //log('Rebuilding buyin button now');
           return RoundRaisedButtonWithTimer(
-            buttonText: 'Buyin',
-            color: Colors.blueGrey,
+            buttonText: AppStringsNew.BuyIn,
+            color:theme.fillInColor,
             verticalPadding: 1,
             fontSize: 15,
             onButtonTap: () async => {await onBuyin(context)},
@@ -213,7 +218,7 @@ class BoardView extends StatelessWidget {
     return widget;
   }
 
-  Widget rankText(BuildContext context) {
+  Widget rankText(BuildContext context, AppTheme theme) {
     // show buyin button only for if the current player is in a seat
     final gameState = GameState.getState(context);
     final mySeat = gameState.mySeat(context);
@@ -242,12 +247,7 @@ class BoardView extends StatelessWidget {
         ),
         child: Text(
           mySeat.player.rankText,
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 16.dp,
-            fontFamily: AppAssets.fontFamilyLato,
-            fontWeight: FontWeight.w400,
-          ),
+          style: AppDecorators.getHeadLine4Style(theme: theme),
         ),
       );
     } else {
@@ -287,7 +287,7 @@ class BoardView extends StatelessWidget {
         return Transform.translate(
           offset: Offset(0, 10),
           child: RoundRaisedButtonWithTimer(
-            buttonText: 'Sit Back',
+            buttonText: AppStringsNew.sitBackText,
             color: Colors.blueGrey,
             verticalPadding: 1,
             fontSize: 14,

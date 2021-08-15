@@ -410,4 +410,45 @@ class AppStringsNew {
   static String gameTimeLabel = 'Game Time (in hours)';
 
   static String buyinMaxWaitTimeLabel = 'Buyin max wait time (in seconds)';
+
+  static String sitBackText = 'Sit Back';
+
+  static String tableText = "Table";
+
+  static String stackSeats = "Stack Stats";
+
+  static String outstandingBalance = "Outstanding balance";
+
+  static String stackTimelineText = "Stack Timeline";
+
+  static String chatHintText = 'Type a message';
+
+  static String elapsedLabel = "Elapsed";
+
+  static String sessionText = "Session";
+
+  static String betActionText = 'Bet Action';
+
+  static String betActionHintText = "applied in next action";
+
+  static String swipeText = "Swipe";
+  static String tapText = "Tap";
+
+  static String muckLoosingHand = 'Muck Losing Hand';
+
+  static String promptRunitTwice = 'Prompt run it twice';
+
+  static String gameSoundsText = 'Game Sounds';
+
+  static String audioConferenceText = 'Audio Conference';
+
+  static String animationsText = 'Animations';
+
+  static String showChatText = 'Animations';
+
+  static String straddleText = 'Straddle';
+
+  static String autoStraddleText = 'Auto Straddle';
+
+  static String applyText = "Apply";
 }

@@ -6,8 +6,9 @@ import 'package:pokerapp/models/game_play_models/provider_models/game_context.da
 import 'package:pokerapp/models/game_play_models/provider_models/host_seat_change.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/seat.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_constants.dart';
-import 'package:pokerapp/resources/new/app_styles_new.dart';
+import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/screens/game_play_screen/game_play_screen_util_methods.dart';
 import 'package:pokerapp/screens/game_play_screen/seat_view/animating_widgets/stack_reload_animating_widget.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/milliseconds_counter.dart';
@@ -30,12 +31,13 @@ class NamePlateWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer2<SeatChangeNotifier, GameContextObject>(
+    return Consumer3<SeatChangeNotifier, GameContextObject, AppTheme>(
       key: globalKey,
       builder: (
         context,
         hostSeatChange,
         gameContextObject,
+        theme,
         _,
       ) {
         Widget displayWidget;
@@ -56,17 +58,19 @@ class NamePlateWidget extends StatelessWidget {
             feedback: buildSeat(
               context,
               hostSeatChange,
+              theme,
               isFeedBack: true,
             ),
-            child: buildSeat(context, hostSeatChange),
+            child: buildSeat(context, hostSeatChange, theme),
             childWhenDragging: buildSeat(
               context,
               hostSeatChange,
+              theme,
               childWhenDragging: true,
             ),
           );
         } else {
-          displayWidget = buildSeat(context, hostSeatChange);
+          displayWidget = buildSeat(context, hostSeatChange, theme);
         }
         return displayWidget;
       },
@@ -84,6 +88,7 @@ class NamePlateWidget extends StatelessWidget {
   List<BoxShadow> getShadow(
     SeatChangeNotifier hostSeatChange,
     bool isFeedback,
+    AppTheme theme,
   ) {
     BoxShadow shadow;
     bool winner = seat.player?.winner ?? false;
@@ -137,12 +142,13 @@ class NamePlateWidget extends StatelessWidget {
 
   Widget buildSeat(
     BuildContext context,
-    SeatChangeNotifier hostSeatChange, {
+    SeatChangeNotifier hostSeatChange,
+    AppTheme theme, {
     bool isFeedBack = false,
     bool childWhenDragging = false,
   }) {
     // log('rebuild seat ${seat.serverSeatPos}');
-    final shadow = getShadow(hostSeatChange, isFeedBack);
+    final shadow = getShadow(hostSeatChange, isFeedBack, theme);
 
     Widget plateWidget;
 
@@ -219,9 +225,7 @@ class NamePlateWidget extends StatelessWidget {
                   FittedBox(
                     child: Text(
                       seat.player?.name ?? '',
-                      style: AppStylesNew.gamePlayScreenPlayerName.copyWith(
-                        color: Colors.white,
-                      ),
+                      style: AppDecorators.getSubtitle1Style(theme: theme),
                     ),
                   ),
 
@@ -234,7 +238,7 @@ class NamePlateWidget extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 5),
                       child: FittedBox(
-                        child: bottomWidget(context),
+                        child: bottomWidget(context, theme),
                       ),
                     ),
                   ),
@@ -247,7 +251,7 @@ class NamePlateWidget extends StatelessWidget {
     );
   }
 
-  Widget bottomWidget(BuildContext context) {
+  Widget bottomWidget(BuildContext context, AppTheme theme) {
     if (seat.player.inBreak && seat.player.breakTimeExpAt != null) {
       return GamePlayScreenUtilMethods.breakBuyIntimer(
         context,
@@ -261,19 +265,17 @@ class NamePlateWidget extends StatelessWidget {
       return GamePlayScreenUtilMethods.breakBuyIntimer(context, seat);
     } else {
       if (seat.player != null) {
-        return stack(context);
+        return stack(context, theme);
       } else {
         return Container();
       }
     }
   }
 
-  Widget stack(BuildContext context) {
+  Widget stack(BuildContext context, AppTheme theme) {
     Widget _buildStackTextWidget(int stack) => Text(
           stack?.toString() ?? 'XX',
-          style: AppStylesNew.gamePlayScreenPlayerChips.copyWith(
-            color: Colors.white,
-          ),
+          style: AppDecorators.getSubtitle1Style(theme: theme),
         );
 
     if (seat.player.reloadAnimation == true)
@@ -337,16 +339,15 @@ class PlayerViewDivider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(5),
-      child: Container(
-        decoration: BoxDecoration(
-          color: Color.fromARGB(255, 129, 129, 129),
-          borderRadius: BorderRadius.circular(5),
-        ),
-        height: 1,
-        width: double.infinity,
+    final theme = AppTheme.getTheme(context);
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 8),
+      decoration: BoxDecoration(
+        color: theme.fillInColor,
+        borderRadius: BorderRadius.circular(5),
       ),
+      height: 1,
+      width: double.infinity,
     );
   }
 }

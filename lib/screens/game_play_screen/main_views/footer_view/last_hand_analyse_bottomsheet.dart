@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/hand_log_model_new.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/screens/club_screen/hand_log_views/hand_log_view.dart';
 
@@ -21,6 +22,7 @@ class _LastHandAnalyseBottomSheetState
 
   @override
   Widget build(BuildContext context) {
+    final theme = AppTheme.getTheme(context);
     // get game state
     HandLogModelNew handLog;
     if (widget.handLog != null) {
@@ -69,13 +71,13 @@ class _LastHandAnalyseBottomSheetState
                 child: Container(
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: AppColorsNew.newGreenButtonColor,
+                    color: theme.accentColor,
                   ),
                   padding: EdgeInsets.all(6),
                   child: Icon(
                     ratio == 2 ? Icons.arrow_upward : Icons.arrow_downward,
                     size: 20,
-                    color: AppColorsNew.darkGreenShadeColor,
+                    color: theme.primaryColorWithDark(),
                   ),
                 ),
               ),
@@ -91,13 +93,13 @@ class _LastHandAnalyseBottomSheetState
                 child: Container(
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: AppColorsNew.newGreenButtonColor,
+                    color: theme.accentColor,
                   ),
                   padding: EdgeInsets.all(6),
                   child: Icon(
                     Icons.close,
                     size: 20,
-                    color: AppColorsNew.darkGreenShadeColor,
+                    color: theme.primaryColorWithDark(),
                   ),
                 ),
               ),

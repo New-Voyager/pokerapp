@@ -151,7 +151,7 @@ class TextInputWidget extends StatelessWidget {
             vertical: 5.0,
           ),
           decoration: BoxDecoration(
-            color: theme.secondaryColor,
+            color: theme.primaryColorWithDark(),
             borderRadius: BorderRadius.circular(5.0),
           ),
           child: Row(

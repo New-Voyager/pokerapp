@@ -20,9 +20,12 @@ import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/models/player_info.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/app_constants.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
+import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/game_context_screen/game_chat/game_chat.dart';
 import 'package:pokerapp/screens/game_play_screen/game_play_screen_util_methods.dart';
 import 'package:pokerapp/screens/game_play_screen/main_views/board_view/board_view.dart';
@@ -584,7 +587,8 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         )
       : SizedBox.shrink();
 
-  Widget _buildBoardView(Size boardDimensions, double tableScale) => Container(
+  Widget _buildBoardView(Size boardDimensions, double tableScale) {
+    return Container(
         width: boardDimensions.width,
         height: boardDimensions.height,
         child: Transform.scale(
@@ -598,8 +602,10 @@ class _GamePlayScreenState extends State<GamePlayScreen>
           ),
         ),
       );
+  }
 
-  Widget _buildFooterView(BuildContext context) => Expanded(
+  Widget _buildFooterView(BuildContext context) {
+    return Expanded(
         child: Container(
           decoration: BoxDecoration(
             image: DecorationImage(
@@ -616,6 +622,7 @@ class _GamePlayScreenState extends State<GamePlayScreen>
           ),
         ),
       );
+  }
 
   void _setupGameContextObject() {
     if (_gameContextObj.gameUpdateService == null) {
@@ -769,10 +776,9 @@ class _GamePlayScreenState extends State<GamePlayScreen>
     );
   }
 
-  Widget _buildBody() {
+  Widget _buildBody(AppTheme theme) {
     // show a progress indicator if the game info object is null
-    if (_gameInfoModel == null)
-      return Center(child: CircularProgressIndicator());
+    if (_gameInfoModel == null) return Center(child: CircularProgressWidget());
 
     /* get the screen sizes, and initialize the board attributes */
     BoardAttributesObject boardAttributes = BoardAttributesObject(
@@ -810,7 +816,8 @@ class _GamePlayScreenState extends State<GamePlayScreen>
         return ListenableProvider<ValueNotifier<bool>>(
           // default value false means, we keep the chat window hidden initially
           create: (_) => ValueNotifier<bool>(false),
-          builder: (context, _) => _buildCoreBody(context, boardAttributes),
+          builder: (context, _) =>
+              _buildCoreBody(context, boardAttributes),
         );
       },
     );
@@ -828,19 +835,24 @@ class _GamePlayScreenState extends State<GamePlayScreen>
       }
     }
 
-    return Container(
-      decoration: AppStylesNew.BgGreenRadialGradient,
-      child: SafeArea(
-        child: Scaffold(
-          /* FIXME: THIS FLOATING ACTION BUTTON IS FOR SHOWING THE TESTS */
-          floatingActionButton: GamePlayScreenUtilMethods.floatingActionButton(
-            onReload: () {},
+    return Consumer<AppTheme>(
+      builder: (_, theme, __) {
+        return Container(
+          decoration: AppDecorators.bgRadialGradient(theme),
+          child: SafeArea(
+            child: Scaffold(
+              /* FIXME: THIS FLOATING ACTION BUTTON IS FOR SHOWING THE TESTS */
+              floatingActionButton:
+                  GamePlayScreenUtilMethods.floatingActionButton(
+                onReload: () {},
+              ),
+              resizeToAvoidBottomInset: true,
+              backgroundColor: Colors.transparent,
+              body: _buildBody(theme),
+            ),
           ),
-          resizeToAvoidBottomInset: true,
-          backgroundColor: Colors.transparent,
-          body: _buildBody(),
-        ),
-      ),
+        );
+      },
     );
   }
 

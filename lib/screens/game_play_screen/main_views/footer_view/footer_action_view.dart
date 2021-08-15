@@ -7,9 +7,9 @@ import 'package:pokerapp/models/game_play_models/provider_models/game_context.da
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/player_action.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_constants.dart';
-import 'package:pokerapp/resources/new/app_styles_new.dart';
-import 'package:pokerapp/resources/new/app_colors_new.dart';
+import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/screens/game_play_screen/widgets/bet_widget.dart';
 import 'package:pokerapp/services/game_play/action_services/hand_action_proto_service.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
@@ -57,17 +57,17 @@ class _FooterActionViewState extends State<FooterActionView> {
     Function onTap,
     bool isSelected = false,
     bool disable = false,
+    AppTheme theme,
   }) {
-    TextStyle btnTextStyle = AppStylesNew.clubItemInfoTextStyle.copyWith(
-      fontSize: 10.5,
-      color: isSelected ? Colors.white : null,
-    );
-    Color btnColor = AppColorsNew.newGreenButtonColor;
+    TextStyle btnTextStyle = AppDecorators.getHeadLine4Style(theme: theme)
+        .copyWith(
+            color: isSelected
+                ? theme.primaryColorWithDark()
+                : theme.supportingColor);
+    Color btnColor = theme.primaryColor;
     if (disable) {
       btnColor = Colors.grey;
-      btnTextStyle = AppStylesNew.disabledButtonTextStyle.copyWith(
-        fontSize: 10.5,
-      );
+      btnTextStyle = AppDecorators.getSubtitle3Style(theme: theme);
     }
 
     final button = AnimatedContainer(
@@ -78,10 +78,10 @@ class _FooterActionViewState extends State<FooterActionView> {
       margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
       padding: const EdgeInsets.all(2.0),
       decoration: BoxDecoration(
-        color: isSelected ? AppColorsNew.newActiveBoxColor : Colors.transparent,
+        color: isSelected ? theme.accentColor : Colors.transparent,
         shape: BoxShape.rectangle,
         border: Border.all(
-          color: isSelected ? AppColorsNew.newActiveBoxColor : btnColor,
+          color: theme.accentColor,
           width: 1.0,
         ),
         borderRadius: BorderRadius.circular(16),
@@ -93,10 +93,11 @@ class _FooterActionViewState extends State<FooterActionView> {
             text.toUpperCase(),
             textAlign: TextAlign.center,
             style: btnTextStyle.copyWith(
-                fontSize: 10.dp,
-                color: isSelected
-                    ? AppColorsNew.darkGreenShadeColor
-                    : AppColorsNew.newGreenButtonColor),
+              fontSize: 10.dp,
+              color: isSelected
+                  ? theme.primaryColorWithDark()
+                  : theme.supportingColor,
+            ),
           ),
         ),
       ),
@@ -213,7 +214,7 @@ class _FooterActionViewState extends State<FooterActionView> {
     _actionTaken(context);
   }
 
-  Widget _buildActionWidgets(PlayerAction playerAction) {
+  Widget _buildActionWidgets(PlayerAction playerAction, AppTheme theme) {
     AvailableAction allin;
     playerAction.sort();
     for (final action in playerAction?.actions) {
@@ -236,6 +237,7 @@ class _FooterActionViewState extends State<FooterActionView> {
                 action.actionValue,
                 context: context,
               ),
+              theme: theme,
             );
           case CHECK:
             return _buildRoundButton(
@@ -243,6 +245,7 @@ class _FooterActionViewState extends State<FooterActionView> {
               onTap: () => _check(
                 context: context,
               ),
+              theme: theme,
             );
 
           /* on tapping on BET this button should highlight and show further options */
@@ -255,6 +258,7 @@ class _FooterActionViewState extends State<FooterActionView> {
                 _showOptions = !_showOptions;
                 widget.isBetWidgetVisible?.call(_showOptions);
               }),
+              theme: theme,
             );
           case CALL:
             return _buildRoundButton(
@@ -263,6 +267,7 @@ class _FooterActionViewState extends State<FooterActionView> {
                 playerAction.callAmount,
                 context: context,
               ),
+              theme: theme,
             );
 
           /* on tapping on RAISE this button should highlight and show further options */
@@ -275,6 +280,7 @@ class _FooterActionViewState extends State<FooterActionView> {
                 _showOptions = !_showOptions;
                 widget.isBetWidgetVisible?.call(_showOptions);
               }),
+              theme: theme,
             );
         }
 
@@ -289,6 +295,7 @@ class _FooterActionViewState extends State<FooterActionView> {
           amount: playerAction.allInAmount,
           context: context,
         ),
+        theme: theme,
       ));
     }
 
@@ -332,11 +339,10 @@ class _FooterActionViewState extends State<FooterActionView> {
   @override
   Widget build(BuildContext context) {
     final boardAttributes = context.read<BoardAttributesObject>();
+    final theme = AppTheme.getTheme(context);
 
     return Container(
-      margin: const EdgeInsets.only(
-        bottom: 10.0,
-      ),
+      color: theme.primaryColor.withOpacity(0.5),
       child: Consumer<ActionState>(
         key: ValueKey('buildActionButtons'),
         builder: (_, actionState, __) => Column(
@@ -355,11 +361,9 @@ class _FooterActionViewState extends State<FooterActionView> {
               scale: boardAttributes.footerActionViewScale,
               alignment: Alignment.bottomCenter,
               child: Container(
-                padding: EdgeInsets.symmetric(vertical: 10.0),
-                decoration: new BoxDecoration(
-                  color: Colors.black.withOpacity(0.80),
-                ),
-                child: _buildActionWidgets(actionState.action),
+                padding: EdgeInsets.symmetric(vertical: 4.0),
+                
+                child: _buildActionWidgets(actionState.action, theme),
               ),
             ),
           ],

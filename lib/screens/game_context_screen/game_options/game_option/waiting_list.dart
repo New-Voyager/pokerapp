@@ -6,12 +6,13 @@ import 'package:pokerapp/models/game_play_models/business/game_info_model.dart';
 import 'package:pokerapp/models/game_play_models/provider_models/game_state.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/models/waiting_list_model.dart';
-import 'package:pokerapp/resources/new/app_styles_new.dart';
+import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/widgets/custom_text_button.dart';
+import 'package:pokerapp/widgets/round_color_button.dart';
 import 'package:pokerapp/widgets/switch_widget.dart';
 import 'package:provider/provider.dart';
 
@@ -81,7 +82,7 @@ class _WaitingListBottomSheetState extends State<WaitingListBottomSheet> {
     width = MediaQuery.of(context).size.width;
     return Consumer<AppTheme>(
         builder: (_, theme, __) => Container(
-              decoration: AppStylesNew.BgGreenRadialGradient,
+              decoration: AppDecorators.bgRadialGradient(theme),
               height: height / 2,
               child: Scaffold(
                 backgroundColor: Colors.transparent,
@@ -93,16 +94,16 @@ class _WaitingListBottomSheetState extends State<WaitingListBottomSheet> {
                 body: Column(
                   mainAxisSize: MainAxisSize.max,
                   children: [
-                    addRemoveWaitingListButton(),
-                    this.header,
-                    playersInList()
+                    addRemoveWaitingListButton(theme),
+                    header(theme),
+                    playersInList(theme)
                   ],
                 ),
               ),
             ));
   }
 
-  playersInList() {
+  playersInList(AppTheme theme) {
     return Expanded(
         child: Container(
       margin: EdgeInsets.symmetric(horizontal: 16.0),
@@ -111,21 +112,24 @@ class _WaitingListBottomSheetState extends State<WaitingListBottomSheet> {
         children: [
           Text(
             AppStringsNew.playersInWaitingListText,
-            style: AppStylesNew.labelTextStyle,
+            style: AppDecorators.getSubtitle3Style(theme: theme),
           ),
           AppDimensionsNew.getVerticalSizedBox(10),
           Expanded(
             child: Container(
-              decoration: AppStylesNew.actionRowDecoration,
+              decoration: AppDecorators.tileDecorationWithoutBorder(theme),
               child: allWaitingListPlayers.length > 0
                   ? ListView.builder(
                       itemCount: allWaitingListPlayers.length,
                       shrinkWrap: true,
-                      itemBuilder: (_, index) =>
-                          playerItem(allWaitingListPlayers[index], index),
+                      itemBuilder: (_, index) => playerItem(
+                          allWaitingListPlayers[index], index, theme),
                     )
                   : Center(
-                      child: Text(AppStringsNew.noWaitingListText),
+                      child: Text(
+                        AppStringsNew.noWaitingListText,
+                        style: AppDecorators.getSubtitle3Style(theme: theme),
+                      ),
                     ),
             ),
           ),
@@ -134,7 +138,7 @@ class _WaitingListBottomSheetState extends State<WaitingListBottomSheet> {
     ));
   }
 
-  playerItem(WaitingListModel seatChangeModel, int index) {
+  playerItem(WaitingListModel seatChangeModel, int index, AppTheme theme) {
     bool isAdmin = widget.gameState.currentPlayer.isAdmin();
 
     return Container(
@@ -148,7 +152,7 @@ class _WaitingListBottomSheetState extends State<WaitingListBottomSheet> {
                 padding: EdgeInsets.only(top: 15, bottom: 10),
                 child: Text(
                   seatChangeModel.name,
-                  style: AppStylesNew.clubCodeStyle,
+                  style: AppDecorators.getHeadLine4Style(theme: theme),
                 ),
               ),
               Spacer(),
@@ -209,13 +213,13 @@ class _WaitingListBottomSheetState extends State<WaitingListBottomSheet> {
     );
   }
 
-  addRemoveWaitingListButton() {
+  addRemoveWaitingListButton(AppTheme theme) {
     if (widget.gameState.getSeatByPlayer(widget.gameState.currentPlayerId) ==
         null) {
       return Container(
           margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           padding: EdgeInsets.all(8),
-          decoration: AppStylesNew.actionRowDecoration,
+          decoration: AppDecorators.tileDecorationWithoutBorder(theme),
           child: SwitchWidget(
             label: AppStringsNew.addMeToWaitingListText,
             value: isInWaitingList,
@@ -239,7 +243,7 @@ class _WaitingListBottomSheetState extends State<WaitingListBottomSheet> {
     }
   }
 
-  get header {
+  header(AppTheme theme) {
     log('waiting list: header');
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -252,9 +256,11 @@ class _WaitingListBottomSheetState extends State<WaitingListBottomSheet> {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        RoundRectButton(
-                          text: 'Apply',
-                          onTap: () {
+                        RoundedColorButton(
+                          text: AppStringsNew.applyText,
+                          textColor: theme.primaryColorWithDark(),
+                          backgroundColor: theme.accentColor,
+                          onTapFunction: () {
                             List<String> uuids = [];
                             allWaitingListPlayers.forEach((element) {
                               uuids.add(element.playerUuid);
@@ -276,9 +282,11 @@ class _WaitingListBottomSheetState extends State<WaitingListBottomSheet> {
                           width: 15,
                         ),
 
-                        RoundRectButton(
-                          text: 'Cancel',
-                          onTap: () {
+                        RoundedColorButton(
+                          text: AppStringsNew.cancelButtonText,
+                          textColor: theme.accentColor,
+                          borderColor: theme.accentColor,
+                          onTapFunction: () {
                             setState(() {
                               ischanged = false;
                             });

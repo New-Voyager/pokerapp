@@ -11,7 +11,9 @@ import 'package:pokerapp/models/game_play_models/provider_models/players.dart';
 import 'package:pokerapp/models/hand_history_model.dart';
 import 'package:pokerapp/models/pending_approvals.dart';
 import 'package:pokerapp/models/rabbit_state.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_assets.dart';
+import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
@@ -120,6 +122,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
   }
 
   Widget _buildStatefulBuilder(double height, BuildContext context) {
+    final theme = AppTheme.getTheme(context);
     return StatefulBuilder(builder: (context, localSetState) {
       return Container(
         height: height / 2.5,
@@ -127,7 +130,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
         child: Stack(
           children: [
             Container(
-              decoration: AppStylesNew.BgGreenRadialGradient,
+              decoration: AppDecorators.bgRadialGradient(theme),
               child: Column(
                 children: [
                   SizedBox(
@@ -136,7 +139,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                   Container(
                       child: Text(
                         AppStringsNew.pendingApprovalTitleText,
-                        style: AppStylesNew.accentTextStyle,
+                        style: AppDecorators.getAccentTextStyle(theme: theme),
                       ),
                       padding: EdgeInsets.all(8)),
                   Expanded(
@@ -161,19 +164,17 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                                     separatorBuilder: (context, index) =>
                                         Divider(
                                       height: 8,
-                                      color: Colors.black45,
+                                      color: theme.fillInColor,
                                     ),
                                     itemBuilder: (context, index) {
                                       final item = list[index];
                                       return Container(
                                         decoration:
-                                            AppStylesNew.actionRowDecoration,
+                                            AppDecorators.tileDecoration(theme),
                                         padding: EdgeInsets.all(8),
                                         margin: EdgeInsets.symmetric(
                                             horizontal: 16, vertical: 8),
                                         child: ListTile(
-                                          tileColor:
-                                              AppColorsNew.cardBackgroundColor,
                                           title: Column(
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
@@ -184,27 +185,30 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                                               RichText(
                                                 text: TextSpan(
                                                   text: "${item.name}",
+                                                  style: AppDecorators
+                                                      .getHeadLine4Style(
+                                                          theme: theme),
                                                   children: [
                                                     TextSpan(
-                                                        text: " request buyin",
-                                                        style: AppStylesNew
-                                                            .labelTextStyle),
+                                                      text: " request buyin",
+                                                      style: AppDecorators
+                                                          .getSubtitle3Style(
+                                                              theme: theme),
+                                                    ),
                                                     TextSpan(
                                                       text: " ${item.amount}",
-                                                      style: AppStylesNew
-                                                          .joinTextStyle
-                                                          .copyWith(
-                                                        color: AppColorsNew
-                                                            .newTextColor,
-                                                      ),
+                                                      style: AppDecorators
+                                                          .getAccentTextStyle(
+                                                              theme: theme),
                                                     ),
                                                   ],
                                                 ),
                                               ),
                                               Text(
-                                                "Outstanding balance: ${item.balance}",
-                                                style: AppStylesNew
-                                                    .itemInfoTextStyle,
+                                                "${AppStringsNew.outstandingBalance}: ${item.balance}",
+                                                style: AppDecorators
+                                                    .getHeadLine4Style(
+                                                        theme: theme),
                                               ),
                                               SizedBox(
                                                 height: 16,
@@ -218,18 +222,21 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                                             children: [
                                               Text(
                                                 "Game: ${item.gameType}",
-                                                style: AppStylesNew
-                                                    .itemInfoTextStyle,
+                                                style: AppDecorators
+                                                    .getSubtitle1Style(
+                                                        theme: theme),
                                               ),
                                               Text(
                                                 "Code: ${item.gameCode}",
-                                                style: AppStylesNew
-                                                    .itemInfoTextStyle,
+                                                style: AppDecorators
+                                                    .getSubtitle1Style(
+                                                        theme: theme),
                                               ),
                                               Text(
                                                 "Club: ${item.clubCode}",
-                                                style: AppStylesNew
-                                                    .itemInfoTextStyle,
+                                                style: AppDecorators
+                                                    .getSubtitle1Style(
+                                                        theme: theme),
                                               ),
                                               SizedBox(
                                                 height: 16,
@@ -281,7 +288,8 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                                                 IconButton(
                                                   icon: Icon(
                                                     Icons.cancel_rounded,
-                                                    color: Colors.red,
+                                                    color: theme
+                                                        .negativeOrErrorColor,
                                                   ),
                                                   onPressed: () async {
                                                     final bool val =
@@ -336,7 +344,8 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                                   child: Center(
                                     child: Text(
                                       AppStringsNew.noPendingText,
-                                      style: AppStylesNew.labelTextStyle,
+                                      style: AppDecorators.getSubtitle1Style(
+                                          theme: theme),
                                     ),
                                   ),
                                 );
@@ -375,13 +384,13 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                   child: Container(
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: AppColorsNew.newGreenButtonColor,
+                      color: theme.accentColor,
                     ),
                     padding: EdgeInsets.all(6),
                     child: Icon(
                       Icons.close,
                       size: 20,
-                      color: AppColorsNew.darkGreenShadeColor,
+                      color: theme.primaryColorWithDark(),
                     ),
                   ),
                 ),
@@ -603,6 +612,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
   Widget build(BuildContext context) {
     _context = context;
     log('game started: ${widget.gameState.started}');
+    final theme = AppTheme.getTheme(context);
     return Align(
       alignment: Alignment.topLeft,
       child: Column(
@@ -631,7 +641,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
                 'assets/images/game/clipboard.svg',
                 width: 16,
                 height: 16,
-                color: Colors.black,
+                color: theme.primaryColorWithDark(),
               );
 
               return IconWithBadge(
@@ -698,6 +708,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
     @required String imagePath,
     @required int value,
     @required String label,
+    AppTheme theme,
   }) {
     return PopupMenuItem(
       value: 0,
@@ -715,9 +726,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
             SizedBox(width: 5),
             Text(
               label,
-              style: AppStylesNew.labelTextStyle.copyWith(
-                fontSize: 12.dp,
-              ),
+              style: AppDecorators.getHeadLine4Style(theme: theme),
             ),
           ],
         ),
@@ -726,6 +735,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
   }
 
   void showMoreOptions(context) {
+    final theme = AppTheme.getTheme(context);
     final RenderBox button = context.findRenderObject();
     final RenderBox overlay = Overlay.of(context).context.findRenderObject();
 
@@ -741,7 +751,7 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
     showMenu(
       context: context,
       position: position,
-      color: AppColorsNew.darkGreenShadeColor,
+      color: theme.fillInColor,
       items: <PopupMenuEntry>[
         // hand history
         _buildPopupMenuItem(
@@ -749,7 +759,8 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
           callback: onClickViewHandAnalysis,
           imagePath: AppAssetsNew.handHistoryPath,
           value: 0,
-          label: 'Hand History',
+          label: AppStringsNew.handHistoryTitle,
+          theme: theme,
         ),
 
         // table
@@ -758,7 +769,8 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
           callback: onTableBottomSheet,
           imagePath: AppAssetsNew.tableResultPath,
           value: 1,
-          label: 'Table',
+          label: AppStringsNew.tableText,
+          theme: theme,
         ),
 
         // stack stats
@@ -767,7 +779,8 @@ class _HandAnalyseViewState extends State<HandAnalyseView> {
           callback: onPlayerStatsBottomSheet,
           imagePath: AppAssetsNew.playerStatsPath,
           value: 2,
-          label: 'Stack Stats',
+          label: AppStringsNew.stackSeats,
+          theme: theme,
         ),
       ],
     ).then<void>(

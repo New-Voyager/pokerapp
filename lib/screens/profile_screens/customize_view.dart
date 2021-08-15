@@ -6,6 +6,8 @@ import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
+import 'package:pokerapp/services/data/box_type.dart';
+import 'package:pokerapp/services/data/hive_datasource_impl.dart';
 import 'package:provider/provider.dart';
 
 class CustomizeScreen extends StatefulWidget {
@@ -131,24 +133,53 @@ class _CustomizeScreenState extends State<CustomizeScreen> {
                             //scrollDirection: Axis.horizontal,
                             itemBuilder: (context, index) {
                               final themeData = themeList[index];
+
+                              final int savedIndex = HiveDatasource.getInstance
+                                      .getBox(BoxType.USER_SETTINGS_BOX)
+                                      .get("themeIndex") ??
+                                  0;
                               return InkResponse(
-                                onTap: () {
+                                onTap: () async {
                                   setState(() {
                                     selectedThemeData = themeList[index];
                                   });
+                                  final settings = HiveDatasource.getInstance
+                                      .getBox(BoxType.USER_SETTINGS_BOX);
+                                  settings.put('theme', themeList[index].toString());
+                                  settings.put('themeIndex', index);
+
                                   theme.updateThemeData(selectedThemeData);
                                 },
                                 child: Row(
                                   children: [
                                     Expanded(
                                         flex: 2,
-                                        child: Text("THEME ${index + 1}")),
+                                        child: Row(
+                                          children: [
+                                            Text(
+                                              "THEME ${index + 1}",
+                                              style: AppDecorators
+                                                  .getSubtitle1Style(
+                                                      theme: theme),
+                                            ),
+                                            Visibility(
+                                              child: Icon(
+                                                Icons.done,
+                                                color: theme.accentColor,
+                                              ),
+                                              visible: index == savedIndex,
+                                            ),
+                                          ],
+                                        )),
                                     AppDimensionsNew.getHorizontalSpace(16),
                                     Expanded(
                                       flex: 5,
                                       child: Container(
                                         decoration:
-                                            AppDecorators.tileDecoration(theme),
+                                            AppDecorators.tileDecoration(theme)
+                                                .copyWith(
+                                                    border: Border.all(
+                                                        color: Colors.white)),
                                         height: 32,
                                         child: Row(
                                           children: [
