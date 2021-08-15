@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_type.dart';
@@ -10,7 +8,6 @@ import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
-import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/services/app/game_service.dart';
 import 'package:pokerapp/services/data/box_type.dart';
 import 'package:pokerapp/services/data/hive_datasource_impl.dart';
@@ -123,20 +120,18 @@ class NewGameSettings2 extends StatelessWidget {
     this.savedModel,
   );
 
-  Widget _buildLabel(String label) => Padding(
+  Widget _buildLabel(String label, AppTheme theme) => Padding(
         padding: const EdgeInsets.symmetric(vertical: 5.0),
         child: Text(
           label,
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 14.0,
-          ),
+          style: AppDecorators.getHeadLine4Style(theme: theme),
         ),
       );
 
   Widget _buildDecoratedContainer({
     Widget child,
     List<Widget> children,
+    @required AppTheme theme,
   }) =>
       Container(
         padding: const EdgeInsets.symmetric(
@@ -144,7 +139,7 @@ class NewGameSettings2 extends StatelessWidget {
           vertical: 15.0,
         ),
         decoration: BoxDecoration(
-          color: Colors.black,
+          color: theme.fillInColor,
           borderRadius: BorderRadius.circular(5.0),
         ),
         child: children != null
@@ -156,8 +151,8 @@ class NewGameSettings2 extends StatelessWidget {
             : child,
       );
 
-  Widget _buildSeperator() => Container(
-        color: Color(0x33ffffff),
+  Widget _buildSeperator(AppTheme theme) => Container(
+        color: theme.fillInColor,
         width: double.infinity,
         height: 1.0,
       );
@@ -166,6 +161,7 @@ class NewGameSettings2 extends StatelessWidget {
     @required bool value,
     @required String label,
     @required void Function(bool v) onChange,
+    @required AppTheme theme,
   }) =>
       Column(
         mainAxisSize: MainAxisSize.min,
@@ -179,7 +175,7 @@ class NewGameSettings2 extends StatelessWidget {
           ),
 
           /* seperator */
-          _buildSeperator(),
+          _buildSeperator(theme),
         ],
       );
 
@@ -203,7 +199,7 @@ class NewGameSettings2 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     _appScreenText = getAppTextScreen("newGameSettings2");
-
+    final theme = AppTheme.getTheme(context);
     return ListenableProvider<NewGameModelProvider>(
       create: (_) => NewGameModelProvider(clubCode),
       builder: (BuildContext context, _) {
@@ -226,18 +222,7 @@ class NewGameSettings2 extends StatelessWidget {
         }
 
         return Container(
-          decoration: BoxDecoration(
-            gradient: RadialGradient(
-              center: Alignment.centerLeft,
-              radius: 0.8,
-              colors: [
-                const Color(0xff033614),
-                const Color(0xff02290F),
-                const Color(0xff02290F),
-                Colors.black,
-              ],
-            ),
-          ),
+          decoration: AppDecorators.bgRadialGradient(theme),
           child: SingleChildScrollView(
             physics: BouncingScrollPhysics(),
             padding: const EdgeInsets.symmetric(
@@ -259,26 +244,26 @@ class NewGameSettings2 extends StatelessWidget {
                         final result = await showDialog(
                           context: context,
                           builder: (context) => AlertDialog(
-                            backgroundColor: AppColorsNew.darkGreenShadeColor,
+                            backgroundColor: theme.fillInColor,
                             title: Text(
                               _appScreenText['SAVESETTINGS'],
-                              style: AppStylesNew.labelTextStyle,
+                              style:
+                                  AppDecorators.getHeadLine4Style(theme: theme),
                             ),
                             content: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 CardFormTextField(
+                                  theme: theme,
                                   controller: _controller,
                                   maxLines: 1,
                                   hintText: _appScreenText['ENTERTEXT'],
-                                  theme: AppTheme.getTheme(context),
                                 ),
                                 AppDimensionsNew.getVerticalSizedBox(12),
                                 RoundedColorButton(
                                   text: _appScreenText['SAVE'],
-                                  backgroundColor:
-                                      AppColorsNew.yellowAccentColor,
-                                  textColor: AppColorsNew.darkGreenShadeColor,
+                                  backgroundColor: theme.accentColor,
+                                  textColor: theme.primaryColorWithDark(),
                                   onTapFunction: () {
                                     if (_controller.text.isNotEmpty) {
                                       Navigator.of(context)
@@ -297,8 +282,11 @@ class NewGameSettings2 extends StatelessWidget {
                         }
                       },
                       child: CircleAvatar(
-                        child: Icon(Icons.save),
-                        backgroundColor: AppColorsNew.newGreenRadialStartColor,
+                        child: Icon(
+                          Icons.save,
+                          color: theme.primaryColorWithDark(),
+                        ),
+                        backgroundColor: theme.accentColor,
                       ),
                     ),
                     /* HEADING */
@@ -310,15 +298,18 @@ class NewGameSettings2 extends StatelessWidget {
                     InkWell(
                       onTap: () => Navigator.of(context).pop(),
                       child: CircleAvatar(
-                        child: Icon(Icons.close),
-                        backgroundColor: AppColorsNew.newGreenRadialStartColor,
+                        child: Icon(
+                          Icons.close,
+                          color: theme.primaryColorWithDark(),
+                        ),
+                        backgroundColor: theme.accentColor,
                       ),
                     ),
                   ],
                 ),
 
                 /* players */
-                _buildLabel('PLAYERS'),
+                _buildLabel('PLAYERS', theme),
                 sepV8,
                 RadioListWidget(
                   defaultValue: gmp.maxPlayers,
@@ -337,7 +328,7 @@ class NewGameSettings2 extends StatelessWidget {
                         label: _appScreenText['BIGBLIND'],
                         minValue: 2,
                         maxValue: 1000,
-                        title: _appScreenText['ENTERBIGBLIND'],
+                        title:  _appScreenText['ENTERBIGBLIND'],
                         onChange: (value) {
                           //gmp.blinds.bigBlind = value.toDouble();
                           gmp.bigBlind = value.toDouble();
@@ -366,7 +357,7 @@ class NewGameSettings2 extends StatelessWidget {
 
                 /* buyin */
                 sepV20,
-                _buildLabel(_appScreenText['BUYIN']),
+                _buildLabel(_appScreenText['BUYIN', theme),
                 sepV8,
                 _buildDecoratedContainer(
                   child: Row(
@@ -420,11 +411,12 @@ class NewGameSettings2 extends StatelessWidget {
                       ),
                     ],
                   ),
+                  theme: theme,
                 ),
 
                 /* tips */
                 sepV20,
-                _buildLabel('${_appScreenText["TIPS"]}'),
+                _buildLabel(_appScreenText["TIPS"], theme),
                 sepV8,
                 _buildDecoratedContainer(
                   child: Row(
@@ -463,11 +455,12 @@ class NewGameSettings2 extends StatelessWidget {
                       ),
                     ],
                   ),
+                  theme: theme,
                 ),
 
                 /* action time */
                 sepV20,
-                _buildLabel(_appScreenText['ACTIONTIME']),
+                _buildLabel(_appScreenText['ACTIONTIME'], theme),
                 sepV8,
                 RadioListWidget(
                   defaultValue: gmp.actionTime,
@@ -479,7 +472,7 @@ class NewGameSettings2 extends StatelessWidget {
 
                 /* game time */
                 sepV20,
-                _buildLabel(_appScreenText['GAMETIME']),
+                _buildLabel(_appScreenText['GAMETIME'], theme),
                 sepV8,
                 RadioListWidget(
                   defaultValue: gmp.gameLengthInHrs,
@@ -499,6 +492,7 @@ class NewGameSettings2 extends StatelessWidget {
                   onChange: (bool b) {
                     gmp.straddleAllowed = b;
                   },
+                  theme: theme,
                 ),
                 sepV20,
 
@@ -509,6 +503,7 @@ class NewGameSettings2 extends StatelessWidget {
                   onChange: (bool b) {
                     gmp.runItTwice = b;
                   },
+                  theme: theme,
                 ),
                 sepV20,
                 /* buy in approval */
@@ -537,6 +532,7 @@ class NewGameSettings2 extends StatelessWidget {
                                     children: [
                                       _buildLabel(
                                           _appScreenText['BUYINGMAXWAITTIME']),
+                                          theme),
                                       RadioListWidget(
                                         defaultValue: gmp.buyInWaitTime,
                                         values:
@@ -552,7 +548,7 @@ class NewGameSettings2 extends StatelessWidget {
 
                         /* seperator */
                         sepV20,
-                        _buildSeperator(),
+                        _buildSeperator(theme),
 
                         /* sep */
                         sepV20,
@@ -586,6 +582,7 @@ class NewGameSettings2 extends StatelessWidget {
                     /* sep */
                     sepV20,
                     _buildDecoratedContainer(
+                      theme: theme,
                       children: [
                         /* allow audio conference */
                         _buildRadio(
@@ -594,6 +591,7 @@ class NewGameSettings2 extends StatelessWidget {
                           onChange: (bool b) {
                             gmp.audioConference = b;
                           },
+                          theme: theme,
                         ),
 
                         /* allow audio conference */
@@ -603,6 +601,7 @@ class NewGameSettings2 extends StatelessWidget {
                           onChange: (bool b) {
                             gmp.useAgora = b;
                           },
+                          theme: theme,
                         ),
 
                         /* bot games */
@@ -612,6 +611,7 @@ class NewGameSettings2 extends StatelessWidget {
                           onChange: (bool b) {
                             gmp.botGame = b;
                           },
+                          theme: theme,
                         ),
                         /* location check */
                         _buildRadio(
@@ -620,6 +620,7 @@ class NewGameSettings2 extends StatelessWidget {
                           onChange: (bool b) {
                             gmp.locationCheck = b;
                           },
+                          theme: theme,
                         ),
 
                         /* ip check */
@@ -629,6 +630,7 @@ class NewGameSettings2 extends StatelessWidget {
                           onChange: (bool b) {
                             gmp.ipCheck = b;
                           },
+                          theme: theme,
                         ),
 
                         /* waitlist */
@@ -638,11 +640,13 @@ class NewGameSettings2 extends StatelessWidget {
                           onChange: (bool b) {
                             gmp.waitList = b;
                           },
+                          theme: theme,
                         ),
 
                         /* allow run it twice */
                         _buildRadio(
                           label: _appScreenText['ALLOWFUNANIMATION'],
+                          theme: theme,
                           value: true,
                           onChange: (bool b) {},
                         ),
@@ -652,6 +656,7 @@ class NewGameSettings2 extends StatelessWidget {
                           label: _appScreenText['MUCKLOSINGHAND'],
                           value: false,
                           onChange: (bool b) {},
+                          theme: theme,
                         ),
 
                         /* show player buyin */
@@ -661,6 +666,7 @@ class NewGameSettings2 extends StatelessWidget {
                           onChange: (bool b) {
                             gmp.showPlayerBuyin = b;
                           },
+                          theme: theme,
                         ),
 
                         /* allow rabbit hunt */
@@ -670,6 +676,7 @@ class NewGameSettings2 extends StatelessWidget {
                           onChange: (bool b) {
                             gmp.allowRabbitHunt = b;
                           },
+                          theme: theme,
                         ),
 
                         /* show hand rank */
@@ -679,6 +686,7 @@ class NewGameSettings2 extends StatelessWidget {
                           onChange: (bool b) {
                             gmp.showHandRank = b;
                           },
+                          theme: theme,
                         ),
                       ],
                     ),

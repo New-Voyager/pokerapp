@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/club_stats_model.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
-import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
-import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/no_message.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/services/app/stats_service.dart';
@@ -48,62 +48,63 @@ class _ClubStatsScreenState extends State<ClubStatsScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Consumer(
-      builder: (_, theme, __) => Container(
-        decoration: AppStylesNew.BgGreenRadialGradient,
-        child: Scaffold(
-          backgroundColor: Colors.transparent,
-          appBar: CustomAppBar(
-            theme: theme,
-            context: context,
-            titleText: AppStringsNew.clubStatisticsTitle,
-            subTitleText: widget.clubCode,
-          ),
-          body: _clubStats == null
-              ? CircularProgressWidget(
-                  text: "Loading statistics..",
-                )
-              : Column(
-                  children: [
-                    AppDimensionsNew.getVerticalSizedBox(8),
-                    TabBar(
-                      controller: _tabController,
-                      tabs: [
-                        Text("No Limit Holdem"),
-                        Text("PLO"),
-                        Text("5 Card PLO"),
-                      ],
-                      isScrollable: true,
-                      indicatorSize: TabBarIndicatorSize.label,
-                      indicatorColor: AppColorsNew.yellowAccentColor,
-                      labelColor: AppColorsNew.newTextColor,
-                      unselectedLabelColor:
-                          AppColorsNew.newTextColor.withAlpha(100),
-                    ),
-                    AppDimensionsNew.getVerticalSizedBox(8),
-                    Expanded(
-                      child: TabBarView(
+    return Consumer<AppTheme>(
+      builder: (_, theme, __) {
+        return Container(
+          decoration: AppDecorators.bgRadialGradient(theme),
+          child: Scaffold(
+            backgroundColor: Colors.transparent,
+            appBar: CustomAppBar(
+              theme: theme,
+              context: context,
+              titleText: AppStringsNew.clubStatisticsTitle,
+              subTitleText: widget.clubCode,
+            ),
+            body: _clubStats == null
+                ? CircularProgressWidget(
+                    text: AppStringsNew.loadingStatistics,
+                  )
+                : Column(
+                    children: [
+                      AppDimensionsNew.getVerticalSizedBox(8),
+                      TabBar(
                         controller: _tabController,
-                        children: [
-                          StatsDetailForGame(
-                            action: _clubStats.holdem,
-                            imagePath: AppAssetsNew.pathHoldemTypeImage,
-                          ),
-                          StatsDetailForGame(
-                            action: _clubStats.plo,
-                            imagePath: AppAssetsNew.pathPLOTypeImage,
-                          ),
-                          StatsDetailForGame(
-                            action: _clubStats.fivecardPlo,
-                            imagePath: AppAssetsNew.pathFiveCardPLOTypeImage,
-                          ),
+                        tabs: [
+                          Text(AppStringsNew.tabNLHText),
+                          Text(AppStringsNew.tabPLOText),
+                          Text(AppStringsNew.tab5CardPLOText),
                         ],
+                        isScrollable: true,
+                        indicatorSize: TabBarIndicatorSize.label,
+                        indicatorColor: theme.accentColor,
+                        labelColor: theme.secondaryColorWithLight(0.2),
+                        unselectedLabelColor: theme.secondaryColorWithDark(0.2),
                       ),
-                    )
-                  ],
-                ),
-        ),
-      ),
+                      AppDimensionsNew.getVerticalSizedBox(8),
+                      Expanded(
+                        child: TabBarView(
+                          controller: _tabController,
+                          children: [
+                            StatsDetailForGame(
+                              action: _clubStats.holdem,
+                              imagePath: AppAssetsNew.pathHoldemTypeImage,
+                            ),
+                            StatsDetailForGame(
+                              action: _clubStats.plo,
+                              imagePath: AppAssetsNew.pathPLOTypeImage,
+                            ),
+                            StatsDetailForGame(
+                              action: _clubStats.fivecardPlo,
+                              imagePath: AppAssetsNew.pathFiveCardPLOTypeImage,
+                            ),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+          ),
+        );
+      },
     );
   }
 }
@@ -117,145 +118,159 @@ class StatsDetailForGame extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              decoration: AppStylesNew.actionRowDecoration,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
+    return Consumer<AppTheme>(
+      builder: (_, theme, __) {
+        return Container(
+          margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  decoration: AppDecorators.tileDecoration(theme),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Column(
+                        mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            "Total Games",
-                            style: AppStylesNew.labelTextStyle,
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                AppStringsNew.totalGamesText,
+                                style: AppDecorators.getSubtitle3Style(
+                                    theme: theme),
+                              ),
+                              Text(
+                                "${action['totalGames']}",
+                                style: AppDecorators.getHeadLine3Style(
+                                    theme: theme),
+                              ),
+                            ],
                           ),
-                          Text(
-                            "${action['totalGames']}",
-                            style: AppStylesNew.valueTextStyle,
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                AppStringsNew.totalHandsText,
+                                style: AppDecorators.getSubtitle3Style(
+                                    theme: theme),
+                              ),
+                              Text(
+                                "${action['totalHands']}",
+                                style: AppDecorators.getHeadLine3Style(
+                                    theme: theme),
+                              ),
+                            ],
                           ),
                         ],
                       ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Total Hands",
-                            style: AppStylesNew.labelTextStyle,
-                          ),
-                          Text(
-                            "${action['totalHands']}",
-                            style: AppStylesNew.valueTextStyle,
-                          ),
-                        ],
+                      Container(
+                        height: 100,
+                        width: 100,
+                        child: Image.asset(
+                          imagePath,
+                          fit: BoxFit.contain,
+                        ),
                       ),
                     ],
                   ),
-                  Container(
-                    height: 100,
-                    width: 100,
-                    child: Image.asset(
-                      imagePath,
-                      fit: BoxFit.contain,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            AppDimensionsNew.getVerticalSizedBox(8),
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              decoration: AppStylesNew.actionRowDecoration,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Text(
-                    AppStringsNew.oddsSoFarText,
-                    style: AppStylesNew.cardHeaderTextStyle,
-                  ),
-                  Row(
+                ),
+                AppDimensionsNew.getVerticalSizedBox(8),
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  decoration: AppDecorators.tileDecoration(theme),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      Expanded(
-                        child: Text(
-                          "Hand",
-                          style: AppStylesNew.labelTextStyle,
-                        ),
-                        flex: 5,
+                      Text(
+                        AppStringsNew.oddsSoFarText,
+                        style: AppDecorators.getHeadLine4Style(theme: theme),
                       ),
-                      Expanded(
-                        child: Text(
-                          "Hits",
-                          style: AppStylesNew.labelTextStyle,
-                          textAlign: TextAlign.end,
-                        ),
-                        flex: 2,
-                      ),
-                      Expanded(
-                        child: Text(
-                          "Odds",
-                          style: AppStylesNew.labelTextStyle,
-                          textAlign: TextAlign.end,
-                        ),
-                        flex: 3,
-                      ),
-                    ],
-                  ),
-                  AppDimensionsNew.getVerticalSizedBox(8),
-                  ListView.separated(
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    itemBuilder: (context, index) {
-                      return Row(
+                      Row(
                         children: [
                           Expanded(
-                            child: StackCardView02(
-                              cards: CardHelper.rankCards[types[index]],
-                              show: true,
+                            child: Text(
+                              AppStringsNew.hand,
+                              style:
+                                  AppDecorators.getSubtitle3Style(theme: theme),
                             ),
                             flex: 5,
                           ),
                           Expanded(
                             child: Text(
-                              "${action[types[index]]}",
-                              style: AppStylesNew.statValTextStyle,
+                              AppStringsNew.hitsText,
+                              style:
+                                  AppDecorators.getSubtitle3Style(theme: theme),
                               textAlign: TextAlign.end,
                             ),
                             flex: 2,
                           ),
                           Expanded(
                             child: Text(
-                              (action['totalHands'] == 0 ||
-                                      action[types[index]] == 0)
-                                  ? "NA"
-                                  : "${(action[types[index]] / action['totalHands']).toStringAsFixed(4)}",
-                              style: AppStylesNew.statValTextStyle,
+                              AppStringsNew.odds,
+                              style:
+                                  AppDecorators.getSubtitle3Style(theme: theme),
                               textAlign: TextAlign.end,
                             ),
                             flex: 3,
                           ),
                         ],
-                      );
-                    },
-                    separatorBuilder: (context, index) => Divider(height: 8),
-                    itemCount: CardHelper.rankCards.length,
-                    cacheExtent: 20,
-                  )
-                ],
-              ),
+                      ),
+                      AppDimensionsNew.getVerticalSizedBox(8),
+                      ListView.separated(
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemBuilder: (context, index) {
+                          return Row(
+                            children: [
+                              Expanded(
+                                child: StackCardView02(
+                                  cards: CardHelper.rankCards[types[index]],
+                                  show: true,
+                                ),
+                                flex: 5,
+                              ),
+                              Expanded(
+                                child: Text(
+                                  "${action[types[index]]}",
+                                  style: AppDecorators.getHeadLine4Style(
+                                      theme: theme),
+                                  textAlign: TextAlign.end,
+                                ),
+                                flex: 2,
+                              ),
+                              Expanded(
+                                child: Text(
+                                  (action['totalHands'] == 0 ||
+                                          action[types[index]] == 0)
+                                      ? "NA"
+                                      : "${(action[types[index]] / action['totalHands']).toStringAsFixed(4)}",
+                                  style: AppDecorators.getHeadLine4Style(
+                                      theme: theme),
+                                  textAlign: TextAlign.end,
+                                ),
+                                flex: 3,
+                              ),
+                            ],
+                          );
+                        },
+                        separatorBuilder: (context, index) =>
+                            Divider(height: 8),
+                        itemCount: CardHelper.rankCards.length,
+                        cacheExtent: 20,
+                      )
+                    ],
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }

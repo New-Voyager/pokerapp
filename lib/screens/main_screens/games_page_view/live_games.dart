@@ -22,6 +22,7 @@ import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/alerts.dart';
 import 'package:pokerapp/utils/loading_utils.dart';
 import 'package:pokerapp/widgets/card_form_text_field.dart';
+import 'package:pokerapp/widgets/heading_widget.dart';
 import 'package:pokerapp/widgets/round_color_button.dart';
 import 'package:provider/provider.dart';
 
@@ -204,7 +205,9 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
               body: Column(children: [
                 // AppBar
                 Container(
-                  margin: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                  margin: EdgeInsets.symmetric(
+                    horizontal: 16,
+                  ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -231,14 +234,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
                         backgroundColor: appTheme.accentColor,
                         textColor: appTheme.primaryColorWithDark(),
                       ),
-                      Expanded(
-                        child: Text(
-                          _appScreenText['POKERCLUBAPP'],
-                          style:
-                              AppDecorators.getAccentTextStyle(theme: appTheme),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
+                      Expanded(child: HeadingWidget(heading:  _appScreenText['POKERCLUBAPP'])),
                       RoundedColorButton(
                         onTapFunction: () async {
                           _disposeTimer();
@@ -375,9 +371,8 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
                                   ? Center(
                                       child: Text(
                                         _appScreenText['NOLIVEGAMES'],
-                                        style: AppDecorators
-                                            .getCenterTextTextstyle(
-                                                appTheme: appTheme),
+                                        style: AppDecorators.getAccentTextStyle(
+                                            theme: appTheme),
                                       ),
                                     )
                                   : ListView.separated(
@@ -433,7 +428,7 @@ class _LiveGamesScreenState extends State<LiveGamesScreen>
         ? Center(
             child: Text(
               _appScreenText['NOGAMES'],
-              style: AppDecorators.getCenterTextTextstyle(appTheme: appTheme),
+              style: AppDecorators.getAccentTextStyle(theme: appTheme),
             ),
           )
         : ListView.separated(

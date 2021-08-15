@@ -15,7 +15,9 @@ class AppTheme extends ChangeNotifier {
   }
 
   // call this from anywhere to get the app theme object
-  static AppTheme getTheme(BuildContext context) => context.read<AppTheme>();
+  static AppTheme getTheme(BuildContext context) {
+    return context.read<AppTheme>();
+  }
 
   // font family
   String get fontFamily => _themeData.fontFamily;
@@ -45,8 +47,10 @@ class AppTheme extends ChangeNotifier {
 
   // main color that the app is based on
   Color get primaryColor => _themeData.primaryColor;
-  Color primaryColorWithDark([double d = 0.10]) =>
-      _darken(_themeData.primaryColor, d);
+  Color primaryColorWithDark([double d = 0.10]) {
+    return _darken(_themeData.primaryColor, d);
+  }
+
   Color primaryColorWithLight([double l = 0.10]) =>
       _lighten(_themeData.primaryColor, l);
 
@@ -66,6 +70,12 @@ class AppTheme extends ChangeNotifier {
 
   // color that is used for filling inside text fields, or cards views
   Color get fillInColor => _themeData.fillInColor;
+
+  Color get preFlopColor => _themeData.handlogPreflopColor;
+  Color get flopColor => _themeData.handlogFlopColor;
+  Color get turnColor => _themeData.handlogTurnColor;
+  Color get riverColor => _themeData.handlogRiverColor;
+  Color get showDownColor => _themeData.handlogShowdownColor;
 
   // supporting color: color that is used to create constrast with main color and accent color
   // mainly used for texts (white, or shades of white)

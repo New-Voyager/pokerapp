@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:provider/provider.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
@@ -14,6 +15,7 @@ class RadioListWidget extends StatelessWidget {
   });
 
   Widget _buildItem({
+    AppTheme theme,
     int v,
   }) =>
       Consumer<ValueNotifier<int>>(
@@ -26,8 +28,8 @@ class RadioListWidget extends StatelessWidget {
             margin: EdgeInsets.symmetric(horizontal: 5.0),
             decoration: BoxDecoration(
               color: vnCurrValue.value == v
-                  ? Color(0xffC48F3A)
-                  : Color(0x3340D876),
+                  ? theme.accentColor
+                  : theme.primaryColorWithDark(),
               borderRadius: BorderRadius.circular(5.0),
             ),
             height: 32.ph,
@@ -37,7 +39,7 @@ class RadioListWidget extends StatelessWidget {
               v == -1 ? '∞' : v.toString(),
               style: TextStyle(
                 fontSize: 10.dp,
-                color: Colors.white,
+                color: theme.supportingColor,
                 shadows: [
                   Shadow(
                     blurRadius: 10.0,
@@ -51,32 +53,35 @@ class RadioListWidget extends StatelessWidget {
         ),
       );
 
-  Widget _buildItems() => SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        physics: BouncingScrollPhysics(),
-        child: Row(
-          children: values
-              .map<Widget>(
-                (v) => _buildItem(v: v),
-              )
-              .toList(),
-        ),
-      );
+  Widget _buildItems(AppTheme theme) {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      physics: BouncingScrollPhysics(),
+      child: Row(
+        children: values
+            .map<Widget>(
+              (v) => _buildItem(v: v, theme: theme),
+            )
+            .toList(),
+      ),
+    );
+  }
 
   @override
-  Widget build(BuildContext _) {
+  Widget build(BuildContext context) {
+    final theme = AppTheme.getTheme(context);
     return ListenableProvider<ValueNotifier<int>>(
       create: (_) => ValueNotifier<int>(defaultValue),
       child: Container(
         padding: const EdgeInsets.symmetric(
-          horizontal: 10.0,
+          horizontal: 16.0,
           vertical: 15.0,
         ),
         decoration: BoxDecoration(
-          color: Colors.black,
+          color: theme.secondaryColor,
           borderRadius: BorderRadius.circular(5.0),
         ),
-        child: _buildItems(),
+        child: _buildItems(theme),
       ),
     );
   }

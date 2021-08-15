@@ -9,7 +9,6 @@ import 'package:pokerapp/models/pending_approvals.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
-import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
 import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/routes.dart';
@@ -95,13 +94,14 @@ class _ClubsPageViewState extends State<ClubsPageView>
     return Alerts.showSnackBar(ctx, _appScreenText['COULDNOTUPDATE']);
   }
 
-  void _showClubOptions(ClubModel club, BuildContext ctx) async {
+  void _showClubOptions(
+      ClubModel club, BuildContext ctx, AppTheme theme) async {
     showDialog(
       context: context,
       builder: (context) => Dialog(
         child: Container(
           padding: EdgeInsets.all(15.0),
-          color: AppColorsNew.cardBackgroundColor,
+          color: theme.fillInColor,
           width: MediaQuery.of(context).size.width * 0.60,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -110,8 +110,8 @@ class _ClubsPageViewState extends State<ClubsPageView>
               /* delete club  */
               RoundRaisedButton(
                 radius: 5.0,
-                color: AppColorsNew.contentColor,
-                buttonText: _appScreenText['DELETECLUB'],
+                color: theme.accentColor,
+                buttonText: _appScreenText['DELETECLUB'],,
                 onButtonTap: () {
                   Navigator.pop(context);
                   _deleteClub(club, ctx);
@@ -120,7 +120,7 @@ class _ClubsPageViewState extends State<ClubsPageView>
               SizedBox(height: 10.0),
               RoundRaisedButton(
                 radius: 5.0,
-                color: AppColorsNew.contentColor,
+                color: theme.accentColor,
                 buttonText: _appScreenText['EDITCLUB'],
                 onButtonTap: () {
                   Navigator.pop(context);
@@ -267,7 +267,7 @@ class _ClubsPageViewState extends State<ClubsPageView>
           builder: (ctx) => Container(
             decoration: AppDecorators.bgRadialGradient(theme),
             child: Scaffold(
-              backgroundColor: Colors.black.withAlpha(100),
+              backgroundColor: Colors.transparent,
               body: Padding(
                 padding: EdgeInsets.only(
                   top: MediaQuery.of(context).padding.top,
@@ -343,6 +343,7 @@ class _ClubsPageViewState extends State<ClubsPageView>
                                       onLongPress: () => _showClubOptions(
                                         club,
                                         ctx,
+                                        theme,
                                       ),
                                       child: Container(
                                         decoration:

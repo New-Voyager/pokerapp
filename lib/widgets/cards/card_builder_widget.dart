@@ -1,8 +1,11 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:pokerapp/models/game_play_models/ui/board_attributes_object/board_attributes_object.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
 import 'package:pokerapp/resources/app_assets.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
+import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/widgets/cards/pulsating_card_container.dart';
 import 'package:provider/provider.dart';
@@ -95,18 +98,28 @@ class CardBuilderWidget extends StatelessWidget {
     bool toDim = dim;
     if (highlight) toDim = false;
 
+    log('Card dim 2: dimboard: ${card.dimBoard}');
+    BoxDecoration fgDecoration;
+    if (toDim) {
+      fgDecoration = BoxDecoration(
+        color: Colors.black26,
+        backgroundBlendMode: BlendMode.darken,
+      );
+    }
+    if (card.dimBoard) {
+      fgDecoration = BoxDecoration(
+        color: Color(0x99000000),
+        backgroundBlendMode: BlendMode.darken,
+      );
+    }
+
     final double height = AppDimensions.cardHeight * _ratio;
     final double width = AppDimensions.cardWidth * _ratio;
 
     Widget cardWidget = Container(
       height: height,
       width: width,
-      foregroundDecoration: toDim
-          ? BoxDecoration(
-              color: Colors.black54,
-              backgroundBlendMode: BlendMode.darken,
-            )
-          : null,
+      foregroundDecoration: fgDecoration,
       decoration: BoxDecoration(
         boxShadow: shadow
             ? [

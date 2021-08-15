@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:pokerapp/enums/game_stages.dart';
 import 'package:pokerapp/enums/hand_actions.dart';
 import 'package:pokerapp/proto/hand.pb.dart' as proto;
+import 'package:pokerapp/proto/handmessage.pb.dart' as proto;
 
 class HandLogModelNew {
   static HandLogModelNew handLogModelNewFromJson(
@@ -73,14 +74,12 @@ class HandLogModelNew {
     }
     bool authorized = hand['authorized'] ?? authorizedToView;
     if (serviceResult) {
-      hand = hand['data'];
+      hand = jsonDecode(hand['data']);
     }
-    //log("HandData : \n $hand");
-
-    Data handLog;
-    if (hand != null) {
-      handLog = Data.fromJson(hand);
-    }
+    Data handLog = Data.fromJson(hand);
+    // if (hand != null) {
+    //   handLog = Data.fromJson(hand);
+    // }
     final handData = jsonEncode(hand);
 
     dynamic myInfo;
@@ -185,38 +184,39 @@ class Data {
   HandStats handStats;
   bool runItTwice;
 
-  factory Data.fromJson(Map<String, dynamic> json) => Data(
-        gameId: json["gameId"],
-        gameCode: json["gameCode"],
-        handNum: json["handNum"],
-        gameType: json["gameType"],
-        actionTime: json["actionTime"],
-        noCards: json['noCards'],
-        maxPlayers: json['maxPlayers'] ?? 9,
-        smallBlind: double.parse((json['smallBlind'] ?? 1).toString()),
-        bigBlind: double.parse((json['bigBlind'] ?? 2).toString()),
-        handLog: HandLog.fromJson(json["handLog"]),
-        rewardTrackingIds:
-            List<dynamic>.from(json["rewardTrackingIds"].map((x) => x)),
-        boardCards: List<int>.from(json["boardCards"].map((x) => x)),
-        boardCards2: List<int>.from(json["boardCards2"].map((x) => x)),
-        flop: List<int>.from(json["flop"].map((x) => x)),
-        turn: json["turn"],
-        river: json["river"],
-        playersInSeats: Map.from(json["players"])
-            .map((k, v) {
-              final seatNo = int.parse(k.toString());
-              return MapEntry<int, Player>(seatNo, Player.fromJson(seatNo, v));
-            })
-            .values
-            .toList(),
-        rakeCollected: json["rakeCollected"],
-        highHand: json["highHand"],
-        // playerStats: Map.from(json["playerStats"]).map(
-        //     (k, v) => MapEntry<String, PlayerStat>(k, PlayerStat.fromJson(v))),
-        handStats: HandStats.fromJson(json["handStats"]),
-        runItTwice: json["runItTwice"],
-      );
+  factory Data.fromJson(Map<String, dynamic> json) {
+    return Data(
+      gameId: json["gameId"],
+      gameCode: json["gameCode"],
+      handNum: json["handNum"],
+      gameType: json["gameType"],
+      noCards: json['noCards'],
+      maxPlayers: json['maxPlayers'] ?? 9,
+      smallBlind: double.parse((json['smallBlind'] ?? 1).toString()),
+      bigBlind: double.parse((json['bigBlind'] ?? 2).toString()),
+      handLog: HandLog.fromJson(json["handLog"]),
+      rewardTrackingIds:
+          List<dynamic>.from(json["rewardTrackingIds"].map((x) => x)),
+      boardCards: List<int>.from(json["boardCards"].map((x) => x)),
+      boardCards2: List<int>.from(json["boardCards2"].map((x) => x)),
+      flop: List<int>.from(json["flop"].map((x) => x)),
+      turn: json["turn"],
+      river: json["river"],
+      playersInSeats: Map.from(json["players"])
+          .map((k, v) {
+            final seatNo = int.parse(k.toString());
+            return MapEntry<int, Player>(seatNo, Player.fromJson(seatNo, v));
+          })
+          .values
+          .toList(),
+      rakeCollected: json["rakeCollected"],
+      highHand: json["highHand"],
+      // playerStats: Map.from(json["playerStats"]).map(
+      //     (k, v) => MapEntry<String, PlayerStat>(k, PlayerStat.fromJson(v))),
+      handStats: HandStats.fromJson(json["handStats"]),
+      runItTwice: json["runItTwice"],
+    );
+  }
 
   Map<String, dynamic> toJson() => {
         "gameId": gameId,
@@ -276,23 +276,23 @@ class HandLog {
       flopActions: GameActions.fromJson(json["flopActions"]),
       turnActions: GameActions.fromJson(json["turnActions"]),
       riverActions: GameActions.fromJson(json["riverActions"]),
-      potWinners: Map.from(json["potWinners"])
-          .map((k, v) => MapEntry<String, PotWinner>(k, PotWinner.fromJson(v))),
+      // potWinners: Map.from(json["potWinners"])
+      //     .map((k, v) => MapEntry<String, PotWinner>(k, PotWinner.fromJson(v))),
       wonAt: stagesEnumValues.map[json["wonAt"]],
-      showDown: json["showDown"],
+      showDown: stagesEnumValues.map[json["wonAt"]] == GameStages.SHOWDOWN,
       handStartedAt: int.parse(json["handStartedAt"].toString()),
       handEndedAt: int.parse(json["handEndedAt"].toString()),
-      runItTwice: json["runItTwice"],
-      runItTwiceResult: json["runItTwiceResult"],
+      // runItTwice: json["runItTwice"],
+      // runItTwiceResult: json["runItTwiceResult"],
     );
-    final seatPotsJson = json["seatsPotsShowdown"];
-    List<SeatPot> seatPots = [];
-    if (seatPotsJson.length > 0) {
-      for (final seatPot in seatPotsJson) {
-        seatPots.add(SeatPot.fromJson(seatPot));
-      }
-    }
-    handLog.seatPotsInShowdown = seatPots;
+    // final seatPotsJson = json["seatsPotsShowdown"];
+    // List<SeatPot> seatPots = [];
+    // if (seatPotsJson.length > 0) {
+    //   for (final seatPot in seatPotsJson) {
+    //     seatPots.add(SeatPot.fromJson(seatPot));
+    //   }
+    // }
+    // handLog.seatPotsInShowdown = seatPots;
     return handLog;
   }
 
@@ -384,14 +384,18 @@ class ActionElement {
   int actionTime;
   int stack;
 
-  factory ActionElement.fromJson(Map<String, dynamic> json) => ActionElement(
-        seatNo: json["seatNo"],
-        action: actionEnumValues.map[json["action"]],
-        amount: json["amount"],
-        timedOut: json["timedOut"],
-        actionTime: json["actionTime"],
-        stack: json["stack"],
-      );
+  factory ActionElement.fromJson(Map<String, dynamic> json) {
+    final action = json['action'];
+    final actionValue = actionEnumValues.map[action];
+    return ActionElement(
+      seatNo: json["seatNo"],
+      action: actionValue,
+      amount: json["amount"],
+      timedOut: json["timedOut"],
+      actionTime: json["actionTime"],
+      stack: json["stack"],
+    );
+  }
 
   Map<String, dynamic> toJson() => {
         "seatNo": seatNo,
@@ -412,7 +416,8 @@ final actionEnumValues = EnumValues({
   "RAISE": HandActions.RAISE,
   "FOLD": HandActions.FOLD,
   "STRADDLE": HandActions.STRADDLE,
-  "ALLIN": HandActions.ALLIN
+  "ALLIN": HandActions.ALLIN,
+  "BOMB_POT_BET": HandActions.BOMB_POT_BET,
 });
 
 final stagesEnumValues = StageEnumValues({

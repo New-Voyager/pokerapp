@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:pokerapp/enums/game_type.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/new/app_assets_new.dart';
-import 'package:pokerapp/resources/new/app_colors_new.dart';
 import 'package:pokerapp/resources/new/app_dimenstions_new.dart';
-import 'package:pokerapp/resources/new/app_styles_new.dart';
-
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class GameTypeItem extends StatelessWidget {
@@ -33,26 +32,13 @@ class GameTypeItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final double width = MediaQuery.of(context).size.width;
+    final theme = AppTheme.getTheme(context);
     return Stack(
       children: [
         Container(
           margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          decoration: BoxDecoration(
-            color: AppColorsNew.newTileBgBlackColor,
-            border: Border.all(
-              color: AppColorsNew.newBlueShadeColor,
-              width: 1,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: AppColorsNew.newBlueShadeColor,
-                blurRadius: 5,
-                spreadRadius: 0.5,
-              ),
-            ],
-            borderRadius: BorderRadius.circular(16),
-          ),
+          decoration: AppDecorators.tileDecoration(theme),
           alignment: Alignment.centerRight,
           child: InkWell(
             onTap: onArrowClick,
@@ -73,14 +59,13 @@ class GameTypeItem extends StatelessWidget {
           margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           decoration: BoxDecoration(
-            color: isSelected
-                ? AppColorsNew.newSelectedGreenColor
-                : AppColorsNew.newTileBgBlackColor,
+            color:
+                isSelected ? theme.primaryColorWithDark() : theme.fillInColor,
             border: Border.all(
-              color: AppColorsNew.newBorderColor,
+              color: theme.accentColor,
               width: 2,
             ),
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(8),
           ),
           // -32 is for margin for container. and remaining difference is for revealing arrow.
           width: width - 32 - (isSelected ? (animValue * 64) : 0),
@@ -100,16 +85,14 @@ class GameTypeItem extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(gameTypeStr(type),
-                        style: AppStylesNew.gameTypeTextStyle.copyWith(
-                          fontWeight: FontWeight.w500,
-                        )),
+                    Text(
+                      gameTypeStr(type),
+                      style: AppDecorators.getHeadLine4Style(theme: theme),
+                    ),
                     Visibility(
                       child: Text(
                         _buildGameTypeStrFromList(),
-                        style: AppStylesNew.openSeatsTextStyle.copyWith(
-                          fontSize: 8.dp,
-                        ),
+                        style: AppDecorators.getSubtitle2Style(theme: theme),
                       ),
                       visible: (gamesList != null && gamesList.length > 0),
                     ),
@@ -120,7 +103,7 @@ class GameTypeItem extends StatelessWidget {
                 child: IconButton(
                   onPressed: onSettingsClick,
                   icon: Icon(Icons.settings),
-                  color: AppColorsNew.newTextColor,
+                  color: theme.supportingColor,
                 ),
                 visible: type == GameType.ROE || type == GameType.DEALER_CHOICE,
               ),

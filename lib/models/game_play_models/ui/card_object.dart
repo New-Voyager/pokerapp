@@ -27,7 +27,7 @@ class CardObject {
   while highlighting a winner */
   bool highlight;
   bool dim;
-
+  bool dimBoard;
   bool otherHighlightColor;
 
   CardType cardType;
@@ -42,6 +42,7 @@ class CardObject {
     this.dim = false,
     this.cardType = CardType.HoleCard,
     this.cardFace = CardFace.FRONT,
+    this.dimBoard = false,
     this.empty = false,
   });
 

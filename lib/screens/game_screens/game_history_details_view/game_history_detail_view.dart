@@ -1,9 +1,11 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:pokerapp/models/game_history_model.dart';
 import 'package:pokerapp/models/hand_history_model.dart';
+import 'package:pokerapp/models/hand_log_model_new.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/resources/app_decorators.dart';
 import 'package:pokerapp/resources/app_dimensions.dart';
@@ -16,6 +18,7 @@ import 'package:pokerapp/screens/game_screens/game_history_details_view/stack_ch
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
 import 'package:pokerapp/screens/game_screens/widgets/highhand_widget.dart';
 import 'package:pokerapp/services/app/game_service.dart';
+import 'package:pokerapp/services/test/hand_messages.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 import 'package:pokerapp/utils/formatter.dart';
 import 'package:pokerapp/widgets/round_color_button.dart';
@@ -659,7 +662,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
     Widget hhTile;
     if (!hhTracked) {
       hhTile = ListTile(
-        tileColor: AppColorsNew.actionRowBgColor,
+        tileColor: theme.fillInColor,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         leading: Container(
           width: 36.ph,
@@ -669,7 +672,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
               BoxDecoration(color: Colors.yellow, shape: BoxShape.circle),
           child: SvgPicture.asset(
             'assets/images/highhand.svg',
-            color: AppColorsNew.darkGreenShadeColor,
+            color: theme.primaryColorWithDark(),
             width: 24.ph,
             height: 24.ph,
             fit: BoxFit.cover,
@@ -679,15 +682,16 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "High Hand Log",
+              AppStringsNew.HighHandlogTitle,
+              style: AppDecorators.getHeadLine4Style(theme: theme),
             ),
           ],
         ),
-        trailing: Text('Not tracked'),
+        trailing: Text(AppStringsNew.notTrackedText),
       );
     } else {
       hhTile = ListTile(
-        tileColor: AppColorsNew.actionRowBgColor,
+        tileColor: theme.fillInColor,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         onTap: () => this.onHighHandLogPressed(context),
         leading: Container(
@@ -705,16 +709,20 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
           ),
         ),
         title: Text(
-          "High Hand Log",
+          AppStringsNew.HighHandlogTitle,
+          style: AppDecorators.getHeadLine4Style(theme: theme),
         ),
         trailing: Icon(
           Icons.arrow_forward_ios,
-          color: AppColorsNew.newGreenButtonColor,
+          color: theme.accentColor,
           size: 12.dp,
         ),
       );
     }
-
+    bool showHandHistory = _gameDetail.playedGame;
+    if (widget.data.isHost || widget.data.isManager || widget.data.isOwner) {
+      showHandHistory = true;
+    }
     log('hands Played: ${_gameDetail.handsPlayed}');
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16),
@@ -727,11 +735,11 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
           //   ),
           // ),
           ListTile(
-            tileColor: AppColorsNew.actionRowBgColor,
+            tileColor: theme.fillInColor,
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
             onTap: () {
-              if (_gameDetail.playedGame) {
+              if (showHandHistory) {
                 this.onHandHistoryPressed(context);
               }
             },
@@ -749,41 +757,40 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
                 fit: BoxFit.cover,
               ),
             ),
-            title: Text(
-              "Hand History",
-            ),
-            trailing: !_gameDetail.playedGame
+            title: Text(AppStringsNew.handHistoryTitle,
+                style: AppDecorators.getHeadLine4Style(theme: theme)),
+            trailing: !showHandHistory
                 ? Text(
-                    "Not Available",
+                    AppStringsNew.notAvaialbleText,
                   )
                 : Icon(
                     Icons.arrow_forward_ios,
-                    color: AppColorsNew.newGreenButtonColor,
+                    color: theme.accentColor,
                     size: 12.dp,
                   ),
           ),
           AppDimensionsNew.getVerticalSizedBox(16),
           ListTile(
-            tileColor: AppColorsNew.actionRowBgColor,
+            tileColor: theme.fillInColor,
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
             leading: Container(
               width: 36.ph,
               height: 36.ph,
               padding: EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                  color: AppColorsNew.newBlueShadeColor,
-                  shape: BoxShape.circle),
+              decoration:
+                  BoxDecoration(color: Colors.blue, shape: BoxShape.circle),
               child: SvgPicture.asset(
                 'assets/images/casino.svg',
-                color: AppColorsNew.newTextColor,
+                color: theme.supportingColor,
                 width: 24.ph,
                 height: 24.ph,
                 fit: BoxFit.contain,
               ),
             ),
             title: Text(
-              "Table Record",
+              AppStringsNew.TableRecordTitle,
+              style: AppDecorators.getHeadLine4Style(theme: theme),
             ),
             onTap: () {
               Navigator.pushNamed(
@@ -797,7 +804,7 @@ class _GameHistoryDetailView extends State<GameHistoryDetailView>
             },
             trailing: Icon(
               Icons.arrow_forward_ios,
-              color: AppColorsNew.newGreenButtonColor,
+              color: theme.accentColor,
               size: 12.dp,
             ),
           ),

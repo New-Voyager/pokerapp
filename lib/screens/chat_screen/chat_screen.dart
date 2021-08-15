@@ -3,6 +3,8 @@ import 'package:pokerapp/main.dart';
 import 'package:pokerapp/models/messages_from_member.dart';
 import 'package:pokerapp/models/ui/app_text.dart';
 import 'package:pokerapp/models/ui/app_theme.dart';
+import 'package:pokerapp/resources/app_decorators.dart';
+import 'package:pokerapp/resources/new/app_strings_new.dart';
 import 'package:pokerapp/screens/chat_screen/chat_model.dart';
 import 'package:pokerapp/screens/chat_screen/widgets/chat_list_widget.dart';
 import 'package:pokerapp/screens/game_screens/widgets/back_button.dart';
@@ -49,15 +51,9 @@ class _ChatScreenState extends State<ChatScreen> with RouteAwareAnalytics {
     isHostView = widget.player != null;
     return Consumer<AppTheme>(
       builder: (_, theme, __) => Container(
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image:
-                  AssetImage("assets/images/backgrounds/chat-background.png"),
-              repeat: ImageRepeat.repeat,
-            ),
-          ),
+          decoration: AppDecorators.bgRadialGradient(theme),
           child: Scaffold(
-            backgroundColor: chatBg,
+            backgroundColor: Colors.transparent,
             appBar: CustomAppBar(
               theme: theme,
               context: context,

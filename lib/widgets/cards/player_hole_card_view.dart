@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pokerapp/models/game_play_models/ui/card_object.dart';
@@ -52,6 +54,7 @@ class PlayerHoleCardView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    log('Card dim dimboard: ${card.dimBoard}');
     return CardBuilderWidget(
       highlight: false,
       card: card,

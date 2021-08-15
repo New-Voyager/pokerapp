@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pokerapp/models/ui/app_theme.dart';
 import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class HeadingWidget extends StatelessWidget {
@@ -10,6 +11,7 @@ class HeadingWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = AppTheme.getTheme(context);
     return Padding(
       padding: EdgeInsets.symmetric(
         horizontal: 10.0.pw,
@@ -19,16 +21,16 @@ class HeadingWidget extends StatelessWidget {
         heading.toUpperCase(),
         textAlign: TextAlign.center,
         style: TextStyle(
-            fontSize: 20.0.dp,
-            color: const Color(0xfff4f4f4),
+            fontSize: 16.0.dp,
+            color: theme.supportingColor,
             fontWeight: FontWeight.w900,
             shadows: [
               Shadow(
-                color: const Color(0xff00FFB1),
+                color: theme.secondaryColor,
                 blurRadius: 40.0.pw,
               ),
               Shadow(
-                color: const Color(0xff00FFB1),
+                color: theme.secondaryColorWithDark(),
                 blurRadius: 30.0.pw,
                 offset: Offset(0.0, 5.0.pw),
               ),

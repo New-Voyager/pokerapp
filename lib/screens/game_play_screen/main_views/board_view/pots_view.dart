@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pokerapp/resources/new/app_styles_new.dart';
 import 'package:pokerapp/utils/formatter.dart';
+import 'package:pokerapp/utils/adaptive_sizer.dart';
 
 class PotsView extends StatelessWidget {
   final bool highlight;
+  final bool dim;
   final double potChip;
   final bool isBoardHorizontal;
   final GlobalKey uiKey;
@@ -13,6 +16,7 @@ class PotsView extends StatelessWidget {
     this.potChip,
     this.uiKey,
     this.highlight,
+    this.dim,
     this.transparent = false,
   });
 
@@ -23,6 +27,17 @@ class PotsView extends StatelessWidget {
     String potText = '';
     if (!isPotChipEmpty) {
       potText = DataFormatter.chipsFormat(potChip);
+    }
+    TextStyle potTextStyle = AppStylesNew.itemInfoTextStyleHeavy.copyWith(
+      fontSize: 12.dp,
+    );
+    Color chipColor = Colors.yellow;
+    if (dim ?? false) {
+      potTextStyle = AppStylesNew.itemInfoTextStyleHeavy.copyWith(
+        color: Colors.white24,
+        fontSize: 12.dp,
+      );
+      chipColor = Colors.white24;
     }
 
     return Opacity(
@@ -51,10 +66,14 @@ class PotsView extends StatelessWidget {
                   Align(
                     key: uiKey,
                     alignment: Alignment.centerLeft,
-                    child: Image.asset(
-                      'assets/images/chips.png',
-                      height: 15.0,
-                    ),
+                    child: SvgPicture.asset("assets/images/chip.svg",
+                        width: 15.pw, height: 15.pw, color: chipColor),
+
+                    // Image.asset(
+                    //   'assets/images/chips.png',
+                    //   height: 15.pw,
+                    //   width: 15.pw,
+                    // ),
                   ),
 
                   // pot amount text
@@ -62,9 +81,7 @@ class PotsView extends StatelessWidget {
                     padding: const EdgeInsets.only(left: 5.0),
                     child: Text(
                       potText,
-                      style: AppStylesNew.itemInfoTextStyleHeavy.copyWith(
-                        fontSize: 12,
-                      ),
+                      style: potTextStyle,
                     ),
                   ),
                 ],

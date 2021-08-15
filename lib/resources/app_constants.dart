@@ -158,6 +158,7 @@ class AppConstants {
   static const String TABLE_STATUS_HOST_SEATCHANGE_IN_PROGRESS =
       'HOST_SEATCHANGE_IN_PROGRESS';
 
+  static const String GAME_CONFIGURED = 'CONFIGURED';
   static const String GAME_ACTIVE = 'ACTIVE';
   static const String GAME_RUNNING = 'GAME_RUNNING';
   static const String GAME_ENDED = 'ENDED';
@@ -171,8 +172,8 @@ class AppConstants {
   static const String ALLIN = 'ALLIN';
 
   // types of winners - high and low winners
-  static const String HIGH_WINNERS = 'High Winners';
-  static const String LOW_WINNERS = 'Low Winners';
+  static const String HIGH_WINNERS = 'High';
+  static const String LOW_WINNERS = 'Low';
 
   /* message types */
   static const String PLAYER_UPDATE = 'PLAYER_UPDATE';
@@ -189,6 +190,7 @@ class AppConstants {
   static const String YOUR_ACTION = 'YOUR_ACTION';
   static const String QUERY_CURRENT_HAND = 'QUERY_CURRENT_HAND';
   static const String RESULT = 'RESULT';
+  static const String RESULT2 = 'RESULT2';
   static const String MSG_ACK = 'MSG_ACK';
   static const String RUN_IT_TWICE = 'RUN_IT_TWICE';
   static const String PLAYER_CONNECTIVITY_LOST = 'PLAYER_CONNECTIVITY_LOST';
